@@ -1,0 +1,71 @@
+Known Problems (All Versions): 
+   161 7/2/00 Open specifying a user_nick too long causes confusion
+   158 10/11/99 Open some servers dont allow multiple recipiants
+   170 12/09/03 Open queue remaining times dont take into consideration maxtransfersperperson
+
+Short Term Features:
+   165 02/03/01 Open specify more than one type of plist for a single channel with different times
+   164 02/03/01 Open remove dead users from queue
+   150 01/30/01 Open keep track of how long its been since on a server and/or on a channel  
+?  145 12/21/00 Open option to respond to unknown command
+?  144 12/21/00 Open reorder queue members
+?  143 12/21/00 Open manually add someone to a queue
+   141 11/12/00 Open send credit line when sending packs
+   138 7/16/00 Open compress old logs
+   135 4/22/00 Open let (queued) users request dcc list
+   132 3/20/00 Open rename/move a file in upload dir
+   173 12/09/03 Open resend dcc send message if user doesn't connect 
+?  174 12/09/03 Open user can cancel pending transfer
+   175 12/09/03 Open sort by name listing
+   177 12/09/03 Open dont join channels until nickserv has authenticated iroffer
+   181 12/09/03 Open xdcc list display estimated time until queue slot opens up
+   185 12/09/03 Open autosend should use queue if necessary
+   189 12/09/03 Open configurable to disable all stats
+   193 12/09/03 Open different lowbdwth for day and night speeds
+   194 12/09/03 Open send note to user on get of file
+   197 12/09/03 Open qsend with queue number
+   199 12/12/03 Open dont enforce minspeed if there are free slots
+   201 1/19/04 Open configurable to set how aggressive auto-ignore is  
+   204 2/2/04 Open configurable to cover both maxqueueditemsperperson and maxtransfersperperson
+   205 2/12/04 Open switch to background on the fly
+   207 4/02/04 Open md5sum uploads
+   212 6/08/04 Open configurable to enable/disable xdcc info
+   214 7/17/04 Open invite into channel using chanserv
+
+Long Term Features:
+   131 1/7/00 Open nochannel command, leave channels for x minutes   
+*  128 12/21/00 Done save current transfers and queue across a shutdown
+   127 12/14/00 Open individual slotsmax for each pack
+   123 10/21/99 Open lock console with password
+   118 long ago Open telnet admin
+   148 01/01/01 Open channel file for dynamic channels, read in like another config file and written by admin commands
+?  172 12/09/03 Open restrict list/send to only voiced/opped users
+   187 12/09/03 Open lock/busy-out packs from gets
+*  188 12/09/03 Done password protect packs
+   190 12/09/03 Open different bandwidth limiting for each day of the week
+   195 12/09/03 Open IPv6 support
+   202 1/19/04 Open Define hosts that are exempt from bandwidth limits  
+   208 4/13/04 Open SSL connections to irc server
+   209 4/25/04 Open DCC2 support
+   210 5/3/04 Open hostmasks that bypass queue
+   211 6/8/04 Open (auto) resend on lost connection instead instead of going to next queued user
+   213 7/17/04 Open allow multiple uploaddirs>
+
+Not going to happen anytime soon:
+   115 long ago Deferred fserve
+   114 3/2/00 Deferred multiple files per pack
+   113 1/2/00 Deferred different packs for different plist channels
+   112 1/2/00 Deferred multi-language support  
+   111 12/3/99 Deferred exec a shell command
+?  108 long ago Deferred wildcards in add pack
+   107 long ago Deferred multiple autosend words/packs
+   129 12/5/00 Deferred built-in identd server for windows
+   171 12/09/03 Deferred online config file editor
+   176 12/09/03 Deferred customize xdcc list output
+   182 12/09/03 Deferred MIRC style dccserver support
+   183 12/09/03 Deferred SOCKS4/5 support
+   191 12/09/03 Deferred connect to multiple servers/networks
+   198 12/09/03 Deferred Windows service
+   
+Page last modified: 09/01/04 
+
