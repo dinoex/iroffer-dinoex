@@ -1,0 +1,35 @@
+
+1) iroffer
+
+   add a GROUP feature, as seen in various splitoffs.
+   this is a clean reimplementation, groups are optional.
+   and can be mixed with normal packs.
+
+   new commands:
+   XDLFULL, XDLGROUP, GROUPDESC, GROUP, REGROUP
+
+   new user commands:
+   XDCC LIST <group>
+
+2) convertxdccfile
+
+   comandline option "-g" to import groups
+   from an XDCC file created with modBySplizzerv1.6
+   source: http://splizzer.de.ms
+
+3) save download quue on exit or crash.  and read it back on start.
+   I though about saving running transfers too, but decided against it.
+
+   References TODO:
+Long Term Features:
+128     12/21/00        Open    save current transfers and queue across a shutdown
+
+   Known Bugs: transfers will not start automaticly,
+               you need to send a "rehash"
+
+4) getipfromserver
+
+   if iroffer runs behind nat, i recommend setting "getipfromserver"
+   in the config. This will update "natip" whenever the bot reconnects.
+   this obsoletes scripts like "dynip.sh" or other cronjobs.
+
