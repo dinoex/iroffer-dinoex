@@ -28,6 +28,10 @@ __attribute__ ((format(printf, 2, 3)))
 u_respond(const userinput * const u, const char *format, ...);
 
 static void u_help(const userinput * const u);
+static int u_xdl_space(void);
+static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd);
+static void u_xdl_full(const userinput * const u);
+static void u_xdl_group(const userinput * const u);
 static void u_xdl(const userinput * const u);
 static void u_xds(const userinput * const u);
 static void u_dcl(const userinput * const u);
@@ -57,6 +61,9 @@ static void u_chnote(const userinput * const u);
 static void u_chmins(const userinput * const u);
 static void u_chmaxs(const userinput * const u);
 static void u_chgets(const userinput * const u);
+static void u_groupdesc(const userinput * const u);
+static void u_group(const userinput * const u);
+static void u_regroup(const userinput * const u);
 static void u_add(const userinput * const u);
 static void u_adddir(const userinput * const u);
 static void u_addnew(const userinput * const u);
@@ -103,6 +110,8 @@ typedef struct
 /* local info */
 static const userinput_parse_t userinput_parse[] = {
 {1,method_allow_all,u_help,     "HELP",NULL,"Shows Help"},
+{1,method_allow_all_xdl,u_xdl_full,   "XDLFULL",NULL,"Lists All Offered Files"},
+{1,method_allow_all_xdl,u_xdl_group,  "XDLGROUP","<group>","Show <group>"},
 {1,method_allow_all_xdl,u_xdl,  "XDL",NULL,"Lists Offered Files"},
 {1,method_allow_all,u_xds,      "XDS",NULL,"Save XDCC File"},
 {1,method_allow_all,u_dcl,      "DCL",NULL,"Lists Current Transfers"},
@@ -135,6 +144,9 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_chmins,   "CHMINS","n x","Change min speed of pack n to x KB"},
 {3,method_allow_all,u_chmaxs,   "CHMAXS","n x","Change max speed of pack n to x KB"},
 {3,method_allow_all,u_chgets,   "CHGETS","n x","Change the get count of a pack"},
+{3,method_allow_all,u_groupdesc,  "GROUPDESC","<g> <msg>","Change Desc of group <g> to <msg>"},
+{3,method_allow_all,u_group,      "GROUP","n <msg>","Change Group of pack n to <msg>"},
+{3,method_allow_all,u_regroup,    "REGROUP","<g> <msg>","Change all packs of group <g> to <msg>"},
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
 {4,method_allow_all,u_mesg,     "MESG","<message>","Sends msg to all users who are transferring"},
@@ -479,13 +491,131 @@ static void u_help(const userinput * const u)
   
 }
 
+static int u_xdl_space(void) {
+   int i,s;
+   xdcc *xd;
+
+   i = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       i = max2(i,xd->gets);
+       xd = irlist_get_next(xd);
+     }
+   s = 5;
+   if (i < 10000) s = 4;
+   if (i < 1000) s = 3;
+   if (i < 100) s = 2;
+   if (i < 10) s = 1;
+   return s;
+}
+   
+static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd) {
+   char *sizestrstr;
+   int len;
+        
+   sizestrstr = sizestr(1, xd->st_size);
+   snprintf(tempstr, maxtextlength - 1,
+           "\2#%-2i\2 %*ix [%s] %s",
+            i,
+            s, xd->gets,
+            sizestrstr,
+            xd->desc);
+   len = strlen(tempstr);
+   mydelete(sizestrstr);
+       
+   if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed)
+     {
+        snprintf(tempstr + len, maxtextlength - 1 - len,
+                 " [%1.1fK Min]",
+                 xd->minspeed);
+        len = strlen(tempstr);
+     }
+        
+   if (xd->maxspeed > 0 && xd->maxspeed != gdata.transfermaxspeed)
+     {
+        snprintf(tempstr + len, maxtextlength - 1 - len,
+                 " [%1.1fK Max]",
+                 xd->maxspeed);
+        len = strlen(tempstr);
+     }
+}
+
+static void u_xdl_full(const userinput * const u) {
+   char *tempstr;
+   xdcc *xd;
+   int i,s;
+
+   updatecontext();
+
+   tempstr = mycalloc(maxtextlength);
+   i = 1;
+   s = u_xdl_space();
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       u_xdl_pack(tempstr,i,s,xd);
+       u_respond(u,"%s",tempstr);
+       i++;
+       xd = irlist_get_next(xd);
+     }
+         
+   mydelete(tempstr);
+}
+
+static void u_xdl_group(const userinput * const u) {
+   char *tempstr;
+   char *msg3;
+   xdcc *xd;
+   int i,k,s;
+
+   updatecontext();
+
+   msg3 = u->arg1;
+   if (msg3 == NULL)
+     return;
+
+   tempstr = mycalloc(maxtextlength);
+   i = 1;
+   k = 0;
+   s = u_xdl_space();
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       if (xd->group != NULL)
+         {
+           if (strcasecmp(xd->group,msg3) == 0 )
+             {
+               if (xd->group_desc != NULL)
+                 {
+                   u_respond(u,"group: %s %s",msg3,xd->group_desc);
+                 }
+
+               u_xdl_pack(tempstr,i,s,xd);
+               u_respond(u,"%s",tempstr);
+               k++;
+             }
+         }
+       i++;
+       xd = irlist_get_next(xd);
+     }
+         
+   mydelete(tempstr);
+   if (!k)
+     {
+       u_respond(u,"Sorry, nothing was found, try a XDCC LIST");
+     }
+}
+
 static void u_xdl(const userinput * const u) {
    char *tempstr;
-   const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
+   char *inlist;
+   static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
    int a,i,m,m1,s;
    float toffered;
    int len;
    xdcc *xd;
+   irlist_t grplist = {};
    ir_uint64 xdccsent;
    
    updatecontext();
@@ -607,63 +737,53 @@ static void u_xdl(const userinput * const u) {
        return;
      }
    
-   s = 0;
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       s = max2(s,xd->gets);
-       xd = irlist_get_next(xd);
-     }
-   i = s; s = 5;
-   if (i < 10000) s = 4;
-   if (i < 1000) s = 3;
-   if (i < 100) s = 2;
-   if (i < 10) s = 1;
-   
+   s = u_xdl_space();
    i = 1;
    toffered = 0;
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
-       char *sizestrstr;
        toffered += (float)xd->st_size;
        
-       sizestrstr = sizestr(1, xd->st_size);
-       snprintf(tempstr, maxtextlength - 1,
-                "\2#%-2i\2 %*ix [%s] %s",
-                i,
-                s, xd->gets,
-                sizestrstr,
-                xd->desc);
-       len = strlen(tempstr);
-       mydelete(sizestrstr);
-       
-       if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed)
+       /* skip is group is set */
+       if (xd->group == NULL)
          {
-           snprintf(tempstr + len, maxtextlength - 1 - len,
-                    " [%1.1fK Min]",
-                    xd->minspeed);
-           len = strlen(tempstr);
+           u_xdl_pack(tempstr,i,s,xd);
+           u_respond(u,"%s",tempstr);
+       
+           if (xd->note && strlen(xd->note))
+             {
+               u_respond(u," \2^-\2%s%s",spaces[s],xd->note);
+             }
+       
          }
-       
-       if (xd->maxspeed > 0 && xd->maxspeed != gdata.transfermaxspeed)
-         {
-           snprintf(tempstr + len, maxtextlength - 1 - len,
-                    " [%1.1fK Max]",
-                    xd->maxspeed);
-           len = strlen(tempstr);
-         }
-       
-       u_respond(u,"%s",tempstr);
-       
-       if (xd->note && strlen(xd->note))
-         {
-           u_respond(u," \2^-\2%s%s",spaces[s],xd->note);
-         }
-       
        i++;
        xd = irlist_get_next(xd);
      }
+   
+   i = 1;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       /* groupe entry and entry is visible */
+       if ((xd->group != NULL) && (xd->group_desc != NULL))
+          {
+            snprintf(tempstr,maxtextlength-1,
+                     "%s %s",xd->group,xd->group_desc);
+            inlist = irlist_add(&grplist, strlen(tempstr) + 1);
+            strcpy(inlist, tempstr);
+          }
+       i++;
+       xd = irlist_get_next(xd);
+     }
+
+     irlist_sort(&grplist, irlist_sort_cmpfunc_string, NULL);
+     inlist = irlist_get_head(&grplist);
+     while (inlist)
+       {
+         u_respond(u,"group: %s",inlist);
+         inlist = irlist_delete(&grplist, inlist);
+       }
    
    if (gdata.creditline)
      {
@@ -1047,10 +1167,10 @@ static void u_qul(const userinput * const u)
                     i,
                     pq->nick,
                     getfilename(pq->xpack->file),
-                    (gdata.curtime-pq->queuedtime)/60/60,
-                    ((gdata.curtime-pq->queuedtime)/60)%60,
-                    rtime/60/60,
-                    (rtime/60)%60);
+                    (long)((gdata.curtime-pq->queuedtime)/60/60),
+                    (long)(((gdata.curtime-pq->queuedtime)/60)%60),
+                    (long)(rtime/60/60),
+                    (long)(rtime/60)%60);
         }
       else
         {
@@ -1058,8 +1178,8 @@ static void u_qul(const userinput * const u)
                     i,
                     pq->nick,
                     getfilename(pq->xpack->file),
-                    (gdata.curtime-pq->queuedtime)/60/60,
-                    ((gdata.curtime-pq->queuedtime)/60)%60);
+                    (long)((gdata.curtime-pq->queuedtime)/60/60),
+                    (long)(((gdata.curtime-pq->queuedtime)/60)%60));
         }
       pq = irlist_get_next(pq);
       i++;
@@ -2209,6 +2329,155 @@ static void u_chgets(const userinput * const u)
   
   xd->gets = atoi(u->arg2);
   
+  write_statefile();
+  xdccsavetext();
+}
+
+static void u_groupdesc(const userinput * const u) {
+  xdcc *xd;
+  int k;
+
+  updatecontext();
+
+  if (!u->arg1 || !strlen(u->arg1))
+    {
+      u_respond(u,"Try Specifying a Valid Group");
+      return;
+    }
+   
+  k = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,u->arg1) == 0)
+            {
+              k++;
+              /* delete all matching entires */
+              if (xd->group_desc != NULL)
+                mydelete(xd->group_desc);
+              /* write only the first entry */
+              if (k == 1)
+                {
+                  if (u->arg2e && strlen(u->arg2e))
+                    {
+                      xd->group_desc = mycalloc(strlen(u->arg2e)+1);
+                      strcpy(xd->group_desc,u->arg2e);
+                    }
+                }
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  if (k == 0)
+    return;
+
+  if (u->arg2e && strlen(u->arg2e))
+    {
+      u_respond(u, "New GROUPDESC: %s",u->arg2e);
+    }
+  else
+    {
+      u_respond(u, "Removed GROUPDESC");
+    }
+  write_statefile();
+  xdccsavetext();
+}
+
+static void u_group(const userinput * const u) {
+  xdcc *xd;
+  const char *new;
+  int num = 0;
+  
+  updatecontext();
+  
+  if (u->arg1)
+    {
+      num = atoi(u->arg1);
+    }
+  
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      u_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+
+  new = u->arg2;
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+      if (xd->group == NULL)
+      {
+        u_respond(u,"Try Specifying a Group");
+        return;
+      }
+      new = "MAIN";
+    }
+  
+  if (xd->group != NULL)
+    {
+      u_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
+                num,xd->group,new);
+      mydelete(xd->group);
+    }
+  else
+    {
+      u_respond(u, "GROUP: [Pack %i] New: %s",
+                num,u->arg2e);
+    }
+  
+  if (new == u->arg2)
+    {
+      xd->group = mycalloc(strlen(u->arg2e)+1);
+      strcpy(xd->group,u->arg2e);
+    }
+  
+  write_statefile();
+  xdccsavetext();
+}
+
+static void u_regroup(const userinput * const u) {
+  xdcc *xd;
+  int k;
+
+  updatecontext();
+
+  if (!u->arg1 || !strlen(u->arg1))
+    {
+      u_respond(u,"Try Specifying a Valid Group");
+      return;
+    }
+   
+  if (!u->arg2e || !strlen(u->arg2e))
+    {
+      u_respond(u,"Try Specifying a Valid Group");
+      return;
+    }
+   
+  k = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,u->arg1) == 0)
+            {
+              k++;
+              mydelete(xd->group);
+              xd->group = mycalloc(strlen(u->arg2e)+1);
+              strcpy(xd->group,u->arg2e);
+            }
+            xd = irlist_get_next(xd);
+        }
+    }
+
+  if (k == 0)
+    return;
+
+  u_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2e);
   write_statefile();
   xdccsavetext();
 }

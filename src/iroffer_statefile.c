@@ -74,6 +74,8 @@ typedef enum
   STATEFILE_TAG_XDCCS_MINSPEED,
   STATEFILE_TAG_XDCCS_MAXSPEED,
   STATEFILE_TAG_XDCCS_MD5SUM_INFO,
+  STATEFILE_TAG_XDCCS_GROUP,
+  STATEFILE_TAG_XDCCS_GROUP_DESC,
   
   STATEFILE_TAG_TLIMIT_DAILY_USED    = 13 << 8,
   STATEFILE_TAG_TLIMIT_DAILY_ENDS,
@@ -82,6 +84,11 @@ typedef enum
   STATEFILE_TAG_TLIMIT_MONTHLY_USED,
   STATEFILE_TAG_TLIMIT_MONTHLY_ENDS,
   
+  STATEFILE_TAG_QUEUE                = 14 << 8,
+  STATEFILE_TAG_QUEUE_PACK,
+  STATEFILE_TAG_QUEUE_NICK,
+  STATEFILE_TAG_QUEUE_HOST,
+  STATEFILE_TAG_QUEUE_TIME,
 } statefile_tag_t;
 
 typedef struct
@@ -483,6 +490,14 @@ void write_statefile(void)
           {
             length += ceiling(sizeof(statefile_item_md5sum_info_t), 4);
           }
+        if (xd->group != NULL)
+          {
+            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->group) + 1, 4);
+          }
+        if (xd->group_desc != NULL)
+          {
+            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->group_desc) + 1, 4);
+          }
         
         data = mycalloc(length);
         
@@ -567,6 +582,27 @@ void write_statefile(void)
             memcpy(md5sum_info->md5sum, xd->md5sum, sizeof(MD5Digest));
             next = (unsigned char*)(&md5sum_info[1]);
           }
+
+        if (xd->group != NULL)
+          {
+            /* group */
+            hdr = (statefile_hdr_t*)next;
+            hdr->tag = htonl(STATEFILE_TAG_XDCCS_GROUP);
+            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->group) + 1);
+            next = (unsigned char*)(&hdr[1]);
+            strcpy(next, xd->group);
+            next += ceiling(strlen(xd->group) + 1, 4);
+          }
+        if (xd->group_desc != NULL)
+          {
+            /* group_desc */
+            hdr = (statefile_hdr_t*)next;
+            hdr->tag = htonl(STATEFILE_TAG_XDCCS_GROUP_DESC);
+            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->group_desc) + 1);
+            next = (unsigned char*)(&hdr[1]);
+            strcpy(next, xd->group_desc);
+            next += ceiling(strlen(xd->group_desc) + 1, 4);
+          }
         
         write_statefile_item(&bout, data);
         
@@ -621,6 +657,86 @@ void write_statefile(void)
     item_monthly_ends.hdr.length = sizeof(statefile_item_generic_time_t);
     item_monthly_ends.g_time = htonl(gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends);
     write_statefile_item(&bout, &item_monthly_ends);
+  }
+  {
+    unsigned char *data;
+    unsigned char *next;
+    pqueue *pq;
+    xdcc *xd;
+    statefile_item_generic_int_t *g_int;
+    statefile_item_generic_time_t *g_time;
+    int pack;
+    
+    pq = irlist_get_head(&gdata.mainqueue);
+    
+    while (pq)
+      {
+        /*
+         * need room to write:
+         *  pack          int
+         *  nick          string
+         *  hostname      string
+         *  queuedtime    time
+         */
+        length = sizeof(statefile_hdr_t) +
+          sizeof(statefile_item_generic_int_t) + 
+          sizeof(statefile_hdr_t) + ceiling(strlen(pq->nick) + 1, 4) +
+          sizeof(statefile_hdr_t) + ceiling(strlen(pq->hostname) + 1, 4) +
+          sizeof(statefile_item_generic_time_t);
+        
+        data = mycalloc(length);
+        
+        /* outter header */
+        hdr = (statefile_hdr_t*)data;
+        hdr->tag = STATEFILE_TAG_QUEUE;
+        hdr->length = length;
+        next = (unsigned char*)(&hdr[1]);
+
+        pack = 1;
+        xd = irlist_get_head(&gdata.xdccs);
+        while(xd)
+          {
+            if (xd == pq->xpack)
+              break;
+            pack++;
+            xd = irlist_get_next(xd);
+          }
+
+        /* pack */
+        g_int = (statefile_item_generic_int_t*)next;
+        g_int->hdr.tag = htonl(STATEFILE_TAG_QUEUE_PACK);
+        g_int->hdr.length = htonl(sizeof(*g_int));
+        g_int->g_int = htonl(pack);
+        next = (unsigned char*)(&g_int[1]);
+        
+        /* nick */
+        hdr = (statefile_hdr_t*)next;
+        hdr->tag = htonl(STATEFILE_TAG_QUEUE_NICK);
+        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(pq->nick) + 1);
+        next = (unsigned char*)(&hdr[1]);
+        strcpy(next, pq->nick);
+        next += ceiling(strlen(pq->nick) + 1, 4);
+        
+        /* hostname */
+        hdr = (statefile_hdr_t*)next;
+        hdr->tag = htonl(STATEFILE_TAG_QUEUE_HOST);
+        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(pq->hostname) + 1);
+        next = (unsigned char*)(&hdr[1]);
+        strcpy(next, pq->hostname);
+        next += ceiling(strlen(pq->hostname) + 1, 4);
+        
+        /* queuedtime */
+        g_time = (statefile_item_generic_time_t*)next;
+        g_time->hdr.tag = htonl(STATEFILE_TAG_QUEUE_TIME);
+        g_time->hdr.length = htonl(sizeof(*g_time));
+        g_time->g_time = htonl(pq->queuedtime);
+        next = (unsigned char*)(&g_time[1]);
+        
+        write_statefile_item(&bout, data);
+        
+        mydelete(data);
+        pq = irlist_get_next(pq);
+      }
   }
   
   {
@@ -1157,6 +1273,8 @@ void read_statefile(void)
             
             xd->minspeed = gdata.transferminspeed;
             xd->maxspeed = gdata.transfermaxspeed;
+            xd->group = NULL;
+            xd->group_desc = NULL;
             
             hdr->length -= sizeof(*hdr);
             ihdr = &hdr[1];
@@ -1272,6 +1390,36 @@ void read_statefile(void)
                     else
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC md5sum Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_GROUP:
+                    if (ihdr->length > sizeof(statefile_hdr_t))
+                      {
+                        char *group = (char*)(&ihdr[1]);
+                        group[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
+                        xd->group = mycalloc(strlen(group)+1);
+                        strcpy(xd->group,group);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Desc Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_GROUP_DESC:
+                    if (ihdr->length > sizeof(statefile_hdr_t))
+                      {
+                        char *group_desc = (char*)(&ihdr[1]);
+                        group_desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
+                        xd->group_desc = mycalloc(strlen(group_desc)+1);
+                        strcpy(xd->group_desc,group_desc);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Desc Tag (len = %d)",
                                  ihdr->length);
                       }
                     break;
@@ -1477,6 +1625,96 @@ void read_statefile(void)
             }
           break;
           
+        case STATEFILE_TAG_QUEUE:
+          {
+            pqueue *pq;
+            statefile_hdr_t *ihdr;
+            statefile_item_generic_int_t *g_int;
+            statefile_item_generic_time_t *g_time;
+            char *text;
+            int num;
+            
+            pq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
+
+            pq->xpack = NULL;
+            pq->nick = NULL;
+            pq->hostname = NULL;
+            pq->queuedtime = 0L;
+            pq->restrictsend_bad = gdata.curtime;
+            
+            hdr->length -= sizeof(*hdr);
+            ihdr = &hdr[1];
+            
+            while (hdr->length >= sizeof(*hdr))
+              {
+                ihdr->tag = ntohl(ihdr->tag);
+                ihdr->length = ntohl(ihdr->length);
+                switch (ihdr->tag)
+                  {
+                  case STATEFILE_TAG_QUEUE_PACK:
+                    if (ihdr->length != sizeof(statefile_item_generic_int_t))
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Tag (len = %d)",
+                                 ihdr->length);
+                        break;
+                      }
+                    g_int = (statefile_item_generic_int_t*)ihdr;
+                    num = ntohl(g_int->g_int);
+                    if (num < 1 || num > irlist_size(&gdata.xdccs))
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Nr (%d)", num);
+                        break;
+                      }
+                    pq->xpack = irlist_get_nth(&gdata.xdccs, num-1);
+                    break;
+                    
+                  case STATEFILE_TAG_QUEUE_NICK:
+                    if (ihdr->length <= sizeof(statefile_hdr_t))
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Nick Tag (len = %d)",
+                                 ihdr->length);
+                        break;
+                      }
+                    text = (char*)(&ihdr[1]);
+                    text[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
+                    pq->nick = mycalloc(strlen(text)+1);
+                    strcpy(pq->nick,text);
+                    break;
+                    
+                  case STATEFILE_TAG_QUEUE_HOST:
+                    if (ihdr->length <= sizeof(statefile_hdr_t))
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Host Tag (len = %d)",
+                                 ihdr->length);
+                        break;
+                      }
+                    text = (char*)(&ihdr[1]);
+                    text[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
+                    pq->hostname = mycalloc(strlen(text)+1);
+                    strcpy(pq->hostname,text);
+                    break;
+                    
+                  case STATEFILE_TAG_QUEUE_TIME:
+                    if (ihdr->length != sizeof(statefile_item_generic_time_t))
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Time Tag (len = %d)",
+                                 ihdr->length);
+                        break;
+                      }
+                    g_time = (statefile_item_generic_time_t*)ihdr;
+                    pq->queuedtime = ntohl(g_time->g_time);
+                    break;
+                    
+                  default:
+                    outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown XDCC Tag 0x%X (len=%d)",
+                             ihdr->tag, ihdr->length);
+                  }
+                hdr->length -= ceiling(ihdr->length, 4);
+                ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
+              }
+          }
+          break;
+
         default:
           outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown Tag 0x%X (len=%d)",
                  hdr->tag, hdr->length);
@@ -1514,6 +1752,14 @@ void read_statefile(void)
               COLOR_NO_COLOR, "  [Found %d Pack%s]",
               irlist_size(&gdata.xdccs),
               (irlist_size(&gdata.xdccs) == 1) ? "" : "s");
+    }
+  
+  if ((gdata.debug > 0) || irlist_size(&gdata.mainqueue))
+    {
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
+              COLOR_NO_COLOR, "  [Found %d Queue%s]",
+              irlist_size(&gdata.mainqueue),
+              (irlist_size(&gdata.mainqueue) == 1) ? "" : "s");
     }
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,

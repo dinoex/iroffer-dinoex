@@ -142,6 +142,8 @@ typedef struct
 
 typedef struct {
    char *file, *desc, *note;
+   char *group;
+   char *group_desc;
    int gets;
    float minspeed,
          maxspeed;
@@ -611,6 +613,7 @@ void ir_boutput_get_md5sum(ir_boutput_t *bout, MD5Digest digest);
 const char *transferlimit_type_to_string(transferlimit_type_e type);
 
 /* misc.c */
+void update_natip (const char *var);
 void getconfig (void);
 void getconfig_set (const char *line, int rehash);
 void initirc(void);

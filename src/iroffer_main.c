@@ -1787,6 +1787,16 @@ static void parseline(char *line) {
    if ( !strcmp(part2,"001") )
      {
        ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Server welcome: %s",line);
+       mylog(CALLTYPE_NORMAL,"Server welcome: %s",line);
+       if (gdata.getipfromserver)
+         {
+           tptr = strchr(line, '@');
+           if (tptr != NULL)
+             {
+             ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"IP From Server: %s",tptr+1);
+	     update_natip(tptr+1);
+             }
+         }
        
        /* update server name */
        mydelete(gdata.curserveractualname);
@@ -2619,13 +2629,31 @@ static void privmsgparse(const char* type, char* line) {
                    }
                  else
                    {
-                     user = irlist_add(&gdata.xlistqueue, strlen(nick) + 1);
-                     strcpy(user,nick);
+                     if (msg3)
+                       {
+                         userinput *pubplist;
+                         char *tempstr = mycalloc(maxtextlength);
+                         
+                         snprintf(tempstr,maxtextlength-1,"A A A A A xdlgroup %s",msg3);
+                         pubplist = mycalloc(sizeof(userinput));
+                         u_fillwith_msg(pubplist,nick,tempstr);
+                         pubplist->method = method_xdl_user_notice;
+                         u_parseit(pubplist);
+                         mydelete(pubplist);
+                         mydelete(tempstr);
+                         j = 3; /* msg3 */
+                       }
+                     else
+                       {
+                         user = irlist_add(&gdata.xlistqueue, strlen(nick) + 1);
+                         strcpy(user,nick);
+                       }
                    }
                }
 	   }
 	 
-         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC LIST %s: (%s)",(j==1?"ignored":(j==2?"denied":"queued")),hostmask);
+         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC LIST %s: (%s)",
+                 (j==1?"ignored":(j==2?"denied":(j==3?msg3:"queued"))),hostmask);
          
          }
       else if (gdata.caps_nick && !strcmp(gdata.caps_nick,dest))

@@ -1420,6 +1420,7 @@ void dumpgdata(void)
   gdata_print_int(maxqueueditemsperperson);
   gdata_print_int(punishslowusers);
   gdata_print_int(nomd5sum);
+  gdata_print_int(getipfromserver);
   
   /* downloadhost */
   

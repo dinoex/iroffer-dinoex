@@ -25,10 +25,56 @@
 
 static void usage(const char *progname)
 {
-  fprintf(stderr, "Usage: %s [-v] -x mybot.xdcc -s mybot.state\n", progname);
+  fprintf(stderr, "Usage: %s [-v] [-g] -x mybot.xdcc -s mybot.state\n", progname);
   exit(1);
 }
 
+int splizzer;
+
+struct list_s {
+  struct list_s *l_next;
+  char *l_data;
+} *seen_list;
+
+static struct list_s *seen_init(const char *data)
+{
+   struct list_s *new;
+
+   new = malloc(sizeof(struct list_s));
+   if (new == NULL)
+      return NULL;
+   new->l_next = NULL;
+   new->l_data = (data != NULL) ? strdup(data) : NULL;
+   return new;
+}
+
+static int seen(const char *data)
+{
+   struct list_s *old;
+   struct list_s *new;
+
+   if (seen_list == NULL) {
+      new = seen_init(data);
+      seen_list = new;
+      return 0;
+      }
+   old = seen_list;
+   while (old->l_next != NULL) {
+      if (old->l_data != NULL) {
+         if (strcasecmp(old->l_data,data) == 0)
+            return 1;
+         }
+      old = old->l_next;
+   }
+
+   if (old->l_data != NULL) {
+      if (strcasecmp(old->l_data,data) == 0)
+         return 1;
+      }
+   new = seen_init(data);
+   old->l_next = new;
+   return 0;
+}
 
 static void getxdccconfig(const char *filename) {
    char *templine1 = mycalloc(maxtextlength);
@@ -37,6 +83,9 @@ static void getxdccconfig(const char *filename) {
    char *templine4 = mycalloc(maxtextlength);
    char *templine5 = mycalloc(maxtextlength);
    char *templine6 = mycalloc(maxtextlength);
+   char *templine7 = mycalloc(maxtextlength);
+   char *templine8 = mycalloc(maxtextlength);
+   char *templine9 = mycalloc(maxtextlength);
    char *msg;
    int ok,i;
    int filedescriptor,xfiledescriptor;
@@ -136,8 +185,16 @@ static void getxdccconfig(const char *filename) {
       if (getfline(templine5,maxtextlength,filedescriptor,0) == NULL)  ok++;
       if (getfline(templine6,maxtextlength,filedescriptor,0) == NULL)  ok++;
       
-      if (ok)
+      if (splizzer != 0) {
+         if (getfline(templine7,maxtextlength,filedescriptor,0) == NULL)  ok++;
+         if (getfline(templine8,maxtextlength,filedescriptor,0) == NULL)  ok++;
+         if (getfline(templine9,maxtextlength,filedescriptor,0) == NULL)  ok++;
+         }
+
+      if (ok) {
+         printf("** ERROR: to read a XDCC file with group definitions use '-g'\n");
          outerror(OUTERROR_TYPE_CRASH,"XDCC file syntax error (missing/extra line)");
+         }
       
       for (i=strlen(templine1)-1; i>7 && templine1[i] == ' '; i--)
          templine1[i] = '\0';
@@ -151,6 +208,12 @@ static void getxdccconfig(const char *filename) {
          templine5[i] = '\0';
       for (i=strlen(templine6)-1; i>7 && templine6[i] == ' '; i--)
          templine6[i] = '\0';
+      for (i=strlen(templine7)-1; i>7 && templine7[i] == ' '; i--)
+         templine7[i] = '\0';
+      for (i=strlen(templine8)-1; i>7 && templine8[i] == ' '; i--)
+         templine8[i] = '\0';
+      for (i=strlen(templine9)-1; i>7 && templine9[i] == ' '; i--)
+         templine9[i] = '\0';
 
       if ((strlen(templine1) < 8) || strncmp(templine1+3,"file ",5)) ok++;
       if ((strlen(templine2) < 8) || strncmp(templine2+3,"desc ",5)) ok++;
@@ -158,6 +221,13 @@ static void getxdccconfig(const char *filename) {
       if ((strlen(templine4) < 8) || strncmp(templine4+3,"gets ",5)) ok++;
       if ((strlen(templine5) < 8) || strncmp(templine5+3,"mins ",5)) ok++;
       if ((strlen(templine6) < 8) || strncmp(templine6+3,"maxs ",5)) ok++;
+      if (splizzer != 0) {
+         if ((strlen(templine7) < 8) || strncmp(templine7+3,"data ",5)) ok++;
+         if ((strlen(templine8) < 8) || strncmp(templine8+3,"trig ",5)) ok++;
+         if ((strlen(templine9) < 8) || strncmp(templine9+3,"trno ",5)) ok++;
+         }
+      if (ok)
+         printf("error=%d, near file=%s\n", ok, templine1);
 
       if (ok)
          outerror(OUTERROR_TYPE_CRASH,"XDCC file syntax error (incorrect order?)");
@@ -176,6 +246,17 @@ static void getxdccconfig(const char *filename) {
       
       xd->gets     = atoi(templine4+8);
       
+      xd->group = NULL;
+      xd->group_desc = NULL;
+      if (splizzer != 0) {
+         xd->group = mycalloc(strlen(templine7+8)+1);
+         strcpy(xd->group,templine7+8);
+         if (seen(templine9+8) == 0) {
+            xd->group_desc = mycalloc(strlen(templine9+8)+1);
+            strcpy(xd->group_desc,templine9+8);
+            }
+         }
+
       xd->minspeed = gdata.transferminspeed;
       if ( atof(templine5+8) > 0)
          xd->minspeed = atof(templine5+8);
@@ -239,6 +320,10 @@ static void getxdccconfig(const char *filename) {
    mydelete(templine4);
    mydelete(templine5);
    mydelete(templine6);
+   mydelete(templine6);
+   mydelete(templine7);
+   mydelete(templine8);
+   mydelete(templine9);
 
    }
 
@@ -254,6 +339,8 @@ int main(int argc, char *argv[])
   gdata.nocolor = 1;
   gdata.noscreen = 1;
   gdata.debug = 1;
+  splizzer = 0;
+  seen_list = NULL;
   
 #if defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)
   /* 4GB max size */
@@ -267,12 +354,16 @@ int main(int argc, char *argv[])
   gdata.startuptime = gdata.curtime = time(NULL);
   gdata.curtimems = ((unsigned long long)gdata.curtime) * 1000;
   
-  while ((callval_i = getopt(argc, argv, "vx:s:")) >= 0)
+  while ((callval_i = getopt(argc, argv, "vgx:s:")) >= 0)
     {
       switch (callval_i)
         {
         case 'v':
           gdata.debug++;
+          break;
+
+        case 'g':
+          splizzer++;
           break;
           
         case 'x':

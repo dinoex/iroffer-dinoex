@@ -85,6 +85,7 @@ int restrictlist, restrictsend, restrictprivlist;
 char *restrictprivlistmsg;
 int punishslowusers;
 int nomd5sum;
+int getipfromserver;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

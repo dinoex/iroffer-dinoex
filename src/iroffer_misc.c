@@ -97,6 +97,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"restrictprivlist",     &gdata.restrictprivlist,     &gdata.restrictprivlist },
   {"restrictsend",         &gdata.restrictsend,         &gdata.restrictsend },
   {"nomd5sum",             &gdata.nomd5sum,             &gdata.nomd5sum },
+  {"getipfromserver",      &gdata.getipfromserver,      &gdata.getipfromserver },
 };
 
 typedef struct
@@ -140,6 +141,56 @@ static const config_parse_str_t config_parse_str[] = {
   {"nickserv_pass",        &gdata.nickserv_pass,        &gdata.nickserv_pass },
   {"restrictprivlistmsg",  &gdata.restrictprivlistmsg,  &gdata.restrictprivlistmsg },
 };
+
+void update_natip (const char *var)
+{
+  struct hostent *hp;
+  struct in_addr in;
+  struct in_addr old;
+
+  if (var == NULL)
+    return;
+
+  bzero((char *)&in, sizeof(in));
+  if (inet_aton(var, &in) == 0)
+    {
+      hp = gethostbyname2(var, AF_INET);
+      if (hp == NULL)
+        {
+          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid NAT Host, Ignoring: %s",hstrerror(h_errno));
+          return;
+        }
+      if ((unsigned)hp->h_length > sizeof(in) || hp->h_length < 0)
+        {
+          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid DNS response, Ignoring: %s",hstrerror(h_errno));
+          return;
+        }
+      memcpy(&in, hp->h_addr_list[0], sizeof(in));
+    }
+
+  old.s_addr = htonl(gdata.ourip);
+  gdata.usenatip = 1;
+  if (old.s_addr == in.s_addr)
+    return;
+
+  gdata.ourip = in.s_addr;
+  gdata.ourip = ntohl(in.s_addr);
+  mylog(CALLTYPE_NORMAL,"DCC IP changed from %s to %s", inet_ntoa(old), inet_ntoa(in));
+  
+  if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ip=0x%8.8lX\n",gdata.ourip);
+  
+  /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
+  if (((gdata.ourip & 0xFF000000UL) == 0x0A000000UL) ||
+      ((gdata.ourip & 0xFFF00000UL) == 0xAC100000UL) ||
+      ((gdata.ourip & 0xFFFF0000UL) == 0xC0A80000UL))
+    {
+      outerror(OUTERROR_TYPE_WARN_LOUD,"usenatip of %lu.%lu.%lu.%lu looks wrong, this is probably not what you want to do",
+                (gdata.ourip >> 24) & 0xFF,
+                (gdata.ourip >> 16) & 0xFF,
+                (gdata.ourip >>  8) & 0xFF,
+                (gdata.ourip      ) & 0xFF);
+     }
+}
 
 void getconfig_set (const char *line, int rehash)
 {
@@ -599,35 +650,7 @@ void getconfig_set (const char *line, int rehash)
       }
    else if ( ! strcmp(type,"usenatip"))
      {
-      unsigned long ipparts[4];
-      if (sscanf(var, "%lu.%lu.%lu.%lu", &ipparts[0], &ipparts[1], &ipparts[2], &ipparts[3]) < 4)
-        {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid NAT Host, Ignoring");
-        }
-      else if ((ipparts[0] > 255) || (ipparts[1] > 255) ||
-               (ipparts[2] > 255) || (ipparts[3] > 255))
-        {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid NAT Host, Ignoring");
-        }
-      else
-        {
-          gdata.usenatip = 1;
-          gdata.ourip = (ipparts[0] << 24) | (ipparts[1] << 16) | (ipparts[2] << 8) | ipparts[3];
-          
-          if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ip=0x%8.8lX\n",gdata.ourip);
-          
-          /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
-          if (((gdata.ourip & 0xFF000000UL) == 0x0A000000UL) ||
-              ((gdata.ourip & 0xFFF00000UL) == 0xAC100000UL) ||
-              ((gdata.ourip & 0xFFFF0000UL) == 0xC0A80000UL))
-            {
-              outerror(OUTERROR_TYPE_WARN_LOUD,"usenatip of %lu.%lu.%lu.%lu looks wrong, this is probably not what you want to do",
-                       (gdata.ourip >> 24) & 0xFF,
-                       (gdata.ourip >> 16) & 0xFF,
-                       (gdata.ourip >>  8) & 0xFF,
-                       (gdata.ourip      ) & 0xFF);
-            }
-        }
+      update_natip(var);
       mydelete(var);
      }
    else if ( ! strcmp(type,"local_vhost"))
@@ -2323,6 +2346,7 @@ void reinit_config_vars(void)
   gdata.lowbdwth = 0;
   gdata.punishslowusers = 0;
   gdata.nomd5sum = 0;
+  gdata.getipfromserver = 0;
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;
