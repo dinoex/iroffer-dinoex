@@ -5,21 +5,27 @@
    this is a clean reimplementation, groups are optional.
    and can be mixed with normal packs.
 
-   new commands:
-   XDLFULL
-   XDLGROUP <group>
-   GROUPDESC <group> <text>
-   GROUP <pack> <group>
-   REGROUP <group> <newname>
+   new admin commands:
+   XDLFULL                    list all packs
+   XDLGROUP <group>           list packs with given group
+   GROUPDESC <group> <text>   set new description for group
+   GROUP <pack> <group>       set pack as a member of group
+   REGROUP <group> <newname>  rename group
 
    new user commands:
-   XDCC LIST <group>
+   XDCC LIST <group>          list packs with given group
+
+   changed user commands:
+   XDCC LIST                  list packs that have no group defined
+                              and list all groups that have a description.
 
 2) convertxdccfile
 
-   comandline option "-g" to import groups
-   from an XDCC file created with modBySplizzerv1.6
-   source: http://splizzer.de.ms
+   comandline option "-g" to import group definitions
+   from an XDCC file created with modBySplizzerv1.6, http://splizzer.de.ms
+
+   sample commandline:
+   convertxdccfile -g splizzer.xdcc mybot.state
 
 3) save download quue on exit or crash.  and read it back on start.
    I though about saving running transfers too, but decided against it.
@@ -28,15 +34,19 @@
 Long Term Features:
 128     12/21/00        Open    save current transfers and queue across a shutdown
 
-   Known Bugs: transfers will not start automaticly,
-               you need to send a "rehash"
 
+Ab Version mod 1.3:
 4) getipfromserver
 
-   if iroffer runs behind nat, i recommend setting "getipfromserver"
+   Automatic dcc ip translation
+   Get my own IP from the ircserver, and uses this as value for usenatip.
+   Set usenatip to a default value when using this option.
+
+   If iroffer runs behind nat, I recommend setting "getipfromserver"
    in the config. This will update "natip" whenever the bot reconnects.
    this obsoletes scripts like "dynip.sh" or other cronjobs.
 
+Ab Version mod 1.4:
 5) locking/password:
 
    new commands:
@@ -50,24 +60,45 @@ Long Term Features:
 Long Term Features:
 188	12/09/03	Open	password protect packs
 
-
 6) noduplicatefiles
 
-   when configured, add and addir resfufe to add a files that is already there.
+   When configured, add, adddir and addnew refuses to add a files that
+   already have been added. Full path is compared.
 
-7) adddir_exclude
+7) adddir_exclude <pattern>
 
-   when configured, addir will ignore files that match this pattern.
+   When configured, addir and adnew will skip all files that match this
+   patterns.
 
-8) enable_nick dinoex
+8) enable_nick <nickname>
 
-    watch this user, stop serving when this user is not online
+   Watch this user.
+   No new "xdcc send" are accepted, when this user is not online.
+   Old queue entries are still send.
 
+Ab Version mod 1.5:
 9) need_voice
 
-   restrict list/send to only voiced/opped users
+   Restrict list/send to only voiced/opped users
+   restrictlist and restrictsend must be set yes.
 
    References TODO:
 Long Term Features:
 172	12/09/03	Open	restrict list/send to only voiced/opped users
+
+
+Ab Version mod 1.6:
+10) hide_list_info
+
+    Don't print line with "/msg nick xdcc info #x"
+
+11) xdcclist_grouponly
+
+    Export your xdcc list with group and main information only.
+    Default ouput is all packs and no group ionformation.
+
+12) admin_job_file
+
+    when defined, read this file for commands and execute them.
+    ouput will be written in <filename>.done
 

@@ -100,6 +100,8 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"getipfromserver",      &gdata.getipfromserver,      &gdata.getipfromserver },
   {"noduplicatefiles",     &gdata.noduplicatefiles,     &gdata.noduplicatefiles },
   {"need_voice",           &gdata.need_voice,           &gdata.need_voice },
+  {"hide_list_info",       &gdata.hide_list_info,       &gdata.hide_list_info },
+  {"xdcclist_grouponly",   &gdata.xdcclist_grouponly,   &gdata.xdcclist_grouponly },
 };
 
 typedef struct
@@ -143,6 +145,7 @@ static const config_parse_str_t config_parse_str[] = {
   {"nickserv_pass",        &gdata.nickserv_pass,        &gdata.nickserv_pass },
   {"restrictprivlistmsg",  &gdata.restrictprivlistmsg,  &gdata.restrictprivlistmsg },
   {"enable_nick",          &gdata.enable_nick,          &gdata.enable_nick },
+  {"admin_job_file",       &gdata.admin_job_file,       &gdata.admin_job_file },
 };
 
 void update_natip (const char *var)
@@ -1503,7 +1506,10 @@ void xdccsavetext(void)
   
   uxdl = mycalloc(sizeof(userinput));
   
-  u_fillwith_msg(uxdl,NULL,"A A A A A xdl");
+  if (gdata.xdcclist_grouponly)
+    u_fillwith_msg(uxdl,NULL,"A A A A A xdl");
+  else
+    u_fillwith_msg(uxdl,NULL,"A A A A A xdlfull");
   uxdl->method = method_fd; 
   uxdl->fd = fd;
   
@@ -2363,6 +2369,9 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.adddir_exclude);
   mydelete(gdata.enable_nick);
   gdata.need_voice = 0;
+  gdata.hide_list_info = 0;
+  gdata.xdcclist_grouponly = 0;
+  mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;

@@ -30,6 +30,7 @@ u_respond(const userinput * const u, const char *format, ...);
 static void u_help(const userinput * const u);
 static int u_xdl_space(void);
 static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd);
+static void u_xdl_head(const userinput * const u);
 static void u_xdl_full(const userinput * const u);
 static void u_xdl_group(const userinput * const u);
 static void u_xdl(const userinput * const u);
@@ -545,84 +546,12 @@ static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd) {
      }
 }
 
-static void u_xdl_full(const userinput * const u) {
+static void u_xdl_head(const userinput * const u) {
    char *tempstr;
-   xdcc *xd;
-   int i,s;
-
-   updatecontext();
-
-   tempstr = mycalloc(maxtextlength);
-   i = 1;
-   s = u_xdl_space();
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       u_xdl_pack(tempstr,i,s,xd);
-       u_respond(u,"%s",tempstr);
-       i++;
-       xd = irlist_get_next(xd);
-     }
-         
-   mydelete(tempstr);
-}
-
-static void u_xdl_group(const userinput * const u) {
-   char *tempstr;
-   char *msg3;
-   xdcc *xd;
-   int i,k,s;
-
-   updatecontext();
-
-   msg3 = u->arg1;
-   if (msg3 == NULL)
-     return;
-
-   tempstr = mycalloc(maxtextlength);
-   i = 1;
-   k = 0;
-   s = u_xdl_space();
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       if (xd->group != NULL)
-         {
-           if (strcasecmp(xd->group,msg3) == 0 )
-             {
-               if (xd->group_desc != NULL)
-                 {
-                   u_respond(u,"group: %s %s",msg3,xd->group_desc);
-                 }
-
-               u_xdl_pack(tempstr,i,s,xd);
-               u_respond(u,"%s",tempstr);
-               k++;
-             }
-         }
-       i++;
-       xd = irlist_get_next(xd);
-     }
-         
-   mydelete(tempstr);
-   if (!k)
-     {
-       u_respond(u,"Sorry, nothing was found, try a XDCC LIST");
-     }
-}
-
-static void u_xdl(const userinput * const u) {
-   char *tempstr;
-   char *inlist;
-   static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
-   int a,i,m,m1,s;
-   float toffered;
+   int a,i,m,m1;
    int len;
    xdcc *xd;
-   irlist_t grplist = {};
    ir_uint64 xdccsent;
-   
-   updatecontext();
    
    tempstr  = mycalloc(maxtextlength);
 
@@ -721,8 +650,23 @@ static void u_xdl(const userinput * const u) {
        u_respond(u,"\2**\2 To request a file, type \"/msg %s xdcc send #x\" \2**\2",
                  (gdata.user_nick ? gdata.user_nick : "??"));
        
-       u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info #x\" \2**\2",
-                 (gdata.user_nick ? gdata.user_nick : "??"));
+       if (gdata.hide_list_info == 0)
+          u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info #x\" \2**\2",
+                    (gdata.user_nick ? gdata.user_nick : "??"));
+       
+       i = 0;
+       xd = irlist_get_head(&gdata.xdccs);
+       while(xd)
+         {
+           if (xd->group != NULL)
+             {
+               i++;
+             }
+           xd = irlist_get_next(xd);
+         }
+       if (i > 0)
+          u_respond(u,"\2**\2 To list a group, type \"/msg %s xdcc list GROUP\" \2**\2",
+                    (gdata.user_nick ? gdata.user_nick : "??"));
      }
    
    if (m1)
@@ -736,10 +680,96 @@ static void u_xdl(const userinput * const u) {
          {
            u_respond(u,"\2**\2 %s \2**\2",gdata.creditline);
          }
-       
-       mydelete(tempstr);
-       return;
      }
+   
+   mydelete(tempstr);
+}
+
+static void u_xdl_full(const userinput * const u) {
+   char *tempstr;
+   xdcc *xd;
+   int i,s;
+   
+   updatecontext();
+   
+   u_xdl_head(u);
+   
+   tempstr = mycalloc(maxtextlength);
+   i = 1;
+   s = u_xdl_space();
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       u_xdl_pack(tempstr,i,s,xd);
+       u_respond(u,"%s",tempstr);
+       i++;
+       xd = irlist_get_next(xd);
+     }
+         
+   mydelete(tempstr);
+}
+
+static void u_xdl_group(const userinput * const u) {
+   char *tempstr;
+   char *msg3;
+   xdcc *xd;
+   int i,k,s;
+
+   updatecontext();
+
+   msg3 = u->arg1;
+   if (msg3 == NULL)
+     return;
+
+   tempstr = mycalloc(maxtextlength);
+   i = 1;
+   k = 0;
+   s = u_xdl_space();
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       if (xd->group != NULL)
+         {
+           if (strcasecmp(xd->group,msg3) == 0 )
+             {
+               if (xd->group_desc != NULL)
+                 {
+                   u_respond(u,"group: %s %s",msg3,xd->group_desc);
+                 }
+
+               u_xdl_pack(tempstr,i,s,xd);
+               u_respond(u,"%s",tempstr);
+               k++;
+             }
+         }
+       i++;
+       xd = irlist_get_next(xd);
+     }
+         
+   mydelete(tempstr);
+   if (!k)
+     {
+       u_respond(u,"Sorry, nothing was found, try a XDCC LIST");
+     }
+}
+
+static void u_xdl(const userinput * const u) {
+   char *tempstr;
+   char *inlist;
+   static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
+   int i,m,s;
+   float toffered;
+   xdcc *xd;
+   irlist_t grplist = {};
+
+   updatecontext();
+   
+   u_xdl_head(u);
+
+   if (u->method==method_xdl_channel_sum) return;
+   if (u->method==method_xdl_channel_min) m = 1; else m = 0;
+
+   tempstr  = mycalloc(maxtextlength);
    
    s = u_xdl_space();
    i = 1;
@@ -765,7 +795,6 @@ static void u_xdl(const userinput * const u) {
        xd = irlist_get_next(xd);
      }
    
-   i = 1;
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
@@ -777,7 +806,6 @@ static void u_xdl(const userinput * const u) {
             inlist = irlist_add(&grplist, strlen(tempstr) + 1);
             strcpy(inlist, tempstr);
           }
-       i++;
        xd = irlist_get_next(xd);
      }
 
@@ -805,7 +833,7 @@ static void u_xdl(const userinput * const u) {
      }
    
    mydelete(tempstr);
-   }
+}
 
 static void u_xds(const userinput * const u)
 {

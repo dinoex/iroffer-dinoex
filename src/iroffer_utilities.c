@@ -1424,6 +1424,10 @@ void dumpgdata(void)
   gdata_print_int(noduplicatefiles);
   /* adddir_exclude */
   gdata_print_string(enable_nick);
+  gdata_print_int(need_voice);
+  gdata_print_int(hide_list_info);
+  gdata_print_int(xdcclist_grouponly);
+  gdata_print_string(admin_job_file);
   
   /* downloadhost */
   
@@ -1887,6 +1891,9 @@ void removefrommemberlist(channel_t *c, char *nick)
 
 void changeinmemberlist(channel_t *c, char *oldnick, const char *newnick)
 {
+  char *nick1;
+  char *member;
+
   updatecontext();
   
   if (gdata.debug > 2)
@@ -1895,6 +1902,27 @@ void changeinmemberlist(channel_t *c, char *oldnick, const char *newnick)
               "changing %s to %s in %s",oldnick,newnick,c->name);
     }
   
+  if (gdata.need_voice)
+    {
+      nick1 = mycalloc(strlen(oldnick)+1);
+      strcpy(nick1,oldnick);
+      caps(nick1);
+  
+      /* is in list for this channel? */
+      member = irlist_get_head(&c->members);
+      while(member)
+        {
+          if (!strcmp(caps(member),oldnick))
+            {
+              irlist_delete(&c->members, member);
+              addtomemberlist(c, newnick);
+              return;
+            }
+          member = irlist_get_next(member);
+        }
+        return;
+    }
+    
   removefrommemberlist(c, oldnick);
   addtomemberlist(c, newnick);
   

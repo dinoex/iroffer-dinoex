@@ -198,6 +198,73 @@ static void select_dump(const char *desc, int highests)
   
 }
 
+static void admin_line(int fd, const char *line) {
+   userinput *uxdl;
+   
+   if (line == NULL)
+      return;
+   
+   uxdl = mycalloc(sizeof(userinput));
+   
+   u_fillwith_msg(uxdl,NULL,line);
+   uxdl->method = method_fd;
+   uxdl->fd = fd;
+   
+   u_parseit(uxdl);
+   
+   mydelete(uxdl);
+}
+
+static void admin_jobs(const char *job) {
+   FILE *fin;
+   int fd;
+   char *done;
+   char *line;
+   char *l;
+   char *r;
+   
+   if (job == NULL)
+      return;
+
+   fin = fopen(job, "ra" );
+   if (fin == NULL)
+      return;
+
+   line = mycalloc(maxtextlength);
+
+   done = mycalloc(strlen(job)+6);
+   strcpy(done,job);
+   strcat(done,".done");
+   fd = open(done,
+             O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+             CREAT_PERMISSIONS);
+   if (fd < 0)
+    {
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+               "Cant Create Admin Job Done File '%s': %s",
+               done, strerror(errno));
+    }
+  else
+    {
+      while (!feof(fin)) {
+         strcpy(line, "A A A A A ");
+         l = line + strlen(line);
+         r = fgets(l, maxtextlength - 1, fin);
+         if (r == NULL )
+            break;
+         l = line + strlen(line) - 1;
+         while (( *l == '\r' ) || ( *l == '\n' ))
+            *(l--) = 0;
+         admin_line(fd,line);
+      }
+      close(fd);
+    }
+   mydelete(line)
+   mydelete(done)
+   fclose(fin);
+   unlink(job);
+}
+
 static void mainloop (void) {
    /* data is persistant across calls */
    static char server_input_line[INPUT_BUFFER_LENGTH];
@@ -1573,7 +1640,8 @@ static void mainloop (void) {
             
             tostdout("\x1b[%d;%dH]\x1b[u",gdata.termlines,gdata.termcols);
             }
-
+         
+         admin_jobs(gdata.admin_job_file);
          }
       
       updatecontext();
@@ -1876,8 +1944,9 @@ static void parseline(char *line) {
 	     {
                int hasvoice = 0;
 
-	       while ((t[0] == ':') ||
-                      (t[0] == '*') ||
+	       while (t[0] == ':')
+                 t++;
+	       while ((t[0] == '*') ||
                       (t[0] == '@') ||
                       (t[0] == '+') ||
                       (t[0] == '!') ||
@@ -1903,7 +1972,38 @@ static void parseline(char *line) {
 	     }
 	 }
      }
+  
+  /* MODE channel +v nick */
+   if ((gdata.need_voice != 0) && !strncmp(part2,"MODE",4) 
+      && part3 && part4 && part5)
+     {
+       caps(part3);
+       
+       ch = irlist_get_head(&gdata.channels);
+       while(ch)
+         {
+           if (!strcmp(part3,ch->name))
+             {
+               break;
+             }
+           ch = irlist_get_next(ch);
+         }
    
+       if (ch)
+         { 
+           if (part4[0] == '+')
+            {
+		if (strpbrk(part4,"ahoqv") != NULL)
+                  addtomemberlist(ch,part5);
+            } 
+           if (part4[0] == '-')
+            { 
+		if (strpbrk(part4,"ahoqv") != NULL)
+                  removefrommemberlist(ch,part5);
+            } 
+         }
+     }
+  
  /* ERROR :Closing Link */
    if (strncmp(line, "ERROR :Closing Link", strlen("ERROR :Closing Link")) == 0) {
       if (gdata.exiting)
@@ -1961,9 +2061,32 @@ static void parseline(char *line) {
               ch = irlist_get_next(ch);
             }
           
+
           if (!ch)
             {
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"%s is not a known channel!",part3a);
+            }
+
+          /* we have joined all channels => restart transfers */
+          j=0;
+          ch = irlist_get_head(&gdata.channels);
+          while(ch)
+            {
+              if ((ch->flags | CHAN_ONCHAN) == 0);
+                j++;
+              ch = irlist_get_next(ch);
+            }
+          if (j > 0)
+            {
+              for (i=0; i<100; i++)
+                {
+                  if (!gdata.exiting &&
+                      irlist_size(&gdata.mainqueue) &&
+                      (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
+                    {
+                      sendaqueue(0);
+                    }
+                }
             }
         }
       else
