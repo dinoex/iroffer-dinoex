@@ -26,7 +26,6 @@ static void mainloop(void);
 static void parseline(char *line);
 static void privmsgparse(const char* type, char* line);
 static void autosendf(char* line);
-static char* addtoqueue(const char* nick, const char* hostname, int pack);
 static int  parsecmdline(int argc, char *argv[]);
 
 /* main */
@@ -1185,7 +1184,7 @@ static void mainloop (void) {
                       
                     case TRANSFERLIMIT_MONTHLY:
                       /* next month */
-                      localt->tm_mday = 1;
+                      localt->tm_mday = gdata.start_of_month;
                       localt->tm_mon++;
                       break;
                       
@@ -3258,7 +3257,7 @@ void sendxdccinfo(const char* nick,
   return;
 }
    
-static char* addtoqueue(const char* nick, const char* hostname, int pack)
+char* addtoqueue(const char* nick, const char* hostname, int pack)
 {
    char *tempstr = mycalloc(maxtextlength);
    pqueue *tempq;

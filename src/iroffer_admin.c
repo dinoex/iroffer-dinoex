@@ -50,6 +50,7 @@ static void u_info(const userinput * const u);
 static void u_remove(const userinput * const u);
 static void u_removedir(const userinput * const u);
 static void u_send(const userinput * const u);
+static void u_queue(const userinput * const u);
 static void u_psend(const userinput * const u);
 static void u_msg(const userinput * const u);
 static void u_mesg(const userinput * const u);
@@ -132,6 +133,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_nomin,    "NOMIN","n","Disables Minspeed For Transfer ID n"},
 {2,method_allow_all,u_nomax,    "NOMAX","n","Disables Maxspeed For Transfer ID n"},
 {2,method_allow_all,u_send,     "SEND","nick n","Sends Pack n to nick"},
+{2,method_allow_all,u_queue,    "QUEUE","nick n","Queues Pack n for nick"},
 {2,method_allow_all,u_psend,    "PSEND","<channel> <style>","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
 {2,method_allow_all,u_qsend,    "QSEND",NULL,"Sends Out The First Queued Pack"},
 
@@ -1627,6 +1629,64 @@ static void u_send(const userinput * const u) {
    
    sendxdccfile(u->arg1,"man","man",num,NULL,NULL);
    
+   }
+
+/* this function imported from iroffer-lamm */
+static void u_queue(const userinput * const u) {
+   int num = 0;
+   int alreadytrans;
+   pqueue *pq;
+   xdcc *xd;
+   char *tempstr;
+
+   updatecontext();
+   
+   if (u->arg2) num = atoi(u->arg2);
+   
+   if (!u->arg1 || !strlen(u->arg1)) {
+      u_respond(u,"Try Specifying a Nick");
+      return;
+      }
+   
+   if (num > irlist_size(&gdata.xdccs) || num < 1) {
+      u_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+      }
+
+   xd = irlist_get_nth(&gdata.xdccs, num-1);
+
+   alreadytrans = 0;
+   pq = irlist_get_head(&gdata.mainqueue);
+   while(pq)
+     {
+       if (!strcasecmp(pq->nick,u->arg1))
+         {
+           if (pq->xpack == xd)
+             {
+               alreadytrans++;
+               break;
+             }
+         }
+       pq = irlist_get_next(pq);
+     }
+
+   if (alreadytrans > 0) {
+      u_respond(u,"Already Queued %s for Pack %i!", u->arg1,num);
+      return;
+      }
+   
+   u_respond(u,"Queueing %s for Pack %i", u->arg1,num);
+   
+   tempstr = addtoqueue(u->arg1, "man", num);
+   notice(u->arg1, "** %s", tempstr);
+   mydelete(tempstr);
+   
+   if (!gdata.exiting &&
+       irlist_size(&gdata.mainqueue) &&
+       (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
+     {
+       sendaqueue(0);
+     }
    }
 
 static void u_psend(const userinput * const u)

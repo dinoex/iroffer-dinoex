@@ -717,6 +717,9 @@ void u_fillwith_clean(userinput * const u);
 
 void u_parseit(userinput * const u);
 
+/* main.c */
+char* addtoqueue(const char* nick, const char* hostname, int pack);
+
 #endif
 
 /* End of File */

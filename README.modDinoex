@@ -103,7 +103,6 @@ Ab Version mod 1.6:
     ouput will be written in <filename>.done
 
 Ab Version mod 1.7:
-
 13) auto_default_group
 
    when adding a file, search for a similar entry, and set the same group.
@@ -112,4 +111,14 @@ Ab Version mod 1.7:
 
    new admin commands:
    ADDGROUP <group> <dir>     import new files in this dir to given group
+
+Ab Version mod 1.8:
+15) queue
+
+    new admin commands:
+    QUEUE <nick> <pack>       Queues Pack for given Nick
+
+16 ) start_of_month
+
+day of month when to reset the monthly traffic limit, default 1
 

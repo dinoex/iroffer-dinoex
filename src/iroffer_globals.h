@@ -93,6 +93,7 @@ int need_voice;
 int hide_list_info;
 int xdcclist_grouponly;
 int auto_default_group;
+int start_of_month;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;

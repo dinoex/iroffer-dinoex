@@ -127,6 +127,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"maxtransfersperperson", &gdata.maxtransfersperperson, &gdata.maxtransfersperperson, 1, 1000000, 1 },
   {"punishslowusers", &gdata.punishslowusers, &gdata.punishslowusers, 0, 1000000, 1 },
   {"autoignore_threshold", &gdata.autoignore_threshold, &gdata.autoignore_threshold, 10, 600, 1 },
+  {"start_of_month",  &gdata.start_of_month,  &gdata.start_of_month,  1, 31, 1 },
 };
 
 typedef struct
@@ -2373,6 +2374,7 @@ void reinit_config_vars(void)
   gdata.hide_list_info = 0;
   gdata.xdcclist_grouponly = 0;
   gdata.auto_default_group = 0;
+  gdata.start_of_month = 1;
   mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
