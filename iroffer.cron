@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# --- How To Use Cron ---
+#
+# Edit the iroffer.cron file's iroffer_dir, iroffer_exec, and
+# iroffer_pid variables
+#
+# then crontab -e and place the following line in the editor
+#
+# */5 * * * * /full/path/to/iroffer/iroffer.cron
+#
+
+iroffer_dir="/full/path/to/iroffer/"
+iroffer_exec="./iroffer -b sample.config"
+iroffer_pid="mybot.pid"
+
+
+#### don't touch below here ####
+
+cd $iroffer_dir
+
+# make sure filesystem isn't full
+freespace=`df -k . | tail -1 | awk {'print $4'}`
+if [ $freespace -lt 10 ]; then
+echo "Filesystem Full!"
+exit
+fi
+
+# see if stale pid file
+if [ -f $iroffer_pid ]; then
+   pid=`cat $iroffer_pid`
+   if [ `ps -p $pid | wc -l` -eq 2 ]; then
+   exit
+   else
+   echo "Stale PID File"
+   fi
+fi
+
+echo "Starting iroffer..."
+$iroffer_exec
+
+#
+# @(#) iroffer.cron 1.6@(#)
+# pmg@alliance.centerclick.org|iroffer.cron|20011019202404|62443
+#

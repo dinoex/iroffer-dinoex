@@ -1,0 +1,1074 @@
+#!/bin/sh
+
+#
+# @(#) Configure 1.111@(#)
+# pmg@wellington.i202.centerclick.org|Configure|20050116230509|15178
+#
+
+VERSION=1.4.b02
+RELEASE=1
+
+if [ -d BitKeeper -a -f "`type bk 2>/dev/null | awk '{print $NF}'`" ]; then
+ CSET=`bk prs -h -d':UTC:\n' -r+ ChangeSet`
+ echo $CSET > .cset_number
+elif [ -f .cset_number ]; then
+ CSET=`cat .cset_number`
+else
+ CSET="Unknown"
+fi
+
+if [ $RELEASE -eq 1 ]; then
+ VERSIONLONG="$VERSION [$CSET]"
+else
+ VERSIONLONG="$VERSION [PRERELEASE $CSET]"
+fi
+
+echo
+echo "Configure for iroffer $VERSIONLONG"
+
+echo -n "Determining OS... "
+uname
+ostype=`uname`
+platform=`uname -m`
+short_ostype=`uname | cut -d "_" -f 1`
+libs=""
+
+rm -f config.error.* config.temp*
+
+case "$ostype" in
+ Linux | FreeBSD | OpenBSD | NetBSD | IRIX | IRIX64 | \
+ OSF1 | Rhapsody | Darwin | AIX )
+  # nothing fancy
+  ;;
+ SunOS )
+  libs="$libs -lsocket -lnsl"
+  ;;
+ BSD/OS )
+  ostype=BSD_OS
+  ;;
+ HP-UX )
+  ostype=HPUX
+  ;;
+ CYGWIN* )
+  ostype=$short_ostype
+  exe=.exe
+  
+  # only 1.5.6 or later is supported
+  echo -n "Checking for cygwin >= 1.5.6... "
+  ver=`uname -r | cut -d '(' -f 1`
+  ver_A=`echo $ver | cut -d '.' -f 1`
+  ver_B=`echo $ver | cut -d '.' -f 2`
+  ver_C=`echo $ver | cut -d '.' -f 3`
+  
+  # 2.x.x - 9.x.x, 1.6.x - 1.9.x, and 1.5.6 - 1.5.9 are ok
+  if [ \( "$ver_A" -ge "2" \)                                         \
+    -o \( "$ver_A" -eq "1" -a "$ver_B" -ge "6" \)                     \
+    -o \( "$ver_A" -eq "1" -a "$ver_B" -eq "5" -a "$ver_C" -ge "6" \) \
+     ]; then
+   echo "OK, $ver"
+  else
+   echo "***ERROR***: $ver < 1.5.6"
+   exit # fatal error
+   waserror=yes
+  fi
+  ;;
+ *)
+  echo "***ERROR***: This OS is not supported"
+  exit
+  ;;
+esac
+
+echo "/* Automatically Generated, Do Not Edit */" > src/iroffer_config.h
+echo "" >> src/iroffer_config.h
+
+echo "#define VERSIONLONG \"$VERSIONLONG\"" >> src/iroffer_config.h
+echo "#define _OS_$ostype" >> src/iroffer_config.h
+
+if [ "$1" = "errors" -o "$2" = "errors" -o "$3" = "errors" ]; then
+ echo "Printing Errors During Execution..."
+ shift
+else
+ exec 2>/dev/null
+fi
+
+if [ "$1" = "debug" -o "$2" = "debug" -o "$3" = "debug" ]; then
+echo "Configuring for debugging."
+OPT_AND_DEBUG="-g"
+shift
+else
+OPT_AND_DEBUG="-O2"
+fi
+
+if [ "$1" = "warn" -o "$2" = "warn" -o "$3" = "warn" ]; then
+echo "Configuring for extra warnings."
+WARNS="-Wshadow
+-Wpointer-arith
+-Wcast-qual
+-Wcast-align
+-Wstrict-prototypes
+-Wmissing-prototypes
+-Wmissing-declarations
+-Winline
+-Wwrite-strings
+-Werror"
+shift
+fi
+
+if [ "$1" = "prof" -o "$2" = "prof" -o "$3" = "prof" ]; then
+echo "Configuring for profiling."
+PROF="-pg"
+shift
+fi
+
+if [ -n "$1" ]; then
+echo "Unknown option: $1"
+exit 1
+fi
+
+echo -n "Checking for make... "
+if [ -f "`type make | awk '{print $NF}'`" ]; then
+ maketype="make"
+ if [ -x "`type $maketype | awk '{print $NF}'`" ]; then
+  echo "found $maketype"
+ else
+  echo "found $maketype. ***ERROR***: You are not allowed to execute $maketype"
+  waserror=yes
+ fi
+elif [ -f "`type gmake | awk '{print $NF}'`" ]; then
+ maketype="gmake"
+ if [ -x "`type $maketype | awk '{print $NF}'`" ]; then
+  echo "found $maketype"
+ else
+  echo "found $maketype. ***ERROR***: You are not allowed to execute $maketype"
+  waserror=yes
+ fi
+else
+ echo "not found. ***ERROR***: Couldn't find make or gmake"
+ maketype="make"
+ waserror=yes
+fi
+
+echo -n "Checking for gcc/cc... "
+if [ -f "`type gcc | awk '{print $NF}'`" ]; then
+ cctype="gcc"
+ if [ -x "`type $cctype | awk '{print $NF}'`" ]; then
+  echo "found $cctype"
+ else
+  echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
+  waserror=yes
+ fi
+elif [ -f "`type cc | awk '{print $NF}'`" ]; then
+ cctype="cc"
+ if [ -x "`type $cctype | awk '{print $NF}'`" ]; then
+  echo "found $cctype"
+ else
+  echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
+  waserror=yes
+ fi
+else
+ echo "not found. ***ERROR***: Couldn't find gcc or cc"
+ maketype="gcc"
+ waserror=yes
+fi
+
+echo -n "Seeing if $cctype works... "
+echo "
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -o config.temp config.temp.c ; then
+ echo "yes"
+else
+ echo " ***ERROR***: $cctype didn't seem to work."
+ waserror=yes
+fi
+
+echo -n "Seeing if $cctype accepts '-Wall'... "
+echo "
+#include <stdlib.h>
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -Wall -o config.temp config.temp.c ; then
+ echo "yes"
+ WARNS="-Wall $WARNS"
+else
+ echo " no"
+fi
+
+echo -n "Seeing if $cctype accepts '-Werror'... "
+echo "
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -Werror -o config.temp config.temp.c ; then
+ echo "yes"
+ WERROR="-Werror"
+else
+ echo " no"
+fi
+
+
+echo -n "Seeing how to define a 16 bit integer... "
+echo "
+#define GEX 
+#include <stdlib.h>
+#include <stdio.h>
+int main (int argc, char **argv) {
+ printf(\"%d\", (int)sizeof( C_IR_INT16 ));
+ exit(0);
+ }
+" > config.temp.c
+if $cctype -DC_IR_INT16="short" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "2" ]; then
+ echo "short"
+ echo "typedef short ir_int16;" >> src/iroffer_config.h
+ echo "typedef unsigned short ir_uint16;" >> src/iroffer_config.h
+elif $cctype -DC_IR_INT16="int" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "2" ]; then
+ echo "int"
+ echo "typedef int ir_int16;" >> src/iroffer_config.h
+ echo "typedef unsigned int ir_uint16;" >> src/iroffer_config.h
+else
+ echo "Unknown. ***ERROR***: neither short or int worked."
+ waserror=yes
+fi
+
+
+echo -n "Seeing how to define a 32 bit integer... "
+echo "
+#define GEX 
+#include <stdlib.h>
+#include <stdio.h>
+int main (int argc, char **argv) {
+ printf(\"%d\", (int)sizeof( C_IR_INT32 ));
+ exit(0);
+ }
+" > config.temp.c
+if $cctype -DC_IR_INT32="int" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "4" ]; then
+ echo "int"
+ echo "typedef int ir_int32;" >> src/iroffer_config.h
+ echo "typedef unsigned int ir_uint32;" >> src/iroffer_config.h
+elif $cctype -DC_IR_INT32="long" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "4" ]; then
+ echo "long"
+ echo "typedef long ir_int32;" >> src/iroffer_config.h
+ echo "typedef unsigned long ir_uint32;" >> src/iroffer_config.h
+elif $cctype -DC_IR_INT32="long long" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "4" ]; then
+ echo "long long"
+ echo "typedef long long ir_int32;" >> src/iroffer_config.h
+ echo "typedef unsigned long long ir_uint32;" >> src/iroffer_config.h
+elif $cctype -DC_IR_INT32="short" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "4" ]; then
+ echo "short"
+ echo "typedef short ir_int32;" >> src/iroffer_config.h
+ echo "typedef unsigned short ir_uint32;" >> src/iroffer_config.h
+else
+ echo "Unknown. ***ERROR***: neither short, int, long or long long worked."
+ waserror=yes
+fi
+
+echo -n "Seeing how to define a 64 bit integer... "
+echo "
+#define GEX 
+#include <stdlib.h>
+#include <stdio.h>
+int main (int argc, char **argv) {
+ printf(\"%d\", (int)sizeof( C_IR_INT64 ));
+ exit(0);
+ }
+" > config.temp.c
+if $cctype -DC_IR_INT64="long long" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "8" ]; then
+ echo "long long"
+ echo "typedef long long ir_int64;" >> src/iroffer_config.h
+ echo "typedef unsigned long long ir_uint64;" >> src/iroffer_config.h
+elif $cctype -DC_IR_INT64="long" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "8" ]; then
+ echo "long"
+ echo "typedef long ir_int64;" >> src/iroffer_config.h
+ echo "typedef unsigned long ir_uint64;" >> src/iroffer_config.h
+elif $cctype -DC_IR_INT64="int" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "8" ]; then
+ echo "int"
+ echo "typedef int ir_int64;" >> src/iroffer_config.h
+ echo "typedef unsigned int ir_uint64;" >> src/iroffer_config.h
+elif $cctype -DC_IR_INT64="short" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "8" ]; then
+ echo "short"
+ echo "typedef short ir_int64;" >> src/iroffer_config.h
+ echo "typedef unsigned short ir_uint64;" >> src/iroffer_config.h
+else
+ echo "Unknown. ***ERROR***: neither short, int, long or long long worked."
+ waserror=yes
+fi
+
+
+echo -n "Seeing if compiling with standard #include's works... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -DSIGNEDSOCK=signed config.temp.c $libs -o config.temp; then
+ echo "looks good"
+else
+ echo " ***ERROR***: couldn't build with standard #include's"
+ waserror=yes
+fi
+
+
+echo -n "Seeing how large FD_SETSIZE is... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+FD_SETSIZE
+" > config.temp.c
+if $cctype -E -o config.temp.p config.temp.c $WARNS $WERROR ; then
+ setsize=`tail -2 config.temp.p |grep -v "config.temp"`
+ echo -n " $setsize"
+ 
+ if [ "$ostype" = CYGWIN -a $setsize -le 255 ]; then
+   echo ", Boosting up to 255"
+   echo "#define FD_SETSIZE 255" >> src/iroffer_config.h
+ else
+   echo
+ fi
+else
+ echo " ***ERROR***: couldn't determine it"
+ waserror=yes
+fi
+
+echo -n "Determining endianness... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {
+ printf(\"%s\", (100 == ntohl(100)) ? \"big\" : \"little\");
+ exit(0);
+ }
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "big" ]; then
+ echo "big"
+ echo "#define IR_ENDIAN_BIG" >> src/iroffer_config.h
+elif [ "`./config.temp`" = "little" ]; then
+ echo "little"
+ echo "#define IR_ENDIAN_LITTLE" >> src/iroffer_config.h
+else
+ echo "Unknown. ***ERROR***"
+ waserror=yes
+fi
+
+
+echo -n "Seeing if large file support works... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {
+ int fd;
+ int array[ ((int)sizeof(off_t)) - 7 ];
+ fd=open(\"foo\", O_RDWR | O_CREAT | ADDED_OPEN_FLAGS);
+ array[0] = array[0];
+ exit(0);
+ }
+" > config.temp.c
+if $cctype -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "yes"
+ echo "#define _FILE_OFFSET_BITS 64" >> src/iroffer_config.h
+ echo "#define _LARGEFILE_SOURCE" >> src/iroffer_config.h
+else
+ echo "No.  Max filesize will be 2GB."
+fi
+
+echo -n "Determing the signedness of 'addrlen'... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {
+ int a; struct sockaddr_in b; SIGNEDSOCK int c;
+ getsockname(a,(struct sockaddr *)&b,&c);
+ exit(0);
+ }
+" > config.temp.c
+if $cctype -DSIGNEDSOCK=signed config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "signed"
+ echo "#define SIGNEDSOCK signed" >> src/iroffer_config.h
+elif $cctype -DSIGNEDSOCK=unsigned config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "unsigned"
+ echo "#define SIGNEDSOCK unsigned" >> src/iroffer_config.h
+else
+ echo "Unknown. ***ERROR***: neither signed or unsigned worked."
+ echo "#define SIGNEDSOCK signed" >> src/iroffer_config.h
+ waserror=yes
+fi
+
+
+echo -n "Seeing how to display long long using printf... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv)
+  {
+    long long a = 1000000000;
+    a = a*10;
+    printf(\"%\" LLPRINTFMT \"i\",a);
+    exit(0);
+  }
+" > config.temp.c
+if $cctype -DLLPRINTFMT=\"ll\" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "10000000000" ]; then
+ echo "ll"
+ echo "#define LLPRINTFMT \"ll\"" >> src/iroffer_config.h
+elif $cctype -DLLPRINTFMT=\"L\" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "10000000000" ]; then
+ echo "L"
+ echo "#define LLPRINTFMT \"L\"" >> src/iroffer_config.h
+elif $cctype -DLLPRINTFMT=\"l\" config.temp.c $libs -o config.temp $WARNS $WERROR && [ "`./config.temp`" = "10000000000" ]; then
+ echo "l"
+ echo "#define LLPRINTFMT \"l\"" >> src/iroffer_config.h
+else
+ echo "Unknown. ***ERROR***: neither ll, l, or L worked."
+ echo "#define LLPRINTFMT \"L\"" >> src/iroffer_config.h
+ waserror=yes
+fi
+
+
+echo -n "Checking for snprintf()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {char *s; snprintf(s,10,\"blah\"); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "found"
+else
+ echo "#define NO_SNPRINTF" >> src/iroffer_config.h
+ echo "missing, will emulate"
+fi
+
+echo -n "Checking for strcasecmp()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {strcasecmp(\"blah\",\"blah\"); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "found"
+else
+ echo "#define NO_STRCASECMP" >> src/iroffer_config.h
+ echo "missing, will emulate"
+fi
+
+echo -n "Checking for strsignal()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {strsignal(1); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "found"
+else
+ echo "#define NO_STRSIGNAL" >> src/iroffer_config.h
+ echo "missing, will emulate"
+fi
+
+echo -n "Checking for regcomp()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {regex_t *t; regcomp(t,\"blah\",REG_ICASE|REG_NOSUB); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "found"
+else
+ echo "Missing. ***ERROR***: couldn't find regcomp()"
+ waserror=yes
+fi
+
+echo -n "Seeing if 'sys/mman.h' exists... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -c -DHAS_SYS_MMAN_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "#define HAS_SYS_MMAN_H" >> src/iroffer_config.h
+ echo "found"
+else
+ echo "not found"
+fi
+
+echo -n "Seeing if 'sys/sendfile.h' exists... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -c -DHAS_SYS_SENDFILE_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "#define HAS_SYS_SENDFILE_H" >> src/iroffer_config.h
+ echo "found"
+else
+ echo "not found"
+fi
+
+echo -n "Seeing if 'sys/vfs.h' exists... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -c -DHAS_SYS_VFS_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "#define HAS_SYS_VFS_H" >> src/iroffer_config.h
+ echo "found"
+else
+ echo "not found"
+fi
+
+echo -n "Seeing if 'sys/statfs.h' exists... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -c -DHAS_SYS_STATFS_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "#define HAS_SYS_STATFS_H" >> src/iroffer_config.h
+ echo "found"
+else
+ echo "not found"
+fi
+
+echo -n "Seeing if 'sys/param.h' exists... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -c -DHAS_SYS_PARAM_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "#define HAS_SYS_PARAM_H" >> src/iroffer_config.h
+ echo "found"
+else
+ echo "not found"
+fi
+
+echo -n "Seeing if 'sys/mount.h' exists... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -c -DHAS_SYS_MOUNT_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "#define HAS_SYS_MOUNT_H" >> src/iroffer_config.h
+ echo "found"
+else
+ echo "not found"
+fi
+
+echo -n "Seeing if 'sys/statvfs.h' exists... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype -c -DHAS_SYS_STATVFS_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "#define HAS_SYS_STATVFS_H" >> src/iroffer_config.h
+ echo "found"
+else
+ echo "not found"
+fi
+
+echo -n "Checking for statvfs()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {struct statvfs stf; statvfs(\"\",&stf); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "found"
+else
+ echo "#define NO_STATVFS" >> src/iroffer_config.h
+ echo "missing"
+fi
+
+echo -n "Checking for statfs()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {struct statfs stf; statfs(\"\",&stf); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "found"
+else
+ echo "#define NO_STATFS" >> src/iroffer_config.h
+ echo "missing"
+fi
+
+echo -n "Seeing if 'crypt.h' is needed... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {crypt(\"aaaaaaaa\",\"aa\"); exit(0);}
+" > config.temp.c
+if $cctype -c -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "not needed"
+elif $cctype -c -DHAS_CRYPT_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
+ echo "#define HAS_CRYPT_H" >> src/iroffer_config.h
+ echo "needed"
+else
+ echo "Missing. ***ERROR***: couldn't find crypt() with or without crypt.h"
+ echo "#define HAS_CRYPT_H" >> src/iroffer_config.h
+ waserror=yes
+fi
+
+echo -n "Seeing if '-lcrypt' is needed... "
+if $cctype -o config.temp config.temp.o $WARNS $WERROR ; then
+ echo "not needed"
+elif $cctype -o config.temp config.temp.o $libs -lcrypt $WARNS $WERROR ; then
+ libs="$libs -lcrypt"
+ echo "needed"
+else
+ echo "Neither!"
+ echo -n "Seeing if '-lcrypto' works instead... "
+ if $cctype -o config.temp config.temp.o $libs -lcrypto $WARNS $WERROR ; then
+  libs="$libs -lcrypto"
+  echo "yes"
+ else
+  echo "Missing. ***ERROR***: couldn't link with or without -lcrypt or -lcrypto"
+  libs="$libs -lcrypt"
+  waserror=yes
+ fi
+fi
+
+echo -n "Seeing if crypt() works as expected... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv)
+  {
+    char *pwout;
+    pwout = crypt(\"testtest\",\"LH\");
+    if (pwout && !strcmp(\"LHD/pLKwfn0.k\", pwout))
+      {
+        exit(0);
+      }
+    exit(1);
+  }
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR && ./config.temp; then
+ echo "yes"
+else
+ echo "no, will disable encrypted passwords"
+ echo "#define NO_CRYPT" >> src/iroffer_config.h
+fi
+
+
+echo -n "Checking for chroot()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {chroot(\".\"); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "found"
+else
+echo "#define NO_CHROOT" >> src/iroffer_config.h
+echo "missing, will desactivate chroot()-ing"
+fi
+
+echo -n "Seeing if NSS libraries exist (for chroot)... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -lnss_files -lnss_dns -o config.temp $WARNS $WERROR; then
+NSSLIBS="-lnss_files -lnss_dns"
+echo "found"
+else
+NSSLIBS=""
+echo "missing"
+fi
+
+echo -n "Checking for setuid()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {setuid(0); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "found"
+else
+echo "#define NO_SETUID" >> src/iroffer_config.h
+echo "missing, will desactivate setuid()-ing"
+fi
+
+echo -n "Checking for getgrouplist()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {getgrouplist (NULL, 0, NULL, NULL); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "found"
+else
+echo "#define NO_GETGROUPLIST" >> src/iroffer_config.h
+echo "missing, group list will be incorrect when setuid()-ing"
+fi
+
+if [ "x$ostype" = "xLinux" ]; then
+echo -n "Checking for Linux-style sendfile()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv)
+{
+  int     out_fd = 0;
+  int     in_fd = 0;
+  off_t   offset = 0;
+  size_t  count = 0;
+  ssize_t ret_val;
+  ret_val = sendfile(out_fd, in_fd, &offset, count);
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "#define HAVE_LINUX_SENDFILE" >> src/iroffer_config.h
+echo "found"
+else
+echo "missing, won't use sendfile()"
+fi
+fi
+
+if [ "x$ostype" = "xFreeBSD" ]; then
+echo -n "Checking for FreeBSD-style sendfile()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv)
+{
+  int     in_fd = 0;
+  int     out_fd = 0;
+  off_t   offset = 0;
+  off_t   offset2 = 0;
+  size_t  count = 0;
+  struct sf_hdtr hdr = {};
+  int ret_val;
+  ret_val = sendfile(in_fd, out_fd, offset, count,
+                     &hdr, &offset2, 0);
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "#define HAVE_FREEBSD_SENDFILE" >> src/iroffer_config.h
+echo "found"
+else
+echo "missing, won't use sendfile()"
+fi
+fi
+
+echo -n "Checking for mmap()/munmap()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv)
+{
+  mmap(NULL,0,PROT_READ,MAP_SHARED,0,0);
+  munmap(NULL,0);
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "#define HAVE_MMAP" >> src/iroffer_config.h
+echo "found"
+else
+echo "missing, won't use mmap()"
+fi
+
+
+echo -n "Checking for name of fd limit... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv)
+{
+  struct rlimit rlim;
+  getrlimit(RLIMIT_NOFILE, &rlim);
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "RLIMIT_NOFILE"
+else
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv)
+{
+  struct rlimit rlim;
+  getrlimit(RLIMIT_OFILE, &rlim);
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "RLIMIT_OFILE"
+echo "#define USE_OFILE" >> src/iroffer_config.h
+else
+waserror=yes
+echo "neither work, thats not good"
+fi
+fi
+
+echo -n "Checking for siginfo_t/sa_sigaction... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {siginfo_t si; struct sigaction sa; sa.sa_sigaction = NULL; si.si_code = 0; exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "found"
+else
+echo "#define NO_SIGINFO" >> src/iroffer_config.h
+echo "missing, will use lame signal handlers"
+fi
+
+echo -n "Checking for si_code values... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {
+  siginfo_t si;
+  si.si_code = BUS_ADRALN;
+  si.si_code = BUS_ADRERR;
+  si.si_code = BUS_OBJERR;
+  si.si_code = ILL_ILLOPC;
+  si.si_code = ILL_ILLOPN;
+  si.si_code = ILL_ILLADR;
+  si.si_code = ILL_ILLTRP;
+  si.si_code = ILL_PRVOPC;
+  si.si_code = ILL_PRVREG;
+  si.si_code = ILL_COPROC;
+  si.si_code = ILL_BADSTK;
+  si.si_code = FPE_INTDIV;
+  si.si_code = FPE_INTOVF;
+  si.si_code = FPE_FLTDIV;
+  si.si_code = FPE_FLTOVF;
+  si.si_code = FPE_FLTUND;
+  si.si_code = FPE_FLTRES;
+  si.si_code = FPE_FLTINV;
+  si.si_code = FPE_FLTSUB;
+  si.si_code = SEGV_MAPERR;
+  si.si_code = SEGV_ACCERR;
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "found"
+else
+echo "#define NO_SIGCODES" >> src/iroffer_config.h
+echo "missing, won't report si_codes"
+fi
+
+echo -n "Checking for wait status values... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {
+  int status = 0;
+  if (WIFEXITED(status) ||
+      WIFSIGNALED(status) ||
+      WEXITSTATUS(status) ||
+      WTERMSIG(status))
+    {
+      status++;
+    }
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "found"
+else
+echo "#define NO_WSTATUS_CODES" >> src/iroffer_config.h
+echo "missing, won't report wait status codes"
+fi
+
+
+echo -n "Seeing if TOS can be set for IP sockets... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {
+  int fd = 0;
+  int tempc = 0x8; /* IPTOS_THROUGHPUT */
+  setsockopt(fd, SOL_IP, IP_TOS, &tempc, sizeof(int));
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "yes"
+else
+echo "#define CANT_SET_TOS" >> src/iroffer_config.h
+echo "no"
+fi
+
+echo -n "Checking for gethostbyname error values... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {
+  extern int h_errno;
+  int i;
+  switch (h_errno)
+    {
+     case HOST_NOT_FOUND:
+     case NO_ADDRESS:
+#if NO_ADDRESS != NO_DATA
+     case NO_DATA:
+#endif
+     case NO_RECOVERY:
+     case TRY_AGAIN:
+       i = 1;
+     default:
+       i = 0;
+    }
+  exit(i);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "found"
+else
+echo "#define NO_HOSTCODES" >> src/iroffer_config.h
+echo "missing, won't report error codes"
+fi
+
+rm -f config.temp*
+
+echo "Creating src/iroffer_config.h... Done"
+
+echo -n "Creating Makefile... "
+
+cp /dev/null Makefile
+(
+echo "# Automatically Generated, Do Not Edit #"
+echo
+echo VERSION=$VERSION
+echo CC=$cctype
+echo CONFIG_EXE=$exe
+echo CONFIG_LDLIBS=$libs
+echo CONFIG_LDFLAGS=$PROF $OPT_AND_DEBUG
+echo CONFIG_CFLAGS=$PROF $WARNS $OPT_AND_DEBUG
+echo CONFIG_CPPFLAGS=
+echo CONFIG_CHROOT=$NSSLIBS
+if [ -z "$NSSLIBS" ]; then
+ echo CONFIG_TARGETS=
+else
+ echo CONFIG_TARGETS=iroffer_chroot$exe
+fi
+echo
+cat Makefile.config 
+) > Makefile
+
+echo Done
+echo
+
+if [ -n "$waserror" ]; then
+echo "!!!!!WARNING!!!!!  one or more errors occured, guesses for those values that failed were included."
+echo "You should re-run Configure with the 'errors' arguemnt to see the details."
+echo
+fi
+
+echo "Type \"$maketype\" to compile"
+echo "No errors or warnings should appear when compiling, if they do, something is wrong"
+echo
+
+# end
