@@ -1874,7 +1874,10 @@ static void parseline(char *line) {
 	 {
 	   for (i=0; (t2 = t = getpart(line,6+i)); i++)
 	     {
+               int hasvoice = 0;
+
 	       while ((t[0] == ':') ||
+                      (t[0] == '*') ||
                       (t[0] == '@') ||
                       (t[0] == '+') ||
                       (t[0] == '!') ||
@@ -1884,10 +1887,18 @@ static void parseline(char *line) {
                       (t[0] == '&'))
                  {
                    t++;
+                   hasvoice = 1;
                  }
-	       
-	       addtomemberlist(ch,t);
-	       
+               
+               if (gdata.need_voice != 0)
+                 {
+                   if (hasvoice != 0)
+                     addtomemberlist(ch,t);
+                 }
+               else
+                 {
+                   addtomemberlist(ch,t);
+                 }
 	       mydelete(t2);
 	     }
 	 }
@@ -1975,7 +1986,8 @@ static void parseline(char *line) {
             }
 	  else
             {
-              addtomemberlist(ch,nick);
+	      if (gdata.need_voice == 0)
+                addtomemberlist(ch,nick);
             }
 	}
 	
@@ -2604,7 +2616,10 @@ static void privmsgparse(const char* type, char* line) {
 	 else if (gdata.restrictlist && (!isinmemberlist(nick)))
 	   {
 	     j = 2; /* deny */
-	     notice(nick,"XDCC LIST Denied. You must be on a known channel to request a list");
+	     if (gdata.need_voice != 0)
+	        notice(nick,"XDCC LIST Denied. You must have voice or more on this channel to request a list");
+             else
+	        notice(nick,"XDCC LIST Denied. You must be on a known channel to request a list");
 	   }
 	 else
 	   {
@@ -2898,7 +2913,16 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   else if (!man && gdata.restrictsend && !isinmemberlist(nick))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (restricted): ");
-      notice(nick,"** XDCC SEND denied, you must be on a known channel to request a pack");
+      if (gdata.need_voice != 0)
+        notice(nick,"** XDCC SEND denied, you must have voice on a known channel to request a pack");
+      else
+        notice(nick,"** XDCC SEND denied, you must be on a known channel to request a pack");
+      goto done;
+    }
+  else if (!man && gdata.enable_nick && !isinmemberlist(gdata.enable_nick))
+    {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (offline): ");
+      notice(nick,"** XDCC SEND denied, owner of this bot is not online");
       goto done;
     }
   else if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1))

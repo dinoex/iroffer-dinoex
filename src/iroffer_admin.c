@@ -1515,7 +1515,7 @@ static void u_removedir(const userinput * const u)
           mydelete(tempstr);
           continue;
         }
-      else if (!S_ISREG(st.st_mode))
+      if (!S_ISREG(st.st_mode))
         {
           mydelete(tempstr);
           continue;
@@ -1867,6 +1867,19 @@ static void u_add(const userinput * const u) {
       return;
       }
    
+   if (gdata.noduplicatefiles) {
+      xd = irlist_get_head(&gdata.xdccs);
+      while(xd)
+         {
+           if (!strcmp(u->arg1e, xd->file))
+             {
+               u_respond(u,"File '%s' is already added.", u->arg1e);
+               return;
+             }
+           xd = irlist_get_next(xd);
+         }
+      }
+   
    xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
    
    xd->file = mycalloc(strlen(u->arg1e)+1);
@@ -1964,6 +1977,26 @@ static void u_add(const userinput * const u) {
    
    }
 
+#include <fnmatch.h>
+static int verifyshell(irlist_t *list, const char *file)
+{
+  char *pattern;
+
+  updatecontext();
+
+  pattern = irlist_get_head(list);
+  while (pattern)
+    {
+    if (fnmatch(pattern,file,FNM_CASEFOLD) == 0)
+      {
+        return 1;
+      }
+    pattern = irlist_get_next(pattern);
+    }
+
+  return 0;
+}
+
 static void u_adddir(const userinput * const u)
 {
   DIR *d;
@@ -2016,6 +2049,9 @@ static void u_adddir(const userinput * const u)
     {
       struct stat st;
       int len = strlen(f->d_name);
+      
+      if (verifyhost(&gdata.adddir_exclude, f->d_name))
+        continue;
       
       tempstr = mycalloc(len + thedirlen + 2);
       
@@ -2112,6 +2148,9 @@ static void u_addnew(const userinput * const u)
     {
       struct stat st;
       int len = strlen(f->d_name);
+      
+      if (verifyshell(&gdata.adddir_exclude, f->d_name))
+        continue;
       
       tempstr = mycalloc(len + thedirlen + 2);
       

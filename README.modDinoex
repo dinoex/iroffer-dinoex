@@ -37,7 +37,7 @@ Long Term Features:
    in the config. This will update "natip" whenever the bot reconnects.
    this obsoletes scripts like "dynip.sh" or other cronjobs.
 
-5) locking:
+5) locking/password:
 
    new commands:
    LOCK <pack> <password>
@@ -45,4 +45,29 @@ Long Term Features:
 
    new user commands:
    XDCC SEND #<pack> password
+
+   References TODO:
+Long Term Features:
+188	12/09/03	Open	password protect packs
+
+
+6) noduplicatefiles
+
+   when configured, add and addir resfufe to add a files that is already there.
+
+7) adddir_exclude
+
+   when configured, addir will ignore files that match this pattern.
+
+8) enable_nick dinoex
+
+    watch this user, stop serving when this user is not online
+
+9) need_voice
+
+   restrict list/send to only voiced/opped users
+
+   References TODO:
+Long Term Features:
+172	12/09/03	Open	restrict list/send to only voiced/opped users
 

@@ -98,6 +98,8 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"restrictsend",         &gdata.restrictsend,         &gdata.restrictsend },
   {"nomd5sum",             &gdata.nomd5sum,             &gdata.nomd5sum },
   {"getipfromserver",      &gdata.getipfromserver,      &gdata.getipfromserver },
+  {"noduplicatefiles",     &gdata.noduplicatefiles,     &gdata.noduplicatefiles },
+  {"need_voice",           &gdata.need_voice,           &gdata.need_voice },
 };
 
 typedef struct
@@ -140,13 +142,15 @@ static const config_parse_str_t config_parse_str[] = {
   {"loginname",            &gdata.loginname,            &gdata.loginname },
   {"nickserv_pass",        &gdata.nickserv_pass,        &gdata.nickserv_pass },
   {"restrictprivlistmsg",  &gdata.restrictprivlistmsg,  &gdata.restrictprivlistmsg },
+  {"enable_nick",          &gdata.enable_nick,          &gdata.enable_nick },
 };
 
 void update_natip (const char *var)
 {
   struct hostent *hp;
-  struct in_addr in;
   struct in_addr old;
+  struct in_addr in;
+  char *oldtxt;
 
   if (var == NULL)
     return;
@@ -167,15 +171,16 @@ void update_natip (const char *var)
         }
       memcpy(&in, hp->h_addr_list[0], sizeof(in));
     }
-
+  
   old.s_addr = htonl(gdata.ourip);
   gdata.usenatip = 1;
   if (old.s_addr == in.s_addr)
     return;
-
-  gdata.ourip = in.s_addr;
+  
   gdata.ourip = ntohl(in.s_addr);
-  mylog(CALLTYPE_NORMAL,"DCC IP changed from %s to %s", inet_ntoa(old), inet_ntoa(in));
+  oldtxt = strdup(inet_ntoa(old));
+  mylog(CALLTYPE_NORMAL,"DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
+  free(oldtxt);
   
   if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ip=0x%8.8lX\n",gdata.ourip);
   
@@ -398,6 +403,13 @@ void getconfig_set (const char *line, int rehash)
      {
        char *cjr;
        cjr = irlist_add(&gdata.server_connected_raw, strlen(var) + 1);
+       strcpy(cjr, var);
+       mydelete(var);
+     }
+   else if ( !strcmp(type,"adddir_exclude"))
+     {
+       char *cjr;
+       cjr = irlist_add(&gdata.adddir_exclude, strlen(var) + 1);
        strcpy(cjr, var);
        mydelete(var);
      }
@@ -2347,6 +2359,10 @@ void reinit_config_vars(void)
   gdata.punishslowusers = 0;
   gdata.nomd5sum = 0;
   gdata.getipfromserver = 0;
+  gdata.noduplicatefiles = 0;
+  irlist_delete_all(&gdata.adddir_exclude);
+  mydelete(gdata.enable_nick);
+  gdata.need_voice = 0;
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;

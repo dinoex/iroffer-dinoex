@@ -1421,6 +1421,9 @@ void dumpgdata(void)
   gdata_print_int(punishslowusers);
   gdata_print_int(nomd5sum);
   gdata_print_int(getipfromserver);
+  gdata_print_int(noduplicatefiles);
+  /* adddir_exclude */
+  gdata_print_string(enable_nick);
   
   /* downloadhost */
   

@@ -18,9 +18,9 @@ else
 fi
 
 if [ $RELEASE -eq 1 ]; then
- VERSIONLONG="$VERSION [$CSET] mod by Dinoex 1.3"
+ VERSIONLONG="$VERSION [$CSET] mod by Dinoex 1.4"
 else
- VERSIONLONG="$VERSION [PRERELEASE $CSET] mod by Dinoex 1.3"
+ VERSIONLONG="$VERSION [PRERELEASE $CSET] mod by Dinoex 1.4"
 fi
 
 echo
