@@ -102,6 +102,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"need_voice",           &gdata.need_voice,           &gdata.need_voice },
   {"hide_list_info",       &gdata.hide_list_info,       &gdata.hide_list_info },
   {"xdcclist_grouponly",   &gdata.xdcclist_grouponly,   &gdata.xdcclist_grouponly },
+  {"auto_default_group",   &gdata.auto_default_group,   &gdata.auto_default_group },
 };
 
 typedef struct
@@ -2371,6 +2372,7 @@ void reinit_config_vars(void)
   gdata.need_voice = 0;
   gdata.hide_list_info = 0;
   gdata.xdcclist_grouponly = 0;
+  gdata.auto_default_group = 0;
   mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;

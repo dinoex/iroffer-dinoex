@@ -92,6 +92,7 @@ char *enable_nick;
 int need_voice;
 int hide_list_info;
 int xdcclist_grouponly;
+int auto_default_group;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;

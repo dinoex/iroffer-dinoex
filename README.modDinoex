@@ -1,5 +1,5 @@
 
-1) iroffer
+1) grouped lists
 
    add a GROUP feature, as seen in various splitoffs.
    this is a clean reimplementation, groups are optional.
@@ -95,10 +95,21 @@ Ab Version mod 1.6:
 11) xdcclist_grouponly
 
     Export your xdcc list with group and main information only.
-    Default ouput is all packs and no group ionformation.
+    Default ouput is all packs and no group information.
 
 12) admin_job_file
 
     when defined, read this file for commands and execute them.
     ouput will be written in <filename>.done
+
+Ab Version mod 1.7:
+
+13) auto_default_group
+
+   when adding a file, search for a similar entry, and set the same group.
+
+14) addgroup
+
+   new admin commands:
+   ADDGROUP <group> <dir>     import new files in this dir to given group
 

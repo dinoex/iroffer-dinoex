@@ -70,6 +70,7 @@ static void u_regroup(const userinput * const u);
 static void u_add(const userinput * const u);
 static void u_adddir(const userinput * const u);
 static void u_addnew(const userinput * const u);
+static void u_addgroup(const userinput * const u);
 static void u_chatme(const userinput * const u);
 static void u_chatl(const userinput * const u);
 static void u_closec(const userinput * const u);
@@ -141,6 +142,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_add,      "ADD","<filename>","Add New Pack With <filename>"},
 {3,method_allow_all,u_adddir,   "ADDDIR","<dir>","Add Every File in <dir>"},
 {3,method_allow_all,u_addnew,   "ADDNEW","<dir>","Add any new files in <dir>"},
+{3,method_allow_all,u_addgroup, "ADDGROUP","<g> <dir>","Add any new files in <dir> to group <g>"},
 {3,method_allow_all,u_chfile,   "CHFILE","n <msg>","Change File of pack n to <msg>"},
 {3,method_allow_all,u_chdesc,   "CHDESC","n <msg>","Change Description of pack n to <msg>"},
 {3,method_allow_all,u_chnote,   "CHNOTE","n <msg>","Change Note of pack n to <msg>"},
@@ -1883,10 +1885,76 @@ static void u_chfile(const userinput * const u) {
    
    }
 
+#include <ctype.h>
+
+static void strtextcpy(char *d, const char *s) {
+   const char *x;
+   char *w;
+   char ch;
+   size_t l;
+   
+   if (d == NULL)
+      return;
+   if (s == NULL)
+      return;
+   
+   /* ignore path */
+   x = strrchr(s, '/');
+   if (x != NULL)
+      x ++;
+   else
+      x = s;
+   
+   strcpy(d,x);
+   /* ignore extension */
+   w = strrchr(d, '.');
+   if (w != NULL)
+      *w = 0;
+   
+   l = strlen(d);
+   if ( l < 8 )
+      return;
+
+   w = d + l - 1;
+   ch = *w;
+   switch (ch) {
+   case '}':
+      w = strrchr(d, '{');
+      if (w != NULL)
+         *w = 0;
+      break;
+   case ')':
+      w = strrchr(d, '(');
+      if (w != NULL)
+         *w = 0;
+      break;
+   case ']':
+      w = strrchr(d, '[');
+      if (w != NULL)
+         *w = 0;
+      break;
+   }
+
+   /* strip numbers */
+   x = d;
+   w = d;
+   for (;;) {
+      ch = *(x++);
+      *w = ch;
+      if (ch == 0)
+         break;
+      if (isalpha(ch))
+         w++;
+   }
+}
+
 static void u_add(const userinput * const u) {
    int xfiledescriptor;
    struct stat st;
    xdcc *xd;
+   char *group;
+   char *a1;
+   char *a2;
    
    updatecontext();
    
@@ -1906,6 +1974,27 @@ static void u_add(const userinput * const u) {
              }
            xd = irlist_get_next(xd);
          }
+      }
+
+   group = NULL;
+   if (gdata.auto_default_group) {
+      a1 = mycalloc(strlen(u->arg1e) + 1);
+      strtextcpy(a1, u->arg1e);
+      xd = irlist_get_head(&gdata.xdccs);
+      while(xd)
+         {
+           a2 = mycalloc(strlen(xd->file) + 1);
+           strtextcpy(a2, xd->file);
+           if (!strcmp(a1, a2))
+             {
+               group = xd->group;
+               mydelete(a2);
+               break;
+             }
+           mydelete(a2);
+           xd = irlist_get_next(xd);
+         }
+      mydelete(a1);
       }
    
    xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
@@ -1999,6 +2088,13 @@ static void u_add(const userinput * const u) {
    
    u_respond(u, "ADD PACK: [Pack: %i] [File: %s] Use CHDESC to change description",
              irlist_size(&gdata.xdccs),xd->file);
+   
+   if ((gdata.auto_default_group) && (group != NULL)) {
+         xd->group = mycalloc(strlen(group)+1);
+         strcpy(xd->group,group);
+         u_respond(u,"GROUP: [Pack: %i] New: %s",
+                   irlist_size(&gdata.xdccs), xd->group);
+      }
    
    write_statefile();
    xdccsavetext();
@@ -2230,6 +2326,141 @@ static void u_addnew(const userinput * const u)
       u2 = *u;
       u2.arg1e = thefile;
       u_add(&u2);
+      
+      thefile = irlist_delete(&dirlist, thefile);
+    }
+  
+  mydelete(thedir);
+  return;
+}
+
+static void u_addgroup(const userinput * const u)
+{
+  DIR *d;
+  struct dirent *f;
+  char *thefile, *tempstr, *thedir;
+  irlist_t dirlist = {};
+  int thedirlen, foundit;
+  xdcc *xd;
+  
+  updatecontext();
+  
+  if (!u->arg1 || !strlen(u->arg1))
+    {
+      u_respond(u,"Try Specifying a Group");
+      return;
+    }
+  
+  if (!u->arg2e || !strlen(u->arg2e))
+    {
+      u_respond(u,"Try Specifying a Directory");
+      return;
+    }
+  
+  convert_to_unix_slash(u->arg2e);
+   
+  if (u->arg2e[strlen(u->arg2e)-1] == '/')
+    {
+      u->arg2e[strlen(u->arg2e)-1] = '\0';
+    }
+  
+  thedirlen = strlen(u->arg2e);
+  if (gdata.filedir)
+    {
+      thedirlen += strlen(gdata.filedir) + 1;
+    }
+  
+  thedir = mycalloc(thedirlen+1);
+  strcpy(thedir, u->arg2e);
+  
+  d = opendir(thedir);
+  
+  if (!d && (errno == ENOENT) && gdata.filedir)
+    {
+      snprintf(thedir, thedirlen+1, "%s/%s",
+               gdata.filedir, u->arg2e);
+      d = opendir(thedir);
+    }
+  
+  if (!d)
+    {
+      u_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+  
+  
+  while ((f = readdir(d)))
+    {
+      struct stat st;
+      int len = strlen(f->d_name);
+      
+      if (verifyshell(&gdata.adddir_exclude, f->d_name))
+        continue;
+      
+      tempstr = mycalloc(len + thedirlen + 2);
+      
+      snprintf(tempstr, len + thedirlen + 2,
+               "%s/%s", thedir, f->d_name);
+      
+      if (stat(tempstr,&st) < 0)
+        {
+          u_respond(u,"cannot access %s, ignoring: %s",
+                    tempstr, strerror(errno));
+        }
+      else if (S_ISREG(st.st_mode))
+        {
+          foundit = 0;
+          xd = irlist_get_head(&gdata.xdccs);
+          while(xd)
+            {
+              if (!strcmp(tempstr, xd->file))
+                {
+                  foundit = 1;
+                  break;
+                }
+              
+              xd = irlist_get_next(xd);
+            }
+          
+          if (foundit == 0)
+            {
+              thefile = irlist_add(&dirlist, len + thedirlen + 2);
+              strcpy(thefile, tempstr);
+            }
+        }
+      mydelete(tempstr);
+    }
+  
+  closedir(d);
+  
+  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
+  
+  u_respond(u,"Adding %d new files...",
+            irlist_size(&dirlist));
+  
+  thefile = irlist_get_head(&dirlist);
+  while (thefile)
+    {
+      userinput u2;
+      u_respond(u,"  Adding %s:",thefile);
+      
+      u2 = *u;
+      u2.arg1e = thefile;
+      u_add(&u2);
+      
+      xd = irlist_get_head(&gdata.xdccs);
+      while(xd)
+         {
+           if (!strcmp(thefile,xd->file))
+             {
+               if (xd->group != NULL)
+                  mydelete(xd->group);
+               xd->group = mycalloc(strlen(u->arg1)+1);
+               strcpy(xd->group,u->arg1);
+               break;
+             }
+           xd = irlist_get_next(xd);
+         }
       
       thefile = irlist_delete(&dirlist, thefile);
     }
