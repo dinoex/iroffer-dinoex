@@ -6,7 +6,11 @@
    and can be mixed with normal packs.
 
    new commands:
-   XDLFULL, XDLGROUP, GROUPDESC, GROUP, REGROUP
+   XDLFULL
+   XDLGROUP <group>
+   GROUPDESC <group> <text>
+   GROUP <pack> <group>
+   REGROUP <group> <newname>
 
    new user commands:
    XDCC LIST <group>
@@ -32,4 +36,13 @@ Long Term Features:
    if iroffer runs behind nat, i recommend setting "getipfromserver"
    in the config. This will update "natip" whenever the bot reconnects.
    this obsoletes scripts like "dynip.sh" or other cronjobs.
+
+5) locking:
+
+   new commands:
+   LOCK <pack> <password>
+   UNLOCK <pack>
+
+   new user commands:
+   XDCC SEND #<pack> password
 

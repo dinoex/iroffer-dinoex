@@ -61,6 +61,8 @@ static void u_chnote(const userinput * const u);
 static void u_chmins(const userinput * const u);
 static void u_chmaxs(const userinput * const u);
 static void u_chgets(const userinput * const u);
+static void u_lock(const userinput * const u);
+static void u_unlock(const userinput * const u);
 static void u_groupdesc(const userinput * const u);
 static void u_group(const userinput * const u);
 static void u_regroup(const userinput * const u);
@@ -144,6 +146,8 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_chmins,   "CHMINS","n x","Change min speed of pack n to x KB"},
 {3,method_allow_all,u_chmaxs,   "CHMAXS","n x","Change max speed of pack n to x KB"},
 {3,method_allow_all,u_chgets,   "CHGETS","n x","Change the get count of a pack"},
+{3,method_allow_all,u_lock,     "LOCK","n x","Lock the pack n with password x"},
+{3,method_allow_all,u_unlock,   "UNLOCK","n","Unlock the pack n"},
 {3,method_allow_all,u_groupdesc,  "GROUPDESC","<g> <msg>","Change Desc of group <g> to <msg>"},
 {3,method_allow_all,u_group,      "GROUP","n <msg>","Change Group of pack n to <msg>"},
 {3,method_allow_all,u_regroup,    "REGROUP","<g> <msg>","Change all packs of group <g> to <msg>"},
@@ -1591,7 +1595,7 @@ static void u_send(const userinput * const u) {
    
    u_respond(u,"Sending %s pack %i",u->arg1,num);
    
-   sendxdccfile(u->arg1,"man","man",num,NULL);
+   sendxdccfile(u->arg1,"man","man",num,NULL,NULL);
    
    }
 
@@ -2328,6 +2332,68 @@ static void u_chgets(const userinput * const u)
             num,xd->gets,atoi(u->arg2));
   
   xd->gets = atoi(u->arg2);
+  
+  write_statefile();
+  xdccsavetext();
+}
+
+static void u_lock(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+  
+  updatecontext();
+  
+  if (u->arg1)
+    {
+      num = atoi(u->arg1);
+    }
+  
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      u_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+      u_respond(u,"Try Specifying a Password");
+      return;
+    }
+  
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  
+  u_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2e);
+  xd->lock = mycalloc(strlen(u->arg2e)+1);
+  strcpy(xd->lock,u->arg2e);
+
+  write_statefile();
+  xdccsavetext();
+}
+
+static void u_unlock(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+  
+  updatecontext();
+  
+  if (u->arg1)
+    {
+      num = atoi(u->arg1);
+    }
+  
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      u_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  u_respond(u, "UNLOCK: [Pack %i]", num);
+  
+  mydelete(xd->lock);
+  xd->lock = NULL;
   
   write_statefile();
   xdccsavetext();

@@ -76,6 +76,7 @@ typedef enum
   STATEFILE_TAG_XDCCS_MD5SUM_INFO,
   STATEFILE_TAG_XDCCS_GROUP,
   STATEFILE_TAG_XDCCS_GROUP_DESC,
+  STATEFILE_TAG_XDCCS_LOCK,
   
   STATEFILE_TAG_TLIMIT_DAILY_USED    = 13 << 8,
   STATEFILE_TAG_TLIMIT_DAILY_ENDS,
@@ -498,6 +499,10 @@ void write_statefile(void)
           {
             length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->group_desc) + 1, 4);
           }
+        if (xd->lock != NULL)
+          {
+            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->lock) + 1, 4);
+          }
         
         data = mycalloc(length);
         
@@ -602,6 +607,16 @@ void write_statefile(void)
             next = (unsigned char*)(&hdr[1]);
             strcpy(next, xd->group_desc);
             next += ceiling(strlen(xd->group_desc) + 1, 4);
+          }
+        if (xd->lock != NULL)
+          {
+            /* group */
+            hdr = (statefile_hdr_t*)next;
+            hdr->tag = htonl(STATEFILE_TAG_XDCCS_LOCK);
+            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->lock) + 1);
+            next = (unsigned char*)(&hdr[1]);
+            strcpy(next, xd->lock);
+            next += ceiling(strlen(xd->lock) + 1, 4);
           }
         
         write_statefile_item(&bout, data);
@@ -1275,6 +1290,7 @@ void read_statefile(void)
             xd->maxspeed = gdata.transfermaxspeed;
             xd->group = NULL;
             xd->group_desc = NULL;
+            xd->lock = NULL;
             
             hdr->length -= sizeof(*hdr);
             ihdr = &hdr[1];
@@ -1420,6 +1436,21 @@ void read_statefile(void)
                     else
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Desc Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_LOCK:
+                    if (ihdr->length > sizeof(statefile_hdr_t))
+                      {
+                        char *data = (char*)(&ihdr[1]);
+                        data[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
+                        xd->lock = mycalloc(strlen(data)+1);
+                        strcpy(xd->lock,data);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Lock Tag (len = %d)",
                                  ihdr->length);
                       }
                     break;

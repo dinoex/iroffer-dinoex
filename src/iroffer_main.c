@@ -2662,7 +2662,7 @@ static void privmsgparse(const char* type, char* line) {
          if ( msg2 && msg3 && (!strcmp(msg2,"SEND") || !strcmp(msg2,"GET"))) {
          if (!gdata.attop) gototop();
          ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC SEND %s",msg3);
-         sendxdccfile(nick, hostname, hostmask, packnumtonum(msg3), NULL);
+         sendxdccfile(nick, hostname, hostmask, packnumtonum(msg3), NULL, msg4);
          }
          else if ( msg2 && msg3 && (!strcmp(msg2,"INFO"))) {
          if (!gdata.attop) gototop();
@@ -2850,7 +2850,7 @@ static void autosendf(char* line) {
        snprintf(tempstr, strlen(gdata.autosend.message) + strlen(format) - 1,
                        format, gdata.autosend.message);
        
-       sendxdccfile(nick, hostname, hostmask, gdata.autosend.pack, tempstr);
+       sendxdccfile(nick, hostname, hostmask, gdata.autosend.pack, tempstr, NULL);
        
        mydelete(tempstr);
      }
@@ -2860,7 +2860,16 @@ static void autosendf(char* line) {
 
    }
 
-void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg)
+static int check_lock(const char* lockstr, const char* pwd)
+{
+  if (lockstr == NULL)
+    return 0; /* no lock */
+  if (pwd == NULL)
+    return 1; /* locked */
+  return strcmp(lockstr, pwd);
+}
+
+void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd)
 {
   int usertrans, userpackok, man;
   xdcc *xd;
@@ -2900,6 +2909,12 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
     }
   
   xd = irlist_get_nth(&gdata.xdccs, pack-1);
+  if (check_lock(xd->lock, pwd) != 0)
+    {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (pack locked): ");
+      notice(nick,"** XDCC SEND denied, this pack is locked");
+      goto done;
+    }
   
   tr = irlist_get_head(&gdata.trans);
   while(tr)

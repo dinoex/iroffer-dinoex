@@ -144,6 +144,7 @@ typedef struct {
    char *file, *desc, *note;
    char *group;
    char *group_desc;
+   char *lock;
    int gets;
    float minspeed,
          maxspeed;
@@ -411,7 +412,7 @@ typedef struct
 /*------------ function declarations ------------- */
 
 /* iroffer.c */
-void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg);
+void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd);
 void sendxdccinfo(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg);
 void sendaqueue(int type);
 
