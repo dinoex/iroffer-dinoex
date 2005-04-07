@@ -2234,7 +2234,7 @@ static void u_adddir(const userinput * const u)
       struct stat st;
       int len = strlen(f->d_name);
       
-      if (verifyhost(&gdata.adddir_exclude, f->d_name))
+      if (verifyshell(&gdata.adddir_exclude, f->d_name))
         continue;
       
       tempstr = mycalloc(len + thedirlen + 2);
