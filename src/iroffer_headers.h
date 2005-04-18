@@ -653,6 +653,7 @@ void notifybandwidth(void);
 void notifybandwidthtrans(void);
 void look_for_file_changes(xdcc *xpack);
 void user_changed_nick(const char *oldnick, const char *newnick);
+int has_joined_channels(int all);
 void reverify_restrictsend(void);
 
 /* statefile.c */

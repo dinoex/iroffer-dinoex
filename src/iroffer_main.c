@@ -2066,16 +2066,8 @@ static void parseline(char *line) {
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"%s is not a known channel!",part3a);
             }
 
-          /* we have joined all channels => restart transfers */
-          j=0;
-          ch = irlist_get_head(&gdata.channels);
-          while(ch)
-            {
-              if ((ch->flags | CHAN_ONCHAN) == 0);
-                j++;
-              ch = irlist_get_next(ch);
-            }
-          if (j > 0)
+          /* we have joined all channels => restart transfers if needed */
+          if (has_joined_channels(1) > 0)
             {
               for (i=0; i<100; i++)
                 {
@@ -3332,6 +3324,16 @@ void sendaqueue(int type)
   char *sendnamestr;
   
   updatecontext();
+  
+  if (gdata.serverstatus != SERVERSTATUS_CONNECTED)
+     return;
+
+  /* timeout for restart must be less then Transfer Timeout 180s */
+  if (gdata.curtime - gdata.lastservercontact > 150)
+     return;
+  
+  if (gdata.restrictlist && (has_joined_channels(1) == 0))
+     return;
   
   if (!gdata.attop) gototop();
   
