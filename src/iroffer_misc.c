@@ -3078,6 +3078,8 @@ void user_changed_nick(const char *oldnick, const char *newnick)
 {
   transfer *tr;
   pqueue *pq;
+  pqueue *old;
+  int userinqueue = 0;
   
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
     {
@@ -3099,7 +3101,45 @@ void user_changed_nick(const char *oldnick, const char *newnick)
         }
     }
   
+  for (pq = irlist_get_head(&gdata.mainqueue); pq; )
+    {
+      if (!strcasecmp(pq->nick, newnick))
+        {
+	  userinqueue++;
+          if ( userinqueue > gdata.maxqueueditemsperperson )
+            {
+              mydelete(pq->nick);
+              mydelete(pq->hostname);
+	      old = pq;
+              pq = irlist_get_next(pq);
+              irlist_delete(&gdata.mainqueue, old);
+              continue;
+            }
+        }
+      pq = irlist_get_next(pq);
+    }
   return;
+}
+
+int has_joined_channels(int all)
+{
+  int j;
+  channel_t *ch;
+
+  j=0;
+  ch = irlist_get_head(&gdata.channels);
+  while(ch)
+    {
+       if ((ch->flags | CHAN_ONCHAN) == 0)
+         {
+           if (all != 0)
+             return 0;
+         }
+       else
+         j++;
+       ch = irlist_get_next(ch);
+     }
+  return j;
 }
 
 void reverify_restrictsend(void)
