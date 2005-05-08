@@ -103,6 +103,8 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"hide_list_info",       &gdata.hide_list_info,       &gdata.hide_list_info },
   {"xdcclist_grouponly",   &gdata.xdcclist_grouponly,   &gdata.xdcclist_grouponly },
   {"auto_default_group",   &gdata.auto_default_group,   &gdata.auto_default_group },
+  {"restrictprivlistmain", &gdata.restrictprivlistmain, &gdata.restrictprivlistmain },
+  {"restrictprivlistfull", &gdata.restrictprivlistfull, &gdata.restrictprivlistfull },
 };
 
 typedef struct
@@ -2375,6 +2377,8 @@ void reinit_config_vars(void)
   gdata.xdcclist_grouponly = 0;
   gdata.auto_default_group = 0;
   gdata.start_of_month = 1;
+  gdata.restrictprivlistmain = 0;
+  gdata.restrictprivlistfull = 0;
   mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;

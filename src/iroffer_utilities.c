@@ -1429,6 +1429,8 @@ void dumpgdata(void)
   gdata_print_int(xdcclist_grouponly);
   gdata_print_int(auto_default_group);
   gdata_print_int(start_of_month);
+  gdata_print_int(restrictprivlistmain);
+  gdata_print_int(restrictprivlistfull);
   gdata_print_string(admin_job_file);
   
   /* downloadhost */

@@ -160,12 +160,21 @@ bugfix: remove
 bugfix: regroup
     bot could hang when entries without a group does exist.
 
-new admin commands:
+19) new admin commands:
    REGROUP main <newname>  put all files without a grou in the new group
 
-new user command alias:
+20) new user command alias:
    xdcc list group <group> ==> xdcc list <group>
 
-new user command:
+21) new user command:
    xdcc list group all
+
+22) restrictprivlistmain
+
+If set, "xdcc list" without an option will be rejected.
+This allows to list a single group only.
+
+23) restrictprivlistfull
+
+If set, "xdcc list all" will be rejected. 
 

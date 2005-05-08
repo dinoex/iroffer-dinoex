@@ -2763,6 +2763,7 @@ static void privmsgparse(const char* type, char* line) {
                          userinput *pubplist;
                          char *tempstr = mycalloc(maxtextlength);
                          
+                         j = 3; /* msg3 */
                          /* detect xdcc list group xxx */
                          if ((msg4) && (strcmp(caps(msg3),"GROUP") == 0))
                            {
@@ -2772,21 +2773,57 @@ static void privmsgparse(const char* type, char* line) {
                              msg3 = msg0;
                            }
                          if ((msg3) && (strcmp(caps(msg3),"ALL") == 0))
-                           snprintf(tempstr,maxtextlength-1,"A A A A A xdlfull %s",msg3);
+                           {
+                             if (gdata.restrictprivlistfull)
+                               {
+                                 j = 2; /* deny */
+                                 if (gdata.restrictprivlistmsg)
+                                   {
+                                     notice(nick,"XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
+                                   }
+                                 else
+                                   {
+                                     notice(nick,"XDCC LIST Denied. Wait for the public list in the channel.");
+                                   }
+                               }
+                             else
+                               {
+                                 snprintf(tempstr,maxtextlength-1,"A A A A A xdlfull %s",msg3);
+                               }
+                           }
                          else
-                           snprintf(tempstr,maxtextlength-1,"A A A A A xdlgroup %s",msg3);
-                         pubplist = mycalloc(sizeof(userinput));
-                         u_fillwith_msg(pubplist,nick,tempstr);
-                         pubplist->method = method_xdl_user_notice;
-                         u_parseit(pubplist);
-                         mydelete(pubplist);
-                         mydelete(tempstr);
-                         j = 3; /* msg3 */
+                           {
+                             snprintf(tempstr,maxtextlength-1,"A A A A A xdlgroup %s",msg3);
+                           }
+                         if ( j == 3 )
+                           {
+                             pubplist = mycalloc(sizeof(userinput));
+                             u_fillwith_msg(pubplist,nick,tempstr);
+                             pubplist->method = method_xdl_user_notice;
+                             u_parseit(pubplist);
+                             mydelete(pubplist);
+                             mydelete(tempstr);
+                           }
                        }
                      else
                        {
-                         user = irlist_add(&gdata.xlistqueue, strlen(nick) + 1);
-                         strcpy(user,nick);
+                         if (gdata.restrictprivlistmain)
+                           {
+                             j = 2; /* deny */
+                             if (gdata.restrictprivlistmsg)
+                               {
+                                 notice(nick,"XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
+                               }
+                             else
+                               {
+                                 notice(nick,"XDCC LIST Denied. Wait for the public list in the channel.");
+                               }
+                           }
+                         else
+                           {
+                             user = irlist_add(&gdata.xlistqueue, strlen(nick) + 1);
+                             strcpy(user,nick);
+                           }
                        }
                    }
                }
