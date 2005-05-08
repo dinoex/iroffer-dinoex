@@ -1410,6 +1410,39 @@ static void u_info(const userinput * const u)
   return;
 }
 
+static int reorder_groupdesc(char *group, char *desc) {
+  xdcc *xd;
+  int k;
+
+  k = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,group) == 0)
+            {
+              k++;
+              /* delete all matching entires */
+              if (xd->group_desc != NULL)
+                mydelete(xd->group_desc);
+              /* write only the first entry */
+              if (k == 1)
+                {
+                  if (desc && strlen(desc))
+                    {
+                      xd->group_desc = mycalloc(strlen(desc)+1);
+                      strcpy(xd->group_desc,desc);
+                    }
+                }
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  return k;
+}
+
 static void u_remove(const userinput * const u) {
    int num = 0;
    pqueue *pq;
@@ -1475,6 +1508,16 @@ static void u_remove(const userinput * const u) {
    mydelete(xd->file);
    mydelete(xd->desc);
    mydelete(xd->note);
+   if (xd->group != NULL)
+     {
+       mydelete(xd->group);
+       if (xd->group_desc != NULL)
+         {
+           /* group is now NULL */
+           reorder_groupdesc(xd->group,xd->group_desc);
+           mydelete(xd->group_desc);
+         }
+     }
    irlist_delete(&gdata.xdccs, xd);
    
    write_statefile();
@@ -2758,7 +2801,6 @@ static void u_unlock(const userinput * const u)
 }
 
 static void u_groupdesc(const userinput * const u) {
-  xdcc *xd;
   int k;
 
   updatecontext();
@@ -2769,32 +2811,7 @@ static void u_groupdesc(const userinput * const u) {
       return;
     }
    
-  k = 0;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      if (xd->group != NULL)
-        {
-          if (strcasecmp(xd->group,u->arg1) == 0)
-            {
-              k++;
-              /* delete all matching entires */
-              if (xd->group_desc != NULL)
-                mydelete(xd->group_desc);
-              /* write only the first entry */
-              if (k == 1)
-                {
-                  if (u->arg2e && strlen(u->arg2e))
-                    {
-                      xd->group_desc = mycalloc(strlen(u->arg2e)+1);
-                      strcpy(xd->group_desc,u->arg2e);
-                    }
-                }
-            }
-        }
-      xd = irlist_get_next(xd);
-    }
-
+  k = reorder_groupdesc(u->arg1,u->arg2e);
   if (k == 0)
     return;
 
@@ -2865,6 +2882,7 @@ static void u_group(const userinput * const u) {
 
 static void u_regroup(const userinput * const u) {
   xdcc *xd;
+  const char *g;
   int k;
 
   updatecontext();
@@ -2886,16 +2904,18 @@ static void u_regroup(const userinput * const u) {
   while(xd)
     {
       if (xd->group != NULL)
+        g = xd->group;
+      else
+        g = "main";
+      if (strcasecmp(g,u->arg1) == 0)
         {
-          if (strcasecmp(xd->group,u->arg1) == 0)
-            {
-              k++;
-              mydelete(xd->group);
-              xd->group = mycalloc(strlen(u->arg2e)+1);
-              strcpy(xd->group,u->arg2e);
-            }
-            xd = irlist_get_next(xd);
+          k++;
+          if (xd->group != NULL)
+            mydelete(xd->group);
+          xd->group = mycalloc(strlen(u->arg2e)+1);
+          strcpy(xd->group,u->arg2e);
         }
+      xd = irlist_get_next(xd);
     }
 
   if (k == 0)
