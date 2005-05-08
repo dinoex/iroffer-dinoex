@@ -163,3 +163,9 @@ bugfix: regroup
 new admin commands:
    REGROUP main <newname>  put all files without a grou in the new group
 
+new user command alias:
+   xdcc list group <group> ==> xdcc list <group>
+
+new user command:
+   xdcc list group all
+

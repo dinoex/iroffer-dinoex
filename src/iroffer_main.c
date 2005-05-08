@@ -2763,7 +2763,18 @@ static void privmsgparse(const char* type, char* line) {
                          userinput *pubplist;
                          char *tempstr = mycalloc(maxtextlength);
                          
-                         snprintf(tempstr,maxtextlength-1,"A A A A A xdlgroup %s",msg3);
+                         /* detect xdcc list group xxx */
+                         if ((msg4) && (strcmp(caps(msg3),"GROUP") == 0))
+                           {
+                             char *msg0;
+                             msg0 = msg4;
+                             msg4 = msg3;
+                             msg3 = msg0;
+                           }
+                         if ((msg3) && (strcmp(caps(msg3),"ALL") == 0))
+                           snprintf(tempstr,maxtextlength-1,"A A A A A xdlfull %s",msg3);
+                         else
+                           snprintf(tempstr,maxtextlength-1,"A A A A A xdlgroup %s",msg3);
                          pubplist = mycalloc(sizeof(userinput));
                          u_fillwith_msg(pubplist,nick,tempstr);
                          pubplist->method = method_xdl_user_notice;
