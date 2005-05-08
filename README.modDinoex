@@ -4,7 +4,7 @@ With Version mod 1.1:
 
 1) grouped lists
 
-   add a GROUP feature, as seen in various splitoffs.
+   add a GROUP feature, as seen in various split offs.
    this is a clean reimplementation, groups are optional.
    and can be mixed with normal packs.
 
@@ -33,7 +33,7 @@ With Version mod 1.1:
 With Version mod 1.2:
 ---------------------
 
-3) save download quue on exit or crash.  and read it back on start.
+3) save download queue on exit or crash.  and read it back on start.
    I though about saving running transfers too, but decided against it.
 
    References TODO:
@@ -109,12 +109,12 @@ With Version mod 1.6:
 11) xdcclist_grouponly
 
     Export your xdcc list with group and main information only.
-    Default ouput is all packs and no group information.
+    Default output is all packs and no group information.
 
 12) admin_job_file
 
     when defined, read this file for commands and execute them.
-    ouput will be written in <filename>.done
+    output will be written in <filename>.done
 
 With Version mod 1.7:
 ---------------------
@@ -150,4 +150,16 @@ With Version mod 1.9:
     his transfer has not timed out, he can add himself to the queue again.
     After he regained his old Nickname, he has more than the allowed number
     of requests in queue. Now the last entry is removed.
+
+With Version mod 1.10:
+----------------------
+
+bugfix: remove
+    keep group description when first pack of a group is removed.
+
+bugfix: regroup
+    bot could hang when entries without a group does exist.
+
+new admin commands:
+   REGROUP main <newname>  put all files without a grou in the new group
 
