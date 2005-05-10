@@ -2461,6 +2461,8 @@ static void u_addgroup(const userinput * const u)
     }
   
   convert_to_unix_slash(u->arg2e);
+  if (gdata.groupsincaps)
+    caps(u->arg1);
    
   if (u->arg2e[strlen(u->arg2e)-1] == '/')
     {
@@ -2857,6 +2859,11 @@ static void u_group(const userinput * const u) {
       }
       new = "MAIN";
     }
+  else
+    {
+       if (gdata.groupsincaps)
+         caps(u->arg2);
+    }
   
   if (xd->group != NULL)
     {
@@ -2898,6 +2905,9 @@ static void u_regroup(const userinput * const u) {
       u_respond(u,"Try Specifying a Valid Group");
       return;
     }
+   
+  if (gdata.groupsincaps)
+    caps(u->arg1);
    
   k = 0;
   xd = irlist_get_head(&gdata.xdccs);

@@ -96,6 +96,7 @@ int auto_default_group;
 int start_of_month;
 int restrictprivlistmain;
 int restrictprivlistfull;
+int groupsincaps;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;

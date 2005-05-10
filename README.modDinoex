@@ -178,3 +178,10 @@ This allows to list a single group only.
 
 If set, "xdcc list all" will be rejected. 
 
+With Version mod 1.11:
+----------------------
+
+24) groupsincaps
+
+If set, all groups names changed will be folded to  uppercase.
+
