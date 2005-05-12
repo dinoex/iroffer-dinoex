@@ -185,3 +185,7 @@ With Version mod 1.11:
 
 If set, all groups names changed will be folded to  uppercase.
 
+bugfix: send <pack>
+
+It is now possible to send password protected packs.
+

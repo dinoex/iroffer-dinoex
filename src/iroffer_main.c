@@ -3095,7 +3095,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
     }
   
   xd = irlist_get_nth(&gdata.xdccs, pack-1);
-  if (check_lock(xd->lock, pwd) != 0)
+  if (!man && (check_lock(xd->lock, pwd) != 0))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (pack locked): ");
       notice(nick,"** XDCC SEND denied, this pack is locked");
