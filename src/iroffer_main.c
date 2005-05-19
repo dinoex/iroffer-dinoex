@@ -356,7 +356,7 @@ static void mainloop (void) {
         + gdata.xdccsent[(gdata.curtime-2)%XDCC_SENT_SIZE]
         + gdata.xdccsent[(gdata.curtime-3)%XDCC_SENT_SIZE];
       
-      if ( gdata.maxb && ((gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE] + gdata.xdccsent[(gdata.curtime-1)%XDCC_SENT_SIZE] + gdata.xdccsent[(gdata.curtime-2)%XDCC_SENT_SIZE] + gdata.xdccsent[(gdata.curtime-3)%XDCC_SENT_SIZE]) >= gdata.maxb*1024))
+      if ( gdata.maxb && (j >= gdata.maxb*1024))
         {
           overlimit = 1;
         }

@@ -1432,6 +1432,7 @@ void dumpgdata(void)
   gdata_print_int(restrictprivlistmain);
   gdata_print_int(restrictprivlistfull);
   gdata_print_int(groupsincaps);
+  gdata_print_int(ignoreuploadbandwidth);
   gdata_print_string(admin_job_file);
   
   /* downloadhost */

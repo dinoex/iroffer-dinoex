@@ -192,3 +192,10 @@ bugfix: remove <pack>
 versions affected: 1.10
    bot could crash when removing a group with description.
 
+With Version mod 1.12:
+----------------------
+
+25) ignoreuploadbandwidth
+   don't count uploads traffic into transferlimits.
+   Fast uploads will stop any downloads without this option.
+

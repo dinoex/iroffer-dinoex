@@ -97,6 +97,7 @@ int start_of_month;
 int restrictprivlistmain;
 int restrictprivlistfull;
 int groupsincaps;
+int ignoreuploadbandwidth;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;
