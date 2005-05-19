@@ -1069,7 +1069,7 @@ void mydelete2(void *t) {
    
    if (i == (MEMINFOHASHSIZE * gdata.meminfo_depth)) {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Pointer 0x%8.8lX not found in meminfo database while trying to free!!",(long)t);
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Please report this error to PMG");
+      outerror(OUTERROR_TYPE_WARN_LOUD,"Please report this error to Dinoex");
       for(i=0; i<(12*12); i+=12) {
          outerror(OUTERROR_TYPE_WARN_LOUD," : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\"",
                ut[i+0], ut[i+1], ut[i+2], ut[i+3], ut[i+4], ut[i+5], ut[i+6], ut[i+7], ut[i+8], ut[i+9], ut[i+10], ut[i+11],
