@@ -1414,6 +1414,8 @@ static int reorder_groupdesc(char *group, char *desc) {
   xdcc *xd;
   int k;
 
+  updatecontext();
+
   k = 0;
   xd = irlist_get_head(&gdata.xdccs);
   while(xd)
@@ -1445,6 +1447,8 @@ static int reorder_groupdesc(char *group, char *desc) {
 
 static void u_remove(const userinput * const u) {
    int num = 0;
+   char *tmpdesc;
+   char *tmpgroup;
    pqueue *pq;
    transfer *tr;
    xdcc *xd;
@@ -1508,17 +1512,21 @@ static void u_remove(const userinput * const u) {
    mydelete(xd->file);
    mydelete(xd->desc);
    mydelete(xd->note);
-   if (xd->group != NULL)
-     {
-       mydelete(xd->group);
-       if (xd->group_desc != NULL)
-         {
-           /* group is now NULL */
-           reorder_groupdesc(xd->group,xd->group_desc);
-           mydelete(xd->group_desc);
-         }
-     }
+   /* keep group info for later work */
+   tmpgroup = xd->group;
+   xd->group = NULL;
+   tmpdesc = xd->group_desc;
+   xd->group_desc = NULL;
    irlist_delete(&gdata.xdccs, xd);
+   
+   if (tmpdesc != NULL)
+     {
+       if (tmpgroup != NULL)
+         reorder_groupdesc(tmpgroup,tmpdesc);
+       mydelete(tmpdesc);
+     }
+   if (tmpgroup != NULL)
+     mydelete(tmpgroup);
    
    write_statefile();
    xdccsavetext();

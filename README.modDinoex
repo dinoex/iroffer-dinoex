@@ -182,10 +182,13 @@ With Version mod 1.11:
 ----------------------
 
 24) groupsincaps
-
-If set, all groups names changed will be folded to  uppercase.
+   If set, all groups names changed will be folded to  uppercase.
 
 bugfix: send <pack>
+versions affected: 1.4 to 1.10
+   It is now possible to send password protected packs.
 
-It is now possible to send password protected packs.
+bugfix: remove <pack>
+versions affected: 1.10
+   bot could crash when removing a group with description.
 
