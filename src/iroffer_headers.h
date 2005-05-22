@@ -360,6 +360,7 @@ typedef struct
 {
   char *name;
   char *key;
+  char *headline;
   short flags;
   short plisttime;
   short plistoffset;

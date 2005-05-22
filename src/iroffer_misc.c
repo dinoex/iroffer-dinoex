@@ -211,6 +211,7 @@ void getconfig_set (const char *line, int rehash)
   char *type;
   char *var;
   char *a,*b,*c;
+  const char *found;
   int i,j;
   
   updatecontext();
@@ -440,6 +441,7 @@ void getconfig_set (const char *line, int rehash)
       caps(tname);
       cptr->name = mycalloc(strlen(tname)+1);
       strcpy(cptr->name,tname);
+      cptr->headline = NULL;
       
       for (i=2; i<20 && ok && (tptr = getpart(var,i)); i++) {
          if (!strcmp(tptr,"-plist")) {
@@ -474,6 +476,18 @@ void getconfig_set (const char *line, int rehash)
               {
                 cptr->key = mycalloc(strlen(tptr2)+1);
                 strcpy(cptr->key,tptr2);
+              }
+            else ok=0;
+            }
+         else if (!strcmp(tptr,"-headline")) {
+            i++;
+            found = strstr(line, "-headline");
+            if (found != NULL)
+              {
+		found += strlen( "-headline" );
+		found ++;
+                cptr->headline = mycalloc(strlen(found)+1);
+                strcpy(cptr->headline,found);
               }
             else ok=0;
             }

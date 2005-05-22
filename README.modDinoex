@@ -199,3 +199,10 @@ With Version mod 1.12:
    don't count uploads traffic into transferlimits.
    Fast uploads will stop any downloads without this option.
 
+26) channel -headline
+   text from this keyword to the end of the line is used as a
+   channel specific headline.
+
+Sample:
+channel #chan04 -plist 14 -pformat summary -headline moving soon
+

@@ -555,12 +555,36 @@ static void u_xdl_head(const userinput * const u) {
    int a,i,m,m1;
    int len;
    xdcc *xd;
+   channel_t *ch;
    ir_uint64 xdccsent;
    
    tempstr  = mycalloc(maxtextlength);
 
    if (u->method==method_xdl_channel_min) m = 1; else m = 0;
    if (u->method==method_xdl_channel_sum) m1 = 1; else m1 = 0;
+   
+   switch (u->method)
+    {
+    case method_xdl_channel:
+    case method_xdl_channel_min:
+    case method_xdl_channel_sum:
+      ch = irlist_get_head(&gdata.channels);
+      while(ch)
+        {
+          if (!strcmp(ch->name,u->snick))
+            {
+             if (ch->headline != NULL )
+               {
+                 u_respond(u,"\2**\2 %s \2**\2", ch->headline);
+               }
+             break;
+            }
+          ch = irlist_get_next(ch);
+        }
+      break;
+    default:
+      break;
+    }
    
    if (gdata.headline)
      {
