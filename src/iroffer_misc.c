@@ -488,6 +488,8 @@ void getconfig_set (const char *line, int rehash)
 		found ++;
                 cptr->headline = mycalloc(strlen(found)+1);
                 strcpy(cptr->headline,found);
+                mydelete(tptr);
+		break;
               }
             else ok=0;
             }
