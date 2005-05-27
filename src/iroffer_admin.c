@@ -554,6 +554,7 @@ static void u_xdl_head(const userinput * const u) {
    char *tempstr;
    int a,i,m,m1;
    int len;
+   int head;
    xdcc *xd;
    channel_t *ch;
    ir_uint64 xdccsent;
@@ -563,6 +564,7 @@ static void u_xdl_head(const userinput * const u) {
    if (u->method==method_xdl_channel_min) m = 1; else m = 0;
    if (u->method==method_xdl_channel_sum) m1 = 1; else m1 = 0;
    
+   head = 0;
    switch (u->method)
     {
     case method_xdl_channel:
@@ -576,6 +578,7 @@ static void u_xdl_head(const userinput * const u) {
              if (ch->headline != NULL )
                {
                  u_respond(u,"\2**\2 %s \2**\2", ch->headline);
+                 head ++;
                }
              break;
             }
@@ -588,7 +591,8 @@ static void u_xdl_head(const userinput * const u) {
    
    if (gdata.headline)
      {
-       u_respond(u,"\2**\2 %s \2**\2",gdata.headline);
+       if (head == 0)
+          u_respond(u,"\2**\2 %s \2**\2",gdata.headline);
      }
    
    if (!m && !m1)

@@ -206,3 +206,8 @@ With Version mod 1.12:
 Sample:
 channel #chan04 -plist 14 -pformat summary -headline moving soon
 
+With Version mod 1.13:
+----------------------
+
+bugfix: if channel headline is set, drop global headline
+
