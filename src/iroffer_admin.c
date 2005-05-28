@@ -49,6 +49,7 @@ static void u_delhist(const userinput * const u);
 static void u_info(const userinput * const u);
 static void u_remove(const userinput * const u);
 static void u_removedir(const userinput * const u);
+static void u_removegroup(const userinput * const u);
 static void u_send(const userinput * const u);
 static void u_queue(const userinput * const u);
 static void u_psend(const userinput * const u);
@@ -140,6 +141,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_info,     "INFO","n","Show Info for Pack n"},
 {3,method_allow_all,u_remove,   "REMOVE","n","Removes Pack n"},
 {3,method_allow_all,u_removedir,"REMOVEDIR","<dir>","Remove Every File in <dir>"},
+{3,method_allow_all,u_removegroup, "REMOVEGROUP","<group>","Remove Every File within <group>"},
 {3,method_allow_all,u_renumber, "RENUMBER","x y","Moves Pack x to y"},
 {3,method_allow_all,u_add,      "ADD","<filename>","Add New Pack With <filename>"},
 {3,method_allow_all,u_adddir,   "ADDDIR","<dir>","Add Every File in <dir>"},
@@ -1666,6 +1668,46 @@ static void u_removedir(const userinput * const u)
   
   mydelete(thedir);
   return;
+}
+
+static void u_removegroup(const userinput * const u)
+{
+   xdcc *xd;
+   userinput u2;
+   int n;
+   char tempstr2[8];
+   
+   updatecontext();
+   
+   if (!u->arg1 || !strlen(u->arg1))
+     {
+       u_respond(u,"Try Specifying a Group");
+       return;
+     }
+   
+   n = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       n++;
+       if (xd->group != NULL)
+         {
+           if (strcasecmp(xd->group,u->arg1) == 0)
+             {
+                snprintf(tempstr2, 8, "%d", n);
+                
+                u2 = *u;
+                u2.arg1 = tempstr2;
+                u_remove(&u2);
+                
+                /* start over, the list has changed */
+                n = 0;
+                xd = irlist_get_head(&gdata.xdccs);
+                continue;
+             }
+         }
+       xd = irlist_get_next(xd);
+     }
 }
 
 static void u_redraw(const userinput * const u) {

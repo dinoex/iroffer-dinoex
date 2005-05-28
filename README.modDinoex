@@ -211,3 +211,8 @@ With Version mod 1.13:
 
 bugfix: if channel headline is set, drop global headline
 
+27) removegroup
+
+   new admin commands:
+   REMOVEGROUP <group>     remove every file within <group>
+
