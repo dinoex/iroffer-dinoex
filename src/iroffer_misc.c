@@ -107,6 +107,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"restrictprivlistfull", &gdata.restrictprivlistfull, &gdata.restrictprivlistfull },
   {"groupsincaps",         &gdata.groupsincaps,         &gdata.groupsincaps },
   {"ignoreuploadbandwidth", &gdata.ignoreuploadbandwidth, &gdata.ignoreuploadbandwidth },
+  {"holdqueue",            &gdata.holdqueue,            &gdata.holdqueue },
 };
 
 typedef struct
@@ -2399,6 +2400,7 @@ void reinit_config_vars(void)
   gdata.restrictprivlistfull = 0;
   gdata.groupsincaps = 0;
   gdata.ignoreuploadbandwidth = 0;
+  gdata.holdqueue = 0;
   mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;

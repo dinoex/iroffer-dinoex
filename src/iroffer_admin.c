@@ -89,6 +89,7 @@ static void u_msgread(const userinput * const u);
 static void u_msgdel(const userinput * const u);
 static void u_memstat(const userinput * const u);
 static void u_qsend(const userinput * const u);
+static void u_holdqueue(const userinput * const u);
 static void u_shutdown(const userinput * const u);
 static void u_debug(const userinput * const u);
 static void u_jump(const userinput * const u);
@@ -187,6 +188,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_allow_all,u_chatl,    "CHATL",NULL,"Lists DCC Chat Information"},
 {5,method_allow_all,u_closec,   "CLOSEC","n","Closes DCC Chat with ID = n"},
 {5,method_console,  u_debug,    "DEBUG","n","Set Debugging level to n"},
+{5,method_allow_all,u_holdqueue, "HOLDQUEUE","<num>","set or toggles holdqueue"},
 {5,method_allow_all,u_shutdown, "SHUTDOWN","<act>","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
 
 {6,method_console,  u_crash, "CRASH",NULL,"Cause a segmentation fault"},
@@ -4066,6 +4068,30 @@ static void u_qsend(const userinput * const u)
   
   sendaqueue(2);
   return;
+}
+
+static void u_holdqueue(const userinput * const u) {
+   int val;
+   
+   updatecontext();
+    
+   if (gdata.holdqueue)
+     {
+       val = 0;
+     }
+   else
+     {
+       val = 1;
+     }
+   
+   if (u->arg1)
+     {
+       val = atoi(u->arg1);
+     }
+   
+   gdata.holdqueue = val;
+   u_respond(u,"HOLDQUEUE now %d", val );
+   
 }
 
 static void u_shutdown(const userinput * const u) {

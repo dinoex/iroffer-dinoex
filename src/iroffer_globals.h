@@ -98,6 +98,7 @@ int restrictprivlistmain;
 int restrictprivlistfull;
 int groupsincaps;
 int ignoreuploadbandwidth;
+int holdqueue;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;

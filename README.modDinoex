@@ -216,3 +216,16 @@ bugfix: if channel headline is set, drop global headline
    new admin commands:
    REMOVEGROUP <group>     remove every file within <group>
 
+With Version mod 1.14:
+----------------------
+
+28) holdqueue
+
+  don't send from queue, let current transfers run out,
+  do the bot can shutdown cleanly.
+
+  new admin commands:
+  HOLDQUEUE               toggle holdqueue
+  HOLDQUEUE 1             holdqueue on, don't send more files
+  HOLDQUEUE 0             holdqueue off, send files from queue
+

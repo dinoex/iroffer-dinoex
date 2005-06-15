@@ -3380,6 +3380,9 @@ void sendaqueue(int type)
   if (gdata.curtime - gdata.lastservercontact > 150)
      return;
   
+  if (gdata.holdqueue)
+     return;
+  
   if (gdata.restrictlist && (has_joined_channels(1) == 0))
      return;
   
