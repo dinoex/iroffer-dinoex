@@ -229,3 +229,8 @@ With Version mod 1.14:
   HOLDQUEUE 1             holdqueue on, don't send more files
   HOLDQUEUE 0             holdqueue off, send files from queue
 
+29) removelostfiles
+
+  if a files is no longer accessible on the server, remove the pack.
+  use with care, if started in wrong dir it may delete all packs.
+

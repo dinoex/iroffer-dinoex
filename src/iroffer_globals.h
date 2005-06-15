@@ -99,6 +99,7 @@ int restrictprivlistfull;
 int groupsincaps;
 int ignoreuploadbandwidth;
 int holdqueue;
+int removelostfiles;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;

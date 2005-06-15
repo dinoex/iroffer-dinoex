@@ -108,6 +108,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"groupsincaps",         &gdata.groupsincaps,         &gdata.groupsincaps },
   {"ignoreuploadbandwidth", &gdata.ignoreuploadbandwidth, &gdata.ignoreuploadbandwidth },
   {"holdqueue",            &gdata.holdqueue,            &gdata.holdqueue },
+  {"removelostfiles",      &gdata.removelostfiles,      &gdata.removelostfiles },
 };
 
 typedef struct
@@ -2401,6 +2402,7 @@ void reinit_config_vars(void)
   gdata.groupsincaps = 0;
   gdata.ignoreuploadbandwidth = 0;
   gdata.holdqueue = 0;
+  gdata.removelostfiles = 0;
   mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
@@ -3032,6 +3034,31 @@ void look_for_file_changes(xdcc *xpack)
       outerror(OUTERROR_TYPE_WARN,
                "File '%s' can no longer be accessed: %s",
                xpack->file, strerror(errno));
+      if ((gdata.removelostfiles) && (errno == ENOENT))
+        {
+           userinput *pubplist;
+           xdcc *xd;
+           char *tempstr;
+           int n;
+
+           updatecontext();
+           n = 0;
+           xd = irlist_get_head(&gdata.xdccs);
+           while(xd)
+             {
+               n++;
+               if (xd == xpack)
+                 break;
+               xd = irlist_get_next(xd);
+             }
+           pubplist = mycalloc(sizeof(userinput));
+           tempstr = mycalloc(maxtextlength);
+           snprintf(tempstr,maxtextlength-1,"remove %d", n);
+           u_fillwith_console(pubplist,tempstr);
+           u_parseit(pubplist);
+           mydelete(pubplist);
+           mydelete(tempstr);
+        }
       return;
     }
   

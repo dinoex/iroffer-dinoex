@@ -1434,6 +1434,7 @@ void dumpgdata(void)
   gdata_print_int(groupsincaps);
   gdata_print_int(ignoreuploadbandwidth);
   gdata_print_int(holdqueue);
+  gdata_print_int(removelostfiles);
   gdata_print_string(admin_job_file);
   
   /* downloadhost */
