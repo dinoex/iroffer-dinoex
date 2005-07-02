@@ -248,3 +248,6 @@ With Version mod 1.15:
 
 31) fix ping response (from PMG)
 
+32) track usermodes in channels (from PMG)
+  this breaks option need_voice
+
