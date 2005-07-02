@@ -253,3 +253,6 @@ With Version mod 1.15:
 
 33) fix infinate loop if debug is set and meminfo grows (from PMG)
 
+bugfix: enforce queue limit.
+  don't count manual transfers
+
