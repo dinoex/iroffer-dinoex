@@ -249,10 +249,11 @@ With Version mod 1.15:
 31) fix ping response (from PMG)
 
 32) track usermodes in channels (from PMG)
-  this breaks option need_voice
 
 33) fix infinate loop if debug is set and meminfo grows (from PMG)
 
 bugfix: enforce queue limit.
   don't count manual transfers
+
+34) need_voice redesign using usermodes
 

@@ -2011,37 +2011,6 @@ static void parseline(char *line) {
 	 }
      }
   
-  /* MODE channel +v nick */
-   if ((gdata.need_voice != 0) && !strncmp(part2,"MODE",4) 
-      && part3 && part4 && part5)
-     {
-       caps(part3);
-       
-       ch = irlist_get_head(&gdata.channels);
-       while(ch)
-         {
-           if (!strcmp(part3,ch->name))
-             {
-               break;
-             }
-           ch = irlist_get_next(ch);
-         }
-   
-       if (ch)
-         { 
-           if (part4[0] == '+')
-            {
-		if (strpbrk(part4,"ahoqv") != NULL)
-                  addtomemberlist(ch,part5);
-            } 
-           if (part4[0] == '-')
-            { 
-		if (strpbrk(part4,"ahoqv") != NULL)
-                  removefrommemberlist(ch,part5);
-            } 
-         }
-     }
-  
  /* ERROR :Closing Link */
    if (strncmp(line, "ERROR :Closing Link", strlen("ERROR :Closing Link")) == 0) {
       if (gdata.exiting)
@@ -3349,7 +3318,10 @@ void sendxdccinfo(const char* nick,
   else if (gdata.restrictsend && !isinmemberlist(nick))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (restricted): ");
-      notice(nick,"** XDCC INFO denied, you must be on a known channel to request pack info");
+      if (gdata.need_voice != 0)
+        notice(nick,"** XDCC INFO denied, you must have voice on a known channel to request a pack");
+      else
+        notice(nick,"** XDCC INFO denied, you must be on a known channel to request a pack");
       goto done;
     }
   else if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1))

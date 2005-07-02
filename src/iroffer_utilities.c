@@ -1825,7 +1825,12 @@ int isinmemberlist(const char *nick)
         {
           if (!strcasecmp(caps(member->nick),nick))
             {
-              return 1;
+              if (gdata.need_voice == 0)
+                return 1;
+              /* any prefix is counted as voice */
+              if ( member->prefixes[0] != 0 )
+                return 1;
+              /* no good prefix found try next chan */
             }
           member = irlist_get_next(member);
         }
