@@ -1814,7 +1814,7 @@ static void mainloop (void) {
 static void parseline(char *line) {
    char *part2, *part3, *part4, *part5;
    char *part3a;
-   char *t, *t2;
+   char *t;
    int i;
    char *tptr;
    channel_t *ch;
@@ -1901,6 +1901,70 @@ static void parseline(char *line) {
          }
      }
 
+   /* :server 005 xxxx aaa bbb=x ccc=y :are supported... */
+   if ( !strcmp(part2,"005") )
+     {
+       int ii = 4;
+       char *item;
+       
+       while((item = getpart(line, ii++)))
+         {
+           if (item[0] == ':')
+             {
+               mydelete(item);
+               break;
+             }
+           
+           if (!strncmp("PREFIX=(", item, 8))
+             {
+               char *ptr = item+8;
+               int pi;
+               memset(&gdata.prefixes, 0, sizeof(gdata.prefixes));
+               for (pi = 0; (ptr[pi] && (ptr[pi] != ')') && (pi < MAX_PREFIX)); pi++)
+                 {
+                   gdata.prefixes[pi].p_mode = ptr[pi];
+                 }
+               if (ptr[pi] == ')')
+                 {
+                   ptr += pi + 1;
+                   for (pi = 0; (ptr[pi] && (pi < MAX_PREFIX)); pi++)
+                     {
+                       gdata.prefixes[pi].p_symbol = ptr[pi];
+                     }
+                 }
+               for (pi = 0; pi < MAX_PREFIX; pi++)
+                 {
+                   if ((gdata.prefixes[pi].p_mode && !gdata.prefixes[pi].p_symbol) ||
+                       (!gdata.prefixes[pi].p_mode && gdata.prefixes[pi].p_symbol))
+                     {
+                       outerror(OUTERROR_TYPE_WARN,
+                                "Server prefix list doesn't make sense, using defaults: %s",
+                                item);
+                       initprefixes();
+                     }
+                 }
+             }
+           
+           if (!strncmp("CHANMODES=", item, 10))
+             {
+               char *ptr = item+10;
+               int ci;
+               int cm;
+               memset(&gdata.chanmodes, 0, sizeof(gdata.chanmodes));
+               for (ci = cm = 0; (ptr[ci] && (cm < MAX_CHANMODES)); ci++)
+                 {
+                   if (ptr[ci+1] == ',')
+                     {
+                       /* we only care about ones with arguments */
+                       gdata.chanmodes[cm++] = ptr[ci++];
+                     }
+                 }
+             }
+           
+           mydelete(item);
+         }
+     }
+
  /* :server 433 old new :Nickname is already in use. */
    if ( !strcmp(part2,"433") && part3 && !strcmp(part3,"*") && part4 )
      {
@@ -1939,35 +2003,10 @@ static void parseline(char *line) {
          }
        else
 	 {
-	   for (i=0; (t2 = t = getpart(line,6+i)); i++)
+	   for (i=0; (t = getpart(line,6+i)); i++)
 	     {
-               int hasvoice = 0;
-
-	       while (t[0] == ':')
-                 t++;
-	       while ((t[0] == '*') ||
-                      (t[0] == '@') ||
-                      (t[0] == '+') ||
-                      (t[0] == '!') ||
-                      (t[0] == '.') ||
-                      (t[0] == '%') ||
-                      (t[0] == '~') ||
-                      (t[0] == '&'))
-                 {
-                   t++;
-                   hasvoice = 1;
-                 }
-               
-               if (gdata.need_voice != 0)
-                 {
-                   if (hasvoice != 0)
-                     addtomemberlist(ch,t);
-                 }
-               else
-                 {
-                   addtomemberlist(ch,t);
-                 }
-	       mydelete(t2);
+               addtomemberlist(ch, i == 0 ? t+1 : t);
+	       mydelete(t);
 	     }
 	 }
      }
@@ -2228,7 +2267,7 @@ static void parseline(char *line) {
        ch = irlist_get_head(&gdata.channels);
        while(ch)
          {
-           changeinmemberlist(ch,oldnick,newnick);
+           changeinmemberlist_nick(ch, oldnick, newnick);
            ch = irlist_get_next(ch);
          }
        
@@ -2263,6 +2302,70 @@ static void parseline(char *line) {
        reverify_restrictsend();
      }
    
+   /* MODE #channel +x ... */
+   if (!strcmp(part2,"MODE") && part3 && part4)
+     {
+       /* find channel */
+       for (ch = irlist_get_head(&gdata.channels); ch; ch = irlist_get_next(ch))
+         {
+           if (!strcasecmp(ch->name, part3))
+             {
+               break;
+             }
+         }
+       if (ch)
+         {
+           int plus = 0;
+           int part = 5;
+           char *ptr;
+           
+           for (ptr = part4; *ptr; ptr++)
+             {
+               if (*ptr == '+')
+                 {
+                   plus = 1;
+                 }
+               else if (*ptr == '-')
+                 {
+                   plus = 0;
+                 }
+               else
+                 {
+                   int ii;
+                   for (ii = 0; (ii < MAX_PREFIX && gdata.prefixes[ii].p_mode); ii++)
+                     {
+                       if (*ptr == gdata.prefixes[ii].p_mode)
+                         {
+                           /* found a nick mode */
+                           char *nick = getpart(line, part++);
+                           if (nick)
+                             {
+                               if (nick[strlen(nick)-1] == '\1')
+                                 {
+                                   nick[strlen(nick)-1] == '\0';
+                                 }
+                               changeinmemberlist_mode(ch, nick,
+                                                       gdata.prefixes[ii].p_symbol,
+                                                       plus);
+                               mydelete(nick);
+                             }
+                           break;
+                         }
+                     }
+                   for (ii = 0; (ii < MAX_CHANMODES && gdata.chanmodes[ii]); ii++)
+                     {
+                       if (*ptr == gdata.chanmodes[ii])
+                         {
+                           /* found a channel mode that has an argument */
+                           part++;
+                           break;
+                         }
+                     }
+                 }
+             }
+         }
+     }
+
  /* PRIVMSG */
    if (!strcmp(part2,"PRIVMSG"))
      {

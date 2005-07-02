@@ -1521,6 +1521,18 @@ void dumpgdata(void)
   gdata_print_int(serverbucket);
   gdata_print_int(ircserver);
   gdata_print_int(serverconnectbackoff);
+
+  for (ii=0; ii<MAX_PREFIX && gdata.prefixes[ii].p_mode; ii++)
+    {
+      gdata_print_number_array_item("%c",prefixes,p_mode);
+      gdata_print_number_array_item("%c",prefixes,p_symbol);
+    }
+  
+  for (ii=0; ii<MAX_CHANMODES && gdata.chanmodes[ii]; ii++)
+    {
+      gdata_print_number_array("%c", chanmodes);
+    }
+
   gdata_print_int(attop);
   gdata_print_int(needsclear);
   gdata_print_int(termcols);
@@ -1547,6 +1559,7 @@ void dumpgdata(void)
           iter->flags,
           iter->plisttime,
           iter->plistoffset);
+  /* members */
   gdata_irlist_iter_end;
   
 
@@ -1777,7 +1790,6 @@ void dumpgdata(void)
 }
 
 
-
 void clearmemberlist(channel_t *c)
 {
   /* clear members list */
@@ -1794,8 +1806,7 @@ void clearmemberlist(channel_t *c)
 
 int isinmemberlist(const char *nick)
 {
-  char *nick1;
-  char *member;
+  member_t *member;
   channel_t *ch;
   
   updatecontext();
@@ -1806,19 +1817,14 @@ int isinmemberlist(const char *nick)
               "checking for %s",nick);
     }
   
-  nick1 = mymalloc(strlen(nick)+1);
-  strcpy(nick1,nick);
-  caps(nick1);
-  
   ch = irlist_get_head(&gdata.channels);
   while(ch)
     {
       member = irlist_get_head(&ch->members);
       while(member)
         {
-          if (!strcmp(caps(member),nick1))
+          if (!strcasecmp(caps(member->nick),nick))
             {
-              mydelete(nick1);
               return 1;
             }
           member = irlist_get_next(member);
@@ -1826,15 +1832,14 @@ int isinmemberlist(const char *nick)
       ch = irlist_get_next(ch);
     }
   
-  mydelete(nick1);
   return 0;
 }
 
 
 void addtomemberlist(channel_t *c, const char *nick)
 {
-  char *nick1;
-  char *member;
+  member_t *member;
+  char prefixes[MAX_PREFIX] = {};
   
   updatecontext();
 
@@ -1844,15 +1849,33 @@ void addtomemberlist(channel_t *c, const char *nick)
               "adding %s to %s",nick,c->name);
     }
   
-  nick1 = mymalloc(strlen(nick)+1);
-  strcpy(nick1,nick);
-  caps(nick1);
+  /* find any prefixes */
+ more:
+  if (*nick)
+    {
+      int pi;
+      for (pi = 0; (pi < MAX_PREFIX && gdata.prefixes[pi].p_symbol); pi++)
+        {
+          if (*nick == gdata.prefixes[pi].p_symbol)
+            {
+              for (pi = 0;
+                   (pi < MAX_PREFIX && prefixes[pi] && prefixes[pi] != *nick);
+                   pi++) ;
+              if (pi < MAX_PREFIX)
+                {
+                  prefixes[pi] = *nick;
+                }
+              nick++;
+              goto more;
+            }
+        }
+    }
   
   /* is in list for this channel already? */
   member = irlist_get_head(&c->members);
   while(member)
     {
-      if (!strcmp(caps(member),nick1))
+      if (!strcasecmp(member->nick,nick))
         {
           break;
         }
@@ -1862,17 +1885,17 @@ void addtomemberlist(channel_t *c, const char *nick)
   if (!member)
     {
       /* add it */
-      member = irlist_add(&c->members, strlen(nick1) + 1);
-      strcpy(member, nick1);
+      member = irlist_add(&c->members, sizeof(member_t) + strlen(nick));
+      strcpy(member->nick, nick);
+      memcpy(member->prefixes, prefixes, sizeof(prefixes));
     }
   
-  mydelete(nick1);
   return;
 }
 
-void removefrommemberlist(channel_t *c, char *nick)
+void removefrommemberlist(channel_t *c, const char *nick)
 {
-  char *member;
+  member_t *member;
   
   updatecontext();
   
@@ -1882,13 +1905,11 @@ void removefrommemberlist(channel_t *c, char *nick)
               "removing %s from %s",nick,c->name);
     }
   
-  caps(nick);
-  
   /* is in list for this channel? */
   member = irlist_get_head(&c->members);
   while(member)
     {
-      if (!strcmp(caps(member),nick))
+      if (!strcasecmp(member->nick,nick))
         {
           irlist_delete(&c->members, member);
           return;
@@ -1900,10 +1921,70 @@ void removefrommemberlist(channel_t *c, char *nick)
   return;
 }
 
-void changeinmemberlist(channel_t *c, char *oldnick, const char *newnick)
+void changeinmemberlist_mode(channel_t *c, const char *nick, char mode, int add)
 {
-  char *nick1;
-  char *member;
+  member_t *member;
+  int pi;
+  
+  updatecontext();
+  
+  if (gdata.debug > 2)
+    {
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+              "%s prefix %c on %s in %s",
+              add ? "adding" : "removing",
+              mode, nick, c->name);
+    }
+  
+  /* is in list for this channel? */
+  member = irlist_get_head(&c->members);
+  while(member)
+    {
+      if (!strcasecmp(member->nick,nick))
+        {
+          break;
+        }
+      member = irlist_get_next(member);
+    }
+  
+  if (member)
+    {
+      if (add)
+        {
+          for (pi = 0;
+               (pi < MAX_PREFIX && member->prefixes[pi] && member->prefixes[pi] != mode);
+               pi++) ;
+          if (pi < MAX_PREFIX)
+            {
+              member->prefixes[pi] = mode;
+            }
+        }
+      else
+        {
+          for (pi = 0; (pi < MAX_PREFIX && member->prefixes[pi]); pi++)
+            {
+              if (member->prefixes[pi] == mode)
+                {
+                  for (pi++; pi < MAX_PREFIX; pi++)
+                    {
+                      member->prefixes[pi-1] = member->prefixes[pi];
+                    }
+                  member->prefixes[MAX_PREFIX-1] = '\0';
+                  break;
+                }
+            }
+        }
+      
+    }
+  
+  return;
+}
+
+
+void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newnick)
+{
+  member_t *oldmember;
+  member_t *newmember;
 
   updatecontext();
   
@@ -1913,29 +1994,31 @@ void changeinmemberlist(channel_t *c, char *oldnick, const char *newnick)
               "changing %s to %s in %s",oldnick,newnick,c->name);
     }
   
-  if (gdata.need_voice)
+  /* find old in list for this channel  */
+  oldmember = irlist_get_head(&c->members);
+  while(oldmember)
     {
-      nick1 = mycalloc(strlen(oldnick)+1);
-      strcpy(nick1,oldnick);
-      caps(nick1);
-  
-      /* is in list for this channel? */
-      member = irlist_get_head(&c->members);
-      while(member)
+      if (!strcasecmp(oldmember->nick,oldnick))
         {
-          if (!strcmp(caps(member),oldnick))
-            {
-              irlist_delete(&c->members, member);
-              addtomemberlist(c, newnick);
-              return;
-            }
-          member = irlist_get_next(member);
+          break;
         }
-        return;
+      oldmember = irlist_get_next(oldmember);
     }
-    
-  removefrommemberlist(c, oldnick);
-  addtomemberlist(c, newnick);
+  
+  /* add it */
+  newmember = irlist_add(&c->members, sizeof(member_t) + strlen(newnick));
+  strcpy(newmember->nick, newnick);
+  
+  if (oldmember)
+    {
+      memcpy(newmember->prefixes, oldmember->prefixes, sizeof(oldmember->prefixes));
+      irlist_delete(&c->members, oldmember);
+    }
+  else
+    {
+      /* this shouldn't happen, set no prefixes */
+      memset(newmember->prefixes, 0, sizeof(newmember->prefixes));
+    }
   
   return;
 }
