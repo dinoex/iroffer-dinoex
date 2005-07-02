@@ -956,12 +956,6 @@ static void meminfo_grow(int grow)
   int i;
   int start;
 
-  if (gdata.debug > 0)
-    {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"growing meminfo from %d to %d",
-              gdata.meminfo_depth, gdata.meminfo_depth+grow);
-    }
-
   len = MEMINFOHASHSIZE * sizeof(meminfo_t) * (gdata.meminfo_depth+grow);
   newmeminfo = calloc(len,1);
   
@@ -1015,6 +1009,12 @@ static void meminfo_grow(int grow)
   gdata.meminfo = newmeminfo;
   gdata.meminfo_depth += grow;
   
+  if (gdata.debug > 0)
+    {
+      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"growing meminfo from %d to %d",
+              gdata.meminfo_depth-grow, gdata.meminfo_depth);
+    }
+
   return;
 }
 
