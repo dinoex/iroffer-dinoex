@@ -42,7 +42,7 @@ void l_establishcon (upload * const l)
   updatecontext();
   
   /* local file already exists? */
-  fullfile = mycalloc(strlen(gdata.uploaddir) + strlen(l->file) + 2);
+  fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(l->file) + 2);
   sprintf(fullfile, "%s/%s", gdata.uploaddir, l->file);
   
   l->filedescriptor = open(fullfile,

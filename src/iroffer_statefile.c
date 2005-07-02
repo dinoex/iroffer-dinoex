@@ -200,8 +200,8 @@ void write_statefile(void)
       return;
     }
   
-  statefile_tmp = mycalloc(strlen(gdata.statefile)+5);
-  statefile_bkup = mycalloc(strlen(gdata.statefile)+2);
+  statefile_tmp = mymalloc(strlen(gdata.statefile)+5);
+  statefile_bkup = mymalloc(strlen(gdata.statefile)+2);
   
   sprintf(statefile_tmp,  "%s.tmp", gdata.statefile);
   sprintf(statefile_bkup, "%s~",    gdata.statefile);
@@ -1159,7 +1159,7 @@ void read_statefile(void)
                       {
                         char *hostmask = (char*)(&ihdr[1]);
                         hostmask[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        ignore->hostmask = mycalloc(strlen(hostmask)+1);
+                        ignore->hostmask = mymalloc(strlen(hostmask)+1);
                         strcpy(ignore->hostmask,hostmask);
                       }
                     else
@@ -1234,7 +1234,7 @@ void read_statefile(void)
                       {
                         char *hostmask = (char*)(&ihdr[1]);
                         hostmask[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        msglog->hostmask = mycalloc(strlen(hostmask)+1);
+                        msglog->hostmask = mymalloc(strlen(hostmask)+1);
                         strcpy(msglog->hostmask,hostmask);
                       }
                     else
@@ -1249,7 +1249,7 @@ void read_statefile(void)
                       {
                         char *message = (char*)(&ihdr[1]);
                         message[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        msglog->message = mycalloc(strlen(message)+1);
+                        msglog->message = mymalloc(strlen(message)+1);
                         strcpy(msglog->message,message);
                       }
                     else
@@ -1306,7 +1306,7 @@ void read_statefile(void)
                       {
                         char *file = (char*)(&ihdr[1]);
                         file[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->file = mycalloc(strlen(file)+1);
+                        xd->file = mymalloc(strlen(file)+1);
                         strcpy(xd->file,file);
                       }
                     else
@@ -1321,7 +1321,7 @@ void read_statefile(void)
                       {
                         char *desc = (char*)(&ihdr[1]);
                         desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->desc = mycalloc(strlen(desc)+1);
+                        xd->desc = mymalloc(strlen(desc)+1);
                         strcpy(xd->desc,desc);
                       }
                     else
@@ -1336,7 +1336,7 @@ void read_statefile(void)
                       {
                         char *note = (char*)(&ihdr[1]);
                         note[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->note = mycalloc(strlen(note)+1);
+                        xd->note = mymalloc(strlen(note)+1);
                         strcpy(xd->note,note);
                       }
                     else

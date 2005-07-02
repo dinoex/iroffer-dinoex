@@ -217,7 +217,7 @@ void u_fillwith_console (userinput * const u, char *line)
   
   if (u->arg1)
     {
-      u->arg1e = mycalloc(strlen(line) - strlen(u->cmd) - 1 + 1);
+      u->arg1e = mymalloc(strlen(line) - strlen(u->cmd) - 1 + 1);
       strcpy(u->arg1e, line + strlen(u->cmd) + 1);
     }
   else
@@ -227,7 +227,7 @@ void u_fillwith_console (userinput * const u, char *line)
   
   if (u->arg2)
     {
-      u->arg2e = mycalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
+      u->arg2e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
       strcpy(u->arg2e, line + strlen(u->cmd) + strlen(u->arg1) + 2);
     }
   else
@@ -259,7 +259,7 @@ void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
   
   if (u->arg1)
     {
-      u->arg1e = mycalloc(strlen(line) - strlen(u->cmd) - 1 + 1);
+      u->arg1e = mymalloc(strlen(line) - strlen(u->cmd) - 1 + 1);
       strcpy(u->arg1e, line + strlen(u->cmd) + 1);
     }
   else
@@ -269,7 +269,7 @@ void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
   
   if (u->arg2)
     {
-      u->arg2e = mycalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
+      u->arg2e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
       strcpy(u->arg2e, line + strlen(u->cmd) + strlen(u->arg1) + 2);
     }
   else
@@ -290,7 +290,7 @@ void u_fillwith_msg (userinput * const u, const char* n, const char *line)
   u->method = method_msg;
   if (n)
     {
-      u->snick = mycalloc(strlen(n)+1);
+      u->snick = mymalloc(strlen(n)+1);
       strcpy(u->snick, n);
     }
   else
@@ -313,7 +313,7 @@ void u_fillwith_msg (userinput * const u, const char* n, const char *line)
   
   if (u->arg1)
     {
-      u->arg1e = mycalloc(strlen(line) - len - strlen(u->cmd) - 1 + 1);
+      u->arg1e = mymalloc(strlen(line) - len - strlen(u->cmd) - 1 + 1);
       strcpy(u->arg1e, line + len + strlen(u->cmd) + 1);
     }
   else
@@ -323,7 +323,7 @@ void u_fillwith_msg (userinput * const u, const char* n, const char *line)
   
   if (u->arg2)
     {
-      u->arg2e = mycalloc(strlen(line) - len - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
+      u->arg2e = mymalloc(strlen(line) - len - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
       strcpy(u->arg2e, line + len + strlen(u->cmd) + strlen(u->arg1) + 2);
     }
   else
@@ -2182,13 +2182,13 @@ static void u_add(const userinput * const u) {
    
    xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
    
-   xd->file = mycalloc(strlen(u->arg1e)+1);
+   xd->file = mymalloc(strlen(u->arg1e)+1);
    strcpy(xd->file,u->arg1e);
    
-   xd->note = mycalloc(1);
+   xd->note = mymalloc(1);
    strcpy(xd->note,"");
    
-   xd->desc = mycalloc(strlen(getfilename(u->arg1e)) + 1);
+   xd->desc = mymalloc(strlen(getfilename(u->arg1e)) + 1);
    strcpy(xd->desc,getfilename(u->arg1e));
    
    convert_to_unix_slash(xd->file);
@@ -2202,7 +2202,7 @@ static void u_add(const userinput * const u) {
    if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
      {
        mydelete(xd->file);
-       xd->file = mycalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
+       xd->file = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
        sprintf(xd->file,"%s/%s",gdata.filedir,u->arg1e);
        convert_to_unix_slash(xd->file);
        xfiledescriptor=open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
@@ -2333,7 +2333,7 @@ static void u_adddir(const userinput * const u)
       thedirlen += strlen(gdata.filedir) + 1;
     }
   
-  thedir = mycalloc(thedirlen+1);
+  thedir = mymalloc(thedirlen+1);
   strcpy(thedir, u->arg1e);
   
   d = opendir(thedir);
@@ -2432,7 +2432,7 @@ static void u_addnew(const userinput * const u)
       thedirlen += strlen(gdata.filedir) + 1;
     }
   
-  thedir = mycalloc(thedirlen+1);
+  thedir = mymalloc(thedirlen+1);
   strcpy(thedir, u->arg1e);
   
   d = opendir(thedir);
@@ -2677,7 +2677,7 @@ static void u_chdesc(const userinput * const u) {
       num,xd->desc,u->arg2e);
    
    mydelete(xd->desc);
-   xd->desc = mycalloc(strlen(u->arg2e) + 1);
+   xd->desc = mymalloc(strlen(u->arg2e) + 1);
    
    strcpy(xd->desc,u->arg2e);
    
@@ -2709,12 +2709,12 @@ static void u_chnote(const userinput * const u) {
    
    if (!u->arg2e)
      {
-       xd->note = mycalloc(1);
+       xd->note = mymalloc(1);
        strcpy(xd->note,"");
      }
    else
      {
-       xd->note = mycalloc(strlen(u->arg2e) + 1);
+       xd->note = mymalloc(strlen(u->arg2e) + 1);
        strcpy(xd->note,u->arg2e);
      }
    
@@ -3716,7 +3716,7 @@ static void u_ignore(const userinput * const u)
       ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
       ignore->regexp = mycalloc(sizeof(regex_t));
       
-      ignore->hostmask = mycalloc(strlen(u->arg2)+1);
+      ignore->hostmask = mymalloc(strlen(u->arg2)+1);
       strcpy(ignore->hostmask,u->arg2);
       
       tempstr = hostmasktoregex(u->arg2);
@@ -4506,7 +4506,7 @@ static void u_rmul(const userinput * const u) {
       return;
       }
    
-   tempstr = mycalloc(strlen(gdata.uploaddir) + 1 + strlen(u->arg1e) + 1);
+   tempstr = mymalloc(strlen(gdata.uploaddir) + 1 + strlen(u->arg1e) + 1);
    sprintf(tempstr,"%s/%s",gdata.uploaddir,u->arg1e);
    
    if (doesfileexist(tempstr)) {

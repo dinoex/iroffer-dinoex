@@ -106,7 +106,7 @@ int setupdccchatout(const char *nick)
   
   gdata.num_dccchats++;
   chat->status = DCCCHAT_LISTENING;
-  chat->nick = mycalloc(strlen(nick)+1);
+  chat->nick = mymalloc(strlen(nick)+1);
   strcpy(chat->nick, nick);
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
@@ -308,7 +308,7 @@ int setupdccchat(const char *nick,
   
   gdata.num_dccchats++;
   chat->status = DCCCHAT_CONNECTING;
-  chat->nick = mycalloc(strlen(nick)+1);
+  chat->nick = mymalloc(strlen(nick)+1);
   strcpy(chat->nick, nick);
   chat->remoteip   = ntohl(remoteip.sin_addr.s_addr);
   chat->remoteport = ntohs(remoteip.sin_port);
@@ -367,7 +367,7 @@ void parsedccchat(dccchat_t *chat,
   
   updatecontext();
   
-  linec = mycalloc(strlen(line)+1);
+  linec = mymalloc(strlen(line)+1);
   strcpy(linec,line);
   caps(linec);
   

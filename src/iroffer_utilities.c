@@ -26,12 +26,12 @@ const char* strstrnocase (const char *str1, const char *match1)
   char *str, *match;
   const char *retval;
   
-  str   = mycalloc(strlen(str1)+1);
-  match = mycalloc(strlen(match1)+1);
+  str   = mymalloc(strlen(str1)+1);
+  match = mymalloc(strlen(match1)+1);
   
-  strncpy(str,str1,strlen(str1)+1);
+  strcpy(str,str1);
   caps(str);
-  strncpy(match,match1,strlen(match1)+1);
+  strcpy(match,match1);
   caps(match);
   
   retval = strstr(str, match);
@@ -82,9 +82,10 @@ char* getpart2(const char *line, int howmany,
   
   li -= plen;
   
-  part = mycalloc2(plen+1, src_function, src_file, src_line);
+  part = mymalloc2(plen+1, 0, src_function, src_file, src_line);
   
   memcpy(part, line+li, plen);
+  part[plen] = '\0';
   
   return part;
 }
@@ -182,7 +183,7 @@ void getos (void) {
    printf("** You Are Running %s %s on a %s",u1.sysname,u1.release,u1.machine);
    mylog(CALLTYPE_NORMAL,"You Are Running %s %s on a %s",u1.sysname,u1.release,u1.machine);
    
-   gdata.osstring = mycalloc(strlen(u1.sysname) + strlen(u1.release) + 2);
+   gdata.osstring = mymalloc(strlen(u1.sysname) + strlen(u1.release) + 2);
    
    sprintf(gdata.osstring, "%s %s",
            u1.sysname, u1.release);
@@ -933,7 +934,7 @@ char onlyprintable(char a) {
       return '.'; 
    }
 
-static unsigned long mycalloc_hash(void *ptr)
+static unsigned long alloc_hash(void *ptr)
 {
   unsigned long retval;
   
@@ -994,7 +995,7 @@ static void meminfo_grow(int grow)
           if (gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr)
             {
               /* find new location */
-              start = mycalloc_hash(gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr) * (gdata.meminfo_depth+grow);
+              start = alloc_hash(gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr) * (gdata.meminfo_depth+grow);
               
               for (i=0; newmeminfo[(i+start)%(MEMINFOHASHSIZE * (gdata.meminfo_depth+grow))].ptr; i++) ;
               
@@ -1017,14 +1018,15 @@ static void meminfo_grow(int grow)
   return;
 }
 
-void* mycalloc2(int len, const char *src_function, const char *src_file, int src_line) {
+void* mymalloc2(int len, int zero,
+                const char *src_function, const char *src_file, int src_line) {
    void *t = NULL;
    int i;
    unsigned long start;
    
    updatecontext();
 
-   t = calloc(len,1);
+   t = zero ? calloc(len,1) : malloc(len);
    
    if (t == NULL)
      {
@@ -1036,7 +1038,7 @@ void* mycalloc2(int len, const char *src_function, const char *src_file, int src
        meminfo_grow(gdata.meminfo_depth/3 + 1);
      }
    
-   start = mycalloc_hash(t) * gdata.meminfo_depth;
+   start = alloc_hash(t) * gdata.meminfo_depth;
    
    for (i=0; gdata.meminfo[(i+start)%(MEMINFOHASHSIZE * gdata.meminfo_depth)].ptr; i++) ;
    
@@ -1063,7 +1065,7 @@ void mydelete2(void *t) {
 
    if (t == NULL) return;
    
-   start = mycalloc_hash(t) * gdata.meminfo_depth;
+   start = alloc_hash(t) * gdata.meminfo_depth;
    
    for (i=0; (i<(MEMINFOHASHSIZE * gdata.meminfo_depth) && (gdata.meminfo[(i+start)%(MEMINFOHASHSIZE * gdata.meminfo_depth)].ptr != t)); i++) ;
    
@@ -1804,7 +1806,7 @@ int isinmemberlist(const char *nick)
               "checking for %s",nick);
     }
   
-  nick1 = mycalloc(strlen(nick)+1);
+  nick1 = mymalloc(strlen(nick)+1);
   strcpy(nick1,nick);
   caps(nick1);
   
@@ -1842,7 +1844,7 @@ void addtomemberlist(channel_t *c, const char *nick)
               "adding %s to %s",nick,c->name);
     }
   
-  nick1 = mycalloc(strlen(nick)+1);
+  nick1 = mymalloc(strlen(nick)+1);
   strcpy(nick1,nick);
   caps(nick1);
   
@@ -1965,20 +1967,20 @@ void set_loginname(void)
 #if !defined(NO_SETUID)
       if (gdata.runasuser)
         {
-          gdata.loginname = mycalloc(strlen(gdata.runasuser)+1);
+          gdata.loginname = mymalloc(strlen(gdata.runasuser)+1);
           strcpy(gdata.loginname,gdata.runasuser);
         }
       else
 #endif
         {
           outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Get username, specify loginname in config file");
-          gdata.loginname = mycalloc(strlen("UNKNOWN"+1));
+          gdata.loginname = mymalloc(strlen("UNKNOWN")+1);
           strcpy(gdata.loginname,"UNKNOWN");
         }
     }
   else
     {
-      gdata.loginname = mycalloc(strlen(p->pw_name)+1);
+      gdata.loginname = mymalloc(strlen(p->pw_name)+1);
       strcpy(gdata.loginname,p->pw_name);
     }
   
@@ -2146,7 +2148,7 @@ void* irlist_add2(irlist_t *list, unsigned int size,
   
   updatecontext();
   
-  iitem = mycalloc2(sizeof(irlist_item_t) + size,
+  iitem = mymalloc2(sizeof(irlist_item_t) + size, 1,
                     src_function, src_file, src_line);
   
   irlist_insert_tail(list, IRLIST_INT_TO_EXT(iitem));

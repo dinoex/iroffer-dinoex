@@ -1872,8 +1872,8 @@ static void parseline(char *line) {
        /* update nick */
        mydelete(gdata.user_nick);
        mydelete(gdata.caps_nick);
-       gdata.user_nick = mycalloc(strlen(part3)+1);
-       gdata.caps_nick = mycalloc(strlen(part3)+1);
+       gdata.user_nick = mymalloc(strlen(part3)+1);
+       gdata.caps_nick = mymalloc(strlen(part3)+1);
        strcpy(gdata.user_nick,part3);
        strcpy(gdata.caps_nick,part3);
        caps(gdata.caps_nick);
@@ -2216,8 +2216,8 @@ static void parseline(char *line) {
            /* we changed, update nick */
            mydelete(gdata.user_nick);
            mydelete(gdata.caps_nick);
-           gdata.user_nick = mycalloc(strlen(part3a)+1);
-           gdata.caps_nick = mycalloc(strlen(part3a)+1);
+           gdata.user_nick = mymalloc(strlen(part3a)+1);
+           gdata.caps_nick = mymalloc(strlen(part3a)+1);
            strcpy(gdata.user_nick,part3a);
            strcpy(gdata.caps_nick,part3a);
            caps(gdata.caps_nick);
@@ -2411,7 +2411,7 @@ static void privmsgparse(const char* type, char* line) {
            ignore = irlist_add(&gdata.ignorelist,sizeof(igninfo));
            ignore->regexp = mycalloc(sizeof(regex_t));
            
-           ignore->hostmask = mycalloc(strlen(wildhost)+1);
+           ignore->hostmask = mymalloc(strlen(wildhost)+1);
            strcpy(ignore->hostmask,wildhost);
            
            tempr = hostmasktoregex(wildhost);
@@ -2614,14 +2614,14 @@ static void privmsgparse(const char* type, char* line) {
               ul = irlist_add(&gdata.uploads, sizeof(upload));
               l_initvalues(ul);
               removenonprintablefile(msg3);
-              ul->file = mycalloc(strlen(msg3)+1);
+              ul->file = mymalloc(strlen(msg3)+1);
               strcpy(ul->file,msg3);
               ul->remoteip = atoul(msg4);
               ul->remoteport = atoi(msg5);
               ul->totalsize = (off_t)atoull(msg6);
-              ul->nick = mycalloc(strlen(nick)+1);
+              ul->nick = mymalloc(strlen(nick)+1);
               strcpy(ul->nick,nick);
-              ul->hostname = mycalloc(strlen(hostname)+1);
+              ul->hostname = mymalloc(strlen(hostname)+1);
               strcpy(ul->hostname,hostname);
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                       "DCC Send Accepted from %s: %s (%" LLPRINTFMT "iKB)", nick, ul->file,
@@ -2955,9 +2955,9 @@ static void privmsgparse(const char* type, char* line) {
               begin = line + 5 + strlen(hostmask) + strlen(type) + strlen(dest);
               
               ml->when = gdata.curtime;
-              ml->hostmask = mycalloc(strlen(hostmask)+1);
+              ml->hostmask = mymalloc(strlen(hostmask)+1);
               strcpy(ml->hostmask, hostmask);
-              ml->message = mycalloc(strlen(begin)+1);
+              ml->message = mymalloc(strlen(begin)+1);
               strcpy(ml->message, begin);
               
               write_statefile();
@@ -3171,12 +3171,12 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        tr = irlist_add(&gdata.trans, sizeof(transfer));
        t_initvalues(tr);
        tr->id = get_next_tr_id();
-       tr->nick = mycalloc(strlen(nick)+1);
+       tr->nick = mymalloc(strlen(nick)+1);
        strcpy(tr->nick,nick);
-       tr->caps_nick = mycalloc(strlen(nick)+1);
+       tr->caps_nick = mymalloc(strlen(nick)+1);
        strcpy(tr->caps_nick,nick);
        caps(tr->caps_nick);
-       tr->hostname = mycalloc(strlen(hostname)+1);
+       tr->hostname = mymalloc(strlen(hostname)+1);
        strcpy(tr->hostname,hostname);
        
        tr->xpack = xd;
@@ -3358,9 +3358,9 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Queued (slot): ");
          tempq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
          tempq->queuedtime = gdata.curtime;
-         tempq->nick = mycalloc(strlen(nick)+1);
+         tempq->nick = mymalloc(strlen(nick)+1);
          strcpy(tempq->nick,nick);
-         tempq->hostname = mycalloc(strlen(hostname)+1);
+         tempq->hostname = mymalloc(strlen(hostname)+1);
          strcpy(tempq->hostname,hostname);
          tempq->xpack = tempx;
 
@@ -3462,12 +3462,12 @@ void sendaqueue(int type)
       tr = irlist_add(&gdata.trans, sizeof(transfer));
       t_initvalues(tr);
       tr->id = get_next_tr_id();
-      tr->nick = mycalloc(strlen(pq->nick)+1);
+      tr->nick = mymalloc(strlen(pq->nick)+1);
       strcpy(tr->nick,pq->nick);
-      tr->caps_nick = mycalloc(strlen(pq->nick)+1);
+      tr->caps_nick = mymalloc(strlen(pq->nick)+1);
       strcpy(tr->caps_nick,pq->nick);
       caps(tr->caps_nick);
-      tr->hostname = mycalloc(strlen(pq->hostname)+1);
+      tr->hostname = mymalloc(strlen(pq->hostname)+1);
       strcpy(tr->hostname,pq->hostname);
       
       tr->xpack = pq->xpack;

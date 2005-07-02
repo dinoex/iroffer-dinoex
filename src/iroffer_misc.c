@@ -442,7 +442,7 @@ void getconfig_set (const char *line, int rehash)
       
       tname = getpart(var,1);
       caps(tname);
-      cptr->name = mycalloc(strlen(tname)+1);
+      cptr->name = mymalloc(strlen(tname)+1);
       strcpy(cptr->name,tname);
       cptr->headline = NULL;
       
@@ -477,7 +477,7 @@ void getconfig_set (const char *line, int rehash)
             i++;
             if ((tptr2 = getpart(var,i)))
               {
-                cptr->key = mycalloc(strlen(tptr2)+1);
+                cptr->key = mymalloc(strlen(tptr2)+1);
                 strcpy(cptr->key,tptr2);
               }
             else ok=0;
@@ -605,7 +605,7 @@ void getconfig_set (const char *line, int rehash)
            gdata.autosend.word = b;
            mydelete(gdata.autosend.message);
            
-           gdata.autosend.message = mycalloc(strlen(var) - 2 - strlen(a) - strlen(b) + 1);
+           gdata.autosend.message = mymalloc(strlen(var) - 2 - strlen(a) - strlen(b) + 1);
            strcpy(gdata.autosend.message, var + strlen(a) + strlen(b) + 2);
            mydelete(a); mydelete(c);
          }
@@ -787,17 +787,17 @@ void getconfig_set (const char *line, int rehash)
          {
            gdata.connectionmethod.how = how_bnc;
            
-           gdata.connectionmethod.host = mycalloc(strlen(targ1)+1);
+           gdata.connectionmethod.host = mymalloc(strlen(targ1)+1);
            strcpy(gdata.connectionmethod.host,targ1);
            
            gdata.connectionmethod.port = atoi(targ2);
            
-           gdata.connectionmethod.password = mycalloc(strlen(targ3)+1);
+           gdata.connectionmethod.password = mymalloc(strlen(targ3)+1);
            strcpy(gdata.connectionmethod.password,targ3);
            
            if (targ4)
              {
-               gdata.connectionmethod.vhost = mycalloc(strlen(targ4)+1);
+               gdata.connectionmethod.vhost = mymalloc(strlen(targ4)+1);
                strcpy(gdata.connectionmethod.vhost,targ4);
              }
          }
@@ -805,7 +805,7 @@ void getconfig_set (const char *line, int rehash)
          {
            gdata.connectionmethod.how = how_wingate;
            
-           gdata.connectionmethod.host = mycalloc(strlen(targ1)+1);
+           gdata.connectionmethod.host = mymalloc(strlen(targ1)+1);
            strcpy(gdata.connectionmethod.host,targ1);
            
            gdata.connectionmethod.port = atoi(targ2);
@@ -814,7 +814,7 @@ void getconfig_set (const char *line, int rehash)
          {
            gdata.connectionmethod.how = how_custom;
            
-           gdata.connectionmethod.host = mycalloc(strlen(targ1)+1);
+           gdata.connectionmethod.host = mymalloc(strlen(targ1)+1);
            strcpy(gdata.connectionmethod.host,targ1);
            
            gdata.connectionmethod.port = atoi(targ2);
@@ -858,12 +858,12 @@ static int connectirc (server_t *tserver) {
    mydelete(gdata.curserver.hostname);
    mydelete(gdata.curserver.password);
    mydelete(gdata.curserveractualname);
-   gdata.curserver.hostname = mycalloc(strlen(tserver->hostname)+1);
+   gdata.curserver.hostname = mymalloc(strlen(tserver->hostname)+1);
    strcpy(gdata.curserver.hostname, tserver->hostname);
    gdata.curserver.port = tserver->port;
    if (tserver->password)
      {
-       gdata.curserver.password = mycalloc(strlen(tserver->password)+1);
+       gdata.curserver.password = mymalloc(strlen(tserver->password)+1);
        strcpy(gdata.curserver.password, tserver->password);
      }
    
@@ -2743,7 +2743,7 @@ void isrotatelog(void)
   
   lthen = localtime(&gdata.curtime);
   
-  newname = mycalloc(strlen(gdata.logfile) + 12);
+  newname = mymalloc(strlen(gdata.logfile) + 12);
   sprintf(newname, "%s.%04i-%02i-%02i",
           gdata.logfile,
           lthen->tm_year+1900,
@@ -3141,7 +3141,7 @@ void user_changed_nick(const char *oldnick, const char *newnick)
       if (!strcasecmp(tr->nick, oldnick))
         {
           mydelete(tr->nick);
-          tr->nick = mycalloc(strlen(newnick)+1);
+          tr->nick = mymalloc(strlen(newnick)+1);
           strcpy(tr->nick, newnick);
         }
     }
@@ -3151,7 +3151,7 @@ void user_changed_nick(const char *oldnick, const char *newnick)
       if (!strcasecmp(pq->nick, oldnick))
         {
           mydelete(pq->nick);
-          pq->nick = mycalloc(strlen(newnick)+1);
+          pq->nick = mymalloc(strlen(newnick)+1);
           strcpy(pq->nick, newnick);
         }
     }

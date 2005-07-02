@@ -548,7 +548,7 @@ int is_fd_readable(int fd);
 int is_fd_writeable(int fd);
 char* convert_to_unix_slash(char *ss);
 
-void* mycalloc2(int a, const char *src_function, const char *src_file, int src_line);
+void* mymalloc2(int a, int zero, const char *src_function, const char *src_file, int src_line);
 void mydelete2(void *t);
 
 #ifdef NO_SNPRINTF

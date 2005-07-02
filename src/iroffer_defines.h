@@ -119,7 +119,8 @@
 
 /* free'ing just leads to trouble if we dont check first and then make NULL */
 #define mydelete(x) { mydelete2(x); x = NULL; }
-#define mycalloc(x) mycalloc2(x, __FUNCTION__, __FILE__, __LINE__)
+#define mymalloc(x) mymalloc2(x, 0, __FUNCTION__, __FILE__, __LINE__)
+#define mycalloc(x) mymalloc2(x, 1, __FUNCTION__, __FILE__, __LINE__)
 
 #define  maxtextlengthshort 60
 #define  maxtextlength 512
