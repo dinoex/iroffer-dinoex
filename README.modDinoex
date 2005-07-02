@@ -2,7 +2,7 @@
 With Version mod 1.1:
 ---------------------
 
-1) grouped lists
+1) grouped lists (inspired by Splizzer, Rom)
 
    add a GROUP feature, as seen in various split offs.
    this is a clean reimplementation, groups are optional.
@@ -33,7 +33,8 @@ With Version mod 1.1:
 With Version mod 1.2:
 ---------------------
 
-3) save download queue on exit or crash.  and read it back on start.
+3) save queue
+   Save download queue on exit or crash.  and read it back on start.
    I though about saving running transfers too, but decided against it.
 
    References TODO:
@@ -70,7 +71,7 @@ With Version mod 1.4:
 Long Term Features:
 188	12/09/03	Open	password protect packs
 
-6) noduplicatefiles
+6) noduplicatefiles (inspired by Ddrulez)
 
    When configured, add, adddir and addnew refuses to add a files that
    already have been added. Full path is compared.
@@ -89,7 +90,7 @@ Long Term Features:
 With Version mod 1.5:
 ---------------------
 
-9) need_voice
+9) need_voice (inspired by Tak0r)
 
    Restrict list/send to only voiced/opped users
    restrictlist and restrictsend must be set yes.
@@ -119,11 +120,11 @@ With Version mod 1.6:
 With Version mod 1.7:
 ---------------------
 
-13) auto_default_group
+13) auto_default_group (inspired by Keichi)
 
    when adding a file, search for a similar entry, and set the same group.
 
-14) addgroup
+14) addgroup (inspired by Keichi)
 
    new admin commands:
    ADDGROUP <group> <dir>     import new files in this dir to given group
@@ -136,17 +137,19 @@ With Version mod 1.8:
     new admin commands:
     QUEUE <nick> <pack>       Queues Pack for given Nick
 
-16 ) start_of_month
+16 ) start_of_month (inspired by Keichi)
 
 day of month when to reset the monthly traffic limit, default 1
 
 With Version mod 1.9:
 ---------------------
 
-17) Don't send packs when we are no longer connected.
+17) failsave when server or link goes down
+    Don't send packs when we are no longer connected.
     Queue will be hold till next join.
 
-18) When User is reconnecting with a new nickname while
+18) enforce queue limit. (inspired by Kickaha)
+    When User is reconnecting with a new nickname while
     his transfer has not timed out, he can add himself to the queue again.
     After he regained his old Nickname, he has more than the allowed number
     of requests in queue. Now the last entry is removed.
@@ -157,13 +160,14 @@ With Version mod 1.10:
 bugfix: remove
     keep group description when first pack of a group is removed.
 
-bugfix: regroup
+bugfix: regroup (inspired by Takatoo, TheDeath)
+versions affected: 1.1 to 1.9
     bot could hang when entries without a group does exist.
 
 19) new admin commands:
-   REGROUP main <newname>  put all files without a grou in the new group
+   REGROUP main <newname>  put all files without a group in the new group
 
-20) new user command alias:
+20) new user command alias: (inspired by [GFE]Lunix)
    xdcc list group <group> ==> xdcc list <group>
 
 21) new user command:
@@ -181,10 +185,10 @@ If set, "xdcc list all" will be rejected.
 With Version mod 1.11:
 ----------------------
 
-24) groupsincaps
+24) groupsincaps (inspired by [GFE]Lunix)
    If set, all groups names changed will be folded to  uppercase.
 
-bugfix: send <pack>
+bugfix: send <pack>  (inspired by TheDeath)
 versions affected: 1.4 to 1.10
    It is now possible to send password protected packs.
 
@@ -195,11 +199,11 @@ versions affected: 1.10
 With Version mod 1.12:
 ----------------------
 
-25) ignoreuploadbandwidth
+25) ignoreuploadbandwidth (inspired by [Faith]Athrun)
    don't count uploads traffic into transferlimits.
    Fast uploads will stop any downloads without this option.
 
-26) channel -headline
+26) channel -headline (inspired by TheDeath)
    text from this keyword to the end of the line is used as a
    channel specific headline.
 
@@ -209,9 +213,10 @@ channel #chan04 -plist 14 -pformat summary -headline moving soon
 With Version mod 1.13:
 ----------------------
 
-bugfix: if channel headline is set, drop global headline
+bugfix: channel -headline (inspired by Chobits)
+   if channel headline is set, drop global headline
 
-27) removegroup
+27) removegroup (inspired by Neo2001)
 
    new admin commands:
    REMOVEGROUP <group>     remove every file within <group>
@@ -229,7 +234,7 @@ With Version mod 1.14:
   HOLDQUEUE 1             holdqueue on, don't send more files
   HOLDQUEUE 0             holdqueue off, send files from queue
 
-29) removelostfiles
+29) removelostfiles (inspired by Neo2001)
 
   if a files is no longer accessible on the server, remove the pack.
   use with care, if started in wrong dir it may delete all packs.
