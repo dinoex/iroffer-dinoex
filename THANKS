@@ -46,3 +46,6 @@ Neo2001
 	"REMOVEGROUP" comamnd
 	option "removelostfiles"
 
+StoVoKor
+	reporting xdcclistfile bug
+

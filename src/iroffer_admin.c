@@ -31,6 +31,7 @@ static void u_help(const userinput * const u);
 static int u_xdl_space(void);
 static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd);
 static void u_xdl_head(const userinput * const u);
+static void u_xdl_foot(const userinput * const u);
 static void u_xdl_full(const userinput * const u);
 static void u_xdl_group(const userinput * const u);
 static void u_xdl(const userinput * const u);
@@ -721,6 +722,34 @@ static void u_xdl_head(const userinput * const u) {
    mydelete(tempstr);
 }
 
+static void u_xdl_foot(const userinput * const u) {
+   xdcc *xd;
+   float toffered;
+
+   if (gdata.creditline)
+     {
+       u_respond(u,"\2**\2 %s \2**\2",gdata.creditline);
+     }
+   
+   if (u->method==method_xdl_channel_min == 0)
+     {
+       toffered = 0;
+       xd = irlist_get_head(&gdata.xdccs);
+       while(xd)
+         {
+           toffered += (float)xd->st_size;
+           xd = irlist_get_next(xd);
+         }
+   
+       u_respond(u,
+                 "Total Offered: %1.1f MB  Total Transferred: %1.2f %cB",
+                 toffered/1024.0/1024.0,
+                 (gdata.totalsent/1024/1024) > 1024 ? ( (gdata.totalsent/1024/1024/1024) > 1024 ? ((float)gdata.totalsent)/1024/1024/1024/1024 : ((float)gdata.totalsent)/1024/1024/1024 ) : ((float)gdata.totalsent)/1024/1024 ,
+                 (gdata.totalsent/1024/1024) > 1024 ? ( (gdata.totalsent/1024/1024/1024) > 1024 ? 'T' : 'G' ) : 'M'
+         );
+     }
+}
+
 static void u_xdl_full(const userinput * const u) {
    char *tempstr;
    xdcc *xd;
@@ -743,6 +772,8 @@ static void u_xdl_full(const userinput * const u) {
      }
          
    mydelete(tempstr);
+
+   u_xdl_foot(u);
 }
 
 static void u_xdl_group(const userinput * const u) {
@@ -794,7 +825,6 @@ static void u_xdl(const userinput * const u) {
    char *inlist;
    static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
    int i,m,s;
-   float toffered;
    xdcc *xd;
    irlist_t grplist = {};
 
@@ -809,12 +839,9 @@ static void u_xdl(const userinput * const u) {
    
    s = u_xdl_space();
    i = 1;
-   toffered = 0;
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
-       toffered += (float)xd->st_size;
-       
        /* skip is group is set */
        if (xd->group == NULL)
          {
@@ -853,20 +880,7 @@ static void u_xdl(const userinput * const u) {
          inlist = irlist_delete(&grplist, inlist);
        }
    
-   if (gdata.creditline)
-     {
-       u_respond(u,"\2**\2 %s \2**\2",gdata.creditline);
-     }
-   
-   if (!m)
-     {
-       u_respond(u,
-                 "Total Offered: %1.1f MB  Total Transferred: %1.2f %cB",
-                 toffered/1024.0/1024.0,
-                 (gdata.totalsent/1024/1024) > 1024 ? ( (gdata.totalsent/1024/1024/1024) > 1024 ? ((float)gdata.totalsent)/1024/1024/1024/1024 : ((float)gdata.totalsent)/1024/1024/1024 ) : ((float)gdata.totalsent)/1024/1024 ,
-                 (gdata.totalsent/1024/1024) > 1024 ? ( (gdata.totalsent/1024/1024/1024) > 1024 ? 'T' : 'G' ) : 'M'
-         );
-     }
+   u_xdl_foot(u);
    
    mydelete(tempstr);
 }
