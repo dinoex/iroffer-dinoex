@@ -3179,15 +3179,18 @@ void user_changed_nick(const char *oldnick, const char *newnick)
     {
       if (!strcasecmp(pq->nick, newnick))
         {
-	  userinqueue++;
-          if ( userinqueue > gdata.maxqueueditemsperperson )
+          if (strcmp(pq->hostname,"man"))
             {
-              mydelete(pq->nick);
-              mydelete(pq->hostname);
-	      old = pq;
-              pq = irlist_get_next(pq);
-              irlist_delete(&gdata.mainqueue, old);
-              continue;
+	      userinqueue++;
+              if ( userinqueue > gdata.maxqueueditemsperperson )
+                {
+                  mydelete(pq->nick);
+                  mydelete(pq->hostname);
+	          old = pq;
+                  pq = irlist_get_next(pq);
+                  irlist_delete(&gdata.mainqueue, old);
+                  continue;
+                }
             }
         }
       pq = irlist_get_next(pq);
