@@ -1,0 +1,48 @@
+
+I like to thank those who helped to impove iroffer:
+
+David Johnson (PMG)
+	original distribution
+
+Splizzer
+	groups in iroffer 1.3
+
+Rom
+	mixing groups and normal packs
+
+Ddrulez
+	option "noduplicatefiles"
+
+Tak0r
+	option "need_voice"
+
+Keichi
+	option "auto_default_group"
+	"ADDGROUP" comamnd
+	option "start_of_month"
+
+Kickaha
+	enforce queue limit
+
+Takatoo
+	reporting regroup bug
+
+TheDeath
+	reporting regroup bug
+	reporting send problem
+	option "channel -headline"
+
+[GFE]Lunix
+	alias xdcc list group <group>
+	option "groupsincaps"
+
+[Faith]Athrun
+	reporting the bandwidth problem during uploads
+
+Chobits
+	option "channel -headline"
+
+Neo2001
+	"REMOVEGROUP" comamnd
+	option "removelostfiles"
+
