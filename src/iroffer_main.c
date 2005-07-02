@@ -2455,9 +2455,17 @@ static void privmsgparse(const char* type, char* line) {
    else if ( !gdata.ignore && (!strcmp(msg1,"\1PING")
           || !strcmp(msg1,"\1PING\1") )) {
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-/*      msg2 = getpart(line,5); */
-      notice(nick, "\1PING %s%s%s\1",
-             msg2,
+      if (msg2 && (msg2[strlen(msg2)-1] == '\1'))
+        {
+          msg2[strlen(msg2)-1] = '\0';
+        }
+      if (msg3 && (msg3[strlen(msg3)-1] == '\1'))
+        {
+          msg3[strlen(msg3)-1] = '\0';
+        }
+      notice(nick, "\1PING%s%s%s%s\1",
+             msg2 ? " " : "",
+             msg2 ? msg2 : "",
              msg3 ? " " : "",
              msg3 ? msg3 : "");
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: PING",nick);

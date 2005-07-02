@@ -246,3 +246,5 @@ With Version mod 1.15:
 
   config option to log messages in the logfile
 
+31) fix ping response (from PMG)
+
