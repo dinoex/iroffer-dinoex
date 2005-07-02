@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_headers.h 1.140@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_headers.h|20050116225153|26803
+ * @(#) iroffer_headers.h 1.142@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_headers.h|20050313225819|56401
  * 
  */
 

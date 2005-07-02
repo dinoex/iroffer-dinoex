@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_defines.h 1.116@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_defines.h|20050116225152|03044
+ * @(#) iroffer_defines.h 1.118@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_defines.h|20050313225819|12365
  * 
  */
 

@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_main.c 1.241@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_main.c|20050116225153|49499
+ * @(#) iroffer_main.c 1.245@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_main.c|20050313225819|23935
  * 
  */
 

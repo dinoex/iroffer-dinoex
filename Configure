@@ -1,8 +1,8 @@
 #!/bin/sh
 
 #
-# @(#) Configure 1.111@(#)
-# pmg@wellington.i202.centerclick.org|Configure|20050116230509|15178
+# @(#) Configure 1.112@(#)
+# pmg@wellington.i202.centerclick.org|Configure|20050116230535|15178
 #
 
 VERSION=1.4.b02

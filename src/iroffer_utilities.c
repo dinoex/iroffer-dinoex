@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_utilities.c 1.199@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_utilities.c|20050116225154|32135
+ * @(#) iroffer_utilities.c 1.204@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_utilities.c|20050512030218|31933
  * 
  */
 
@@ -1926,6 +1926,7 @@ void removefrommemberlist(channel_t *c, const char *nick)
   return;
 }
 
+
 void changeinmemberlist_mode(channel_t *c, const char *nick, char mode, int add)
 {
   member_t *member;
@@ -1990,7 +1991,7 @@ void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newn
 {
   member_t *oldmember;
   member_t *newmember;
-
+  
   updatecontext();
   
   if (gdata.debug > 2)

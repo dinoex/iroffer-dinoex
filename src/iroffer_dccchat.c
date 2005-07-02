@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_dccchat.c 1.76@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_dccchat.c|20050116225130|02289
+ * @(#) iroffer_dccchat.c 1.77@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_dccchat.c|20050313183434|02319
  * 
  */
 
