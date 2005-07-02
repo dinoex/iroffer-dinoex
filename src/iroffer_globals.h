@@ -152,6 +152,8 @@ irlist_t serverq_slow;
 int serverbucket;
 int ircserver;
 int serverconnectbackoff;
+prefix_t prefixes[MAX_PREFIX];
+char chanmodes[MAX_CHANMODES];
 
 irlist_t msglog;
 

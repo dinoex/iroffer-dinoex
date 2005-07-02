@@ -116,6 +116,8 @@
 
 #define MAX_HISTORY_SIZE 100
 
+#define MAX_PREFIX     16
+#define MAX_CHANMODES  16
 
 /* free'ing just leads to trouble if we dont check first and then make NULL */
 #define mydelete(x) { mydelete2(x); x = NULL; }

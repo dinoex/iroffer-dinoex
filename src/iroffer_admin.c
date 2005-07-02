@@ -4535,7 +4535,7 @@ static void u_crash(const userinput * const u) {
 static void u_chanl(const userinput * const u)
 {
   int j;
-  char *member;
+  member_t *member;
   char *tempstr = mycalloc(maxtextlength);
   channel_t *ch;
   
@@ -4550,19 +4550,18 @@ static void u_chanl(const userinput * const u)
       member = irlist_get_head(&ch->members);
       while(member)
         {
-          nocaps(member);
           if (!(j%USERS_PER_CHAN_LINE))
             {
               snprintf(tempstr,maxtextlength-1,"%s: ",ch->name);
             }
-          strncat(tempstr,member,maxtextlength-strlen(tempstr)-1);
-          strncat(tempstr," ",maxtextlength-strlen(tempstr)-1);
+          snprintf(tempstr + strlen(tempstr),
+                   maxtextlength - 1 - strlen(tempstr),
+                   "%s%s ", member->prefixes, member->nick);
           if (!((j+1)%USERS_PER_CHAN_LINE))
             {
               u_respond(u,"%s",tempstr);
               tempstr[0] = '\0';
             }
-          caps(member);
           
           member = irlist_get_next(member);
           j++;

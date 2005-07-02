@@ -2445,11 +2445,30 @@ void reinit_config_vars(void)
   return;
 }
 
+void initprefixes(void)
+{
+  memset(&gdata.prefixes, 0, sizeof(gdata.prefixes));
+  gdata.prefixes[0].p_mode   = 'o';
+  gdata.prefixes[0].p_symbol = '@';
+  gdata.prefixes[1].p_mode   = 'v';
+  gdata.prefixes[1].p_symbol = '+';
+}
+
+void initchanmodes(void)
+{
+  memset(&gdata.chanmodes, 0, sizeof(gdata.chanmodes));
+  gdata.chanmodes[0] = 'b';
+  gdata.chanmodes[1] = 'k';
+  gdata.chanmodes[1] = 'l';
+}
+
 void initvars(void)
 {
   memset(&gdata, 0, sizeof(gdata_t));
   
   reinit_config_vars();
+  initprefixes();
+  initchanmodes();
   
   gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
   gdata.logfd = FD_UNUSED;

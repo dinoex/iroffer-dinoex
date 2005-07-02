@@ -358,6 +358,18 @@ typedef struct {
 
 typedef struct
 {
+  char p_mode;
+  char p_symbol;
+} prefix_t;
+
+typedef struct
+{
+  char prefixes[MAX_PREFIX];
+  char nick[1]; /* last, make this bigger on alloc */
+} member_t;
+
+typedef struct
+{
   char *name;
   char *key;
   char *headline;
@@ -540,8 +552,9 @@ void dumpgdata(void);
 void clearmemberlist(channel_t *c);
 int isinmemberlist(const char *nick);
 void addtomemberlist(channel_t *c, const char *nick);
-void removefrommemberlist(channel_t *c, char *nick);
-void changeinmemberlist(channel_t *c, char *oldnick, const char *newnick);
+void removefrommemberlist(channel_t *c, const char *nick);
+void changeinmemberlist_mode(channel_t *c, const char *nick, char mode, int add);
+void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newnick);
 int set_socket_nonblocking (int s, int nonblock);
 void set_loginname(void);
 int is_fd_readable(int fd);
@@ -644,6 +657,8 @@ char* getstatuslinenums(char *str, int len);
 void sendxdlqueue(void);
 int isthisforme (const char *dest, char *msg1);
 void reinit_config_vars(void);
+void initprefixes(void);
+void initchanmodes(void);
 void initvars(void);
 void startupiroffer(void);
 void isrotatelog(void);
