@@ -89,6 +89,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"logstats",             &gdata.logstats,             &gdata.logstats },
   {"hideos",               &gdata.hideos,               &gdata.hideos },
   {"lognotices",           &gdata.lognotices,           &gdata.lognotices },
+  {"logmessages",          &gdata.logmessages,          &gdata.logmessages },
   {"timestampconsole",     &gdata.timestampconsole,     &gdata.timestampconsole },
   {"respondtochannelxdcc", &gdata.respondtochannelxdcc, &gdata.respondtochannelxdcc },
   {"respondtochannellist", &gdata.respondtochannellist, &gdata.respondtochannellist },
@@ -2420,6 +2421,7 @@ void reinit_config_vars(void)
   mydelete(gdata.autosend.message);
   gdata.hideos = 0;
   gdata.lognotices = 0;
+  gdata.logmessages = 0;
   gdata.timestampconsole = 0;
   gdata.quietmode = 0;
   gdata.notifytime = 5;

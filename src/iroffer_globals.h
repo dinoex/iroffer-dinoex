@@ -30,6 +30,7 @@ char* configfile[MAXCONFIG];
 char* osstring;
 int hideos;
 int lognotices;
+int logmessages;
 int timestampconsole;
 long startuptime;
 unsigned long local_vhost;

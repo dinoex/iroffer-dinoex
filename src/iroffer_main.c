@@ -2934,7 +2934,8 @@ static void privmsgparse(const char* type, char* line) {
    else {
       if (dest && gdata.caps_nick && !strcmp(dest,gdata.caps_nick))
         {
-          if (strcmp(type,"NOTICE") || gdata.lognotices)
+          if ((gdata.lognotices && !strcmp(type,"NOTICE")) ||
+              (gdata.logmessages && !strcmp(type,"PRIVMSG")))
             {
               msglog_t *ml;
               char *begin;

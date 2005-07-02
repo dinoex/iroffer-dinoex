@@ -239,3 +239,10 @@ With Version mod 1.14:
   if a files is no longer accessible on the server, remove the pack.
   use with care, if started in wrong dir it may delete all packs.
 
+With Version mod 1.15:
+----------------------
+
+30) logmessages (from PMG)
+
+  config option to log messages in the logfile
+

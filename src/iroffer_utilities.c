@@ -1376,6 +1376,7 @@ void dumpgdata(void)
   gdata_print_string(osstring);
   gdata_print_int(hideos);
   gdata_print_int(lognotices);
+  gdata_print_int(logmessages);
   gdata_print_int(timestampconsole);
   gdata_print_long(startuptime);
   gdata_print_int(lowbdwth);
