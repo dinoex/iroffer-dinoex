@@ -3221,7 +3221,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
               tempstr);
        mydelete(tempstr);
      }
-   else if ((irlist_size(&gdata.trans) >= MAXTRANS) ||
+   else if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) ||
             (!man &&
              (((xd->st_size < gdata.smallfilebypass) && (gdata.slotsmax >= MAXTRANS)) ||
               ((xd->st_size >= gdata.smallfilebypass) && (gdata.slotsmax-irlist_size(&gdata.trans) <= 0)))))
