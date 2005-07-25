@@ -119,7 +119,7 @@ typedef struct
 static const userinput_parse_t userinput_parse[] = {
 {1,method_allow_all,u_help,     "HELP",NULL,"Shows Help"},
 {1,method_allow_all_xdl,u_xdl_full,   "XDLFULL",NULL,"Lists All Offered Files"},
-{1,method_allow_all_xdl,u_xdl_group,  "XDLGROUP","<group>","Show <group>"},
+{1,method_allow_all_xdl,u_xdl_group,  "XDLGROUP","<g>","Show group <g>"},
 {1,method_allow_all_xdl,u_xdl,  "XDL",NULL,"Lists Offered Files"},
 {1,method_allow_all,u_xds,      "XDS",NULL,"Save XDCC File"},
 {1,method_allow_all,u_dcl,      "DCL",NULL,"Lists Current Transfers"},
@@ -158,8 +158,8 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_lock,     "LOCK","n x","Lock the pack n with password x"},
 {3,method_allow_all,u_unlock,   "UNLOCK","n","Unlock the pack n"},
 {3,method_allow_all,u_groupdesc,  "GROUPDESC","<g> <msg>","Change Desc of group <g> to <msg>"},
-{3,method_allow_all,u_group,      "GROUP","n <msg>","Change Group of pack n to <msg>"},
-{3,method_allow_all,u_regroup,    "REGROUP","<g> <msg>","Change all packs of group <g> to <msg>"},
+{3,method_allow_all,u_group,      "GROUP","n <g>","Change Group of pack n to <g>"},
+{3,method_allow_all,u_regroup,    "REGROUP","<g> <new>","Change all packs of group <g> to <new>"},
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
 {4,method_allow_all,u_mesg,     "MESG","<message>","Sends msg to all users who are transferring"},
@@ -1456,7 +1456,7 @@ static void u_info(const userinput * const u)
   return;
 }
 
-static int reorder_groupdesc(char *group, char *desc) {
+static int reorder_new_groupdesc(char *group, char *desc) {
   xdcc *xd;
   int k;
 
@@ -1488,6 +1488,62 @@ static int reorder_groupdesc(char *group, char *desc) {
       xd = irlist_get_next(xd);
     }
 
+  return k;
+}
+
+static int reorder_groupdesc(char *group) {
+  xdcc *xd;
+  xdcc *firstxd;
+  xdcc *descxd;
+  char *tempdesc;
+  int k;
+
+  updatecontext();
+
+  k = 0;
+  firstxd = NULL;
+  descxd = NULL;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,group) == 0)
+            {
+              k++;
+              if (xd->group_desc != NULL)
+                {
+                   if (descxd == NULL)
+                     {
+                       descxd = xd;
+                     }
+                   else
+                     {
+                       /* more than one desc */
+                       mydelete(xd->group_desc);
+                     }
+                }
+              /* check only the first entry */
+              if (k == 1)
+                {
+                  firstxd = xd;
+                }
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  if (k == 0)
+    return k;
+
+  if (descxd == NULL)
+    return k;
+
+  if (descxd == firstxd)
+    return k;
+
+  tempdesc = descxd->group_desc;
+  firstxd->group_desc = tempdesc;
   return k;
 }
 
@@ -1568,7 +1624,7 @@ static void u_remove(const userinput * const u) {
    if (tmpdesc != NULL)
      {
        if (tmpgroup != NULL)
-         reorder_groupdesc(tmpgroup,tmpdesc);
+         reorder_new_groupdesc(tmpgroup,tmpdesc);
        mydelete(tmpdesc);
      }
    if (tmpgroup != NULL)
@@ -2907,7 +2963,7 @@ static void u_groupdesc(const userinput * const u) {
       return;
     }
    
-  k = reorder_groupdesc(u->arg1,u->arg2e);
+  k = reorder_new_groupdesc(u->arg1,u->arg2e);
   if (k == 0)
     return;
 
@@ -2926,6 +2982,8 @@ static void u_groupdesc(const userinput * const u) {
 static void u_group(const userinput * const u) {
   xdcc *xd;
   const char *new;
+  char *tmpdesc;
+  char *tmpgroup;
   int num = 0;
   
   updatecontext();
@@ -2963,7 +3021,19 @@ static void u_group(const userinput * const u) {
     {
       u_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
                 num,xd->group,new);
-      mydelete(xd->group);
+      /* keep group info for later work */
+      tmpgroup = xd->group;
+      xd->group = NULL;
+      tmpdesc = xd->group_desc;
+      xd->group_desc = NULL;
+      if (tmpdesc != NULL)
+        {
+          if (tmpgroup != NULL)
+            reorder_new_groupdesc(tmpgroup,tmpdesc);
+          mydelete(tmpdesc);
+        }
+      if (tmpgroup != NULL)
+        mydelete(tmpgroup);
     }
   else
     {
@@ -2975,6 +3045,7 @@ static void u_group(const userinput * const u) {
     {
       xd->group = mycalloc(strlen(u->arg2e)+1);
       strcpy(xd->group,u->arg2e);
+      reorder_groupdesc(u->arg2e);
     }
   
   write_statefile();
