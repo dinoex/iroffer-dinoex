@@ -1590,12 +1590,7 @@ static void mainloop (void) {
          updatecontext();
          
          /* look to see if any files changed */
-         xd = irlist_get_head(&gdata.xdccs);
-         while(xd)
-           {
-             look_for_file_changes(xd);
-             xd = irlist_get_next(xd);
-           }
+         look_for_file_remove();
          
          updatecontext();
          

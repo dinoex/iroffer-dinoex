@@ -263,12 +263,15 @@ bugfix: xdcclistfile (inspired by StoVoKor)
 With Version mod 1.16:
 ----------------------
 
-35) bugfix: holdqueue
+bugfix: holdqueue
    enforce holdqueue when new requests are comming in
 
-36) bugfix: GROUP <n> <g> (inspired by conanmichi)
+bugfix: GROUP <n> <g> (inspired by conanmichi)
    save group description when the the first pack of a group leaves it.
    move group description when joining as the first pack of a group.
 
 Fix online help. (inspired by conanmichi)
+
+bugfix: removelostfiles (inspired by TheDeath)
+   Iroffer could crash when removing the last file.
 

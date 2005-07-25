@@ -3045,7 +3045,7 @@ void notifybandwidthtrans(void)
 }
 
 
-void look_for_file_changes(xdcc *xpack)
+int look_for_file_changes(xdcc *xpack)
 {
   struct stat st;
   transfer *tr;
@@ -3056,31 +3056,8 @@ void look_for_file_changes(xdcc *xpack)
                "File '%s' can no longer be accessed: %s",
                xpack->file, strerror(errno));
       if ((gdata.removelostfiles) && (errno == ENOENT))
-        {
-           userinput *pubplist;
-           xdcc *xd;
-           char *tempstr;
-           int n;
-
-           updatecontext();
-           n = 0;
-           xd = irlist_get_head(&gdata.xdccs);
-           while(xd)
-             {
-               n++;
-               if (xd == xpack)
-                 break;
-               xd = irlist_get_next(xd);
-             }
-           pubplist = mycalloc(sizeof(userinput));
-           tempstr = mycalloc(maxtextlength);
-           snprintf(tempstr,maxtextlength-1,"remove %d", n);
-           u_fillwith_console(pubplist,tempstr);
-           u_parseit(pubplist);
-           mydelete(pubplist);
-           mydelete(tempstr);
-        }
-      return;
+        return 1;
+      return 0;
     }
   
   if (st.st_size == 0)
@@ -3145,6 +3122,46 @@ void look_for_file_changes(xdcc *xpack)
 #endif
     }
   
+  return 0;
+}
+
+void look_for_file_remove(void)
+{
+
+  xdcc *xd;
+  userinput *pubplist;
+  char *tempstr;
+  int r;
+  int n;
+  
+  updatecontext();
+
+  /* look to see if any files changed */
+  n = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+       n ++;
+       r = look_for_file_changes(xd);
+       if (r == 0)
+         {
+            xd = irlist_get_next(xd);
+            continue;
+         }
+       
+       pubplist = mycalloc(sizeof(userinput));
+       tempstr = mycalloc(maxtextlength);
+       snprintf(tempstr,maxtextlength-1,"remove %d", n);
+       u_fillwith_console(pubplist,tempstr);
+       u_parseit(pubplist);
+       mydelete(pubplist);
+       mydelete(tempstr);
+       
+       /* start over */
+       xd = irlist_get_head(&gdata.xdccs);
+       n = 0;
+    }
+     
   return;
 }
 
