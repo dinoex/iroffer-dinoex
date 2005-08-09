@@ -170,7 +170,7 @@ void update_natip (const char *var)
   bzero((char *)&in, sizeof(in));
   if (inet_aton(var, &in) == 0)
     {
-      hp = gethostbyname2(var, AF_INET);
+      hp = gethostbyname(var);
       if (hp == NULL)
         {
           outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid NAT Host, Ignoring: %s",hstrerror(h_errno));
