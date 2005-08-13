@@ -77,6 +77,9 @@ typedef enum
   STATEFILE_TAG_XDCCS_GROUP,
   STATEFILE_TAG_XDCCS_GROUP_DESC,
   STATEFILE_TAG_XDCCS_LOCK,
+  STATEFILE_TAG_XDCCS_DLIMIT_MAX,
+  STATEFILE_TAG_XDCCS_DLIMIT_USED,
+  STATEFILE_TAG_XDCCS_DLIMIT_DESC,
   
   STATEFILE_TAG_TLIMIT_DAILY_USED    = 13 << 8,
   STATEFILE_TAG_TLIMIT_DAILY_ENDS,
@@ -465,6 +468,7 @@ void write_statefile(void)
     statefile_item_generic_int_t *g_int;
     statefile_item_generic_float_t *g_float;
     statefile_item_md5sum_info_t *md5sum_info;
+    statefile_item_generic_time_t *g_time;
     
     xd = irlist_get_head(&gdata.xdccs);
     
@@ -502,6 +506,16 @@ void write_statefile(void)
         if (xd->lock != NULL)
           {
             length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->lock) + 1, 4);
+          }
+        if (xd->dlimit_max != 0)
+          {
+            length += sizeof(statefile_item_generic_int_t);
+            length += sizeof(statefile_item_generic_int_t);
+            length += sizeof(statefile_item_generic_time_t);
+          }
+        if (xd->dlimit_desc != NULL)
+          {
+            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->dlimit_desc) + 1, 4);
           }
         
         data = mycalloc(length);
@@ -617,6 +631,33 @@ void write_statefile(void)
             next = (unsigned char*)(&hdr[1]);
             strcpy(next, xd->lock);
             next += ceiling(strlen(xd->lock) + 1, 4);
+          }
+        
+        if (xd->dlimit_max != 0)
+          {
+            /* download limit */
+            g_int = (statefile_item_generic_int_t*)next;
+            g_int->hdr.tag = htonl(STATEFILE_TAG_XDCCS_DLIMIT_MAX);
+            g_int->hdr.length = htonl(sizeof(*g_int));
+            g_int->g_int = htonl(xd->dlimit_max);
+            next = (unsigned char*)(&g_int[1]);
+            
+            /* download limit */
+            g_int = (statefile_item_generic_int_t*)next;
+            g_int->hdr.tag = htonl(STATEFILE_TAG_XDCCS_DLIMIT_USED);
+            g_int->hdr.length = htonl(sizeof(*g_int));
+            g_int->g_int = htonl(xd->dlimit_used);
+            next = (unsigned char*)(&g_int[1]);
+          }
+        if (xd->dlimit_desc != NULL)
+          {
+            /* group */
+            hdr = (statefile_hdr_t*)next;
+            hdr->tag = htonl(STATEFILE_TAG_XDCCS_DLIMIT_DESC);
+            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->dlimit_desc) + 1);
+            next = (unsigned char*)(&hdr[1]);
+            strcpy(next, xd->dlimit_desc);
+            next += ceiling(strlen(xd->dlimit_desc) + 1, 4);
           }
         
         write_statefile_item(&bout, data);
@@ -1291,6 +1332,7 @@ void read_statefile(void)
             xd->group = NULL;
             xd->group_desc = NULL;
             xd->lock = NULL;
+            xd->dlimit_desc = NULL;
             
             hdr->length -= sizeof(*hdr);
             ihdr = &hdr[1];
@@ -1451,6 +1493,47 @@ void read_statefile(void)
                     else
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Lock Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_DLIMIT_MAX:
+                    if (ihdr->length == sizeof(statefile_item_generic_int_t))
+                      {
+                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
+                        xd->dlimit_max = ntohl(g_int->g_int);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Limit_Max Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_DLIMIT_USED:
+                    if (ihdr->length == sizeof(statefile_item_generic_int_t))
+                      {
+                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
+                        xd->dlimit_used = ntohl(g_int->g_int);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Limit_Used Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_DLIMIT_DESC:
+                    if (ihdr->length > sizeof(statefile_hdr_t))
+                      {
+                        char *desc = (char*)(&ihdr[1]);
+                        desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
+                        xd->dlimit_desc = mycalloc(strlen(desc)+1);
+                        strcpy(xd->dlimit_desc,desc);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Limit Desc Tag (len = %d)",
                                  ihdr->length);
                       }
                     break;

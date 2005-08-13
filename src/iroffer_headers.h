@@ -145,7 +145,10 @@ typedef struct {
    char *group;
    char *group_desc;
    char *lock;
+   char *dlimit_desc;
    int gets;
+   int dlimit_max;
+   int dlimit_used;
    float minspeed,
          maxspeed;
    off_t st_size;
@@ -672,6 +675,7 @@ void look_for_file_remove(void);
 void user_changed_nick(const char *oldnick, const char *newnick);
 int has_joined_channels(int all);
 void reverify_restrictsend(void);
+void reset_download_limits(void);
 
 /* statefile.c */
 void write_statefile(void);

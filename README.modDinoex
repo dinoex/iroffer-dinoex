@@ -284,3 +284,13 @@ With Version mod 1.17:
 bugfix: channel -headline (inspired by Chobits)
     send channel headline when plist in mutiple channels.
 
+36) chlimit (inspired by TheDeath)
+
+   new admin commands:
+   CHLIMIT <pack> <x>         do not allow more than x downloads per day
+
+37) chlimitinfo (inspired by Chobits)
+
+   new admin commands:
+   CHLIMITINFO <pack> <text>  send text to use when he can download the pack
+

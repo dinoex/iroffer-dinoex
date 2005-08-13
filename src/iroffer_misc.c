@@ -3302,6 +3302,27 @@ void reverify_restrictsend(void)
   return;
 }
 
+void reset_download_limits(void)
+{
+  int num;
+  int new;
+  xdcc *xd;
 
+  num = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      num++;
+      if (xd->dlimit_max != 0)
+        {
+          new = xd->gets + xd->dlimit_max;
+          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                  "Resetting download limit of pack %d, used %d",
+                  num, new - xd->dlimit_used);
+          xd->dlimit_used = new;
+        }
+      xd = irlist_get_next(xd);
+    }
+}
 
 /* End of File */

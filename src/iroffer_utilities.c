@@ -1670,6 +1670,10 @@ void dumpgdata(void)
   gdata_iter_print_string(group);
   gdata_iter_print_string(group_desc);
   gdata_iter_print_string(lock);
+  ioutput(gdata_common,
+          "  : dlimit max=%d used=%d",
+          iter->dlimit_max, iter->dlimit_used);
+  gdata_iter_print_string(dlimit_desc);
 #ifdef HAVE_MMAP
   {
     mmap_info_t *iter2;

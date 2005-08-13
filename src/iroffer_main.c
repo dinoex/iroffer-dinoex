@@ -1175,6 +1175,7 @@ static void mainloop (void) {
                     case TRANSFERLIMIT_DAILY:
                       /* tomorrow */
                       localt->tm_mday++;
+                      reset_download_limits();
                       break;
                       
                     case TRANSFERLIMIT_WEEKLY:
@@ -3204,6 +3205,13 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
      {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (Over Transfer Limit): ");
       notice(nick,"** Sorry, I have exceeded my transfer limit for today.  Try again tomorrow.");
+     }
+   else if (!man && (xd->dlimit_max != 0) && (xd->gets >= xd->dlimit_used))
+     {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (Over Pack Transfer Limit): ");
+      notice(nick,"** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
+      if (xd->dlimit_desc != NULL)
+        notice(nick,xd->dlimit_desc);
      }
    /* if maxtransfersperperson is reached, queue the file, unless queues are used up, which is checked in addtoqueue() */
    else if ( !man && usertrans >= gdata.maxtransfersperperson)
