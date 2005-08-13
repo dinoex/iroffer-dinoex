@@ -275,3 +275,9 @@ Fix online help. (inspired by conanmichi)
 bugfix: removelostfiles (inspired by TheDeath)
    Iroffer could crash when removing the last file.
 
+With Version mod 1.17:
+----------------------
+
+35) set groupname as default group description
+    for an invisible group you haave to remove the description by hand.
+

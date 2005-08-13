@@ -1456,7 +1456,7 @@ static void u_info(const userinput * const u)
   return;
 }
 
-static int reorder_new_groupdesc(char *group, char *desc) {
+static int reorder_new_groupdesc(const char *group, const char *desc) {
   xdcc *xd;
   int k;
 
@@ -1491,7 +1491,7 @@ static int reorder_new_groupdesc(char *group, char *desc) {
   return k;
 }
 
-static int reorder_groupdesc(char *group) {
+static int reorder_groupdesc(const char *group) {
   xdcc *xd;
   xdcc *firstxd;
   xdcc *descxd;
@@ -1544,6 +1544,44 @@ static int reorder_groupdesc(char *group) {
 
   tempdesc = descxd->group_desc;
   firstxd->group_desc = tempdesc;
+  return k;
+}
+
+static int add_default_groupdesc(const char *group) {
+  xdcc *xd;
+  xdcc *firstxd;
+  int k;
+
+  updatecontext();
+
+  k = 0;
+  firstxd = NULL;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,group) == 0)
+            {
+              k++;
+              if (xd->group_desc != NULL)
+                return 0;
+              
+              /* check only the first entry */
+              if (k == 1)
+                {
+                  firstxd = xd;
+                }
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  if (k != 1)
+    return k;
+
+  firstxd->group_desc = mycalloc(strlen(group)+1);
+  strcpy(firstxd->group_desc,group);
   return k;
 }
 
@@ -2594,6 +2632,9 @@ static void u_addgroup(const userinput * const u)
   char *thefile, *tempstr, *thedir;
   irlist_t dirlist = {};
   int thedirlen, foundit;
+  int newgroup;
+  int num;
+  int rc;
   xdcc *xd;
   
   updatecontext();
@@ -2692,7 +2733,8 @@ static void u_addgroup(const userinput * const u)
   
   u_respond(u,"Adding %d new files...",
             irlist_size(&dirlist));
-  
+
+  newgroup = 0;
   thefile = irlist_get_head(&dirlist);
   while (thefile)
     {
@@ -2702,19 +2744,34 @@ static void u_addgroup(const userinput * const u)
       u2 = *u;
       u2.arg1e = thefile;
       u_add(&u2);
-      
+
+      num = 0;
       xd = irlist_get_head(&gdata.xdccs);
       while(xd)
          {
+           num++;
            if (!strcmp(thefile,xd->file))
              {
                if (xd->group != NULL)
-                  mydelete(xd->group);
+                  {
+                     if (strcmp(xd->group, u->arg1) == 0 )
+                       break;
+                     mydelete(xd->group);
+                  }
                xd->group = mycalloc(strlen(u->arg1)+1);
                strcpy(xd->group,u->arg1);
+               u_respond(u, "GROUP: [Pack %i] New: %s",
+                 num,u->arg1);
                break;
              }
            xd = irlist_get_next(xd);
+         }
+      
+      if ((++newgroup) == 1)
+         {
+           rc = add_default_groupdesc(u->arg1);
+           if (rc == 1)
+             u_respond(u, "New GROUPDESC: %s",u->arg1);
          }
       
       thefile = irlist_delete(&dirlist, thefile);
@@ -2984,6 +3041,7 @@ static void u_group(const userinput * const u) {
   const char *new;
   char *tmpdesc;
   char *tmpgroup;
+  int rc;
   int num = 0;
   
   updatecontext();
@@ -3046,6 +3104,9 @@ static void u_group(const userinput * const u) {
       xd->group = mycalloc(strlen(u->arg2e)+1);
       strcpy(xd->group,u->arg2e);
       reorder_groupdesc(u->arg2e);
+      rc = add_default_groupdesc(u->arg2e);
+      if (rc == 1)
+        u_respond(u, "New GROUPDESC: %s",u->arg2e);
     }
   
   write_statefile();
