@@ -1667,6 +1667,9 @@ void dumpgdata(void)
   ioutput(gdata_common,
           "  : has_md5=%d md5sum=" MD5_PRINT_FMT,
           iter->has_md5sum, MD5_PRINT_DATA(iter->md5sum));
+  gdata_iter_print_string(group);
+  gdata_iter_print_string(group_desc);
+  gdata_iter_print_string(lock);
 #ifdef HAVE_MMAP
   {
     mmap_info_t *iter2;
