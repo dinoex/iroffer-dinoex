@@ -278,6 +278,9 @@ bugfix: removelostfiles (inspired by TheDeath)
 With Version mod 1.17:
 ----------------------
 
-35) set groupname as default group description
+35) set groupname as default group description (inspired by Kyu)
     for an invisible group you haave to remove the description by hand.
+
+bugfix: channel -headline (inspired by Chobits)
+    send channel headline when plist in mutiple channels.
 

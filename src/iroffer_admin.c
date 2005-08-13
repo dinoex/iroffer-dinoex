@@ -557,6 +557,8 @@ static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd) {
 
 static void u_xdl_head(const userinput * const u) {
    char *tempstr;
+   char *tempnick;
+   char *chan;
    int a,i,m,m1;
    int len;
    int head;
@@ -578,14 +580,23 @@ static void u_xdl_head(const userinput * const u) {
       ch = irlist_get_head(&gdata.channels);
       while(ch)
         {
-          if (!strcmp(ch->name,u->snick))
+          if (ch->headline != NULL )
             {
-             if (ch->headline != NULL )
-               {
-                 u_respond(u,"\2**\2 %s \2**\2", ch->headline);
-                 head ++;
-               }
-             break;
+              tempnick = mycalloc(strlen(u->snick)+1);
+              strcpy(tempnick,u->snick);
+              for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
+                {
+                  if (!strcasecmp(ch->name,chan))
+                    {
+                      userinput u2;
+                      
+                      u2 = *u;
+                      u2.snick = chan;
+                      u_respond(&u2,"\2**\2 %s \2**\2", ch->headline);
+                      head ++;
+                    }
+                }
+              mydelete(tempnick);
             }
           ch = irlist_get_next(ch);
         }
