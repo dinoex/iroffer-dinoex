@@ -698,6 +698,31 @@ void t_flushed (transfer * const t)
   t->tr_status = TRANSFER_STATUS_DONE;
   t->xpack->gets++;
   
+  if ((t->xpack->dlimit_max != 0) && (t->xpack->gets >= t->xpack->dlimit_used))
+    {
+      pqueue *pq;
+       
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"Reached Pack Download Limit %d for %s",
+              t->xpack->dlimit_max, t->xpack->desc);
+       
+      /* remove queued users */
+      pq = irlist_get_head(&gdata.mainqueue);
+      while(pq)
+        {
+          if (pq->xpack == t->xpack)
+            {
+               notice_slow(pq->nick,"** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
+               if (t->xpack->dlimit_desc != NULL)
+                 notice_slow(pq->nick,t->xpack->dlimit_desc);
+               mydelete(pq->nick);
+               mydelete(pq->hostname);
+               pq = irlist_delete(&gdata.mainqueue, pq);
+               continue;
+            }
+          pq = irlist_get_next(pq);
+        }
+    }
+  
   mydelete(tempstr);
 }
 
