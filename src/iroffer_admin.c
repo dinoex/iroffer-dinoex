@@ -3244,6 +3244,8 @@ static void u_regroup(const userinput * const u) {
     return;
 
   u_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2e);
+  if (strcasecmp(u->arg1,"main") == 0)
+    add_default_groupdesc(u->arg2e);
   write_statefile();
   xdccsavetext();
 }
