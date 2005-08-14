@@ -2941,7 +2941,7 @@ static void u_chlimit(const userinput * const u) {
       }
    
    if (!u->arg2 || !strlen(u->arg2)) {
-      u_respond(u,"Try Specifying a Maxspeed");
+      u_respond(u,"Try Specifying a daily Downloadlimit");
       return;
       }
 
