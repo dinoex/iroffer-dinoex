@@ -468,7 +468,6 @@ void write_statefile(void)
     statefile_item_generic_int_t *g_int;
     statefile_item_generic_float_t *g_float;
     statefile_item_md5sum_info_t *md5sum_info;
-    statefile_item_generic_time_t *g_time;
     
     xd = irlist_get_head(&gdata.xdccs);
     
