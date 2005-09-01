@@ -296,3 +296,9 @@ bugfix: channel -headline (inspired by Chobits)
    new admin commands:
    CHLIMITINFO <pack> <text>  send text to use when he can download the pack
 
+With Version mod 1.18:
+----------------------
+
+38) new admin commands:
+   IDENTIFY                   send stored password again to nickserv
+

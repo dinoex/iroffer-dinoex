@@ -2340,6 +2340,12 @@ static void parseline(char *line) {
          }
        else
          {
+           /* nickserv */
+           if (gdata.nickserv_pass)
+             {
+               if (strstr(line, "please choose a different nick.") != NULL)
+                 privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
+             }
            privmsgparse("PRIVMSG",line);
          }
      }

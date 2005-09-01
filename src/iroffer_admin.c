@@ -104,6 +104,7 @@ static void u_clearrecords(const userinput * const u);
 static void u_rmul(const userinput * const u);
 static void u_crash(const userinput * const u);
 static void u_chanl(const userinput * const u);
+static void u_identify(const userinput * const u);
 
 
 typedef struct
@@ -194,6 +195,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_allow_all,u_closec,   "CLOSEC","n","Closes DCC Chat with ID = n"},
 {5,method_console,  u_debug,    "DEBUG","n","Set Debugging level to n"},
 {5,method_allow_all,u_holdqueue, "HOLDQUEUE","<num>","set or toggles holdqueue"},
+{5,method_allow_all,u_identify, "IDENTIFY",NULL,"Send stored password again to nickserv"},
 {5,method_allow_all,u_shutdown, "SHUTDOWN","<act>","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
 
 {6,method_console,  u_crash, "CRASH",NULL,"Cause a segmentation fault"},
@@ -4326,6 +4328,17 @@ static void u_holdqueue(const userinput * const u) {
    gdata.holdqueue = val;
    u_respond(u,"HOLDQUEUE now %d", val );
    
+}
+
+static void u_identify(const userinput * const u)
+{
+  if (!gdata.nickserv_pass)
+    {
+       u_respond(u,"No nickserv_pass set!");
+       return;
+    } 
+  privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
+  u_respond(u,"nickserv identify send.");
 }
 
 static void u_shutdown(const userinput * const u) {
