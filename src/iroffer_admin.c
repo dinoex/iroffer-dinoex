@@ -3184,17 +3184,17 @@ static void u_group(const userinput * const u) {
   else
     {
       u_respond(u, "GROUP: [Pack %i] New: %s",
-                num,u->arg2e);
+                num,u->arg2);
     }
   
   if (new == u->arg2)
     {
-      xd->group = mycalloc(strlen(u->arg2e)+1);
-      strcpy(xd->group,u->arg2e);
-      reorder_groupdesc(u->arg2e);
-      rc = add_default_groupdesc(u->arg2e);
+      xd->group = mycalloc(strlen(u->arg2)+1);
+      strcpy(xd->group,u->arg2);
+      reorder_groupdesc(u->arg2);
+      rc = add_default_groupdesc(u->arg2);
       if (rc == 1)
-        u_respond(u, "New GROUPDESC: %s",u->arg2e);
+        u_respond(u, "New GROUPDESC: %s",u->arg2);
     }
   
   write_statefile();
@@ -3214,7 +3214,7 @@ static void u_regroup(const userinput * const u) {
       return;
     }
    
-  if (!u->arg2e || !strlen(u->arg2e))
+  if (!u->arg2 || !strlen(u->arg2))
     {
       u_respond(u,"Try Specifying a Valid Group");
       return;
@@ -3236,8 +3236,8 @@ static void u_regroup(const userinput * const u) {
           k++;
           if (xd->group != NULL)
             mydelete(xd->group);
-          xd->group = mycalloc(strlen(u->arg2e)+1);
-          strcpy(xd->group,u->arg2e);
+          xd->group = mycalloc(strlen(u->arg2)+1);
+          strcpy(xd->group,u->arg2);
         }
       xd = irlist_get_next(xd);
     }
@@ -3245,9 +3245,9 @@ static void u_regroup(const userinput * const u) {
   if (k == 0)
     return;
 
-  u_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2e);
+  u_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2);
   if (strcasecmp(u->arg1,"main") == 0)
-    add_default_groupdesc(u->arg2e);
+    add_default_groupdesc(u->arg2);
   write_statefile();
   xdccsavetext();
 }

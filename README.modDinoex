@@ -302,3 +302,7 @@ With Version mod 1.18:
 38) new admin commands:
    IDENTIFY                   send stored password again to nickserv
 
+39) automatic IDENTIFY when nickserver is restarted
+
+bugfix: no spaces in groupname (inspired by Chobits)
+
