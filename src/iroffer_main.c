@@ -1844,7 +1844,18 @@ static void parseline(char *line) {
    
  /* NOTICE nick */
    if (part3 && gdata.caps_nick && !strcmp(caps(part2),"NOTICE") && !strcmp(caps(part3),gdata.caps_nick))
-      privmsgparse("NOTICE",line);
+     {
+       /* nickserv */
+       if (gdata.nickserv_pass)
+         {
+           if (strstr(line, "please choose a different nick.") != NULL)
+             {
+               privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
+               ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"nickserv identify send.");
+             }
+         }
+       privmsgparse("NOTICE",line);
+     }
  
  /* :server 001  xxxx :welcome.... */
    if ( !strcmp(part2,"001") )
@@ -2340,12 +2351,6 @@ static void parseline(char *line) {
          }
        else
          {
-           /* nickserv */
-           if (gdata.nickserv_pass)
-             {
-               if (strstr(line, "please choose a different nick.") != NULL)
-                 privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
-             }
            privmsgparse("PRIVMSG",line);
          }
      }
