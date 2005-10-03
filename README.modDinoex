@@ -316,3 +316,12 @@ bugfix: ignore spaces in groupname (inspired by Chobits)
    new user commands:
    XDCC QUEUE                 poll current queue status
 
+41) XDCC CANCEL
+
+   new user commands:
+   XDCC CANCEL                abort pending DCC connection
+
+   References TODO:
+Short Term Features:
+174 12/09/03 Open user can cancel pending transfer
+
