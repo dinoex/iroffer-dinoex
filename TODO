@@ -9,7 +9,6 @@ Short Term Features:
    150 01/30/01 Open keep track of how long its been since on a server and/or on a channel  
 ?  145 12/21/00 Open option to respond to unknown command
 ?  144 12/21/00 Open reorder queue members
-?  143 12/21/00 Open manually add someone to a queue
    141 11/12/00 Open send credit line when sending packs
    138 7/16/00 Open compress old logs
    135 4/22/00 Open let (queued) users request dcc list
@@ -29,19 +28,16 @@ Short Term Features:
    204 2/2/04 Open configurable to cover both maxqueueditemsperperson and maxtransfersperperson
    205 2/12/04 Open switch to background on the fly
    207 4/02/04 Open md5sum uploads
-   212 6/08/04 Open configurable to enable/disable xdcc info
+?  212 6/08/04 Open configurable to enable/disable xdcc info
    214 7/17/04 Open invite into channel using chanserv
 
 Long Term Features:
    131 1/7/00 Open nochannel command, leave channels for x minutes   
-*  128 12/21/00 Done save current transfers and queue across a shutdown
    127 12/14/00 Open individual slotsmax for each pack
    123 10/21/99 Open lock console with password
    118 long ago Open telnet admin
    148 01/01/01 Open channel file for dynamic channels, read in like another config file and written by admin commands
-?  172 12/09/03 Open restrict list/send to only voiced/opped users
    187 12/09/03 Open lock/busy-out packs from gets
-*  188 12/09/03 Done password protect packs
    190 12/09/03 Open different bandwidth limiting for each day of the week
    195 12/09/03 Open IPv6 support
    202 1/19/04 Open Define hosts that are exempt from bandwidth limits  
