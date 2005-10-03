@@ -2983,6 +2983,78 @@ void notifyqueued(void)
   
 }
 
+void notifyqueued_nick(const char *nick)
+{
+  int i;
+  unsigned long rtime, lastrtime;
+  pqueue *pq;
+  transfer *tr;
+  
+  updatecontext();
+  
+  lastrtime=0;
+  
+  /* if we are sending more than allowed, we need to skip the difference */
+  for (i=0; i<irlist_size(&gdata.trans)-gdata.slotsmax; i++)
+    {
+      rtime=-1;
+      tr = irlist_get_head(&gdata.trans);
+      while(tr)
+        {
+          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
+          if (left > lastrtime && left < rtime)
+            {
+              rtime = left;
+            }
+          tr = irlist_get_next(tr);
+        }
+      if (rtime < 359999)
+        {
+          lastrtime=rtime;
+        }
+    }
+  
+  i=1;
+  pq = irlist_get_head(&gdata.mainqueue);
+  while(pq)
+    {
+      rtime=-1;
+      tr = irlist_get_head(&gdata.trans);
+      while(tr)
+        {
+          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
+          if (left > lastrtime && left < rtime)
+            {
+              rtime = left;
+            }
+          tr = irlist_get_next(tr);
+        }
+      if (rtime < 359999)
+        {
+          lastrtime=rtime;
+        }
+      
+      if (!strcasecmp(pq->nick, nick))
+        {
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+                  "Notifying Queued status to %s",
+                  nick);
+          notice_slow(pq->nick,"Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
+                  (long)(gdata.curtime-pq->queuedtime)/60/60,
+                  (long)((gdata.curtime-pq->queuedtime)/60)%60,
+                  pq->xpack->desc,
+                  i,
+                  irlist_size(&gdata.mainqueue),
+                  lastrtime/60/60,
+                  (lastrtime/60)%60,
+                  (rtime >= 359999) ? "more" : "less");
+        }
+      i++;
+      pq = irlist_get_next(pq);
+    }
+  
+}
+
 void notifybandwidth(void)
 {
   int i;

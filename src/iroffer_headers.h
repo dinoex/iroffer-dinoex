@@ -668,6 +668,7 @@ void isrotatelog(void);
 void createpassword(void);
 char inttosaltchar (int n);
 void notifyqueued(void);
+void notifyqueued_nick(const char *nick);
 void notifybandwidth(void);
 void notifybandwidthtrans(void);
 int look_for_file_changes(xdcc *xpack);

@@ -2933,6 +2933,11 @@ static void privmsgparse(const char* type, char* line) {
          ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC INFO %s",msg3);
          sendxdccinfo(nick, hostname, hostmask, packnumtonum(msg3), NULL);
          }
+         else if ( msg2 && !strcmp(msg2,"QUEUE")) {
+         if (!gdata.attop) gototop();
+         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC QUEUE (%s) ",hostmask);
+         notifyqueued_nick(nick);
+         }
 	 else if ( msg2 && !strcmp(msg2,"REMOVE")) {
          if (!gdata.attop) gototop();
          k=0;

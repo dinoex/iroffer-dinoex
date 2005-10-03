@@ -311,3 +311,8 @@ With Version mod 1.18:
 
 bugfix: ignore spaces in groupname (inspired by Chobits)
 
+40) XDCC QUEUE
+
+   new user commands:
+   XDCC QUEUE                 poll current queue status
+
