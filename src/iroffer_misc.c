@@ -3273,6 +3273,10 @@ void user_changed_nick(const char *oldnick, const char *newnick)
 	      userinqueue++;
               if ( userinqueue > gdata.maxqueueditemsperperson )
                 {
+                  notice(pq->nick,"** Removed From Queue: To many requests");
+                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+                          "Removed From Queue: To many requests for %s.",
+                          pq->nick);
                   mydelete(pq->nick);
                   mydelete(pq->hostname);
 	          old = pq;
@@ -3356,6 +3360,9 @@ void reverify_restrictsend(void)
           else if ((gdata.curtime - pq->restrictsend_bad) >= RESTRICTSEND_TIMEOUT)
             {
               notice(pq->nick,"** Removed From Queue: You are no longer on a known channel");
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+                      "Removed From Queue: %s not in known Channel.",
+                       pq->nick);
               mydelete(pq->nick);
               mydelete(pq->hostname);
               pq = irlist_delete(&gdata.mainqueue, pq);
