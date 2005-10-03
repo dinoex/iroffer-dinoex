@@ -2318,7 +2318,7 @@ static void parseline(char *line) {
                              {
                                if (nick[strlen(nick)-1] == '\1')
                                  {
-                                   nick[strlen(nick)-1] == '\0';
+                                   nick[strlen(nick)-1] = '\0';
                                  }
                                changeinmemberlist_mode(ch, nick,
                                                        gdata.prefixes[ii].p_symbol,
