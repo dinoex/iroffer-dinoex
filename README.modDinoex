@@ -329,3 +329,9 @@ Short Term Features:
 
    detect faked hostmasks and abort mutiple transfers to the same host
 
+43) LOCKGROUP, UNLOCKGROUP
+
+   new admin commands:
+   LOCKGROUP <g> <x>          Lock all packs in group <g> with password <x>
+   UNLOCKGROUP <g>            Unlock all packs in group <g>
+

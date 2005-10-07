@@ -69,6 +69,8 @@ static void u_chlimitinfo(const userinput * const u);
 static void u_chgets(const userinput * const u);
 static void u_lock(const userinput * const u);
 static void u_unlock(const userinput * const u);
+static void u_lockgroup(const userinput * const u);
+static void u_unlockgroup(const userinput * const u);
 static void u_groupdesc(const userinput * const u);
 static void u_group(const userinput * const u);
 static void u_regroup(const userinput * const u);
@@ -162,6 +164,8 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_chgets,   "CHGETS","n x","Change the get count of a pack"},
 {3,method_allow_all,u_lock,     "LOCK","n x","Lock the pack n with password x"},
 {3,method_allow_all,u_unlock,   "UNLOCK","n","Unlock the pack n"},
+{3,method_allow_all,u_lockgroup,   "LOCKGROUP","g x","Lock all packs in group <g> with password x"},
+{3,method_allow_all,u_unlockgroup, "UNLOCKGROUP","g","Unlock all packs in group <g>"},
 {3,method_allow_all,u_groupdesc,  "GROUPDESC","<g> <msg>","Change Desc of group <g> to <msg>"},
 {3,method_allow_all,u_group,      "GROUP","n <g>","Change Group of pack n to <g>"},
 {3,method_allow_all,u_regroup,    "REGROUP","<g> <new>","Change all packs of group <g> to <new>"},
@@ -3093,6 +3097,78 @@ static void u_unlock(const userinput * const u)
   mydelete(xd->lock);
   xd->lock = NULL;
   
+  write_statefile();
+  xdccsavetext();
+}
+
+static void u_lockgroup(const userinput * const u)
+{
+   xdcc *xd;
+   int n;
+   
+   updatecontext();
+   
+   if (!u->arg1 || !strlen(u->arg1))
+     {
+       u_respond(u,"Try Specifying a Group");
+       return;
+     }
+   
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+      u_respond(u,"Try Specifying a Password");
+      return;
+    }
+  
+   n = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       n++;
+       if (xd->group != NULL)
+         {
+           if (strcasecmp(xd->group,u->arg1) == 0)
+             {
+                u_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2e);
+                xd->lock = mycalloc(strlen(u->arg2e)+1);
+                strcpy(xd->lock,u->arg2e);
+             }
+         }
+       xd = irlist_get_next(xd);
+     }
+  write_statefile();
+  xdccsavetext();
+}
+
+static void u_unlockgroup(const userinput * const u)
+{
+   xdcc *xd;
+   int n;
+   
+   updatecontext();
+   
+   if (!u->arg1 || !strlen(u->arg1))
+     {
+       u_respond(u,"Try Specifying a Group");
+       return;
+     }
+   
+   n = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       n++;
+       if (xd->group != NULL)
+         {
+           if (strcasecmp(xd->group,u->arg1) == 0)
+             {
+                u_respond(u, "UNLOCK: [Pack %i]", n);
+                mydelete(xd->lock);
+                xd->lock = NULL;
+             }
+         }
+       xd = irlist_get_next(xd);
+     }
   write_statefile();
   xdccsavetext();
 }
