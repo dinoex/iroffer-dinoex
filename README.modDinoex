@@ -325,3 +325,7 @@ bugfix: ignore spaces in groupname (inspired by Chobits)
 Short Term Features:
 174 12/09/03 Open user can cancel pending transfer
 
+42) ignoreduplicateip (inspired by Chobits)
+
+   detect faked hostmasks and abort mutiple transfers to the same host
+

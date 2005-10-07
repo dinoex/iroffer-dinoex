@@ -101,6 +101,7 @@ int groupsincaps;
 int ignoreuploadbandwidth;
 int holdqueue;
 int removelostfiles;
+int ignoreduplicateip;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;

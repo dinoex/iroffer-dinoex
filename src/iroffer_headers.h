@@ -677,6 +677,7 @@ void user_changed_nick(const char *oldnick, const char *newnick);
 int has_joined_channels(int all);
 void reverify_restrictsend(void);
 void reset_download_limits(void);
+void check_duplicateip(void);
 
 /* statefile.c */
 void write_statefile(void);

@@ -110,6 +110,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"ignoreuploadbandwidth", &gdata.ignoreuploadbandwidth, &gdata.ignoreuploadbandwidth },
   {"holdqueue",            &gdata.holdqueue,            &gdata.holdqueue },
   {"removelostfiles",      &gdata.removelostfiles,      &gdata.removelostfiles },
+  {"ignoreduplicateip",    &gdata.ignoreduplicateip,    &gdata.ignoreduplicateip },
 };
 
 typedef struct
@@ -2404,6 +2405,7 @@ void reinit_config_vars(void)
   gdata.ignoreuploadbandwidth = 0;
   gdata.holdqueue = 0;
   gdata.removelostfiles = 0;
+  gdata.ignoreduplicateip = 0;
   mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
@@ -3402,6 +3404,85 @@ void reset_download_limits(void)
         }
       xd = irlist_get_next(xd);
     }
+}
+
+void check_duplicateip(void)
+{
+  igninfo *ignore;
+  char *bhostmask;
+  transfer *tr;
+  int found;
+  int num;
+  
+  num = 24 * 60; /* 1 day */
+  found = 0;
+  tr = irlist_get_head(&gdata.trans);
+  while(tr)
+    {
+      if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
+         (tr->remoteip == tr->remoteip))
+        {
+          if (strcmp(tr->hostname,"man"))
+            found ++;
+        }
+      tr = irlist_get_next(tr);
+    }
+
+  if (found <= gdata.maxtransfersperperson)
+    return;
+
+  tr = irlist_get_head(&gdata.trans);
+  while(tr)
+    {
+      if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
+         (tr->remoteip == tr->remoteip))
+        {
+          t_closeconn(tr, "You are being punished for pararell downloads", 0);
+          bhostmask = mymalloc(strlen(tr->hostname)+5);
+          sprintf(bhostmask, "*!*@%s", tr->hostname);
+          ignore = irlist_get_head(&gdata.ignorelist);
+          while(ignore)
+            {
+              if (ignore->regexp && !regexec(ignore->regexp,bhostmask,0,NULL,0))
+                {
+                  break;
+                }
+              ignore = irlist_get_next(ignore);
+            }
+          
+          if (!ignore)
+            {
+              char *tempstr;
+              
+              ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
+              ignore->regexp = mycalloc(sizeof(regex_t));
+              
+              ignore->hostmask = mymalloc(strlen(bhostmask)+1);
+              strcpy(ignore->hostmask,bhostmask);
+              
+              tempstr = hostmasktoregex(bhostmask);
+              if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
+                {
+                  ignore->regexp = NULL;
+                }
+              
+              ignore->flags |= IGN_IGNORING;
+              ignore->lastcontact = gdata.curtime;
+              
+              mydelete(tempstr);
+            }
+          
+          ignore->flags |= IGN_MANUAL;
+          ignore->bucket = (num*60)/gdata.autoignore_threshold;
+        
+          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                  "same IP detected, Ignore activated for %s which will last %i min",
+                  bhostmask,num);
+        }
+      tr = irlist_get_next(tr);
+    }
+
+  write_statefile();
 }
 
 /* End of File */
