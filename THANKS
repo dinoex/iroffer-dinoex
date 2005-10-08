@@ -1,5 +1,5 @@
 
-I like to thank those who helped to impove iroffer:
+I like to thank those who helped to improve iroffer:
 
 David Johnson (PMG)
 	original distribution
@@ -31,6 +31,9 @@ TheDeath
 	reporting regroup bug
 	reporting send problem
 	option "channel -headline"
+	reporting removelostfiles problem
+	"CHLIMIT" command
+	porting to WIN32
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -41,6 +44,9 @@ TheDeath
 
 Chobits
 	option "channel -headline"
+	"CHLIMITINFO" command
+	spaces in groupname problem
+	ignoreduplicateip
 
 Neo2001
 	"REMOVEGROUP" comamnd
@@ -48,4 +54,11 @@ Neo2001
 
 StoVoKor
 	reporting xdcclistfile bug
+
+conanmichi
+	reporting group descriptions problmes
+	reporting ambigious online help
+
+Kyu
+	groupname as default group description
 
