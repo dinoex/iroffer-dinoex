@@ -335,3 +335,7 @@ Short Term Features:
    LOCKGROUP <g> <x>          Lock all packs in group <g> with password <x>
    UNLOCKGROUP <g>            Unlock all packs in group <g>
 
+bugfix: addnew (inspired by StoVoKor)
+   check filestate instead of name in addnew and noduplicatefiles
+   duplicates are detected even when path is spelled diferently
+

@@ -2265,6 +2265,7 @@ static void u_add(const userinput * const u) {
    struct stat st;
    xdcc *xd;
    char *group;
+   char *file;
    char *a1;
    char *a2;
    
@@ -2275,11 +2276,61 @@ static void u_add(const userinput * const u) {
       return;
       }
    
+   file = mymalloc(strlen(u->arg1e)+1);
+   strcpy(file,u->arg1e);
+   convert_to_unix_slash(file);
+   
+   xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+   
+   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
+     {
+       mydelete(file);
+       file = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
+       sprintf(file,"%s/%s",gdata.filedir,u->arg1e);
+       convert_to_unix_slash(file);
+       xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+     }
+   
+   if (xfiledescriptor < 0) {
+      u_respond(u,"Cant Access File: %s",strerror(errno));
+      mydelete(file);
+      return;
+      }
+   
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      u_respond(u,"Cant Access File Details: %s",strerror(errno));
+      close(xfiledescriptor);
+      mydelete(file);
+      return;
+     }
+   close(xfiledescriptor);
+   
+   if (!S_ISREG(st.st_mode))
+     {
+      u_respond(u,"%s is not a file",file);
+      mydelete(file);
+      return;
+     }
+   
+   if ( st.st_size == 0 ) {
+      u_respond(u,"File has size of 0 bytes!");
+      mydelete(file);
+      return;
+      }
+   
+   if ((st.st_size > gdata.max_file_size) || (st.st_size < 0)) {
+      u_respond(u,"File is too large.");
+      mydelete(file);
+      return;
+      }
+   
    if (gdata.noduplicatefiles) {
       xd = irlist_get_head(&gdata.xdccs);
       while(xd)
          {
-           if (!strcmp(u->arg1e, xd->file))
+           if ((xd->st_dev == st.st_dev) &&
+              (xd->st_ino == st.st_ino))
              {
                u_respond(u,"File '%s' is already added.", u->arg1e);
                return;
@@ -2311,8 +2362,7 @@ static void u_add(const userinput * const u) {
    
    xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
    
-   xd->file = mymalloc(strlen(u->arg1e)+1);
-   strcpy(xd->file,u->arg1e);
+   xd->file = file;
    
    xd->note = mymalloc(1);
    strcpy(xd->note,"");
@@ -2320,55 +2370,9 @@ static void u_add(const userinput * const u) {
    xd->desc = mymalloc(strlen(getfilename(u->arg1e)) + 1);
    strcpy(xd->desc,getfilename(u->arg1e));
    
-   convert_to_unix_slash(xd->file);
-   
    xd->gets = 0;
    xd->minspeed = gdata.transferminspeed;
    xd->maxspeed = gdata.transfermaxspeed;
-
-   xfiledescriptor=open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
-   
-   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
-     {
-       mydelete(xd->file);
-       xd->file = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
-       sprintf(xd->file,"%s/%s",gdata.filedir,u->arg1e);
-       convert_to_unix_slash(xd->file);
-       xfiledescriptor=open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
-     }
-   
-   if (xfiledescriptor < 0) {
-      u_respond(u,"Cant Access File: %s",strerror(errno));
-      mydelete(xd->file);
-      mydelete(xd->desc);
-      mydelete(xd->note);
-      irlist_delete(&gdata.xdccs, xd);
-      return;
-      }
-   
-   if (fstat(xfiledescriptor,&st) < 0)
-     {
-      u_respond(u,"Cant Access File Details: %s",strerror(errno));
-      mydelete(xd->file);
-      mydelete(xd->desc);
-      mydelete(xd->note);
-      irlist_delete(&gdata.xdccs, xd);
-      close(xfiledescriptor);
-      return;
-     }
-   
-   if (!S_ISREG(st.st_mode))
-     {
-      u_respond(u,"%s is not a file",xd->file);
-      mydelete(xd->file);
-      mydelete(xd->desc);
-      mydelete(xd->note);
-      irlist_delete(&gdata.xdccs, xd);
-      close(xfiledescriptor);
-      return;
-     }
-   
-   close(xfiledescriptor);
    
    xd->st_size  = st.st_size;
    xd->st_dev   = st.st_dev;
@@ -2378,25 +2382,6 @@ static void u_add(const userinput * const u) {
    xd->file_fd = FD_UNUSED;
    xd->file_fd_count = 0;
    xd->file_fd_location = 0;
-   
-   if ( xd->st_size == 0 ) {
-      u_respond(u,"File has size of 0 bytes!");
-      mydelete(xd->file);
-      mydelete(xd->desc);
-      mydelete(xd->note);
-      irlist_delete(&gdata.xdccs, xd);
-      return;
-      }
-   
-   if ((xd->st_size > gdata.max_file_size) || (xd->st_size < 0)) {
-      u_respond(u,"File is too large.");
-      mydelete(xd->file);
-      mydelete(xd->desc);
-      mydelete(xd->note);
-      irlist_delete(&gdata.xdccs, xd);
-      return;
-      }
-   
    
    u_respond(u, "ADD PACK: [Pack: %i] [File: %s] Use CHDESC to change description",
              irlist_size(&gdata.xdccs),xd->file);
@@ -2604,7 +2589,8 @@ static void u_addnew(const userinput * const u)
           xd = irlist_get_head(&gdata.xdccs);
           while(xd)
             {
-              if (!strcmp(tempstr, xd->file))
+              if ((xd->st_dev == st.st_dev) &&
+                  (xd->st_ino == st.st_ino))
                 {
                   foundit = 1;
                   break;
