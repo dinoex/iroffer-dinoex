@@ -3441,7 +3441,7 @@ void reset_download_limits(void)
     }
 }
 
-void check_duplicateip(void)
+void check_duplicateip(transfer *const newtr)
 {
   igninfo *ignore;
   char *bhostmask;
@@ -3455,7 +3455,7 @@ void check_duplicateip(void)
   while(tr)
     {
       if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
-         (tr->remoteip == tr->remoteip))
+         (tr->remoteip == newtr->remoteip))
         {
           if (strcmp(tr->hostname,"man"))
             found ++;

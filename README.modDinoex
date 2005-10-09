@@ -348,3 +348,9 @@ bugfix: addnew (inspired by StoVoKor)
 
   clear transferlimits too
 
+With Version mod 1.19:
+----------------------
+
+bugfix: ignoreduplicateip
+  does incorrectly detect all transfers as invalid.
+

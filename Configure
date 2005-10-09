@@ -7,7 +7,7 @@
 
 VERSION=1.4.b02
 RELEASE=1
-MOD="1.18"
+MOD="1.19"
 
 if [ -d BitKeeper -a -f "`type bk 2>/dev/null | awk '{print $NF}'`" ]; then
  CSET=`bk prs -h -d':UTC:\n' -r+ ChangeSet`

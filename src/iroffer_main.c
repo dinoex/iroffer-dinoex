@@ -1064,7 +1064,7 @@ static void mainloop (void) {
               t_establishcon(tr);
               if ((gdata.ignoreduplicateip) && (gdata.maxtransfersperperson > 0))
                 {
-                  check_duplicateip();
+                  check_duplicateip(tr);
                 }
             }
           
