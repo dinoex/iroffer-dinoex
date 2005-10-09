@@ -339,3 +339,8 @@ bugfix: addnew (inspired by StoVoKor)
    check filestate instead of name in addnew and noduplicatefiles
    duplicates are detected even when path is spelled diferently
 
+44) XDCC STOP (inspired by StoVoKor)
+
+  new user commands:
+  XDCC STOP                   aborts long XDCC LISTS
+

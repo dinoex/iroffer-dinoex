@@ -1495,3 +1495,5 @@
 1495 "UNLOCKGROUP"
 1496 "g"
 1497 "Unlock all packs in group <g>"
+1498 "STOP"
+1499 "XDCC STOP from %s"

@@ -2942,6 +2942,10 @@ static void privmsgparse(const char* type, char* line) {
          ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC QUEUE (%s) ",hostmask);
          notifyqueued_nick(nick);
          }
+         else if ( msg2 && !strcmp(msg2,"STOP")) {
+           if (!irlist_size(&gdata.serverq_slow))
+            stoplist(nick);
+         }
          else if ( msg2 && !strcmp(msg2,"CANCEL")) {
          if (!gdata.attop) gototop();
          /* stop transfers */

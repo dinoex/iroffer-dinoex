@@ -1442,6 +1442,41 @@ void sendserver(void)
   return;
 }
 
+void stoplist(const char *nick)
+{
+  char *item;
+  char *copy;
+  char *end;
+  char *inick;
+
+  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC STOP from %s", nick);
+  item = irlist_get_head(&gdata.serverq_slow);
+  while (item)
+    {
+      inick = NULL;
+      copy = mymalloc(strlen(item)+1);
+      strcpy(copy, item);
+      inick = strchr(copy, ' ');
+      if (inick != NULL)
+        {
+          *(inick++) = 0;
+          end = strchr(inick, ' ');
+          if (end != NULL)
+            {
+              *(end++) = 0;
+              if (strcasecmp(inick,nick) == 0)
+                {
+                   if ( (strcmp(copy,"PRIVMSG") == 0) || (strcmp(copy,"NOTICE") == 0) )
+                     {
+                       item = irlist_delete(&gdata.serverq_slow, item);
+                       continue;
+                     }
+                }
+            }
+        }
+      item = irlist_get_next(item);
+    }
+}
 
 /* 'Sanitize' the filename in full, putting the sanitized copy into copy. */
 char* getsendname(char * const full)
