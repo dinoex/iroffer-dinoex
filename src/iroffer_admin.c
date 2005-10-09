@@ -190,7 +190,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_allow_all,u_rehash,   "REHASH",NULL,"Re-reads config file(s) and reconfigures"},
 {5,method_allow_all,u_botinfo,  "BOTINFO",NULL,"Show Information about the bot status"},
 {5,method_allow_all,u_memstat,  "MEMSTAT",NULL,"Show Information about memory usage"},
-{5,method_allow_all,u_clearrecords, "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, and total sent"},
+{5,method_allow_all,u_clearrecords, "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, total sent, and transfer limits"},
 {5,method_console,  u_redraw,   "REDRAW",NULL,"Redraws the Screen"},
 {5,method_console,  u_delhist,  "DELHIST",NULL,"Deletes console history"},
 {5,method_dcc,      u_quit,     "QUIT",NULL,"Close this DCC chat"},
@@ -3821,19 +3821,21 @@ static void u_botinfo(const userinput * const u) {
    
    for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
      {
+       char *tempstr2 = mycalloc(maxtextlength);
+       
+       getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlength);
+       
        if (gdata.transferlimits[ii].limit)
          {
-           u_respond(u, "transferlimit: %-7s %-8s: used %" LLPRINTFMT "uMB, limit %" LLPRINTFMT "uMB",
-                     transferlimit_type_to_string(ii),
-                     gdata.transferlimits[ii].limit ? "enabled" : "disabled",
+           u_respond(u, "transferlimit: %7s (ends %s): used %" LLPRINTFMT "uMB, limit %" LLPRINTFMT "uMB",
+                     transferlimit_type_to_string(ii), tempstr2,
                      gdata.transferlimits[ii].used / 1024 / 1024,
                      gdata.transferlimits[ii].limit / 1024 / 1024);
          }
        else
          {
-           u_respond(u, "transferlimit: %-7s %-8s: used %" LLPRINTFMT "uMB",
-                     transferlimit_type_to_string(ii),
-                     gdata.transferlimits[ii].limit ? "enabled" : "disabled",
+           u_respond(u, "transferlimit: %7s (ends %s): used %" LLPRINTFMT "uMB, limit unlimited",
+                     transferlimit_type_to_string(ii),tempstr2 ,
                      gdata.transferlimits[ii].used / 1024 / 1024);
          }
      }
@@ -4781,17 +4783,24 @@ static void u_listul(const userinput * const u)
   
 }
 
-static void u_clearrecords(const userinput * const u) {
-   updatecontext();
-   
-   gdata.record = 0;
-   gdata.sentrecord = 0;
-   gdata.totalsent = 0;
-   gdata.totaluptime = 0;
-   
-   u_respond(u,"Cleared transfer record, bandwidth record, total sent, and total uptime");
-   
-   }
+static void u_clearrecords(const userinput * const u)
+{
+  int ii;
+  updatecontext();
+  
+  gdata.record = 0;
+  gdata.sentrecord = 0;
+  gdata.totalsent = 0;
+  gdata.totaluptime = 0;
+  
+  for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
+    {
+      gdata.transferlimits[ii].ends = 0;
+    }
+  
+  u_respond(u,"Cleared transfer record, bandwidth record, total sent, total uptime, and transfer limits");
+  
+}
 
 static void u_rmul(const userinput * const u) {
    char *tempstr;

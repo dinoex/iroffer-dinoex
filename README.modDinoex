@@ -344,3 +344,7 @@ bugfix: addnew (inspired by StoVoKor)
   new user commands:
   XDCC STOP                   aborts long XDCC LISTS
 
+45) CLEARRECORDS (from PMG)
+
+  clear transferlimits too
+
