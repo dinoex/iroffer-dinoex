@@ -29,7 +29,7 @@ u_respond(const userinput * const u, const char *format, ...);
 
 static void u_help(const userinput * const u);
 static int u_xdl_space(void);
-static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd);
+static void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xdcc *xd);
 static void u_xdl_head(const userinput * const u);
 static void u_xdl_foot(const userinput * const u);
 static void u_xdl_full(const userinput * const u);
@@ -515,6 +515,25 @@ static void u_help(const userinput * const u)
   
 }
 
+static int u_is_locked(const userinput * const u, const xdcc *xd) {
+  if (gdata.hidelockedpacks == 0)
+    return 0;
+   
+  if (xd->lock == NULL)
+    return 0;
+   
+  switch (u->method)
+    {
+    case method_xdl_channel:
+    case method_xdl_user_privmsg:
+    case method_xdl_user_notice:
+      return 1;
+    default:
+      break;
+    }
+  return 0;
+}
+
 static int u_xdl_space(void) {
    int i,s;
    xdcc *xd;
@@ -534,10 +553,14 @@ static int u_xdl_space(void) {
    return s;
 }
    
-static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd) {
+static void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xdcc *xd) {
+   static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
    char *sizestrstr;
    int len;
-        
+   
+   if (u_is_locked(u,xd) != 0)
+     return;
+   
    sizestrstr = sizestr(1, xd->st_size);
    snprintf(tempstr, maxtextlength - 1,
            "\2#%-2i\2 %*ix [%s] %s",
@@ -547,7 +570,7 @@ static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd) {
             xd->desc);
    len = strlen(tempstr);
    mydelete(sizestrstr);
-       
+   
    if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed)
      {
         snprintf(tempstr + len, maxtextlength - 1 - len,
@@ -555,13 +578,20 @@ static void u_xdl_pack(char *tempstr, int i, int s, const xdcc *xd) {
                  xd->minspeed);
         len = strlen(tempstr);
      }
-        
+   
    if (xd->maxspeed > 0 && xd->maxspeed != gdata.transfermaxspeed)
      {
         snprintf(tempstr + len, maxtextlength - 1 - len,
                  " [%1.1fK Max]",
                  xd->maxspeed);
         len = strlen(tempstr);
+     }
+   
+   u_respond(u,"%s",tempstr);
+   
+   if (xd->note && strlen(xd->note))
+     {
+       u_respond(u," \2^-\2%s%s",spaces[s],xd->note);
      }
 }
 
@@ -786,8 +816,7 @@ static void u_xdl_full(const userinput * const u) {
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
-       u_xdl_pack(tempstr,i,s,xd);
-       u_respond(u,"%s",tempstr);
+       u_xdl_pack(u,tempstr,i,s,xd);
        i++;
        xd = irlist_get_next(xd);
      }
@@ -825,8 +854,7 @@ static void u_xdl_group(const userinput * const u) {
                    u_respond(u,"group: %s %s",msg3,xd->group_desc);
                  }
 
-               u_xdl_pack(tempstr,i,s,xd);
-               u_respond(u,"%s",tempstr);
+               u_xdl_pack(u,tempstr,i,s,xd);
                k++;
              }
          }
@@ -844,7 +872,6 @@ static void u_xdl_group(const userinput * const u) {
 static void u_xdl(const userinput * const u) {
    char *tempstr;
    char *inlist;
-   static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
    int i,m,s;
    xdcc *xd;
    irlist_t grplist = {};
@@ -866,14 +893,7 @@ static void u_xdl(const userinput * const u) {
        /* skip is group is set */
        if (xd->group == NULL)
          {
-           u_xdl_pack(tempstr,i,s,xd);
-           u_respond(u,"%s",tempstr);
-       
-           if (xd->note && strlen(xd->note))
-             {
-               u_respond(u," \2^-\2%s%s",spaces[s],xd->note);
-             }
-       
+           u_xdl_pack(u,tempstr,i,s,xd);
          }
        i++;
        xd = irlist_get_next(xd);

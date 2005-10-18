@@ -111,6 +111,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"holdqueue",            &gdata.holdqueue,            &gdata.holdqueue },
   {"removelostfiles",      &gdata.removelostfiles,      &gdata.removelostfiles },
   {"ignoreduplicateip",    &gdata.ignoreduplicateip,    &gdata.ignoreduplicateip },
+  {"hidelockedpacks",      &gdata.hidelockedpacks,      &gdata.hidelockedpacks },
 };
 
 typedef struct
@@ -2441,6 +2442,7 @@ void reinit_config_vars(void)
   gdata.holdqueue = 0;
   gdata.removelostfiles = 0;
   gdata.ignoreduplicateip = 0;
+  gdata.hidelockedpacks = 0;
   mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;

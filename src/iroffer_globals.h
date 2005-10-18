@@ -102,6 +102,7 @@ int ignoreuploadbandwidth;
 int holdqueue;
 int removelostfiles;
 int ignoreduplicateip;
+int hidelockedpacks;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;

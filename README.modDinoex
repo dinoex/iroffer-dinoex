@@ -362,3 +362,7 @@ With Version mod 1.20:
 
    Pack will be added to queue, even if queue limits are reached
 
+47) hidelockedpacks
+
+   dont show locked packs on XDCC INFO and XDCC LIST for users
+

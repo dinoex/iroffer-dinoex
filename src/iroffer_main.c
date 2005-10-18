@@ -3375,6 +3375,13 @@ void sendxdccinfo(const char* nick,
   
   xd = irlist_get_nth(&gdata.xdccs, pack-1);
   
+  if ((gdata.hidelockedpacks != 0) && (xd->lock != NULL))
+    {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (locked pack): ");
+      notice(nick,"** Invalid Pack Number, Try Again");
+      goto done;
+    }
+  
   ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," requested: ");
   
   notice_slow(nick, "Pack Info for Pack #%i:", pack);
