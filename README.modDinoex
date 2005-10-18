@@ -352,5 +352,13 @@ With Version mod 1.19:
 ----------------------
 
 bugfix: ignoreduplicateip
-  does incorrectly detect all transfers as invalid.
+  versions affected: 1.18
+  did incorrectly detect all transfers as invalid
+
+With Version mod 1.20:
+----------------------
+
+46) admin command: queue (inspired by TheDeath)
+
+   Pack will be added to queue, even if queue limits are reached
 

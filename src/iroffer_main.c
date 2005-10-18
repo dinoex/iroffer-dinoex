@@ -3429,6 +3429,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
    pqueue *tempq;
    xdcc *tempx;
    int inq,alreadytrans;
+   int man;
    pqueue *pq;
    
    updatecontext();
@@ -3456,8 +3457,17 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
                "Denied, You already have that item queued.");
       return tempstr;
       }
+    
+   if (!strcmp(hostname,"man"))
+      {
+        man = 1;
+      }
+    else
+      {
+        man = 0;
+      }
    
-   if (inq >= gdata.maxqueueditemsperperson) {
+   if (!man && (inq >= gdata.maxqueueditemsperperson)) {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (user/queue): ");
       snprintf(tempstr, maxtextlength,
                "Denied, You already have %i items queued, Try Again Later",
@@ -3465,7 +3475,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
       return tempstr;
       }
    
-      if (irlist_size(&gdata.mainqueue) >= gdata.queuesize) {
+      if (!man && (irlist_size(&gdata.mainqueue) >= gdata.queuesize)) {
          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (slot/queue): ");
          snprintf(tempstr, maxtextlength,
                   "Main queue of size %d is Full, Try Again Later",
