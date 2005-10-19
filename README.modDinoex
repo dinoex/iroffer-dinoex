@@ -133,7 +133,7 @@ With Version mod 1.7:
 With Version mod 1.8:
 ---------------------
 
-15) queue
+15) queue (from Porakin, taken from iroffer-lamm)
 
    new admin commands:
    QUEUE <nick> <pack>       Queues Pack for given Nick
