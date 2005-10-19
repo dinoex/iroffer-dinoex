@@ -370,3 +370,11 @@ bugfix: getipfromserver
   versions affected: 1.3 - 1.19
   on reash the DCC IP was lost, transfers did not work until reconnect
 
+48) disablexdccinfo
+
+   disable command XDCC INFO for all
+
+   References TODO:
+Short Term Features:
+212 6/08/04 Open configurable to enable/disable xdcc info
+

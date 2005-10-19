@@ -1491,3 +1491,6 @@
 1501 " Denied (locked pack): "
 1502 "hidelockedpacks"
 1503 "Invalid ID number, Try \"CHATL\" for a list"
+1504 "** XDCC INFO denied, disabled by configuration"
+1505 " ignored: "
+1506 "disablexdccinfo"

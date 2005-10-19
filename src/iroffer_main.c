@@ -3351,6 +3351,13 @@ void sendxdccinfo(const char* nick,
   
   updatecontext();
   
+  if (gdata.disablexdccinfo)
+    {
+      notice(nick,"** XDCC INFO denied, disabled by configuration");
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," ignored: ");
+      goto done;
+    }
+  
   if (!verifyhost(&gdata.downloadhost, hostmask))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (host denied): ");

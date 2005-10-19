@@ -27,7 +27,6 @@ Short Term Features:
    204 2/2/04 Open configurable to cover both maxqueueditemsperperson and maxtransfersperperson
    205 2/12/04 Open switch to background on the fly
    207 4/02/04 Open md5sum uploads
-?  212 6/08/04 Open configurable to enable/disable xdcc info
    214 7/17/04 Open invite into channel using chanserv
 
 Long Term Features:

@@ -103,6 +103,7 @@ int holdqueue;
 int removelostfiles;
 int ignoreduplicateip;
 int hidelockedpacks;
+int disablexdccinfo;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;

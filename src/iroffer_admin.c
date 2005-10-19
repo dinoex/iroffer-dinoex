@@ -738,7 +738,7 @@ static void u_xdl_head(const userinput * const u) {
        u_respond(u,"\2**\2 To request a file, type \"/msg %s xdcc send #x\" \2**\2",
                  (gdata.user_nick ? gdata.user_nick : "??"));
        
-       if (gdata.hide_list_info == 0)
+       if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
           u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info #x\" \2**\2",
                     (gdata.user_nick ? gdata.user_nick : "??"));
        
