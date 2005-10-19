@@ -3454,7 +3454,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
    pq = irlist_get_head(&gdata.mainqueue);
    while(pq)
      {
-       if (!strcmp(pq->hostname,hostname))
+       if (!strcmp(pq->hostname,hostname) || !strcasecmp(pq->nick,nick))
          {
            inq++;
            if (pq->xpack == tempx)

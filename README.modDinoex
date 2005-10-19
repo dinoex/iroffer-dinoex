@@ -378,3 +378,6 @@ bugfix: getipfromserver
 Short Term Features:
 212 6/08/04 Open configurable to enable/disable xdcc info
 
+bugfix: admin command: queue
+   detect if user try to queue and manuel queued pack
+
