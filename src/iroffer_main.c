@@ -2939,7 +2939,7 @@ static void privmsgparse(const char* type, char* line) {
          }
          else if ( msg2 && !strcmp(msg2,"QUEUE")) {
          if (!gdata.attop) gototop();
-         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC QUEUE (%s) ",hostmask);
+         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC QUEUE (%s)\n",hostmask);
          notifyqueued_nick(nick);
          }
          else if ( msg2 && !strcmp(msg2,"STOP")) {
@@ -2959,7 +2959,7 @@ static void privmsgparse(const char* type, char* line) {
                    }
                }
            }
-         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC CANCEL (%s) ",hostmask);
+         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC CANCEL (%s)\n",hostmask);
          }
 	 else if ( msg2 && !strcmp(msg2,"REMOVE")) {
          if (!gdata.attop) gototop();
