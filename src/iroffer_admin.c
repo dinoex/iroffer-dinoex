@@ -3510,6 +3510,10 @@ static void u_rehash(const userinput * const u) {
    
    u_respond(u,"Reconfiguring...");
    
+   /* keep dynamic IP */
+   if (gdata.getipfromserver)
+     gdata.ourip = gdata.r_ourip;
+   
    needtojump=0;
    if (gdata.local_vhost != gdata.r_local_vhost)
      {

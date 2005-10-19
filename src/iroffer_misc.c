@@ -192,6 +192,7 @@ void update_natip (const char *var)
     return;
   
   gdata.ourip = ntohl(in.s_addr);
+  gdata.r_ourip = gdata.ourip;
   oldtxt = strdup(inet_ntoa(old));
   mylog(CALLTYPE_NORMAL,"DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
   free(oldtxt);

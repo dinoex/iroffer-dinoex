@@ -124,6 +124,7 @@ unsigned long r_local_vhost;
 char *r_pidfile;
 char *r_config_nick;
 float r_transferminspeed, r_transfermaxspeed;
+unsigned long r_ourip;
 
 /* server */
 irlist_t servers;
