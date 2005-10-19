@@ -2119,8 +2119,7 @@ static void parseline(char *line) {
             }
 	  else
             {
-	      if (gdata.need_voice == 0)
-                addtomemberlist(ch,nick);
+              addtomemberlist(ch,nick);
             }
 	}
 	
