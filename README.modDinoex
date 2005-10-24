@@ -384,3 +384,8 @@ bugfix: admin command: queue
 bugfix: need_voice
    solved a problem when users joined with voice set
 
+49) HOP (inspired by TheDeath)
+
+   new admin command:
+   HOP <channel>              leave and rejoin a channel to get status
+

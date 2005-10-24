@@ -97,6 +97,7 @@ static void u_qsend(const userinput * const u);
 static void u_holdqueue(const userinput * const u);
 static void u_shutdown(const userinput * const u);
 static void u_debug(const userinput * const u);
+static void u_hop(const userinput * const u);
 static void u_jump(const userinput * const u);
 static void u_servqc(const userinput * const u);
 static void u_servers(const userinput * const u);
@@ -184,6 +185,7 @@ static const userinput_parse_t userinput_parse[] = {
 {4,method_allow_all,u_raw,      "RAW","<command>","Send <command> to server (RAW IRC)"},
 
 {5,method_allow_all,u_servers,  "SERVERS",NULL,"Shows the server list"},
+{5,method_allow_all,u_hop,      "HOP","<channel>","leave and rejoin a channel to get status"},
 {5,method_allow_all,u_jump,     "JUMP","<num>","Switches to a random server or server <num>"},
 {5,method_allow_all,u_servqc,   "SERVQC",NULL,"Clears the server send queue"},
 {5,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},
@@ -4478,6 +4480,27 @@ static void u_servqc(const userinput * const u)
   irlist_delete_all(&gdata.serverq_normal);
   irlist_delete_all(&gdata.serverq_slow);
   return;
+}
+
+static void u_hop(const userinput * const u)
+{
+   channel_t *ch;
+   
+   updatecontext();
+   
+   /* part & join channels */
+   ch = irlist_get_head(&gdata.channels);
+   while(ch)
+     {
+       if ((!u->arg1) || (!strcasecmp(u->arg1,ch->name)))
+         {
+           writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
+           clearmemberlist(ch);
+           ch->flags &= ~CHAN_ONCHAN;
+           joinchannel(ch);
+         }
+       ch = irlist_get_next(ch);
+     }
 }
 
 static void u_jump(const userinput * const u)

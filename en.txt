@@ -1494,3 +1494,6 @@
 1504 "** XDCC INFO denied, disabled by configuration"
 1505 " ignored: "
 1506 "disablexdccinfo"
+1507 "HOP"
+1508 "<channel>"
+1509 "leave and rejoin a channel to get status"
