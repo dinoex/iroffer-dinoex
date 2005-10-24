@@ -791,9 +791,9 @@ int verifypass(const char *testpass) {
      return 0;
    
    if (
-     strlen(gdata.adminpass) != 13
+     strlen(gdata.adminpass) < 13
      || strlen(testpass) < 5
-     || strlen(testpass) > 8
+     || strlen(testpass) > 59
      )
      return 0;
    
@@ -1202,13 +1202,14 @@ void checkadminpass(void) {
    
    updatecontext();
 
-   if (!gdata.adminpass || strlen(gdata.adminpass) != 13) err++;
+   if (!gdata.adminpass || strlen(gdata.adminpass) < 13) err++;
    
-   for (i=0; !err && i<13; i++) {
+   for (i=0; !err && i<strlen(gdata.adminpass); i++) {
       if (!((gdata.adminpass[i] >= 'a' && gdata.adminpass[i] <= 'z') ||
             (gdata.adminpass[i] >= 'A' && gdata.adminpass[i] <= 'Z') ||
             (gdata.adminpass[i] >= '0' && gdata.adminpass[i] <= '9') ||
             (gdata.adminpass[i] == '.') ||
+            (gdata.adminpass[i] == '$') ||
             (gdata.adminpass[i] == '/')))
          err++;
       }

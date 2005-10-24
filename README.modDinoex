@@ -389,3 +389,8 @@ bugfix: need_voice
    new admin command:
    HOP <channel>              leave and rejoin a channel to get status
 
+50) generate md5 password hash per default (inspired by TheDeath)
+
+   use extended "crypt" for longer passwords
+   old passwords are not affected
+

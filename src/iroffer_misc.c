@@ -2857,7 +2857,7 @@ void createpassword(void) {
 #ifndef NO_CRYPT
    char pw1[maxtextlengthshort], pw2[maxtextlengthshort];
    int len, ok, saltnum;
-   char salt[3], *pwout;
+   char salt[6], *pwout;
    
    printf("\niroffer v" VERSIONLONG " by PMG\n"
           "  Configuration File Password Generator\n"
@@ -2866,7 +2866,7 @@ void createpassword(void) {
           "You should place the output this program generates in your config file.\n"
           "You can then use your password you enter here over irc.\n"
           "\n"
-          "Your password must be between 5 and 8 characters\n");
+          "Your password must be between 5 and 59 characters\n");
    
    
    ok = 0;
@@ -2877,7 +2877,7 @@ void createpassword(void) {
          { fprintf(stderr,"Couldn't Read Your Password, Try Again\n"); exit(1); }
       if (pw1[len-1] == '\n') { pw1[len-1] = '\0'; len--;}
       
-      if ( len < 5 || len > 8 )
+      if ( len < 5 )
          printf("Wrong Length, Try Again\n");
       else
          ok = 1;
@@ -2896,13 +2896,16 @@ void createpassword(void) {
    
    srand((unsigned int)( (getpid()*5000) + (time(NULL)%5000) ));
    saltnum = (int)(4096.0*rand()/(RAND_MAX+0.0));
-   salt[0] = inttosaltchar((saltnum>>6) %64);
-   salt[1] = inttosaltchar( saltnum     %64);
-   salt[2] = '\0';
+   salt[0] = '$';
+   salt[1] = '1';
+   salt[2] = '$';
+   salt[3] = inttosaltchar((saltnum>>6) %64);
+   salt[4] = inttosaltchar( saltnum     %64);
+   salt[5] = '\0';
    
    pwout = crypt(pw1,salt);
    
-   if (pwout && strlen(pwout) == 13)
+   if (pwout && strlen(pwout) >= 13)
       printf("\n"
              "To use \"%s\" as your password use the following in your config file:\n"
              "adminpass %s\n"
