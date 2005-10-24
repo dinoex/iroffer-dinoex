@@ -836,6 +836,8 @@ static void u_xdl_group(const userinput * const u) {
 
    updatecontext();
 
+   u_xdl_head(u);
+
    msg3 = u->arg1;
    if (msg3 == NULL)
      return;
@@ -865,6 +867,9 @@ static void u_xdl_group(const userinput * const u) {
      }
          
    mydelete(tempstr);
+   
+   u_xdl_foot(u);
+   
    if (!k)
      {
        u_respond(u,"Sorry, nothing was found, try a XDCC LIST");

@@ -394,3 +394,7 @@ bugfix: need_voice
    use extended "crypt" for longer passwords
    old passwords are not affected
 
+bugfix: XDCC LIST <group> (inspired by TheDeath)
+   versions affected: 1.15 - 1.19
+   send headline and creditline to user
+
