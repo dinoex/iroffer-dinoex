@@ -3556,7 +3556,7 @@ void sendaqueue(int type)
               tr = irlist_get_head(&gdata.trans);
               while(tr)
                 {
-                  if (!strcmp(tr->hostname,pq->hostname))
+                  if ((!strcmp(tr->hostname,pq->hostname)) || (!strcasecmp(tr->nick,pq->nick)))
                     {
                       usertrans++;
                     }
