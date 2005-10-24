@@ -341,19 +341,19 @@ bugfix: addnew (inspired by StoVoKor)
 
 44) XDCC STOP (inspired by StoVoKor)
 
-  new user commands:
-  XDCC STOP                   aborts long XDCC LISTS
+   new user commands:
+   XDCC STOP                  aborts long XDCC LISTS
 
 45) CLEARRECORDS (from PMG)
 
-  clear transferlimits too
+   clear transferlimits too
 
 With Version mod 1.19:
 ----------------------
 
 bugfix: ignoreduplicateip
-  versions affected: 1.18
-  did incorrectly detect all transfers as invalid
+   versions affected: 1.18
+   did incorrectly detect all transfers as invalid
 
 With Version mod 1.20:
 ----------------------
@@ -367,8 +367,8 @@ With Version mod 1.20:
    dont show locked packs on XDCC INFO and XDCC LIST for users
 
 bugfix: getipfromserver
-  versions affected: 1.3 - 1.19
-  on reash the DCC IP was lost, transfers did not work until reconnect
+   versions affected: 1.3 - 1.19
+   on reash the DCC IP was lost, transfers did not work until reconnect
 
 48) disablexdccinfo
 
