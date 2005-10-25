@@ -727,6 +727,11 @@ else
 echo "#define NO_CHROOT" >> src/iroffer_config.h
 echo "missing, will desactivate chroot()-ing"
 fi
+if [ "$ostype" = CYGWIN ]; then
+echo "#define NO_SETUID" >> src/iroffer_config.h
+echo "#define NO_CHROOT" >> src/iroffer_config.h
+echo "deactivate chroot()-ing"
+fi
 
 echo -n "Seeing if NSS libraries exist (for chroot)... "
 echo "
