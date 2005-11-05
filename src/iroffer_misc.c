@@ -1481,7 +1481,7 @@ void stoplist(const char *nick)
         }
       item = irlist_get_next(item);
     }
-  ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (stopped %d)\n", stopped);
+  ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (stopped %d)", stopped);
 }
 
 /* 'Sanitize' the filename in full, putting the sanitized copy into copy. */
