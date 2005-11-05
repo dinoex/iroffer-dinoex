@@ -405,3 +405,6 @@ bugfix: XDCC STOP
    log more information
    allow to stop even before first line has been send
 
+bugfix: HELP
+   improved text and syntax description
+
