@@ -403,4 +403,5 @@ With Version mod 1.21:
 
 bugfix: XDCC STOP
    log more information
+   allow to stop even before first line has been send
 

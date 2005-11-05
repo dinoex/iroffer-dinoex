@@ -1452,8 +1452,20 @@ void stoplist(const char *nick)
   char *end;
   char *inick;
   int stopped = 0;
-
+  
   ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC STOP from %s", nick);
+  item = irlist_get_head(&gdata.xlistqueue);
+  while (item)
+    {
+      if (strcasecmp(item,nick) == 0)
+        {
+           stopped ++;
+           item = irlist_delete(&gdata.xlistqueue, item);
+           continue;
+         }
+      item = irlist_get_next(item);
+    }
+  
   item = irlist_get_head(&gdata.serverq_slow);
   while (item)
     {
