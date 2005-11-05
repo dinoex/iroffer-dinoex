@@ -3047,21 +3047,25 @@ static void privmsgparse(const char* type, char* line) {
    /* iroffer-lamm: @find */
    else if ( !gdata.ignore && gdata.caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1),"@FIND") )
      {
+      char *msg2e;
+      msg2e = getpart_eol(line,5);
       gdata.inamnt[gdata.curtime % 10]++;
-      for (i = k = 0; i < strlen(msg2); i++)
-        if ((msg2[i] == '*') || (msg2[i] == '#') || (msg2[i] == '?'))
+      for (i = k = 0; i < strlen(msg2e); i++)
+        if (msg2e[i] == ' ') msg2e[i] = '*';
+        if ((msg2e[i] == '*') || (msg2e[i] == '#') || (msg2e[i] == '?'))
           k++;
-      if ((strlen(msg2) - k) >= gdata.atfind) {
+      if ((strlen(msg2e) - k) >= gdata.atfind) {
         char *atfindmatch = mycalloc(maxtextlength);
-        snprintf(atfindmatch, maxtextlength - 2, "*%s*", msg2);
+        snprintf(atfindmatch, maxtextlength - 2, "*%s*", msg2e);
         k = noticeresults(nick, atfindmatch);
         if (k) {
           if (!gdata.attop)
             gototop();
-          ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW, "@FIND %s (%s) - %i pack%s found.", msg2, hostmask, k, k != 1 ? "s" : "");
+          ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW, "@FIND %s (%s) - %i pack%s found.", msg2e, hostmask, k, k != 1 ? "s" : "");
         }
         mydelete(atfindmatch);
       }
+      mydelete(msg2e);
      }
    
    else {

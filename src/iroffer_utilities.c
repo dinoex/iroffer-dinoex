@@ -90,6 +90,44 @@ char* getpart2(const char *line, int howmany,
   return part;
 }
 
+char* getpart_eol(const char *line, int howmany)
+{
+  char *part;
+  int li;
+  size_t plen;
+  int hi;
+  
+  li=0;
+  
+  for (hi = 1; hi < howmany; hi++)
+    {
+      while (line[li] != ' ')
+        {
+          if (line[li] == '\0')
+            {
+              return NULL;
+            }
+          else
+            {
+              li++;
+            }
+        }
+      li++;
+    }
+  
+  if (line[li] == '\0')
+    {
+      return NULL;
+    }
+  
+  plen = strlen(line+li);
+  part = mycalloc(plen+1);
+  memcpy(part, line+li, plen);
+  part[plen] = '\0';
+  
+  return part;
+}
+
 char* caps(char *text) {
    int i;
    if (text)

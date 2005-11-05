@@ -410,7 +410,7 @@ bugfix: HELP
 
 51) atfind (from Porakin, taken from iroffer-lamm)
 
-   iroffer will respond to "!find pattern" requests sent a channel
+   iroffer will respond to "@find pattern" requests sent a channel
    with a pattern that contains at least <n> non wildcards chars
    wild cards are:
     * = 0 or more characters,  ? = 1 character,  # = any positive integer
@@ -432,4 +432,8 @@ With Version mod 1.22:
 ----------------------
 
 URLs updated.
+
+54) atfind 
+
+    if more than one word given, treat ' ' as '*'
 

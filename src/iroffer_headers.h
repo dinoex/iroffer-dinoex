@@ -455,6 +455,7 @@ void tostdout_disable_buffering(int flush);
 const char* strstrnocase (const char *str1, const char *match1);
 #define getpart(x,y) getpart2(x,y,__FUNCTION__,__FILE__,__LINE__)
 char* getpart2(const char *line, int howmany, const char *src_function, const char *src_file, int src_line);
+char* getpart_eol(const char *line, int howmany);
 char* caps(char *text);
 char* nocaps(char *text);
 char* sizestr(int spaces, off_t num);
