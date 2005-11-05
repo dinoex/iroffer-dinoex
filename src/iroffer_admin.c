@@ -108,6 +108,8 @@ static void u_rmul(const userinput * const u);
 static void u_crash(const userinput * const u);
 static void u_chanl(const userinput * const u);
 static void u_identify(const userinput * const u);
+static void u_announce(const userinput * const u);
+static void u_addann(const userinput * const u);
 
 
 typedef struct
@@ -170,6 +172,8 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_groupdesc,  "GROUPDESC","<g> <msg>","Change Desc of group <g> to <msg>"},
 {3,method_allow_all,u_group,      "GROUP","n <g>","Change Group of pack n to <g>"},
 {3,method_allow_all,u_regroup,    "REGROUP","<g> <new>","Change all packs of group <g> to <new>"},
+{3,method_allow_all,u_announce, "ANNOUNCE","n <msg>","ANNOUNCE <msg> for pack n in all joined channels"},
+{3,method_allow_all,u_addann,   "ADDANN","<filename>","Add and Announce New Pack"},
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
 {4,method_allow_all,u_mesg,     "MESG","<message>","Sends msg to all users who are transferring"},
@@ -2025,6 +2029,66 @@ static void u_psend(const userinput * const u)
   
 }
 
+/* iroffer-lamm: add-ons */
+static void u_announce (const userinput * const u) {
+  int num = 0;
+  xdcc *xd;
+  channel_t *ch;
+  char *tempstr;
+  char *tempstr2;
+  updatecontext ();
+
+  if (u->arg1) num = atoi (u->arg1);
+
+  if (num > irlist_size(&gdata.xdccs) || num < 1) {
+    u_respond (u, "Try Specifying a Valid Pack Number");
+    return;
+    }
+  if (!u->arg2e || !strlen (u->arg2e)) {
+    u_respond (u, "Try Specifying a Message (e.g. NEW)");
+    return;
+    }
+  
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  
+  u_respond(u,"Pack Info for Pack #%i:",num);
+  
+  tempstr = mycalloc(maxtextlength);
+  tempstr2 = mycalloc(maxtextlength);
+  snprintf(tempstr2,maxtextlength-2,"[\2%s\2] %s",u->arg2e,xd->desc);
+  snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send #%i",tempstr2,gdata.user_nick,num);
+  ch = irlist_get_head(&gdata.channels);
+  while(ch) {
+    if (ch->flags & CHAN_ONCHAN)
+      privmsg(ch->name, tempstr);
+    ch = irlist_get_next(ch);
+    }
+  u_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);
+  mydelete(tempstr2);
+  mydelete(tempstr);
+}
+
+/* iroffer-lamm: add-ons */
+static void u_addann (const userinput * const u) {
+  char *tempstr;
+  userinput *ui;
+  int i;
+  
+  updatecontext ();
+  i = irlist_size(&gdata.xdccs);
+  u_add(u);
+  if (irlist_size(&gdata.xdccs) > i) {
+    tempstr = mycalloc (maxtextlength);
+    ui = mycalloc(sizeof(userinput));
+    snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i added",irlist_size(&gdata.xdccs));
+    u_fillwith_msg(ui,NULL,tempstr);
+    ui->method = method_out_all;       /* just OUT_S|OUT_L|OUT_D it */
+    u_parseit(ui);
+    mydelete(ui);
+    mydelete(tempstr);
+    }
+}
+
 static void u_msg(const userinput * const u)
 {
   updatecontext();
@@ -2423,6 +2487,20 @@ static void u_add(const userinput * const u) {
    write_statefile();
    xdccsavetext();
    
+   /* iroffer-lamm: autoaddann */
+   if (gdata.autoaddann) {
+      userinput *ui;
+      char *tempstr;
+      
+      tempstr = mycalloc (maxtextlength);
+      ui = mycalloc(sizeof(userinput));
+      snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i %s",irlist_size(&gdata.xdccs),gdata.autoaddann);
+      u_fillwith_msg(ui,NULL,tempstr);
+      ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
+      u_parseit(ui);
+      mydelete(ui);
+      mydelete(tempstr);
+      } 
    }
 
 #include <fnmatch.h>

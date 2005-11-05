@@ -417,3 +417,14 @@ bugfix: HELP
    default: 0 = no response at all
    output delayed and stopable
 
+52) ANNOUNCE, ADDANN (from Porakin, taken from iroffer-lamm)
+
+   new admin commands:
+   HOP <channel>              leave and rejoin a channel to get status
+   ANNOUNCE n <msg>           ANNOUNCE <msg> for pack n in all joined channels
+   ADDANN <filename>          Add and Announce New Pack
+
+53) autoaddann (from Porakin, taken from iroffer-lamm)
+
+   When configured, each add will be annouced on all channels with <msg>
+

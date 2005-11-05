@@ -159,6 +159,7 @@ static const config_parse_str_t config_parse_str[] = {
   {"restrictprivlistmsg",  &gdata.restrictprivlistmsg,  &gdata.restrictprivlistmsg },
   {"enable_nick",          &gdata.enable_nick,          &gdata.enable_nick },
   {"admin_job_file",       &gdata.admin_job_file,       &gdata.admin_job_file },
+  {"autoaddann",           &gdata.autoaddann,           &gdata.autoaddann },
 };
 
 void update_natip (const char *var)
@@ -2464,6 +2465,7 @@ void reinit_config_vars(void)
   gdata.disablexdccinfo = 0;
   gdata.atfind = 0;
   mydelete(gdata.admin_job_file);
+  mydelete(gdata.autoaddann);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;
