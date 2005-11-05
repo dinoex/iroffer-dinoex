@@ -2942,8 +2942,7 @@ static void privmsgparse(const char* type, char* line) {
          notifyqueued_nick(nick);
          }
          else if ( msg2 && !strcmp(msg2,"STOP")) {
-           if (!irlist_size(&gdata.serverq_slow))
-            stoplist(nick);
+         stoplist(nick);
          }
          else if ( msg2 && !strcmp(msg2,"CANCEL")) {
          if (!gdata.attop) gototop();
