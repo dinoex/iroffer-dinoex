@@ -1442,6 +1442,7 @@ void dumpgdata(void)
   gdata_print_int(ignoreduplicateip);
   gdata_print_int(hidelockedpacks);
   gdata_print_int(disablexdccinfo);
+  gdata_print_int(atfind);
   gdata_print_string(admin_job_file);
   
   /* downloadhost */

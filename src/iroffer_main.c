@@ -3044,6 +3044,26 @@ static void privmsgparse(const char* type, char* line) {
              gdata.creditline ? "\2)\2 " : "");
      }
    
+   /* iroffer-lamm: @find */
+   else if ( !gdata.ignore && gdata.caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1),"@FIND") )
+     {
+      gdata.inamnt[gdata.curtime % 10]++;
+      for (i = k = 0; i < strlen(msg2); i++)
+        if ((msg2[i] == '*') || (msg2[i] == '#') || (msg2[i] == '?'))
+          k++;
+      if ((strlen(msg2) - k) >= gdata.atfind) {
+        char *atfindmatch = mycalloc(maxtextlength);
+        snprintf(atfindmatch, maxtextlength - 2, "*%s*", msg2);
+        k = noticeresults(nick, atfindmatch);
+        if (k) {
+          if (!gdata.attop)
+            gototop();
+          ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW, "@FIND %s (%s) - %i pack%s found.", msg2, hostmask, k, k != 1 ? "s" : "");
+        }
+        mydelete(atfindmatch);
+      }
+     }
+   
    else {
       if (dest && gdata.caps_nick && !strcmp(dest,gdata.caps_nick))
         {

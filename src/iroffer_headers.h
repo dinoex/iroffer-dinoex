@@ -679,6 +679,7 @@ int has_joined_channels(int all);
 void reverify_restrictsend(void);
 void reset_download_limits(void);
 void check_duplicateip(transfer *const newtr);
+int noticeresults(const char *nick, const char *match);
 
 /* statefile.c */
 void write_statefile(void);

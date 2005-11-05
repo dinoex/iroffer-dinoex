@@ -138,6 +138,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"punishslowusers", &gdata.punishslowusers, &gdata.punishslowusers, 0, 1000000, 1 },
   {"autoignore_threshold", &gdata.autoignore_threshold, &gdata.autoignore_threshold, 10, 600, 1 },
   {"start_of_month",  &gdata.start_of_month,  &gdata.start_of_month,  1, 31, 1 },
+  {"atfind",          &gdata.atfind,          &gdata.atfind,          0, 10, 1 },
 };
 
 typedef struct
@@ -2461,6 +2462,7 @@ void reinit_config_vars(void)
   gdata.ignoreduplicateip = 0;
   gdata.hidelockedpacks = 0;
   gdata.disablexdccinfo = 0;
+  gdata.atfind = 0;
   mydelete(gdata.admin_job_file);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
@@ -3541,6 +3543,80 @@ void check_duplicateip(transfer *const newtr)
     }
 
   write_statefile();
+}
+
+/* iroffer-lamm: @find and long !list */
+int noticeresults(const char *nick, const char *match)
+{
+  int             i, j, k, len;
+  char           *tempstr = mycalloc(maxtextlength);
+  char           *sizestrstr; 
+  char           *tempr;
+  regex_t        *regexp = mycalloc(sizeof(regex_t));
+  xdcc           *xd;
+  
+  len = k = 0;
+  
+  tempr = hostmasktoregex(match);
+
+  if (!regcomp(regexp, tempr, REG_ICASE | REG_NOSUB)) {
+    i = 1;
+    xd = irlist_get_head(&gdata.xdccs);
+    while (xd) {
+      if (!regexec(regexp, xd->file, 0, NULL, 0) || !regexec(regexp, xd->desc, 0, NULL, 0) || !regexec(regexp, xd->note, 0, NULL, 0)) {
+        if (!k) {
+          if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
+            j = irlist_size(&gdata.trans);
+          else
+            j = gdata.slotsmax;
+          snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - Slot%s:[%i/%i]", j != 1 ? "s" : "", j - irlist_size(&gdata.trans), j);
+          len = strlen(tempstr);
+           if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
+            len = strlen(tempstr);
+          }
+          if (gdata.transferminspeed > 0) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
+            len = strlen(tempstr);
+          }
+          if (gdata.transfermaxspeed > 0) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
+            len = strlen(tempstr);
+          }
+          if (gdata.maxb) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
+            len = strlen(tempstr);
+          }
+          snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send #x -", gdata.user_nick);
+          len = strlen(tempstr);
+          if (!strcmp(match, "*"))
+            snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");
+          else
+            snprintf(tempstr + len, maxtextlength - 1 - len, " Found:");
+          len = strlen(tempstr);
+        }
+        sizestrstr = sizestr(0, xd->st_size);
+        snprintf(tempstr + len, maxtextlength - 1 - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
+        if (strlen(tempstr) > 400) {
+          snprintf(tempstr + len, maxtextlength - 1 - len, " [...]");
+          notice(nick, tempstr);
+          snprintf(tempstr, maxtextlength - 2, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
+        }
+        len = strlen(tempstr);
+        mydelete(sizestrstr);
+        k++;
+      }
+      i++;
+      xd = irlist_get_next(xd);
+    }
+  }
+  
+  if (k)
+    notice(nick, tempstr);
+  mydelete(tempr);
+  mydelete(regexp);
+  mydelete(tempstr);
+  return k;
 }
 
 /* End of File */

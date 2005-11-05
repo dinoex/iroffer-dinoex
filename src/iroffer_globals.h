@@ -104,6 +104,7 @@ int removelostfiles;
 int ignoreduplicateip;
 int hidelockedpacks;
 int disablexdccinfo;
+int atfind;
 char *admin_job_file;
 char *nickserv_pass;
 int notifytime;
