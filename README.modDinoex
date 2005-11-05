@@ -398,3 +398,9 @@ bugfix: XDCC LIST <group> (inspired by TheDeath)
    versions affected: 1.15 - 1.19
    send headline and creditline to user
 
+With Version mod 1.21:
+----------------------
+
+bugfix: XDCC STOP
+   log more information
+
