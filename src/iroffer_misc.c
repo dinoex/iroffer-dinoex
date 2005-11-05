@@ -2581,7 +2581,7 @@ void startupiroffer(void) {
    
    printf("\n");
    if (!gdata.background && !gdata.nocolor) printf("\x1b[1;33m");
-   printf("Welcome to iroffer by PMG - http://iroffer.org/\n"
+   printf("Welcome to iroffer mod by Dinoex - http://iroffer.dinoex.net/\n"
           "Version " VERSIONLONG "\n");
    if (!gdata.background && !gdata.nocolor) printf("\x1b[0m");
    printf("\n");
@@ -2878,7 +2878,7 @@ void createpassword(void) {
    int len, ok, saltnum;
    char salt[6], *pwout;
    
-   printf("\niroffer v" VERSIONLONG " by PMG\n"
+   printf("\niroffer v" VERSIONLONG " by Dinoex\n"
           "  Configuration File Password Generator\n"
           "\n"
           "This will take a password of your choosing and encrypt it.\n"
