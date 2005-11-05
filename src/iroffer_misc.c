@@ -3599,7 +3599,7 @@ int noticeresults(const char *nick, const char *match)
         snprintf(tempstr + len, maxtextlength - 1 - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
         if (strlen(tempstr) > 400) {
           snprintf(tempstr + len, maxtextlength - 1 - len, " [...]");
-          notice(nick, tempstr);
+          notice_slow(nick, tempstr);
           snprintf(tempstr, maxtextlength - 2, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
         }
         len = strlen(tempstr);
@@ -3612,7 +3612,7 @@ int noticeresults(const char *nick, const char *match)
   }
   
   if (k)
-    notice(nick, tempstr);
+    notice_slow(nick, tempstr);
   mydelete(tempr);
   mydelete(regexp);
   mydelete(tempstr);

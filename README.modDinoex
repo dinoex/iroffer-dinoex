@@ -410,3 +410,10 @@ bugfix: HELP
 
 51) atfind (from Porakin, taken from iroffer-lamm)
 
+   iroffer will respond to "!find pattern" requests sent a channel
+   with a pattern that contains at least <n> non wildcards chars
+   wild cards are:
+    * = 0 or more characters,  ? = 1 character,  # = any positive integer
+   default: 0 = no response at all
+   output delayed and stopable
+
