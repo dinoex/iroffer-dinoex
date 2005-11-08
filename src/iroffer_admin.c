@@ -2060,7 +2060,7 @@ static void u_announce (const userinput * const u) {
   ch = irlist_get_head(&gdata.channels);
   while(ch) {
     if (ch->flags & CHAN_ONCHAN)
-      privmsg(ch->name, tempstr);
+      privmsg_slow(ch->name, tempstr);
     ch = irlist_get_next(ch);
     }
   u_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);

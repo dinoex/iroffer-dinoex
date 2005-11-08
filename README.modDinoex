@@ -435,5 +435,9 @@ URLs updated.
 
 54) atfind 
 
-    if more than one word given, treat ' ' as '*'
+   if more than one word given, treat ' ' as '*'
+
+55) ANNOUNCE
+
+   slow ANNOUNCE, to avoid flooding
 
