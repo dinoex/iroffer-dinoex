@@ -441,3 +441,11 @@ URLs updated.
 
    slow ANNOUNCE, to avoid flooding
 
+bugfix: CHLIMIT (reported by TheDeath)
+   limit was reset to many times after 24 hours
+
+bugfix: CHLIMIT
+   versions affected: 1.17 - 1.21
+   saving statefile with chlimit will generate a bad tag
+   statefile is still readable with newer version
+

@@ -510,7 +510,6 @@ void write_statefile(void)
           {
             length += sizeof(statefile_item_generic_int_t);
             length += sizeof(statefile_item_generic_int_t);
-            length += sizeof(statefile_item_generic_time_t);
           }
         if (xd->dlimit_desc != NULL)
           {
@@ -1540,6 +1539,8 @@ void read_statefile(void)
                   default:
                     outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown XDCC Tag 0x%X (len=%d)",
                              ihdr->tag, ihdr->length);
+                    /* in case of 0 bytes len we loop forever */
+                    if ( ihdr->length == 0 ) ihdr->length ++;
                   }
                 hdr->length -= ceiling(ihdr->length, 4);
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));

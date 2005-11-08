@@ -1179,7 +1179,6 @@ static void mainloop (void) {
                     case TRANSFERLIMIT_DAILY:
                       /* tomorrow */
                       localt->tm_mday++;
-                      reset_download_limits();
                       break;
                       
                     case TRANSFERLIMIT_WEEKLY:
@@ -1199,6 +1198,8 @@ static void mainloop (void) {
                   /* tm_wday and tm_yday are ignored in mktime() */
                   gdata.transferlimits[ii].ends = mktime(localt);
                   gdata.transferlimits[ii].used = 0;
+                  if ( ii == TRANSFERLIMIT_DAILY )
+                    reset_download_limits();
                 }
               
               if (!transferlimits_over &&
