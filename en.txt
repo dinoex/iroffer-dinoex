@@ -1525,3 +1525,4 @@
 1535 "A A A A A announce %i added"
 1536 "A A A A A announce %i %s"
 1537 "autoaddann"
+1538 " [%d of %d DL left]"
