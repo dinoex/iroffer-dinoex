@@ -1547,7 +1547,6 @@ static int reorder_groupdesc(const char *group) {
   xdcc *xd;
   xdcc *firstxd;
   xdcc *descxd;
-  char *tempdesc;
   int k;
 
   updatecontext();
@@ -1594,8 +1593,8 @@ static int reorder_groupdesc(const char *group) {
   if (descxd == firstxd)
     return k;
 
-  tempdesc = descxd->group_desc;
-  firstxd->group_desc = tempdesc;
+  firstxd->group_desc = descxd->group_desc;
+  descxd->group_desc = NULL;
   return k;
 }
 

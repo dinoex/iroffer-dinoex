@@ -449,3 +449,8 @@ bugfix: CHLIMIT
    saving statefile with chlimit will generate a bad tag
    statefile is still readable with newer version
 
+With Version mod 1.23:
+----------------------
+
+bugifx: fix menmory leak (reported by TheDeath)
+
