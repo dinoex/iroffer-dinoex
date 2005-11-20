@@ -425,6 +425,13 @@ typedef struct
   char *password;
 } server_t;
 
+typedef struct
+{
+  int pack;
+  char *word;
+  char *message;
+} autoqueue_t;
+
 /*------------ function declarations ------------- */
 
 /* iroffer.c */

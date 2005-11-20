@@ -25,7 +25,7 @@
 static void mainloop(void);
 static void parseline(char *line);
 static void privmsgparse(const char* type, char* line);
-static void autosendf(char* line);
+static void autoqueuef(const char* line, const autoqueue_t *aq);
 static int  parsecmdline(int argc, char *argv[]);
 
 /* main */
@@ -2349,13 +2349,24 @@ static void parseline(char *line) {
  /* PRIVMSG */
    if (!strcmp(part2,"PRIVMSG"))
      {
-       if (gdata.autosend.word && part4 && !strcmp(caps(part4+1),caps(gdata.autosend.word)))
+       autoqueue_t *aq;
+       int autoword = 0;
+       while (line)
          {
-           autosendf(line);
-         }
-       else
-         {
-           privmsgparse("PRIVMSG",line);
+           for (aq = irlist_get_head(&gdata.autoqueue); aq; aq = irlist_get_next(aq))
+             {
+               if (part4 && !strcmp(caps(part4+1),caps(aq->word)))
+                 {
+                   autoqueuef(line, aq);
+                   autoword = 1;
+                   /* only first match is activated */
+                   break;
+                 }
+             }
+           /* matched lines are skipped */
+           if (autoword == 0)
+             privmsgparse("PRIVMSG",line);
+           break;
          }
      }
    
@@ -3119,7 +3130,7 @@ static void privmsgparse(const char* type, char* line) {
    return;
    }
 
-static void autosendf(char* line) {
+static void autoqueuef(const char* line, const autoqueue_t *aq) {
    char *nick, *hostname, *hostmask;
    int i,j;
    
@@ -3162,11 +3173,11 @@ static void autosendf(char* line) {
        
        ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"AutoSend ");
        
-       tempstr = mycalloc(strlen(gdata.autosend.message) + strlen(format) - 1);
-       snprintf(tempstr, strlen(gdata.autosend.message) + strlen(format) - 1,
-                       format, gdata.autosend.message);
+       tempstr = mycalloc(strlen(aq->message) + strlen(format) - 1);
+       snprintf(tempstr, strlen(aq->message) + strlen(format) - 1,
+                       format, aq->message);
        
-       sendxdccfile(nick, hostname, hostmask, gdata.autosend.pack, tempstr, NULL);
+       sendxdccfile(nick, hostname, hostmask, aq->pack, tempstr, NULL);
        
        mydelete(tempstr);
      }

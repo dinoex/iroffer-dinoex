@@ -46,13 +46,6 @@ int usenatip;
 
 struct
 {
-  int pack;
-  char *word;
-  char *message;
-} autosend;
-
-struct
-{
   ir_uint64  limit;
   ir_uint64  used;
   time_t     ends;
@@ -89,6 +82,7 @@ int nomd5sum;
 int getipfromserver;
 int noduplicatefiles;
 irlist_t adddir_exclude;
+irlist_t autoqueue;
 char *enable_nick;
 int need_voice;
 int hide_list_info;

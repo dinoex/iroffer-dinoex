@@ -606,19 +606,18 @@ void getconfig_set (const char *line, int rehash)
        a = getpart(var,1); b = getpart(var,2); c = getpart(var,3);
        if (a && b && c)
          {
-           gdata.autosend.pack = between(0,atoi(a),100000);
-           mydelete(gdata.autosend.word);
-           gdata.autosend.word = b;
-           mydelete(gdata.autosend.message);
-           
-           gdata.autosend.message = mymalloc(strlen(var) - 2 - strlen(a) - strlen(b) + 1);
-           strcpy(gdata.autosend.message, var + strlen(a) + strlen(b) + 2);
-           mydelete(a); mydelete(c);
+           autoqueue_t *aq;
+           aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
+           aq->pack = between(0,atoi(a),100000);
+           aq->word = b;
+           aq->message = mymalloc(strlen(var) - 2 - strlen(a) - strlen(b) + 1);
+           strcpy(aq->message, var + strlen(a) + strlen(b) + 2);
          }
        else
          {
-           mydelete(a); mydelete(b); mydelete(c);
+           mydelete(b);
          }
+       mydelete(a); mydelete(c);
        mydelete(var);
      }
    else if ( ! strcmp(type,"logrotate")) {
@@ -2448,6 +2447,7 @@ void reinit_config_vars(void)
   gdata.getipfromserver = 0;
   gdata.noduplicatefiles = 0;
   irlist_delete_all(&gdata.adddir_exclude);
+  irlist_delete_all(&gdata.autoqueue);
   mydelete(gdata.enable_nick);
   gdata.need_voice = 0;
   gdata.hide_list_info = 0;
@@ -2477,9 +2477,6 @@ void reinit_config_vars(void)
         gdata.transferlimits[ii].limit = 0;
       }
   }
-  gdata.autosend.pack = 0;
-  mydelete(gdata.autosend.word);
-  mydelete(gdata.autosend.message);
   gdata.hideos = 0;
   gdata.lognotices = 0;
   gdata.logmessages = 0;

@@ -17,7 +17,6 @@ Short Term Features:
    175 12/09/03 Open sort by name listing
    177 12/09/03 Open dont join channels until nickserv has authenticated iroffer
    181 12/09/03 Open xdcc list display estimated time until queue slot opens up
-   185 12/09/03 Open autosend should use queue if necessary
    189 12/09/03 Open configurable to disable all stats
    193 12/09/03 Open different lowbdwth for day and night speeds
    194 12/09/03 Open send note to user on get of file
@@ -52,7 +51,6 @@ Not going to happen anytime soon:
    112 1/2/00 Deferred multi-language support  
    111 12/3/99 Deferred exec a shell command
 ?  108 long ago Deferred wildcards in add pack
-   107 long ago Deferred multiple autosend words/packs
    129 12/5/00 Deferred built-in identd server for windows
    171 12/09/03 Deferred online config file editor
    176 12/09/03 Deferred customize xdcc list output

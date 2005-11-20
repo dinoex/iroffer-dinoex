@@ -458,3 +458,12 @@ bugifx: fix menmory leak (reported by TheDeath)
 
    show limit on xdcc list
 
+57) autosendpack (inspired by Hikari)
+
+   autosendpack can now be used mutiple times
+   Only the first matching trigger will start a send
+
+   References TODO:
+Not going to happen anytime soon:
+107 long ago Deferred multiple autosend words/packs
+

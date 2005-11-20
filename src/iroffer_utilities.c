@@ -1424,9 +1424,6 @@ void dumpgdata(void)
   gdata_print_int(background);
   gdata_print_number("0x%.8lX",ourip);
   gdata_print_int(usenatip);
-  gdata_print_int(autosend.pack);
-  gdata_print_string(autosend.word);
-  gdata_print_string(autosend.message);
   gdata_print_number("0x%.8lX",local_vhost);
   gdata_print_int(logstats);
   gdata_print_string(logfile);
@@ -1464,7 +1461,17 @@ void dumpgdata(void)
   gdata_print_int(nomd5sum);
   gdata_print_int(getipfromserver);
   gdata_print_int(noduplicatefiles);
-  /* adddir_exclude */
+
+  gdata_irlist_iter_start(adddir_exclude, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
+  gdata_irlist_iter_start(autoqueue, autoqueue_t);
+  gdata_iter_print_uint(pack);
+  gdata_iter_print_string(word);
+  gdata_iter_print_string(message);
+  gdata_irlist_iter_end;
+
   gdata_print_string(enable_nick);
   gdata_print_int(need_voice);
   gdata_print_int(hide_list_info);
