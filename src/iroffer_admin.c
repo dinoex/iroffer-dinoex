@@ -593,6 +593,14 @@ static void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, c
         len = strlen(tempstr);
      }
    
+   if (xd->dlimit_max != 0)
+     {
+        snprintf(tempstr + len, maxtextlength - 1 - len,
+                 " [%d of %d DL left]",
+                 xd->dlimit_used - xd->gets, xd->dlimit_max);
+        len = strlen(tempstr);
+     }
+   
    u_respond(u,"%s",tempstr);
    
    if (xd->note && strlen(xd->note))
