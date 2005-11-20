@@ -454,7 +454,7 @@ With Version mod 1.23:
 
 bugifx: fix menmory leak (reported by TheDeath)
 
-56) CHLIMIT
+56) CHLIMIT (inspired by TheDeath)
 
    show limit on xdcc list
 
