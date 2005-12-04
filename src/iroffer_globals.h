@@ -149,6 +149,7 @@ long lastservercontact;
 irlist_t serverq_fast;
 irlist_t serverq_normal;
 irlist_t serverq_slow;
+irlist_t serverq_channel;
 int serverbucket;
 int ircserver;
 int serverconnectbackoff;

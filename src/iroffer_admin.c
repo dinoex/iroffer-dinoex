@@ -375,6 +375,9 @@ void u_fillwith_clean (userinput * const u)
 static void u_respond(const userinput * const u, const char *format, ...)
 {
   va_list args;
+  channel_t *ch;
+  char *tempnick;
+  char *chan;
 
   updatecontext();
   
@@ -426,6 +429,22 @@ static void u_respond(const userinput * const u, const char *format, ...)
     case method_xdl_channel:
     case method_xdl_channel_min:
     case method_xdl_channel_sum:
+      ch = irlist_get_head(&gdata.channels);
+      while(ch)
+        {
+          tempnick = mycalloc(strlen(u->snick)+1);
+          strcpy(tempnick,u->snick);
+          for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
+            {
+              if (!strcasecmp(ch->name,chan))
+                {
+                  vprivmsg_chan(ch, format, args);
+                }
+            }
+          mydelete(tempnick);
+          ch = irlist_get_next(ch);
+        }
+      break;
     case method_xdl_user_privmsg:
       vprivmsg_slow(u->snick, format, args);
       break;
@@ -2067,7 +2086,7 @@ static void u_announce (const userinput * const u) {
   ch = irlist_get_head(&gdata.channels);
   while(ch) {
     if (ch->flags & CHAN_ONCHAN)
-      privmsg_slow(ch->name, tempstr);
+      privmsg_chan(ch, tempstr);
     ch = irlist_get_next(ch);
     }
   u_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);

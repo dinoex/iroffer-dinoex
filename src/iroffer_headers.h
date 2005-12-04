@@ -379,6 +379,7 @@ typedef struct
   short flags;
   short plisttime;
   short plistoffset;
+  short rate;
   irlist_t members;
 } channel_t;
 
@@ -431,6 +432,12 @@ typedef struct
   char *word;
   char *message;
 } autoqueue_t;
+
+typedef struct
+{
+  int delay;
+  char *msg;
+} channel_announce_t;
 
 /*------------ function declarations ------------- */
 
@@ -650,6 +657,22 @@ __attribute__ ((format(printf, 2, 3)))
 #endif
 writeserver (writeserver_type_e type, const char *format, ... );
 void vwriteserver(writeserver_type_e type, const char *format, va_list ap);
+
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+privmsg_chan(const channel_t *ch, const char *format, ...);
+void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap);
+
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+writeserver_channel (int rate, const char *format, ... );
+void vwriteserver_channel(int rate, const char *format, va_list ap);
+
+void sendannounce(void);
 
 void sendserver(void);
 void stoplist(const char *nick);

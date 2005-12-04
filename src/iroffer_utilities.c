@@ -1567,6 +1567,11 @@ void dumpgdata(void)
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
   
+  gdata_irlist_iter_start(serverq_channel, channel_announce_t);
+  gdata_iter_print_int(delay);
+  gdata_iter_print_string(msg);
+  gdata_irlist_iter_end;
+  
   gdata_print_int(adjustcore);
   
   gdata_print_int(serverbucket);
@@ -1602,7 +1607,7 @@ void dumpgdata(void)
      
   /* stdout_buffer_init stdout_buffer */
   
-  gdata_irlist_iter_start(ignorelist, channel_t);
+  gdata_irlist_iter_start(channels, channel_t);
   ioutput(gdata_common,"  : name=%s key=%s",
           iter->name,
           gdata_string(iter->key));
@@ -1610,6 +1615,8 @@ void dumpgdata(void)
           iter->flags,
           iter->plisttime,
           iter->plistoffset);
+  gdata_iter_print_string(headline);
+  gdata_iter_print_int(rate);
   /* members */
   gdata_irlist_iter_end;
   
