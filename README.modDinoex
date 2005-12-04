@@ -467,3 +467,12 @@ bugifx: fix menmory leak (reported by TheDeath)
 Not going to happen anytime soon:
 107 long ago Deferred multiple autosend words/packs
 
+With Version mod 1.24:
+----------------------
+
+58) channel -limit (inspired by Horst)
+   delay messages to this channel by seconds.
+
+Sample:
+channel #chan04 -plist 14 -pformat summary -limit 60
+
