@@ -20,6 +20,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "iroffer_dinoex.h"
 
 /* local functions */
 static void mainloop(void);
@@ -195,73 +196,6 @@ static void select_dump(const char *desc, int highests)
     }
   ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_CYAN, "]");
   
-}
-
-static void admin_line(int fd, const char *line) {
-   userinput *uxdl;
-   
-   if (line == NULL)
-      return;
-   
-   uxdl = mycalloc(sizeof(userinput));
-   
-   u_fillwith_msg(uxdl,NULL,line);
-   uxdl->method = method_fd;
-   uxdl->fd = fd;
-   
-   u_parseit(uxdl);
-   
-   mydelete(uxdl);
-}
-
-static void admin_jobs(const char *job) {
-   FILE *fin;
-   int fd;
-   char *done;
-   char *line;
-   char *l;
-   char *r;
-   
-   if (job == NULL)
-      return;
-
-   fin = fopen(job, "ra" );
-   if (fin == NULL)
-      return;
-
-   line = mycalloc(maxtextlength);
-
-   done = mycalloc(strlen(job)+6);
-   strcpy(done,job);
-   strcat(done,".done");
-   fd = open(done,
-             O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
-             CREAT_PERMISSIONS);
-   if (fd < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD,
-               "Cant Create Admin Job Done File '%s': %s",
-               done, strerror(errno));
-    }
-  else
-    {
-      while (!feof(fin)) {
-         strcpy(line, "A A A A A ");
-         l = line + strlen(line);
-         r = fgets(l, maxtextlength - 1, fin);
-         if (r == NULL )
-            break;
-         l = line + strlen(line) - 1;
-         while (( *l == '\r' ) || ( *l == '\n' ))
-            *(l--) = 0;
-         admin_line(fd,line);
-      }
-      close(fd);
-    }
-   mydelete(line)
-   mydelete(done)
-   fclose(fin);
-   unlink(job);
 }
 
 static void mainloop (void) {
@@ -3186,15 +3120,6 @@ static void autoqueuef(const char* line, const autoqueue_t *aq) {
    mydelete(hostname);
 
    }
-
-static int check_lock(const char* lockstr, const char* pwd)
-{
-  if (lockstr == NULL)
-    return 0; /* no lock */
-  if (pwd == NULL)
-    return 1; /* locked */
-  return strcmp(lockstr, pwd);
-}
 
 void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd)
 {

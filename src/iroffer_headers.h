@@ -469,7 +469,6 @@ void tostdout_disable_buffering(int flush);
 const char* strstrnocase (const char *str1, const char *match1);
 #define getpart(x,y) getpart2(x,y,__FUNCTION__,__FILE__,__LINE__)
 char* getpart2(const char *line, int howmany, const char *src_function, const char *src_file, int src_line);
-char* getpart_eol(const char *line, int howmany);
 char* caps(char *text);
 char* nocaps(char *text);
 char* sizestr(int spaces, off_t num);
@@ -646,7 +645,6 @@ void ir_boutput_get_md5sum(ir_boutput_t *bout, MD5Digest digest);
 const char *transferlimit_type_to_string(transferlimit_type_e type);
 
 /* misc.c */
-void update_natip (const char *var);
 void getconfig (void);
 void getconfig_set (const char *line, int rehash);
 void initirc(void);
@@ -658,24 +656,7 @@ __attribute__ ((format(printf, 2, 3)))
 writeserver (writeserver_type_e type, const char *format, ... );
 void vwriteserver(writeserver_type_e type, const char *format, va_list ap);
 
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
-#endif
-privmsg_chan(const channel_t *ch, const char *format, ...);
-void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap);
-
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
-#endif
-writeserver_channel (int rate, const char *format, ... );
-void vwriteserver_channel(int rate, const char *format, va_list ap);
-
-void sendannounce(void);
-
 void sendserver(void);
-void stoplist(const char *nick);
 char* getsendname(char * const full);
 const char* getfilename(const char * const full);
 void pingserver(void);
@@ -700,17 +681,11 @@ void isrotatelog(void);
 void createpassword(void);
 char inttosaltchar (int n);
 void notifyqueued(void);
-void notifyqueued_nick(const char *nick);
 void notifybandwidth(void);
 void notifybandwidthtrans(void);
 int look_for_file_changes(xdcc *xpack);
-void look_for_file_remove(void);
 void user_changed_nick(const char *oldnick, const char *newnick);
-int has_joined_channels(int all);
 void reverify_restrictsend(void);
-void reset_download_limits(void);
-void check_duplicateip(transfer *const newtr);
-int noticeresults(const char *nick, const char *match);
 
 /* statefile.c */
 void write_statefile(void);

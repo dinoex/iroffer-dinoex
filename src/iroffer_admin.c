@@ -19,6 +19,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "iroffer_dinoex.h"
 
 /* local functions */
 static void
@@ -1535,134 +1536,6 @@ static void u_info(const userinput * const u)
   return;
 }
 
-static int reorder_new_groupdesc(const char *group, const char *desc) {
-  xdcc *xd;
-  int k;
-
-  updatecontext();
-
-  k = 0;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      if (xd->group != NULL)
-        {
-          if (strcasecmp(xd->group,group) == 0)
-            {
-              k++;
-              /* delete all matching entires */
-              if (xd->group_desc != NULL)
-                mydelete(xd->group_desc);
-              /* write only the first entry */
-              if (k == 1)
-                {
-                  if (desc && strlen(desc))
-                    {
-                      xd->group_desc = mycalloc(strlen(desc)+1);
-                      strcpy(xd->group_desc,desc);
-                    }
-                }
-            }
-        }
-      xd = irlist_get_next(xd);
-    }
-
-  return k;
-}
-
-static int reorder_groupdesc(const char *group) {
-  xdcc *xd;
-  xdcc *firstxd;
-  xdcc *descxd;
-  int k;
-
-  updatecontext();
-
-  k = 0;
-  firstxd = NULL;
-  descxd = NULL;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      if (xd->group != NULL)
-        {
-          if (strcasecmp(xd->group,group) == 0)
-            {
-              k++;
-              if (xd->group_desc != NULL)
-                {
-                   if (descxd == NULL)
-                     {
-                       descxd = xd;
-                     }
-                   else
-                     {
-                       /* more than one desc */
-                       mydelete(xd->group_desc);
-                     }
-                }
-              /* check only the first entry */
-              if (k == 1)
-                {
-                  firstxd = xd;
-                }
-            }
-        }
-      xd = irlist_get_next(xd);
-    }
-
-  if (k == 0)
-    return k;
-
-  if (descxd == NULL)
-    return k;
-
-  if (descxd == firstxd)
-    return k;
-
-  firstxd->group_desc = descxd->group_desc;
-  descxd->group_desc = NULL;
-  return k;
-}
-
-static int add_default_groupdesc(const char *group) {
-  xdcc *xd;
-  xdcc *firstxd;
-  int k;
-
-  updatecontext();
-
-  k = 0;
-  firstxd = NULL;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      if (xd->group != NULL)
-        {
-          if (strcasecmp(xd->group,group) == 0)
-            {
-              k++;
-              if (xd->group_desc != NULL)
-                return 0;
-              
-              /* check only the first entry */
-              if (k == 1)
-                {
-                  firstxd = xd;
-                }
-            }
-        }
-      xd = irlist_get_next(xd);
-    }
-
-  if (k != 1)
-    return k;
-
-  firstxd->group_desc = mycalloc(strlen(group)+1);
-  strcpy(firstxd->group_desc,group);
-  return k;
-}
-
 static void u_remove(const userinput * const u) {
    int num = 0;
    char *tmpdesc;
@@ -2313,69 +2186,6 @@ static void u_chfile(const userinput * const u) {
    xdccsavetext();
    
    }
-
-#include <ctype.h>
-
-static void strtextcpy(char *d, const char *s) {
-   const char *x;
-   char *w;
-   char ch;
-   size_t l;
-   
-   if (d == NULL)
-      return;
-   if (s == NULL)
-      return;
-   
-   /* ignore path */
-   x = strrchr(s, '/');
-   if (x != NULL)
-      x ++;
-   else
-      x = s;
-   
-   strcpy(d,x);
-   /* ignore extension */
-   w = strrchr(d, '.');
-   if (w != NULL)
-      *w = 0;
-   
-   l = strlen(d);
-   if ( l < 8 )
-      return;
-
-   w = d + l - 1;
-   ch = *w;
-   switch (ch) {
-   case '}':
-      w = strrchr(d, '{');
-      if (w != NULL)
-         *w = 0;
-      break;
-   case ')':
-      w = strrchr(d, '(');
-      if (w != NULL)
-         *w = 0;
-      break;
-   case ']':
-      w = strrchr(d, '[');
-      if (w != NULL)
-         *w = 0;
-      break;
-   }
-
-   /* strip numbers */
-   x = d;
-   w = d;
-   for (;;) {
-      ch = *(x++);
-      *w = ch;
-      if (ch == 0)
-         break;
-      if (isalpha(ch))
-         w++;
-   }
-}
 
 static void u_add(const userinput * const u) {
    int xfiledescriptor;

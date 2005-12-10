@@ -1,0 +1,848 @@
+/*
+ * by Dirk Meyer (dinoex)
+ * Copyright (C) 2004-2005 Dirk Meyer
+ * 
+ * By using this file, you agree to the terms and conditions set
+ * forth in the GNU General Public License.  More information is    
+ * available in the README file.
+ * 
+ * If you received this file without documentation, it can be
+ * downloaded from http://iroffer.dinoex.net/
+ * 
+ * $Id$
+ * 
+ */
+
+/* include the headers */
+#include "iroffer_config.h"
+#include "iroffer_defines.h"
+#include "iroffer_headers.h"
+#include "iroffer_globals.h"
+#include "iroffer_dinoex.h"
+
+#include <ctype.h>
+
+static void admin_line(int fd, const char *line) {
+   userinput *uxdl;
+   
+   if (line == NULL)
+      return;
+   
+   uxdl = mycalloc(sizeof(userinput));
+   
+   u_fillwith_msg(uxdl,NULL,line);
+   uxdl->method = method_fd;
+   uxdl->fd = fd;
+   
+   u_parseit(uxdl);
+   
+   mydelete(uxdl);
+}
+
+void admin_jobs(const char *job) {
+   FILE *fin;
+   int fd;
+   char *done;
+   char *line;
+   char *l;
+   char *r;
+   
+   if (job == NULL)
+      return;
+
+   fin = fopen(job, "ra" );
+   if (fin == NULL)
+      return;
+
+   line = mycalloc(maxtextlength);
+
+   done = mycalloc(strlen(job)+6);
+   strcpy(done,job);
+   strcat(done,".done");
+   fd = open(done,
+             O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+             CREAT_PERMISSIONS);
+   if (fd < 0)
+    {
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+               "Cant Create Admin Job Done File '%s': %s",
+               done, strerror(errno));
+    }
+  else
+    {
+      while (!feof(fin)) {
+         strcpy(line, "A A A A A ");
+         l = line + strlen(line);
+         r = fgets(l, maxtextlength - 1, fin);
+         if (r == NULL )
+            break;
+         l = line + strlen(line) - 1;
+         while (( *l == '\r' ) || ( *l == '\n' ))
+            *(l--) = 0;
+         admin_line(fd,line);
+      }
+      close(fd);
+    }
+   mydelete(line)
+   mydelete(done)
+   fclose(fin);
+   unlink(job);
+}
+
+
+int check_lock(const char* lockstr, const char* pwd)
+{
+  if (lockstr == NULL)
+    return 0; /* no lock */
+  if (pwd == NULL)
+    return 1; /* locked */
+  return strcmp(lockstr, pwd);
+}
+
+int reorder_new_groupdesc(const char *group, const char *desc) {
+  xdcc *xd;
+  int k;
+
+  updatecontext();
+
+  k = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,group) == 0)
+            {
+              k++;
+              /* delete all matching entires */
+              if (xd->group_desc != NULL)
+                mydelete(xd->group_desc);
+              /* write only the first entry */
+              if (k == 1)
+                {
+                  if (desc && strlen(desc))
+                    {
+                      xd->group_desc = mycalloc(strlen(desc)+1);
+                      strcpy(xd->group_desc,desc);
+                    }
+                }
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  return k;
+}
+
+int reorder_groupdesc(const char *group) {
+  xdcc *xd; 
+  xdcc *firstxd;
+  xdcc *descxd;
+  int k;
+
+  updatecontext();
+
+  k = 0;
+  firstxd = NULL;
+  descxd = NULL;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,group) == 0)
+            {
+              k++;
+              if (xd->group_desc != NULL)
+                {
+                   if (descxd == NULL)
+                     {
+                       descxd = xd;
+                     }
+                   else
+                     {
+                       /* more than one desc */
+                       mydelete(xd->group_desc);
+                     }
+                }
+              /* check only the first entry */
+              if (k == 1)
+                {
+                  firstxd = xd;
+                }
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  if (k == 0)
+    return k;
+
+  if (descxd == NULL)
+    return k;
+
+  if (descxd == firstxd)
+    return k;
+
+  firstxd->group_desc = descxd->group_desc;
+  descxd->group_desc = NULL;
+  return k;
+}
+
+int add_default_groupdesc(const char *group) {
+  xdcc *xd; 
+  xdcc *firstxd;
+  int k;
+
+  updatecontext();
+
+  k = 0;
+  firstxd = NULL;
+  xd = irlist_get_head(&gdata.xdccs); 
+  while(xd) 
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,group) == 0)
+            {
+              k++;
+              if (xd->group_desc != NULL) 
+                return 0;
+              
+              /* check only the first entry */
+              if (k == 1)
+                {
+                  firstxd = xd;
+                }
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  if (k != 1)
+    return k;
+
+  firstxd->group_desc = mycalloc(strlen(group)+1);
+  strcpy(firstxd->group_desc,group); 
+  return k; 
+}
+
+void strtextcpy(char *d, const char *s) {
+   const char *x;
+   char *w;
+   char ch;
+   size_t l;
+   
+   if (d == NULL)
+      return;
+   if (s == NULL)
+      return;
+   
+   /* ignore path */
+   x = strrchr(s, '/');
+   if (x != NULL)
+      x ++;
+   else
+      x = s;
+   
+   strcpy(d,x);
+   /* ignore extension */
+   w = strrchr(d, '.');
+   if (w != NULL)
+      *w = 0;
+   
+   l = strlen(d);
+   if ( l < 8 )
+      return;
+
+   w = d + l - 1;
+   ch = *w;
+   switch (ch) {
+   case '}':
+      w = strrchr(d, '{');
+      if (w != NULL)
+         *w = 0;
+      break;
+   case ')':
+      w = strrchr(d, '(');
+      if (w != NULL)
+         *w = 0;
+      break;
+   case ']':
+      w = strrchr(d, '[');
+      if (w != NULL)
+         *w = 0;
+      break;
+   }
+
+   /* strip numbers */
+   x = d;
+   w = d;
+   for (;;) {
+      ch = *(x++);
+      *w = ch;
+      if (ch == 0)
+         break;
+      if (isalpha(ch))
+         w++;
+   }
+}
+
+void update_natip (const char *var)
+{
+  struct hostent *hp;
+  struct in_addr old;
+  struct in_addr in;
+  char *oldtxt;
+
+  if (var == NULL)
+    return;
+
+  bzero((char *)&in, sizeof(in));
+  if (inet_aton(var, &in) == 0)
+    {
+      hp = gethostbyname(var);
+      if (hp == NULL)
+        {
+          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid NAT Host, Ignoring: %s",hstrerror(h_errno));
+          return;
+        }
+      if ((unsigned)hp->h_length > sizeof(in) || hp->h_length < 0)
+        {
+          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid DNS response, Ignoring: %s",hstrerror(h_errno));
+          return;
+        }
+      memcpy(&in, hp->h_addr_list[0], sizeof(in));
+    }
+ 
+  old.s_addr = htonl(gdata.ourip);
+  gdata.usenatip = 1;
+  if (old.s_addr == in.s_addr)
+    return;
+ 
+  gdata.ourip = ntohl(in.s_addr);
+  gdata.r_ourip = gdata.ourip;
+  oldtxt = strdup(inet_ntoa(old));
+  mylog(CALLTYPE_NORMAL,"DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
+  free(oldtxt);
+ 
+  if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ip=0x%8.8lX\n",gdata.ourip);
+
+  /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
+  if (((gdata.ourip & 0xFF000000UL) == 0x0A000000UL) ||
+      ((gdata.ourip & 0xFFF00000UL) == 0xAC100000UL) ||
+      ((gdata.ourip & 0xFFFF0000UL) == 0xC0A80000UL))
+    {
+      outerror(OUTERROR_TYPE_WARN_LOUD,"usenatip of %lu.%lu.%lu.%lu looks wrong, this is probably not what you want to do",
+                (gdata.ourip >> 24) & 0xFF,
+                (gdata.ourip >> 16) & 0xFF,
+                (gdata.ourip >>  8) & 0xFF,
+                (gdata.ourip      ) & 0xFF);
+     }
+}
+
+void privmsg_chan(const channel_t *ch, const char *format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  vprivmsg_chan(ch, format, args);
+  va_end(args);
+}
+
+void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
+{
+  char tempstr[maxtextlength];
+  int len;
+  
+  if (!ch) return;
+  if (!ch->name) return;
+  
+  len = vsnprintf(tempstr,maxtextlength,format,ap);
+  
+  if ((len < 0) || (len >= maxtextlength))
+    {
+      outerror(OUTERROR_TYPE_WARN,"PRVMSG-CHAN: Output too large, ignoring!");
+      return;
+    }
+  
+  writeserver_channel(ch->rate, "PRIVMSG %s :%s", ch->name, tempstr);
+}
+
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+writeserver_channel (int rate, const char *format, ... )
+{
+  va_list args;
+  va_start(args, format);
+  vwriteserver_channel(rate, format, args);
+  va_end(args);
+}
+
+void vwriteserver_channel(int rate, const char *format, va_list ap)
+{
+  char *msg;
+  channel_announce_t *item;
+  int len;
+  
+  msg = mycalloc(maxtextlength+1);
+  
+  len = vsnprintf(msg,maxtextlength,format,ap);
+  
+  if ((len < 0) || (len >= maxtextlength))
+    {
+      outerror(OUTERROR_TYPE_WARN,"WRITESERVER: Output too large, ignoring!");
+      mydelete(msg);
+      return;
+    }
+  
+  if (gdata.exiting || (gdata.serverstatus != SERVERSTATUS_CONNECTED))
+    {
+      mydelete(msg);
+      return;
+    }
+  
+  if (gdata.debug > 0)
+    {
+      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<QUES<: %s",msg);
+    }
+  
+  if (len > EXCESS_BUCKET_MAX)
+    {
+      outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
+      msg[EXCESS_BUCKET_MAX] = '\0';
+      len = EXCESS_BUCKET_MAX;
+    }
+  
+  if (irlist_size(&gdata.serverq_slow) < MAXSENDQ)
+    {
+      item = irlist_add(&gdata.serverq_slow, sizeof(channel_announce_t));
+      item->delay = rate;
+      item->msg = irlist_add(&gdata.serverq_slow, len + 1);
+      strcpy(item->msg, msg);
+    }
+  else
+    {
+      outerror(OUTERROR_TYPE_WARN,"Server queue is very large. Dropping additional output.");
+    }
+  
+  mydelete(msg);
+  return;
+}
+
+void sendannounce(void)
+{
+  channel_announce_t *item;
+  
+  item = irlist_get_head(&gdata.serverq_channel);
+  if (!item)
+    return;
+
+  if ( --(item->delay) > 0 )
+    return;
+
+  writeserver(WRITESERVER_SLOW, "%s", item->msg);
+  mydelete(item->msg);
+  irlist_delete(&gdata.serverq_channel, item);
+}
+
+void stoplist(const char *nick)
+{
+  char *item;
+  char *copy;
+  char *end;
+  char *inick;
+  int stopped = 0;
+  
+  ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC STOP from %s", nick);
+  item = irlist_get_head(&gdata.xlistqueue);
+  while (item)
+    {
+      if (strcasecmp(item,nick) == 0)
+        {
+           stopped ++;
+           item = irlist_delete(&gdata.xlistqueue, item);
+           continue;
+         }
+      item = irlist_get_next(item);
+    }
+  
+  item = irlist_get_head(&gdata.serverq_slow);
+  while (item)
+    {
+      inick = NULL;
+      copy = mymalloc(strlen(item)+1);
+      strcpy(copy, item);
+      inick = strchr(copy, ' ');
+      if (inick != NULL)
+        {
+          *(inick++) = 0;
+          end = strchr(inick, ' ');
+          if (end != NULL)
+            {
+              *(end++) = 0;
+              if (strcasecmp(inick,nick) == 0)
+                {
+                   if ( (strcmp(copy,"PRIVMSG") == 0) || (strcmp(copy,"NOTICE") == 0) )
+                     {
+                       stopped ++;
+                       item = irlist_delete(&gdata.serverq_slow, item);
+                       continue;
+                     }
+                }
+            }
+        }
+      item = irlist_get_next(item);
+    }
+  ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (stopped %d)", stopped);
+}
+
+void notifyqueued_nick(const char *nick)
+{
+  int i;
+  unsigned long rtime, lastrtime;
+  pqueue *pq;
+  transfer *tr;
+  
+  updatecontext();
+  
+  lastrtime=0;
+  
+  /* if we are sending more than allowed, we need to skip the difference */
+  for (i=0; i<irlist_size(&gdata.trans)-gdata.slotsmax; i++)
+    {
+      rtime=-1;
+      tr = irlist_get_head(&gdata.trans);
+      while(tr)
+        {
+          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
+          if (left > lastrtime && left < rtime)
+            {
+              rtime = left;
+            }
+          tr = irlist_get_next(tr);
+        }
+      if (rtime < 359999)
+        {
+          lastrtime=rtime;
+        }
+    }
+  
+  i=1;
+  pq = irlist_get_head(&gdata.mainqueue);
+  while(pq)
+    {
+      rtime=-1;
+      tr = irlist_get_head(&gdata.trans);
+      while(tr)
+        {
+          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
+          if (left > lastrtime && left < rtime)
+            {
+              rtime = left;
+            }
+          tr = irlist_get_next(tr);
+        }
+      if (rtime < 359999)
+        {
+          lastrtime=rtime;
+        }
+      
+      if (!strcasecmp(pq->nick, nick))
+        {
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+                  "Notifying Queued status to %s",
+                  nick);
+          notice_slow(pq->nick,"Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
+                  (long)(gdata.curtime-pq->queuedtime)/60/60,
+                  (long)((gdata.curtime-pq->queuedtime)/60)%60,
+                  pq->xpack->desc,
+                  i,
+                  irlist_size(&gdata.mainqueue),
+                  lastrtime/60/60,
+                  (lastrtime/60)%60,
+                  (rtime >= 359999) ? "more" : "less");
+        }
+      i++;
+      pq = irlist_get_next(pq);
+    }
+  
+}
+
+void look_for_file_remove(void)
+{
+
+  xdcc *xd;
+  userinput *pubplist;
+  char *tempstr;
+  int r;
+  int n;
+  
+  updatecontext();
+
+  /* look to see if any files changed */
+  n = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+       n ++;
+       r = look_for_file_changes(xd);
+       if (r == 0)
+         {
+            xd = irlist_get_next(xd);
+            continue;
+         }
+       
+       pubplist = mycalloc(sizeof(userinput));
+       tempstr = mycalloc(maxtextlength);
+       snprintf(tempstr,maxtextlength-1,"remove %d", n);
+       u_fillwith_console(pubplist,tempstr);
+       u_parseit(pubplist);
+       mydelete(pubplist);
+       mydelete(tempstr);
+       
+       /* start over */
+       xd = irlist_get_head(&gdata.xdccs);
+       n = 0;
+    }
+     
+  return;
+}
+
+int has_joined_channels(int all)
+{
+  int j;
+  channel_t *ch;
+
+  j=0;
+  ch = irlist_get_head(&gdata.channels);
+  while(ch)
+    {
+       if ((ch->flags | CHAN_ONCHAN) == 0)
+         {
+           if (all != 0)
+             return 0;
+         }
+       else
+         j++;
+       ch = irlist_get_next(ch);
+     }
+  return j;
+}
+
+void reset_download_limits(void)
+{
+  int num;
+  int new;
+  xdcc *xd;
+
+  num = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      num++;
+      if (xd->dlimit_max != 0)
+        {
+          new = xd->gets + xd->dlimit_max;
+          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                  "Resetting download limit of pack %d, used %d",
+                  num, new - xd->dlimit_used);
+          xd->dlimit_used = new;
+        }
+      xd = irlist_get_next(xd);
+    }
+}
+
+void check_duplicateip(transfer *const newtr)
+{
+  igninfo *ignore;
+  char *bhostmask;
+  transfer *tr;
+  int found;
+  int num;
+  
+  num = 24 * 60; /* 1 day */
+  found = 0;
+  tr = irlist_get_head(&gdata.trans);
+  while(tr)
+    {
+      if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
+         (tr->remoteip == newtr->remoteip))
+        {
+          if (strcmp(tr->hostname,"man"))
+            found ++;
+        }
+      tr = irlist_get_next(tr);
+    }
+
+  if (found <= gdata.maxtransfersperperson)
+    return;
+
+  tr = irlist_get_head(&gdata.trans);
+  while(tr)
+    {
+      if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
+         (tr->remoteip == tr->remoteip))
+        {
+          t_closeconn(tr, "You are being punished for pararell downloads", 0);
+          bhostmask = mymalloc(strlen(tr->hostname)+5);
+          sprintf(bhostmask, "*!*@%s", tr->hostname);
+          ignore = irlist_get_head(&gdata.ignorelist);
+          while(ignore)
+            {
+              if (ignore->regexp && !regexec(ignore->regexp,bhostmask,0,NULL,0))
+                {
+                  break;
+                }
+              ignore = irlist_get_next(ignore);
+            }
+          
+          if (!ignore)
+            {
+              char *tempstr;
+              
+              ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
+              ignore->regexp = mycalloc(sizeof(regex_t));
+              
+              ignore->hostmask = mymalloc(strlen(bhostmask)+1);
+              strcpy(ignore->hostmask,bhostmask);
+              
+              tempstr = hostmasktoregex(bhostmask);
+              if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
+                {
+                  ignore->regexp = NULL;
+                }
+              
+              ignore->flags |= IGN_IGNORING;
+              ignore->lastcontact = gdata.curtime;
+              
+              mydelete(tempstr);
+            }
+          
+          ignore->flags |= IGN_MANUAL;
+          ignore->bucket = (num*60)/gdata.autoignore_threshold;
+        
+          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                  "same IP detected, Ignore activated for %s which will last %i min",
+                  bhostmask,num);
+        }
+      tr = irlist_get_next(tr);
+    }
+
+  write_statefile();
+}
+
+/* iroffer-lamm: @find and long !list */
+int noticeresults(const char *nick, const char *match)
+{
+  int             i, j, k, len;
+  char           *tempstr = mycalloc(maxtextlength);
+  char           *sizestrstr; 
+  char           *tempr;
+  regex_t        *regexp = mycalloc(sizeof(regex_t));
+  xdcc           *xd;
+  
+  len = k = 0;
+  
+  tempr = hostmasktoregex(match);
+
+  if (!regcomp(regexp, tempr, REG_ICASE | REG_NOSUB)) {
+    i = 1;
+    xd = irlist_get_head(&gdata.xdccs);
+    while (xd) {
+      if (!regexec(regexp, xd->file, 0, NULL, 0) || !regexec(regexp, xd->desc, 0, NULL, 0) || !regexec(regexp, xd->note, 0, NULL, 0)) {
+        if (!k) {
+          if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
+            j = irlist_size(&gdata.trans);
+          else
+            j = gdata.slotsmax;
+          snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - Slot%s:[%i/%i]", j != 1 ? "s" : "", j - irlist_size(&gdata.trans), j);
+          len = strlen(tempstr);
+           if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
+            len = strlen(tempstr);
+          }
+          if (gdata.transferminspeed > 0) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
+            len = strlen(tempstr);
+          }
+          if (gdata.transfermaxspeed > 0) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
+            len = strlen(tempstr);
+          }
+          if (gdata.maxb) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
+            len = strlen(tempstr);
+          }
+          snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send #x -", gdata.user_nick);
+          len = strlen(tempstr);
+          if (!strcmp(match, "*"))
+            snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");
+          else
+            snprintf(tempstr + len, maxtextlength - 1 - len, " Found:");
+          len = strlen(tempstr);
+        }
+        sizestrstr = sizestr(0, xd->st_size);
+        snprintf(tempstr + len, maxtextlength - 1 - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
+        if (strlen(tempstr) > 400) {
+          snprintf(tempstr + len, maxtextlength - 1 - len, " [...]");
+          notice_slow(nick, tempstr);
+          snprintf(tempstr, maxtextlength - 2, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
+        }
+        len = strlen(tempstr);
+        mydelete(sizestrstr);
+        k++;
+      }
+      i++;
+      xd = irlist_get_next(xd);
+    }
+  }
+  
+  if (k)
+    notice_slow(nick, tempstr);
+  mydelete(tempr);
+  mydelete(regexp);
+  mydelete(tempstr);
+  return k;
+}
+
+char* getpart_eol(const char *line, int howmany)
+{
+  char *part;
+  int li;
+  size_t plen;
+  int hi;
+  
+  li=0;
+  
+  for (hi = 1; hi < howmany; hi++)
+    {
+      while (line[li] != ' ')
+        {
+          if (line[li] == '\0')
+            {
+              return NULL;
+            }
+          else
+            {
+              li++;
+            }
+        }
+      li++;
+    }
+  
+  if (line[li] == '\0')
+    {
+      return NULL;
+    }
+  
+  plen = strlen(line+li);
+  part = mycalloc(plen+1);
+  memcpy(part, line+li, plen);
+  part[plen] = '\0';
+  
+  return part;
+}
+
+/* End of File */
