@@ -470,9 +470,9 @@ Not going to happen anytime soon:
 With Version mod 1.24:
 ----------------------
 
-58) channel -limit (inspired by Horst)
+58) channel -delay (inspired by Horst)
    delay messages to this channel by seconds.
 
 Sample:
-channel #chan04 -plist 14 -pformat summary -limit 60
+channel #chan04 -plist 14 -pformat summary -delay 60
 

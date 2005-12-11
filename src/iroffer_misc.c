@@ -436,12 +436,12 @@ void getconfig_set (const char *line, int rehash)
               }
             else ok=0;
             }
-         else if (!strcmp(tptr,"-rate")) {
+         else if (!strcmp(tptr,"-delay")) {
             i++;
             if ((tptr2 = getpart(var, i)))
-              cptr->rate = atoi(tptr2);
+              cptr->delay = atoi(tptr2);
             else
-              cptr->rate = 0;
+              cptr->delay = 0;
             }
          else if (!strcmp(tptr,"-headline")) {
             i++;

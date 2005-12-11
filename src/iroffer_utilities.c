@@ -1578,7 +1578,7 @@ void dumpgdata(void)
           iter->plisttime,
           iter->plistoffset);
   gdata_iter_print_string(headline);
-  gdata_iter_print_int(rate);
+  gdata_iter_print_int(delay);
   /* members */
   gdata_irlist_iter_end;
   

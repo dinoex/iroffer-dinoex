@@ -379,7 +379,7 @@ typedef struct
   short flags;
   short plisttime;
   short plistoffset;
-  short rate;
+  short delay;
   irlist_t members;
 } channel_t;
 
@@ -436,6 +436,7 @@ typedef struct
 typedef struct
 {
   int delay;
+  char *chan;
   char *msg;
 } channel_announce_t;
 

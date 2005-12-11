@@ -365,22 +365,22 @@ void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
       return;
     }
   
-  writeserver_channel(ch->rate, "PRIVMSG %s :%s", ch->name, tempstr);
+  writeserver_channel(ch->delay, ch->name, "PRIVMSG %s :%s", ch->name, tempstr);
 }
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
+__attribute__ ((format(printf, 3, 4)))
 #endif
-writeserver_channel (int rate, const char *format, ... )
+writeserver_channel (int delay, const char *chan, const char *format, ... )
 {
   va_list args;
   va_start(args, format);
-  vwriteserver_channel(rate, format, args);
+  vwriteserver_channel(delay, chan, format, args);
   va_end(args);
 }
 
-void vwriteserver_channel(int rate, const char *format, va_list ap)
+void vwriteserver_channel(int delay, const char *chan, const char *format, va_list ap)
 {
   char *msg;
   channel_announce_t *item;
@@ -415,11 +415,13 @@ void vwriteserver_channel(int rate, const char *format, va_list ap)
       len = EXCESS_BUCKET_MAX;
     }
   
-  if (irlist_size(&gdata.serverq_slow) < MAXSENDQ)
+  if (irlist_size(&gdata.serverq_channel) < MAXSENDQ)
     {
-      item = irlist_add(&gdata.serverq_slow, sizeof(channel_announce_t));
-      item->delay = rate;
-      item->msg = irlist_add(&gdata.serverq_slow, len + 1);
+      item = irlist_add(&gdata.serverq_channel, sizeof(channel_announce_t));
+      item->delay = delay;
+      item->chan = mycalloc(strlen(chan)+1);
+      strcpy(item->chan, chan);
+      item->msg = mycalloc(len + 1);
       strcpy(item->msg, msg);
     }
   else
@@ -443,6 +445,7 @@ void sendannounce(void)
     return;
 
   writeserver(WRITESERVER_SLOW, "%s", item->msg);
+  mydelete(item->chan);
   mydelete(item->msg);
   irlist_delete(&gdata.serverq_channel, item);
 }

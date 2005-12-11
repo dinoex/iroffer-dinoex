@@ -30,10 +30,10 @@ privmsg_chan(const channel_t *ch, const char *format, ...);
 void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap);
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
+__attribute__ ((format(printf, 3, 4)))
 #endif
-writeserver_channel (int rate, const char *format, ... );
-void vwriteserver_channel(int rate, const char *format, va_list ap);
+writeserver_channel (int delay, const char *chan, const char *format, ... );
+void vwriteserver_channel(int delay, const char *chan, const char *format, va_list ap);
 void sendannounce(void);
 void stoplist(const char *nick);
 void notifyqueued_nick(const char *nick);
