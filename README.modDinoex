@@ -19,6 +19,9 @@ bugfix: ignoreduplicateip (reported by Chobits and TheDeath)
    versions affected: 1.18 - 1.23
    check was counting manual sends
 
+bugfix: queue (reported by TheDeath)
+   the same pack to mutiple Nicks
+
 With Version mod 1.23:
 ----------------------
 

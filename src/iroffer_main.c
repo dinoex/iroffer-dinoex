@@ -3412,16 +3412,26 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
 
    tempx = irlist_get_nth(&gdata.xdccs, pack-1);
    
+   if (!strcmp(hostname,"man"))
+      {
+        man = 1;
+      }
+    else
+      {
+        man = 0;
+      }
+   
    alreadytrans = inq = 0;
    pq = irlist_get_head(&gdata.mainqueue);
    while(pq)
      {
-       if (!strcmp(pq->hostname,hostname) || !strcasecmp(pq->nick,nick))
+       if (!strcmp(pq->hostname,hostname))
          {
-           inq++;
-           if (pq->xpack == tempx)
+           if (!man || !strcasecmp(pq->nick,nick))
              {
-               alreadytrans++;
+               inq++;
+               if (pq->xpack == tempx)
+                 alreadytrans++;
              }
          }
        pq = irlist_get_next(pq);
@@ -3434,15 +3444,6 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
       return tempstr;
       }
     
-   if (!strcmp(hostname,"man"))
-      {
-        man = 1;
-      }
-    else
-      {
-        man = 0;
-      }
-   
    if (!man && (inq >= gdata.maxqueueditemsperperson)) {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (user/queue): ");
       snprintf(tempstr, maxtextlength,
