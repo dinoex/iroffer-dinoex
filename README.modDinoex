@@ -1,303 +1,133 @@
 
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
-With Version mod 1.1:
----------------------
+With Version mod 1.24:
+----------------------
 
-1) grouped lists (inspired by Splizzer, Rom)
+58) channel -delay (inspired by Horst)
+   delay messages to this channel by seconds.
 
-   add a GROUP feature, as seen in various split offs.
-   this is a clean reimplementation, groups are optional.
-   and can be mixed with normal packs.
+Sample:
+channel #chan04 -plist 14 -pformat summary -delay 60
 
-   new admin commands:
-   XDLFULL                    list all packs
-   XDLGROUP <group>           list packs with given group
-   GROUPDESC <group> <text>   set new description for group
-   GROUP <pack> <group>       set pack as a member of group
-   REGROUP <group> <newname>  rename group
+With Version mod 1.23:
+----------------------
 
-   new user commands:
-   XDCC LIST <group>          list packs with given group
+bugifx: fix menmory leak (reported by TheDeath)
 
-   changed user commands:
-   XDCC LIST                  list packs that have no group defined
-                              and list all groups that have a description.
+56) CHLIMIT (inspired by TheDeath)
 
-2) convertxdccfile
+   show limit on xdcc list
 
-   comandline option "-g" to import group definitions
-   from an XDCC file created with modBySplizzerv1.6, http://splizzer.de.ms
+57) autosendpack (inspired by Hikari)
 
-   sample commandline:
-   convertxdccfile -g splizzer.xdcc mybot.state
-
-With Version mod 1.2:
----------------------
-
-3) save queue
-   Save download queue on exit or crash.  and read it back on start.
-   I though about saving running transfers too, but decided against it.
+   autosendpack can now be used mutiple times
+   Only the first matching trigger will start a send
 
    References TODO:
-Long Term Features:
-128     12/21/00        Open    save current transfers and queue across a shutdown
+Not going to happen anytime soon:
+107 long ago Deferred multiple autosend words/packs
 
+With Version mod 1.22:
+----------------------
 
-With Version mod 1.3:
----------------------
+URLs updated.
 
-4) getipfromserver
+54) atfind 
 
-   Automatic dcc ip translation
-   Get my own IP from the ircserver, and uses this as value for usenatip.
-   Set usenatip to a default value when using this option.
+   if more than one word given, treat ' ' as '*'
 
-   If iroffer runs behind nat, I recommend setting "getipfromserver"
-   in the config. This will update "natip" whenever the bot reconnects.
-   this obsoletes scripts like "dynip.sh" or other cronjobs.
+55) ANNOUNCE
 
-With Version mod 1.4:
----------------------
+   slow ANNOUNCE, to avoid flooding
 
-5) locking/password:
+bugfix: CHLIMIT (reported by TheDeath)
+   limit was reset to many times after 24 hours
 
-   new commands:
-   LOCK <pack> <password>
-   UNLOCK <pack>
+bugfix: CHLIMIT
+   versions affected: 1.17 - 1.21
+   saving statefile with chlimit will generate a bad tag
+   statefile is still readable with newer version
 
-   new user commands:
-   XDCC SEND #<pack> password
+With Version mod 1.21:
+----------------------
 
-   References TODO:
-Long Term Features:
-188	12/09/03	Open	password protect packs
+bugfix: XDCC STOP
+   log more information
+   allow to stop even before first line has been send
 
-6) noduplicatefiles (inspired by Ddrulez)
+bugfix: HELP
+   improved text and syntax description
 
-   When configured, add, adddir and addnew refuses to add a files that
-   already have been added. Full path is compared.
+51) atfind (from Porakin, taken from iroffer-lamm)
 
-7) adddir_exclude <pattern>
+   iroffer will respond to "@find pattern" requests sent a channel
+   with a pattern that contains at least <n> non wildcards chars
+   wild cards are:
+    * = 0 or more characters,  ? = 1 character,  # = any positive integer
+   default: 0 = no response at all
+   output delayed and stopable
 
-   When configured, addir and adnew will skip all files that match this
-   patterns.
-
-8) enable_nick <nickname>
-
-   Watch this user.
-   No new "xdcc send" are accepted, when this user is not online.
-   Old queue entries are still send.
-
-With Version mod 1.5:
----------------------
-
-9) need_voice (inspired by Tak0r)
-
-   Restrict list/send to only voiced/opped users
-   restrictlist and restrictsend must be set yes.
-
-   References TODO:
-Long Term Features:
-172	12/09/03	Open	restrict list/send to only voiced/opped users
-
-With Version mod 1.6:
----------------------
-
-10) hide_list_info
-
-    Don't print line with "/msg nick xdcc info #x"
-
-11) xdcclist_grouponly
-
-   Export your xdcc list with group and main information only.
-   Default output is all packs and no group information.
-
-12) admin_job_file
-
-   when defined, read this file for commands and execute them.
-   output will be written in <filename>.done
-
-With Version mod 1.7:
----------------------
-
-13) auto_default_group (inspired by Keichi)
-
-   when adding a file, search for a similar entry, and set the same group.
-
-14) addgroup (inspired by Keichi)
+52) ANNOUNCE, ADDANN (from Porakin, taken from iroffer-lamm)
 
    new admin commands:
-   ADDGROUP <group> <dir>     import new files in this dir to given group
+   HOP <channel>              leave and rejoin a channel to get status
+   ANNOUNCE n <msg>           ANNOUNCE <msg> for pack n in all joined channels
+   ADDANN <filename>          Add and Announce New Pack
 
-With Version mod 1.8:
----------------------
+53) autoaddann (from Porakin, taken from iroffer-lamm)
 
-15) queue (from Porakin, taken from iroffer-lamm)
+   When configured, each add will be annouced on all channels with <msg>
 
-   new admin commands:
-   QUEUE <nick> <pack>       Queues Pack for given Nick
+With Version mod 1.20:
+----------------------
+
+46) admin command: queue (inspired by TheDeath)
+
+   Pack will be added to queue, even if queue limits are reached
+
+47) hidelockedpacks
+
+   dont show locked packs on XDCC INFO and XDCC LIST for users
+
+bugfix: getipfromserver
+   versions affected: 1.3 - 1.19
+   on reash the DCC IP was lost, transfers did not work until reconnect
+
+48) disablexdccinfo
+
+   disable command XDCC INFO for all
 
    References TODO:
 Short Term Features:
-143 12/21/00 Open manually add someone to a queue
+212 6/08/04 Open configurable to enable/disable xdcc info
 
-16 ) start_of_month (inspired by Keichi)
+bugfix: admin command: queue
+   detect if user try to queue and manuel queued pack
 
-day of month when to reset the monthly traffic limit, default 1
+bugfix: need_voice
+   solved a problem when users joined with voice set
 
-With Version mod 1.9:
----------------------
+49) HOP (inspired by TheDeath)
 
-17) failsave when server or link goes down
-   Don't send packs when we are no longer connected.
-   Queue will be hold till next join.
+   new admin command:
+   HOP <channel>              leave and rejoin a channel to get status
 
-18) enforce queue limit. (inspired by Kickaha)
-   When User is reconnecting with a new nickname while
-   his transfer has not timed out, he can add himself to the queue again.
-   After he regained his old Nickname, he has more than the allowed number
-   of requests in queue. Now the last entry is removed.
+50) generate md5 password hash per default (inspired by TheDeath)
 
-With Version mod 1.10:
+   use extended "crypt" for longer passwords
+   old passwords are not affected
+
+bugfix: XDCC LIST <group> (inspired by TheDeath)
+   versions affected: 1.15 - 1.19
+   send headline and creditline to user
+
+With Version mod 1.19:
 ----------------------
 
-bugfix: remove
-   keep group description when first pack of a group is removed.
-
-bugfix: regroup (inspired by Takatoo, TheDeath)
-   versions affected: 1.1 to 1.9
-   bot could hang when entries without a group does exist.
-
-19) new admin commands:
-   REGROUP main <newname>  put all files without a group in the new group
-
-20) new user command alias: (inspired by [GFE]Lunix)
-   xdcc list group <group> ==> xdcc list <group>
-
-21) new user command:
-   xdcc list group all
-
-22) restrictprivlistmain
-
-   If set, "xdcc list" without an option will be rejected.
-   This allows to list a single group only.
-
-23) restrictprivlistfull
-
-If set, "xdcc list all" will be rejected. 
-
-With Version mod 1.11:
-----------------------
-
-24) groupsincaps (inspired by [GFE]Lunix)
-   If set, all groups names changed will be folded to  uppercase.
-
-bugfix: send <pack>  (inspired by TheDeath)
-   versions affected: 1.4 to 1.10
-   It is now possible to send password protected packs.
-
-bugfix: remove <pack>
-   versions affected: 1.10
-   bot could crash when removing a group with description.
-
-With Version mod 1.12:
-----------------------
-
-25) ignoreuploadbandwidth (inspired by [Faith]Athrun)
-   don't count uploads traffic into transferlimits.
-   Fast uploads will stop any downloads without this option.
-
-26) channel -headline (inspired by TheDeath)
-   text from this keyword to the end of the line is used as a
-   channel specific headline.
-
-Sample:
-channel #chan04 -plist 14 -pformat summary -headline moving soon
-
-With Version mod 1.13:
-----------------------
-
-bugfix: channel -headline (inspired by Chobits)
-   if channel headline is set, drop global headline
-
-27) removegroup (inspired by Neo2001)
-
-   new admin commands:
-   REMOVEGROUP <group>     remove every file within <group>
-
-With Version mod 1.14:
-----------------------
-
-28) holdqueue
-
-   don't send from queue, let current transfers run out,
-   do the bot can shutdown cleanly.
-
-   new admin commands:
-   HOLDQUEUE               toggle holdqueue
-   HOLDQUEUE 1             holdqueue on, don't send more files
-   HOLDQUEUE 0             holdqueue off, send files from queue
-
-29) removelostfiles (inspired by Neo2001)
-
-   if a files is no longer accessible on the server, remove the pack.
-   use with care, if started in wrong dir it may delete all packs.
-
-With Version mod 1.15:
-----------------------
-
-30) logmessages (from PMG)
-
-   config option to log messages in the logfile
-
-31) fix ping response (from PMG)
-
-32) track usermodes in channels (from PMG)
-
-33) fix infinate loop if debug is set and meminfo grows (from PMG)
-
-bugfix: enforce queue limit.
-   don't count manual transfers
-
-34) need_voice redesign using usermodes
-
-bugfix: xdcclistfile (inspired by StoVoKor)
-   credtline and totals was not generated by default
-
-With Version mod 1.16:
-----------------------
-
-bugfix: holdqueue
-   enforce holdqueue when new requests are comming in
-
-bugfix: GROUP <n> <g> (inspired by conanmichi)
-   save group description when the the first pack of a group leaves it.
-   move group description when joining as the first pack of a group.
-
-Fix online help. (inspired by conanmichi)
-
-bugfix: removelostfiles (inspired by TheDeath)
-   Iroffer could crash when removing the last file.
-
-With Version mod 1.17:
-----------------------
-
-35) set groupname as default group description (inspired by Kyu)
-   for an invisible group you haave to remove the description by hand.
-
-bugfix: channel -headline (inspired by Chobits)
-   send channel headline when plist in mutiple channels.
-
-36) chlimit (inspired by TheDeath)
-
-   new admin commands:
-   CHLIMIT <pack> <x>         do not allow more than x downloads per day
-
-37) chlimitinfo (inspired by Chobits)
-
-   new admin commands:
-   CHLIMITINFO <pack> <text>  send text to use when he can download the pack
+bugfix: ignoreduplicateip
+   versions affected: 1.18
+   did incorrectly detect all transfers as invalid
 
 With Version mod 1.18:
 ----------------------
@@ -348,131 +178,300 @@ bugfix: addnew (inspired by StoVoKor)
 
    clear transferlimits too
 
-With Version mod 1.19:
+With Version mod 1.17:
 ----------------------
 
-bugfix: ignoreduplicateip
-   versions affected: 1.18
-   did incorrectly detect all transfers as invalid
+35) set groupname as default group description (inspired by Kyu)
+   for an invisible group you haave to remove the description by hand.
 
-With Version mod 1.20:
+bugfix: channel -headline (inspired by Chobits)
+   send channel headline when plist in mutiple channels.
+
+36) chlimit (inspired by TheDeath)
+
+   new admin commands:
+   CHLIMIT <pack> <x>         do not allow more than x downloads per day
+
+37) chlimitinfo (inspired by Chobits)
+
+   new admin commands:
+   CHLIMITINFO <pack> <text>  send text to use when he can download the pack
+
+With Version mod 1.16:
 ----------------------
 
-46) admin command: queue (inspired by TheDeath)
+bugfix: holdqueue
+   enforce holdqueue when new requests are comming in
 
-   Pack will be added to queue, even if queue limits are reached
+bugfix: GROUP <n> <g> (inspired by conanmichi)
+   save group description when the the first pack of a group leaves it.
+   move group description when joining as the first pack of a group.
 
-47) hidelockedpacks
+Fix online help. (inspired by conanmichi)
 
-   dont show locked packs on XDCC INFO and XDCC LIST for users
+bugfix: removelostfiles (inspired by TheDeath)
+   Iroffer could crash when removing the last file.
 
-bugfix: getipfromserver
-   versions affected: 1.3 - 1.19
-   on reash the DCC IP was lost, transfers did not work until reconnect
+With Version mod 1.15:
+----------------------
 
-48) disablexdccinfo
+30) logmessages (from PMG)
 
-   disable command XDCC INFO for all
+   config option to log messages in the logfile
+
+31) fix ping response (from PMG)
+
+32) track usermodes in channels (from PMG)
+
+33) fix infinate loop if debug is set and meminfo grows (from PMG)
+
+bugfix: enforce queue limit.
+   don't count manual transfers
+
+34) need_voice redesign using usermodes
+
+bugfix: xdcclistfile (inspired by StoVoKor)
+   credtline and totals was not generated by default
+
+With Version mod 1.14:
+----------------------
+
+28) holdqueue
+
+   don't send from queue, let current transfers run out,
+   do the bot can shutdown cleanly.
+
+   new admin commands:
+   HOLDQUEUE               toggle holdqueue
+   HOLDQUEUE 1             holdqueue on, don't send more files
+   HOLDQUEUE 0             holdqueue off, send files from queue
+
+29) removelostfiles (inspired by Neo2001)
+
+   if a files is no longer accessible on the server, remove the pack.
+   use with care, if started in wrong dir it may delete all packs.
+
+With Version mod 1.13:
+----------------------
+
+bugfix: channel -headline (inspired by Chobits)
+   if channel headline is set, drop global headline
+
+27) removegroup (inspired by Neo2001)
+
+   new admin commands:
+   REMOVEGROUP <group>     remove every file within <group>
+
+With Version mod 1.12:
+----------------------
+
+25) ignoreuploadbandwidth (inspired by [Faith]Athrun)
+   don't count uploads traffic into transferlimits.
+   Fast uploads will stop any downloads without this option.
+
+26) channel -headline (inspired by TheDeath)
+   text from this keyword to the end of the line is used as a
+   channel specific headline.
+
+Sample:
+channel #chan04 -plist 14 -pformat summary -headline moving soon
+
+With Version mod 1.11:
+----------------------
+
+24) groupsincaps (inspired by [GFE]Lunix)
+   If set, all groups names changed will be folded to  uppercase.
+
+bugfix: send <pack>  (inspired by TheDeath)
+   versions affected: 1.4 to 1.10
+   It is now possible to send password protected packs.
+
+bugfix: remove <pack>
+   versions affected: 1.10
+   bot could crash when removing a group with description.
+
+With Version mod 1.10:
+----------------------
+
+bugfix: remove
+   keep group description when first pack of a group is removed.
+
+bugfix: regroup (inspired by Takatoo, TheDeath)
+   versions affected: 1.1 to 1.9
+   bot could hang when entries without a group does exist.
+
+19) new admin commands:
+   REGROUP main <newname>  put all files without a group in the new group
+
+20) new user command alias: (inspired by [GFE]Lunix)
+   xdcc list group <group> ==> xdcc list <group>
+
+21) new user command:
+   xdcc list group all
+
+22) restrictprivlistmain
+
+   If set, "xdcc list" without an option will be rejected.
+   This allows to list a single group only.
+
+23) restrictprivlistfull
+
+If set, "xdcc list all" will be rejected. 
+
+With Version mod 1.9:
+---------------------
+
+17) failsave when server or link goes down
+   Don't send packs when we are no longer connected.
+   Queue will be hold till next join.
+
+18) enforce queue limit. (inspired by Kickaha)
+   When User is reconnecting with a new nickname while
+   his transfer has not timed out, he can add himself to the queue again.
+   After he regained his old Nickname, he has more than the allowed number
+   of requests in queue. Now the last entry is removed.
+
+With Version mod 1.8:
+---------------------
+
+15) queue (from Porakin, taken from iroffer-lamm)
+
+   new admin commands:
+   QUEUE <nick> <pack>       Queues Pack for given Nick
 
    References TODO:
 Short Term Features:
-212 6/08/04 Open configurable to enable/disable xdcc info
+143 12/21/00 Open manually add someone to a queue
 
-bugfix: admin command: queue
-   detect if user try to queue and manuel queued pack
+16 ) start_of_month (inspired by Keichi)
 
-bugfix: need_voice
-   solved a problem when users joined with voice set
+day of month when to reset the monthly traffic limit, default 1
 
-49) HOP (inspired by TheDeath)
+With Version mod 1.7:
+---------------------
 
-   new admin command:
-   HOP <channel>              leave and rejoin a channel to get status
+13) auto_default_group (inspired by Keichi)
 
-50) generate md5 password hash per default (inspired by TheDeath)
+   when adding a file, search for a similar entry, and set the same group.
 
-   use extended "crypt" for longer passwords
-   old passwords are not affected
-
-bugfix: XDCC LIST <group> (inspired by TheDeath)
-   versions affected: 1.15 - 1.19
-   send headline and creditline to user
-
-With Version mod 1.21:
-----------------------
-
-bugfix: XDCC STOP
-   log more information
-   allow to stop even before first line has been send
-
-bugfix: HELP
-   improved text and syntax description
-
-51) atfind (from Porakin, taken from iroffer-lamm)
-
-   iroffer will respond to "@find pattern" requests sent a channel
-   with a pattern that contains at least <n> non wildcards chars
-   wild cards are:
-    * = 0 or more characters,  ? = 1 character,  # = any positive integer
-   default: 0 = no response at all
-   output delayed and stopable
-
-52) ANNOUNCE, ADDANN (from Porakin, taken from iroffer-lamm)
+14) addgroup (inspired by Keichi)
 
    new admin commands:
-   HOP <channel>              leave and rejoin a channel to get status
-   ANNOUNCE n <msg>           ANNOUNCE <msg> for pack n in all joined channels
-   ADDANN <filename>          Add and Announce New Pack
+   ADDGROUP <group> <dir>     import new files in this dir to given group
 
-53) autoaddann (from Porakin, taken from iroffer-lamm)
+With Version mod 1.6:
+---------------------
 
-   When configured, each add will be annouced on all channels with <msg>
+10) hide_list_info
 
-With Version mod 1.22:
-----------------------
+    Don't print line with "/msg nick xdcc info #x"
 
-URLs updated.
+11) xdcclist_grouponly
 
-54) atfind 
+   Export your xdcc list with group and main information only.
+   Default output is all packs and no group information.
 
-   if more than one word given, treat ' ' as '*'
+12) admin_job_file
 
-55) ANNOUNCE
+   when defined, read this file for commands and execute them.
+   output will be written in <filename>.done
 
-   slow ANNOUNCE, to avoid flooding
+With Version mod 1.5:
+---------------------
 
-bugfix: CHLIMIT (reported by TheDeath)
-   limit was reset to many times after 24 hours
+9) need_voice (inspired by Tak0r)
 
-bugfix: CHLIMIT
-   versions affected: 1.17 - 1.21
-   saving statefile with chlimit will generate a bad tag
-   statefile is still readable with newer version
-
-With Version mod 1.23:
-----------------------
-
-bugifx: fix menmory leak (reported by TheDeath)
-
-56) CHLIMIT (inspired by TheDeath)
-
-   show limit on xdcc list
-
-57) autosendpack (inspired by Hikari)
-
-   autosendpack can now be used mutiple times
-   Only the first matching trigger will start a send
+   Restrict list/send to only voiced/opped users
+   restrictlist and restrictsend must be set yes.
 
    References TODO:
-Not going to happen anytime soon:
-107 long ago Deferred multiple autosend words/packs
+Long Term Features:
+172	12/09/03	Open	restrict list/send to only voiced/opped users
 
-With Version mod 1.24:
-----------------------
+With Version mod 1.4:
+---------------------
 
-58) channel -delay (inspired by Horst)
-   delay messages to this channel by seconds.
+5) locking/password:
 
-Sample:
-channel #chan04 -plist 14 -pformat summary -delay 60
+   new commands:
+   LOCK <pack> <password>
+   UNLOCK <pack>
+
+   new user commands:
+   XDCC SEND #<pack> password
+
+   References TODO:
+Long Term Features:
+188	12/09/03	Open	password protect packs
+
+6) noduplicatefiles (inspired by Ddrulez)
+
+   When configured, add, adddir and addnew refuses to add a files that
+   already have been added. Full path is compared.
+
+7) adddir_exclude <pattern>
+
+   When configured, addir and adnew will skip all files that match this
+   patterns.
+
+8) enable_nick <nickname>
+
+   Watch this user.
+   No new "xdcc send" are accepted, when this user is not online.
+   Old queue entries are still send.
+
+With Version mod 1.3:
+---------------------
+
+4) getipfromserver
+
+   Automatic dcc ip translation
+   Get my own IP from the ircserver, and uses this as value for usenatip.
+   Set usenatip to a default value when using this option.
+
+   If iroffer runs behind nat, I recommend setting "getipfromserver"
+   in the config. This will update "natip" whenever the bot reconnects.
+   this obsoletes scripts like "dynip.sh" or other cronjobs.
+
+With Version mod 1.2:
+---------------------
+
+3) save queue
+   Save download queue on exit or crash.  and read it back on start.
+   I though about saving running transfers too, but decided against it.
+
+   References TODO:
+Long Term Features:
+128     12/21/00        Open    save current transfers and queue across a shutdown
+
+With Version mod 1.1:
+---------------------
+
+1) grouped lists (inspired by Splizzer, Rom)
+
+   add a GROUP feature, as seen in various split offs.
+   this is a clean reimplementation, groups are optional.
+   and can be mixed with normal packs.
+
+   new admin commands:
+   XDLFULL                    list all packs
+   XDLGROUP <group>           list packs with given group
+   GROUPDESC <group> <text>   set new description for group
+   GROUP <pack> <group>       set pack as a member of group
+   REGROUP <group> <newname>  rename group
+
+   new user commands:
+   XDCC LIST <group>          list packs with given group
+
+   changed user commands:
+   XDCC LIST                  list packs that have no group defined
+                              and list all groups that have a description.
+
+2) convertxdccfile
+
+   comandline option "-g" to import group definitions
+   from an XDCC file created with modBySplizzerv1.6, http://splizzer.de.ms
+
+   sample commandline:
+   convertxdccfile -g splizzer.xdcc mybot.state
 
