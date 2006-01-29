@@ -673,7 +673,7 @@ void check_duplicateip(transfer *const newtr)
       if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
          (tr->remoteip == newtr->remoteip))
         {
-          if (strcmp(tr->hostname,"man"))
+          if (!strcmp(tr->hostname,"man"))
             found ++;
         }
       tr = irlist_get_next(tr);
