@@ -1,4 +1,4 @@
-Welcome to iroffer 1.4.b02, by PMG (released January 16th 2005)
+Welcome to iroffer 1.4.b03, by PMG (released December 12th 2005)
 
 
  --- Info ---
@@ -151,5 +151,5 @@ SIGTERM (kill xxxx)        shuts down iroffer      (same as admin command "shutd
 
  --- End of README ---
 
-@(#) README 1.91@(#)
-pmg@wellington.i202.centerclick.org|README|20050116230509|46766
+@(#) README 1.93@(#)
+pmg@wellington.i202.centerclick.org|README|20051213024432|46824

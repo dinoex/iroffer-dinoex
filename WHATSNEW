@@ -2,6 +2,17 @@ What's New in iroffer:
 
 ############################## version 1.4 ##############################
 
+ --- New in 1.4.b03 --- (December 12th 2005)
+ - all fixes in 1.3.b11
+ - add 'logmessages' config item, similar to 'lognotices'
+ - minor performance changes to memory allocator
+ - better detection of valid usermodes, nick prefixes, and channel modes
+ - track usermodes of users in channels (shown in 'chanl' command)
+ - 'clearrecords' shuld clear transferlimit too
+ - mention directories when you do an 'adddir' or 'addnew' command
+ - some cleanups to Configure and makefile
+ - add 'xdcclistfileraw' config, includes control characters to xdcc file
+
  --- New in 1.4.b02 --- (January 16th 2005)
  - all fixes in 1.3.b10
  - add autoignore_threshold - auto-ignore rate configurable
@@ -17,6 +28,11 @@ What's New in iroffer:
  - add daily/weekly/monthly transfer limits
 
 ############################## version 1.3 ##############################
+
+ --- New in 1.3.b11 --- (December 12th 2005)
+ - fix invalid ctcp ping response
+ - fix username when it cannot be determined automatically
+ - fix infinate loop when debug output causes memory allocation
 
  --- New in 1.3.b10 --- (January 16th 2005)
  - ignore dev/inode changes as file changes
@@ -642,5 +658,5 @@ bug fixes
 orriginal release
 
 ---
-@(#) WHATSNEW 1.84@(#)
-pmg@wellington.i202.centerclick.org|WHATSNEW|20050116230509|33287
+@(#) WHATSNEW 1.86@(#)
+pmg@wellington.i202.centerclick.org|WHATSNEW|20051213024432|32923

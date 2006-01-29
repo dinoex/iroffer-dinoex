@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_admin.c 1.212@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_admin.c|20050313225819|04332
+ * @(#) iroffer_admin.c 1.215@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_admin.c|20051123201143|48668
  * 
  */
 
@@ -409,7 +409,10 @@ static void u_respond(const userinput * const u, const char *format, ...)
             llen = 0;
           }
         
-        removenonprintablectrl(tempstr);
+        if (!gdata.xdcclistfileraw)
+          {
+            removenonprintablectrl(tempstr);
+          }
         
 #if defined(_OS_CYGWIN)
         tempstr[llen++] = '\r';
@@ -2425,6 +2428,12 @@ static void u_adddir(const userinput * const u)
           u_respond(u,"cannot access %s, ignoring: %s",
                     tempstr, strerror(errno));
         }
+      else if (strcmp(f->d_name,".") &&
+               strcmp(f->d_name,"..") &&
+               S_ISDIR(st.st_mode))
+        {
+          u_respond(u,"  Ignoring directory: %s", tempstr);
+        }
       else if (S_ISREG(st.st_mode))
         {
           thefile = irlist_add(&dirlist, len + thedirlen + 2);
@@ -2523,6 +2532,12 @@ static void u_addnew(const userinput * const u)
         {
           u_respond(u,"cannot access %s, ignoring: %s",
                     tempstr, strerror(errno));
+        }
+      else if (strcmp(f->d_name,".") &&
+               strcmp(f->d_name,"..") &&
+               S_ISDIR(st.st_mode))
+        {
+          u_respond(u,"  Ignoring directory: %s", tempstr);
         }
       else if (S_ISREG(st.st_mode))
         {

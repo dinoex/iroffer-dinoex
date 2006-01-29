@@ -1,8 +1,8 @@
 #!/bin/sh
 
 #
-# @(#) Configure 1.112@(#)
-# pmg@wellington.i202.centerclick.org|Configure|20050116230535|15178
+# @(#) Configure 1.115@(#)
+# pmg@wellington.i202.centerclick.org|Configure|20051213024432|40052
 #
 
 VERSION=1.4.b02
@@ -26,6 +26,35 @@ fi
 
 echo
 echo "Configure for iroffer $VERSIONLONG"
+
+usage()
+{
+echo "Usage: Configure [ options ]"
+echo "   -h           This help"
+echo "   -e           Print errors while running Configure"
+echo "   -d           Compile with debug symbols"
+echo "   -p           Compile with profiling flags"
+echo "   -w           Compile with extra warning flags"
+exit 1
+}
+
+OPT_ERRORS=false
+OPT_DEBUG=false
+OPT_WARN=false
+OPT_PROF=false
+
+while getopts 'hedpw' OPTNAME; do
+  case "$OPTNAME" in
+    h) usage;;
+
+    e) OPT_ERRORS=true;;
+    d) OPT_DEBUG=true;;
+    w) OPT_WARN=true;;
+    p) OPT_PROF=true;;
+
+    *) usage;;
+  esac
+done
 
 echo -n "Determining OS... "
 uname
@@ -85,22 +114,22 @@ echo "" >> src/iroffer_config.h
 echo "#define VERSIONLONG \"$VERSIONLONG\"" >> src/iroffer_config.h
 echo "#define _OS_$ostype" >> src/iroffer_config.h
 
-if [ "$1" = "errors" -o "$2" = "errors" -o "$3" = "errors" ]; then
+if $OPT_ERRORS; then
  echo "Printing Errors During Execution..."
  shift
 else
  exec 2>/dev/null
 fi
 
-if [ "$1" = "debug" -o "$2" = "debug" -o "$3" = "debug" ]; then
+if $OPT_DEBUG; then
 echo "Configuring for debugging."
-OPT_AND_DEBUG="-g"
+DEBUG="-g"
 shift
 else
-OPT_AND_DEBUG="-O2"
+DEBUG="-O2"
 fi
 
-if [ "$1" = "warn" -o "$2" = "warn" -o "$3" = "warn" ]; then
+if $OPT_WARN; then
 echo "Configuring for extra warnings."
 WARNS="-Wshadow
 -Wpointer-arith
@@ -115,15 +144,10 @@ WARNS="-Wshadow
 shift
 fi
 
-if [ "$1" = "prof" -o "$2" = "prof" -o "$3" = "prof" ]; then
+if $OPT_PROF; then
 echo "Configuring for profiling."
 PROF="-pg"
 shift
-fi
-
-if [ -n "$1" ]; then
-echo "Unknown option: $1"
-exit 1
 fi
 
 echo -n "Checking for make... "
@@ -1051,8 +1075,8 @@ echo VERSION=$VERSION
 echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs
-echo CONFIG_LDFLAGS=$PROF $OPT_AND_DEBUG
-echo CONFIG_CFLAGS=$PROF $WARNS $OPT_AND_DEBUG
+echo CONFIG_LDFLAGS=$PROF $DEBUG
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG
 echo CONFIG_CPPFLAGS=
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then

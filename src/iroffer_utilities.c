@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_utilities.c 1.204@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_utilities.c|20050512030218|31933
+ * @(#) iroffer_utilities.c 1.205@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_utilities.c|20051123201144|35346
  * 
  */
 
@@ -1462,6 +1462,7 @@ void dumpgdata(void)
   gdata_print_string(filedir);
   gdata_print_string(statefile);
   gdata_print_string(xdcclistfile);
+  gdata_print_int(xdcclistfileraw);
   gdata_print_string(periodicmsg_nick);
   gdata_print_string(periodicmsg_msg);
   gdata_print_int(periodicmsg_time);

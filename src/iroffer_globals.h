@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_globals.h 1.120@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_globals.h|20050313225819|09463
+ * @(#) iroffer_globals.h 1.121@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_globals.h|20051123201144|11503
  * 
  */
 
@@ -67,6 +67,7 @@ irlist_t adminhost;
 char *filedir;
 char *statefile;
 char *xdcclistfile;
+int xdcclistfileraw;
 char *periodicmsg_nick, *periodicmsg_msg;
 int  periodicmsg_time;
 char *uploaddir;

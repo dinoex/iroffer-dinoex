@@ -9,8 +9,8 @@
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
  * 
- * @(#) iroffer_misc.c 1.250@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_misc.c|20050313225819|06148
+ * @(#) iroffer_misc.c 1.251@(#)
+ * pmg@wellington.i202.centerclick.org|src/iroffer_misc.c|20051123201144|15577
  * 
  */
 
@@ -99,6 +99,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"restrictprivlist",     &gdata.restrictprivlist,     &gdata.restrictprivlist },
   {"restrictsend",         &gdata.restrictsend,         &gdata.restrictsend },
   {"nomd5sum",             &gdata.nomd5sum,             &gdata.nomd5sum },
+  {"xdcclistfileraw",      &gdata.xdcclistfileraw,      &gdata.xdcclistfileraw },
   {"getipfromserver",      &gdata.getipfromserver,      &gdata.getipfromserver },
   {"noduplicatefiles",     &gdata.noduplicatefiles,     &gdata.noduplicatefiles },
   {"need_voice",           &gdata.need_voice,           &gdata.need_voice },
@@ -2405,6 +2406,7 @@ void reinit_config_vars(void)
   gdata.connectionmethod.how = how_direct;
   mydelete(gdata.statefile);
   mydelete(gdata.xdcclistfile);
+  gdata.xdcclistfileraw = 0;
   return;
 }
 
