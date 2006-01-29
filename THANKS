@@ -34,6 +34,9 @@ TheDeath
 	reporting removelostfiles problem
 	"CHLIMIT" command
 	porting to WIN32
+	reporting menmory leak
+	reporting ignoreduplicateip bug
+	reporting queue bug
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -56,6 +59,7 @@ StoVoKor
 	reporting xdcclistfile bug
 	reporting addnew bug
 	"XDCC STOP" command
+	reporting "XDCC SEARCH" bug
 
 conanmichi
 	reporting group descriptions problmes
@@ -63,4 +67,10 @@ conanmichi
 
 Kyu
 	groupname as default group description
+
+Hikari
+	autosendpack
+
+Horst
+	channel anti flooding
 
