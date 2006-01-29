@@ -12,6 +12,10 @@ channel #chan04 -plist 14 -pformat summary -delay 60
 
 59) sync with iroffer1.4.b03 (from PMG)
 
+60) XDCC SEARCH (inspired by StoVoKor)
+
+    pathnames are now ignored in search.
+
 With Version mod 1.23:
 ----------------------
 

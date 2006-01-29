@@ -2943,7 +2943,10 @@ static void privmsgparse(const char* type, char* line) {
          xd = irlist_get_head(&gdata.xdccs);
          while(xd)
            {
-             if (strstrnocase(xd->file,msg3) ||
+             char *file;
+             file = strrchr(xd->file, '/');
+             if (file == NULL) file = xd->file;
+             if (strstrnocase(file,msg3) ||
                  strstrnocase(xd->desc,msg3) ||
                  strstrnocase(xd->note,msg3))
                {
