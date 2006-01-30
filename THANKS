@@ -7,6 +7,13 @@ David Johnson (PMG)
 Splizzer
 	groups in iroffer 1.3
 
+Porakin
+	iroffer-lamm distribution
+	manual queue for sends 
+	announce/addann/autoaddann
+	noxdccinfo
+	@find-reply ("atfind" config option)
+
 Rom
 	mixing groups and normal packs
 
@@ -37,6 +44,7 @@ TheDeath
 	reporting menmory leak
 	reporting ignoreduplicateip bug
 	reporting queue bug
+	reporting send bug
 
 [GFE]Lunix
 	alias xdcc list group <group>
