@@ -673,7 +673,7 @@ void check_duplicateip(transfer *const newtr)
       if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
          (tr->remoteip == newtr->remoteip))
         {
-          if (!strcmp(tr->hostname,"man"))
+          if (strcmp(tr->hostname,"man"))
             found ++;
         }
       tr = irlist_get_next(tr);
@@ -689,46 +689,49 @@ void check_duplicateip(transfer *const newtr)
          (tr->remoteip == tr->remoteip))
         {
           t_closeconn(tr, "You are being punished for pararell downloads", 0);
-          bhostmask = mymalloc(strlen(tr->hostname)+5);
-          sprintf(bhostmask, "*!*@%s", tr->hostname);
-          ignore = irlist_get_head(&gdata.ignorelist);
-          while(ignore)
+          if (strcmp(tr->hostname,"man"))
             {
-              if (ignore->regexp && !regexec(ignore->regexp,bhostmask,0,NULL,0))
+              bhostmask = mymalloc(strlen(tr->hostname)+5);
+              sprintf(bhostmask, "*!*@%s", tr->hostname);
+              ignore = irlist_get_head(&gdata.ignorelist);
+              while(ignore)
                 {
-                  break;
-                }
-              ignore = irlist_get_next(ignore);
-            }
-          
-          if (!ignore)
-            {
-              char *tempstr;
-              
-              ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
-              ignore->regexp = mycalloc(sizeof(regex_t));
-              
-              ignore->hostmask = mymalloc(strlen(bhostmask)+1);
-              strcpy(ignore->hostmask,bhostmask);
-              
-              tempstr = hostmasktoregex(bhostmask);
-              if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
-                {
-                  ignore->regexp = NULL;
+                  if (ignore->regexp && !regexec(ignore->regexp,bhostmask,0,NULL,0))
+                    {
+                      break;
+                    }
+                  ignore = irlist_get_next(ignore);
                 }
               
-              ignore->flags |= IGN_IGNORING;
-              ignore->lastcontact = gdata.curtime;
+              if (!ignore)
+                {
+                  char *tempstr;
+                  
+                  ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
+                  ignore->regexp = mycalloc(sizeof(regex_t));
+                  
+                  ignore->hostmask = mymalloc(strlen(bhostmask)+1);
+                  strcpy(ignore->hostmask,bhostmask);
+                  
+                  tempstr = hostmasktoregex(bhostmask);
+                  if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
+                    {
+                      ignore->regexp = NULL;
+                    }
+                  
+                  ignore->flags |= IGN_IGNORING;
+                  ignore->lastcontact = gdata.curtime;
+                  
+                  mydelete(tempstr);
+                }
               
-              mydelete(tempstr);
+              ignore->flags |= IGN_MANUAL;
+              ignore->bucket = (num*60)/gdata.autoignore_threshold;
+              
+              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                      "same IP detected, Ignore activated for %s which will last %i min",
+                      bhostmask,num);
             }
-          
-          ignore->flags |= IGN_MANUAL;
-          ignore->bucket = (num*60)/gdata.autoignore_threshold;
-        
-          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
-                  "same IP detected, Ignore activated for %s which will last %i min",
-                  bhostmask,num);
         }
       tr = irlist_get_next(tr);
     }

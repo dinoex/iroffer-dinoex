@@ -22,6 +22,9 @@ bugfix: ignoreduplicateip (reported by Chobits and TheDeath)
 bugfix: queue (reported by TheDeath)
    the same pack to mutiple Nicks
 
+bugfix: send (reported by TheDeath)
+   alow mutiple sends to the same Nick
+
 With Version mod 1.23:
 ----------------------
 
