@@ -475,7 +475,8 @@ void t_transfersome (transfer * const t)
         }
       
       t->bytessent += howmuch2;
-      gdata.xdccsent[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
+      if (t->unlimited == 0)
+        gdata.xdccsent[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
       t->tx_bucket -= howmuch2;
       j += howmuch2;
       gdata.totalsent += (unsigned long long)howmuch2;
