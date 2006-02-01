@@ -1760,11 +1760,12 @@ void dumpgdata(void)
   gdata_iter_print_string(caps_nick);
   gdata_iter_print_string(hostname);
   ioutput(gdata_common,
-          "  : nomin=%d nomax=%d reminded=%d overlimit=%d tr_status=%d",
+          "  : nomin=%d nomax=%d reminded=%d overlimit=%d unlimited=%d tr_status=%d",
           iter->nomin,
           iter->nomax,
           iter->reminded,
           iter->overlimit,
+          iter->unlimited,
           iter->tr_status);
   gdata_irlist_iter_end;
   

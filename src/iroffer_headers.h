@@ -242,6 +242,7 @@ typedef struct
   char reminded;
   char close_to_timeout;
   char overlimit;
+  char unlimited;
   transfer_status_e tr_status;
 } transfer;
 

@@ -44,6 +44,7 @@ static void u_close(const userinput * const u);
 static void u_closeu(const userinput * const u);
 static void u_nomin(const userinput * const u);
 static void u_nomax(const userinput * const u);
+static void u_unlimited(const userinput * const u);
 static void u_rmq(const userinput * const u);
 static void u_raw(const userinput * const u);
 static void u_redraw(const userinput * const u);
@@ -144,6 +145,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_rmq,      "RMQ","n","Removes Queue Number n"},
 {2,method_allow_all,u_nomin,    "NOMIN","n","Disables Minspeed For Transfer ID n"},
 {2,method_allow_all,u_nomax,    "NOMAX","n","Disables Maxspeed For Transfer ID n"},
+{2,method_allow_all,u_unlimited, "UNLIMITED","n","Disables Bandwidth Limits For Transfer ID n"},
 {2,method_allow_all,u_send,     "SEND","nick n","Sends Pack n to nick"},
 {2,method_allow_all,u_queue,    "QUEUE","nick n","Queues Pack n for nick"},
 {2,method_allow_all,u_psend,    "PSEND","<channel> <style>","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
@@ -1427,6 +1429,27 @@ static void u_nomax(const userinput * const u)
     {
       tr = does_tr_id_exist(num);
       tr->nomax = 1;
+    }
+}
+
+static void u_unlimited(const userinput * const u)
+{
+  int num = -1;
+  transfer *tr;
+  
+  updatecontext();
+  
+  if (u->arg1) num = atoi(u->arg1);
+  
+  if ((num < 0) || !does_tr_id_exist(num))
+    {
+      u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
+    }
+  else
+    {
+      tr = does_tr_id_exist(num);
+      tr->nomax = 1;
+      tr->unlimited = 1;
     }
 }
 

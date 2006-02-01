@@ -226,7 +226,8 @@ void t_transfersome (transfer * const t)
   
   if ( gdata.maxb && (j >= gdata.maxb*1024))
     {
-      return; /* over overall limit */
+      if (t->unlimited == 0)
+        return; /* over overall limit */
     }
   
   t->overlimit = 0;

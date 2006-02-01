@@ -3256,7 +3256,8 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        strcpy(tr->hostname,hostname);
        
        tr->xpack = xd;
-       tr->nomax = verifyhost(&gdata.unlimitedhost, hostmask);
+       tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
+       tr->nomax = tr->unlimited;
        
        if (!man)
          {
@@ -3581,7 +3582,8 @@ void sendaqueue(int type)
       len = strlen(pq->hostname)+strlen(pq->nick)+4;
       hostmask = mymalloc(len+1);
       snprintf(hostmask,len,"%s!*@%s",tr->nick,tr->hostname);
-      tr->nomax = verifyhost(&gdata.unlimitedhost, hostmask);
+      tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
+      tr->nomax = tr->unlimited;
       mydelete(hostmask);
       
       if (!gdata.quietmode)

@@ -28,6 +28,11 @@ bugfix: send (reported by TheDeath)
 60) unlimitedhost (inspired by Chobits)
    specify nicks and hostnames which are not limited in bandnwidth
 
+61) UNLIMITED
+
+   new admin command:
+   UNLIMITED <n>     Disables Bandwidth Limits For Transfer ID n
+
 With Version mod 1.23:
 ----------------------
 
