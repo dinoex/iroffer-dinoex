@@ -84,6 +84,7 @@ int getipfromserver;
 int noduplicatefiles;
 irlist_t adddir_exclude;
 irlist_t autoqueue;
+irlist_t unlimitedhost;
 char *enable_nick;
 int need_voice;
 int hide_list_info;
