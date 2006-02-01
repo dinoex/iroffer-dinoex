@@ -42,6 +42,7 @@ TheDeath
 	"CHLIMIT" command
 	porting to WIN32
 	reporting menmory leak
+	suggesting flood protection
 	reporting ignoreduplicateip bug
 	reporting queue bug
 	reporting send bug
