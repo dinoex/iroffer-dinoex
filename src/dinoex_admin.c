@@ -684,7 +684,6 @@ void reset_download_limits(void)
 #ifdef USE_GEOIP
 
 #define GEOIP_FLAGS GEOIP_MEMORY_CACHE
-#define GEOIP_OK(r) ((r!=NULL)&&(r[0]!='-')&&(r[1]!='-'))
 
 GeoIP *gi = NULL;
 
