@@ -33,6 +33,11 @@ bugfix: send (reported by TheDeath)
    new admin command:
    UNLIMITED <n>     Disables Bandwidth Limits For Transfer ID n
 
+62) Support for GeoIP Database lookups
+
+   Documentation at http://www.maxmind.com/geoip/
+   activate with Configure -g
+
 With Version mod 1.23:
 ----------------------
 

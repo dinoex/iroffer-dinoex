@@ -24,8 +24,6 @@
 
 #ifdef USE_GEOIP
 #include <GeoIP.h>
-GeoIP *gi;
-#define GEOIP_OK(r) ((r!=NULL)&&(r[0]!='-')&&(r[1]!='-'))
 #endif /* USE_GEOIP */
 
 static void admin_line(int fd, const char *line) {
@@ -664,12 +662,21 @@ void reset_download_limits(void)
 }
 
 #ifdef USE_GEOIP
+
+#define GEOIP_FLAGS GEOIP_MEMORY_CACHE
+#define GEOIP_OK(r) ((r!=NULL)&&(r[0]!='-')&&(r[1]!='-'))
+
+GeoIP *gi = NULL;
+
 char *check_geoip(transfer *const t);
 char *check_geoip(transfer *const t)
 {
   static char hostname[20];
   static char code[20];
   const char *result;
+
+  if (gi == NULL)
+    gi = GeoIP_new(GEOIP_FLAGS);
 
   snprintf(hostname, sizeof(hostname), "%ld.%ld.%ld.%ld",
             t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF );
@@ -776,6 +783,16 @@ void check_duplicateip(transfer *const newtr)
     }
 
   write_statefile();
+}
+
+void shutdown_dinoex(void)
+{
+#ifdef USE_GEOIP
+  if (gi != NULL)
+    {
+      GeoIP_delete(gi);
+    }
+#endif
 }
 
 /* iroffer-lamm: @find and long !list */

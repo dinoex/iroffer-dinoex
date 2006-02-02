@@ -1978,6 +1978,7 @@ void shutdowniroffer(void) {
 
       tostdout_disable_buffering(1);
       uninitscreen();
+      shutdown_dinoex();
       if (gdata.pidfile) unlink(gdata.pidfile);
       exit(0);
       }
