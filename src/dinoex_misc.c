@@ -701,7 +701,7 @@ char *check_geoip(transfer *const t)
   snprintf(hostname, sizeof(hostname), "%ld.%ld.%ld.%ld",
             t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF );
   result = GeoIP_country_code_by_addr(gi, hostname);
-  if (!GEOIP_OK(result))
+  if (result == NULL)
     {
       code[0] = 0;
       return code;
