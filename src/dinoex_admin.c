@@ -824,6 +824,18 @@ void shutdown_dinoex(void)
   if (gi != NULL)
     {
       GeoIP_delete(gi);
+      gi = NULL;
+    }
+#endif
+}
+
+void rehash_dinoex(void)
+{
+#ifdef USE_GEOIP
+  if (gi != NULL)
+    {
+      GeoIP_delete(gi);
+      gi = NULL;
     }
 #endif
 }

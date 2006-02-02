@@ -3448,6 +3448,7 @@ static void u_rehash(const userinput * const u) {
    /* see what needs to be redone */
    
    u_respond(u,"Reconfiguring...");
+   rehash_dinoex();
    
    /* keep dynamic IP */
    if (gdata.getipfromserver)

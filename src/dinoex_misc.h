@@ -42,6 +42,7 @@ void look_for_file_remove(void);
 int has_joined_channels(int all);
 void reset_download_limits(void);
 void shutdown_dinoex(void);
+void rehash_dinoex(void);
 void check_duplicateip(transfer *const newtr);
 int noticeresults(const char *nick, const char *match);
 
