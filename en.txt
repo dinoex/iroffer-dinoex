@@ -1534,3 +1534,8 @@
 1544 "%s!*@%s"
 1545 "UNLIMITED"
 1546 "Disables Bandwidth Limits For Transfer ID n"
+1547 "%ld.%ld.%ld.%ld"
+1548 "GeoIP [%s]: Info %ld.%ld.%ld.%ld -> %s)"
+1549 "Sorry, no downloads to your country"
+1550 "IP from other country (%s) detected"
+1551 "geoipcountry"
