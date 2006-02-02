@@ -22,6 +22,12 @@
 
 #include <ctype.h>
 
+#ifdef USE_GEOIP
+#include <GeoIP.h>
+GeoIP *gi;
+#define GEOIP_OK(r) ((r!=NULL)&&(r[0]!='-')&&(r[1]!='-'))
+#endif /* USE_GEOIP */
+
 static void admin_line(int fd, const char *line) {
    userinput *uxdl;
    
@@ -657,14 +663,47 @@ void reset_download_limits(void)
     }
 }
 
+#ifdef USE_GEOIP
+char *check_geoip(transfer *const t);
+char *check_geoip(transfer *const t)
+{
+  static char hostname[20];
+  static char code[20];
+  const char *result;
+
+  snprintf(hostname, sizeof(hostname), "%ld.%ld.%ld.%ld",
+            t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF );
+  result = GeoIP_country_code_by_addr(gi, hostname);
+  if (!GEOIP_OK(result))
+    return NULL;
+
+  code[0] = tolower(result[0]);
+  code[1] = tolower(result[1]);
+  code[2] = 0;
+  return code;
+}
+#endif /* USE_GEOIP */
+
 void check_duplicateip(transfer *const newtr)
 {
   igninfo *ignore;
   char *bhostmask;
+#ifdef USE_GEOIP
+  char *country;
+#endif
   transfer *tr;
   int found;
   int num;
   
+#ifdef USE_GEOIP
+  country = check_geoip(newtr);
+  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"GeoIP [%s]: Info %ld.%ld.%ld.%ld -> %s)",
+            newtr->nick,
+            newtr->remoteip>>24, (newtr->remoteip>>16) & 0xFF,
+            (newtr->remoteip>>8) & 0xFF, newtr->remoteip & 0xFF,
+            country );
+   
+#endif
   num = 24 * 60; /* 1 day */
   found = 0;
   tr = irlist_get_head(&gdata.trans);
@@ -686,11 +725,11 @@ void check_duplicateip(transfer *const newtr)
   while(tr)
     {
       if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
-         (tr->remoteip == tr->remoteip))
+         (tr->remoteip == newtr->remoteip))
         {
-          t_closeconn(tr, "You are being punished for pararell downloads", 0);
           if (strcmp(tr->hostname,"man"))
             {
+              t_closeconn(tr, "You are being punished for pararell downloads", 0);
               bhostmask = mymalloc(strlen(tr->hostname)+5);
               sprintf(bhostmask, "*!*@%s", tr->hostname);
               ignore = irlist_get_head(&gdata.ignorelist);

@@ -42,8 +42,9 @@ OPT_ERRORS=false
 OPT_DEBUG=false
 OPT_WARN=false
 OPT_PROF=false
+OPT_GEOIP=false
 
-while getopts 'hedpw' OPTNAME; do
+while getopts 'hedpwg' OPTNAME; do
   case "$OPTNAME" in
     h) usage;;
 
@@ -51,6 +52,7 @@ while getopts 'hedpw' OPTNAME; do
     d) OPT_DEBUG=true;;
     w) OPT_WARN=true;;
     p) OPT_PROF=true;;
+    g) OPT_GEOIP=true;;
 
     *) usage;;
   esac
@@ -147,6 +149,14 @@ fi
 if $OPT_PROF; then
 echo "Configuring for profiling."
 PROF="-pg"
+shift
+fi
+
+if $OPT_GEOIP; then
+echo "Configuring for GeoIP."
+GEOLIB="-lGeoIP"
+GEOINC="-DUSE_GEOIP -I/usr/local/include"
+GEOLDF="-L/usr/local/lib"
 shift
 fi
 
@@ -1074,9 +1084,9 @@ echo
 echo VERSION=$VERSION
 echo CC=$cctype
 echo CONFIG_EXE=$exe
-echo CONFIG_LDLIBS=$libs
-echo CONFIG_LDFLAGS=$PROF $DEBUG
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG
+echo CONFIG_LDLIBS=$libs $GEOLIB
+echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $GEOINC
 echo CONFIG_CPPFLAGS=
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
