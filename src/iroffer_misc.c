@@ -381,6 +381,13 @@ void getconfig_set (const char *line, int rehash)
        strcpy(cjr, var);
        mydelete(var);
      }
+   else if ( !strcmp(type,"geoipcountry"))
+     {
+       char *cjr;
+       cjr = irlist_add(&gdata.geoipcountry, strlen(var) + 1);
+       strcpy(cjr, var);
+       mydelete(var);
+     }
    else if ( ! strcmp(type,"channel")) {
       char *tptr = NULL, *tptr2 = NULL, *tname;
       int ok=1;
@@ -2374,6 +2381,7 @@ void reinit_config_vars(void)
   gdata.noduplicatefiles = 0;
   irlist_delete_all(&gdata.adddir_exclude);
   irlist_delete_all(&gdata.autoqueue);
+  irlist_delete_all(&gdata.geoipcountry);
   mydelete(gdata.enable_nick);
   gdata.need_voice = 0;
   gdata.hide_list_info = 0;

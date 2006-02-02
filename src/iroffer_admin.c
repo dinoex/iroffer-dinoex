@@ -2365,26 +2365,6 @@ static void u_add(const userinput * const u) {
       } 
    }
 
-#include <fnmatch.h>
-static int verifyshell(irlist_t *list, const char *file)
-{
-  char *pattern;
-
-  updatecontext();
-
-  pattern = irlist_get_head(list);
-  while (pattern)
-    {
-    if (fnmatch(pattern,file,FNM_CASEFOLD) == 0)
-      {
-        return 1;
-      }
-    pattern = irlist_get_next(pattern);
-    }
-
-  return 0;
-}
-
 static void u_adddir(const userinput * const u)
 {
   DIR *d;

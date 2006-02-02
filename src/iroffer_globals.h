@@ -85,6 +85,7 @@ int noduplicatefiles;
 irlist_t adddir_exclude;
 irlist_t autoqueue;
 irlist_t unlimitedhost;
+irlist_t geoipcountry;
 char *enable_nick;
 int need_voice;
 int hide_list_info;

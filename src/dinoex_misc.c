@@ -21,10 +21,30 @@
 #include "iroffer_dinoex.h"
 
 #include <ctype.h>
+#include <fnmatch.h>
 
 #ifdef USE_GEOIP
 #include <GeoIP.h>
 #endif /* USE_GEOIP */
+
+int verifyshell(irlist_t *list, const char *file)
+{
+  char *pattern;
+
+  updatecontext();
+
+  pattern = irlist_get_head(list);
+  while (pattern)
+    {
+    if (fnmatch(pattern,file,FNM_CASEFOLD) == 0)
+      {
+        return 1;
+      }
+    pattern = irlist_get_next(pattern);
+    }
+
+  return 0;
+}
 
 static void admin_line(int fd, const char *line) {
    userinput *uxdl;
@@ -682,7 +702,10 @@ char *check_geoip(transfer *const t)
             t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF );
   result = GeoIP_country_code_by_addr(gi, hostname);
   if (!GEOIP_OK(result))
-    return NULL;
+    {
+      code[0] = 0;
+      return code;
+    }
 
   code[0] = tolower(result[0]);
   code[1] = tolower(result[1]);
@@ -708,9 +731,20 @@ void check_duplicateip(transfer *const newtr)
             newtr->nick,
             newtr->remoteip>>24, (newtr->remoteip>>16) & 0xFF,
             (newtr->remoteip>>8) & 0xFF, newtr->remoteip & 0xFF,
-            country );
+            country);
    
+   if (irlist_size(&gdata.geoipcountry))
+     {
+       if (!verifyshell(&gdata.geoipcountry, country))
+         {
+           t_closeconn(newtr, "Sorry, no downloads to your country", 0);
+           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                    "IP from other country (%s) detected", country);
+           return;
+         }
+     }
 #endif
+  
   num = 24 * 60; /* 1 day */
   found = 0;
   tr = irlist_get_head(&gdata.trans);

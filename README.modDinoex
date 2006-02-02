@@ -38,6 +38,10 @@ bugfix: send (reported by TheDeath)
    Documentation at http://www.maxmind.com/geoip/
    activate with Configure -g
 
+63) geoipcountry
+
+   allow downloads only for users in the given countries
+
 With Version mod 1.23:
 ----------------------
 
