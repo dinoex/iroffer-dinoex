@@ -46,6 +46,8 @@ TheDeath
 	reporting ignoreduplicateip bug
 	reporting queue bug
 	reporting send bug
+	german translation of config file
+	http://wiki.deutsche-fansubs.de/index.php?title=Iroffer_Tutorial
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -82,8 +84,4 @@ Hikari
 
 Horst
 	channel anti flooding
-
-+
-	german translations from
-	http://wiki.deutsche-fansubs.de/index.php?title=Iroffer_Tutorial
 
