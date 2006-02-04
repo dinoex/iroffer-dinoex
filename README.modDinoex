@@ -1,6 +1,12 @@
 
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 1.25:
+----------------------
+
+64) geoipexcludenick
+   allow downloads for this nicks, even if geoip entry differs.
+
 With Version mod 1.24:
 ----------------------
 
@@ -26,6 +32,7 @@ bugfix: send (reported by TheDeath)
    alow mutiple sends to the same Nick
 
 60) unlimitedhost (inspired by Chobits)
+
    specify nicks and hostnames which are not limited in bandnwidth
 
 61) UNLIMITED

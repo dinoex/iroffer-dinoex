@@ -736,10 +736,13 @@ void check_duplicateip(transfer *const newtr)
      {
        if (!verifyshell(&gdata.geoipcountry, country))
          {
-           t_closeconn(newtr, "Sorry, no downloads to your country", 0);
-           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
-                    "IP from other country (%s) detected", country);
-           return;
+           if (!verifyshell(&gdata.geoipexcludenick, newtr->nick))
+             {
+               t_closeconn(newtr, "Sorry, no downloads to your country", 0);
+               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                        "IP from other country (%s) detected", country);
+               return;
+             }
          }
      }
 #endif

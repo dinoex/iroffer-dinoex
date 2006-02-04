@@ -1454,6 +1454,7 @@ void dumpgdata(void)
   gdata_print_string(admin_job_file);
   /* unlimitedhost */
   /* geoipcountry */
+  /* geoipexcludenick */
   
   /* downloadhost */
   
