@@ -713,32 +713,27 @@ char *check_geoip(transfer *const t)
 }
 #endif /* USE_GEOIP */
 
-void check_duplicateip(transfer *const newtr)
+void check_new_connection(transfer *const tr)
 {
-  igninfo *ignore;
-  char *bhostmask;
 #ifdef USE_GEOIP
   char *country;
 #endif
-  transfer *tr;
-  int found;
-  int num;
   
 #ifdef USE_GEOIP
-  country = check_geoip(newtr);
+  country = check_geoip(tr);
   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"GeoIP [%s]: Info %ld.%ld.%ld.%ld -> %s)",
-            newtr->nick,
-            newtr->remoteip>>24, (newtr->remoteip>>16) & 0xFF,
-            (newtr->remoteip>>8) & 0xFF, newtr->remoteip & 0xFF,
+            tr->nick,
+            tr->remoteip>>24, (tr->remoteip>>16) & 0xFF,
+            (tr->remoteip>>8) & 0xFF, tr->remoteip & 0xFF,
             country);
    
    if (irlist_size(&gdata.geoipcountry))
      {
        if (!verifyshell(&gdata.geoipcountry, country))
          {
-           if (!verifyshell(&gdata.geoipexcludenick, newtr->nick))
+           if (!verifyshell(&gdata.geoipexcludenick, tr->nick))
              {
-               t_closeconn(newtr, "Sorry, no downloads to your country", 0);
+               t_closeconn(tr, "Sorry, no downloads to your country", 0);
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                         "IP from other country (%s) detected", country);
                return;
@@ -747,6 +742,20 @@ void check_duplicateip(transfer *const newtr)
      }
 #endif
   
+  if ((gdata.ignoreduplicateip) && (gdata.maxtransfersperperson > 0))
+    {
+      check_duplicateip(tr);
+    }
+}
+
+void check_duplicateip(transfer *const newtr)
+{
+  igninfo *ignore;
+  char *bhostmask;
+  transfer *tr;
+  int found;
+  int num;
+
   num = 24 * 60; /* 1 day */
   found = 0;
   tr = irlist_get_head(&gdata.trans);

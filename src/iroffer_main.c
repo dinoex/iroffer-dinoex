@@ -996,10 +996,7 @@ static void mainloop (void) {
               FD_ISSET(tr->listensocket, &gdata.readset))
             {
               t_establishcon(tr);
-              if ((gdata.ignoreduplicateip) && (gdata.maxtransfersperperson > 0))
-                {
-                  check_duplicateip(tr);
-                }
+              check_new_connection(tr);
             }
           
           /*----- look for junk to read ----- */
