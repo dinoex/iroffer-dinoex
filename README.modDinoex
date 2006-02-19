@@ -1,14 +1,19 @@
 
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 1.26:
+----------------------
+
+66) network
+   support multiple irc networks with common queue and limits.
+
 With Version mod 1.25:
 ----------------------
 
 64) geoipexcludenick
    allow downloads for this nicks, even if geoip entry differs.
 
-65) network
-   support multiple irc networks with common queue and limits.
+65) do not response on CPTP PING response (inspired by satmd)
 
 bugfix:
     geoipcountry worked only when ignoreduplicateip was active.
