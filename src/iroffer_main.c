@@ -3633,7 +3633,7 @@ void sendaqueue(int type)
       snprintf(hostmask,len,"%s!*@%s",tr->nick,tr->hostname);
       tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
       tr->nomax = tr->unlimited;
-      tr->net = gnetwork->net;
+      tr->net = pq->net;
       mydelete(hostmask);
       
       if (!gdata.quietmode)
