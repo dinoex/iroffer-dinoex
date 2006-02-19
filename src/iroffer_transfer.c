@@ -730,6 +730,8 @@ void t_flushed (transfer * const t)
 
 void t_closeconn(transfer * const t, const char *msg, int errno1)
 {
+  gnetwork_t *backup;
+  
   updatecontext();
   
   if (errno1)
@@ -804,6 +806,8 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
   
   t->tr_status = TRANSFER_STATUS_DONE;
   
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[t->net]);
   if (errno1)
     {
       notice(t->nick, "** Closing Connection: %s (%s)", msg, strerror(errno1));
@@ -812,6 +816,7 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
     {
       notice(t->nick, "** Closing Connection: %s", msg);
     }
+  gnetwork = backup;
 }
 
 void t_setresume(transfer * const t, const char *amt) {
