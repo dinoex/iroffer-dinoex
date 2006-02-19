@@ -2372,10 +2372,14 @@ static void privmsgparse(const char* type, char* line) {
    pqueue *pq;
    xdcc *xd;
    int line_len;
+   int notnotice = 0;
    
    updatecontext();
 
    floodchk();
+   
+   if ( strcmp(type,"NOTICE") )
+     notnotice ++;
    
    line_len = sstrlen(line);
    
@@ -2531,7 +2535,7 @@ static void privmsgparse(const char* type, char* line) {
    
    /*----- PING ----- */
    else if ( !gdata.ignore && (!strcmp(msg1,"\1PING")
-          || !strcmp(msg1,"\1PING\1") )) {
+          || !strcmp(msg1,"\1PING\1") ) && notnotice ) {
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
       if (msg2 && (msg2[strlen(msg2)-1] == '\1'))
         {
