@@ -697,20 +697,7 @@ int has_joined_channels(int all)
   channel_t *ch;
 
   j=0;
-#ifndef MULTINET
-  ch = irlist_get_head(&gdata.channels);
-  while(ch)
-    {
-       if ((ch->flags | CHAN_ONCHAN) == 0)
-         {
-           if (all != 0)
-             return 0;
-         }
-       else
-         j++;
-       ch = irlist_get_next(ch);
-     }
-#else /* MULTINET */
+#ifdef MULTINET
   for (ss=0; ss<gdata.networks_online; ss++) {
     ch = irlist_get_head(&gdata.networks[ss].channels);
     while(ch)
@@ -727,7 +714,20 @@ int has_joined_channels(int all)
            }
          ch = irlist_get_next(ch);
        }
-   }
+    }
+#else /* MULTINET */
+  ch = irlist_get_head(&gdata.channels);
+  while(ch)
+    {
+       if ((ch->flags | CHAN_ONCHAN) == 0)
+         {
+           if (all != 0)
+             return 0;
+         }
+       else
+         j++;
+       ch = irlist_get_next(ch);
+     }
 #endif /* MULTINET */
   return j;
 }
