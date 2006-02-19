@@ -3293,7 +3293,10 @@ void reverify_restrictsend(void)
     {
       gnetwork = &(gdata.networks[pq->net]);
       if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
-         continue;
+        {
+          pq = irlist_get_next(pq);
+          continue;
+        }
       if (strcmp(pq->hostname,"man"))
         {
           if (isinmemberlist(pq->nick))
