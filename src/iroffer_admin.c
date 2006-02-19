@@ -377,8 +377,8 @@ void u_fillwith_msg (userinput * const u, const char* n, const char *line)
   
   if (u->arg3)
     {
-      u->arg3e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - strlen(u->arg2) - 3 + 1);
-      strcpy(u->arg3e, line + strlen(u->cmd) + strlen(u->arg1) + strlen(u->arg2) + 3);
+      u->arg3e = mymalloc(strlen(line) - len - strlen(u->cmd) - strlen(u->arg1) - strlen(u->arg2) - 3 + 1);
+      strcpy(u->arg3e, line + strlen(u->cmd) + len + strlen(u->arg1) + strlen(u->arg2) + 3);
     }
   else
     {
