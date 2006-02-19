@@ -3540,6 +3540,7 @@ void sendaqueue(int type)
   char *sendnamestr;
   char *hostmask;
   size_t len;
+  gnetwork_t *backup;
   
   updatecontext();
   
@@ -3636,6 +3637,9 @@ void sendaqueue(int type)
       tr->net = pq->net;
       mydelete(hostmask);
       
+      backup = gnetwork;
+      gnetwork = &(gdata.networks[tr->net]);
+      
       if (!gdata.quietmode)
         {
           char *sizestrstr;
@@ -3662,6 +3666,7 @@ void sendaqueue(int type)
       mydelete(pq->hostname);
       irlist_delete(&gdata.mainqueue, pq);
       
+      gnetwork = backup;
       return;
     }
 }
