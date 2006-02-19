@@ -262,7 +262,7 @@ void u_fillwith_console (userinput * const u, char *line)
   if (u->arg3)
     {
       u->arg3e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - strlen(u->arg2) - 3 + 1);
-      strcpy(u->arg3e, line + strlen(u->cmd) + strlen(u->arg1) + 2);
+      strcpy(u->arg3e, line + strlen(u->cmd) + strlen(u->arg1) + strlen(u->arg2) + 3);
     }
   else
     {
@@ -309,6 +309,16 @@ void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
   else
     {
       u->arg2e = NULL;
+    }
+  
+  if (u->arg3)
+    {
+      u->arg3e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - strlen(u->arg2) - 3 + 1);
+      strcpy(u->arg3e, line + strlen(u->cmd) + strlen(u->arg1) + strlen(u->arg2) + 3);
+    }
+  else
+    {
+      u->arg3e = NULL;
     }
   
   return;
@@ -365,6 +375,16 @@ void u_fillwith_msg (userinput * const u, const char* n, const char *line)
       u->arg2e = NULL;
     }
   
+  if (u->arg3)
+    {
+      u->arg3e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - strlen(u->arg2) - 3 + 1);
+      strcpy(u->arg3e, line + strlen(u->cmd) + strlen(u->arg1) + strlen(u->arg2) + 3);
+    }
+  else
+    {
+      u->arg3e = NULL;
+    }
+  
   mydelete(t1);
   mydelete(t2);
   mydelete(t3);
@@ -387,6 +407,7 @@ void u_fillwith_clean (userinput * const u)
   mydelete(u->arg1);
   mydelete(u->arg2);
   mydelete(u->arg3);
+  mydelete(u->arg3e);
 }
 
 static void u_respond(const userinput * const u, const char *format, ...)
