@@ -1592,11 +1592,15 @@ static void mainloop (void) {
          
          updatecontext();
          
+         for (ss=0; ss<gdata.networks_online; ss++) {
+	   gnetwork = &(gdata.networks[ss]);
          /* try to regain nick */
          if (!gdata.user_nick || strcmp(gdata.config_nick,gdata.user_nick))
            {
              writeserver(WRITESERVER_NORMAL, "NICK %s", gdata.config_nick);
            }
+         } /* networks */
+         gnetwork = 0x100014;
          
          updatecontext();
          
