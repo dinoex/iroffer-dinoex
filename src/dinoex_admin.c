@@ -421,7 +421,7 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
       return;
     }
   
-  if (gdata.exiting || (gdata.serverstatus != SERVERSTATUS_CONNECTED))
+  if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
     {
       mydelete(msg);
       return;
@@ -439,9 +439,9 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
       len = EXCESS_BUCKET_MAX;
     }
   
-  if (irlist_size(&gdata.serverq_channel) < MAXSENDQ)
+  if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ)
     {
-      item = irlist_add(&gdata.serverq_channel, sizeof(channel_announce_t));
+      item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
       item->delay = delay;
       item->chan = mycalloc(strlen(chan)+1);
       strcpy(item->chan, chan);
@@ -461,7 +461,7 @@ void sendannounce(void)
 {
   channel_announce_t *item;
   
-  item = irlist_get_head(&gdata.serverq_channel);
+  item = irlist_get_head(&(gnetwork->serverq_channel));
   if (!item)
     return;
 
@@ -471,7 +471,7 @@ void sendannounce(void)
   writeserver(WRITESERVER_SLOW, "%s", item->msg);
   mydelete(item->chan);
   mydelete(item->msg);
-  irlist_delete(&gdata.serverq_channel, item);
+  irlist_delete(&(gnetwork->serverq_channel), item);
 }
 
 void stoplist(const char *nick)
@@ -495,7 +495,7 @@ void stoplist(const char *nick)
       item = irlist_get_next(item);
     }
   
-  item = irlist_get_head(&gdata.serverq_slow);
+  item = irlist_get_head(&(gnetwork->serverq_slow));
   while (item)
     {
       inick = NULL;
@@ -514,7 +514,7 @@ void stoplist(const char *nick)
                    if ( (strcmp(copy,"PRIVMSG") == 0) || (strcmp(copy,"NOTICE") == 0) )
                      {
                        stopped ++;
-                       item = irlist_delete(&gdata.serverq_slow, item);
+                       item = irlist_delete(&(gnetwork->serverq_slow), item);
                        continue;
                      }
                 }
@@ -637,24 +637,43 @@ void look_for_file_remove(void)
   return;
 }
 
+int has_closed_servers(void)
+{
+  int ss;
+
+  for (ss=0; ss<gdata.networks_online; ss++)
+    {
+      if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
+        return 0;
+    }
+  return 1;
+}
+
 int has_joined_channels(int all)
 {
   int j;
+  int n;
+  int ss;
   channel_t *ch;
 
   j=0;
-  ch = irlist_get_head(&gdata.channels);
-  while(ch)
-    {
-       if ((ch->flags | CHAN_ONCHAN) == 0)
-         {
-           if (all != 0)
-             return 0;
-         }
-       else
-         j++;
-       ch = irlist_get_next(ch);
-     }
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    ch = irlist_get_head(&gdata.networks[ss].channels);
+    while(ch)
+      {
+         if ((ch->flags | CHAN_ONCHAN) == 0)
+           {
+             if (all != 0)
+               return 0;
+           }
+         else
+           {
+             j++;
+             n++;
+           }
+         ch = irlist_get_next(ch);
+       }
+   }
   return j;
 }
 

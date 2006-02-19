@@ -93,6 +93,7 @@ typedef enum
   STATEFILE_TAG_QUEUE_NICK,
   STATEFILE_TAG_QUEUE_HOST,
   STATEFILE_TAG_QUEUE_TIME,
+  STATEFILE_TAG_QUEUE_NET,
 } statefile_tag_t;
 
 typedef struct
@@ -736,7 +737,8 @@ void write_statefile(void)
           sizeof(statefile_item_generic_int_t) + 
           sizeof(statefile_hdr_t) + ceiling(strlen(pq->nick) + 1, 4) +
           sizeof(statefile_hdr_t) + ceiling(strlen(pq->hostname) + 1, 4) +
-          sizeof(statefile_item_generic_time_t);
+          sizeof(statefile_item_generic_time_t) +
+          sizeof(statefile_item_generic_int_t);
         
         data = mycalloc(length);
         
@@ -785,6 +787,13 @@ void write_statefile(void)
         g_time->hdr.length = htonl(sizeof(*g_time));
         g_time->g_time = htonl(pq->queuedtime);
         next = (unsigned char*)(&g_time[1]);
+        
+        /* net */
+        g_int = (statefile_item_generic_int_t*)next;
+        g_int->hdr.tag = htonl(STATEFILE_TAG_QUEUE_NET);
+        g_int->hdr.length = htonl(sizeof(*g_int));
+        g_int->g_int = htonl(pq->net);
+        next = (unsigned char*)(&g_int[1]);
         
         write_statefile_item(&bout, data);
         
@@ -1755,6 +1764,7 @@ void read_statefile(void)
             pq->hostname = NULL;
             pq->queuedtime = 0L;
             pq->restrictsend_bad = gdata.curtime;
+            pq->net = 0;
             
             hdr->length -= sizeof(*hdr);
             ihdr = &hdr[1];
@@ -1817,6 +1827,23 @@ void read_statefile(void)
                       }
                     g_time = (statefile_item_generic_time_t*)ihdr;
                     pq->queuedtime = ntohl(g_time->g_time);
+                    break;
+                    
+                  case STATEFILE_TAG_QUEUE_NET:
+                    if (ihdr->length != sizeof(statefile_item_generic_int_t))
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Net Tag (len = %d)",
+                                 ihdr->length);
+                        break;
+                      }
+                    g_int = (statefile_item_generic_int_t*)ihdr;
+                    num = ntohl(g_int->g_int);
+                    if (num < 0 || num > gdata.networks_online)
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Net Nr (%d)", num);
+                        break;
+                      }
+                    pq->net = num;
                     break;
                     
                   default:

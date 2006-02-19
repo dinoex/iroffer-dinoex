@@ -1361,6 +1361,7 @@ void dumpcontext(void)
 void dumpgdata(void)
 {
   int ii;
+  int ss;
   
   ioutput(gdata_common,"GDATA DUMP BEGIN");
   
@@ -1491,14 +1492,68 @@ void dumpgdata(void)
   gdata_print_int(respondtochannellist);
   gdata_print_int(smallfilebypass);
 
-  gdata_irlist_iter_start(server_join_raw, char);
+  gdata_print_int(networks_online);
+  for (ss=0; ss<gdata.networks_online; ss++)
+    {
+      
+  gdata_irlist_iter_start(networks[ss].server_join_raw, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
-  gdata_irlist_iter_start(server_connected_raw, char);
+  gdata_irlist_iter_start(networks[ss].server_connected_raw, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(networks[ss].servers, server_t);
+  gdata_iter_print_string(hostname);
+  gdata_iter_print_uint(port);
+  gdata_iter_print_string(password);
+  gdata_irlist_iter_end;
+  
+  gdata_print_string(networks[ss].curserver.hostname);
+  gdata_print_uint(networks[ss].curserver.port);
+  gdata_print_string(networks[ss].curserver.password);
+  gdata_print_string(networks[ss].curserveractualname);
+
+  gdata_print_int(networks[ss].nocon);
+  gdata_print_int(networks[ss].servertime);
+  gdata_print_number_cast("%d",networks[ss].serverstatus,int);
+  gdata_print_long(networks[ss].lastservercontact);
+  
+  gdata_irlist_iter_start(networks[ss].serverq_fast, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  
+  gdata_irlist_iter_start(networks[ss].serverq_normal, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  
+  gdata_irlist_iter_start(networks[ss].serverq_slow, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  
+  gdata_irlist_iter_start(networks[ss].serverq_channel, channel_announce_t);
+  gdata_iter_print_int(delay);
+  gdata_iter_print_string(msg);
+  gdata_irlist_iter_end;
+  
+  gdata_print_int(networks[ss].serverbucket);
+  gdata_print_int(networks[ss].ircserver);
+  gdata_print_int(networks[ss].serverconnectbackoff);
+  
+  for (ii=0; ii<MAX_PREFIX && gdata.networks[ss].prefixes[ii].p_mode; ii++)
+    {
+      gdata_print_number_array_item("%c",networks[ss].prefixes,p_mode);
+      gdata_print_number_array_item("%c",networks[ss].prefixes,p_symbol);
+    }
+  
+  for (ii=0; ii<MAX_CHANMODES && gdata.networks[ss].chanmodes[ii]; ii++)
+    {
+      gdata_print_number_array("%c", networks[ss].chanmodes);
+    }
+      
+    } /* networks */
+   
   gdata_irlist_iter_start(channel_join_raw, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
@@ -1506,54 +1561,7 @@ void dumpgdata(void)
   /* r_channel t_channel r_local_vhost r_pidfile r_config_nick */
   /* r_transferminspeed r_transfermaxspeed */
   
-  gdata_irlist_iter_start(servers, server_t);
-  gdata_iter_print_string(hostname);
-  gdata_iter_print_uint(port);
-  gdata_iter_print_string(password);
-  gdata_irlist_iter_end;
-  
-  gdata_print_string(curserver.hostname);
-  gdata_print_uint(curserver.port);
-  gdata_print_string(curserver.password);
-  gdata_print_string(curserveractualname);
-  gdata_print_int(nocon);
-  gdata_print_int(servertime);
-  gdata_print_number_cast("%d",serverstatus,int);
-  gdata_print_long(lastservercontact);
-  
-  gdata_irlist_iter_start(serverq_fast, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  
-  gdata_irlist_iter_start(serverq_normal, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  
-  gdata_irlist_iter_start(serverq_slow, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  
-  gdata_irlist_iter_start(serverq_channel, channel_announce_t);
-  gdata_iter_print_int(delay);
-  gdata_iter_print_string(msg);
-  gdata_irlist_iter_end;
-  
   gdata_print_int(adjustcore);
-  
-  gdata_print_int(serverbucket);
-  gdata_print_int(ircserver);
-  gdata_print_int(serverconnectbackoff);
-
-  for (ii=0; ii<MAX_PREFIX && gdata.prefixes[ii].p_mode; ii++)
-    {
-      gdata_print_number_array_item("%c",prefixes,p_mode);
-      gdata_print_number_array_item("%c",prefixes,p_symbol);
-    }
-  
-  for (ii=0; ii<MAX_CHANMODES && gdata.chanmodes[ii]; ii++)
-    {
-      gdata_print_number_array("%c", chanmodes);
-    }
 
   gdata_print_int(attop);
   gdata_print_int(needsclear);
@@ -1573,7 +1581,10 @@ void dumpgdata(void)
      
   /* stdout_buffer_init stdout_buffer */
   
-  gdata_irlist_iter_start(channels, channel_t);
+  for (ss=0; ss<gdata.networks_online; ss++)
+    {
+      
+  gdata_irlist_iter_start(networks[ss].channels, channel_t);
   ioutput(gdata_common,"  : name=%s key=%s",
           iter->name,
           gdata_string(iter->key));
@@ -1586,7 +1597,9 @@ void dumpgdata(void)
   /* members */
   gdata_irlist_iter_end;
   
-
+  gdata_print_int(networks[ss].recentsent);
+    }
+  
   gdata_irlist_iter_start(msglog, msglog_t);
   ioutput(gdata_common,"  : when=%ld hostmask=%s message=%s",
           (long)iter->when,
@@ -1637,7 +1650,6 @@ void dumpgdata(void)
   
   gdata_print_int(ignore);
   gdata_print_int(slotsmax);
-  gdata_print_int(recentsent);
   gdata_print_int(queuesize);
   gdata_print_int(noautosave);
   gdata_print_long(nonewcons);
@@ -1849,7 +1861,7 @@ int isinmemberlist(const char *nick)
               "checking for %s",nick);
     }
   
-  ch = irlist_get_head(&gdata.channels);
+  ch = irlist_get_head(&(gnetwork->channels));
   while(ch)
     {
       member = irlist_get_head(&ch->members);
@@ -1891,9 +1903,9 @@ void addtomemberlist(channel_t *c, const char *nick)
   if (*nick)
     {
       int pi;
-      for (pi = 0; (pi < MAX_PREFIX && gdata.prefixes[pi].p_symbol); pi++)
+      for (pi = 0; (pi < MAX_PREFIX && gnetwork->prefixes[pi].p_symbol); pi++)
         {
-          if (*nick == gdata.prefixes[pi].p_symbol)
+          if (*nick == gnetwork->prefixes[pi].p_symbol)
             {
               for (pi = 0;
                    (pi < MAX_PREFIX && prefixes[pi] && prefixes[pi] != *nick);

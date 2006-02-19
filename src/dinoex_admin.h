@@ -39,6 +39,7 @@ void sendannounce(void);
 void stoplist(const char *nick);
 void notifyqueued_nick(const char *nick);
 void look_for_file_remove(void);
+int has_closed_servers(void);
 int has_joined_channels(int all);
 void reset_download_limits(void);
 void shutdown_dinoex(void);

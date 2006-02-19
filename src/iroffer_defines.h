@@ -55,6 +55,9 @@
 #define  MAXTRANS  (((ACTUAL_MAXSETSIZE)-RESERVED_FDS-(MAXUPLDS*2)-MAXCHATS)/2)
 
 
+/*       max number of networks */
+#define  MAX_NETWORKS	5
+
 /*       max size for xdcc list queue */
 #define  MAXXLQUE  5
 /*       max config files */

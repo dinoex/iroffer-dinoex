@@ -213,6 +213,7 @@ static void mainloop (void) {
    
    int overlimit;
    int highests;
+   int ss;
    upload *ul;
    transfer *tr;
    pqueue *pq;
@@ -221,6 +222,7 @@ static void mainloop (void) {
    dccchat_t *chat;
    
    updatecontext();
+   gnetwork = 0x100003;
    
    if (first_loop)
      {
@@ -247,21 +249,24 @@ static void mainloop (void) {
       FD_ZERO(&gdata.writeset);
       highests = 0;
       
-      if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
+      for (ss=0; ss<gdata.networks_online; ss++)
         {
-          FD_SET(gdata.ircserver, &gdata.readset);
-          highests = max2(highests, gdata.ircserver);
-        }
-      else if (gdata.serverstatus == SERVERSTATUS_TRYING)
-        {
-          FD_SET(gdata.ircserver, &gdata.writeset);
-          highests = max2(highests, gdata.ircserver);
-        }
-      else if (gdata.serverstatus == SERVERSTATUS_RESOLVING)
-        {
-          FD_SET(gdata.serv_resolv.sp_fd[0], &gdata.readset);
-          highests = max2(highests, gdata.serv_resolv.sp_fd[0]);
-        }
+          if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
+            {
+              FD_SET(gdata.networks[ss].ircserver, &gdata.readset);
+              highests = max2(highests, gdata.networks[ss].ircserver);
+            }
+          else if (gdata.networks[ss].serverstatus == SERVERSTATUS_TRYING)
+            {
+              FD_SET(gdata.networks[ss].ircserver, &gdata.writeset);
+              highests = max2(highests, gdata.networks[ss].ircserver);
+            }
+          else if (gdata.networks[ss].serverstatus == SERVERSTATUS_RESOLVING)
+            {
+              FD_SET(gdata.networks[ss].serv_resolv.sp_fd[0], &gdata.readset);
+              highests = max2(highests, gdata.networks[ss].serv_resolv.sp_fd[0]);
+            }
+        } /*networks */
       
       if (!gdata.background)
         {
@@ -399,15 +404,17 @@ static void mainloop (void) {
           
           while ((child = waitpid(-1, &status, WNOHANG)) > 0)
             {
-              if (gdata.serverstatus == SERVERSTATUS_RESOLVING)
+              for (ss=0; ss<gdata.networks_online; ss++)
                 {
-                  if (child == gdata.serv_resolv.child_pid)
+                  if (gdata.networks[ss].serverstatus == SERVERSTATUS_RESOLVING)
                     {
+                      if (child == gdata.networks[ss].serv_resolv.child_pid)
+                        {
                       /* lookup failed */
 #ifdef NO_WSTATUS_CODES
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                               "Unable to resolve server %s (status=0x%.8X)",
-                              gdata.curserver.hostname,
+                              gdata.networks[ss].curserver.hostname,
                               status);
 #else
 #ifndef NO_HOSTCODES
@@ -440,32 +447,33 @@ static void mainloop (void) {
                             }
                           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                                   "Unable to resolve server %s (%s)",
-                                  gdata.curserver.hostname, errstr);
+                                  gdata.networks[ss].curserver.hostname, errstr);
                         }
                       else
 #endif
                         {
                           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                                   "Unable to resolve server %s (status=0x%.8X, %s: %d)",
-                                  gdata.curserver.hostname,
+                                  gdata.networks[ss].curserver.hostname,
                                   status,
                                   WIFEXITED(status) ? "exit" : WIFSIGNALED(status) ? "signaled" : "??",
                                   WIFEXITED(status) ? WEXITSTATUS(status) : WIFSIGNALED(status) ? WTERMSIG(status) : 0);
                         }
 #endif
-                      gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+                          gdata.networks[ss].serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+                        }
+                      /* else  this is an old child, ignore */
                     }
-                  /* else  this is an old child, ignore */
-                }
               
-              if (child == gdata.serv_resolv.child_pid)
-                {
+                  if (child == gdata.networks[ss].serv_resolv.child_pid)
+                    {
                   /* cleanup */
-                  close(gdata.serv_resolv.sp_fd[0]);
-                  FD_CLR(gdata.serv_resolv.sp_fd[0], &gdata.readset);
-                  gdata.serv_resolv.sp_fd[0] = 0;
-                  gdata.serv_resolv.child_pid = 0;
-                }
+                  close(gdata.networks[ss].serv_resolv.sp_fd[0]);
+                  FD_CLR(gdata.networks[ss].serv_resolv.sp_fd[0], &gdata.readset);
+                  gdata.networks[ss].serv_resolv.sp_fd[0] = 0;
+                  gdata.networks[ss].serv_resolv.child_pid = 0;
+                    }
+                } /* networks */
             }
         }
       
@@ -569,29 +577,33 @@ static void mainloop (void) {
          parseconsole();
       
       updatecontext();
+      
+      for (ss=0; ss<gdata.networks_online; ss++)
+        {
+	  gnetwork = &(gdata.networks[ss]);
       /*----- see if gdata.ircserver is sending anything to us ----- */
-      if (gdata.serverstatus == SERVERSTATUS_CONNECTED && FD_ISSET(gdata.ircserver, &gdata.readset)) {
+      if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED && FD_ISSET(gnetwork->ircserver, &gdata.readset)) {
          char tempbuffa[INPUT_BUFFER_LENGTH];
-         gdata.lastservercontact = gdata.curtime;
-         gdata.servertime = 0;
-         length = read (gdata.ircserver, &tempbuffa, INPUT_BUFFER_LENGTH);
+         gnetwork->lastservercontact = gdata.curtime;
+         gnetwork->servertime = 0;
+         length = read (gnetwork->ircserver, &tempbuffa, INPUT_BUFFER_LENGTH);
          
          if (length < 1) {
             ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Closing Server Connection: %s",(length<0) ? strerror(errno) : "Closed");
             if (gdata.exiting)
               {
-                gdata.recentsent = 0;
+                gnetwork->recentsent = 0;
               }
-            FD_CLR(gdata.ircserver, &gdata.readset);
+            FD_CLR(gnetwork->ircserver, &gdata.readset);
             /*
              * cygwin close() is broke, if outstanding data is present
              * it will block until the TCP connection is dead, sometimes
              * upto 10-20 minutes, calling shutdown() first seems to help
              */
-            shutdown(gdata.ircserver, SHUT_RDWR);
-            close(gdata.ircserver);
-            mydelete(gdata.curserveractualname);
-            gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+            shutdown(gnetwork->ircserver, SHUT_RDWR);
+            close(gnetwork->ircserver);
+            mydelete(gnetwork->curserveractualname);
+            gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
          else
            {
@@ -618,13 +630,13 @@ static void mainloop (void) {
            }
         }
       
-      if (gdata.serverstatus == SERVERSTATUS_TRYING && FD_ISSET(gdata.ircserver, &gdata.writeset))
+      if (gnetwork->serverstatus == SERVERSTATUS_TRYING && FD_ISSET(gnetwork->ircserver, &gdata.writeset))
         {
           int callval_i;
           int connect_error;
           int connect_error_len = sizeof(connect_error);
           
-          callval_i = getsockopt(gdata.ircserver,
+          callval_i = getsockopt(gnetwork->ircserver,
                                  SOL_SOCKET, SO_ERROR,
                                  &connect_error, &connect_error_len);
           
@@ -642,15 +654,15 @@ static void mainloop (void) {
           
           if ((callval_i < 0) || connect_error)
             {
-              FD_CLR(gdata.ircserver, &gdata.writeset);
+              FD_CLR(gnetwork->ircserver, &gdata.writeset);
               /*
                * cygwin close() is broke, if outstanding data is present
                * it will block until the TCP connection is dead, sometimes
                * upto 10-20 minutes, calling shutdown() first seems to help
                */
-              shutdown(gdata.ircserver, SHUT_RDWR);
-              close(gdata.ircserver);
-              gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+              shutdown(gnetwork->ircserver, SHUT_RDWR);
+              close(gnetwork->ircserver);
+              gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
           else
             {
@@ -658,16 +670,16 @@ static void mainloop (void) {
 	    struct sockaddr_in localaddr;
           
 	    ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Connection Established, Logging In");
-            gdata.serverstatus = SERVERSTATUS_CONNECTED;
-            FD_CLR(gdata.ircserver, &gdata.writeset);
-	    if (set_socket_nonblocking(gdata.ircserver, 0) < 0 )
+            gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
+            FD_CLR(gnetwork->ircserver, &gdata.writeset);
+	    if (set_socket_nonblocking(gnetwork->ircserver, 0) < 0 )
 	      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
 	    
             if (!gdata.usenatip)
               {
                 addrlen = sizeof (localaddr);
                 bzero ((char *) &localaddr, sizeof (localaddr));
-                if (getsockname(gdata.ircserver,(struct sockaddr *) &localaddr, &addrlen) >= 0)
+                if (getsockname(gnetwork->ircserver,(struct sockaddr *) &localaddr, &addrlen) >= 0)
                   {
                     gdata.ourip = ntohl(localaddr.sin_addr.s_addr);
                     if (gdata.debug > 0)
@@ -688,22 +700,22 @@ static void mainloop (void) {
             }
          }
       
-      if ((gdata.serverstatus == SERVERSTATUS_RESOLVING) &&
-          FD_ISSET(gdata.serv_resolv.sp_fd[0], &gdata.readset))
+      if ((gnetwork->serverstatus == SERVERSTATUS_RESOLVING) &&
+          FD_ISSET(gnetwork->serv_resolv.sp_fd[0], &gdata.readset))
         {
           struct in_addr remote;
-          length = read(gdata.serv_resolv.sp_fd[0],
+          length = read(gnetwork->serv_resolv.sp_fd[0],
                         &remote, sizeof(struct in_addr));
           
-          kill(gdata.serv_resolv.child_pid, SIGKILL);
-          FD_CLR(gdata.serv_resolv.sp_fd[0], &gdata.readset);
+          kill(gnetwork->serv_resolv.child_pid, SIGKILL);
+          FD_CLR(gnetwork->serv_resolv.sp_fd[0], &gdata.readset);
           
           if (length != sizeof(struct in_addr))
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                       "Error resolving server %s",
-                      gdata.curserver.hostname);
-              gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+                      gnetwork->curserver.hostname);
+              gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
           else
             {
@@ -711,41 +723,41 @@ static void mainloop (void) {
               if (connectirc2(&remote))
                 {
                   /* failed */
-                  gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+                  gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
                 }
             }
         }
       
-      if (changesec && gdata.serverstatus == SERVERSTATUS_RESOLVING)
+      if (changesec && gnetwork->serverstatus == SERVERSTATUS_RESOLVING)
         {
           int timeout;
-          timeout = CTIMEOUT + (gdata.serverconnectbackoff * CBKTIMEOUT);
+          timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
           
-          if (gdata.lastservercontact + timeout < gdata.curtime)
+          if (gnetwork->lastservercontact + timeout < gdata.curtime)
             {
-              kill(gdata.serv_resolv.child_pid, SIGKILL);
+              kill(gnetwork->serv_resolv.child_pid, SIGKILL);
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Resolve Timed Out (%d seconds)",timeout);
-              gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+              gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
         }
       
-      if (changesec && gdata.serverstatus == SERVERSTATUS_TRYING)
+      if (changesec && gnetwork->serverstatus == SERVERSTATUS_TRYING)
         {
           int timeout;
-          timeout = CTIMEOUT + (gdata.serverconnectbackoff * CBKTIMEOUT);
+          timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
           
-          if (gdata.lastservercontact + timeout < gdata.curtime)
+          if (gnetwork->lastservercontact + timeout < gdata.curtime)
             {
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Connection Timed Out (%d seconds)",timeout);
-              FD_CLR(gdata.ircserver, &gdata.readset);
+              FD_CLR(gnetwork->ircserver, &gdata.readset);
               /*
                * cygwin close() is broke, if outstanding data is present
                * it will block until the TCP connection is dead, sometimes
                * upto 10-20 minutes, calling shutdown() first seems to help
                */
-              shutdown(gdata.ircserver, SHUT_RDWR);
-              close(gdata.ircserver);
-              gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+              shutdown(gnetwork->ircserver, SHUT_RDWR);
+              close(gnetwork->ircserver);
+              gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
         }
       
@@ -754,6 +766,8 @@ static void mainloop (void) {
           gdata.needsswitch = 0;
           switchserver(-1);
         }
+        } /* networks */
+      gnetwork = 0x100005;
       
       updatecontext();
       
@@ -772,6 +786,7 @@ static void mainloop (void) {
               int connect_error;
               int connect_error_len = sizeof(connect_error);
               
+	      gnetwork = &(gdata.networks[ul->net]);
               callval_i = getsockopt(ul->clientsocket,
                                      SOL_SOCKET, SO_ERROR,
                                      &connect_error, &connect_error_len);
@@ -829,6 +844,7 @@ static void mainloop (void) {
               ul = irlist_get_next(ul);
             }
         }
+      gnetwork = 0x100006;
       
       updatecontext();
       /*----- see if dccchat is sending anything to us ----- */
@@ -968,6 +984,7 @@ static void mainloop (void) {
       tr = irlist_get_head(&gdata.trans);
       while(tr)
         {
+	  gnetwork = &(gdata.networks[tr->net]);
           /*----- look for listen reminders ----- */
           if (changesec &&
               (tr->tr_status == TRANSFER_STATUS_LISTENING) &&
@@ -1039,6 +1056,7 @@ static void mainloop (void) {
               tr = irlist_get_next(tr);
             }
          }
+      gnetwork = 0x100007;
       
       /*----- time for a delayed shutdown? ----- */
       if (changesec && gdata.delayedshutdown)
@@ -1052,6 +1070,8 @@ static void mainloop (void) {
         }
       
       updatecontext();
+      for (ss=0; ss<gdata.networks_online; ss++) {
+	gnetwork = &(gdata.networks[ss]);
       /*----- send server stuff ----- */
       if (changesec) {
          sendserver();
@@ -1062,10 +1082,12 @@ static void mainloop (void) {
          }
       
       /*----- see if we can send out some xdcc lists */
-      if (changesec && gdata.serverstatus == SERVERSTATUS_CONNECTED) {
-         if (!irlist_size(&gdata.serverq_normal) && !irlist_size(&gdata.serverq_slow))
+      if (changesec && gnetwork->serverstatus == SERVERSTATUS_CONNECTED) {
+         if (!irlist_size((&gnetwork->serverq_normal)) && !irlist_size(&(gnetwork->serverq_slow)))
             sendxdlqueue();
          }
+        }
+      gnetwork = 0x100008;
       
       /*----- see if its time to change maxb */
       if (changehour) {
@@ -1160,6 +1182,7 @@ static void mainloop (void) {
                       /* remove queued users */
                       for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_delete(&gdata.mainqueue, pq))
                         {
+	                  gnetwork = &(gdata.networks[pq->net]);
                           notice_slow(pq->nick, tempstr);
                           mydelete(pq->nick);
                           mydelete(pq->hostname);
@@ -1170,10 +1193,12 @@ static void mainloop (void) {
                         {
                           if (tr->tr_status != TRANSFER_STATUS_DONE)
                             {
+	                      gnetwork = &(gdata.networks[tr->net]);
                               t_closeconn(tr,tempstr,0);
                             }
                         }
                       
+                      gnetwork = 0x100009;
                       mydelete(tempstr);
                       mydelete(tempstr2);
                     }
@@ -1232,11 +1257,15 @@ static void mainloop (void) {
       if (changesec && (gdata.curtime - lastperiodicmsg > gdata.periodicmsg_time*60)) {
          lastperiodicmsg = gdata.curtime;
          
-         if (gdata.periodicmsg_nick && gdata.periodicmsg_msg
-	     && (gdata.serverstatus == SERVERSTATUS_CONNECTED) )
-            privmsg(gdata.periodicmsg_nick,"%s",gdata.periodicmsg_msg);
+         for (ss=0; ss<gdata.networks_online; ss++) {
+            if (gdata.periodicmsg_nick && gdata.periodicmsg_msg
+	        && (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) )
+               gnetwork = &(gdata.networks[ss]);
+               privmsg(gdata.periodicmsg_nick,"%s",gdata.periodicmsg_msg);
+            }
          
          }
+      gnetwork = 0x100010;
       
       updatecontext();
       
@@ -1246,15 +1275,17 @@ static void mainloop (void) {
          
 	 updatecontext();
          /*----- server timeout ----- */
-         if ((gdata.serverstatus == SERVERSTATUS_CONNECTED) &&
-             (gdata.curtime - gdata.lastservercontact > SRVRTOUT)) {
-            if (gdata.servertime < 3)
+         for (ss=0; ss<gdata.networks_online; ss++) {
+	   gnetwork = &(gdata.networks[ss]);
+         if ((gnetwork->serverstatus == SERVERSTATUS_CONNECTED) &&
+             (gdata.curtime - gnetwork->lastservercontact > SRVRTOUT)) {
+            if (gnetwork->servertime < 3)
               {
-                const char *servname = gdata.curserveractualname ? gdata.curserveractualname : gdata.curserver.hostname;
+                const char *servname = gnetwork->curserveractualname ? gnetwork->curserveractualname : gnetwork->curserver.hostname;
                 int        len       = 6 + strlen(servname);
                 char       *tempstr3 = mycalloc(len + 1);
                 snprintf(tempstr3, len + 1, "PING %s\n", servname);
-                write(gdata.ircserver, tempstr3, len);
+                write(gnetwork->ircserver, tempstr3, len);
                 if (gdata.debug > 0)
                   {
                     tempstr3[len-1] = '\0';
@@ -1262,31 +1293,33 @@ static void mainloop (void) {
                     ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<NORES<: %s",tempstr3);
                   }
                 mydelete(tempstr3);
-                gdata.servertime++;
+                gnetwork->servertime++;
               }
-            else if (gdata.servertime == 3) {
+            else if (gnetwork->servertime == 3) {
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Closing Server Connection: No Response for %d minutes.",SRVRTOUT/60);
-               FD_CLR(gdata.ircserver, &gdata.readset);
+               FD_CLR(gnetwork->ircserver, &gdata.readset);
                /*
                 * cygwin close() is broke, if outstanding data is present
                 * it will block until the TCP connection is dead, sometimes
                 * upto 10-20 minutes, calling shutdown() first seems to help
                 */
-               shutdown(gdata.ircserver, SHUT_RDWR);
-               close(gdata.ircserver);
-               gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-               gdata.servertime = 0;
+               shutdown(gnetwork->ircserver, SHUT_RDWR);
+               close(gnetwork->ircserver);
+               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+               gnetwork->servertime = 0;
                }
             }
          
          
          /*----- ping server ----- */
-         if (gdata.recentsent) {
+         if (gnetwork->recentsent) {
             pingserver();
-            gdata.recentsent--;
+            gnetwork->recentsent--;
             }
          
          }
+         } /* networks */
+      gnetwork = 0x100011;
       
       /*----- 4 seconds ----- */
       if (changesec && (gdata.curtime - last4sec > 3))
@@ -1346,8 +1379,10 @@ static void mainloop (void) {
       
       updatecontext();
       
+      for (ss=0; ss<gdata.networks_online; ss++) {
+	gnetwork = &(gdata.networks[ss]);
       /*----- plist stuff ----- */
-      if ((gdata.serverstatus == SERVERSTATUS_CONNECTED) &&
+      if ((gnetwork->serverstatus == SERVERSTATUS_CONNECTED) &&
           changemin &&
           irlist_size(&gdata.xdccs) &&
           !gdata.transferlimits_over &&
@@ -1356,7 +1391,7 @@ static void mainloop (void) {
         {
             char *tchanf = NULL, *tchanm = NULL, *tchans = NULL;
             
-            ch = irlist_get_head(&gdata.channels);
+            ch = irlist_get_head(&(gnetwork->channels));
             while(ch)
               {
                 if ((ch->flags & CHAN_ONCHAN) &&
@@ -1443,6 +1478,8 @@ static void mainloop (void) {
                }
             
          }
+         } /* networks */
+      gnetwork = 0x100012;
       
       updatecontext();
       /*----- low bandwidth send, save state file ----- */
@@ -1466,17 +1503,19 @@ static void mainloop (void) {
          }
       
       updatecontext();
+      for (ss=0; ss<gdata.networks_online; ss++) {
+	gnetwork = &(gdata.networks[ss]);
       /*----- queue notify ----- */
       if (changesec && gdata.notifytime && (!gdata.quietmode) &&
           (gdata.curtime - lastnotify > (gdata.notifytime*60)))
         {
          lastnotify = gdata.curtime;
          
-	 if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
+	 if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
 	   {
-             if ((irlist_size(&gdata.serverq_fast) >= 10) ||
-                 (irlist_size(&gdata.serverq_normal) >= 10) ||
-                 (irlist_size(&gdata.serverq_slow) >= 50))
+             if ((irlist_size(&(gnetwork->serverq_fast)) >= 10) ||
+                 (irlist_size(&(gnetwork->serverq_normal)) >= 10) ||
+                 (irlist_size(&(gnetwork->serverq_slow)) >= 50))
                {
                  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,
                          "notifications skipped, server queue is rather large");
@@ -1490,6 +1529,8 @@ static void mainloop (void) {
 	   }
 	 
          }
+         } /* networks */
+      gnetwork = 0x100013;
       
       updatecontext();
       /*----- log stats / remote admin stats ----- */
@@ -1531,17 +1572,21 @@ static void mainloop (void) {
          
          updatecontext();
          
+         for (ss=0; ss<gdata.networks_online; ss++) {
+	   gnetwork = &(gdata.networks[ss]);
          /* try rejoining channels not on */
-         ch = irlist_get_head(&gdata.channels);
+         ch = irlist_get_head(&(gnetwork->channels));
          while(ch)
            {
-             if ((gdata.serverstatus == SERVERSTATUS_CONNECTED) &&
+             if ((gnetwork->serverstatus == SERVERSTATUS_CONNECTED) &&
                  !(ch->flags & CHAN_ONCHAN))
                {
                  joinchannel(ch);
                }
              ch = irlist_get_next(ch);
            }
+         } /* networks */
+         gnetwork = 0x100014;
          
          last20sec = gdata.curtime;
          
@@ -1675,7 +1720,7 @@ static void mainloop (void) {
       
       updatecontext();
       
-      if (gdata.exiting && gdata.serverstatus != SERVERSTATUS_CONNECTED) {
+      if (gdata.exiting && has_closed_servers()) {
          
          for (chat = irlist_get_head(&gdata.dccchats);
               chat;
@@ -1694,12 +1739,14 @@ static void mainloop (void) {
          }
       
       updatecontext();
-      if (gdata.serverstatus == SERVERSTATUS_NEED_TO_CONNECT)
+      for (ss=0; ss<gdata.networks_online; ss++) {
+	gnetwork = &(gdata.networks[ss]);
+      if (gnetwork->serverstatus == SERVERSTATUS_NEED_TO_CONNECT)
         {
           int timeout;
-          timeout = CTIMEOUT + (gdata.serverconnectbackoff * CBKTIMEOUT);
+          timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
           
-          if (gdata.lastservercontact + timeout < gdata.curtime)
+          if (gnetwork->lastservercontact + timeout < gdata.curtime)
             {
               if (gdata.debug > 0)
                 {
@@ -1708,6 +1755,8 @@ static void mainloop (void) {
               switchserver(-1);
             }
         }
+      } /* networks */
+      gnetwork = 0x100015;
       
       if (gdata.needsrehash) {
          gdata.needsrehash = 0;
@@ -1809,8 +1858,8 @@ static void parseline(char *line) {
          }
        
        /* update server name */
-       mydelete(gdata.curserveractualname);
-       gdata.curserveractualname = getpart(line+1,1);
+       mydelete(gnetwork->curserveractualname);
+       gnetwork->curserveractualname = getpart(line+1,1);
        
        /* update nick */
        mydelete(gdata.user_nick);
@@ -1830,7 +1879,7 @@ static void parseline(char *line) {
          }
        
        /* server connected raw command */
-       tptr = irlist_get_head(&gdata.server_connected_raw);
+       tptr = irlist_get_head(&(gnetwork->server_connected_raw));
        while(tptr)
          {
            writeserver(WRITESERVER_NORMAL, "%s", tptr);
@@ -1862,23 +1911,23 @@ static void parseline(char *line) {
              {
                char *ptr = item+8;
                int pi;
-               memset(&gdata.prefixes, 0, sizeof(gdata.prefixes));
+               memset(&(gnetwork->prefixes), 0, sizeof(gnetwork->prefixes));
                for (pi = 0; (ptr[pi] && (ptr[pi] != ')') && (pi < MAX_PREFIX)); pi++)
                  {
-                   gdata.prefixes[pi].p_mode = ptr[pi];
+                   gnetwork->prefixes[pi].p_mode = ptr[pi];
                  }
                if (ptr[pi] == ')')
                  {
                    ptr += pi + 1;
                    for (pi = 0; (ptr[pi] && (pi < MAX_PREFIX)); pi++)
                      {
-                       gdata.prefixes[pi].p_symbol = ptr[pi];
+                       gnetwork->prefixes[pi].p_symbol = ptr[pi];
                      }
                  }
                for (pi = 0; pi < MAX_PREFIX; pi++)
                  {
-                   if ((gdata.prefixes[pi].p_mode && !gdata.prefixes[pi].p_symbol) ||
-                       (!gdata.prefixes[pi].p_mode && gdata.prefixes[pi].p_symbol))
+                   if ((gnetwork->prefixes[pi].p_mode && !gnetwork->prefixes[pi].p_symbol) ||
+                       (!gnetwork->prefixes[pi].p_mode && gnetwork->prefixes[pi].p_symbol))
                      {
                        outerror(OUTERROR_TYPE_WARN,
                                 "Server prefix list doesn't make sense, using defaults: %s",
@@ -1893,13 +1942,13 @@ static void parseline(char *line) {
                char *ptr = item+10;
                int ci;
                int cm;
-               memset(&gdata.chanmodes, 0, sizeof(gdata.chanmodes));
+               memset(&(gnetwork->chanmodes), 0, sizeof(gnetwork->chanmodes));
                for (ci = cm = 0; (ptr[ci] && (cm < MAX_CHANMODES)); ci++)
                  {
                    if (ptr[ci+1] == ',')
                      {
                        /* we only care about ones with arguments */
-                       gdata.chanmodes[cm++] = ptr[ci++];
+                       gnetwork->chanmodes[cm++] = ptr[ci++];
                      }
                  }
              }
@@ -1929,7 +1978,7 @@ static void parseline(char *line) {
      {
        caps(part5);
        
-       ch = irlist_get_head(&gdata.channels);
+       ch = irlist_get_head(&(gnetwork->channels));
        while(ch)
          {
            if (!strcmp(part5,ch->name))
@@ -1957,19 +2006,19 @@ static void parseline(char *line) {
  /* ERROR :Closing Link */
    if (strncmp(line, "ERROR :Closing Link", strlen("ERROR :Closing Link")) == 0) {
       if (gdata.exiting)
-         gdata.recentsent = 0;
+         gnetwork->recentsent = 0;
       else {
          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Server Closed Connection: %s",line);
          
-          FD_CLR(gdata.ircserver, &gdata.readset);
+          FD_CLR(gnetwork->ircserver, &gdata.readset);
           /*
            * cygwin close() is broke, if outstanding data is present
            * it will block until the TCP connection is dead, sometimes
            * upto 10-20 minutes, calling shutdown() first seems to help
            */
-          shutdown(gdata.ircserver, SHUT_RDWR);
-          close(gdata.ircserver);
-          gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+          shutdown(gnetwork->ircserver, SHUT_RDWR);
+          close(gnetwork->ircserver);
+          gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
          }
       }
    
@@ -1986,7 +2035,7 @@ static void parseline(char *line) {
       int j,found;
       nick = mycalloc(strlen(line)+1);
       j=1;
-      gdata.nocon = 0;
+      gnetwork->nocon = 0;
       found = 0;
       while(line[j] != '!' && j<sstrlen(line)) {
          nick[j-1] = line[j];
@@ -1997,10 +2046,10 @@ static void parseline(char *line) {
         {
           /* we joined */
           /* clear now, we have succesfully logged in */
-          gdata.serverconnectbackoff = 0;
+          gnetwork->serverconnectbackoff = 0;
           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Joined %s",caps(part3a));
           
-          ch = irlist_get_head(&gdata.channels);
+          ch = irlist_get_head(&(gnetwork->channels));
           while(ch)
             {
               if (!strcmp(part3a,ch->name))
@@ -2035,7 +2084,7 @@ static void parseline(char *line) {
 	{
 	  /* someone else joined */
 	  caps(part3a);
-          ch = irlist_get_head(&gdata.channels);
+          ch = irlist_get_head(&(gnetwork->channels));
           while(ch)
             {
               if (!strcmp(part3a,ch->name))
@@ -2081,7 +2130,7 @@ static void parseline(char *line) {
 	 {
 	   /* someone else left */
 	   caps(part3a);
-           ch = irlist_get_head(&gdata.channels);
+           ch = irlist_get_head(&(gnetwork->channels));
            while(ch)
              {
                if (!strcmp(part3a,ch->name))
@@ -2127,7 +2176,7 @@ static void parseline(char *line) {
        else
 	 {
 	   /* someone else quit */
-           ch = irlist_get_head(&gdata.channels);
+           ch = irlist_get_head(&(gnetwork->channels));
            while(ch)
              {
                removefrommemberlist(ch,nick);
@@ -2175,7 +2224,7 @@ static void parseline(char *line) {
            gdata.needsclear = 1;
          }
        
-       ch = irlist_get_head(&gdata.channels);
+       ch = irlist_get_head(&(gnetwork->channels));
        while(ch)
          {
            changeinmemberlist_nick(ch, oldnick, newnick);
@@ -2190,7 +2239,7 @@ static void parseline(char *line) {
  /* KICK */
    if (!strcmp(part2,"KICK") && part3a && part4 && gdata.caps_nick)
      {
-       ch = irlist_get_head(&gdata.channels);
+       ch = irlist_get_head(&(gnetwork->channels));
        while(ch)
          {
            if (!strcmp(caps(part3a),ch->name))
@@ -2217,7 +2266,7 @@ static void parseline(char *line) {
    if (!strcmp(part2,"MODE") && part3 && part4)
      {
        /* find channel */
-       for (ch = irlist_get_head(&gdata.channels); ch; ch = irlist_get_next(ch))
+       for (ch = irlist_get_head(&(gnetwork->channels)); ch; ch = irlist_get_next(ch))
          {
            if (!strcasecmp(ch->name, part3))
              {
@@ -2243,9 +2292,9 @@ static void parseline(char *line) {
                else
                  {
                    int ii;
-                   for (ii = 0; (ii < MAX_PREFIX && gdata.prefixes[ii].p_mode); ii++)
+                   for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_mode); ii++)
                      {
-                       if (*ptr == gdata.prefixes[ii].p_mode)
+                       if (*ptr == gnetwork->prefixes[ii].p_mode)
                          {
                            /* found a nick mode */
                            char *nick = getpart(line, part++);
@@ -2256,16 +2305,16 @@ static void parseline(char *line) {
                                    nick[strlen(nick)-1] = '\0';
                                  }
                                changeinmemberlist_mode(ch, nick,
-                                                       gdata.prefixes[ii].p_symbol,
+                                                       gnetwork->prefixes[ii].p_symbol,
                                                        plus);
                                mydelete(nick);
                              }
                            break;
                          }
                      }
-                   for (ii = 0; (ii < MAX_CHANMODES && gdata.chanmodes[ii]); ii++)
+                   for (ii = 0; (ii < MAX_CHANMODES && gnetwork->chanmodes[ii]); ii++)
                      {
-                       if (*ptr == gdata.chanmodes[ii])
+                       if (*ptr == gnetwork->chanmodes[ii])
                          {
                            /* found a channel mode that has an argument */
                            part++;
@@ -2648,6 +2697,7 @@ static void privmsgparse(const char* type, char* line) {
               strcpy(ul->nick,nick);
               ul->hostname = mymalloc(strlen(hostname)+1);
               strcpy(ul->hostname,hostname);
+              ul->net = gnetwork->net;
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                       "DCC Send Accepted from %s: %s (%" LLPRINTFMT "iKB)", nick, ul->file,
                       (long long)(ul->totalsize / 1024));
@@ -3255,6 +3305,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        tr->xpack = xd;
        tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
        tr->nomax = tr->unlimited;
+       tr->net = gnetwork->net;
        
        if (!man)
          {
@@ -3466,6 +3517,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
          tempq->hostname = mymalloc(strlen(hostname)+1);
          strcpy(tempq->hostname,hostname);
          tempq->xpack = tempx;
+         tempq->net = gnetwork->net;
 
          snprintf(tempstr,maxtextlength,
                   "Added you to the main queue in position %d. To Remove youself at "
@@ -3486,13 +3538,6 @@ void sendaqueue(int type)
   size_t len;
   
   updatecontext();
-  
-  if (gdata.serverstatus != SERVERSTATUS_CONNECTED)
-     return;
-
-  /* timeout for restart must be less then Transfer Timeout 180s */
-  if (gdata.curtime - gdata.lastservercontact > 150)
-     return;
   
   if (gdata.holdqueue)
      return;
@@ -3531,7 +3576,10 @@ void sendaqueue(int type)
               /* usertrans is the number of transfers a user has in progress */
               if (usertrans < gdata.maxtransfersperperson)
                 {
-                  break; /* found the person that will get the send */
+                  /* timeout for restart must be less then Transfer Timeout 180s */
+                  if ((gdata.networks[tr->net].serverstatus == SERVERSTATUS_CONNECTED)
+                  && (gdata.curtime - gdata.networks[tr->net].lastservercontact > 150))
+                    break; /* found the person that will get the send */
                 }
               pq = irlist_get_next(pq);
             }
@@ -3581,6 +3629,7 @@ void sendaqueue(int type)
       snprintf(hostmask,len,"%s!*@%s",tr->nick,tr->hostname);
       tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
       tr->nomax = tr->unlimited;
+      tr->net = gnetwork->net;
       mydelete(hostmask);
       
       if (!gdata.quietmode)

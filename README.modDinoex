@@ -7,6 +7,9 @@ With Version mod 1.25:
 64) geoipexcludenick
    allow downloads for this nicks, even if geoip entry differs.
 
+65) network
+   support multiple irc networks with common queue and limits
+
 bugfix:
     geoipcountry worked only when ignoreduplicateip was active.
 

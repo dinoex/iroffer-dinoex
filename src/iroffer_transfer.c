@@ -821,14 +821,19 @@ void t_setresume(transfer * const t, const char *amt) {
    }
 
 void t_remind(transfer * const t) {
+   gnetwork_t *backup;
+   
    updatecontext();
    
-   if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
+   backup = gnetwork;
+   gnetwork = &(gdata.networks[t->net]);
+   if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
      {
        notice(t->nick,"** You have a DCC pending, Set your client to receive the transfer. "
 	      "(%li seconds remaining until timeout)",(long)(t->lastcontact+180-gdata.curtime));
      }
    
+   gnetwork = backup;
    t->reminded++;
    }
 

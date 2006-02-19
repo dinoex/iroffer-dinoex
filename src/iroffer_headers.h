@@ -172,6 +172,7 @@ typedef struct
   char *hostname;
   time_t queuedtime;
   time_t restrictsend_bad;
+  int net;
 } pqueue;
 
 typedef struct
@@ -213,6 +214,7 @@ typedef struct
   int listensocket;
   int clientsocket;
   int id;
+  int net;
   off_t bytessent;
   off_t bytesgot;
   off_t lastack;
@@ -275,6 +277,7 @@ typedef struct
   char *file;
   upload_status_e ul_status;
   int resumed;
+  int net;
 } upload;
 
 typedef struct
@@ -346,7 +349,7 @@ typedef struct
   userinput_method_e method;
   char *snick, *cmd;
   char *arg1, *arg2, *arg3;
-  char *arg1e, *arg2e;
+  char *arg1e, *arg2e, *arg3e;
   int fd;
   dccchat_t *chat;
 } userinput;
