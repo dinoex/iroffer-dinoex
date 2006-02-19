@@ -730,7 +730,9 @@ void t_flushed (transfer * const t)
 
 void t_closeconn(transfer * const t, const char *msg, int errno1)
 {
+#ifdef MULTINET
   gnetwork_t *backup;
+#endif /* MULTINET */
   
   updatecontext();
   
@@ -806,8 +808,10 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
   
   t->tr_status = TRANSFER_STATUS_DONE;
   
+#ifdef MULTINET
   backup = gnetwork;
   gnetwork = &(gdata.networks[t->net]);
+#endif /* MULTINET */
   if (errno1)
     {
       notice(t->nick, "** Closing Connection: %s (%s)", msg, strerror(errno1));
@@ -816,7 +820,9 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
     {
       notice(t->nick, "** Closing Connection: %s", msg);
     }
+#ifdef MULTINET
   gnetwork = backup;
+#endif /* MULTINET */
 }
 
 void t_setresume(transfer * const t, const char *amt) {
@@ -826,19 +832,27 @@ void t_setresume(transfer * const t, const char *amt) {
    }
 
 void t_remind(transfer * const t) {
+#ifdef MULTINET
    gnetwork_t *backup;
+#endif /* MULTINET */
    
    updatecontext();
    
+#ifndef MULTINET
+   if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
+#else /* MULTINET */
    backup = gnetwork;
    gnetwork = &(gdata.networks[t->net]);
    if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
+#endif /* MULTINET */
      {
        notice(t->nick,"** You have a DCC pending, Set your client to receive the transfer. "
 	      "(%li seconds remaining until timeout)",(long)(t->lastcontact+180-gdata.curtime));
      }
    
+#ifdef MULTINET
    gnetwork = backup;
+#endif /* MULTINET */
    t->reminded++;
    }
 

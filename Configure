@@ -35,6 +35,8 @@ echo "   -e           Print errors while running Configure"
 echo "   -d           Compile with debug symbols"
 echo "   -p           Compile with profiling flags"
 echo "   -w           Compile with extra warning flags"
+echo "   -g           Compile GeoIP lib"
+echo "   -m           Compile for multiple IRC networks"
 exit 1
 }
 
@@ -43,8 +45,9 @@ OPT_DEBUG=false
 OPT_WARN=false
 OPT_PROF=false
 OPT_GEOIP=false
+OPT_MULTI=false
 
-while getopts 'hedpwg' OPTNAME; do
+while getopts 'hedpwgm' OPTNAME; do
   case "$OPTNAME" in
     h) usage;;
 
@@ -53,6 +56,7 @@ while getopts 'hedpwg' OPTNAME; do
     w) OPT_WARN=true;;
     p) OPT_PROF=true;;
     g) OPT_GEOIP=true;;
+    m) OPT_MULTI=true;;
 
     *) usage;;
   esac
@@ -157,6 +161,12 @@ echo "Configuring for GeoIP."
 GEOLIB="-lGeoIP"
 GEOINC="-DUSE_GEOIP -I/usr/local/include"
 GEOLDF="-L/usr/local/lib"
+shift
+fi
+
+if $OPT_MULTI; then
+echo "Configuring for Multiple IRC Networks."
+MULTI="-DMULTINET"
 shift
 fi
 
@@ -1086,7 +1096,7 @@ echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB
 echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $GEOINC
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $GEOINC $MULTI
 echo CONFIG_CPPFLAGS=
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then

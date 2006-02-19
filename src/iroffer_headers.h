@@ -172,7 +172,9 @@ typedef struct
   char *hostname;
   time_t queuedtime;
   time_t restrictsend_bad;
+#ifdef MULTINET
   int net;
+#endif /* MULTINET */
 } pqueue;
 
 typedef struct
@@ -214,7 +216,9 @@ typedef struct
   int listensocket;
   int clientsocket;
   int id;
+#ifdef MULTINET
   int net;
+#endif /* MULTINET */
   off_t bytessent;
   off_t bytesgot;
   off_t lastack;
@@ -277,7 +281,9 @@ typedef struct
   char *file;
   upload_status_e ul_status;
   int resumed;
+#ifdef MULTINET
   int net;
+#endif /* MULTINET */
 } upload;
 
 typedef struct
@@ -349,7 +355,11 @@ typedef struct
   userinput_method_e method;
   char *snick, *cmd;
   char *arg1, *arg2, *arg3;
+#ifndef MULTINET
+  char *arg1e, *arg2e;
+#else /* MULTINET */
   char *arg1e, *arg2e, *arg3e;
+#endif /* MULTINET */
   int fd;
   dccchat_t *chat;
 } userinput;
