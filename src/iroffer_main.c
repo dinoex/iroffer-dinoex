@@ -3582,8 +3582,8 @@ void sendaqueue(int type)
               if (usertrans < gdata.maxtransfersperperson)
                 {
                   /* timeout for restart must be less then Transfer Timeout 180s */
-                  if ((gdata.networks[pr->net].serverstatus == SERVERSTATUS_CONNECTED)
-                  && (gdata.curtime - gdata.networks[pr->net].lastservercontact > 150))
+                  if ((gdata.networks[pq->net].serverstatus == SERVERSTATUS_CONNECTED)
+                  && (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150))
                     break; /* found the person that will get the send */
                 }
               pq = irlist_get_next(pq);
