@@ -2825,7 +2825,7 @@ static void privmsgparse(const char* type, char* line) {
 	 else
 	   {
              char *user;
-             user = irlist_get_head(&gdata.xlistqueue);
+             user = irlist_get_head(&(gnetwork->xlistqueue));
              
              while (user)
                {
@@ -2838,7 +2838,7 @@ static void privmsgparse(const char* type, char* line) {
              
              if (!user)
                {
-                 if (irlist_size(&gdata.xlistqueue) >= MAXXLQUE)
+                 if (irlist_size(&(gnetwork->xlistqueue)) >= MAXXLQUE)
                    {
                      j = 2; /* deny */
                      notice_slow(nick,"XDCC LIST Denied. I'm rather busy at the moment, try again later");
@@ -2908,7 +2908,7 @@ static void privmsgparse(const char* type, char* line) {
                            }
                          else
                            {
-                             user = irlist_add(&gdata.xlistqueue, strlen(nick) + 1);
+                             user = irlist_add(&(gnetwork->xlistqueue), strlen(nick) + 1);
                              strcpy(user,nick);
                            }
                        }

@@ -2296,13 +2296,13 @@ void sendxdlqueue (void)
   
   updatecontext();
   
-  if (!irlist_size(&gdata.xlistqueue))
+  if (!irlist_size(&(gnetwork->xlistqueue)))
     {
       return;
     }
   
   len = 0;
-  user = irlist_get_head(&gdata.xlistqueue);
+  user = irlist_get_head(&(gnetwork->xlistqueue));
   while (user)
     {
       len += strlen(user) + 1;
@@ -2312,11 +2312,11 @@ void sendxdlqueue (void)
   tempstr = mycalloc(len);
   
   len = 0;
-  user = irlist_get_head(&gdata.xlistqueue);
+  user = irlist_get_head(&(gnetwork->xlistqueue));
   strcpy(tempstr+len, user);
   len += strlen(tempstr+len);
   
-  user = irlist_delete(&gdata.xlistqueue, user);
+  user = irlist_delete(&(gnetwork->xlistqueue), user);
   while (user)
     {
       strcpy(tempstr+len, ",");
@@ -2324,7 +2324,7 @@ void sendxdlqueue (void)
       strcpy(tempstr+len, user);
       len += strlen(tempstr+len);
       
-      user = irlist_delete(&gdata.xlistqueue, user);
+      user = irlist_delete(&(gnetwork->xlistqueue), user);
     }
   
   if (gdata.nolisting > gdata.curtime)

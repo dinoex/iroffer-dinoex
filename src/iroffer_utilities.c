@@ -1598,6 +1598,11 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
   
   gdata_print_int(networks[ss].recentsent);
+  
+  gdata_irlist_iter_start(networks[ss].xlistqueue, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+      
     }
   
   gdata_irlist_iter_start(msglog, msglog_t);
@@ -1669,10 +1674,6 @@ void dumpgdata(void)
   gdata_print_int(logfd);
   
   /* sendbuff context_log context_cur_ptr */
-  
-  gdata_irlist_iter_start(xlistqueue, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
   
   gdata_irlist_iter_start(ignorelist, igninfo);
   ioutput(gdata_common,

@@ -59,6 +59,7 @@ irlist_t serverq_fast;
 irlist_t serverq_normal;
 irlist_t serverq_slow;
 irlist_t serverq_channel;
+irlist_t xlistqueue;
 int serverbucket;
 int ircserver;
 int serverconnectbackoff;
@@ -241,8 +242,6 @@ unsigned char *sendbuff;
 
 context_t context_log[MAXCONTEXTS];
 int context_cur_ptr;
-
-irlist_t xlistqueue;
 
 irlist_t ignorelist;
 
