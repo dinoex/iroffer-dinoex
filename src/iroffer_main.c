@@ -4058,7 +4058,7 @@ void sendaqueue(int type)
 #ifdef MULTINET
                   /* timeout for restart must be less then Transfer Timeout 180s */
                   if ((gdata.networks[pq->net].serverstatus == SERVERSTATUS_CONNECTED)
-                  && (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150))
+                  && (gdata.curtime - gdata.networks[pq->net].lastservercontact <= 150))
 #endif /* MULTINET */
                   break; /* found the person that will get the send */
                 }
