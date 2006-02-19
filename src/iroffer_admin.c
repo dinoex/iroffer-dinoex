@@ -144,10 +144,10 @@ static const userinput_parse_t userinput_parse[] = {
 {1,method_allow_all,u_qul,      "QUL",NULL,"Lists Current Queue"},
 {1,method_allow_all,u_ignl,     "IGNL",NULL,"Show Ignored List"},
 {1,method_allow_all,u_listul,   "LISTUL",NULL,"Shows contents of upload directory"},
-#ifndef MULTINET
-{1,method_allow_all,u_chanl,    "CHANL",NULL,"Shows channel list with member list"},
-#else /* MULTINET */
+#ifdef MULTINET
 {1,method_allow_all,u_chanl,    "CHANL","[<net>]","Shows channel list with member list"},
+#else /* MULTINET */
+{1,method_allow_all,u_chanl,    "CHANL",NULL,"Shows channel list with member list"},
 #endif /* MULTINET */
 
 {2,method_allow_all,u_close,    "CLOSE","n","Cancels Transfer with ID = n"},
@@ -156,14 +156,14 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_nomin,    "NOMIN","n","Disables Minspeed For Transfer ID n"},
 {2,method_allow_all,u_nomax,    "NOMAX","n","Disables Maxspeed For Transfer ID n"},
 {2,method_allow_all,u_unlimited, "UNLIMITED","n","Disables Bandwidth Limits For Transfer ID n"},
-#ifndef MULTINET
-{2,method_allow_all,u_send,     "SEND","nick n","Sends Pack n to nick"},
-{2,method_allow_all,u_queue,    "QUEUE","nick n","Queues Pack n for nick"},
-{2,method_allow_all,u_psend,    "PSEND","<channel> <style>","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
-#else /* MULTINET */
+#ifdef MULTINET
 {2,method_allow_all,u_send,     "SEND","nick n [<net>]","Sends Pack n to nick"},
 {2,method_allow_all,u_queue,    "QUEUE","nick n [<net>]","Queues Pack n for nick"},
 {2,method_allow_all,u_psend,    "PSEND","<channel> <style> [<net>]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
+#else /* MULTINET */
+{2,method_allow_all,u_send,     "SEND","nick n","Sends Pack n to nick"},
+{2,method_allow_all,u_queue,    "QUEUE","nick n","Queues Pack n for nick"},
+{2,method_allow_all,u_psend,    "PSEND","<channel> <style>","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
 #endif /* MULTINET */
 {2,method_allow_all,u_qsend,    "QSEND",NULL,"Sends Out The First Queued Pack"},
 
@@ -213,16 +213,16 @@ static const userinput_parse_t userinput_parse[] = {
 {4,method_allow_all,u_rawnet,   "RAWNET","<net> <command>","Send <command> to server (RAW IRC)"},
 #endif /* MULTINET */
 
-#ifndef MULTINET
-{5,method_allow_all,u_servers,  "SERVERS",NULL,"Shows the server list"},
-#else /* MULTINET */
+#ifdef MULTINET
 {5,method_allow_all,u_servers,  "SERVERS","[<net>]","Shows the server list"},
+#else /* MULTINET */
+{5,method_allow_all,u_servers,  "SERVERS",NULL,"Shows the server list"},
 #endif /* MULTINET */
 {5,method_allow_all,u_hop,      "HOP","<channel>","leave and rejoin a channel to get status"},
-#ifndef MULTINET
-{5,method_allow_all,u_jump,     "JUMP","<num>","Switches to a random server or server <num>"},
-#else /* MULTINET */
+#ifdef MULTINET
 {5,method_allow_all,u_jump,     "JUMP","<num> [<net>]","Switches to a random server or server <num>"},
+#else /* MULTINET */
+{5,method_allow_all,u_jump,     "JUMP","<num>","Switches to a random server or server <num>"},
 #endif /* MULTINET */
 {5,method_allow_all,u_servqc,   "SERVQC",NULL,"Clears the server send queue"},
 {5,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},
@@ -238,10 +238,10 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_allow_all,u_closec,   "CLOSEC","n","Closes DCC Chat with ID = n"},
 {5,method_console,  u_debug,    "DEBUG","n","Set Debugging level to n"},
 {5,method_allow_all,u_holdqueue, "HOLDQUEUE","<num>","set or toggles holdqueue"},
-#ifndef MULTINET
-{5,method_allow_all,u_identify, "IDENTIFY",NULL,"Send stored password again to nickserv"},
-#else /* MULTINET */
+#ifdef MULTINET
 {5,method_allow_all,u_identify, "IDENTIFY","[<net>]","Send stored password again to nickserv"},
+#else /* MULTINET */
+{5,method_allow_all,u_identify, "IDENTIFY",NULL,"Send stored password again to nickserv"},
 #endif /* MULTINET */
 {5,method_allow_all,u_shutdown, "SHUTDOWN","<act>","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
 
@@ -508,10 +508,10 @@ static void u_respond(const userinput * const u, const char *format, ...)
     case method_xdl_channel:
     case method_xdl_channel_min:
     case method_xdl_channel_sum:
-#ifndef MULTINET
-      ch = irlist_get_head(&gdata.channels);
-#else /* MULTINET */
+#ifdef MULTINET
       ch = irlist_get_head(&(gnetwork->channels));
+#else /* MULTINET */
+      ch = irlist_get_head(&gdata.channels);
 #endif /* MULTINET */
       while(ch)
         {
@@ -733,10 +733,10 @@ static void u_xdl_head(const userinput * const u) {
     case method_xdl_channel:
     case method_xdl_channel_min:
     case method_xdl_channel_sum:
-#ifndef MULTINET
-      ch = irlist_get_head(&gdata.channels);
-#else /* MULTINET */
+#ifdef MULTINET
       ch = irlist_get_head(&(gnetwork->channels));
+#else /* MULTINET */
+      ch = irlist_get_head(&gdata.channels);
 #endif /* MULTINET */
       while(ch)
         {
@@ -2204,15 +2204,8 @@ static void u_announce (const userinput * const u) {
   tempstr2 = mycalloc(maxtextlength);
   snprintf(tempstr2,maxtextlength-2,"[\2%s\2] %s",u->arg2e,xd->desc);
   snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send #%i",tempstr2,gdata.user_nick,num);
-#ifndef MULTINET
-  ch = irlist_get_head(&gdata.channels);
-  while(ch) {
-    if (ch->flags & CHAN_ONCHAN)
-      privmsg_chan(ch, tempstr);
-    ch = irlist_get_next(ch);
-    }
-#else /* MULTINET */
   
+#ifdef MULTINET
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
@@ -2224,6 +2217,13 @@ static void u_announce (const userinput * const u) {
         }
     }
   gnetwork = backup;
+#else /* MULTINET */
+  ch = irlist_get_head(&gdata.channels);
+  while(ch) {
+    if (ch->flags & CHAN_ONCHAN)
+      privmsg_chan(ch, tempstr);
+    ch = irlist_get_next(ch);
+    }
 #endif /* MULTINET */
   u_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);
   mydelete(tempstr2);
@@ -3781,17 +3781,17 @@ static void u_rehash(const userinput * const u) {
 #endif /* MULTINET */
    
    /* part deleted channels, add common channels */
-#ifndef MULTINET
-   ch = irlist_get_head(&gdata.channels);
-#else /* MULTINET */
+#ifdef MULTINET
    ch = irlist_get_head(&(gnetwork->channels));
+#else /* MULTINET */
+   ch = irlist_get_head(&gdata.channels);
 #endif /* MULTINET */
    while(ch)
      {
-#ifndef MULTINET
-       rch = irlist_get_head(&gdata.r_channels);
-#else /* MULTINET */
+#ifdef MULTINET
        rch = irlist_get_head(&(gnetwork->r_channels));
+#else /* MULTINET */
+       rch = irlist_get_head(&gdata.r_channels);
 #endif /* MULTINET */
        while(rch)
          {
@@ -3816,10 +3816,10 @@ static void u_rehash(const userinput * const u) {
            clearmemberlist(ch);
            mydelete(ch->name);
            mydelete(ch->key);
-#ifndef MULTINET
-           ch = irlist_delete(&gdata.channels, ch);
-#else /* MULTINET */
+#ifdef MULTINET
            ch = irlist_delete(&(gnetwork->channels), ch);
+#else /* MULTINET */
+           ch = irlist_delete(&gdata.channels, ch);
 #endif /* MULTINET */
          }
        else
@@ -3834,10 +3834,10 @@ static void u_rehash(const userinput * const u) {
                ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
                        "2  = %s common\n", ch->name);
              }
-#ifndef MULTINET
-           irlist_delete(&gdata.r_channels, rch);
-#else /* MULTINET */
+#ifdef MULTINET
            irlist_delete(&(gnetwork->r_channels), rch);
+#else /* MULTINET */
+           irlist_delete(&gdata.r_channels, rch);
 #endif /* MULTINET */
            ch = irlist_get_next(ch);
          }
@@ -3845,17 +3845,17 @@ static void u_rehash(const userinput * const u) {
    
    /* join/add new channels */
    
-#ifndef MULTINET
-   rch = irlist_get_head(&gdata.r_channels);
-#else /* MULTINET */
+#ifdef MULTINET
    rch = irlist_get_head(&(gnetwork->r_channels));
+#else /* MULTINET */
+   rch = irlist_get_head(&gdata.r_channels);
 #endif /* MULTINET */
    while(rch)
      {
-#ifndef MULTINET
-       ch = irlist_get_head(&gdata.channels);
-#else /* MULTINET */
+#ifdef MULTINET
        ch = irlist_get_head(&(gnetwork->channels));
+#else /* MULTINET */
+       ch = irlist_get_head(&gdata.channels);
 #endif /* MULTINET */
        while(ch)
          {
@@ -3868,10 +3868,10 @@ static void u_rehash(const userinput * const u) {
        
        if (!ch)
          {
-#ifndef MULTINET
-           ch = irlist_add(&gdata.channels, sizeof(channel_t));
-#else /* MULTINET */
+#ifdef MULTINET
            ch = irlist_add(&(gnetwork->channels), sizeof(channel_t));
+#else /* MULTINET */
+           ch = irlist_add(&gdata.channels, sizeof(channel_t));
 #endif /* MULTINET */
            *ch = *rch;
            ch->flags &= ~CHAN_ONCHAN;
@@ -3884,10 +3884,10 @@ static void u_rehash(const userinput * const u) {
                ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
                        "3 = %s new\n",ch->name);
              }
-#ifndef MULTINET
-           rch = irlist_delete(&gdata.r_channels, rch);
-#else /* MULTINET */
+#ifdef MULTINET
            rch = irlist_delete(&(gnetwork->r_channels), rch);
+#else /* MULTINET */
+           rch = irlist_delete(&gdata.r_channels, rch);
 #endif /* MULTINET */
          }
        else
@@ -3936,10 +3936,7 @@ static void u_rehash(const userinput * const u) {
      {
        if (strcmp(gdata.config_nick,gdata.r_config_nick))
          {
-#ifndef MULTINET
-           u_respond(u,"user_nick changed, renaming nick to %s", gdata.r_config_nick);
-           writeserver(WRITESERVER_NOW, "NICK %s", gdata.r_config_nick);
-#else /* MULTINET */
+#ifdef MULTINET
            backup = gnetwork;
            for (ss=0; ss<gdata.networks_online; ss++)
              {
@@ -3948,6 +3945,9 @@ static void u_rehash(const userinput * const u) {
                 writeserver(WRITESERVER_NOW, "NICK %s", gdata.r_config_nick);
              }
            gnetwork = backup;
+#else /* MULTINET */
+           u_respond(u,"user_nick changed, renaming nick to %s", gdata.r_config_nick);
+           writeserver(WRITESERVER_NOW, "NICK %s", gdata.r_config_nick);
 #endif /* MULTINET */
          }
        mydelete(gdata.config_nick);
@@ -4901,16 +4901,7 @@ static void u_servqc(const userinput * const u)
 #endif /* MULTINET */
   updatecontext();
   
-#ifndef MULTINET
-  u_respond(u,"Cleared server queue of %d lines",
-            irlist_size(&gdata.serverq_fast) +
-            irlist_size(&gdata.serverq_normal) +
-            irlist_size(&gdata.serverq_slow));
-  
-  irlist_delete_all(&gdata.serverq_fast);
-  irlist_delete_all(&gdata.serverq_normal);
-  irlist_delete_all(&gdata.serverq_slow);
-#else /* MULTINET */
+#ifdef MULTINET
   for (ss=0; ss<gdata.networks_online; ss++)
     {
       u_respond(u,"Cleared server queue of %d lines",
@@ -4922,6 +4913,15 @@ static void u_servqc(const userinput * const u)
       irlist_delete_all(&gdata.networks[ss].serverq_normal);
       irlist_delete_all(&gdata.networks[ss].serverq_slow);
     }
+#else /* MULTINET */
+  u_respond(u,"Cleared server queue of %d lines",
+            irlist_size(&gdata.serverq_fast) +
+            irlist_size(&gdata.serverq_normal) +
+            irlist_size(&gdata.serverq_slow));
+  
+  irlist_delete_all(&gdata.serverq_fast);
+  irlist_delete_all(&gdata.serverq_normal);
+  irlist_delete_all(&gdata.serverq_slow);
 #endif /* MULTINET */
   return;
 }
@@ -5000,22 +5000,22 @@ static void u_jump(const userinput * const u)
       int num;
       num = atoi(u->arg1);
       
-#ifndef MULTINET
-      if ((num < 1) || (num > irlist_size(&gdata.servers)))
-#else /* MULTINET */
+#ifdef MULTINET
       if ((num < 1) || (num > irlist_size(&gdata.networks[net].servers)))
+#else /* MULTINET */
+      if ((num < 1) || (num > irlist_size(&gdata.servers)))
 #endif /* MULTINET */
         {
           u_respond(u,"Try specifying a valid server number, use \"servers\" for a list");
         }
       else
         {
-#ifndef MULTINET
-          gdata.serverconnectbackoff = 0;
-#else /* MULTINET */
+#ifdef MULTINET
           backup = gnetwork;
 	  gnetwork = &(gdata.networks[net]);
           gnetwork->serverconnectbackoff = 0;
+#else /* MULTINET */
+          gdata.serverconnectbackoff = 0;
 #endif /* MULTINET */
           switchserver(num-1);
 #ifdef MULTINET
@@ -5025,12 +5025,12 @@ static void u_jump(const userinput * const u)
     }
   else
     {
-#ifndef MULTINET
-      gdata.serverconnectbackoff = 0;
-#else /* MULTINET */
+#ifdef MULTINET
       backup = gnetwork;
       gnetwork = &(gdata.networks[net]);
       gnetwork->serverconnectbackoff = 0;
+#else /* MULTINET */
+      gdata.serverconnectbackoff = 0;
 #endif /* MULTINET */
       switchserver(-1);
 #ifdef MULTINET
@@ -5065,10 +5065,10 @@ static void u_servers(const userinput * const u)
   u_respond(u,"Server List:");
   u_respond(u,"  Num  Server                         Port  Password");
   
-#ifndef MULTINET
-  ss = irlist_get_head(&gdata.servers);
-#else /* MULTINET */
+#ifdef MULTINET
   ss = irlist_get_head(&gdata.networks[net].servers);
+#else /* MULTINET */
+  ss = irlist_get_head(&gdata.servers);
 #endif /* MULTINET */
   i = 1;
   while(ss)
@@ -5083,14 +5083,14 @@ static void u_servers(const userinput * const u)
     }
   
   u_respond(u,"Current Server: %s:%u (%s)",
-#ifndef MULTINET
-            gdata.curserver.hostname,
-            gdata.curserver.port,
-            gdata.curserveractualname ? gdata.curserveractualname : "<unknown>");
-#else /* MULTINET */
+#ifdef MULTINET
             gdata.networks[net].curserver.hostname,
             gdata.networks[net].curserver.port,
             gdata.networks[net].curserveractualname ? gdata.networks[net].curserveractualname : "<unknown>");
+#else /* MULTINET */
+            gdata.curserver.hostname,
+            gdata.curserver.port,
+            gdata.curserveractualname ? gdata.curserveractualname : "<unknown>");
 #endif /* MULTINET */
   
 }
@@ -5459,10 +5459,10 @@ static void u_chanl(const userinput * const u)
   
   u_respond(u,"Channel Members:");
   
-#ifndef MULTINET
-  ch = irlist_get_head(&gdata.channels);
-#else /* MULTINET */
+#ifdef MULTINET
   ch = irlist_get_head(&gdata.networks[net].channels);
+#else /* MULTINET */
+  ch = irlist_get_head(&gdata.channels);
 #endif /* MULTINET */
   while(ch)
     {

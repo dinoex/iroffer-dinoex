@@ -838,12 +838,12 @@ void t_remind(transfer * const t) {
    
    updatecontext();
    
-#ifndef MULTINET
-   if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
-#else /* MULTINET */
+#ifdef MULTINET
    backup = gnetwork;
    gnetwork = &(gdata.networks[t->net]);
    if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
+#else /* MULTINET */
+   if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
 #endif /* MULTINET */
      {
        notice(t->nick,"** You have a DCC pending, Set your client to receive the transfer. "

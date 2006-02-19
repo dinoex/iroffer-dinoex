@@ -183,7 +183,10 @@ char *r_config_nick;
 float r_transferminspeed, r_transfermaxspeed;
 unsigned long r_ourip;
 
-#ifndef MULTINET
+#ifdef MULTINET
+gnetwork_t networks[MAX_NETWORKS];
+int networks_online;
+#else /* MULTINET */
 /* server */
 irlist_t servers;
 server_t curserver;
@@ -216,9 +219,6 @@ int ircserver;
 int serverconnectbackoff;
 prefix_t prefixes[MAX_PREFIX];
 char chanmodes[MAX_CHANMODES];
-#else /* MULTINET */
-gnetwork_t networks[MAX_NETWORKS];
-int networks_online;
 #endif /* MULTINET */
 
 irlist_t msglog;

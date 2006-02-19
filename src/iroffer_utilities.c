@@ -1947,10 +1947,10 @@ int isinmemberlist(const char *nick)
               "checking for %s",nick);
     }
   
-#ifndef MULTINET
-  ch = irlist_get_head(&gdata.channels);
-#else /* MULTINET */
+#ifdef MULTINET
   ch = irlist_get_head(&(gnetwork->channels));
+#else /* MULTINET */
+  ch = irlist_get_head(&gdata.channels);
 #endif /* MULTINET */
   while(ch)
     {
@@ -1993,16 +1993,16 @@ void addtomemberlist(channel_t *c, const char *nick)
   if (*nick)
     {
       int pi;
-#ifndef MULTINET
-      for (pi = 0; (pi < MAX_PREFIX && gdata.prefixes[pi].p_symbol); pi++)
-#else /* MULTINET */
+#ifdef MULTINET
       for (pi = 0; (pi < MAX_PREFIX && gnetwork->prefixes[pi].p_symbol); pi++)
+#else /* MULTINET */
+      for (pi = 0; (pi < MAX_PREFIX && gdata.prefixes[pi].p_symbol); pi++)
 #endif /* MULTINET */
         {
-#ifndef MULTINET
-          if (*nick == gdata.prefixes[pi].p_symbol)
-#else /* MULTINET */
+#ifdef MULTINET
           if (*nick == gnetwork->prefixes[pi].p_symbol)
+#else /* MULTINET */
+          if (*nick == gdata.prefixes[pi].p_symbol)
 #endif /* MULTINET */
             {
               for (pi = 0;

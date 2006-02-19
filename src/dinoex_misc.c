@@ -421,10 +421,10 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
       return;
     }
   
-#ifndef MULTINET
-  if (gdata.exiting || (gdata.serverstatus != SERVERSTATUS_CONNECTED))
-#else /* MULTINET */
+#ifdef MULTINET
   if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
+#else /* MULTINET */
+  if (gdata.exiting || (gdata.serverstatus != SERVERSTATUS_CONNECTED))
 #endif /* MULTINET */
     {
       mydelete(msg);
@@ -443,16 +443,16 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
       len = EXCESS_BUCKET_MAX;
     }
   
-#ifndef MULTINET
-  if (irlist_size(&gdata.serverq_channel) < MAXSENDQ)
-#else /* MULTINET */
+#ifdef MULTINET
   if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ)
+#else /* MULTINET */
+  if (irlist_size(&gdata.serverq_channel) < MAXSENDQ)
 #endif /* MULTINET */
     {
-#ifndef MULTINET
-      item = irlist_add(&gdata.serverq_channel, sizeof(channel_announce_t));
-#else /* MULTINET */
+#ifdef MULTINET
       item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
+#else /* MULTINET */
+      item = irlist_add(&gdata.serverq_channel, sizeof(channel_announce_t));
 #endif /* MULTINET */
       item->delay = delay;
       item->chan = mycalloc(strlen(chan)+1);
@@ -473,10 +473,10 @@ void sendannounce(void)
 {
   channel_announce_t *item;
   
-#ifndef MULTINET
-  item = irlist_get_head(&gdata.serverq_channel);
-#else /* MULTINET */
+#ifdef MULTINET
   item = irlist_get_head(&(gnetwork->serverq_channel));
+#else /* MULTINET */
+  item = irlist_get_head(&gdata.serverq_channel);
 #endif /* MULTINET */
   if (!item)
     return;
@@ -487,10 +487,10 @@ void sendannounce(void)
   writeserver(WRITESERVER_SLOW, "%s", item->msg);
   mydelete(item->chan);
   mydelete(item->msg);
-#ifndef MULTINET
-  irlist_delete(&gdata.serverq_channel, item);
-#else /* MULTINET */
+#ifdef MULTINET
   irlist_delete(&(gnetwork->serverq_channel), item);
+#else /* MULTINET */
+  irlist_delete(&gdata.serverq_channel, item);
 #endif /* MULTINET */
 }
 
@@ -503,30 +503,30 @@ void stoplist(const char *nick)
   int stopped = 0;
   
   ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC STOP from %s", nick);
-#ifndef MULTINET
-  item = irlist_get_head(&gdata.xlistqueue);
-#else /* MULTINET */
+#ifdef MULTINET
   item = irlist_get_head(&(gnetwork->xlistqueue));
+#else /* MULTINET */
+  item = irlist_get_head(&gdata.xlistqueue);
 #endif /* MULTINET */
   while (item)
     {
       if (strcasecmp(item,nick) == 0)
         {
            stopped ++;
-#ifndef MULTINET
-           item = irlist_delete(&gdata.xlistqueue, item);
-#else /* MULTINET */
+#ifdef MULTINET
            item = irlist_delete(&(gnetwork->xlistqueue), item);
+#else /* MULTINET */
+           item = irlist_delete(&gdata.xlistqueue, item);
 #endif /* MULTINET */
            continue;
          }
       item = irlist_get_next(item);
     }
   
-#ifndef MULTINET
-  item = irlist_get_head(&gdata.serverq_slow);
-#else /* MULTINET */
+#ifdef MULTINET
   item = irlist_get_head(&(gnetwork->serverq_slow));
+#else /* MULTINET */
+  item = irlist_get_head(&gdata.serverq_slow);
 #endif /* MULTINET */
   while (item)
     {
@@ -546,10 +546,10 @@ void stoplist(const char *nick)
                    if ( (strcmp(copy,"PRIVMSG") == 0) || (strcmp(copy,"NOTICE") == 0) )
                      {
                        stopped ++;
-#ifndef MULTINET
-                       item = irlist_delete(&gdata.serverq_slow, item);
-#else /* MULTINET */
+#ifdef MULTINET
                        item = irlist_delete(&(gnetwork->serverq_slow), item);
+#else /* MULTINET */
+                       item = irlist_delete(&gdata.serverq_slow, item);
 #endif /* MULTINET */
                        continue;
                      }
