@@ -112,6 +112,9 @@ int setupdccchatout(const char *nick)
   chat->lastcontact = gdata.curtime;
   chat->localip   = gdata.ourip;
   chat->localport = listenport;
+#ifdef MULTINET
+  chat->net = gnetworks->net
+#endif /* MULTINET */
   
   privmsg_fast(nick,"\1DCC CHAT CHAT %lu %d\1",gdata.ourip,listenport);
   
@@ -316,6 +319,9 @@ int setupdccchat(const char *nick,
   chat->localport  = ntohs(localaddr.sin_port);
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
+#ifdef MULTINET
+  chat->net = gnetworks->net
+#endif /* MULTINET */
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT received from %s, attempting connection to %lu.%lu.%lu.%lu:%d",
