@@ -49,5 +49,8 @@ void check_duplicateip(transfer *const newtr);
 int noticeresults(const char *nick, const char *match);
 
 char* getpart_eol(const char *line, int howmany);
+#ifdef MULTINET
+int get_network(const char *arg1);
+#endif /* MULTINET */
 
 /* End of File */

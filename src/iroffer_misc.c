@@ -383,13 +383,14 @@ void getconfig_set (const char *line, int rehash)
            outerror(OUTERROR_TYPE_WARN,
                     "ignored network '%s' because we have to many.",
                     var);
+           mydelete(var);
          }
        else
          {
+           mydelete(gdata.networks[gdata.networks_online].name);
            gdata.networks[gdata.networks_online].name = var;
            gdata.networks[gdata.networks_online].net = gdata.networks_online;
          }
-       mydelete(var);
      }
 #endif /* MULTINET */
    else if ( ! strcmp(type,"proxyinfo"))

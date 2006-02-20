@@ -1605,19 +1605,15 @@ static void u_raw(const userinput * const u)
 static void u_rawnet(const userinput * const u)
 {
   gnetwork_t *backup;
-  int net = 0;
+  int net;
   
   updatecontext();
   
-  if (u->arg1)
+  net = get_network(u->arg1);
+  if (net < 0)
     {
-      net = atoi(u->arg1);
-      if ((net < 1) || (net > gdata.networks_online))
-        {
-          u_respond(u,"Try specifying a valid network number");
-          return;
-        }
-      net --;
+      u_respond(u,"Try specifying a valid network number");
+      return;
     }
   
   if (!u->arg2e || !strlen(u->arg2e))
@@ -1965,21 +1961,17 @@ static void u_send(const userinput * const u) {
    int num = 0;
 #ifdef MULTINET
    gnetwork_t *backup;
-   int net = 0;
+   int net;
 #endif /* MULTINET */
    
    updatecontext();
    
 #ifdef MULTINET
-   if (u->arg3)
+   net = get_network(u->arg3);
+   if (net < 0)
      {
-       net = atoi(u->arg3);
-       if ((net < 1) || (net > gdata.networks_online))
-         {
-           u_respond(u,"Try specifying a valid network number");
-           return;
-         }
-       net --;
+       u_respond(u,"Try specifying a valid network number");
+       return;
      }
 #endif /* MULTINET */
 
@@ -2017,21 +2009,17 @@ static void u_queue(const userinput * const u) {
    char *tempstr;
 #ifdef MULTINET
    gnetwork_t *backup;
-   int net = 0;
+   int net;
 #endif /* MULTINET */
    
    updatecontext();
    
 #ifdef MULTINET
-   if (u->arg3)
+   net = get_network(u->arg3);
+   if (net < 0)
      {
-       net = atoi(u->arg3);
-       if ((net < 1) || (net > gdata.networks_online))
-         {
-           u_respond(u,"Try specifying a valid network number");
-           return;
-         }
-       net --;
+       u_respond(u,"Try specifying a valid network number");
+       return;
      }
 #endif /* MULTINET */
 
@@ -2096,21 +2084,17 @@ static void u_psend(const userinput * const u)
   userinput_method_e method;
 #ifdef MULTINET
   gnetwork_t *backup;
-  int net = 0;
+  int net;
 #endif /* MULTINET */
   
   updatecontext();
   
 #ifdef MULTINET
-  if (u->arg3)
+  net = get_network(u->arg3);
+  if (net < 0)
     {
-      net = atoi(u->arg3);
-      if ((net < 1) || (net > gdata.networks_online))
-        {
-          u_respond(u,"Try specifying a valid network number");
-          return;
-        }
-      net --;
+      u_respond(u,"Try specifying a valid network number");
+      return;
     }
 #endif /* MULTINET */
 
@@ -2286,19 +2270,15 @@ static void u_msg(const userinput * const u)
 static void u_msgnet(const userinput * const u)
 {
   gnetwork_t *backup;
-  int net = 0;
+  int net;
   
   updatecontext();
   
-  if (u->arg1)
+  net = get_network(u->arg1);
+  if (net < 0)
     {
-      net = atoi(u->arg1);
-      if ((net < 1) || (net > gdata.networks_online))
-        {
-          u_respond(u,"Try specifying a valid network number");
-          return;
-        }
-      net --;
+      u_respond(u,"Try specifying a valid network number");
+      return;
     }
   
   if (!u->arg2 || !strlen(u->arg2))
@@ -4825,19 +4805,15 @@ static void u_identify(const userinput * const u)
 {
 #ifdef MULTINET
   gnetwork_t *backup;
-  int net = 0;
+  int net;
   
   updatecontext();
   
-  if (u->arg1)
+  net = get_network(u->arg1);
+  if (net < 0)
     {
-      net = atoi(u->arg1);
-      if ((net < 1) || (net > gdata.networks_online))
-        {
-          u_respond(u,"Try specifying a valid network number");
-          return;
-        }
-      net --;
+      u_respond(u,"Try specifying a valid network number");
+      return;
     }
 #endif /* MULTINET */
   
@@ -4977,24 +4953,20 @@ static void u_jump(const userinput * const u)
 {
 #ifdef MULTINET
   gnetwork_t *backup;
-  int net = 0;
+  int net;
 #endif /* MULTINET */
   
   updatecontext();
   
 #ifdef MULTINET
-  if (u->arg2)
+  net = get_network(u->arg2);
+  if (net < 0)
     {
-      net = atoi(u->arg2);
-      if ((net < 1) || (net > gdata.networks_online))
-        {
-          u_respond(u,"Try specifying a valid network number");
-          return;
-        }
-      net --;
+      u_respond(u,"Try specifying a valid network number");
+      return;
     }
-
 #endif /* MULTINET */
+
   if (u->arg1)
     {
       int num;
@@ -5044,21 +5016,17 @@ static void u_servers(const userinput * const u)
   int i;
   server_t *ss;
 #ifdef MULTINET
-  int net = 0;
+  int net;
 #endif /* MULTINET */
   
   updatecontext();
   
 #ifdef MULTINET
-  if (u->arg1)
+  net = get_network(u->arg1);
+  if (net < 0)
     {
-      net = atoi(u->arg1);
-      if ((net < 1) || (net > gdata.networks_online))
-        {
-          u_respond(u,"Try specifying a valid network number");
-          return;
-        }
-      net --;
+      u_respond(u,"Try specifying a valid network number");
+      return;
     }
 #endif /* MULTINET */
   
@@ -5439,21 +5407,17 @@ static void u_chanl(const userinput * const u)
   char *tempstr = mycalloc(maxtextlength);
   channel_t *ch;
 #ifdef MULTINET
-  int net = 0;
+  int net;
 #endif /* MULTINET */
   
   updatecontext();
   
 #ifdef MULTINET
-  if (u->arg1)
+  net = get_network(u->arg1);
+  if (net < 0)
     {
-      net = atoi(u->arg1);
-      if ((net < 1) || (net > gdata.networks_online))
-        {
-          u_respond(u,"Try specifying a valid network number");
-          return;
-        }
-      net --;
+      u_respond(u,"Try specifying a valid network number");
+      return;
     }
 #endif /* MULTINET */
   
