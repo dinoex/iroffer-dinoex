@@ -1498,6 +1498,8 @@ void dumpgdata(void)
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)
     {
+  gdata_print_int(networks[ss].net);
+  gdata_print_string(networks[ss].name);
       
   gdata_irlist_iter_start(networks[ss].server_join_raw, char);
   gdata_iter_as_print_string;

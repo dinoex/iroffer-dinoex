@@ -2136,7 +2136,11 @@ static void parseline(char *line) {
    line[maxtextlength-1] = '\0';
    
    if (gdata.debug > 0)
+#ifdef MULTINET
+      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_CYAN,">IRC>: %s, %s",gnetwork->net,line);
+#else /* MULTINET */
       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_CYAN,">IRC>: %s",line);
+#endif /* MULTINET */
    
    part2 = getpart(line,2);
    if (part2 == NULL)
