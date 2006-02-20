@@ -2112,8 +2112,8 @@ static void u_psend(const userinput * const u)
         }
       net --;
     }
-
 #endif /* MULTINET */
+
   if (!u->arg1 || !strlen(u->arg1))
     {
       u_respond(u,"Try Specifying a Channel");
