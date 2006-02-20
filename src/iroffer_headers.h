@@ -297,6 +297,7 @@ typedef struct
       DCCCHAT_CONNECTED,
     } status;
   int fd;
+  int net;
   ir_boutput_t boutput;
   time_t lastcontact;
   time_t connecttime;

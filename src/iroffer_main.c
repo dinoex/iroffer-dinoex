@@ -1033,7 +1033,7 @@ static void mainloop (void) {
             }
         }
 #ifdef MULTINET
-      gnetwork = 0x100006;
+      gnetwork = 0x101006;
 #endif /* MULTINET */
       
       updatecontext();
@@ -1097,6 +1097,9 @@ static void mainloop (void) {
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                               "DCC Chat Lost: %s",
                               (length<0) ? strerror(errno) : "Closed");
+#ifdef MULTINET
+                      gnetwork = &(gdata.networks[chat->net]);
+#endif /* MULTINET */
                       notice(chat->nick, "DCC Chat Lost: %s", (length<0) ? strerror(errno) : "Closed");
                       shutdowndccchat(chat,0);
                       /* deleted below */
@@ -1135,6 +1138,9 @@ static void mainloop (void) {
                 }
             }
         }
+#ifdef MULTINET
+      gnetwork = 0x100006;
+#endif /* MULTINET */
       
       updatecontext();
       
