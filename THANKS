@@ -48,6 +48,7 @@ TheDeath
 	reporting send bug
 	german translation of config file
 	http://wiki.deutsche-fansubs.de/index.php?title=Iroffer_Tutorial
+	Debugging of multi irc network support
 
 [GFE]Lunix
 	alias xdcc list group <group>
