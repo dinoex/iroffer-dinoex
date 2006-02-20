@@ -387,6 +387,7 @@ void getconfig_set (const char *line, int rehash)
        else
          {
            gdata.networks[gdata.networks_online].name = var;
+           gdata.networks[gdata.networks_online].net = gdata.networks_online;
          }
        mydelete(var);
      }
@@ -1460,16 +1461,21 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
       return;
     }
   
-  if ((type == WRITESERVER_NOW) &&
 #ifdef MULTINET
+  if ((type == WRITESERVER_NOW) &&
       (gnetwork->serverstatus == SERVERSTATUS_CONNECTED))
 #else /* MULTINET */
+  if ((type == WRITESERVER_NOW) &&
       (gdata.serverstatus == SERVERSTATUS_CONNECTED))
 #endif /* MULTINET */
     {
       if (gdata.debug > 0)
         {
+#ifdef MULTINET
+          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<SND<: %d: %s",gnetwork->net,msg);
+#else /* MULTINET */
           ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<SND<: %s",msg);
+#endif /* MULTINET */
         }
       msg[len] = '\n';
       len++;
