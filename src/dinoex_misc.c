@@ -1057,8 +1057,6 @@ int get_network(const char *arg1)
     {
       if (gdata.networks[net].name == NULL)
         continue;
- ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
-    "compare %s which %s min", gdata.networks[net].name, arg1 );
       if (strcasecmp(gdata.networks[net].name,arg1) == 0)
         return net;
     }
