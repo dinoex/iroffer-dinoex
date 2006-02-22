@@ -960,6 +960,9 @@ static void mainloop (void) {
       ul = irlist_get_head(&gdata.uploads);
       while(ul)
         {
+#ifdef MULTINET
+          gnetwork = &(gdata.networks[ul->net]);
+#endif /* MULTINET */
           /*----- see if uploads are sending anything to us ----- */
           if (ul->ul_status == UPLOAD_STATUS_GETTING && FD_ISSET(ul->clientsocket, &gdata.readset))
             {
@@ -972,9 +975,6 @@ static void mainloop (void) {
               int connect_error;
               int connect_error_len = sizeof(connect_error);
               
-#ifdef MULTINET
-              gnetwork = &(gdata.networks[ul->net]);
-#endif /* MULTINET */
               callval_i = getsockopt(ul->clientsocket,
                                      SOL_SOCKET, SO_ERROR,
                                      &connect_error, &connect_error_len);
