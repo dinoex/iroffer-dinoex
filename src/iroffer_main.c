@@ -2466,7 +2466,7 @@ static void parseline(char *line) {
               if (!strcmp(part3a,ch->name))
                 {
                   ch->flags |= CHAN_ONCHAN;
-                  ch->lastjoin = gdata.curtime + 180;
+                  ch->lastjoin = gdata.curtime + gdata.waitafterjoin;
                   break;
                 }
               ch = irlist_get_next(ch);

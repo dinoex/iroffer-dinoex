@@ -155,6 +155,7 @@ int ignoreduplicateip;
 int hidelockedpacks;
 int disablexdccinfo;
 int atfind;
+int waitafterjoin;
 char *autoaddann;
 char *admin_job_file;
 char *nickserv_pass;

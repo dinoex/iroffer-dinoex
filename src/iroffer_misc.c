@@ -151,6 +151,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"autoignore_threshold", &gdata.autoignore_threshold, &gdata.autoignore_threshold, 10, 600, 1 },
   {"start_of_month",  &gdata.start_of_month,  &gdata.start_of_month,  1, 31, 1 },
   {"atfind",          &gdata.atfind,          &gdata.atfind,          0, 10, 1 },
+  {"waitafterjoin",   &gdata.waitafterjoin,   &gdata.waitafterjoin,   0, 2000, 1 },
 };
 
 typedef struct
@@ -2973,6 +2974,7 @@ void reinit_config_vars(void)
   gdata.hidelockedpacks = 0;
   gdata.disablexdccinfo = 0;
   gdata.atfind = 0;
+  gdata.waitafterjoin = 200;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
