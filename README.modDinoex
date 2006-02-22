@@ -7,6 +7,9 @@ With Version mod 1.26:
 66) network
    support multiple irc networks with common queue and limits.
 
+67) lastjoin
+   do not announce plist directly after joining a channel
+
 With Version mod 1.25:
 ----------------------
 

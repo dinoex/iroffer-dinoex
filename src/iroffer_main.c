@@ -1682,6 +1682,7 @@ static void mainloop (void) {
             while(ch)
               {
                 if ((ch->flags & CHAN_ONCHAN) &&
+                    (ch->lastjoin < gdata.curtime) &&
                     ch->plisttime &&
                     (((gdata.curtime / 60) % ch->plisttime) == ch->plistoffset))
                   {
@@ -2465,6 +2466,7 @@ static void parseline(char *line) {
               if (!strcmp(part3a,ch->name))
                 {
                   ch->flags |= CHAN_ONCHAN;
+                  ch->lastjoin = gdata.curtime + 180;
                   break;
                 }
               ch = irlist_get_next(ch);

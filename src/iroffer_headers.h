@@ -395,6 +395,7 @@ typedef struct
   short plisttime;
   short plistoffset;
   short delay;
+  long lastjoin;
   irlist_t members;
 } channel_t;
 
