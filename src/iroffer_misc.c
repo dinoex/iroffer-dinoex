@@ -3064,7 +3064,7 @@ void initvars(void)
       
       gdata.networks[ss].serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
     }
-  gnetwork = 0x100001;
+  gnetwork = NULL;
 #else /* MULTINET */
   initprefixes();
   initchanmodes();
@@ -3351,7 +3351,7 @@ void startupiroffer(void) {
        gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
        switchserver(-1);
      }
-   gnetwork = 0x100002;
+   gnetwork = NULL;
 #else /* MULTINET */
    gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
    switchserver(-1);

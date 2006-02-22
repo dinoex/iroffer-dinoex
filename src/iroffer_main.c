@@ -225,7 +225,7 @@ static void mainloop (void) {
    
    updatecontext();
 #ifdef MULTINET
-   gnetwork = 0x100003;
+   gnetwork = NULL;
 #endif /* MULTINET */
    
    if (first_loop)
@@ -952,7 +952,7 @@ static void mainloop (void) {
         }
 #ifdef MULTINET
         } /* networks */
-      gnetwork = 0x100005;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       updatecontext();
@@ -1033,7 +1033,7 @@ static void mainloop (void) {
             }
         }
 #ifdef MULTINET
-      gnetwork = 0x101006;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       updatecontext();
@@ -1139,7 +1139,7 @@ static void mainloop (void) {
             }
         }
 #ifdef MULTINET
-      gnetwork = 0x100006;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       updatecontext();
@@ -1261,7 +1261,7 @@ static void mainloop (void) {
             }
          }
 #ifdef MULTINET
-      gnetwork = 0x100007;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       /*----- time for a delayed shutdown? ----- */
@@ -1301,7 +1301,7 @@ static void mainloop (void) {
          }
 #ifdef MULTINET
         }
-      gnetwork = 0x100008;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       /*----- see if its time to change maxb */
@@ -1418,7 +1418,7 @@ static void mainloop (void) {
                         }
                       
 #ifdef MULTINET
-                      gnetwork = 0x100009;
+                      gnetwork = NULL;
 #endif /* MULTINET */
                       mydelete(tempstr);
                       mydelete(tempstr2);
@@ -1493,7 +1493,7 @@ static void mainloop (void) {
          
          }
 #ifdef MULTINET
-      gnetwork = 0x100010;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       updatecontext();
@@ -1590,7 +1590,7 @@ static void mainloop (void) {
          }
 #ifdef MULTINET
          } /* networks */
-      gnetwork = 0x100011;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       /*----- 4 seconds ----- */
@@ -1768,7 +1768,7 @@ static void mainloop (void) {
          }
 #ifdef MULTINET
          } /* networks */
-      gnetwork = 0x100012;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       updatecontext();
@@ -1833,7 +1833,7 @@ static void mainloop (void) {
          }
 #ifdef MULTINET
          } /* networks */
-      gnetwork = 0x100013;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       updatecontext();
@@ -1902,7 +1902,7 @@ static void mainloop (void) {
            }
 #ifdef MULTINET
          } /* networks */
-         gnetwork = 0x100014;
+         gnetwork = NULL;
 #endif /* MULTINET */
          
          last20sec = gdata.curtime;
@@ -1920,7 +1920,7 @@ static void mainloop (void) {
            }
 #ifdef MULTINET
          } /* networks */
-         gnetwork = 0x100014;
+         gnetwork = NULL;
 #endif /* MULTINET */
          
          updatecontext();
@@ -2098,7 +2098,7 @@ static void mainloop (void) {
         }
 #ifdef MULTINET
       } /* networks */
-      gnetwork = 0x100015;
+      gnetwork = NULL;
 #endif /* MULTINET */
       
       if (gdata.needsrehash) {
