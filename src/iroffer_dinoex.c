@@ -317,9 +317,13 @@ void update_natip (const char *var)
   struct hostent *hp;
   struct in_addr old;
   struct in_addr in;
+  long oldip;
   char *oldtxt;
 
   if (var == NULL)
+    return;
+
+  if (gdata.r_ourip != 0)
     return;
 
   bzero((char *)&in, sizeof(in));
@@ -343,12 +347,16 @@ void update_natip (const char *var)
   gdata.usenatip = 1;
   if (old.s_addr == in.s_addr)
     return;
- 
+
+  oldip = gdata.ourip;
   gdata.ourip = ntohl(in.s_addr);
-  gdata.r_ourip = gdata.ourip;
-  oldtxt = strdup(inet_ntoa(old));
-  mylog(CALLTYPE_NORMAL,"DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
-  free(oldtxt);
+  if (oldip != 0 )
+    {
+      oldtxt = strdup(inet_ntoa(old));
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+              "DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
+      free(oldtxt);
+    }
  
   if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ip=0x%8.8lX\n",gdata.ourip);
 
