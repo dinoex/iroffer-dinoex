@@ -3701,6 +3701,7 @@ static void u_rehash(const userinput * const u) {
    
    gdata.r_transferminspeed = gdata.transferminspeed;
    gdata.r_transfermaxspeed = gdata.transfermaxspeed;
+   gdata.r_ourip = gdata.ourip;
    
    if (gdata.logfd != FD_UNUSED)
      {
