@@ -114,6 +114,7 @@ int overallmaxspeeddaytimestart, overallmaxspeeddaytimeend;
 char overallmaxspeeddaydays;
 int maxtransfersperperson, maxqueueditemsperperson;
 irlist_t downloadhost;
+irlist_t nodownloadhost;
 char *adminpass;
 irlist_t adminhost;
 char *filedir;

@@ -1461,6 +1461,7 @@ void dumpgdata(void)
   /* geoipexcludenick */
   
   /* downloadhost */
+  /* nodownloadhost */
   
   gdata_print_string(adminpass);
   

@@ -8,7 +8,10 @@ With Version mod 1.26:
    support multiple irc networks with common queue and limits.
 
 67) waitafterjoin
-   do not announce plist directly after joining a channel
+   do not announce plist directly after joining a channel.
+
+68) nodownloadhost (inspired by Thunder)
+   specify who can not download from this bot.
 
 With Version mod 1.25:
 ----------------------

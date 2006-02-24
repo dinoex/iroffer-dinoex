@@ -805,6 +805,19 @@ void getconfig_set (const char *line, int rehash)
        mydelete(varr);
        mydelete(var);
      }
+   else if ( ! strcmp(type,"nodownloadhost"))
+     {
+       regex_t *uh;
+       char *varr;
+       varr = hostmasktoregex(caps(var));
+       uh = irlist_add(&gdata.nodownloadhost, sizeof(regex_t));
+       if (regcomp(uh,varr,REG_ICASE|REG_NOSUB))
+         {
+           irlist_delete(&gdata.nodownloadhost, uh);
+         }
+       mydelete(varr);
+       mydelete(var);
+     }
    else if ( ! strcmp(type,"unlimitedhost"))
      {
        regex_t *uh;
@@ -2894,6 +2907,12 @@ void reinit_config_vars(void)
   for (rh = irlist_get_head(&gdata.downloadhost);
        rh;
        rh = irlist_delete(&gdata.downloadhost, rh))
+    {
+      regfree(rh);
+    }
+  for (rh = irlist_get_head(&gdata.nodownloadhost);
+       rh;
+       rh = irlist_delete(&gdata.nodownloadhost, rh))
     {
       regfree(rh);
     }

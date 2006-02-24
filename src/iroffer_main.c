@@ -3671,6 +3671,12 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       notice(nick,"** XDCC SEND denied, I don't send transfers to %s", hostmask);
       goto done;
     }
+  else if (!man && (verifyhost(&gdata.nodownloadhost, hostmask)) )
+    {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (host denied): ");
+      notice(nick,"** XDCC SEND denied, I don't send transfers to %s", hostmask);
+      goto done;
+    }
   else if (!man && gdata.restrictsend && !isinmemberlist(nick))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (restricted): ");
@@ -3847,6 +3853,12 @@ void sendxdccinfo(const char* nick,
     }
   
   if (!verifyhost(&gdata.downloadhost, hostmask))
+    {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (host denied): ");
+      notice(nick,"** XDCC INFO denied, I don't send transfers to %s", hostmask);
+      goto done;
+    }
+  else if (verifyhost(&gdata.nodownloadhost, hostmask))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (host denied): ");
       notice(nick,"** XDCC INFO denied, I don't send transfers to %s", hostmask);
