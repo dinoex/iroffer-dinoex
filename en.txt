@@ -1558,3 +1558,4 @@
 1568 "waitafterjoin"
 1569 "  : net=%d"
 1570 "Send XDCC CANCEL to abort the transfer. "
+1571 "\2**\2 To stop this listing, type /MSG %s XDCC STOP \2**\2"

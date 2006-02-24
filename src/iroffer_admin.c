@@ -762,6 +762,8 @@ static void u_xdl_head(const userinput * const u) {
         }
       break;
     default:
+      u_respond(u,"\2**\2 To stop this listing, type /MSG %s XDCC STOP \2**\2",
+                  (gdata.user_nick ? gdata.user_nick : "??"));
       break;
     }
    
