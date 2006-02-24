@@ -1557,3 +1557,4 @@
 1567 "<SND<: %d: %s"
 1568 "waitafterjoin"
 1569 "  : net=%d"
+1570 "Send XDCC CANCEL to abort the transfer. "

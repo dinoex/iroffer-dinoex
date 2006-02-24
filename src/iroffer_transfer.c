@@ -847,6 +847,7 @@ void t_remind(transfer * const t) {
 #endif /* MULTINET */
      {
        notice(t->nick,"** You have a DCC pending, Set your client to receive the transfer. "
+              "Send XDCC CANCEL to abort the transfer. "
 	      "(%li seconds remaining until timeout)",(long)(t->lastcontact+180-gdata.curtime));
      }
    
