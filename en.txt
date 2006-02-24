@@ -1556,3 +1556,4 @@
 1566 ">IRC>: %d, %s"
 1567 "<SND<: %d: %s"
 1568 "waitafterjoin"
+1569 "  : net=%d"
