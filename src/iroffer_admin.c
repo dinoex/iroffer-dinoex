@@ -4976,7 +4976,7 @@ static void u_jump(const userinput * const u)
       num = atoi(u->arg1);
       
 #ifdef MULTINET
-      if ((num < 1) || (num > irlist_size(&gdata.networks[net].servers)))
+      if ((num < 0) || (num > irlist_size(&gdata.networks[net].servers)))
 #else /* MULTINET */
       if ((num < 1) || (num > irlist_size(&gdata.servers)))
 #endif /* MULTINET */
