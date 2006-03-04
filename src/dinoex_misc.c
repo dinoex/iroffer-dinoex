@@ -323,6 +323,7 @@ void update_natip (const char *var)
   if (var == NULL)
     return;
 
+  gdata.usenatip = 1;
   if (gdata.r_ourip != 0)
     return;
 
@@ -344,7 +345,6 @@ void update_natip (const char *var)
     }
  
   old.s_addr = htonl(gdata.ourip);
-  gdata.usenatip = 1;
   if (old.s_addr == in.s_addr)
     return;
 
