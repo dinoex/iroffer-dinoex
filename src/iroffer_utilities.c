@@ -1827,7 +1827,7 @@ void dumpgdata(void)
           "  : xpack=0x%.8lX queuedtime=%ld",
           (unsigned long)iter->xpack,
           (long)iter->queuedtime);
-#ifndef MULTINET
+#ifdef MULTINET
   ioutput(gdata_common,"  : net=%d", iter->net );
 #endif /* not MULTINET */
   gdata_irlist_iter_end;
@@ -1838,7 +1838,7 @@ void dumpgdata(void)
           iter->listensocket,
           iter->clientsocket,
           iter->id);
-#ifndef MULTINET
+#ifdef MULTINET
   ioutput(gdata_common,"  : net=%d", iter->net );
 #endif /* not MULTINET */
   ioutput(gdata_common,
@@ -1902,7 +1902,7 @@ void dumpgdata(void)
           iter->remoteport,
           iter->localip,
           iter->remoteip);
-#ifndef MULTINET
+#ifdef MULTINET
   ioutput(gdata_common,"  : net=%d", iter->net );
 #endif /* not MULTINET */
   gdata_iter_print_string(nick);
