@@ -3749,6 +3749,7 @@ static void u_rehash(const userinput * const u) {
    /* keep dynamic IP */
    if (gdata.getipfromserver)
      gdata.ourip = gdata.r_ourip;
+   gdata.r_ourip = 0;
    
    needtojump=0;
    if (gdata.local_vhost != gdata.r_local_vhost)
