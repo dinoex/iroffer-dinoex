@@ -1052,6 +1052,9 @@ static void mainloop (void) {
               callval_i = getsockopt(chat->fd,
                                      SOL_SOCKET, SO_ERROR,
                                      &connect_error, &connect_error_len);
+#ifdef MULTINET
+              gnetwork = &(gdata.networks[chat->net]);
+#endif /* MULTINET */
               
               if (callval_i < 0)
                 {
@@ -1097,9 +1100,6 @@ static void mainloop (void) {
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                               "DCC Chat Lost: %s",
                               (length<0) ? strerror(errno) : "Closed");
-#ifdef MULTINET
-                      gnetwork = &(gdata.networks[chat->net]);
-#endif /* MULTINET */
                       notice(chat->nick, "DCC Chat Lost: %s", (length<0) ? strerror(errno) : "Closed");
                       shutdowndccchat(chat,0);
                       /* deleted below */
