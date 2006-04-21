@@ -4,6 +4,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.27:
 ----------------------
 
+69) iroffer parts from unwanted channels
+  this makes it easier to get unnbanned in euirc.net
+
+70) noautorejoin
+  do not rejoin the cnahell when bot is kicked.
+
 bugfix: crashes with mutitinet chats
 versions affected: 1.26 Multinet
 
