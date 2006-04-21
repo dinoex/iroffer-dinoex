@@ -2377,6 +2377,7 @@ static void parseline(char *line) {
          {
            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                    "Got name data for %s which is not a known channel!",part5);
+           writeserver(WRITESERVER_NORMAL, "PART %s", part5);
          }
        else
 	 {
