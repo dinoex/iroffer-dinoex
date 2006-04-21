@@ -4930,6 +4930,7 @@ static void u_hop(const userinput * const u)
                writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
                clearmemberlist(ch);
                ch->flags &= ~CHAN_ONCHAN;
+               ch->flags &= ~CHAN_KICKED;
                joinchannel(ch);
              }
            ch = irlist_get_next(ch);
@@ -4946,6 +4947,7 @@ static void u_hop(const userinput * const u)
            writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
            clearmemberlist(ch);
            ch->flags &= ~CHAN_ONCHAN;
+           ch->flags &= ~CHAN_KICKED;
            joinchannel(ch);
          }
        ch = irlist_get_next(ch);

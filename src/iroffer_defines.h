@@ -141,6 +141,7 @@
 #define CHAN_ONCHAN     1
 #define CHAN_MINIMAL    2
 #define CHAN_SUMMARY    4
+#define CHAN_KICKED     0x40
 
 /* buffer output flags */
 #define BOUTPUT_NO_FLUSH       1

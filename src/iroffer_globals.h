@@ -157,6 +157,7 @@ int hidelockedpacks;
 int disablexdccinfo;
 int atfind;
 int waitafterjoin;
+int noautorejoin;
 char *autoaddann;
 char *admin_job_file;
 char *nickserv_pass;

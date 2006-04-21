@@ -125,6 +125,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"ignoreduplicateip",    &gdata.ignoreduplicateip,    &gdata.ignoreduplicateip },
   {"hidelockedpacks",      &gdata.hidelockedpacks,      &gdata.hidelockedpacks },
   {"disablexdccinfo",      &gdata.disablexdccinfo,      &gdata.disablexdccinfo },
+  {"noautorejoin",         &gdata.noautorejoin,         &gdata.noautorejoin },
 };
 
 typedef struct
@@ -2366,6 +2367,8 @@ void joinchannel(channel_t *c)
   
   if (!c) return;
   
+  if (c->flags & CHAN_KICKED) return;
+  
   if (c->key)
     {
       writeserver(WRITESERVER_NORMAL, "JOIN %s %s", c->name, c->key);
@@ -2994,6 +2997,7 @@ void reinit_config_vars(void)
   gdata.disablexdccinfo = 0;
   gdata.atfind = 0;
   gdata.waitafterjoin = 200;
+  gdata.noautorejoin = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;

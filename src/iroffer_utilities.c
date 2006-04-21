@@ -1454,6 +1454,7 @@ void dumpgdata(void)
   gdata_print_int(disablexdccinfo);
   gdata_print_int(atfind);
   gdata_print_int(waitafterjoin);
+  gdata_print_int(noautorejoin);
   gdata_print_string(autoaddann);
   gdata_print_string(admin_job_file);
   /* unlimitedhost */

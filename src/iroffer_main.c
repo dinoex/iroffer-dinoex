@@ -2680,9 +2680,19 @@ static void parseline(char *line) {
                if(!strcmp(caps(part4),gdata.caps_nick))
                  {
                    /* we were kicked */
-                   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Kicked, Rejoining: %s",line);
-                   joinchannel(ch);
-                   ch->flags &= ~CHAN_ONCHAN;
+                   if ( gdata.noautorejoin )
+                     {
+                       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Kicked: %s",line);
+                       ch->flags |= CHAN_KICKED;
+                       clearmemberlist(ch);
+                       reverify_restrictsend();
+                     }
+                   else
+                     {
+                       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Kicked, Rejoining: %s",line);
+                       joinchannel(ch);
+                       ch->flags &= ~CHAN_ONCHAN;
+                     }
                  }
                else
                  {
