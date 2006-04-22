@@ -1572,3 +1572,8 @@
 1582 "noautorejoin"
 1583 "auto_crc_check"
 1584 "  : crc32=%.8lX"
+1585 "CRC"
+1586 "Check CRC of Pack n"
+1587 "Validating CRC for Pack #%i:"
+1588 "nocrc32"
+1589 "Ignoring Bad XDCC CRC32 Tag (len = %d)"

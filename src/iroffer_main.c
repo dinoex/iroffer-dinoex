@@ -2008,7 +2008,7 @@ static void mainloop (void) {
                   gdata.md5build.file_fd = FD_UNUSED;
                   if (!gdata.nocrc32 && gdata.auto_crc_check)
                     {
-                      const char *crcmsg = validate_crc32(gdata.md5build.xpack);
+                      const char *crcmsg = validate_crc32(gdata.md5build.xpack, 2);
                       if (crcmsg != NULL)
                         {
                            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,

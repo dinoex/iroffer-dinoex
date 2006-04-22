@@ -1012,7 +1012,7 @@ int noticeresults(const char *nick, const char *match)
 
 static const char *badcrc = "badcrc";
 
-const char *validate_crc32(xdcc *xd)
+const char *validate_crc32(xdcc *xd, int quiet)
 {
    char *newcrc;
    char *line;
@@ -1037,13 +1037,19 @@ const char *validate_crc32(xdcc *xd)
       *w = 0;
 
    caps(line);
-   if (strstr(line, newcrc) != NULL)
-     x = "CRC32 verified OK";
+   if (strstr(line, newcrc) != NULL) {
+     if (quiet)
+       x = NULL;
+     else
+       x = "CRC32 verified OK";
+   }
    else {
      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s\n", newcrc, line);
      x = "CRC32 failed";
-     xd->lock = mycalloc(strlen(badcrc)+1);
-     strcpy(xd->lock,badcrc);
+     if (quiet == 2) {
+       xd->lock = mycalloc(strlen(badcrc)+1);
+       strcpy(xd->lock,badcrc);
+     }
    }
    mydelete(line)
    mydelete(newcrc)

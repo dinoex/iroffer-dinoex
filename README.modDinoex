@@ -17,6 +17,11 @@ With Version mod 1.27:
 72) nocrc32
   disable crc32 calculation.
 
+73) CRC
+
+   new admin command:
+   CRC <n>     Test and Report CRC32
+
 bugfix: crashes with mutitinet chats (reported by TheDeath)
 versions affected: 1.26 Multinet
 

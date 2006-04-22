@@ -118,6 +118,7 @@ static void u_chanl(const userinput * const u);
 static void u_identify(const userinput * const u);
 static void u_announce(const userinput * const u);
 static void u_addann(const userinput * const u);
+static void u_crc(const userinput * const u);
 
 
 typedef struct
@@ -193,6 +194,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_regroup,    "REGROUP","<g> <new>","Change all packs of group <g> to <new>"},
 {3,method_allow_all,u_announce, "ANNOUNCE","n <msg>","ANNOUNCE <msg> for pack n in all joined channels"},
 {3,method_allow_all,u_addann,   "ADDANN","<filename>","Add and Announce New Pack"},
+{3,method_allow_all,u_crc,      "CRC","n","Check CRC of Pack n"},
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
 #ifdef MULTINET
@@ -2239,6 +2241,38 @@ static void u_addann (const userinput * const u) {
     mydelete(ui);
     mydelete(tempstr);
     }
+}
+
+static void u_crc(const userinput * const u) {
+  int num = 0;
+  xdcc *xd;
+  const char *crcmsg;
+  
+  updatecontext ();
+  
+  if (u->arg1) {
+    num = atoi (u->arg1);
+    if (num > irlist_size(&gdata.xdccs) || num < 1) {
+      u_respond (u, "Try Specifying a Valid Pack Number");
+      return;
+      }
+  
+    xd = irlist_get_nth(&gdata.xdccs, num-1);
+    u_respond(u,"Validating CRC for Pack #%i:",num);
+    crcmsg = validate_crc32(xd, 0);
+    if (crcmsg != NULL)
+      u_respond(u,"File '%s' %s.", xd->file, crcmsg);
+  }
+  else {
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       crcmsg = validate_crc32(xd, 1);
+       if (crcmsg != NULL)
+         u_respond(u,"File '%s' %s.", xd->file, crcmsg);
+       xd = irlist_get_next(xd);
+     }
+  }
 }
 
 static void u_msg(const userinput * const u)
