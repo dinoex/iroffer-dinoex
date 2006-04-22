@@ -1018,9 +1018,6 @@ const char *validate_crc32(xdcc *xd)
    char *line;
    const char *x;
    char *w;
-   char *r;
-   char ch;
-   size_t l;
   
    newcrc = mycalloc(10);
    snprintf(newcrc,10,"%.8lX", xd->crc32);
@@ -1039,51 +1036,11 @@ const char *validate_crc32(xdcc *xd)
    if (w != NULL) 
       *w = 0;
 
-   l = strlen(line);
-   if ( l < 8 )
-      return NULL;
-
-   r = NULL;
-   w = line + l - 1;
-   ch = *w;
-   switch (ch) {
-   case '}':
-      r = strrchr(line, '{');
-      break;
-   case ')':
-      r = strrchr(line, '(');
-      break;
-   case ']':
-      r = strrchr(line, '[');
-      break;
-   }
-   /* get last 8 chars */
-   if (r != NULL) {
-      r += strlen(r) - 9;
-      r[8] = 0;
-   }
-
-   /* CRC just at the end */
-   if (r == NULL) {
-     ch = toupper(ch);
-     while (r == NULL) {
-       if ( ch < '0' )
-         return NULL;
-       if ( ch <= '9' )
-         break;
-       if ( ch < 'A' )
-         return NULL;
-       if ( ch <= 'F' )
-         break;
-       return NULL;
-     }
-     r = line + l - 8;
-   }
-
-   if (strcasecmp(newcrc, r) == 0)
+   caps(line);
+   if (strstr(line, newcrc) != NULL)
      x = "CRC32 verified OK";
    else {
-     ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s\n", newcrc, r );
+     ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s\n", newcrc, line);
      x = "CRC32 failed";
      xd->lock = mycalloc(strlen(badcrc)+1);
      strcpy(xd->lock,badcrc);
@@ -1179,9 +1136,10 @@ void crc32_update(char *buf, unsigned long len)
   gdata.crc32build.crc_total = crc_total;
 }
 
-void crc32_final(unsigned long *crc_final)
+void crc32_final(xdcc *xd)
 {
-  *crc_final = ~gdata.crc32build.crc;
+  xd->crc32 = ~gdata.crc32build.crc;
+  xd->has_crc32 = 1;
 }
 
 /* End of File */

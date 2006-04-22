@@ -57,6 +57,6 @@ int get_network(const char *arg1);
 
 void crc32_init(void);
 void crc32_update(char *buf, unsigned long len);
-void crc32_final(unsigned long *crc_final);
+void crc32_final(xdcc *xd);
 
 /* End of File */

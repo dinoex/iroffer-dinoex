@@ -156,11 +156,12 @@ typedef struct {
    ino_t st_ino;
    time_t mtime;
    int has_md5sum;
+   int has_crc32;
+   unsigned long crc32;
    MD5Digest md5sum;
    int file_fd;
    int file_fd_count;
    off_t file_fd_location;
-   unsigned long crc32;
 #ifdef HAVE_MMAP
    irlist_t mmaps;
 #endif

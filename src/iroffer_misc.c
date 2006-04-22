@@ -127,6 +127,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"disablexdccinfo",      &gdata.disablexdccinfo,      &gdata.disablexdccinfo },
   {"noautorejoin",         &gdata.noautorejoin,         &gdata.noautorejoin },
   {"auto_crc_check",       &gdata.auto_crc_check,       &gdata.auto_crc_check },
+  {"nocrc32",              &gdata.nocrc32,              &gdata.nocrc32 },
 };
 
 typedef struct
@@ -3000,6 +3001,7 @@ void reinit_config_vars(void)
   gdata.waitafterjoin = 200;
   gdata.noautorejoin = 0;
   gdata.auto_crc_check = 0;
+  gdata.nocrc32 = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
@@ -3757,7 +3759,7 @@ int look_for_file_changes(xdcc *xpack)
           gdata.md5build.xpack = NULL;
         }
       xpack->has_md5sum = 0;
-      xpack->crc32 = 0;
+      xpack->has_crc32 = 0;
       memset(xpack->md5sum,0,sizeof(MD5Digest));
       
       assert(xpack->file_fd == FD_UNUSED);

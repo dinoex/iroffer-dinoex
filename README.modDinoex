@@ -14,6 +14,9 @@ With Version mod 1.27:
   compute crc32 for new files and  lock them when crc does not match
   pattern in filename.
 
+72) nocrc32
+  disable crc32 calculation.
+
 bugfix: crashes with mutitinet chats (reported by TheDeath)
 versions affected: 1.26 Multinet
 

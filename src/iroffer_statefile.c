@@ -80,6 +80,7 @@ typedef enum
   STATEFILE_TAG_XDCCS_DLIMIT_MAX,
   STATEFILE_TAG_XDCCS_DLIMIT_USED,
   STATEFILE_TAG_XDCCS_DLIMIT_DESC,
+  STATEFILE_TAG_XDCCS_CRC32,
   
   STATEFILE_TAG_TLIMIT_DAILY_USED    = 13 << 8,
   STATEFILE_TAG_TLIMIT_DAILY_ENDS,
@@ -495,6 +496,10 @@ void write_statefile(void)
           {
             length += ceiling(sizeof(statefile_item_md5sum_info_t), 4);
           }
+        if (xd->has_crc32)
+          {
+            length += sizeof(statefile_item_generic_int_t);
+          }
         if (xd->group != NULL)
           {
             length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->group) + 1, 4);
@@ -600,7 +605,17 @@ void write_statefile(void)
             memcpy(md5sum_info->md5sum, xd->md5sum, sizeof(MD5Digest));
             next = (unsigned char*)(&md5sum_info[1]);
           }
-
+         
+        if (xd->has_crc32)
+          {
+            /* crc32 */
+            g_int = (statefile_item_generic_int_t*)next;
+            g_int->hdr.tag = htonl(STATEFILE_TAG_XDCCS_CRC32);
+            g_int->hdr.length = htonl(sizeof(*g_int));
+            g_int->g_int = htonl(xd->crc32);
+            next = (unsigned char*)(&g_int[1]);
+          }
+        
         if (xd->group != NULL)
           {
             /* group */
@@ -1461,6 +1476,20 @@ void read_statefile(void)
                     else
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC md5sum Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_CRC32:
+                    if (ihdr->length == sizeof(statefile_item_generic_int_t))
+                      {
+                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
+                        xd->crc32 = ntohl(g_int->g_int);
+                        xd->has_crc32 = 1;
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC CRC32 Tag (len = %d)",
                                  ihdr->length);
                       }
                     break;

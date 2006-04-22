@@ -159,6 +159,7 @@ int atfind;
 int waitafterjoin;
 int noautorejoin;
 int auto_crc_check;
+int nocrc32;
 char *autoaddann;
 char *admin_job_file;
 char *nickserv_pass;
