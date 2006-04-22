@@ -160,6 +160,7 @@ typedef struct {
    int file_fd;
    int file_fd_count;
    off_t file_fd_location;
+   unsigned long crc32;
 #ifdef HAVE_MMAP
    irlist_t mmaps;
 #endif

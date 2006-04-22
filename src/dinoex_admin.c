@@ -27,6 +27,8 @@
 #include <GeoIP.h>
 #endif /* USE_GEOIP */
 
+extern const unsigned long crctable[256];
+
 int verifyshell(irlist_t *list, const char *file)
 {
   char *pattern;
@@ -1008,6 +1010,89 @@ int noticeresults(const char *nick, const char *match)
   return k;
 }
 
+static const char *badcrc = "badcrc";
+
+const char *validate_crc32(xdcc *xd)
+{
+   char *newcrc;
+   char *line;
+   const char *x;
+   char *w;
+   char *r;
+   char ch;
+   size_t l;
+  
+   newcrc = mycalloc(10);
+   snprintf(newcrc,10,"%.8lX", xd->crc32);
+   line = mycalloc(strlen(xd->file)+1);
+
+   /* ignore path */
+   x = strrchr(xd->file, '/');
+   if (x != NULL) 
+      x ++; 
+   else 
+      x = xd->file;
+
+   strcpy(line, x);
+   /* ignore extension */
+   w = strrchr(line, '.');
+   if (w != NULL) 
+      *w = 0;
+
+   l = strlen(line);
+   if ( l < 8 )
+      return NULL;
+
+   r = NULL;
+   w = line + l - 1;
+   ch = *w;
+   switch (ch) {
+   case '}':
+      r = strrchr(line, '{');
+      break;
+   case ')':
+      r = strrchr(line, '(');
+      break;
+   case ']':
+      r = strrchr(line, '[');
+      break;
+   }
+   /* get last 8 chars */
+   if (r != NULL) {
+      r += strlen(r) - 9;
+      r[8] = 0;
+   }
+
+   /* CRC just at the end */
+   if (r == NULL) {
+     ch = toupper(ch);
+     while (r == NULL) {
+       if ( ch < '0' )
+         return NULL;
+       if ( ch <= '9' )
+         break;
+       if ( ch < 'A' )
+         return NULL;
+       if ( ch <= 'F' )
+         break;
+       return NULL;
+     }
+     r = line + l - 8;
+   }
+
+   if (strcasecmp(newcrc, r) == 0)
+     x = "CRC32 verified OK";
+   else {
+     ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s\n", newcrc, r );
+     x = "CRC32 failed";
+     xd->lock = mycalloc(strlen(badcrc)+1);
+     strcpy(xd->lock,badcrc);
+   }
+   mydelete(line)
+   mydelete(newcrc)
+   return x;
+}
+
 char* getpart_eol(const char *line, int howmany)
 {
   char *part;
@@ -1073,5 +1158,30 @@ int get_network(const char *arg1)
   return -1;
 }
 #endif /* MULTINET */
+
+void crc32_init(void)
+{
+  gdata.crc32build.crc = ~0;
+  gdata.crc32build.crc_total = ~0;
+}
+
+void crc32_update(char *buf, unsigned long len)
+{
+  char *p;
+  unsigned long crc = gdata.crc32build.crc;
+  unsigned long crc_total = gdata.crc32build.crc_total;
+
+  for (p = buf; len--; ++p) {
+    crc = (crc >> 8) ^ crctable[(crc ^ *p) & 0xff];
+    crc_total = (crc >> 8) ^ crctable[(crc_total ^ *p) & 0xff];
+  }
+  gdata.crc32build.crc = crc;
+  gdata.crc32build.crc_total = crc_total;
+}
+
+void crc32_final(unsigned long *crc_final)
+{
+  *crc_final = ~gdata.crc32build.crc;
+}
 
 /* End of File */

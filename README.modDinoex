@@ -10,7 +10,11 @@ With Version mod 1.27:
 70) noautorejoin
   do not rejoin the cnahell when bot is kicked.
 
-bugfix: crashes with mutitinet chats
+71) auto_crc_check
+  compute crc32 for new files and  lock them when crc does not match
+  pattern in filename.
+
+bugfix: crashes with mutitinet chats (reported by TheDeath)
 versions affected: 1.26 Multinet
 
 With Version mod 1.26:

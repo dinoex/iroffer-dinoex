@@ -1991,21 +1991,34 @@ static void mainloop (void) {
                 {
                   /* EOF */
                   MD5Final(gdata.md5build.xpack->md5sum, &gdata.md5build.md5sum);
+                  crc32_final(&(gdata.md5build.xpack->crc32));
                   gdata.md5build.xpack->has_md5sum = 1;
                   
                   if (!gdata.attop) { gototop(); }
                   
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                           "[MD5]: is " MD5_PRINT_FMT, MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
+                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                          "[CRC32]: is %.8lX", gdata.md5build.xpack->crc32);
                   
                   FD_CLR(gdata.md5build.file_fd, &gdata.readset);
                   close(gdata.md5build.file_fd);
                   gdata.md5build.file_fd = FD_UNUSED;
+                  if (gdata.auto_crc_check)
+                    {
+                      const char *crcmsg = validate_crc32(gdata.md5build.xpack);
+                      if (crcmsg != NULL)
+                        {
+                           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                                   "File '%s' %s.", gdata.md5build.xpack->file, crcmsg);
+                        }
+                    }
                   gdata.md5build.xpack = NULL;
                   break;
                 }
               /* else got data */
               MD5Update(&gdata.md5build.md5sum, gdata.sendbuff, howmuch);
+              crc32_update(gdata.sendbuff, howmuch);
             }
         }
       
@@ -2025,6 +2038,7 @@ static void mainloop (void) {
                   if (gdata.md5build.file_fd >= 0)
                     {
                       gdata.md5build.xpack = xd;
+                      crc32_init();
                       MD5Init(&gdata.md5build.md5sum);
                       if (set_socket_nonblocking(gdata.md5build.file_fd, 1) < 0)
                         {

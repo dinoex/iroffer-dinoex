@@ -47,10 +47,16 @@ void rehash_dinoex(void);
 void check_new_connection(transfer *const tr);
 void check_duplicateip(transfer *const newtr);
 int noticeresults(const char *nick, const char *match);
+void check_duplicateip(transfer *const newtr);
+const char *validate_crc32(xdcc *xd);
 
 char* getpart_eol(const char *line, int howmany);
 #ifdef MULTINET
 int get_network(const char *arg1);
 #endif /* MULTINET */
+
+void crc32_init(void);
+void crc32_update(char *buf, unsigned long len);
+void crc32_final(unsigned long *crc_final);
 
 /* End of File */

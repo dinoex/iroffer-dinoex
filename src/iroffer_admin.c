@@ -1690,6 +1690,10 @@ static void u_info(const userinput * const u)
     {
       u_respond(u, " md5sum         " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
     }
+  if (xd->crc32 != 0)
+    {
+      u_respond(u, " crc32          %.8lX", xd->crc32);
+    }
   
   return;
 }
@@ -2488,6 +2492,7 @@ static void u_chfile(const userinput * const u) {
        gdata.md5build.xpack = NULL;
      }
    xd->has_md5sum = 0;
+   xd->crc32 = 0;
    memset(xd->md5sum,0,sizeof(MD5Digest));
    
    assert(xd->file_fd == FD_UNUSED);
@@ -2579,7 +2584,7 @@ static void u_add(const userinput * const u) {
            xd = irlist_get_next(xd);
          }
       }
-
+   
    group = NULL;
    if (gdata.auto_default_group) {
       a1 = mycalloc(strlen(u->arg1e) + 1);

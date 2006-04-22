@@ -158,6 +158,7 @@ int disablexdccinfo;
 int atfind;
 int waitafterjoin;
 int noautorejoin;
+int auto_crc_check;
 char *autoaddann;
 char *admin_job_file;
 char *nickserv_pass;
@@ -328,6 +329,12 @@ struct
   int file_fd;
   struct MD5Context md5sum;
 } md5build;
+
+struct
+{
+  unsigned long crc;
+  unsigned long crc_total;
+} crc32build;
 
 enum
 {

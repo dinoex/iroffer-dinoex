@@ -1455,6 +1455,7 @@ void dumpgdata(void)
   gdata_print_int(atfind);
   gdata_print_int(waitafterjoin);
   gdata_print_int(noautorejoin);
+  gdata_print_int(auto_crc_check);
   gdata_print_string(autoaddann);
   gdata_print_string(admin_job_file);
   /* unlimitedhost */
@@ -1794,6 +1795,7 @@ void dumpgdata(void)
   ioutput(gdata_common,
           "  : has_md5=%d md5sum=" MD5_PRINT_FMT,
           iter->has_md5sum, MD5_PRINT_DATA(iter->md5sum));
+  ioutput(gdata_common, "  : crc32=%.8lX", iter->crc32);
   gdata_iter_print_string(group);
   gdata_iter_print_string(group_desc);
   gdata_iter_print_string(lock);
