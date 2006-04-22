@@ -3963,6 +3963,10 @@ void sendxdccinfo(const char* nick,
     {
       notice_slow(nick, " md5sum         " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
     }
+  if (xd->has_crc32)
+    {
+      notice_slow(nick, " crc32          %.8lX", xd->crc32);
+    }
   
  done:
   
