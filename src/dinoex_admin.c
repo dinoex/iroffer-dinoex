@@ -1019,6 +1019,13 @@ const char *validate_crc32(xdcc *xd, int quiet)
    const char *x;
    char *w;
   
+   if (xd->has_crc32 == 0) {
+     if (quiet)
+       return NULL;
+     else
+       return "no CRC32 calculated";
+   }
+
    newcrc = mycalloc(10);
    snprintf(newcrc,10,"%.8lX", xd->crc32);
    line = mycalloc(strlen(xd->file)+1);
