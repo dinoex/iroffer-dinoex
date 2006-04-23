@@ -1564,7 +1564,7 @@
 1574 "badcrc"
 1575 "%.8lX"
 1576 "CRC32 verified OK"
-1577 "crc expected %s, failed %s\n"
+1577 "crc expected %s, failed %s"
 1578 "CRC32 failed"
 1579 "[CRC32]: is %.8lX"
 1580 "File '%s' %s."
@@ -1577,3 +1577,4 @@
 1587 "Validating CRC for Pack #%i:"
 1588 "nocrc32"
 1589 "Ignoring Bad XDCC CRC32 Tag (len = %d)"
+1590 "no CRC32 calculated"

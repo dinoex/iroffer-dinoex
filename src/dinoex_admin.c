@@ -1051,7 +1051,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
        x = "CRC32 verified OK";
    }
    else {
-     ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s\n", newcrc, line);
+     ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s", newcrc, line);
      x = "CRC32 failed";
      if (quiet == 2) {
        xd->lock = mycalloc(strlen(badcrc)+1);
