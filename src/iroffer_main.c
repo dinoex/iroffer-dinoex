@@ -1042,6 +1042,9 @@ static void mainloop (void) {
            chat;
            chat = irlist_get_next(chat))
         {
+#ifdef MULTINET
+          gnetwork = &(gdata.networks[chat->net]);
+#endif /* MULTINET */
           if ((chat->status == DCCCHAT_CONNECTING) &&
               FD_ISSET(chat->fd, &gdata.writeset))
             {
@@ -1052,9 +1055,6 @@ static void mainloop (void) {
               callval_i = getsockopt(chat->fd,
                                      SOL_SOCKET, SO_ERROR,
                                      &connect_error, &connect_error_len);
-#ifdef MULTINET
-              gnetwork = &(gdata.networks[chat->net]);
-#endif /* MULTINET */
               
               if (callval_i < 0)
                 {
