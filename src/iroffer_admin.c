@@ -665,8 +665,9 @@ static int u_xdl_space(void) {
    return s;
 }
    
+static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
+
 static void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xdcc *xd) {
-   static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
    char *sizestrstr;
    int len;
    
@@ -1073,7 +1074,10 @@ static void u_xdlock(const userinput * const u)
    while(xd)
      {
        if (xd->lock != NULL)
-         u_xdl_pack(u,tempstr,i,s,xd);
+         {
+           u_xdl_pack(u,tempstr,i,s,xd);
+           u_respond(u," \2^-\2%sPassword: %s",spaces[s],xd->lock);
+         }
        i++;
        xd = irlist_get_next(xd);
      }
