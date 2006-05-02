@@ -36,6 +36,7 @@ static void u_xdl_foot(const userinput * const u);
 static void u_xdl_full(const userinput * const u);
 static void u_xdl_group(const userinput * const u);
 static void u_xdl(const userinput * const u);
+static void u_xdlock(const userinput * const u);
 static void u_xds(const userinput * const u);
 static void u_dcl(const userinput * const u);
 static void u_dcld(const userinput * const u);
@@ -138,6 +139,7 @@ static const userinput_parse_t userinput_parse[] = {
 {1,method_allow_all_xdl,u_xdl_full,   "XDLFULL",NULL,"Lists All Offered Files"},
 {1,method_allow_all_xdl,u_xdl_group,  "XDLGROUP","<g>","Show group <g>"},
 {1,method_allow_all_xdl,u_xdl,  "XDL",NULL,"Lists Offered Groups and Files without group"},
+{1,method_allow_all,u_xdlock,   "XDLOCK",NULL,"Show all locked Files"},
 {1,method_allow_all,u_xds,      "XDS",NULL,"Save State File"},
 {1,method_allow_all,u_dcl,      "DCL",NULL,"Lists Current Transfers"},
 {1,method_allow_all,u_dcld,     "DCLD",NULL,"Lists Current Transfers with Details"},
@@ -668,9 +670,6 @@ static void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, c
    char *sizestrstr;
    int len;
    
-   if (u_is_locked(u,xd) != 0)
-     return;
-   
    sizestrstr = sizestr(1, xd->st_size);
    snprintf(tempstr, maxtextlength - 1,
            "\2#%-2i\2 %*ix [%s] %s",
@@ -940,7 +939,8 @@ static void u_xdl_full(const userinput * const u) {
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
-       u_xdl_pack(u,tempstr,i,s,xd);
+       if (u_is_locked(u,xd) == 0)
+         u_xdl_pack(u,tempstr,i,s,xd);
        i++;
        xd = irlist_get_next(xd);
      }
@@ -980,7 +980,8 @@ static void u_xdl_group(const userinput * const u) {
                    u_respond(u,"group: %s %s",msg3,xd->group_desc);
                  }
 
-               u_xdl_pack(u,tempstr,i,s,xd);
+               if (u_is_locked(u,xd) == 0)
+                 u_xdl_pack(u,tempstr,i,s,xd);
                k++;
              }
          }
@@ -1022,7 +1023,8 @@ static void u_xdl(const userinput * const u) {
        /* skip is group is set */
        if (xd->group == NULL)
          {
-           u_xdl_pack(u,tempstr,i,s,xd);
+           if (u_is_locked(u,xd) == 0)
+             u_xdl_pack(u,tempstr,i,s,xd);
          }
        i++;
        xd = irlist_get_next(xd);
@@ -1051,6 +1053,30 @@ static void u_xdl(const userinput * const u) {
        }
    
    u_xdl_foot(u);
+   
+   mydelete(tempstr);
+}
+
+static void u_xdlock(const userinput * const u)
+{
+   char *tempstr;
+   int i,s;
+   xdcc *xd;
+
+   updatecontext();
+   
+   tempstr  = mycalloc(maxtextlength);
+   
+   s = u_xdl_space();
+   i = 1;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       if (xd->lock != NULL)
+         u_xdl_pack(u,tempstr,i,s,xd);
+       i++;
+       xd = irlist_get_next(xd);
+     }
    
    mydelete(tempstr);
 }
