@@ -906,7 +906,7 @@ static void u_xdl_foot(const userinput * const u) {
        u_respond(u,"\2**\2 %s \2**\2",gdata.creditline);
      }
    
-   if ((u->method == 0) && (method_xdl_channel_min == 0))
+   if (u->method != method_xdl_channel_min)
      {
        toffered = 0;
        xd = irlist_get_head(&gdata.xdccs);
