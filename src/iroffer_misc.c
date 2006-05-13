@@ -128,6 +128,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"noautorejoin",         &gdata.noautorejoin,         &gdata.noautorejoin },
   {"auto_crc_check",       &gdata.auto_crc_check,       &gdata.auto_crc_check },
   {"nocrc32",              &gdata.nocrc32,              &gdata.nocrc32 },
+  {"direct_file_access",   &gdata.direct_file_access,   &gdata.direct_file_access },
 };
 
 typedef struct
@@ -3002,6 +3003,7 @@ void reinit_config_vars(void)
   gdata.noautorejoin = 0;
   gdata.auto_crc_check = 0;
   gdata.nocrc32 = 0;
+  gdata.direct_file_access = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;

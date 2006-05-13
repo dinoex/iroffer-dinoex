@@ -111,6 +111,7 @@ static void u_jump(const userinput * const u);
 static void u_servqc(const userinput * const u);
 static void u_servers(const userinput * const u);
 static void u_trinfo(const userinput * const u);
+static void u_listdir(const userinput * const u, const char *dir);
 static void u_listul(const userinput * const u);
 static void u_clearrecords(const userinput * const u);
 static void u_rmul(const userinput * const u);
@@ -120,6 +121,9 @@ static void u_identify(const userinput * const u);
 static void u_announce(const userinput * const u);
 static void u_addann(const userinput * const u);
 static void u_crc(const userinput * const u);
+static void u_filemove(const userinput * const u);
+static void u_filedel(const userinput * const u);
+static void u_showdir(const userinput * const u);
 
 
 typedef struct
@@ -197,6 +201,9 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_announce, "ANNOUNCE","n <msg>","ANNOUNCE <msg> for pack n in all joined channels"},
 {3,method_allow_all,u_addann,   "ADDANN","<filename>","Add and Announce New Pack"},
 {3,method_allow_all,u_crc,      "CRC","n","Check CRC of Pack n"},
+{3,method_allow_all,u_filemove, "FILEMOVE","<filename> <filename>","rename file on disk"},
+{3,method_allow_all,u_filedel,  "FILEDEL","<filename>","remove file from disk"},
+{3,method_allow_all,u_showdir,  "SHOWDIR","<dir>","list directory on disk"},
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
 #ifdef MULTINET
@@ -2305,6 +2312,197 @@ static void u_crc(const userinput * const u) {
        xd = irlist_get_next(xd);
      }
   }
+}
+
+static void u_filemove(const userinput * const u)
+{
+   int xfiledescriptor;
+   struct stat st;
+   char *file1;
+   char *file2;
+   
+   updatecontext();
+   
+   if (gdata.direct_file_access == 0) {
+      u_respond(u,"Disabled in Config");
+      return;
+      }
+
+   if (!u->arg1 || !strlen(u->arg1)) {
+      u_respond(u,"Try Specifying a Filename");
+      return;
+      }
+   
+   if (!u->arg2e || !strlen(u->arg2e)) {
+      u_respond(u,"Try Specifying a new Filename");
+      return;
+      }
+   
+   file1 = mymalloc(strlen(u->arg1)+1);
+   strcpy(file1,u->arg1);
+   convert_to_unix_slash(file1);
+   
+   xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
+   
+   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
+     {
+       mydelete(file1);
+       file1 = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1)+1);
+       sprintf(file1,"%s/%s",gdata.filedir,u->arg1);
+       convert_to_unix_slash(file1);
+       xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
+     }
+   
+   if (xfiledescriptor < 0) {
+      u_respond(u,"Cant Access File: %s: %s", file1, strerror(errno));
+      mydelete(file1);
+      return;
+      }
+   
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      u_respond(u,"Cant Access File Details: %s: %s", file1, strerror(errno));
+      close(xfiledescriptor);
+      mydelete(file1);
+      return;
+     }
+   close(xfiledescriptor);
+   
+   if (!S_ISREG(st.st_mode))
+     {
+      u_respond(u,"%s is not a file", file1);
+      mydelete(file1);
+      return;
+     }
+   
+   file2 = mymalloc(strlen(u->arg2e)+1);
+   strcpy(file2,u->arg2e);
+   convert_to_unix_slash(file2);
+   
+   if (strchr(file2, '/') == NULL)
+     {
+       mydelete(file2);
+       file2 = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg2e)+1);
+       sprintf(file2,"%s/%s",gdata.filedir,u->arg2e);
+       convert_to_unix_slash(file2);
+     }
+   
+   if (rename(file1,file2) < 0)
+     {
+       u_respond(u,"File %s could not be moved to %s: %s", file1, file2, strerror(errno));
+     }
+   else
+     {
+       u_respond(u,"File %s was moved to %s.",file1, file2);
+     }
+   mydelete(file1);
+   mydelete(file2);
+}
+
+static void u_filedel(const userinput * const u)
+{
+   int xfiledescriptor;
+   struct stat st;
+   char *file;
+   
+   updatecontext();
+   
+   if (gdata.direct_file_access == 0) {
+      u_respond(u,"Disabled in Config");
+      return;
+      }
+
+   if (!u->arg1e || !strlen(u->arg1e)) {
+      u_respond(u,"Try Specifying a Filename");
+      return;
+      }
+   
+   file = mymalloc(strlen(u->arg1e)+1);
+   strcpy(file,u->arg1e);
+   convert_to_unix_slash(file);
+   
+   xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+   
+   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
+     {
+       mydelete(file);
+       file = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
+       sprintf(file,"%s/%s",gdata.filedir,u->arg1e);
+       convert_to_unix_slash(file);
+       xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+     }
+   
+   if (xfiledescriptor < 0) {
+      u_respond(u,"Cant Access File: %s: %s", file, strerror(errno));
+      mydelete(file);
+      return;
+      }
+   
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      u_respond(u,"Cant Access File Details: %s: %s", file, strerror(errno));
+      close(xfiledescriptor);
+      mydelete(file);
+      return;
+     }
+   close(xfiledescriptor);
+   
+   if (!S_ISREG(st.st_mode))
+     {
+      u_respond(u,"%s is not a file", file);
+      mydelete(file);
+      return;
+     }
+   
+   if (unlink(file) < 0)
+     {
+       u_respond(u,"File %s could not be deleted: %s", file, strerror(errno));
+     }
+   else
+     {
+       u_respond(u,"File %s was deleted.", file);
+     }
+   mydelete(file);
+}
+
+static void u_showdir(const userinput * const u)
+{
+  char *thedir;
+  int thedirlen;
+   
+  updatecontext();
+   
+  if (gdata.direct_file_access == 0)
+    {
+      u_respond(u,"Disabled in Config");
+      return;
+    }
+   
+  if (!u->arg1e || !strlen(u->arg1e))
+    {
+      u_respond(u,"Try Specifying a Directory");
+      return;
+    }
+  
+  convert_to_unix_slash(u->arg1e);
+   
+  if (u->arg1e[strlen(u->arg1e)-1] == '/')
+    {
+      u->arg1e[strlen(u->arg1e)-1] = '\0';
+    }
+  
+  thedirlen = strlen(u->arg1e);
+  if (gdata.filedir)
+    {
+      thedirlen += strlen(gdata.filedir) + 1;
+    }
+  
+  thedir = mymalloc(thedirlen+1);
+  strcpy(thedir, u->arg1e);
+  
+  u_listdir(u, thedir);
+  mydelete(thedir);
+  return;
 }
 
 static void u_msg(const userinput * const u)
@@ -5252,7 +5450,7 @@ static void u_trinfo(const userinput * const u)
 }
 
 
-static void u_listul(const userinput * const u)
+static void u_listdir(const userinput * const u, const char *dir)
 {
   DIR *d;
   struct dirent *f;
@@ -5269,19 +5467,13 @@ static void u_listul(const userinput * const u)
   
   updatecontext();
   
-  if (!irlist_size(&gdata.uploadhost) || !gdata.uploaddir)
-    {
-      u_respond(u,"No upload hosts or no uploaddir defined.");
-      return;
-    }
+  thedirlen = strlen(dir);
   
-  thedirlen = strlen(gdata.uploaddir);
-  
-  d = opendir(gdata.uploaddir);
+  d = opendir(dir);
   
   if (!d)
     {
-      u_respond(u,"Can't Access Upload Directory: %s",strerror(errno));
+      u_respond(u,"Can't Access Directory: %s",strerror(errno));
       return;
     }
   
@@ -5304,7 +5496,7 @@ static void u_listul(const userinput * const u)
     }
   else
     {
-      u_respond(u,"Listing '%s':", gdata.uploaddir);
+      u_respond(u,"Listing '%s':", dir);
       
       thefile = irlist_get_head(&dirlist);
       while (thefile)
@@ -5315,7 +5507,7 @@ static void u_listul(const userinput * const u)
           tempstr = mycalloc(len + thedirlen + 2);
           
           snprintf(tempstr, len + thedirlen + 2,
-                   "%s/%s", gdata.uploaddir, thefile);
+                   "%s/%s", dir, thefile);
           
           if (lstat(tempstr,&st) < 0)
             {
@@ -5357,7 +5549,7 @@ static void u_listul(const userinput * const u)
     }
   
 #ifndef NO_STATVFS
-  if (statvfs(gdata.uploaddir, &stf) < 0)
+  if (statvfs(dir, &stf) < 0)
     {
       u_respond(u,"Unable to determine device sizes: %s",
                 strerror(errno));
@@ -5381,7 +5573,7 @@ static void u_listul(const userinput * const u)
     }
 #else
 #ifndef NO_STATFS
-  if (statfs(gdata.uploaddir, &stf) < 0)
+  if (statfs(dir, &stf) < 0)
     {
       u_respond(u,"Unable to determine device sizes: %s",
                 strerror(errno));
@@ -5406,6 +5598,21 @@ static void u_listul(const userinput * const u)
 #endif
 #endif
   
+  return;
+  
+}
+
+static void u_listul(const userinput * const u)
+{
+  updatecontext();
+  
+  if (!irlist_size(&gdata.uploadhost) || !gdata.uploaddir)
+    {
+      u_respond(u,"No upload hosts or no uploaddir defined.");
+      return;
+    }
+  
+  u_listdir(u, gdata.uploaddir);
   return;
   
 }

@@ -51,6 +51,7 @@ TheDeath
 	Debugging of multi irc network support
 	suggesting CRC check
 	extending CRC check
+	direct file access
 
 [GFE]Lunix
 	alias xdcc list group <group>

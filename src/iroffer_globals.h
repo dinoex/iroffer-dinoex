@@ -160,6 +160,7 @@ int waitafterjoin;
 int noautorejoin;
 int auto_crc_check;
 int nocrc32;
+int direct_file_access;
 char *autoaddann;
 char *admin_job_file;
 char *nickserv_pass;

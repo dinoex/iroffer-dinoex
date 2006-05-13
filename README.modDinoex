@@ -9,6 +9,14 @@ With Version mod 1.28:
    new admin command:
    XDLOCK         Show all locked packs
 
+75) direct_file_access (inspired by TheDeath)
+   when set allows admin to change files.
+
+   new admin commands:
+   FILEMOVE <filename> <filename>      rename file on disk
+   FILEDEL <filename>                  remove file from disk
+   SHOWDIR <dir>                       list directory on disk
+
 bugfix: XDCC LIST (reported by Alita-Chan)
 versions affected: 1.27
    report total stats with all gcc versions

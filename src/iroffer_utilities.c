@@ -1457,6 +1457,7 @@ void dumpgdata(void)
   gdata_print_int(noautorejoin);
   gdata_print_int(auto_crc_check);
   gdata_print_int(nocrc32);
+  gdata_print_int(direct_file_access);
   gdata_print_string(autoaddann);
   gdata_print_string(admin_job_file);
   /* unlimitedhost */
