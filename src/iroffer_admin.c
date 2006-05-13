@@ -2294,12 +2294,14 @@ static void u_crc(const userinput * const u) {
       u_respond(u,"File '%s' %s.", xd->file, crcmsg);
   }
   else {
+   num = 0;
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
+       num ++;
        crcmsg = validate_crc32(xd, 1);
        if (crcmsg != NULL)
-         u_respond(u,"File '%s' %s.", xd->file, crcmsg);
+         u_respond(u,"Pack %d, File '%s' %s.", num, xd->file, crcmsg);
        xd = irlist_get_next(xd);
      }
   }
