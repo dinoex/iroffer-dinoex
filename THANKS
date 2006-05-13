@@ -50,6 +50,7 @@ TheDeath
 	http://wiki.deutsche-fansubs.de/index.php?title=Iroffer_Tutorial
 	Debugging of multi irc network support
 	suggesting CRC check
+	extending CRC check
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -93,4 +94,7 @@ Terminator2k2
 Thunder
 	nodownloadhost
 	xdlock
+
+Alita-Chan
+	reporting XDCC LIST problem with total line
 

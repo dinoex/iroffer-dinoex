@@ -9,6 +9,16 @@ With Version mod 1.28:
    new admin command:
    XDLOCK         Show all locked packs
 
+bugfix: XDCC LIST (reported by Alita-Chan)
+versions affected: 1.27
+   report total stats with all gcc versions
+
+bugfix: CRC (reported by TheDeath)
+   report pack number with file
+
+bugfix: CRC (reported by TheDeath)
+   CRC fails only when a group of 8 digits is found
+
 With Version mod 1.27:
 ----------------------
 
