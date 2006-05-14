@@ -204,6 +204,7 @@ static void mainloop (void) {
    static struct timeval timestruct;
    static int i,j,length,changequartersec,changesec,changemin,changehour;
    static time_t lasttime, lastmin, lasthour, last4sec, last5sec, last20sec;
+   static time_t lastautoadd;
    static long lastnotify, last3min, last2min, lastignoredec, lastperiodicmsg;
    static userinput *pubplist;
    static userinput *urehash;
@@ -2146,6 +2147,15 @@ static void mainloop (void) {
             {
               flushdccchat(chat);
               chat = irlist_get_next(chat);
+            }
+        }
+      
+      if (gdata.autoadd_time > 0)
+        {
+          if (changesec && (gdata.curtime - lastautoadd > gdata.autoadd_time))
+            {
+              lastautoadd = gdata.curtime;
+              autoadd_scan(gdata.autoadd_dir, gdata.autoadd_group);
             }
         }
       

@@ -1599,3 +1599,8 @@
 1610 "File %s could not be deleted: %s"
 1611 "File %s was deleted."
 1612 "direct_file_access"
+1613 "A A A A A ADDGROUP %s %s"
+1614 "A A A A A ADDNEW %s"
+1615 "autoadd_time"
+1616 "autoadd_dir"
+1617 "autoadd_group"

@@ -1071,6 +1071,27 @@ const char *validate_crc32(xdcc *xd, int quiet)
    return x;
 }
 
+void autoadd_scan(const char *dir, const char *group)
+{
+   userinput *uxdl;
+   char *line;
+
+   if (dir == NULL)
+      return;
+
+   line = mycalloc(maxtextlength);
+   if (group != NULL)
+     snprintf(line,maxtextlength -1,"A A A A A ADDGROUP %s %s", group, dir);
+   else
+     snprintf(line,maxtextlength -1,"A A A A A ADDNEW %s", dir);
+
+   uxdl = mycalloc(sizeof(userinput));
+   u_fillwith_msg(uxdl,NULL,line);
+   uxdl->method = method_out_all;
+   u_parseit(uxdl);
+   mydelete(line);
+}
+
 char* getpart_eol(const char *line, int howmany)
 {
   char *part;

@@ -17,6 +17,18 @@ With Version mod 1.28:
    FILEDEL <filename>                  remove file from disk
    SHOWDIR <dir>                       list directory on disk
 
+76) autoadd_dir (inspired by Tak0r)
+
+  autoadd_time:
+  Time in seconds when the bot checks for new files in autoadd_dir. 
+  Default: 0 = disabled. 
+
+  autoadd_dir:
+  Directory for files that will be added without further interaction.
+
+  autoadd_group:
+  Group for files added in autoadd_dir. Default "MAIN"
+
 bugfix: XDCC LIST (reported by Alita-Chan)
 versions affected: 1.27
    report total stats with all gcc versions

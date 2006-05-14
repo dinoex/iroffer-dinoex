@@ -156,6 +156,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"start_of_month",  &gdata.start_of_month,  &gdata.start_of_month,  1, 31, 1 },
   {"atfind",          &gdata.atfind,          &gdata.atfind,          0, 10, 1 },
   {"waitafterjoin",   &gdata.waitafterjoin,   &gdata.waitafterjoin,   0, 2000, 1 },
+  {"autoadd_time",    &gdata.autoadd_time,    &gdata.autoadd_time,    0, 2000, 1 },
 };
 
 typedef struct
@@ -177,6 +178,8 @@ static const config_parse_str_t config_parse_str[] = {
   {"enable_nick",          &gdata.enable_nick,          &gdata.enable_nick },
   {"admin_job_file",       &gdata.admin_job_file,       &gdata.admin_job_file },
   {"autoaddann",           &gdata.autoaddann,           &gdata.autoaddann },
+  {"autoadd_dir",          &gdata.autoadd_dir,          &gdata.autoadd_dir },
+  {"autoadd_group",        &gdata.autoadd_group,        &gdata.autoadd_group },
 };
 
 void getconfig_set (const char *line, int rehash)
@@ -3004,8 +3007,11 @@ void reinit_config_vars(void)
   gdata.auto_crc_check = 0;
   gdata.nocrc32 = 0;
   gdata.direct_file_access = 0;
+  gdata.autoadd_time = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
+  mydelete(gdata.autoadd_dir);
+  mydelete(gdata.autoadd_group);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;

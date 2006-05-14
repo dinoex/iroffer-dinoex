@@ -49,6 +49,7 @@ void check_duplicateip(transfer *const newtr);
 int noticeresults(const char *nick, const char *match);
 void check_duplicateip(transfer *const newtr);
 const char *validate_crc32(xdcc *xd, int quiet);
+void autoadd_scan(const char *dir, const char *group);
 
 char* getpart_eol(const char *line, int howmany);
 #ifdef MULTINET
