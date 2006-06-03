@@ -881,6 +881,9 @@ void t_checkminspeed(transfer * const t) {
        igninfo *ignore;
        pqueue *pq;
        transfer *tr;
+#ifdef MULTINET
+       gnetwork_t *backup;
+#endif /* MULTINET */
        
        for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
          {
@@ -896,10 +899,17 @@ void t_checkminspeed(transfer * const t) {
          {
            if (strcasecmp(pq->nick,t->nick) == 0)
              {
+#ifdef MULTINET
+               backup = gnetwork;
+               gnetwork = &(gdata.networks[pq->net]);
+#endif /* MULTINET */
                notice(pq->nick,"** Removed From Queue: You are being punished for your slowness");
                mydelete(pq->nick);
                mydelete(pq->hostname);
                pq = irlist_delete(&gdata.mainqueue, pq);
+#ifdef MULTINET
+               gnetwork = backup;
+#endif /* MULTINET */
              }
            else
              {

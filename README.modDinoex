@@ -1,6 +1,12 @@
 
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 1.29:
+----------------------
+
+bugfix: crashes with multinet and punishslowusers (reported by Thunder)
+versions affected: 1.26 - 1.28 Multinet
+
 With Version mod 1.28:
 ----------------------
 
