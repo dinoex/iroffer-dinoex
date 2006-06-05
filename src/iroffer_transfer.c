@@ -934,6 +934,10 @@ void t_checkminspeed(transfer * const t) {
        ignore->lastcontact = gdata.curtime;
        ignore->bucket = (gdata.punishslowusers*60)/gdata.autoignore_threshold;
        
+#ifdef MULTINET
+       backup = gnetwork;
+       gnetwork = &(gdata.networks[t->net]);
+#endif /* MULTINET */
        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                "Punish-ignore activated for %s (%s) %d minutes",
                t->nick,
@@ -945,6 +949,9 @@ void t_checkminspeed(transfer * const t) {
               ignore->hostmask,
               gdata.punishslowusers);
        
+#ifdef MULTINET
+       gnetwork = backup;
+#endif /* MULTINET */
        write_statefile();
      }
    
