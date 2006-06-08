@@ -12,7 +12,6 @@ Short Term Features:
    141 11/12/00 Open send credit line when sending packs
    138 7/16/00 Open compress old logs
    135 4/22/00 Open let (queued) users request dcc list
-   132 3/20/00 Open rename/move a file in upload dir
    173 12/09/03 Open resend dcc send message if user doesn't connect 
    175 12/09/03 Open sort by name listing
    177 12/09/03 Open dont join channels until nickserv has authenticated iroffer
@@ -37,7 +36,6 @@ Long Term Features:
    187 12/09/03 Open lock/busy-out packs from gets
    190 12/09/03 Open different bandwidth limiting for each day of the week
    195 12/09/03 Open IPv6 support
-   202 1/19/04 Open Define hosts that are exempt from bandwidth limits  
    208 4/13/04 Open SSL connections to irc server
    209 4/25/04 Open DCC2 support
    210 5/3/04 Open hostmasks that bypass queue
@@ -56,7 +54,6 @@ Not going to happen anytime soon:
    176 12/09/03 Deferred customize xdcc list output
    182 12/09/03 Deferred MIRC style dccserver support
    183 12/09/03 Deferred SOCKS4/5 support
-   191 12/09/03 Deferred connect to multiple servers/networks
    198 12/09/03 Deferred Windows service
    
 Page last modified: 09/01/04 

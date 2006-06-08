@@ -23,6 +23,10 @@ With Version mod 1.28:
    FILEDEL <filename>                  remove file from disk
    SHOWDIR <dir>                       list directory on disk
 
+   References TODO:
+Short Term Features
+132 3/20/00 Open rename/move a file in upload dir
+
 76) autoadd_dir (inspired by Tak0r)
 
   autoadd_time:
@@ -75,6 +79,10 @@ With Version mod 1.26:
 66) network
    support multiple irc networks with common queue and limits.
 
+   References TODO:
+Not going to happen anytime soon:
+191 12/09/03 Deferred connect to multiple servers/networks
+
 67) waitafterjoin
    do not announce plist directly after joining a channel.
 
@@ -118,7 +126,11 @@ bugfix: send (reported by TheDeath)
 
 60) unlimitedhost (inspired by Chobits)
 
-   specify nicks and hostnames which are not limited in bandnwidth
+   specify nicks and hostnames which are not limited in bandwidth
+
+   References TODO:
+Long Term Features:
+202 1/19/04 Open Define hosts that are exempt from bandwidth limits
 
 61) UNLIMITED
 
