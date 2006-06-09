@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.29:
 ----------------------
 
+77) remove # sign in xdcc commands
+   this avoids banning of users who cut & paste for spam
+
 bugfix: crashes with multinet and punishslowusers (reported by Thunder)
 versions affected: 1.26 - 1.28 Multinet
 

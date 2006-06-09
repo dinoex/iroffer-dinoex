@@ -866,11 +866,11 @@ static void u_xdl_head(const userinput * const u) {
        
        u_respond(u,"%s",tempstr);
        
-       u_respond(u,"\2**\2 To request a file, type \"/msg %s xdcc send #x\" \2**\2",
+       u_respond(u,"\2**\2 To request a file, type \"/msg %s xdcc send x\" \2**\2",
                  (gdata.user_nick ? gdata.user_nick : "??"));
        
        if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
-          u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info #x\" \2**\2",
+          u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info x\" \2**\2",
                     (gdata.user_nick ? gdata.user_nick : "??"));
        
        i = 0;
@@ -2232,7 +2232,7 @@ static void u_announce (const userinput * const u) {
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
   snprintf(tempstr2,maxtextlength-2,"[\2%s\2] %s",u->arg2e,xd->desc);
-  snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send #%i",tempstr2,gdata.user_nick,num);
+  snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gdata.user_nick,num);
   
 #ifdef MULTINET
   backup = gnetwork;
