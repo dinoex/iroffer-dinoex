@@ -1264,6 +1264,13 @@ static void u_dcld(const userinput * const u)
           break;
         }
       
+#ifdef MULTINET
+      if (gdata.networks[tr->net].name == NULL)
+        u_respond(u,"network: %d", tr->net);
+      else
+        u_respond(u,"network: %d: %s", tr->net, gdata.networks[tr->net].name);
+#endif /* MULTINET */
+      
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
           u_respond(u,"%3i  %-9s   %-32s   %s %2.0f%%",
@@ -4338,6 +4345,11 @@ static void u_botinfo(const userinput * const u) {
 #ifdef MULTINET
    for (ss=0; ss<gdata.networks_online; ss++)
      {
+       if (gdata.networks[ss].name == NULL)
+         u_respond(u,"network: %d", ss);
+       else
+         u_respond(u,"network: %d: %s", ss, gdata.networks[ss].name);
+       
        switch (gdata.connectionmethod.how)
          {
          case how_direct:

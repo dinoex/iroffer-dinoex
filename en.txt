@@ -1604,3 +1604,5 @@
 1615 "autoadd_time"
 1616 "autoadd_dir"
 1617 "autoadd_group"
+1618 "network: %d"
+1619 "network: %d: %s"

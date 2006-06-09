@@ -4,6 +4,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.29:
 ----------------------
 
+78) extend output for dcld and botinfo for Multinet
+
 77) remove # sign in xdcc commands
    this avoids banning of users who cut & paste for spam
 
