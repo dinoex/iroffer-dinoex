@@ -4,6 +4,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.29:
 ----------------------
 
+79) extend triggers for re-IDENTIFY with nickserv
+
 78) extend output for dcld and botinfo for Multinet (inspired by TheDeath)
 
 77) remove # sign in xdcc commands

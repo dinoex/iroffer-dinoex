@@ -1606,3 +1606,6 @@
 1617 "autoadd_group"
 1618 "network: %d"
 1619 "network: %d: %s"
+1620 "Nickname is registered to someone else."
+1621 "This nickname has been registered"
+1622 "This nickname is registered and protected."
