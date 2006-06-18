@@ -4,7 +4,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.29:
 ----------------------
 
-78) extend output for dcld and botinfo for Multinet
+78) extend output for dcld and botinfo for Multinet (inspired by TheDeath)
 
 77) remove # sign in xdcc commands
    this avoids banning of users who cut & paste for spam
@@ -32,7 +32,7 @@ With Version mod 1.28:
 Short Term Features
 132 3/20/00 Open rename/move a file in upload dir
 
-76) autoadd_dir (inspired by Tak0r)
+76) autoadd_dir (inspired by Terra_Knight, Tak0r)
 
   autoadd_time:
   Time in seconds when the bot checks for new files in autoadd_dir. 

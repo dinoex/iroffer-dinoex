@@ -30,7 +30,7 @@ Keichi
 	option "start_of_month"
 
 Kickaha
-	enforce queue limit
+	Genforce queue limit
 
 Takatoo
 	reporting regroup bug
@@ -53,6 +53,7 @@ TheDeath
 	suggesting CRC check
 	extending CRC check
 	direct file access
+	dcld and botinfo for Multinet
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -100,4 +101,7 @@ Thunder
 
 Alita-Chan
 	reporting XDCC LIST problem with total line
+
+Terra_Knight
+	option "autoadd_dir"
 
