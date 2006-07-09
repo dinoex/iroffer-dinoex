@@ -214,7 +214,6 @@ bugfix: HELP
 52) ANNOUNCE, ADDANN (from Porakin, taken from iroffer-lamm)
 
    new admin commands:
-   HOP <channel>              leave and rejoin a channel to get status
    ANNOUNCE n <msg>           ANNOUNCE <msg> for pack n in all joined channels
    ADDANN <filename>          Add and Announce New Pack
 
@@ -416,7 +415,7 @@ With Version mod 1.12:
    text from this keyword to the end of the line is used as a
    channel specific headline.
 
-Sample:
+   Sample:
 channel #chan04 -plist 14 -pformat summary -headline moving soon
 
 With Version mod 1.11:
@@ -450,7 +449,7 @@ bugfix: regroup (inspired by Takatoo, TheDeath)
    xdcc list group <group> ==> xdcc list <group>
 
 21) new user command:
-   xdcc list group all
+   xdcc list all
 
 22) restrictprivlistmain
 
