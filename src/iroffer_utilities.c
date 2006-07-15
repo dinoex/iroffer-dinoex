@@ -1837,8 +1837,9 @@ void dumpgdata(void)
           "  : xpack=0x%.8lX queuedtime=%ld",
           (unsigned long)iter->xpack,
           (long)iter->queuedtime);
+  ioutput(gdata_common,"  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
 #ifdef MULTINET
-  ioutput(gdata_common,"  : net=%d", iter->net );
+  ioutput(gdata_common, "  : net=%d", iter->net );
 #endif /* not MULTINET */
   gdata_irlist_iter_end;
   
@@ -1849,7 +1850,7 @@ void dumpgdata(void)
           iter->clientsocket,
           iter->id);
 #ifdef MULTINET
-  ioutput(gdata_common,"  : net=%d", iter->net );
+  ioutput(gdata_common, "  : net=%d", iter->net );
 #endif /* not MULTINET */
   ioutput(gdata_common,
           "  : sent=%" LLPRINTFMT "d got=%" LLPRINTFMT "d lastack=%" LLPRINTFMT "d curack=%" LLPRINTFMT "d resume=%" LLPRINTFMT "d speedamt=%" LLPRINTFMT "d tx_bucket=%li",
@@ -1872,6 +1873,7 @@ void dumpgdata(void)
           iter->remoteport,
           iter->localip,
           iter->remoteip);
+  ioutput(gdata_common, "  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
 #ifdef HAVE_MMAP
   ioutput(gdata_common, "  : mmap_info=%p", iter->mmap_info);
 #endif
