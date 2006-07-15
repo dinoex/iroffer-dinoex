@@ -1611,3 +1611,4 @@
 1622 "This nickname is registered and protected."
 1623 "restrictsend_warning"
 1624 "restrictsend_timeout"
+1625 "  : restrictsend_bad=%ld"
