@@ -3881,7 +3881,7 @@ void reverify_restrictsend(void)
                   notice(tr->nick, "You are no longer on a known channel");
                 }
             }
-          else if ((gdata.curtime - tr->restrictsend_bad) >= RESTRICTSEND_TIMEOUT)
+          else if ((gdata.curtime - tr->restrictsend_bad) >= gdata.restrictsend_timeout)
             {
               t_closeconn(tr, "You are no longer on a known channel", 0);
             }
@@ -3914,7 +3914,7 @@ void reverify_restrictsend(void)
                 }
               pq = irlist_get_next(pq);
             }
-          else if ((gdata.curtime - pq->restrictsend_bad) >= RESTRICTSEND_TIMEOUT)
+          else if ((gdata.curtime - pq->restrictsend_bad) >= gdata.restrictsend_timeout)
             {
               notice(pq->nick,"** Removed From Queue: You are no longer on a known channel");
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
