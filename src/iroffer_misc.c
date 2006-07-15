@@ -158,7 +158,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"atfind",          &gdata.atfind,          &gdata.atfind,          0, 10, 1 },
   {"waitafterjoin",   &gdata.waitafterjoin,   &gdata.waitafterjoin,   0, 2000, 1 },
   {"autoadd_time",    &gdata.autoadd_time,    &gdata.autoadd_time,    0, 2000, 1 },
-  {"restrictsend_timeout",  &gdata.restrictsend_timeout,  &gdata.restrictsend_timeout,    0, 600, 300 },
+  {"restrictsend_timeout",  &gdata.restrictsend_timeout,  &gdata.restrictsend_timeout,    0, 600, 1 },
 };
 
 typedef struct
