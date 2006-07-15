@@ -1,6 +1,15 @@
 
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 1.30:
+----------------------
+
+80) restrictsend_warning
+  If set, try to warn use when he leaves channel.
+
+81) restrictsend_timeout
+  Timeout in seconds to cancel transfer after user left channel.
+
 With Version mod 1.29:
 ----------------------
 

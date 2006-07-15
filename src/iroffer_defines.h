@@ -173,6 +173,7 @@
 #define CREAT_PERMISSIONS ( S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH )
 
 /* how long to tollerate a missing user before disconnecting */
+#define RESTRICTSEND_WARNING 30
 #define RESTRICTSEND_TIMEOUT 300
 
 /* some os's (cygwin, cough, cough, ... ) require extra flags to open() */

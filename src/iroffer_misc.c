@@ -129,6 +129,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"auto_crc_check",       &gdata.auto_crc_check,       &gdata.auto_crc_check },
   {"nocrc32",              &gdata.nocrc32,              &gdata.nocrc32 },
   {"direct_file_access",   &gdata.direct_file_access,   &gdata.direct_file_access },
+  {"restrictsend_warning", &gdata.restrictsend_warning, &gdata.restrictsend_warning },
 };
 
 typedef struct
@@ -157,6 +158,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"atfind",          &gdata.atfind,          &gdata.atfind,          0, 10, 1 },
   {"waitafterjoin",   &gdata.waitafterjoin,   &gdata.waitafterjoin,   0, 2000, 1 },
   {"autoadd_time",    &gdata.autoadd_time,    &gdata.autoadd_time,    0, 2000, 1 },
+  {"restrictsend_timeout",  &gdata.restrictsend_timeout,  &gdata.restrictsend_timeout,    0, 600, 300 },
 };
 
 typedef struct
@@ -3008,6 +3010,8 @@ void reinit_config_vars(void)
   gdata.nocrc32 = 0;
   gdata.direct_file_access = 0;
   gdata.autoadd_time = 0;
+  gdata.restrictsend_warning = 0;
+  gdata.restrictsend_timeout = RESTRICTSEND_TIMEOUT;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_dir);
@@ -3872,6 +3876,10 @@ void reverify_restrictsend(void)
           else if (!tr->restrictsend_bad)
             {
               tr->restrictsend_bad = gdata.curtime;
+              if (gdata.restrictsend_warning)
+                {
+                  notice(tr->nick, "You are no longer on a known channel");
+                }
             }
           else if ((gdata.curtime - tr->restrictsend_bad) >= RESTRICTSEND_TIMEOUT)
             {
@@ -3900,6 +3908,10 @@ void reverify_restrictsend(void)
           else if (!pq->restrictsend_bad)
             {
               pq->restrictsend_bad = gdata.curtime;
+              if (gdata.restrictsend_warning)
+                {
+                  notice(pq->nick, "You are no longer on a known channel");
+                }
               pq = irlist_get_next(pq);
             }
           else if ((gdata.curtime - pq->restrictsend_bad) >= RESTRICTSEND_TIMEOUT)

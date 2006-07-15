@@ -1609,3 +1609,5 @@
 1620 "Nickname is registered to someone else."
 1621 "This nickname has been registered"
 1622 "This nickname is registered and protected."
+1623 "restrictsend_warning"
+1624 "restrictsend_timeout"

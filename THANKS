@@ -104,4 +104,6 @@ Alita-Chan
 
 Terra_Knight
 	option "autoadd_dir"
+	option "restrictsend_warning"
+	option "restrictsend_timeout"
 

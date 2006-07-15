@@ -1459,6 +1459,8 @@ void dumpgdata(void)
   gdata_print_int(nocrc32);
   gdata_print_int(direct_file_access);
   gdata_print_int(autoadd_time);
+  gdata_print_int(restrictsend_warning);
+  gdata_print_int(restrictsend_timeout);
   gdata_print_string(autoadd_dir);
   gdata_print_string(autoadd_group);
   gdata_print_string(autoaddann);
