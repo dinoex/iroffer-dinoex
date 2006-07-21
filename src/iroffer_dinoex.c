@@ -27,7 +27,7 @@
 #include <GeoIP.h>
 #endif /* USE_GEOIP */
 
-extern const unsigned long crctable[256];
+extern const ir_uint32 crctable[256];
 
 int verifyshell(irlist_t *list, const char *file)
 {
@@ -1167,8 +1167,8 @@ void crc32_init(void)
 void crc32_update(char *buf, unsigned long len)
 {
   char *p;
-  unsigned long crc = gdata.crc32build.crc;
-  unsigned long crc_total = gdata.crc32build.crc_total;
+  ir_uint32 crc = gdata.crc32build.crc;
+  ir_uint32 crc_total = gdata.crc32build.crc_total;
 
   for (p = buf; len--; ++p) {
     crc = (crc >> 8) ^ crctable[(crc ^ *p) & 0xff];

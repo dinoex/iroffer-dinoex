@@ -10,6 +10,9 @@ With Version mod 1.30:
 81) restrictsend_timeout
   Timeout in seconds to cancel transfer after user left channel.
 
+bugfix: CRC (reported by conanmichi)
+  crc on 64bit linux was wrong.
+
 With Version mod 1.29:
 ----------------------
 

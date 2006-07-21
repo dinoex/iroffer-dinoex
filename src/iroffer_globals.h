@@ -339,8 +339,8 @@ struct
 
 struct
 {
-  unsigned long crc;
-  unsigned long crc_total;
+  ir_uint32 crc;
+  ir_uint32 crc_total;
 } crc32build;
 
 enum

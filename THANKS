@@ -81,6 +81,7 @@ StoVoKor
 conanmichi
 	reporting group descriptions problmes
 	reporting ambigious online help
+	reporting crc 64bit bug
 
 Kyu
 	groupname as default group description
