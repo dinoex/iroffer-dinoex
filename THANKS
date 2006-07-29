@@ -55,6 +55,8 @@ TheDeath
 	extending CRC check
 	direct file access
 	dcld and botinfo for Multinet
+	admin command SLOTSMAX
+	admin command QUEUESIZE
 
 [GFE]Lunix
 	alias xdcc list group <group>

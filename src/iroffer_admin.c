@@ -104,6 +104,8 @@ static void u_msgread(const userinput * const u);
 static void u_msgdel(const userinput * const u);
 static void u_memstat(const userinput * const u);
 static void u_qsend(const userinput * const u);
+static void u_slotsmax(const userinput * const u);
+static void u_queuesize(const userinput * const u);
 static void u_holdqueue(const userinput * const u);
 static void u_shutdown(const userinput * const u);
 static void u_debug(const userinput * const u);
@@ -174,6 +176,8 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_psend,    "PSEND","<channel> <style>","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
 #endif /* MULTINET */
 {2,method_allow_all,u_qsend,    "QSEND",NULL,"Sends Out The First Queued Pack"},
+{2,method_allow_all,u_slotsmax, "SLOTSMAX","n","temporary change slotsmax"},
+{2,method_allow_all,u_queuesize, "QUEUESIZE","n","temporary change queuesize"},
 
 {3,method_allow_all,u_info,     "INFO","n","Show Info for Pack n"},
 {3,method_allow_all,u_remove,   "REMOVE","n","Removes Pack n"},
@@ -5152,6 +5156,32 @@ static void u_qsend(const userinput * const u)
   return;
 }
 
+static void u_slotsmax(const userinput * const u) {
+   int val;
+   
+   updatecontext();
+    
+   if (u->arg1)
+     {
+       val = atoi(u->arg1);
+       gdata.slotsmax = between(1,val,MAXTRANS);
+     }
+   u_respond(u,"SLOTSMAX now %d", gdata.slotsmax);
+}
+
+static void u_queuesize(const userinput * const u) {
+   int val;
+   
+   updatecontext();
+    
+   if (u->arg1)
+     {
+       val = atoi(u->arg1);
+       gdata.queuesize = between(0,val,1000000);
+     }
+   u_respond(u,"QUEUESIZE now %d", gdata.queuesize);
+}
+
 static void u_holdqueue(const userinput * const u) {
    int val;
    
@@ -5172,8 +5202,7 @@ static void u_holdqueue(const userinput * const u) {
      }
    
    gdata.holdqueue = val;
-   u_respond(u,"HOLDQUEUE now %d", val );
-   
+   u_respond(u,"HOLDQUEUE now %d", val);
 }
 
 static void u_identify(const userinput * const u)

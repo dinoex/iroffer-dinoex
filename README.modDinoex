@@ -15,6 +15,18 @@ With Version mod 1.30:
   new admin command:
   MOVEGROUP <n> <m> <group>           move all packs from n to m into a group
 
+83) SLOTSMAX (inspired by TheDeath)
+
+  new admin command:
+  SLOTSMAX                            shows current slotsmax
+  SLOTSMAX n                          temporary change slotsmax
+
+84) QUEUESIZE (inspired by TheDeath)
+
+  new admin command:
+  QUEUESIZE                            shows current queuesize
+  QUEUESIZE n                          temporary change queuesize
+
 bugfix: CRC (reported by conanmichi)
   crc on 64bit linux was wrong.
 
