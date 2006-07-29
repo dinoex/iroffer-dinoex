@@ -10,6 +10,11 @@ With Version mod 1.30:
 81) restrictsend_timeout (inspired by Terra_Knight)
   Timeout in seconds to cancel transfer after user left channel.
 
+82) movegroup (inspired by Takatoo)
+
+  new admin command:
+  MOVEGROUP <n> <m> <group>           move all packs from n to m into a group
+
 bugfix: CRC (reported by conanmichi)
   crc on 64bit linux was wrong.
 

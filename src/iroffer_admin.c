@@ -82,6 +82,7 @@ static void u_lockgroup(const userinput * const u);
 static void u_unlockgroup(const userinput * const u);
 static void u_groupdesc(const userinput * const u);
 static void u_group(const userinput * const u);
+static void u_movegroup(const userinput * const u);
 static void u_regroup(const userinput * const u);
 static void u_add(const userinput * const u);
 static void u_adddir(const userinput * const u);
@@ -197,6 +198,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_unlockgroup, "UNLOCKGROUP","g","Unlock all packs in group <g>"},
 {3,method_allow_all,u_groupdesc,  "GROUPDESC","<g> <msg>","Change Desc of group <g> to <msg>"},
 {3,method_allow_all,u_group,      "GROUP","n <g>","Change Group of pack n to <g>"},
+{3,method_allow_all,u_movegroup,  "MOVEGROUP","n m <g>","Change Group of pack n to m, set to <g>"},
 {3,method_allow_all,u_regroup,    "REGROUP","<g> <new>","Change all packs of group <g> to <new>"},
 {3,method_allow_all,u_announce, "ANNOUNCE","n <msg>","ANNOUNCE <msg> for pack n in all joined channels"},
 {3,method_allow_all,u_addann,   "ADDANN","<filename>","Add and Announce New Pack"},
@@ -3785,6 +3787,94 @@ static void u_group(const userinput * const u) {
   write_statefile();
   xdccsavetext();
 }
+static void u_movegroup(const userinput * const u) {
+  xdcc *xd;
+  const char *new;
+  char *tmpdesc;
+  char *tmpgroup;
+  int rc;
+  int num;
+  int num1 = 0;
+  int num2 = 0;
+  
+  updatecontext();
+  
+  if (u->arg1)
+    {
+      num1 = atoi(u->arg1);
+    }
+  
+  if (num1 < 1 || num1 > irlist_size(&gdata.xdccs))
+    {
+      u_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  if (u->arg2)
+    {
+      num2 = atoi(u->arg2);
+    }
+  
+  if (num2 < 1 || num2 > irlist_size(&gdata.xdccs))
+    {
+      u_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  new = u->arg3;
+  if (!u->arg3 || !strlen(u->arg3))
+    {
+      new = "MAIN";
+    }
+  else
+    {
+       if (gdata.groupsincaps)
+         caps(u->arg3);
+    }
+  
+  for (num = num1; num <= num2; num ++)
+    {
+       xd = irlist_get_nth(&gdata.xdccs, num-1);
+       if (xd->group != NULL)
+         {
+           u_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
+                     num,xd->group,new);
+           /* keep group info for later work */
+           tmpgroup = xd->group;
+           xd->group = NULL;
+           tmpdesc = xd->group_desc;
+           xd->group_desc = NULL;
+           if (tmpdesc != NULL)
+             {
+               if (tmpgroup != NULL)
+                 reorder_new_groupdesc(tmpgroup,tmpdesc);
+               mydelete(tmpdesc);
+             }
+           if (tmpgroup != NULL)
+             mydelete(tmpgroup);
+         }
+       else
+         {
+           u_respond(u, "GROUP: [Pack %i] New: %s",
+                     num,u->arg3);
+         }
+       
+       if (new == u->arg3)
+         {
+           xd->group = mycalloc(strlen(u->arg3)+1);
+           strcpy(xd->group,u->arg3);
+           reorder_groupdesc(u->arg3);
+           rc = add_default_groupdesc(u->arg3);
+           if (rc == 1)
+             u_respond(u, "New GROUPDESC: %s",u->arg3);
+         }
+      
+     }
+  
+  write_statefile();
+  xdccsavetext();
+}
+
 
 static void u_regroup(const userinput * const u) {
   xdcc *xd;
