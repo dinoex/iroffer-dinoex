@@ -183,8 +183,8 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_psend,    "PSEND","<channel> <style>","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
 #endif /* MULTINET */
 {2,method_allow_all,u_qsend,    "QSEND",NULL,"Sends Out The First Queued Pack"},
-{2,method_allow_all,u_slotsmax, "SLOTSMAX","n","temporary change slotsmax"},
-{2,method_allow_all,u_queuesize, "QUEUESIZE","n","temporary change queuesize"},
+{2,method_allow_all,u_slotsmax, "SLOTSMAX","[n]","temporary change slotsmax"},
+{2,method_allow_all,u_queuesize, "QUEUESIZE","[n]","temporary change queuesize"},
 
 {3,method_allow_all,u_info,     "INFO","n","Show Info for Pack n"},
 {3,method_allow_all,u_remove,   "REMOVE","n","Removes Pack n"},
