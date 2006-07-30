@@ -254,7 +254,9 @@ static void mainloop (void) {
       FD_ZERO(&gdata.writeset);
       FD_ZERO(&gdata.execset);
       highests = 0;
+#ifdef USE_CURL
       fetch_multi_fdset(&gdata.readset, &gdata.writeset, &gdata.execset, &highests);
+#endif /* USE_CURL */
       
 #ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++)
@@ -410,7 +412,9 @@ static void mainloop (void) {
           FD_ZERO(&gdata.execset);
         }
       
+#ifdef USE_CURL
       fetch_perform();
+#endif /* USE_CURL */
       
       if (gdata.debug > 3)
         {
