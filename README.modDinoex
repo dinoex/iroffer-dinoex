@@ -37,6 +37,9 @@ With Version mod 1.30:
   When adding a new file, search for matching directories and aad the
   new file to the same group.
 
+87) autoadd_dir mutiple, (inspired by Terra_Knight, Tak0r)
+  Multiple Directory for files that will be added without further interaction.
+
 bugfix: CRC (reported by conanmichi)
   crc on 64bit linux was wrong.
 

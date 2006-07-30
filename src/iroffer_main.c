@@ -2160,7 +2160,7 @@ static void mainloop (void) {
           if (changesec && (gdata.curtime - lastautoadd > gdata.autoadd_time))
             {
               lastautoadd = gdata.curtime;
-              autoadd_scan(gdata.autoadd_dir, gdata.autoadd_group);
+              autoadd_all();
             }
         }
       

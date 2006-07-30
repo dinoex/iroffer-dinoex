@@ -52,6 +52,7 @@ int noticeresults(const char *nick, const char *match);
 void check_duplicateip(transfer *const newtr);
 const char *validate_crc32(xdcc *xd, int quiet);
 void autoadd_scan(const char *dir, const char *group);
+void autoadd_all(void);
 #ifdef USE_CURL
 void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd);
 void fetch_perform(void);

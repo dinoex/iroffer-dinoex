@@ -181,7 +181,6 @@ static const config_parse_str_t config_parse_str[] = {
   {"enable_nick",          &gdata.enable_nick,          &gdata.enable_nick },
   {"admin_job_file",       &gdata.admin_job_file,       &gdata.admin_job_file },
   {"autoaddann",           &gdata.autoaddann,           &gdata.autoaddann },
-  {"autoadd_dir",          &gdata.autoadd_dir,          &gdata.autoadd_dir },
   {"autoadd_group",        &gdata.autoadd_group,        &gdata.autoadd_group },
 };
 
@@ -458,6 +457,13 @@ void getconfig_set (const char *line, int rehash)
      {
        char *cjr;
        cjr = irlist_add(&gdata.geoipexcludenick, strlen(var) + 1);
+       strcpy(cjr, var);
+       mydelete(var);
+     }
+   else if ( !strcmp(type,"autoadd_dir"))
+     {
+       char *cjr;
+       cjr = irlist_add(&gdata.autoadd_dirs, strlen(var) + 1);
        strcpy(cjr, var);
        mydelete(var);
      }
@@ -2989,6 +2995,7 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.autoqueue);
   irlist_delete_all(&gdata.geoipcountry);
   irlist_delete_all(&gdata.geoipexcludenick);
+  irlist_delete_all(&gdata.autoadd_dirs);
   mydelete(gdata.enable_nick);
   gdata.need_voice = 0;
   gdata.hide_list_info = 0;
@@ -3016,7 +3023,6 @@ void reinit_config_vars(void)
   gdata.restrictsend_timeout = RESTRICTSEND_TIMEOUT;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
-  mydelete(gdata.autoadd_dir);
   mydelete(gdata.autoadd_group);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;

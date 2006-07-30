@@ -1437,6 +1437,10 @@ void dumpgdata(void)
   gdata_iter_print_string(message);
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(autoadd_dirs, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
   gdata_print_string(enable_nick);
   gdata_print_int(need_voice);
   gdata_print_int(hide_list_info);
@@ -1462,7 +1466,6 @@ void dumpgdata(void)
   gdata_print_int(autoadd_time);
   gdata_print_int(restrictsend_warning);
   gdata_print_int(restrictsend_timeout);
-  gdata_print_string(autoadd_dir);
   gdata_print_string(autoadd_group);
   gdata_print_string(autoaddann);
   gdata_print_string(admin_job_file);

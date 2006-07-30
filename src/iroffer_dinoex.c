@@ -1212,6 +1212,20 @@ void autoadd_scan(const char *dir, const char *group)
    mydelete(line);
 }
 
+void autoadd_all(void)
+{
+  char *dir;
+
+  updatecontext();
+
+  dir = irlist_get_head(&gdata.autoadd_dirs);
+  while (dir)
+    {
+      autoadd_scan(dir, gdata.autoadd_group);
+      dir = irlist_get_next(dir);
+    }
+}
+
 #ifdef USE_CURL
 
 typedef struct
