@@ -259,7 +259,7 @@ int num_dccchats;
 time_t curtime;
 unsigned long long curtimems;
 
-fd_set readset, writeset;
+fd_set readset, writeset, execset;
 
 float record;
 float sentrecord;

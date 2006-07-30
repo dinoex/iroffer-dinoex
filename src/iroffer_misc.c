@@ -3352,6 +3352,8 @@ void startupiroffer(void) {
          }
      }
    
+   startup_dinoex();
+   
    getconfig();
    
    mylog(CALLTYPE_NORMAL,"iroffer started v" VERSIONLONG);

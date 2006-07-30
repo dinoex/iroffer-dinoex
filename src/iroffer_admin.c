@@ -21,6 +21,10 @@
 #include "iroffer_globals.h"
 #include "iroffer_dinoex.h"
 
+#ifdef USE_CURL
+#include <curl/curl.h>
+#endif /* USE_CURL */
+
 /* local functions */
 static void
 #ifdef __GNUC__
@@ -127,6 +131,9 @@ static void u_crc(const userinput * const u);
 static void u_filemove(const userinput * const u);
 static void u_filedel(const userinput * const u);
 static void u_showdir(const userinput * const u);
+#ifdef USE_CURL
+static void u_fetch(const userinput * const u);
+#endif /* USE_CURL */
 
 
 typedef struct
@@ -210,6 +217,9 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_filemove, "FILEMOVE","<filename> <filename>","rename file on disk"},
 {3,method_allow_all,u_filedel,  "FILEDEL","<filename>","remove file from disk"},
 {3,method_allow_all,u_showdir,  "SHOWDIR","<dir>","list directory on disk"},
+#ifdef USE_CURL
+{3,method_allow_all,u_fetch,    "FETCH","<file> <url>","download url and save file in upload dir"},
+#endif /* USE_CURL */
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
 #ifdef MULTINET
@@ -2517,6 +2527,33 @@ static void u_showdir(const userinput * const u)
   mydelete(thedir);
   return;
 }
+
+#ifdef USE_CURL
+static void u_fetch(const userinput * const u)
+{
+  updatecontext();
+  
+  if (gdata.direct_file_access == 0)
+    {
+      u_respond(u,"Disabled in Config");
+      return;
+    }
+   
+  if (!u->arg1 || !strlen(u->arg1))
+    {
+      u_respond(u,"Try Specifying a File");
+      return;
+    }
+  
+  if (!u->arg2e || !strlen(u->arg2e))
+    {
+      u_respond(u,"Try Specifying a URL");
+      return;
+    }
+  
+  start_fetch_url(u);
+}
+#endif /* USE_CURL */
 
 static void u_msg(const userinput * const u)
 {

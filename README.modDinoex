@@ -27,6 +27,12 @@ With Version mod 1.30:
   QUEUESIZE                            shows current queuesize
   QUEUESIZE n                          temporary change queuesize
 
+85) FETCH (inspired by TheDeath)
+
+  new admin command:
+  FETCH <file> <url>                   download content of url as file
+                                       which is saved in uploadir
+
 bugfix: CRC (reported by conanmichi)
   crc on 64bit linux was wrong.
 

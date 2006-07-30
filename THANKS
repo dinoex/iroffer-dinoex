@@ -57,6 +57,7 @@ TheDeath
 	dcld and botinfo for Multinet
 	admin command SLOTSMAX
 	admin command QUEUESIZE
+	admin command FETCH
 
 [GFE]Lunix
 	alias xdcc list group <group>

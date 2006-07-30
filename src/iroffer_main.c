@@ -252,7 +252,9 @@ static void mainloop (void) {
    
       FD_ZERO(&gdata.readset);
       FD_ZERO(&gdata.writeset);
+      FD_ZERO(&gdata.execset);
       highests = 0;
+      fetch_multi_fdset(&gdata.readset, &gdata.writeset, &gdata.execset, &highests);
       
 #ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++)
@@ -405,7 +407,10 @@ static void mainloop (void) {
           /* data is undefined on error, zero and continue */
           FD_ZERO(&gdata.readset);
           FD_ZERO(&gdata.writeset);
+          FD_ZERO(&gdata.execset);
         }
+      
+      fetch_perform();
       
       if (gdata.debug > 3)
         {

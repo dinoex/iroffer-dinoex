@@ -27,7 +27,79 @@
 #include <GeoIP.h>
 #endif /* USE_GEOIP */
 
+#ifdef USE_CURL
+#include <curl/curl.h>
+#endif /* USE_CURL */
+
 extern const ir_uint32 crctable[256];
+
+/* local functions */
+static void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+a_respond(const userinput * const u, const char *format, ...);
+
+static void a_respond(const userinput * const u, const char *format, ...)
+{
+  va_list args;
+
+  updatecontext();
+ 
+  va_start(args, format);
+ 
+  switch (u->method)
+    {
+    case method_console:
+      vioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, format, args);
+      break;
+    case method_dcc:
+      vwritedccchat(u->chat, 1, format, args);
+      break;
+    case method_out_all:
+      vioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, format, args);
+      break;
+    case method_fd:
+      {
+        ssize_t retval;
+        char tempstr[maxtextlength];
+        int llen;
+
+        llen = vsnprintf(tempstr,maxtextlength-3,format,args);
+        if ((llen < 0) || (llen >= maxtextlength-3))
+          {
+            outerror(OUTERROR_TYPE_WARN,"string too long!");
+            tempstr[0] = '\0';
+            llen = 0;
+          }
+
+        if (!gdata.xdcclistfileraw)
+          {
+            removenonprintablectrl(tempstr);
+          }
+
+#if defined(_OS_CYGWIN)
+        tempstr[llen++] = '\r';
+#endif
+        tempstr[llen++] = '\n';
+        tempstr[llen] = '\0';
+
+        retval = write(u->fd, tempstr, strlen(tempstr));
+        if (retval < 0)
+          {
+            outerror(OUTERROR_TYPE_WARN_LOUD,"Write failed: %s", strerror(errno));
+          }
+      }
+      break;
+    case method_msg:
+      vprivmsg(u->snick, format, args);
+      break;
+    default:
+      break;
+    }
+
+  va_end(args);
+}
 
 int verifyshell(irlist_t *list, const char *file)
 {
@@ -801,7 +873,7 @@ void check_new_connection(transfer *const tr)
 {
 #ifdef USE_GEOIP
   char *country;
-#endif
+#endif /* USE_GEOIP */
   
 #ifdef USE_GEOIP
   country = check_geoip(tr);
@@ -824,7 +896,7 @@ void check_new_connection(transfer *const tr)
              }
          }
      }
-#endif
+#endif /* USE_GEOIP */
   
   if ((gdata.ignoreduplicateip) && (gdata.maxtransfersperperson > 0))
     {
@@ -914,6 +986,35 @@ void check_duplicateip(transfer *const newtr)
   write_statefile();
 }
 
+#ifdef USE_CURL
+CURLM *cm;
+irlist_t fetch_trans;
+int fetch_started;
+#endif /* USE_CURL */
+
+void startup_dinoex(void)
+{
+#ifdef USE_CURL
+  CURLcode cs;
+
+  bzero((char *)&fetch_trans, sizeof(fetch_trans));
+  fetch_started = 0;
+
+  cs = curl_global_init(CURL_GLOBAL_ALL);
+  if (cs != 0)
+    {
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+              "curl_global_init failed with %d", cs);
+    }
+  cm = curl_multi_init();
+  if (cm == NULL)
+    {
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+              "curl_multi_init failed");
+    }
+#endif /* USE_CURL */
+}
+
 void shutdown_dinoex(void)
 {
 #ifdef USE_GEOIP
@@ -923,6 +1024,9 @@ void shutdown_dinoex(void)
       gi = NULL;
     }
 #endif
+#ifdef USE_CURL
+  curl_global_cleanup();
+#endif /* USE_CURL */
 }
 
 void rehash_dinoex(void)
@@ -1091,6 +1195,280 @@ void autoadd_scan(const char *dir, const char *group)
    u_parseit(uxdl);
    mydelete(line);
 }
+
+#ifdef USE_CURL
+
+typedef struct
+{
+  userinput u;
+#ifndef MULTINET
+  int net;
+#endif /* MULTINET */
+  char *name;
+  char *url;
+  char *vhosttext;
+  FILE *writefd;
+  off_t resumesize;
+  char *errorbuf;
+  CURL *curlhandle;
+} fetch_curl_t;
+
+void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd)
+{
+  CURLMcode cs;
+
+  cs = curl_multi_fdset(cm, read_fd_set, write_fd_set, exc_fd_set, max_fd);
+}
+
+static fetch_curl_t *clean_fetch(fetch_curl_t *ft);
+static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
+{
+  fclose(ft->writefd);
+  mydelete(ft->errorbuf);
+  mydelete(ft->name);
+  mydelete(ft->url);
+  if (ft->u.snick != NULL)
+    mydelete(ft->u.snick);
+  if (ft->vhosttext != NULL)
+    mydelete(ft->vhosttext);
+  return irlist_delete(&fetch_trans, ft);
+}
+
+void fetch_perform(void)
+{
+  CURLMcode cms;
+  CURLMsg *msg;
+  CURL *ch;
+  int running;
+  int msgs_in_queue;
+  int seen = 0;
+  fetch_curl_t *ft;
+#ifndef MULTINET
+  gnetwork_t *backup;
+#endif /* MULTINET */
+
+  do {
+    cms = curl_multi_perform(cm, &running);
+  } while (cms == CURLM_CALL_MULTI_PERFORM);
+
+  if (running == fetch_started)
+    return;
+
+  updatecontext();
+#ifndef MULTINET
+  backup = gnetwork;
+#endif /* MULTINET */
+  do {
+     msg = curl_multi_info_read(cm, &msgs_in_queue);
+     if (msg == NULL)
+       break;
+
+     ch = msg->easy_handle;
+     ft = irlist_get_head(&fetch_trans);
+     while(ft)
+       {
+         if (ft->curlhandle == ch)
+           {
+#ifndef MULTINET
+             gnetwork = &(gdata.networks[ft->net]);
+#endif /* MULTINET */
+             if (ft->errorbuf[0] != 0)
+               outerror(OUTERROR_TYPE_WARN_LOUD,"fetch: %s",ft->errorbuf);
+             if (msg->data.result != 0 )
+               {
+                 a_respond(&(ft->u),"fetch %s failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
+               }
+              else
+               {
+                 a_respond(&(ft->u),"fetch %s completed", ft->name);
+               }
+             curl_easy_cleanup(ft->curlhandle);
+             seen ++;
+             fetch_started --;
+             ft = clean_fetch(ft);
+             continue;
+           }
+         ft = irlist_get_next(ft);
+       }
+  } while (msgs_in_queue > 0);
+  if (seen == 0)
+    outerror(OUTERROR_TYPE_WARN_LOUD,"curlhandle not found ");
+#ifndef MULTINET
+  gnetwork = backup;
+#endif /* MULTINET */
+}
+
+void start_fetch_url(const userinput *const u)
+{
+  off_t resumesize;
+  fetch_curl_t *ft;
+  char *fullfile;
+  unsigned char *name;
+  unsigned char *url;
+  FILE *writefd;
+  struct stat s;
+  int retval;
+  CURL *ch;
+  CURLcode ces;
+  CURLcode cms;
+
+  name = u->arg1;
+  url = u->arg2e;
+
+  resumesize = 0;
+  fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(name) + 2);
+  sprintf(fullfile, "%s/%s", gdata.uploaddir, name);
+  writefd = fopen(fullfile, "w+");
+  if ((writefd < 0) && (errno == EEXIST))
+    {
+      retval = stat(fullfile, &s);
+      if (retval < 0)
+        {
+          outerror(OUTERROR_TYPE_WARN_LOUD,"Cant Stat Upload File '%s': %s",
+                   fullfile,strerror(errno));
+          a_respond(u,"File Error, File couldn't be opened for writing");
+          mydelete(fullfile);
+          return;
+        }
+      writefd = fopen(fullfile, "a");
+      if (writefd >= 0)
+        {
+          resumesize = s.st_size;
+        }
+    }
+  if (writefd < 0)
+    {
+      outerror(OUTERROR_TYPE_WARN_LOUD,"Cant Access Upload File '%s': %s",
+               fullfile,strerror(errno));
+      a_respond(u,"File Error, File couldn't be opened for writing");
+      mydelete(fullfile);
+      return;
+    }
+  
+  updatecontext();
+  ft = irlist_add(&fetch_trans, sizeof(fetch_curl_t));
+  ft->u.method = u->method;
+  if (u->snick != NULL)
+    {
+       ft->u.snick = mycalloc(strlen(u->snick)+1);;
+       strcpy(ft->u.snick, u->snick);
+    }
+  ft->u.fd = u->fd;
+  ft->u.chat = u->chat;
+#ifndef MULTINET
+  ft->net = gnetwork->net;
+#endif /* MULTINET */
+  ft->name = mycalloc(strlen(name)+1);
+  strcpy((ft->name),name);
+  ft->url = mycalloc(strlen(url)+1);
+  strcpy((ft->url),url);
+  ft->writefd = writefd;
+  ft->resumesize = resumesize;
+  ft->errorbuf = mycalloc(CURL_ERROR_SIZE);
+
+  updatecontext();
+  ch = curl_easy_init();
+  if (ch == NULL)
+    {
+      a_respond(u,"Curl not ready");
+      clean_fetch(ft);
+      return;
+    }
+
+  ft->curlhandle = ch;
+
+  ces = curl_easy_setopt(ch, CURLOPT_ERRORBUFFER, ft->errorbuf);
+  if (ces != 0)
+    {
+      a_respond(u,"curl_easy_setopt ERRORBUFFER failed with %d", ces);
+      clean_fetch(ft);
+      return;
+    }
+
+#if 0
+  if (gdata.local_vhost)
+    {
+      char *vhosttext;
+
+      ft->vhosttext = mycalloc(40);
+      snprintf(ft->vhosttext,40,"%ld.%ld.%ld.%ld",
+               gdata.local_vhost>>24,
+               (gdata.local_vhost>>16) & 0xFF,
+               (gdata.local_vhost>>8) & 0xFF,
+               gdata.local_vhost & 0xFF);
+      ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
+      if (ces != 0)
+        {
+          a_respond(u,"curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
+          clean_fetch(ft);
+          return;
+        }
+    }
+#endif
+
+  ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
+  if (ces != 0)
+    {
+      a_respond(u,"curl_easy_setopt NOPROGRESS failed with %d", ces);
+      return;
+    }
+
+  ces = curl_easy_setopt(ch, CURLOPT_NOSIGNAL, 1);
+  if (ces != 0)
+    {
+      a_respond(u,"curl_easy_setopt NOSIGNAL failed with %d", ces);
+      return;
+    }
+
+  ces = curl_easy_setopt(ch, CURLOPT_FAILONERROR, 1);
+  if (ces != 0)
+    {
+      a_respond(u,"curl_easy_setopt FAILONERROR failed with %d", ces);
+      return;
+    }
+
+  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
+  if (ces != 0)
+    {
+      a_respond(u,"curl_easy_setopt SSL_VERIFYPEER failed with %d", ces);
+      return;
+    }
+
+  ces = curl_easy_setopt(ch, CURLOPT_URL, ft->url);
+  if (ces != 0)
+    {
+      a_respond(u,"curl_easy_setopt URL failed with %d", ces);
+      return;
+    }
+
+  ces = curl_easy_setopt(ch, CURLOPT_WRITEDATA, ft->writefd);
+  if (ces != 0)
+    {
+      a_respond(u,"curl_easy_setopt WRITEDATA failed with %d", ces);
+      return;
+    }
+
+  if (resumesize > 0L)
+    {
+      ces = curl_easy_setopt(ch, CURLOPT_RESUME_FROM_LARGE, ft->resumesize);
+      if (ces != 0)
+        {
+          a_respond(u,"curl_easy_setopt RESUME_FROM failed with %d", ces);
+          return;
+        }
+    }
+
+  cms = curl_multi_add_handle(cm, ch);
+  if (cms != 0)
+    {
+      a_respond(u,"curl_multi_add_handle failed with %d", cms);
+      return;
+    }
+
+    a_respond(u,"fetch %s started", ft->name);
+    fetch_started ++;
+}
+#endif /* USE_CURL */
 
 char* getpart_eol(const char *line, int howmany)
 {

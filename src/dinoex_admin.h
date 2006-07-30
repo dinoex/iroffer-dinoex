@@ -42,6 +42,7 @@ void look_for_file_remove(void);
 int has_closed_servers(void);
 int has_joined_channels(int all);
 void reset_download_limits(void);
+void startup_dinoex(void);
 void shutdown_dinoex(void);
 void rehash_dinoex(void);
 void check_new_connection(transfer *const tr);
@@ -50,6 +51,11 @@ int noticeresults(const char *nick, const char *match);
 void check_duplicateip(transfer *const newtr);
 const char *validate_crc32(xdcc *xd, int quiet);
 void autoadd_scan(const char *dir, const char *group);
+#ifdef USE_CURL
+void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd);
+void fetch_perform(void);
+void start_fetch_url(const userinput *const u);
+#endif /* USE_CURL */
 
 char* getpart_eol(const char *line, int howmany);
 #ifdef MULTINET

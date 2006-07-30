@@ -7,7 +7,7 @@
 
 VERSION=1.4.b03
 RELEASE=1
-MOD="1.29"
+MOD="1.30"
 
 if [ -d BitKeeper -a -f "`type bk 2>/dev/null | awk '{print $NF}'`" ]; then
  CSET=`bk prs -h -d':UTC:\n' -r+ ChangeSet`
@@ -36,6 +36,7 @@ echo "   -d           Compile with debug symbols"
 echo "   -p           Compile with profiling flags"
 echo "   -w           Compile with extra warning flags"
 echo "   -g           Compile GeoIP lib"
+echo "   -c           Compile Curl lib"
 echo "   -m           Compile for multiple IRC networks"
 exit 1
 }
@@ -45,9 +46,10 @@ OPT_DEBUG=false
 OPT_WARN=false
 OPT_PROF=false
 OPT_GEOIP=false
+OPT_CURL=false
 OPT_MULTI=false
 
-while getopts 'hedpwgm' OPTNAME; do
+while getopts 'hedpwgcm' OPTNAME; do
   case "$OPTNAME" in
     h) usage;;
 
@@ -56,6 +58,7 @@ while getopts 'hedpwgm' OPTNAME; do
     w) OPT_WARN=true;;
     p) OPT_PROF=true;;
     g) OPT_GEOIP=true;;
+    c) OPT_CURL=true;;
     m) VERSIONLONG="${VERSIONLONG} Multinet"
        OPT_MULTI=true;;
 
@@ -162,6 +165,14 @@ echo "Configuring for GeoIP."
 GEOLIB="-lGeoIP"
 GEOINC="-DUSE_GEOIP -I/usr/local/include"
 GEOLDF="-L/usr/local/lib"
+shift
+fi
+
+if $OPT_CURL; then
+echo "Configuring for Curl."
+CURLLIB="-lcurl"
+CURLINC="-DUSE_CURL -I/usr/local/include"
+CURLLDF="-L/usr/local/lib"
 shift
 fi
 
@@ -1095,9 +1106,9 @@ echo
 echo VERSION=$VERSION
 echo CC=$cctype
 echo CONFIG_EXE=$exe
-echo CONFIG_LDLIBS=$libs $GEOLIB
-echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $GEOINC $MULTI
+echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB
+echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF $CURLLFD
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $GEOINC $CURLINC $MULTI
 echo CONFIG_CPPFLAGS=
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
