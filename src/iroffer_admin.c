@@ -2919,6 +2919,25 @@ static void u_add(const userinput * const u) {
          }
       mydelete(a1);
       }
+   if ((gdata.auto_path_group) && (group == NULL)) {
+      a1 = mycalloc(strlen(u->arg1e) + 1);
+      strpathcpy(a1, u->arg1e);
+      xd = irlist_get_head(&gdata.xdccs);
+      while(xd)
+         {
+           a2 = mycalloc(strlen(xd->file) + 1);
+           strpathcpy(a2, xd->file);
+           if (!strcmp(a1, a2))
+             {
+               group = xd->group;
+               mydelete(a2);
+               break;
+             }
+           mydelete(a2);
+           xd = irlist_get_next(xd);
+         }
+      mydelete(a1);
+      }
    
    xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
    

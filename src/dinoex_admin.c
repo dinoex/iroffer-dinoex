@@ -386,6 +386,22 @@ void strtextcpy(char *d, const char *s) {
    }
 }
 
+void strpathcpy(char *d, const char *s) {
+   char *w;
+   
+   if (d == NULL)
+      return;
+   if (s == NULL)
+      return;
+   
+   strcpy(d,s);
+   
+   /* ignore file */
+   w = strrchr(d, '/');
+   if (w != NULL)
+      w[0] = 0;
+}
+
 void update_natip (const char *var)
 {
   struct hostent *hp;

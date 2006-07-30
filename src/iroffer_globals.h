@@ -145,6 +145,7 @@ int need_voice;
 int hide_list_info;
 int xdcclist_grouponly;
 int auto_default_group;
+int auto_path_group;
 int start_of_month;
 int restrictprivlistmain;
 int restrictprivlistfull;

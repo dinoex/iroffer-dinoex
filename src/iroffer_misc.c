@@ -116,6 +116,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"hide_list_info",       &gdata.hide_list_info,       &gdata.hide_list_info },
   {"xdcclist_grouponly",   &gdata.xdcclist_grouponly,   &gdata.xdcclist_grouponly },
   {"auto_default_group",   &gdata.auto_default_group,   &gdata.auto_default_group },
+  {"auto_path_group",      &gdata.auto_path_group,      &gdata.auto_path_group },
   {"restrictprivlistmain", &gdata.restrictprivlistmain, &gdata.restrictprivlistmain },
   {"restrictprivlistfull", &gdata.restrictprivlistfull, &gdata.restrictprivlistfull },
   {"groupsincaps",         &gdata.groupsincaps,         &gdata.groupsincaps },
@@ -2993,6 +2994,7 @@ void reinit_config_vars(void)
   gdata.hide_list_info = 0;
   gdata.xdcclist_grouponly = 0;
   gdata.auto_default_group = 0;
+  gdata.auto_path_group = 0;
   gdata.start_of_month = 1;
   gdata.restrictprivlistmain = 0;
   gdata.restrictprivlistfull = 0;

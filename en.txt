@@ -1646,3 +1646,4 @@
 1657 "curl_easy_setopt RESUME_FROM failed with %d"
 1658 "curl_multi_add_handle failed with %d"
 1659 "fetch %s started"
+1660 "auto_path_group"
