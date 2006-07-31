@@ -888,7 +888,8 @@ char *check_geoip(transfer *const t)
 void check_new_connection(transfer *const tr)
 {
 #ifdef USE_GEOIP
-  char *country;
+  const char *country;
+  char *msg;
 #endif /* USE_GEOIP */
   
 #ifdef USE_GEOIP
@@ -905,9 +906,14 @@ void check_new_connection(transfer *const tr)
          {
            if (!verifyshell(&gdata.geoipexcludenick, tr->nick))
              {
-               t_closeconn(tr, "Sorry, no downloads to your country", 0);
+               msg = mycalloc(maxtextlength);
+               if (country == NULL)
+                  country = "error";
+               snprintf(msg, maxtextlength - 1, "Sorry, no downloads to your country = %s", country);
+               t_closeconn(tr, msg, 0);
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                         "IP from other country (%s) detected", country);
+               mydelete(msg);
                return;
              }
          }
