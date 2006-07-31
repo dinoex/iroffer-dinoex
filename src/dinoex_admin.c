@@ -1199,9 +1199,7 @@ void update_hour_dinoex(int hour, int minute)
      return;
 
 #endif /* not MULTINET */
-  sendrunning = has_joined_channels(1);
-
-  if (has_joined_channels(1) < 1)
+  if (has_joined_channels(0) < 1)
      return;
 
   xd = &xdcc_statefile;

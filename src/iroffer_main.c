@@ -2538,7 +2538,7 @@ static void parseline(char *line) {
             }
 
           /* we have joined all channels => restart transfers if needed */
-          if (has_joined_channels(1) > 0)
+          if (has_joined_channels(0) > 0)
             {
               for (i=0; i<100; i++)
                 {
@@ -4117,7 +4117,7 @@ void sendaqueue(int type)
   if (gdata.holdqueue)
      return;
   
-  if (gdata.restrictlist && (has_joined_channels(1) == 0))
+  if (gdata.restrictlist && (has_joined_channels(0) == 0))
      return;
   
   if (!gdata.attop) gototop();
