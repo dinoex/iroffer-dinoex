@@ -1582,7 +1582,7 @@
 1593 " \2^-\2%sPassword: %s"
 1594 "Pack %d, File '%s' %s."
 1595 "CRC32 not found"
-1596 "[0-9A-Z]{8,}"
+1596 "[0-9A-F]{8,}"
 1597 "FILEMOVE"
 1598 "<filename> <filename>"
 1599 "rename file on disk"
@@ -1648,3 +1648,4 @@
 1659 "fetch %s started"
 1660 "auto_path_group"
 1661 "[n]"
+1662 "[0-9A-F]{8,}"
