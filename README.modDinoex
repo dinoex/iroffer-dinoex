@@ -43,6 +43,9 @@ With Version mod 1.30:
 bugfix: CRC (reported by conanmichi)
   crc on 64bit linux was wrong.
 
+bugfix: CRC
+  report "CRC missing" instead of "CRC failed" for a few more cases.
+
 With Version mod 1.29:
 ----------------------
 

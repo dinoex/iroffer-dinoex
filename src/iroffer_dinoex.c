@@ -1174,7 +1174,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
    else {
      x = "CRC32 not found";
      regexp = mycalloc(sizeof(regex_t));
-     if (!regcomp(regexp, "[0-9A-Z]{8,}", REG_EXTENDED | REG_ICASE | REG_NOSUB)) {
+     if (!regcomp(regexp, "[0-9A-F]{8,}", REG_EXTENDED | REG_ICASE | REG_NOSUB)) {
        if (!regexec(regexp, line, 0, NULL, 0)) {
          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s", newcrc, line);
          x = "CRC32 failed";
