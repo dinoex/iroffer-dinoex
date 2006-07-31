@@ -1466,9 +1466,11 @@ void dumpgdata(void)
   gdata_print_int(autoadd_time);
   gdata_print_int(restrictsend_warning);
   gdata_print_int(restrictsend_timeout);
-  gdata_print_string(autoadd_group);
-  gdata_print_string(autoaddann);
+  gdata_print_int(send_statefile_minute);
   gdata_print_string(admin_job_file);
+  gdata_print_string(autoaddann);
+  gdata_print_string(autoadd_group);
+  gdata_print_string(send_statefile);
   /* unlimitedhost */
   /* geoipcountry */
   /* geoipexcludenick */

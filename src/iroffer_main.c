@@ -1960,6 +1960,7 @@ static void mainloop (void) {
       if (changemin)
         {
           reverify_restrictsend();
+          update_hour_dinoex(lasthour, lastmin);
         }
 
       updatecontext();

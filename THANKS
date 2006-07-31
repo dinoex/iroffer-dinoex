@@ -112,3 +112,6 @@ Terra_Knight
 	option "restrictsend_warning"
 	option "restrictsend_timeout"
 
+Anime20o5
+	option "send_statefile"
+

@@ -37,14 +37,22 @@ With Version mod 1.30:
   When adding a new file, search for matching directories and aad the
   new file to the same group.
 
-87) autoadd_dir mutiple, (inspired by Terra_Knight, Tak0r)
+87) autoadd_dir mutiple (inspired by Terra_Knight, Tak0r)
   Multiple Directory for files that will be added without further interaction.
+
+88) send_statefile (inspired by Anime20o5)
+  Send statefile every hour via DCC to the specified nick.
+
+89) send_statefile_minute
+  Send statefile when a secific minute is reached
 
 bugfix: CRC (reported by conanmichi)
   crc on 64bit linux was wrong.
 
 bugfix: CRC
   report "CRC missing" instead of "CRC failed" for a few more cases.
+
+bugfix: improve check for joined channel
 
 With Version mod 1.29:
 ----------------------

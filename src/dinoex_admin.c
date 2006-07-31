@@ -34,6 +34,7 @@
 extern const ir_uint32 crctable[256];
 
 /* local functions */
+#ifdef USE_CURL
 static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
@@ -100,6 +101,7 @@ static void a_respond(const userinput * const u, const char *format, ...)
 
   va_end(args);
 }
+#endif /* USE_CURL */
 
 int verifyshell(irlist_t *list, const char *file)
 {
@@ -800,7 +802,7 @@ int has_joined_channels(int all)
     ch = irlist_get_head(&gdata.networks[ss].channels);
     while(ch)
       {
-         if ((ch->flags | CHAN_ONCHAN) == 0)
+         if ((ch->flags & CHAN_ONCHAN) == 0)
            {
              if (all != 0)
                return 0;
@@ -817,7 +819,7 @@ int has_joined_channels(int all)
   ch = irlist_get_head(&gdata.channels);
   while(ch)
     {
-       if ((ch->flags | CHAN_ONCHAN) == 0)
+       if ((ch->flags & CHAN_ONCHAN) == 0)
          {
            if (all != 0)
              return 0;
@@ -1009,16 +1011,28 @@ void check_duplicateip(transfer *const newtr)
 }
 
 #ifdef USE_CURL
-CURLM *cm;
-irlist_t fetch_trans;
-int fetch_started;
+static CURLM *cm;
+static irlist_t fetch_trans;
+static int fetch_started;
 #endif /* USE_CURL */
+
+static xdcc xdcc_statefile;
+static int dinoex_lasthour;
 
 void startup_dinoex(void)
 {
 #ifdef USE_CURL
   CURLcode cs;
+#endif /* USE_CURL */
 
+  bzero((char *)&xdcc_statefile, sizeof(xdcc_statefile));
+  xdcc_statefile.note = mymalloc(1);
+  strcpy(xdcc_statefile.note,"");
+  xdcc_statefile.file_fd = FD_UNUSED;
+  xdcc_statefile.has_md5sum = 2;
+  xdcc_statefile.has_crc32 = 2;
+  dinoex_lasthour = -1;
+#ifdef USE_CURL
   bzero((char *)&fetch_trans, sizeof(fetch_trans));
   fetch_started = 0;
 
@@ -1060,6 +1074,156 @@ void rehash_dinoex(void)
       gi = NULL;
     }
 #endif
+}
+
+static int send_statefile(int net)
+{
+  xdcc *xd;
+  transfer *tr;
+  char *nick;
+  const char *hostname;
+  char *sendnamestr;
+  struct stat st;
+  int xfiledescriptor;
+
+  updatecontext();
+
+  nick = gdata.send_statefile;
+  hostname = "man";
+  xd = &xdcc_statefile;
+  xd->file = gdata.statefile;
+  xd->desc = gdata.statefile;
+  xd->minspeed = gdata.transferminspeed;
+  xd->maxspeed = gdata.transfermaxspeed;
+  xfiledescriptor = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (xfiledescriptor < 0)
+    return 1;
+  
+  if (fstat(xfiledescriptor,&st) < 0)
+    {
+      close(xfiledescriptor);
+      return 1;
+    }
+
+  xd->st_size  = st.st_size;
+  xd->st_dev   = st.st_dev;
+  xd->st_ino   = st.st_ino;
+  xd->mtime    = st.st_mtime;
+  close(xfiledescriptor);
+
+  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+          "Send: %s to %s bytes=%" LLPRINTFMT "u",
+          gdata.statefile, nick, (unsigned long long)xd->st_size);
+  xd->file_fd_count++;
+  tr = irlist_add(&gdata.trans, sizeof(transfer));
+  t_initvalues(tr);
+  tr->id = get_next_tr_id();
+  tr->nick = mymalloc(strlen(nick)+1);
+  strcpy(tr->nick,nick);
+  tr->caps_nick = mymalloc(strlen(nick)+1);
+  strcpy(tr->caps_nick,nick);
+  caps(tr->caps_nick);
+  tr->hostname = mymalloc(strlen(hostname)+1);
+  strcpy(tr->hostname,hostname);
+  tr->xpack = xd;
+#ifdef MULTINET
+  tr->net = gnetwork->net;
+#endif /* MULTINET */
+  t_setuplisten(tr);
+   
+  if (tr->tr_status != TRANSFER_STATUS_LISTENING)
+    return 1;
+
+  sendnamestr = getsendname(tr->xpack->file);
+  privmsg_fast(nick,"\1DCC SEND %s %lu %i %" LLPRINTFMT "u\1",
+               sendnamestr,
+               gdata.ourip,
+               tr->listenport,
+               (unsigned long long)tr->xpack->st_size);
+  mydelete(sendnamestr);
+  return 0;
+}
+
+void update_hour_dinoex(int hour, int minute)
+{
+  xdcc *xd;
+  transfer *tr;
+  int sendrunning;
+  int lastminute;
+#ifdef MULTINET
+  gnetwork_t *backup;
+  int net = 0;
+#endif /* MULTINET */
+
+  if (!gdata.send_statefile)
+    return;
+
+  updatecontext();
+
+  if (dinoex_lasthour == hour)
+    return;
+
+  minute %= 60;
+  lastminute = gdata.send_statefile_minute + 10;
+  if (lastminute < 60)
+    {
+      if (minute < gdata.send_statefile_minute)
+        return;
+      if (minute >= lastminute)
+        return;
+    }
+  else
+    {
+      lastminute = lastminute % 60;
+      if ((minute < gdata.send_statefile_minute) && (minute > lastminute))
+        return;
+    }
+
+#ifdef MULTINET
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
+     return;
+
+ /* timeout for restart must be less then Transfer Timeout 180s */
+  if (gdata.curtime - gnetwork->lastservercontact >= 150)
+     return;
+
+#endif /* MULTINET */
+#ifndef MULTINET
+  if (gdata.serverstatus != SERVERSTATUS_CONNECTED)
+     return;
+
+  /* timeout for restart must be less then Transfer Timeout 180s */
+  if (gdata.curtime - gdata.lastservercontact >= 150)
+     return;
+
+#endif /* not MULTINET */
+  sendrunning = has_joined_channels(1);
+
+  if (has_joined_channels(1) < 1)
+     return;
+
+  xd = &xdcc_statefile;
+  sendrunning = 0;
+  tr = irlist_get_head(&gdata.trans);
+  while(tr)
+    {
+      if (xd == tr->xpack)
+        {
+          sendrunning++;
+        }
+      tr = irlist_get_next(tr);
+    } 
+  if (sendrunning == 0)
+    {
+       if (send_statefile(net) == 0)
+         dinoex_lasthour = hour;
+    } 
+    
+#ifdef MULTINET
+  gnetwork = backup;
+#endif /* MULTINET */
 }
 
 /* iroffer-lamm: @find and long !list */

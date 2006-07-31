@@ -46,6 +46,7 @@ void reset_download_limits(void);
 void startup_dinoex(void);
 void shutdown_dinoex(void);
 void rehash_dinoex(void);
+void update_hour_dinoex(int hour, int minute);
 void check_new_connection(transfer *const tr);
 void check_duplicateip(transfer *const newtr);
 int noticeresults(const char *nick, const char *match);

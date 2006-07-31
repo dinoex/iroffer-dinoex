@@ -160,6 +160,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"waitafterjoin",   &gdata.waitafterjoin,   &gdata.waitafterjoin,   0, 2000, 1 },
   {"autoadd_time",    &gdata.autoadd_time,    &gdata.autoadd_time,    0, 2000, 1 },
   {"restrictsend_timeout",  &gdata.restrictsend_timeout,  &gdata.restrictsend_timeout,    0, 600, 1 },
+  {"send_statefile_minute",  &gdata.send_statefile_minute,  &gdata.send_statefile_minute, 0, 60, 1 },
 };
 
 typedef struct
@@ -182,6 +183,7 @@ static const config_parse_str_t config_parse_str[] = {
   {"admin_job_file",       &gdata.admin_job_file,       &gdata.admin_job_file },
   {"autoaddann",           &gdata.autoaddann,           &gdata.autoaddann },
   {"autoadd_group",        &gdata.autoadd_group,        &gdata.autoadd_group },
+  {"send_statefile",       &gdata.send_statefile,       &gdata.send_statefile },
 };
 
 void getconfig_set (const char *line, int rehash)
@@ -3021,9 +3023,11 @@ void reinit_config_vars(void)
   gdata.autoadd_time = 0;
   gdata.restrictsend_warning = 0;
   gdata.restrictsend_timeout = RESTRICTSEND_TIMEOUT;
+  gdata.send_statefile_minute = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
+  mydelete(gdata.send_statefile);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;
