@@ -32,6 +32,9 @@ With Version mod 1.30:
   new admin command:
   FETCH <file> <url>                   download content of url as file
                                        which is saved in uploadir
+
+  this needs libcurl, activate with ./Configure -c
+
 86) auto_path_group
 
   When adding a new file, search for matching directories and aad the
@@ -138,6 +141,7 @@ With Version mod 1.26:
 
 66) network
    support multiple irc networks with common queue and limits.
+   activate with ./Configure -m
 
    References TODO:
 Not going to happen anytime soon:
@@ -200,7 +204,7 @@ Long Term Features:
 62) Support for GeoIP Database lookups
 
    Documentation at http://www.maxmind.com/geoip/
-   activate with Configure -g
+   activate with ./Configure -g
 
 63) geoipcountry
 
