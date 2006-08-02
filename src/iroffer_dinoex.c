@@ -1076,7 +1076,7 @@ void rehash_dinoex(void)
 #endif
 }
 
-static int send_statefile(int net)
+static int send_statefile(void)
 {
   xdcc *xd;
   transfer *tr;
@@ -1215,7 +1215,7 @@ void update_hour_dinoex(int hour, int minute)
     } 
   if (sendrunning == 0)
     {
-       if (send_statefile(net) == 0)
+       if (send_statefile() == 0)
          dinoex_lasthour = hour;
     } 
     
@@ -1441,7 +1441,7 @@ void fetch_perform(void)
   int msgs_in_queue;
   int seen = 0;
   fetch_curl_t *ft;
-#ifndef MULTINET
+#ifdef MULTINET
   gnetwork_t *backup;
 #endif /* MULTINET */
 
@@ -1453,7 +1453,7 @@ void fetch_perform(void)
     return;
 
   updatecontext();
-#ifndef MULTINET
+#ifdef MULTINET
   backup = gnetwork;
 #endif /* MULTINET */
   do {
@@ -1467,7 +1467,7 @@ void fetch_perform(void)
        {
          if (ft->curlhandle == ch)
            {
-#ifndef MULTINET
+#ifdef MULTINET
              gnetwork = &(gdata.networks[ft->net]);
 #endif /* MULTINET */
              if (ft->errorbuf[0] != 0)
@@ -1491,7 +1491,7 @@ void fetch_perform(void)
   } while (msgs_in_queue > 0);
   if (seen == 0)
     outerror(OUTERROR_TYPE_WARN_LOUD,"curlhandle not found ");
-#ifndef MULTINET
+#ifdef MULTINET
   gnetwork = backup;
 #endif /* MULTINET */
 }
@@ -1553,7 +1553,7 @@ void start_fetch_url(const userinput *const u)
     }
   ft->u.fd = u->fd;
   ft->u.chat = u->chat;
-#ifndef MULTINET
+#ifdef MULTINET
   ft->net = gnetwork->net;
 #endif /* MULTINET */
   ft->name = mycalloc(strlen(name)+1);
