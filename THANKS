@@ -11,7 +11,7 @@ Porakin
 	iroffer-lamm distribution
 	manual queue for sends 
 	announce/addann/autoaddann
-	noxdccinfo
+	option "noxdccinfo"
 	@find-reply ("atfind" config option)
 
 Rom
@@ -26,7 +26,7 @@ Tak0r
 
 Keichi
 	option "auto_default_group"
-	"ADDGROUP" comamnd
+	admin command "ADDGROUP"
 	option "start_of_month"
 
 Kickaha
@@ -34,14 +34,14 @@ Kickaha
 
 Takatoo
 	reporting regroup bug
-	command "movegroup"
+	admin command "MOVEGROUP"
 
 TheDeath
 	reporting regroup bug
 	reporting send problem
 	option "channel -headline"
 	reporting removelostfiles problem
-	"CHLIMIT" command
+	admin command "CHLIMIT"
 	porting to WIN32
 	reporting menmory leak
 	suggesting flood protection
@@ -55,10 +55,10 @@ TheDeath
 	extending CRC check
 	direct file access
 	dcld and botinfo for Multinet
-	admin command SLOTSMAX
-	admin command QUEUESIZE
-	admin command FETCH
-	uploadminspace
+	admin command "SLOTSMAX"
+	admin command "QUEUESIZE"
+	admin command "FETCH"
+	option "uploadminspace"
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -69,9 +69,10 @@ TheDeath
 
 Chobits
 	option "channel -headline"
-	"CHLIMITINFO" command
+	admin command "CHLIMITINFO"
 	spaces in groupname problem
-	ignoreduplicateip
+	option "ignoreduplicateip"
+	admin command "AMSG"
 
 Neo2001
 	"REMOVEGROUP" comamnd
@@ -80,7 +81,7 @@ Neo2001
 StoVoKor
 	reporting xdcclistfile bug
 	reporting addnew bug
-	"XDCC STOP" command
+	user command "XDCC STOP"
 	reporting "XDCC SEARCH" bug
 
 conanmichi
@@ -92,7 +93,7 @@ Kyu
 	groupname as default group description
 
 Hikari
-	autosendpack
+	option "autosendpack"
 
 Horst
 	channel anti flooding
@@ -101,8 +102,8 @@ Terminator2k2
 	reporting win32 bugs
 
 Thunder
-	nodownloadhost
-	xdlock
+	option "nodownloadhost"
+	admin command "xdlock"
 	reporting multinet bug, punishslowusers
 
 Alita-Chan

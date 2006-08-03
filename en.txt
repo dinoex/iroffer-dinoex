@@ -1659,3 +1659,7 @@
 1670 "uploadminspace"
 1671 "disk_free= %"
 1672 "d, required= %"
+1673 "AMSG"
+1674 "<msg>"
+1675 "Announce <msg> in all joined channels"
+1676 "Announced [%s]"

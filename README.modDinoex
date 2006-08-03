@@ -8,6 +8,11 @@ With Version mod 1.31:
   Check free space on disk and do not start uploads when disk gets full.
   Specifies the minimum size in MB availible before upload.
 
+91) AMSG
+
+  new admin command:
+  AMSG <msg>                          announce message in all channels
+
 With Version mod 1.30:
 ----------------------
 

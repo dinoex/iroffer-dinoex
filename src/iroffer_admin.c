@@ -128,6 +128,7 @@ static void u_identify(const userinput * const u);
 static void u_announce(const userinput * const u);
 static void u_addann(const userinput * const u);
 static void u_crc(const userinput * const u);
+static void u_amsg(const userinput * const u);
 static void u_filemove(const userinput * const u);
 static void u_filedel(const userinput * const u);
 static void u_showdir(const userinput * const u);
@@ -222,6 +223,7 @@ static const userinput_parse_t userinput_parse[] = {
 #endif /* USE_CURL */
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
+{3,method_allow_all,u_amsg,     "AMSG","<msg>","Announce <msg> in all joined channels"},
 #ifdef MULTINET
 {4,method_allow_all,u_msgnet,   "MSGNET","<net> <nick> <message>","Send a message to a user"},
 #endif /* MULTINET */
@@ -2301,6 +2303,43 @@ static void u_addann (const userinput * const u) {
     mydelete(ui);
     mydelete(tempstr);
     }
+}
+
+static void u_amsg(const userinput * const u) {
+  channel_t *ch;
+#ifdef MULTINET
+  int ss;
+  gnetwork_t *backup;
+#endif /* MULTINET */
+  
+  updatecontext ();
+  
+  if (!u->arg1e || !strlen (u->arg1e)) {
+    u_respond (u, "Try Specifying a Message (e.g. NEW)");
+    return;
+    }
+  
+#ifdef MULTINET
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      ch = irlist_get_head(&(gnetwork->channels));
+      while(ch) {
+        if (ch->flags & CHAN_ONCHAN)
+          privmsg_chan(ch, u->arg1e);
+        ch = irlist_get_next(ch);
+        }
+    }
+  gnetwork = backup;
+#else /* MULTINET */
+  ch = irlist_get_head(&gdata.channels);
+  while(ch) {
+    if (ch->flags & CHAN_ONCHAN)
+      privmsg_chan(ch, u->arg1e);
+    ch = irlist_get_next(ch);
+    }
+#endif /* MULTINET */
+  u_respond(u,"Announced [%s]",u->arg1e);
 }
 
 static void u_crc(const userinput * const u) {
