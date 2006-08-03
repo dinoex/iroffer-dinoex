@@ -1399,7 +1399,7 @@ void autoadd_all(void)
 typedef struct
 {
   userinput u;
-#ifndef MULTINET
+#ifdef MULTINET
   int net;
 #endif /* MULTINET */
   char *name;
