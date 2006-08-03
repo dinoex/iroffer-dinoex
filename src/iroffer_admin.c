@@ -2538,7 +2538,13 @@ static void u_fetch(const userinput * const u)
       u_respond(u,"Disabled in Config");
       return;
     }
-   
+  
+  if (!gdata.uploaddir)
+    {
+      u_respond(u,"No uploaddir defined.");
+      return;
+    }
+  
   if (!u->arg1 || !strlen(u->arg1))
     {
       u_respond(u,"Try Specifying a File");
