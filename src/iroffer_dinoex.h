@@ -69,4 +69,6 @@ void crc32_init(void);
 void crc32_update(char *buf, unsigned long len);
 void crc32_final(xdcc *xd);
 
+int disk_full(const char *path);
+
 /* End of File */

@@ -1494,6 +1494,7 @@ void dumpgdata(void)
   /* uploadhost */
   gdata_print_string(uploaddir);
   gdata_print_number_cast("%" LLPRINTFMT "d",uploadmaxsize,long long);
+  gdata_print_number_cast("%" LLPRINTFMT "d",uploadminspace,long long);
   gdata_print_string(config_nick);
   gdata_print_string(user_nick);
   gdata_print_string(caps_nick);

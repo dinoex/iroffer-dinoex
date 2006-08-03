@@ -1760,4 +1760,53 @@ void crc32_final(xdcc *xd)
   xd->has_crc32 = 1;
 }
 
+int disk_full(const char *path)
+{
+#ifndef NO_STATVFS
+  struct statvfs stf;
+#else
+#ifndef NO_STATFS
+  struct statfs stf;
+#endif
+#endif
+  off_t freebytes;
+
+  freebytes = 0L;
+#ifndef NO_STATVFS
+  if (statvfs(path, &stf) < 0)
+    {
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+              "Unable to determine device sizes: %s",
+              strerror(errno));
+    }
+  else
+    {
+      freebytes = (off_t)stf.f_bavail * (off_t)stf.f_frsize;
+    }
+#else
+#ifndef NO_STATFS
+  if (statfs(dpath, &stf) < 0)
+    {
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+              "Unable to determine device sizes: %s",
+              strerror(errno));
+    }
+  else
+    {
+      freebytes = (off_t)stf.f_bavail * (off_t)stf.f_bsize;
+    }
+#endif
+#endif
+
+  if (gdata.debug > 0) 
+    ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+           "disk_free= %" LLPRINTFMT "d, required= %" LLPRINTFMT "d",
+           (long long)freebytes, (long long)gdata.uploadminspace);
+
+  if (freebytes >= gdata.uploadminspace)
+    return 0;
+
+  return 1;
+}
+
 /* End of File */

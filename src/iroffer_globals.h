@@ -125,6 +125,7 @@ char *periodicmsg_nick, *periodicmsg_msg;
 int  periodicmsg_time;
 char *uploaddir;
 off_t uploadmaxsize;
+off_t uploadminspace;
 irlist_t uploadhost;
 char *config_nick;
 char *user_nick, *caps_nick;

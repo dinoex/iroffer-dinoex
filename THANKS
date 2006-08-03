@@ -58,6 +58,7 @@ TheDeath
 	admin command SLOTSMAX
 	admin command QUEUESIZE
 	admin command FETCH
+	uploadminspace
 
 [GFE]Lunix
 	alias xdcc list group <group>

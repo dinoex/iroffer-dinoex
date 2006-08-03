@@ -2545,6 +2545,12 @@ static void u_fetch(const userinput * const u)
       return;
     }
   
+  if (disk_full(gdata.uploaddir) != 0)
+    {
+      u_respond(u,"Not enough free space on disk.");
+      return;
+    }
+  
   if (!u->arg1 || !strlen(u->arg1))
     {
       u_respond(u,"Try Specifying a File");

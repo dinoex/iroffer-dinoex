@@ -3212,6 +3212,12 @@ static void privmsgparse(const char* type, char* line) {
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
                       "DCC Send Denied (too many uploads) from %s",hostmask);
             }
+          else if (disk_full(gdata.uploaddir) != 0)
+            {
+              notice(nick,"DCC Send Denied, not enough free space on disk");
+              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied (not enough free space on disk) from %s",hostmask);
+            }
           else
             {
               ul = irlist_add(&gdata.uploads, sizeof(upload));

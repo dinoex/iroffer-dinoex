@@ -797,6 +797,10 @@ void getconfig_set (const char *line, int rehash)
       gdata.uploadmaxsize = (off_t)(max2(0,atoull(var)*1024*1024));
       mydelete(var);
       }
+   else if ( ! strcmp(type,"uploadminspace")) {
+      gdata.uploadminspace = (off_t)(max2(0,atoull(var)*1024*1024));
+      mydelete(var);
+      }
    else if ( ! strcmp(type,"uploadhost"))
      {
        regex_t *uh;
@@ -3055,6 +3059,7 @@ void reinit_config_vars(void)
   mydelete(gdata.periodicmsg_msg);
   gdata.periodicmsg_time = 0;
   gdata.uploadmaxsize = 0;
+  gdata.uploadminspace = 0;
   mydelete(gdata.uploaddir);
   gdata.restrictlist = gdata.restrictsend = gdata.restrictprivlist = 0;
   mydelete(gdata.restrictprivlistmsg);
