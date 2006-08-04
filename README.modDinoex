@@ -19,6 +19,9 @@ With Version mod 1.31:
 bugfix; unlimitedhost
   report all matching unlimited downloads in log
 
+bugfix: HOLDQUEUE
+  when HOLDQUEUE is off, start to deliver queue
+
 With Version mod 1.30:
 ----------------------
 

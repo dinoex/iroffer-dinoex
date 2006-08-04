@@ -5291,6 +5291,7 @@ static void u_queuesize(const userinput * const u) {
 
 static void u_holdqueue(const userinput * const u) {
    int val;
+   int i;
    
    updatecontext();
     
@@ -5310,6 +5311,19 @@ static void u_holdqueue(const userinput * const u) {
    
    gdata.holdqueue = val;
    u_respond(u,"HOLDQUEUE now %d", val);
+
+   if (val != 0)
+     return;
+
+   for (i=0; i<100; i++)
+     {
+       if (!gdata.exiting &&
+           irlist_size(&gdata.mainqueue) &&
+           (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
+         {
+           sendaqueue(0);
+         }
+     }
 }
 
 static void u_identify(const userinput * const u)
