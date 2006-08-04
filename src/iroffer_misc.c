@@ -131,6 +131,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"nocrc32",              &gdata.nocrc32,              &gdata.nocrc32 },
   {"direct_file_access",   &gdata.direct_file_access,   &gdata.direct_file_access },
   {"restrictsend_warning", &gdata.restrictsend_warning, &gdata.restrictsend_warning },
+  {"extend_status_line",   &gdata.extend_status_line,   &gdata.extend_status_line },
 };
 
 typedef struct
@@ -2686,6 +2687,8 @@ char* getstatusline(char *str, int len)
 {
   int i,srvq;
   ir_uint64 xdccsent;
+  ir_uint64 xdccrecv;
+  ir_uint64 xdccsum;
 #ifdef MULTINET
   int ss;
 #endif /* MULTINET */
@@ -2712,7 +2715,37 @@ char* getstatusline(char *str, int len)
     + irlist_size(&gdata.serverq_slow);
 #endif /* MULTINET */
   
-  i = snprintf(str, len,
+  if (gdata.extend_status_line)
+    {
+       xdccrecv = 0;
+       for (i=0; i<XDCC_SENT_SIZE; i++)
+         {
+           xdccrecv += (ir_uint64)gdata.xdccrecv[i];
+         }
+       xdccsum = 0;
+       for (i=0; i<XDCC_SENT_SIZE; i++)
+         {
+           xdccsum += (ir_uint64)gdata.xdccsum[i];
+         }
+       
+       i = snprintf(str, len,
+               "Stat: %i/%i Sls, %i/%i Q, %1.1fK/s Rcd, %i SrQ (Bdw: %" LLPRINTFMT
+               "uK, %1.1fK/s, %1.1fK/s Rcd, %1.1fK/s Up, %1.1fK/s Down)",
+               irlist_size(&gdata.trans),
+               gdata.slotsmax,
+               irlist_size(&gdata.mainqueue),
+               gdata.queuesize,
+               gdata.record,
+               srvq,
+               (unsigned long long)(xdccsent/1024),
+               ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
+               gdata.sentrecord,
+               ((float)xdccrecv)/XDCC_SENT_SIZE/1024.0,
+               ((float)xdccsum)/XDCC_SENT_SIZE/1024.0);
+    }
+  else
+    {
+       i = snprintf(str, len,
                "Stat: %i/%i Sls, %i/%i Q, %1.1fK/s Rcd, %i SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Rcd)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
@@ -2723,6 +2756,7 @@ char* getstatusline(char *str, int len)
                (unsigned long long)(xdccsent/1024),
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
                gdata.sentrecord);
+    }
   
   if ((i < 0) || (i >= len))
     {
@@ -2746,7 +2780,7 @@ char* getstatuslinenums(char *str, int len)
   xdccsent = 0;
   for (i=0; i<XDCC_SENT_SIZE; i++)
     {
-      xdccsent += (ir_uint64)gdata.xdccsent[i];
+      xdccsent += (ir_uint64)gdata.xdccsum[i];
     }
   
 #ifdef MULTINET
@@ -3028,6 +3062,8 @@ void reinit_config_vars(void)
   gdata.restrictsend_warning = 0;
   gdata.restrictsend_timeout = RESTRICTSEND_TIMEOUT;
   gdata.send_statefile_minute = 0;
+  gdata.send_statefile_minute = 0;
+  gdata.extend_status_line = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

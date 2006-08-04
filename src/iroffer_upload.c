@@ -189,8 +189,12 @@ void l_transfersome (upload * const l) {
          if (howmuch > 0) l->lastcontact = gdata.curtime;
          
          l->bytesgot += howmuch2;
+         gdata.xdccrecv[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
          if (gdata.ignoreuploadbandwidth == 0)
-           gdata.xdccsent[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
+           {
+             gdata.xdccsent[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
+             gdata.xdccsum[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
+           }
          
          if (gdata.debug > 4) {
             ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_BLUE,"Read %d File %d",howmuch,howmuch2);

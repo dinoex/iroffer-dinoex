@@ -172,6 +172,7 @@ int autoadd_time;
 int restrictsend_warning;
 int restrictsend_timeout;
 int send_statefile_minute;
+int extend_status_line;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;
@@ -274,6 +275,8 @@ int exiting;
 int crashing;
 
 unsigned long xdccsent[XDCC_SENT_SIZE];
+unsigned long xdccrecv[XDCC_SENT_SIZE];
+unsigned long xdccsum[XDCC_SENT_SIZE];
 
 int inamnt[INAMNT_SIZE];
 int ignore;

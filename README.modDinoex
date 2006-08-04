@@ -13,6 +13,12 @@ With Version mod 1.31:
   new admin command:
   AMSG <msg>                          announce message in all channels
 
+92) extend_status_line
+  print out upload and download bandwidth in status line.
+
+bugfix; unlimitedhost
+  report all matching unlimited downloads in log
+
 With Version mod 1.30:
 ----------------------
 

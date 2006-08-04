@@ -1467,6 +1467,7 @@ void dumpgdata(void)
   gdata_print_int(restrictsend_warning);
   gdata_print_int(restrictsend_timeout);
   gdata_print_int(send_statefile_minute);
+  gdata_print_int(extend_status_line);
   gdata_print_string(admin_job_file);
   gdata_print_string(autoaddann);
   gdata_print_string(autoadd_group);
@@ -1743,6 +1744,8 @@ void dumpgdata(void)
   for (ii=0; ii<XDCC_SENT_SIZE; ii++)
     {
       gdata_print_ulong_array(xdccsent)
+      gdata_print_ulong_array(xdccrecv)
+      gdata_print_ulong_array(xdccsum)
     }
   for (ii=0; ii<INAMNT_SIZE; ii++)
     {

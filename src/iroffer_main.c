@@ -618,9 +618,19 @@ static void mainloop (void) {
          xdccsent = 0;
          for (i=0; i<XDCC_SENT_SIZE; i++)
             xdccsent += (ir_uint64)gdata.xdccsent[i];
+         gdata.xdccsent[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
+         
+         xdccsent = 0;
+         for (i=0; i<XDCC_SENT_SIZE; i++)
+            xdccsent += (ir_uint64)gdata.xdccrecv[i];
+         gdata.xdccrecv[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
+         
+         xdccsent = 0;
+         for (i=0; i<XDCC_SENT_SIZE; i++)
+            xdccsent += (ir_uint64)gdata.xdccsum[i];
          if (((float)xdccsent)/XDCC_SENT_SIZE/1024.0 > gdata.sentrecord)
             gdata.sentrecord = ((float)xdccsent)/XDCC_SENT_SIZE/1024.0;
-         gdata.xdccsent[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
+         gdata.xdccsum[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
       }
 
       if (changequartersec)
@@ -3723,6 +3733,7 @@ static void autoqueuef(const char* line, const autoqueue_t *aq) {
 void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd)
 {
   int usertrans, userpackok, man;
+  int unlimitedhost;
   xdcc *xd;
   transfer *tr;
   
@@ -3730,6 +3741,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   
   usertrans = 0;
   userpackok = 1;
+  unlimitedhost = 0;
   
   if (!strcmp(hostname,"man"))
     {
@@ -3859,6 +3871,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        
        tr->xpack = xd;
        tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
+       unlimitedhost = tr->unlimited;
        tr->nomax = tr->unlimited;
 #ifdef MULTINET
        tr->net = gnetwork->net;
@@ -3904,7 +3917,12 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
    
    if (!man)
       ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"%s (%s)",nick,hostname);
-
+   
+   if (unlimitedhost)
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+              "unlimitedhost found: %s (%s)",
+               nick, hostname);
+   
    }
    
 void sendxdccinfo(const char* nick,
@@ -4211,6 +4229,10 @@ void sendaqueue(int type)
       hostmask = mymalloc(len+1);
       snprintf(hostmask,len,"%s!*@%s",tr->nick,tr->hostname);
       tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
+      if (tr->unlimited)
+        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+                "unlimitedhost found: %s (%s)",
+                tr->nick, tr->hostname);
       tr->nomax = tr->unlimited;
 #ifdef MULTINET
       tr->net = pq->net;
