@@ -1663,3 +1663,6 @@
 1674 "<msg>"
 1675 "Announce <msg> in all joined channels"
 1676 "Announced [%s]"
+1677 "unlimitedhost found: %s (%s)"
+1678 "extend_status_line"
+1679 "uK, %1.1fK/s, %1.1fK/s Rcd, %1.1fK/s Up, %1.1fK/s Down)"
