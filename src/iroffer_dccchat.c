@@ -171,8 +171,13 @@ void setupdccchataccept(dccchat_t *chat)
   tempstr = mycalloc(maxtextlength);
   getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
   
+#ifdef MULTINET
+  writedccchat(chat,0,"Welcome to %s\n",
+               (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
   writedccchat(chat,0,"Welcome to %s\n",
                (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
   writedccchat(chat,0,"iroffer v" VERSIONLONG "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);
@@ -350,8 +355,13 @@ void setupdccchatconnected(dccchat_t *chat)
   tempstr = mycalloc(maxtextlength);
   getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
 
+#ifdef MULTINET
+  writedccchat(chat,0,"Welcome to %s\n",
+               (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
   writedccchat(chat,0,"Welcome to %s\n",
                (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
   writedccchat(chat,0,"iroffer v" VERSIONLONG "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);

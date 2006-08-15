@@ -1266,7 +1266,13 @@ int noticeresults(const char *nick, const char *match)
             snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
             len = strlen(tempstr);
           }
-          snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -", gdata.user_nick);
+#ifdef MULTINET
+          snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -",
+                   (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
+          snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -",
+                   (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
           len = strlen(tempstr);
           if (!strcmp(match, "*"))
             snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");

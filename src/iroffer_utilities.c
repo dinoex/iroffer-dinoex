@@ -1497,8 +1497,10 @@ void dumpgdata(void)
   gdata_print_number_cast("%" LLPRINTFMT "d",uploadmaxsize,long long);
   gdata_print_number_cast("%" LLPRINTFMT "d",uploadminspace,long long);
   gdata_print_string(config_nick);
+#ifndef MULTINET
   gdata_print_string(user_nick);
   gdata_print_string(caps_nick);
+#endif /* not MULTINET */
   gdata_print_string(user_realname);
   gdata_print_string(user_modes);
   gdata_print_int(quietmode);
@@ -1519,7 +1521,9 @@ void dumpgdata(void)
     {
   gdata_print_int(networks[ss].net);
   gdata_print_string(networks[ss].name);
-      
+  gdata_print_string(networks[ss].user_nick);
+  gdata_print_string(networks[ss].caps_nick);
+  
   gdata_irlist_iter_start(networks[ss].server_join_raw, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
@@ -1694,6 +1698,7 @@ void dumpgdata(void)
 
 #ifdef MULTINET
   gdata_print_int(networks[ss].recentsent);
+  gdata_print_int(networks[ss].nick_number);
   
   gdata_irlist_iter_start(networks[ss].xlistqueue, char);
   gdata_iter_as_print_string;
@@ -1772,7 +1777,9 @@ void dumpgdata(void)
   
   gdata_print_uint(max_fds_from_rlimit);
   
+#ifndef MULTINET
   gdata_print_int(nick_number);
+#endif /* not MULTINET */
   gdata_print_int(logfd);
   
   /* sendbuff context_log context_cur_ptr */

@@ -67,9 +67,12 @@ int serverconnectbackoff;
 prefix_t prefixes[MAX_PREFIX];
 char chanmodes[MAX_CHANMODES];
 
+char *user_nick;
+char *caps_nick;
 char *name;
 int net;
 int recentsent;
+int nick_number;
 
 } gnetwork_t;
 #endif /* MULTINET */
@@ -128,7 +131,9 @@ off_t uploadmaxsize;
 off_t uploadminspace;
 irlist_t uploadhost;
 char *config_nick;
+#ifndef MULTINET
 char *user_nick, *caps_nick;
+#endif /* not MULTINET */
 char *user_realname, *user_modes, *loginname;
 int restrictlist, restrictsend, restrictprivlist;
 char *restrictprivlistmsg;
@@ -302,7 +307,9 @@ int next_tr_id;
 off_t max_file_size;
 
 unsigned int max_fds_from_rlimit;
+#ifndef MULTINET
 int nick_number;
+#endif /* not MULTINET */
 
 int logfd;
 

@@ -2912,11 +2912,28 @@ void sendxdlqueue (void)
 int isthisforme (const char *dest, char *msg1) {
    if (!msg1 || !dest) { outerror(OUTERROR_TYPE_WARN_LOUD,"isthisforme() got NULL value"); return 1; }
    
+#ifdef MULTINET
+   if (!gnetwork->caps_nick)
+#else
    if (!gdata.caps_nick)
+#endif /* MULTINET */
      {
        return 0;
      }
 
+#ifdef MULTINET
+   if (
+         !strcmp(msg1,"\1CLIENTINFO") || !strcmp(msg1,"\1CLIENTINFO\1")
+      || !strcmp(msg1,"\1PING") || !strcmp(msg1,"\1PING\1") 
+      || !strcmp(msg1,"\1VERSION") || !strcmp(msg1,"\1VERSION\1")
+      || !strcmp(msg1,"\1UPTIME") || !strcmp(msg1,"\1UPTIME\1") 
+      || !strcmp(msg1,"\1STATUS") || !strcmp(msg1,"\1STATUS\1")
+      || (!strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"\1DCC"))
+      || (!strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"ADMIN"))
+      || (!strcmp(gnetwork->caps_nick,dest) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC")))
+      || !strcmp(dest,gnetwork->caps_nick)
+      ) return 1;
+#else
    if (
          !strcmp(msg1,"\1CLIENTINFO") || !strcmp(msg1,"\1CLIENTINFO\1")
       || !strcmp(msg1,"\1PING") || !strcmp(msg1,"\1PING\1") 
@@ -2928,6 +2945,7 @@ int isthisforme (const char *dest, char *msg1) {
       || (!strcmp(gdata.caps_nick,dest) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC")))
       || !strcmp(dest,gdata.caps_nick)
       ) return 1;
+#endif /* MULTINET */
    
    return 0;
    
@@ -3717,11 +3735,19 @@ void notifybandwidth(void)
       tr = irlist_get_head(&gdata.trans);
       while(tr)
         {
+#ifdef MULTINET
+          notice_slow(tr->nick,"%s bandwidth limit: %2.1f of %2.1fKB/sec used. Your share: %2.1fKB/sec.",
+                      (gnetwork->user_nick ? gnetwork->user_nick : "??"),
+                      ((float)xdccsent)/XDCC_SENT_SIZE,
+                      ((float)gdata.maxb)/4.0,
+                      tr->lastspeed);
+#else
           notice_slow(tr->nick,"%s bandwidth limit: %2.1f of %2.1fKB/sec used. Your share: %2.1fKB/sec.",
                       (gdata.user_nick ? gdata.user_nick : "??"),
                       ((float)xdccsent)/XDCC_SENT_SIZE,
                       ((float)gdata.maxb)/4.0,
                       tr->lastspeed);
+#endif /* MULTINET */
           tr = irlist_get_next(tr);
         }
     }

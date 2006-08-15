@@ -789,8 +789,13 @@ static void u_xdl_head(const userinput * const u) {
         }
       break;
     default:
+#ifdef MULTINET
+      u_respond(u,"\2**\2 To stop this listing, type /MSG %s XDCC STOP \2**\2",
+                  (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
       u_respond(u,"\2**\2 To stop this listing, type /MSG %s XDCC STOP \2**\2",
                   (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
       break;
     }
    
@@ -884,12 +889,22 @@ static void u_xdl_head(const userinput * const u) {
        
        u_respond(u,"%s",tempstr);
        
+#ifdef MULTINET
+       u_respond(u,"\2**\2 To request a file, type \"/msg %s xdcc send x\" \2**\2",
+                 (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
        u_respond(u,"\2**\2 To request a file, type \"/msg %s xdcc send x\" \2**\2",
                  (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
        
        if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
+#ifdef MULTINET
+          u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info x\" \2**\2",
+                    (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
           u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info x\" \2**\2",
                     (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
        
        i = 0;
        xd = irlist_get_head(&gdata.xdccs);
@@ -902,16 +917,26 @@ static void u_xdl_head(const userinput * const u) {
            xd = irlist_get_next(xd);
          }
        if (i > 0)
+#ifdef MULTINET
+          u_respond(u,"\2**\2 To list a group, type \"/msg %s xdcc list GROUP\" \2**\2",
+                    (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
           u_respond(u,"\2**\2 To list a group, type \"/msg %s xdcc list GROUP\" \2**\2",
                     (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
      }
    
    if (m1)
      {
        if (!gdata.restrictprivlist)
          {
+#ifdef MULTINET
+           u_respond(u,"\2**\2 For a listing type: \"/msg %s xdcc list\" \2**\2",
+                     (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
            u_respond(u,"\2**\2 For a listing type: \"/msg %s xdcc list\" \2**\2",
                      (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
          }
        if (gdata.creditline)
          {
@@ -2257,7 +2282,11 @@ static void u_announce (const userinput * const u) {
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
   snprintf(tempstr2,maxtextlength-2,"[\2%s\2] %s",u->arg2e,xd->desc);
+#ifdef MULTINET
+  snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gnetwork->user_nick,num);
+#else
   snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gdata.user_nick,num);
+#endif /* MULTINET */
   
 #ifdef MULTINET
   backup = gnetwork;
@@ -4537,13 +4566,13 @@ static void u_botinfo(const userinput * const u) {
             100.0*((float)r.ru_stime.tv_sec+(((float)r.ru_stime.tv_usec)/1000000.0))/((float)(max2(1,gdata.curtime-gdata.startuptime)))
             );
 
+#ifdef MULTINET
    u_respond(u,"configured nick: %s, actual nick: %s, realname: %s, modes: %s",
              gdata.config_nick,
-             (gdata.user_nick ? gdata.user_nick : "??"),
+             (gnetwork->user_nick ? gnetwork->user_nick : "??"),
              gdata.user_realname,
              gdata.user_modes);
    
-#ifdef MULTINET
    for (ss=0; ss<gdata.networks_online; ss++)
      {
        if (gdata.networks[ss].name == NULL)
@@ -4628,6 +4657,12 @@ static void u_botinfo(const userinput * const u) {
          }
      }
 #else /* MULTINET */
+   u_respond(u,"configured nick: %s, actual nick: %s, realname: %s, modes: %s",
+             gdata.config_nick,
+             (gdata.user_nick ? gdata.user_nick : "??"),
+             gdata.user_realname,
+             gdata.user_modes);
+   
    switch (gdata.connectionmethod.how)
      {
      case how_direct:

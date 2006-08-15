@@ -1932,15 +1932,18 @@ static void mainloop (void) {
 #ifdef MULTINET
          for (ss=0; ss<gdata.networks_online; ss++) {
            gnetwork = &(gdata.networks[ss]);
-#endif /* MULTINET */
-         /* try to regain nick */
+           /* try to regain nick */
+           if (!gnetwork->user_nick || strcmp(gdata.config_nick,gnetwork->user_nick))
+             {
+               writeserver(WRITESERVER_NORMAL, "NICK %s", gdata.config_nick);
+             }
+           } /* networks */
+         gnetwork = NULL;
+#else
          if (!gdata.user_nick || strcmp(gdata.config_nick,gdata.user_nick))
            {
              writeserver(WRITESERVER_NORMAL, "NICK %s", gdata.config_nick);
            }
-#ifdef MULTINET
-         } /* networks */
-         gnetwork = NULL;
 #endif /* MULTINET */
          
          updatecontext();
@@ -2228,7 +2231,11 @@ static void parseline(char *line) {
      }
    
  /* NOTICE nick */
+#ifdef MULTINET
+   if (part3 && gnetwork->caps_nick && !strcmp(caps(part2),"NOTICE") && !strcmp(caps(part3),gnetwork->caps_nick))
+#else
    if (part3 && gdata.caps_nick && !strcmp(caps(part2),"NOTICE") && !strcmp(caps(part3),gdata.caps_nick))
+#endif /* MULTINET */
      {
        /* nickserv */
        if (gdata.nickserv_pass)
@@ -2282,6 +2289,16 @@ static void parseline(char *line) {
 #endif /* MULTINET */
        
        /* update nick */
+#ifdef MULTINET
+       mydelete(gnetwork->user_nick);
+       mydelete(gnetwork->caps_nick);
+       gnetwork->user_nick = mymalloc(strlen(part3)+1);
+       gnetwork->caps_nick = mymalloc(strlen(part3)+1);
+       strcpy(gnetwork->user_nick,part3);
+       strcpy(gnetwork->caps_nick,part3);
+       caps(gnetwork->caps_nick);
+       gnetwork->nick_number = 0;
+#else
        mydelete(gdata.user_nick);
        mydelete(gdata.caps_nick);
        gdata.user_nick = mymalloc(strlen(part3)+1);
@@ -2290,12 +2307,18 @@ static void parseline(char *line) {
        strcpy(gdata.caps_nick,part3);
        caps(gdata.caps_nick);
        gdata.nick_number = 0;
+#endif /* MULTINET */
        gdata.needsclear = 1;
        
        if (gdata.user_modes && strlen(gdata.user_modes))
          {
+#ifdef MULTINET
+           writeserver(WRITESERVER_NOW, "MODE %s %s",
+                       gnetwork->user_nick, gdata.user_modes);
+#else
            writeserver(WRITESERVER_NOW, "MODE %s %s",
                        gdata.user_nick, gdata.user_modes);
+#endif /* MULTINET */
          }
        
        /* server connected raw command */
@@ -2409,6 +2432,18 @@ static void parseline(char *line) {
  /* :server 433 old new :Nickname is already in use. */
    if ( !strcmp(part2,"433") && part3 && !strcmp(part3,"*") && part4 )
      {
+#ifdef MULTINET
+       ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+               "Nickname %s already in use, trying %s%d",
+               part4,
+               gdata.config_nick,
+               gnetwork->nick_number);
+       
+       /* generate new nick and retry */
+       writeserver(WRITESERVER_NORMAL, "NICK %s%d",
+                   gdata.config_nick,
+                   gnetwork->nick_number++);
+#else
        ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
                "Nickname %s already in use, trying %s%d",
                part4,
@@ -2419,6 +2454,7 @@ static void parseline(char *line) {
        writeserver(WRITESERVER_NORMAL, "NICK %s%d",
                    gdata.config_nick,
                    gdata.nick_number++);
+#endif /* MULTINET */
      }
 
    /* names list for a channel */
@@ -2498,7 +2534,11 @@ static void parseline(char *line) {
       }
 
  /* JOIN */
+#ifdef MULTINET
+   if (!strcmp(part2,"JOIN") && part3a && gnetwork->caps_nick) {
+#else
    if (!strcmp(part2,"JOIN") && part3a && gdata.caps_nick) {
+#endif /* MULTINET */
       char* nick;
       int j,found;
       nick = mycalloc(strlen(line)+1);
@@ -2514,7 +2554,11 @@ static void parseline(char *line) {
          j++;
          }
       nick[j-1]='\0';
+#ifdef MULTINET
+      if (!strcmp(caps(nick),gnetwork->caps_nick))
+#else
       if (!strcmp(caps(nick),gdata.caps_nick))
+#endif /* MULTINET */
         {
           /* we joined */
           /* clear now, we have succesfully logged in */
@@ -2593,7 +2637,11 @@ static void parseline(char *line) {
       }
 
  /* PART */
+#ifdef MULTINET
+   if (!strcmp(part2,"PART") && part3a && gnetwork->caps_nick)
+#else
    if (!strcmp(part2,"PART") && part3a && gdata.caps_nick)
+#endif /* MULTINET */
      {
        char* nick;
        int j;
@@ -2606,7 +2654,11 @@ static void parseline(char *line) {
 	 }
        nick[j-1]='\0';
        
+#ifdef MULTINET
+       if (!strcmp(caps(nick),gnetwork->caps_nick))
+#else
        if (!strcmp(caps(nick),gdata.caps_nick))
+#endif /* MULTINET */
 	 {
 	   /* we left? */
 	   ;
@@ -2644,7 +2696,11 @@ static void parseline(char *line) {
      }
    
  /* QUIT */
+#ifdef MULTINET
+   if (!strcmp(part2,"QUIT") && gnetwork->caps_nick)
+#else
    if (!strcmp(part2,"QUIT") && gdata.caps_nick)
+#endif /* MULTINET */
      {
        char* nick;
        int j;
@@ -2657,7 +2713,11 @@ static void parseline(char *line) {
 	 }
        nick[j-1]='\0';
        
+#ifdef MULTINET
+       if (!strcmp(caps(nick),gnetwork->caps_nick))
+#else
        if (!strcmp(caps(nick),gdata.caps_nick))
+#endif /* MULTINET */
 	 {
 	   /* we quit? */
 	   ;
@@ -2697,7 +2757,11 @@ static void parseline(char *line) {
 
        newnick = part3a;
        
+#ifdef MULTINET
+       if (gnetwork->caps_nick && !strcmp(caps(oldnick),gnetwork->caps_nick))
+#else
        if (gdata.caps_nick && !strcmp(caps(oldnick),gdata.caps_nick))
+#endif /* MULTINET */
 	 {
            /* nickserv */
            if (gdata.nickserv_pass)
@@ -2706,6 +2770,16 @@ static void parseline(char *line) {
              }
            
            /* we changed, update nick */
+#ifdef MULTINET
+           mydelete(gnetwork->user_nick);
+           mydelete(gnetwork->caps_nick);
+           gnetwork->user_nick = mymalloc(strlen(part3a)+1);
+           gnetwork->caps_nick = mymalloc(strlen(part3a)+1);
+           strcpy(gnetwork->user_nick,part3a);
+           strcpy(gnetwork->caps_nick,part3a);
+           caps(gnetwork->caps_nick);
+           gnetwork->nick_number = 0;
+#else
            mydelete(gdata.user_nick);
            mydelete(gdata.caps_nick);
            gdata.user_nick = mymalloc(strlen(part3a)+1);
@@ -2714,6 +2788,7 @@ static void parseline(char *line) {
            strcpy(gdata.caps_nick,part3a);
            caps(gdata.caps_nick);
            gdata.nick_number = 0;
+#endif /* MULTINET */
            gdata.needsclear = 1;
          }
        
@@ -2734,7 +2809,11 @@ static void parseline(char *line) {
      }
    
  /* KICK */
+#ifdef MULTINET
+   if (!strcmp(part2,"KICK") && part3a && part4 && gnetwork->caps_nick)
+#else
    if (!strcmp(part2,"KICK") && part3a && part4 && gdata.caps_nick)
+#endif /* MULTINET */
      {
 #ifdef MULTINET
        ch = irlist_get_head(&(gnetwork->channels));
@@ -2745,7 +2824,11 @@ static void parseline(char *line) {
          {
            if (!strcmp(caps(part3a),ch->name))
              {
+#ifdef MULTINET
+               if(!strcmp(caps(part4),gnetwork->caps_nick))
+#else
                if(!strcmp(caps(part4),gdata.caps_nick))
+#endif /* MULTINET */
                  {
                    /* we were kicked */
                    if ( gdata.noautorejoin )
@@ -3119,7 +3202,11 @@ static void privmsgparse(const char* type, char* line) {
      }
    
    /*----- DCC SEND/CHAT/RESUME ----- */
+#ifdef MULTINET
+   else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"\1DCC") && msg2) {
+#else
    else if ( !gdata.ignore && gdata.caps_nick && !strcmp(gdata.caps_nick,dest) && !strcmp(caps(msg1),"\1DCC") && msg2) {
+#endif /* MULTINET */
       if (!gdata.attop) gototop();
       if (!strcmp(caps(msg2),"RESUME") && msg3 && msg4 && msg5)
         {
@@ -3302,7 +3389,11 @@ static void privmsgparse(const char* type, char* line) {
    }
    
    /*----- ADMIN ----- */
+#ifdef MULTINET
+   else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"ADMIN") ) {
+#else
    else if ( !gdata.ignore && gdata.caps_nick && !strcmp(gdata.caps_nick,dest) && !strcmp(caps(msg1),"ADMIN") ) {
+#endif /* MULTINET */
 /*      msg2 = getpart(line,5); */
       if (!gdata.attop) gototop();
       
@@ -3334,7 +3425,11 @@ static void privmsgparse(const char* type, char* line) {
       }
    
    /*----- XDCC ----- */
+#ifdef MULTINET
+   else if ( !gdata.ignore && gnetwork->caps_nick && (!strcmp(gnetwork->caps_nick,dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC") )) {
+#else
    else if ( !gdata.ignore && gdata.caps_nick && (!strcmp(gdata.caps_nick,dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC") )) {
+#endif /* MULTINET */
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
       
       caps(msg2);
@@ -3475,7 +3570,11 @@ static void privmsgparse(const char* type, char* line) {
                  (j==1?"ignored":(j==2?"denied":(j==3?msg3:"queued"))),hostmask);
          
          }
+#ifdef MULTINET
+      else if (gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest))
+#else
       else if (gdata.caps_nick && !strcmp(gdata.caps_nick,dest))
+#endif /* MULTINET */
 	{
          
          if ( msg2 && msg3 && (!strcmp(msg2,"SEND") || !strcmp(msg2,"GET"))) {
@@ -3575,13 +3674,35 @@ static void privmsgparse(const char* type, char* line) {
    }
    
    /*----- !LIST ----- */
+#ifdef MULTINET
+   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.respondtochannellist && msg1 && !strcasecmp(caps(msg1),"!LIST") &&
+             ( !msg2 || !strcmp(caps(msg2),gnetwork->caps_nick) ))
+#else
    else if ( !gdata.ignore && gdata.caps_nick && gdata.respondtochannellist && msg1 && !strcasecmp(caps(msg1),"!LIST") &&
              ( !msg2 || !strcmp(caps(msg2),gdata.caps_nick) ))
+#endif /* MULTINET */
      {
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
       
       /* generate !list styled message */
       
+#ifdef MULTINET
+      notice_slow(nick,
+             "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
+             "Trigger:\2(\2/msg %s xdcc list\2)\2 "
+             "Sends:\2(\2%i/%i\2)\2 "
+             "Queues:\2(\2%i/%i\2)\2 "
+             "Record:\2(\2%1.1fKB/s\2)\2 "
+             "%s%s%s\2=\2iroffer\2=\2",
+             irlist_size(&gdata.xdccs),
+             (gnetwork->user_nick ? gnetwork->user_nick : "??"),
+             irlist_size(&gdata.trans),gdata.slotsmax,
+             irlist_size(&gdata.mainqueue),gdata.queuesize,
+             gdata.record,
+             gdata.creditline ? "Note:\2(\2" : "",
+             gdata.creditline ? gdata.creditline : "",
+             gdata.creditline ? "\2)\2 " : "");
+#else
       notice_slow(nick,
              "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
              "Trigger:\2(\2/msg %s xdcc list\2)\2 "
@@ -3597,10 +3718,15 @@ static void privmsgparse(const char* type, char* line) {
              gdata.creditline ? "Note:\2(\2" : "",
              gdata.creditline ? gdata.creditline : "",
              gdata.creditline ? "\2)\2 " : "");
+#endif /* MULTINET */
      }
    
    /* iroffer-lamm: @find */
+#ifdef MULTINET
+   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1),"@FIND") )
+#else
    else if ( !gdata.ignore && gdata.caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1),"@FIND") )
+#endif /* MULTINET */
      {
       char *msg2e;
       msg2e = getpart_eol(line,5);
@@ -3624,7 +3750,11 @@ static void privmsgparse(const char* type, char* line) {
      }
    
    else {
+#ifdef MULTINET
+      if (dest && gnetwork->caps_nick && !strcmp(dest,gnetwork->caps_nick))
+#else
       if (dest && gdata.caps_nick && !strcmp(dest,gdata.caps_nick))
+#endif /* MULTINET */
         {
           if ((gdata.lognotices && !strcmp(type,"NOTICE")) ||
               (gdata.logmessages && !strcmp(type,"PRIVMSG")))
@@ -4106,11 +4236,19 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
          tempq->net = gnetwork->net;
 #endif /* MULTINET */
 
+#ifdef MULTINET
+         snprintf(tempstr,maxtextlength,
+                  "Added you to the main queue in position %d. To Remove youself at "
+                  "a later time type \"/msg %s xdcc remove\".",
+                  irlist_size(&gdata.mainqueue),
+                  (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+#else
          snprintf(tempstr,maxtextlength,
                   "Added you to the main queue in position %d. To Remove youself at "
                   "a later time type \"/msg %s xdcc remove\".",
                   irlist_size(&gdata.mainqueue),
                   (gdata.user_nick ? gdata.user_nick : "??"));
+#endif /* MULTINET */
          }
    return tempstr;
    }
