@@ -1940,6 +1940,9 @@ void xdccsavetext(void)
   int fd;
   userinput *uxdl;
   int callval;
+#ifdef MULTINET
+  gnetwork_t *backup;
+#endif /* MULTINET */
   
   updatecontext();
   
@@ -1967,6 +1970,10 @@ void xdccsavetext(void)
   
   uxdl = mycalloc(sizeof(userinput));
   
+#ifdef MULTINET
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[0]);
+#endif /* MULTINET */
   if (gdata.xdcclist_grouponly)
     u_fillwith_msg(uxdl,NULL,"A A A A A xdl");
   else
@@ -1979,6 +1986,9 @@ void xdccsavetext(void)
   mydelete(uxdl);
   
   close(fd);
+#ifdef MULTINET
+  gnetwork = backup;
+#endif /* MULTINET */
   
   /* remove old bkup */
   callval = unlink(xdcclistfile_bkup);
