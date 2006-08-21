@@ -2237,7 +2237,10 @@ static void u_psend(const userinput * const u)
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
 #endif /* MULTINET */
-  u_fillwith_msg(&manplist,u->arg1,"A A A A A xdl");
+  if (gdata.xdcclist_grouponly)
+    u_fillwith_msg(&manplist,u->arg1,"A A A A A xdl");
+  else
+    u_fillwith_msg(&manplist,u->arg1,"A A A A A xdlfull");
   manplist.method = method;
   u_parseit(&manplist);
 #ifdef MULTINET
