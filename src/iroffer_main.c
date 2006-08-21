@@ -1769,7 +1769,10 @@ static void mainloop (void) {
             if (tchanf) {
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Plist sent to %s (full)",tchanf);
                pubplist = mycalloc(sizeof(userinput));
-               u_fillwith_msg(pubplist,tchanf,"A A A A A xdl");
+               if (gdata.xdcclist_grouponly)
+                 u_fillwith_msg(pubplist,tchanf,"A A A A A xdl");
+               else
+                 u_fillwith_msg(pubplist,tchanf,"A A A A A xdlfull");
                pubplist->method = method_xdl_channel;
                u_parseit(pubplist);
                mydelete(pubplist);

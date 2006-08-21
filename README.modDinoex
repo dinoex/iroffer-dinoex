@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.32:
 ----------------------
 
+bugfix: -plist full (reported by Jippi)
+  support xdcclist_grouponly
+
 bugfix: MULITNET
   regain nick on all networks
 

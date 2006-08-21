@@ -117,3 +117,6 @@ Terra_Knight
 Anime20o5
 	option "send_statefile"
 
+Jippi
+	reportiing plist xdcclist_grouponly
+
