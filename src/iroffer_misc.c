@@ -1734,7 +1734,11 @@ void sendserver(void)
       if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
+#ifdef MULTINET
+          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %d, %s",gnetwork->net, item);
+#else /* MULTINET */
           ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %s",item);
+#endif /* MULTINET */
         }
 #ifdef MULTINET
       write(gnetwork->ircserver, item, strlen(item));
@@ -1782,7 +1786,11 @@ void sendserver(void)
       if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
+#ifdef MULTINET
+          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %d, %s",gnetwork->net, item);
+#else /* MULTINET */
           ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %s",item);
+#endif /* MULTINET */
         }
 #ifdef MULTINET
       write(gnetwork->ircserver, item, strlen(item));
@@ -1830,7 +1838,11 @@ void sendserver(void)
       if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
+#ifdef MULTINET
+          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %d, %s",gnetwork->net, item);
+#else /* MULTINET */
           ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %s",item);
+#endif /* MULTINET */
         }
 #ifdef MULTINET
       write(gnetwork->ircserver, item, strlen(item));
