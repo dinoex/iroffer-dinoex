@@ -4,6 +4,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.32:
 ----------------------
 
+93) CLEARGETS
+  new admin command:
+  CLEARGETS                          Clears download counters for each pack
+
 bugfix: -plist full (reported by Jippi)
   support xdcclist_grouponly
 

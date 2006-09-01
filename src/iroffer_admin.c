@@ -121,6 +121,7 @@ static void u_trinfo(const userinput * const u);
 static void u_listdir(const userinput * const u, const char *dir);
 static void u_listul(const userinput * const u);
 static void u_clearrecords(const userinput * const u);
+static void u_cleargets(const userinput * const u);
 static void u_rmul(const userinput * const u);
 static void u_crash(const userinput * const u);
 static void u_chanl(const userinput * const u);
@@ -259,6 +260,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_allow_all,u_botinfo,  "BOTINFO",NULL,"Show Information about the bot status"},
 {5,method_allow_all,u_memstat,  "MEMSTAT",NULL,"Show Information about memory usage"},
 {5,method_allow_all,u_clearrecords, "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, total sent, and transfer limits"},
+{5,method_allow_all,u_cleargets, "CLEARGETS",NULL,"Clears download counters for each pack"},
 {5,method_console,  u_redraw,   "REDRAW",NULL,"Redraws the Screen"},
 {5,method_console,  u_delhist,  "DELHIST",NULL,"Deletes console history"},
 {5,method_dcc,      u_quit,     "QUIT",NULL,"Close this DCC chat"},
@@ -5923,7 +5925,22 @@ static void u_clearrecords(const userinput * const u)
     }
   
   u_respond(u,"Cleared transfer record, bandwidth record, total sent, total uptime, and transfer limits");
+  write_statefile();
+}
+
+static void u_cleargets(const userinput * const u)
+{
+   xdcc *xd;
+
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       xd->gets = 0;
+       xd = irlist_get_next(xd);
+     }
   
+  u_respond(u,"Cleared download counter for each pack");
+  write_statefile();
 }
 
 static void u_rmul(const userinput * const u) {
