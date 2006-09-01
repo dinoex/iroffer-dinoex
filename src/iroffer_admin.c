@@ -4570,18 +4570,18 @@ static void u_botinfo(const userinput * const u) {
             );
 
 #ifdef MULTINET
-   u_respond(u,"configured nick: %s, actual nick: %s, realname: %s, modes: %s",
-             gdata.config_nick,
-             (gnetwork->user_nick ? gnetwork->user_nick : "??"),
-             gdata.user_realname,
-             gdata.user_modes);
-   
    for (ss=0; ss<gdata.networks_online; ss++)
      {
        if (gdata.networks[ss].name == NULL)
          u_respond(u,"network: %d", ss);
        else
          u_respond(u,"network: %d: %s", ss, gdata.networks[ss].name);
+       
+       u_respond(u,"configured nick: %s, actual nick: %s, realname: %s, modes: %s",
+                 gdata.config_nick,
+                 (gdata.networks[ss].user_nick ? gdata.networks[ss].user_nick : "??"),
+                 gdata.user_realname,
+                 gdata.user_modes);
        
        switch (gdata.connectionmethod.how)
          {
