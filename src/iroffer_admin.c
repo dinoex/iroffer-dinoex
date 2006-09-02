@@ -2287,9 +2287,7 @@ static void u_announce (const userinput * const u) {
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
   snprintf(tempstr2,maxtextlength-2,"[\2%s\2] %s",u->arg2e,xd->desc);
-#ifdef MULTINET
-  snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gnetwork->user_nick,num);
-#else
+#ifndef MULTINET
   snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gdata.user_nick,num);
 #endif /* MULTINET */
   
@@ -2297,6 +2295,7 @@ static void u_announce (const userinput * const u) {
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
+      snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gnetwork->user_nick,num);
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch) {
         if (ch->flags & CHAN_ONCHAN)
