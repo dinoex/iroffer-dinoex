@@ -1344,6 +1344,13 @@ const char *validate_crc32(xdcc *xd, int quiet)
        x = NULL;
      else
        x = "CRC32 verified OK";
+     /* unlock pack */
+     if ((quiet == 2) && (xd->lock != NULL)) {
+       if (strcmp(xd->lock,badcrc)) {
+         mydelete(xd->lock);
+         xd->lock = NULL;
+       }
+     }
    }
    else {
      x = "CRC32 not found";
