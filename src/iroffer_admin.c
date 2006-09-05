@@ -4574,9 +4574,9 @@ static void u_botinfo(const userinput * const u) {
    for (ss=0; ss<gdata.networks_online; ss++)
      {
        if (gdata.networks[ss].name == NULL)
-         u_respond(u,"network: %d", ss);
+         u_respond(u,"network: %d", ss + 1);
        else
-         u_respond(u,"network: %d: %s", ss, gdata.networks[ss].name);
+         u_respond(u,"network: %d: %s", ss + 1, gdata.networks[ss].name);
        
        u_respond(u,"configured nick: %s, actual nick: %s, realname: %s, modes: %s",
                  gdata.config_nick,
