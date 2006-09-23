@@ -751,6 +751,7 @@ static void u_xdl_head(const userinput * const u) {
    channel_t *ch;
    ir_uint64 xdccsent;
    
+   updatecontext();
    tempstr  = mycalloc(maxtextlength);
 
    if (u->method==method_xdl_channel_min) m = 1; else m = 0;

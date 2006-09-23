@@ -1672,3 +1672,4 @@
 1683 "Clears download counters for each pack"
 1684 "Cleared download counter for each pack"
 1685 "max_uploads"
+1686 "max_upspeed"

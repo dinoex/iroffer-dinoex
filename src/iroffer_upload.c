@@ -157,6 +157,7 @@ void l_establishcon (upload * const l)
 
 void l_transfersome (upload * const l) {
    int i, howmuch, howmuch2;
+   int j;
    unsigned long g;
    off_t mysize;
    
@@ -166,6 +167,18 @@ void l_transfersome (upload * const l) {
    howmuch2 = 1;
    for (i=0; i<MAXTXPERLOOP; i++) {
       if ((howmuch == BUFFERSIZE && howmuch2 > 0) && is_fd_readable(l->clientsocket)) {
+         
+         if ( gdata.max_upspeed )
+           {
+             j = gdata.xdccrecv[(gdata.curtime)%XDCC_SENT_SIZE]
+               + gdata.xdccrecv[(gdata.curtime-1)%XDCC_SENT_SIZE]
+               + gdata.xdccrecv[(gdata.curtime-2)%XDCC_SENT_SIZE]
+               + gdata.xdccrecv[(gdata.curtime-3)%XDCC_SENT_SIZE];
+             if ( j >= gdata.max_upspeed*1024 )
+               {
+                 return;
+               }
+           }
          
          howmuch  = read(l->clientsocket, gdata.sendbuff, BUFFERSIZE);
          if (howmuch < 0)

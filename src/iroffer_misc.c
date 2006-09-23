@@ -163,6 +163,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"restrictsend_timeout",  &gdata.restrictsend_timeout,  &gdata.restrictsend_timeout,    0, 600, 1 },
   {"send_statefile_minute",  &gdata.send_statefile_minute,  &gdata.send_statefile_minute, 0, 60, 1 },
   {"max_uploads",     &gdata.max_uploads,     &gdata.max_uploads,     0, 65000, 1 },
+  {"max_upspeed",     &gdata.max_upspeed,     &gdata.max_upspeed,     0, 1000000, 4 },
 };
 
 typedef struct
@@ -3103,6 +3104,7 @@ void reinit_config_vars(void)
   gdata.send_statefile_minute = 0;
   gdata.extend_status_line = 0;
   gdata.max_uploads = 65000;
+  gdata.max_upspeed = 65000;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
