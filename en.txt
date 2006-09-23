@@ -1668,3 +1668,7 @@
 1679 "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)"
 1680 "<IRC<: %d, %s"
 1681 "Stat: %i/%i Sls, %i/%i Q, %i SrQ (Bdw: %"
+1682 "CLEARGETS"
+1683 "Clears download counters for each pack"
+1684 "Cleared download counter for each pack"
+1685 "max_uploads"
