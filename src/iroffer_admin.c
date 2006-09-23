@@ -575,12 +575,23 @@ static void u_respond(const userinput * const u, const char *format, ...)
 
 void u_parseit(userinput * const u) {
    int i,found = 0;
+#ifdef MULTINET
+   gnetwork_t *backup;
+#endif /* MULTINET */
    
    updatecontext();
    
+#ifdef MULTINET
+   backup = gnetwork;
+   if ( gnetwork == NULL )
+     gnetwork = &(gdata.networks[0]);
+#endif /* MULTINET */
    if (!u->cmd || !strlen(u->cmd)) {
       u_respond(u,"** Missing Command, try again");
       u_fillwith_clean(u);
+#ifdef MULTINET
+      gnetwork = backup;
+#endif /* MULTINET */
       return;
       }
    
@@ -602,6 +613,9 @@ void u_parseit(userinput * const u) {
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s Requested (MSG: %s)",u->cmd,u->snick);
    
    u_fillwith_clean(u);
+#ifdef MULTINET
+   gnetwork = backup;
+#endif /* MULTINET */
    
    }
 
