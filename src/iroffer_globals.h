@@ -178,6 +178,7 @@ int restrictsend_warning;
 int restrictsend_timeout;
 int send_statefile_minute;
 int extend_status_line;
+int max_uploads;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

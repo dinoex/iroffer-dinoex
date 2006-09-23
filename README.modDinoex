@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.32:
 ----------------------
 
+95) max_uploads
+  limit for concurrents uploads.
+
 94) auto_crc_check
   automatic unlock if crc matches
 
