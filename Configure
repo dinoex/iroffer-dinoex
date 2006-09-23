@@ -168,13 +168,6 @@ GEOLDF="-L/usr/local/lib"
 shift
 fi
 
-if $OPT_CURL; then
-echo "Configuring for Curl."
-CURLLIB="-lcurl"
-CURLINC="-DUSE_CURL -I/usr/local/include"
-CURLLDF="-L/usr/local/lib"
-shift
-fi
 
 if $OPT_MULTI; then
 echo "Configuring for Multiple IRC Networks."
@@ -787,6 +780,33 @@ if [ "$ostype" = CYGWIN ]; then
 echo "#define NO_SETUID" >> src/iroffer_config.h
 echo "#define NO_CHROOT" >> src/iroffer_config.h
 echo "deactivate chroot()-ing"
+fi
+
+if $OPT_CURL; then
+	echo -n "Seeing if libcurl libraries exist (for the FETCH-Command)... "
+	echo "
+	#define GEX 
+	#include \"src/iroffer_config.h\"
+	#include \"src/iroffer_defines.h\"
+	#include \"src/iroffer_headers.h\"
+	#include \"src/iroffer_globals.h\"
+	int main (int argc, char **argv) {exit(0);}
+	" > config.temp.c
+	if $cctype config.temp.c $libs -lcurl -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR; then
+		echo "found"
+		echo "Configuring for Curl."
+		CURLLIB="-lcurl"
+		CURLINC="-DUSE_CURL -I/usr/local/include"
+		CURLLDF="-L/usr/local/lib"
+		shift
+	else
+		echo "not found"
+		echo "***Disable the FETCH-Command. If u want to use this feature, please install libcurl.***"
+		CURLLIB=""
+		CURLINC=""
+		CURLLDF=""
+		shift
+	fi
 fi
 
 echo -n "Seeing if NSS libraries exist (for chroot)... "
