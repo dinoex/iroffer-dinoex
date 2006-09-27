@@ -73,6 +73,7 @@ char *name;
 int net;
 int recentsent;
 int nick_number;
+int inamnt[INAMNT_SIZE];
 
 } gnetwork_t;
 #endif /* MULTINET */
@@ -285,7 +286,9 @@ unsigned long xdccsent[XDCC_SENT_SIZE];
 unsigned long xdccrecv[XDCC_SENT_SIZE];
 unsigned long xdccsum[XDCC_SENT_SIZE];
 
+#ifndef MULTINET
 int inamnt[INAMNT_SIZE];
+#endif /* not MULTINET */
 int ignore;
 
 int slotsmax;

@@ -1581,7 +1581,12 @@ void dumpgdata(void)
     {
       gdata_print_number_array("%c", networks[ss].chanmodes);
     }
-      
+  
+  for (ii=0; ii<INAMNT_SIZE; ii++)
+    {
+      gdata_print_int_array(networks[ss].inamnt)
+    }
+    
     } /* networks */
    
   gdata_irlist_iter_start(channel_join_raw, char);
@@ -1754,10 +1759,12 @@ void dumpgdata(void)
       gdata_print_ulong_array(xdccrecv)
       gdata_print_ulong_array(xdccsum)
     }
+#ifndef MULTINET
   for (ii=0; ii<INAMNT_SIZE; ii++)
     {
       gdata_print_int_array(inamnt)
     }
+#endif /* not MULTINET */
   
   gdata_print_int(ignore);
   gdata_print_int(slotsmax);

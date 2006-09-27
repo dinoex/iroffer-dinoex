@@ -2368,7 +2368,11 @@ void floodchk(void) {
    last = gdata.ignore;
    
    for (i=0; i<INAMNT_SIZE; i++) {
+#ifdef MULTINET
+      count += gnetwork->inamnt[i];
+#else /* MULTINET */
       count += gdata.inamnt[i];
+#endif /* MULTINET */
       }
 
    if (count > 6)

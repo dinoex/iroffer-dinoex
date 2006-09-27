@@ -22,6 +22,7 @@ bugfix: -plist full (reported by Jippi)
 
 bugfix: MULITNET
   regain nick on all networks
+  count flooding for each server
 
 bugfix: MULTINET (reported by TheDeath)
   rare crash when first net is not connected

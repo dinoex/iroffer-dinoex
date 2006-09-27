@@ -1299,7 +1299,22 @@ static void mainloop (void) {
 #ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++) {
         gnetwork = &(gdata.networks[ss]);
-#endif /* MULTINET */
+        /*----- send server stuff ----- */
+        if (changesec) {
+           sendserver();
+           if (gdata.curtime%INAMNT_SIZE == (INAMNT_SIZE-1))
+              gnetwork->inamnt[0] = 0;
+           else
+              gnetwork->inamnt[gdata.curtime%INAMNT_SIZE+1] = 0;
+           }
+        /*----- see if we can send out some xdcc lists */
+        if (changesec && gnetwork->serverstatus == SERVERSTATUS_CONNECTED) {
+          if (!irlist_size((&gnetwork->serverq_normal)) && !irlist_size(&(gnetwork->serverq_slow)))
+            sendxdlqueue();
+          }
+        }
+      gnetwork = NULL;
+#else /* MULTINET */
       /*----- send server stuff ----- */
       if (changesec) {
          sendserver();
@@ -1310,18 +1325,10 @@ static void mainloop (void) {
          }
       
       /*----- see if we can send out some xdcc lists */
-#ifdef MULTINET
-      if (changesec && gnetwork->serverstatus == SERVERSTATUS_CONNECTED) {
-         if (!irlist_size((&gnetwork->serverq_normal)) && !irlist_size(&(gnetwork->serverq_slow)))
-#else /* MULTINET */
       if (changesec && gdata.serverstatus == SERVERSTATUS_CONNECTED) {
          if (!irlist_size(&gdata.serverq_normal) && !irlist_size(&gdata.serverq_slow))
-#endif /* MULTINET */
             sendxdlqueue();
          }
-#ifdef MULTINET
-        }
-      gnetwork = NULL;
 #endif /* MULTINET */
       
       /*----- see if its time to change maxb */
@@ -3132,7 +3139,11 @@ static void privmsgparse(const char* type, char* line) {
    /*----- CLIENTINFO ----- */
    if ( !gdata.ignore && (!strcmp(msg1,"\1CLIENTINFO")
           || !strcmp(msg1,"\1CLIENTINFO\1") )) {
+#ifdef MULTINET
+      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
       if (!msg2) {
          notice(nick,"\1CLIENTINFO DCC PING VERSION XDCC UPTIME "
          ":Use CTCP CLIENTINFO <COMMAND> to get more specific information\1");
@@ -3154,7 +3165,11 @@ static void privmsgparse(const char* type, char* line) {
    /*----- PING ----- */
    else if ( !gdata.ignore && (!strcmp(msg1,"\1PING")
           || !strcmp(msg1,"\1PING\1") ) && notnotice ) {
+#ifdef MULTINET
+      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
       if (msg2 && (msg2[strlen(msg2)-1] == '\1'))
         {
           msg2[strlen(msg2)-1] = '\0';
@@ -3174,7 +3189,11 @@ static void privmsgparse(const char* type, char* line) {
    /*----- VERSION ----- */
    else if ( !gdata.ignore && (!strcmp(msg1,"\1VERSION")
           || !strcmp(msg1,"\1VERSION\1") )) {
+#ifdef MULTINET
+      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
       notice(nick,"\1VERSION iroffer v" VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
@@ -3186,7 +3205,11 @@ static void privmsgparse(const char* type, char* line) {
           || !strcmp(msg1,"\1UPTIME\1") ))
      {
        char *tempstr2 = mycalloc(maxtextlength);
+#ifdef MULTINET
+       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
        gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
        tempstr2 = getuptime(tempstr2, 0, gdata.startuptime, maxtextlength);
        notice(nick,"\1UPTIME %s\1", tempstr2);
        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: UPTIME",nick);
@@ -3198,7 +3221,11 @@ static void privmsgparse(const char* type, char* line) {
           || !strcmp(msg1,"\1STATUS\1") ))
      {
        char *tempstr2 = mycalloc(maxtextlength);
+#ifdef MULTINET
+       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
        gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
        tempstr2 = getstatuslinenums(tempstr2,maxtextlength);
        notice(nick,"\1%s\1",tempstr2);
        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: STATUS",nick);
@@ -3214,7 +3241,11 @@ static void privmsgparse(const char* type, char* line) {
       if (!gdata.attop) gototop();
       if (!strcmp(caps(msg2),"RESUME") && msg3 && msg4 && msg5)
         {
+#ifdef MULTINET
+          gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
           gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
           
           caps(nick);
           
@@ -3437,10 +3468,11 @@ static void privmsgparse(const char* type, char* line) {
    /*----- XDCC ----- */
 #ifdef MULTINET
    else if ( !gdata.ignore && gnetwork->caps_nick && (!strcmp(gnetwork->caps_nick,dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC") )) {
-#else
+      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
    else if ( !gdata.ignore && gdata.caps_nick && (!strcmp(gdata.caps_nick,dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC") )) {
-#endif /* MULTINET */
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
       
       caps(msg2);
       
@@ -3692,7 +3724,11 @@ static void privmsgparse(const char* type, char* line) {
              ( !msg2 || !strcmp(caps(msg2),gdata.caps_nick) ))
 #endif /* MULTINET */
      {
+#ifdef MULTINET
+      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
       
       /* generate !list styled message */
       
@@ -3740,7 +3776,11 @@ static void privmsgparse(const char* type, char* line) {
      {
       char *msg2e;
       msg2e = getpart_eol(line,5);
-      gdata.inamnt[gdata.curtime % 10]++;
+#ifdef MULTINET
+      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
+      gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
       for (i = k = 0; i < strlen(msg2e); i++)
         if (msg2e[i] == ' ') msg2e[i] = '*';
         if ((msg2e[i] == '*') || (msg2e[i] == '#') || (msg2e[i] == '?'))
@@ -3850,7 +3890,11 @@ static void autoqueuef(const char* line, const autoqueue_t *aq) {
        char *tempstr;
        const char *format = " :** Sending You %s by DCC";
        
+#ifdef MULTINET
+       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+#else /* MULTINET */
        gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
+#endif /* MULTINET */
        
        if (!gdata.attop) gototop();
        
