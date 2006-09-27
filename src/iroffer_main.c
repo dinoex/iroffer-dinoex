@@ -1501,10 +1501,11 @@ static void mainloop (void) {
 #ifdef MULTINET
          for (ss=0; ss<gdata.networks_online; ss++) {
             if (gdata.periodicmsg_nick && gdata.periodicmsg_msg
-            && (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) )
+            && (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) ) {
                gnetwork = &(gdata.networks[ss]);
                privmsg(gdata.periodicmsg_nick,"%s",gdata.periodicmsg_msg);
             }
+         }
 #else /* MULTINET */
          if (gdata.periodicmsg_nick && gdata.periodicmsg_msg
             && (gdata.serverstatus == SERVERSTATUS_CONNECTED) )

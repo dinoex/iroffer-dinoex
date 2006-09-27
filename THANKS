@@ -59,6 +59,7 @@ TheDeath
 	admin command "QUEUESIZE"
 	admin command "FETCH"
 	option "uploadminspace"
+	reporting not connected bug
 
 [GFE]Lunix
 	alias xdcc list group <group>
