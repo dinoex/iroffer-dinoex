@@ -60,6 +60,7 @@ TheDeath
 	admin command "FETCH"
 	option "uploadminspace"
 	reporting not connected bug
+	reporting bad url bug
 
 [GFE]Lunix
 	alias xdcc list group <group>

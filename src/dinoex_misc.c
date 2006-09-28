@@ -1434,6 +1434,7 @@ void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd
 static fetch_curl_t *clean_fetch(fetch_curl_t *ft);
 static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
 {
+  updatecontext();
   fclose(ft->writefd);
   mydelete(ft->errorbuf);
   mydelete(ft->name);
@@ -1493,6 +1494,7 @@ void fetch_perform(void)
                {
                  a_respond(&(ft->u),"fetch %s completed", ft->name);
                }
+             updatecontext();
              curl_easy_cleanup(ft->curlhandle);
              seen ++;
              fetch_started --;
@@ -1502,6 +1504,7 @@ void fetch_perform(void)
          ft = irlist_get_next(ft);
        }
   } while (msgs_in_queue > 0);
+  updatecontext();
   if (seen == 0)
     outerror(OUTERROR_TYPE_WARN_LOUD,"curlhandle not found ");
 #ifdef MULTINET
@@ -1530,7 +1533,7 @@ void start_fetch_url(const userinput *const u)
   fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(name) + 2);
   sprintf(fullfile, "%s/%s", gdata.uploaddir, name);
   writefd = fopen(fullfile, "w+");
-  if ((writefd < 0) && (errno == EEXIST))
+  if ((writefd == NULL) && (errno == EEXIST))
     {
       retval = stat(fullfile, &s);
       if (retval < 0)
@@ -1541,13 +1544,10 @@ void start_fetch_url(const userinput *const u)
           mydelete(fullfile);
           return;
         }
+      resumesize = s.st_size;
       writefd = fopen(fullfile, "a");
-      if (writefd >= 0)
-        {
-          resumesize = s.st_size;
-        }
     }
-  if (writefd < 0)
+  if (writefd == NULL)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Cant Access Upload File '%s': %s",
                fullfile,strerror(errno));

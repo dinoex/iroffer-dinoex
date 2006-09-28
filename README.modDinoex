@@ -27,6 +27,8 @@ bugfix: MULITNET
 bugfix: MULTINET (reported by TheDeath)
   rare crash when first net is not connected
 
+bugfix: FETCH (reported by TheDeath)
+  crashes with bad urls
 
 With Version mod 1.31:
 ----------------------
