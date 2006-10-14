@@ -58,6 +58,8 @@ void autoadd_all(void);
 void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd);
 void fetch_perform(void);
 void start_fetch_url(const userinput *const u);
+void dinoex_dcl(const userinput *const u);
+void dinoex_dcld(const userinput *const u);
 #endif /* USE_CURL */
 
 char* getpart_eol(const char *line, int howmany);

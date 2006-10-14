@@ -5,13 +5,13 @@ With Version mod 1.32:
 ----------------------
 
 96) max_upspeed
-  limit bandwidth for uploads.
+  limit bandwidth for XDCC uploads.
 
 95) max_uploads
-  limit for concurrents uploads.
+  limit for concurrents XDCC uploads.
 
 94) auto_crc_check
-  automatic unlock if crc matches
+  automatic unlock if crc matches.
 
 93) CLEARGETS
   new admin command:
@@ -29,6 +29,7 @@ bugfix: MULTINET (reported by TheDeath)
 
 bugfix: FETCH (reported by TheDeath)
   crashes with bad urls
+  list active downloads in dcl and dcld
 
 With Version mod 1.31:
 ----------------------

@@ -1679,6 +1679,34 @@ void start_fetch_url(const userinput *const u)
     a_respond(u,"fetch %s started", ft->name);
     fetch_started ++;
 }
+
+void dinoex_dcl(const userinput *const u)
+{
+  fetch_curl_t *ft;
+
+  updatecontext();
+  ft = irlist_get_head(&fetch_trans);
+  while(ft)
+    {
+      a_respond(u,"    .  fetch       %s   Receiving", ft->name);
+      ft = irlist_get_next(ft);
+    }
+}
+
+void dinoex_dcld(const userinput *const u)
+{
+  fetch_curl_t *ft;
+
+  updatecontext();
+  ft = irlist_get_head(&fetch_trans);
+  while(ft)
+    {
+      a_respond(u,"    .  fetch       %s   Receiving", ft->name);
+      a_respond(u,"                   %s", ft->url);
+      ft = irlist_get_next(ft);
+    }
+}
+
 #endif /* USE_CURL */
 
 char* getpart_eol(const char *line, int howmany)

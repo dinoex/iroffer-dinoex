@@ -1267,7 +1267,9 @@ static void u_dcl(const userinput * const u)
       ul = irlist_get_next(ul);
       i++;
     }
-  
+#ifdef USE_CURL
+  dinoex_dcl(u);
+#endif
 }
 
 static void u_dcld(const userinput * const u)
@@ -1458,6 +1460,9 @@ static void u_dcld(const userinput * const u)
   mydelete(tempstr2);
   mydelete(tempstr3);
   mydelete(tempstr4);
+#ifdef USE_CURL
+  dinoex_dcld(u);
+#endif
 }
 
 static void u_qul(const userinput * const u)

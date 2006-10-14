@@ -61,6 +61,7 @@ TheDeath
 	option "uploadminspace"
 	reporting not connected bug
 	reporting bad url bug
+	suggesting list of active downloads in dcl and dcld
 
 [GFE]Lunix
 	alias xdcc list group <group>
