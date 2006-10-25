@@ -5191,7 +5191,7 @@ static void u_memstat(const userinput * const u)
             r.ru_inblock, r.ru_oublock, r.ru_msgsnd,
             r.ru_msgrcv, r.ru_nsignals, r.ru_nvcsw, r.ru_nivcsw);
   
-  u_respond(u, "gdata:  %d bytes", sizeof(gdata_t));
+  u_respond(u, "gdata:  %ld bytes", (long)sizeof(gdata_t));
   
   numcountrecent = sizecount = 0;
   for (i=0; i<(MEMINFOHASHSIZE * gdata.meminfo_depth); i++)
