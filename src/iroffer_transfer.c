@@ -489,7 +489,7 @@ void t_transfersome (transfer * const t)
       
       if (gdata.debug > 4)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_BLUE,"File %d Write %d",howmuch,howmuch2);
+          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_BLUE,"File %ld Write %ld",(long)howmuch,(long)howmuch2);
         }
       
       /* if over 50% send one to be fair */

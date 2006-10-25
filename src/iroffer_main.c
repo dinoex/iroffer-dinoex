@@ -2004,7 +2004,7 @@ static void mainloop (void) {
               if (gdata.debug > 4)
                 {
                   if (!gdata.attop) { gototop(); }
-                  ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"[MD5]: read %d",howmuch);
+                  ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"[MD5]: read %ld", (long)howmuch);
                 }
               
               if ((howmuch < 0) && (errno != EAGAIN))
