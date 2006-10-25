@@ -1408,7 +1408,7 @@
 1419 "d"
 1420 "%c"
 1421 "  : name=%s key=%s"
-1422 "  : flags=%d plsittime=%d plistoffset=%d"
+1422 "  : flags=%d plisttime=%d plistoffset=%d"
 1423 "  : when=%ld hostmask=%s message=%s"
 1424 "  : status=%d fd=%d"
 1425 "  : lastcontact=%ld connecttime=%ld"
