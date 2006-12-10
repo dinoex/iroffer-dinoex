@@ -553,6 +553,8 @@ static void u_respond(const userinput * const u, const char *format, ...)
               if (!strcasecmp(ch->name,chan))
                 {
                   vprivmsg_chan(ch, format, args);
+                  va_end(args);
+                  va_start(args, format);
                 }
             }
           mydelete(tempnick);

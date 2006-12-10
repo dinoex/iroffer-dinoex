@@ -126,3 +126,6 @@ Jippi
 [c]Mr_Unknow
 	automatic unlock if crc matches
 
+Yasuo|Iwakura
+	report -plist crash
+
