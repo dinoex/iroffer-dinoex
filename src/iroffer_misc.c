@@ -3819,8 +3819,9 @@ int look_for_file_changes(xdcc *xpack)
   if (stat(xpack->file,&st) < 0)
     {
       outerror(OUTERROR_TYPE_WARN,
-               "File '%s' can no longer be accessed: %s",
-               xpack->file, strerror(errno));
+               "Pack %d: File '%s' can no longer be accessed: %s",
+                number_of_pack(xpack),
+                xpack->file, strerror(errno));
       if ((gdata.removelostfiles) && (errno == ENOENT))
         return 1;
       return 0;

@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.33:
 ----------------------
 
+bugfix: lost files (reported by Yasuo|Iwakura)
+  lost files will now be reported with pack nr.
+
 bugfix: -plist (reported by Yasuo|Iwakura)
 versions affected: 1.24 - 1.32
   iroffer can chash when sending plist into to many channels at the same time

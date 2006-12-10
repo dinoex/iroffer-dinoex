@@ -128,4 +128,5 @@ Jippi
 
 Yasuo|Iwakura
 	report -plist crash
+	report uncomplete warning
 

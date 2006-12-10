@@ -707,6 +707,7 @@ void user_changed_nick(const char *oldnick, const char *newnick);
 void reverify_restrictsend(void);
 
 /* statefile.c */
+int number_of_pack(xdcc *pack);
 void write_statefile(void);
 void read_statefile(void);
 

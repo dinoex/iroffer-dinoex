@@ -153,6 +153,28 @@ typedef struct
 } statefile_item_md5sum_info_t;
 
 
+int number_of_pack(xdcc *pack)
+{
+  xdcc *xd;
+  int n;
+  
+  updatecontext();
+  
+  n = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      n++;
+      if (xd == pack)
+        return n;
+
+      xd = irlist_get_next(xd);
+    }
+  
+  return 0;
+}
+
+
 static int write_statefile_item(ir_boutput_t *bout, void *item)
 {
   int callval;
@@ -1605,13 +1627,15 @@ void read_statefile(void)
                 xfd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
                 if (xfd < 0)
                   {
-                    outerror(OUTERROR_TYPE_WARN,"Cant Access Offered File '%s': %s",
+                    outerror(OUTERROR_TYPE_WARN,"Pack %d: Cant Access Offered File '%s': %s",
+                             number_of_pack(xd),
                              xd->file, strerror(errno));
                     memset(&st,0,sizeof(st));
                   }
                 else if (fstat(xfd, &st) < 0)
                   {
-                    outerror(OUTERROR_TYPE_WARN,"Cant Access Offered File Details '%s': %s",
+                    outerror(OUTERROR_TYPE_WARN,"Pack %d: Cant Access Offered File Details '%s': %s",
+                             number_of_pack(xd),
                              xd->file, strerror(errno));
                     memset(&st, 0, sizeof(st));
                   }
@@ -1632,13 +1656,15 @@ void read_statefile(void)
                 
                 if (xd->st_size == 0)
                   {
-                    outerror(OUTERROR_TYPE_WARN,"The file \"%s\" has size of 0 bytes!",
+                    outerror(OUTERROR_TYPE_WARN,"Pack %d: The file \"%s\" has size of 0 bytes!",
+                             number_of_pack(xd),
                              xd->file);
                   }
                 
                 if (xd->st_size > gdata.max_file_size)
                   {
-                    outerror(OUTERROR_TYPE_CRASH,"The file \"%s\" is too large!",
+                    outerror(OUTERROR_TYPE_CRASH,"Pack %d: The file \"%s\" is too large!",
+                             number_of_pack(xd),
                              xd->file);
                   }
                 
