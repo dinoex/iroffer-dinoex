@@ -4153,7 +4153,7 @@ static void u_chatl(const userinput * const u)
           
         case DCCCHAT_UNUSED:
         default:
-          outerror(OUTERROR_TYPE_CRASH,
+          outerror(OUTERROR_TYPE_WARN_LOUD,
                    "Unexpected dccchat state %d", chat->status);
           break;
         }
@@ -4408,7 +4408,12 @@ static void u_rehash(const userinput * const u) {
          }
        else
          {
-           outerror(OUTERROR_TYPE_CRASH,"channel found!");
+           outerror(OUTERROR_TYPE_WARN_LOUD,"could not add channel %s twice!", rch->name);
+#ifdef MULTINET
+           rch = irlist_delete(&(gnetwork->r_channels), rch);
+#else /* MULTINET */
+           rch = irlist_delete(&gdata.r_channels, rch);
+#endif /* MULTINET */
          }
      }
 #ifdef MULTINET

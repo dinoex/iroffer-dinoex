@@ -372,7 +372,7 @@
 373 "1 = %s parted\n"
 374 "2  = %s common\n"
 375 "3 = %s new\n"
-376 "channel found!"
+376 "could not add channel %s twice!"
 377 "vhost changed, reconnecting"
 378 "pidfile changed, switching"
 379 "user_nick missing! keeping old nick!"
