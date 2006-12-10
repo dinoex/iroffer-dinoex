@@ -2201,6 +2201,7 @@ static void u_psend(const userinput * const u)
 {
   userinput manplist;
   userinput_method_e method;
+  channel_t *ch;
 #ifdef MULTINET
   gnetwork_t *backup;
   int net;
@@ -2260,7 +2261,35 @@ static void u_psend(const userinput * const u)
 #ifdef MULTINET
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
+  ch = irlist_get_head(&(gnetwork->channels));
+#else
+  ch = irlist_get_head(&gdata.channels);
 #endif /* MULTINET */
+  /* joinen channels only */
+  while(ch)
+    {
+      if (!strcasecmp(u->arg1,ch->name))
+        {
+          if ((ch->flags & CHAN_ONCHAN) != 0 )
+            break;
+          
+#ifdef MULTINET
+          gnetwork = backup;
+#endif /* MULTINET */
+          u_respond(u,"Bot not in Channel %s", u->arg1);
+          return;
+        }
+      ch = irlist_get_next(ch);
+    }
+  if (ch == NULL)
+    {
+#ifdef MULTINET
+       gnetwork = backup;
+#endif /* MULTINET */
+       u_respond(u,"Channel %s not found", u->arg1);
+       return;
+    }
+  
   if ((gdata.xdcclist_grouponly) || (method != method_xdl_channel))
     u_fillwith_msg(&manplist,u->arg1,"A A A A A xdl");
   else

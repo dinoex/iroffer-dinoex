@@ -4,7 +4,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.33:
 ----------------------
 
-99) extend REHASH (reported by TheDeath)
+100) extern PSEND (inspired by TheDeath)
+  give an error when the chan is not found
+  or the bot is not joined to the channel.
+
+99) extend REHASH (inspired by TheDeath)
   dont crash on duplicate channels
 
 98) extend CRASH

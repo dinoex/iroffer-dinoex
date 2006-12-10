@@ -63,6 +63,7 @@ TheDeath
 	reporting bad url bug
 	suggesting list of active downloads in dcl and dcld
 	reporting crash on duplicate channels
+	reporting psend without effect
 
 [GFE]Lunix
 	alias xdcc list group <group>
