@@ -276,7 +276,7 @@ static const userinput_parse_t userinput_parse[] = {
 #endif /* MULTINET */
 {5,method_allow_all,u_shutdown, "SHUTDOWN","<act>","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
 
-{6,method_console,  u_crash, "CRASH",NULL,"Cause a segmentation fault"},
+{5,method_console,  u_crash, "CRASH",NULL,"Cause a segmentation fault"},
 };
 
 

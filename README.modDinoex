@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.33:
 ----------------------
 
+97) CRASH
+  allow crash via remote
+
 bugfix: lost files (reported by Yasuo|Iwakura)
   lost files will now be reported with pack nr.
 
