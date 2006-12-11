@@ -214,9 +214,7 @@ static void mainloop (void) {
    
    int overlimit;
    int highests;
-#ifdef MULTINET
    int ss;
-#endif /* MULTINET */
    upload *ul;
    transfer *tr;
    pqueue *pq;
@@ -225,9 +223,7 @@ static void mainloop (void) {
    dccchat_t *chat;
    
    updatecontext();
-#ifdef MULTINET
    gnetwork = NULL;
-#endif /* MULTINET */
    
    if (first_loop)
      {
@@ -258,7 +254,6 @@ static void mainloop (void) {
       fetch_multi_fdset(&gdata.readset, &gdata.writeset, &gdata.execset, &highests);
 #endif /* USE_CURL */
       
-#ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++)
         {
           if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
@@ -277,23 +272,6 @@ static void mainloop (void) {
               highests = max2(highests, gdata.networks[ss].serv_resolv.sp_fd[0]);
             }
         } /*networks */
-#else /* MULTINET */
-      if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
-        {
-          FD_SET(gdata.ircserver, &gdata.readset);
-          highests = max2(highests, gdata.ircserver);
-        }
-      else if (gdata.serverstatus == SERVERSTATUS_TRYING)
-        {
-          FD_SET(gdata.ircserver, &gdata.writeset);
-          highests = max2(highests, gdata.ircserver);
-        }
-      else if (gdata.serverstatus == SERVERSTATUS_RESOLVING)
-        {
-          FD_SET(gdata.serv_resolv.sp_fd[0], &gdata.readset);
-          highests = max2(highests, gdata.serv_resolv.sp_fd[0]);
-        }
-#endif /* MULTINET */
       
       if (!gdata.background)
         {
@@ -436,28 +414,17 @@ static void mainloop (void) {
           
           while ((child = waitpid(-1, &status, WNOHANG)) > 0)
             {
-#ifdef MULTINET
               for (ss=0; ss<gdata.networks_online; ss++)
                 {
                   if (gdata.networks[ss].serverstatus == SERVERSTATUS_RESOLVING)
                     {
                       if (child == gdata.networks[ss].serv_resolv.child_pid)
                         {
-#else /* MULTINET */
-              if (gdata.serverstatus == SERVERSTATUS_RESOLVING)
-                {
-                  if (child == gdata.serv_resolv.child_pid)
-                    {
-#endif /* MULTINET */
                       /* lookup failed */
 #ifdef NO_WSTATUS_CODES
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                               "Unable to resolve server %s (status=0x%.8X)",
-#ifdef MULTINET
                               gdata.networks[ss].curserver.hostname,
-#else /* MULTINET */
-                              gdata.curserver.hostname,
-#endif /* MULTINET */
                               status);
 #else
 #ifndef NO_HOSTCODES
@@ -488,32 +455,21 @@ static void mainloop (void) {
                               errstr = "unknown";
                               break;
                             }
-#ifdef MULTINET
                           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                                   "Unable to resolve server %s (%s)",
                                   gdata.networks[ss].curserver.hostname, errstr);
-#else /* MULTINET */
-                          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
-                                  "Unable to resolve server %s (%s)",
-                                  gdata.curserver.hostname, errstr);
-#endif /* MULTINET */
                         }
                       else
 #endif
                         {
                           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                                   "Unable to resolve server %s (status=0x%.8X, %s: %d)",
-#ifdef MULTINET
                                   gdata.networks[ss].curserver.hostname,
-#else /* MULTINET */
-                                  gdata.curserver.hostname,
-#endif /* MULTINET */
                                   status,
                                   WIFEXITED(status) ? "exit" : WIFSIGNALED(status) ? "signaled" : "??",
                                   WIFEXITED(status) ? WEXITSTATUS(status) : WIFSIGNALED(status) ? WTERMSIG(status) : 0);
                         }
 #endif
-#ifdef MULTINET
                           gdata.networks[ss].serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
                         }
                       /* else  this is an old child, ignore */
@@ -528,21 +484,6 @@ static void mainloop (void) {
                   gdata.networks[ss].serv_resolv.child_pid = 0;
                     }
                 } /* networks */
-#else /* MULTINET */
-                      gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-                    }
-                  /* else  this is an old child, ignore */
-                }
-              
-              if (child == gdata.serv_resolv.child_pid)
-                {
-                  /* cleanup */
-                  close(gdata.serv_resolv.sp_fd[0]);
-                  FD_CLR(gdata.serv_resolv.sp_fd[0], &gdata.readset);
-                  gdata.serv_resolv.sp_fd[0] = 0;
-                  gdata.serv_resolv.child_pid = 0;
-                }
-#endif /* MULTINET */
             }
         }
       
@@ -657,59 +598,32 @@ static void mainloop (void) {
       
       updatecontext();
       
-#ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++)
         {
           gnetwork = &(gdata.networks[ss]);
-#endif /* MULTINET */
       /*----- see if gdata.ircserver is sending anything to us ----- */
-#ifdef MULTINET
       if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED && FD_ISSET(gnetwork->ircserver, &gdata.readset)) {
-#else /* MULTINET */
-      if (gdata.serverstatus == SERVERSTATUS_CONNECTED && FD_ISSET(gdata.ircserver, &gdata.readset)) {
-#endif /* MULTINET */
          char tempbuffa[INPUT_BUFFER_LENGTH];
-#ifdef MULTINET
          gnetwork->lastservercontact = gdata.curtime;
          gnetwork->servertime = 0;
          length = read (gnetwork->ircserver, &tempbuffa, INPUT_BUFFER_LENGTH);
-#else /* MULTINET */
-         gdata.lastservercontact = gdata.curtime;
-         gdata.servertime = 0;
-         length = read (gdata.ircserver, &tempbuffa, INPUT_BUFFER_LENGTH);
-#endif /* MULTINET */
          
          if (length < 1) {
             ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Closing Server Connection: %s",(length<0) ? strerror(errno) : "Closed");
             if (gdata.exiting)
               {
-#ifdef MULTINET
                 gnetwork->recentsent = 0;
-#else /* MULTINET */
-                gdata.recentsent = 0;
-#endif /* MULTINET */
               }
-#ifdef MULTINET
             FD_CLR(gnetwork->ircserver, &gdata.readset);
-#else /* MULTINET */
-            FD_CLR(gdata.ircserver, &gdata.readset);
-#endif /* MULTINET */
             /*
              * cygwin close() is broke, if outstanding data is present
              * it will block until the TCP connection is dead, sometimes
              * upto 10-20 minutes, calling shutdown() first seems to help
              */
-#ifdef MULTINET
             shutdown(gnetwork->ircserver, SHUT_RDWR);
             close(gnetwork->ircserver);
             mydelete(gnetwork->curserveractualname);
             gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#else /* MULTINET */
-            shutdown(gdata.ircserver, SHUT_RDWR);
-            close(gdata.ircserver);
-            mydelete(gdata.curserveractualname);
-            gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#endif /* MULTINET */
             }
          else
            {
@@ -736,25 +650,15 @@ static void mainloop (void) {
            }
         }
       
-#ifdef MULTINET
       if (gnetwork->serverstatus == SERVERSTATUS_TRYING && FD_ISSET(gnetwork->ircserver, &gdata.writeset))
-#else /* MULTINET */
-      if (gdata.serverstatus == SERVERSTATUS_TRYING && FD_ISSET(gdata.ircserver, &gdata.writeset))
-#endif /* MULTINET */
         {
           int callval_i;
           int connect_error;
           int connect_error_len = sizeof(connect_error);
           
-#ifdef MULTINET
           callval_i = getsockopt(gnetwork->ircserver,
                                  SOL_SOCKET, SO_ERROR,
                                  &connect_error, &connect_error_len);
-#else /* MULTINET */
-          callval_i = getsockopt(gdata.ircserver,
-                                 SOL_SOCKET, SO_ERROR,
-                                 &connect_error, &connect_error_len);
-#endif /* MULTINET */
           
           if (callval_i < 0)
             {
@@ -770,25 +674,15 @@ static void mainloop (void) {
           
           if ((callval_i < 0) || connect_error)
             {
-#ifdef MULTINET
               FD_CLR(gnetwork->ircserver, &gdata.writeset);
-#else /* MULTINET */
-              FD_CLR(gdata.ircserver, &gdata.writeset);
-#endif /* MULTINET */
               /*
                * cygwin close() is broke, if outstanding data is present
                * it will block until the TCP connection is dead, sometimes
                * upto 10-20 minutes, calling shutdown() first seems to help
                */
-#ifdef MULTINET
               shutdown(gnetwork->ircserver, SHUT_RDWR);
               close(gnetwork->ircserver);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#else /* MULTINET */
-              shutdown(gdata.ircserver, SHUT_RDWR);
-              close(gdata.ircserver);
-              gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#endif /* MULTINET */
             }
           else
             {
@@ -796,26 +690,16 @@ static void mainloop (void) {
 	    struct sockaddr_in localaddr;
           
 	    ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Connection Established, Logging In");
-#ifdef MULTINET
             gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
             FD_CLR(gnetwork->ircserver, &gdata.writeset);
             if (set_socket_nonblocking(gnetwork->ircserver, 0) < 0 )
-#else /* MULTINET */
-            gdata.serverstatus = SERVERSTATUS_CONNECTED;
-            FD_CLR(gdata.ircserver, &gdata.writeset);
-            if (set_socket_nonblocking(gdata.ircserver, 0) < 0 )
-#endif /* MULTINET */
 	      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
 	    
             if (!gdata.usenatip)
               {
                 addrlen = sizeof (localaddr);
                 bzero ((char *) &localaddr, sizeof (localaddr));
-#ifdef MULTINET
                 if (getsockname(gnetwork->ircserver,(struct sockaddr *) &localaddr, &addrlen) >= 0)
-#else /* MULTINET */
-                if (getsockname(gdata.ircserver,(struct sockaddr *) &localaddr, &addrlen) >= 0)
-#endif /* MULTINET */
                   {
                     gdata.ourip = ntohl(localaddr.sin_addr.s_addr);
                     if (gdata.debug > 0)
@@ -836,44 +720,22 @@ static void mainloop (void) {
             }
          }
       
-#ifdef MULTINET
       if ((gnetwork->serverstatus == SERVERSTATUS_RESOLVING) &&
           FD_ISSET(gnetwork->serv_resolv.sp_fd[0], &gdata.readset))
-#else /* MULTINET */
-      if ((gdata.serverstatus == SERVERSTATUS_RESOLVING) &&
-          FD_ISSET(gdata.serv_resolv.sp_fd[0], &gdata.readset))
-#endif /* MULTINET */
         {
           struct in_addr remote;
-#ifdef MULTINET
           length = read(gnetwork->serv_resolv.sp_fd[0],
                         &remote, sizeof(struct in_addr));
-#else /* MULTINET */
-          length = read(gdata.serv_resolv.sp_fd[0],
-                        &remote, sizeof(struct in_addr));
-#endif /* MULTINET */
           
-#ifdef MULTINET
           kill(gnetwork->serv_resolv.child_pid, SIGKILL);
           FD_CLR(gnetwork->serv_resolv.sp_fd[0], &gdata.readset);
-#else /* MULTINET */
-          kill(gdata.serv_resolv.child_pid, SIGKILL);
-          FD_CLR(gdata.serv_resolv.sp_fd[0], &gdata.readset);
-#endif /* MULTINET */
           
           if (length != sizeof(struct in_addr))
             {
-#ifdef MULTINET
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                       "Error resolving server %s",
                       gnetwork->curserver.hostname);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#else /* MULTINET */
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
-                      "Error resolving server %s",
-                      gdata.curserver.hostname);
-              gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#endif /* MULTINET */
             }
           else
             {
@@ -881,87 +743,41 @@ static void mainloop (void) {
               if (connectirc2(&remote))
                 {
                   /* failed */
-#ifdef MULTINET
                   gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#else /* MULTINET */
-                  gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#endif /* MULTINET */
                 }
             }
         }
       
-#ifdef MULTINET
       if (changesec && gnetwork->serverstatus == SERVERSTATUS_RESOLVING)
-#else /* MULTINET */
-      if (changesec && gdata.serverstatus == SERVERSTATUS_RESOLVING)
-#endif /* MULTINET */
         {
           int timeout;
-#ifdef MULTINET
           timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
-#else /* MULTINET */
-          timeout = CTIMEOUT + (gdata.serverconnectbackoff * CBKTIMEOUT);
-#endif /* MULTINET */
           
-#ifdef MULTINET
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
-#else /* MULTINET */
-          if (gdata.lastservercontact + timeout < gdata.curtime)
-#endif /* MULTINET */
             {
-#ifdef MULTINET
               kill(gnetwork->serv_resolv.child_pid, SIGKILL);
-#else /* MULTINET */
-              kill(gdata.serv_resolv.child_pid, SIGKILL);
-#endif /* MULTINET */
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Resolve Timed Out (%d seconds)",timeout);
-#ifdef MULTINET
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#else /* MULTINET */
-              gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#endif /* MULTINET */
             }
         }
       
-#ifdef MULTINET
       if (changesec && gnetwork->serverstatus == SERVERSTATUS_TRYING)
-#else /* MULTINET */
-      if (changesec && gdata.serverstatus == SERVERSTATUS_TRYING)
-#endif /* MULTINET */
         {
           int timeout;
-#ifdef MULTINET
           timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
-#else /* MULTINET */
-          timeout = CTIMEOUT + (gdata.serverconnectbackoff * CBKTIMEOUT);
-#endif /* MULTINET */
           
-#ifdef MULTINET
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
-#else /* MULTINET */
-          if (gdata.lastservercontact + timeout < gdata.curtime)
-#endif /* MULTINET */
             {
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Connection Timed Out (%d seconds)",timeout);
-#ifdef MULTINET
               FD_CLR(gnetwork->ircserver, &gdata.readset);
-#else /* MULTINET */
-              FD_CLR(gdata.ircserver, &gdata.readset);
-#endif /* MULTINET */
               /*
                * cygwin close() is broke, if outstanding data is present
                * it will block until the TCP connection is dead, sometimes
                * upto 10-20 minutes, calling shutdown() first seems to help
                */
-#ifdef MULTINET
               shutdown(gnetwork->ircserver, SHUT_RDWR);
               close(gnetwork->ircserver);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#else /* MULTINET */
-              shutdown(gdata.ircserver, SHUT_RDWR);
-              close(gdata.ircserver);
-              gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#endif /* MULTINET */
             }
         }
       
@@ -970,19 +786,15 @@ static void mainloop (void) {
           gdata.needsswitch = 0;
           switchserver(-1);
         }
-#ifdef MULTINET
         } /* networks */
       gnetwork = NULL;
-#endif /* MULTINET */
       
       updatecontext();
       
       ul = irlist_get_head(&gdata.uploads);
       while(ul)
         {
-#ifdef MULTINET
           gnetwork = &(gdata.networks[ul->net]);
-#endif /* MULTINET */
           /*----- see if uploads are sending anything to us ----- */
           if (ul->ul_status == UPLOAD_STATUS_GETTING && FD_ISSET(ul->clientsocket, &gdata.readset))
             {
@@ -1052,9 +864,7 @@ static void mainloop (void) {
               ul = irlist_get_next(ul);
             }
         }
-#ifdef MULTINET
       gnetwork = NULL;
-#endif /* MULTINET */
       
       updatecontext();
       /*----- see if dccchat is sending anything to us ----- */
@@ -1062,9 +872,7 @@ static void mainloop (void) {
            chat;
            chat = irlist_get_next(chat))
         {
-#ifdef MULTINET
           gnetwork = &(gdata.networks[chat->net]);
-#endif /* MULTINET */
           if ((chat->status == DCCCHAT_CONNECTING) &&
               FD_ISSET(chat->fd, &gdata.writeset))
             {
@@ -1158,9 +966,7 @@ static void mainloop (void) {
                 }
             }
         }
-#ifdef MULTINET
       gnetwork = NULL;
-#endif /* MULTINET */
       
       updatecontext();
       
@@ -1176,9 +982,7 @@ static void mainloop (void) {
               /*----- look for transfer some -----  send at least once a second, or more if necessary */
               if (changequartersec || FD_ISSET(tr->clientsocket, &gdata.writeset))
                 {
-#ifdef MULTINET
                   gnetwork = &(gdata.networks[tr->net]);
-#endif /* MULTINET */
                   t_transfersome(tr);
                 }
             }
@@ -1194,9 +998,7 @@ static void mainloop (void) {
               /*----- look for transfer some -----  send at least once a second, or more if necessary */
               if (changequartersec || FD_ISSET(tr->clientsocket, &gdata.writeset))
                 {
-#ifdef MULTINET
                   gnetwork = &(gdata.networks[tr->net]);
-#endif /* MULTINET */
                   t_transfersome(tr);
                 }
             }
@@ -1206,9 +1008,7 @@ static void mainloop (void) {
       tr = irlist_get_head(&gdata.trans);
       while(tr)
         {
-#ifdef MULTINET
           gnetwork = &(gdata.networks[tr->net]);
-#endif /* MULTINET */
           /*----- look for listen reminders ----- */
           if (changesec &&
               (tr->tr_status == TRANSFER_STATUS_LISTENING) &&
@@ -1280,9 +1080,7 @@ static void mainloop (void) {
               tr = irlist_get_next(tr);
             }
          }
-#ifdef MULTINET
       gnetwork = NULL;
-#endif /* MULTINET */
       
       /*----- time for a delayed shutdown? ----- */
       if (changesec && gdata.delayedshutdown)
@@ -1296,7 +1094,6 @@ static void mainloop (void) {
         }
       
       updatecontext();
-#ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++) {
         gnetwork = &(gdata.networks[ss]);
         /*----- send server stuff ----- */
@@ -1314,22 +1111,6 @@ static void mainloop (void) {
           }
         }
       gnetwork = NULL;
-#else /* MULTINET */
-      /*----- send server stuff ----- */
-      if (changesec) {
-         sendserver();
-         if (gdata.curtime%INAMNT_SIZE == (INAMNT_SIZE-1))
-            gdata.inamnt[0] = 0;
-         else
-            gdata.inamnt[gdata.curtime%INAMNT_SIZE+1] = 0;
-         }
-      
-      /*----- see if we can send out some xdcc lists */
-      if (changesec && gdata.serverstatus == SERVERSTATUS_CONNECTED) {
-         if (!irlist_size(&gdata.serverq_normal) && !irlist_size(&gdata.serverq_slow))
-            sendxdlqueue();
-         }
-#endif /* MULTINET */
       
       /*----- see if its time to change maxb */
       if (changehour) {
@@ -1424,9 +1205,7 @@ static void mainloop (void) {
                       /* remove queued users */
                       for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_delete(&gdata.mainqueue, pq))
                         {
-#ifdef MULTINET
                           gnetwork = &(gdata.networks[pq->net]);
-#endif /* MULTINET */
                           notice_slow(pq->nick, tempstr);
                           mydelete(pq->nick);
                           mydelete(pq->hostname);
@@ -1437,16 +1216,12 @@ static void mainloop (void) {
                         {
                           if (tr->tr_status != TRANSFER_STATUS_DONE)
                             {
-#ifdef MULTINET
                               gnetwork = &(gdata.networks[tr->net]);
-#endif /* MULTINET */
                               t_closeconn(tr,tempstr,0);
                             }
                         }
                       
-#ifdef MULTINET
                       gnetwork = NULL;
-#endif /* MULTINET */
                       mydelete(tempstr);
                       mydelete(tempstr2);
                     }
@@ -1505,7 +1280,6 @@ static void mainloop (void) {
       if (changesec && (gdata.curtime - lastperiodicmsg > gdata.periodicmsg_time*60)) {
          lastperiodicmsg = gdata.curtime;
          
-#ifdef MULTINET
          for (ss=0; ss<gdata.networks_online; ss++) {
             if (gdata.periodicmsg_nick && gdata.periodicmsg_msg
             && (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) ) {
@@ -1513,16 +1287,9 @@ static void mainloop (void) {
                privmsg(gdata.periodicmsg_nick,"%s",gdata.periodicmsg_msg);
             }
          }
-#else /* MULTINET */
-         if (gdata.periodicmsg_nick && gdata.periodicmsg_msg
-            && (gdata.serverstatus == SERVERSTATUS_CONNECTED) )
-            privmsg(gdata.periodicmsg_nick,"%s",gdata.periodicmsg_msg);
-#endif /* MULTINET */
          
          }
-#ifdef MULTINET
       gnetwork = NULL;
-#endif /* MULTINET */
       
       updatecontext();
       
@@ -1532,31 +1299,17 @@ static void mainloop (void) {
          
          updatecontext();
          /*----- server timeout ----- */
-#ifdef MULTINET
          for (ss=0; ss<gdata.networks_online; ss++) {
            gnetwork = &(gdata.networks[ss]);
          if ((gnetwork->serverstatus == SERVERSTATUS_CONNECTED) &&
              (gdata.curtime - gnetwork->lastservercontact > SRVRTOUT)) {
             if (gnetwork->servertime < 3)
-#else /* MULTINET */
-         if ((gdata.serverstatus == SERVERSTATUS_CONNECTED) &&
-             (gdata.curtime - gdata.lastservercontact > SRVRTOUT)) {
-            if (gdata.servertime < 3)
-#endif /* MULTINET */
               {
-#ifdef MULTINET
                 const char *servname = gnetwork->curserveractualname ? gnetwork->curserveractualname : gnetwork->curserver.hostname;
-#else /* MULTINET */
-                const char *servname = gdata.curserveractualname ? gdata.curserveractualname : gdata.curserver.hostname;
-#endif /* MULTINET */
                 int        len       = 6 + strlen(servname);
                 char       *tempstr3 = mycalloc(len + 1);
                 snprintf(tempstr3, len + 1, "PING %s\n", servname);
-#ifdef MULTINET
                 write(gnetwork->ircserver, tempstr3, len);
-#else /* MULTINET */
-                write(gdata.ircserver, tempstr3, len);
-#endif /* MULTINET */
                 if (gdata.debug > 0)
                   {
                     tempstr3[len-1] = '\0';
@@ -1564,62 +1317,33 @@ static void mainloop (void) {
                     ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<NORES<: %s",tempstr3);
                   }
                 mydelete(tempstr3);
-#ifdef MULTINET
                 gnetwork->servertime++;
-#else /* MULTINET */
-                gdata.servertime++;
-#endif /* MULTINET */
               }
-#ifdef MULTINET
             else if (gnetwork->servertime == 3) {
-#else /* MULTINET */
-            else if (gdata.servertime == 3) {
-#endif /* MULTINET */
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Closing Server Connection: No Response for %d minutes.",SRVRTOUT/60);
-#ifdef MULTINET
                FD_CLR(gnetwork->ircserver, &gdata.readset);
-#else /* MULTINET */
-               FD_CLR(gdata.ircserver, &gdata.readset);
-#endif /* MULTINET */
                /*
                 * cygwin close() is broke, if outstanding data is present
                 * it will block until the TCP connection is dead, sometimes
                 * upto 10-20 minutes, calling shutdown() first seems to help
                 */
-#ifdef MULTINET
                shutdown(gnetwork->ircserver, SHUT_RDWR);
                close(gnetwork->ircserver);
                gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
                gnetwork->servertime = 0;
-#else /* MULTINET */
-               shutdown(gdata.ircserver, SHUT_RDWR);
-               close(gdata.ircserver);
-               gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-               gdata.servertime = 0;
-#endif /* MULTINET */
                }
             }
          
          
          /*----- ping server ----- */
-#ifdef MULTINET
          if (gnetwork->recentsent) {
-#else /* MULTINET */
-         if (gdata.recentsent) {
-#endif /* MULTINET */
             pingserver();
-#ifdef MULTINET
             gnetwork->recentsent--;
-#else /* MULTINET */
-            gdata.recentsent--;
-#endif /* MULTINET */
             }
          
          }
-#ifdef MULTINET
          } /* networks */
       gnetwork = NULL;
-#endif /* MULTINET */
       
       /*----- 4 seconds ----- */
       if (changesec && (gdata.curtime - last4sec > 3))
@@ -1679,34 +1403,19 @@ static void mainloop (void) {
       
       updatecontext();
       
-#ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++) {
         gnetwork = &(gdata.networks[ss]);
-#endif /* MULTINET */
       /*----- plist stuff ----- */
-#ifdef MULTINET
       if ((gnetwork->serverstatus == SERVERSTATUS_CONNECTED) &&
           changemin &&
           irlist_size(&gdata.xdccs) &&
           !gdata.transferlimits_over &&
           (!gdata.queuesize || irlist_size(&gdata.mainqueue) < gdata.queuesize) &&
           (gdata.nolisting <= gdata.curtime))
-#else /* MULTINET */
-      if ((gdata.serverstatus == SERVERSTATUS_CONNECTED) &&
-          changemin &&
-          irlist_size(&gdata.xdccs) &&
-          !gdata.transferlimits_over &&
-          (!gdata.queuesize || irlist_size(&gdata.mainqueue) < gdata.queuesize) &&
-          (gdata.nolisting <= gdata.curtime))
-#endif /* MULTINET */
         {
             char *tchanf = NULL, *tchanm = NULL, *tchans = NULL;
             
-#ifdef MULTINET
             ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-            ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
             while(ch)
               {
                 if ((ch->flags & CHAN_ONCHAN) &&
@@ -1797,10 +1506,8 @@ static void mainloop (void) {
                }
             
          }
-#ifdef MULTINET
          } /* networks */
       gnetwork = NULL;
-#endif /* MULTINET */
       
       updatecontext();
       /*----- low bandwidth send, save state file ----- */
@@ -1824,31 +1531,19 @@ static void mainloop (void) {
          }
       
       updatecontext();
-#ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++) {
         gnetwork = &(gdata.networks[ss]);
-#endif /* MULTINET */
       /*----- queue notify ----- */
       if (changesec && gdata.notifytime && (!gdata.quietmode) &&
           (gdata.curtime - lastnotify > (gdata.notifytime*60)))
         {
          lastnotify = gdata.curtime;
          
-#ifdef MULTINET
          if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
-#else /* MULTINET */
-         if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
-#endif /* MULTINET */
            {
-#ifdef MULTINET
              if ((irlist_size(&(gnetwork->serverq_fast)) >= 10) ||
                  (irlist_size(&(gnetwork->serverq_normal)) >= 10) ||
                  (irlist_size(&(gnetwork->serverq_slow)) >= 50))
-#else /* MULTINET */
-             if ((irlist_size(&gdata.serverq_fast) >= 10) ||
-                 (irlist_size(&gdata.serverq_normal) >= 10) ||
-                 (irlist_size(&gdata.serverq_slow) >= 50))
-#endif /* MULTINET */
                {
                  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,
                          "notifications skipped, server queue is rather large");
@@ -1862,10 +1557,8 @@ static void mainloop (void) {
            }
          
          }
-#ifdef MULTINET
          } /* networks */
       gnetwork = NULL;
-#endif /* MULTINET */
       
       updatecontext();
       /*----- log stats / remote admin stats ----- */
@@ -1907,40 +1600,26 @@ static void mainloop (void) {
          
          updatecontext();
          
-#ifdef MULTINET
          for (ss=0; ss<gdata.networks_online; ss++) {
            gnetwork = &(gdata.networks[ss]);
-#endif /* MULTINET */
          /* try rejoining channels not on */
-#ifdef MULTINET
          ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-         ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
          while(ch)
            {
-#ifdef MULTINET
              if ((gnetwork->serverstatus == SERVERSTATUS_CONNECTED) &&
                  !(ch->flags & CHAN_ONCHAN))
-#else /* MULTINET */
-             if ((gdata.serverstatus == SERVERSTATUS_CONNECTED) &&
-                 !(ch->flags & CHAN_ONCHAN))
-#endif /* MULTINET */
                {
                  joinchannel(ch);
                }
              ch = irlist_get_next(ch);
            }
-#ifdef MULTINET
          } /* networks */
          gnetwork = NULL;
-#endif /* MULTINET */
          
          last20sec = gdata.curtime;
          
          updatecontext();
          
-#ifdef MULTINET
          for (ss=0; ss<gdata.networks_online; ss++) {
            gnetwork = &(gdata.networks[ss]);
            /* try to regain nick */
@@ -1950,12 +1629,6 @@ static void mainloop (void) {
              }
            } /* networks */
          gnetwork = NULL;
-#else
-         if (!gdata.user_nick || strcmp(gdata.config_nick,gdata.user_nick))
-           {
-             writeserver(WRITESERVER_NORMAL, "NICK %s", gdata.config_nick);
-           }
-#endif /* MULTINET */
          
          updatecontext();
          
@@ -2103,11 +1776,7 @@ static void mainloop (void) {
       
       updatecontext();
       
-#ifdef MULTINET
       if (gdata.exiting && has_closed_servers()) {
-#else /* MULTINET */
-      if (gdata.exiting && gdata.serverstatus != SERVERSTATUS_CONNECTED) {
-#endif /* MULTINET */
          
          for (chat = irlist_get_head(&gdata.dccchats);
               chat;
@@ -2126,26 +1795,14 @@ static void mainloop (void) {
          }
       
       updatecontext();
-#ifdef MULTINET
       for (ss=0; ss<gdata.networks_online; ss++) {
         gnetwork = &(gdata.networks[ss]);
       if (gnetwork->serverstatus == SERVERSTATUS_NEED_TO_CONNECT)
-#else /* MULTINET */
-      if (gdata.serverstatus == SERVERSTATUS_NEED_TO_CONNECT)
-#endif /* MULTINET */
         {
           int timeout;
-#ifdef MULTINET
           timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
-#else /* MULTINET */
-          timeout = CTIMEOUT + (gdata.serverconnectbackoff * CBKTIMEOUT);
-#endif /* MULTINET */
           
-#ifdef MULTINET
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
-#else /* MULTINET */
-          if (gdata.lastservercontact + timeout < gdata.curtime)
-#endif /* MULTINET */
             {
               if (gdata.debug > 0)
                 {
@@ -2154,10 +1811,8 @@ static void mainloop (void) {
               switchserver(-1);
             }
         }
-#ifdef MULTINET
       } /* networks */
       gnetwork = NULL;
-#endif /* MULTINET */
       
       if (gdata.needsrehash) {
          gdata.needsrehash = 0;
@@ -2216,11 +1871,7 @@ static void parseline(char *line) {
    line[maxtextlength-1] = '\0';
    
    if (gdata.debug > 0)
-#ifdef MULTINET
       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_CYAN,">IRC>: %d, %s",gnetwork->net,line);
-#else /* MULTINET */
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_CYAN,">IRC>: %s",line);
-#endif /* MULTINET */
    
    part2 = getpart(line,2);
    if (part2 == NULL)
@@ -2242,11 +1893,7 @@ static void parseline(char *line) {
      }
    
  /* NOTICE nick */
-#ifdef MULTINET
    if (part3 && gnetwork->caps_nick && !strcmp(caps(part2),"NOTICE") && !strcmp(caps(part3),gnetwork->caps_nick))
-#else
-   if (part3 && gdata.caps_nick && !strcmp(caps(part2),"NOTICE") && !strcmp(caps(part3),gdata.caps_nick))
-#endif /* MULTINET */
      {
        /* nickserv */
        if (gdata.nickserv_pass)
@@ -2291,16 +1938,10 @@ static void parseline(char *line) {
          }
        
        /* update server name */
-#ifdef MULTINET
        mydelete(gnetwork->curserveractualname);
        gnetwork->curserveractualname = getpart(line+1,1);
-#else /* MULTINET */
-       mydelete(gdata.curserveractualname);
-       gdata.curserveractualname = getpart(line+1,1);
-#endif /* MULTINET */
        
        /* update nick */
-#ifdef MULTINET
        mydelete(gnetwork->user_nick);
        mydelete(gnetwork->caps_nick);
        gnetwork->user_nick = mymalloc(strlen(part3)+1);
@@ -2309,35 +1950,16 @@ static void parseline(char *line) {
        strcpy(gnetwork->caps_nick,part3);
        caps(gnetwork->caps_nick);
        gnetwork->nick_number = 0;
-#else
-       mydelete(gdata.user_nick);
-       mydelete(gdata.caps_nick);
-       gdata.user_nick = mymalloc(strlen(part3)+1);
-       gdata.caps_nick = mymalloc(strlen(part3)+1);
-       strcpy(gdata.user_nick,part3);
-       strcpy(gdata.caps_nick,part3);
-       caps(gdata.caps_nick);
-       gdata.nick_number = 0;
-#endif /* MULTINET */
        gdata.needsclear = 1;
        
        if (gdata.user_modes && strlen(gdata.user_modes))
          {
-#ifdef MULTINET
            writeserver(WRITESERVER_NOW, "MODE %s %s",
                        gnetwork->user_nick, gdata.user_modes);
-#else
-           writeserver(WRITESERVER_NOW, "MODE %s %s",
-                       gdata.user_nick, gdata.user_modes);
-#endif /* MULTINET */
          }
        
        /* server connected raw command */
-#ifdef MULTINET
        tptr = irlist_get_head(&(gnetwork->server_connected_raw));
-#else /* MULTINET */
-       tptr = irlist_get_head(&gdata.server_connected_raw);
-#endif /* MULTINET */
        while(tptr)
          {
            writeserver(WRITESERVER_NORMAL, "%s", tptr);
@@ -2369,40 +1991,23 @@ static void parseline(char *line) {
              {
                char *ptr = item+8;
                int pi;
-#ifdef MULTINET
                memset(&(gnetwork->prefixes), 0, sizeof(gnetwork->prefixes));
-#else /* MULTINET */
-               memset(&gdata.prefixes, 0, sizeof(gdata.prefixes));
-#endif /* MULTINET */
                for (pi = 0; (ptr[pi] && (ptr[pi] != ')') && (pi < MAX_PREFIX)); pi++)
                  {
-#ifdef MULTINET
                    gnetwork->prefixes[pi].p_mode = ptr[pi];
-#else /* MULTINET */
-                   gdata.prefixes[pi].p_mode = ptr[pi];
-#endif /* MULTINET */
                  }
                if (ptr[pi] == ')')
                  {
                    ptr += pi + 1;
                    for (pi = 0; (ptr[pi] && (pi < MAX_PREFIX)); pi++)
                      {
-#ifdef MULTINET
                        gnetwork->prefixes[pi].p_symbol = ptr[pi];
-#else /* MULTINET */
-                       gdata.prefixes[pi].p_symbol = ptr[pi];
-#endif /* MULTINET */
                      }
                  }
                for (pi = 0; pi < MAX_PREFIX; pi++)
                  {
-#ifdef MULTINET
                    if ((gnetwork->prefixes[pi].p_mode && !gnetwork->prefixes[pi].p_symbol) ||
                        (!gnetwork->prefixes[pi].p_mode && gnetwork->prefixes[pi].p_symbol))
-#else /* MULTINET */
-                   if ((gdata.prefixes[pi].p_mode && !gdata.prefixes[pi].p_symbol) ||
-                       (!gdata.prefixes[pi].p_mode && gdata.prefixes[pi].p_symbol))
-#endif /* MULTINET */
                      {
                        outerror(OUTERROR_TYPE_WARN,
                                 "Server prefix list doesn't make sense, using defaults: %s",
@@ -2417,21 +2022,13 @@ static void parseline(char *line) {
                char *ptr = item+10;
                int ci;
                int cm;
-#ifdef MULTINET
                memset(&(gnetwork->chanmodes), 0, sizeof(gnetwork->chanmodes));
-#else /* MULTINET */
-               memset(&gdata.chanmodes, 0, sizeof(gdata.chanmodes));
-#endif /* MULTINET */
                for (ci = cm = 0; (ptr[ci] && (cm < MAX_CHANMODES)); ci++)
                  {
                    if (ptr[ci+1] == ',')
                      {
                        /* we only care about ones with arguments */
-#ifdef MULTINET
                        gnetwork->chanmodes[cm++] = ptr[ci++];
-#else /* MULTINET */
-                       gdata.chanmodes[cm++] = ptr[ci++];
-#endif /* MULTINET */
                      }
                  }
              }
@@ -2443,7 +2040,6 @@ static void parseline(char *line) {
  /* :server 433 old new :Nickname is already in use. */
    if ( !strcmp(part2,"433") && part3 && !strcmp(part3,"*") && part4 )
      {
-#ifdef MULTINET
        ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
                "Nickname %s already in use, trying %s%d",
                part4,
@@ -2454,18 +2050,6 @@ static void parseline(char *line) {
        writeserver(WRITESERVER_NORMAL, "NICK %s%d",
                    gdata.config_nick,
                    gnetwork->nick_number++);
-#else
-       ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
-               "Nickname %s already in use, trying %s%d",
-               part4,
-               gdata.config_nick,
-               gdata.nick_number);
-       
-       /* generate new nick and retry */
-       writeserver(WRITESERVER_NORMAL, "NICK %s%d",
-                   gdata.config_nick,
-                   gdata.nick_number++);
-#endif /* MULTINET */
      }
 
    /* names list for a channel */
@@ -2474,11 +2058,7 @@ static void parseline(char *line) {
      {
        caps(part5);
        
-#ifdef MULTINET
        ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-       ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
        while(ch)
          {
            if (!strcmp(part5,ch->name))
@@ -2507,33 +2087,19 @@ static void parseline(char *line) {
  /* ERROR :Closing Link */
    if (strncmp(line, "ERROR :Closing Link", strlen("ERROR :Closing Link")) == 0) {
       if (gdata.exiting)
-#ifdef MULTINET
          gnetwork->recentsent = 0;
-#else /* MULTINET */
-         gdata.recentsent = 0;
-#endif /* MULTINET */
       else {
          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Server Closed Connection: %s",line);
          
-#ifdef MULTINET
           FD_CLR(gnetwork->ircserver, &gdata.readset);
-#else /* MULTINET */
-          FD_CLR(gdata.ircserver, &gdata.readset);
-#endif /* MULTINET */
           /*
            * cygwin close() is broke, if outstanding data is present
            * it will block until the TCP connection is dead, sometimes
            * upto 10-20 minutes, calling shutdown() first seems to help
            */
-#ifdef MULTINET
           shutdown(gnetwork->ircserver, SHUT_RDWR);
           close(gnetwork->ircserver);
           gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#else /* MULTINET */
-          shutdown(gdata.ircserver, SHUT_RDWR);
-          close(gdata.ircserver);
-          gdata.serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-#endif /* MULTINET */
          }
       }
    
@@ -2545,46 +2111,26 @@ static void parseline(char *line) {
       }
 
  /* JOIN */
-#ifdef MULTINET
    if (!strcmp(part2,"JOIN") && part3a && gnetwork->caps_nick) {
-#else
-   if (!strcmp(part2,"JOIN") && part3a && gdata.caps_nick) {
-#endif /* MULTINET */
       char* nick;
       int j,found;
       nick = mycalloc(strlen(line)+1);
       j=1;
-#ifdef MULTINET
       gnetwork->nocon = 0;
-#else /* MULTINET */
-      gdata.nocon = 0;
-#endif /* MULTINET */
       found = 0;
       while(line[j] != '!' && j<sstrlen(line)) {
          nick[j-1] = line[j];
          j++;
          }
       nick[j-1]='\0';
-#ifdef MULTINET
       if (!strcmp(caps(nick),gnetwork->caps_nick))
-#else
-      if (!strcmp(caps(nick),gdata.caps_nick))
-#endif /* MULTINET */
         {
           /* we joined */
           /* clear now, we have succesfully logged in */
-#ifdef MULTINET
           gnetwork->serverconnectbackoff = 0;
-#else /* MULTINET */
-          gdata.serverconnectbackoff = 0;
-#endif /* MULTINET */
           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Joined %s",caps(part3a));
           
-#ifdef MULTINET
           ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-          ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
           while(ch)
             {
               if (!strcmp(part3a,ch->name))
@@ -2620,11 +2166,7 @@ static void parseline(char *line) {
 	{
 	  /* someone else joined */
 	  caps(part3a);
-#ifdef MULTINET
           ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-          ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
           while(ch)
             {
               if (!strcmp(part3a,ch->name))
@@ -2648,11 +2190,7 @@ static void parseline(char *line) {
       }
 
  /* PART */
-#ifdef MULTINET
    if (!strcmp(part2,"PART") && part3a && gnetwork->caps_nick)
-#else
-   if (!strcmp(part2,"PART") && part3a && gdata.caps_nick)
-#endif /* MULTINET */
      {
        char* nick;
        int j;
@@ -2665,11 +2203,7 @@ static void parseline(char *line) {
 	 }
        nick[j-1]='\0';
        
-#ifdef MULTINET
        if (!strcmp(caps(nick),gnetwork->caps_nick))
-#else
-       if (!strcmp(caps(nick),gdata.caps_nick))
-#endif /* MULTINET */
 	 {
 	   /* we left? */
 	   ;
@@ -2678,11 +2212,7 @@ static void parseline(char *line) {
 	 {
 	   /* someone else left */
 	   caps(part3a);
-#ifdef MULTINET
            ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-           ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
            while(ch)
              {
                if (!strcmp(part3a,ch->name))
@@ -2707,11 +2237,7 @@ static void parseline(char *line) {
      }
    
  /* QUIT */
-#ifdef MULTINET
    if (!strcmp(part2,"QUIT") && gnetwork->caps_nick)
-#else
-   if (!strcmp(part2,"QUIT") && gdata.caps_nick)
-#endif /* MULTINET */
      {
        char* nick;
        int j;
@@ -2724,11 +2250,7 @@ static void parseline(char *line) {
 	 }
        nick[j-1]='\0';
        
-#ifdef MULTINET
        if (!strcmp(caps(nick),gnetwork->caps_nick))
-#else
-       if (!strcmp(caps(nick),gdata.caps_nick))
-#endif /* MULTINET */
 	 {
 	   /* we quit? */
 	   ;
@@ -2736,11 +2258,7 @@ static void parseline(char *line) {
        else
 	 {
 	   /* someone else quit */
-#ifdef MULTINET
            ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-           ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
            while(ch)
              {
                removefrommemberlist(ch,nick);
@@ -2768,11 +2286,7 @@ static void parseline(char *line) {
 
        newnick = part3a;
        
-#ifdef MULTINET
        if (gnetwork->caps_nick && !strcmp(caps(oldnick),gnetwork->caps_nick))
-#else
-       if (gdata.caps_nick && !strcmp(caps(oldnick),gdata.caps_nick))
-#endif /* MULTINET */
 	 {
            /* nickserv */
            if (gdata.nickserv_pass)
@@ -2781,7 +2295,6 @@ static void parseline(char *line) {
              }
            
            /* we changed, update nick */
-#ifdef MULTINET
            mydelete(gnetwork->user_nick);
            mydelete(gnetwork->caps_nick);
            gnetwork->user_nick = mymalloc(strlen(part3a)+1);
@@ -2790,24 +2303,10 @@ static void parseline(char *line) {
            strcpy(gnetwork->caps_nick,part3a);
            caps(gnetwork->caps_nick);
            gnetwork->nick_number = 0;
-#else
-           mydelete(gdata.user_nick);
-           mydelete(gdata.caps_nick);
-           gdata.user_nick = mymalloc(strlen(part3a)+1);
-           gdata.caps_nick = mymalloc(strlen(part3a)+1);
-           strcpy(gdata.user_nick,part3a);
-           strcpy(gdata.caps_nick,part3a);
-           caps(gdata.caps_nick);
-           gdata.nick_number = 0;
-#endif /* MULTINET */
            gdata.needsclear = 1;
          }
        
-#ifdef MULTINET
        ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-       ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
        while(ch)
          {
            changeinmemberlist_nick(ch, oldnick, newnick);
@@ -2820,26 +2319,14 @@ static void parseline(char *line) {
      }
    
  /* KICK */
-#ifdef MULTINET
    if (!strcmp(part2,"KICK") && part3a && part4 && gnetwork->caps_nick)
-#else
-   if (!strcmp(part2,"KICK") && part3a && part4 && gdata.caps_nick)
-#endif /* MULTINET */
      {
-#ifdef MULTINET
        ch = irlist_get_head(&(gnetwork->channels));
-#else /* MULTINET */
-       ch = irlist_get_head(&gdata.channels);
-#endif /* MULTINET */
        while(ch)
          {
            if (!strcmp(caps(part3a),ch->name))
              {
-#ifdef MULTINET
                if(!strcmp(caps(part4),gnetwork->caps_nick))
-#else
-               if(!strcmp(caps(part4),gdata.caps_nick))
-#endif /* MULTINET */
                  {
                    /* we were kicked */
                    if ( gdata.noautorejoin )
@@ -2871,11 +2358,7 @@ static void parseline(char *line) {
    if (!strcmp(part2,"MODE") && part3 && part4)
      {
        /* find channel */
-#ifdef MULTINET
        for (ch = irlist_get_head(&(gnetwork->channels)); ch; ch = irlist_get_next(ch))
-#else /* MULTINET */
-       for (ch = irlist_get_head(&gdata.channels); ch; ch = irlist_get_next(ch))
-#endif /* MULTINET */
          {
            if (!strcasecmp(ch->name, part3))
              {
@@ -2901,17 +2384,9 @@ static void parseline(char *line) {
                else
                  {
                    int ii;
-#ifdef MULTINET
                    for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_mode); ii++)
-#else /* MULTINET */
-                   for (ii = 0; (ii < MAX_PREFIX && gdata.prefixes[ii].p_mode); ii++)
-#endif /* MULTINET */
                      {
-#ifdef MULTINET
                        if (*ptr == gnetwork->prefixes[ii].p_mode)
-#else /* MULTINET */
-                       if (*ptr == gdata.prefixes[ii].p_mode)
-#endif /* MULTINET */
                          {
                            /* found a nick mode */
                            char *nick = getpart(line, part++);
@@ -2922,28 +2397,16 @@ static void parseline(char *line) {
                                    nick[strlen(nick)-1] = '\0';
                                  }
                                changeinmemberlist_mode(ch, nick,
-#ifdef MULTINET
                                                        gnetwork->prefixes[ii].p_symbol,
-#else /* MULTINET */
-                                                       gdata.prefixes[ii].p_symbol,
-#endif /* MULTINET */
                                                        plus);
                                mydelete(nick);
                              }
                            break;
                          }
                      }
-#ifdef MULTINET
                    for (ii = 0; (ii < MAX_CHANMODES && gnetwork->chanmodes[ii]); ii++)
-#else /* MULTINET */
-                   for (ii = 0; (ii < MAX_CHANMODES && gdata.chanmodes[ii]); ii++)
-#endif /* MULTINET */
                      {
-#ifdef MULTINET
                        if (*ptr == gnetwork->chanmodes[ii])
-#else /* MULTINET */
-                       if (*ptr == gdata.chanmodes[ii])
-#endif /* MULTINET */
                          {
                            /* found a channel mode that has an argument */
                            part++;
@@ -3139,11 +2602,7 @@ static void privmsgparse(const char* type, char* line) {
    /*----- CLIENTINFO ----- */
    if ( !gdata.ignore && (!strcmp(msg1,"\1CLIENTINFO")
           || !strcmp(msg1,"\1CLIENTINFO\1") )) {
-#ifdef MULTINET
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-      gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
       if (!msg2) {
          notice(nick,"\1CLIENTINFO DCC PING VERSION XDCC UPTIME "
          ":Use CTCP CLIENTINFO <COMMAND> to get more specific information\1");
@@ -3165,11 +2624,7 @@ static void privmsgparse(const char* type, char* line) {
    /*----- PING ----- */
    else if ( !gdata.ignore && (!strcmp(msg1,"\1PING")
           || !strcmp(msg1,"\1PING\1") ) && notnotice ) {
-#ifdef MULTINET
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-      gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
       if (msg2 && (msg2[strlen(msg2)-1] == '\1'))
         {
           msg2[strlen(msg2)-1] = '\0';
@@ -3189,11 +2644,7 @@ static void privmsgparse(const char* type, char* line) {
    /*----- VERSION ----- */
    else if ( !gdata.ignore && (!strcmp(msg1,"\1VERSION")
           || !strcmp(msg1,"\1VERSION\1") )) {
-#ifdef MULTINET
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-      gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
       notice(nick,"\1VERSION iroffer v" VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
@@ -3205,11 +2656,7 @@ static void privmsgparse(const char* type, char* line) {
           || !strcmp(msg1,"\1UPTIME\1") ))
      {
        char *tempstr2 = mycalloc(maxtextlength);
-#ifdef MULTINET
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
        tempstr2 = getuptime(tempstr2, 0, gdata.startuptime, maxtextlength);
        notice(nick,"\1UPTIME %s\1", tempstr2);
        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: UPTIME",nick);
@@ -3221,11 +2668,7 @@ static void privmsgparse(const char* type, char* line) {
           || !strcmp(msg1,"\1STATUS\1") ))
      {
        char *tempstr2 = mycalloc(maxtextlength);
-#ifdef MULTINET
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
        tempstr2 = getstatuslinenums(tempstr2,maxtextlength);
        notice(nick,"\1%s\1",tempstr2);
        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: STATUS",nick);
@@ -3233,19 +2676,11 @@ static void privmsgparse(const char* type, char* line) {
      }
    
    /*----- DCC SEND/CHAT/RESUME ----- */
-#ifdef MULTINET
    else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"\1DCC") && msg2) {
-#else
-   else if ( !gdata.ignore && gdata.caps_nick && !strcmp(gdata.caps_nick,dest) && !strcmp(caps(msg1),"\1DCC") && msg2) {
-#endif /* MULTINET */
       if (!gdata.attop) gototop();
       if (!strcmp(caps(msg2),"RESUME") && msg3 && msg4 && msg5)
         {
-#ifdef MULTINET
           gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-          gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
           
           caps(nick);
           
@@ -3370,9 +2805,7 @@ static void privmsgparse(const char* type, char* line) {
               strcpy(ul->nick,nick);
               ul->hostname = mymalloc(strlen(hostname)+1);
               strcpy(ul->hostname,hostname);
-#ifdef MULTINET
               ul->net = gnetwork->net;
-#endif /* MULTINET */
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                       "DCC Send Accepted from %s: %s (%" LLPRINTFMT "iKB)", nick, ul->file,
                       (long long)(ul->totalsize / 1024));
@@ -3430,11 +2863,7 @@ static void privmsgparse(const char* type, char* line) {
    }
    
    /*----- ADMIN ----- */
-#ifdef MULTINET
    else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"ADMIN") ) {
-#else
-   else if ( !gdata.ignore && gdata.caps_nick && !strcmp(gdata.caps_nick,dest) && !strcmp(caps(msg1),"ADMIN") ) {
-#endif /* MULTINET */
 /*      msg2 = getpart(line,5); */
       if (!gdata.attop) gototop();
       
@@ -3466,13 +2895,8 @@ static void privmsgparse(const char* type, char* line) {
       }
    
    /*----- XDCC ----- */
-#ifdef MULTINET
    else if ( !gdata.ignore && gnetwork->caps_nick && (!strcmp(gnetwork->caps_nick,dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC") )) {
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-   else if ( !gdata.ignore && gdata.caps_nick && (!strcmp(gdata.caps_nick,dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC") )) {
-      gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
       
       caps(msg2);
       
@@ -3505,11 +2929,7 @@ static void privmsgparse(const char* type, char* line) {
 	 else
 	   {
              char *user;
-#ifdef MULTINET
              user = irlist_get_head(&(gnetwork->xlistqueue));
-#else /* MULTINET */
-             user = irlist_get_head(&gdata.xlistqueue);
-#endif /* MULTINET */
              
              while (user)
                {
@@ -3522,11 +2942,7 @@ static void privmsgparse(const char* type, char* line) {
              
              if (!user)
                {
-#ifdef MULTINET
                  if (irlist_size(&(gnetwork->xlistqueue)) >= MAXXLQUE)
-#else /* MULTINET */
-                 if (irlist_size(&gdata.xlistqueue) >= MAXXLQUE)
-#endif /* MULTINET */
                    {
                      j = 2; /* deny */
                      notice_slow(nick,"XDCC LIST Denied. I'm rather busy at the moment, try again later");
@@ -3596,11 +3012,7 @@ static void privmsgparse(const char* type, char* line) {
                            }
                          else
                            {
-#ifdef MULTINET
                              user = irlist_add(&(gnetwork->xlistqueue), strlen(nick) + 1);
-#else /* MULTINET */
-                             user = irlist_add(&gdata.xlistqueue, strlen(nick) + 1);
-#endif /* MULTINET */
                              strcpy(user,nick);
                            }
                        }
@@ -3612,11 +3024,7 @@ static void privmsgparse(const char* type, char* line) {
                  (j==1?"ignored":(j==2?"denied":(j==3?msg3:"queued"))),hostmask);
          
          }
-#ifdef MULTINET
       else if (gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest))
-#else
-      else if (gdata.caps_nick && !strcmp(gdata.caps_nick,dest))
-#endif /* MULTINET */
 	{
          
          if ( msg2 && msg3 && (!strcmp(msg2,"SEND") || !strcmp(msg2,"GET"))) {
@@ -3716,23 +3124,13 @@ static void privmsgparse(const char* type, char* line) {
    }
    
    /*----- !LIST ----- */
-#ifdef MULTINET
    else if ( !gdata.ignore && gnetwork->caps_nick && gdata.respondtochannellist && msg1 && !strcasecmp(caps(msg1),"!LIST") &&
              ( !msg2 || !strcmp(caps(msg2),gnetwork->caps_nick) ))
-#else
-   else if ( !gdata.ignore && gdata.caps_nick && gdata.respondtochannellist && msg1 && !strcasecmp(caps(msg1),"!LIST") &&
-             ( !msg2 || !strcmp(caps(msg2),gdata.caps_nick) ))
-#endif /* MULTINET */
      {
-#ifdef MULTINET
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-      gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
       
       /* generate !list styled message */
       
-#ifdef MULTINET
       notice_slow(nick,
              "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
              "Trigger:\2(\2/msg %s xdcc list\2)\2 "
@@ -3748,39 +3146,14 @@ static void privmsgparse(const char* type, char* line) {
              gdata.creditline ? "Note:\2(\2" : "",
              gdata.creditline ? gdata.creditline : "",
              gdata.creditline ? "\2)\2 " : "");
-#else
-      notice_slow(nick,
-             "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
-             "Trigger:\2(\2/msg %s xdcc list\2)\2 "
-             "Sends:\2(\2%i/%i\2)\2 "
-             "Queues:\2(\2%i/%i\2)\2 "
-             "Record:\2(\2%1.1fKB/s\2)\2 "
-             "%s%s%s\2=\2iroffer\2=\2",
-             irlist_size(&gdata.xdccs),
-             (gdata.user_nick ? gdata.user_nick : "??"),
-             irlist_size(&gdata.trans),gdata.slotsmax,
-             irlist_size(&gdata.mainqueue),gdata.queuesize,
-             gdata.record,
-             gdata.creditline ? "Note:\2(\2" : "",
-             gdata.creditline ? gdata.creditline : "",
-             gdata.creditline ? "\2)\2 " : "");
-#endif /* MULTINET */
      }
    
    /* iroffer-lamm: @find */
-#ifdef MULTINET
    else if ( !gdata.ignore && gnetwork->caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1),"@FIND") )
-#else
-   else if ( !gdata.ignore && gdata.caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1),"@FIND") )
-#endif /* MULTINET */
      {
       char *msg2e;
       msg2e = getpart_eol(line,5);
-#ifdef MULTINET
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-      gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
       for (i = k = 0; i < strlen(msg2e); i++)
         if (msg2e[i] == ' ') msg2e[i] = '*';
         if ((msg2e[i] == '*') || (msg2e[i] == '#') || (msg2e[i] == '?'))
@@ -3800,11 +3173,7 @@ static void privmsgparse(const char* type, char* line) {
      }
    
    else {
-#ifdef MULTINET
       if (dest && gnetwork->caps_nick && !strcmp(dest,gnetwork->caps_nick))
-#else
-      if (dest && gdata.caps_nick && !strcmp(dest,gdata.caps_nick))
-#endif /* MULTINET */
         {
           if ((gdata.lognotices && !strcmp(type,"NOTICE")) ||
               (gdata.logmessages && !strcmp(type,"PRIVMSG")))
@@ -3890,11 +3259,7 @@ static void autoqueuef(const char* line, const autoqueue_t *aq) {
        char *tempstr;
        const char *format = " :** Sending You %s by DCC";
        
-#ifdef MULTINET
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-#else /* MULTINET */
-       gdata.inamnt[gdata.curtime%INAMNT_SIZE]++;
-#endif /* MULTINET */
        
        if (!gdata.attop) gototop();
        
@@ -4057,9 +3422,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
        unlimitedhost = tr->unlimited;
        tr->nomax = tr->unlimited;
-#ifdef MULTINET
        tr->net = gnetwork->net;
-#endif /* MULTINET */
        
        if (!man)
          {
@@ -4286,23 +3649,13 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
          tempq->hostname = mymalloc(strlen(hostname)+1);
          strcpy(tempq->hostname,hostname);
          tempq->xpack = tempx;
-#ifdef MULTINET
          tempq->net = gnetwork->net;
-#endif /* MULTINET */
 
-#ifdef MULTINET
          snprintf(tempstr,maxtextlength,
                   "Added you to the main queue in position %d. To Remove youself at "
                   "a later time type \"/msg %s xdcc remove\".",
                   irlist_size(&gdata.mainqueue),
                   (gnetwork->user_nick ? gnetwork->user_nick : "??"));
-#else
-         snprintf(tempstr,maxtextlength,
-                  "Added you to the main queue in position %d. To Remove youself at "
-                  "a later time type \"/msg %s xdcc remove\".",
-                  irlist_size(&gdata.mainqueue),
-                  (gdata.user_nick ? gdata.user_nick : "??"));
-#endif /* MULTINET */
          }
    return tempstr;
    }
@@ -4315,20 +3668,9 @@ void sendaqueue(int type)
   char *sendnamestr;
   char *hostmask;
   size_t len;
-#ifdef MULTINET
   gnetwork_t *backup;
-#endif /* MULTINET */
   
   updatecontext();
-  
-#ifndef MULTINET
-  if (gdata.serverstatus != SERVERSTATUS_CONNECTED)
-     return;
-
-  /* timeout for restart must be less then Transfer Timeout 180s */
-  if (gdata.curtime - gdata.lastservercontact > 150)
-     return;
-#endif /* not MULTINET */
   
   if (gdata.holdqueue)
      return;
@@ -4367,11 +3709,9 @@ void sendaqueue(int type)
               /* usertrans is the number of transfers a user has in progress */
               if (usertrans < gdata.maxtransfersperperson)
                 {
-#ifdef MULTINET
                   /* timeout for restart must be less then Transfer Timeout 180s */
                   if ((gdata.networks[pq->net].serverstatus == SERVERSTATUS_CONNECTED)
                   && (gdata.curtime - gdata.networks[pq->net].lastservercontact <= 150))
-#endif /* MULTINET */
                   break; /* found the person that will get the send */
                 }
               pq = irlist_get_next(pq);
@@ -4426,16 +3766,12 @@ void sendaqueue(int type)
                 "unlimitedhost found: %s (%s)",
                 tr->nick, tr->hostname);
       tr->nomax = tr->unlimited;
-#ifdef MULTINET
       tr->net = pq->net;
-#endif /* MULTINET */
       mydelete(hostmask);
       
-#ifdef MULTINET
       backup = gnetwork;
       gnetwork = &(gdata.networks[tr->net]);
       
-#endif /* MULTINET */
       if (!gdata.quietmode)
         {
           char *sizestrstr;
@@ -4462,9 +3798,7 @@ void sendaqueue(int type)
       mydelete(pq->hostname);
       irlist_delete(&gdata.mainqueue, pq);
       
-#ifdef MULTINET
       gnetwork = backup;
-#endif /* MULTINET */
       return;
     }
 }

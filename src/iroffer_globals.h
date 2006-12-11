@@ -21,7 +21,6 @@
 #define GEX extern
 #endif
 
-#ifdef MULTINET
 typedef struct
 {
 
@@ -76,7 +75,6 @@ int nick_number;
 int inamnt[INAMNT_SIZE];
 
 } gnetwork_t;
-#endif /* MULTINET */
 
 typedef struct
 {
@@ -132,9 +130,6 @@ off_t uploadmaxsize;
 off_t uploadminspace;
 irlist_t uploadhost;
 char *config_nick;
-#ifndef MULTINET
-char *user_nick, *caps_nick;
-#endif /* not MULTINET */
 char *user_realname, *user_modes, *loginname;
 int restrictlist, restrictsend, restrictprivlist;
 char *restrictprivlistmsg;
@@ -191,59 +186,17 @@ irlist_t autoignore_exclude;
 int autoignore_threshold;
 
 /* raw on join */
-#ifndef MULTINET
-irlist_t server_join_raw;
-irlist_t server_connected_raw;
-#endif /* not MULTINET */
 irlist_t channel_join_raw;
 
 /* rehash temp variables */
-#ifndef MULTINET
-irlist_t r_channels;
-#endif /* not MULTINET */
 unsigned long r_local_vhost;
 char *r_pidfile;
 char *r_config_nick;
 float r_transferminspeed, r_transfermaxspeed;
 unsigned long r_ourip;
 
-#ifdef MULTINET
 gnetwork_t networks[MAX_NETWORKS];
 int networks_online;
-#else /* MULTINET */
-/* server */
-irlist_t servers;
-server_t curserver;
-char *curserveractualname;
-int nocon;
-int servertime;
-
-struct
-{
-  char *to_ip;
-  unsigned short to_port;
-  int sp_fd[2];
-  pid_t child_pid;
-} serv_resolv;
-
-enum
-{
-  SERVERSTATUS_NEED_TO_CONNECT,
-  SERVERSTATUS_RESOLVING,
-  SERVERSTATUS_TRYING,
-  SERVERSTATUS_CONNECTED,
-} serverstatus;
-long lastservercontact;
-irlist_t serverq_fast;
-irlist_t serverq_normal;
-irlist_t serverq_slow;
-irlist_t serverq_channel;
-int serverbucket;
-int ircserver;
-int serverconnectbackoff;
-prefix_t prefixes[MAX_PREFIX];
-char chanmodes[MAX_CHANMODES];
-#endif /* MULTINET */
 
 irlist_t msglog;
 
@@ -260,11 +213,6 @@ struct termios startup_tio;
 
 int stdout_buffer_init;
 ir_boutput_t stdout_buffer;
-
-#ifndef MULTINET
-/* channel */
-irlist_t channels;
-#endif /* not MULTINET */
 
 irlist_t dccchats;
 int num_dccchats;
@@ -286,15 +234,9 @@ unsigned long xdccsent[XDCC_SENT_SIZE];
 unsigned long xdccrecv[XDCC_SENT_SIZE];
 unsigned long xdccsum[XDCC_SENT_SIZE];
 
-#ifndef MULTINET
-int inamnt[INAMNT_SIZE];
-#endif /* not MULTINET */
 int ignore;
 
 int slotsmax;
-#ifndef MULTINET
-int recentsent;
-#endif /* not MULTINET */
 int queuesize;
 
 
@@ -312,9 +254,6 @@ int next_tr_id;
 off_t max_file_size;
 
 unsigned int max_fds_from_rlimit;
-#ifndef MULTINET
-int nick_number;
-#endif /* not MULTINET */
 
 int logfd;
 
@@ -324,10 +263,6 @@ unsigned char *sendbuff;
 
 context_t context_log[MAXCONTEXTS];
 int context_cur_ptr;
-
-#ifndef MULTINET
-irlist_t xlistqueue;
-#endif /* not MULTINET */
 
 irlist_t ignorelist;
 
@@ -380,9 +315,7 @@ enum
 
 
 GEX gdata_t gdata;
-#ifdef MULTINET
 GEX gnetwork_t *gnetwork;
-#endif /* MULTINET */
 
 
 #endif

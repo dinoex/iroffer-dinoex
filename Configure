@@ -37,7 +37,6 @@ echo "   -p           Compile with profiling flags"
 echo "   -w           Compile with extra warning flags"
 echo "   -g           Compile GeoIP lib"
 echo "   -c           Compile Curl lib"
-echo "   -m           Compile for multiple IRC networks"
 exit 1
 }
 
@@ -47,7 +46,6 @@ OPT_WARN=false
 OPT_PROF=false
 OPT_GEOIP=false
 OPT_CURL=false
-OPT_MULTI=false
 
 while getopts 'hedpwgcm' OPTNAME; do
   case "$OPTNAME" in
@@ -59,9 +57,7 @@ while getopts 'hedpwgcm' OPTNAME; do
     p) OPT_PROF=true;;
     g) OPT_GEOIP=true;;
     c) OPT_CURL=true;;
-    m) VERSIONLONG="${VERSIONLONG} Multinet"
-       OPT_MULTI=true;;
-
+    m) VERSIONLONG="${VERSIONLONG} Multinet";;
     *) usage;;
   esac
 done
@@ -168,12 +164,6 @@ GEOLDF="-L/usr/local/lib"
 shift
 fi
 
-
-if $OPT_MULTI; then
-echo "Configuring for Multiple IRC Networks."
-MULTI="-DMULTINET"
-shift
-fi
 
 echo -n "Checking for make... "
 if [ -f "`type make | awk '{print $NF}'`" ]; then
@@ -1128,7 +1118,7 @@ echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB
 echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF $CURLLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $GEOINC $CURLINC $MULTI
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $GEOINC $CURLINC
 echo CONFIG_CPPFLAGS=
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then

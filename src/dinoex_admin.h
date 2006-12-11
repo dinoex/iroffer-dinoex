@@ -63,9 +63,7 @@ void dinoex_dcld(const userinput *const u);
 #endif /* USE_CURL */
 
 char* getpart_eol(const char *line, int howmany);
-#ifdef MULTINET
 int get_network(const char *arg1);
-#endif /* MULTINET */
 
 void crc32_init(void);
 void crc32_update(char *buf, unsigned long len);

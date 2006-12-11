@@ -4,6 +4,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.33:
 ----------------------
 
+make MULTINET default
+
 100) extern PSEND (inspired by TheDeath)
   give an error when the chan is not found
   or the bot is not joined to the channel.

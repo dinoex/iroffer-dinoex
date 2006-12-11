@@ -303,9 +303,7 @@ void l_istimeout (upload * const l)
 
 void l_closeconn(upload * const l, const char *msg, int errno1)
 {
-#ifdef MULTINET
   gnetwork_t *backup;
-#endif /* MULTINET */
   
   updatecontext();
   
@@ -345,10 +343,8 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
   
   l->ul_status = UPLOAD_STATUS_DONE;
   
-#ifdef MULTINET
   backup = gnetwork;
   gnetwork = &(gdata.networks[l->net]);
-#endif /* MULTINET */
   if (errno1)
     {
       notice(l->nick, "** Closing Upload Connection: %s (%s)", msg, strerror(errno1));
@@ -357,9 +353,7 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
     {
       notice(l->nick, "** Closing Upload Connection: %s", msg);
     }
-#ifdef MULTINET
   gnetwork = backup;
-#endif /* MULTINET */
 }
 
 

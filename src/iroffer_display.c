@@ -149,11 +149,7 @@ void drawbot(void)
   
   len = strlen(gdata.console_input_line);
   
-#ifdef MULTINET
   maxlen = gdata.termcols - (gdata.networks[0].user_nick ? 17+strlen(gdata.networks[0].user_nick) : 17);
-#else
-  maxlen = gdata.termcols - (gdata.user_nick ? 17+strlen(gdata.user_nick) : 17);
-#endif /* MULTINET */
   
   if (maxlen < 0)
     {
@@ -166,7 +162,6 @@ void drawbot(void)
       gdata.console_input_line[maxlen] = '\0';
     }
   
-#ifdef MULTINET
   /* draw bottom line */
   tostdout("\x1b[%d;1H[ iroffer (%s) > %-*s]",
            gdata.termlines,
@@ -178,19 +173,6 @@ void drawbot(void)
   tostdout("\x1b[%d;%dH",
            gdata.termlines,
            ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + (gdata.networks[0].user_nick ? 16+(int)strlen(gdata.networks[0].user_nick) : 16));
-#else
-  /* draw bottom line */
-  tostdout("\x1b[%d;1H[ iroffer (%s) > %-*s]",
-           gdata.termlines,
-           (gdata.user_nick ? gdata.user_nick : ""),
-           gdata.termcols - (int)(gdata.user_nick ? 16+strlen(gdata.user_nick) : 16),
-           gdata.console_input_line);
-  
-  /* move cursor */
-  tostdout("\x1b[%d;%dH",
-           gdata.termlines,
-           ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + (gdata.user_nick ? 16+(int)strlen(gdata.user_nick) : 16));
-#endif /* MULTINET */
   
   if ((len > maxlen))
     {
@@ -209,17 +191,10 @@ void gotobot (void)
   if ( gdata.noscreen )
     return;
   
-#ifdef MULTINET
   maxlen = gdata.termcols - (gdata.networks[0].user_nick ? 17+strlen(gdata.networks[0].user_nick) : 17);
   
   tostdout("\x1b[%d;%dH", gdata.termlines,
            ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + (gdata.networks[0].user_nick ? 16+(int)strlen(gdata.networks[0].user_nick) : 16));
-#else
-  maxlen = gdata.termcols - (gdata.user_nick ? 17+strlen(gdata.user_nick) : 17);
-  
-  tostdout("\x1b[%d;%dH", gdata.termlines,
-           ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + (gdata.user_nick ? 16+(int)strlen(gdata.user_nick) : 16));
-#endif /* MULTINET */
     }
 
 

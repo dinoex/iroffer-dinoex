@@ -521,11 +521,7 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
       return;
     }
   
-#ifdef MULTINET
   if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
-#else /* MULTINET */
-  if (gdata.exiting || (gdata.serverstatus != SERVERSTATUS_CONNECTED))
-#endif /* MULTINET */
     {
       mydelete(msg);
       return;
@@ -543,17 +539,9 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
       len = EXCESS_BUCKET_MAX;
     }
   
-#ifdef MULTINET
   if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ)
-#else /* MULTINET */
-  if (irlist_size(&gdata.serverq_channel) < MAXSENDQ)
-#endif /* MULTINET */
     {
-#ifdef MULTINET
       item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
-#else /* MULTINET */
-      item = irlist_add(&gdata.serverq_channel, sizeof(channel_announce_t));
-#endif /* MULTINET */
       item->delay = delay;
       item->chan = mycalloc(strlen(chan)+1);
       strcpy(item->chan, chan);
@@ -573,11 +561,7 @@ void sendannounce(void)
 {
   channel_announce_t *item;
   
-#ifdef MULTINET
   item = irlist_get_head(&(gnetwork->serverq_channel));
-#else /* MULTINET */
-  item = irlist_get_head(&gdata.serverq_channel);
-#endif /* MULTINET */
   if (!item)
     return;
 
@@ -587,11 +571,7 @@ void sendannounce(void)
   writeserver(WRITESERVER_SLOW, "%s", item->msg);
   mydelete(item->chan);
   mydelete(item->msg);
-#ifdef MULTINET
   irlist_delete(&(gnetwork->serverq_channel), item);
-#else /* MULTINET */
-  irlist_delete(&gdata.serverq_channel, item);
-#endif /* MULTINET */
 }
 
 void stoplist(const char *nick)
@@ -603,31 +583,19 @@ void stoplist(const char *nick)
   int stopped = 0;
   
   ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC STOP from %s", nick);
-#ifdef MULTINET
   item = irlist_get_head(&(gnetwork->xlistqueue));
-#else /* MULTINET */
-  item = irlist_get_head(&gdata.xlistqueue);
-#endif /* MULTINET */
   while (item)
     {
       if (strcasecmp(item,nick) == 0)
         {
            stopped ++;
-#ifdef MULTINET
            item = irlist_delete(&(gnetwork->xlistqueue), item);
-#else /* MULTINET */
-           item = irlist_delete(&gdata.xlistqueue, item);
-#endif /* MULTINET */
            continue;
          }
       item = irlist_get_next(item);
     }
   
-#ifdef MULTINET
   item = irlist_get_head(&(gnetwork->serverq_slow));
-#else /* MULTINET */
-  item = irlist_get_head(&gdata.serverq_slow);
-#endif /* MULTINET */
   while (item)
     {
       inick = NULL;
@@ -646,11 +614,7 @@ void stoplist(const char *nick)
                    if ( (strcmp(copy,"PRIVMSG") == 0) || (strcmp(copy,"NOTICE") == 0) )
                      {
                        stopped ++;
-#ifdef MULTINET
                        item = irlist_delete(&(gnetwork->serverq_slow), item);
-#else /* MULTINET */
-                       item = irlist_delete(&gdata.serverq_slow, item);
-#endif /* MULTINET */
                        continue;
                      }
                 }
@@ -773,7 +737,6 @@ void look_for_file_remove(void)
   return;
 }
 
-#ifdef MULTINET
 int has_closed_servers(void)
 {
   int ss;
@@ -785,19 +748,15 @@ int has_closed_servers(void)
     }
   return 1;
 }
-#endif /* MULTINET */
 
 int has_joined_channels(int all)
 {
   int j;
-#ifdef MULTINET
   int n;
   int ss;
-#endif /* MULTINET */
   channel_t *ch;
 
   j=0;
-#ifdef MULTINET
   for (ss=0; ss<gdata.networks_online; ss++) {
     ch = irlist_get_head(&gdata.networks[ss].channels);
     while(ch)
@@ -815,20 +774,6 @@ int has_joined_channels(int all)
          ch = irlist_get_next(ch);
        }
     }
-#else /* MULTINET */
-  ch = irlist_get_head(&gdata.channels);
-  while(ch)
-    {
-       if ((ch->flags & CHAN_ONCHAN) == 0)
-         {
-           if (all != 0)
-             return 0;
-         }
-       else
-         j++;
-       ch = irlist_get_next(ch);
-     }
-#endif /* MULTINET */
   return j;
 }
 
@@ -1126,9 +1071,7 @@ static int send_statefile(void)
   tr->hostname = mymalloc(strlen(hostname)+1);
   strcpy(tr->hostname,hostname);
   tr->xpack = xd;
-#ifdef MULTINET
   tr->net = gnetwork->net;
-#endif /* MULTINET */
   t_setuplisten(tr);
    
   if (tr->tr_status != TRANSFER_STATUS_LISTENING)
@@ -1150,10 +1093,8 @@ void update_hour_dinoex(int hour, int minute)
   transfer *tr;
   int sendrunning;
   int lastminute;
-#ifdef MULTINET
   gnetwork_t *backup;
   int net = 0;
-#endif /* MULTINET */
 
   if (!gdata.send_statefile)
     return;
@@ -1179,7 +1120,6 @@ void update_hour_dinoex(int hour, int minute)
         return;
     }
 
-#ifdef MULTINET
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
@@ -1189,16 +1129,6 @@ void update_hour_dinoex(int hour, int minute)
   if (gdata.curtime - gnetwork->lastservercontact >= 150)
      return;
 
-#endif /* MULTINET */
-#ifndef MULTINET
-  if (gdata.serverstatus != SERVERSTATUS_CONNECTED)
-     return;
-
-  /* timeout for restart must be less then Transfer Timeout 180s */
-  if (gdata.curtime - gdata.lastservercontact >= 150)
-     return;
-
-#endif /* not MULTINET */
   if (has_joined_channels(0) < 1)
      return;
 
@@ -1219,9 +1149,6 @@ void update_hour_dinoex(int hour, int minute)
          dinoex_lasthour = hour;
     } 
     
-#ifdef MULTINET
-  gnetwork = backup;
-#endif /* MULTINET */
 }
 
 /* iroffer-lamm: @find and long !list */
@@ -1266,13 +1193,8 @@ int noticeresults(const char *nick, const char *match)
             snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
             len = strlen(tempstr);
           }
-#ifdef MULTINET
           snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -",
                    (gnetwork->user_nick ? gnetwork->user_nick : "??"));
-#else
-          snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -",
-                   (gdata.user_nick ? gdata.user_nick : "??"));
-#endif /* MULTINET */
           len = strlen(tempstr);
           if (!strcmp(match, "*"))
             snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");
@@ -1412,9 +1334,7 @@ void autoadd_all(void)
 typedef struct
 {
   userinput u;
-#ifdef MULTINET
   int net;
-#endif /* MULTINET */
   char *name;
   char *url;
   char *vhosttext;
@@ -1455,9 +1375,7 @@ void fetch_perform(void)
   int msgs_in_queue;
   int seen = 0;
   fetch_curl_t *ft;
-#ifdef MULTINET
   gnetwork_t *backup;
-#endif /* MULTINET */
 
   do {
     cms = curl_multi_perform(cm, &running);
@@ -1467,9 +1385,7 @@ void fetch_perform(void)
     return;
 
   updatecontext();
-#ifdef MULTINET
   backup = gnetwork;
-#endif /* MULTINET */
   do {
      msg = curl_multi_info_read(cm, &msgs_in_queue);
      if (msg == NULL)
@@ -1481,9 +1397,7 @@ void fetch_perform(void)
        {
          if (ft->curlhandle == ch)
            {
-#ifdef MULTINET
              gnetwork = &(gdata.networks[ft->net]);
-#endif /* MULTINET */
              if (ft->errorbuf[0] != 0)
                outerror(OUTERROR_TYPE_WARN_LOUD,"fetch: %s",ft->errorbuf);
              if (msg->data.result != 0 )
@@ -1507,9 +1421,7 @@ void fetch_perform(void)
   updatecontext();
   if (seen == 0)
     outerror(OUTERROR_TYPE_WARN_LOUD,"curlhandle not found ");
-#ifdef MULTINET
   gnetwork = backup;
-#endif /* MULTINET */
 }
 
 void start_fetch_url(const userinput *const u)
@@ -1566,9 +1478,7 @@ void start_fetch_url(const userinput *const u)
     }
   ft->u.fd = u->fd;
   ft->u.chat = u->chat;
-#ifdef MULTINET
   ft->net = gnetwork->net;
-#endif /* MULTINET */
   ft->name = mycalloc(strlen(name)+1);
   strcpy((ft->name),name);
   ft->url = mycalloc(strlen(url)+1);
@@ -1747,7 +1657,6 @@ char* getpart_eol(const char *line, int howmany)
   return part;
 }
 
-#ifdef MULTINET
 int get_network(const char *arg1)
 {
   int net;
@@ -1773,7 +1682,6 @@ int get_network(const char *arg1)
   /* unknown */
   return -1;
 }
-#endif /* MULTINET */
 
 void crc32_init(void)
 {

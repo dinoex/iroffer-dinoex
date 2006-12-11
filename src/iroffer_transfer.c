@@ -731,9 +731,7 @@ void t_flushed (transfer * const t)
 
 void t_closeconn(transfer * const t, const char *msg, int errno1)
 {
-#ifdef MULTINET
   gnetwork_t *backup;
-#endif /* MULTINET */
   
   updatecontext();
   
@@ -809,10 +807,8 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
   
   t->tr_status = TRANSFER_STATUS_DONE;
   
-#ifdef MULTINET
   backup = gnetwork;
   gnetwork = &(gdata.networks[t->net]);
-#endif /* MULTINET */
   if (errno1)
     {
       notice(t->nick, "** Closing Connection: %s (%s)", msg, strerror(errno1));
@@ -821,9 +817,7 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
     {
       notice(t->nick, "** Closing Connection: %s", msg);
     }
-#ifdef MULTINET
   gnetwork = backup;
-#endif /* MULTINET */
 }
 
 void t_setresume(transfer * const t, const char *amt) {
@@ -833,28 +827,20 @@ void t_setresume(transfer * const t, const char *amt) {
    }
 
 void t_remind(transfer * const t) {
-#ifdef MULTINET
    gnetwork_t *backup;
-#endif /* MULTINET */
    
    updatecontext();
    
-#ifdef MULTINET
    backup = gnetwork;
    gnetwork = &(gdata.networks[t->net]);
    if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
-#else /* MULTINET */
-   if (gdata.serverstatus == SERVERSTATUS_CONNECTED)
-#endif /* MULTINET */
      {
        notice(t->nick,"** You have a DCC pending, Set your client to receive the transfer. "
               "Send XDCC CANCEL to abort the transfer. "
 	      "(%li seconds remaining until timeout)",(long)(t->lastcontact+180-gdata.curtime));
      }
    
-#ifdef MULTINET
    gnetwork = backup;
-#endif /* MULTINET */
    t->reminded++;
    }
 
@@ -882,9 +868,7 @@ void t_checkminspeed(transfer * const t) {
        igninfo *ignore;
        pqueue *pq;
        transfer *tr;
-#ifdef MULTINET
        gnetwork_t *backup;
-#endif /* MULTINET */
        
        for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
          {
@@ -900,17 +884,13 @@ void t_checkminspeed(transfer * const t) {
          {
            if (strcasecmp(pq->nick,t->nick) == 0)
              {
-#ifdef MULTINET
                backup = gnetwork;
                gnetwork = &(gdata.networks[pq->net]);
-#endif /* MULTINET */
                notice(pq->nick,"** Removed From Queue: You are being punished for your slowness");
                mydelete(pq->nick);
                mydelete(pq->hostname);
                pq = irlist_delete(&gdata.mainqueue, pq);
-#ifdef MULTINET
                gnetwork = backup;
-#endif /* MULTINET */
              }
            else
              {
@@ -935,10 +915,8 @@ void t_checkminspeed(transfer * const t) {
        ignore->lastcontact = gdata.curtime;
        ignore->bucket = (gdata.punishslowusers*60)/gdata.autoignore_threshold;
        
-#ifdef MULTINET
        backup = gnetwork;
        gnetwork = &(gdata.networks[t->net]);
-#endif /* MULTINET */
        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                "Punish-ignore activated for %s (%s) %d minutes",
                t->nick,
@@ -950,9 +928,7 @@ void t_checkminspeed(transfer * const t) {
               ignore->hostmask,
               gdata.punishslowusers);
        
-#ifdef MULTINET
        gnetwork = backup;
-#endif /* MULTINET */
        write_statefile();
      }
    

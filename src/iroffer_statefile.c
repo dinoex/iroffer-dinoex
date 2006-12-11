@@ -774,12 +774,8 @@ void write_statefile(void)
           sizeof(statefile_item_generic_int_t) + 
           sizeof(statefile_hdr_t) + ceiling(strlen(pq->nick) + 1, 4) +
           sizeof(statefile_hdr_t) + ceiling(strlen(pq->hostname) + 1, 4) +
-#ifdef MULTINET
           sizeof(statefile_item_generic_time_t) +
           sizeof(statefile_item_generic_int_t);
-#else /* MULTINET */
-          sizeof(statefile_item_generic_time_t);
-#endif /* MULTINET */
         
         data = mycalloc(length);
         
@@ -829,14 +825,12 @@ void write_statefile(void)
         g_time->g_time = htonl(pq->queuedtime);
         next = (unsigned char*)(&g_time[1]);
         
-#ifdef MULTINET
         /* net */
         g_int = (statefile_item_generic_int_t*)next;
         g_int->hdr.tag = htonl(STATEFILE_TAG_QUEUE_NET);
         g_int->hdr.length = htonl(sizeof(*g_int));
         g_int->g_int = htonl(pq->net);
         next = (unsigned char*)(&g_int[1]);
-#endif /* MULTINET */
         
         write_statefile_item(&bout, data);
         
@@ -1825,9 +1819,7 @@ void read_statefile(void)
             pq->hostname = NULL;
             pq->queuedtime = 0L;
             pq->restrictsend_bad = gdata.curtime;
-#ifdef MULTINET
             pq->net = 0;
-#endif /* MULTINET */
             
             hdr->length -= sizeof(*hdr);
             ihdr = &hdr[1];
@@ -1893,7 +1885,6 @@ void read_statefile(void)
                     break;
                     
                   case STATEFILE_TAG_QUEUE_NET:
-#ifdef MULTINET
                     if (ihdr->length != sizeof(statefile_item_generic_int_t))
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Net Tag (len = %d)",
@@ -1908,7 +1899,6 @@ void read_statefile(void)
                         break;
                       }
                     pq->net = num;
-#endif /* MULTINET */
                     break;
                     
                   default:
