@@ -1685,3 +1685,4 @@
 1701 "XDCC unsupported (%s) "
 1702 "Sorry, this command is unsupported"
 1703 "n <m>"
+1704 "max_find"

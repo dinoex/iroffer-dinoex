@@ -1470,6 +1470,7 @@ void dumpgdata(void)
   gdata_print_int(extend_status_line);
   gdata_print_int(max_uploads);
   gdata_print_int(max_upspeed);
+  gdata_print_int(max_find);
   gdata_print_string(admin_job_file);
   gdata_print_string(autoaddann);
   gdata_print_string(autoadd_group);

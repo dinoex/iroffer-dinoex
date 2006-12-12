@@ -3113,6 +3113,9 @@ static void privmsgparse(const char* type, char* line) {
                  notice_slow(nick," - Pack #%i matches, \"%s\"",
                              i, xd->desc);
                  k++;
+                 /* limit matches */
+                 if ((gdata.max_find != 0) && (k >= gdata.max_find))
+                   break;
                }
              i++;
              xd = irlist_get_next(xd);

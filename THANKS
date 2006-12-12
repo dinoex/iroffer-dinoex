@@ -134,8 +134,11 @@ Yasuo|Iwakura
 	report uncomplete warning
 
 Road
-	suggesting XDCC OWNER
+	user command XDCC OWNER
 
 Skyw4lker
-	suggesting "REMOVE n m"
+	admin command "REMOVE n m"
+
+Cork
+	option "max_find"
 

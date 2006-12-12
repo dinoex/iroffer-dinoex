@@ -178,6 +178,7 @@ int send_statefile_minute;
 int extend_status_line;
 int max_uploads;
 int max_upspeed;
+int max_find;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

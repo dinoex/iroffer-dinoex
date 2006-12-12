@@ -1212,6 +1212,9 @@ int noticeresults(const char *nick, const char *match)
         len = strlen(tempstr);
         mydelete(sizestrstr);
         k++;
+        /* limit matches */
+        if ((gdata.max_find != 0) && (k >= gdata.max_find))
+          break;
       }
       i++;
       xd = irlist_get_next(xd);

@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.33:
 ----------------------
 
+105) max_find (inspired by Cork)
+   Limit matches to @find and XDCC SREACH commands.
+
 104) remove n m (inspired by Skyw4lker)
 
    new admin commands:
