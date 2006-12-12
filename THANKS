@@ -23,6 +23,7 @@ Ddrulez
 Tak0r
 	option "need_voice"
 	option "autoadd_dir"
+	option "need_level"
 
 Keichi
 	option "auto_default_group"

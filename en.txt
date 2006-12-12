@@ -1676,3 +1676,4 @@
 1692 "Pack %d: The file \"%s\" is too large!"
 1693 "Bot not in Channel %s"
 1694 "Channel %s not found"
+1695 "need_level"

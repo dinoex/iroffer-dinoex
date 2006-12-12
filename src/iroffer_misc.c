@@ -156,6 +156,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"send_statefile_minute",  &gdata.send_statefile_minute,  &gdata.send_statefile_minute, 0, 60, 1 },
   {"max_uploads",     &gdata.max_uploads,     &gdata.max_uploads,     0, 65000, 1 },
   {"max_upspeed",     &gdata.max_upspeed,     &gdata.max_upspeed,     0, 1000000, 4 },
+  {"need_level",      &gdata.need_level,      &gdata.need_level,      0, 3, 0 },
 };
 
 typedef struct
@@ -2532,6 +2533,7 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.autoadd_dirs);
   mydelete(gdata.enable_nick);
   gdata.need_voice = 0;
+  gdata.need_level = 0;
   gdata.hide_list_info = 0;
   gdata.xdcclist_grouponly = 0;
   gdata.auto_default_group = 0;
@@ -2637,8 +2639,6 @@ void initvars(void)
       gdata.networks[ss].serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
     }
   gnetwork = NULL;
-  initprefixes();
-  initchanmodes();
   
   gdata.logfd = FD_UNUSED;
   gdata.termcols = 80;

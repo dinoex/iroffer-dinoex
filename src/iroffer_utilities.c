@@ -1441,6 +1441,7 @@ void dumpgdata(void)
 
   gdata_print_string(enable_nick);
   gdata_print_int(need_voice);
+  gdata_print_int(need_level);
   gdata_print_int(hide_list_info);
   gdata_print_int(xdcclist_grouponly);
   gdata_print_int(auto_default_group);
@@ -1868,6 +1869,53 @@ void dumpgdata(void)
 }
 
 
+int check_level(char prefix)
+{
+  int ii;
+  int level;
+
+  if (gdata.need_level == 0)
+    {
+      if (gdata.need_voice == 0)
+        return 1;
+      /* any prefix is counted as voice */
+      if ( prefix != 0 )
+        return 1;
+      /* no good prefix found try next chan */
+      return 0;
+    }
+
+  level = 0;
+  for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_symbol); ii++)
+    {
+      if (prefix == gnetwork->prefixes[ii].p_symbol)
+        {
+          /* found a nick mode */
+          switch (gnetwork->prefixes[ii].p_mode) {
+          case 'q':
+          case 'a':
+          case 'o':
+            level = 3;
+            break;
+          case 'h':
+            level = 2;
+            break;
+          case 'v':
+            level = 1;
+            break;
+          default:
+            level = 0;
+          }
+        }
+    }
+
+  if (level >= gdata.need_level)
+    return 1;
+
+  return 0;
+}
+
+
 void clearmemberlist(channel_t *c)
 {
   /* clear members list */
@@ -1903,12 +1951,8 @@ int isinmemberlist(const char *nick)
         {
           if (!strcasecmp(caps(member->nick),nick))
             {
-              if (gdata.need_voice == 0)
+              if (check_level( member->prefixes[0] ) != 0)
                 return 1;
-              /* any prefix is counted as voice */
-              if ( member->prefixes[0] != 0 )
-                return 1;
-              /* no good prefix found try next chan */
             }
           member = irlist_get_next(member);
         }

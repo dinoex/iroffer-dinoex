@@ -575,6 +575,7 @@ void checkadminpass(void);
 void updatecontext_f(const char *file, const char *func, int line);
 void dumpcontext(void);
 void dumpgdata(void);
+int check_level(char prefix);
 void clearmemberlist(channel_t *c);
 int isinmemberlist(const char *nick);
 void addtomemberlist(channel_t *c, const char *nick);

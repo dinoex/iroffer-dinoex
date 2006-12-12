@@ -149,6 +149,7 @@ char *autoaddann;
 char *autoadd_group;
 char *send_statefile;
 int need_voice;
+int need_level;
 int hide_list_info;
 int xdcclist_grouponly;
 int auto_default_group;

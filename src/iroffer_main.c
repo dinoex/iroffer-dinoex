@@ -2921,7 +2921,7 @@ static void privmsgparse(const char* type, char* line) {
 	 else if (gdata.restrictlist && (!isinmemberlist(nick)))
 	   {
 	     j = 2; /* deny */
-	     if (gdata.need_voice != 0)
+	     if ((gdata.need_voice != 0) || (gdata.need_level != 0))
 	        notice(nick,"XDCC LIST Denied. You must have voice or more on this channel to request a list");
              else
 	        notice(nick,"XDCC LIST Denied. You must be on a known channel to request a list");
@@ -3316,7 +3316,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   else if (!man && gdata.restrictsend && !isinmemberlist(nick))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (restricted): ");
-      if (gdata.need_voice != 0)
+      if ((gdata.need_voice != 0) || (gdata.need_level != 0))
         notice(nick,"** XDCC SEND denied, you must have voice on a known channel to request a pack");
       else
         notice(nick,"** XDCC SEND denied, you must be on a known channel to request a pack");
@@ -3507,7 +3507,7 @@ void sendxdccinfo(const char* nick,
   else if (gdata.restrictsend && !isinmemberlist(nick))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (restricted): ");
-      if (gdata.need_voice != 0)
+      if ((gdata.need_voice != 0) || (gdata.need_level != 0))
         notice(nick,"** XDCC INFO denied, you must have voice on a known channel to request a pack");
       else
         notice(nick,"** XDCC INFO denied, you must be on a known channel to request a pack");
