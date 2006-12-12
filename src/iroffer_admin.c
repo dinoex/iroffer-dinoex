@@ -175,7 +175,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_queuesize, "QUEUESIZE","[n]","temporary change queuesize"},
 
 {3,method_allow_all,u_info,     "INFO","n","Show Info for Pack n"},
-{3,method_allow_all,u_remove,   "REMOVE","n","Removes Pack n"},
+{3,method_allow_all,u_remove,   "REMOVE","n <m>","Removes Pack n or n to m"},
 {3,method_allow_all,u_removedir,"REMOVEDIR","<dir>","Remove Every File in <dir>"},
 {3,method_allow_all,u_removegroup, "REMOVEGROUP","<group>","Remove Every File within <group>"},
 {3,method_allow_all,u_renumber, "RENUMBER","x y","Moves Pack x to y"},
@@ -1716,25 +1716,14 @@ static void u_info(const userinput * const u)
   return;
 }
 
-static void u_remove(const userinput * const u) {
-   int num = 0;
+static void u_remove_pack(const userinput * const u, xdcc *xd, int num) {
    char *tmpdesc;
    char *tmpgroup;
    pqueue *pq;
    transfer *tr;
-   xdcc *xd;
    gnetwork_t *backup;
    
    updatecontext();
-   
-   if (u->arg1) num = atoi(u->arg1);
-   
-   if ( num < 1 || num > irlist_size(&gdata.xdccs) ) {
-      u_respond(u,"Try a valid pack number");
-      return;
-      }
-   
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
    
    tr = irlist_get_head(&gdata.trans);
    while(tr)
@@ -1805,7 +1794,45 @@ static void u_remove(const userinput * const u) {
    
    write_statefile();
    xdccsavetext();
-   }
+}
+
+static void u_remove(const userinput * const u) {
+   int num = 0;
+   int num2 = 0;
+   xdcc *xd;
+   
+   updatecontext();
+   
+   if (u->arg1) num = atoi(u->arg1);
+   
+   if ( num < 1 || num > irlist_size(&gdata.xdccs) ) {
+      u_respond(u,"Try a valid pack number");
+      return;
+      }
+   
+   if (u->arg2) num2 = atoi(u->arg2);
+   
+   if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
+      u_respond(u,"Try a valid pack number");
+      return;
+      }
+
+   if (num2 == 0) {
+      xd = irlist_get_nth(&gdata.xdccs, num-1);
+      u_remove_pack(u, xd, num);
+      return;
+      }
+
+   if ( num2 < num ) {
+      u_respond(u,"Try a valid pack number");
+      return;
+      }
+
+   for (; num2 >= num; num2--) {
+     xd = irlist_get_nth(&gdata.xdccs, num2-1);
+     u_remove_pack(u, xd, num2);
+     }
+}
 
 static void u_removedir(const userinput * const u)
 {

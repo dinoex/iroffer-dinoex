@@ -4,6 +4,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 1.33:
 ----------------------
 
+104) remove n m (inspired by Skyw4lker)
+
+   new admin commands:
+   REMOVE <n> <m>                    remove every pack from <n> to <m>
+
 103) XDCC #1
   report unsupported commands to user
 

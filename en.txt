@@ -45,7 +45,7 @@
 47 "INFO"
 48 "Show Info for Pack n"
 49 "REMOVE"
-50 "Removes Pack n"
+50 "Removes Pack n or n to m"
 51 "REMOVEDIR"
 52 "<dir>"
 53 "Remove Every File in <dir>"
@@ -1684,3 +1684,4 @@
 1700 "owner_nick"
 1701 "XDCC unsupported (%s) "
 1702 "Sorry, this command is unsupported"
+1703 "n <m>"
