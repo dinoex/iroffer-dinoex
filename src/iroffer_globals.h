@@ -179,6 +179,7 @@ int extend_status_line;
 int max_uploads;
 int max_upspeed;
 int max_find;
+int include_subdirs;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

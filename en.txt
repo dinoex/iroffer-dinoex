@@ -1686,3 +1686,5 @@
 1702 "Sorry, this command is unsupported"
 1703 "n <m>"
 1704 "max_find"
+1705 "  Scanning directory: %s"
+1706 "include_subdirs"

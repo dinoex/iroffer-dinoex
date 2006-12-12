@@ -124,6 +124,7 @@ static const config_parse_bool_t config_parse_bool[] = {
   {"direct_file_access",   &gdata.direct_file_access,   &gdata.direct_file_access },
   {"restrictsend_warning", &gdata.restrictsend_warning, &gdata.restrictsend_warning },
   {"extend_status_line",   &gdata.extend_status_line,   &gdata.extend_status_line },
+  {"include_subdirs",      &gdata.include_subdirs,      &gdata.include_subdirs },
 };
 
 typedef struct
@@ -2563,6 +2564,7 @@ void reinit_config_vars(void)
   gdata.send_statefile_minute = 0;
   gdata.send_statefile_minute = 0;
   gdata.extend_status_line = 0;
+  gdata.include_subdirs = 0;
   gdata.max_uploads = 65000;
   gdata.max_upspeed = 65000;
   gdata.max_find = 0;

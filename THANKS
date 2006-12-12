@@ -142,3 +142,10 @@ Skyw4lker
 Cork
 	option "max_find"
 
+anibi
+	option "include_subdirs"
+
+Tass
+	option "include_subdirs"
+
+

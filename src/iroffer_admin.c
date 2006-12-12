@@ -1834,13 +1834,90 @@ static void u_remove(const userinput * const u) {
      }
 }
 
+static void u_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
+{
+  struct dirent *f;
+  char *tempstr;
+  int thedirlen;
+  xdcc *xd;
+  
+  updatecontext();
+  
+  thedirlen = strlen(thedir);
+  if (d == NULL)
+    d = opendir(thedir);
+  
+  if (!d)
+    {
+      u_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+  
+  while ((f = readdir(d)))
+    {
+      struct stat st;
+      int len = strlen(f->d_name);
+      int n;
+      
+      tempstr = mycalloc(len + thedirlen + 2);
+      
+      snprintf(tempstr, len + thedirlen + 2,
+               "%s/%s", thedir, f->d_name);
+      
+      if (stat(tempstr,&st) < 0)
+        {
+          u_respond(u,"cannot access %s, ignoring: %s",
+                    tempstr, strerror(errno));
+          mydelete(tempstr);
+          continue;
+        }
+      if (S_ISDIR(st.st_mode))
+        {
+          if (strcmp(f->d_name,".") == 0 )
+            continue;
+          if (strcmp(f->d_name,"..") == 0 )
+            continue;
+          if (gdata.include_subdirs != 0)
+            u_removedir_sub(u, tempstr, NULL);
+          continue;
+        }
+      if (!S_ISREG(st.st_mode))
+        {
+          mydelete(tempstr);
+          continue;
+        }
+      
+      n = 0;
+      xd = irlist_get_head(&gdata.xdccs);
+      while(xd)
+        {
+          n++;
+          if ((xd->st_dev == st.st_dev) &&
+              (xd->st_ino == st.st_ino))
+            {
+              u_remove_pack(u, xd, n);
+              /* start over, the list has changed */
+              n = 0;
+              xd = irlist_get_head(&gdata.xdccs);
+            }
+          else
+            {
+              xd = irlist_get_next(xd);
+            }
+        }
+      
+      mydelete(tempstr);
+    }
+  
+  closedir(d);
+  return;
+}
+
 static void u_removedir(const userinput * const u)
 {
   DIR *d;
-  struct dirent *f;
-  char *tempstr, *thedir;
+  char *thedir;
   int thedirlen;
-  xdcc *xd;
   
   updatecontext();
   
@@ -1881,63 +1958,7 @@ static void u_removedir(const userinput * const u)
       return;
     }
   
-  
-  while ((f = readdir(d)))
-    {
-      struct stat st;
-      int len = strlen(f->d_name);
-      int n;
-      
-      tempstr = mycalloc(len + thedirlen + 2);
-      
-      snprintf(tempstr, len + thedirlen + 2,
-               "%s/%s", thedir, f->d_name);
-      
-      if (stat(tempstr,&st) < 0)
-        {
-          u_respond(u,"cannot access %s, ignoring: %s",
-                    tempstr, strerror(errno));
-          mydelete(tempstr);
-          continue;
-        }
-      if (!S_ISREG(st.st_mode))
-        {
-          mydelete(tempstr);
-          continue;
-        }
-      
-      n = 0;
-      xd = irlist_get_head(&gdata.xdccs);
-      while(xd)
-        {
-          n++;
-          if ((xd->st_dev == st.st_dev) &&
-              (xd->st_ino == st.st_ino))
-            {
-              userinput u2;
-              char tempstr2[8];
-              
-              snprintf(tempstr2, 8, "%d", n);
-              
-              u2 = *u;
-              u2.arg1 = tempstr2;
-              u_remove(&u2);
-              
-              /* start over, the list has changed */
-              n = 0;
-              xd = irlist_get_head(&gdata.xdccs);
-            }
-          else
-            {
-              xd = irlist_get_next(xd);
-            }
-        }
-      
-      mydelete(tempstr);
-    }
-  
-  closedir(d);
-  
+  u_removedir_sub(u, thedir, d);
   mydelete(thedir);
   return;
 }
@@ -1945,9 +1966,7 @@ static void u_removedir(const userinput * const u)
 static void u_removegroup(const userinput * const u)
 {
    xdcc *xd;
-   userinput u2;
    int n;
-   char tempstr2[8];
    
    updatecontext();
    
@@ -1966,12 +1985,7 @@ static void u_removegroup(const userinput * const u)
          {
            if (strcasecmp(xd->group,u->arg1) == 0)
              {
-                snprintf(tempstr2, 8, "%d", n);
-                
-                u2 = *u;
-                u2.arg1 = tempstr2;
-                u_remove(&u2);
-                
+                u_remove_pack(u, xd, n);
                 /* start over, the list has changed */
                 n = 0;
                 xd = irlist_get_head(&gdata.xdccs);
@@ -2977,12 +2991,91 @@ static void u_add(const userinput * const u) {
       } 
    }
 
+static void u_adddir_sub(const userinput * const u, const char *thedir, DIR *d)
+{
+  struct dirent *f;
+  char *thefile, *tempstr;
+  irlist_t dirlist = {};
+  int thedirlen;
+  
+  updatecontext();
+  
+  thedirlen = strlen(thedir);
+  if (d == NULL)
+    d = opendir(thedir);
+  
+  if (!d)
+    {
+      u_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+  
+  while ((f = readdir(d)))
+    {
+      struct stat st;
+      int len = strlen(f->d_name);
+      
+      if (verifyshell(&gdata.adddir_exclude, f->d_name))
+        continue;
+      
+      tempstr = mycalloc(len + thedirlen + 2);
+      
+      snprintf(tempstr, len + thedirlen + 2,
+               "%s/%s", thedir, f->d_name);
+      
+      if (stat(tempstr,&st) < 0)
+        {
+          u_respond(u,"cannot access %s, ignoring: %s",
+                    tempstr, strerror(errno));
+        }
+      else if (S_ISDIR(st.st_mode))
+        {
+          if ((strcmp(f->d_name,".") == 0) ||
+              (strcmp(f->d_name,"..") == 0) ||
+	      gdata.include_subdirs == 0)
+          {
+            u_respond(u,"  Ignoring directory: %s", tempstr);
+          }
+	  else
+          {
+            u_respond(u,"  Scanning directory: %s", tempstr);
+            u_adddir_sub(u, tempstr, NULL);
+          }
+        }
+      else if (S_ISREG(st.st_mode))
+        {
+          thefile = irlist_add(&dirlist, len + thedirlen + 2);
+          strcpy(thefile, tempstr);
+        }
+      mydelete(tempstr);
+    }
+  
+  closedir(d);
+  
+  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
+  
+  u_respond(u,"Adding %d files...",
+            irlist_size(&dirlist));
+  
+  thefile = irlist_get_head(&dirlist);
+  while (thefile)
+    {
+      userinput u2;
+      u_respond(u,"  Adding %s:",thefile);
+      
+      u2 = *u;
+      u2.arg1e = thefile;
+      u_add(&u2);
+      
+      thefile = irlist_delete(&dirlist, thefile);
+    }
+  return;
+}
+
 static void u_adddir(const userinput * const u)
 {
   DIR *d;
-  struct dirent *f;
-  char *thefile, *tempstr, *thedir;
-  irlist_t dirlist = {};
+  char *thedir;
   int thedirlen;
   
   updatecontext();
@@ -3024,59 +3117,7 @@ static void u_adddir(const userinput * const u)
       return;
     }
   
-  
-  while ((f = readdir(d)))
-    {
-      struct stat st;
-      int len = strlen(f->d_name);
-      
-      if (verifyshell(&gdata.adddir_exclude, f->d_name))
-        continue;
-      
-      tempstr = mycalloc(len + thedirlen + 2);
-      
-      snprintf(tempstr, len + thedirlen + 2,
-               "%s/%s", thedir, f->d_name);
-      
-      if (stat(tempstr,&st) < 0)
-        {
-          u_respond(u,"cannot access %s, ignoring: %s",
-                    tempstr, strerror(errno));
-        }
-      else if (strcmp(f->d_name,".") &&
-               strcmp(f->d_name,"..") &&
-               S_ISDIR(st.st_mode))
-        {
-          u_respond(u,"  Ignoring directory: %s", tempstr);
-        }
-      else if (S_ISREG(st.st_mode))
-        {
-          thefile = irlist_add(&dirlist, len + thedirlen + 2);
-          strcpy(thefile, tempstr);
-        }
-      mydelete(tempstr);
-    }
-  
-  closedir(d);
-  
-  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
-  
-  u_respond(u,"Adding %d files...",
-            irlist_size(&dirlist));
-  
-  thefile = irlist_get_head(&dirlist);
-  while (thefile)
-    {
-      userinput u2;
-      u_respond(u,"  Adding %s:",thefile);
-      
-      u2 = *u;
-      u2.arg1e = thefile;
-      u_add(&u2);
-      
-      thefile = irlist_delete(&dirlist, thefile);
-    }
-  
+  u_adddir_sub(u, thedir, d);
   mydelete(thedir);
   return;
 }
