@@ -6,22 +6,13 @@
 #
 
 VERSION=1.4.b03
-RELEASE=1
+RELEASE=0
 MOD="1.33"
 
-if [ -d BitKeeper -a -f "`type bk 2>/dev/null | awk '{print $NF}'`" ]; then
- CSET=`bk prs -h -d':UTC:\n' -r+ ChangeSet`
- echo $CSET > .cset_number
-elif [ -f .cset_number ]; then
- CSET=`cat .cset_number`
-else
- CSET="Unknown"
-fi
-
 if [ $RELEASE -eq 1 ]; then
- VERSIONLONG="$VERSION [$CSET] mod by Dinoex $MOD"
+ VERSIONLONG="$VERSION mod by Dinoex $MOD"
 else
- VERSIONLONG="$VERSION [PRERELEASE $CSET] mod by Dinoex $MOD"
+ VERSIONLONG="$VERSION mod by Dinoex $MOD Beta"
 fi
 
 echo
