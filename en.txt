@@ -1677,3 +1677,8 @@
 1693 "Bot not in Channel %s"
 1694 "Channel %s not found"
 1695 "need_level"
+1696 "OWNER"
+1697 "XDCC OWNER (%s) "
+1698 "Owner for this bots is: %s"
+1699 "(unknown)"
+1700 "owner_nick"

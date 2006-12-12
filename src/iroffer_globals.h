@@ -144,6 +144,7 @@ irlist_t geoipcountry;
 irlist_t geoipexcludenick;
 irlist_t autoadd_dirs;
 char *enable_nick;
+char *owner_nick;
 char *admin_job_file;
 char *autoaddann;
 char *autoadd_group;

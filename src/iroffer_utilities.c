@@ -1440,6 +1440,7 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
 
   gdata_print_string(enable_nick);
+  gdata_print_string(owner_nick);
   gdata_print_int(need_voice);
   gdata_print_int(need_level);
   gdata_print_int(hide_list_info);

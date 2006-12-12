@@ -3088,7 +3088,12 @@ static void privmsgparse(const char* type, char* line) {
          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC REMOVE (%s) ",hostmask);
          
          }
-      else if ( msg2 && !strcmp(msg2,"SEARCH") && msg3) {
+         else if ( msg2 && !strcmp(msg2,"OWNER")) {
+           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC OWNER (%s) ",hostmask);
+           notice(nick, "Owner for this bots is: %s",
+                  gdata.owner_nick ? gdata.owner_nick : "(unknown)");
+         }
+         else if ( msg2 && !strcmp(msg2,"SEARCH") && msg3) {
          if (!gdata.attop) gototop();
          
          notice_slow(nick,"Searching for \"%s\"...",msg3);
