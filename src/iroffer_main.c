@@ -3125,6 +3125,10 @@ static void privmsgparse(const char* type, char* line) {
          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC SEARCH %s (%s)",msg3,hostmask);
          
          }
+         else if ( msg2 )  {
+           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC unsupported (%s) ",hostmask);
+           notice(nick, "Sorry, this command is unsupported" );
+         }
       }
    }
    

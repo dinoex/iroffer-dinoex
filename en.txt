@@ -1682,3 +1682,5 @@
 1698 "Owner for this bots is: %s"
 1699 "(unknown)"
 1700 "owner_nick"
+1701 "XDCC unsupported (%s) "
+1702 "Sorry, this command is unsupported"
