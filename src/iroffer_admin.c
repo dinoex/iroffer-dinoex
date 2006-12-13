@@ -84,7 +84,6 @@ static void u_groupdesc(const userinput * const u);
 static void u_group(const userinput * const u);
 static void u_movegroup(const userinput * const u);
 static void u_regroup(const userinput * const u);
-static void u_add(const userinput * const u);
 static void u_adddir(const userinput * const u);
 static void u_addnew(const userinput * const u);
 static void u_addgroup(const userinput * const u);
@@ -1716,86 +1715,6 @@ static void u_info(const userinput * const u)
   return;
 }
 
-static void u_remove_pack(const userinput * const u, xdcc *xd, int num) {
-   char *tmpdesc;
-   char *tmpgroup;
-   pqueue *pq;
-   transfer *tr;
-   gnetwork_t *backup;
-   
-   updatecontext();
-   
-   tr = irlist_get_head(&gdata.trans);
-   while(tr)
-     {
-       if ((tr->tr_status != TRANSFER_STATUS_DONE) &&
-           (tr->xpack == xd))
-         {
-           t_closeconn(tr,"Pack removed",0);
-         }
-       tr = irlist_get_next(tr);
-     }
-   
-   pq = irlist_get_head(&gdata.mainqueue);
-   while(pq)
-     {
-       if (pq->xpack == xd)
-         {
-           backup = gnetwork;
-           gnetwork = &(gdata.networks[pq->net]);
-           notice(pq->nick,"** Removed From Queue: Pack removed");
-           gnetwork = backup;
-           mydelete(pq->nick);
-           mydelete(pq->hostname);
-           pq = irlist_delete(&gdata.mainqueue, pq);
-         }
-       else
-         {
-           pq = irlist_get_next(pq);
-         }
-     }
-   
-   u_respond(u,"Removed Pack %i [%s]", num, xd->desc);
-   
-   if (gdata.md5build.xpack == xd)
-     {
-       outerror(OUTERROR_TYPE_WARN,"[MD5]: Canceled (remove)");
-       
-       FD_CLR(gdata.md5build.file_fd, &gdata.readset);
-       close(gdata.md5build.file_fd);
-       gdata.md5build.file_fd = FD_UNUSED;
-       gdata.md5build.xpack = NULL;
-     }
-   
-   assert(xd->file_fd == FD_UNUSED);
-   assert(xd->file_fd_count == 0);
-#ifdef HAVE_MMAP
-   assert(!irlist_size(&xd->mmaps));
-#endif
-   
-   mydelete(xd->file);
-   mydelete(xd->desc);
-   mydelete(xd->note);
-   /* keep group info for later work */
-   tmpgroup = xd->group;
-   xd->group = NULL;
-   tmpdesc = xd->group_desc;
-   xd->group_desc = NULL;
-   irlist_delete(&gdata.xdccs, xd);
-   
-   if (tmpdesc != NULL)
-     {
-       if (tmpgroup != NULL)
-         reorder_new_groupdesc(tmpgroup,tmpdesc);
-       mydelete(tmpdesc);
-     }
-   if (tmpgroup != NULL)
-     mydelete(tmpgroup);
-   
-   write_statefile();
-   xdccsavetext();
-}
-
 static void u_remove(const userinput * const u) {
    int num = 0;
    int num2 = 0;
@@ -1838,8 +1757,8 @@ static void u_removedir_sub(const userinput * const u, const char *thedir, DIR *
 {
   struct dirent *f;
   char *tempstr;
+  userinput *u2;
   int thedirlen;
-  xdcc *xd;
   
   updatecontext();
   
@@ -1857,7 +1776,6 @@ static void u_removedir_sub(const userinput * const u, const char *thedir, DIR *
     {
       struct stat st;
       int len = strlen(f->d_name);
-      int n;
       
       tempstr = mycalloc(len + thedirlen + 2);
       
@@ -1873,12 +1791,15 @@ static void u_removedir_sub(const userinput * const u, const char *thedir, DIR *
         }
       if (S_ISDIR(st.st_mode))
         {
-          if (strcmp(f->d_name,".") == 0 )
-            continue;
-          if (strcmp(f->d_name,"..") == 0 )
-            continue;
+          if ((strcmp(f->d_name,".") == 0 ) ||
+              (strcmp(f->d_name,"..") == 0))
+            {
+              mydelete(tempstr);
+              continue;
+            }
           if (gdata.include_subdirs != 0)
             u_removedir_sub(u, tempstr, NULL);
+          mydelete(tempstr);
           continue;
         }
       if (!S_ISREG(st.st_mode))
@@ -1887,26 +1808,18 @@ static void u_removedir_sub(const userinput * const u, const char *thedir, DIR *
           continue;
         }
       
-      n = 0;
-      xd = irlist_get_head(&gdata.xdccs);
-      while(xd)
-        {
-          n++;
-          if ((xd->st_dev == st.st_dev) &&
-              (xd->st_ino == st.st_ino))
-            {
-              u_remove_pack(u, xd, n);
-              /* start over, the list has changed */
-              n = 0;
-              xd = irlist_get_head(&gdata.xdccs);
-            }
-          else
-            {
-              xd = irlist_get_next(xd);
-            }
-        }
-      
-      mydelete(tempstr);
+      u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
+      u2->method = u->method;
+      u2->snick = u->snick;
+      u2->fd = u->fd;
+      u2->chat = u->chat;
+      u2->cmd = "REMOVE";
+
+      u2->arg1 = tempstr;
+      tempstr = NULL;
+
+      u2->arg2 = mycalloc(sizeof(struct stat));
+      memcpy(u2->arg2, &st, sizeof(struct stat));
     }
   
   closedir(d);
@@ -2820,7 +2733,7 @@ static void u_chfile(const userinput * const u) {
    
    }
 
-static void u_add(const userinput * const u) {
+void u_add(const userinput * const u) {
    int xfiledescriptor;
    struct stat st;
    xdcc *xd;
@@ -2991,9 +2904,12 @@ static void u_add(const userinput * const u) {
       } 
    }
 
-static void u_adddir_sub(const userinput * const u, const char *thedir, DIR *d)
+static void u_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup)
 {
+  userinput *u2;
   struct dirent *f;
+  struct stat st;
+  struct stat *sta;
   char *thefile, *tempstr;
   irlist_t dirlist = {};
   int thedirlen;
@@ -3012,8 +2928,9 @@ static void u_adddir_sub(const userinput * const u, const char *thedir, DIR *d)
   
   while ((f = readdir(d)))
     {
-      struct stat st;
+      xdcc *xd;
       int len = strlen(f->d_name);
+      int foundit;
       
       if (verifyshell(&gdata.adddir_exclude, f->d_name))
         continue;
@@ -3030,46 +2947,110 @@ static void u_adddir_sub(const userinput * const u, const char *thedir, DIR *d)
         }
       else if (S_ISDIR(st.st_mode))
         {
-          if ((strcmp(f->d_name,".") == 0) ||
-              (strcmp(f->d_name,"..") == 0) ||
-	      gdata.include_subdirs == 0)
-          {
-            u_respond(u,"  Ignoring directory: %s", tempstr);
-          }
+          if ((strcmp(f->d_name,".") == 0 ) ||
+              (strcmp(f->d_name,"..") == 0))
+            {
+              mydelete(tempstr);
+              continue;
+            }
+          if (gdata.include_subdirs == 0)
+            {
+              u_respond(u,"  Ignoring directory: %s", tempstr);
+            }
 	  else
-          {
-            u_respond(u,"  Scanning directory: %s", tempstr);
-            u_adddir_sub(u, tempstr, NULL);
-          }
+            {
+              u_adddir_sub(u, tempstr, NULL, new, setgroup);
+            }
+          mydelete(tempstr);
+          continue;
         }
       else if (S_ISREG(st.st_mode))
         {
-          thefile = irlist_add(&dirlist, len + thedirlen + 2);
-          strcpy(thefile, tempstr);
+          foundit = 0;
+          if (new != 0)
+          {
+            xd = irlist_get_head(&gdata.xdccs);
+            while(xd)
+              {
+                if ((xd->st_dev == st.st_dev) &&
+                    (xd->st_ino == st.st_ino))
+                  {
+                    foundit = 1;
+                    break;
+                  }
+
+                xd = irlist_get_next(xd);
+              }
+          }
+
+          if (foundit == 0)
+          {
+            u2 = irlist_get_head(&gdata.packs_delayed);
+            while(u2)
+              {
+                sta = (struct stat *)(u2->arg2);
+                if ((strcmp(u2->cmd,"ADD") == 0) &&
+                   (sta->st_dev == st.st_dev) &&
+                   (sta->st_ino == st.st_ino))
+                  {
+                    foundit = 1;
+                    break;
+                  }
+
+                u2 = irlist_get_next(u2);
+              }
+          }
+
+          if (foundit == 0)
+            {
+              thefile = irlist_add(&dirlist, len + thedirlen + 2);
+              strcpy(thefile, tempstr);
+            }
         }
       mydelete(tempstr);
     }
   
   closedir(d);
   
+  if (irlist_size(&dirlist) == 0)
+    return;
+ 
   irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
   
-  u_respond(u,"Adding %d files...",
-            irlist_size(&dirlist));
+  u_respond(u,"Adding %d files from dir %s",
+            irlist_size(&dirlist), thedir);
   
   thefile = irlist_get_head(&dirlist);
   while (thefile)
     {
-      userinput u2;
-      u_respond(u,"  Adding %s:",thefile);
-      
-      u2 = *u;
-      u2.arg1e = thefile;
-      u_add(&u2);
-      
+      u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
+      u2->method = u->method;
+      u2->snick = u->snick;
+      u2->fd = u->fd;
+      u2->chat = u->chat;
+      u2->cmd = "ADD";
+
+      u2->arg1 = mymalloc(strlen(thefile) + 1);
+      strcpy(u2->arg1,thefile);
+
+      if (stat(thefile,&st) == 0)
+        {
+          u2->arg2 = mycalloc(sizeof(struct stat));
+          memcpy(u2->arg2, &st, sizeof(struct stat));
+        }
+
+      if (setgroup != NULL)
+        {
+          u2->arg3 = mymalloc(strlen(setgroup) + 1);
+          strcpy(u2->arg3,setgroup);
+        }
+      else
+        {
+          u2->arg3 = NULL;
+        }
+
       thefile = irlist_delete(&dirlist, thefile);
     }
-  return;
 }
 
 static void u_adddir(const userinput * const u)
@@ -3117,7 +3098,7 @@ static void u_adddir(const userinput * const u)
       return;
     }
   
-  u_adddir_sub(u, thedir, d);
+  u_adddir_sub(u, thedir, d, 0, NULL);
   mydelete(thedir);
   return;
 }
@@ -3125,11 +3106,8 @@ static void u_adddir(const userinput * const u)
 static void u_addnew(const userinput * const u)
 {
   DIR *d;
-  struct dirent *f;
-  char *thefile, *tempstr, *thedir;
-  irlist_t dirlist = {};
-  int thedirlen, foundit;
-  xdcc *xd;
+  char *thedir;
+  int thedirlen;
   
   updatecontext();
   
@@ -3170,76 +3148,7 @@ static void u_addnew(const userinput * const u)
       return;
     }
   
-  
-  while ((f = readdir(d)))
-    {
-      struct stat st;
-      int len = strlen(f->d_name);
-      
-      if (verifyshell(&gdata.adddir_exclude, f->d_name))
-        continue;
-      
-      tempstr = mycalloc(len + thedirlen + 2);
-      
-      snprintf(tempstr, len + thedirlen + 2,
-               "%s/%s", thedir, f->d_name);
-      
-      if (stat(tempstr,&st) < 0)
-        {
-          u_respond(u,"cannot access %s, ignoring: %s",
-                    tempstr, strerror(errno));
-        }
-      else if (strcmp(f->d_name,".") &&
-               strcmp(f->d_name,"..") &&
-               S_ISDIR(st.st_mode))
-        {
-          u_respond(u,"  Ignoring directory: %s", tempstr);
-        }
-      else if (S_ISREG(st.st_mode))
-        {
-          foundit = 0;
-          xd = irlist_get_head(&gdata.xdccs);
-          while(xd)
-            {
-              if ((xd->st_dev == st.st_dev) &&
-                  (xd->st_ino == st.st_ino))
-                {
-                  foundit = 1;
-                  break;
-                }
-              
-              xd = irlist_get_next(xd);
-            }
-          
-          if (foundit == 0)
-            {
-              thefile = irlist_add(&dirlist, len + thedirlen + 2);
-              strcpy(thefile, tempstr);
-            }
-        }
-      mydelete(tempstr);
-    }
-  
-  closedir(d);
-  
-  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
-  
-  u_respond(u,"Adding %d new files...",
-            irlist_size(&dirlist));
-  
-  thefile = irlist_get_head(&dirlist);
-  while (thefile)
-    {
-      userinput u2;
-      u_respond(u,"  Adding %s:",thefile);
-      
-      u2 = *u;
-      u2.arg1e = thefile;
-      u_add(&u2);
-      
-      thefile = irlist_delete(&dirlist, thefile);
-    }
-  
+  u_adddir_sub(u, thedir, d, 1, NULL);
   mydelete(thedir);
   return;
 }
@@ -3247,14 +3156,8 @@ static void u_addnew(const userinput * const u)
 static void u_addgroup(const userinput * const u)
 {
   DIR *d;
-  struct dirent *f;
-  char *thefile, *tempstr, *thedir;
-  irlist_t dirlist = {};
-  int thedirlen, foundit;
-  int newgroup;
-  int num;
-  int rc;
-  xdcc *xd;
+  char *thedir;
+  int thedirlen;
   
   updatecontext();
   
@@ -3303,99 +3206,7 @@ static void u_addgroup(const userinput * const u)
       return;
     }
   
-  
-  while ((f = readdir(d)))
-    {
-      struct stat st;
-      int len = strlen(f->d_name);
-      
-      if (verifyshell(&gdata.adddir_exclude, f->d_name))
-        continue;
-      
-      tempstr = mycalloc(len + thedirlen + 2);
-      
-      snprintf(tempstr, len + thedirlen + 2,
-               "%s/%s", thedir, f->d_name);
-      
-      if (stat(tempstr,&st) < 0)
-        {
-          u_respond(u,"cannot access %s, ignoring: %s",
-                    tempstr, strerror(errno));
-        }
-      else if (S_ISREG(st.st_mode))
-        {
-          foundit = 0;
-          xd = irlist_get_head(&gdata.xdccs);
-          while(xd)
-            {
-              if (!strcmp(tempstr, xd->file))
-                {
-                  foundit = 1;
-                  break;
-                }
-              
-              xd = irlist_get_next(xd);
-            }
-          
-          if (foundit == 0)
-            {
-              thefile = irlist_add(&dirlist, len + thedirlen + 2);
-              strcpy(thefile, tempstr);
-            }
-        }
-      mydelete(tempstr);
-    }
-  
-  closedir(d);
-  
-  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
-  
-  u_respond(u,"Adding %d new files...",
-            irlist_size(&dirlist));
-
-  newgroup = 0;
-  thefile = irlist_get_head(&dirlist);
-  while (thefile)
-    {
-      userinput u2;
-      u_respond(u,"  Adding %s:",thefile);
-      
-      u2 = *u;
-      u2.arg1e = thefile;
-      u_add(&u2);
-
-      num = 0;
-      xd = irlist_get_head(&gdata.xdccs);
-      while(xd)
-         {
-           num++;
-           if (!strcmp(thefile,xd->file))
-             {
-               if (xd->group != NULL)
-                  {
-                     if (strcmp(xd->group, u->arg1) == 0 )
-                       break;
-                     mydelete(xd->group);
-                  }
-               xd->group = mycalloc(strlen(u->arg1)+1);
-               strcpy(xd->group,u->arg1);
-               u_respond(u, "GROUP: [Pack %i] New: %s",
-                 num,u->arg1);
-               break;
-             }
-           xd = irlist_get_next(xd);
-         }
-      
-      if ((++newgroup) == 1)
-         {
-           rc = add_default_groupdesc(u->arg1);
-           if (rc == 1)
-             u_respond(u, "New GROUPDESC: %s",u->arg1);
-         }
-      
-      thefile = irlist_delete(&dirlist, thefile);
-    }
-  
+  u_adddir_sub(u, thedir, d, 1, u->arg1);
   mydelete(thedir);
   return;
 }

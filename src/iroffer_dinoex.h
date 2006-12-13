@@ -71,4 +71,7 @@ void crc32_final(xdcc *xd);
 
 int disk_full(const char *path);
 
+void u_remove_pack(const userinput * const u, xdcc *xd, int num);
+void changesec_dinoex(void);
+
 /* End of File */

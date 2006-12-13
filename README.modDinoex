@@ -5,7 +5,7 @@ With Version mod 1.33:
 ----------------------
 
 106) include_subdirs (inspired by anibi, Tass)
-  on ADDDIR and REMOVDIR scan subdirectories too.
+  on ADDDIR, ADDNEW, ADDGROUP and REMOVDIR scan subdirectories too.
 
 105) max_find (inspired by Cork)
    Limit matches to @find and XDCC SREACH commands.

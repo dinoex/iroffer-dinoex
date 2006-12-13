@@ -572,6 +572,8 @@ static void mainloop (void) {
          if (((float)xdccsent)/XDCC_SENT_SIZE/1024.0 > gdata.sentrecord)
             gdata.sentrecord = ((float)xdccsent)/XDCC_SENT_SIZE/1024.0;
          gdata.xdccsum[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
+
+         changesec_dinoex();
       }
 
       if (changequartersec)

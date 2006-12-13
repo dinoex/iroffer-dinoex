@@ -1439,6 +1439,17 @@ void dumpgdata(void)
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(packs_delayed, userinput);
+  gdata_iter_print_uint(method);
+  gdata_iter_print_string(snick);
+  gdata_iter_print_string(cmd);
+  gdata_iter_print_string(arg1);
+  /* ppointer stat arg2 */
+  gdata_iter_print_string(arg3);
+  gdata_iter_print_int(fd);
+  /* ppointer chat */
+  gdata_irlist_iter_end;
+
   gdata_print_string(enable_nick);
   gdata_print_string(owner_nick);
   gdata_print_int(need_voice);

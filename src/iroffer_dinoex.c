@@ -1761,4 +1761,190 @@ int disk_full(const char *path)
   return 1;
 }
 
+void u_remove_pack(const userinput * const u, xdcc *xd, int num)
+{
+   char *tmpdesc;
+   char *tmpgroup;
+   pqueue *pq;
+   transfer *tr;
+   gnetwork_t *backup;
+   
+   updatecontext();
+   
+   tr = irlist_get_head(&gdata.trans);
+   while(tr)
+     {
+       if ((tr->tr_status != TRANSFER_STATUS_DONE) &&
+           (tr->xpack == xd))
+         {
+           t_closeconn(tr,"Pack removed",0);
+         }
+       tr = irlist_get_next(tr);
+     }
+   
+   pq = irlist_get_head(&gdata.mainqueue);
+   while(pq)
+     {
+       if (pq->xpack == xd)
+         {
+           backup = gnetwork;
+           gnetwork = &(gdata.networks[pq->net]);
+           notice(pq->nick,"** Removed From Queue: Pack removed");
+           gnetwork = backup;
+           mydelete(pq->nick);
+           mydelete(pq->hostname);
+           pq = irlist_delete(&gdata.mainqueue, pq);
+         }
+       else
+         {
+           pq = irlist_get_next(pq);
+         }
+     }
+   
+   a_respond(u,"Removed Pack %i [%s]", num, xd->desc);
+   
+   if (gdata.md5build.xpack == xd)
+     {
+       outerror(OUTERROR_TYPE_WARN,"[MD5]: Canceled (remove)");
+       
+       FD_CLR(gdata.md5build.file_fd, &gdata.readset);
+       close(gdata.md5build.file_fd);
+       gdata.md5build.file_fd = FD_UNUSED;
+       gdata.md5build.xpack = NULL;
+     }
+   
+   assert(xd->file_fd == FD_UNUSED);
+   assert(xd->file_fd_count == 0);
+#ifdef HAVE_MMAP
+   assert(!irlist_size(&xd->mmaps));
+#endif
+   
+   mydelete(xd->file);
+   mydelete(xd->desc);
+   mydelete(xd->note);
+   /* keep group info for later work */
+   tmpgroup = xd->group;
+   xd->group = NULL;
+   tmpdesc = xd->group_desc;
+   xd->group_desc = NULL;
+   irlist_delete(&gdata.xdccs, xd);
+   
+   if (tmpdesc != NULL)
+     {
+       if (tmpgroup != NULL)
+         reorder_new_groupdesc(tmpgroup,tmpdesc);
+       mydelete(tmpdesc);
+     }
+   if (tmpgroup != NULL)
+     mydelete(tmpgroup);
+   
+   write_statefile();
+   xdccsavetext();
+}
+
+static void u_remove_delayed(const userinput * const u)
+{
+   struct stat *st;
+   xdcc *xd;
+   int n;
+
+   st = (struct stat *)(u->arg2);
+   n = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       n++;
+       if ((xd->st_dev == st->st_dev) &&
+           (xd->st_ino == st->st_ino))
+         {
+           u_remove_pack(u, xd, n);
+           /* start over, the list has changed */
+           n = 0;
+           xd = irlist_get_head(&gdata.xdccs);
+         }
+       else
+         {
+           xd = irlist_get_next(xd);
+         }
+     }
+}
+
+static void u_add_delayed(const userinput * const u)
+{
+   userinput u2;
+   xdcc *xd;
+   int newgroup;
+   int num;
+   int rc;
+
+   a_respond(u,"  Adding %s:", u->arg1);
+
+   u2 = *u;
+   u2.arg1e = u->arg1;
+   u_add(&u2);
+
+   if (u->arg3 == NULL)
+     return;
+
+   num = 0;
+   newgroup = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       num++;
+       if (!strcmp(u->arg1,xd->file))
+         {
+           if (xd->group != NULL)
+             {
+               if (strcmp(xd->group, u->arg3) == 0 )
+                 break;
+             }
+           xd->group = mycalloc(strlen(u->arg3)+1);
+           strcpy(xd->group, u->arg3);
+           a_respond(u, "GROUP: [Pack %i] New: %s",
+                        num, u->arg3);
+           break;
+         }
+       xd = irlist_get_next(xd);
+     }
+
+   if ((++newgroup) == 1)
+     {
+       rc = add_default_groupdesc(u->arg3);
+       if (rc == 1)
+         a_respond(u, "New GROUPDESC: %s", u->arg3);
+     }
+
+}
+
+void changesec_dinoex(void)
+{
+  userinput *u;
+
+  u = irlist_get_head(&gdata.packs_delayed);
+  while (u)
+    {
+      if (strcmp(u->cmd,"REMOVE") == 0)
+        {
+          u_remove_delayed(u);
+          mydelete(u->arg1);
+          mydelete(u->arg2);
+          u = irlist_delete(&gdata.packs_delayed, u);
+          /* process only one file */
+          return;
+        }
+      if (strcmp(u->cmd,"ADD") == 0)
+        {
+          u_add_delayed(u);
+          mydelete(u->arg1);
+          mydelete(u->arg2);
+          u = irlist_delete(&gdata.packs_delayed, u);
+          /* process only one file */
+          return;
+        }
+      /* ignore */
+      u = irlist_delete(&gdata.packs_delayed, u);
+    }
+}
+
 /* End of File */
