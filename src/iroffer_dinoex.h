@@ -16,6 +16,7 @@
 int verifyshell(irlist_t *list, const char *file);
 void admin_jobs(const char *job);
 int check_lock(const char* lockstr, const char* pwd);
+int hide_locked(const userinput * const u, const xdcc *xd);
 
 int reorder_new_groupdesc(const char *group, const char *desc);
 int reorder_groupdesc(const char *group);
@@ -71,7 +72,43 @@ void crc32_final(xdcc *xd);
 
 int disk_full(const char *path);
 
-void u_remove_pack(const userinput * const u, xdcc *xd, int num);
+void a_remove_pack(const userinput * const u, xdcc *xd, int num);
 void changesec_dinoex(void);
+
+void a_xdlock(const userinput * const u);
+
+void a_unlimited(const userinput * const u);
+void a_slotsmax(const userinput * const u);
+void a_queuesize(const userinput * const u);
+
+void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d);
+void a_removegroup(const userinput * const u);
+void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup);
+void a_addgroup(const userinput * const u);
+void a_chlimit(const userinput * const u);
+void a_chlimitinfo(const userinput * const u);
+void a_lock(const userinput * const u);
+void a_unlock(const userinput * const u);
+void a_lockgroup(const userinput * const u);
+void a_unlockgroup(const userinput * const u);
+void a_groupdesc(const userinput * const u);
+void a_group(const userinput * const u);
+void a_movegroup(const userinput * const u);
+void a_regroup(const userinput * const u);
+void a_crc(const userinput * const u);
+void a_filemove(const userinput * const u);
+void a_filedel(const userinput * const u);
+void a_showdir(const userinput * const u);
+#ifdef USE_CURL
+void a_fetch(const userinput * const u);
+#endif /* USE_CURL */
+
+void a_amsg(const userinput * const u);
+void a_msgnet(const userinput * const u);
+void a_rawnet(const userinput * const u);
+void a_hop(const userinput * const u);
+void a_cleargets(const userinput * const u);
+void a_identify(const userinput * const u);
+void a_holdqueue(const userinput * const u);
 
 /* End of File */

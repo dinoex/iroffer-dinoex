@@ -33,14 +33,11 @@ __attribute__ ((format(printf, 2, 3)))
 u_respond(const userinput * const u, const char *format, ...);
 
 static void u_help(const userinput * const u);
-static int u_xdl_space(void);
-static void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xdcc *xd);
 static void u_xdl_head(const userinput * const u);
 static void u_xdl_foot(const userinput * const u);
 static void u_xdl_full(const userinput * const u);
 static void u_xdl_group(const userinput * const u);
 static void u_xdl(const userinput * const u);
-static void u_xdlock(const userinput * const u);
 static void u_xds(const userinput * const u);
 static void u_dcl(const userinput * const u);
 static void u_dcld(const userinput * const u);
@@ -49,21 +46,17 @@ static void u_close(const userinput * const u);
 static void u_closeu(const userinput * const u);
 static void u_nomin(const userinput * const u);
 static void u_nomax(const userinput * const u);
-static void u_unlimited(const userinput * const u);
 static void u_rmq(const userinput * const u);
 static void u_raw(const userinput * const u);
-static void u_rawnet(const userinput * const u);
 static void u_redraw(const userinput * const u);
 static void u_delhist(const userinput * const u);
 static void u_info(const userinput * const u);
 static void u_remove(const userinput * const u);
 static void u_removedir(const userinput * const u);
-static void u_removegroup(const userinput * const u);
 static void u_send(const userinput * const u);
 static void u_queue(const userinput * const u);
 static void u_psend(const userinput * const u);
 static void u_msg(const userinput * const u);
-static void u_msgnet(const userinput * const u);
 static void u_mesg(const userinput * const u);
 static void u_mesq(const userinput * const u);
 static void u_quit(const userinput * const u);
@@ -73,20 +66,9 @@ static void u_chdesc(const userinput * const u);
 static void u_chnote(const userinput * const u);
 static void u_chmins(const userinput * const u);
 static void u_chmaxs(const userinput * const u);
-static void u_chlimit(const userinput * const u);
-static void u_chlimitinfo(const userinput * const u);
 static void u_chgets(const userinput * const u);
-static void u_lock(const userinput * const u);
-static void u_unlock(const userinput * const u);
-static void u_lockgroup(const userinput * const u);
-static void u_unlockgroup(const userinput * const u);
-static void u_groupdesc(const userinput * const u);
-static void u_group(const userinput * const u);
-static void u_movegroup(const userinput * const u);
-static void u_regroup(const userinput * const u);
 static void u_adddir(const userinput * const u);
 static void u_addnew(const userinput * const u);
-static void u_addgroup(const userinput * const u);
 static void u_chatme(const userinput * const u);
 static void u_chatl(const userinput * const u);
 static void u_closec(const userinput * const u);
@@ -103,35 +85,19 @@ static void u_msgread(const userinput * const u);
 static void u_msgdel(const userinput * const u);
 static void u_memstat(const userinput * const u);
 static void u_qsend(const userinput * const u);
-static void u_slotsmax(const userinput * const u);
-static void u_queuesize(const userinput * const u);
-static void u_holdqueue(const userinput * const u);
 static void u_shutdown(const userinput * const u);
 static void u_debug(const userinput * const u);
-static void u_hop(const userinput * const u);
 static void u_jump(const userinput * const u);
 static void u_servqc(const userinput * const u);
 static void u_servers(const userinput * const u);
 static void u_trinfo(const userinput * const u);
-static void u_listdir(const userinput * const u, const char *dir);
 static void u_listul(const userinput * const u);
 static void u_clearrecords(const userinput * const u);
-static void u_cleargets(const userinput * const u);
 static void u_rmul(const userinput * const u);
 static void u_crash(const userinput * const u);
 static void u_chanl(const userinput * const u);
-static void u_identify(const userinput * const u);
 static void u_announce(const userinput * const u);
 static void u_addann(const userinput * const u);
-static void u_crc(const userinput * const u);
-static void u_amsg(const userinput * const u);
-static void u_filemove(const userinput * const u);
-static void u_filedel(const userinput * const u);
-static void u_showdir(const userinput * const u);
-#ifdef USE_CURL
-static void u_fetch(const userinput * const u);
-#endif /* USE_CURL */
-
 
 typedef struct
 {
@@ -150,7 +116,7 @@ static const userinput_parse_t userinput_parse[] = {
 {1,method_allow_all_xdl,u_xdl_full,   "XDLFULL",NULL,"Lists All Offered Files"},
 {1,method_allow_all_xdl,u_xdl_group,  "XDLGROUP","<g>","Show group <g>"},
 {1,method_allow_all_xdl,u_xdl,  "XDL",NULL,"Lists Offered Groups and Files without group"},
-{1,method_allow_all,u_xdlock,   "XDLOCK",NULL,"Show all locked Files"},
+{1,method_allow_all,a_xdlock,   "XDLOCK",NULL,"Show all locked Files"},
 {1,method_allow_all,u_xds,      "XDS",NULL,"Save State File"},
 {1,method_allow_all,u_dcl,      "DCL",NULL,"Lists Current Transfers"},
 {1,method_allow_all,u_dcld,     "DCLD",NULL,"Lists Current Transfers with Details"},
@@ -165,52 +131,52 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_rmq,      "RMQ","n","Removes Queue Number n"},
 {2,method_allow_all,u_nomin,    "NOMIN","n","Disables Minspeed For Transfer ID n"},
 {2,method_allow_all,u_nomax,    "NOMAX","n","Disables Maxspeed For Transfer ID n"},
-{2,method_allow_all,u_unlimited, "UNLIMITED","n","Disables Bandwidth Limits For Transfer ID n"},
+{2,method_allow_all,a_unlimited, "UNLIMITED","n","Disables Bandwidth Limits For Transfer ID n"},
 {2,method_allow_all,u_send,     "SEND","nick n [<net>]","Sends Pack n to nick"},
 {2,method_allow_all,u_queue,    "QUEUE","nick n [<net>]","Queues Pack n for nick"},
 {2,method_allow_all,u_psend,    "PSEND","<channel> <style> [<net>]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
 {2,method_allow_all,u_qsend,    "QSEND",NULL,"Sends Out The First Queued Pack"},
-{2,method_allow_all,u_slotsmax, "SLOTSMAX","[n]","temporary change slotsmax"},
-{2,method_allow_all,u_queuesize, "QUEUESIZE","[n]","temporary change queuesize"},
+{2,method_allow_all,a_slotsmax, "SLOTSMAX","[n]","temporary change slotsmax"},
+{2,method_allow_all,a_queuesize, "QUEUESIZE","[n]","temporary change queuesize"},
 
 {3,method_allow_all,u_info,     "INFO","n","Show Info for Pack n"},
 {3,method_allow_all,u_remove,   "REMOVE","n <m>","Removes Pack n or n to m"},
 {3,method_allow_all,u_removedir,"REMOVEDIR","<dir>","Remove Every File in <dir>"},
-{3,method_allow_all,u_removegroup, "REMOVEGROUP","<group>","Remove Every File within <group>"},
+{3,method_allow_all,a_removegroup, "REMOVEGROUP","<group>","Remove Every File within <group>"},
 {3,method_allow_all,u_renumber, "RENUMBER","x y","Moves Pack x to y"},
 {3,method_allow_all,u_add,      "ADD","<filename>","Add New Pack With <filename>"},
 {3,method_allow_all,u_adddir,   "ADDDIR","<dir>","Add Every File in <dir>"},
 {3,method_allow_all,u_addnew,   "ADDNEW","<dir>","Add any new files in <dir>"},
-{3,method_allow_all,u_addgroup, "ADDGROUP","<g> <dir>","Add any new files in <dir> to group <g>"},
+{3,method_allow_all,a_addgroup, "ADDGROUP","<g> <dir>","Add any new files in <dir> to group <g>"},
 {3,method_allow_all,u_chfile,   "CHFILE","n <filename>","Change File of pack n to <filename>"},
 {3,method_allow_all,u_chdesc,   "CHDESC","n <msg>","Change Description of pack n to <msg>"},
 {3,method_allow_all,u_chnote,   "CHNOTE","n <msg>","Change Note of pack n to <msg>"},
 {3,method_allow_all,u_chmins,   "CHMINS","n x","Change min speed of pack n to x KB"},
 {3,method_allow_all,u_chmaxs,   "CHMAXS","n x","Change max speed of pack n to x KB"},
-{3,method_allow_all,u_chlimit,  "CHLIMIT","n x","Change Download limit of pack n to x transfers per day"},
-{3,method_allow_all,u_chlimitinfo, "CHLIMITINFO","n <msg>","Change Over Limit Info of pack n to <msg>"},
+{3,method_allow_all,a_chlimit,  "CHLIMIT","n x","Change Download limit of pack n to x transfers per day"},
+{3,method_allow_all,a_chlimitinfo, "CHLIMITINFO","n <msg>","Change Over Limit Info of pack n to <msg>"},
 {3,method_allow_all,u_chgets,   "CHGETS","n x","Change the get count of a pack"},
-{3,method_allow_all,u_lock,     "LOCK","n <msg>","Lock the pack n with password <msg>"},
-{3,method_allow_all,u_unlock,   "UNLOCK","n","Unlock the pack n"},
-{3,method_allow_all,u_lockgroup,   "LOCKGROUP","g x","Lock all packs in group <g> with password x"},
-{3,method_allow_all,u_unlockgroup, "UNLOCKGROUP","g","Unlock all packs in group <g>"},
-{3,method_allow_all,u_groupdesc,  "GROUPDESC","<g> <msg>","Change Desc of group <g> to <msg>"},
-{3,method_allow_all,u_group,      "GROUP","n <g>","Change Group of pack n to <g>"},
-{3,method_allow_all,u_movegroup,  "MOVEGROUP","n m <g>","Change Group of pack n to m, set to <g>"},
-{3,method_allow_all,u_regroup,    "REGROUP","<g> <new>","Change all packs of group <g> to <new>"},
+{3,method_allow_all,a_lock,     "LOCK","n <msg>","Lock the pack n with password <msg>"},
+{3,method_allow_all,a_unlock,   "UNLOCK","n","Unlock the pack n"},
+{3,method_allow_all,a_lockgroup,   "LOCKGROUP","g x","Lock all packs in group <g> with password x"},
+{3,method_allow_all,a_unlockgroup, "UNLOCKGROUP","g","Unlock all packs in group <g>"},
+{3,method_allow_all,a_groupdesc,  "GROUPDESC","<g> <msg>","Change Desc of group <g> to <msg>"},
+{3,method_allow_all,a_group,      "GROUP","n <g>","Change Group of pack n to <g>"},
+{3,method_allow_all,a_movegroup,  "MOVEGROUP","n m <g>","Change Group of pack n to m, set to <g>"},
+{3,method_allow_all,a_regroup,    "REGROUP","<g> <new>","Change all packs of group <g> to <new>"},
 {3,method_allow_all,u_announce, "ANNOUNCE","n <msg>","ANNOUNCE <msg> for pack n in all joined channels"},
 {3,method_allow_all,u_addann,   "ADDANN","<filename>","Add and Announce New Pack"},
-{3,method_allow_all,u_crc,      "CRC","n","Check CRC of Pack n"},
-{3,method_allow_all,u_filemove, "FILEMOVE","<filename> <filename>","rename file on disk"},
-{3,method_allow_all,u_filedel,  "FILEDEL","<filename>","remove file from disk"},
-{3,method_allow_all,u_showdir,  "SHOWDIR","<dir>","list directory on disk"},
+{3,method_allow_all,a_crc,      "CRC","n","Check CRC of Pack n"},
+{3,method_allow_all,a_filemove, "FILEMOVE","<filename> <filename>","rename file on disk"},
+{3,method_allow_all,a_filedel,  "FILEDEL","<filename>","remove file from disk"},
+{3,method_allow_all,a_showdir,  "SHOWDIR","<dir>","list directory on disk"},
 #ifdef USE_CURL
-{3,method_allow_all,u_fetch,    "FETCH","<file> <url>","download url and save file in upload dir"},
+{3,method_allow_all,a_fetch,    "FETCH","<file> <url>","download url and save file in upload dir"},
 #endif /* USE_CURL */
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
-{3,method_allow_all,u_amsg,     "AMSG","<msg>","Announce <msg> in all joined channels"},
-{4,method_allow_all,u_msgnet,   "MSGNET","<net> <nick> <message>","Send a message to a user"},
+{3,method_allow_all,a_amsg,     "AMSG","<msg>","Announce <msg> in all joined channels"},
+{4,method_allow_all,a_msgnet,   "MSGNET","<net> <nick> <message>","Send a message to a user"},
 {4,method_allow_all,u_mesg,     "MESG","<message>","Sends msg to all users who are transferring"},
 {4,method_allow_all,u_mesq,     "MESQ","<message>","Sends msg to all users in a queue"},
 {4,method_allow_all,u_ignore,   "IGNORE","n <hostmask>","Ignore hostmask (nick!user@host) for n minutes, wildcards allowed"},
@@ -222,10 +188,10 @@ static const userinput_parse_t userinput_parse[] = {
 {4,method_allow_all,u_msgdel,   "MSGDEL",NULL,"Delete MSG log"},
 {4,method_allow_all,u_rmul,     "RMUL","<file>","Delete a file in the Upload Dir"},
 {4,method_allow_all,u_raw,      "RAW","<command>","Send <command> to server (RAW IRC)"},
-{4,method_allow_all,u_rawnet,   "RAWNET","<net> <command>","Send <command> to server (RAW IRC)"},
+{4,method_allow_all,a_rawnet,   "RAWNET","<net> <command>","Send <command> to server (RAW IRC)"},
 
 {5,method_allow_all,u_servers,  "SERVERS","[<net>]","Shows the server list"},
-{5,method_allow_all,u_hop,      "HOP","<channel>","leave and rejoin a channel to get status"},
+{5,method_allow_all,a_hop,      "HOP","<channel>","leave and rejoin a channel to get status"},
 {5,method_allow_all,u_jump,     "JUMP","<num> [<net>]","Switches to a random server or server <num>"},
 {5,method_allow_all,u_servqc,   "SERVQC",NULL,"Clears the server send queue"},
 {5,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},
@@ -233,7 +199,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_allow_all,u_botinfo,  "BOTINFO",NULL,"Show Information about the bot status"},
 {5,method_allow_all,u_memstat,  "MEMSTAT",NULL,"Show Information about memory usage"},
 {5,method_allow_all,u_clearrecords, "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, total sent, and transfer limits"},
-{5,method_allow_all,u_cleargets, "CLEARGETS",NULL,"Clears download counters for each pack"},
+{5,method_allow_all,a_cleargets, "CLEARGETS",NULL,"Clears download counters for each pack"},
 {5,method_console,  u_redraw,   "REDRAW",NULL,"Redraws the Screen"},
 {5,method_console,  u_delhist,  "DELHIST",NULL,"Deletes console history"},
 {5,method_dcc,      u_quit,     "QUIT",NULL,"Close this DCC chat"},
@@ -241,8 +207,8 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_allow_all,u_chatl,    "CHATL",NULL,"Lists DCC Chat Information"},
 {5,method_allow_all,u_closec,   "CLOSEC","n","Closes DCC Chat with ID = n"},
 {5,method_console,  u_debug,    "DEBUG","n","Set Debugging level to n"},
-{5,method_allow_all,u_holdqueue, "HOLDQUEUE","<num>","set or toggles holdqueue"},
-{5,method_allow_all,u_identify, "IDENTIFY","[<net>]","Send stored password again to nickserv"},
+{5,method_allow_all,a_identify, "IDENTIFY","[<net>]","Send stored password again to nickserv"},
+{5,method_allow_all,a_holdqueue, "HOLDQUEUE","<num>","set or toggles holdqueue"},
 {5,method_allow_all,u_shutdown, "SHUTDOWN","<act>","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
 
 {5,method_console,  u_crash, "CRASH",NULL,"Cause a segmentation fault"},
@@ -619,26 +585,7 @@ static void u_help(const userinput * const u)
   
 }
 
-static int u_is_locked(const userinput * const u, const xdcc *xd) {
-  if (gdata.hidelockedpacks == 0)
-    return 0;
-   
-  if (xd->lock == NULL)
-    return 0;
-   
-  switch (u->method)
-    {
-    case method_xdl_channel:
-    case method_xdl_user_privmsg:
-    case method_xdl_user_notice:
-      return 1;
-    default:
-      break;
-    }
-  return 0;
-}
-
-static int u_xdl_space(void) {
+int u_xdl_space(void) {
    int i,s;
    xdcc *xd;
 
@@ -657,9 +604,9 @@ static int u_xdl_space(void) {
    return s;
 }
    
-static const char *spaces[] = { ""," ","  ","   ","    ","     ","      " };
+const char *u_spaces[] = { ""," ","  ","   ","    ","     ","      " };
 
-static void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xdcc *xd) {
+void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xdcc *xd) {
    char *sizestrstr;
    int len;
    
@@ -701,7 +648,7 @@ static void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, c
    
    if (xd->note && strlen(xd->note))
      {
-       u_respond(u," \2^-\2%s%s",spaces[s],xd->note);
+       u_respond(u," \2^-\2%s%s",u_spaces[s],xd->note);
      }
 }
 
@@ -929,7 +876,7 @@ static void u_xdl_full(const userinput * const u) {
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
-       if (u_is_locked(u,xd) == 0)
+       if (hide_locked(u,xd) == 0)
          u_xdl_pack(u,tempstr,i,s,xd);
        i++;
        xd = irlist_get_next(xd);
@@ -970,7 +917,7 @@ static void u_xdl_group(const userinput * const u) {
                    u_respond(u,"group: %s %s",msg3,xd->group_desc);
                  }
 
-               if (u_is_locked(u,xd) == 0)
+               if (hide_locked(u,xd) == 0)
                  u_xdl_pack(u,tempstr,i,s,xd);
                k++;
              }
@@ -1013,7 +960,7 @@ static void u_xdl(const userinput * const u) {
        /* skip is group is set */
        if (xd->group == NULL)
          {
-           if (u_is_locked(u,xd) == 0)
+           if (hide_locked(u,xd) == 0)
              u_xdl_pack(u,tempstr,i,s,xd);
          }
        i++;
@@ -1043,33 +990,6 @@ static void u_xdl(const userinput * const u) {
        }
    
    u_xdl_foot(u);
-   
-   mydelete(tempstr);
-}
-
-static void u_xdlock(const userinput * const u)
-{
-   char *tempstr;
-   int i,s;
-   xdcc *xd;
-
-   updatecontext();
-   
-   tempstr  = mycalloc(maxtextlength);
-   
-   s = u_xdl_space();
-   i = 1;
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       if (xd->lock != NULL)
-         {
-           u_xdl_pack(u,tempstr,i,s,xd);
-           u_respond(u," \2^-\2%sPassword: %s",spaces[s],xd->lock);
-         }
-       i++;
-       xd = irlist_get_next(xd);
-     }
    
    mydelete(tempstr);
 }
@@ -1548,27 +1468,6 @@ static void u_nomax(const userinput * const u)
     }
 }
 
-static void u_unlimited(const userinput * const u)
-{
-  int num = -1;
-  transfer *tr;
-  
-  updatecontext();
-  
-  if (u->arg1) num = atoi(u->arg1);
-  
-  if ((num < 0) || !does_tr_id_exist(num))
-    {
-      u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
-    }
-  else
-    {
-      tr = does_tr_id_exist(num);
-      tr->nomax = 1;
-      tr->unlimited = 1;
-    }
-}
-
 static void u_rmq(const userinput * const u)
 {
   int num = 0;
@@ -1621,32 +1520,6 @@ static void u_raw(const userinput * const u)
   backup = gnetwork;
   gnetwork = &(gdata.networks[0]);
   writeserver(WRITESERVER_NOW, "%s", u->arg1e);
-  gnetwork = backup;
-}
-
-static void u_rawnet(const userinput * const u)
-{
-  gnetwork_t *backup;
-  int net;
-  
-  updatecontext();
-  
-  net = get_network(u->arg1);
-  if (net < 0)
-    {
-      u_respond(u,"Try specifying a valid network number");
-      return;
-    }
-  
-  if (!u->arg2e || !strlen(u->arg2e))
-    {
-      u_respond(u,"Try Specifying a Command");
-      return;
-    }
-
-  backup = gnetwork;
-  gnetwork = &(gdata.networks[net]);
-  writeserver(WRITESERVER_NOW, "%s", u->arg2e);
   gnetwork = backup;
 }
 
@@ -1740,7 +1613,7 @@ static void u_remove(const userinput * const u) {
 
    if (num2 == 0) {
       xd = irlist_get_nth(&gdata.xdccs, num-1);
-      u_remove_pack(u, xd, num);
+      a_remove_pack(u, xd, num);
       return;
       }
 
@@ -1750,82 +1623,9 @@ static void u_remove(const userinput * const u) {
       }
 
    for (; num2 >= num; num2--) {
-     xd = irlist_get_nth(&gdata.xdccs, num2-1);
-     u_remove_pack(u, xd, num2);
-     }
-}
-
-static void u_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
-{
-  struct dirent *f;
-  char *tempstr;
-  userinput *u2;
-  int thedirlen;
-  
-  updatecontext();
-  
-  thedirlen = strlen(thedir);
-  if (d == NULL)
-    d = opendir(thedir);
-  
-  if (!d)
-    {
-      u_respond(u,"Can't Access Directory: %s",strerror(errno));
-      return;
-    }
-  
-  while ((f = readdir(d)))
-    {
-      struct stat st;
-      int len = strlen(f->d_name);
-      
-      tempstr = mycalloc(len + thedirlen + 2);
-      
-      snprintf(tempstr, len + thedirlen + 2,
-               "%s/%s", thedir, f->d_name);
-      
-      if (stat(tempstr,&st) < 0)
-        {
-          u_respond(u,"cannot access %s, ignoring: %s",
-                    tempstr, strerror(errno));
-          mydelete(tempstr);
-          continue;
-        }
-      if (S_ISDIR(st.st_mode))
-        {
-          if ((strcmp(f->d_name,".") == 0 ) ||
-              (strcmp(f->d_name,"..") == 0))
-            {
-              mydelete(tempstr);
-              continue;
-            }
-          if (gdata.include_subdirs != 0)
-            u_removedir_sub(u, tempstr, NULL);
-          mydelete(tempstr);
-          continue;
-        }
-      if (!S_ISREG(st.st_mode))
-        {
-          mydelete(tempstr);
-          continue;
-        }
-      
-      u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
-      u2->method = u->method;
-      u2->snick = u->snick;
-      u2->fd = u->fd;
-      u2->chat = u->chat;
-      u2->cmd = "REMOVE";
-
-      u2->arg1 = tempstr;
-      tempstr = NULL;
-
-      u2->arg2 = mycalloc(sizeof(struct stat));
-      memcpy(u2->arg2, &st, sizeof(struct stat));
-    }
-  
-  closedir(d);
-  return;
+      xd = irlist_get_nth(&gdata.xdccs, num2-1);
+      a_remove_pack(u, xd, num2);
+      }
 }
 
 static void u_removedir(const userinput * const u)
@@ -1873,42 +1673,9 @@ static void u_removedir(const userinput * const u)
       return;
     }
   
-  u_removedir_sub(u, thedir, d);
+  a_removedir_sub(u, thedir, d);
   mydelete(thedir);
   return;
-}
-
-static void u_removegroup(const userinput * const u)
-{
-   xdcc *xd;
-   int n;
-   
-   updatecontext();
-   
-   if (!u->arg1 || !strlen(u->arg1))
-     {
-       u_respond(u,"Try Specifying a Group");
-       return;
-     }
-   
-   n = 0;
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       n++;
-       if (xd->group != NULL)
-         {
-           if (strcasecmp(xd->group,u->arg1) == 0)
-             {
-                u_remove_pack(u, xd, n);
-                /* start over, the list has changed */
-                n = 0;
-                xd = irlist_get_head(&gdata.xdccs);
-                continue;
-             }
-         }
-       xd = irlist_get_next(xd);
-     }
 }
 
 static void u_redraw(const userinput * const u) {
@@ -2200,296 +1967,6 @@ static void u_addann (const userinput * const u) {
     }
 }
 
-static void u_amsg(const userinput * const u) {
-  channel_t *ch;
-  int ss;
-  gnetwork_t *backup;
-  
-  updatecontext ();
-  
-  if (!u->arg1e || !strlen (u->arg1e)) {
-    u_respond (u, "Try Specifying a Message (e.g. NEW)");
-    return;
-    }
-  
-  backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
-      gnetwork = &(gdata.networks[ss]);
-      ch = irlist_get_head(&(gnetwork->channels));
-      while(ch) {
-        if (ch->flags & CHAN_ONCHAN)
-          privmsg_chan(ch, u->arg1e);
-        ch = irlist_get_next(ch);
-        }
-    }
-  gnetwork = backup;
-  u_respond(u,"Announced [%s]",u->arg1e);
-}
-
-static void u_crc(const userinput * const u) {
-  int num = 0;
-  xdcc *xd;
-  const char *crcmsg;
-  
-  updatecontext ();
-  
-  if (u->arg1) {
-    num = atoi (u->arg1);
-    if (num > irlist_size(&gdata.xdccs) || num < 1) {
-      u_respond (u, "Try Specifying a Valid Pack Number");
-      return;
-      }
-  
-    xd = irlist_get_nth(&gdata.xdccs, num-1);
-    u_respond(u,"Validating CRC for Pack #%i:",num);
-    crcmsg = validate_crc32(xd, 0);
-    if (crcmsg != NULL)
-      u_respond(u,"File '%s' %s.", xd->file, crcmsg);
-  }
-  else {
-   num = 0;
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       num ++;
-       crcmsg = validate_crc32(xd, 1);
-       if (crcmsg != NULL)
-         u_respond(u,"Pack %d, File '%s' %s.", num, xd->file, crcmsg);
-       xd = irlist_get_next(xd);
-     }
-  }
-}
-
-static void u_filemove(const userinput * const u)
-{
-   int xfiledescriptor;
-   struct stat st;
-   char *file1;
-   char *file2;
-   
-   updatecontext();
-   
-   if (gdata.direct_file_access == 0) {
-      u_respond(u,"Disabled in Config");
-      return;
-      }
-
-   if (!u->arg1 || !strlen(u->arg1)) {
-      u_respond(u,"Try Specifying a Filename");
-      return;
-      }
-   
-   if (!u->arg2e || !strlen(u->arg2e)) {
-      u_respond(u,"Try Specifying a new Filename");
-      return;
-      }
-   
-   file1 = mymalloc(strlen(u->arg1)+1);
-   strcpy(file1,u->arg1);
-   convert_to_unix_slash(file1);
-   
-   xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
-   
-   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
-     {
-       mydelete(file1);
-       file1 = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1)+1);
-       sprintf(file1,"%s/%s",gdata.filedir,u->arg1);
-       convert_to_unix_slash(file1);
-       xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
-     }
-   
-   if (xfiledescriptor < 0) {
-      u_respond(u,"Cant Access File: %s: %s", file1, strerror(errno));
-      mydelete(file1);
-      return;
-      }
-   
-   if (fstat(xfiledescriptor,&st) < 0)
-     {
-      u_respond(u,"Cant Access File Details: %s: %s", file1, strerror(errno));
-      close(xfiledescriptor);
-      mydelete(file1);
-      return;
-     }
-   close(xfiledescriptor);
-   
-   if (!S_ISREG(st.st_mode))
-     {
-      u_respond(u,"%s is not a file", file1);
-      mydelete(file1);
-      return;
-     }
-   
-   file2 = mymalloc(strlen(u->arg2e)+1);
-   strcpy(file2,u->arg2e);
-   convert_to_unix_slash(file2);
-   
-   if (strchr(file2, '/') == NULL)
-     {
-       mydelete(file2);
-       file2 = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg2e)+1);
-       sprintf(file2,"%s/%s",gdata.filedir,u->arg2e);
-       convert_to_unix_slash(file2);
-     }
-   
-   if (rename(file1,file2) < 0)
-     {
-       u_respond(u,"File %s could not be moved to %s: %s", file1, file2, strerror(errno));
-     }
-   else
-     {
-       u_respond(u,"File %s was moved to %s.",file1, file2);
-     }
-   mydelete(file1);
-   mydelete(file2);
-}
-
-static void u_filedel(const userinput * const u)
-{
-   int xfiledescriptor;
-   struct stat st;
-   char *file;
-   
-   updatecontext();
-   
-   if (gdata.direct_file_access == 0) {
-      u_respond(u,"Disabled in Config");
-      return;
-      }
-
-   if (!u->arg1e || !strlen(u->arg1e)) {
-      u_respond(u,"Try Specifying a Filename");
-      return;
-      }
-   
-   file = mymalloc(strlen(u->arg1e)+1);
-   strcpy(file,u->arg1e);
-   convert_to_unix_slash(file);
-   
-   xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
-   
-   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
-     {
-       mydelete(file);
-       file = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
-       sprintf(file,"%s/%s",gdata.filedir,u->arg1e);
-       convert_to_unix_slash(file);
-       xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
-     }
-   
-   if (xfiledescriptor < 0) {
-      u_respond(u,"Cant Access File: %s: %s", file, strerror(errno));
-      mydelete(file);
-      return;
-      }
-   
-   if (fstat(xfiledescriptor,&st) < 0)
-     {
-      u_respond(u,"Cant Access File Details: %s: %s", file, strerror(errno));
-      close(xfiledescriptor);
-      mydelete(file);
-      return;
-     }
-   close(xfiledescriptor);
-   
-   if (!S_ISREG(st.st_mode))
-     {
-      u_respond(u,"%s is not a file", file);
-      mydelete(file);
-      return;
-     }
-   
-   if (unlink(file) < 0)
-     {
-       u_respond(u,"File %s could not be deleted: %s", file, strerror(errno));
-     }
-   else
-     {
-       u_respond(u,"File %s was deleted.", file);
-     }
-   mydelete(file);
-}
-
-static void u_showdir(const userinput * const u)
-{
-  char *thedir;
-  int thedirlen;
-   
-  updatecontext();
-   
-  if (gdata.direct_file_access == 0)
-    {
-      u_respond(u,"Disabled in Config");
-      return;
-    }
-   
-  if (!u->arg1e || !strlen(u->arg1e))
-    {
-      u_respond(u,"Try Specifying a Directory");
-      return;
-    }
-  
-  convert_to_unix_slash(u->arg1e);
-   
-  if (u->arg1e[strlen(u->arg1e)-1] == '/')
-    {
-      u->arg1e[strlen(u->arg1e)-1] = '\0';
-    }
-  
-  thedirlen = strlen(u->arg1e);
-  if (gdata.filedir)
-    {
-      thedirlen += strlen(gdata.filedir) + 1;
-    }
-  
-  thedir = mymalloc(thedirlen+1);
-  strcpy(thedir, u->arg1e);
-  
-  u_listdir(u, thedir);
-  mydelete(thedir);
-  return;
-}
-
-#ifdef USE_CURL
-static void u_fetch(const userinput * const u)
-{
-  updatecontext();
-  
-  if (gdata.direct_file_access == 0)
-    {
-      u_respond(u,"Disabled in Config");
-      return;
-    }
-  
-  if (!gdata.uploaddir)
-    {
-      u_respond(u,"No uploaddir defined.");
-      return;
-    }
-  
-  if (disk_full(gdata.uploaddir) != 0)
-    {
-      u_respond(u,"Not enough free space on disk.");
-      return;
-    }
-  
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      u_respond(u,"Try Specifying a File");
-      return;
-    }
-  
-  if (!u->arg2e || !strlen(u->arg2e))
-    {
-      u_respond(u,"Try Specifying a URL");
-      return;
-    }
-  
-  start_fetch_url(u);
-}
-#endif /* USE_CURL */
-
 static void u_msg(const userinput * const u)
 {
   gnetwork_t *backup;
@@ -2513,38 +1990,6 @@ static void u_msg(const userinput * const u)
   privmsg_fast(u->arg1,"%s",u->arg2e);
   gnetwork = backup;
   
-}
-
-static void u_msgnet(const userinput * const u)
-{
-  gnetwork_t *backup;
-  int net;
-  
-  updatecontext();
-  
-  net = get_network(u->arg1);
-  if (net < 0)
-    {
-      u_respond(u,"Try specifying a valid network number");
-      return;
-    }
-  
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      u_respond(u,"Try Specifying a Nick");
-      return;
-    }
-  
-  if (!u->arg3e || !strlen(u->arg3e))
-    {
-      u_respond(u,"Try Specifying a Message");
-      return;
-    }
-
-  backup = gnetwork;
-  gnetwork = &(gdata.networks[net]);
-  privmsg_fast(u->arg2,"%s",u->arg3e);
-  gnetwork = backup;
 }
 
 static void u_mesg(const userinput * const u)
@@ -2906,155 +2351,6 @@ void u_add(const userinput * const u) {
       } 
    }
 
-static void u_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup)
-{
-  userinput *u2;
-  struct dirent *f;
-  struct stat st;
-  struct stat *sta;
-  char *thefile, *tempstr;
-  irlist_t dirlist = {};
-  int thedirlen;
-  
-  updatecontext();
-  
-  thedirlen = strlen(thedir);
-  if (d == NULL)
-    d = opendir(thedir);
-  
-  if (!d)
-    {
-      u_respond(u,"Can't Access Directory: %s",strerror(errno));
-      return;
-    }
-  
-  while ((f = readdir(d)))
-    {
-      xdcc *xd;
-      int len = strlen(f->d_name);
-      int foundit;
-      
-      if (verifyshell(&gdata.adddir_exclude, f->d_name))
-        continue;
-      
-      tempstr = mycalloc(len + thedirlen + 2);
-      
-      snprintf(tempstr, len + thedirlen + 2,
-               "%s/%s", thedir, f->d_name);
-      
-      if (stat(tempstr,&st) < 0)
-        {
-          u_respond(u,"cannot access %s, ignoring: %s",
-                    tempstr, strerror(errno));
-        }
-      else if (S_ISDIR(st.st_mode))
-        {
-          if ((strcmp(f->d_name,".") == 0 ) ||
-              (strcmp(f->d_name,"..") == 0))
-            {
-              mydelete(tempstr);
-              continue;
-            }
-          if (gdata.include_subdirs == 0)
-            {
-              u_respond(u,"  Ignoring directory: %s", tempstr);
-            }
-	  else
-            {
-              u_adddir_sub(u, tempstr, NULL, new, setgroup);
-            }
-          mydelete(tempstr);
-          continue;
-        }
-      else if (S_ISREG(st.st_mode))
-        {
-          foundit = 0;
-          if (new != 0)
-          {
-            xd = irlist_get_head(&gdata.xdccs);
-            while(xd)
-              {
-                if ((xd->st_dev == st.st_dev) &&
-                    (xd->st_ino == st.st_ino))
-                  {
-                    foundit = 1;
-                    break;
-                  }
-
-                xd = irlist_get_next(xd);
-              }
-          }
-
-          if (foundit == 0)
-          {
-            u2 = irlist_get_head(&gdata.packs_delayed);
-            while(u2)
-              {
-                sta = (struct stat *)(u2->arg2);
-                if ((strcmp(u2->cmd,"ADD") == 0) &&
-                   (sta->st_dev == st.st_dev) &&
-                   (sta->st_ino == st.st_ino))
-                  {
-                    foundit = 1;
-                    break;
-                  }
-
-                u2 = irlist_get_next(u2);
-              }
-          }
-
-          if (foundit == 0)
-            {
-              thefile = irlist_add(&dirlist, len + thedirlen + 2);
-              strcpy(thefile, tempstr);
-            }
-        }
-      mydelete(tempstr);
-    }
-  
-  closedir(d);
-  
-  if (irlist_size(&dirlist) == 0)
-    return;
- 
-  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
-  
-  u_respond(u,"Adding %d files from dir %s",
-            irlist_size(&dirlist), thedir);
-  
-  thefile = irlist_get_head(&dirlist);
-  while (thefile)
-    {
-      u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
-      u2->method = u->method;
-      u2->snick = u->snick;
-      u2->fd = u->fd;
-      u2->chat = u->chat;
-      u2->cmd = "ADD";
-
-      u2->arg1 = mymalloc(strlen(thefile) + 1);
-      strcpy(u2->arg1,thefile);
-
-      if (stat(thefile,&st) == 0)
-        {
-          u2->arg2 = mycalloc(sizeof(struct stat));
-          memcpy(u2->arg2, &st, sizeof(struct stat));
-        }
-
-      if (setgroup != NULL)
-        {
-          u2->arg3 = mymalloc(strlen(setgroup) + 1);
-          strcpy(u2->arg3,setgroup);
-        }
-      else
-        {
-          u2->arg3 = NULL;
-        }
-
-      thefile = irlist_delete(&dirlist, thefile);
-    }
-}
-
 static void u_adddir(const userinput * const u)
 {
   DIR *d;
@@ -3100,7 +2396,7 @@ static void u_adddir(const userinput * const u)
       return;
     }
   
-  u_adddir_sub(u, thedir, d, 0, NULL);
+  a_adddir_sub(u, thedir, d, 0, NULL);
   mydelete(thedir);
   return;
 }
@@ -3150,65 +2446,7 @@ static void u_addnew(const userinput * const u)
       return;
     }
   
-  u_adddir_sub(u, thedir, d, 1, NULL);
-  mydelete(thedir);
-  return;
-}
-
-static void u_addgroup(const userinput * const u)
-{
-  DIR *d;
-  char *thedir;
-  int thedirlen;
-  
-  updatecontext();
-  
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      u_respond(u,"Try Specifying a Group");
-      return;
-    }
-  
-  if (!u->arg2e || !strlen(u->arg2e))
-    {
-      u_respond(u,"Try Specifying a Directory");
-      return;
-    }
-  
-  convert_to_unix_slash(u->arg2e);
-  if (gdata.groupsincaps)
-    caps(u->arg1);
-   
-  if (u->arg2e[strlen(u->arg2e)-1] == '/')
-    {
-      u->arg2e[strlen(u->arg2e)-1] = '\0';
-    }
-  
-  thedirlen = strlen(u->arg2e);
-  if (gdata.filedir)
-    {
-      thedirlen += strlen(gdata.filedir) + 1;
-    }
-  
-  thedir = mycalloc(thedirlen+1);
-  strcpy(thedir, u->arg2e);
-  
-  d = opendir(thedir);
-  
-  if (!d && (errno == ENOENT) && gdata.filedir)
-    {
-      snprintf(thedir, thedirlen+1, "%s/%s",
-               gdata.filedir, u->arg2e);
-      d = opendir(thedir);
-    }
-  
-  if (!d)
-    {
-      u_respond(u,"Can't Access Directory: %s",strerror(errno));
-      return;
-    }
-  
-  u_adddir_sub(u, thedir, d, 1, u->arg1);
+  a_adddir_sub(u, thedir, d, 1, NULL);
   mydelete(thedir);
   return;
 }
@@ -3344,77 +2582,6 @@ static void u_chmaxs(const userinput * const u) {
    
    }
 
-static void u_chlimit(const userinput * const u) {
-   int num = 0;
-   int val = 0;
-   xdcc *xd;
-   
-   updatecontext();
-   
-   if (u->arg1) num = atoi(u->arg1);
-   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-      }
-   
-   if (!u->arg2 || !strlen(u->arg2)) {
-      u_respond(u,"Try Specifying a daily Downloadlimit");
-      return;
-      }
-
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
-   val = atoi(u->arg2);
-
-   u_respond(u, "CHLIMIT: [Pack %i] Old: %d New: %d",
-             num,xd->dlimit_max,val);
-   
-   xd->dlimit_max = val;
-   if (val == 0)
-     xd->dlimit_used = 0;
-   else
-     xd->dlimit_used = xd->gets + xd->dlimit_max;
-   
-   write_statefile();
-   xdccsavetext();
-   
-   }
-
-static void u_chlimitinfo(const userinput * const u) {
-  int num = 0;
-  xdcc *xd;
-  
-  updatecontext();
-  
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-  
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-       u_respond(u, "DLIMIT: [Pack %i] descr removed", num);
-       mydelete(xd->dlimit_desc);
-       xd->dlimit_desc = NULL;
-    }
-  else
-    {
-       u_respond(u, "DLIMIT: [Pack %i] descr: %s", num, u->arg2e);
-       xd->dlimit_desc = mycalloc(strlen(u->arg2e)+1);
-       strcpy(xd->dlimit_desc,u->arg2e);
-    }
-   
-  write_statefile();
-  xdccsavetext();
-  }
-
 static void u_chgets(const userinput * const u)
 {
   int num = 0;
@@ -3446,383 +2613,6 @@ static void u_chgets(const userinput * const u)
   
   xd->gets = atoi(u->arg2);
   
-  write_statefile();
-  xdccsavetext();
-}
-
-static void u_lock(const userinput * const u)
-{
-  int num = 0;
-  xdcc *xd;
-  
-  updatecontext();
-  
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      u_respond(u,"Try Specifying a Password");
-      return;
-    }
-  
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-  
-  u_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2e);
-  xd->lock = mycalloc(strlen(u->arg2e)+1);
-  strcpy(xd->lock,u->arg2e);
-
-  write_statefile();
-  xdccsavetext();
-}
-
-static void u_unlock(const userinput * const u)
-{
-  int num = 0;
-  xdcc *xd;
-  
-  updatecontext();
-  
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-  u_respond(u, "UNLOCK: [Pack %i]", num);
-  
-  mydelete(xd->lock);
-  xd->lock = NULL;
-  
-  write_statefile();
-  xdccsavetext();
-}
-
-static void u_lockgroup(const userinput * const u)
-{
-   xdcc *xd;
-   int n;
-   
-   updatecontext();
-   
-   if (!u->arg1 || !strlen(u->arg1))
-     {
-       u_respond(u,"Try Specifying a Group");
-       return;
-     }
-   
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      u_respond(u,"Try Specifying a Password");
-      return;
-    }
-  
-   n = 0;
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       n++;
-       if (xd->group != NULL)
-         {
-           if (strcasecmp(xd->group,u->arg1) == 0)
-             {
-                u_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2e);
-                xd->lock = mycalloc(strlen(u->arg2e)+1);
-                strcpy(xd->lock,u->arg2e);
-             }
-         }
-       xd = irlist_get_next(xd);
-     }
-  write_statefile();
-  xdccsavetext();
-}
-
-static void u_unlockgroup(const userinput * const u)
-{
-   xdcc *xd;
-   int n;
-   
-   updatecontext();
-   
-   if (!u->arg1 || !strlen(u->arg1))
-     {
-       u_respond(u,"Try Specifying a Group");
-       return;
-     }
-   
-   n = 0;
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       n++;
-       if (xd->group != NULL)
-         {
-           if (strcasecmp(xd->group,u->arg1) == 0)
-             {
-                u_respond(u, "UNLOCK: [Pack %i]", n);
-                mydelete(xd->lock);
-                xd->lock = NULL;
-             }
-         }
-       xd = irlist_get_next(xd);
-     }
-  write_statefile();
-  xdccsavetext();
-}
-
-static void u_groupdesc(const userinput * const u) {
-  int k;
-
-  updatecontext();
-
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      u_respond(u,"Try Specifying a Valid Group");
-      return;
-    }
-   
-  k = reorder_new_groupdesc(u->arg1,u->arg2e);
-  if (k == 0)
-    return;
-
-  if (u->arg2e && strlen(u->arg2e))
-    {
-      u_respond(u, "New GROUPDESC: %s",u->arg2e);
-    }
-  else
-    {
-      u_respond(u, "Removed GROUPDESC");
-    }
-  write_statefile();
-  xdccsavetext();
-}
-
-static void u_group(const userinput * const u) {
-  xdcc *xd;
-  const char *new;
-  char *tmpdesc;
-  char *tmpgroup;
-  int rc;
-  int num = 0;
-  
-  updatecontext();
-  
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-
-  new = u->arg2;
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      if (xd->group == NULL)
-      {
-        u_respond(u,"Try Specifying a Group");
-        return;
-      }
-      new = "MAIN";
-    }
-  else
-    {
-       if (gdata.groupsincaps)
-         caps(u->arg2);
-    }
-  
-  if (xd->group != NULL)
-    {
-      u_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
-                num,xd->group,new);
-      /* keep group info for later work */
-      tmpgroup = xd->group;
-      xd->group = NULL;
-      tmpdesc = xd->group_desc;
-      xd->group_desc = NULL;
-      if (tmpdesc != NULL)
-        {
-          if (tmpgroup != NULL)
-            reorder_new_groupdesc(tmpgroup,tmpdesc);
-          mydelete(tmpdesc);
-        }
-      if (tmpgroup != NULL)
-        mydelete(tmpgroup);
-    }
-  else
-    {
-      u_respond(u, "GROUP: [Pack %i] New: %s",
-                num,u->arg2);
-    }
-  
-  if (new == u->arg2)
-    {
-      xd->group = mycalloc(strlen(u->arg2)+1);
-      strcpy(xd->group,u->arg2);
-      reorder_groupdesc(u->arg2);
-      rc = add_default_groupdesc(u->arg2);
-      if (rc == 1)
-        u_respond(u, "New GROUPDESC: %s",u->arg2);
-    }
-  
-  write_statefile();
-  xdccsavetext();
-}
-static void u_movegroup(const userinput * const u) {
-  xdcc *xd;
-  const char *new;
-  char *tmpdesc;
-  char *tmpgroup;
-  int rc;
-  int num;
-  int num1 = 0;
-  int num2 = 0;
-  
-  updatecontext();
-  
-  if (u->arg1)
-    {
-      num1 = atoi(u->arg1);
-    }
-  
-  if (num1 < 1 || num1 > irlist_size(&gdata.xdccs))
-    {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
-  if (u->arg2)
-    {
-      num2 = atoi(u->arg2);
-    }
-  
-  if (num2 < 1 || num2 > irlist_size(&gdata.xdccs))
-    {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
-  new = u->arg3;
-  if (!u->arg3 || !strlen(u->arg3))
-    {
-      new = "MAIN";
-    }
-  else
-    {
-       if (gdata.groupsincaps)
-         caps(u->arg3);
-    }
-  
-  for (num = num1; num <= num2; num ++)
-    {
-       xd = irlist_get_nth(&gdata.xdccs, num-1);
-       if (xd->group != NULL)
-         {
-           u_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
-                     num,xd->group,new);
-           /* keep group info for later work */
-           tmpgroup = xd->group;
-           xd->group = NULL;
-           tmpdesc = xd->group_desc;
-           xd->group_desc = NULL;
-           if (tmpdesc != NULL)
-             {
-               if (tmpgroup != NULL)
-                 reorder_new_groupdesc(tmpgroup,tmpdesc);
-               mydelete(tmpdesc);
-             }
-           if (tmpgroup != NULL)
-             mydelete(tmpgroup);
-         }
-       else
-         {
-           u_respond(u, "GROUP: [Pack %i] New: %s",
-                     num,u->arg3);
-         }
-       
-       if (new == u->arg3)
-         {
-           xd->group = mycalloc(strlen(u->arg3)+1);
-           strcpy(xd->group,u->arg3);
-           reorder_groupdesc(u->arg3);
-           rc = add_default_groupdesc(u->arg3);
-           if (rc == 1)
-             u_respond(u, "New GROUPDESC: %s",u->arg3);
-         }
-      
-     }
-  
-  write_statefile();
-  xdccsavetext();
-}
-
-
-static void u_regroup(const userinput * const u) {
-  xdcc *xd;
-  const char *g;
-  int k;
-
-  updatecontext();
-
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      u_respond(u,"Try Specifying a Valid Group");
-      return;
-    }
-   
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      u_respond(u,"Try Specifying a Valid Group");
-      return;
-    }
-   
-  if (gdata.groupsincaps)
-    caps(u->arg1);
-   
-  k = 0;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      if (xd->group != NULL)
-        g = xd->group;
-      else
-        g = "main";
-      if (strcasecmp(g,u->arg1) == 0)
-        {
-          k++;
-          if (xd->group != NULL)
-            mydelete(xd->group);
-          xd->group = mycalloc(strlen(u->arg2)+1);
-          strcpy(xd->group,u->arg2);
-        }
-      xd = irlist_get_next(xd);
-    }
-
-  if (k == 0)
-    return;
-
-  u_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2);
-  if (strcasecmp(u->arg1,"main") == 0)
-    add_default_groupdesc(u->arg2);
   write_statefile();
   xdccsavetext();
 }
@@ -4935,96 +3725,6 @@ static void u_qsend(const userinput * const u)
   return;
 }
 
-static void u_slotsmax(const userinput * const u) {
-   int val;
-   
-   updatecontext();
-    
-   if (u->arg1)
-     {
-       val = atoi(u->arg1);
-       gdata.slotsmax = between(1,val,MAXTRANS);
-     }
-   u_respond(u,"SLOTSMAX now %d", gdata.slotsmax);
-}
-
-static void u_queuesize(const userinput * const u) {
-   int val;
-   
-   updatecontext();
-    
-   if (u->arg1)
-     {
-       val = atoi(u->arg1);
-       gdata.queuesize = between(0,val,1000000);
-     }
-   u_respond(u,"QUEUESIZE now %d", gdata.queuesize);
-}
-
-static void u_holdqueue(const userinput * const u) {
-   int val;
-   int i;
-   
-   updatecontext();
-    
-   if (gdata.holdqueue)
-     {
-       val = 0;
-     }
-   else
-     {
-       val = 1;
-     }
-   
-   if (u->arg1)
-     {
-       val = atoi(u->arg1);
-     }
-   
-   gdata.holdqueue = val;
-   u_respond(u,"HOLDQUEUE now %d", val);
-
-   if (val != 0)
-     return;
-
-   for (i=0; i<100; i++)
-     {
-       if (!gdata.exiting &&
-           irlist_size(&gdata.mainqueue) &&
-           (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
-         {
-           sendaqueue(0);
-         }
-     }
-}
-
-static void u_identify(const userinput * const u)
-{
-  gnetwork_t *backup;
-  int net;
-  
-  updatecontext();
-  
-  net = get_network(u->arg1);
-  if (net < 0)
-    {
-      u_respond(u,"Try specifying a valid network number");
-      return;
-    }
-  
-  if (!gdata.nickserv_pass)
-    {
-       u_respond(u,"No nickserv_pass set!");
-       return;
-    } 
-  
-  backup = gnetwork;
-  gnetwork = &(gdata.networks[net]);
-  privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
-  gnetwork = backup;
-  u_respond(u,"nickserv identify send.");
-}
-
 static void u_shutdown(const userinput * const u) {
    updatecontext();
    
@@ -5078,36 +3778,6 @@ static void u_servqc(const userinput * const u)
       irlist_delete_all(&gdata.networks[ss].serverq_slow);
     }
   return;
-}
-
-static void u_hop(const userinput * const u)
-{
-   channel_t *ch;
-   gnetwork_t *backup;
-   int ss;
-   
-   updatecontext();
-   
-   backup = gnetwork;
-   for (ss=0; ss<gdata.networks_online; ss++)
-     {
-       gnetwork = &(gdata.networks[ss]);
-       /* part & join channels */
-       ch = irlist_get_head(&(gnetwork->channels));
-       while(ch)
-         {
-           if ((!u->arg1) || (!strcasecmp(u->arg1,ch->name)))
-             {
-               writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
-               clearmemberlist(ch);
-               ch->flags &= ~CHAN_ONCHAN;
-               ch->flags &= ~CHAN_KICKED;
-               joinchannel(ch);
-             }
-           ch = irlist_get_next(ch);
-         }
-     }
-   gnetwork = backup;
 }
 
 static void u_jump(const userinput * const u)
@@ -5302,7 +3972,7 @@ static void u_trinfo(const userinput * const u)
 }
 
 
-static void u_listdir(const userinput * const u, const char *dir)
+void u_listdir(const userinput * const u, const char *dir)
 {
   DIR *d;
   struct dirent *f;
@@ -5485,21 +4155,6 @@ static void u_clearrecords(const userinput * const u)
     }
   
   u_respond(u,"Cleared transfer record, bandwidth record, total sent, total uptime, and transfer limits");
-  write_statefile();
-}
-
-static void u_cleargets(const userinput * const u)
-{
-   xdcc *xd;
-
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       xd->gets = 0;
-       xd = irlist_get_next(xd);
-     }
-  
-  u_respond(u,"Cleared download counter for each pack");
   write_statefile();
 }
 

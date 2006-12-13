@@ -199,6 +199,26 @@ int check_lock(const char* lockstr, const char* pwd)
   return strcmp(lockstr, pwd);
 }
 
+int hide_locked(const userinput * const u, const xdcc *xd)
+{
+  if (gdata.hidelockedpacks == 0)
+    return 0;
+   
+  if (xd->lock == NULL)
+    return 0;
+   
+  switch (u->method)
+    {
+    case method_xdl_channel:
+    case method_xdl_user_privmsg:
+    case method_xdl_user_notice:
+      return 1;
+    default:
+      break;
+    }
+  return 0; 
+}
+
 int reorder_new_groupdesc(const char *group, const char *desc) {
   xdcc *xd;
   int k;
@@ -1762,7 +1782,7 @@ int disk_full(const char *path)
   return 1;
 }
 
-void u_remove_pack(const userinput * const u, xdcc *xd, int num)
+void a_remove_pack(const userinput * const u, xdcc *xd, int num)
 {
    char *tmpdesc;
    char *tmpgroup;
@@ -1843,7 +1863,7 @@ void u_remove_pack(const userinput * const u, xdcc *xd, int num)
    xdccsavetext();
 }
 
-static void u_remove_delayed(const userinput * const u)
+static void a_remove_delayed(const userinput * const u)
 {
    struct stat *st;
    xdcc *xd;
@@ -1858,7 +1878,7 @@ static void u_remove_delayed(const userinput * const u)
        if ((xd->st_dev == st->st_dev) &&
            (xd->st_ino == st->st_ino))
          {
-           u_remove_pack(u, xd, n);
+           a_remove_pack(u, xd, n);
            /* start over, the list has changed */
            n = 0;
            xd = irlist_get_head(&gdata.xdccs);
@@ -1870,7 +1890,7 @@ static void u_remove_delayed(const userinput * const u)
      }
 }
 
-static void u_add_delayed(const userinput * const u)
+static void a_add_delayed(const userinput * const u)
 {
    userinput u2;
    xdcc *xd;
@@ -1927,7 +1947,7 @@ void changesec_dinoex(void)
     {
       if (strcmp(u->cmd,"REMOVE") == 0)
         {
-          u_remove_delayed(u);
+          a_remove_delayed(u);
           mydelete(u->arg1);
           mydelete(u->arg2);
           u = irlist_delete(&gdata.packs_delayed, u);
@@ -1936,7 +1956,7 @@ void changesec_dinoex(void)
         }
       if (strcmp(u->cmd,"ADD") == 0)
         {
-          u_add_delayed(u);
+          a_add_delayed(u);
           mydelete(u->arg1);
           mydelete(u->arg2);
           u = irlist_delete(&gdata.packs_delayed, u);
@@ -1946,6 +1966,1308 @@ void changesec_dinoex(void)
       /* ignore */
       u = irlist_delete(&gdata.packs_delayed, u);
     }
+}
+
+void a_xdlock(const userinput * const u)
+{
+   char *tempstr;
+   int i,s;
+   xdcc *xd;
+
+   updatecontext();
+
+   tempstr  = mycalloc(maxtextlength);
+
+   s = u_xdl_space();
+   i = 1;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       if (xd->lock != NULL)
+         {
+           u_xdl_pack(u,tempstr,i,s,xd);
+           a_respond(u," \2^-\2%sPassword: %s",u_spaces[s],xd->lock);
+         }
+       i++;
+       xd = irlist_get_next(xd);
+     }
+
+   mydelete(tempstr);
+}
+
+void a_unlimited(const userinput * const u)
+{
+  int num = -1;
+  transfer *tr;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+
+  if ((num < 0) || !does_tr_id_exist(num))
+    {
+      a_respond(u,"Invalid ID number, Try \"DCL\" for a list");
+    }
+  else
+    {
+      tr = does_tr_id_exist(num);
+      tr->nomax = 1;
+      tr->unlimited = 1;
+    }
+}
+
+void a_slotsmax(const userinput * const u)
+{
+   int val;
+  
+   updatecontext();
+   
+   if (u->arg1)
+     {
+       val = atoi(u->arg1);
+       gdata.slotsmax = between(1,val,MAXTRANS);
+     }
+   a_respond(u,"SLOTSMAX now %d", gdata.slotsmax);
+}
+
+void a_queuesize(const userinput * const u)
+{
+   int val;
+  
+   updatecontext();
+   
+   if (u->arg1)
+     {
+       val = atoi(u->arg1);
+       gdata.queuesize = between(0,val,1000000);
+     }
+   a_respond(u,"QUEUESIZE now %d", gdata.queuesize);
+}
+
+void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
+{
+  struct dirent *f;
+  char *tempstr;
+  userinput *u2;
+  int thedirlen;
+  
+  updatecontext();
+  
+  thedirlen = strlen(thedir);
+  if (d == NULL)
+    d = opendir(thedir);
+  
+  if (!d)
+    {
+      a_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+  
+  while ((f = readdir(d)))
+    {
+      struct stat st;
+      int len = strlen(f->d_name);
+      
+      tempstr = mycalloc(len + thedirlen + 2);
+      
+      snprintf(tempstr, len + thedirlen + 2,
+               "%s/%s", thedir, f->d_name);
+      
+      if (stat(tempstr,&st) < 0)
+        {
+          a_respond(u,"cannot access %s, ignoring: %s",
+                    tempstr, strerror(errno));
+          mydelete(tempstr);
+          continue;
+        }
+      if (S_ISDIR(st.st_mode))
+        {
+          if ((strcmp(f->d_name,".") == 0 ) ||
+              (strcmp(f->d_name,"..") == 0))
+            {
+              mydelete(tempstr);
+              continue;
+            }
+          if (gdata.include_subdirs != 0)
+            a_removedir_sub(u, tempstr, NULL);
+          mydelete(tempstr);
+          continue;
+        }
+      if (!S_ISREG(st.st_mode))
+        {
+          mydelete(tempstr);
+          continue;
+        }
+      
+      u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
+      u2->method = u->method;
+      u2->snick = u->snick;
+      u2->fd = u->fd;
+      u2->chat = u->chat;
+      u2->cmd = "REMOVE";
+
+      u2->arg1 = tempstr;
+      tempstr = NULL;
+
+      u2->arg2 = mycalloc(sizeof(struct stat));
+      memcpy(u2->arg2, &st, sizeof(struct stat));
+    }
+  
+  closedir(d);
+  return;
+}
+
+void a_removegroup(const userinput * const u)
+{
+   xdcc *xd;
+   int n;
+
+   updatecontext();
+
+   if (!u->arg1 || !strlen(u->arg1))
+     {
+       a_respond(u,"Try Specifying a Group");
+       return;
+     }
+
+   n = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       n++;
+       if (xd->group != NULL)
+         {
+           if (strcasecmp(xd->group,u->arg1) == 0)
+             {
+                a_remove_pack(u, xd, n);
+                /* start over, the list has changed */
+                n = 0;
+                xd = irlist_get_head(&gdata.xdccs);
+                continue;
+             }
+         }
+       xd = irlist_get_next(xd);
+     }
+}
+
+void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup)
+{
+  userinput *u2;
+  struct dirent *f;
+  struct stat st;
+  struct stat *sta;
+  char *thefile, *tempstr;
+  irlist_t dirlist = {};
+  int thedirlen;
+  
+  updatecontext();
+  
+  thedirlen = strlen(thedir);
+  if (d == NULL)
+    d = opendir(thedir);
+  
+  if (!d)
+    {
+      a_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+  
+  while ((f = readdir(d)))
+    {
+      xdcc *xd;
+      int len = strlen(f->d_name);
+      int foundit;
+      
+      if (verifyshell(&gdata.adddir_exclude, f->d_name))
+        continue;
+      
+      tempstr = mycalloc(len + thedirlen + 2);
+      
+      snprintf(tempstr, len + thedirlen + 2,
+               "%s/%s", thedir, f->d_name);
+      
+      if (stat(tempstr,&st) < 0)
+        {
+          a_respond(u,"cannot access %s, ignoring: %s",
+                    tempstr, strerror(errno));
+        }
+      else if (S_ISDIR(st.st_mode))
+        {
+          if ((strcmp(f->d_name,".") == 0 ) ||
+              (strcmp(f->d_name,"..") == 0))
+            {
+              mydelete(tempstr);
+              continue;
+            }
+          if (gdata.include_subdirs == 0)
+            {
+              a_respond(u,"  Ignoring directory: %s", tempstr);
+            }
+	  else
+            {
+              a_adddir_sub(u, tempstr, NULL, new, setgroup);
+            }
+          mydelete(tempstr);
+          continue;
+        }
+      else if (S_ISREG(st.st_mode))
+        {
+          foundit = 0;
+          if (new != 0)
+          {
+            xd = irlist_get_head(&gdata.xdccs);
+            while(xd)
+              {
+                if ((xd->st_dev == st.st_dev) &&
+                    (xd->st_ino == st.st_ino))
+                  {
+                    foundit = 1;
+                    break;
+                  }
+
+                xd = irlist_get_next(xd);
+              }
+          }
+
+          if (foundit == 0)
+          {
+            u2 = irlist_get_head(&gdata.packs_delayed);
+            while(u2)
+              {
+                sta = (struct stat *)(u2->arg2);
+                if ((strcmp(u2->cmd,"ADD") == 0) &&
+                   (sta->st_dev == st.st_dev) &&
+                   (sta->st_ino == st.st_ino))
+                  {
+                    foundit = 1;
+                    break;
+                  }
+
+                u2 = irlist_get_next(u2);
+              }
+          }
+
+          if (foundit == 0)
+            {
+              thefile = irlist_add(&dirlist, len + thedirlen + 2);
+              strcpy(thefile, tempstr);
+            }
+        }
+      mydelete(tempstr);
+    }
+  
+  closedir(d);
+  
+  if (irlist_size(&dirlist) == 0)
+    return;
+ 
+  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
+  
+  a_respond(u,"Adding %d files from dir %s",
+            irlist_size(&dirlist), thedir);
+  
+  thefile = irlist_get_head(&dirlist);
+  while (thefile)
+    {
+      u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
+      u2->method = u->method;
+      u2->snick = u->snick;
+      u2->fd = u->fd;
+      u2->chat = u->chat;
+      u2->cmd = "ADD";
+
+      u2->arg1 = mymalloc(strlen(thefile) + 1);
+      strcpy(u2->arg1,thefile);
+
+      if (stat(thefile,&st) == 0)
+        {
+          u2->arg2 = mycalloc(sizeof(struct stat));
+          memcpy(u2->arg2, &st, sizeof(struct stat));
+        }
+
+      if (setgroup != NULL)
+        {
+          u2->arg3 = mymalloc(strlen(setgroup) + 1);
+          strcpy(u2->arg3,setgroup);
+        }
+      else
+        {
+          u2->arg3 = NULL;
+        }
+
+      thefile = irlist_delete(&dirlist, thefile);
+    }
+}
+
+void a_addgroup(const userinput * const u)
+{
+  DIR *d;
+  char *thedir;
+  int thedirlen;
+
+  updatecontext();
+
+  if (!u->arg1 || !strlen(u->arg1))
+    {
+      a_respond(u,"Try Specifying a Group");
+      return;
+    }
+
+  if (!u->arg2e || !strlen(u->arg2e))
+    {
+      a_respond(u,"Try Specifying a Directory");
+      return;
+    }
+
+  convert_to_unix_slash(u->arg2e);
+  if (gdata.groupsincaps)
+    caps(u->arg1);
+
+  if (u->arg2e[strlen(u->arg2e)-1] == '/')
+    {
+      u->arg2e[strlen(u->arg2e)-1] = '\0';
+    }
+
+  thedirlen = strlen(u->arg2e);
+  if (gdata.filedir)
+    {
+      thedirlen += strlen(gdata.filedir) + 1;
+    }
+
+  thedir = mycalloc(thedirlen+1);
+  strcpy(thedir, u->arg2e);
+
+  d = opendir(thedir);
+
+  if (!d && (errno == ENOENT) && gdata.filedir)
+    {
+      snprintf(thedir, thedirlen+1, "%s/%s",
+               gdata.filedir, u->arg2e);
+      d = opendir(thedir);
+    }
+
+  if (!d)
+    {
+      a_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+
+  a_adddir_sub(u, thedir, d, 1, u->arg1);
+  mydelete(thedir);
+  return;
+}
+
+void a_chlimit(const userinput * const u)
+{
+   int num = 0;
+   int val = 0;
+   xdcc *xd;
+  
+   updatecontext();
+  
+   if (u->arg1) num = atoi(u->arg1);
+   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
+      a_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+      }
+  
+   if (!u->arg2 || !strlen(u->arg2)) {
+      a_respond(u,"Try Specifying a daily Downloadlimit");
+      return;
+      }
+
+   xd = irlist_get_nth(&gdata.xdccs, num-1);
+   val = atoi(u->arg2);
+
+   a_respond(u, "CHLIMIT: [Pack %i] Old: %d New: %d",
+             num,xd->dlimit_max,val);
+  
+   xd->dlimit_max = val;
+   if (val == 0)
+     xd->dlimit_used = 0;
+   else
+     xd->dlimit_used = xd->gets + xd->dlimit_max;
+  
+   write_statefile();
+   xdccsavetext();
+}
+
+void a_chlimitinfo(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+
+  updatecontext();
+
+  if (u->arg1)
+    {
+      num = atoi(u->arg1);
+    }
+
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      a_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+       a_respond(u, "DLIMIT: [Pack %i] descr removed", num);
+       mydelete(xd->dlimit_desc);
+       xd->dlimit_desc = NULL;
+    }
+  else
+    {
+       a_respond(u, "DLIMIT: [Pack %i] descr: %s", num, u->arg2e);
+       xd->dlimit_desc = mycalloc(strlen(u->arg2e)+1);
+       strcpy(xd->dlimit_desc,u->arg2e);
+    }
+
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_lock(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+  
+  updatecontext();
+  
+  if (u->arg1)
+    {
+      num = atoi(u->arg1);
+    }
+  
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      a_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+      a_respond(u,"Try Specifying a Password");
+      return;
+    }
+  
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  
+  a_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2e);
+  xd->lock = mycalloc(strlen(u->arg2e)+1);
+  strcpy(xd->lock,u->arg2e);
+
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_unlock(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+  
+  updatecontext();
+  
+  if (u->arg1)
+    {
+      num = atoi(u->arg1);
+    }
+  
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      a_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  a_respond(u, "UNLOCK: [Pack %i]", num);
+  
+  mydelete(xd->lock);
+  xd->lock = NULL;
+  
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_lockgroup(const userinput * const u)
+{
+   xdcc *xd;
+   int n;
+   
+   updatecontext();
+   
+   if (!u->arg1 || !strlen(u->arg1))
+     {
+       a_respond(u,"Try Specifying a Group");
+       return;
+     }
+   
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+      a_respond(u,"Try Specifying a Password");
+      return;
+    }
+  
+   n = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       n++;
+       if (xd->group != NULL)
+         {
+           if (strcasecmp(xd->group,u->arg1) == 0)
+             {
+                a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2e);
+                xd->lock = mycalloc(strlen(u->arg2e)+1);
+                strcpy(xd->lock,u->arg2e);
+             }
+         }
+       xd = irlist_get_next(xd);
+     }
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_unlockgroup(const userinput * const u)
+{
+   xdcc *xd;
+   int n;
+   
+   updatecontext();
+   
+   if (!u->arg1 || !strlen(u->arg1))
+     {
+       a_respond(u,"Try Specifying a Group");
+       return;
+     }
+   
+   n = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       n++;
+       if (xd->group != NULL)
+         {
+           if (strcasecmp(xd->group,u->arg1) == 0)
+             {
+                a_respond(u, "UNLOCK: [Pack %i]", n);
+                mydelete(xd->lock);
+                xd->lock = NULL;
+             }
+         }
+       xd = irlist_get_next(xd);
+     }
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_groupdesc(const userinput * const u)
+{
+  int k;
+
+  updatecontext();
+
+  if (!u->arg1 || !strlen(u->arg1))
+    {
+      a_respond(u,"Try Specifying a Valid Group");
+      return;
+    }
+   
+  k = reorder_new_groupdesc(u->arg1,u->arg2e);
+  if (k == 0)
+    return;
+
+  if (u->arg2e && strlen(u->arg2e))
+    {
+      a_respond(u, "New GROUPDESC: %s",u->arg2e);
+    }
+  else
+    {
+      a_respond(u, "Removed GROUPDESC");
+    }
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_group(const userinput * const u)
+{
+  xdcc *xd;
+  const char *new;
+  char *tmpdesc;
+  char *tmpgroup;
+  int rc;
+  int num = 0;
+  
+  updatecontext();
+  
+  if (u->arg1)
+    {
+      num = atoi(u->arg1);
+    }
+  
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      a_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+
+  new = u->arg2;
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+      if (xd->group == NULL)
+      {
+        a_respond(u,"Try Specifying a Group");
+        return;
+      }
+      new = "MAIN";
+    }
+  else
+    {
+       if (gdata.groupsincaps)
+         caps(u->arg2);
+    }
+  
+  if (xd->group != NULL)
+    {
+      a_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
+                num,xd->group,new);
+      /* keep group info for later work */
+      tmpgroup = xd->group;
+      xd->group = NULL;
+      tmpdesc = xd->group_desc;
+      xd->group_desc = NULL;
+      if (tmpdesc != NULL)
+        {
+          if (tmpgroup != NULL)
+            reorder_new_groupdesc(tmpgroup,tmpdesc);
+          mydelete(tmpdesc);
+        }
+      if (tmpgroup != NULL)
+        mydelete(tmpgroup);
+    }
+  else
+    {
+      a_respond(u, "GROUP: [Pack %i] New: %s",
+                num,u->arg2);
+    }
+  
+  if (new == u->arg2)
+    {
+      xd->group = mycalloc(strlen(u->arg2)+1);
+      strcpy(xd->group,u->arg2);
+      reorder_groupdesc(u->arg2);
+      rc = add_default_groupdesc(u->arg2);
+      if (rc == 1)
+        a_respond(u, "New GROUPDESC: %s",u->arg2);
+    }
+  
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_movegroup(const userinput * const u)
+{
+  xdcc *xd;
+  const char *new;
+  char *tmpdesc;
+  char *tmpgroup;
+  int rc;
+  int num;
+  int num1 = 0;
+  int num2 = 0;
+  
+  updatecontext();
+  
+  if (u->arg1)
+    {
+      num1 = atoi(u->arg1);
+    }
+  
+  if (num1 < 1 || num1 > irlist_size(&gdata.xdccs))
+    {
+      a_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  if (u->arg2)
+    {
+      num2 = atoi(u->arg2);
+    }
+  
+  if (num2 < 1 || num2 > irlist_size(&gdata.xdccs))
+    {
+      a_respond(u,"Try Specifying a Valid Pack Number");
+      return;
+    }
+  
+  new = u->arg3;
+  if (!u->arg3 || !strlen(u->arg3))
+    {
+      new = "MAIN";
+    }
+  else
+    {
+       if (gdata.groupsincaps)
+         caps(u->arg3);
+    }
+  
+  for (num = num1; num <= num2; num ++)
+    {
+       xd = irlist_get_nth(&gdata.xdccs, num-1);
+       if (xd->group != NULL)
+         {
+           a_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
+                     num,xd->group,new);
+           /* keep group info for later work */
+           tmpgroup = xd->group;
+           xd->group = NULL;
+           tmpdesc = xd->group_desc;
+           xd->group_desc = NULL;
+           if (tmpdesc != NULL)
+             {
+               if (tmpgroup != NULL)
+                 reorder_new_groupdesc(tmpgroup,tmpdesc);
+               mydelete(tmpdesc);
+             }
+           if (tmpgroup != NULL)
+             mydelete(tmpgroup);
+         }
+       else
+         {
+           a_respond(u, "GROUP: [Pack %i] New: %s",
+                     num,u->arg3);
+         }
+       
+       if (new == u->arg3)
+         {
+           xd->group = mycalloc(strlen(u->arg3)+1);
+           strcpy(xd->group,u->arg3);
+           reorder_groupdesc(u->arg3);
+           rc = add_default_groupdesc(u->arg3);
+           if (rc == 1)
+             a_respond(u, "New GROUPDESC: %s",u->arg3);
+         }
+      
+     }
+  
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_regroup(const userinput * const u)
+{
+  xdcc *xd;
+  const char *g;
+  int k;
+
+  updatecontext();
+
+  if (!u->arg1 || !strlen(u->arg1))
+    {
+      a_respond(u,"Try Specifying a Valid Group");
+      return;
+    }
+   
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+      a_respond(u,"Try Specifying a Valid Group");
+      return;
+    }
+   
+  if (gdata.groupsincaps)
+    caps(u->arg1);
+   
+  k = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        g = xd->group;
+      else
+        g = "main";
+      if (strcasecmp(g,u->arg1) == 0)
+        {
+          k++;
+          if (xd->group != NULL)
+            mydelete(xd->group);
+          xd->group = mycalloc(strlen(u->arg2)+1);
+          strcpy(xd->group,u->arg2);
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  if (k == 0)
+    return;
+
+  a_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2);
+  if (strcasecmp(u->arg1,"main") == 0)
+    add_default_groupdesc(u->arg2);
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_crc(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+  const char *crcmsg;
+
+  updatecontext ();
+
+  if (u->arg1) {
+    num = atoi (u->arg1);
+    if (num > irlist_size(&gdata.xdccs) || num < 1) {
+      a_respond (u, "Try Specifying a Valid Pack Number");
+      return;
+      }
+
+    xd = irlist_get_nth(&gdata.xdccs, num-1);
+    a_respond(u,"Validating CRC for Pack #%i:",num);
+    crcmsg = validate_crc32(xd, 0);
+    if (crcmsg != NULL)
+      a_respond(u,"File '%s' %s.", xd->file, crcmsg);
+  }
+  else {
+   num = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       num ++;
+       crcmsg = validate_crc32(xd, 1);
+       if (crcmsg != NULL)
+         a_respond(u,"Pack %d, File '%s' %s.", num, xd->file, crcmsg);
+       xd = irlist_get_next(xd);
+     }
+  }
+}
+
+void a_filemove(const userinput * const u)
+{
+   int xfiledescriptor;
+   struct stat st;
+   char *file1;
+   char *file2;
+   
+   updatecontext();
+   
+   if (gdata.direct_file_access == 0) {
+      a_respond(u,"Disabled in Config");
+      return;
+      }
+
+   if (!u->arg1 || !strlen(u->arg1)) {
+      a_respond(u,"Try Specifying a Filename");
+      return;
+      }
+   
+   if (!u->arg2e || !strlen(u->arg2e)) {
+      a_respond(u,"Try Specifying a new Filename");
+      return;
+      }
+   
+   file1 = mymalloc(strlen(u->arg1)+1);
+   strcpy(file1,u->arg1);
+   convert_to_unix_slash(file1);
+   
+   xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
+   
+   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
+     {
+       mydelete(file1);
+       file1 = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1)+1);
+       sprintf(file1,"%s/%s",gdata.filedir,u->arg1);
+       convert_to_unix_slash(file1);
+       xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
+     }
+   
+   if (xfiledescriptor < 0) {
+      a_respond(u,"Cant Access File: %s: %s", file1, strerror(errno));
+      mydelete(file1);
+      return;
+      }
+   
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      a_respond(u,"Cant Access File Details: %s: %s", file1, strerror(errno));
+      close(xfiledescriptor);
+      mydelete(file1);
+      return;
+     }
+   close(xfiledescriptor);
+   
+   if (!S_ISREG(st.st_mode))
+     {
+      a_respond(u,"%s is not a file", file1);
+      mydelete(file1);
+      return;
+     }
+   
+   file2 = mymalloc(strlen(u->arg2e)+1);
+   strcpy(file2,u->arg2e);
+   convert_to_unix_slash(file2);
+   
+   if (strchr(file2, '/') == NULL)
+     {
+       mydelete(file2);
+       file2 = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg2e)+1);
+       sprintf(file2,"%s/%s",gdata.filedir,u->arg2e);
+       convert_to_unix_slash(file2);
+     }
+   
+   if (rename(file1,file2) < 0)
+     {
+       a_respond(u,"File %s could not be moved to %s: %s", file1, file2, strerror(errno));
+     }
+   else
+     {
+       a_respond(u,"File %s was moved to %s.",file1, file2);
+     }
+   mydelete(file1);
+   mydelete(file2);
+}
+
+void a_filedel(const userinput * const u)
+{
+   int xfiledescriptor;
+   struct stat st;
+   char *file;
+   
+   updatecontext();
+   
+   if (gdata.direct_file_access == 0) {
+      a_respond(u,"Disabled in Config");
+      return;
+      }
+
+   if (!u->arg1e || !strlen(u->arg1e)) {
+      a_respond(u,"Try Specifying a Filename");
+      return;
+      }
+   
+   file = mymalloc(strlen(u->arg1e)+1);
+   strcpy(file,u->arg1e);
+   convert_to_unix_slash(file);
+   
+   xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+   
+   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
+     {
+       mydelete(file);
+       file = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
+       sprintf(file,"%s/%s",gdata.filedir,u->arg1e);
+       convert_to_unix_slash(file);
+       xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+     }
+   
+   if (xfiledescriptor < 0) {
+      a_respond(u,"Cant Access File: %s: %s", file, strerror(errno));
+      mydelete(file);
+      return;
+      }
+   
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      a_respond(u,"Cant Access File Details: %s: %s", file, strerror(errno));
+      close(xfiledescriptor);
+      mydelete(file);
+      return;
+     }
+   close(xfiledescriptor);
+   
+   if (!S_ISREG(st.st_mode))
+     {
+      a_respond(u,"%s is not a file", file);
+      mydelete(file);
+      return;
+     }
+   
+   if (unlink(file) < 0)
+     {
+       a_respond(u,"File %s could not be deleted: %s", file, strerror(errno));
+     }
+   else
+     {
+       a_respond(u,"File %s was deleted.", file);
+     }
+   mydelete(file);
+}
+
+void a_showdir(const userinput * const u)
+{
+  char *thedir;
+  int thedirlen;
+  
+  updatecontext();
+  
+  if (gdata.direct_file_access == 0)
+    {
+      a_respond(u,"Disabled in Config");
+      return;
+    }
+  
+  if (!u->arg1e || !strlen(u->arg1e))
+    {
+      a_respond(u,"Try Specifying a Directory");
+      return;
+    }
+ 
+  convert_to_unix_slash(u->arg1e);
+  
+  if (u->arg1e[strlen(u->arg1e)-1] == '/')
+    {
+      u->arg1e[strlen(u->arg1e)-1] = '\0';
+    }
+ 
+  thedirlen = strlen(u->arg1e);
+  if (gdata.filedir)
+    {
+      thedirlen += strlen(gdata.filedir) + 1;
+    }
+ 
+  thedir = mymalloc(thedirlen+1);
+  strcpy(thedir, u->arg1e);
+ 
+  u_listdir(u, thedir);
+  mydelete(thedir);
+  return;
+}
+
+#ifdef USE_CURL
+void a_fetch(const userinput * const u)
+{
+  updatecontext();
+  
+  if (gdata.direct_file_access == 0)
+    {
+      a_respond(u,"Disabled in Config");
+      return;
+    }
+  
+  if (!gdata.uploaddir)
+    {
+      a_respond(u,"No uploaddir defined.");
+      return;
+    }
+  
+  if (disk_full(gdata.uploaddir) != 0)
+    {
+      a_respond(u,"Not enough free space on disk.");
+      return;
+    }
+  
+  if (!u->arg1 || !strlen(u->arg1))
+    {
+      a_respond(u,"Try Specifying a File");
+      return;
+    }
+
+  if (!u->arg2e || !strlen(u->arg2e))
+    {
+      a_respond(u,"Try Specifying a URL");
+      return;
+    }
+
+  start_fetch_url(u);
+}
+#endif /* USE_CURL */
+
+void a_amsg(const userinput * const u)
+{
+  channel_t *ch;
+  int ss;
+  gnetwork_t *backup;
+  
+  updatecontext ();
+  
+  if (!u->arg1e || !strlen (u->arg1e)) {
+    a_respond (u, "Try Specifying a Message (e.g. NEW)");
+    return;
+    }
+  
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      ch = irlist_get_head(&(gnetwork->channels));
+      while(ch) {
+        if (ch->flags & CHAN_ONCHAN)
+          privmsg_chan(ch, u->arg1e);
+        ch = irlist_get_next(ch);
+        }
+    }
+  gnetwork = backup;
+  a_respond(u,"Announced [%s]",u->arg1e);
+}
+
+void a_msgnet(const userinput * const u)
+{
+  gnetwork_t *backup;
+  int net;
+
+  updatecontext();
+
+  net = get_network(u->arg1);
+  if (net < 0)
+    {
+      a_respond(u,"Try specifying a valid network number");
+      return;
+    }
+
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+      a_respond(u,"Try Specifying a Nick");
+      return;
+    }
+
+  if (!u->arg3e || !strlen(u->arg3e))
+    {
+      a_respond(u,"Try Specifying a Message");
+      return;
+    }
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  privmsg_fast(u->arg2,"%s",u->arg3e);
+  gnetwork = backup;
+}
+
+void a_rawnet(const userinput * const u)
+{
+  gnetwork_t *backup;
+  int net;
+
+  updatecontext();
+
+  net = get_network(u->arg1);
+  if (net < 0)
+    {
+      a_respond(u,"Try specifying a valid network number");
+      return;
+    }
+
+  if (!u->arg2e || !strlen(u->arg2e))
+    {
+      a_respond(u,"Try Specifying a Command");
+      return;
+    }
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  writeserver(WRITESERVER_NOW, "%s", u->arg2e);
+  gnetwork = backup;
+}
+
+void a_hop(const userinput * const u)
+{
+   channel_t *ch;
+   gnetwork_t *backup;
+   int ss;
+
+   updatecontext();
+
+   backup = gnetwork;
+   for (ss=0; ss<gdata.networks_online; ss++)
+     {
+       gnetwork = &(gdata.networks[ss]);
+       /* part & join channels */
+       ch = irlist_get_head(&(gnetwork->channels));
+       while(ch)
+         {
+           if ((!u->arg1) || (!strcasecmp(u->arg1,ch->name)))
+             {
+               writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
+               clearmemberlist(ch);
+               ch->flags &= ~CHAN_ONCHAN;
+               ch->flags &= ~CHAN_KICKED;
+               joinchannel(ch);
+             }
+           ch = irlist_get_next(ch);
+         }
+     }
+   gnetwork = backup;
+}
+
+void a_cleargets(const userinput * const u)
+{
+   xdcc *xd;
+
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       xd->gets = 0;
+       xd = irlist_get_next(xd);
+     }
+
+  a_respond(u,"Cleared download counter for each pack");
+  write_statefile();
+}
+
+void a_identify(const userinput * const u)
+{
+  gnetwork_t *backup;
+  int net;
+
+  updatecontext();
+
+  net = get_network(u->arg1);
+  if (net < 0)
+    {
+      a_respond(u,"Try specifying a valid network number");
+      return;
+    }
+
+  if (!gdata.nickserv_pass)
+    {
+       a_respond(u,"No nickserv_pass set!");
+       return;
+    }
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
+  gnetwork = backup;
+  a_respond(u,"nickserv identify send.");
+}
+
+void a_holdqueue(const userinput * const u)
+{
+   int val;
+   int i;
+   
+   updatecontext();
+    
+   if (gdata.holdqueue)
+     {
+       val = 0;
+     }
+   else
+     {
+       val = 1;
+     }
+   
+   if (u->arg1)
+     {
+       val = atoi(u->arg1);
+     }
+   
+   gdata.holdqueue = val;
+   a_respond(u,"HOLDQUEUE now %d", val);
+
+   if (val != 0)
+     return;
+
+   for (i=0; i<100; i++)
+     {
+       if (!gdata.exiting &&
+           irlist_size(&gdata.mainqueue) &&
+           (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
+         {
+           sendaqueue(0);
+         }
+     }
 }
 
 /* End of File */
