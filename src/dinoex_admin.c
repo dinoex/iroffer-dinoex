@@ -1305,6 +1305,7 @@ void autoadd_scan(const char *dir, const char *group)
    if (dir == NULL)
       return;
 
+   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"autoadd scan %s", dir);
    line = mycalloc(maxtextlength);
    if (group != NULL)
      snprintf(line,maxtextlength -1,"A A A A A ADDGROUP %s %s", group, dir);

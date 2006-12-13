@@ -1099,7 +1099,7 @@ static void u_dcl(const userinput * const u)
   if (irlist_size(&gdata.trans))
     {
       u_respond(u,"Current Transfer%s",irlist_size(&gdata.trans)!=1?"s":"");
-      u_respond(u,"   ID  User        File                               Status");
+      u_respond(u,"   ID  User        Pack File                               Status");
     }
   
   tr = irlist_get_head(&gdata.trans);
@@ -1130,14 +1130,14 @@ static void u_dcl(const userinput * const u)
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
-          u_respond(u,"  %3i  %-9s   %-32s   %s %2.0f%%",
-                    tr->id,tr->nick,getfilename(tr->xpack->file),y,
+          u_respond(u,"  %3i  %-9s   %-4d %-32s   %s %2.0f%%",
+                    tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y,
                     ((float)tr->bytessent)*100.0/((float)tr->xpack->st_size));
         }
       else
         {
-          u_respond(u,"  %3i  %-9s   %-32s   %s",
-                    tr->id,tr->nick,getfilename(tr->xpack->file),y);
+          u_respond(u,"  %3i  %-9s   %-4d %-32s   %s",
+                    tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y);
         }
       tr = irlist_get_next(tr);
     }
@@ -1217,7 +1217,7 @@ static void u_dcld(const userinput * const u)
    if (irlist_size(&gdata.trans))
      {
        u_respond(u,"Current Transfer%s",irlist_size(&gdata.trans)!=1?"s":"");
-       u_respond(u," ID  User        File                               Status");
+       u_respond(u," ID  User        Pack File                               Status");
        u_respond(u,"  ^-    Speed    Current/    End   Start/Remain    Min/  Max  Resumed");
        u_respond(u," --------------------------------------------------------------------");
      }
@@ -1255,14 +1255,14 @@ static void u_dcld(const userinput * const u)
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
-          u_respond(u,"%3i  %-9s   %-32s   %s %2.0f%%",
-                    tr->id,tr->nick,getfilename(tr->xpack->file),y,
+          u_respond(u,"%3i  %-9s   %-4d %-32s   %s %2.0f%%",
+                    tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y,
                     ((float)tr->bytessent)*100.0/((float)tr->xpack->st_size));
         }
       else
         {
-          u_respond(u,"%3i  %-9s   %-32s   %s",
-                    tr->id,tr->nick,getfilename(tr->xpack->file),y);
+          u_respond(u,"%3i  %-9s   %-4d %-32s   %s",
+                    tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y);
         }
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING || tr->tr_status == TRANSFER_STATUS_WAITING)
@@ -1401,7 +1401,7 @@ static void u_qul(const userinput * const u)
     }
   
   u_respond(u,"Current Queue:");
-  u_respond(u,"    #  User        File                              Waiting     Left");
+  u_respond(u,"    #  User        Pack File                              Waiting     Left");
   
   lastrtime=0;
   
@@ -1444,9 +1444,10 @@ static void u_qul(const userinput * const u)
       
       if (rtime < 359999)
         {
-          u_respond(u,"   %2i  %-9s   %-32s   %2lih%2lim   %2lih%2lim",
+          u_respond(u,"   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
                     i,
                     pq->nick,
+                    number_of_pack(pq->xpack),
                     getfilename(pq->xpack->file),
                     (long)((gdata.curtime-pq->queuedtime)/60/60),
                     (long)(((gdata.curtime-pq->queuedtime)/60)%60),
@@ -1455,9 +1456,10 @@ static void u_qul(const userinput * const u)
         }
       else
         {
-          u_respond(u,"   %2i  %-9s   %-32s   %2lih%2lim  Unknown",
+          u_respond(u,"   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
                     i,
                     pq->nick,
+                    number_of_pack(pq->xpack),
                     getfilename(pq->xpack->file),
                     (long)((gdata.curtime-pq->queuedtime)/60/60),
                     (long)(((gdata.curtime-pq->queuedtime)/60)%60));

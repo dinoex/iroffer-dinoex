@@ -132,6 +132,7 @@ Jippi
 Yasuo|Iwakura
 	report -plist crash
 	report uncomplete warning
+	QUL and DCL output
 
 Road
 	user command XDCC OWNER
