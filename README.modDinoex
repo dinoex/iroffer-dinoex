@@ -1,14 +1,15 @@
 
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
-With Version mod 1.33:
+With Version mod 2.00:
 ----------------------
 
 107) QUL and DCL
-  list pack number with file
+  list pack number with file.
 
 106) include_subdirs (inspired by anibi, Tass)
   on ADDDIR, ADDNEW, ADDGROUP and REMOVDIR scan subdirectories too.
+  mass add or remove of packs will no longer stall the bot.
 
 105) max_find (inspired by Cork)
    Limit matches to @find and XDCC SREACH commands.
