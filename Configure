@@ -48,7 +48,7 @@ while getopts 'hedpwgcm' OPTNAME; do
     p) OPT_PROF=true;;
     g) OPT_GEOIP=true;;
     c) OPT_CURL=true;;
-    m) VERSIONLONG="${VERSIONLONG} Multinet";;
+    m) ;;
     *) usage;;
   esac
 done
