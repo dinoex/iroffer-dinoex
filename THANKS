@@ -65,6 +65,8 @@ TheDeath
 	suggesting list of active downloads in dcl and dcld
 	reporting crash on duplicate channels
 	reporting psend without effect
+	admin command "EXIT"
+	admin command "LOGOUT"
 
 [GFE]Lunix
 	alias xdcc list group <group>

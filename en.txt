@@ -1689,3 +1689,5 @@
 1707 "   ID  User        Pack File                               Status"
 1708 " ID  User        Pack File                               Status"
 1709 "autoadd scan %s"
+1710 "EXIT"
+1711 "LOGOUT"

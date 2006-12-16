@@ -4,6 +4,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.00:
 ----------------------
 
+108) EXIT, LOGOUT (inspired by TheDeath)
+ 
+   new admin commands:
+   EXIT                              Close this DCC chat (alias to QUIT)
+   LOGOUT                            Close this DCC chat (alias to QUIT)
+
 107) QUL and DCL
   list pack number with file.
 

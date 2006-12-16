@@ -203,6 +203,8 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_console,  u_redraw,   "REDRAW",NULL,"Redraws the Screen"},
 {5,method_console,  u_delhist,  "DELHIST",NULL,"Deletes console history"},
 {5,method_dcc,      u_quit,     "QUIT",NULL,"Close this DCC chat"},
+{5,method_dcc,      u_quit,     "EXIT",NULL,"Close this DCC chat"},
+{5,method_dcc,      u_quit,     "LOGOUT",NULL,"Close this DCC chat"},
 {5,method_msg,      u_chatme,   "CHATME",NULL,"Sends you a DCC Chat Request"},
 {5,method_allow_all,u_chatl,    "CHATL",NULL,"Lists DCC Chat Information"},
 {5,method_allow_all,u_closec,   "CLOSEC","n","Closes DCC Chat with ID = n"},
