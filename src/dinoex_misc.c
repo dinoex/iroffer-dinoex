@@ -33,8 +33,6 @@
 
 extern const ir_uint32 crctable[256];
 
-/* local functions */
-#ifdef USE_CURL
 static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
@@ -101,7 +99,6 @@ static void a_respond(const userinput * const u, const char *format, ...)
 
   va_end(args);
 }
-#endif /* USE_CURL */
 
 int verifyshell(irlist_t *list, const char *file)
 {
