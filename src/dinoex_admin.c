@@ -833,6 +833,12 @@ char *check_geoip(transfer *const t)
   if (gi == NULL)
     gi = GeoIP_new(GEOIP_FLAGS);
 
+  if (gi == NULL)
+    {
+      code[0] = 0;
+      return code;
+    }
+
   snprintf(hostname, sizeof(hostname), "%ld.%ld.%ld.%ld",
             t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF );
   result = GeoIP_country_code_by_addr(gi, hostname);

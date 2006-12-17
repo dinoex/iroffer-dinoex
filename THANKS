@@ -67,6 +67,7 @@ TheDeath
 	reporting psend without effect
 	admin command "EXIT"
 	admin command "LOGOUT"
+	reporting crash whith geoip
 
 [GFE]Lunix
 	alias xdcc list group <group>
