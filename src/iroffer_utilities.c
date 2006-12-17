@@ -1487,6 +1487,7 @@ void dumpgdata(void)
   gdata_print_string(autoaddann);
   gdata_print_string(autoadd_group);
   gdata_print_string(send_statefile);
+  gdata_print_string(geoipdatabase);
   /* unlimitedhost */
   /* geoipcountry */
   /* geoipexcludenick */

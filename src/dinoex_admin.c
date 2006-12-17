@@ -831,7 +831,12 @@ char *check_geoip(transfer *const t)
   const char *result;
 
   if (gi == NULL)
-    gi = GeoIP_new(GEOIP_FLAGS);
+    {
+      if (gdata.geoipdatabase != NULL)
+        gi = GeoIP_open(gdata.geoipdatabase, GEOIP_FLAGS);
+      else
+        gi = GeoIP_new(GEOIP_FLAGS);
+    }
 
   if (gi == NULL)
     {

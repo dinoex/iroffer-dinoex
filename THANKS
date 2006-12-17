@@ -68,6 +68,7 @@ TheDeath
 	admin command "EXIT"
 	admin command "LOGOUT"
 	reporting crash whith geoip
+	option "geoipdatabase"
 
 [GFE]Lunix
 	alias xdcc list group <group>

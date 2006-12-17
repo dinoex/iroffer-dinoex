@@ -150,6 +150,7 @@ char *admin_job_file;
 char *autoaddann;
 char *autoadd_group;
 char *send_statefile;
+char *geoipdatabase;
 int need_voice;
 int need_level;
 int hide_list_info;

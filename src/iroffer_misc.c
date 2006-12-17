@@ -183,6 +183,7 @@ static const config_parse_str_t config_parse_str[] = {
   {"autoadd_group",        &gdata.autoadd_group,        &gdata.autoadd_group },
   {"send_statefile",       &gdata.send_statefile,       &gdata.send_statefile },
   {"owner_nick",           &gdata.owner_nick,           &gdata.owner_nick },
+  {"geoipdatabase",        &gdata.geoipdatabase,        &gdata.geoipdatabase },
 };
 
 void getconfig_set (const char *line, int rehash)
@@ -2536,6 +2537,7 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.autoadd_dirs);
   mydelete(gdata.enable_nick);
   mydelete(gdata.owner_nick);
+  mydelete(gdata.geoipdatabase);
   gdata.need_voice = 0;
   gdata.need_level = 0;
   gdata.hide_list_info = 0;

@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.00:
 ----------------------
 
+109) geoipdatabase (inspired by TheDeath)
+  configure a custom database file.
+
 bugfix: GEOIP (reported by TheDeath)
    fix crash when GEOIP can't find its data
 
