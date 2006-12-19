@@ -1691,3 +1691,6 @@
 1709 "autoadd scan %s"
 1710 "EXIT"
 1711 "LOGOUT"
+1712 "geoipdatabase"
+1713 "unlock Pack %d, File %s"
+1714 "lock Pack %d, File %s"

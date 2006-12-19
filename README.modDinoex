@@ -4,6 +4,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.00:
 ----------------------
 
+bugfix:	auto_crc_check (reported by Kurosaki)
+  auto_crc_check did not unlock the pack after file was repaired
+  better logging of lock/unlock by auto_crc_check
+
 109) geoipdatabase (inspired by TheDeath)
   configure a custom database file.
 

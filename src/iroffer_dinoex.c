@@ -1299,7 +1299,9 @@ const char *validate_crc32(xdcc *xd, int quiet)
        x = "CRC32 verified OK";
      /* unlock pack */
      if ((quiet == 2) && (xd->lock != NULL)) {
-       if (strcmp(xd->lock,badcrc)) {
+       if (strcmp(xd->lock,badcrc) == 0) {
+         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"unlock Pack %d, File %s",
+                 number_of_pack(xd), line);
          mydelete(xd->lock);
          xd->lock = NULL;
        }
@@ -1313,6 +1315,8 @@ const char *validate_crc32(xdcc *xd, int quiet)
          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s", newcrc, line);
          x = "CRC32 failed";
          if (quiet == 2) {
+           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"lock Pack %d, File %s",
+                   number_of_pack(xd), line);
            xd->lock = mycalloc(strlen(badcrc)+1);
            strcpy(xd->lock,badcrc);
          }
