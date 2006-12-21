@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.00:
 ----------------------
 
+111) (patch by Cork)
+  extend info when user is added to main queue.
+
 110) respondtochannellistmsg (inspired by Cork)
   text that is put int each response to !list in a channel.
 

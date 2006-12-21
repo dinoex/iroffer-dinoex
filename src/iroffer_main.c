@@ -3680,8 +3680,9 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
          tempq->net = gnetwork->net;
 
          snprintf(tempstr,maxtextlength,
-                  "Added you to the main queue in position %d. To Remove youself at "
+                  "Added you to the main queue for pack %d (\"%s\") in position %d. To Remove youself at "
                   "a later time type \"/msg %s xdcc remove\".",
+                  pack, tempx->desc,
                   irlist_size(&gdata.mainqueue),
                   (gnetwork->user_nick ? gnetwork->user_nick : "??"));
          }
