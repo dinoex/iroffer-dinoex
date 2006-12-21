@@ -184,6 +184,7 @@ static const config_parse_str_t config_parse_str[] = {
   {"send_statefile",       &gdata.send_statefile,       &gdata.send_statefile },
   {"owner_nick",           &gdata.owner_nick,           &gdata.owner_nick },
   {"geoipdatabase",        &gdata.geoipdatabase,        &gdata.geoipdatabase },
+  {"respondtochannellistmsg",  &gdata.respondtochannellistmsg,  &gdata.respondtochannellistmsg },
 };
 
 void getconfig_set (const char *line, int rehash)
@@ -2538,6 +2539,7 @@ void reinit_config_vars(void)
   mydelete(gdata.enable_nick);
   mydelete(gdata.owner_nick);
   mydelete(gdata.geoipdatabase);
+  mydelete(gdata.respondtochannellistmsg);
   gdata.need_voice = 0;
   gdata.need_level = 0;
   gdata.hide_list_info = 0;

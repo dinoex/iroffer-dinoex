@@ -146,6 +146,8 @@ Skyw4lker
 
 Cork
 	option "max_find"
+	reporting trigger with restrictprivlist
+	option "respondtochannellistmsg"
 
 anibi
 	option "include_subdirs"

@@ -151,6 +151,7 @@ char *autoaddann;
 char *autoadd_group;
 char *send_statefile;
 char *geoipdatabase;
+char *respondtochannellistmsg;
 int need_voice;
 int need_level;
 int hide_list_info;

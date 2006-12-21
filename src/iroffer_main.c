@@ -3141,25 +3141,39 @@ static void privmsgparse(const char* type, char* line) {
    else if ( !gdata.ignore && gnetwork->caps_nick && gdata.respondtochannellist && msg1 && !strcasecmp(caps(msg1),"!LIST") &&
              ( !msg2 || !strcmp(caps(msg2),gnetwork->caps_nick) ))
      {
-      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+      char *tempstr2 = mycalloc(maxtextlength);
       
       /* generate !list styled message */
       
+      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+      
+      if (gdata.restrictprivlist)
+        strcpy(tempstr2, "");
+      else
+        snprintf(tempstr2, maxtextlength - 2,
+                 "Trigger:\2(\2/msg %s xdcc list\2)\2 ",
+                 (gnetwork->user_nick ? gnetwork->user_nick : "??"));
       notice_slow(nick,
              "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
-             "Trigger:\2(\2/msg %s xdcc list\2)\2 "
+             "%s%s"
+             "%s"
              "Sends:\2(\2%i/%i\2)\2 "
              "Queues:\2(\2%i/%i\2)\2 "
              "Record:\2(\2%1.1fKB/s\2)\2 "
              "%s%s%s\2=\2iroffer\2=\2",
              irlist_size(&gdata.xdccs),
-             (gnetwork->user_nick ? gnetwork->user_nick : "??"),
+             (gdata.respondtochannellistmsg ? gdata.respondtochannellistmsg : ""),
+             (gdata.respondtochannellistmsg ? " " : ""),
+             tempstr2,
              irlist_size(&gdata.trans),gdata.slotsmax,
              irlist_size(&gdata.mainqueue),gdata.queuesize,
              gdata.record,
              gdata.creditline ? "Note:\2(\2" : "",
              gdata.creditline ? gdata.creditline : "",
              gdata.creditline ? "\2)\2 " : "");
+
+       mydelete(tempstr2);
+
      }
    
    /* iroffer-lamm: @find */
