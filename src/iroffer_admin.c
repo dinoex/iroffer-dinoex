@@ -527,11 +527,13 @@ void u_parseit(userinput * const u) {
       u_respond(u,"** User Command Not Recognized, try \"HELP\"");
    
    if (found && u->method==method_console)
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s Requested (console)",u->cmd);
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s requested (console)",u->cmd);
    if (found && u->method==method_dcc)
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s Requested (DCC Chat: %s)", u->cmd, u->chat->nick ? u->chat->nick : "???");
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s requested (DCC Chat: %s) (network: %s)",
+               u->cmd, save_nick(u->chat->nick), gnetwork->name);
    if (found && u->method==method_msg)
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s Requested (MSG: %s)",u->cmd,u->snick);
+      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s requested (MSG: %s) (network: %s)",
+              u->cmd, u->snick, gnetwork->name);
    
    u_fillwith_clean(u);
    gnetwork = backup;
@@ -583,7 +585,7 @@ static void u_help(const userinput * const u)
             }
         }
     }
-  u_respond(u,"For additional help, see the complete documentation at http://iroffer.org/");
+  u_respond(u,"For additional help, see the documentation at http://iroffer.dinoex.net/");
   
 }
 
@@ -703,7 +705,7 @@ static void u_xdl_head(const userinput * const u) {
       break;
     default:
       u_respond(u,"\2**\2 To stop this listing, type /MSG %s XDCC STOP \2**\2",
-                  (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+                  save_nick(gnetwork->user_nick));
       break;
     }
    
@@ -798,11 +800,11 @@ static void u_xdl_head(const userinput * const u) {
        u_respond(u,"%s",tempstr);
        
        u_respond(u,"\2**\2 To request a file, type \"/msg %s xdcc send x\" \2**\2",
-                 (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+                 save_nick(gnetwork->user_nick));
        
        if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
           u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info x\" \2**\2",
-                    (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+                    save_nick(gnetwork->user_nick));
        
        i = 0;
        xd = irlist_get_head(&gdata.xdccs);
@@ -816,7 +818,7 @@ static void u_xdl_head(const userinput * const u) {
          }
        if (i > 0)
           u_respond(u,"\2**\2 To list a group, type \"/msg %s xdcc list GROUP\" \2**\2",
-                    (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+                    save_nick(gnetwork->user_nick));
      }
    
    if (m1)
@@ -824,7 +826,7 @@ static void u_xdl_head(const userinput * const u) {
        if (!gdata.restrictprivlist)
          {
            u_respond(u,"\2**\2 For a listing type: \"/msg %s xdcc list\" \2**\2",
-                     (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+                     save_nick(gnetwork->user_nick));
          }
        if (gdata.creditline)
          {
@@ -1170,10 +1172,7 @@ static void u_dcld(const userinput * const u)
           break;
         }
       
-      if (gdata.networks[tr->net].name == NULL)
-        u_respond(u,"network: %d", tr->net);
-      else
-        u_respond(u,"network: %d: %s", tr->net, gdata.networks[tr->net].name);
+      u_respond(u,"network: %d: %s", tr->net, gdata.networks[tr->net].name);
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
@@ -1812,6 +1811,7 @@ static void u_psend(const userinput * const u)
   channel_t *ch;
   gnetwork_t *backup;
   int net;
+  const char *nname;
   
   updatecontext();
   
@@ -1892,11 +1892,12 @@ static void u_psend(const userinput * const u)
     u_fillwith_msg(&manplist,u->arg1,"A A A A A xdlfull");
   manplist.method = method;
   u_parseit(&manplist);
+  nname = gnetwork->name;
   gnetwork = backup;
   
-  u_respond(u,"Sending PLIST with style %s to %s",
+  u_respond(u,"Sending PLIST with style %s to %s on network %s",
             u->arg2 ? u->arg2 : "full",
-            u->arg1);
+            u->arg1, nname);
   
 }
 
@@ -2808,9 +2809,16 @@ static void u_rehash(const userinput * const u) {
    needtojump=0;
    if (gdata.local_vhost != gdata.r_local_vhost)
      {
+       u_respond(u,"vhost changed, reconnecting");
        needtojump=1;
      }
-
+   /* dopped networks */
+   if (gdata.networks_online < gdata.r_networks_online)
+     {
+       u_respond(u,"network dropped, reconnecting");
+       needtojump=1;
+     }
+   
    backup = gnetwork;
    for (ss=0; ss<gdata.networks_online; ss++)
      {
@@ -2907,11 +2915,15 @@ static void u_rehash(const userinput * const u) {
    gdata.local_vhost = gdata.r_local_vhost;
    gdata.r_local_vhost = 0;
    
-   if (needtojump) {
-      u_respond(u,"vhost changed, reconnecting");
-      switchserver(-1);
-      /* switchserver takes care of joining channels */
-      }
+   if (needtojump)
+     {
+       for (ss=0; ss<gdata.networks_online; ss++)
+         {
+           gnetwork = &(gdata.networks[ss]);
+           switchserver(-1);
+           /* switchserver takes care of joining channels */
+         }
+     }
    
    if (((!gdata.pidfile) && (gdata.r_pidfile)) ||
        ((gdata.pidfile) && (!gdata.r_pidfile)) ||
@@ -3066,10 +3078,7 @@ static void u_botinfo(const userinput * const u) {
 
    for (ss=0; ss<gdata.networks_online; ss++)
      {
-       if (gdata.networks[ss].name == NULL)
-         u_respond(u,"network: %d", ss + 1);
-       else
-         u_respond(u,"network: %d: %s", ss + 1, gdata.networks[ss].name);
+       u_respond(u,"network: %d: %s", ss + 1, gdata.networks[ss].name);
        
        u_respond(u,"configured nick: %s, actual nick: %s, realname: %s, modes: %s",
                  gdata.config_nick,

@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.00:
 ----------------------
 
+bugfix: REHASH
+  clenanup when netzorks are dropped.
+
 111) (patch by Cork)
   extend info when user is added to main queue.
 
@@ -56,6 +59,7 @@ bugfix: GEOIP (reported by TheDeath)
   restrictlist and restrictsend must be set yes.
 
 make MULTINET default
+  extend debug information
 
 100) extern PSEND (inspired by TheDeath)
   give an error when the chan is not found

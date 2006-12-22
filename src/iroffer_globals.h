@@ -204,6 +204,7 @@ unsigned long r_ourip;
 
 gnetwork_t networks[MAX_NETWORKS];
 int networks_online;
+int r_networks_online;
 
 irlist_t msglog;
 
