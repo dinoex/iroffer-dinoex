@@ -392,6 +392,12 @@ void getconfig_set (const char *line, int rehash)
        else
          {
            mydelete(gdata.networks[gdata.networks_online].name);
+           if (strlen(var) == 0)
+             {
+               mydelete(var);
+               var = mymalloc(10);
+               snprintf(var, 10, "%d", gdata.networks_online);
+             }
            gdata.networks[gdata.networks_online].name = var;
            gdata.networks[gdata.networks_online].net = gdata.networks_online;
          }
@@ -2497,6 +2503,7 @@ void reinit_config_vars(void)
     {
       regfree(rh);
     }
+  gdata.r_networks_online = gdata.networks_online;
   gdata.networks_online = 0;
   for (si=0; si<MAX_NETWORKS; si++)
   {
@@ -3198,7 +3205,7 @@ void notifybandwidth(void)
       while(tr)
         {
           notice_slow(tr->nick,"%s bandwidth limit: %2.1f of %2.1fKB/sec used. Your share: %2.1fKB/sec.",
-                      (gnetwork->user_nick ? gnetwork->user_nick : "??"),
+                      save_nick(gnetwork->user_nick),
                       ((float)xdccsent)/XDCC_SENT_SIZE,
                       ((float)gdata.maxb)/4.0,
                       tr->lastspeed);
