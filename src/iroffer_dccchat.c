@@ -19,6 +19,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "iroffer_dinoex.h"
 
 
 int setupdccchatout(const char *nick)
@@ -170,7 +171,7 @@ void setupdccchataccept(dccchat_t *chat)
   getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
   
   writedccchat(chat,0,"Welcome to %s\n",
-               (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+               save_nick(gnetwork->user_nick));
   writedccchat(chat,0,"iroffer v" VERSIONLONG "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);
@@ -347,7 +348,7 @@ void setupdccchatconnected(dccchat_t *chat)
   getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
 
   writedccchat(chat,0,"Welcome to %s\n",
-               (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+               save_nick(gnetwork->user_nick));
   writedccchat(chat,0,"iroffer v" VERSIONLONG "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);

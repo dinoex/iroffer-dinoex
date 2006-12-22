@@ -3152,7 +3152,7 @@ static void privmsgparse(const char* type, char* line) {
       else
         snprintf(tempstr2, maxtextlength - 2,
                  "Trigger:\2(\2/msg %s xdcc list\2)\2 ",
-                 (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+                 save_nick(gnetwork->user_nick));
       notice_slow(nick,
              "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
              "%s%s"
@@ -3684,7 +3684,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
                   "a later time type \"/msg %s xdcc remove\".",
                   pack, tempx->desc,
                   irlist_size(&gdata.mainqueue),
-                  (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+                  save_nick(gnetwork->user_nick));
          }
    return tempstr;
    }

@@ -1179,6 +1179,13 @@ void update_hour_dinoex(int hour, int minute)
     
 }
 
+const char *save_nick(const char * nick)
+{
+  if (nick)
+    return nick;
+  return "??";
+}
+
 /* iroffer-lamm: @find and long !list */
 int noticeresults(const char *nick, const char *match)
 {
@@ -1222,7 +1229,7 @@ int noticeresults(const char *nick, const char *match)
             len = strlen(tempstr);
           }
           snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -",
-                   (gnetwork->user_nick ? gnetwork->user_nick : "??"));
+                   save_nick(gnetwork->user_nick));
           len = strlen(tempstr);
           if (!strcmp(match, "*"))
             snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");

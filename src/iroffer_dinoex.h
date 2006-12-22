@@ -50,6 +50,7 @@ void rehash_dinoex(void);
 void update_hour_dinoex(int hour, int minute);
 void check_new_connection(transfer *const tr);
 void check_duplicateip(transfer *const newtr);
+const char *save_nick(const char * nick);
 int noticeresults(const char *nick, const char *match);
 void check_duplicateip(transfer *const newtr);
 const char *validate_crc32(xdcc *xd, int quiet);
