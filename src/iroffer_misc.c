@@ -1303,7 +1303,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<SND<: %d: %s",gnetwork->net,msg);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<SND<: %d: %s", gnetwork->net +1, msg);
         }
       msg[len] = '\n';
       len++;
@@ -1446,7 +1446,7 @@ void sendserver(void)
       if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %d, %s",gnetwork->net, item);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
         }
       write(gnetwork->ircserver, item, strlen(item));
       write(gnetwork->ircserver, "\n", 1);
@@ -1469,7 +1469,7 @@ void sendserver(void)
       if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %d, %s",gnetwork->net, item);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
         }
       write(gnetwork->ircserver, item, strlen(item));
       write(gnetwork->ircserver, "\n", 1);
@@ -1492,7 +1492,7 @@ void sendserver(void)
       if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<IRC<: %d, %s",gnetwork->net, item);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
         }
       write(gnetwork->ircserver, item, strlen(item));
       write(gnetwork->ircserver, "\n", 1);

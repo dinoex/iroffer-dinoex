@@ -478,9 +478,13 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
    
    len = vsnprintf(tempstr,maxtextlength,format,ap);
    
-   if ((len < 0) || (len >= maxtextlength))
+   if (len < 0)
      {
        snprintf(tempstr, maxtextlength-1, "IOUTPUT-INT: Output too large, ignoring!");
+     }
+   if (len >= maxtextlength)
+     {
+       tempstr[maxtextlength-1] = 0;
      }
 
    /* screen */
@@ -1784,7 +1788,7 @@ void dumpgdata(void)
           (unsigned long)iter->xpack,
           (long)iter->queuedtime);
   ioutput(gdata_common,"  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
-  ioutput(gdata_common, "  : net=%d", iter->net );
+  ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   gdata_irlist_iter_end;
   
   gdata_irlist_iter_start(trans, transfer);
@@ -1793,7 +1797,7 @@ void dumpgdata(void)
           iter->listensocket,
           iter->clientsocket,
           iter->id);
-  ioutput(gdata_common, "  : net=%d", iter->net );
+  ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   ioutput(gdata_common,
           "  : sent=%" LLPRINTFMT "d got=%" LLPRINTFMT "d lastack=%" LLPRINTFMT "d curack=%" LLPRINTFMT "d resume=%" LLPRINTFMT "d speedamt=%" LLPRINTFMT "d tx_bucket=%li",
           (long long)iter->bytessent,
@@ -1856,7 +1860,7 @@ void dumpgdata(void)
           iter->remoteport,
           iter->localip,
           iter->remoteip);
-  ioutput(gdata_common,"  : net=%d", iter->net );
+  ioutput(gdata_common,"  : net=%d", iter->net + 1 );
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
   gdata_iter_print_string(file);
