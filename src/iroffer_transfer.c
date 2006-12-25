@@ -654,6 +654,13 @@ void t_flushed (transfer * const t)
           tempstr,
           ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0));
   
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "Log: Pack %d, Nick %s, Network %s, File %s",
+          number_of_pack(t->xpack),
+          t->nick,
+          gdata.networks[ t->net ].name,
+          t->xpack->desc );
+  
   if (!gdata.quietmode)
     {
       if (t->xpack->has_md5sum)

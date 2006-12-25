@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.00:
 ----------------------
 
+112) Log:
+  generate an extra line in logfile for statistics
+
 bugfix: network
   set a default network name.
 
