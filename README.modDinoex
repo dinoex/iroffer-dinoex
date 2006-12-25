@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.0:
 ---------------------
 
+bugfix: MULTINET
+  in rare situation a buffer from the server could be parsed twice.
+
 112) Log:
   generate an extra line in logfile for statistics
 

@@ -608,6 +608,7 @@ static void mainloop (void) {
          char tempbuffa[INPUT_BUFFER_LENGTH];
          gnetwork->lastservercontact = gdata.curtime;
          gnetwork->servertime = 0;
+         memset(&tempbuffa, 0, INPUT_BUFFER_LENGTH);
          length = read (gnetwork->ircserver, &tempbuffa, INPUT_BUFFER_LENGTH);
          
          if (length < 1) {
