@@ -4,6 +4,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.00:
 ----------------------
 
+bugfix: XDCC REMOVE, XDCC CANCEL
+  let user remove enties mathching him.
+  remove only entries on the same network.
+
 bugfix: IDENTIFY
   avoid multiple identify on connect.
 

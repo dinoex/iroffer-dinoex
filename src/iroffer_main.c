@@ -3033,7 +3033,7 @@ static void privmsgparse(const char* type, char* line) {
          /* stop transfers */
          for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
            {
-             if (!strcmp(tr->nick,nick))
+               if ((tr->net == gnetwork->net) && (!strcasecmp(tr->nick,nick)))
                {
                  if (tr->tr_status != TRANSFER_STATUS_DONE)
                    {
@@ -3050,7 +3050,7 @@ static void privmsgparse(const char* type, char* line) {
          pq = irlist_get_head(&gdata.mainqueue);
          while (pq)
            {
-             if (!strcmp(pq->nick,nick))
+             if ((pq->net == gnetwork->net) && (!strcasecmp(pq->nick,nick)))
                {
                  notice(nick,
                         "Removed you from the queue for \"%s\", you waited %li minute%s.",
