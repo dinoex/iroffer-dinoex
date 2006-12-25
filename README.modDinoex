@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.0:
 ---------------------
 
+113) restrictsend_delay (inspired by Cork)
+  Time in seconds to wait after connect till restrictsend is enforced.
+
 bugfix: MULTINET
   in rare situation a buffer from the server could be parsed twice.
 
@@ -24,7 +27,7 @@ bugfix: SHUTDOWN
   do not try to reconnect on shutdown.
 
 bugfix: REHASH
-  clenanup when netzorks are dropped.
+  clenanup when networks are dropped.
 
 111) (patch by Cork)
   extend info when user is added to main queue.

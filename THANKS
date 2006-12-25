@@ -148,6 +148,7 @@ Cork
 	option "max_find"
 	reporting trigger with restrictprivlist
 	option "respondtochannellistmsg"
+	option "restrictsend_delay"
 
 anibi
 	option "include_subdirs"

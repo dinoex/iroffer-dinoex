@@ -159,6 +159,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"max_upspeed",     &gdata.max_upspeed,     &gdata.max_upspeed,     0, 1000000, 4 },
   {"need_level",      &gdata.need_level,      &gdata.need_level,      0, 3, 0 },
   {"max_find",        &gdata.max_find,        &gdata.max_find,        0, 65000, 1 },
+  {"restrictsend_delay",  &gdata.restrictsend_delay,  &gdata.restrictsend_delay,  0, 2000, 1 },
 };
 
 typedef struct
@@ -2581,6 +2582,7 @@ void reinit_config_vars(void)
   gdata.max_uploads = 65000;
   gdata.max_upspeed = 65000;
   gdata.max_find = 0;
+  gdata.restrictsend_delay = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
@@ -3390,12 +3392,14 @@ void reverify_restrictsend(void)
     {
       return;
     }
-
+  
   backup = gnetwork;
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
     {
       gnetwork = &(gdata.networks[tr->net]);
       if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
+         continue;
+      if (gdata.curtime < gnetwork->next_restrict)
          continue;
       if ((tr->tr_status != TRANSFER_STATUS_DONE) &&
           strcmp(tr->hostname,"man"))

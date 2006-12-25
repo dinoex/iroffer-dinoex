@@ -1944,6 +1944,7 @@ static void parseline(char *line) {
        strcpy(gnetwork->caps_nick,part3);
        caps(gnetwork->caps_nick);
        gnetwork->nick_number = 0;
+       gnetwork->next_restrict = gdata.curtime + gdata.restrictsend_delay;
        gdata.needsclear = 1;
        
        if (gdata.user_modes && strlen(gdata.user_modes))

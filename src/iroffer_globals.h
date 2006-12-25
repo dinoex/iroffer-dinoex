@@ -76,6 +76,7 @@ int nick_number;
 int inamnt[INAMNT_SIZE];
 
 long next_identify;
+long next_restrict;
 
 } gnetwork_t;
 
@@ -186,6 +187,7 @@ int max_uploads;
 int max_upspeed;
 int max_find;
 int include_subdirs;
+int restrictsend_delay;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

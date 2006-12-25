@@ -1487,6 +1487,7 @@ void dumpgdata(void)
   gdata_print_int(max_upspeed);
   gdata_print_int(max_find);
   gdata_print_int(include_subdirs);
+  gdata_print_int(restrictsend_delay);
   gdata_print_string(admin_job_file);
   gdata_print_string(autoaddann);
   gdata_print_string(autoadd_group);
