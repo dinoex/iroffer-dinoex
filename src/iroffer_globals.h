@@ -75,6 +75,8 @@ int recentsent;
 int nick_number;
 int inamnt[INAMNT_SIZE];
 
+long next_identify;
+
 } gnetwork_t;
 
 typedef struct

@@ -1801,6 +1801,41 @@ int disk_full(const char *path)
   return 1;
 }
 
+
+void identify_needed(int force)
+{
+  if (force == 0)
+    {
+      if ((gnetwork->next_identify > 0) && (gnetwork->next_identify < gdata.curtime))
+        return;
+    }
+  /* wait 1 sec before idetify again */
+  gnetwork->next_identify = gdata.curtime + 1;
+  privmsg("nickserv", "IDENTIFY %s", gdata.nickserv_pass);
+  ioutput(CALLTYPE_NORMAL, OUT_S,COLOR_NO_COLOR,
+          "nickserv identify send on %s.", gnetwork->name);
+}
+
+void identify_check(const char *line)
+{
+  if (strstr(line, "Nickname is registered to someone else.") != NULL)
+    {
+      identify_needed(0);
+    }
+  if (strstr(line, "This nickname has been registered") != NULL)
+    {
+      identify_needed(0);
+    }
+  if (strstr(line, "This nickname is registered and protected.") != NULL)
+    {
+      identify_needed(0);
+    }
+  if (strstr(line, "please choose a different nick.") != NULL)
+    {
+      identify_needed(0);
+    }
+}
+
 void a_remove_pack(const userinput * const u, xdcc *xd, int num)
 {
    char *tmpdesc;
@@ -3246,7 +3281,7 @@ void a_identify(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
+  identify_needed(1);
   gnetwork = backup;
   a_respond(u,"nickserv identify send.");
 }

@@ -1900,26 +1900,7 @@ static void parseline(char *line) {
        /* nickserv */
        if (gdata.nickserv_pass)
          {
-           if (strstr(line, "Nickname is registered to someone else.") != NULL)
-             {
-               privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
-               ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"nickserv identify send.");
-             }
-           if (strstr(line, "This nickname has been registered") != NULL)
-             {
-               privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
-               ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"nickserv identify send.");
-             }
-           if (strstr(line, "This nickname is registered and protected.") != NULL)
-             {
-               privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
-               ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"nickserv identify send.");
-             }
-           if (strstr(line, "please choose a different nick.") != NULL)
-             {
-               privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
-               ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"nickserv identify send.");
-             }
+           identify_check(line);
          }
        privmsgparse("NOTICE",line);
      }
@@ -1971,7 +1952,7 @@ static void parseline(char *line) {
        /* nickserv */
        if (gdata.nickserv_pass)
          {
-           privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
+           identify_needed(1);
          }
      }
 
@@ -2293,7 +2274,7 @@ static void parseline(char *line) {
            /* nickserv */
            if (gdata.nickserv_pass)
              {
-               privmsg("nickserv","IDENTIFY %s",gdata.nickserv_pass);
+               identify_needed(1);
              }
            
            /* we changed, update nick */

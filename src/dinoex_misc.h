@@ -41,6 +41,7 @@ void sendannounce(void);
 void stoplist(const char *nick);
 void notifyqueued_nick(const char *nick);
 void look_for_file_remove(void);
+void set_default_network_name(void);
 int has_closed_servers(void);
 int has_joined_channels(int all);
 void reset_download_limits(void);
@@ -72,6 +73,9 @@ void crc32_update(char *buf, unsigned long len);
 void crc32_final(xdcc *xd);
 
 int disk_full(const char *path);
+
+void identify_needed(int force);
+void identify_check(const char *line);
 
 void a_remove_pack(const userinput * const u, xdcc *xd, int num);
 void changesec_dinoex(void);
