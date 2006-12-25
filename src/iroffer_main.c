@@ -665,13 +665,13 @@ static void mainloop (void) {
           if (callval_i < 0)
             {
               outerror(OUTERROR_TYPE_WARN,
-                       "Couldn't determine connection status: %s",
-                       strerror(errno));
+                       "Couldn't determine connection status: %s on %s",
+                       strerror(errno), gnetwork->name);
             }
           else if (connect_error)
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                      "Server Connection Failed: %s", strerror(connect_error));
+                      "Server Connection Failed: %s on %s", strerror(connect_error), gnetwork->name);
             }
           
           if ((callval_i < 0) || connect_error)
@@ -691,7 +691,8 @@ static void mainloop (void) {
 	    SIGNEDSOCK int addrlen; 
 	    struct sockaddr_in localaddr;
           
-	    ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Connection Established, Logging In");
+	    ioutput(CALLTYPE_NORMAL ,OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                    "Server Connection to %s Established, Logging In",  gnetwork->name);
             gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
             FD_CLR(gnetwork->ircserver, &gdata.writeset);
             if (set_socket_nonblocking(gnetwork->ircserver, 0) < 0 )
@@ -715,7 +716,7 @@ static void mainloop (void) {
                       }
                   }
                 else
-                  outerror(OUTERROR_TYPE_WARN,"couldn't get ourip");
+                  outerror(OUTERROR_TYPE_WARN,"couldn't get ourip on %s", gnetwork->name);
               }
 	    
 	    initirc();
@@ -735,8 +736,8 @@ static void mainloop (void) {
           if (length != sizeof(struct in_addr))
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
-                      "Error resolving server %s",
-                      gnetwork->curserver.hostname);
+                      "Error resolving server %s on %s",
+                      gnetwork->curserver.hostname, gnetwork->name);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
           else
@@ -758,7 +759,8 @@ static void mainloop (void) {
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
             {
               kill(gnetwork->serv_resolv.child_pid, SIGKILL);
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Resolve Timed Out (%d seconds)",timeout);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                      "Server Resolve Timed Out (%d seconds) on %s", timeout, gnetwork->name);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
         }
@@ -770,7 +772,8 @@ static void mainloop (void) {
           
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Server Connection Timed Out (%d seconds)",timeout);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                      "Server Connection Timed Out (%d seconds) on %s", timeout, gnetwork->name);
               FD_CLR(gnetwork->ircserver, &gdata.readset);
               /*
                * cygwin close() is broke, if outstanding data is present
@@ -816,8 +819,8 @@ static void mainloop (void) {
               if (callval_i < 0)
                 {
                   outerror(OUTERROR_TYPE_WARN,
-                           "Couldn't determine upload connection status: %s",
-                           strerror(errno));
+                           "Couldn't determine upload connection status on %s: %s",
+                           gnetwork->name, strerror(errno));
                   l_closeconn(ul,"Upload Connection Failed status:",errno);
                 }
               else if (connect_error)
@@ -831,7 +834,8 @@ static void mainloop (void) {
                 }
               else
                 {
-                  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"Upload Connection Established");
+                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                          "Upload Connection Established on %s", gnetwork->name);
                   ul->ul_status = UPLOAD_STATUS_GETTING;
                   FD_CLR(ul->clientsocket, &gdata.writeset);
                   notice(ul->nick,"DCC Connection Established");
@@ -889,15 +893,15 @@ static void mainloop (void) {
               if (callval_i < 0)
                 {
                   outerror(OUTERROR_TYPE_WARN,
-                           "Couldn't determine dcc connection status: %s",
-                           strerror(errno));
+                           "Couldn't determine dcc connection status on %s: %s",
+                           gnetwork->name, strerror(errno));
                   notice(chat->nick, "DCC Chat Connect Attempt Failed: %s", strerror(errno));
                 }
               else if (connect_error)
                 {
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                          "DCC Chat Connect Attempt Failed: %s",
-                          strerror(connect_error));
+                          "DCC Chat Connect Attempt Failed on %s: %s",
+                          gnetwork->name, strerror(connect_error));
                   notice(chat->nick, "DCC Chat Connect Attempt Failed: %s", strerror(connect_error));
                 }
               
@@ -928,7 +932,8 @@ static void mainloop (void) {
                   if (length < 1)
                     {
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                              "DCC Chat Lost: %s",
+                              "DCC Chat Lost on %s: %s",
+                              gnetwork->name,
                               (length<0) ? strerror(errno) : "Closed");
                       notice(chat->nick, "DCC Chat Lost: %s", (length<0) ? strerror(errno) : "Closed");
                       shutdowndccchat(chat,0);
@@ -1322,7 +1327,9 @@ static void mainloop (void) {
                 gnetwork->servertime++;
               }
             else if (gnetwork->servertime == 3) {
-               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Closing Server Connection: No Response for %d minutes.",SRVRTOUT/60);
+               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+                       "Closing Server Connection on %s: No Response for %d minutes.",
+                       gnetwork->name, SRVRTOUT/60);
                FD_CLR(gnetwork->ircserver, &gdata.readset);
                /*
                 * cygwin close() is broke, if outstanding data is present
@@ -1547,8 +1554,9 @@ static void mainloop (void) {
                  (irlist_size(&(gnetwork->serverq_normal)) >= 10) ||
                  (irlist_size(&(gnetwork->serverq_slow)) >= 50))
                {
-                 ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,
-                         "notifications skipped, server queue is rather large");
+                 ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_NO_COLOR,
+                         "notifications skipped on %s, server queue is rather large",
+                         gnetwork->name);
                }
              else
                {
@@ -1808,7 +1816,9 @@ static void mainloop (void) {
             {
               if (gdata.debug > 0)
                 {
-                  ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"Reconnecting to server (%d seconds)",timeout);
+                  ioutput(CALLTYPE_NORMAL, OUT_S,COLOR_YELLOW,
+                          "Reconnecting to server (%d seconds) on %s",
+                          timeout, gnetwork->name);
                 }
               switchserver(-1);
             }
@@ -1993,8 +2003,8 @@ static void parseline(char *line) {
                        (!gnetwork->prefixes[pi].p_mode && gnetwork->prefixes[pi].p_symbol))
                      {
                        outerror(OUTERROR_TYPE_WARN,
-                                "Server prefix list doesn't make sense, using defaults: %s",
-                                item);
+                                "Server prefix list on %s doesn't make sense, using defaults: %s",
+                                gnetwork->name, item);
                        initprefixes();
                      }
                  }
@@ -2024,8 +2034,9 @@ static void parseline(char *line) {
    if ( !strcmp(part2,"433") && part3 && !strcmp(part3,"*") && part4 )
      {
        ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
-               "Nickname %s already in use, trying %s%d",
+               "Nickname %s already in use on %s, trying %s%d",
                part4,
+               gnetwork->name,
                gdata.config_nick,
                gnetwork->nick_number);
        
@@ -2053,8 +2064,9 @@ static void parseline(char *line) {
        
        if (!ch)
          {
-           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
-                   "Got name data for %s which is not a known channel!",part5);
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                   "Got name data for %s which is not a known channel on %s!",
+                   gnetwork->name, part5);
            writeserver(WRITESERVER_NORMAL, "PART %s", part5);
          }
        else
@@ -2072,7 +2084,9 @@ static void parseline(char *line) {
       if (gdata.exiting)
          gnetwork->recentsent = 0;
       else {
-         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Server Closed Connection: %s",line);
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+                 "Server Closed Connection on %s: %s",
+                 gnetwork->name, line);
          
           FD_CLR(gnetwork->ircserver, &gdata.readset);
           /*
@@ -2089,7 +2103,9 @@ static void parseline(char *line) {
  /* server ping */
    if (PING_SRVR && (strncmp(line, "PING :", 6) == 0)) {
       if (gdata.debug > 0)
-         ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Server Ping: %s",line);
+         ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+                 "Server Ping on %s: %s",
+                 gnetwork->name, line);
       writeserver(WRITESERVER_NOW, "PO%s", line+2);
       }
 
@@ -2111,7 +2127,8 @@ static void parseline(char *line) {
           /* we joined */
           /* clear now, we have succesfully logged in */
           gnetwork->serverconnectbackoff = 0;
-          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Joined %s",caps(part3a));
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                  "Joined %s on %s", caps(part3a), gnetwork->name);
           
           ch = irlist_get_head(&(gnetwork->channels));
           while(ch)
@@ -2128,7 +2145,9 @@ static void parseline(char *line) {
 
           if (!ch)
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"%s is not a known channel!",part3a);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                  "%s is not a known channel on %s!",
+                  part3a, gnetwork->name);
             }
 
           /* we have joined all channels => restart transfers if needed */
@@ -2161,7 +2180,9 @@ static void parseline(char *line) {
 	  
 	  if (!ch)
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"%s is not a known channel!",part3a);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                      "%s is not a known channel on %s!",
+                      part3a, gnetwork->name);
             }
 	  else
             {
@@ -2207,7 +2228,9 @@ static void parseline(char *line) {
 	   
 	   if (!ch)
              {
-               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"%s is not a known channel!",part3a);
+               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                       "%s is not a known channel on %s!",
+                       part3a, gnetwork->name);
              }
 	   else
              {
@@ -2314,14 +2337,16 @@ static void parseline(char *line) {
                    /* we were kicked */
                    if ( gdata.noautorejoin )
                      {
-                       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Kicked: %s",line);
+                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                               "Kicked on %s: %s", gnetwork->name, line);
                        ch->flags |= CHAN_KICKED;
                        clearmemberlist(ch);
                        reverify_restrictsend();
                      }
                    else
                      {
-                       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Kicked, Rejoining: %s",line);
+                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                               "Kicked on %s, Rejoining: %s", gnetwork->name, line);
                        joinchannel(ch);
                        ch->flags &= ~CHAN_ONCHAN;
                      }
@@ -2721,14 +2746,16 @@ static void privmsgparse(const char* type, char* line) {
           if ( verifyhost(&gdata.adminhost, hostmask) )
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                      "DCC CHAT attempt authorized from %s", hostmask);
+                      "DCC CHAT attempt authorized from %s on %s",
+                      hostmask, gnetwork->name);
               setupdccchat(nick, line);
             }
           else
            {
              notice(nick,"DCC Chat denied from %s",hostmask);
              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                     "DCC CHAT attempt denied from %s", hostmask);
+                     "DCC CHAT attempt denied from %s on %s",
+                      hostmask, gnetwork->name);
            }
         }
       
@@ -2741,38 +2768,44 @@ static void privmsgparse(const char* type, char* line) {
           if ( !verifyhost(&gdata.uploadhost, hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied from %s",hostmask);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied from %s on %s",
+                      hostmask, gnetwork->name);
             }
           else if ( gdata.uploadmaxsize && atoull(msg6) > gdata.uploadmaxsize)
             {
               notice(nick,"DCC Send Denied, I don't accept transfers that big");
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (Too Big) from %s",hostmask);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied (Too Big) from %s on %s",
+                      hostmask, gnetwork->name);
             }
           else if ( atoull(msg6) > gdata.max_file_size)
             {
               notice(nick,"DCC Send Denied, I can't accept transfers that large");
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (Too Large) from %s",hostmask);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied (Too Large) from %s on %s",
+                      hostmask, gnetwork->name);
             }
           else if (irlist_size(&gdata.uploads) >= MAXUPLDS)
             {
               notice(nick,"DCC Send Denied, I'm already getting too many files");
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (too many uploads) from %s",hostmask);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied (too many uploads) from %s on %s",
+                      hostmask, gnetwork->name);
             }
           else if (irlist_size(&gdata.uploads) >= gdata.max_uploads)
             {
               notice(nick,"DCC Send Denied, I'm already getting too many files");
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (too many uploads) from %s",hostmask);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied (too many uploads) from %s on %s",
+                      hostmask, gnetwork->name);
             }
           else if (disk_full(gdata.uploaddir) != 0)
             {
               notice(nick,"DCC Send Denied, not enough free space on disk");
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (not enough free space on disk) from %s",hostmask);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied (not enough free space on disk) from %s on %s",
+                      hostmask, gnetwork->name);
             }
           else
             {
@@ -2790,7 +2823,8 @@ static void privmsgparse(const char* type, char* line) {
               strcpy(ul->hostname,hostname);
               ul->net = gnetwork->net;
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                      "DCC Send Accepted from %s: %s (%" LLPRINTFMT "iKB)", nick, ul->file,
+                      "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "iKB)",
+                      nick, gnetwork->name, ul->file,
                       (long long)(ul->totalsize / 1024));
               l_establishcon(ul);
             }
@@ -2805,20 +2839,23 @@ static void privmsgparse(const char* type, char* line) {
           if ( !verifyhost(&gdata.uploadhost, hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied from %s",hostmask);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied from %s on %s",
+                      hostmask, gnetwork->name);
             }
           else if ( gdata.uploadmaxsize && atoull(msg5) > gdata.uploadmaxsize)
             {
               notice(nick,"DCC Send Denied, I don't accept transfers that big");
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                      "DCC Send denied from %s (too big)", hostmask);
+                      "DCC Send denied from %s on %s (too big)",
+                      hostmask, gnetwork->name);
             }
           else if ( atoull(msg5) > gdata.max_file_size)
             {
               notice(nick,"DCC Send Denied, I can't accept transfers that large");
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                      "DCC Send denied from %s (too large)", hostmask);
+                      "DCC Send denied from %s on %s (too large)",
+                      hostmask, gnetwork->name);
             }
           
           ul = irlist_get_head(&gdata.uploads);
@@ -2827,8 +2864,9 @@ static void privmsgparse(const char* type, char* line) {
               if ((ul->remoteport == atoi(msg4)) && !strcmp(ul->nick, nick))
                 {
                   ul->resumed = 1;
-                  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"DCC Send Resumed from %s: %s (%" LLPRINTFMT "i of %" LLPRINTFMT "iKB left)",
-                          nick, ul->file,
+                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                          "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "i of %" LLPRINTFMT "iKB left)",
+                          nick, gnetwork->name, ul->file,
                           (long long)((ul->totalsize - ul->resumesize) / 1024),
                           (long long)(ul->totalsize / 1024));
                   l_establishcon(ul);
@@ -2840,7 +2878,9 @@ static void privmsgparse(const char* type, char* line) {
           if (!ul)
             {
               notice(nick, "DCC Resume Denied, unable to find transfer");
-              outerror(OUTERROR_TYPE_WARN, "Couldn't find upload that %s tried to resume!", nick);
+              outerror(OUTERROR_TYPE_WARN,
+                       "Couldn't find upload that %s on %s tried to resume!",
+                       nick, gnetwork->name);
             }
         }
    }
@@ -2868,12 +2908,16 @@ static void privmsgparse(const char* type, char* line) {
             }
          else {
             notice(nick,"ADMIN: Incorrect Password");
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"Incorrect ADMIN Password (%s)",hostmask);
+            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                    "Incorrect ADMIN Password (%s on %s)",
+                    hostmask, gnetwork->name);
             }
          }
       else {
          notice(nick,"ADMIN: %s is not allowed to issue admin commands",hostmask);
-         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"Incorrect ADMIN Hostname (%s)",hostmask);
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                 "Incorrect ADMIN Hostname (%s on %s)",
+                 hostmask, gnetwork->name);
          }
       }
    
@@ -3003,45 +3047,55 @@ static void privmsgparse(const char* type, char* line) {
                }
 	   }
 	 
-         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC LIST %s: (%s)",
-                 (j==1?"ignored":(j==2?"denied":(j==3?msg3:"queued"))),hostmask);
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                 "XDCC LIST %s: (%s on %s)",
+                 (j==1?"ignored":(j==2?"denied":(j==3?msg3:"queued"))),
+                 hostmask, gnetwork->name);
          
          }
       else if (gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest))
 	{
          
          if ( msg2 && msg3 && (!strcmp(msg2,"SEND") || !strcmp(msg2,"GET"))) {
-         if (!gdata.attop) gototop();
-         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC SEND %s",msg3);
-         sendxdccfile(nick, hostname, hostmask, packnumtonum(msg3), NULL, msg4);
+           if (!gdata.attop) gototop();
+           ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                   "XDCC SEND (%s on %s)",
+                   msg3, gnetwork->name);
+           sendxdccfile(nick, hostname, hostmask, packnumtonum(msg3), NULL, msg4);
          }
          else if ( msg2 && msg3 && (!strcmp(msg2,"INFO"))) {
-         if (!gdata.attop) gototop();
-         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC INFO %s",msg3);
-         sendxdccinfo(nick, hostname, hostmask, packnumtonum(msg3), NULL);
+           if (!gdata.attop) gototop();
+           ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                   "XDCC INFO (%s on %s)",
+                   msg3, gnetwork->name);
+           sendxdccinfo(nick, hostname, hostmask, packnumtonum(msg3), NULL);
          }
          else if ( msg2 && !strcmp(msg2,"QUEUE")) {
-         if (!gdata.attop) gototop();
-         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC QUEUE (%s)\n",hostmask);
-         notifyqueued_nick(nick);
+           if (!gdata.attop) gototop();
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                   "XDCC QUEUE (%s on %s)",
+                   hostmask, gnetwork->name);
+           notifyqueued_nick(nick);
          }
          else if ( msg2 && !strcmp(msg2,"STOP")) {
-         stoplist(nick);
+           stoplist(nick);
          }
          else if ( msg2 && !strcmp(msg2,"CANCEL")) {
          if (!gdata.attop) gototop();
-         /* stop transfers */
-         for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
-           {
+           /* stop transfers */
+           for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
+             {
                if ((tr->net == gnetwork->net) && (!strcasecmp(tr->nick,nick)))
-               {
-                 if (tr->tr_status != TRANSFER_STATUS_DONE)
-                   {
-                     t_closeconn(tr,"Tranfer cancelled by user",0);
-                   }
-               }
-           }
-         ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC CANCEL (%s)\n",hostmask);
+                 {
+                   if (tr->tr_status != TRANSFER_STATUS_DONE)
+                     {
+                       t_closeconn(tr,"Tranfer cancelled by user",0);
+                     }
+                 }
+             }
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                   "XDCC CANCEL (%s on %s)",
+                   hostmask, gnetwork->name);
          }
 	 else if ( msg2 && !strcmp(msg2,"REMOVE")) {
          if (!gdata.attop) gototop();
@@ -3068,11 +3122,15 @@ static void privmsgparse(const char* type, char* line) {
                }
            }
          if (!k) notice(nick,"You Don't Appear To Be In A Queue");
-         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC REMOVE (%s) ",hostmask);
-         
+           
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                   "XDCC REMOVE (%s on %s) ",
+                   hostmask, gnetwork->name);
          }
          else if ( msg2 && !strcmp(msg2,"OWNER")) {
-           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC OWNER (%s) ",hostmask);
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                 "XDCC OWNER (%s on %s) ",
+                 hostmask, gnetwork->name);
            notice(nick, "Owner for this bots is: %s",
                   gdata.owner_nick ? gdata.owner_nick : "(unknown)");
          }
@@ -3108,11 +3166,15 @@ static void privmsgparse(const char* type, char* line) {
            {
              notice_slow(nick,"Sorry, nothing was found, try a XDCC LIST");
            }
-         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC SEARCH %s (%s)",msg3,hostmask);
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                   "XDCC SEARCH %s (%s on %s)",
+                   msg3, hostmask, gnetwork->name);
          
          }
          else if ( msg2 )  {
-           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC unsupported (%s) ",hostmask);
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                   "XDCC unsupported (%s on %s) ",
+                   hostmask, gnetwork->name);
            notice(nick, "Sorry, this command is unsupported" );
          }
       }
@@ -3190,7 +3252,9 @@ static void privmsgparse(const char* type, char* line) {
               msglog_t *ml;
               char *begin;
               
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_GREEN,"%s from %s logged, use MSGREAD to display it.",type,nick);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_GREEN,
+                      "%s from %s on %s logged, use MSGREAD to display it.",
+                      type, nick, gnetwork->name);
               
               ml = irlist_add(&gdata.msglog, sizeof(msglog_t));
               
@@ -3472,14 +3536,15 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
  done:
    
    if (!man)
-      ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"%s (%s)",nick,hostname);
+      ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "%s (%s on %s)",
+              nick, hostname, gnetwork->name);
    
    if (unlimitedhost)
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-              "unlimitedhost found: %s (%s)",
-               nick, hostname);
-   
-   }
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "unlimitedhost found: %s (%s on %s)",
+              nick, hostname, gnetwork->name);
+}
    
 void sendxdccinfo(const char* nick,
                   const char* hostname,
@@ -3585,7 +3650,9 @@ void sendxdccinfo(const char* nick,
   
  done:
   
-  ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"%s (%s)",nick,hostname);
+  ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "%s (%s on %s)",
+          nick, hostname, gnetwork->name);
   
   return;
 }
@@ -3735,21 +3802,21 @@ void sendaqueue(int type)
       
       if (type == 1)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-                  "QUEUED SEND (low bandwidth): %s (%s)",
-                  pq->nick, pq->hostname);
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                  "QUEUED SEND (low bandwidth): %s (%s on %s)",
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name);
         }
       else if (type == 2)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-                  "QUEUED SEND (manual): %s (%s)",
-                  pq->nick, pq->hostname);
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                  "QUEUED SEND (manual): %s (%s on %s)",
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name);
         }
       else
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-                  "QUEUED SEND: %s (%s)",
-                  pq->nick, pq->hostname);
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                  "QUEUED SEND: %s (%s on %s)",
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name);
         }
       
       look_for_file_changes(pq->xpack);
@@ -3772,9 +3839,9 @@ void sendaqueue(int type)
       snprintf(hostmask,len,"%s!*@%s",tr->nick,tr->hostname);
       tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
       if (tr->unlimited)
-        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-                "unlimitedhost found: %s (%s)",
-                tr->nick, tr->hostname);
+        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                "unlimitedhost found: %s (%s on %s)",
+                tr->nick, tr->hostname, gdata.networks[ tr->net ].name);
       tr->nomax = tr->unlimited;
       tr->net = pq->net;
       mydelete(hostmask);
@@ -3814,11 +3881,3 @@ void sendaqueue(int type)
 }
 
 /* End of File */
-
-
-
-
-
-
-
-   

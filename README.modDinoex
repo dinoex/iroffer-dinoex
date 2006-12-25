@@ -72,7 +72,7 @@ bugfix: GEOIP (reported by TheDeath)
   restrictlist and restrictsend must be set yes.
 
 make MULTINET default
-  extend debug information
+  extend debug and log information.
 
 100) extern PSEND (inspired by TheDeath)
   give an error when the chan is not found
