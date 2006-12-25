@@ -4,6 +4,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.00:
 ----------------------
 
+bugfix: SHUTDOWN
+  do not try to reconnect on shutdown.
+
 bugfix: REHASH
   clenanup when netzorks are dropped.
 

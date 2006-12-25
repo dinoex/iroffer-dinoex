@@ -2255,7 +2255,7 @@ static void parseline(char *line) {
        if (!strcmp(caps(nick),gnetwork->caps_nick))
 	 {
 	   /* we quit? */
-	   ;
+           gnetwork->serverstatus = SERVERSTATUS_EXIT;
 	 }
        else
 	 {

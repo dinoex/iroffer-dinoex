@@ -53,6 +53,7 @@ enum
   SERVERSTATUS_RESOLVING,
   SERVERSTATUS_TRYING,
   SERVERSTATUS_CONNECTED,
+  SERVERSTATUS_EXIT,
 } serverstatus;
 long lastservercontact;
 irlist_t serverq_fast;
