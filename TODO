@@ -7,7 +7,6 @@ Short Term Features:
    165 02/03/01 Open specify more than one type of plist for a single channel with different times
    164 02/03/01 Open remove dead users from queue
    150 01/30/01 Open keep track of how long its been since on a server and/or on a channel  
-?  145 12/21/00 Open option to respond to unknown command
 ?  144 12/21/00 Open reorder queue members
    141 11/12/00 Open send credit line when sending packs
    138 7/16/00 Open compress old logs
@@ -33,7 +32,6 @@ Long Term Features:
    123 10/21/99 Open lock console with password
    118 long ago Open telnet admin
    148 01/01/01 Open channel file for dynamic channels, read in like another config file and written by admin commands
-   187 12/09/03 Open lock/busy-out packs from gets
    190 12/09/03 Open different bandwidth limiting for each day of the week
    195 12/09/03 Open IPv6 support
    208 4/13/04 Open SSL connections to irc server

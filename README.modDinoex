@@ -73,6 +73,11 @@ bugfix: GEOIP (reported by TheDeath)
 103) XDCC #1
   report unsupported commands to user
 
+   References TODO:
+Short Term Features
+?  145 12/21/00 Open option to respond to unknown command
+
+
 102) XDCC OWNER (inspired by Road)
   report nick of owner, so someone can contact him in case of trouble.
 
@@ -540,6 +545,10 @@ bugfix: channel -headline (inspired by Chobits)
 
    new admin commands:
    CHLIMIT <pack> <x>         do not allow more than x downloads per day
+
+   References TODO:
+Long Term Features:
+   187 12/09/03 Open lock/busy-out packs from gets
 
 37) chlimitinfo (inspired by Chobits)
 
