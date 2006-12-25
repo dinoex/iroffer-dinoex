@@ -339,6 +339,7 @@ void getconfig_set (const char *line, int rehash)
        server_t *ss;
        char *portstr;
 
+       set_default_network_name();
        ss = irlist_add(&gdata.networks[gdata.networks_online].servers, sizeof(*ss));
        ss->hostname = getpart(var,1);
        portstr = getpart(var,2);
@@ -399,6 +400,7 @@ void getconfig_set (const char *line, int rehash)
                snprintf(var, 10, "%d", gdata.networks_online);
              }
            gdata.networks[gdata.networks_online].name = var;
+           set_default_network_name();
            gdata.networks[gdata.networks_online].net = gdata.networks_online;
          }
      }
