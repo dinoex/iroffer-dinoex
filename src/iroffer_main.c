@@ -1883,7 +1883,7 @@ static void parseline(char *line) {
    line[maxtextlength-1] = '\0';
    
    if (gdata.debug > 0)
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_CYAN,">IRC>: %d, %s",gnetwork->net,line);
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_CYAN, ">IRC>: %d, %s", gnetwork->net + 1, line);
    
    part2 = getpart(line,2);
    if (part2 == NULL)
@@ -2066,7 +2066,7 @@ static void parseline(char *line) {
          {
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                    "Got name data for %s which is not a known channel on %s!",
-                   gnetwork->name, part5);
+                   part5, gnetwork->name);
            writeserver(WRITESERVER_NORMAL, "PART %s", part5);
          }
        else
