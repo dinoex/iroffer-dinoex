@@ -181,8 +181,9 @@ void t_establishcon (transfer * const t) {
    else
       t->localip = ntohl(temp1.sin_addr.s_addr);
    
-   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC [%02i:%s]: Connection established (%ld.%ld.%ld.%ld:%d -> %ld.%ld.%ld.%ld:%d)",
-            t->id,t->nick,
+   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "XDCC [%02i:%s on %s]: Connection established (%ld.%ld.%ld.%ld:%d -> %ld.%ld.%ld.%ld:%d)",
+            t->id, t->nick, gdata.networks[ t->net ].name,
             t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF, t->remoteport,
             t->localip>>24, (t->localip>>16) & 0xFF, (t->localip>>8) & 0xFF, t->localip & 0xFF, t->listenport
             );
@@ -600,9 +601,9 @@ void t_istimeout (transfer * const t)
       if (!t->close_to_timeout)
         {
           if (!gdata.attop) gototop();
-          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-                  "XDCC [%02i:%s]: Connection close to timeout 30 sec remain",
-                  t->id, t->nick);
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                  "XDCC [%02i:%s on %s]: Connection close to timeout 30 sec remain",
+                  t->id, t->nick, gdata.networks[ t->net ].name);
         }
       t->close_to_timeout = 1;
     }
@@ -647,9 +648,9 @@ void t_flushed (transfer * const t)
   snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
            " %" LLPRINTFMT "u.%03" LLPRINTFMT "u sec", (timetookms%(60*1000))/1000, (timetookms%1000));
   
-  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-          "XDCC [%02i:%s]: Transfer Completed (%" LLPRINTFMT "i KB,%s, %0.1f KB/sec)",
-          t->id,t->nick,
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC [%02i:%s on %s]: Transfer Completed (%" LLPRINTFMT "i KB,%s, %0.1f KB/sec)",
+          t->id, t->nick, gdata.networks[ t->net ].name,
           (long long )(t->xpack->st_size-t->startresume)/1024,
           tempstr,
           ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0));
@@ -744,15 +745,15 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
   
   if (errno1)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-              "XDCC [%02i:%s]: Connection closed: %s (%s)",
-              t->id, t->nick,msg, strerror(errno1));
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "XDCC [%02i:%s on %s]: Connection closed: %s (%s)",
+              t->id, t->nick,msg, gdata.networks[ t->net ].name, strerror(errno1));
     }
   else
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-              "XDCC [%02i:%s]: Connection closed: %s",
-              t->id, t->nick,msg);
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "XDCC [%02i:%s on %s]: Connection closed: %s",
+              t->id, t->nick,msg, gdata.networks[ t->net ].name);
     }
   
   if (t->tr_status == TRANSFER_STATUS_DONE)
@@ -924,9 +925,9 @@ void t_checkminspeed(transfer * const t) {
        
        backup = gnetwork;
        gnetwork = &(gdata.networks[t->net]);
-       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
-               "Punish-ignore activated for %s (%s) %d minutes",
-               t->nick,
+       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+               "Punish-ignore activated for (%s on %s) (%s) %d minutes",
+               t->nick, gdata.networks[ t->net ].name,
                ignore->hostmask,
                gdata.punishslowusers);
        

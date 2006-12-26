@@ -599,7 +599,9 @@ void stoplist(const char *nick)
   char *inick;
   int stopped = 0;
   
-  ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"XDCC STOP from %s", nick);
+  ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC STOP from (%s on %s)",
+          nick, gnetwork->name);
   item = irlist_get_head(&(gnetwork->xlistqueue));
   while (item)
     {
@@ -893,8 +895,10 @@ void check_new_connection(transfer *const tr)
   
 #ifdef USE_GEOIP
   country = check_geoip(tr);
-  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"GeoIP [%s]: Info %ld.%ld.%ld.%ld -> %s)",
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "GeoIP [%s on %s]: Info %ld.%ld.%ld.%ld -> %s)",
             tr->nick,
+            gdata.networks[ tr->net ].name,
             tr->remoteip>>24, (tr->remoteip>>16) & 0xFF,
             (tr->remoteip>>8) & 0xFF, tr->remoteip & 0xFF,
             country);

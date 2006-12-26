@@ -118,8 +118,9 @@ int setupdccchatout(const char *nick)
   privmsg_fast(nick,"\1DCC CHAT CHAT %lu %d\1",gdata.ourip,listenport);
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "DCC CHAT sent to %s, waiting for connection on %lu.%lu.%lu.%lu:%d",
+          "DCC CHAT sent to %s on %s, waiting for connection on %lu.%lu.%lu.%lu:%d",
           nick,
+          gnetwork->name,
           (gdata.ourip >> 24) & 0xFF,
           (gdata.ourip >> 16) & 0xFF,
           (gdata.ourip >>  8) & 0xFF,
@@ -321,8 +322,9 @@ int setupdccchat(const char *nick,
   chat->net = gnetwork->net;
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "DCC CHAT received from %s, attempting connection to %lu.%lu.%lu.%lu:%d",
+          "DCC CHAT received from %s on %s, attempting connection to %lu.%lu.%lu.%lu:%d",
           nick,
+          gnetwork->name,
           (chat->remoteip >> 24) & 0xFF,
           (chat->remoteip >> 16) & 0xFF,
           (chat->remoteip >>  8) & 0xFF,

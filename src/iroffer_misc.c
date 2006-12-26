@@ -544,7 +544,9 @@ void getconfig_set (const char *line, int rehash)
          mydelete(tptr2);
          }
       
-      if (!ok) ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR," !!! Bad syntax for channel %s in config file !!!",tname);
+      if (!ok) ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                       " !!! Bad syntax for channel %s on %s in config file !!!",
+                       tname, gnetwork->name);
       
       if (cptr->plisttime && (cptr->plistoffset >= cptr->plisttime))
         {
@@ -2204,7 +2206,8 @@ void switchserver(int which)
   if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
     {
       writeserver(WRITESERVER_NOW, "QUIT :Changing Servers");
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Changing Servers");
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+              "Changing Servers on %s", gnetwork->name);
       
       FD_CLR(gnetwork->ircserver, &gdata.readset);
       /*
@@ -3365,9 +3368,9 @@ void user_changed_nick(const char *oldnick, const char *newnick)
               if ( userinqueue > gdata.maxqueueditemsperperson )
                 {
                   notice(pq->nick,"** Removed From Queue: To many requests");
-                  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-                          "Removed From Queue: To many requests for %s.",
-                          pq->nick);
+                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                          "Removed From Queue: To many requests for %s on %s.",
+                          pq->nick, gdata.networks[ pq->net ].name);
                   mydelete(pq->nick);
                   mydelete(pq->hostname);
 	          old = pq;
@@ -3450,9 +3453,9 @@ void reverify_restrictsend(void)
           else if ((gdata.curtime - pq->restrictsend_bad) >= gdata.restrictsend_timeout)
             {
               notice(pq->nick,"** Removed From Queue: You are no longer on a known channel");
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
-                      "Removed From Queue: %s not in known Channel.",
-                       pq->nick);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                      "Removed From Queue: %s on %s not in known Channel.",
+                       pq->nick, gdata.networks[ pq->net ].name);
               mydelete(pq->nick);
               mydelete(pq->hostname);
               pq = irlist_delete(&gdata.mainqueue, pq);
