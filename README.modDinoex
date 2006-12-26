@@ -274,7 +274,7 @@ With Version mod 1.27:
   this makes it easier to get unnbanned in euirc.net
 
 70) noautorejoin
-  do not rejoin the cnahell when bot is kicked.
+  do not rejoin the channel when bot is kicked.
 
 71) auto_crc_check
   compute crc32 for new files and  lock them when crc does not match
