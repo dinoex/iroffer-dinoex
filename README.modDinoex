@@ -4,6 +4,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.0:
 ---------------------
 
+114) DCL, DCLD (inspired by PiRaTe, TheDeath)
+  extend output for transfers started with FETCH
+
+bugfix: FETCH
+  show active uploads even when no other transfer is running.
+
 113) restrictsend_delay (inspired by Cork)
   Time in seconds to wait after connect till restrictsend is enforced.
 

@@ -1665,7 +1665,7 @@
 1684 "Cleared download counter for each pack"
 1685 "max_uploads"
 1686 "max_upspeed"
-1687 "    .  fetch       %s   Receiving"
+1687 "    .  fetch       %-32s   Receiving %d%%"
 1688 "                   %s"
 1689 "Pack %d: Cant Access Offered File '%s': %s"
 1690 "Pack %d: Cant Access Offered File Details '%s': %s"

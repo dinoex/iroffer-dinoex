@@ -1014,7 +1014,7 @@ void check_duplicateip(transfer *const newtr)
 #ifdef USE_CURL
 static CURLM *cm;
 static irlist_t fetch_trans;
-static int fetch_started;
+int fetch_started;
 #endif /* USE_CURL */
 
 static xdcc xdcc_statefile;
@@ -1413,6 +1413,7 @@ typedef struct
   off_t resumesize;
   char *errorbuf;
   CURL *curlhandle;
+  long starttime;
 } fetch_curl_t;
 
 void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd)
@@ -1557,6 +1558,7 @@ void start_fetch_url(const userinput *const u)
   ft->writefd = writefd;
   ft->resumesize = resumesize;
   ft->errorbuf = mycalloc(CURL_ERROR_SIZE);
+  ft->starttime = gdata.curtime;
 
   updatecontext();
   ch = curl_easy_init();
@@ -1664,12 +1666,23 @@ void start_fetch_url(const userinput *const u)
 void dinoex_dcl(const userinput *const u)
 {
   fetch_curl_t *ft;
+  double dl_total;
+  double dl_size;
+  int progress;
 
   updatecontext();
   ft = irlist_get_head(&fetch_trans);
   while(ft)
-    {
-      a_respond(u,"    .  fetch       %s   Receiving", ft->name);
+    { 
+      dl_size = 0.0;
+      curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD, &dl_size);
+
+      dl_total = 0.0;
+      curl_easy_getinfo(ft->curlhandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &dl_total);
+
+      progress = 0;
+      progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
+      a_respond(u,"    .  fetch       %-32s   Receiving %d%%", ft->name, progress);
       ft = irlist_get_next(ft);
     }
 }
@@ -1677,13 +1690,49 @@ void dinoex_dcl(const userinput *const u)
 void dinoex_dcld(const userinput *const u)
 {
   fetch_curl_t *ft;
+  double dl_total;
+  double dl_size;
+  double dl_speed;
+  double dl_time;
+  int progress;
+  int started;
+  int left;
 
   updatecontext();
   ft = irlist_get_head(&fetch_trans);
   while(ft)
     {
-      a_respond(u,"    .  fetch       %s   Receiving", ft->name);
+      dl_size = 0.0;
+      curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD, &dl_size);
+
+      dl_total = 0.0;
+      curl_easy_getinfo(ft->curlhandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &dl_total);
+
+      dl_speed = 0.0;
+      curl_easy_getinfo(ft->curlhandle, CURLINFO_SPEED_DOWNLOAD, &dl_speed);
+
+      dl_time = 0.0;
+      curl_easy_getinfo(ft->curlhandle, CURLINFO_TOTAL_TIME, &dl_time);
+      
+      started = min2(359999, gdata.curtime - ft->starttime);
+      left = min2(359999, (dl_total - dl_size) /
+                          ((int)(max2(dl_speed, 1))));
+      progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
+      a_respond(u,"    .  fetch       %-32s   Receiving %d%%", ft->name, progress);
       a_respond(u,"                   %s", ft->url);
+      a_respond(u,"  ^- %5.1fK/s    %6" LLPRINTFMT "iK/%6" LLPRINTFMT "iK  %2i%c%02i%c/%2i%c%02i%c",
+                  (float)(dl_speed/1024),
+                  (long long)(dl_size/1024),
+                  (long long)(dl_total/1024),
+                  started < 3600 ? started/60 : started/60/60 ,
+                  started < 3600 ? 'm' : 'h',
+                  started < 3600 ? started%60 : (started/60)%60 ,
+                  started < 3600 ? 's' : 'm',
+                  left < 3600 ? left/60 : left/60/60 ,
+                  left < 3600 ? 'm' : 'h',
+                  left < 3600 ? left%60 : (left/60)%60 ,
+                  left < 3600 ? 's' : 'm');
+
       ft = irlist_get_next(ft);
     }
 }
