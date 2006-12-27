@@ -1014,7 +1014,11 @@ static void u_dcl(const userinput * const u)
 
   updatecontext();
   
+#ifdef USE_CURL
+  if (!irlist_size(&gdata.trans) && !irlist_size(&gdata.uploads) && !fetch_started)
+#else
   if (!irlist_size(&gdata.trans) && !irlist_size(&gdata.uploads))
+#endif
     {
       u_respond(u,"No Active Transfers");
       return;
@@ -1066,7 +1070,11 @@ static void u_dcl(const userinput * const u)
       tr = irlist_get_next(tr);
     }
   
+#ifdef USE_CURL
+  if (irlist_size(&gdata.uploads) || fetch_started)
+#else
   if (irlist_size(&gdata.uploads))
+#endif
     {
       u_respond(u,"Current Upload%s",irlist_size(&gdata.uploads)!=1?"s":"");
       u_respond(u,"   ID  User        File                               Status");
@@ -1128,7 +1136,11 @@ static void u_dcld(const userinput * const u)
   
   updatecontext();
   
+#ifdef USE_CURL
+  if (!irlist_size(&gdata.trans) && !irlist_size(&gdata.uploads) && !fetch_started)
+#else
   if (!irlist_size(&gdata.trans) && !irlist_size(&gdata.uploads))
+#endif
     {
       u_respond(u,"No Active Transfers");
       return;
@@ -1221,7 +1233,11 @@ static void u_dcld(const userinput * const u)
       tr = irlist_get_next(tr);
     }
   
+#ifdef USE_CURL
+  if (irlist_size(&gdata.uploads) || fetch_started)
+#else
   if (irlist_size(&gdata.uploads))
+#endif
     {
       u_respond(u,"Current Upload%s",irlist_size(&gdata.uploads)!=1?"s":"");
       u_respond(u," ID  User        File                               Status");
@@ -1296,14 +1312,14 @@ static void u_dcld(const userinput * const u)
       i++;
     }
   
-  u_respond(u," --------------------------------------------------------------------");
-  
   mydelete(tempstr2);
   mydelete(tempstr3);
   mydelete(tempstr4);
 #ifdef USE_CURL
   dinoex_dcld(u);
 #endif
+  
+  u_respond(u," --------------------------------------------------------------------");
 }
 
 static void u_qul(const userinput * const u)
