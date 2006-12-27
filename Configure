@@ -6,8 +6,8 @@
 #
 
 VERSION=1.4.b03
-RELEASE=0
-MOD="2.00"
+RELEASE=1
+MOD="2.0"
 
 if [ $RELEASE -eq 1 ]; then
  VERSIONLONG="$VERSION mod by Dinoex $MOD"
