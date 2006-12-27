@@ -138,6 +138,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_qsend,    "QSEND",NULL,"Sends Out The First Queued Pack"},
 {2,method_allow_all,a_slotsmax, "SLOTSMAX","[n]","temporary change slotsmax"},
 {2,method_allow_all,a_queuesize, "QUEUESIZE","[n]","temporary change queuesize"},
+{2,method_allow_all,a_requeue,  "REQUEUE","x y","Moves Queue Entry x to y"},
 
 {3,method_allow_all,u_info,     "INFO","n","Show Info for Pack n"},
 {3,method_allow_all,u_remove,   "REMOVE","n <m>","Removes Pack n or n to m"},

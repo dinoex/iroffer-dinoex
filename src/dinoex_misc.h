@@ -86,6 +86,7 @@ void a_xdlock(const userinput * const u);
 void a_unlimited(const userinput * const u);
 void a_slotsmax(const userinput * const u);
 void a_queuesize(const userinput * const u);
+void a_requeue(const userinput * const u);
 
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d);
 void a_removegroup(const userinput * const u);

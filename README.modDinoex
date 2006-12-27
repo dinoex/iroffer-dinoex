@@ -4,6 +4,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.0:
 ---------------------
 
+115) REQUEUE
+
+   new admin commands:
+   REQUEUE <x> <y>                   Moves Queue Entry x to y
+
+   References TODO:
+Short Term Features:
+   144 12/21/00 Open reorder queue members
+
 114) DCL, DCLD (inspired by PiRaTe, TheDeath)
   extend output for transfers started with FETCH
 

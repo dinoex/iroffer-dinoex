@@ -2175,6 +2175,44 @@ void a_queuesize(const userinput * const u)
    a_respond(u,"QUEUESIZE now %d", gdata.queuesize);
 }
 
+void a_requeue(const userinput * const u)
+{
+  int oldp = 0, newp = 0;
+  pqueue *pqo;
+  pqueue *pqn;
+
+  updatecontext();
+
+  if (u->arg1) oldp = atoi(u->arg1);
+  if (u->arg2) newp = atoi(u->arg2);
+
+  if ((oldp < 1) ||
+      (oldp > irlist_size(&gdata.mainqueue)) ||
+      (newp < 1) ||
+      (newp > irlist_size(&gdata.mainqueue)) ||
+      (newp == oldp))
+    {
+      a_respond(u,"Invalid Queue Entry");
+      return;
+    }
+
+  a_respond(u,"** Moved Queue %i to %i", oldp, newp);
+
+  /* get queue we are renumbering */
+  pqo = irlist_get_nth(&gdata.mainqueue, oldp-1);
+  irlist_remove(&gdata.mainqueue, pqo);
+
+  if (newp == 1)
+    {
+      irlist_insert_head(&gdata.mainqueue, pqo);
+    }
+  else
+    {
+      pqn = irlist_get_nth(&gdata.mainqueue, newp-2);
+      irlist_insert_after(&gdata.mainqueue, pqo, pqn);
+    }
+}
+
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
 {
   struct dirent *f;

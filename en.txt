@@ -1702,3 +1702,7 @@
 1721 "Log: Pack %d, Nick %s, Network %s, File %s"
 1722 "restrictsend_delay"
 1723 "Punish-ignore activated for (%s on %s) (%s) %d minutes"
+1724 "REQUEUE"
+1725 "Moves Queue Entry x to y"
+1726 "Invalid Queue Entry"
+1727 "** Moved Queue %i to %i"
