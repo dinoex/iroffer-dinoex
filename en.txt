@@ -41,7 +41,7 @@
 42 "PSEND"
 44 "Sends <style> (full|minimal|summary) XDCC LIST to <channel>"
 45 "QSEND"
-46 "Sends Out The First Queued Pack"
+46 "Sends Out The Next Queued Pack"
 47 "INFO"
 48 "Show Info for Pack n"
 49 "REMOVE"

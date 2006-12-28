@@ -135,7 +135,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_send,     "SEND","nick n [<net>]","Sends Pack n to nick"},
 {2,method_allow_all,u_queue,    "QUEUE","nick n [<net>]","Queues Pack n for nick"},
 {2,method_allow_all,u_psend,    "PSEND","<channel> <style> [<net>]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
-{2,method_allow_all,u_qsend,    "QSEND",NULL,"Sends Out The First Queued Pack"},
+{2,method_allow_all,u_qsend,    "QSEND",NULL,"Sends Out The Next Queued Pack"},
 {2,method_allow_all,a_slotsmax, "SLOTSMAX","[n]","temporary change slotsmax"},
 {2,method_allow_all,a_queuesize, "QUEUESIZE","[n]","temporary change queuesize"},
 {2,method_allow_all,a_requeue,  "REQUEUE","x y","Moves Queue Entry x to y"},
