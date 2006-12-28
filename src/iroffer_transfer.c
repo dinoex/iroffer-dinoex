@@ -747,13 +747,13 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "XDCC [%02i:%s on %s]: Connection closed: %s (%s)",
-              t->id, t->nick,msg, gdata.networks[ t->net ].name, strerror(errno1));
+              t->id, t->nick, gdata.networks[ t->net ].name, msg, strerror(errno1));
     }
   else
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "XDCC [%02i:%s on %s]: Connection closed: %s",
-              t->id, t->nick,msg, gdata.networks[ t->net ].name);
+              t->id, t->nick, gdata.networks[ t->net ].name, msg);
     }
   
   if (t->tr_status == TRANSFER_STATUS_DONE)

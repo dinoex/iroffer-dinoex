@@ -2707,8 +2707,8 @@ static void privmsgparse(const char* type, char* line) {
                     {
                       notice(nick,"You can't resume the transfer at a point greater than the size of the file");
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                              "XDCC [%02i:%s]: Resume attempted beyond end of file ( %" LLPRINTFMT "u >= %" LLPRINTFMT "u )",
-                              tr->id, tr->nick, atoull(msg5),
+                              "XDCC [%02i:%s on %s]: Resume attempted beyond end of file ( %" LLPRINTFMT "u >= %" LLPRINTFMT "u )",
+                              tr->id, tr->nick, gnetwork->name, atoull(msg5),
                               (unsigned long long)tr->xpack->st_size);
                     }
                   else
@@ -2716,8 +2716,8 @@ static void privmsgparse(const char* type, char* line) {
                       t_setresume(tr,msg5);
                       privmsg_fast(nick,"\1DCC ACCEPT %s %s %s\1",msg3,msg4,msg5);
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                              "XDCC [%02i:%s]: Resumed at %" LLPRINTFMT "iK", tr->id,
-                              tr->nick, (long long)(tr->startresume / 1024));
+                              "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "iK", tr->id,
+                              tr->nick, gnetwork->name, (long long)(tr->startresume / 1024));
                     }
                   break;
                 }
