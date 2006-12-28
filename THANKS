@@ -149,6 +149,7 @@ Cork
 	reporting trigger with restrictprivlist
 	option "respondtochannellistmsg"
 	option "restrictsend_delay"
+	reporting QSEND bug
 
 anibi
 	option "include_subdirs"

@@ -3770,9 +3770,7 @@ void sendaqueue(int type)
        */
       
       pq = irlist_get_head(&gdata.mainqueue);
-      if (type != 2)
-        {
-          while (pq)
+           while (pq)
             {
               usertrans=0;
               tr = irlist_get_head(&gdata.trans);
@@ -3795,7 +3793,6 @@ void sendaqueue(int type)
                 }
               pq = irlist_get_next(pq);
             }
-        }
       
       if (!pq)
         {
