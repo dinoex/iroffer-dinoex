@@ -1,4 +1,3 @@
-
 I like to thank those who helped to improve iroffer:
 
 David Johnson (PMG)
@@ -55,7 +54,7 @@ TheDeath
 	suggesting CRC check
 	extending CRC check
 	direct file access
-	dcld and botinfo for Multinet
+	DCLD and BOTINFO for Multinet
 	admin command "SLOTSMAX"
 	admin command "QUEUESIZE"
 	admin command "FETCH"
@@ -95,8 +94,8 @@ StoVoKor
 	reporting "XDCC SEARCH" bug
 
 conanmichi
-	reporting group descriptions problmes
-	reporting ambigious online help
+	reporting group descriptions problems
+	reporting ambiguous online help
 	reporting crc 64bit bug
 
 Kyu
@@ -135,7 +134,7 @@ Jippi
 
 Yasuo|Iwakura
 	report -plist crash
-	report uncomplete warning
+	report incomplete warning
 	QUL and DCL output
 
 Road

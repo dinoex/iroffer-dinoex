@@ -1,4 +1,3 @@
-
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
 With Version mod 2.1:
@@ -45,7 +44,7 @@ bugfix: network
   set a default network name.
 
 bugfix: XDCC REMOVE, XDCC CANCEL
-  let user remove enties mathching him.
+  let user remove entries matching him.
   remove only entries on the same network.
 
 bugfix: IDENTIFY
@@ -55,7 +54,7 @@ bugfix: SHUTDOWN
   do not try to reconnect on shutdown.
 
 bugfix: REHASH
-  clenanup when networks are dropped.
+  clean up when networks are dropped.
 
 111) (patch by Cork)
   extend info when user is added to main queue.
@@ -64,7 +63,7 @@ bugfix: REHASH
   text that is put int each response to !list in a channel.
 
 bugfix: restrictprivlist (reported by Cork)
-  in the response to !list ist a channel, iroffer reports the
+  in the response to !list is a channel, iroffer reported the
   "trigger: xdcc list" even if it is disabled.
 
 bugfix:	auto_crc_check (reported by Kurosaki)
@@ -161,14 +160,14 @@ bugfix: MULTINET (reported by TheDeath)
 
 bugfix: FETCH (reported by TheDeath)
   crashes with bad urls
-  list active downloads in dcl and dcld
+  list active downloads in DCL and DCLD
 
 With Version mod 1.31:
 ----------------------
 
 90) uploadminspace (inspired by TheDeath)
   Check free space on disk and do not start uploads when disk gets full.
-  Specifies the minimum size in MB availible before upload.
+  Specifies the minimum size in MB available before upload.
 
 91) AMSG
 
@@ -230,10 +229,10 @@ With Version mod 1.30:
   Send statefile every hour via DCC to the specified nick.
 
 89) send_statefile_minute
-  Send statefile when a secific minute is reached
+  Send statefile when a specific minute is reached
 
 bugfix: CRC (reported by conanmichi)
-  crc on 64bit linux was wrong.
+  crc on 64bit Linux was wrong.
 
 bugfix: CRC
   report "CRC missing" instead of "CRC failed" for a few more cases.
@@ -245,7 +244,7 @@ With Version mod 1.29:
 
 79) extend triggers for re-IDENTIFY with nickserv
 
-78) extend output for dcld and botinfo for Multinet (inspired by TheDeath)
+78) extend output for DCLD and BOTINFO for Multinet (inspired by TheDeath)
 
 77) remove # sign in xdcc commands
    this avoids banning of users who cut & paste for spam
@@ -299,7 +298,7 @@ With Version mod 1.27:
 ----------------------
 
 69) iroffer parts from unwanted channels
-  this makes it easier to get unnbanned in euirc.net
+  this makes it easier to get unbanned in euirc.net
 
 70) noautorejoin
   do not rejoin the channel when bot is kicked.
@@ -366,10 +365,10 @@ bugfix: ignoreduplicateip (reported by Chobits and TheDeath)
    check was counting manual sends
 
 bugfix: queue (reported by TheDeath)
-   the same pack to mutiple Nicks
+   the same pack to multiple Nicks
 
 bugfix: send (reported by TheDeath)
-   alow mutiple sends to the same Nick
+   allow multiple sends to the same Nick
 
 60) unlimitedhost (inspired by Chobits)
 
@@ -396,7 +395,7 @@ Long Term Features:
 With Version mod 1.23:
 ----------------------
 
-bugifx: fix menmory leak (reported by TheDeath)
+bugifx: fix memory leak (reported by TheDeath)
 
 56) CHLIMIT (inspired by TheDeath)
 
@@ -404,7 +403,7 @@ bugifx: fix menmory leak (reported by TheDeath)
 
 57) autosendpack (inspired by Hikari)
 
-   autosendpack can now be used mutiple times
+   autosendpack can now be used multiple times
    Only the first matching trigger will start a send
 
    References TODO:
@@ -459,7 +458,7 @@ bugfix: HELP
 
 53) autoaddann (from Porakin, taken from iroffer-lamm)
 
-   When configured, each add will be annouced on all channels with <msg>
+   When configured, each add will be announced on all channels with <msg>
 
 With Version mod 1.20:
 ----------------------
@@ -474,7 +473,7 @@ With Version mod 1.20:
 
 bugfix: getipfromserver
    versions affected: 1.3 - 1.19
-   on reash the DCC IP was lost, transfers did not work until reconnect
+   on rehash the DCC IP was lost, transfers did not work until reconnect
 
 48) disablexdccinfo
 
@@ -485,7 +484,7 @@ Short Term Features:
 212 6/08/04 Open configurable to enable/disable xdcc info
 
 bugfix: admin command: queue
-   detect if user try to queue and manuel queued pack
+   detect if user try to queue and manual queued pack
 
 bugfix: need_voice
    solved a problem when users joined with voice set
@@ -539,7 +538,7 @@ Short Term Features:
 
 42) ignoreduplicateip (inspired by Chobits)
 
-   detect faked hostmasks and abort mutiple transfers to the same host
+   detect faked hostmasks and abort multiple transfers to the same host
 
 43) LOCKGROUP, UNLOCKGROUP
 
@@ -549,7 +548,7 @@ Short Term Features:
 
 bugfix: addnew (inspired by StoVoKor)
    check filestate instead of name in addnew and noduplicatefiles
-   duplicates are detected even when path is spelled diferently
+   duplicates are detected even when path is spelled differently
 
 44) XDCC STOP (inspired by StoVoKor)
 
@@ -564,10 +563,10 @@ With Version mod 1.17:
 ----------------------
 
 35) set groupname as default group description (inspired by Kyu)
-   for an invisible group you haave to remove the description by hand.
+   for an invisible group you have to remove the description by hand.
 
 bugfix: channel -headline (inspired by Chobits)
-   send channel headline when plist in mutiple channels.
+   send channel headline when plist in multiple channels.
 
 36) chlimit (inspired by TheDeath)
 
@@ -587,7 +586,7 @@ With Version mod 1.16:
 ----------------------
 
 bugfix: holdqueue
-   enforce holdqueue when new requests are comming in
+   enforce holdqueue when new requests are coming in
 
 bugfix: GROUP <n> <g> (inspired by conanmichi)
    save group description when the the first pack of a group leaves it.
@@ -609,7 +608,7 @@ With Version mod 1.15:
 
 32) track usermodes in channels (from PMG)
 
-33) fix infinate loop if debug is set and meminfo grows (from PMG)
+33) fix infinite loop if debug is set and meminfo grows (from PMG)
 
 bugfix: enforce queue limit.
    don't count manual transfers
