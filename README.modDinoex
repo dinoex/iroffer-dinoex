@@ -4,6 +4,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.1:
 ---------------------
 
+bugfix: ADDGROUP (reported by Kurosaki)
+versions affected: 2.0
+  iroffer might crash when addgroup runs via /MSG
+
 bugfix: QSEND (reported by Cork)
   check for maxtransfersperperson.
 

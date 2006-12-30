@@ -354,6 +354,7 @@ typedef struct
   char *arg1, *arg2, *arg3;
   char *arg1e, *arg2e, *arg3e;
   int fd;
+  int net;
   dccchat_t *chat;
 } userinput;
 

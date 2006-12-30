@@ -1998,8 +1998,12 @@ static void a_remove_delayed(const userinput * const u)
 {
    struct stat *st;
    xdcc *xd;
+   gnetwork_t *backup;
    int n;
 
+   updatecontext();
+
+   backup = gnetwork;
    st = (struct stat *)(u->arg2);
    n = 0;
    xd = irlist_get_head(&gdata.xdccs);
@@ -2009,6 +2013,7 @@ static void a_remove_delayed(const userinput * const u)
        if ((xd->st_dev == st->st_dev) &&
            (xd->st_ino == st->st_ino))
          {
+           gnetwork = &(gdata.networks[u->net]);
            a_remove_pack(u, xd, n);
            /* start over, the list has changed */
            n = 0;
@@ -2019,24 +2024,30 @@ static void a_remove_delayed(const userinput * const u)
            xd = irlist_get_next(xd);
          }
      }
+   gnetwork = backup;
 }
 
 static void a_add_delayed(const userinput * const u)
 {
    userinput u2;
    xdcc *xd;
+   gnetwork_t *backup;
    int newgroup;
    int num;
    int rc;
 
+   updatecontext();
+
+   if (u->arg3 == NULL)
+     return;
+
+   backup = gnetwork;
+   gnetwork = &(gdata.networks[u->net]);
    a_respond(u,"  Adding %s:", u->arg1);
 
    u2 = *u;
    u2.arg1e = u->arg1;
    u_add(&u2);
-
-   if (u->arg3 == NULL)
-     return;
 
    num = 0;
    newgroup = 0;
@@ -2067,6 +2078,7 @@ static void a_add_delayed(const userinput * const u)
          a_respond(u, "New GROUPDESC: %s", u->arg3);
      }
 
+   gnetwork = backup;
 }
 
 void changesec_dinoex(void)
@@ -2270,13 +2282,16 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
       
       u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
       u2->method = u->method;
-      u2->snick = u->snick;
       u2->fd = u->fd;
       u2->chat = u->chat;
       u2->cmd = "REMOVE";
+      u2->net = gnetwork->net;
 
       u2->arg1 = tempstr;
       tempstr = NULL;
+
+      u2->snick = mymalloc(strlen(u->snick) + 1);
+      strcpy(u2->snick,u->snick);
 
       u2->arg2 = mycalloc(sizeof(struct stat));
       memcpy(u2->arg2, &st, sizeof(struct stat));
@@ -2440,10 +2455,13 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
     {
       u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
       u2->method = u->method;
-      u2->snick = u->snick;
       u2->fd = u->fd;
       u2->chat = u->chat;
       u2->cmd = "ADD";
+      u2->net = gnetwork->net;
+
+      u2->snick = mymalloc(strlen(u->snick) + 1);
+      strcpy(u2->snick,u->snick);
 
       u2->arg1 = mymalloc(strlen(thefile) + 1);
       strcpy(u2->arg1,thefile);
