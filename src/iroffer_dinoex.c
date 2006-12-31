@@ -2340,6 +2340,86 @@ void a_removegroup(const userinput * const u)
      }
 }
 
+void a_sort(const userinput * const u)
+{
+  irlist_t old_list;
+  xdcc *xdo, *xdn;
+  const char *oname;
+  const char *nname;
+  const char *work;
+  char *tmpdesc;
+  int n;
+
+  updatecontext();
+ 
+  if (irlist_size(&gdata.xdccs) == 0)
+    {
+      a_respond(u,"No packs to sort");
+      return;
+    }
+
+  old_list = gdata.xdccs;
+  /* clean start */
+  gdata.xdccs.size = 0;
+  gdata.xdccs.head = NULL;
+  gdata.xdccs.tail = NULL;
+
+  while (irlist_size(&old_list) > 0)
+    {
+      xdo = irlist_get_head(&old_list);
+      irlist_remove(&old_list, xdo);
+      work = strrchr(xdo->file, '/');
+      if (work != NULL)
+        oname = work;
+      else
+        oname = xdo->file;
+
+      n = 0;
+      xdn = irlist_get_tail(&gdata.xdccs);
+      while(xdn)
+        {
+          n++;
+          work = strrchr(xdn->file, '/');
+          if (work != NULL)
+            nname = work;
+          else
+            nname = xdo->file;
+
+          if (strcasecmp(oname,nname) < 0)
+            break;
+
+          xdn = irlist_get_next(xdn);
+        }
+      if (xdn != NULL)
+        {
+          irlist_insert_before(&gdata.xdccs, xdo, xdn);
+        }
+      else 
+        {
+          if (n <= 1)
+            irlist_insert_head(&gdata.xdccs, xdo);
+          else
+            irlist_insert_tail(&gdata.xdccs, xdo);
+        }
+
+      if (xdo->group != NULL)
+        {
+          if (xdo->group_desc != NULL)
+            {
+               tmpdesc = xdo->group_desc;
+               xdo->group_desc = NULL;
+               reorder_new_groupdesc(xdo->group, tmpdesc);
+               mydelete(tmpdesc);
+            }
+          else
+            reorder_groupdesc(xdo->group);
+        }
+    }
+
+  write_statefile();
+  xdccsavetext();
+}
+
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup)
 {
   userinput *u2;

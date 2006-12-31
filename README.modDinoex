@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.2:
 ---------------------
 
+116: SORT (inspired by ThE_-_BliZZarD)
+
+  new admin commands:
+  SORT                              Sort all Packs by Filename
+
 bugfix: RENUMBER
   keep groupdescripton on renumber.
 

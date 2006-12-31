@@ -1706,3 +1706,6 @@
 1725 "Moves Queue Entry x to y"
 1726 "Invalid Queue Entry"
 1727 "** Moved Queue %i to %i"
+1728 "SORT"
+1729 "Sort all Packs by Filename"
+1730 "No packs to sort"

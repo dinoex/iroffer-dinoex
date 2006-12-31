@@ -90,6 +90,7 @@ void a_requeue(const userinput * const u);
 
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d);
 void a_removegroup(const userinput * const u);
+void a_sort(const userinput * const u);
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup);
 void a_addgroup(const userinput * const u);
 void a_chlimit(const userinput * const u);
