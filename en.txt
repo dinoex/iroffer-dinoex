@@ -617,7 +617,7 @@
 625 "gettimeofday() failed! %s\n"
 626 "System Time Changed Backwards %lim %lis!!\n"
 627 "System Time Changed Forward or Mainloop Skipped %lim %lis!!\n"
-628 "Closing Server Connection: %s"
+628 "Closing Server Connection on %s: %s"
 629 "Closed"
 630 "Couldn't determine connection status: %s on %s"
 631 "Server Connection Failed: %s on %s"

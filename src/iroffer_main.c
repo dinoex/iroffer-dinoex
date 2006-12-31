@@ -612,7 +612,9 @@ static void mainloop (void) {
          length = read (gnetwork->ircserver, &tempbuffa, INPUT_BUFFER_LENGTH);
          
          if (length < 1) {
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_RED,"Closing Server Connection: %s",(length<0) ? strerror(errno) : "Closed");
+            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+                    "Closing Server Connection on %s: %s",
+                    gnetwork->name, (length<0) ? strerror(errno) : "Closed");
             if (gdata.exiting)
               {
                 gnetwork->recentsent = 0;
