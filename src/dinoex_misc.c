@@ -1149,7 +1149,6 @@ void update_hour_dinoex(int hour, int minute)
   transfer *tr;
   int sendrunning;
   int lastminute;
-  gnetwork_t *backup;
   int net = 0;
 
   if (!gdata.send_statefile)
@@ -1176,7 +1175,6 @@ void update_hour_dinoex(int hour, int minute)
         return;
     }
 
-  backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
      return;
@@ -1368,10 +1366,14 @@ void autoadd_scan(const char *dir, const char *group)
 {
    userinput *uxdl;
    char *line;
+   int net = 0;
 
    if (dir == NULL)
       return;
 
+   updatecontext();
+
+   gnetwork = &(gdata.networks[net]);
    ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"autoadd scan %s", dir);
    line = mycalloc(maxtextlength);
    if (group != NULL)
@@ -1382,6 +1384,7 @@ void autoadd_scan(const char *dir, const char *group)
    uxdl = mycalloc(sizeof(userinput));
    u_fillwith_msg(uxdl,NULL,line);
    uxdl->method = method_out_all;
+   uxdl->net = 0;
    u_parseit(uxdl);
    mydelete(line);
 }
@@ -2290,8 +2293,11 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
       u2->arg1 = tempstr;
       tempstr = NULL;
 
-      u2->snick = mymalloc(strlen(u->snick) + 1);
-      strcpy(u2->snick,u->snick);
+      if (u->snick != NULL)
+        {
+          u2->snick = mymalloc(strlen(u->snick) + 1);
+          strcpy(u2->snick,u->snick);
+        }
 
       u2->arg2 = mycalloc(sizeof(struct stat));
       memcpy(u2->arg2, &st, sizeof(struct stat));
@@ -2460,8 +2466,11 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
       u2->cmd = "ADD";
       u2->net = gnetwork->net;
 
-      u2->snick = mymalloc(strlen(u->snick) + 1);
-      strcpy(u2->snick,u->snick);
+      if (u2->snick != NULL)
+        {
+          u2->snick = mymalloc(strlen(u->snick) + 1);
+          strcpy(u2->snick,u->snick);
+        }
 
       u2->arg1 = mymalloc(strlen(thefile) + 1);
       strcpy(u2->arg1,thefile);

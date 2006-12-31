@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 2.2:
+---------------------
+
+bugfix: autoadd_dir
+  versions affected: 2.1
+  iroffer crash when autoadd_dir is run.
+
 With Version mod 2.1:
 ---------------------
 
