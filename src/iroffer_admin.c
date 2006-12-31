@@ -145,6 +145,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_removedir,"REMOVEDIR","<dir>","Remove Every File in <dir>"},
 {3,method_allow_all,a_removegroup, "REMOVEGROUP","<group>","Remove Every File within <group>"},
 {3,method_allow_all,u_renumber, "RENUMBER","x y","Moves Pack x to y"},
+{3,method_allow_all,a_sort,     "SORT",NULL,"Sort all Packs by Filename"},
 {3,method_allow_all,u_add,      "ADD","<filename>","Add New Pack With <filename>"},
 {3,method_allow_all,u_adddir,   "ADDDIR","<dir>","Add Every File in <dir>"},
 {3,method_allow_all,u_addnew,   "ADDNEW","<dir>","Add any new files in <dir>"},
@@ -3540,6 +3541,9 @@ static void u_renumber(const userinput * const u)
       xdn = irlist_get_nth(&gdata.xdccs, newp-2);
       irlist_insert_after(&gdata.xdccs, xdo, xdn);
     }
+  
+  if (xdo->group != NULL)
+    reorder_groupdesc(xdo->group);
   
   write_statefile();
   xdccsavetext();
