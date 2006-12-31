@@ -1451,6 +1451,7 @@ void dumpgdata(void)
   /* ppointer stat arg2 */
   gdata_iter_print_string(arg3);
   gdata_iter_print_int(fd);
+  gdata_iter_print_int(net);
   /* ppointer chat */
   gdata_irlist_iter_end;
 
