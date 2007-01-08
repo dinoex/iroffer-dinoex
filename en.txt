@@ -849,7 +849,7 @@
 860 " Denied (slot/queue): "
 861 "Main queue of size %d is Full, Try Again Later"
 862 " Queued (slot): "
-683 "Added you to the main queue for pack %d (\"%s\") in position %d. To Remove youself at "
+683 "Added you to the main queue for pack %d (\"%s\") in position %d. To Remove yourself at "
 864 "a later time type \"/msg %s xdcc remove\"."
 865 "QUEUED SEND (low bandwidth): %s (%s on %s)"
 866 "QUEUED SEND (manual): %s (%s on %s)"
