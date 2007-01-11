@@ -2041,9 +2041,6 @@ static void a_add_delayed(const userinput * const u)
 
    updatecontext();
 
-   if (u->arg3 == NULL)
-     return;
-
    backup = gnetwork;
    gnetwork = &(gdata.networks[u->net]);
    a_respond(u,"  Adding %s:", u->arg1);
@@ -2051,6 +2048,12 @@ static void a_add_delayed(const userinput * const u)
    u2 = *u;
    u2.arg1e = u->arg1;
    u_add(&u2);
+
+   if (u->arg3 == NULL)
+     {
+       gnetwork = backup;
+       return;
+     }
 
    num = 0;
    newgroup = 0;
