@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 2.3:
+---------------------
+
+bugfix: ADDDIR (reported by TheDeath,conanmichi)
+  versions affected: 2.0 - 2.2
+  without a default group, files could not be added
+
 With Version mod 2.2:
 ---------------------
 
