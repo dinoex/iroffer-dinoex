@@ -200,21 +200,23 @@ static void select_dump(const char *desc, int highests)
 
 static void mainloop (void) {
    /* data is persistant across calls */
-   static char server_input_line[INPUT_BUFFER_LENGTH];
    static struct timeval timestruct;
-   static int i,j,length,changequartersec,changesec,changemin,changehour;
+   static int changequartersec,changesec,changemin,changehour;
    static time_t lasttime, lastmin, lasthour, last4sec, last5sec, last20sec;
    static time_t lastautoadd;
-   static long lastnotify, last3min, last2min, lastignoredec, lastperiodicmsg;
-   static userinput *pubplist;
-   static userinput *urehash;
+   static long last3min, last2min, lastignoredec, lastperiodicmsg;
    static int first_loop = 1;
    static unsigned long long last250ms;
-   static ir_uint64 xdccsent;
-   
+
+   userinput *pubplist;
+   userinput *urehash;
+   ir_uint64 xdccsent;
+   int i, j;
+   int length;
    int overlimit;
    int highests;
    int ss;
+   long sum;
    upload *ul;
    transfer *tr;
    pqueue *pq;
@@ -235,9 +237,12 @@ static void mainloop (void) {
        last250ms = ((unsigned long long)lasttime) * 1000;
        lastmin=(lasttime/60)-1;
        lasthour=(lasttime/60/60)-1;
-       lastperiodicmsg = last4sec = last5sec
-	 = lastnotify = last3min = last20sec = last2min = lastignoredec = lasttime;
-       server_input_line[0] = '\0';
+       last4sec = last5sec = last20sec = last2min = last3min = lasttime;
+       for (ss=0; ss<gdata.networks_online; ss++)
+         {
+           gdata.networks[ss].lastnotify = lasttime;
+           gdata.networks[ss].server_input_line[0] = '\0';
+         }
        
        gdata.cursendptr = 0;
        
@@ -295,12 +300,12 @@ static void mainloop (void) {
             }
         }
 
-      j = gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE] 
-        + gdata.xdccsent[(gdata.curtime-1)%XDCC_SENT_SIZE]
-        + gdata.xdccsent[(gdata.curtime-2)%XDCC_SENT_SIZE]
-        + gdata.xdccsent[(gdata.curtime-3)%XDCC_SENT_SIZE];
+      sum = gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE] 
+          + gdata.xdccsent[(gdata.curtime-1)%XDCC_SENT_SIZE]
+          + gdata.xdccsent[(gdata.curtime-2)%XDCC_SENT_SIZE]
+          + gdata.xdccsent[(gdata.curtime-3)%XDCC_SENT_SIZE];
       
-      if ( gdata.maxb && (j >= gdata.maxb*1024))
+      if ( gdata.maxb && (sum >= gdata.maxb*1024))
         {
           overlimit = 1;
         }
@@ -556,19 +561,14 @@ static void mainloop (void) {
       
       if (changesec) {
          gdata.totaluptime++;
-         xdccsent = 0;
-         for (i=0; i<XDCC_SENT_SIZE; i++)
-            xdccsent += (ir_uint64)gdata.xdccsent[i];
          gdata.xdccsent[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
-         
-         xdccsent = 0;
-         for (i=0; i<XDCC_SENT_SIZE; i++)
-            xdccsent += (ir_uint64)gdata.xdccrecv[i];
          gdata.xdccrecv[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
          
          xdccsent = 0;
+#if 0
          for (i=0; i<XDCC_SENT_SIZE; i++)
             xdccsent += (ir_uint64)gdata.xdccsum[i];
+#endif
          if (((float)xdccsent)/XDCC_SENT_SIZE/1024.0 > gdata.sentrecord)
             gdata.sentrecord = ((float)xdccsent)/XDCC_SENT_SIZE/1024.0;
          gdata.xdccsum[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
@@ -632,26 +632,26 @@ static void mainloop (void) {
             }
          else
            {
-             j=strlen(server_input_line);
+             j=strlen(gnetwork->server_input_line);
              for (i=0; i<length; i++)
                {
                  if ((tempbuffa[i] == '\n') || (j == (INPUT_BUFFER_LENGTH-1)))
                    {
-                     if (j && (server_input_line[j-1] == 0x0D))
+                     if (j && (gnetwork->server_input_line[j-1] == 0x0D))
                        {
                          j--;
                        }
-                     server_input_line[j] = '\0';
-                     parseline(removenonprintable(server_input_line));
+                     gnetwork->server_input_line[j] = '\0';
+                     parseline(removenonprintable(gnetwork->server_input_line));
                      j = 0;
                    }
                  else
                    {
-                     server_input_line[j] = tempbuffa[i];
+                     gnetwork->server_input_line[j] = tempbuffa[i];
                      j++;
                    }
                }
-             server_input_line[j] = '\0';
+             gnetwork->server_input_line[j] = '\0';
            }
         }
       
@@ -1490,6 +1490,7 @@ static void mainloop (void) {
                     pubplist = mycalloc(sizeof(userinput));
                     u_fillwith_msg(pubplist,tchans,"A A A A A xdl");
                     pubplist->method = method_xdl_channel_sum;
+                    pubplist->net = gnetwork->net;
                     u_parseit(pubplist);
                     mydelete(pubplist);
                   }
@@ -1503,6 +1504,7 @@ static void mainloop (void) {
                else
                  u_fillwith_msg(pubplist,tchanf,"A A A A A xdlfull");
                pubplist->method = method_xdl_channel;
+               pubplist->net = gnetwork->net;
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanf);
@@ -1512,6 +1514,7 @@ static void mainloop (void) {
                pubplist = mycalloc(sizeof(userinput));
                u_fillwith_msg(pubplist,tchanm,"A A A A A xdl");
                pubplist->method = method_xdl_channel_min;
+               pubplist->net = gnetwork->net;
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanm);
@@ -1547,9 +1550,9 @@ static void mainloop (void) {
         gnetwork = &(gdata.networks[ss]);
       /*----- queue notify ----- */
       if (changesec && gdata.notifytime && (!gdata.quietmode) &&
-          (gdata.curtime - lastnotify > (gdata.notifytime*60)))
+          (gdata.curtime - gnetwork->lastnotify > (gdata.notifytime*60)))
         {
-         lastnotify = gdata.curtime;
+         gnetwork->lastnotify = gdata.curtime;
          
          if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
            {

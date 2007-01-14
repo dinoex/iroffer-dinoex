@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.4:
 ---------------------
 
+bugfix: MULTINET
+  fix member list for big channels
+
 bugfix: autoadd
   fix a small memory leak
   versions affected: 1.28 - 2.3

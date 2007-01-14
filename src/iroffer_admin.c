@@ -1909,6 +1909,7 @@ static void u_psend(const userinput * const u)
   else
     u_fillwith_msg(&manplist,u->arg1,"A A A A A xdlfull");
   manplist.method = method;
+  manplist.net = gnetwork->net;
   u_parseit(&manplist);
   nname = gnetwork->name;
   gnetwork = backup;
@@ -1982,6 +1983,7 @@ static void u_addann (const userinput * const u) {
     snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i added",irlist_size(&gdata.xdccs));
     u_fillwith_msg(ui,NULL,tempstr);
     ui->method = method_out_all;       /* just OUT_S|OUT_L|OUT_D it */
+    ui->net = 0;
     u_parseit(ui);
     mydelete(ui);
     mydelete(tempstr);
@@ -2366,6 +2368,7 @@ void u_add(const userinput * const u) {
       snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i %s",irlist_size(&gdata.xdccs),gdata.autoaddann);
       u_fillwith_msg(ui,NULL,tempstr);
       ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
+      ui->net = 0;
       u_parseit(ui);
       mydelete(ui);
       mydelete(tempstr);

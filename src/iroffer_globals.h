@@ -56,6 +56,7 @@ enum
   SERVERSTATUS_EXIT,
 } serverstatus;
 long lastservercontact;
+long lastnotify;
 irlist_t serverq_fast;
 irlist_t serverq_normal;
 irlist_t serverq_slow;
@@ -66,6 +67,7 @@ int ircserver;
 int serverconnectbackoff;
 prefix_t prefixes[MAX_PREFIX];
 char chanmodes[MAX_CHANMODES];
+char server_input_line[INPUT_BUFFER_LENGTH];
 
 char *user_nick;
 char *caps_nick;
