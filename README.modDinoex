@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.4:
 ---------------------
 
+bugfix: autoadd
+  fix a small memory leak
+  versions affected: 1.28 - 2.3
+
 bugfix: MULTINET
   extend debug and log information.
 
