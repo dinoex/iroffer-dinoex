@@ -3274,7 +3274,9 @@ static void privmsgparse(const char* type, char* line) {
             }
           else
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_GREEN,"%s: %s",type,line);
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_GREEN,
+                      "%s on %s: %s",
+                      type, gnetwork->name, line);
             }
          }
       }
