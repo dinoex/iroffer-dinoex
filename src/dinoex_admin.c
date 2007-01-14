@@ -130,7 +130,7 @@ static void admin_line(int fd, const char *line) {
    u_fillwith_msg(uxdl,NULL,line);
    uxdl->method = method_fd;
    uxdl->fd = fd;
-   
+   uxdl->net = 0;
    u_parseit(uxdl);
    
    mydelete(uxdl);
@@ -1386,6 +1386,7 @@ void autoadd_scan(const char *dir, const char *group)
    uxdl->method = method_out_all;
    uxdl->net = 0;
    u_parseit(uxdl);
+   mydelete(uxdl);
    mydelete(line);
 }
 
