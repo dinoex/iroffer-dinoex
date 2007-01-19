@@ -1,4 +1,12 @@
 #!/bin/sh
+awk -f ./admin.awk src/iroffer_admin.c > admin.neu
+#wdiff admin.txt admin.neu
+if diff admin.txt admin.neu
+then
+	rm -f admin.neu
+else
+	mv -f admin.neu admin.txt
+fi
 echo "New in en.txt:"
 nr="0"
 if test -f en.txt
