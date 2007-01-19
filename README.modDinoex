@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.4:
 ---------------------
 
+bugfix: xdcclistfile
+  fix output for > 100 packs
+
 bugfix: MULTINET
   fix member list for big channels
 

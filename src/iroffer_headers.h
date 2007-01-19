@@ -761,9 +761,9 @@ void u_fillwith_clean(userinput * const u);
 
 void u_parseit(userinput * const u);
 
-extern const char *u_spaces[];
 int u_xdl_space(void);
-void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xdcc *xd);
+int u_xdl_left(void);
+void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, const xdcc *xd);
 void u_add(const userinput * const u);
 void u_listdir(const userinput * const u, const char *dir);
 

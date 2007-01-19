@@ -569,13 +569,12 @@ static void u_help(const userinput * const u)
                   
                   spaces = 20 - 1;
                   spaces -= sstrlen(userinput_parse[i].command);
-                  spaces -= sstrlen(userinput_parse[i].args);
                   spaces = max2(0,spaces);
                   
-                  u_respond(u,"  %s %s %.*s: %s",
+                  u_respond(u,"  %s %-*s : %s",
                             userinput_parse[i].command,
+                            spaces,
                             userinput_parse[i].args,
-                            spaces, "                       ", 
                             userinput_parse[i].desc);
                 }
               else
@@ -610,15 +609,27 @@ int u_xdl_space(void) {
    return s;
 }
    
-const char *u_spaces[] = { ""," ","  ","   ","    ","     ","      " };
+int u_xdl_left(void) {
+   int n;
+   int l;
 
-void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xdcc *xd) {
+   n = irlist_size(&gdata.xdccs);
+   l = 5;
+   if (n < 10000) l = 4;
+   if (n < 1000) l = 3;
+   if (n < 100) l = 2;
+   if (n < 10) l = 1;
+   return l;
+}
+
+void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, const xdcc *xd) {
    char *sizestrstr;
    int len;
    
    sizestrstr = sizestr(1, xd->st_size);
    snprintf(tempstr, maxtextlength - 1,
-           "\2#%-2i\2 %*ix [%s] %s",
+           "\2#%-*i\2 %*ix [%s] %s",
+            l,
             i,
             s, xd->gets,
             sizestrstr,
@@ -654,7 +665,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int s, const xd
    
    if (xd->note && strlen(xd->note))
      {
-       u_respond(u," \2^-\2%s%s",u_spaces[s],xd->note);
+       u_respond(u," \2^-\2%*s%s", s, "", xd->note);
      }
 }
 
@@ -870,7 +881,9 @@ static void u_xdl_foot(const userinput * const u) {
 static void u_xdl_full(const userinput * const u) {
    char *tempstr;
    xdcc *xd;
-   int i,s;
+   int i;
+   int l;
+   int s;
    
    updatecontext();
    
@@ -878,12 +891,13 @@ static void u_xdl_full(const userinput * const u) {
    
    tempstr = mycalloc(maxtextlength);
    i = 1;
+   l = u_xdl_left();
    s = u_xdl_space();
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
        if (hide_locked(u,xd) == 0)
-         u_xdl_pack(u,tempstr,i,s,xd);
+         u_xdl_pack(u,tempstr,i,l,s,xd);
        i++;
        xd = irlist_get_next(xd);
      }
@@ -897,7 +911,10 @@ static void u_xdl_group(const userinput * const u) {
    char *tempstr;
    char *msg3;
    xdcc *xd;
-   int i,k,s;
+   int i;
+   int k;
+   int l;
+   int s;
 
    updatecontext();
 
@@ -910,6 +927,7 @@ static void u_xdl_group(const userinput * const u) {
    tempstr = mycalloc(maxtextlength);
    i = 1;
    k = 0;
+   l = u_xdl_left();
    s = u_xdl_space();
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
@@ -924,7 +942,7 @@ static void u_xdl_group(const userinput * const u) {
                  }
 
                if (hide_locked(u,xd) == 0)
-                 u_xdl_pack(u,tempstr,i,s,xd);
+                 u_xdl_pack(u,tempstr,i,l,s,xd);
                k++;
              }
          }
@@ -945,7 +963,10 @@ static void u_xdl_group(const userinput * const u) {
 static void u_xdl(const userinput * const u) {
    char *tempstr;
    char *inlist;
-   int i,m,s;
+   int i;
+   int m;
+   int l;
+   int s;
    xdcc *xd;
    irlist_t grplist = {};
 
@@ -958,6 +979,7 @@ static void u_xdl(const userinput * const u) {
 
    tempstr  = mycalloc(maxtextlength);
    
+   l = u_xdl_left();
    s = u_xdl_space();
    i = 1;
    xd = irlist_get_head(&gdata.xdccs);
@@ -967,7 +989,7 @@ static void u_xdl(const userinput * const u) {
        if (xd->group == NULL)
          {
            if (hide_locked(u,xd) == 0)
-             u_xdl_pack(u,tempstr,i,s,xd);
+             u_xdl_pack(u,tempstr,i,l,s,xd);
          }
        i++;
        xd = irlist_get_next(xd);

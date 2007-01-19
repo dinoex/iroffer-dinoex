@@ -2121,13 +2121,16 @@ void changesec_dinoex(void)
 void a_xdlock(const userinput * const u)
 {
    char *tempstr;
-   int i,s;
+   int i;
+   int l;
+   int s;
    xdcc *xd;
 
    updatecontext();
 
    tempstr  = mycalloc(maxtextlength);
 
+   l = u_xdl_left();
    s = u_xdl_space();
    i = 1;
    xd = irlist_get_head(&gdata.xdccs);
@@ -2135,8 +2138,8 @@ void a_xdlock(const userinput * const u)
      {
        if (xd->lock != NULL)
          {
-           u_xdl_pack(u,tempstr,i,s,xd);
-           a_respond(u," \2^-\2%sPassword: %s",u_spaces[s],xd->lock);
+           u_xdl_pack(u,tempstr,i,l,s,xd);
+           a_respond(u," \2^-\2%*sPassword: %s", s, "", xd->lock);
          }
        i++;
        xd = irlist_get_next(xd);
