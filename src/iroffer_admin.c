@@ -177,7 +177,7 @@ static const userinput_parse_t userinput_parse[] = {
 #endif /* USE_CURL */
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},
-{3,method_allow_all,a_amsg,     "AMSG","<msg>","Announce <msg> in all joined channels"},
+{4,method_allow_all,a_amsg,     "AMSG","<msg>","Announce <msg> in all joined channels"},
 {4,method_allow_all,a_msgnet,   "MSGNET","<net> <nick> <message>","Send a message to a user"},
 {4,method_allow_all,u_mesg,     "MESG","<message>","Sends msg to all users who are transferring"},
 {4,method_allow_all,u_mesq,     "MESQ","<message>","Sends msg to all users in a queue"},
