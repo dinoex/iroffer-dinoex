@@ -3553,4 +3553,10 @@ void a_holdqueue(const userinput * const u)
      }
 }
 
+void a_dump(const userinput * const u)
+{
+   dumpgdata();
+   a_respond(u,"DUMP written into logfile.");
+}
+
 /* End of File */

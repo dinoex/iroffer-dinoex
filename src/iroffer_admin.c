@@ -214,8 +214,8 @@ static const userinput_parse_t userinput_parse[] = {
 {5,method_allow_all,a_identify, "IDENTIFY","[<net>]","Send stored password again to nickserv"},
 {5,method_allow_all,a_holdqueue, "HOLDQUEUE","<num>","set or toggles holdqueue"},
 {5,method_allow_all,u_shutdown, "SHUTDOWN","<act>","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
-
-{5,method_console,  u_crash, "CRASH",NULL,"Cause a segmentation fault"},
+{5,method_allow_all,a_dump,      "DUMP",NULL,"Write a DUMP into the logfile"},
+{5,method_console,  u_crash,     "CRASH",NULL,"Cause a segmentation fault"},
 };
 
 

@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.5:
 ---------------------
 
+116: DUMP
+
+  new admin commands:
+  DUMP                              Write a DUMP into the logfile
+
 bugfix: MULTINET
   extend debug and log information.
 

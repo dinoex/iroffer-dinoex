@@ -1705,3 +1705,6 @@
 1729 "Sort all Packs by Filename"
 1730 "No packs to sort"
 1731 "%s on %s: %s"
+1732 "DUMP"
+1733 "Write a DUMP into the logfile"
+1734 "DUMP written into logfile."

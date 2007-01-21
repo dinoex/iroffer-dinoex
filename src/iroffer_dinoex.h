@@ -118,5 +118,6 @@ void a_hop(const userinput * const u);
 void a_cleargets(const userinput * const u);
 void a_identify(const userinput * const u);
 void a_holdqueue(const userinput * const u);
+void a_dump(const userinput * const u);
 
 /* End of File */
