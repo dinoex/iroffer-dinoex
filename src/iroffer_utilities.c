@@ -1439,6 +1439,14 @@ void dumpgdata(void)
   gdata_iter_print_string(message);
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(geoipcountry, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
+  gdata_irlist_iter_start(geoipexcludenick, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
   gdata_irlist_iter_start(autoadd_dirs, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
@@ -1457,6 +1465,13 @@ void dumpgdata(void)
 
   gdata_print_string(enable_nick);
   gdata_print_string(owner_nick);
+  gdata_print_string(admin_job_file);
+  gdata_print_string(autoaddann);
+  gdata_print_string(autoadd_group);
+  gdata_print_string(send_statefile);
+  gdata_print_string(geoipdatabase);
+  gdata_print_string(respondtochannellistmsg);
+
   gdata_print_int(need_voice);
   gdata_print_int(need_level);
   gdata_print_int(hide_list_info);
@@ -1489,22 +1504,17 @@ void dumpgdata(void)
   gdata_print_int(max_find);
   gdata_print_int(include_subdirs);
   gdata_print_int(restrictsend_delay);
-  gdata_print_string(admin_job_file);
-  gdata_print_string(autoaddann);
-  gdata_print_string(autoadd_group);
-  gdata_print_string(send_statefile);
-  gdata_print_string(geoipdatabase);
-  gdata_print_string(respondtochannellistmsg);
-  /* unlimitedhost */
-  /* geoipcountry */
-  /* geoipexcludenick */
   
   /* downloadhost */
   /* nodownloadhost */
+  /* unlimitedhost */
   
   gdata_print_string(adminpass);
   
   /* adminhost */
+  gdata_irlist_iter_start(adminhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
   
   gdata_print_string(filedir);
   gdata_print_string(statefile);
@@ -1514,8 +1524,17 @@ void dumpgdata(void)
   gdata_print_string(periodicmsg_msg);
   gdata_print_int(periodicmsg_time);
   /* autoignore_exclude */
+  gdata_irlist_iter_start(autoignore_exclude, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  
   gdata_print_int(autoignore_threshold);
+  
   /* uploadhost */
+  gdata_irlist_iter_start(uploadhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  
   gdata_print_string(uploaddir);
   gdata_print_number_cast("%" LLPRINTFMT "d",uploadmaxsize,long long);
   gdata_print_number_cast("%" LLPRINTFMT "d",uploadminspace,long long);
@@ -1537,71 +1556,71 @@ void dumpgdata(void)
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)
     {
-  gdata_print_int(networks[ss].net);
-  gdata_print_string(networks[ss].name);
-  gdata_print_string(networks[ss].user_nick);
-  gdata_print_string(networks[ss].caps_nick);
+      gdata_print_int(networks[ss].net);
+      gdata_print_string(networks[ss].name);
+      gdata_print_string(networks[ss].user_nick);
+      gdata_print_string(networks[ss].caps_nick);
   
-  gdata_irlist_iter_start(networks[ss].server_join_raw, char);
+      gdata_irlist_iter_start(networks[ss].server_join_raw, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
-  gdata_irlist_iter_start(networks[ss].server_connected_raw, char);
+      gdata_irlist_iter_start(networks[ss].server_connected_raw, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
-  gdata_irlist_iter_start(networks[ss].servers, server_t);
+      gdata_irlist_iter_start(networks[ss].servers, server_t);
   gdata_iter_print_string(hostname);
   gdata_iter_print_uint(port);
   gdata_iter_print_string(password);
   gdata_irlist_iter_end;
   
-  gdata_print_string(networks[ss].curserver.hostname);
-  gdata_print_uint(networks[ss].curserver.port);
-  gdata_print_string(networks[ss].curserver.password);
-  gdata_print_string(networks[ss].curserveractualname);
-  gdata_print_int(networks[ss].nocon);
-  gdata_print_int(networks[ss].servertime);
-  gdata_print_number_cast("%d",networks[ss].serverstatus,int);
-  gdata_print_long(networks[ss].lastservercontact);
+      gdata_print_string(networks[ss].curserver.hostname);
+      gdata_print_uint(networks[ss].curserver.port);
+      gdata_print_string(networks[ss].curserver.password);
+      gdata_print_string(networks[ss].curserveractualname);
+      gdata_print_int(networks[ss].nocon);
+      gdata_print_int(networks[ss].servertime);
+      gdata_print_number_cast("%d",networks[ss].serverstatus,int);
+      gdata_print_long(networks[ss].lastservercontact);
+      gdata_print_long(networks[ss].lastnotify);
   
-  gdata_irlist_iter_start(networks[ss].serverq_fast, char);
+      gdata_irlist_iter_start(networks[ss].serverq_fast, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
   
-  gdata_irlist_iter_start(networks[ss].serverq_normal, char);
+      gdata_irlist_iter_start(networks[ss].serverq_normal, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
   
-  gdata_irlist_iter_start(networks[ss].serverq_slow, char);
+      gdata_irlist_iter_start(networks[ss].serverq_slow, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
   
-  gdata_irlist_iter_start(networks[ss].serverq_channel, channel_announce_t);
-  gdata_iter_print_int(delay);
-  gdata_iter_print_string(msg);
-  gdata_irlist_iter_end;
+      gdata_irlist_iter_start(networks[ss].serverq_channel, channel_announce_t);
+      gdata_iter_print_int(delay);
+      gdata_iter_print_string(msg);
+      gdata_irlist_iter_end;
   
-  gdata_print_int(networks[ss].serverbucket);
-  gdata_print_int(networks[ss].ircserver);
-  gdata_print_int(networks[ss].serverconnectbackoff);
-  
-  for (ii=0; ii<MAX_PREFIX && gdata.networks[ss].prefixes[ii].p_mode; ii++)
-  
-    {
-      gdata_print_number_array_item("%c",networks[ss].prefixes,p_mode);
-      gdata_print_number_array_item("%c",networks[ss].prefixes,p_symbol);
-    }
-  
-  for (ii=0; ii<MAX_CHANMODES && gdata.networks[ss].chanmodes[ii]; ii++)
-    {
-      gdata_print_number_array("%c", networks[ss].chanmodes);
-    }
-  
-  for (ii=0; ii<INAMNT_SIZE; ii++)
-    {
-      gdata_print_int_array(networks[ss].inamnt)
-    }
+      gdata_print_int(networks[ss].serverbucket);
+      gdata_print_int(networks[ss].ircserver);
+      gdata_print_int(networks[ss].serverconnectbackoff);
+      
+      for (ii=0; ii<MAX_PREFIX && gdata.networks[ss].prefixes[ii].p_mode; ii++)
+        {
+          gdata_print_number_array_item("%c",networks[ss].prefixes,p_mode);
+          gdata_print_number_array_item("%c",networks[ss].prefixes,p_symbol);
+        }
+      
+      for (ii=0; ii<MAX_CHANMODES && gdata.networks[ss].chanmodes[ii]; ii++)
+        {
+          gdata_print_number_array("%c", networks[ss].chanmodes);
+        }
+      
+      for (ii=0; ii<INAMNT_SIZE; ii++)
+        {
+          gdata_print_int_array(networks[ss].inamnt);
+        }
     
     } /* networks */
    
@@ -1635,26 +1654,26 @@ void dumpgdata(void)
   for (ss=0; ss<gdata.networks_online; ss++)
     {
       
-  gdata_irlist_iter_start(networks[ss].channels, channel_t);
+      gdata_irlist_iter_start(networks[ss].channels, channel_t);
   ioutput(gdata_common,"  : name=%s key=%s",
           iter->name,
           gdata_string(iter->key));
-  ioutput(gdata_common,"  : flags=%d plisttime=%d plistoffset=%d",
+      ioutput(gdata_common,"  : flags=%d plisttime=%d plistoffset=%d",
           iter->flags,
           iter->plisttime,
           iter->plistoffset);
-  gdata_iter_print_string(headline);
-  gdata_iter_print_int(delay);
+      gdata_iter_print_string(headline);
+      gdata_iter_print_int(delay);
   /* members */
   gdata_irlist_iter_end;
   
 
-  gdata_print_int(networks[ss].recentsent);
-  gdata_print_int(networks[ss].nick_number);
+      gdata_print_int(networks[ss].recentsent);
+      gdata_print_int(networks[ss].nick_number);
   
-  gdata_irlist_iter_start(networks[ss].xlistqueue, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
+      gdata_irlist_iter_start(networks[ss].xlistqueue, char);
+      gdata_iter_as_print_string;
+      gdata_irlist_iter_end;
       
     }
   
@@ -1699,9 +1718,15 @@ void dumpgdata(void)
   
   for (ii=0; ii<XDCC_SENT_SIZE; ii++)
     {
-      gdata_print_ulong_array(xdccsent)
-      gdata_print_ulong_array(xdccrecv)
-      gdata_print_ulong_array(xdccsum)
+      gdata_print_ulong_array(xdccsent);
+    }
+  for (ii=0; ii<XDCC_SENT_SIZE; ii++)
+    {
+      gdata_print_ulong_array(xdccrecv);
+    }
+  for (ii=0; ii<XDCC_SENT_SIZE; ii++)
+    {
+      gdata_print_ulong_array(xdccsum);
     }
   
   gdata_print_int(ignore);

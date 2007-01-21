@@ -1,5 +1,11 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 2.5:
+---------------------
+
+bugfix: MULTINET
+  extend debug and log information.
+
 With Version mod 2.4:
 ---------------------
 
@@ -161,7 +167,7 @@ make MULTINET default
   dont crash on duplicate channels
 
 98) extend CRASH
-  allow crash via remote admin
+  show crash in help
 
 97) lost files message (reported by Yasuo|Iwakura)
   lost files will now be reported with pack nr.
