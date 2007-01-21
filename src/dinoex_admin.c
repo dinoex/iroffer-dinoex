@@ -121,37 +121,33 @@ int verifyshell(irlist_t *list, const char *file)
 
 static void admin_line(int fd, const char *line) {
    userinput *uxdl;
+   char *full;
    
    if (line == NULL)
       return;
    
    uxdl = mycalloc(sizeof(userinput));
-   
-   u_fillwith_msg(uxdl,NULL,line);
+   full = mycalloc(maxtextlength);
+
+   snprintf(full,maxtextlength -1,"A A A A A %s", line);
+   u_fillwith_msg(uxdl,NULL,full);
    uxdl->method = method_fd;
    uxdl->fd = fd;
    uxdl->net = 0;
    u_parseit(uxdl);
    
    mydelete(uxdl);
+   mydelete(full);
 }
 
-void admin_jobs(const char *job) {
-   FILE *fin;
+static void admin_run(const char *cmd) {
    int fd;
+   const char *job;
    char *done;
-   char *line;
-   char *l;
-   char *r;
    
+   job = gdata.admin_job_file;
    if (job == NULL)
       return;
-
-   fin = fopen(job, "ra" );
-   if (fin == NULL)
-      return;
-
-   line = mycalloc(maxtextlength);
 
    done = mycalloc(strlen(job)+6);
    strcpy(done,job);
@@ -167,21 +163,40 @@ void admin_jobs(const char *job) {
     }
   else
     {
-      while (!feof(fin)) {
-         strcpy(line, "A A A A A ");
-         l = line + strlen(line);
-         r = fgets(l, maxtextlength - 1, fin);
-         if (r == NULL )
-            break;
-         l = line + strlen(line) - 1;
-         while (( *l == '\r' ) || ( *l == '\n' ))
-            *(l--) = 0;
-         admin_line(fd,line);
-      }
+      admin_line(fd, cmd);
       close(fd);
     }
-   mydelete(line)
    mydelete(done)
+}
+
+void admin_jobs(void) {
+   FILE *fin;
+   const char *job;
+   char *line;
+   char *l;
+   char *r;
+   char *new;
+   
+   job = gdata.admin_job_file;
+   if (job == NULL)
+      return;
+
+   fin = fopen(job, "ra" );
+   if (fin == NULL)
+      return;
+
+   line = mycalloc(maxtextlength);
+   while (!feof(fin)) {
+      r = fgets(line, maxtextlength - 1, fin);
+      if (r == NULL )
+         break;
+      l = line + strlen(line) - 1;
+      while (( *l == '\r' ) || ( *l == '\n' ))
+         *(l--) = 0;
+      new = irlist_add(&gdata.jobs_delayed, strlen(line) + 1);
+      strcpy(new, line);
+   }
+   mydelete(line)
    fclose(fin);
    unlink(job);
 }
@@ -2091,6 +2106,7 @@ static void a_add_delayed(const userinput * const u)
 void changesec_dinoex(void)
 {
   userinput *u;
+  char *job;
 
   u = irlist_get_head(&gdata.packs_delayed);
   while (u)
@@ -2114,7 +2130,16 @@ void changesec_dinoex(void)
           return;
         }
       /* ignore */
+      outerror(OUTERROR_TYPE_WARN, "Unknown cmd %s in packs_delayed", u->cmd);
       u = irlist_delete(&gdata.packs_delayed, u);
+    }
+
+  job = irlist_get_head(&gdata.jobs_delayed);
+  while (job)
+    {
+       admin_run(job);
+       job = irlist_delete(&gdata.jobs_delayed, job);
+       return;
     }
 }
 

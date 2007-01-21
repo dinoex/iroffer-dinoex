@@ -14,7 +14,7 @@
  */
 
 int verifyshell(irlist_t *list, const char *file);
-void admin_jobs(const char *job);
+void admin_jobs(void);
 int check_lock(const char* lockstr, const char* pwd);
 int hide_locked(const userinput * const u, const xdcc *xd);
 

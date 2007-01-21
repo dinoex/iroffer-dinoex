@@ -1463,6 +1463,10 @@ void dumpgdata(void)
   /* ppointer chat */
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(jobs_delayed, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
   gdata_print_string(enable_nick);
   gdata_print_string(owner_nick);
   gdata_print_string(admin_job_file);

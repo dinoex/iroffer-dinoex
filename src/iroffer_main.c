@@ -1665,7 +1665,7 @@ static void mainloop (void) {
             tostdout("\x1b[%d;%dH]\x1b[u",gdata.termlines,gdata.termcols);
             }
          
-         admin_jobs(gdata.admin_job_file);
+         admin_jobs();
          }
       
       updatecontext();

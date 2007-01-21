@@ -150,6 +150,7 @@ irlist_t geoipcountry;
 irlist_t geoipexcludenick;
 irlist_t autoadd_dirs;
 irlist_t packs_delayed;
+irlist_t jobs_delayed;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;

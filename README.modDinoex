@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.5:
 ---------------------
 
+bugfix: admin_job_file
+  mass add or remove via admin_job_file will no longer stall the bot.
+
 117: DUMP
 
   new admin commands:
