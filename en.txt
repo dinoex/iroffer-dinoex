@@ -596,7 +596,7 @@
 609 "ra"
 610 ".done"
 611 "Cant Create Admin Job Done File '%s': %s"
-612 "A A A A A "
+612 "A A A A A %s"
 613 "try"
 614 "Select returned an error: %s"
 615 "got"
@@ -1708,3 +1708,4 @@
 1732 "DUMP"
 1733 "Write a DUMP into the logfile"
 1734 "DUMP written into logfile."
+1735 "Unknown cmd %s in packs_delayed"
