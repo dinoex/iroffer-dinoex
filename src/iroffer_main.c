@@ -2633,7 +2633,9 @@ static void privmsgparse(const char* type, char* line) {
       else if (strncmp(caps(msg2),"UPTIME",6) == 0)
          notice(nick,"\1CLIENTINFO UPTIME shows how long this client has been running\1");
       
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: CLIENTINFO",nick);
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "[CTCP] %s in %s: CLIENTINFO",
+              nick, gnetwork->name);
       }
    
    /*----- PING ----- */
@@ -2653,7 +2655,9 @@ static void privmsgparse(const char* type, char* line) {
              msg2 ? msg2 : "",
              msg3 ? " " : "",
              msg3 ? msg3 : "");
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: PING",nick);
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "[CTCP] %s on %s: PING",
+              nick, gnetwork->name);
       }
    
    /*----- VERSION ----- */
@@ -2663,7 +2667,9 @@ static void privmsgparse(const char* type, char* line) {
       notice(nick,"\1VERSION iroffer v" VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: VERSION",nick);
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "[CTCP] %s on %s: VERSION",
+              nick, gnetwork->name);
       }
    
    /*----- UPTIME ----- */
@@ -2674,7 +2680,9 @@ static void privmsgparse(const char* type, char* line) {
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
        tempstr2 = getuptime(tempstr2, 0, gdata.startuptime, maxtextlength);
        notice(nick,"\1UPTIME %s\1", tempstr2);
-       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: UPTIME",nick);
+       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+               "[CTCP] %s on %s: UPTIME",
+               nick, gnetwork->name);
        mydelete(tempstr2);
      }
    
@@ -2686,7 +2694,9 @@ static void privmsgparse(const char* type, char* line) {
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
        tempstr2 = getstatuslinenums(tempstr2,maxtextlength);
        notice(nick,"\1%s\1",tempstr2);
-       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"[CTCP] %s: STATUS",nick);
+       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+               "[CTCP] %s on %s: STATUS",
+               nick, gnetwork->name);
        mydelete(tempstr2);
      }
    
@@ -2731,7 +2741,9 @@ static void privmsgparse(const char* type, char* line) {
           
           if (!tr)
             {
-              outerror(OUTERROR_TYPE_WARN,"Couldn't find transfer that %s tried to resume!",nick);
+              outerror(OUTERROR_TYPE_WARN,
+                       "Couldn't find transfer that %s on %s tried to resume!",
+                       nick, gnetwork->name);
               tr = irlist_get_head(&gdata.trans);
               while(tr)
                 {
@@ -3243,7 +3255,9 @@ static void privmsgparse(const char* type, char* line) {
         if (k) {
           if (!gdata.attop)
             gototop();
-          ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW, "@FIND %s (%s) - %i pack%s found.", msg2e, hostmask, k, k != 1 ? "s" : "");
+          ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
+                  "@FIND %s (%s on %s) - %i pack%s found.",
+                  msg2e, hostmask, gnetwork->name, k, k != 1 ? "s" : "");
         }
         mydelete(atfindmatch);
       }
