@@ -3155,6 +3155,153 @@ void a_crc(const userinput * const u)
   }
 }
 
+static int a_newdir_check(const userinput * const u, const char *dir1, const char *dir2, xdcc *xd)
+{
+   struct stat st;
+   transfer *tr;
+   const char *off2;
+   char *tempstr;
+   int len1;
+   int len2;
+   int max;
+   int xfiledescriptor;
+
+   updatecontext();
+
+   len1 = strlen(dir1);
+   if ( strncmp(dir1, xd->file, len1) != 0 )
+     return 0;
+
+   off2 = xd->file + len1;
+   len2 = strlen(off2);
+   max = strlen(dir2) + len2 + 1;
+   tempstr = mymalloc(max + 1);
+   snprintf(tempstr, max,
+            "%s%s", dir2, off2);
+
+   xfiledescriptor=open(tempstr, O_RDONLY | ADDED_OPEN_FLAGS);
+
+   if (xfiledescriptor < 0) {
+      a_respond(u,"%s: Cant Access File: %s",tempstr,strerror(errno));
+      mydelete(tempstr);
+      return 0;
+      }
+
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      a_respond(u,"%s: Cant Access File Details: %s",tempstr,strerror(errno));
+      close(xfiledescriptor);
+      mydelete(tempstr);
+      return 0;
+     }
+
+   close(xfiledescriptor);
+
+   if ( st.st_size == 0 ) {
+      a_respond(u,"%s: File has size of 0 bytes!",tempstr);
+      mydelete(tempstr);
+      return 0;
+      }
+
+   if ((st.st_size > gdata.max_file_size) || (st.st_size < 0)) {
+      a_respond(u,"%s: File is too large.",tempstr);
+      mydelete(tempstr);
+      return 0;
+      }
+
+   a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
+             number_of_pack(xd), xd->file, tempstr);
+
+   tr = irlist_get_head(&gdata.trans);
+   while(tr)
+     {
+       if ((tr->tr_status != TRANSFER_STATUS_DONE) &&
+           (tr->xpack == xd))
+         {
+           t_closeconn(tr,"Pack file changed",0);
+         }
+       tr = irlist_get_next(tr);
+     }
+
+   mydelete(xd->file);
+   xd->file = tempstr;
+   xd->st_size  = st.st_size;
+   xd->st_dev   = st.st_dev;
+   xd->st_ino   = st.st_ino;
+   xd->mtime    = st.st_mtime;
+
+   if (gdata.md5build.xpack == xd)
+     {
+       outerror(OUTERROR_TYPE_WARN,"[MD5]: Canceled (chfile)");
+
+       FD_CLR(gdata.md5build.file_fd, &gdata.readset);
+       close(gdata.md5build.file_fd);
+       gdata.md5build.file_fd = FD_UNUSED;
+       gdata.md5build.xpack = NULL;
+     }
+   xd->has_md5sum = 0;
+   xd->has_crc32 = 0;
+   memset(xd->md5sum,0,sizeof(MD5Digest));
+
+   assert(xd->file_fd == FD_UNUSED);
+   assert(xd->file_fd_count == 0);
+#ifdef HAVE_MMAP
+   assert(!irlist_size(&xd->mmaps));
+#endif
+
+   return 1;
+}
+
+void a_newdir(const userinput * const u)
+{
+   xdcc *xd;
+   char *dir1;
+   char *dir2;
+   int found;
+
+   updatecontext();
+
+   if (gdata.direct_file_access == 0) {
+      a_respond(u,"Disabled in Config");
+      return;
+      }
+
+   if (!u->arg1 || !strlen(u->arg1)) {
+      a_respond(u,"Try Specifying a Directory");
+      return;
+      }
+
+   if (!u->arg2e || !strlen(u->arg2e)) {
+      a_respond(u,"Try Specifying a new Directory");
+      return;
+      }
+
+   dir1 = mymalloc(strlen(u->arg1)+1);
+   strcpy(dir1,u->arg1);
+   convert_to_unix_slash(dir1);
+
+   dir2 = mymalloc(strlen(u->arg1)+1);
+   strcpy(dir2,u->arg1);
+   convert_to_unix_slash(dir2);
+
+   found = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       found += a_newdir_check(u, dir1, dir2, xd);
+       xd = irlist_get_next(xd);
+     }
+   if (found > 0)
+     {
+       write_statefile();
+       xdccsavetext();
+     }
+ 
+   a_respond(u, "NEWFILE: %d Packs found", found);
+   mydelete(dir1);
+   mydelete(dir2);
+}
+
 void a_filemove(const userinput * const u)
 {
    int xfiledescriptor;

@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.5:
 ---------------------
 
+119: NEWDIR (inspired by chibi)
+
+  new admin commands:
+  NEWDIR <dirname> <dirname>        rename pathnames of all matching packs
+
 118: debug
   allow to set debug level in config file
 
