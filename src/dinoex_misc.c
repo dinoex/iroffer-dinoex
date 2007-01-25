@@ -2114,6 +2114,7 @@ void changesec_dinoex(void)
       if (strcmp(u->cmd,"REMOVE") == 0)
         {
           a_remove_delayed(u);
+          mydelete(u->cmd);
           mydelete(u->arg1);
           mydelete(u->arg2);
           u = irlist_delete(&gdata.packs_delayed, u);
@@ -2123,6 +2124,7 @@ void changesec_dinoex(void)
       if (strcmp(u->cmd,"ADD") == 0)
         {
           a_add_delayed(u);
+          mydelete(u->cmd);
           mydelete(u->arg1);
           mydelete(u->arg2);
           u = irlist_delete(&gdata.packs_delayed, u);
@@ -2319,7 +2321,7 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
       u2->method = u->method;
       u2->fd = u->fd;
       u2->chat = u->chat;
-      u2->cmd = "REMOVE";
+      u2->cmd = strdup( "REMOVE" );
       u2->net = gnetwork->net;
 
       u2->arg1 = tempstr;
@@ -2575,7 +2577,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
       u2->method = u->method;
       u2->fd = u->fd;
       u2->chat = u->chat;
-      u2->cmd = "ADD";
+      u2->cmd = strdup( "ADD" );
       u2->net = gnetwork->net;
 
       if (u2->snick != NULL)
