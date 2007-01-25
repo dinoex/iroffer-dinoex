@@ -160,6 +160,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"need_level",      &gdata.need_level,      &gdata.need_level,      0, 3, 0 },
   {"max_find",        &gdata.max_find,        &gdata.max_find,        0, 65000, 1 },
   {"restrictsend_delay",  &gdata.restrictsend_delay,  &gdata.restrictsend_delay,  0, 2000, 1 },
+  {"debug",           &gdata.debug,           &gdata.debug,           0, 65000, 1 },
 };
 
 typedef struct

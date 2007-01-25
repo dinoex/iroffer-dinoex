@@ -1709,3 +1709,4 @@
 1733 "Write a DUMP into the logfile"
 1734 "DUMP written into logfile."
 1735 "Unknown cmd %s in packs_delayed"
+1736 "debug"
