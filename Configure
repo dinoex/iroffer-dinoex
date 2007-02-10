@@ -27,7 +27,7 @@ echo "   -d           Compile with debug symbols"
 echo "   -p           Compile with profiling flags"
 echo "   -w           Compile with extra warning flags"
 echo "   -g           Compile GeoIP lib"
-echo "   -c           Compile Curl lib"
+echo "   -c           Compile Curl lib (for the FETCH-Command)"
 exit 1
 }
 
@@ -766,13 +766,13 @@ fi
 if $OPT_CURL; then
 	echo -n "Seeing if libcurl libraries exist (for the FETCH-Command)... "
 	echo "
-	#define GEX 
-	#include \"src/iroffer_config.h\"
-	#include \"src/iroffer_defines.h\"
-	#include \"src/iroffer_headers.h\"
-	#include \"src/iroffer_globals.h\"
-	int main (int argc, char **argv) {exit(0);}
-	" > config.temp.c
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
 	if $cctype config.temp.c $libs -lcurl -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR; then
 		echo "found"
 		echo "Configuring for Curl."
@@ -1109,8 +1109,8 @@ echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB
 echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF $CURLLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $GEOINC $CURLINC
-echo CONFIG_CPPFLAGS=
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG
+echo CONFIG_CPPFLAGS=$GEOINC $CURLINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
  echo CONFIG_TARGETS=
