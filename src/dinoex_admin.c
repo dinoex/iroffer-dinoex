@@ -2114,7 +2114,7 @@ void changesec_dinoex(void)
       if (strcmp(u->cmd,"REMOVE") == 0)
         {
           a_remove_delayed(u);
-          mydelete(u->cmd);
+          free(u->cmd);
           mydelete(u->arg1);
           mydelete(u->arg2);
           u = irlist_delete(&gdata.packs_delayed, u);
@@ -2124,7 +2124,7 @@ void changesec_dinoex(void)
       if (strcmp(u->cmd,"ADD") == 0)
         {
           a_add_delayed(u);
-          mydelete(u->cmd);
+          free(u->cmd);
           mydelete(u->arg1);
           mydelete(u->arg2);
           u = irlist_delete(&gdata.packs_delayed, u);
