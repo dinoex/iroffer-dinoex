@@ -19,6 +19,10 @@ bugfix: admin_job_file
   new admin commands:
   DUMP                              Write a DUMP into the logfile
 
+bugfix: autoadd
+  versions affected: 2.4
+  iroffer could crash on free memory
+
 bugfix: MULTINET
   extend debug and log information.
 
