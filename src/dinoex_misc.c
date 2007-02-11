@@ -1442,7 +1442,6 @@ void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd
   cs = curl_multi_fdset(cm, read_fd_set, write_fd_set, exc_fd_set, max_fd);
 }
 
-static fetch_curl_t *clean_fetch(fetch_curl_t *ft);
 static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
 {
   updatecontext();
@@ -1455,6 +1454,31 @@ static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
   if (ft->vhosttext != NULL)
     mydelete(ft->vhosttext);
   return irlist_delete(&fetch_trans, ft);
+}
+
+static void fetch_cancel(int num)
+{
+  fetch_curl_t *ft;
+  int i;
+
+  updatecontext();
+
+  i = 0;
+  ft = irlist_get_head(&fetch_trans);
+  while(ft)
+    {
+      i++;
+      if (++i == num)
+        {
+          ft = irlist_get_next(ft);
+          continue;
+        }
+      a_respond(&(ft->u),"fetch %s canceled", ft->name);
+      curl_multi_remove_handle(cm, ft->curlhandle);
+      curl_easy_cleanup(ft->curlhandle);
+      fetch_started --;
+      ft = clean_fetch(ft);
+    }
 }
 
 void fetch_perform(void)
@@ -1688,11 +1712,13 @@ void dinoex_dcl(const userinput *const u)
   double dl_total;
   double dl_size;
   int progress;
+  int i = 0;
 
   updatecontext();
   ft = irlist_get_head(&fetch_trans);
   while(ft)
     { 
+      i ++;
       dl_size = 0.0;
       curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD, &dl_size);
 
@@ -1701,7 +1727,7 @@ void dinoex_dcl(const userinput *const u)
 
       progress = 0;
       progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
-      a_respond(u,"    .  fetch       %-32s   Receiving %d%%", ft->name, progress);
+      a_respond(u,"   %2i  fetch       %-32s   Receiving %d%%", i, ft->name, progress);
       ft = irlist_get_next(ft);
     }
 }
@@ -1716,11 +1742,13 @@ void dinoex_dcld(const userinput *const u)
   int progress;
   int started;
   int left;
+  int i = 0;
 
   updatecontext();
   ft = irlist_get_head(&fetch_trans);
   while(ft)
     {
+      i ++;
       dl_size = 0.0;
       curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD, &dl_size);
 
@@ -1737,7 +1765,7 @@ void dinoex_dcld(const userinput *const u)
       left = min2(359999, (dl_total - dl_size) /
                           ((int)(max2(dl_speed, 1))));
       progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
-      a_respond(u,"    .  fetch       %-32s   Receiving %d%%", ft->name, progress);
+      a_respond(u,"   %2i  fetch       %-32s   Receiving %d%%", i, ft->name, progress);
       a_respond(u,"                   %s", ft->url);
       a_respond(u,"  ^- %5.1fK/s    %6" LLPRINTFMT "iK/%6" LLPRINTFMT "iK  %2i%c%02i%c/%2i%c%02i%c",
                   (float)(dl_speed/1024),
@@ -3529,6 +3557,25 @@ void a_fetch(const userinput * const u)
     }
 
   start_fetch_url(u);
+}
+
+void a_fetchcancel(const userinput * const u)
+{
+  int num;
+
+  updatecontext();
+
+  if (u->arg1)
+    {
+      num = atoi(u->arg1);
+    }
+
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      a_respond(u,"Try Specifying a Valid Download Number");
+      return;
+    }
+  fetch_cancel(num);
 }
 #endif /* USE_CURL */
 

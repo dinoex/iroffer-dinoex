@@ -1,5 +1,13 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 2.6:
+---------------------
+
+120) FETCHCANCEL (inspired by SpiegelEiXXL)
+
+  new admin command:
+  FETCHCANCEL <nr>                  stop download of fetch with index <n>
+
 With Version mod 2.5:
 ---------------------
 

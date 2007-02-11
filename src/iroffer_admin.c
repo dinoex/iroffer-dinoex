@@ -175,6 +175,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,a_showdir,  "SHOWDIR","<dir>","list directory on disk"},
 #ifdef USE_CURL
 {3,method_allow_all,a_fetch,    "FETCH","<file> <url>","download url and save file in upload dir"},
+{3,method_allow_all,a_fetchcancel, "FETCHCANCEL","<nr>","stop download of fetch with index <n>"},
 #endif /* USE_CURL */
 
 {4,method_allow_all,u_msg,      "MSG","<nick> <message>","Send a message to a user"},

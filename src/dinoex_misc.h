@@ -110,6 +110,7 @@ void a_filedel(const userinput * const u);
 void a_showdir(const userinput * const u);
 #ifdef USE_CURL
 void a_fetch(const userinput * const u);
+void a_fetchcancel(const userinput * const u);
 #endif /* USE_CURL */
 
 void a_amsg(const userinput * const u);
