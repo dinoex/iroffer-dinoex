@@ -1691,7 +1691,7 @@
 1715 "%s%s"
 1716 "respondtochannellistmsg"
 1717 "network dropped, reconnecting"
-1718 "nickserv identify send on %s."
+1718 "IDENTIFY send to nickserv on %s."
 1719 "DCC Chat Connect Attempt Failed on %s: %s"
 1720 "DCC Chat Lost on %s: %s"
 1721 "Log: Pack %d, Nick %s, Network %s, File %s"

@@ -8,6 +8,9 @@ With Version mod 2.6:
   new admin command:
   FETCHCANCEL <nr>                  stop download of fetch with index <n>
 
+bugfix: IDENTIFY
+  avoid multiple identify on connect.
+
 With Version mod 2.5:
 ---------------------
 
@@ -118,9 +121,6 @@ bugfix: network
 bugfix: XDCC REMOVE, XDCC CANCEL
   let user remove entries matching him.
   remove only entries on the same network.
-
-bugfix: IDENTIFY
-  avoid multiple identify on connect.
 
 bugfix: SHUTDOWN
   do not try to reconnect on shutdown.

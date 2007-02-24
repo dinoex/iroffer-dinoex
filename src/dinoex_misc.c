@@ -1930,14 +1930,14 @@ void identify_needed(int force)
 {
   if (force == 0)
     {
-      if ((gnetwork->next_identify > 0) && (gnetwork->next_identify < gdata.curtime))
+      if ((gnetwork->next_identify > 0) && (gnetwork->next_identify >= gdata.curtime))
         return;
     }
   /* wait 1 sec before idetify again */
   gnetwork->next_identify = gdata.curtime + 1;
   privmsg("nickserv", "IDENTIFY %s", gdata.nickserv_pass);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-          "nickserv identify send on %s.", gnetwork->name);
+          "IDENTIFY send to nickserv on %s.", gnetwork->name);
 }
 
 void identify_check(const char *line)

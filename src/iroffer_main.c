@@ -1969,7 +1969,7 @@ static void parseline(char *line) {
        /* nickserv */
        if (gdata.nickserv_pass)
          {
-           identify_needed(1);
+           identify_needed(0);
          }
      }
 
@@ -2304,7 +2304,7 @@ static void parseline(char *line) {
            /* nickserv */
            if (gdata.nickserv_pass)
              {
-               identify_needed(1);
+               identify_needed(0);
              }
            
            /* we changed, update nick */
