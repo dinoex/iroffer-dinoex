@@ -1936,7 +1936,7 @@ void identify_needed(int force)
   /* wait 1 sec before idetify again */
   gnetwork->next_identify = gdata.curtime + 1;
   privmsg("nickserv", "IDENTIFY %s", gdata.nickserv_pass);
-  ioutput(CALLTYPE_NORMAL, OUT_S,COLOR_NO_COLOR,
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "nickserv identify send on %s.", gnetwork->name);
 }
 
