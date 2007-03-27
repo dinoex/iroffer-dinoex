@@ -3078,15 +3078,15 @@ static void privmsgparse(const char* type, char* line) {
          if ( msg2 && msg3 && (!strcmp(msg2,"SEND") || !strcmp(msg2,"GET"))) {
            if (!gdata.attop) gototop();
            ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                   "XDCC SEND (%s on %s)",
-                   msg3, gnetwork->name);
+                   "XDCC SEND %s",
+                   msg3);
            sendxdccfile(nick, hostname, hostmask, packnumtonum(msg3), NULL, msg4);
          }
          else if ( msg2 && msg3 && (!strcmp(msg2,"INFO"))) {
            if (!gdata.attop) gototop();
            ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                   "XDCC INFO (%s on %s)",
-                   msg3, gnetwork->name);
+                   "XDCC INFO %s",
+                   msg3);
            sendxdccinfo(nick, hostname, hostmask, packnumtonum(msg3), NULL);
          }
          else if ( msg2 && !strcmp(msg2,"QUEUE")) {
