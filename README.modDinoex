@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.6:
 ---------------------
 
+bugfix: MULTINET
+  cleanup logging of XDCC SEND, XDCC INFO
+
 120) FETCHCANCEL (inspired by SpiegelEiXXL)
 
   new admin command:
