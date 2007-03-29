@@ -1055,6 +1055,7 @@ static int connectirc (server_t *tserver) {
        remotehost = gethostbyname(gnetwork->serv_resolv.to_ip);
        if (remotehost == NULL)
          {
+outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid DNS response, Ignoring: %s",hstrerror(h_errno));
 #ifdef NO_HOSTCODES
            exit(10);
 #else

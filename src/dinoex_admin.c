@@ -221,6 +221,7 @@ int hide_locked(const userinput * const u, const xdcc *xd)
    
   switch (u->method)
     {
+    case method_fd:
     case method_xdl_channel:
     case method_xdl_user_privmsg:
     case method_xdl_user_notice:

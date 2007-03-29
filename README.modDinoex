@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.6:
 ---------------------
 
+bugfix: hidlockepacks (inspired by Noxx)
+  don't show locked packs in xdcclistfile
+
 bugfix: MULTINET
   cleanup logging of XDCC SEND, XDCC INFO
 
