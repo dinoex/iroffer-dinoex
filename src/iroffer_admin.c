@@ -141,7 +141,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,a_requeue,  "REQUEUE","x y","Moves Queue Entry x to y"},
 
 {3,method_allow_all,u_info,     "INFO","n","Show Info for Pack n"},
-{3,method_allow_all,u_remove,   "REMOVE","n <m>","Removes Pack n or n to m"},
+{3,method_allow_all,u_remove,   "REMOVE","n [m]","Removes Pack n or n to m"},
 {3,method_allow_all,u_removedir,"REMOVEDIR","<dir>","Remove Every File in <dir>"},
 {3,method_allow_all,a_removegroup, "REMOVEGROUP","<group>","Remove Every File within <group>"},
 {3,method_allow_all,u_renumber, "RENUMBER","x y","Moves Pack x to y"},
@@ -172,6 +172,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,a_newdir,   "NEWDIR","<dirname> <dirname>","rename pathnames of all matching packs"},
 {3,method_allow_all,a_filemove, "FILEMOVE","<filename> <filename>","rename file on disk"},
 {3,method_allow_all,a_filedel,  "FILEDEL","<filename>","remove file from disk"},
+{3,method_allow_all,a_fileremove, "FILEREMOVE","n [m]","remove pack <n> or <n> to <m> and remove its file from disk"},
 {3,method_allow_all,a_showdir,  "SHOWDIR","<dir>","list directory on disk"},
 #ifdef USE_CURL
 {3,method_allow_all,a_fetch,    "FETCH","<file> <url>","download url and save file in upload dir"},

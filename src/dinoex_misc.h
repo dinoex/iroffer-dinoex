@@ -13,6 +13,7 @@
  * 
  */
 
+char *mystrdup(const char *str);
 int verifyshell(irlist_t *list, const char *file);
 void admin_jobs(void);
 int check_lock(const char* lockstr, const char* pwd);
@@ -107,6 +108,7 @@ void a_crc(const userinput * const u);
 void a_newdir(const userinput * const u);
 void a_filemove(const userinput * const u);
 void a_filedel(const userinput * const u);
+void a_fileremove(const userinput * const u);
 void a_showdir(const userinput * const u);
 #ifdef USE_CURL
 void a_fetch(const userinput * const u);

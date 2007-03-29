@@ -33,6 +33,15 @@
 
 extern const ir_uint32 crctable[256];
 
+char *mystrdup(const char *str)
+{
+   char *copy;
+
+   copy = mymalloc(strlen(str)+1);
+   strcpy(copy, str);
+   return copy;
+}
+
 static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
@@ -3416,7 +3425,7 @@ void a_filemove(const userinput * const u)
    mydelete(file2);
 }
 
-void a_filedel(const userinput * const u)
+static void a_filedel_disk(const userinput * const u, const char *name)
 {
    int xfiledescriptor;
    struct stat st;
@@ -3424,18 +3433,8 @@ void a_filedel(const userinput * const u)
    
    updatecontext();
    
-   if (gdata.direct_file_access == 0) {
-      a_respond(u,"Disabled in Config");
-      return;
-      }
-
-   if (!u->arg1e || !strlen(u->arg1e)) {
-      a_respond(u,"Try Specifying a Filename");
-      return;
-      }
-   
-   file = mymalloc(strlen(u->arg1e)+1);
-   strcpy(file,u->arg1e);
+   file = mymalloc(strlen(name)+1);
+   strcpy(file, name);
    convert_to_unix_slash(file);
    
    xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
@@ -3443,8 +3442,8 @@ void a_filedel(const userinput * const u)
    if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
      {
        mydelete(file);
-       file = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
-       sprintf(file,"%s/%s",gdata.filedir,u->arg1e);
+       file = mymalloc(strlen(gdata.filedir)+1+strlen(name)+1);
+       sprintf(file, "%s/%s", gdata.filedir, name);
        convert_to_unix_slash(file);
        xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
      }
@@ -3480,6 +3479,71 @@ void a_filedel(const userinput * const u)
        a_respond(u,"File %s was deleted.", file);
      }
    mydelete(file);
+}
+
+void a_filedel(const userinput * const u)
+{
+   updatecontext();
+   
+   if (gdata.direct_file_access == 0) {
+      a_respond(u,"Disabled in Config");
+      return;
+      }
+
+   if (!u->arg1e || !strlen(u->arg1e)) {
+      a_respond(u,"Try Specifying a Filename");
+      return;
+      }
+
+   a_filedel_disk(u, u->arg1e);
+}
+
+void a_fileremove(const userinput * const u)
+{
+   int num = 0;
+   int num2 = 0;
+   xdcc *xd;
+   char *filename;
+
+   updatecontext();
+
+   if (gdata.direct_file_access == 0) {
+      a_respond(u,"Disabled in Config");
+      return;
+      }
+
+   if (u->arg1) num = atoi(u->arg1);
+
+   if ( num < 1 || num > irlist_size(&gdata.xdccs) ) {
+      a_respond(u,"Try a valid pack number");
+      return;
+      }
+
+   if (u->arg2) num2 = atoi(u->arg2);
+
+   if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
+      a_respond(u,"Try a valid pack number");
+      return;
+      }
+
+   if (num2 == 0) {
+      xd = irlist_get_nth(&gdata.xdccs, num-1);
+      a_remove_pack(u, xd, num);
+      return;
+      }
+
+   if ( num2 < num ) {
+      a_respond(u,"Try a valid pack number");
+      return;
+      }
+
+   for (; num2 >= num; num2--) {
+      xd = irlist_get_nth(&gdata.xdccs, num2-1);
+      filename = mystrdup(xd->file);
+      a_remove_pack(u, xd, num2);
+      a_filedel_disk(u, filename);
+      mydelete(filename);
+      }
 }
 
 void a_showdir(const userinput * const u)

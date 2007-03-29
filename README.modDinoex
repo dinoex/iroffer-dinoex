@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.6:
 ---------------------
 
+121) FILEREMOVE (inspired by SpiegelEiXXL)
+
+  new admin command:
+  FILEREMOVE n [m]                 remove pack <n> or <n> to <m> and remove its file from disk
+
 bugfix: hidlockepacks (inspired by Noxx)
   don't show locked packs in xdcclistfile
 
