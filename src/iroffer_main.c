@@ -21,7 +21,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
-#include "iroffer_dinoex.h"
+#include "dinoex_misc.h"
 
 /* local functions */
 static void mainloop(void);
