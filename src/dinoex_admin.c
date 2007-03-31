@@ -1914,7 +1914,7 @@ void a_fetch(const userinput * const u)
 
 void a_fetchcancel(const userinput * const u)
 {
-  int num;
+  int num = 0;
 
   updatecontext();
 
