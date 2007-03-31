@@ -1555,11 +1555,8 @@ static void u_raw(const userinput * const u)
   
   updatecontext();
   
-  if (!u->arg1e || !strlen(u->arg1e))
-    {
-      u_respond(u,"Try Specifying a Command");
-      return;
-    }
+  if (invalid_command(u, u->arg1e) != 0)
+    return;
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[0]);
@@ -1577,14 +1574,10 @@ static void u_info(const userinput * const u)
   
   updatecontext();
   
-  if (u->arg1) { num = atoi(u->arg1); }
-  
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
+  if (u->arg1) num = atoi(u->arg1);
+  if (invalid_pack(u, num) != 0)
+     return;
+
   xd = irlist_get_nth(&gdata.xdccs, num-1);
   
   u_respond(u, "Pack Info for Pack #%i:", num);
@@ -1635,38 +1628,32 @@ static void u_info(const userinput * const u)
 }
 
 static void u_remove(const userinput * const u) {
-   int num = 0;
+   int num1 = 0;
    int num2 = 0;
    xdcc *xd;
    
    updatecontext();
-   
-   if (u->arg1) num = atoi(u->arg1);
-   
-   if ( num < 1 || num > irlist_size(&gdata.xdccs) ) {
-      u_respond(u,"Try a valid pack number");
+
+   if (u->arg1) num1 = atoi(u->arg1);
+   if (invalid_pack(u, num1) != 0)
       return;
-      }
-   
+
    if (u->arg2) num2 = atoi(u->arg2);
-   
-   if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
-      u_respond(u,"Try a valid pack number");
+   if (invalid_pack(u, num2) != 0)
       return;
-      }
 
    if (num2 == 0) {
-      xd = irlist_get_nth(&gdata.xdccs, num-1);
-      a_remove_pack(u, xd, num);
+      xd = irlist_get_nth(&gdata.xdccs, num1-1);
+      a_remove_pack(u, xd, num1);
       return;
       }
 
-   if ( num2 < num ) {
-      u_respond(u,"Try a valid pack number");
+   if ( num2 < num1 ) {
+      u_respond(u, "Pack numbers are not in order");
       return;
       }
 
-   for (; num2 >= num; num2--) {
+   for (; num2 >= num1; num2--) {
       xd = irlist_get_nth(&gdata.xdccs, num2-1);
       a_remove_pack(u, xd, num2);
       }
@@ -1679,13 +1666,10 @@ static void u_removedir(const userinput * const u)
   int thedirlen;
   
   updatecontext();
-  
-  if (!u->arg1e || !strlen(u->arg1e))
-    {
-      u_respond(u,"Try Specifying a Directory");
-      return;
-    }
-  
+
+  if (invalid_dir(u, u->arg1e) != 0)
+     return;
+
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -1748,26 +1732,18 @@ static void u_send(const userinput * const u) {
    int net;
    
    updatecontext();
-   
-   net = get_network(u->arg3);
+
+   net = get_network_msg(u, u->arg3);
    if (net < 0)
-     {
-       u_respond(u,"Try specifying a valid network number");
-       return;
-     }
+     return;
+
+   if (invalid_nick(u, u->arg1) != 0)
+      return;
 
    if (u->arg2) num = atoi(u->arg2);
-   
-   if (!u->arg1 || !strlen(u->arg1)) {
-      u_respond(u,"Try Specifying a Nick");
+   if (invalid_pack(u, num) != 0)
       return;
-      }
-   
-   if (num > irlist_size(&gdata.xdccs) || num < 1) {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-      }
-   
+
    u_respond(u,"Sending %s pack %i",u->arg1,num);
    
    backup = gnetwork;
@@ -1788,25 +1764,17 @@ static void u_queue(const userinput * const u) {
    int net;
    
    updatecontext();
-   
-   net = get_network(u->arg3);
+
+   net = get_network_msg(u, u->arg3);
    if (net < 0)
-     {
-       u_respond(u,"Try specifying a valid network number");
-       return;
-     }
+      return;
+
+   if (invalid_nick(u, u->arg1) != 0)
+      return;
 
    if (u->arg2) num = atoi(u->arg2);
-   
-   if (!u->arg1 || !strlen(u->arg1)) {
-      u_respond(u,"Try Specifying a Nick");
+   if (invalid_pack(u, num) != 0)
       return;
-      }
-   
-   if (num > irlist_size(&gdata.xdccs) || num < 1) {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-      }
 
    xd = irlist_get_nth(&gdata.xdccs, num-1);
 
@@ -1858,12 +1826,9 @@ static void u_psend(const userinput * const u)
   
   updatecontext();
   
-  net = get_network(u->arg3);
+  net = get_network_msg(u, u->arg3);
   if (net < 0)
-    {
-      u_respond(u,"Try specifying a valid network number");
-      return;
-    }
+    return;
 
   if (!u->arg1 || !strlen(u->arg1))
     {
@@ -1958,16 +1923,12 @@ static void u_announce (const userinput * const u) {
   updatecontext ();
   
   if (u->arg1) num = atoi (u->arg1);
-  
-  if (num > irlist_size(&gdata.xdccs) || num < 1) {
-    u_respond (u, "Try Specifying a Valid Pack Number");
+  if (invalid_pack(u, num) != 0)
     return;
-    }
-  if (!u->arg2e || !strlen (u->arg2e)) {
-    u_respond (u, "Try Specifying a Message (e.g. NEW)");
+
+  if (invalid_announce(u, u->arg2e) != 0)
     return;
-    }
-  
+
   xd = irlist_get_nth(&gdata.xdccs, num-1);
   
   u_respond(u,"Pack Info for Pack #%i:",num);
@@ -2020,19 +1981,13 @@ static void u_msg(const userinput * const u)
   gnetwork_t *backup;
   
   updatecontext();
-  
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      u_respond(u,"Try Specifying a Nick");
-      return;
-    }
-  
-  if (!u->arg2e || !strlen(u->arg2e))
-    {
-      u_respond(u,"Try Specifying a Message");
-      return;
-    }
-  
+
+  if (invalid_nick(u, u->arg1) != 0)
+    return;
+
+  if (invalid_message(u, u->arg2e) != 0)
+    return;
+
   backup = gnetwork;
   gnetwork = &(gdata.networks[0]);
   privmsg_fast(u->arg1,"%s",u->arg2e);
@@ -2047,12 +2002,9 @@ static void u_mesg(const userinput * const u)
  
   updatecontext();
   
-  if (!u->arg1e || !strlen(u->arg1e))
-    {
-      u_respond(u,"Try Specifying a Message");
-      return;
-    }
-  
+  if (invalid_message(u, u->arg1e) != 0)
+    return;
+
   tr = irlist_get_head(&gdata.trans);
   while(tr)
     {
@@ -2075,12 +2027,9 @@ static void u_mesq(const userinput * const u)
   
   updatecontext();
   
-  if (!u->arg1e || !strlen(u->arg1e))
-    {
-      u_respond(u,"Try Specifying a Message");
-      return;
-    }
-  
+  if (invalid_message(u, u->arg1e) != 0)
+    return;
+
   count=0;
   pq = irlist_get_head(&gdata.mainqueue);
   while(pq)
@@ -2130,17 +2079,12 @@ static void u_chfile(const userinput * const u) {
    updatecontext();
    
    if (u->arg1) num = atoi(u->arg1);
-   
-   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
-      u_respond(u,"Try Specifying a Valid Pack Number");
+   if (invalid_pack(u, num) != 0)
       return;
-      }
-   
-   if (!u->arg2e || !strlen(u->arg2e)) {
-      u_respond(u,"Try Specifying a Filename");
+
+   if (invalid_file(u, u->arg2e) != 0)
       return;
-      }
-   
+
    /* verify file is ok first */
    tempstr[0] = '\0';
    
@@ -2238,12 +2182,10 @@ void u_add(const userinput * const u) {
    char *a2;
    
    updatecontext();
-   
-   if (!u->arg1e || !strlen(u->arg1e)) {
-      u_respond(u,"Try Specifying a Filename");
+
+   if (invalid_file(u, u->arg1e) != 0)
       return;
-      }
-   
+
    file = mystrdup(u->arg1e);
    convert_to_unix_slash(file);
    
@@ -2403,13 +2345,10 @@ static void u_adddir(const userinput * const u)
   int thedirlen;
   
   updatecontext();
-  
-  if (!u->arg1e || !strlen(u->arg1e))
-    {
-      u_respond(u,"Try Specifying a Directory");
-      return;
-    }
-  
+
+  if (invalid_dir(u, u->arg1e) != 0)
+     return;
+
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -2453,13 +2392,10 @@ static void u_addnew(const userinput * const u)
   int thedirlen;
   
   updatecontext();
-  
-  if (!u->arg1e || !strlen(u->arg1e))
-    {
-      u_respond(u,"Try Specifying a Directory");
-      return;
-    }
-  
+
+  if (invalid_dir(u, u->arg1e) != 0)
+     return;
+
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -2503,11 +2439,9 @@ static void u_chdesc(const userinput * const u) {
    updatecontext();
    
    if (u->arg1) num = atoi(u->arg1);
-   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
-      u_respond(u,"Try Specifying a Valid Pack Number");
+   if (invalid_pack(u, num) != 0)
       return;
-      }
-   
+
    if (!u->arg2e || !strlen(u->arg2e)) {
       u_respond(u,"Try Specifying a Description");
       return;
@@ -2533,12 +2467,9 @@ static void u_chnote(const userinput * const u) {
    updatecontext();
    
    if (u->arg1) num = atoi(u->arg1);
-   
-   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
-      u_respond(u,"Try Specifying a Valid Pack Number");
+   if (invalid_pack(u, num) != 0)
       return;
-      }
-   
+
    xd = irlist_get_nth(&gdata.xdccs, num-1);
    
    u_respond(u, "CHNOTE: [Pack %i] Old: %s New: %s",
@@ -2568,11 +2499,9 @@ static void u_chmins(const userinput * const u) {
    updatecontext();
    
    if (u->arg1) num = atoi(u->arg1);
-   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
-      u_respond(u,"Try Specifying a Valid Pack Number");
+   if (invalid_pack(u, num) != 0)
       return;
-      }
-   
+
    if (!u->arg2 || !strlen(u->arg2)) {
       u_respond(u,"Try Specifying a Minspeed");
       return;
@@ -2599,11 +2528,9 @@ static void u_chmaxs(const userinput * const u) {
    updatecontext();
    
    if (u->arg1) num = atoi(u->arg1);
-   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
-      u_respond(u,"Try Specifying a Valid Pack Number");
+   if (invalid_pack(u, num) != 0)
       return;
-      }
-   
+
    if (!u->arg2 || !strlen(u->arg2)) {
       u_respond(u,"Try Specifying a Maxspeed");
       return;
@@ -2635,12 +2562,9 @@ static void u_chgets(const userinput * const u)
       num = atoi(u->arg1);
     }
   
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      u_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
+  if (invalid_pack(u, num) != 0)
+     return;
+
   if (!u->arg2 || !strlen(u->arg2))
     {
       u_respond(u,"Try Specifying a Count");
@@ -3838,12 +3762,9 @@ static void u_jump(const userinput * const u)
   
   updatecontext();
   
-  net = get_network(u->arg2);
+  net = get_network_msg(u, u->arg2);
   if (net < 0)
-    {
-      u_respond(u,"Try specifying a valid network number");
-      return;
-    }
+    return;
 
   if (u->arg1)
     {
@@ -3881,12 +3802,9 @@ static void u_servers(const userinput * const u)
   
   updatecontext();
   
-  net = get_network(u->arg1);
+  net = get_network_msg(u, u->arg1);
   if (net < 0)
-    {
-      u_respond(u,"Try specifying a valid network number");
-      return;
-    }
+    return;
   
   u_respond(u,"Server List:");
   u_respond(u,"  Num  Server                         Port  Password");
@@ -4218,12 +4136,10 @@ static void u_rmul(const userinput * const u) {
       u_respond(u,"No upload hosts or no uploaddir defined.");
       return;
       }
-   
-   if (!u->arg1e || !strlen(u->arg1e)) {
-      u_respond(u,"Try Specifying a Filename");
+
+   if (invalid_file(u, u->arg1e) != 0)
       return;
-      }
-   
+
    convert_to_unix_slash(u->arg1e);
    
    if (strstr(u->arg1e,"/")) {
@@ -4266,14 +4182,11 @@ static void u_chanl(const userinput * const u)
   int net;
   
   updatecontext();
-  
-  net = get_network(u->arg1);
+
+  net = get_network_msg(u, u->arg1);
   if (net < 0)
-    {
-      u_respond(u,"Try specifying a valid network number");
-      return;
-    }
-  
+    return;
+
   u_respond(u,"Channel Members:");
   
   ch = irlist_get_head(&gdata.networks[net].channels);

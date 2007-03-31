@@ -112,7 +112,8 @@ int hide_locked(const userinput * const u, const xdcc *xd)
   return 0; 
 }
 
-int reorder_new_groupdesc(const char *group, const char *desc) {
+int reorder_new_groupdesc(const char *group, const char *desc)
+{
   xdcc *xd;
   int k;
 
@@ -146,7 +147,8 @@ int reorder_new_groupdesc(const char *group, const char *desc) {
   return k;
 }
 
-int reorder_groupdesc(const char *group) {
+int reorder_groupdesc(const char *group)
+{
   xdcc *xd; 
   xdcc *firstxd;
   xdcc *descxd;
@@ -201,7 +203,8 @@ int reorder_groupdesc(const char *group) {
   return k;
 }
 
-int add_default_groupdesc(const char *group) {
+int add_default_groupdesc(const char *group)
+{
   xdcc *xd; 
   xdcc *firstxd;
   int k;
@@ -239,7 +242,8 @@ int add_default_groupdesc(const char *group) {
   return k; 
 }
 
-void strtextcpy(char *d, const char *s) {
+void strtextcpy(char *d, const char *s)
+{
    const char *x;
    char *w;
    char ch;
@@ -300,7 +304,8 @@ void strtextcpy(char *d, const char *s) {
    }
 }
 
-void strpathcpy(char *d, const char *s) {
+void strpathcpy(char *d, const char *s)
+{
    char *w;
    
    if (d == NULL)
@@ -314,6 +319,116 @@ void strpathcpy(char *d, const char *s) {
    w = strrchr(d, '/');
    if (w != NULL)
       w[0] = 0;
+}
+
+int invalid_group(const userinput * const u, const char *arg)
+{
+   if (!arg || !strlen(arg))
+     {
+       a_respond(u, "Try Specifying a Group");
+       return 1;
+     }
+   return 0;
+}
+
+int invalid_dir(const userinput * const u, const char *arg)
+{
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Directory");
+      return 1;
+    }
+   return 0;
+}
+
+int invalid_file(const userinput * const u, const char *arg)
+{
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Filename");
+      return 1;
+    }
+   return 0;
+}
+
+int invalid_pwd(const userinput * const u, const char *arg)
+{
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Password");
+      return 1;
+    }
+   return 0;
+}
+
+int invalid_nick(const userinput * const u, const char *arg)
+{  
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Nick");
+      return 1;
+    }
+   return 0;
+}
+
+int invalid_message(const userinput * const u, const char *arg)
+{  
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Message");
+      return 1;
+    }
+   return 0;
+}
+
+int invalid_announce(const userinput * const u, const char *arg)
+{  
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Message (e.g. NEW)");
+      return 1;
+    }
+   return 0;
+}
+
+int invalid_command(const userinput * const u, const char *arg)
+{  
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Command");
+      return 1;
+    }
+   return 0;
+}
+
+int invalid_pack(const userinput * const u, int num)
+{
+  if (num < 1 || num > irlist_size(&gdata.xdccs))
+    {
+      a_respond(u, "Try Specifying a Valid Pack Number");
+      return 1;
+    }
+   return 0;
+}
+
+int get_network_msg(const userinput * const u, const char *arg)
+{
+   int net;
+
+   net = get_network(u->arg1);
+   if (net < 0)
+      a_respond(u, "Try Specifying a Valid Network");
+   return net;
+}
+
+int disabled_config(const userinput * const u)
+{
+   if (gdata.direct_file_access == 0)
+     {
+       a_respond(u, "Disabled in Config");
+       return 1;
+     }
+   return 0;
 }
 
 void a_remove_pack(const userinput * const u, xdcc *xd, int num)
@@ -688,11 +803,8 @@ void a_removegroup(const userinput * const u)
 
    updatecontext();
 
-   if (!u->arg1 || !strlen(u->arg1))
-     {
-       a_respond(u,"Try Specifying a Group");
+   if (invalid_group(u, u->arg1) != 0)
        return;
-     }
 
    n = 0;
    xd = irlist_get_head(&gdata.xdccs);
@@ -954,17 +1066,11 @@ void a_addgroup(const userinput * const u)
 
   updatecontext();
 
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      a_respond(u,"Try Specifying a Group");
-      return;
-    }
+  if (invalid_group(u, u->arg1) != 0)
+     return;
 
-  if (!u->arg2e || !strlen(u->arg2e))
-    {
-      a_respond(u,"Try Specifying a Directory");
-      return;
-    }
+  if (invalid_dir(u, u->arg2e) != 0)
+     return;
 
   convert_to_unix_slash(u->arg2e);
   if (gdata.groupsincaps)
@@ -1013,10 +1119,8 @@ void a_chlimit(const userinput * const u)
    updatecontext();
   
    if (u->arg1) num = atoi(u->arg1);
-   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
-      a_respond(u,"Try Specifying a Valid Pack Number");
+   if (invalid_pack(u, num) != 0)
       return;
-      }
   
    if (!u->arg2 || !strlen(u->arg2)) {
       a_respond(u,"Try Specifying a daily Downloadlimit");
@@ -1046,16 +1150,9 @@ void a_chlimitinfo(const userinput * const u)
 
   updatecontext();
 
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      a_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
+  if (u->arg1) num = atoi(u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
 
@@ -1082,27 +1179,17 @@ void a_lock(const userinput * const u)
   
   updatecontext();
   
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      a_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      a_respond(u,"Try Specifying a Password");
-      return;
-    }
-  
+  if (u->arg1) num = atoi(u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
+
+  if (invalid_pwd(u, u->arg2) != 0)
+    return;
+
   xd = irlist_get_nth(&gdata.xdccs, num-1);
   
-  a_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2e);
-  xd->lock = mystrdup(u->arg2e);
+  a_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2);
+  xd->lock = mystrdup(u->arg2);
 
   write_statefile();
   xdccsavetext();
@@ -1115,17 +1202,10 @@ void a_unlock(const userinput * const u)
   
   updatecontext();
   
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      a_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
+  if (u->arg1) num = atoi(u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
+
   xd = irlist_get_nth(&gdata.xdccs, num-1);
   a_respond(u, "UNLOCK: [Pack %i]", num);
   
@@ -1143,18 +1223,12 @@ void a_lockgroup(const userinput * const u)
    
    updatecontext();
    
-   if (!u->arg1 || !strlen(u->arg1))
-     {
-       a_respond(u,"Try Specifying a Group");
-       return;
-     }
-   
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      a_respond(u,"Try Specifying a Password");
+   if (invalid_group(u, u->arg1) != 0)
       return;
-    }
-  
+ 
+   if (invalid_pwd(u, u->arg2) != 0)
+      return;
+
    n = 0;
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
@@ -1164,8 +1238,8 @@ void a_lockgroup(const userinput * const u)
          {
            if (strcasecmp(xd->group,u->arg1) == 0)
              {
-                a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2e);
-                xd->lock = mystrdup(u->arg2e);
+                a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2);
+                xd->lock = mystrdup(u->arg2);
              }
          }
        xd = irlist_get_next(xd);
@@ -1180,13 +1254,10 @@ void a_unlockgroup(const userinput * const u)
    int n;
    
    updatecontext();
-   
-   if (!u->arg1 || !strlen(u->arg1))
-     {
-       a_respond(u,"Try Specifying a Group");
-       return;
-     }
-   
+
+   if (invalid_group(u, u->arg1) != 0)
+     return;
+
    n = 0;
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
@@ -1213,12 +1284,9 @@ void a_groupdesc(const userinput * const u)
 
   updatecontext();
 
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      a_respond(u,"Try Specifying a Valid Group");
-      return;
-    }
-   
+  if (invalid_group(u, u->arg1) != 0)
+    return;
+
   k = reorder_new_groupdesc(u->arg1,u->arg2e);
   if (k == 0)
     return;
@@ -1246,17 +1314,10 @@ void a_group(const userinput * const u)
   
   updatecontext();
   
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (num < 1 || num > irlist_size(&gdata.xdccs))
-    {
-      a_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
+  if (u->arg1) num = atoi(u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
+
   xd = irlist_get_nth(&gdata.xdccs, num-1);
 
   new = u->arg2;
@@ -1325,28 +1386,14 @@ void a_movegroup(const userinput * const u)
   
   updatecontext();
   
-  if (u->arg1)
-    {
-      num1 = atoi(u->arg1);
-    }
-  
-  if (num1 < 1 || num1 > irlist_size(&gdata.xdccs))
-    {
-      a_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
-  if (u->arg2)
-    {
-      num2 = atoi(u->arg2);
-    }
-  
-  if (num2 < 1 || num2 > irlist_size(&gdata.xdccs))
-    {
-      a_respond(u,"Try Specifying a Valid Pack Number");
-      return;
-    }
-  
+  if (u->arg1) num1 = atoi(u->arg1);
+  if (invalid_pack(u, num1) != 0)
+    return;
+
+  if (u->arg2) num2 = atoi(u->arg2);
+  if (invalid_pack(u, num2) != 0)
+    return;
+
   new = u->arg3;
   if (!u->arg3 || !strlen(u->arg3))
     {
@@ -1408,18 +1455,12 @@ void a_regroup(const userinput * const u)
 
   updatecontext();
 
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      a_respond(u,"Try Specifying a Valid Group");
-      return;
-    }
-   
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      a_respond(u,"Try Specifying a Valid Group");
-      return;
-    }
-   
+  if (invalid_group(u, u->arg1) != 0)
+     return;
+
+  if (invalid_group(u, u->arg2) != 0)
+     return;
+
   if (gdata.groupsincaps)
     caps(u->arg1);
    
@@ -1461,10 +1502,8 @@ void a_crc(const userinput * const u)
 
   if (u->arg1) {
     num = atoi (u->arg1);
-    if (num > irlist_size(&gdata.xdccs) || num < 1) {
-      a_respond (u, "Try Specifying a Valid Pack Number");
+    if (invalid_pack(u, num) != 0)
       return;
-      }
 
     xd = irlist_get_nth(&gdata.xdccs, num-1);
     a_respond(u,"Validating CRC for Pack #%i:",num);
@@ -1592,15 +1631,11 @@ void a_newdir(const userinput * const u)
 
    updatecontext();
 
-   if (gdata.direct_file_access == 0) {
-      a_respond(u,"Disabled in Config");
+   if (disabled_config(u) != 0)
       return;
-      }
 
-   if (!u->arg1 || !strlen(u->arg1)) {
-      a_respond(u,"Try Specifying a Directory");
+   if (invalid_dir(u, u->arg1) != 0)
       return;
-      }
 
    if (!u->arg2e || !strlen(u->arg2e)) {
       a_respond(u,"Try Specifying a new Directory");
@@ -1639,17 +1674,13 @@ void a_filemove(const userinput * const u)
    char *file2;
    
    updatecontext();
-   
-   if (gdata.direct_file_access == 0) {
-      a_respond(u,"Disabled in Config");
-      return;
-      }
 
-   if (!u->arg1 || !strlen(u->arg1)) {
-      a_respond(u,"Try Specifying a Filename");
+   if (disabled_config(u) != 0)
       return;
-      }
-   
+
+   if (invalid_file(u, u->arg1) != 0)
+      return;
+
    if (!u->arg2e || !strlen(u->arg2e)) {
       a_respond(u,"Try Specifying a new Filename");
       return;
@@ -1772,60 +1803,48 @@ static void a_filedel_disk(const userinput * const u, const char *name)
 void a_filedel(const userinput * const u)
 {
    updatecontext();
-   
-   if (gdata.direct_file_access == 0) {
-      a_respond(u,"Disabled in Config");
-      return;
-      }
 
-   if (!u->arg1e || !strlen(u->arg1e)) {
-      a_respond(u,"Try Specifying a Filename");
+   if (disabled_config(u) != 0)
       return;
-      }
+
+   if (invalid_file(u, u->arg1e) != 0)
+      return;
 
    a_filedel_disk(u, u->arg1e);
 }
 
 void a_fileremove(const userinput * const u)
 {
-   int num = 0;
+   int num1 = 0;
    int num2 = 0;
    xdcc *xd;
    char *filename;
 
    updatecontext();
 
-   if (gdata.direct_file_access == 0) {
-      a_respond(u,"Disabled in Config");
+   if (disabled_config(u) != 0)
       return;
-      }
 
-   if (u->arg1) num = atoi(u->arg1);
-
-   if ( num < 1 || num > irlist_size(&gdata.xdccs) ) {
-      a_respond(u,"Try a valid pack number");
+   if (u->arg1) num1 = atoi(u->arg1);
+   if (invalid_pack(u, num1) != 0)
       return;
-      }
 
    if (u->arg2) num2 = atoi(u->arg2);
-
-   if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
-      a_respond(u,"Try a valid pack number");
+   if (invalid_pack(u, num2) != 0)
       return;
-      }
 
    if (num2 == 0) {
-      xd = irlist_get_nth(&gdata.xdccs, num-1);
-      a_remove_pack(u, xd, num);
+      xd = irlist_get_nth(&gdata.xdccs, num1-1);
+      a_remove_pack(u, xd, num1);
       return;
       }
 
-   if ( num2 < num ) {
-      a_respond(u,"Try a valid pack number");
+   if ( num2 < num1 ) {
+      a_respond(u, "Pack numbers are not in order");
       return;
       }
 
-   for (; num2 >= num; num2--) {
+   for (; num2 >= num1; num2--) {
       xd = irlist_get_nth(&gdata.xdccs, num2-1);
       filename = mystrdup(xd->file);
       a_remove_pack(u, xd, num2);
@@ -1840,18 +1859,12 @@ void a_showdir(const userinput * const u)
   int thedirlen;
   
   updatecontext();
-  
-  if (gdata.direct_file_access == 0)
-    {
-      a_respond(u,"Disabled in Config");
-      return;
-    }
-  
-  if (!u->arg1e || !strlen(u->arg1e))
-    {
-      a_respond(u,"Try Specifying a Directory");
-      return;
-    }
+
+  if (disabled_config(u) != 0)
+     return;
+
+  if (invalid_dir(u, u->arg1e) != 0)
+     return;
  
   convert_to_unix_slash(u->arg1e);
   
@@ -1878,13 +1891,10 @@ void a_showdir(const userinput * const u)
 void a_fetch(const userinput * const u)
 {
   updatecontext();
-  
-  if (gdata.direct_file_access == 0)
-    {
-      a_respond(u,"Disabled in Config");
-      return;
-    }
-  
+
+  if (disabled_config(u) != 0)
+     return;
+
   if (!gdata.uploaddir)
     {
       a_respond(u,"No uploaddir defined.");
@@ -1896,12 +1906,9 @@ void a_fetch(const userinput * const u)
       a_respond(u,"Not enough free space on disk.");
       return;
     }
-  
-  if (!u->arg1 || !strlen(u->arg1))
-    {
-      a_respond(u,"Try Specifying a File");
-      return;
-    }
+
+  if (invalid_file(u, u->arg1) != 0)
+     return;
 
   if (!u->arg2e || !strlen(u->arg2e))
     {
@@ -1918,11 +1925,7 @@ void a_fetchcancel(const userinput * const u)
 
   updatecontext();
 
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-
+  if (u->arg1) num = atoi(u->arg1);
   if (num < 1 || num > irlist_size(&gdata.xdccs))
     {
       a_respond(u,"Try Specifying a Valid Download Number");
@@ -1939,12 +1942,10 @@ void a_amsg(const userinput * const u)
   gnetwork_t *backup;
   
   updatecontext ();
-  
-  if (!u->arg1e || !strlen (u->arg1e)) {
-    a_respond (u, "Try Specifying a Message (e.g. NEW)");
+
+  if (invalid_announce(u, u->arg1e) != 0)
     return;
-    }
-  
+
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
@@ -1966,24 +1967,15 @@ void a_msgnet(const userinput * const u)
 
   updatecontext();
 
-  net = get_network(u->arg1);
+  net = get_network_msg(u, u->arg1);
   if (net < 0)
-    {
-      a_respond(u,"Try specifying a valid network number");
-      return;
-    }
+    return;
 
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      a_respond(u,"Try Specifying a Nick");
-      return;
-    }
+  if (invalid_nick(u, u->arg2) != 0)
+    return;
 
-  if (!u->arg3e || !strlen(u->arg3e))
-    {
-      a_respond(u,"Try Specifying a Message");
-      return;
-    }
+  if (invalid_message(u, u->arg3e) != 0)
+    return;
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
@@ -1998,18 +1990,12 @@ void a_rawnet(const userinput * const u)
 
   updatecontext();
 
-  net = get_network(u->arg1);
+  net = get_network_msg(u, u->arg1);
   if (net < 0)
-    {
-      a_respond(u,"Try specifying a valid network number");
-      return;
-    }
+    return;
 
-  if (!u->arg2e || !strlen(u->arg2e))
-    {
-      a_respond(u,"Try Specifying a Command");
-      return;
-    }
+  if (invalid_command(u, u->arg2e) != 0)
+    return;
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
@@ -2069,12 +2055,8 @@ void a_identify(const userinput * const u)
 
   updatecontext();
 
-  net = get_network(u->arg1);
-  if (net < 0)
-    {
-      a_respond(u,"Try specifying a valid network number");
-      return;
-    }
+  net = get_network_msg(u, u->arg1);
+    return;
 
   if (!gdata.nickserv_pass)
     {
@@ -2105,10 +2087,7 @@ void a_holdqueue(const userinput * const u)
        val = 1;
      }
    
-   if (u->arg1)
-     {
-       val = atoi(u->arg1);
-     }
+   if (u->arg1) val = atoi(u->arg1);
    
    gdata.holdqueue = val;
    a_respond(u,"HOLDQUEUE now %d", val);
