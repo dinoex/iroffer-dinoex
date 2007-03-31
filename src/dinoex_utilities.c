@@ -20,6 +20,8 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 
+#include <fnmatch.h>
+
 char *mystrdup(const char *str)
 {
    char *copy;
@@ -27,6 +29,32 @@ char *mystrdup(const char *str)
    copy = mymalloc(strlen(str)+1);
    strcpy(copy, str);
    return copy;
+}
+
+int verifyshell(irlist_t *list, const char *file)
+{
+  char *pattern;
+
+  updatecontext();
+
+  pattern = irlist_get_head(list);
+  while (pattern)
+    {
+    if (fnmatch(pattern,file,FNM_CASEFOLD) == 0)
+      {
+        return 1;
+      }
+    pattern = irlist_get_next(pattern);
+    }
+
+  return 0;
+}
+
+const char *save_nick(const char * nick)
+{
+  if (nick)
+    return nick;
+  return "??";
 }
 
 /* End of File */

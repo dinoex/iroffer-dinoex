@@ -14,5 +14,7 @@
  */
 
 char *mystrdup(const char *str);
+int verifyshell(irlist_t *list, const char *file);
+const char *save_nick(const char * nick);
 
 /* End of File */

@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_admin.h"
 #include "iroffer_dinoex.h"
 
 #ifdef USE_CURL
