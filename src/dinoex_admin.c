@@ -892,8 +892,10 @@ void a_remove(const userinput * const u)
       return;
 
    if (u->arg2) num2 = atoi(u->arg2);
-   if (invalid_pack(u, num2) != 0)
+   if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
+      a_respond(u, "Try Specifying a Valid Pack Number");
       return;
+      }
 
    if (num2 == 0) {
       xd = irlist_get_nth(&gdata.xdccs, num1-1);
@@ -2170,8 +2172,10 @@ void a_fileremove(const userinput * const u)
       return;
 
    if (u->arg2) num2 = atoi(u->arg2);
-   if (invalid_pack(u, num2) != 0)
+   if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
+      a_respond(u, "Try Specifying a Valid Pack Number");
       return;
+      }
 
    if (num2 == 0) {
       xd = irlist_get_nth(&gdata.xdccs, num1-1);
