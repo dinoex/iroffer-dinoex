@@ -57,6 +57,7 @@ void a_sort(const userinput * const u);
 void a_add(const userinput * const u);
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup);
 void a_addgroup(const userinput * const u);
+void a_newgroup(const userinput * const u);
 void a_chlimit(const userinput * const u);
 void a_chlimitinfo(const userinput * const u);
 void a_lock(const userinput * const u);

@@ -579,6 +579,55 @@ void a_remove_delayed(const userinput * const u)
    gnetwork = backup;
 }
 
+static int a_set_group(const userinput * const u, xdcc *xd, int num, const char *group)
+{
+   const char *new;
+   char *tmpdesc;
+   char *tmpgroup;
+   int rc;
+
+   updatecontext();
+
+   if (num == 0) num = number_of_pack(xd);
+   new = "MAIN";
+   if (group && strlen(group))
+     new = group;
+
+   if (xd->group != NULL)
+     {
+       a_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
+                 num, xd->group, new); 
+       /* keep group info for later work */
+       tmpgroup = xd->group;
+       xd->group = NULL;
+       tmpdesc = xd->group_desc;
+       xd->group_desc = NULL;
+        if (tmpdesc != NULL)
+         {
+           if (tmpgroup != NULL)
+             reorder_new_groupdesc(tmpgroup,tmpdesc);
+           mydelete(tmpdesc);
+         }
+       if (tmpgroup != NULL)
+         mydelete(tmpgroup);
+     }
+   else
+     {
+       a_respond(u, "GROUP: [Pack %i] New: %s",
+                 num, new);
+     }
+
+  if (group != new)
+    return 0;
+    
+  xd->group = mystrdup(group);
+  reorder_groupdesc(group);
+  rc = add_default_groupdesc(group);
+  if (rc == 1)
+    a_respond(u, "New GROUPDESC: %s",group);
+  return rc;
+}
+
 void a_add_delayed(const userinput * const u)
 {
    userinput u2;
@@ -1344,6 +1393,138 @@ void a_addgroup(const userinput * const u)
   return;
 }
 
+void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d, const char *group)
+{
+  struct dirent *f;
+  struct stat st;
+  char *tempstr;
+  int thedirlen;
+  int num;
+  int foundit = 0;
+  
+  updatecontext();
+  
+  thedirlen = strlen(thedir);
+  if (d == NULL)
+    d = opendir(thedir);
+  
+  if (!d)
+    {
+      a_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+  
+  while ((f = readdir(d)))
+    {
+      xdcc *xd;
+      int len = strlen(f->d_name);
+      
+      if (verifyshell(&gdata.adddir_exclude, f->d_name))
+        continue;
+      
+      tempstr = mycalloc(len + thedirlen + 2);
+      
+      snprintf(tempstr, len + thedirlen + 2,
+               "%s/%s", thedir, f->d_name);
+      
+      if (stat(tempstr,&st) < 0)
+        {
+          a_respond(u,"cannot access %s, ignoring: %s",
+                    tempstr, strerror(errno));
+        }
+      else if (S_ISDIR(st.st_mode))
+        {
+          if ((strcmp(f->d_name,".") == 0 ) ||
+              (strcmp(f->d_name,"..") == 0))
+            {
+              mydelete(tempstr);
+              continue;
+            }
+          a_respond(u,"  Ignoring directory: %s", tempstr);
+          mydelete(tempstr);
+          continue;
+        }
+      else if (S_ISREG(st.st_mode))
+        {
+          num = 0;
+          xd = irlist_get_head(&gdata.xdccs);
+          while(xd)
+            {
+              num ++;
+              if ((xd->st_dev == st.st_dev) &&
+                  (xd->st_ino == st.st_ino))
+                {
+                  foundit ++;
+                  a_set_group(u, xd, num, group);
+                  break;
+                }
+
+              xd = irlist_get_next(xd);
+            }
+
+        }
+      mydelete(tempstr);
+    }
+  
+  closedir(d);
+  if (foundit == 0)
+    return;
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_newgroup(const userinput * const u)
+{
+  DIR *d;
+  char *thedir;
+  int thedirlen;
+
+  updatecontext();
+
+  if (invalid_group(u, u->arg1) != 0)
+     return;
+
+  if (invalid_dir(u, u->arg2e) != 0)
+     return;
+
+  convert_to_unix_slash(u->arg2e);
+  if (gdata.groupsincaps)
+    caps(u->arg1);
+
+  if (u->arg2e[strlen(u->arg2e)-1] == '/')
+    {
+      u->arg2e[strlen(u->arg2e)-1] = '\0';
+    }
+
+  thedirlen = strlen(u->arg2e);
+  if (gdata.filedir)
+    {
+      thedirlen += strlen(gdata.filedir) + 1;
+    }
+
+  thedir = mycalloc(thedirlen+1);
+  strcpy(thedir, u->arg2e);
+
+  d = opendir(thedir);
+
+  if (!d && (errno == ENOENT) && gdata.filedir)
+    {
+      snprintf(thedir, thedirlen+1, "%s/%s",
+               gdata.filedir, u->arg2e);
+      d = opendir(thedir);
+    }
+
+  if (!d)
+    {
+      a_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+
+  a_newgroup_sub(u, thedir, d, u->arg1);
+  mydelete(thedir);
+  return;
+}
+
 void a_chlimit(const userinput * const u)
 {
    int num = 0;
@@ -1521,10 +1702,6 @@ void a_groupdesc(const userinput * const u)
   if (invalid_group(u, u->arg1) != 0)
     return;
 
-  k = reorder_new_groupdesc(u->arg1,u->arg2e);
-  if (k == 0)
-    return;
-
   if (u->arg2e && strlen(u->arg2e))
     {
       a_respond(u, "New GROUPDESC: %s",u->arg2e);
@@ -1533,6 +1710,11 @@ void a_groupdesc(const userinput * const u)
     {
       a_respond(u, "Removed GROUPDESC");
     }
+
+  k = reorder_new_groupdesc(u->arg1,u->arg2e);
+  if (k == 0)
+    return;
+
   write_statefile();
   xdccsavetext();
 }
@@ -1541,9 +1723,6 @@ void a_group(const userinput * const u)
 {
   xdcc *xd;
   const char *new;
-  char *tmpdesc;
-  char *tmpgroup;
-  int rc;
   int num = 0;
   
   updatecontext();
@@ -1562,47 +1741,15 @@ void a_group(const userinput * const u)
         a_respond(u,"Try Specifying a Group");
         return;
       }
-      new = "MAIN";
+      new = NULL;
     }
   else
     {
        if (gdata.groupsincaps)
          caps(u->arg2);
     }
-  
-  if (xd->group != NULL)
-    {
-      a_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
-                num,xd->group,new);
-      /* keep group info for later work */
-      tmpgroup = xd->group;
-      xd->group = NULL;
-      tmpdesc = xd->group_desc;
-      xd->group_desc = NULL;
-      if (tmpdesc != NULL)
-        {
-          if (tmpgroup != NULL)
-            reorder_new_groupdesc(tmpgroup,tmpdesc);
-          mydelete(tmpdesc);
-        }
-      if (tmpgroup != NULL)
-        mydelete(tmpgroup);
-    }
-  else
-    {
-      a_respond(u, "GROUP: [Pack %i] New: %s",
-                num,u->arg2);
-    }
-  
-  if (new == u->arg2)
-    {
-      xd->group = mystrdup(u->arg2);
-      reorder_groupdesc(u->arg2);
-      rc = add_default_groupdesc(u->arg2);
-      if (rc == 1)
-        a_respond(u, "New GROUPDESC: %s",u->arg2);
-    }
-  
+
+  a_set_group(u, xd, num, new);
   write_statefile();
   xdccsavetext();
 }
@@ -1610,10 +1757,6 @@ void a_group(const userinput * const u)
 void a_movegroup(const userinput * const u)
 {
   xdcc *xd;
-  const char *new;
-  char *tmpdesc;
-  char *tmpgroup;
-  int rc;
   int num;
   int num1 = 0;
   int num2 = 0;
@@ -1628,12 +1771,7 @@ void a_movegroup(const userinput * const u)
   if (invalid_pack(u, num2) != 0)
     return;
 
-  new = u->arg3;
-  if (!u->arg3 || !strlen(u->arg3))
-    {
-      new = "MAIN";
-    }
-  else
+  if (u->arg3 && strlen(u->arg3))
     {
        if (gdata.groupsincaps)
          caps(u->arg3);
@@ -1642,39 +1780,7 @@ void a_movegroup(const userinput * const u)
   for (num = num1; num <= num2; num ++)
     {
        xd = irlist_get_nth(&gdata.xdccs, num-1);
-       if (xd->group != NULL)
-         {
-           a_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
-                     num,xd->group,new);
-           /* keep group info for later work */
-           tmpgroup = xd->group;
-           xd->group = NULL;
-           tmpdesc = xd->group_desc;
-           xd->group_desc = NULL;
-           if (tmpdesc != NULL)
-             {
-               if (tmpgroup != NULL)
-                 reorder_new_groupdesc(tmpgroup,tmpdesc);
-               mydelete(tmpdesc);
-             }
-           if (tmpgroup != NULL)
-             mydelete(tmpgroup);
-         }
-       else
-         {
-           a_respond(u, "GROUP: [Pack %i] New: %s",
-                     num,u->arg3);
-         }
-       
-       if (new == u->arg3)
-         {
-           xd->group = mystrdup(u->arg3);
-           reorder_groupdesc(u->arg3);
-           rc = add_default_groupdesc(u->arg3);
-           if (rc == 1)
-             a_respond(u, "New GROUPDESC: %s",u->arg3);
-         }
-      
+       a_set_group(u, xd, num, u->arg3);
      }
   
   write_statefile();

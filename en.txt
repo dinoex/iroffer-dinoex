@@ -1723,3 +1723,5 @@
 1751 "FILEREMOVE"
 1752 "remove pack <n> or <n> to <m> and remove its file from disk"
 1753 "Pack numbers are not in order"
+1754 "NEWGROUP"
+1755 "Change any files in <dir> to group <g>"
