@@ -20,6 +20,8 @@ __attribute__ ((format(printf, 2, 3)))
 a_respond(const userinput * const u, const char *format, ...);
 
 int hide_locked(const userinput * const u, const xdcc *xd);
+int a_xdl_space(void);
+int a_xdl_left(void);
 int reorder_new_groupdesc(const char *group, const char *desc);
 int reorder_groupdesc(const char *group);
 int add_default_groupdesc(const char *group);
@@ -49,8 +51,10 @@ void a_queuesize(const userinput * const u);
 void a_requeue(const userinput * const u);
 
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d);
+void a_remove(const userinput * const u);
 void a_removegroup(const userinput * const u);
 void a_sort(const userinput * const u);
+void a_add(const userinput * const u);
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup);
 void a_addgroup(const userinput * const u);
 void a_chlimit(const userinput * const u);
@@ -82,5 +86,10 @@ void a_cleargets(const userinput * const u);
 void a_identify(const userinput * const u);
 void a_holdqueue(const userinput * const u);
 void a_dump(const userinput * const u);
+
+/* this functions imported from iroffer-lamm */
+void a_queue(const userinput * const u);
+void a_announce(const userinput * const u);
+void a_addann(const userinput * const u);
 
 /* End of File */

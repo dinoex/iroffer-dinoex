@@ -112,6 +112,40 @@ int hide_locked(const userinput * const u, const xdcc *xd)
   return 0; 
 }
 
+int a_xdl_space(void)
+{
+   int i,s;
+   xdcc *xd;
+
+   i = 0;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       i = max2(i,xd->gets);
+       xd = irlist_get_next(xd);
+     }
+   s = 5;
+   if (i < 10000) s = 4;
+   if (i < 1000) s = 3;
+   if (i < 100) s = 2;
+   if (i < 10) s = 1;
+   return s;
+}
+   
+int a_xdl_left(void)
+{
+   int n;
+   int l;
+
+   n = irlist_size(&gdata.xdccs);
+   l = 5;
+   if (n < 10000) l = 4;
+   if (n < 1000) l = 3;
+   if (n < 100) l = 2;
+   if (n < 10) l = 1;
+   return l;
+}
+
 int reorder_new_groupdesc(const char *group, const char *desc)
 {
   xdcc *xd;
@@ -562,7 +596,7 @@ void a_add_delayed(const userinput * const u)
 
    u2 = *u;
    u2.arg1e = u->arg1;
-   u_add(&u2);
+   a_add(&u2);
 
    if (u->arg3 == NULL)
      {
@@ -613,8 +647,8 @@ void a_xdlock(const userinput * const u)
 
    tempstr  = mycalloc(maxtextlength);
 
-   l = u_xdl_left();
-   s = u_xdl_space();
+   l = a_xdl_left();
+   s = a_xdl_space();
    i = 1;
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
@@ -796,6 +830,39 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
   return;
 }
 
+void a_remove(const userinput * const u)
+{
+   int num1 = 0;
+   int num2 = 0;
+   xdcc *xd;
+   
+   updatecontext();
+
+   if (u->arg1) num1 = atoi(u->arg1);
+   if (invalid_pack(u, num1) != 0)
+      return;
+
+   if (u->arg2) num2 = atoi(u->arg2);
+   if (invalid_pack(u, num2) != 0)
+      return;
+
+   if (num2 == 0) {
+      xd = irlist_get_nth(&gdata.xdccs, num1-1);
+      a_remove_pack(u, xd, num1);
+      return;
+      }
+
+   if ( num2 < num1 ) {
+      a_respond(u, "Pack numbers are not in order");
+      return;
+      }
+
+   for (; num2 >= num1; num2--) {
+      xd = irlist_get_nth(&gdata.xdccs, num2-1);
+      a_remove_pack(u, xd, num2);
+      }
+}
+
 void a_removegroup(const userinput * const u)
 {
    xdcc *xd;
@@ -904,6 +971,173 @@ void a_sort(const userinput * const u)
 
   write_statefile();
   xdccsavetext();
+}
+
+void a_add(const userinput * const u)
+{
+   int xfiledescriptor;
+   struct stat st;
+   xdcc *xd;
+   char *group;
+   char *file;
+   char *a1;
+   char *a2;
+   
+   updatecontext();
+
+   if (invalid_file(u, u->arg1e) != 0)
+      return;
+
+   file = mystrdup(u->arg1e);
+   convert_to_unix_slash(file);
+   
+   xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+   
+   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
+     {
+       mydelete(file);
+       file = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1e)+1);
+       sprintf(file,"%s/%s",gdata.filedir,u->arg1e);
+       convert_to_unix_slash(file);
+       xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+     }
+   
+   if (xfiledescriptor < 0) {
+      a_respond(u,"Cant Access File: %s",strerror(errno));
+      mydelete(file);
+      return;
+      }
+   
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      a_respond(u,"Cant Access File Details: %s",strerror(errno));
+      close(xfiledescriptor);
+      mydelete(file);
+      return;
+     }
+   close(xfiledescriptor);
+   
+   if (!S_ISREG(st.st_mode))
+     {
+      a_respond(u,"%s is not a file",file);
+      mydelete(file);
+      return;
+     }
+   
+   if ( st.st_size == 0 ) {
+      a_respond(u,"File has size of 0 bytes!");
+      mydelete(file);
+      return;
+      }
+   
+   if ((st.st_size > gdata.max_file_size) || (st.st_size < 0)) {
+      a_respond(u,"File is too large.");
+      mydelete(file);
+      return;
+      }
+   
+   if (gdata.noduplicatefiles) {
+      xd = irlist_get_head(&gdata.xdccs);
+      while(xd)
+         {
+           if ((xd->st_dev == st.st_dev) &&
+              (xd->st_ino == st.st_ino))
+             {
+               a_respond(u,"File '%s' is already added.", u->arg1e);
+               return;
+             }
+           xd = irlist_get_next(xd);
+         }
+      }
+   
+   group = NULL;
+   if (gdata.auto_default_group) {
+      a1 = mycalloc(strlen(u->arg1e) + 1);
+      strtextcpy(a1, u->arg1e);
+      xd = irlist_get_head(&gdata.xdccs);
+      while(xd)
+         {
+           a2 = mycalloc(strlen(xd->file) + 1);
+           strtextcpy(a2, xd->file);
+           if (!strcmp(a1, a2))
+             {
+               group = xd->group;
+               mydelete(a2);
+               break;
+             }
+           mydelete(a2);
+           xd = irlist_get_next(xd);
+         }
+      mydelete(a1);
+      }
+   if ((gdata.auto_path_group) && (group == NULL)) {
+      a1 = mycalloc(strlen(u->arg1e) + 1);
+      strpathcpy(a1, u->arg1e);
+      xd = irlist_get_head(&gdata.xdccs);
+      while(xd)
+         {
+           a2 = mycalloc(strlen(xd->file) + 1);
+           strpathcpy(a2, xd->file);
+           if (!strcmp(a1, a2))
+             {
+               group = xd->group;
+               mydelete(a2);
+               break;
+             }
+           mydelete(a2);
+           xd = irlist_get_next(xd);
+         }
+      mydelete(a1);
+      }
+   
+   xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
+   
+   xd->file = file;
+   
+   xd->note = mystrdup("");
+   
+   xd->desc = mystrdup(getfilename(u->arg1e));
+   
+   xd->gets = 0;
+   xd->minspeed = gdata.transferminspeed;
+   xd->maxspeed = gdata.transfermaxspeed;
+   
+   xd->st_size  = st.st_size;
+   xd->st_dev   = st.st_dev;
+   xd->st_ino   = st.st_ino;
+   xd->mtime    = st.st_mtime;
+   
+   xd->file_fd = FD_UNUSED;
+   xd->file_fd_count = 0;
+   xd->file_fd_location = 0;
+   
+   a_respond(u, "ADD PACK: [Pack: %i] [File: %s] Use CHDESC to change description",
+             irlist_size(&gdata.xdccs),xd->file);
+   
+   if ((gdata.auto_default_group) && (group != NULL)) {
+         xd->group = mystrdup(group);
+         a_respond(u,"GROUP: [Pack: %i] New: %s",
+                   irlist_size(&gdata.xdccs), xd->group);
+      }
+   
+   write_statefile();
+   xdccsavetext();
+   
+   /* iroffer-lamm: autoaddann */
+   if (gdata.autoaddann) {
+      userinput *ui;
+      char *tempstr;
+      
+      tempstr = mycalloc (maxtextlength);
+      ui = mycalloc(sizeof(userinput));
+      snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i %s",irlist_size(&gdata.xdccs),gdata.autoaddann);
+      u_fillwith_msg(ui,NULL,tempstr);
+      ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
+      ui->net = 0;
+      u_parseit(ui);
+      mydelete(ui);
+      mydelete(tempstr);
+      } 
 }
 
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup)
@@ -2110,6 +2344,137 @@ void a_dump(const userinput * const u)
 {
    dumpgdata();
    a_respond(u,"DUMP written into logfile.");
+}
+
+/* this function imported from iroffer-lamm */
+void a_queue(const userinput * const u)
+{
+   int num = 0;
+   int alreadytrans;
+   pqueue *pq;
+   xdcc *xd;
+   char *tempstr;
+   gnetwork_t *backup;
+   int net;
+   
+   updatecontext();
+
+   net = get_network_msg(u, u->arg3);
+   if (net < 0)
+      return;
+
+   if (invalid_nick(u, u->arg1) != 0)
+      return;
+
+   if (u->arg2) num = atoi(u->arg2);
+   if (invalid_pack(u, num) != 0)
+      return;
+
+   xd = irlist_get_nth(&gdata.xdccs, num-1);
+
+   alreadytrans = 0;
+   pq = irlist_get_head(&gdata.mainqueue);
+   while(pq)
+     {
+       if (!strcasecmp(pq->nick,u->arg1))
+         {
+           if (pq->xpack == xd)
+             {
+               alreadytrans++;
+               break;
+             }
+         }
+       pq = irlist_get_next(pq);
+     }
+
+   if (alreadytrans > 0) {
+      a_respond(u,"Already Queued %s for Pack %i!", u->arg1,num);
+      return;
+      }
+   
+   a_respond(u,"Queueing %s for Pack %i", u->arg1,num);
+   
+   backup = gnetwork;
+   gnetwork = &(gdata.networks[net]);
+   tempstr = addtoqueue(u->arg1, "man", num);
+   notice(u->arg1, "** %s", tempstr);
+   mydelete(tempstr);
+   gnetwork = backup;
+   
+   if (!gdata.exiting &&
+       irlist_size(&gdata.mainqueue) &&
+       (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
+     {
+       sendaqueue(0);
+     }
+}
+
+/* iroffer-lamm: add-ons */
+void a_announce(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+  channel_t *ch;
+  char *tempstr;
+  char *tempstr2;
+  int ss;
+  gnetwork_t *backup;
+  
+  updatecontext ();
+  
+  if (u->arg1) num = atoi (u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
+
+  if (invalid_announce(u, u->arg2e) != 0)
+    return;
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  
+  a_respond(u,"Pack Info for Pack #%i:",num);
+  
+  tempstr = mycalloc(maxtextlength);
+  tempstr2 = mycalloc(maxtextlength);
+  snprintf(tempstr2,maxtextlength-2,"[\2%s\2] %s",u->arg2e,xd->desc);
+  
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gnetwork->user_nick,num);
+      ch = irlist_get_head(&(gnetwork->channels));
+      while(ch) {
+        if (ch->flags & CHAN_ONCHAN)
+          privmsg_chan(ch, tempstr);
+        ch = irlist_get_next(ch);
+        }
+    }
+  gnetwork = backup;
+  a_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);
+  mydelete(tempstr2);
+  mydelete(tempstr);
+}
+
+/* iroffer-lamm: add-ons */
+void a_addann(const userinput * const u)
+{
+  char *tempstr;
+  userinput *ui;
+  int i;
+  
+  updatecontext ();
+  i = irlist_size(&gdata.xdccs);
+  a_add(u);
+  if (irlist_size(&gdata.xdccs) > i) {
+    tempstr = mycalloc (maxtextlength);
+    ui = mycalloc(sizeof(userinput));
+    snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i added",irlist_size(&gdata.xdccs));
+    u_fillwith_msg(ui,NULL,tempstr);
+    ui->method = method_out_all;       /* just OUT_S|OUT_L|OUT_D it */
+    ui->net = 0;
+    u_parseit(ui);
+    mydelete(ui);
+    mydelete(tempstr);
+    }
 }
 
 /* End of File */
