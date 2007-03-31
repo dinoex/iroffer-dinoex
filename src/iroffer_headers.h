@@ -576,7 +576,6 @@ void checkadminpass(void);
 void updatecontext_f(const char *file, const char *func, int line);
 void dumpcontext(void);
 void dumpgdata(void);
-int check_level(char prefix);
 void clearmemberlist(channel_t *c);
 int isinmemberlist(const char *nick);
 void addtomemberlist(channel_t *c, const char *nick);
@@ -699,7 +698,6 @@ void user_changed_nick(const char *oldnick, const char *newnick);
 void reverify_restrictsend(void);
 
 /* statefile.c */
-int number_of_pack(xdcc *pack);
 void write_statefile(void);
 void read_statefile(void);
 

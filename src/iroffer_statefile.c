@@ -154,28 +154,6 @@ typedef struct
 } statefile_item_md5sum_info_t;
 
 
-int number_of_pack(xdcc *pack)
-{
-  xdcc *xd;
-  int n;
-  
-  updatecontext();
-  
-  n = 0;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      n++;
-      if (xd == pack)
-        return n;
-
-      xd = irlist_get_next(xd);
-    }
-  
-  return 0;
-}
-
-
 static int write_statefile_item(ir_boutput_t *bout, void *item)
 {
   int callval;
