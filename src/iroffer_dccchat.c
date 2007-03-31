@@ -19,6 +19,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 #include "iroffer_dinoex.h"
 
 
@@ -107,8 +108,7 @@ int setupdccchatout(const char *nick)
   
   gdata.num_dccchats++;
   chat->status = DCCCHAT_LISTENING;
-  chat->nick = mymalloc(strlen(nick)+1);
-  strcpy(chat->nick, nick);
+  chat->nick = mystrdup(nick);
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
   chat->localip   = gdata.ourip;
@@ -311,8 +311,7 @@ int setupdccchat(const char *nick,
   
   gdata.num_dccchats++;
   chat->status = DCCCHAT_CONNECTING;
-  chat->nick = mymalloc(strlen(nick)+1);
-  strcpy(chat->nick, nick);
+  chat->nick = mystrdup(nick);
   chat->remoteip   = ntohl(remoteip.sin_addr.s_addr);
   chat->remoteport = ntohs(remoteip.sin_port);
   chat->localip    = ntohl(localaddr.sin_addr.s_addr);
@@ -372,8 +371,7 @@ void parsedccchat(dccchat_t *chat,
   
   updatecontext();
   
-  linec = mymalloc(strlen(line)+1);
-  strcpy(linec,line);
+  linec = mystrdup(line);
   caps(linec);
   
   chat->lastcontact = gdata.curtime;

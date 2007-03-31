@@ -234,26 +234,21 @@ static void getxdccconfig(const char *filename) {
       
       xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
       
-      xd->file = mycalloc(strlen(templine1+8)+1);
-      strcpy(xd->file,templine1+8);
+      xd->file = mystrdup(templine1+8);
       convert_to_unix_slash(xd->file);
 
-      xd->desc = mycalloc(strlen(templine2+8)+1);
-      strcpy(xd->desc,templine2+8);
+      xd->desc = mystrdup(templine2+8);
       
-      xd->note = mycalloc(strlen(templine3+8)+1);
-      strcpy(xd->note,templine3+8);
+      xd->note = mystrdup(templine3+8);
       
       xd->gets     = atoi(templine4+8);
       
       xd->group = NULL;
       xd->group_desc = NULL;
       if (splizzer != 0) {
-         xd->group = mycalloc(strlen(templine7+8)+1);
-         strcpy(xd->group,templine7+8);
+         xd->group = mystrdup(templine7+8);
          if (seen(templine9+8) == 0) {
-            xd->group_desc = mycalloc(strlen(templine9+8)+1);
-            strcpy(xd->group_desc,templine9+8);
+            xd->group_desc = mystrdup(templine9+8);
             }
          }
 

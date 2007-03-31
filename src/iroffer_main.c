@@ -20,6 +20,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 #include "iroffer_dinoex.h"
 
 /* local functions */
@@ -1943,10 +1944,8 @@ static void parseline(char *line) {
        /* update nick */
        mydelete(gnetwork->user_nick);
        mydelete(gnetwork->caps_nick);
-       gnetwork->user_nick = mymalloc(strlen(part3)+1);
-       gnetwork->caps_nick = mymalloc(strlen(part3)+1);
-       strcpy(gnetwork->user_nick,part3);
-       strcpy(gnetwork->caps_nick,part3);
+       gnetwork->user_nick = mystrdup(part3);
+       gnetwork->caps_nick = mystrdup(part3);
        caps(gnetwork->caps_nick);
        gnetwork->nick_number = 0;
        gnetwork->next_restrict = gdata.curtime + gdata.restrictsend_delay;
@@ -2310,10 +2309,8 @@ static void parseline(char *line) {
            /* we changed, update nick */
            mydelete(gnetwork->user_nick);
            mydelete(gnetwork->caps_nick);
-           gnetwork->user_nick = mymalloc(strlen(part3a)+1);
-           gnetwork->caps_nick = mymalloc(strlen(part3a)+1);
-           strcpy(gnetwork->user_nick,part3a);
-           strcpy(gnetwork->caps_nick,part3a);
+           gnetwork->user_nick = mystrdup(part3a);
+           gnetwork->caps_nick = mystrdup(part3a);
            caps(gnetwork->caps_nick);
            gnetwork->nick_number = 0;
            gdata.needsclear = 1;
@@ -2596,8 +2593,7 @@ static void privmsgparse(const char* type, char* line) {
            ignore = irlist_add(&gdata.ignorelist,sizeof(igninfo));
            ignore->regexp = mycalloc(sizeof(regex_t));
            
-           ignore->hostmask = mymalloc(strlen(wildhost)+1);
-           strcpy(ignore->hostmask,wildhost);
+           ignore->hostmask = mystrdup(wildhost);
            
            tempr = hostmasktoregex(wildhost);
            if (regcomp(ignore->regexp,tempr,REG_ICASE|REG_NOSUB))
@@ -2831,15 +2827,12 @@ static void privmsgparse(const char* type, char* line) {
               ul = irlist_add(&gdata.uploads, sizeof(upload));
               l_initvalues(ul);
               removenonprintablefile(msg3);
-              ul->file = mymalloc(strlen(msg3)+1);
-              strcpy(ul->file,msg3);
+              ul->file = mystrdup(msg3);
               ul->remoteip = atoul(msg4);
               ul->remoteport = atoi(msg5);
               ul->totalsize = (off_t)atoull(msg6);
-              ul->nick = mymalloc(strlen(nick)+1);
-              strcpy(ul->nick,nick);
-              ul->hostname = mymalloc(strlen(hostname)+1);
-              strcpy(ul->hostname,hostname);
+              ul->nick = mystrdup(nick);
+              ul->hostname = mystrdup(hostname);
               ul->net = gnetwork->net;
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                       "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "iKB)",
@@ -3282,10 +3275,8 @@ static void privmsgparse(const char* type, char* line) {
               begin = line + 5 + strlen(hostmask) + strlen(type) + strlen(dest);
               
               ml->when = gdata.curtime;
-              ml->hostmask = mymalloc(strlen(hostmask)+1);
-              strcpy(ml->hostmask, hostmask);
-              ml->message = mymalloc(strlen(begin)+1);
-              strcpy(ml->message, begin);
+              ml->hostmask = mystrdup(hostmask);
+              ml->message = mystrdup(begin);
               
               write_statefile();
             }
@@ -3506,13 +3497,10 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        tr = irlist_add(&gdata.trans, sizeof(transfer));
        t_initvalues(tr);
        tr->id = get_next_tr_id();
-       tr->nick = mymalloc(strlen(nick)+1);
-       strcpy(tr->nick,nick);
-       tr->caps_nick = mymalloc(strlen(nick)+1);
-       strcpy(tr->caps_nick,nick);
+       tr->nick = mystrdup(nick);
+       tr->caps_nick = mystrdup(nick);
        caps(tr->caps_nick);
-       tr->hostname = mymalloc(strlen(hostname)+1);
-       strcpy(tr->hostname,hostname);
+       tr->hostname = mystrdup(hostname);
        
        tr->xpack = xd;
        tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
@@ -3743,10 +3731,8 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Queued (slot): ");
          tempq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
          tempq->queuedtime = gdata.curtime;
-         tempq->nick = mymalloc(strlen(nick)+1);
-         strcpy(tempq->nick,nick);
-         tempq->hostname = mymalloc(strlen(hostname)+1);
-         strcpy(tempq->hostname,hostname);
+         tempq->nick = mystrdup(nick);
+         tempq->hostname = mystrdup(hostname);
          tempq->xpack = tempx;
          tempq->net = gnetwork->net;
 
@@ -3845,13 +3831,10 @@ void sendaqueue(int type)
       tr = irlist_add(&gdata.trans, sizeof(transfer));
       t_initvalues(tr);
       tr->id = get_next_tr_id();
-      tr->nick = mymalloc(strlen(pq->nick)+1);
-      strcpy(tr->nick,pq->nick);
-      tr->caps_nick = mymalloc(strlen(pq->nick)+1);
-      strcpy(tr->caps_nick,pq->nick);
+      tr->nick = mystrdup(pq->nick);
+      tr->caps_nick = mystrdup(pq->nick);
       caps(tr->caps_nick);
-      tr->hostname = mymalloc(strlen(pq->hostname)+1);
-      strcpy(tr->hostname,pq->hostname);
+      tr->hostname = mystrdup(pq->hostname);
       
       tr->xpack = pq->xpack;
       len = strlen(pq->hostname)+strlen(pq->nick)+4;

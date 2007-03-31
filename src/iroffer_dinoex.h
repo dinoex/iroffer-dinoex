@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2005 Dirk Meyer
+ * Copyright (C) 2004-2007 Dirk Meyer
  * 
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is    
@@ -13,7 +13,6 @@
  * 
  */
 
-char *mystrdup(const char *str);
 int verifyshell(irlist_t *list, const char *file);
 void admin_jobs(void);
 int check_lock(const char* lockstr, const char* pwd);

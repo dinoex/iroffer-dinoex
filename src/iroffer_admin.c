@@ -19,6 +19,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 #include "iroffer_dinoex.h"
 
 #ifdef USE_CURL
@@ -476,8 +477,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch)
         {
-          tempnick = mycalloc(strlen(u->snick)+1);
-          strcpy(tempnick,u->snick);
+          tempnick = mystrdup(u->snick);
           for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
             {
               if (!strcasecmp(ch->name,chan))
@@ -700,8 +700,7 @@ static void u_xdl_head(const userinput * const u) {
         {
           if (ch->headline != NULL )
             {
-              tempnick = mycalloc(strlen(u->snick)+1);
-              strcpy(tempnick,u->snick);
+              tempnick = mystrdup(u->snick);
               for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
                 {
                   if (!strcasecmp(ch->name,chan))
@@ -2244,8 +2243,7 @@ void u_add(const userinput * const u) {
       return;
       }
    
-   file = mymalloc(strlen(u->arg1e)+1);
-   strcpy(file,u->arg1e);
+   file = mystrdup(u->arg1e);
    convert_to_unix_slash(file);
    
    xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);
@@ -2351,11 +2349,9 @@ void u_add(const userinput * const u) {
    
    xd->file = file;
    
-   xd->note = mymalloc(1);
-   strcpy(xd->note,"");
+   xd->note = mystrdup("");
    
-   xd->desc = mymalloc(strlen(getfilename(u->arg1e)) + 1);
-   strcpy(xd->desc,getfilename(u->arg1e));
+   xd->desc = mystrdup(getfilename(u->arg1e));
    
    xd->gets = 0;
    xd->minspeed = gdata.transferminspeed;
@@ -2374,8 +2370,7 @@ void u_add(const userinput * const u) {
              irlist_size(&gdata.xdccs),xd->file);
    
    if ((gdata.auto_default_group) && (group != NULL)) {
-         xd->group = mycalloc(strlen(group)+1);
-         strcpy(xd->group,group);
+         xd->group = mystrdup(group);
          u_respond(u,"GROUP: [Pack: %i] New: %s",
                    irlist_size(&gdata.xdccs), xd->group);
       }
@@ -2523,9 +2518,7 @@ static void u_chdesc(const userinput * const u) {
       num,xd->desc,u->arg2e);
    
    mydelete(xd->desc);
-   xd->desc = mymalloc(strlen(u->arg2e) + 1);
-   
-   strcpy(xd->desc,u->arg2e);
+   xd->desc = mystrdup(u->arg2e);
    
    write_statefile();
    xdccsavetext();
@@ -2555,13 +2548,11 @@ static void u_chnote(const userinput * const u) {
    
    if (!u->arg2e)
      {
-       xd->note = mymalloc(1);
-       strcpy(xd->note,"");
+       xd->note = mystrdup("");
      }
    else
      {
-       xd->note = mymalloc(strlen(u->arg2e) + 1);
-       strcpy(xd->note,u->arg2e);
+       xd->note = mystrdup(u->arg2e);
      }
    
    write_statefile();
@@ -3428,8 +3419,7 @@ static void u_ignore(const userinput * const u)
       ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
       ignore->regexp = mycalloc(sizeof(regex_t));
       
-      ignore->hostmask = mymalloc(strlen(u->arg2)+1);
-      strcpy(ignore->hostmask,u->arg2);
+      ignore->hostmask = mystrdup(u->arg2);
       
       tempstr = hostmasktoregex(u->arg2);
       if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))

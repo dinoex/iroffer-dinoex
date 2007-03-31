@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2005 Dirk Meyer
+ * Copyright (C) 2004-2007 Dirk Meyer
  * 
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is    
@@ -18,6 +18,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 #include "iroffer_dinoex.h"
 
 #include <ctype.h>
@@ -32,15 +33,6 @@
 #endif /* USE_CURL */
 
 extern const ir_uint32 crctable[256];
-
-char *mystrdup(const char *str)
-{
-   char *copy;
-
-   copy = mymalloc(strlen(str)+1);
-   strcpy(copy, str);
-   return copy;
-}
 
 static void
 #ifdef __GNUC__
@@ -264,8 +256,7 @@ int reorder_new_groupdesc(const char *group, const char *desc) {
                 {
                   if (desc && strlen(desc))
                     {
-                      xd->group_desc = mycalloc(strlen(desc)+1);
-                      strcpy(xd->group_desc,desc);
+                      xd->group_desc = mystrdup(desc);
                     }
                 }
             }
@@ -486,10 +477,10 @@ void update_natip (const char *var)
   gdata.ourip = ntohl(in.s_addr);
   if (oldip != 0 )
     {
-      oldtxt = strdup(inet_ntoa(old));
+      oldtxt = mystrdup(inet_ntoa(old));
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
               "DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
-      free(oldtxt);
+      mydelete(oldtxt);
     }
  
   if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ip=0x%8.8lX\n",gdata.ourip);
@@ -585,10 +576,8 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
     {
       item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
       item->delay = delay;
-      item->chan = mycalloc(strlen(chan)+1);
-      strcpy(item->chan, chan);
-      item->msg = mycalloc(len + 1);
-      strcpy(item->msg, msg);
+      item->chan = mystrdup(chan);
+      item->msg = mystrdup(msg);
     }
   else
     {
@@ -1007,8 +996,7 @@ void check_duplicateip(transfer *const newtr)
                   ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
                   ignore->regexp = mycalloc(sizeof(regex_t));
                   
-                  ignore->hostmask = mymalloc(strlen(bhostmask)+1);
-                  strcpy(ignore->hostmask,bhostmask);
+                  ignore->hostmask = mystrdup(bhostmask);
                   
                   tempstr = hostmasktoregex(bhostmask);
                   if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
@@ -1052,8 +1040,7 @@ void startup_dinoex(void)
 #endif /* USE_CURL */
 
   bzero((char *)&xdcc_statefile, sizeof(xdcc_statefile));
-  xdcc_statefile.note = mymalloc(1);
-  strcpy(xdcc_statefile.note,"");
+  xdcc_statefile.note = mystrdup("");
   xdcc_statefile.file_fd = FD_UNUSED;
   xdcc_statefile.has_md5sum = 2;
   xdcc_statefile.has_crc32 = 2;
@@ -1144,13 +1131,10 @@ static int send_statefile(void)
   tr = irlist_add(&gdata.trans, sizeof(transfer));
   t_initvalues(tr);
   tr->id = get_next_tr_id();
-  tr->nick = mymalloc(strlen(nick)+1);
-  strcpy(tr->nick,nick);
-  tr->caps_nick = mymalloc(strlen(nick)+1);
-  strcpy(tr->caps_nick,nick);
+  tr->nick = mystrdup(nick);
+  tr->caps_nick = mystrdup(nick);
   caps(tr->caps_nick);
-  tr->hostname = mymalloc(strlen(hostname)+1);
-  strcpy(tr->hostname,hostname);
+  tr->hostname = mystrdup(hostname);
   tr->xpack = xd;
   tr->net = gnetwork->net;
   t_setuplisten(tr);
@@ -1375,8 +1359,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
          if (quiet == 2) {
            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"lock Pack %d, File %s",
                    number_of_pack(xd), line);
-           xd->lock = mycalloc(strlen(badcrc)+1);
-           strcpy(xd->lock,badcrc);
+           xd->lock = mystrdup(badcrc);
          }
        }
      }
@@ -1598,16 +1581,13 @@ void start_fetch_url(const userinput *const u)
   ft->u.method = u->method;
   if (u->snick != NULL)
     {
-       ft->u.snick = mycalloc(strlen(u->snick)+1);;
-       strcpy(ft->u.snick, u->snick);
+       ft->u.snick = mystrdup(u->snick);
     }
   ft->u.fd = u->fd;
   ft->u.chat = u->chat;
   ft->net = gnetwork->net;
-  ft->name = mycalloc(strlen(name)+1);
-  strcpy((ft->name),name);
-  ft->url = mycalloc(strlen(url)+1);
-  strcpy((ft->url),url);
+  ft->name = mystrdup(name);
+  ft->url = mystrdup(url);
   ft->writefd = writefd;
   ft->resumesize = resumesize;
   ft->errorbuf = mycalloc(CURL_ERROR_SIZE);
@@ -2122,8 +2102,7 @@ static void a_add_delayed(const userinput * const u)
                if (strcmp(xd->group, u->arg3) == 0 )
                  break;
              }
-           xd->group = mycalloc(strlen(u->arg3)+1);
-           strcpy(xd->group, u->arg3);
+           xd->group = mystrdup(u->arg3);
            a_respond(u, "GROUP: [Pack %i] New: %s",
                         num, u->arg3);
            break;
@@ -2152,7 +2131,7 @@ void changesec_dinoex(void)
       if (strcmp(u->cmd,"REMOVE") == 0)
         {
           a_remove_delayed(u);
-          free(u->cmd);
+          mydelete(u->cmd);
           mydelete(u->arg1);
           mydelete(u->arg2);
           u = irlist_delete(&gdata.packs_delayed, u);
@@ -2162,7 +2141,7 @@ void changesec_dinoex(void)
       if (strcmp(u->cmd,"ADD") == 0)
         {
           a_add_delayed(u);
-          free(u->cmd);
+          mydelete(u->cmd);
           mydelete(u->arg1);
           mydelete(u->arg2);
           u = irlist_delete(&gdata.packs_delayed, u);
@@ -2359,7 +2338,7 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
       u2->method = u->method;
       u2->fd = u->fd;
       u2->chat = u->chat;
-      u2->cmd = strdup( "REMOVE" );
+      u2->cmd = mystrdup( "REMOVE" );
       u2->net = gnetwork->net;
 
       u2->arg1 = tempstr;
@@ -2367,8 +2346,7 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
 
       if (u->snick != NULL)
         {
-          u2->snick = mymalloc(strlen(u->snick) + 1);
-          strcpy(u2->snick,u->snick);
+          u2->snick = mystrdup(u->snick);
         }
 
       u2->arg2 = mycalloc(sizeof(struct stat));
@@ -2615,17 +2593,15 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
       u2->method = u->method;
       u2->fd = u->fd;
       u2->chat = u->chat;
-      u2->cmd = strdup( "ADD" );
+      u2->cmd = mystrdup( "ADD" );
       u2->net = gnetwork->net;
 
       if (u2->snick != NULL)
         {
-          u2->snick = mymalloc(strlen(u->snick) + 1);
-          strcpy(u2->snick,u->snick);
+          u2->snick = mystrdup(u->snick);
         }
 
-      u2->arg1 = mymalloc(strlen(thefile) + 1);
-      strcpy(u2->arg1,thefile);
+      u2->arg1 = mystrdup(thefile);
 
       if (stat(thefile,&st) == 0)
         {
@@ -2635,8 +2611,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
 
       if (setgroup != NULL)
         {
-          u2->arg3 = mymalloc(strlen(setgroup) + 1);
-          strcpy(u2->arg3,setgroup);
+          u2->arg3 = mystrdup(setgroup);
         }
       else
         {
@@ -2769,8 +2744,7 @@ void a_chlimitinfo(const userinput * const u)
   else
     {
        a_respond(u, "DLIMIT: [Pack %i] descr: %s", num, u->arg2e);
-       xd->dlimit_desc = mycalloc(strlen(u->arg2e)+1);
-       strcpy(xd->dlimit_desc,u->arg2e);
+       xd->dlimit_desc = mystrdup(u->arg2e);
     }
 
   write_statefile();
@@ -2804,8 +2778,7 @@ void a_lock(const userinput * const u)
   xd = irlist_get_nth(&gdata.xdccs, num-1);
   
   a_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2e);
-  xd->lock = mycalloc(strlen(u->arg2e)+1);
-  strcpy(xd->lock,u->arg2e);
+  xd->lock = mystrdup(u->arg2e);
 
   write_statefile();
   xdccsavetext();
@@ -2868,8 +2841,7 @@ void a_lockgroup(const userinput * const u)
            if (strcasecmp(xd->group,u->arg1) == 0)
              {
                 a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2e);
-                xd->lock = mycalloc(strlen(u->arg2e)+1);
-                strcpy(xd->lock,u->arg2e);
+                xd->lock = mystrdup(u->arg2e);
              }
          }
        xd = irlist_get_next(xd);
@@ -3005,8 +2977,7 @@ void a_group(const userinput * const u)
   
   if (new == u->arg2)
     {
-      xd->group = mycalloc(strlen(u->arg2)+1);
-      strcpy(xd->group,u->arg2);
+      xd->group = mystrdup(u->arg2);
       reorder_groupdesc(u->arg2);
       rc = add_default_groupdesc(u->arg2);
       if (rc == 1)
@@ -3092,8 +3063,7 @@ void a_movegroup(const userinput * const u)
        
        if (new == u->arg3)
          {
-           xd->group = mycalloc(strlen(u->arg3)+1);
-           strcpy(xd->group,u->arg3);
+           xd->group = mystrdup(u->arg3);
            reorder_groupdesc(u->arg3);
            rc = add_default_groupdesc(u->arg3);
            if (rc == 1)
@@ -3142,8 +3112,7 @@ void a_regroup(const userinput * const u)
           k++;
           if (xd->group != NULL)
             mydelete(xd->group);
-          xd->group = mycalloc(strlen(u->arg2)+1);
-          strcpy(xd->group,u->arg2);
+          xd->group = mystrdup(u->arg2);
         }
       xd = irlist_get_next(xd);
     }
@@ -3314,12 +3283,10 @@ void a_newdir(const userinput * const u)
       return;
       }
 
-   dir1 = mymalloc(strlen(u->arg1)+1);
-   strcpy(dir1,u->arg1);
+   dir1 = mystrdup(u->arg1);
    convert_to_unix_slash(dir1);
 
-   dir2 = mymalloc(strlen(u->arg1)+1);
-   strcpy(dir2,u->arg1);
+   dir2 = mystrdup(u->arg1);
    convert_to_unix_slash(dir2);
 
    found = 0;
@@ -3364,8 +3331,7 @@ void a_filemove(const userinput * const u)
       return;
       }
    
-   file1 = mymalloc(strlen(u->arg1)+1);
-   strcpy(file1,u->arg1);
+   file1 = mystrdup(u->arg1);
    convert_to_unix_slash(file1);
    
    xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
@@ -3401,8 +3367,7 @@ void a_filemove(const userinput * const u)
       return;
      }
    
-   file2 = mymalloc(strlen(u->arg2e)+1);
-   strcpy(file2,u->arg2e);
+   file2 = mystrdup(u->arg2e);
    convert_to_unix_slash(file2);
    
    if (strchr(file2, '/') == NULL)
@@ -3433,8 +3398,7 @@ static void a_filedel_disk(const userinput * const u, const char *name)
    
    updatecontext();
    
-   file = mymalloc(strlen(name)+1);
-   strcpy(file, name);
+   file = mystrdup(name);
    convert_to_unix_slash(file);
    
    xfiledescriptor=open(file, O_RDONLY | ADDED_OPEN_FLAGS);

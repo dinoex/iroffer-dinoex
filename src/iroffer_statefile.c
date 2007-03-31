@@ -19,6 +19,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 
 
 /*
@@ -1244,8 +1245,7 @@ void read_statefile(void)
                       {
                         char *hostmask = (char*)(&ihdr[1]);
                         hostmask[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        ignore->hostmask = mymalloc(strlen(hostmask)+1);
-                        strcpy(ignore->hostmask,hostmask);
+                        ignore->hostmask = mystrdup(hostmask);
                       }
                     else
                       {
@@ -1319,8 +1319,7 @@ void read_statefile(void)
                       {
                         char *hostmask = (char*)(&ihdr[1]);
                         hostmask[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        msglog->hostmask = mymalloc(strlen(hostmask)+1);
-                        strcpy(msglog->hostmask,hostmask);
+                        msglog->hostmask = mystrdup(hostmask);
                       }
                     else
                       {
@@ -1334,8 +1333,7 @@ void read_statefile(void)
                       {
                         char *message = (char*)(&ihdr[1]);
                         message[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        msglog->message = mymalloc(strlen(message)+1);
-                        strcpy(msglog->message,message);
+                        msglog->message = mystrdup(message);
                       }
                     else
                       {
@@ -1392,8 +1390,7 @@ void read_statefile(void)
                       {
                         char *file = (char*)(&ihdr[1]);
                         file[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->file = mymalloc(strlen(file)+1);
-                        strcpy(xd->file,file);
+                        xd->file = mystrdup(file);
                       }
                     else
                       {
@@ -1407,8 +1404,7 @@ void read_statefile(void)
                       {
                         char *desc = (char*)(&ihdr[1]);
                         desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->desc = mymalloc(strlen(desc)+1);
-                        strcpy(xd->desc,desc);
+                        xd->desc = mystrdup(desc);
                       }
                     else
                       {
@@ -1422,8 +1418,7 @@ void read_statefile(void)
                       {
                         char *note = (char*)(&ihdr[1]);
                         note[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->note = mymalloc(strlen(note)+1);
-                        strcpy(xd->note,note);
+                        xd->note = mystrdup(note);
                       }
                     else
                       {
@@ -1515,8 +1510,7 @@ void read_statefile(void)
                       {
                         char *group = (char*)(&ihdr[1]);
                         group[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->group = mycalloc(strlen(group)+1);
-                        strcpy(xd->group,group);
+                        xd->group = mystrdup(group);
                       }
                     else
                       {
@@ -1530,8 +1524,7 @@ void read_statefile(void)
                       {
                         char *group_desc = (char*)(&ihdr[1]);
                         group_desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->group_desc = mycalloc(strlen(group_desc)+1);
-                        strcpy(xd->group_desc,group_desc);
+                        xd->group_desc = mystrdup(group_desc);
                       }
                     else
                       {
@@ -1545,8 +1538,7 @@ void read_statefile(void)
                       {
                         char *data = (char*)(&ihdr[1]);
                         data[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->lock = mycalloc(strlen(data)+1);
-                        strcpy(xd->lock,data);
+                        xd->lock = mystrdup(data);
                       }
                     else
                       {
@@ -1586,8 +1578,7 @@ void read_statefile(void)
                       {
                         char *desc = (char*)(&ihdr[1]);
                         desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->dlimit_desc = mycalloc(strlen(desc)+1);
-                        strcpy(xd->dlimit_desc,desc);
+                        xd->dlimit_desc = mystrdup(desc);
                       }
                     else
                       {
@@ -1856,8 +1847,7 @@ void read_statefile(void)
                       }
                     text = (char*)(&ihdr[1]);
                     text[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                    pq->nick = mycalloc(strlen(text)+1);
-                    strcpy(pq->nick,text);
+                    pq->nick = mystrdup(text);
                     break;
                     
                   case STATEFILE_TAG_QUEUE_HOST:
@@ -1869,8 +1859,7 @@ void read_statefile(void)
                       }
                     text = (char*)(&ihdr[1]);
                     text[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                    pq->hostname = mycalloc(strlen(text)+1);
-                    strcpy(pq->hostname,text);
+                    pq->hostname = mystrdup(text);
                     break;
                     
                   case STATEFILE_TAG_QUEUE_TIME:

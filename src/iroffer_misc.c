@@ -19,6 +19,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 #include "iroffer_dinoex.h"
 
 
@@ -478,8 +479,7 @@ void getconfig_set (const char *line, int rehash)
       
       tname = getpart(var,1);
       caps(tname);
-      cptr->name = mymalloc(strlen(tname)+1);
-      strcpy(cptr->name,tname);
+      cptr->name = mystrdup(tname);
       cptr->headline = NULL;
       
       for (i=2; i<20 && ok && (tptr = getpart(var,i)); i++) {
@@ -513,8 +513,7 @@ void getconfig_set (const char *line, int rehash)
             i++;
             if ((tptr2 = getpart(var,i)))
               {
-                cptr->key = mymalloc(strlen(tptr2)+1);
-                strcpy(cptr->key,tptr2);
+                cptr->key = mystrdup(tptr2);
               }
             else ok=0;
             }
@@ -532,8 +531,7 @@ void getconfig_set (const char *line, int rehash)
               {
 		found += strlen( "-headline" );
 		found ++;
-                cptr->headline = mycalloc(strlen(found)+1);
-                strcpy(cptr->headline,found);
+                cptr->headline = mystrdup(found);
                 mydelete(tptr);
 		break;
               }
@@ -861,26 +859,22 @@ void getconfig_set (const char *line, int rehash)
          {
            gdata.connectionmethod.how = how_bnc;
            
-           gdata.connectionmethod.host = mymalloc(strlen(targ1)+1);
-           strcpy(gdata.connectionmethod.host,targ1);
+           gdata.connectionmethod.host = mystrdup(targ1);
            
            gdata.connectionmethod.port = atoi(targ2);
            
-           gdata.connectionmethod.password = mymalloc(strlen(targ3)+1);
-           strcpy(gdata.connectionmethod.password,targ3);
+           gdata.connectionmethod.password = mystrdup(targ3);
            
            if (targ4)
              {
-               gdata.connectionmethod.vhost = mymalloc(strlen(targ4)+1);
-               strcpy(gdata.connectionmethod.vhost,targ4);
+               gdata.connectionmethod.vhost = mystrdup(targ4);
              }
          }
        else if (thow && targ1 && targ2 && !strcmp(thow,"wingate"))
          {
            gdata.connectionmethod.how = how_wingate;
            
-           gdata.connectionmethod.host = mymalloc(strlen(targ1)+1);
-           strcpy(gdata.connectionmethod.host,targ1);
+           gdata.connectionmethod.host = mystrdup(targ1);
            
            gdata.connectionmethod.port = atoi(targ2);
          }
@@ -888,8 +882,7 @@ void getconfig_set (const char *line, int rehash)
          {
            gdata.connectionmethod.how = how_custom;
            
-           gdata.connectionmethod.host = mymalloc(strlen(targ1)+1);
-           strcpy(gdata.connectionmethod.host,targ1);
+           gdata.connectionmethod.host = mystrdup(targ1);
            
            gdata.connectionmethod.port = atoi(targ2);
          }
@@ -932,13 +925,11 @@ static int connectirc (server_t *tserver) {
    mydelete(gnetwork->curserver.hostname);
    mydelete(gnetwork->curserver.password);
    mydelete(gnetwork->curserveractualname);
-   gnetwork->curserver.hostname = mymalloc(strlen(tserver->hostname)+1);
-   strcpy(gnetwork->curserver.hostname, tserver->hostname);
+   gnetwork->curserver.hostname = mystrdup(tserver->hostname);
    gnetwork->curserver.port = tserver->port;
    if (tserver->password)
      {
-       gnetwork->curserver.password = mymalloc(strlen(tserver->password)+1);
-       strcpy(gnetwork->curserver.password, tserver->password);
+       gnetwork->curserver.password = mystrdup(tserver->password);
      }
    
    tempstr = mycalloc(maxtextlength);
@@ -3345,8 +3336,7 @@ void user_changed_nick(const char *oldnick, const char *newnick)
       if (!strcasecmp(tr->nick, oldnick))
         {
           mydelete(tr->nick);
-          tr->nick = mymalloc(strlen(newnick)+1);
-          strcpy(tr->nick, newnick);
+          tr->nick = mystrdup(newnick);
         }
     }
   
@@ -3355,8 +3345,7 @@ void user_changed_nick(const char *oldnick, const char *newnick)
       if (!strcasecmp(pq->nick, oldnick))
         {
           mydelete(pq->nick);
-          pq->nick = mymalloc(strlen(newnick)+1);
-          strcpy(pq->nick, newnick);
+          pq->nick = mystrdup(newnick);
         }
     }
   

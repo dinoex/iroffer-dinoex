@@ -19,6 +19,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 
 
 const char* strstrnocase (const char *str1, const char *match1)
@@ -26,12 +27,10 @@ const char* strstrnocase (const char *str1, const char *match1)
   char *str, *match;
   const char *retval;
   
-  str   = mymalloc(strlen(str1)+1);
-  match = mymalloc(strlen(match1)+1);
+  str   = mystrdup(str1);
+  match = mystrdup(match1);
   
-  strcpy(str,str1);
   caps(str);
-  strcpy(match,match1);
   caps(match);
   
   retval = strstr(str, match);
@@ -2229,21 +2228,18 @@ void set_loginname(void)
 #if !defined(NO_SETUID)
       if (gdata.runasuser)
         {
-          gdata.loginname = mymalloc(strlen(gdata.runasuser)+1);
-          strcpy(gdata.loginname,gdata.runasuser);
+          gdata.loginname = mystrdup(gdata.runasuser);
         }
       else
 #endif
         {
           outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Get username, specify loginname in config file");
-          gdata.loginname = mymalloc(strlen("UNKNOWN")+1);
-          strcpy(gdata.loginname,"UNKNOWN");
+          gdata.loginname = mystrdup("UNKNOWN");
         }
     }
   else
     {
-      gdata.loginname = mymalloc(strlen(p->pw_name)+1);
-      strcpy(gdata.loginname,p->pw_name);
+      gdata.loginname = mystrdup(p->pw_name);
     }
   
 }
