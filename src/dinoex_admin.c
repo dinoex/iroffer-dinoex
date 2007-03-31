@@ -2087,6 +2087,87 @@ void a_filemove(const userinput * const u)
    mydelete(file2);
 }
 
+void a_movefile(const userinput * const u)
+{
+   struct stat st;
+   xdcc *xd;
+   char *file1;
+   char *file2;
+   int xfiledescriptor;
+   int num = 0;
+   
+   updatecontext();
+
+   if (disabled_config(u) != 0)
+      return;
+
+   if (u->arg1) num = atoi(u->arg1);
+   if (invalid_pack(u, num) != 0)
+      return;
+
+
+   if (!u->arg2e || !strlen(u->arg2e)) {
+      a_respond(u,"Try Specifying a new Filename");
+      return;
+      }
+ 
+   xd = irlist_get_nth(&gdata.xdccs, num-1);
+   file1 = xd->file;
+
+   xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
+   
+   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir)
+     {
+       mydelete(file1);
+       file1 = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg1)+1);
+       sprintf(file1,"%s/%s",gdata.filedir,u->arg1);
+       convert_to_unix_slash(file1);
+       xfiledescriptor=open(file1, O_RDONLY | ADDED_OPEN_FLAGS);
+     }
+   
+   if (xfiledescriptor < 0) {
+      a_respond(u,"Cant Access File: %s: %s", file1, strerror(errno));
+      return;
+      }
+   
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      a_respond(u,"Cant Access File Details: %s: %s", file1, strerror(errno));
+      close(xfiledescriptor);
+      return;
+     }
+   close(xfiledescriptor);
+   
+   if (!S_ISREG(st.st_mode))
+     {
+      a_respond(u,"%s is not a file", file1);
+      return;
+     }
+   
+   file2 = mystrdup(u->arg2e);
+   convert_to_unix_slash(file2);
+   
+   if (strchr(file2, '/') == NULL)
+     {
+       mydelete(file2);
+       file2 = mymalloc(strlen(gdata.filedir)+1+strlen(u->arg2e)+1);
+       sprintf(file2,"%s/%s",gdata.filedir,u->arg2e);
+       convert_to_unix_slash(file2);
+     }
+   
+   if (rename(file1,file2) < 0)
+     {
+       a_respond(u,"File %s could not be moved to %s: %s", file1, file2, strerror(errno));
+       mydelete(file2);
+     }
+   else
+     {
+       a_respond(u,"File %s was moved to %s.",file1, file2);
+       xd->file = file2;
+       mydelete(file1);
+     }
+}
+
 static void a_filedel_disk(const userinput * const u, const char *name)
 {
    int xfiledescriptor;

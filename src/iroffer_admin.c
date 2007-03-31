@@ -170,6 +170,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,a_crc,      "CRC","n","Check CRC of Pack n"},
 {3,method_allow_all,a_newdir,   "NEWDIR","<dirname> <dirname>","rename pathnames of all matching packs"},
 {3,method_allow_all,a_filemove, "FILEMOVE","<filename> <filename>","rename file on disk"},
+{3,method_allow_all,a_movefile, "MOVEFILE","n <filename>","move the file of pack <n> on disk to <filename>"},
 {3,method_allow_all,a_filedel,  "FILEDEL","<filename>","remove file from disk"},
 {3,method_allow_all,a_fileremove, "FILEREMOVE","n [m]","remove pack <n> or <n> to <m> and remove its file from disk"},
 {3,method_allow_all,a_showdir,  "SHOWDIR","<dir>","list directory on disk"},
