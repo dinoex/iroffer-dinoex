@@ -13,7 +13,7 @@ if test -f en.txt
 then
 	nr=`tail -1 en.txt | cut -d " " -f1`
 fi
-fgrep -h \" src/iroffer*.c |
+fgrep -h \" src/iroffer*.c src/dinoex*.c |
 grep -v "^#include" |
 awk -F \[\"\] '
 {
