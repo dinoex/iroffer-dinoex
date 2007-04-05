@@ -68,4 +68,11 @@ do
 	fi
 	echo "${nr} ${text}"
 done
+sort -n de.txt en.txt -u >de.txt.neu
+if diff -q de.txt de.txt.neu
+then
+	rm -f de.txt.neu
+	exit 0
+fi
+diff -u de.txt de.txt.neu
 # eof
