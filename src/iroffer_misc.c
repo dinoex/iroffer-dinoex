@@ -3103,6 +3103,7 @@ void notifyqueued(void)
 {
   int i;
   unsigned long rtime, lastrtime;
+  gnetwork_t *backup;
   pqueue *pq;
   transfer *tr;
   ir_uint64 xdccsent;
@@ -3153,6 +3154,7 @@ void notifyqueued(void)
         }
     }
   
+  backup = gnetwork;
   i=1;
   pq = irlist_get_head(&gdata.mainqueue);
   while(pq)
@@ -3173,6 +3175,7 @@ void notifyqueued(void)
           lastrtime=rtime;
         }
       
+      gnetwork = &(gdata.networks[pq->net]);
       notice_slow(pq->nick,"Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
                   (long)(gdata.curtime-pq->queuedtime)/60/60,
                   (long)((gdata.curtime-pq->queuedtime)/60)%60,
@@ -3185,13 +3188,14 @@ void notifyqueued(void)
       i++;
       pq = irlist_get_next(pq);
     }
-  
+  gnetwork = backup;
 }
 
 void notifybandwidth(void)
 {
   int i;
   transfer *tr;
+  gnetwork_t *backup;
   ir_uint64 xdccsent;
   
   updatecontext();
@@ -3209,9 +3213,11 @@ void notifybandwidth(void)
   /* send if over 90% */
   if ( (xdccsent*10) > (gdata.maxb*30*9) )
     {
+      backup = gnetwork;
       tr = irlist_get_head(&gdata.trans);
       while(tr)
         {
+          gnetwork = &(gdata.networks[tr->net]);
           notice_slow(tr->nick,"%s bandwidth limit: %2.1f of %2.1fKB/sec used. Your share: %2.1fKB/sec.",
                       save_nick(gnetwork->user_nick),
                       ((float)xdccsent)/XDCC_SENT_SIZE,
@@ -3219,6 +3225,7 @@ void notifybandwidth(void)
                       tr->lastspeed);
           tr = irlist_get_next(tr);
         }
+      gnetwork = backup;
     }
   
 }
@@ -3226,11 +3233,13 @@ void notifybandwidth(void)
 void notifybandwidthtrans(void)
 {
   transfer *tr;
+  gnetwork_t *backup;
   
   updatecontext();
   
   if (gdata.exiting) return;
   
+  backup = gnetwork;
   tr = irlist_get_head(&gdata.trans);
   while(tr)
     {
@@ -3240,13 +3249,14 @@ void notifybandwidthtrans(void)
           (tr->lastspeed*10 > tr->xpack->maxspeed*9))
         {
           /* send if over 90% */
+          gnetwork = &(gdata.networks[tr->net]);
           notice_slow(tr->nick,"Pack bandwidth limit: %2.1f of %2.1fKB/sec used.",
                       tr->lastspeed,
                       tr->xpack->maxspeed);
         }
       tr = irlist_get_next(tr);
     }
-  
+  gnetwork = backup;
 }
 
 
