@@ -449,7 +449,7 @@ int get_network_msg(const userinput * const u, const char *arg)
 {
    int net;
 
-   net = get_network(u->arg1);
+   net = get_network(arg);
    if (net < 0)
       a_respond(u, "Try Specifying a Valid Network");
    return net;
