@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.7:
 ---------------------
 
+bugfix: MULTINET
+  versions affected: 1.26 to 2.6
+  send notices abouts limit and queue status to matching network
+
 126) autocrc_exclude (inspired by fiberOptiC)
   auto crc check will ignore files matching this patterns
 
