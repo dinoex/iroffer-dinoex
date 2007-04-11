@@ -2539,7 +2539,11 @@ void a_dump(const userinput * const u)
 
 void a_autoadd(const userinput * const u)
 {
+   gnetwork_t *backup;
+
+   backup = gnetwork;
    autoadd_all();
+   gnetwork = backup;
    a_respond(u,"AUTOADD done.");
 }
 
