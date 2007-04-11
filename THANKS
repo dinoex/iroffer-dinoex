@@ -176,3 +176,6 @@ Noxx
 dondieschotte
 	reporting get_network_msg bug
 
+dsd
+	admin command "autoadd"
+

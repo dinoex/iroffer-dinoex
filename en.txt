@@ -1721,3 +1721,6 @@
 1721 "This nickname is registered and protected."
 1722 "please choose a different nick."
 1723 "Unknown cmd %s in packs_delayed"
+1724 "AUTOADD"
+1725 "scan autoadd_dirs for new files now"
+1726 "AUTOADD done."

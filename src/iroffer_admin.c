@@ -148,6 +148,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,method_allow_all,u_adddir,   "ADDDIR","dir","Add every file in <dir>"},
 {3,method_allow_all,u_addnew,   "ADDNEW","dir","Add new files in <dir>"},
 {3,method_allow_all,a_addgroup, "ADDGROUP","group dir","Add new files in <dir> to <group>"},
+{3,method_allow_all,a_autoadd,  "AUTOADD",NULL,"scan autoadd_dirs for new files now"},
 {3,method_allow_all,u_chfile,   "CHFILE","n filename","Change file of pack <n> to <filename>"},
 {3,method_allow_all,u_chdesc,   "CHDESC","n msg","Change description of pack <n> to <msg>"},
 {3,method_allow_all,u_chnote,   "CHNOTE","n msg","Change note of pack <n> to <msg>"},

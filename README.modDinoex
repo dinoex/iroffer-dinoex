@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.7:
 ---------------------
 
+125) AUTOADD (inspired by dsd)
+
+  new admin command:
+  AUTOADD                          scan autoadd_dirs for new files now
+
 bugfix: get_network_msg (reported by dondieschotte)
   versions affected: 2.4
   unable to parse: QUEUE SEND PSEND JUMP

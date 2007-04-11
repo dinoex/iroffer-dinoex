@@ -2537,6 +2537,12 @@ void a_dump(const userinput * const u)
    a_respond(u,"DUMP written into logfile.");
 }
 
+void a_autoadd(const userinput * const u)
+{
+   autoadd_all();
+   a_respond(u,"AUTOADD done.");
+}
+
 /* this function imported from iroffer-lamm */
 void a_queue(const userinput * const u)
 {
