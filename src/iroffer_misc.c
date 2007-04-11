@@ -442,6 +442,13 @@ void getconfig_set (const char *line, int rehash)
        strcpy(cjr, var);
        mydelete(var);
      }
+   else if ( !strcmp(type,"autocrc_exclude"))
+     {
+       char *cjr;
+       cjr = irlist_add(&gdata.autocrc_exclude, strlen(var) + 1);
+       strcpy(cjr, var);
+       mydelete(var);
+     }
    else if ( !strcmp(type,"geoipcountry"))
      {
        char *cjr;
@@ -2542,6 +2549,7 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.geoipcountry);
   irlist_delete_all(&gdata.geoipexcludenick);
   irlist_delete_all(&gdata.autoadd_dirs);
+  irlist_delete_all(&gdata.autocrc_exclude);
   mydelete(gdata.enable_nick);
   mydelete(gdata.owner_nick);
   mydelete(gdata.geoipdatabase);

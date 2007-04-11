@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.7:
 ---------------------
 
+126) autocrc_exclude (inspired by fiberOptiC)
+  auto crc check will ignore files matching this patterns
+
 125) AUTOADD (inspired by dsd)
 
   new admin command:

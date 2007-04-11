@@ -998,6 +998,13 @@ const char *validate_crc32(xdcc *xd, int quiet)
        return "no CRC32 calculated";
    }
 
+   if (verifyshell(&gdata.autocrc_exclude, xd->file)) {
+     if (quiet)
+       return NULL;
+     else
+       return "skipped CRC32";
+   }
+
    newcrc = mycalloc(10);
    snprintf(newcrc,10,"%.8lX", xd->crc32);
    line = mycalloc(strlen(xd->file)+1);
