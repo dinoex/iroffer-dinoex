@@ -182,3 +182,6 @@ dsd
 fiberOptiC
 	option "autocrc_exclude"
 
+vegetto
+	report crash on bad config
+

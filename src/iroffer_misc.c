@@ -552,7 +552,7 @@ void getconfig_set (const char *line, int rehash)
       
       if (!ok) ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                        " !!! Bad syntax for channel %s on %s in config file !!!",
-                       tname, gnetwork->name);
+                       tname, gdata.networks[gdata.networks_online].name);
       
       if (cptr->plisttime && (cptr->plistoffset >= cptr->plisttime))
         {
