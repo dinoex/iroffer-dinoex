@@ -1395,7 +1395,7 @@ void a_addgroup(const userinput * const u)
   return;
 }
 
-void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d, const char *group)
+static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d, const char *group)
 {
   struct dirent *f;
   struct stat st;
