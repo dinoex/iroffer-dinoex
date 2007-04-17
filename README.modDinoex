@@ -3,8 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.8:
 ---------------------
 
+bugfix: XDCC STOP
+  versions affected: 1.18 to 2.7
+  fix a small memory leak
+
 bugfix: MULTINET (reported by vegetto)
- iroffer could crash on bad config files
+  iroffer could crash on bad config files
 
 With Version mod 2.7:
 ---------------------

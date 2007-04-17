@@ -321,8 +321,7 @@ void stoplist(const char *nick)
   while (item)
     {
       inick = NULL;
-      copy = mymalloc(strlen(item)+1);
-      strcpy(copy, item);
+      copy = mystrdup(item);
       inick = strchr(copy, ' ');
       if (inick != NULL)
         {
@@ -336,12 +335,14 @@ void stoplist(const char *nick)
                    if ( (strcmp(copy,"PRIVMSG") == 0) || (strcmp(copy,"NOTICE") == 0) )
                      {
                        stopped ++;
+                       mydelete(copy);
                        item = irlist_delete(&(gnetwork->serverq_slow), item);
                        continue;
                      }
                 }
             }
         }
+      mydelete(copy);
       item = irlist_get_next(item);
     }
   ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (stopped %d)", stopped);
