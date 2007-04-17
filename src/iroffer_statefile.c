@@ -158,12 +158,10 @@ static int write_statefile_item(ir_boutput_t *bout, void *item)
 {
   int callval;
   statefile_hdr_t *hdr = (statefile_hdr_t*)item;
-  ir_int32 length = hdr->length;
+  ir_int32 length;
   unsigned char dummy[4] = {};
-  
-  hdr->tag = htonl(hdr->tag);
-  hdr->length = htonl(hdr->length);
-  
+
+  length = ntohl(hdr->length);
   callval = ir_boutput_write(bout, item, length);
   
   if (callval != length)
@@ -189,6 +187,7 @@ static int write_statefile_item(ir_boutput_t *bout, void *item)
   return 0;
 }
 
+#include "dinoex_statefile.c"
 
 void write_statefile(void)
 {
@@ -253,18 +252,17 @@ void write_statefile(void)
       }
   }
   
+  updatecontext();
   {
     unsigned char *data;
     unsigned char *next;
-    
+
     length = sizeof(statefile_hdr_t) + maxtextlength;
     
     data = mycalloc(length);
     
     /* header */
     hdr = (statefile_hdr_t*)data;
-    hdr->tag = STATEFILE_TAG_IROFFER_VERSION;
-    hdr->length = sizeof(statefile_hdr_t);
     next = (unsigned char*)(&hdr[1]);
     
     length = snprintf(next, maxtextlength-1,
@@ -277,70 +275,31 @@ void write_statefile(void)
       }
     else
       {
-        hdr->length += ceiling(length+1, 4);
+        create_statefile_hdr(hdr, STATEFILE_TAG_IROFFER_VERSION, sizeof(statefile_hdr_t) + ceiling(length+1, 4));
         write_statefile_item(&bout, data);
       }
     
     mydelete(data);
   }
-  
-  {
-    statefile_item_generic_time_t item_timestamp;
-    item_timestamp.hdr.tag = STATEFILE_TAG_TIMESTAMP;
-    item_timestamp.hdr.length = sizeof(statefile_item_generic_time_t);
-    item_timestamp.g_time = htonl(gdata.curtime);
-    write_statefile_item(&bout, &item_timestamp);
-  }
-  
-  {
-    statefile_item_generic_float_t item_xfr_record;
-    item_xfr_record.hdr.tag = STATEFILE_TAG_XFR_RECORD;
-    item_xfr_record.hdr.length = sizeof(statefile_item_generic_float_t);
-    item_xfr_record.g_float = gdata.record;
-    write_statefile_item(&bout, &item_xfr_record);
-  }
-  
-  {
-    statefile_item_generic_float_t item_sent_record;
-    item_sent_record.hdr.tag = STATEFILE_TAG_SENT_RECORD;
-    item_sent_record.hdr.length = sizeof(statefile_item_generic_float_t);
-    item_sent_record.g_float = gdata.sentrecord;
-    write_statefile_item(&bout, &item_sent_record);
-  }
-  
-  {
-    statefile_item_generic_ullint_t item_total_sent;
-    item_total_sent.hdr.tag = STATEFILE_TAG_TOTAL_SENT;
-    item_total_sent.hdr.length = sizeof(statefile_item_generic_ullint_t);
-    item_total_sent.g_ullint.upper = htonl(gdata.totalsent >> 32);
-    item_total_sent.g_ullint.lower = htonl(gdata.totalsent & 0xFFFFFFFF);
-    write_statefile_item(&bout, &item_total_sent);
-  }
-  
-  {
-    statefile_item_generic_int_t item_total_uptime;
-    item_total_uptime.hdr.tag = STATEFILE_TAG_TOTAL_UPTIME;
-    item_total_uptime.hdr.length = sizeof(statefile_item_generic_int_t);
-    item_total_uptime.g_int = htonl(gdata.totaluptime);
-    write_statefile_item(&bout, &item_total_uptime);
-  }
-  
-  {
-    statefile_item_generic_time_t item_last_logrotate;
-    item_last_logrotate.hdr.tag = STATEFILE_TAG_LAST_LOGROTATE;
-    item_last_logrotate.hdr.length = sizeof(statefile_item_generic_int_t);
-    item_last_logrotate.g_time = htonl(gdata.last_logrotate);
-    write_statefile_item(&bout, &item_last_logrotate);
-  }
-  
+
+  write_statefile_time(&bout, STATEFILE_TAG_TIMESTAMP, gdata.curtime);
+
+  write_statefile_float(&bout, STATEFILE_TAG_XFR_RECORD, gdata.record);
+
+  write_statefile_float(&bout, STATEFILE_TAG_SENT_RECORD, gdata.sentrecord);
+
+  write_statefile_ullint(&bout, STATEFILE_TAG_TOTAL_SENT, gdata.totalsent );
+
+  write_statefile_int(&bout, STATEFILE_TAG_TOTAL_UPTIME, gdata.totaluptime);
+
+  write_statefile_time(&bout, STATEFILE_TAG_LAST_LOGROTATE, gdata.last_logrotate);
+
+  updatecontext();
   {
     unsigned char *data;
     unsigned char *next;
     igninfo *ignore;
-    statefile_item_generic_int_t *g_int;
-    statefile_item_generic_uint_t *g_uint;
-    statefile_item_generic_time_t *g_time;
-    
+
     ignore = irlist_get_head(&gdata.ignorelist);
     
     while (ignore)
@@ -363,40 +322,24 @@ void write_statefile(void)
             data = mycalloc(length);
             
             /* outter header */
-            hdr = (statefile_hdr_t*)data;
-            hdr->tag = STATEFILE_TAG_IGNORE;
-            hdr->length = length;
-            next = (unsigned char*)(&hdr[1]);
-            
+            next = start_statefile_hdr(data, STATEFILE_TAG_IGNORE, length);
+
             /* flags */
-            g_uint = (statefile_item_generic_uint_t*)next;
-            g_uint->hdr.tag = htonl(STATEFILE_TAG_IGNORE_FLAGS);
-            g_uint->hdr.length = htonl(sizeof(*g_uint));
-            g_uint->g_uint = htonl(ignore->flags);
-            next = (unsigned char*)(&g_uint[1]);
-            
+            next = prepare_statefile_uint(next,
+                   STATEFILE_TAG_IGNORE_FLAGS, ignore->flags);
+
             /* bucket */
-            g_int = (statefile_item_generic_int_t*)next;
-            g_int->hdr.tag = htonl(STATEFILE_TAG_IGNORE_BUCKET);
-            g_int->hdr.length = htonl(sizeof(*g_int));
-            g_int->g_int = htonl(ignore->bucket);
-            next = (unsigned char*)(&g_int[1]);
-            
+            next = prepare_statefile_int(next,
+                   STATEFILE_TAG_IGNORE_BUCKET, ignore->bucket);
+
             /* lastcontact */
-            g_time = (statefile_item_generic_time_t*)next;
-            g_time->hdr.tag = htonl(STATEFILE_TAG_IGNORE_LASTCONTACT);
-            g_time->hdr.length = htonl(sizeof(*g_time));
-            g_time->g_time = htonl(ignore->lastcontact);
-            next = (unsigned char*)(&g_time[1]);
-            
+	    next = prepare_statefile_time(next,
+                   STATEFILE_TAG_IGNORE_LASTCONTACT, ignore->lastcontact);
+
             /* hostmask */
-            hdr = (statefile_hdr_t*)next;
-            hdr->tag = htonl(STATEFILE_TAG_IGNORE_HOSTMASK);
-            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(ignore->hostmask) + 1);
-            next = (unsigned char*)(&hdr[1]);
-            strcpy(next, ignore->hostmask);
-            next += ceiling(strlen(ignore->hostmask) + 1, 4);
-        
+            next = prepare_statefile_string(next,
+                   STATEFILE_TAG_IGNORE_HOSTMASK, ignore->hostmask);
+
             write_statefile_item(&bout, data);
             
             mydelete(data);
@@ -405,12 +348,12 @@ void write_statefile(void)
       }
   }
   
+  updatecontext();
   {
     unsigned char *data;
     unsigned char *next;
     msglog_t *msglog;
-    statefile_item_generic_time_t *g_time;
-    
+
     msglog = irlist_get_head(&gdata.msglog);
     
     while (msglog)
@@ -429,34 +372,20 @@ void write_statefile(void)
         data = mycalloc(length);
         
         /* outter header */
-        hdr = (statefile_hdr_t*)data;
-        hdr->tag = STATEFILE_TAG_MSGLOG;
-        hdr->length = length;
-        next = (unsigned char*)(&hdr[1]);
-        
+        next = start_statefile_hdr(data, STATEFILE_TAG_MSGLOG, length);
+
         /* when */
-        g_time = (statefile_item_generic_time_t*)next;
-        g_time->hdr.tag = htonl(STATEFILE_TAG_MSGLOG_WHEN);
-        g_time->hdr.length = htonl(sizeof(*g_time));
-        g_time->g_time = htonl(msglog->when);
-        next = (unsigned char*)(&g_time[1]);
-        
+	next = prepare_statefile_time(next,
+               STATEFILE_TAG_MSGLOG_WHEN, msglog->when);
+
         /* hostmask */
-        hdr = (statefile_hdr_t*)next;
-        hdr->tag = htonl(STATEFILE_TAG_MSGLOG_HOSTMASK);
-        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(msglog->hostmask) + 1);
-        next = (unsigned char*)(&hdr[1]);
-        strcpy(next, msglog->hostmask);
-        next += ceiling(strlen(msglog->hostmask) + 1, 4);
-        
+        next = prepare_statefile_string(next,
+               STATEFILE_TAG_MSGLOG_HOSTMASK, msglog->hostmask);
+
         /* message */
-        hdr = (statefile_hdr_t*)next;
-        hdr->tag = htonl(STATEFILE_TAG_MSGLOG_MESSAGE);
-        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(msglog->message) + 1);
-        next = (unsigned char*)(&hdr[1]);
-        strcpy(next, msglog->message);
-        next += ceiling(strlen(msglog->message) + 1, 4);
-        
+        next = prepare_statefile_string(next,
+               STATEFILE_TAG_MSGLOG_MESSAGE, msglog->message);
+
         write_statefile_item(&bout, data);
         
         mydelete(data);
@@ -464,12 +393,11 @@ void write_statefile(void)
       }
   }
   
+  updatecontext();
   {
     unsigned char *data;
     unsigned char *next;
     xdcc *xd;
-    statefile_item_generic_int_t *g_int;
-    statefile_item_generic_float_t *g_float;
     statefile_item_md5sum_info_t *md5sum_info;
     
     xd = irlist_get_head(&gdata.xdccs);
@@ -526,70 +454,34 @@ void write_statefile(void)
         data = mycalloc(length);
         
         /* outter header */
-        hdr = (statefile_hdr_t*)data;
-        hdr->tag = STATEFILE_TAG_XDCCS;
-        hdr->length = length;
-        next = (unsigned char*)(&hdr[1]);
-        
+        next = start_statefile_hdr(data, STATEFILE_TAG_XDCCS, length);
+
         /* file */
-        hdr = (statefile_hdr_t*)next;
-        hdr->tag = htonl(STATEFILE_TAG_XDCCS_FILE);
-        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->file) + 1);
-        next = (unsigned char*)(&hdr[1]);
-        strcpy(next, xd->file);
-        next += ceiling(strlen(xd->file) + 1, 4);
-        
+        next = prepare_statefile_string(next,
+               STATEFILE_TAG_XDCCS_FILE, xd->file);
+
         /* desc */
-        hdr = (statefile_hdr_t*)next;
-        hdr->tag = htonl(STATEFILE_TAG_XDCCS_DESC);
-        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->desc) + 1);
-        next = (unsigned char*)(&hdr[1]);
-        strcpy(next, xd->desc);
-        next += ceiling(strlen(xd->desc) + 1, 4);
-        
+        next = prepare_statefile_string(next,
+               STATEFILE_TAG_XDCCS_DESC, xd->desc);
+
         /* note */
-        hdr = (statefile_hdr_t*)next;
-        hdr->tag = htonl(STATEFILE_TAG_XDCCS_NOTE);
-        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->note) + 1);
-        next = (unsigned char*)(&hdr[1]);
-        strcpy(next, xd->note);
-        next += ceiling(strlen(xd->note) + 1, 4);
-        
+	next = prepare_statefile_string(next,
+               STATEFILE_TAG_XDCCS_NOTE, xd->note);
+
         /* gets */
-        g_int = (statefile_item_generic_int_t*)next;
-        g_int->hdr.tag = htonl(STATEFILE_TAG_XDCCS_GETS);
-        g_int->hdr.length = htonl(sizeof(*g_int));
-        g_int->g_int = htonl(xd->gets);
-        next = (unsigned char*)(&g_int[1]);
-        
+        next = prepare_statefile_int(next,
+               STATEFILE_TAG_XDCCS_GETS, xd->gets);
+
         /* minspeed */
-        g_float = (statefile_item_generic_float_t*)next;
-        g_float->hdr.tag = htonl(STATEFILE_TAG_XDCCS_MINSPEED);
-        g_float->hdr.length = htonl(sizeof(*g_float));
-        if (gdata.transferminspeed == xd->minspeed)
-          {
-            g_float->g_float = 0;
-          }
-        else
-          {
-            g_float->g_float = xd->minspeed;
-          }
-        next = (unsigned char*)(&g_float[1]);
-        
+        next = prepare_statefile_float(next,
+               STATEFILE_TAG_XDCCS_MINSPEED,
+               (gdata.transferminspeed == xd->minspeed)? 0 : xd->minspeed);
+
         /* maxspeed */
-        g_float = (statefile_item_generic_float_t*)next;
-        g_float->hdr.tag = htonl(STATEFILE_TAG_XDCCS_MAXSPEED);
-        g_float->hdr.length = htonl(sizeof(*g_float));
-        if (gdata.transfermaxspeed == xd->maxspeed)
-          {
-            g_float->g_float = 0;
-          }
-        else
-          {
-            g_float->g_float = xd->maxspeed;
-          }
-        next = (unsigned char*)(&g_float[1]);
-        
+        next = prepare_statefile_float(next,
+               STATEFILE_TAG_XDCCS_MAXSPEED,
+               (gdata.transfermaxspeed == xd->maxspeed)? 0 : xd->maxspeed);
+
         if (xd->has_md5sum)
           {
             /* md5sum */
@@ -610,69 +502,43 @@ void write_statefile(void)
         if (xd->has_crc32)
           {
             /* crc32 */
-            g_int = (statefile_item_generic_int_t*)next;
-            g_int->hdr.tag = htonl(STATEFILE_TAG_XDCCS_CRC32);
-            g_int->hdr.length = htonl(sizeof(*g_int));
-            g_int->g_int = htonl(xd->crc32);
-            next = (unsigned char*)(&g_int[1]);
+            next = prepare_statefile_int(next,
+                   STATEFILE_TAG_XDCCS_CRC32, xd->crc32);
           }
         
         if (xd->group != NULL)
           {
             /* group */
-            hdr = (statefile_hdr_t*)next;
-            hdr->tag = htonl(STATEFILE_TAG_XDCCS_GROUP);
-            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->group) + 1);
-            next = (unsigned char*)(&hdr[1]);
-            strcpy(next, xd->group);
-            next += ceiling(strlen(xd->group) + 1, 4);
+            next = prepare_statefile_string(next,
+                   STATEFILE_TAG_XDCCS_GROUP, xd->group);
           }
         if (xd->group_desc != NULL)
           {
             /* group_desc */
-            hdr = (statefile_hdr_t*)next;
-            hdr->tag = htonl(STATEFILE_TAG_XDCCS_GROUP_DESC);
-            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->group_desc) + 1);
-            next = (unsigned char*)(&hdr[1]);
-            strcpy(next, xd->group_desc);
-            next += ceiling(strlen(xd->group_desc) + 1, 4);
+            next = prepare_statefile_string(next,
+                   STATEFILE_TAG_XDCCS_GROUP_DESC, xd->group_desc);
           }
         if (xd->lock != NULL)
           {
             /* group */
-            hdr = (statefile_hdr_t*)next;
-            hdr->tag = htonl(STATEFILE_TAG_XDCCS_LOCK);
-            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->lock) + 1);
-            next = (unsigned char*)(&hdr[1]);
-            strcpy(next, xd->lock);
-            next += ceiling(strlen(xd->lock) + 1, 4);
+            next = prepare_statefile_string(next,
+                   STATEFILE_TAG_XDCCS_LOCK, xd->lock);
           }
         
         if (xd->dlimit_max != 0)
           {
             /* download limit */
-            g_int = (statefile_item_generic_int_t*)next;
-            g_int->hdr.tag = htonl(STATEFILE_TAG_XDCCS_DLIMIT_MAX);
-            g_int->hdr.length = htonl(sizeof(*g_int));
-            g_int->g_int = htonl(xd->dlimit_max);
-            next = (unsigned char*)(&g_int[1]);
-            
+            next = prepare_statefile_int(next,
+                   STATEFILE_TAG_XDCCS_DLIMIT_MAX, xd->dlimit_max);
             /* download limit */
-            g_int = (statefile_item_generic_int_t*)next;
-            g_int->hdr.tag = htonl(STATEFILE_TAG_XDCCS_DLIMIT_USED);
-            g_int->hdr.length = htonl(sizeof(*g_int));
-            g_int->g_int = htonl(xd->dlimit_used);
-            next = (unsigned char*)(&g_int[1]);
+            next = prepare_statefile_int(next,
+                   STATEFILE_TAG_XDCCS_DLIMIT_USED, xd->dlimit_used);
           }
         if (xd->dlimit_desc != NULL)
           {
             /* group */
-            hdr = (statefile_hdr_t*)next;
-            hdr->tag = htonl(STATEFILE_TAG_XDCCS_DLIMIT_DESC);
-            hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(xd->dlimit_desc) + 1);
-            next = (unsigned char*)(&hdr[1]);
-            strcpy(next, xd->dlimit_desc);
-            next += ceiling(strlen(xd->dlimit_desc) + 1, 4);
+            next = prepare_statefile_string(next,
+                   STATEFILE_TAG_XDCCS_DLIMIT_DESC, xd->dlimit_desc);
           }
         
         write_statefile_item(&bout, data);
@@ -681,143 +547,19 @@ void write_statefile(void)
         xd = irlist_get_next(xd);
       }
   }
-  
-  {
-    statefile_item_generic_ullint_t item_daily_used;
-    item_daily_used.hdr.tag = STATEFILE_TAG_TLIMIT_DAILY_USED;
-    item_daily_used.hdr.length = sizeof(statefile_item_generic_ullint_t);
-    item_daily_used.g_ullint.upper = htonl(gdata.transferlimits[TRANSFERLIMIT_DAILY].used >> 32);
-    item_daily_used.g_ullint.lower = htonl(gdata.transferlimits[TRANSFERLIMIT_DAILY].used & 0xFFFFFFFF);
-    write_statefile_item(&bout, &item_daily_used);
-  }
-  {
-    statefile_item_generic_time_t item_daily_ends;
-    item_daily_ends.hdr.tag = STATEFILE_TAG_TLIMIT_DAILY_ENDS;
-    item_daily_ends.hdr.length = sizeof(statefile_item_generic_time_t);
-    item_daily_ends.g_time = htonl(gdata.transferlimits[TRANSFERLIMIT_DAILY].ends);
-    write_statefile_item(&bout, &item_daily_ends);
-  }
-  
-  {
-    statefile_item_generic_ullint_t item_weekly_used;
-    item_weekly_used.hdr.tag = STATEFILE_TAG_TLIMIT_WEEKLY_USED;
-    item_weekly_used.hdr.length = sizeof(statefile_item_generic_ullint_t);
-    item_weekly_used.g_ullint.upper = htonl(gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used >> 32);
-    item_weekly_used.g_ullint.lower = htonl(gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used & 0xFFFFFFFF);
-    write_statefile_item(&bout, &item_weekly_used);
-  }
-  {
-    statefile_item_generic_time_t item_weekly_ends;
-    item_weekly_ends.hdr.tag = STATEFILE_TAG_TLIMIT_WEEKLY_ENDS;
-    item_weekly_ends.hdr.length = sizeof(statefile_item_generic_time_t);
-    item_weekly_ends.g_time = htonl(gdata.transferlimits[TRANSFERLIMIT_WEEKLY].ends);
-    write_statefile_item(&bout, &item_weekly_ends);
-  }
-  
-  {
-    statefile_item_generic_ullint_t item_monthly_used;
-    item_monthly_used.hdr.tag = STATEFILE_TAG_TLIMIT_MONTHLY_USED;
-    item_monthly_used.hdr.length = sizeof(statefile_item_generic_ullint_t);
-    item_monthly_used.g_ullint.upper = htonl(gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used >> 32);
-    item_monthly_used.g_ullint.lower = htonl(gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used & 0xFFFFFFFF);
-    write_statefile_item(&bout, &item_monthly_used);
-  }
-  {
-    statefile_item_generic_time_t item_monthly_ends;
-    item_monthly_ends.hdr.tag = STATEFILE_TAG_TLIMIT_MONTHLY_ENDS;
-    item_monthly_ends.hdr.length = sizeof(statefile_item_generic_time_t);
-    item_monthly_ends.g_time = htonl(gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends);
-    write_statefile_item(&bout, &item_monthly_ends);
-  }
-  {
-    unsigned char *data;
-    unsigned char *next;
-    pqueue *pq;
-    xdcc *xd;
-    statefile_item_generic_int_t *g_int;
-    statefile_item_generic_time_t *g_time;
-    int pack;
-    
-    pq = irlist_get_head(&gdata.mainqueue);
-    
-    while (pq)
-      {
-        /*
-         * need room to write:
-         *  pack          int
-         *  nick          string
-         *  hostname      string
-         *  queuedtime    time
-         */
-        length = sizeof(statefile_hdr_t) +
-          sizeof(statefile_item_generic_int_t) + 
-          sizeof(statefile_hdr_t) + ceiling(strlen(pq->nick) + 1, 4) +
-          sizeof(statefile_hdr_t) + ceiling(strlen(pq->hostname) + 1, 4) +
-          sizeof(statefile_item_generic_time_t) +
-          sizeof(statefile_item_generic_int_t);
-        
-        data = mycalloc(length);
-        
-        /* outter header */
-        hdr = (statefile_hdr_t*)data;
-        hdr->tag = STATEFILE_TAG_QUEUE;
-        hdr->length = length;
-        next = (unsigned char*)(&hdr[1]);
 
-        pack = 1;
-        xd = irlist_get_head(&gdata.xdccs);
-        while(xd)
-          {
-            if (xd == pq->xpack)
-              break;
-            pack++;
-            xd = irlist_get_next(xd);
-          }
+  write_statefile_ullint(&bout, STATEFILE_TAG_TLIMIT_DAILY_USED, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
+  write_statefile_time(&bout, STATEFILE_TAG_TLIMIT_DAILY_ENDS, gdata.transferlimits[TRANSFERLIMIT_DAILY].ends);
 
-        /* pack */
-        g_int = (statefile_item_generic_int_t*)next;
-        g_int->hdr.tag = htonl(STATEFILE_TAG_QUEUE_PACK);
-        g_int->hdr.length = htonl(sizeof(*g_int));
-        g_int->g_int = htonl(pack);
-        next = (unsigned char*)(&g_int[1]);
-        
-        /* nick */
-        hdr = (statefile_hdr_t*)next;
-        hdr->tag = htonl(STATEFILE_TAG_QUEUE_NICK);
-        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(pq->nick) + 1);
-        next = (unsigned char*)(&hdr[1]);
-        strcpy(next, pq->nick);
-        next += ceiling(strlen(pq->nick) + 1, 4);
-        
-        /* hostname */
-        hdr = (statefile_hdr_t*)next;
-        hdr->tag = htonl(STATEFILE_TAG_QUEUE_HOST);
-        hdr->length = htonl(sizeof(statefile_hdr_t) + strlen(pq->hostname) + 1);
-        next = (unsigned char*)(&hdr[1]);
-        strcpy(next, pq->hostname);
-        next += ceiling(strlen(pq->hostname) + 1, 4);
-        
-        /* queuedtime */
-        g_time = (statefile_item_generic_time_t*)next;
-        g_time->hdr.tag = htonl(STATEFILE_TAG_QUEUE_TIME);
-        g_time->hdr.length = htonl(sizeof(*g_time));
-        g_time->g_time = htonl(pq->queuedtime);
-        next = (unsigned char*)(&g_time[1]);
-        
-        /* net */
-        g_int = (statefile_item_generic_int_t*)next;
-        g_int->hdr.tag = htonl(STATEFILE_TAG_QUEUE_NET);
-        g_int->hdr.length = htonl(sizeof(*g_int));
-        g_int->g_int = htonl(pq->net);
-        next = (unsigned char*)(&g_int[1]);
-        
-        write_statefile_item(&bout, data);
-        
-        mydelete(data);
-        pq = irlist_get_next(pq);
-      }
-  }
-  
+  write_statefile_ullint(&bout, STATEFILE_TAG_TLIMIT_WEEKLY_USED, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
+  write_statefile_time(&bout, STATEFILE_TAG_TLIMIT_WEEKLY_ENDS, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].ends);
+
+  write_statefile_ullint(&bout, STATEFILE_TAG_TLIMIT_MONTHLY_USED, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
+  write_statefile_time(&bout, STATEFILE_TAG_TLIMIT_MONTHLY_ENDS, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends);
+
+  write_statefile_queue(&bout);
+
+  updatecontext();
   {
     MD5Digest digest = {};
     
@@ -832,6 +574,7 @@ void write_statefile(void)
   }
   
   /*** end write ***/
+  updatecontext();
   
   ir_boutput_set_flags(&bout, 0);
   
