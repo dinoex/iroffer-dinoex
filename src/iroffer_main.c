@@ -3156,19 +3156,22 @@ static void privmsgparse(const char* type, char* line) {
          xd = irlist_get_head(&gdata.xdccs);
          while(xd)
            {
-             char *file;
-             file = strrchr(xd->file, '/');
-             if (file == NULL) file = xd->file;
-             if (strstrnocase(file,msg3) ||
-                 strstrnocase(xd->desc,msg3) ||
-                 strstrnocase(xd->note,msg3))
+             if (hide_pack(xd) == 0)
                {
-                 notice_slow(nick," - Pack #%i matches, \"%s\"",
-                             i, xd->desc);
-                 k++;
-                 /* limit matches */
-                 if ((gdata.max_find != 0) && (k >= gdata.max_find))
-                   break;
+                 char *file;
+                 file = strrchr(xd->file, '/');
+                 if (file == NULL) file = xd->file;
+                 if (strstrnocase(file,msg3) ||
+                     strstrnocase(xd->desc,msg3) ||
+                     strstrnocase(xd->note,msg3))
+                   {
+                      notice_slow(nick," - Pack #%i matches, \"%s\"",
+                                  i, xd->desc);
+                      k++;
+                      /* limit matches */
+                      if ((gdata.max_find != 0) && (k >= gdata.max_find))
+                        break;
+                   }
                }
              i++;
              xd = irlist_get_next(xd);
@@ -3607,7 +3610,7 @@ void sendxdccinfo(const char* nick,
   
   xd = irlist_get_nth(&gdata.xdccs, pack-1);
   
-  if ((gdata.hidelockedpacks != 0) && (xd->lock != NULL))
+  if (hide_pack(xd) != 0)
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (locked pack): ");
       notice(nick,"** Invalid Pack Number, Try Again");

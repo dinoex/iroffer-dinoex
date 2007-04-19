@@ -117,6 +117,17 @@ void admin_jobs(void) {
 }
 
 
+int hide_pack(const xdcc *xd)
+{
+  if (gdata.hidelockedpacks == 0)
+    return 0;
+  
+  if (xd->lock == NULL)
+    return 0;
+  
+  return 1;
+}
+
 int check_lock(const char* lockstr, const char* pwd)
 {
   if (lockstr == NULL)
@@ -922,37 +933,40 @@ int noticeresults(const char *nick, const char *match)
     i = 1;
     xd = irlist_get_head(&gdata.xdccs);
     while (xd) {
-      if (!regexec(regexp, xd->file, 0, NULL, 0) || !regexec(regexp, xd->desc, 0, NULL, 0) || !regexec(regexp, xd->note, 0, NULL, 0)) {
-        if (!k) {
-          if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
-            j = irlist_size(&gdata.trans);
-          else
-            j = gdata.slotsmax;
-          snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - Slot%s:[%i/%i]", j != 1 ? "s" : "", j - irlist_size(&gdata.trans), j);
-          len = strlen(tempstr);
-           if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
+      if (hide_pack(xd) == 0) {
+        if (!regexec(regexp, xd->file, 0, NULL, 0) ||
+            !regexec(regexp, xd->desc, 0, NULL, 0) ||
+            !regexec(regexp, xd->note, 0, NULL, 0)) {
+          if (!k) {
+            if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
+              j = irlist_size(&gdata.trans);
+            else
+              j = gdata.slotsmax;
+            snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - Slot%s:[%i/%i]", j != 1 ? "s" : "", j - irlist_size(&gdata.trans), j);
             len = strlen(tempstr);
-          }
-          if (gdata.transferminspeed > 0) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
+            if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
+              snprintf(tempstr + len, maxtextlength - 1 - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
+              len = strlen(tempstr);
+            }
+            if (gdata.transferminspeed > 0) {
+              snprintf(tempstr + len, maxtextlength - 1 - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
+              len = strlen(tempstr);
+            }
+            if (gdata.transfermaxspeed > 0) {
+              snprintf(tempstr + len, maxtextlength - 1 - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
+              len = strlen(tempstr);
+            }
+            if (gdata.maxb) {
+              snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
+              len = strlen(tempstr);
+            }
+            snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -",
+                     save_nick(gnetwork->user_nick));
             len = strlen(tempstr);
-          }
-          if (gdata.transfermaxspeed > 0) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
-            len = strlen(tempstr);
-          }
-          if (gdata.maxb) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
-            len = strlen(tempstr);
-          }
-          snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -",
-                   save_nick(gnetwork->user_nick));
-          len = strlen(tempstr);
-          if (!strcmp(match, "*"))
-            snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");
-          else
-            snprintf(tempstr + len, maxtextlength - 1 - len, " Found:");
+            if (!strcmp(match, "*"))
+              snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");
+            else
+              snprintf(tempstr + len, maxtextlength - 1 - len, " Found:");
           len = strlen(tempstr);
         }
         sizestrstr = sizestr(0, xd->st_size);
@@ -968,6 +982,7 @@ int noticeresults(const char *nick, const char *match)
         /* limit matches */
         if ((gdata.max_find != 0) && (k >= gdata.max_find))
           break;
+        }
       }
       i++;
       xd = irlist_get_next(xd);

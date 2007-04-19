@@ -14,6 +14,7 @@
  */
 
 void admin_jobs(void);
+int hide_pack(const xdcc *xd);
 int check_lock(const char* lockstr, const char* pwd);
 
 void update_natip (const char *var);

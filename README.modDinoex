@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.8:
 ---------------------
 
+bugfix: hidelockedpacks (reported by Alita-chan)
+  don't show locked packs in @find and XDCC SEARCH
+
 cleanup statefile write
 
 bugfix: XDCC STOP
@@ -52,7 +55,7 @@ With Version mod 2.6:
   new admin command:
   FILEREMOVE n [m]                 remove pack <n> or <n> to <m> and remove its file from disk
 
-bugfix: hidlockepacks (inspired by Noxx)
+bugfix: hidelockepacks (inspired by Noxx)
   don't show locked packs in xdcclistfile
 
 bugfix: MULTINET
