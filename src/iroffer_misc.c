@@ -158,7 +158,7 @@ static const config_parse_int_t config_parse_int[] = {
   {"send_statefile_minute",  &gdata.send_statefile_minute,  &gdata.send_statefile_minute, 0, 60, 1 },
   {"max_uploads",     &gdata.max_uploads,     &gdata.max_uploads,     0, 65000, 1 },
   {"max_upspeed",     &gdata.max_upspeed,     &gdata.max_upspeed,     0, 1000000, 4 },
-  {"need_level",      &gdata.need_level,      &gdata.need_level,      0, 3, 0 },
+  {"need_level",      &gdata.need_level,      &gdata.need_level,      0, 3, 1 },
   {"max_find",        &gdata.max_find,        &gdata.max_find,        0, 65000, 1 },
   {"restrictsend_delay",  &gdata.restrictsend_delay,  &gdata.restrictsend_delay,  0, 2000, 1 },
   {"debug",           &gdata.debug,           &gdata.debug,           0, 65000, 1 },

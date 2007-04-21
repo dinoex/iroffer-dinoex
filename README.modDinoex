@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.8:
 ---------------------
 
+bugfix: need_level
+  need_level was never in effect
+
 128) NOCHANNEL
   
   new admin command:
