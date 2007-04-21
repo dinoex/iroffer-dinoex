@@ -1673,6 +1673,7 @@ void dumpgdata(void)
       gdata_iter_print_int(delay);
       gdata_iter_print_int(noannounce);
       gdata_iter_print_long(nextann);
+      gdata_iter_print_long(nextjoin);
   /* members */
   gdata_irlist_iter_end;
   

@@ -198,6 +198,7 @@ static const userinput_parse_t userinput_parse[] = {
 
 {5,method_allow_all,u_servers,  "SERVERS","[net]","Shows the server list"},
 {5,method_allow_all,a_hop,      "HOP","channel","leave and rejoin a channel to get status"},
+{5,method_allow_all,a_nochannel, "NOCHANNEL","x channel","leave channel for <x> minutes"},
 {5,method_allow_all,u_jump,     "JUMP","server [net]","Switches to a random server or server <server>"},
 {5,method_allow_all,u_servqc,   "SERVQC",NULL,"Clears the server send queue"},
 {5,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},

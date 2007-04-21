@@ -84,6 +84,7 @@ void a_amsg(const userinput * const u);
 void a_msgnet(const userinput * const u);
 void a_rawnet(const userinput * const u);
 void a_hop(const userinput * const u);
+void a_nochannel(const userinput * const u);
 void a_cleargets(const userinput * const u);
 void a_identify(const userinput * const u);
 void a_holdqueue(const userinput * const u);

@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.8:
 ---------------------
 
+128) NOCHANNEL
+  
+  new admin command:
+  NOCHANNEL x <channel>            leave the channel for <x> minutes
+
+   References TODO:
+Long Term Features:
+   131 1/7/00 Open nochannel command, leave channels for x minutes
+
 bugfix: REHASH
   versions affected: 1.20 to 2.7
   fix a small memory leak

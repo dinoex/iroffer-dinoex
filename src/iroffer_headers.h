@@ -390,6 +390,7 @@ typedef struct
   short delay;
   short noannounce;
   long nextann;
+  long nextjoin;
   irlist_t members;
 } channel_t;
 

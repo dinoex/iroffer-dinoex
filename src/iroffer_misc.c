@@ -2037,7 +2037,10 @@ void joinchannel(channel_t *c)
   if (!c) return;
   
   if (c->flags & CHAN_KICKED) return;
-  
+
+  if (c->nextjoin > gdata.curtime)
+    return;
+
   if (c->key)
     {
       writeserver(WRITESERVER_NORMAL, "JOIN %s %s", c->name, c->key);

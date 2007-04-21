@@ -1726,3 +1726,7 @@
 1726 "AUTOADD done."
 1727 "autocrc_exclude"
 1728 "skipped CRC32"
+1729 "-noannounce"
+1730 "NOCHANNEL"
+1731 "x channel"
+1732 "leave channel for <x> minutes"

@@ -2458,6 +2458,38 @@ void a_hop(const userinput * const u)
    gnetwork = backup;
 }
 
+void a_nochannel(const userinput * const u)
+{
+   channel_t *ch;
+   gnetwork_t *backup;
+   int ss;
+   int val = 0;
+
+   updatecontext();
+
+   if (u->arg1) val = atoi(u->arg1);
+
+   backup = gnetwork;
+   for (ss=0; ss<gdata.networks_online; ss++)
+     {
+       gnetwork = &(gdata.networks[ss]);
+       /* part channels */
+       ch = irlist_get_head(&(gnetwork->channels));
+       while(ch)
+         {
+           if ((!u->arg2) || (!strcasecmp(u->arg2,ch->name)))
+             {
+               writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
+               clearmemberlist(ch);
+               ch->flags &= ~CHAN_ONCHAN;
+               ch->nextjoin = gdata.curtime + (val * 60);
+             }
+           ch = irlist_get_next(ch);
+         }
+     }
+   gnetwork = backup;
+}
+
 void a_cleargets(const userinput * const u)
 {
    xdcc *xd;
