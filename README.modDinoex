@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.8:
 ---------------------
 
+bugfix: REHASH
+  versions affected: 1.20 to 2.7
+  fix a small memory leak
+
 127) channel -noannounce (inspired by TheDeath)
   no extra announces on this channel
 

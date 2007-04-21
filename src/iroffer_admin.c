@@ -2455,6 +2455,7 @@ static void u_rehash(const userinput * const u) {
            clearmemberlist(ch);
            mydelete(ch->name);
            mydelete(ch->key);
+           mydelete(ch->headline);
            ch = irlist_delete(&(gnetwork->channels), ch);
          }
        else
@@ -2463,6 +2464,7 @@ static void u_rehash(const userinput * const u) {
            rch->members = ch->members;
            mydelete(ch->name);
            mydelete(ch->key);
+           mydelete(ch->headline);
            *ch = *rch;
            if (gdata.debug > 2)
              {
