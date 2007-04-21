@@ -388,6 +388,7 @@ typedef struct
   short plisttime;
   short plistoffset;
   short delay;
+  short noannounce;
   long nextann;
   irlist_t members;
 } channel_t;

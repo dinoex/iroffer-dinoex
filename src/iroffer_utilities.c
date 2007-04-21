@@ -1671,6 +1671,8 @@ void dumpgdata(void)
           iter->plistoffset);
       gdata_iter_print_string(headline);
       gdata_iter_print_int(delay);
+      gdata_iter_print_int(noannounce);
+      gdata_iter_print_long(nextann);
   /* members */
   gdata_irlist_iter_end;
   

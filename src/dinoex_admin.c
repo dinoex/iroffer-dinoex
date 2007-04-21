@@ -2376,7 +2376,7 @@ void a_amsg(const userinput * const u)
       gnetwork = &(gdata.networks[ss]);
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch) {
-        if (ch->flags & CHAN_ONCHAN)
+        if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
           privmsg_chan(ch, u->arg1e);
         ch = irlist_get_next(ch);
         }
@@ -2644,7 +2644,7 @@ void a_announce(const userinput * const u)
       snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gnetwork->user_nick,num);
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch) {
-        if (ch->flags & CHAN_ONCHAN)
+        if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
           privmsg_chan(ch, tempstr);
         ch = irlist_get_next(ch);
         }

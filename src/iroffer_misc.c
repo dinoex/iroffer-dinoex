@@ -488,6 +488,7 @@ void getconfig_set (const char *line, int rehash)
       caps(tname);
       cptr->name = mystrdup(tname);
       cptr->headline = NULL;
+      cptr->noannounce = 0;
       
       for (i=2; i<20 && ok && (tptr = getpart(var,i)); i++) {
          if (!strcmp(tptr,"-plist")) {
@@ -530,6 +531,9 @@ void getconfig_set (const char *line, int rehash)
               cptr->delay = atoi(tptr2);
             else
               cptr->delay = 0;
+            }
+         else if (!strcmp(tptr,"-noannounce")) {
+            cptr->noannounce = 1;
             }
          else if (!strcmp(tptr,"-headline")) {
             i++;

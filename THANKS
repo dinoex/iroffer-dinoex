@@ -68,6 +68,7 @@ TheDeath
 	admin command "LOGOUT"
 	reporting crash whith geoip
 	option "geoipdatabase"
+        option "channel -noannounce"
 
 [GFE]Lunix
 	alias xdcc list group <group>
