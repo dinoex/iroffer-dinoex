@@ -2450,6 +2450,7 @@ void a_hop(const userinput * const u)
                clearmemberlist(ch);
                ch->flags &= ~CHAN_ONCHAN;
                ch->flags &= ~CHAN_KICKED;
+               ch->nextann = gdata.curtime + gdata.waitafterjoin;
                joinchannel(ch);
              }
            ch = irlist_get_next(ch);

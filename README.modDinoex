@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.8:
 ---------------------
 
+bugfix: waitafterjoin
+  dont send plist when admin has rejoined by HOP
+
 127) channel -noannounce (inspired by TheDeath)
   no extra announces on this channel
 
