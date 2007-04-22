@@ -1612,8 +1612,10 @@ void read_statefile(void)
                     break;
                     
                   default:
-                    outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown XDCC Tag 0x%X (len=%d)",
+                    outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown Queue Tag 0x%X (len=%d)",
                              ihdr->tag, ihdr->length);
+                    /* in case of 0 bytes len we loop forever */
+                    if ( ihdr->length == 0 ) ihdr->length ++;
                   }
                 hdr->length -= ceiling(ihdr->length, 4);
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
