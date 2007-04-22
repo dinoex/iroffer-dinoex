@@ -45,7 +45,6 @@ void update_hour_dinoex(int hour, int minute);
 void check_new_connection(transfer *const tr);
 void check_duplicateip(transfer *const newtr);
 int noticeresults(const char *nick, const char *match);
-void check_duplicateip(transfer *const newtr);
 const char *validate_crc32(xdcc *xd, int quiet);
 void autoadd_scan(const char *dir, const char *group);
 void autoadd_all(void);
