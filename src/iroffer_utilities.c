@@ -937,7 +937,7 @@ char onlyprintable(char a) {
       return '.'; 
    }
 
-static unsigned long alloc_hash(void *ptr)
+static unsigned long mycalloc_hash(void *ptr)
 {
   unsigned long retval;
   
@@ -992,7 +992,7 @@ static void meminfo_grow(int grow)
           if (gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr)
             {
               /* find new location */
-              start = alloc_hash(gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr) * (gdata.meminfo_depth+grow);
+              start = mycalloc_hash(gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr) * (gdata.meminfo_depth+grow);
               
               for (i=0; newmeminfo[(i+start)%(MEMINFOHASHSIZE * (gdata.meminfo_depth+grow))].ptr; i++) ;
               
@@ -1041,7 +1041,7 @@ void* mymalloc2(int len, int zero,
        meminfo_grow(gdata.meminfo_depth/3 + 1);
      }
    
-   start = alloc_hash(t) * gdata.meminfo_depth;
+   start = mycalloc_hash(t) * gdata.meminfo_depth;
    
    for (i=0; gdata.meminfo[(i+start)%(MEMINFOHASHSIZE * gdata.meminfo_depth)].ptr; i++) ;
    
@@ -1068,7 +1068,7 @@ void mydelete2(void *t) {
 
    if (t == NULL) return;
    
-   start = alloc_hash(t) * gdata.meminfo_depth;
+   start = mycalloc_hash(t) * gdata.meminfo_depth;
    
    for (i=0; (i<(MEMINFOHASHSIZE * gdata.meminfo_depth) && (gdata.meminfo[(i+start)%(MEMINFOHASHSIZE * gdata.meminfo_depth)].ptr != t)); i++) ;
    
