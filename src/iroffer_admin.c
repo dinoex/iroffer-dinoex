@@ -23,10 +23,6 @@
 #include "dinoex_admin.h"
 #include "dinoex_misc.h"
 
-#ifdef USE_CURL
-#include <curl/curl.h>
-#endif /* USE_CURL */
-
 /* local functions */
 static void
 #ifdef __GNUC__
@@ -133,7 +129,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,method_allow_all,u_send,     "SEND","nick n [net]","Sends pack <n> to <nick>"},
 {2,method_allow_all,a_queue,    "QUEUE","nick n [net]","Queues pack <n> for <nick>"},
 {2,method_allow_all,u_psend,    "PSEND","channel style [net]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
-{2,method_allow_all,u_qsend,    "QSEND",NULL,"Start a extra transfer from queue"},
+{2,method_allow_all,u_qsend,    "QSEND",NULL,"Start an extra transfer from queue"},
 {2,method_allow_all,a_slotsmax, "SLOTSMAX","[slots]","temporary change slotsmax to <slots>"},
 {2,method_allow_all,a_queuesize, "QUEUESIZE","[slots]","temporary change queuesize to <slots>"},
 {2,method_allow_all,a_requeue,  "REQUEUE","x y","Moves queue entry from postion <x> to <y>"},
@@ -197,8 +193,8 @@ static const userinput_parse_t userinput_parse[] = {
 {4,method_allow_all,a_rawnet,   "RAWNET","net command","Send <command> to server (RAW IRC)"},
 
 {5,method_allow_all,u_servers,  "SERVERS","[net]","Shows the server list"},
-{5,method_allow_all,a_hop,      "HOP","channel","leave and rejoin a channel to get status"},
-{5,method_allow_all,a_nochannel, "NOCHANNEL","x channel","leave channel for <x> minutes"},
+{5,method_allow_all,a_hop,      "HOP","[channel]","leave and rejoin a channel to get status"},
+{5,method_allow_all,a_nochannel, "NOCHANNEL","x [channel]","leave channel for <x> minutes"},
 {5,method_allow_all,u_jump,     "JUMP","server [net]","Switches to a random server or server <server>"},
 {5,method_allow_all,u_servqc,   "SERVQC",NULL,"Clears the server send queue"},
 {5,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},
