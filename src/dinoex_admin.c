@@ -2673,7 +2673,8 @@ void a_announce(const userinput * const u)
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
-      snprintf(tempstr,maxtextlength-2,"%s - /msg %s xdcc send %i",tempstr2,gnetwork->user_nick,num);
+      snprintf(tempstr, maxtextlength-2, "%s - /msg %s xdcc send %i",
+               tempstr2, save_nick(gnetwork->user_nick), num);
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch) {
         if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
