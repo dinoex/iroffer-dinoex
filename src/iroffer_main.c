@@ -3812,20 +3812,23 @@ void sendaqueue(int type)
       if (type == 1)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                  "QUEUED SEND (low bandwidth): %s (%s on %s)",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name);
+                  "QUEUED SEND (low bandwidth): %s (%s on %s), Pack #%d",
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name,
+                  number_of_pack(pq->xpack));
         }
       else if (type == 2)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                  "QUEUED SEND (manual): %s (%s on %s)",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name);
+                  "QUEUED SEND (manual): %s (%s on %s), Pack #%d",
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name,
+                  number_of_pack(pq->xpack));
         }
       else
         {
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                  "QUEUED SEND: %s (%s on %s)",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name);
+                  "QUEUED SEND: %s (%s on %s), Pack #%d",
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name,
+                  number_of_pack(pq->xpack));
         }
       
       look_for_file_changes(pq->xpack);
