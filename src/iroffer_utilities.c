@@ -53,34 +53,40 @@ char* getpart2(const char *line, int howmany,
   int li;
   int plen;
   int hi;
+  int pi;
+  int inquotes;
   
   li=0;
+  inquotes=0;
   
   for (hi = 1; hi < howmany; hi++)
     {
-      while (line[li] != ' ')
+      while (line[li] != ' ' || inquotes != 0)
         {
           if (line[li] == '\0')
-            {
-              return NULL;
-            }
-          else
-            {
-              li++;
-            }
+            return NULL;
+          if (line[li]== '"')
+            inquotes ^= 1;
+          li++;
         }
       li++;
     }
-  
+
   if (line[li] == '\0')
+    return NULL;
+
+  plen=0;
+  pi = li;
+  while (line[pi] != ' ' || inquotes != 0)
     {
-      return NULL;
+      if (line[pi] == '\0')
+        break;
+      if (line[pi]== '"')
+        inquotes ^= 1;
+      pi++;
+      plen++;
     }
-  
-  for (plen=0; (line[li] != ' ') && (line[li] != '\0'); plen++, li++) ;
-  
-  li -= plen;
-  
+
   part = mymalloc2(plen+1, 0, src_function, src_file, src_line);
   
   memcpy(part, line+li, plen);

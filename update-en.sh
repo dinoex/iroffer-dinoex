@@ -15,6 +15,7 @@ then
 fi
 fgrep -h \" src/iroffer*.c src/dinoex*.c |
 grep -v "^#include" |
+fgrep -v "'\"'" |
 awk -F \[\"\] '
 {
 	MORE = 0

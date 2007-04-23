@@ -1526,29 +1526,40 @@ char* getsendname(char * const full)
 {
   char *copy;
   int i, lastslash;
+  int spaced;
   int len;
   
   updatecontext();
   
   len = sstrlen(full);
   lastslash = -1;
+  spaced = 0;
   for (i = 0 ; i < len ; i++)
     {
-      if (full[i] == '/' || full[i] == '\\')
-        {
-          lastslash = i;
-        }
+      switch (full[i]) {
+      case '/':
+      case '\\':
+        lastslash = i;
+        spaced = 0;
+        break;
+      case ' ':
+        spaced = 2;
+        break;
+      }
     }
   
   len -= lastslash + 1;
-  copy = mycalloc(len + 1);
+  copy = mycalloc(len + 1 + spaced);
   
-  strcpy(copy, full + lastslash + 1);
+  if (spaced != 0)
+    sprintf(copy, "\"%s\"", full + lastslash + 1);
+  else
+    strcpy(copy, full + lastslash + 1);
   
   /* replace any evil characters in the filename with underscores */
   for (i = 0; i < len; i++)
     {
-      if (copy[i] == ' ' || copy[i] == '|' || copy[i] == ':' || copy[i] == '*' ||
+      if (copy[i] == '|' || copy[i] == ':' || copy[i] == '*' ||
           copy[i] == '?' || copy[i] == '<' || copy[i] == '>')
         {
           copy[i] = '_';
