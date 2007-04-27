@@ -603,6 +603,40 @@ void getconfig_set (const char *line, int rehash)
          }
        mydelete(var);
      }
+   else if ( ! strcmp(type,"hadminhost"))
+     {
+       regex_t *ah;
+       caps(var);
+       
+       for (i=strlen(var)-1; i>=0; i--)
+         {
+           if (var[i] == '@')
+             {
+               i = 0;
+             }
+           else if ((var[i] != '*') && (var[i] != '?') && (var[i] != '#'))
+             {
+               break;
+             }
+         }
+       
+       if ((i<0) || (!strchr(var,'@')))
+         {
+           outerror(OUTERROR_TYPE_WARN,"hadminhost '%s' ignored because it's way too vague", var);
+         }
+       else
+         {
+           char *varr;
+           varr = hostmasktoregex(var);
+           ah = irlist_add(&gdata.hadminhost, sizeof(regex_t));
+           if (regcomp(ah,varr,REG_ICASE|REG_NOSUB))
+             {
+               irlist_delete(&gdata.hadminhost, ah);
+             }
+           mydelete(varr);
+         }
+       mydelete(var);
+     }
    else if ( ! strcmp(type,"slotsmax")) {
       gdata.slotsmax = between(1,atoi(var),MAXTRANS);
       if (gdata.slotsmax != atoi(var))
@@ -678,6 +712,10 @@ void getconfig_set (const char *line, int rehash)
       mydelete(gdata.adminpass);
       gdata.adminpass = var;
       checkadminpass();
+      }
+   else if ( ! strcmp(type,"hadminpass")) {
+      mydelete(gdata.hadminpass);
+      gdata.hadminpass = var;
       }
    else if ( ! strcmp(type,"pidfile") && !rehash) {
       mydelete(gdata.pidfile);
@@ -1630,6 +1668,8 @@ void xdccsavetext(void)
     u_fillwith_msg(uxdl,NULL,"A A A A A xdlfull");
   uxdl->method = method_fd; 
   uxdl->fd = fd;
+  uxdl->net = 0;
+  uxdl->level = 5;
   
   u_parseit(uxdl);
   
@@ -2455,6 +2495,8 @@ void sendxdlqueue (void)
       
       u_fillwith_msg(&ui,tempstr,"A A A A A xdl");
       ui.method = method_xdl_user_notice;
+      ui.net = gnetwork->net;
+      ui.level = 0;
       u_parseit(&ui);
     }
   
@@ -2500,6 +2542,12 @@ void reinit_config_vars(void)
   for (rh = irlist_get_head(&gdata.adminhost);
        rh;
        rh = irlist_delete(&gdata.adminhost, rh))
+    {
+      regfree(rh);
+    }
+  for (rh = irlist_get_head(&gdata.hadminhost);
+       rh;
+       rh = irlist_delete(&gdata.hadminhost, rh))
     {
       regfree(rh);
     }

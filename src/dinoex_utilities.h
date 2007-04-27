@@ -18,5 +18,6 @@ int verifyshell(irlist_t *list, const char *file);
 const char *save_nick(const char * nick);
 int check_level(char prefix);
 int number_of_pack(xdcc *pack);
+int verifypass2(const char *masterpass, const char *testpass);
 
 /* End of File */

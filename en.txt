@@ -1732,3 +1732,6 @@
 1732 "leave channel for <x> minutes"
 1733 "Ignoring Unknown Queue Tag 0x%X (len=%d)"
 1734 "[channel]"
+1735 "hadminhost"
+1736 "hadminhost '%s' ignored because it's way too vague"
+1737 "hadminpass"

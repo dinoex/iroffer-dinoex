@@ -378,12 +378,13 @@ void parsedccchat(dccchat_t *chat,
   switch (chat->status)
     {
     case DCCCHAT_AUTHENTICATING:
-      if (verifypass(line))
+      if (verifypass2(gdata.adminpass, line))
         {
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                   "DCC CHAT Correct password");
           
           chat->status = DCCCHAT_CONNECTED;
+          chat->level = 5;
           
           writedccchat(chat,0," \n");
           writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
@@ -395,6 +396,18 @@ void parsedccchat(dccchat_t *chat,
                        count != 1 ? "s" : "",
                        count ? ", use MSGREAD to read them" : "");
           writedccchat(chat,0," \n");
+        }
+      else if (verifypass2(gdata.hadminpass, line))
+        {
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                  "DCC CHAT Correct password");
+          
+          chat->status = DCCCHAT_CONNECTED;
+          chat->level = 2;
+          
+          writedccchat(chat,0," \n");
+          writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
+          writedccchat(chat,0,"For Help type \"help\"\n");
         }
       else
         {

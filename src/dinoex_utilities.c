@@ -124,4 +124,32 @@ int number_of_pack(xdcc *pack)
   return 0;
 }
 
+int verifypass2(const char *masterpass, const char *testpass)
+{
+#ifndef NO_CRYPT
+  char *pwout;
+
+  updatecontext();
+
+  if (!masterpass || !testpass)
+    return 0;
+
+  if ((strlen(masterpass) < 13) ||
+      (strlen(testpass) < 5) ||
+      (strlen(testpass) > 59))
+    return 0;
+
+  pwout = crypt(testpass, masterpass);
+  if (strcmp(pwout,masterpass)) return 0;
+#else
+  if (!masterpass || !testpass)
+    return 0;
+
+  if (strcmp(testpass, masterpass)) return 0;
+#endif
+
+   /* allow */
+   return 1;
+}
+
 /* End of File */

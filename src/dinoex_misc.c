@@ -49,6 +49,7 @@ static void admin_line(int fd, const char *line) {
    uxdl->method = method_fd;
    uxdl->fd = fd;
    uxdl->net = 0;
+   uxdl->level = 6;
    u_parseit(uxdl);
    
    mydelete(uxdl);
@@ -1098,6 +1099,7 @@ void autoadd_scan(const char *dir, const char *group)
    u_fillwith_msg(uxdl,NULL,line);
    uxdl->method = method_out_all;
    uxdl->net = 0;
+   uxdl->level = 5;
    u_parseit(uxdl);
    mydelete(uxdl);
    mydelete(line);

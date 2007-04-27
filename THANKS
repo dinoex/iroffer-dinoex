@@ -93,6 +93,7 @@ StoVoKor
 	reporting addnew bug
 	user command "XDCC STOP"
 	reporting "XDCC SEARCH" bug
+	option "hadminhost"
 
 conanmichi
 	reporting group descriptions problems
@@ -115,6 +116,7 @@ Thunder
 	option "nodownloadhost"
 	admin command "xdlock"
 	reporting multinet bug, punishslowusers
+	option "hadminhost"
 
 Alita-Chan
 	reporting XDCC LIST problem with total line

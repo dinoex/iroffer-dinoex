@@ -1492,6 +1492,7 @@ static void mainloop (void) {
                     u_fillwith_msg(pubplist,tchans,"A A A A A xdl");
                     pubplist->method = method_xdl_channel_sum;
                     pubplist->net = gnetwork->net;
+                    pubplist->level = 5;
                     u_parseit(pubplist);
                     mydelete(pubplist);
                   }
@@ -1506,6 +1507,7 @@ static void mainloop (void) {
                  u_fillwith_msg(pubplist,tchanf,"A A A A A xdlfull");
                pubplist->method = method_xdl_channel;
                pubplist->net = gnetwork->net;
+               pubplist->level = 5;
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanf);
@@ -1516,6 +1518,7 @@ static void mainloop (void) {
                u_fillwith_msg(pubplist,tchanm,"A A A A A xdl");
                pubplist->method = method_xdl_channel_min;
                pubplist->net = gnetwork->net;
+               pubplist->level = 5;
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanm);
@@ -1838,6 +1841,8 @@ static void mainloop (void) {
          urehash = mycalloc(sizeof(userinput));
          u_fillwith_msg(urehash,NULL,"A A A A A rehash");
          urehash->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
+         urehash->net = 0;
+         urehash->level = 5;
          u_parseit(urehash);
          mydelete(urehash);
          }
@@ -2765,6 +2770,13 @@ static void privmsgparse(const char* type, char* line) {
                       hostmask, gnetwork->name);
               setupdccchat(nick, line);
             }
+          else if ( verifyhost(&gdata.hadminhost, hostmask) )
+            {
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                      "DCC CHAT attempt authorized from %s on %s",
+                      hostmask, gnetwork->name);
+              setupdccchat(nick, line);
+            }
           else
            {
              notice(nick,"DCC Chat denied from %s",hostmask);
@@ -2903,13 +2915,40 @@ static void privmsgparse(const char* type, char* line) {
       if (!gdata.attop) gototop();
       
       if ( verifyhost(&gdata.adminhost, hostmask) ) {
-         if ( verifypass(msg2) ) {
+         if ( verifypass2(gdata.adminpass, msg2) ) {
             if (line[line_len-1] == '\n')
               {
                 line[line_len-1] = '\0';
                 line_len--;
               }
             u_fillwith_msg(&ui,nick,line);
+            ui.net = gnetwork->net;
+            ui.level = 5;
+            u_parseit(&ui);
+            
+            /* admin commands shouldn't count against ignore */
+            if (ignore)
+              {
+                ignore->bucket--;
+              }
+            }
+         else {
+            notice(nick,"ADMIN: Incorrect Password");
+            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                    "Incorrect ADMIN Password (%s on %s)",
+                    hostmask, gnetwork->name);
+            }
+         }
+      else if ( verifyhost(&gdata.hadminhost, hostmask) ) {
+         if ( verifypass2(gdata.hadminpass, msg2) ) {
+            if (line[line_len-1] == '\n')
+              {
+                line[line_len-1] = '\0';
+                line_len--;
+              }
+            u_fillwith_msg(&ui,nick,line);
+            ui.net = gnetwork->net;
+            ui.level = 3;
             u_parseit(&ui);
             
             /* admin commands shouldn't count against ignore */
@@ -3030,6 +3069,8 @@ static void privmsgparse(const char* type, char* line) {
                              pubplist = mycalloc(sizeof(userinput));
                              u_fillwith_msg(pubplist,nick,tempstr);
                              pubplist->method = method_xdl_user_notice;
+                             pubplist->net = gnetwork->net;
+                             pubplist->level = 0;
                              u_parseit(pubplist);
                              mydelete(pubplist);
                              mydelete(tempstr);

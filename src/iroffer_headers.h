@@ -294,6 +294,7 @@ typedef struct
     } status;
   int fd;
   int net;
+  int level;
   ir_boutput_t boutput;
   time_t lastcontact;
   time_t connecttime;
@@ -355,6 +356,7 @@ typedef struct
   char *arg1e, *arg2e, *arg3e;
   int fd;
   int net;
+  int level;
   dccchat_t *chat;
 } userinput;
 
@@ -562,7 +564,6 @@ notice(const char *nick, const char *format, ...);
 void vnotice(const char *nick, const char *format, va_list ap);
 char* hostmasktoregex(const char *str);
 int verifyhost(irlist_t *list, const char *hmask);
-int verifypass(const char *testpass);
 int packnumtonum(const char *a);
 int sstrlen (const char *p);
 char dayofweektomask(const char a);

@@ -1184,7 +1184,8 @@ void a_add(const userinput * const u)
       snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i %s",irlist_size(&gdata.xdccs),gdata.autoaddann);
       u_fillwith_msg(ui,NULL,tempstr);
       ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
-      ui->net = 0;
+      ui->net = u->net;
+      ui->level = u->level;
       u_parseit(ui);
       mydelete(ui);
       mydelete(tempstr);
@@ -2704,7 +2705,8 @@ void a_addann(const userinput * const u)
     snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i added",irlist_size(&gdata.xdccs));
     u_fillwith_msg(ui,NULL,tempstr);
     ui->method = method_out_all;       /* just OUT_S|OUT_L|OUT_D it */
-    ui->net = 0;
+    ui->net = u->net;
+    ui->level = u->level;
     u_parseit(ui);
     mydelete(ui);
     mydelete(tempstr);

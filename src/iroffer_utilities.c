@@ -789,37 +789,6 @@ int verifyhost(irlist_t *list, const char *hmask)
   return 0;
 }
 
-int verifypass(const char *testpass) {
-   
-#ifndef NO_CRYPT
-   char *pwout;
-
-   updatecontext();
-
-   if ( !gdata.adminpass || !testpass )
-     return 0;
-   
-   if (
-     strlen(gdata.adminpass) < 13
-     || strlen(testpass) < 5
-     || strlen(testpass) > 59
-     )
-     return 0;
-   
-   pwout = crypt(testpass,gdata.adminpass);
-   
-   if (strcmp(pwout,gdata.adminpass)) return 0;
-#else
-   if ( !gdata.adminpass || !testpass )
-     return 0;
-   
-   if (strcmp(testpass,gdata.adminpass)) return 0;
-#endif
-   
-   return 1;
-   
-   }
-
 char* getfline(char* str, int slen, int descr, int ret)
 {
   char *tempbuf;
@@ -1523,11 +1492,19 @@ void dumpgdata(void)
   /* unlimitedhost */
   
   gdata_print_string(adminpass);
+  gdata_print_string(hadminpass);
   
   /* adminhost */
   gdata_irlist_iter_start(adminhost, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
+
+  /* hadminhost */
+  gdata_irlist_iter_start(hadminhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  
+  gdata_print_string(filedir);
   
   gdata_print_string(filedir);
   gdata_print_string(statefile);
