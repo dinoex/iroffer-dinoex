@@ -152,4 +152,28 @@ int verifypass2(const char *masterpass, const char *testpass)
    return 1;
 }
 
+void checkadminpass2(const char *masterpass)
+{
+#ifndef NO_CRYPT
+   int err=0;
+   int i;
+
+   updatecontext();
+
+   if (!masterpass || strlen(masterpass) < 13) err++;
+
+   for (i=0; !err && i<strlen(masterpass); i++) {
+      if (!((masterpass[i] >= 'a' && masterpass[i] <= 'z') ||
+            (masterpass[i] >= 'A' && masterpass[i] <= 'Z') ||
+            (masterpass[i] >= '0' && masterpass[i] <= '9') ||
+            (masterpass[i] == '.') ||
+            (masterpass[i] == '$') ||
+            (masterpass[i] == '/')))
+         err++;
+      }
+
+   if (err) outerror(OUTERROR_TYPE_CRASH, "adminpass is not encrypted!");
+#endif
+}
+
 /* End of File */

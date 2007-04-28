@@ -2371,6 +2371,7 @@ static void u_rehash(const userinput * const u) {
    gdata.r_transferminspeed = gdata.transferminspeed;
    gdata.r_transfermaxspeed = gdata.transfermaxspeed;
    gdata.r_ourip = gdata.getipfromserver ? gdata.ourip : 0;
+   gdata.r_local_vhost = gdata.local_vhost;
    
    if (gdata.logfd != FD_UNUSED)
      {
@@ -2551,13 +2552,13 @@ static void u_rehash(const userinput * const u) {
            writepidfile(gdata.r_pidfile);
          }
      }
-   mydelete(gdata.pidfile);
-   gdata.pidfile = gdata.r_pidfile;
-   gdata.r_pidfile = NULL;
+   mydelete(gdata.r_pidfile);
    
-   if (!gdata.r_config_nick)
+   if (!gdata.config_nick)
      {
        u_respond(u,"user_nick missing! keeping old nick!");
+       gdata.config_nick = gdata.r_config_nick;
+       gdata.r_config_nick = NULL;
      }
    else
      {
@@ -2567,14 +2568,12 @@ static void u_rehash(const userinput * const u) {
            for (ss=0; ss<gdata.networks_online; ss++)
              {
 	        gnetwork = &(gdata.networks[ss]);
-                u_respond(u,"user_nick changed, renaming nick to %s", gdata.r_config_nick);
-                writeserver(WRITESERVER_NOW, "NICK %s", gdata.r_config_nick);
+                u_respond(u,"user_nick changed, renaming nick to %s", gdata.config_nick);
+                writeserver(WRITESERVER_NOW, "NICK %s", gdata.config_nick);
              }
            gnetwork = backup;
          }
-       mydelete(gdata.config_nick);
-       gdata.config_nick = gdata.r_config_nick;
-       gdata.r_config_nick = NULL;
+       mydelete(gdata.r_config_nick);
      }
    
    gdata.maxb = gdata.overallmaxspeed;

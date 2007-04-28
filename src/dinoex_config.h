@@ -13,12 +13,11 @@
  * 
  */
 
-char *mystrdup(const char *str);
-int verifyshell(irlist_t *list, const char *file);
-const char *save_nick(const char * nick);
-int check_level(char prefix);
-int number_of_pack(xdcc *pack);
-int verifypass2(const char *masterpass, const char *testpass);
-void checkadminpass2(const char *masterpass);
+int set_config_bool(const char *key, const char *text);
+int set_config_int(const char *key, const char *text);
+int set_config_string(const char *key, char *text);
+int set_config_list(const char *key, char *text);
 
-/* End of File */
+void config_startup(void);
+
+/* EOF */

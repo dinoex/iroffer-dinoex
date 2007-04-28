@@ -21,6 +21,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_misc.h"
+#include "dinoex_config.h"
 
 
 void getconfig (void) {
@@ -82,113 +83,6 @@ void getconfig (void) {
    }
 
 
-typedef struct
-{
-  const char *name;
-  int *value_normal;
-  int *value_rehash;
-} config_parse_bool_t;
-
-static const config_parse_bool_t config_parse_bool[] = {
-  {"logstats",             &gdata.logstats,             &gdata.logstats },
-  {"hideos",               &gdata.hideos,               &gdata.hideos },
-  {"lognotices",           &gdata.lognotices,           &gdata.lognotices },
-  {"logmessages",          &gdata.logmessages,          &gdata.logmessages },
-  {"timestampconsole",     &gdata.timestampconsole,     &gdata.timestampconsole },
-  {"respondtochannelxdcc", &gdata.respondtochannelxdcc, &gdata.respondtochannelxdcc },
-  {"respondtochannellist", &gdata.respondtochannellist, &gdata.respondtochannellist },
-  {"quietmode",            &gdata.quietmode,            &gdata.quietmode },
-  {"restrictlist",         &gdata.restrictlist,         &gdata.restrictlist },
-  {"restrictprivlist",     &gdata.restrictprivlist,     &gdata.restrictprivlist },
-  {"restrictsend",         &gdata.restrictsend,         &gdata.restrictsend },
-  {"nomd5sum",             &gdata.nomd5sum,             &gdata.nomd5sum },
-  {"xdcclistfileraw",      &gdata.xdcclistfileraw,      &gdata.xdcclistfileraw },
-  {"getipfromserver",      &gdata.getipfromserver,      &gdata.getipfromserver },
-  {"noduplicatefiles",     &gdata.noduplicatefiles,     &gdata.noduplicatefiles },
-  {"need_voice",           &gdata.need_voice,           &gdata.need_voice },
-  {"hide_list_info",       &gdata.hide_list_info,       &gdata.hide_list_info },
-  {"xdcclist_grouponly",   &gdata.xdcclist_grouponly,   &gdata.xdcclist_grouponly },
-  {"auto_default_group",   &gdata.auto_default_group,   &gdata.auto_default_group },
-  {"auto_path_group",      &gdata.auto_path_group,      &gdata.auto_path_group },
-  {"restrictprivlistmain", &gdata.restrictprivlistmain, &gdata.restrictprivlistmain },
-  {"restrictprivlistfull", &gdata.restrictprivlistfull, &gdata.restrictprivlistfull },
-  {"groupsincaps",         &gdata.groupsincaps,         &gdata.groupsincaps },
-  {"ignoreuploadbandwidth", &gdata.ignoreuploadbandwidth, &gdata.ignoreuploadbandwidth },
-  {"holdqueue",            &gdata.holdqueue,            &gdata.holdqueue },
-  {"removelostfiles",      &gdata.removelostfiles,      &gdata.removelostfiles },
-  {"ignoreduplicateip",    &gdata.ignoreduplicateip,    &gdata.ignoreduplicateip },
-  {"hidelockedpacks",      &gdata.hidelockedpacks,      &gdata.hidelockedpacks },
-  {"disablexdccinfo",      &gdata.disablexdccinfo,      &gdata.disablexdccinfo },
-  {"noautorejoin",         &gdata.noautorejoin,         &gdata.noautorejoin },
-  {"auto_crc_check",       &gdata.auto_crc_check,       &gdata.auto_crc_check },
-  {"nocrc32",              &gdata.nocrc32,              &gdata.nocrc32 },
-  {"direct_file_access",   &gdata.direct_file_access,   &gdata.direct_file_access },
-  {"restrictsend_warning", &gdata.restrictsend_warning, &gdata.restrictsend_warning },
-  {"extend_status_line",   &gdata.extend_status_line,   &gdata.extend_status_line },
-  {"include_subdirs",      &gdata.include_subdirs,      &gdata.include_subdirs },
-};
-
-typedef struct
-{
-  const char *name;
-  int *value_normal;
-  int *value_rehash;
-  int min;
-  int max;
-  int mult;
-} config_parse_int_t;
-
-static const config_parse_int_t config_parse_int[] = {
-  {"notifytime",      &gdata.notifytime,      &gdata.notifytime,      0, 1000000, 1 },
-  {"smallfilebypass", &gdata.smallfilebypass, &gdata.smallfilebypass, 0, 1024*1024, 1024 },
-  {"tcprangestart",   &gdata.tcprangestart,   &gdata.tcprangestart,   1024, 65000, 1 },
-  {"overallmaxspeed", &gdata.overallmaxspeed, &gdata.overallmaxspeed, 0, 1000000, 4 },
-  {"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, &gdata.overallmaxspeeddayspeed, 0, 1000000, 4 },
-  {"queuesize",       &gdata.queuesize,       &gdata.queuesize,       0, 1000000, 1 },
-  {"lowbdwth",        &gdata.lowbdwth,        &gdata.lowbdwth,        0, 1000000, 1 },
-  {"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, &gdata.maxqueueditemsperperson, 1, 1000000, 1 },
-  {"maxtransfersperperson", &gdata.maxtransfersperperson, &gdata.maxtransfersperperson, 1, 1000000, 1 },
-  {"punishslowusers", &gdata.punishslowusers, &gdata.punishslowusers, 0, 1000000, 1 },
-  {"autoignore_threshold", &gdata.autoignore_threshold, &gdata.autoignore_threshold, 10, 600, 1 },
-  {"start_of_month",  &gdata.start_of_month,  &gdata.start_of_month,  1, 31, 1 },
-  {"atfind",          &gdata.atfind,          &gdata.atfind,          0, 10, 1 },
-  {"waitafterjoin",   &gdata.waitafterjoin,   &gdata.waitafterjoin,   0, 2000, 1 },
-  {"autoadd_time",    &gdata.autoadd_time,    &gdata.autoadd_time,    0, 2000, 1 },
-  {"restrictsend_timeout",  &gdata.restrictsend_timeout,  &gdata.restrictsend_timeout,    0, 600, 1 },
-  {"send_statefile_minute",  &gdata.send_statefile_minute,  &gdata.send_statefile_minute, 0, 60, 1 },
-  {"max_uploads",     &gdata.max_uploads,     &gdata.max_uploads,     0, 65000, 1 },
-  {"max_upspeed",     &gdata.max_upspeed,     &gdata.max_upspeed,     0, 1000000, 4 },
-  {"need_level",      &gdata.need_level,      &gdata.need_level,      0, 3, 1 },
-  {"max_find",        &gdata.max_find,        &gdata.max_find,        0, 65000, 1 },
-  {"restrictsend_delay",  &gdata.restrictsend_delay,  &gdata.restrictsend_delay,  0, 2000, 1 },
-  {"debug",           &gdata.debug,           &gdata.debug,           0, 65000, 1 },
-};
-
-typedef struct
-{
-  const char *name;
-  char **value_normal;
-  char **value_rehash;
-} config_parse_str_t;
-
-static const config_parse_str_t config_parse_str[] = {
-  {"user_nick",            &gdata.config_nick,          &gdata.r_config_nick },
-  {"user_realname",        &gdata.user_realname,        &gdata.user_realname },
-  {"user_modes",           &gdata.user_modes,           &gdata.user_modes },
-  {"headline",             &gdata.headline,             &gdata.headline },
-  {"creditline",           &gdata.creditline,           &gdata.creditline },
-  {"loginname",            &gdata.loginname,            &gdata.loginname },
-  {"nickserv_pass",        &gdata.nickserv_pass,        &gdata.nickserv_pass },
-  {"restrictprivlistmsg",  &gdata.restrictprivlistmsg,  &gdata.restrictprivlistmsg },
-  {"enable_nick",          &gdata.enable_nick,          &gdata.enable_nick },
-  {"admin_job_file",       &gdata.admin_job_file,       &gdata.admin_job_file },
-  {"autoaddann",           &gdata.autoaddann,           &gdata.autoaddann },
-  {"autoadd_group",        &gdata.autoadd_group,        &gdata.autoadd_group },
-  {"send_statefile",       &gdata.send_statefile,       &gdata.send_statefile },
-  {"owner_nick",           &gdata.owner_nick,           &gdata.owner_nick },
-  {"geoipdatabase",        &gdata.geoipdatabase,        &gdata.geoipdatabase },
-  {"respondtochannellistmsg",  &gdata.respondtochannellistmsg,  &gdata.respondtochannellistmsg },
-};
 
 void getconfig_set (const char *line, int rehash)
 {
@@ -228,114 +122,32 @@ void getconfig_set (const char *line, int rehash)
         }
     }
   
-  for (i=0; i<(sizeof(config_parse_bool)/sizeof(config_parse_bool_t)); i++)
+  if (set_config_bool(type, var) == 0)
     {
-      if (!strcmp(config_parse_bool[i].name,type))
-        {
-          if (!strcmp("no", var))
-            {
-              if (rehash)
-                {
-                  *config_parse_bool[i].value_rehash = 0;
-                }
-              else
-                {
-                  *config_parse_bool[i].value_normal = 0;
-                }
-            }
-          else if (!strcmp("yes", var) || (var[0] == 0))
-            {
-              if (rehash)
-                {
-                  *config_parse_bool[i].value_rehash = 1;
-                }
-              else
-                {
-                  *config_parse_bool[i].value_normal = 1;
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN,
-                       "ignored '%s' because it has unknown args: '%s'",
-                       type, var);
-            }
-          mydelete(var);
-          goto done;
-        }
+      mydelete(type);
+      mydelete(var);
+      return;
     }
-  
-  for (i=0; i<(sizeof(config_parse_int)/sizeof(config_parse_int_t)); i++)
+
+  if (set_config_int(type, var) == 0)
     {
-      if (!strcmp(config_parse_int[i].name,type))
-        {
-          int rawval;
-          char *endptr;
-          
-          rawval = (int)strtol(var, &endptr, 0);
-          
-          if (var[0] == 0)
-            {
-              outerror(OUTERROR_TYPE_WARN,
-                       "ignored '%s' because it has no args.",
-                       type);
-            }
-          else if (endptr[0] != 0)
-            {
-              outerror(OUTERROR_TYPE_WARN,
-                       "ignored '%s' because it has invalid args: '%s'",
-                       type, var);
-            }
-          else
-            {
-              if ((rawval < config_parse_int[i].min) || (rawval > config_parse_int[i].max))
-                {
-                  outerror(OUTERROR_TYPE_WARN,
-                           "'%s': %d is out-of-range",
-                           type, rawval);
-                }
-              rawval = between(config_parse_int[i].min, rawval, config_parse_int[i].max);
-              rawval *= config_parse_int[i].mult;
-              
-              if (rehash)
-                {
-                  *config_parse_int[i].value_rehash = rawval;
-                }
-              else
-                {
-                  *config_parse_int[i].value_normal = rawval;
-                }
-            }
-          mydelete(var);
-          goto done;
-        }
+      mydelete(type);
+      mydelete(var);
+      return;
     }
-  
-  for (i=0; i<(sizeof(config_parse_str)/sizeof(config_parse_str_t)); i++)
+
+  if (set_config_string(type, var) == 0)
     {
-      if (!strcmp(config_parse_str[i].name,type))
-        {
-          if (var[0] == 0)
-            {
-              outerror(OUTERROR_TYPE_WARN,
-                       "ignored '%s' because it has no args.",
-                       type);
-              mydelete(var);
-            }
-          else if (rehash)
-            {
-              mydelete(*config_parse_str[i].value_rehash);
-              *config_parse_str[i].value_rehash = var;
-            }
-          else
-            {
-              mydelete(*config_parse_str[i].value_normal);
-              *config_parse_str[i].value_normal = var;
-            }
-          goto done;
-        }
+      mydelete(type);
+      return;
     }
-  
+
+  if (set_config_list(type, var) == 0)
+    {
+      mydelete(type);
+      return;
+    }
+
    /* parse it */
    if ( ! strcmp(type,"server"))
      {
@@ -407,13 +219,6 @@ void getconfig_set (const char *line, int rehash)
            gdata.networks[gdata.networks_online].net = gdata.networks_online;
          }
      }
-   else if ( ! strcmp(type,"proxyinfo"))
-     {
-       char *pi;
-       pi = irlist_add(&gdata.proxyinfo, strlen(var) + 1);
-       strcpy(pi, var);
-       mydelete(var);
-     }
    else if ( !strcmp(type,"channel_join_raw"))
      {
        char *cjr;
@@ -432,41 +237,6 @@ void getconfig_set (const char *line, int rehash)
      {
        char *cjr;
        cjr = irlist_add(&gdata.networks[gdata.networks_online].server_connected_raw, strlen(var) + 1);
-       strcpy(cjr, var);
-       mydelete(var);
-     }
-   else if ( !strcmp(type,"adddir_exclude"))
-     {
-       char *cjr;
-       cjr = irlist_add(&gdata.adddir_exclude, strlen(var) + 1);
-       strcpy(cjr, var);
-       mydelete(var);
-     }
-   else if ( !strcmp(type,"autocrc_exclude"))
-     {
-       char *cjr;
-       cjr = irlist_add(&gdata.autocrc_exclude, strlen(var) + 1);
-       strcpy(cjr, var);
-       mydelete(var);
-     }
-   else if ( !strcmp(type,"geoipcountry"))
-     {
-       char *cjr;
-       cjr = irlist_add(&gdata.geoipcountry, strlen(var) + 1);
-       strcpy(cjr, var);
-       mydelete(var);
-     }
-   else if ( !strcmp(type,"geoipexcludenick"))
-     {
-       char *cjr;
-       cjr = irlist_add(&gdata.geoipexcludenick, strlen(var) + 1);
-       strcpy(cjr, var);
-       mydelete(var);
-     }
-   else if ( !strcmp(type,"autoadd_dir"))
-     {
-       char *cjr;
-       cjr = irlist_add(&gdata.autoadd_dirs, strlen(var) + 1);
        strcpy(cjr, var);
        mydelete(var);
      }
@@ -569,74 +339,6 @@ void getconfig_set (const char *line, int rehash)
       mydelete(tname);
       mydelete(var);
       }
-   else if ( ! strcmp(type,"adminhost"))
-     {
-       regex_t *ah;
-       caps(var);
-       
-       for (i=strlen(var)-1; i>=0; i--)
-         {
-           if (var[i] == '@')
-             {
-               i = 0;
-             }
-           else if ((var[i] != '*') && (var[i] != '?') && (var[i] != '#'))
-             {
-               break;
-             }
-         }
-       
-       if ((i<0) || (!strchr(var,'@')))
-         {
-           outerror(OUTERROR_TYPE_WARN,"adminhost '%s' ignored because it's way too vague", var);
-         }
-       else
-         {
-           char *varr;
-           varr = hostmasktoregex(var);
-           ah = irlist_add(&gdata.adminhost, sizeof(regex_t));
-           if (regcomp(ah,varr,REG_ICASE|REG_NOSUB))
-             {
-               irlist_delete(&gdata.adminhost, ah);
-             }
-           mydelete(varr);
-         }
-       mydelete(var);
-     }
-   else if ( ! strcmp(type,"hadminhost"))
-     {
-       regex_t *ah;
-       caps(var);
-       
-       for (i=strlen(var)-1; i>=0; i--)
-         {
-           if (var[i] == '@')
-             {
-               i = 0;
-             }
-           else if ((var[i] != '*') && (var[i] != '?') && (var[i] != '#'))
-             {
-               break;
-             }
-         }
-       
-       if ((i<0) || (!strchr(var,'@')))
-         {
-           outerror(OUTERROR_TYPE_WARN,"hadminhost '%s' ignored because it's way too vague", var);
-         }
-       else
-         {
-           char *varr;
-           varr = hostmasktoregex(var);
-           ah = irlist_add(&gdata.hadminhost, sizeof(regex_t));
-           if (regcomp(ah,varr,REG_ICASE|REG_NOSUB))
-             {
-               irlist_delete(&gdata.hadminhost, ah);
-             }
-           mydelete(varr);
-         }
-       mydelete(var);
-     }
    else if ( ! strcmp(type,"slotsmax")) {
       gdata.slotsmax = between(1,atoi(var),MAXTRANS);
       if (gdata.slotsmax != atoi(var))
@@ -708,46 +410,12 @@ void getconfig_set (const char *line, int rehash)
       if (!strcmp(var,"monthly")) gdata.logrotate = 30*24*60*60;
       mydelete(var);
       }
-   else if ( ! strcmp(type,"adminpass")) {
-      mydelete(gdata.adminpass);
-      gdata.adminpass = var;
-      checkadminpass();
-      }
-   else if ( ! strcmp(type,"hadminpass")) {
-      mydelete(gdata.hadminpass);
-      gdata.hadminpass = var;
-      }
-   else if ( ! strcmp(type,"pidfile") && !rehash) {
-      mydelete(gdata.pidfile);
-      gdata.pidfile = var;
-      convert_to_unix_slash(gdata.pidfile);
-      }
-   else if ( ! strcmp(type,"pidfile") && rehash) {
-      mydelete(gdata.r_pidfile);
-      gdata.r_pidfile = var;
-      convert_to_unix_slash(gdata.r_pidfile);
-      }
-   else if ( ! strcmp(type,"filedir")) {
-      mydelete(gdata.filedir);
-      gdata.filedir = var;
-      convert_to_unix_slash(gdata.filedir);
-      }
    else if ( ! strcmp(type,"statefile")) {
       mydelete(gdata.statefile);
       gdata.statefile = var;
       convert_to_unix_slash(gdata.statefile);
       i = open(gdata.statefile, O_RDWR | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS );
       if (i >= 0) close(i);
-      }
-   else if ( ! strcmp(type,"xdcclistfile")) {
-      mydelete(gdata.xdcclistfile);
-      gdata.xdcclistfile = var;
-      convert_to_unix_slash(gdata.xdcclistfile);
-      }
-   else if ( ! strcmp(type,"logfile")) {
-      mydelete(gdata.logfile);
-      gdata.logfile = var;
-      convert_to_unix_slash(gdata.logfile);
       }
    else if ( ! strcmp(type,"periodicmsg")) {
       char *tnum;
@@ -809,24 +477,6 @@ void getconfig_set (const char *line, int rehash)
         }
       mydelete(var);
      }
-   else if ( ! strcmp(type,"autoignore_exclude"))
-     {
-       regex_t *uh;
-       char *varr;
-       varr = hostmasktoregex(caps(var));
-       uh = irlist_add(&gdata.autoignore_exclude, sizeof(regex_t));
-       if (regcomp(uh,varr,REG_ICASE|REG_NOSUB))
-         {
-           irlist_delete(&gdata.autoignore_exclude, uh);
-         }
-       mydelete(varr);
-       mydelete(var);
-     }
-   else if ( ! strcmp(type,"uploaddir")) {
-      mydelete(gdata.uploaddir);
-      gdata.uploaddir = var;
-      convert_to_unix_slash(gdata.uploaddir);
-      }
    else if ( ! strcmp(type,"uploadmaxsize")) {
       gdata.uploadmaxsize = (off_t)(max2(0,atoull(var)*1024*1024));
       mydelete(var);
@@ -835,58 +485,6 @@ void getconfig_set (const char *line, int rehash)
       gdata.uploadminspace = (off_t)(max2(0,atoull(var)*1024*1024));
       mydelete(var);
       }
-   else if ( ! strcmp(type,"uploadhost"))
-     {
-       regex_t *uh;
-       char *varr;
-       varr = hostmasktoregex(caps(var));
-       uh = irlist_add(&gdata.uploadhost, sizeof(regex_t));
-       if (regcomp(uh,varr,REG_ICASE|REG_NOSUB))
-         {
-           irlist_delete(&gdata.uploadhost, uh);
-         }
-       mydelete(varr);
-       mydelete(var);
-     }
-   else if ( ! strcmp(type,"downloadhost"))
-     {
-       regex_t *uh;
-       char *varr;
-       varr = hostmasktoregex(caps(var));
-       uh = irlist_add(&gdata.downloadhost, sizeof(regex_t));
-       if (regcomp(uh,varr,REG_ICASE|REG_NOSUB))
-         {
-           irlist_delete(&gdata.downloadhost, uh);
-         }
-       mydelete(varr);
-       mydelete(var);
-     }
-   else if ( ! strcmp(type,"nodownloadhost"))
-     {
-       regex_t *uh;
-       char *varr;
-       varr = hostmasktoregex(caps(var));
-       uh = irlist_add(&gdata.nodownloadhost, sizeof(regex_t));
-       if (regcomp(uh,varr,REG_ICASE|REG_NOSUB))
-         {
-           irlist_delete(&gdata.nodownloadhost, uh);
-         }
-       mydelete(varr);
-       mydelete(var);
-     }
-   else if ( ! strcmp(type,"unlimitedhost"))
-     {
-       regex_t *uh;
-       char *varr;
-       varr = hostmasktoregex(caps(var));
-       uh = irlist_add(&gdata.unlimitedhost, sizeof(regex_t));
-       if (regcomp(uh,varr,REG_ICASE|REG_NOSUB))
-         {
-           irlist_delete(&gdata.unlimitedhost, uh);
-         }
-       mydelete(varr);
-       mydelete(var);
-     }
    else if ( ! strcmp(type,"connectionmethod"))
      {
        char *thow = getpart(var,1);
@@ -953,7 +551,6 @@ void getconfig_set (const char *line, int rehash)
       mydelete(var);
       }
 
- done:
    mydelete(type);
    }
 
@@ -2575,6 +2172,12 @@ void reinit_config_vars(void)
     {
       regfree(rh);
     }
+  mydelete(gdata.r_pidfile);
+  gdata.r_pidfile = gdata.pidfile;
+  gdata.pidfile = NULL;
+  mydelete(gdata.r_config_nick);
+  gdata.r_config_nick = gdata.config_nick;
+  gdata.config_nick = NULL;
   gdata.r_networks_online = gdata.networks_online;
   gdata.networks_online = 0;
   for (si=0; si<MAX_NETWORKS; si++)

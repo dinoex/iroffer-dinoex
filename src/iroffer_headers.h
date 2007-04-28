@@ -575,7 +575,6 @@ char* removenonprintablectrl(char *str1);
 char* removenonprintablefile(char *str);
 int doesfileexist(const char *f);
 void joinchannel(channel_t *c);
-void checkadminpass(void);
 void updatecontext_f(const char *file, const char *func, int line);
 void dumpcontext(void);
 void dumpgdata(void);

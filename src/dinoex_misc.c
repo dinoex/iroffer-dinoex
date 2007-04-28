@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_admin.h"
 #include "dinoex_misc.h"
+#include "dinoex_config.h"
 
 #include <ctype.h>
 
@@ -741,6 +742,7 @@ void startup_dinoex(void)
   CURLcode cs;
 #endif /* USE_CURL */
 
+  config_startup();
   bzero((char *)&xdcc_statefile, sizeof(xdcc_statefile));
   xdcc_statefile.note = mystrdup("");
   xdcc_statefile.file_fd = FD_UNUSED;

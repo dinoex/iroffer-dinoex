@@ -1174,29 +1174,6 @@ int doesfileexist(const char *f) {
    }
 
 
-void checkadminpass(void) {
-#ifndef NO_CRYPT
-   int err=0,i;
-   
-   updatecontext();
-
-   if (!gdata.adminpass || strlen(gdata.adminpass) < 13) err++;
-   
-   for (i=0; !err && i<strlen(gdata.adminpass); i++) {
-      if (!((gdata.adminpass[i] >= 'a' && gdata.adminpass[i] <= 'z') ||
-            (gdata.adminpass[i] >= 'A' && gdata.adminpass[i] <= 'Z') ||
-            (gdata.adminpass[i] >= '0' && gdata.adminpass[i] <= '9') ||
-            (gdata.adminpass[i] == '.') ||
-            (gdata.adminpass[i] == '$') ||
-            (gdata.adminpass[i] == '/')))
-         err++;
-      }
-   
-   if (err) outerror(OUTERROR_TYPE_CRASH,"adminpass is not encrypted!");
-
-#endif   
-   }
-
 void updatecontext_f(const char *file, const char *func, int line)
 {
   context_t *c;
