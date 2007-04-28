@@ -1454,7 +1454,6 @@ void dumpgdata(void)
   gdata_print_int(auto_crc_check);
   gdata_print_int(nocrc32);
   gdata_print_int(direct_file_access);
-  gdata_print_int(ignore_volumeid);
   gdata_print_int(autoadd_time);
   gdata_print_int(restrictsend_warning);
   gdata_print_int(restrictsend_timeout);

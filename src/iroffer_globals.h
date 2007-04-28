@@ -185,7 +185,6 @@ int noautorejoin;
 int auto_crc_check;
 int nocrc32;
 int direct_file_access;
-int ignore_volumeid;
 int autoadd_time;
 int restrictsend_warning;
 int restrictsend_timeout;
