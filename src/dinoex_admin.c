@@ -474,7 +474,9 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
    gnetwork_t *backup;
    
    updatecontext();
-   
+
+   write_removed_xdcc(xd);
+
    tr = irlist_get_head(&gdata.trans);
    while(tr)
      {

@@ -1430,6 +1430,7 @@ void dumpgdata(void)
   gdata_print_string(send_statefile);
   gdata_print_string(geoipdatabase);
   gdata_print_string(respondtochannellistmsg);
+  gdata_print_string(xdccremovefile);
 
   gdata_print_int(need_voice);
   gdata_print_int(need_level);

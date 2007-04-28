@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.9:
 ---------------------
 
+133) xdccremovefile
+  export stats on removed packs for better statistics
+
 132) adminlevel, hadminlevel (inspired by StoVoKor, Thunder, dondieschotte)
   adminlevel, hadminlevel
   Limit remote admin commands to level:

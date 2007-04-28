@@ -57,14 +57,14 @@ Page last modified: 09/01/04
 mod Dinoex TODO:
 
 Short Term Features:
+  1019  channel -pgroup GRP
+  1026  annonce channel
 
 Long Term Features:
   1008  use text or xml for statefile
   1013  notify adminnick when autoadd
   1014  mutiple filedirs
   1018  warning in chat when bot was kicked
-  1019  channel -pgroup GRP
-  1026  annonce channel
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -84,7 +84,7 @@ Not going to happen anytime soon:
   1021  add /path/dir/*animexyz*
   1022  send notes on mutiple triggers
   1024  gently recover when networks are deleted
-  1027  renumber <from> <toi> new
+  1027  renumber <from> <to> new
   1028  SSL
   1029  local network without getipfromserver/vhost
   1030  msg to owner whn it activates flood protection

@@ -82,4 +82,6 @@ void changesec_dinoex(void);
 
 int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len);
 
+void write_removed_xdcc(xdcc *xd);
+
 /* End of File */

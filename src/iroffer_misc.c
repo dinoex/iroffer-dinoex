@@ -2255,6 +2255,7 @@ void reinit_config_vars(void)
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
   mydelete(gdata.send_statefile);
+  mydelete(gdata.xdccremovefile);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;

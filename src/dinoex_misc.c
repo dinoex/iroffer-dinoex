@@ -1750,4 +1750,78 @@ int admin_message(const char *nick, const char *hostmask, const char *passwd, ch
   return 0;
 }
 
+static const char *find_groupdesc(const char *group)
+{
+  xdcc *xd;
+  int k;
+
+  k = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group,group) == 0)
+            {
+              return xd->group_desc;
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  return "";
+}
+
+void write_removed_xdcc(xdcc *xd)
+{
+  char *line;
+  int len;
+  int fd;
+
+  if (gdata.xdccremovefile == NULL)
+    return;
+
+  fd = open(gdata.xdccremovefile,
+            O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+            CREAT_PERMISSIONS);
+
+  if (fd < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Cant Create XDCC rEmove File '%s': %s",
+             gdata.xdccremovefile, strerror(errno));
+    return;
+  }
+
+  line = mycalloc(maxtextlength);
+  len = snprintf(line, maxtextlength -1, "\n");
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_file %s\n", xd->file);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_desc %s\n", xd->desc);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_note %s\n", xd->note);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_gets %d\n", xd->gets);
+  write(fd, line, len);
+  if (gdata.transferminspeed == xd->minspeed)
+    len = snprintf(line, maxtextlength -1, "xx_mins \n");
+  else
+    len = snprintf(line, maxtextlength -1, "xx_mins %f\n", xd->minspeed);
+  write(fd, line, len);
+  if (gdata.transferminspeed == xd->minspeed)
+    len = snprintf(line, maxtextlength -1, "xx_maxs \n");
+  else
+    len = snprintf(line, maxtextlength -1, "xx_maxs %f\n", xd->maxspeed);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_data %s\n", xd->group);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_trig \n");
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_trno %s\n", find_groupdesc(xd->group));
+  write(fd, line, len);
+  mydelete(line)
+
+  close(fd);
+}
+
 /* End of File */
