@@ -80,4 +80,6 @@ void identify_check(const char *line);
 
 void changesec_dinoex(void);
 
+int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len);
+
 /* End of File */

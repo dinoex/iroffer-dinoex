@@ -1701,4 +1701,53 @@ void changesec_dinoex(void)
     }
 }
 
+static void admin_msg_line(const char *nick, char *line, int line_len, int level)
+{
+  userinput ui;
+
+  if (line[line_len-1] == '\n') {
+    line[line_len-1] = '\0';
+    line_len--;
+  }
+  u_fillwith_msg(&ui, nick, line);
+  ui.net = gnetwork->net;
+  ui.level = level;
+  u_parseit(&ui);
+}
+
+int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len)
+{
+  int err = 0;
+
+  if ( verifyhost(&gdata.adminhost, hostmask) ) {
+    if ( verifypass2(gdata.adminpass, passwd) ) {
+      admin_msg_line(nick, line, line_len, gdata.adminlevel);
+      return 1;
+    } else {
+      err ++;
+    }
+  }
+  if ( verifyhost(&gdata.hadminhost, hostmask) ) {
+    if ( verifypass2(gdata.hadminpass, passwd) ) {
+      admin_msg_line(nick, line, line_len, gdata.hadminlevel);
+      return 1;
+    } else {
+      err ++;
+    }
+  }
+  if (err == 0) {
+    notice(nick, "ADMIN: %s is not allowed to issue admin commands", hostmask);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "Incorrect ADMIN Hostname (%s on %s)",
+            hostmask, gnetwork->name);
+  }
+  if (err > 0) {
+    notice(nick, "ADMIN: Incorrect Password");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "Incorrect ADMIN Password (%s on %s)",
+            hostmask, gnetwork->name);
+  }
+  return 0;
+}
+
 /* End of File */

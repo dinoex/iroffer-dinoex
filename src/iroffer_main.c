@@ -2470,7 +2470,6 @@ static void privmsgparse(const char* type, char* line) {
    char *nick, *hostname, *hostmask, *wildhost;
    char *msg1, *msg2, *msg3, *msg4, *msg5, *msg6, *dest;
    int i,j,k;
-   userinput ui;
    igninfo *ignore = NULL;
    upload *ul;
    transfer *tr;
@@ -2913,62 +2912,13 @@ static void privmsgparse(const char* type, char* line) {
    else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"ADMIN") ) {
 /*      msg2 = getpart(line,5); */
       if (!gdata.attop) gototop();
-      
-      if ( verifyhost(&gdata.adminhost, hostmask) ) {
-         if ( verifypass2(gdata.adminpass, msg2) ) {
-            if (line[line_len-1] == '\n')
-              {
-                line[line_len-1] = '\0';
-                line_len--;
-              }
-            u_fillwith_msg(&ui,nick,line);
-            ui.net = gnetwork->net;
-            ui.level = gdata.adminlevel;
-            u_parseit(&ui);
-            
+      if (admin_message(nick, hostmask, msg2, line, line_len) != 0 )
+         {
             /* admin commands shouldn't count against ignore */
             if (ignore)
               {
                 ignore->bucket--;
               }
-            }
-         else {
-            notice(nick,"ADMIN: Incorrect Password");
-            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                    "Incorrect ADMIN Password (%s on %s)",
-                    hostmask, gnetwork->name);
-            }
-         }
-      else if ( verifyhost(&gdata.hadminhost, hostmask) ) {
-         if ( verifypass2(gdata.hadminpass, msg2) ) {
-            if (line[line_len-1] == '\n')
-              {
-                line[line_len-1] = '\0';
-                line_len--;
-              }
-            u_fillwith_msg(&ui,nick,line);
-            ui.net = gnetwork->net;
-            ui.level = gdata.hadminlevel;
-            u_parseit(&ui);
-            
-            /* admin commands shouldn't count against ignore */
-            if (ignore)
-              {
-                ignore->bucket--;
-              }
-            }
-         else {
-            notice(nick,"ADMIN: Incorrect Password");
-            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                    "Incorrect ADMIN Password (%s on %s)",
-                    hostmask, gnetwork->name);
-            }
-         }
-      else {
-         notice(nick,"ADMIN: %s is not allowed to issue admin commands",hostmask);
-         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                 "Incorrect ADMIN Hostname (%s on %s)",
-                 hostmask, gnetwork->name);
          }
       }
    
