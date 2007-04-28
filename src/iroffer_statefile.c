@@ -1347,7 +1347,7 @@ void read_statefile(void)
                   }
                 
                 if (!xd->has_md5sum ||
-                    (xd->st_dev   != st.st_dev) ||
+                    ((xd->st_dev   != st.st_dev) && !gdata.ignore_volumeid ) ||
                     (xd->st_ino   != st.st_ino) ||
                     (xd->mtime    != st.st_mtime) ||
                     (xd->st_size  != st.st_size))

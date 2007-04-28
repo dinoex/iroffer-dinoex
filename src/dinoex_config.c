@@ -63,6 +63,7 @@ static config_bool_typ config_parse_bool[] = {
 {"hidelockedpacks",        &gdata.hidelockedpacks },
 {"hideos",                 &gdata.hideos },
 {"holdqueue",              &gdata.holdqueue },
+{"ignore_volumeid",        &gdata.ignore_volumeid },
 {"ignoreduplicateip",      &gdata.ignoreduplicateip },
 {"ignoreuploadbandwidth",  &gdata.ignoreuploadbandwidth },
 {"include_subdirs",        &gdata.include_subdirs },
