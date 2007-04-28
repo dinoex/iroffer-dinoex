@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.9:
 ---------------------
 
+bugfix: IDENTIFY (reported by Thunder)
+  versions affected: 2.4 - 2.8
+  admin commad IDENTIFY did not send password
+
 speedup reading config
 
 131) half admin (inspired by StoVoKor, Thunder)

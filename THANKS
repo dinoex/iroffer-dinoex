@@ -117,6 +117,7 @@ Thunder
 	admin command "xdlock"
 	reporting multinet bug, punishslowusers
 	option "hadminhost"
+	reporting IDENTIFY bug
 
 Alita-Chan
 	reporting XDCC LIST problem with total line

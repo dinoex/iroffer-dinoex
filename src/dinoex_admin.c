@@ -2514,6 +2514,7 @@ void a_identify(const userinput * const u)
   updatecontext();
 
   net = get_network_msg(u, u->arg1);
+  if (net < 0)
     return;
 
   if (!gdata.nickserv_pass)
