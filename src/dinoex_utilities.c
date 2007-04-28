@@ -22,11 +22,11 @@
 
 #include <fnmatch.h>
 
-char *mystrdup(const char *str)
+char *mystrdup2(const char *str, const char *src_function, const char *src_file, int src_line)
 {
    char *copy;
 
-   copy = mymalloc(strlen(str)+1);
+   copy = mymalloc2(strlen(str)+1, 0, src_function, src_file, src_line);
    strcpy(copy, str);
    return copy;
 }
