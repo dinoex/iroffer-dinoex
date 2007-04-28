@@ -113,108 +113,108 @@ static const userinput_parse_t userinput_parse[] = {
 {1,0,method_allow_all_xdl,u_xdl,  "XDL",NULL,"Lists offered groups and packs without group"},
 {1,1,method_allow_all,a_xdlock,   "XDLOCK",NULL,"Show all locked packs"},
 {1,5,method_allow_all,u_xds,      "XDS",NULL,"Save state file"},
-{1,3,method_allow_all,u_dcl,      "DCL",NULL,"Lists current transfers"},
-{1,3,method_allow_all,u_dcld,     "DCLD",NULL,"Lists current transfers with details"},
-{1,3,method_allow_all,u_trinfo,   "TRINFO","id","Lists information about transfer <id>"},
-{1,3,method_allow_all,u_qul,      "QUL",NULL,"Lists current queue"},
-{1,3,method_allow_all,u_ignl,     "IGNL",NULL,"Show ignored list"},
+{1,1,method_allow_all,u_dcl,      "DCL",NULL,"Lists current transfers"},
+{1,1,method_allow_all,u_dcld,     "DCLD",NULL,"Lists current transfers with details"},
+{1,1,method_allow_all,u_trinfo,   "TRINFO","id","Lists information about transfer <id>"},
+{1,1,method_allow_all,u_qul,      "QUL",NULL,"Lists current queue"},
+{1,1,method_allow_all,u_ignl,     "IGNL",NULL,"Show ignored list"},
 {1,5,method_allow_all,u_listul,   "LISTUL",NULL,"Shows contents of upload directory"},
 {1,5,method_allow_all,u_chanl,    "CHANL","[net]","Shows channel list with member list"},
 
-{2,3,method_allow_all,u_close,    "CLOSE","id","Cancels transfer <id>"},
-{2,3,method_allow_all,u_closeu,   "CLOSEU","id","Cancels upload <id>"},
-{2,3,method_allow_all,u_rmq,      "RMQ","position","Removes entry at <position> from queue"},
+{2,2,method_allow_all,u_close,    "CLOSE","id","Cancels transfer <id>"},
+{2,2,method_allow_all,u_closeu,   "CLOSEU","id","Cancels upload <id>"},
+{2,2,method_allow_all,u_rmq,      "RMQ","position","Removes entry at <position> from queue"},
 {2,5,method_allow_all,u_nomin,    "NOMIN","id","Disables minspeed for transfer <id>"},
 {2,5,method_allow_all,u_nomax,    "NOMAX","id","Disables maxspeed for transfer <id>"},
 {2,5,method_allow_all,a_unlimited, "UNLIMITED","id","Disables bandwidth limits for transfer <id>"},
-{2,3,method_allow_all,u_send,     "SEND","nick n [net]","Sends pack <n> to <nick>"},
-{2,3,method_allow_all,a_queue,    "QUEUE","nick n [net]","Queues pack <n> for <nick>"},
-{2,3,method_allow_all,u_psend,    "PSEND","channel style [net]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
-{2,3,method_allow_all,u_qsend,    "QSEND",NULL,"Start an extra transfer from queue"},
+{2,2,method_allow_all,u_send,     "SEND","nick n [net]","Sends pack <n> to <nick>"},
+{2,2,method_allow_all,a_queue,    "QUEUE","nick n [net]","Queues pack <n> for <nick>"},
+{2,2,method_allow_all,u_psend,    "PSEND","channel style [net]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
+{2,2,method_allow_all,u_qsend,    "QSEND",NULL,"Start an extra transfer from queue"},
 {2,5,method_allow_all,a_slotsmax, "SLOTSMAX","[slots]","temporary change slotsmax to <slots>"},
 {2,5,method_allow_all,a_queuesize, "QUEUESIZE","[slots]","temporary change queuesize to <slots>"},
 {2,5,method_allow_all,a_requeue,  "REQUEUE","x y","Moves queue entry from postion <x> to <y>"},
 
 {3,0,method_allow_all,u_info,     "INFO","n","Show info for pack <n>"},
-{3,5,method_allow_all,a_remove,   "REMOVE","n [m]","Removes pack <n> or <n> to <m>"},
-{3,5,method_allow_all,u_removedir,"REMOVEDIR","dir","Remove every pack found in <dir>"},
-{3,5,method_allow_all,a_removegroup, "REMOVEGROUP","group","Remove every pack found in <group>"},
-{3,5,method_allow_all,u_renumber, "RENUMBER","x y","Moves pack <x> to position <y>"},
-{3,5,method_allow_all,a_sort,     "SORT",NULL,"Sort all packs by filename"},
-{3,5,method_allow_all,a_add,      "ADD","filename","Add new pack with <filename>"},
-{3,5,method_allow_all,u_adddir,   "ADDDIR","dir","Add every file in <dir>"},
-{3,5,method_allow_all,u_addnew,   "ADDNEW","dir","Add new files in <dir>"},
-{3,5,method_allow_all,a_addgroup, "ADDGROUP","group dir","Add new files in <dir> to <group>"},
-{3,5,method_allow_all,a_autoadd,  "AUTOADD",NULL,"scan autoadd_dirs for new files now"},
-{3,5,method_allow_all,u_chfile,   "CHFILE","n filename","Change file of pack <n> to <filename>"},
-{3,5,method_allow_all,u_chdesc,   "CHDESC","n msg","Change description of pack <n> to <msg>"},
+{3,4,method_allow_all,a_remove,   "REMOVE","n [m]","Removes pack <n> or <n> to <m>"},
+{3,4,method_allow_all,u_removedir,"REMOVEDIR","dir","Remove every pack found in <dir>"},
+{3,4,method_allow_all,a_removegroup, "REMOVEGROUP","group","Remove every pack found in <group>"},
+{3,3,method_allow_all,u_renumber, "RENUMBER","x y","Moves pack <x> to position <y>"},
+{3,3,method_allow_all,a_sort,     "SORT",NULL,"Sort all packs by filename"},
+{3,3,method_allow_all,a_add,      "ADD","filename","Add new pack with <filename>"},
+{3,3,method_allow_all,u_adddir,   "ADDDIR","dir","Add every file in <dir>"},
+{3,3,method_allow_all,u_addnew,   "ADDNEW","dir","Add new files in <dir>"},
+{3,3,method_allow_all,a_addgroup, "ADDGROUP","group dir","Add new files in <dir> to <group>"},
+{3,3,method_allow_all,a_autoadd,  "AUTOADD",NULL,"scan autoadd_dirs for new files now"},
+{3,3,method_allow_all,u_chfile,   "CHFILE","n filename","Change file of pack <n> to <filename>"},
+{3,3,method_allow_all,u_chdesc,   "CHDESC","n msg","Change description of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chnote,   "CHNOTE","n msg","Change note of pack <n> to <msg>"},
-{3,5,method_allow_all,u_chmins,   "CHMINS","n x","Change min speed of pack <n> to <x> KB"},
-{3,5,method_allow_all,u_chmaxs,   "CHMAXS","n x","Change max speed of pack <n> to <x> KB"},
-{3,5,method_allow_all,a_chlimit,  "CHLIMIT","n x","Change download limit of pack <n> to <x> transfers per day"},
-{3,5,method_allow_all,a_chlimitinfo, "CHLIMITINFO","n msg","Change over limit info of pack <n> to <msg>"},
+{3,3,method_allow_all,u_chmins,   "CHMINS","n x","Change min speed of pack <n> to <x> KB"},
+{3,3,method_allow_all,u_chmaxs,   "CHMAXS","n x","Change max speed of pack <n> to <x> KB"},
+{3,3,method_allow_all,a_chlimit,  "CHLIMIT","n x","Change download limit of pack <n> to <x> transfers per day"},
+{3,3,method_allow_all,a_chlimitinfo, "CHLIMITINFO","n msg","Change over limit info of pack <n> to <msg>"},
 {3,5,method_allow_all,u_chgets,   "CHGETS","n x","Set the get counter of pack <n> to <x>"},
-{3,3,method_allow_all,a_lock,     "LOCK","n password","Lock the pack <n> with <password>"},
-{3,3,method_allow_all,a_unlock,   "UNLOCK","n","Unlock the pack <n>"},
-{3,3,method_allow_all,a_lockgroup,   "LOCKGROUP","group password","Lock all packs in <group> with <password>"},
-{3,3,method_allow_all,a_unlockgroup, "UNLOCKGROUP","group","Unlock all packs in <group>"},
-{3,5,method_allow_all,a_groupdesc,  "GROUPDESC","group msg","Change description of <group> to <msg>"},
-{3,5,method_allow_all,a_group,      "GROUP","n group","Change group of pack <n> to <group>"},
-{3,5,method_allow_all,a_movegroup,  "MOVEGROUP","n m group","Change group to <group> for pack <n> to <m>"},
-{3,5,method_allow_all,a_regroup,    "REGROUP","group new","Change all packs of <group> to group <new>"},
-{3,5,method_allow_all,a_newgroup, "NEWGROUP","group dir","Change any files in <dir> to <group>"},
-{3,3,method_allow_all,a_announce, "ANNOUNCE","n msg","ANNOUNCE <msg> for pack <n> in all joined channels"},
-{3,5,method_allow_all,a_addann,   "ADDANN","filename","Add and announce new pack"},
-{3,3,method_allow_all,a_crc,      "CRC","[n]","Check CRC of pack <n>"},
-{3,5,method_allow_all,a_newdir,   "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
+{3,2,method_allow_all,a_lock,     "LOCK","n password","Lock the pack <n> with <password>"},
+{3,2,method_allow_all,a_unlock,   "UNLOCK","n","Unlock the pack <n>"},
+{3,2,method_allow_all,a_lockgroup,   "LOCKGROUP","group password","Lock all packs in <group> with <password>"},
+{3,2,method_allow_all,a_unlockgroup, "UNLOCKGROUP","group","Unlock all packs in <group>"},
+{3,3,method_allow_all,a_groupdesc,  "GROUPDESC","group msg","Change description of <group> to <msg>"},
+{3,3,method_allow_all,a_group,      "GROUP","n group","Change group of pack <n> to <group>"},
+{3,3,method_allow_all,a_movegroup,  "MOVEGROUP","n m group","Change group to <group> for pack <n> to <m>"},
+{3,3,method_allow_all,a_regroup,    "REGROUP","group new","Change all packs of <group> to group <new>"},
+{3,3,method_allow_all,a_newgroup, "NEWGROUP","group dir","Change any files in <dir> to <group>"},
+{3,2,method_allow_all,a_announce, "ANNOUNCE","n msg","ANNOUNCE <msg> for pack <n> in all joined channels"},
+{3,3,method_allow_all,a_addann,   "ADDANN","filename","Add and announce new pack"},
+{3,2,method_allow_all,a_crc,      "CRC","[n]","Check CRC of pack <n>"},
+{3,3,method_allow_all,a_newdir,   "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
 {3,5,method_allow_all,a_filemove, "FILEMOVE","filename newfile","rename file on disk"},
 {3,5,method_allow_all,a_movefile, "MOVEFILE","n filename","rename the file of pack <n> on disk to <filename>"},
 {3,5,method_allow_all,a_filedel,  "FILEDEL","filename","remove file from disk"},
 {3,5,method_allow_all,a_fileremove, "FILEREMOVE","n [m]","remove pack <n> or <n> to <m> and remove its file from disk"},
 {3,5,method_allow_all,a_showdir,  "SHOWDIR","dir","list directory on disk"},
 #ifdef USE_CURL
-{3,5,method_allow_all,a_fetch,    "FETCH","file url","download url and save file in upload dir"},
-{3,5,method_allow_all,a_fetchcancel, "FETCHCANCEL","id","stop download of fetch with <id>"},
+{3,3,method_allow_all,a_fetch,    "FETCH","file url","download url and save file in upload dir"},
+{3,3,method_allow_all,a_fetchcancel, "FETCHCANCEL","id","stop download of fetch with <id>"},
 #endif /* USE_CURL */
 
-{4,3,method_allow_all,u_msg,      "MSG","nick message","Send <message> to user <nick>"},
-{4,3,method_allow_all,a_amsg,     "AMSG","msg","Announce <msg> in all joined channels"},
-{4,3,method_allow_all,a_msgnet,   "MSGNET","net nick message","Send <message> to user <nick>"},
-{4,3,method_allow_all,u_mesg,     "MESG","message","Sends <message> to all users who are transferring"},
-{4,3,method_allow_all,u_mesq,     "MESQ","message","Sends <message> to all users in a queue"},
-{4,3,method_allow_all,u_ignore,   "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
-{4,3,method_allow_all,u_unignore, "UNIGNORE","hostmask","Un-Ignore <hostmask>"},
+{4,2,method_allow_all,u_msg,      "MSG","nick message","Send <message> to user <nick>"},
+{4,2,method_allow_all,a_amsg,     "AMSG","msg","Announce <msg> in all joined channels"},
+{4,2,method_allow_all,a_msgnet,   "MSGNET","net nick message","Send <message> to user <nick>"},
+{4,2,method_allow_all,u_mesg,     "MESG","message","Sends <message> to all users who are transferring"},
+{4,2,method_allow_all,u_mesq,     "MESQ","message","Sends <message> to all users in a queue"},
+{4,2,method_allow_all,u_ignore,   "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
+{4,2,method_allow_all,u_unignore, "UNIGNORE","hostmask","Un-Ignore <hostmask>"},
 {4,5,method_allow_all,u_nosave,   "NOSAVE","x","Disables autosave for next <x> minutes"},
-{4,3,method_allow_all,u_nosend,   "NOSEND","x","Disables XDCC SEND for next <x> minutes"},
-{4,3,method_allow_all,u_nolist,   "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
-{4,5,method_allow_all,u_msgread,  "MSGREAD",NULL,"Show MSG log"},
+{4,2,method_allow_all,u_nosend,   "NOSEND","x","Disables XDCC SEND for next <x> minutes"},
+{4,2,method_allow_all,u_nolist,   "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
+{4,3,method_allow_all,u_msgread,  "MSGREAD",NULL,"Show MSG log"},
 {4,5,method_allow_all,u_msgdel,   "MSGDEL",NULL,"Delete MSG log"},
-{4,5,method_allow_all,u_rmul,     "RMUL","filename","Delete a file in the upload dir"},
+{4,3,method_allow_all,u_rmul,     "RMUL","filename","Delete a file in the upload dir"},
 {4,5,method_allow_all,u_raw,      "RAW","command","Send <command> to server (RAW IRC)"},
 {4,5,method_allow_all,a_rawnet,   "RAWNET","net command","Send <command> to server (RAW IRC)"},
 
-{5,3,method_allow_all,u_servers,  "SERVERS","[net]","Shows the server list"},
-{5,3,method_allow_all,a_hop,      "HOP","[channel]","leave and rejoin a channel to get status"},
-{5,3,method_allow_all,a_nochannel, "NOCHANNEL","x [channel]","leave channel for <x> minutes"},
-{5,3,method_allow_all,u_jump,     "JUMP","server [net]","Switches to a random server or server <server>"},
+{5,2,method_allow_all,u_servers,  "SERVERS","[net]","Shows the server list"},
+{5,2,method_allow_all,a_hop,      "HOP","[channel]","leave and rejoin a channel to get status"},
+{5,2,method_allow_all,a_nochannel, "NOCHANNEL","x [channel]","leave channel for <x> minutes"},
+{5,2,method_allow_all,u_jump,     "JUMP","server [net]","Switches to a random server or server <server>"},
 {5,5,method_allow_all,u_servqc,   "SERVQC",NULL,"Clears the server send queue"},
-{5,3,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},
+{5,2,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},
 {5,5,method_allow_all,u_rehash,   "REHASH",NULL,"Re-reads config file(s) and reconfigures"},
-{5,3,method_allow_all,u_botinfo,  "BOTINFO",NULL,"Show Information about the bot status"},
-{5,3,method_allow_all,u_memstat,  "MEMSTAT",NULL,"Show Information about memory usage"},
+{5,2,method_allow_all,u_botinfo,  "BOTINFO",NULL,"Show Information about the bot status"},
+{5,5,method_allow_all,u_memstat,  "MEMSTAT",NULL,"Show Information about memory usage"},
 {5,5,method_allow_all,u_clearrecords, "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, total sent, and transfer limits"},
 {5,5,method_allow_all,a_cleargets, "CLEARGETS",NULL,"Clears download counters for each pack"},
-{5,3,method_console,  u_redraw,   "REDRAW",NULL,"Redraws the Screen"},
+{5,5,method_console,  u_redraw,   "REDRAW",NULL,"Redraws the Screen"},
 {5,5,method_console,  u_delhist,  "DELHIST",NULL,"Deletes console history"},
-{5,3,method_dcc,      u_quit,     "QUIT",NULL,"Close this DCC chat"},
-{5,3,method_dcc,      u_quit,     "EXIT",NULL,"Close this DCC chat"},
-{5,3,method_dcc,      u_quit,     "LOGOUT",NULL,"Close this DCC chat"},
-{5,3,method_msg,      u_chatme,   "CHATME",NULL,"Sends you a DCC Chat Request"},
-{5,3,method_allow_all,u_chatl,    "CHATL",NULL,"Lists DCC chat information"},
+{5,1,method_dcc,      u_quit,     "QUIT",NULL,"Close this DCC chat"},
+{5,1,method_dcc,      u_quit,     "EXIT",NULL,"Close this DCC chat"},
+{5,1,method_dcc,      u_quit,     "LOGOUT",NULL,"Close this DCC chat"},
+{5,1,method_msg,      u_chatme,   "CHATME",NULL,"Sends you a DCC Chat Request"},
+{5,1,method_allow_all,u_chatl,    "CHATL",NULL,"Lists DCC chat information"},
 {5,5,method_allow_all,u_closec,   "CLOSEC","id","Closes DCC chat <id>"},
 {5,5,method_console,  u_debug,    "DEBUG","x","Set debugging level to <x>"},
-{5,3,method_allow_all,a_identify, "IDENTIFY","[net]","Send stored password again to nickserv"},
-{5,3,method_allow_all,a_holdqueue, "HOLDQUEUE","x","Change holdqueue flag, x=1 set, x=0 reset"},
+{5,1,method_allow_all,a_identify, "IDENTIFY","[net]","Send stored password again to nickserv"},
+{5,2,method_allow_all,a_holdqueue, "HOLDQUEUE","x","Change holdqueue flag, x=1 set, x=0 reset"},
 {5,5,method_allow_all,u_shutdown, "SHUTDOWN","act","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
 {5,5,method_allow_all,a_dump,      "DUMP",NULL,"Write a dump into the logfile"},
 {5,5,method_console,  u_crash,     "CRASH",NULL,"Write a dump into the logfile and exit"},
@@ -236,7 +236,7 @@ void u_fillwith_console (userinput * const u, char *line)
   u->snick = NULL;
   u->chat = NULL;
   u->net = 0;
-  u->level = 6;
+  u->level = ADMIN_LEVEL_CONSOLE;
   
   u->cmd = caps(getpart(line,1));
   u->arg1 = getpart(line,2);
@@ -408,7 +408,7 @@ void u_fillwith_clean (userinput * const u)
   mydelete(u->snick);
   u->chat = NULL;
   u->net = 0;
-  u->level = 0;
+  u->level = ADMIN_LEVEL_PUBLIC;
   mydelete(u->cmd);
   mydelete(u->arg1e);
   mydelete(u->arg2e);
@@ -1779,7 +1779,7 @@ static void u_psend(const userinput * const u)
     u_fillwith_msg(&manplist,u->arg1,"A A A A A xdlfull");
   manplist.method = method;
   manplist.net = gnetwork->net;
-  manplist.level = 5;
+  manplist.level = ADMIN_LEVEL_PUBLIC;
   u_parseit(&manplist);
   nname = gnetwork->name;
   gnetwork = backup;
@@ -2525,7 +2525,6 @@ static void u_rehash(const userinput * const u) {
      } /* networks */
    gnetwork = backup;
    
-   gdata.local_vhost = gdata.r_local_vhost;
    gdata.r_local_vhost = 0;
    
    if (needtojump)

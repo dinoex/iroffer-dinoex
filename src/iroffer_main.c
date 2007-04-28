@@ -1492,7 +1492,7 @@ static void mainloop (void) {
                     u_fillwith_msg(pubplist,tchans,"A A A A A xdl");
                     pubplist->method = method_xdl_channel_sum;
                     pubplist->net = gnetwork->net;
-                    pubplist->level = 5;
+                    pubplist->level = ADMIN_LEVEL_PUBLIC;
                     u_parseit(pubplist);
                     mydelete(pubplist);
                   }
@@ -1507,7 +1507,7 @@ static void mainloop (void) {
                  u_fillwith_msg(pubplist,tchanf,"A A A A A xdlfull");
                pubplist->method = method_xdl_channel;
                pubplist->net = gnetwork->net;
-               pubplist->level = 5;
+               pubplist->level = ADMIN_LEVEL_PUBLIC;
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanf);
@@ -1518,7 +1518,7 @@ static void mainloop (void) {
                u_fillwith_msg(pubplist,tchanm,"A A A A A xdl");
                pubplist->method = method_xdl_channel_min;
                pubplist->net = gnetwork->net;
-               pubplist->level = 5;
+               pubplist->level = ADMIN_LEVEL_PUBLIC;
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanm);
@@ -1842,7 +1842,7 @@ static void mainloop (void) {
          u_fillwith_msg(urehash,NULL,"A A A A A rehash");
          urehash->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
          urehash->net = 0;
-         urehash->level = 5;
+         urehash->level = ADMIN_LEVEL_FULL;
          u_parseit(urehash);
          mydelete(urehash);
          }
@@ -2923,7 +2923,7 @@ static void privmsgparse(const char* type, char* line) {
               }
             u_fillwith_msg(&ui,nick,line);
             ui.net = gnetwork->net;
-            ui.level = 5;
+            ui.level = gdata.adminlevel;
             u_parseit(&ui);
             
             /* admin commands shouldn't count against ignore */
@@ -2948,7 +2948,7 @@ static void privmsgparse(const char* type, char* line) {
               }
             u_fillwith_msg(&ui,nick,line);
             ui.net = gnetwork->net;
-            ui.level = 3;
+            ui.level = gdata.hadminlevel;
             u_parseit(&ui);
             
             /* admin commands shouldn't count against ignore */
@@ -3070,7 +3070,7 @@ static void privmsgparse(const char* type, char* line) {
                              u_fillwith_msg(pubplist,nick,tempstr);
                              pubplist->method = method_xdl_user_notice;
                              pubplist->net = gnetwork->net;
-                             pubplist->level = 0;
+                             pubplist->level = ADMIN_LEVEL_PUBLIC;
                              u_parseit(pubplist);
                              mydelete(pubplist);
                              mydelete(tempstr);

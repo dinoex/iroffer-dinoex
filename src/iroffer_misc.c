@@ -466,14 +466,7 @@ void getconfig_set (const char *line, int rehash)
         }
       else
         {
-          if (rehash)
-            {
-              gdata.r_local_vhost = (ipparts[0] << 24) | (ipparts[1] << 16) | (ipparts[2] << 8) | ipparts[3];
-            }
-          else
-            {
-              gdata.local_vhost = (ipparts[0] << 24) | (ipparts[1] << 16) | (ipparts[2] << 8) | ipparts[3];
-            }
+          gdata.local_vhost = (ipparts[0] << 24) | (ipparts[1] << 16) | (ipparts[2] << 8) | ipparts[3];
         }
       mydelete(var);
      }
@@ -1266,7 +1259,7 @@ void xdccsavetext(void)
   uxdl->method = method_fd; 
   uxdl->fd = fd;
   uxdl->net = 0;
-  uxdl->level = 5;
+  uxdl->level = ADMIN_LEVEL_PUBLIC;
   
   u_parseit(uxdl);
   
@@ -2093,7 +2086,7 @@ void sendxdlqueue (void)
       u_fillwith_msg(&ui,tempstr,"A A A A A xdl");
       ui.method = method_xdl_user_notice;
       ui.net = gnetwork->net;
-      ui.level = 0;
+      ui.level = ADMIN_LEVEL_PUBLIC;
       u_parseit(&ui);
     }
   
@@ -2256,6 +2249,8 @@ void reinit_config_vars(void)
   gdata.max_upspeed = 65000;
   gdata.max_find = 0;
   gdata.restrictsend_delay = 0;
+  gdata.adminlevel = ADMIN_LEVEL_FULL;
+  gdata.hadminlevel = ADMIN_LEVEL_HALF;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

@@ -59,15 +59,12 @@ mod Dinoex TODO:
 Short Term Features:
 
 Long Term Features:
-  1002  addional admin with right to lock file
   1008  use text or xml for statefile
   1013  notify adminnick when autoadd
   1014  mutiple filedirs
   1018  warning in chat when bot was kicked
   1019  channel -pgroup GRP
-  1020  multiple admins
   1026  annonce channel
-  1031  multiple admins with diffrent access priviledges
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -83,10 +80,9 @@ Not going to happen anytime soon:
   1013  Passive DCC
   1015  http admin
   1016  chdirgrp grp /neued/packet
-  1017  cwno clear if user change konsole window
+  1017  no clear if user change konsole window
   1021  add /path/dir/*animexyz*
   1022  send notes on mutiple triggers
-  1023  spaches in filename
   1024  gently recover when networks are deleted
   1027  renumber <from> <toi> new
   1028  SSL

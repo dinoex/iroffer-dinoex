@@ -194,6 +194,8 @@ int max_upspeed;
 int max_find;
 int include_subdirs;
 int restrictsend_delay;
+int adminlevel;
+int hadminlevel;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

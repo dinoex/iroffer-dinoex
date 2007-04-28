@@ -3,19 +3,29 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.9:
 ---------------------
 
+132) adminlevel, hadminlevel (inspired by StoVoKor, Thunder, dondieschotte)
+  adminlevel, hadminlevel
+  Limit remote admin commands to level:
+    1 = info and stats only
+    2 = lock and unlock
+    3 = add and change
+    4 = remove packs
+    5 = full, may rename or removes files on disk
+
 bugfix: IDENTIFY (reported by Thunder)
   versions affected: 2.4 - 2.8
   admin commad IDENTIFY did not send password
 
 speedup reading config
 
-131) half admin (inspired by StoVoKor, Thunder)
+131) half admin (inspired by StoVoKor, Kozue-chan, Thunder)
   hadminhost, hadminpass
   if defined, give limited access to a second admin
 
 130) Better logging for QUEUED SEND (inspired by Alita-Chan)
 
-129) support spaces in filenames for transfer and resume
+129) spaces in filenames (inspired by Cork)
+  support spaces in filenames for transfer and resume
 
 With Version mod 2.8:
 ---------------------

@@ -13,6 +13,14 @@
  * 
  */
 
+#define ADMIN_LEVEL_CONSOLE	6
+#define ADMIN_LEVEL_FULL	5
+#define ADMIN_LEVEL_AUTO	4
+#define ADMIN_LEVEL_MAIN	3
+#define ADMIN_LEVEL_HALF	2
+#define ADMIN_LEVEL_INFO	1
+#define ADMIN_LEVEL_PUBLIC	0
+
 void admin_jobs(void);
 int hide_pack(const xdcc *xd);
 int check_lock(const char* lockstr, const char* pwd);

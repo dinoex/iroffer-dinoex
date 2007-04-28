@@ -94,6 +94,7 @@ StoVoKor
 	user command "XDCC STOP"
 	reporting "XDCC SEARCH" bug
 	option "hadminhost"
+	option "hadminlevel"
 
 conanmichi
 	reporting group descriptions problems
@@ -155,6 +156,7 @@ Cork
 	option "respondtochannellistmsg"
 	option "restrictsend_delay"
 	reporting QSEND bug
+	spaces in filenames
 
 anibi
 	option "include_subdirs"
@@ -181,6 +183,7 @@ Noxx
 
 dondieschotte
 	reporting get_network_msg bug
+	option "adminlevel"
 
 dsd
 	admin command "autoadd"
@@ -188,6 +191,12 @@ dsd
 fiberOptiC
 	option "autocrc_exclude"
 
+chibi
+	admin commamd "newdir"
+
 vegetto
 	report crash on bad config
+
+Kozue-chan
+	option "hadminhost"
 

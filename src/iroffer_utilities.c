@@ -1463,6 +1463,8 @@ void dumpgdata(void)
   gdata_print_int(max_find);
   gdata_print_int(include_subdirs);
   gdata_print_int(restrictsend_delay);
+  gdata_print_int(adminlevel);
+  gdata_print_int(hadminlevel);
   
   /* downloadhost */
   /* nodownloadhost */

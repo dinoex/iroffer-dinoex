@@ -384,7 +384,7 @@ void parsedccchat(dccchat_t *chat,
                   "DCC CHAT Correct password");
           
           chat->status = DCCCHAT_CONNECTED;
-          chat->level = 5;
+          chat->level = gdata.adminlevel;
           
           writedccchat(chat,0," \n");
           writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
@@ -403,7 +403,7 @@ void parsedccchat(dccchat_t *chat,
                   "DCC CHAT Correct password");
           
           chat->status = DCCCHAT_CONNECTED;
-          chat->level = 2;
+          chat->level = gdata.hadminlevel;
           
           writedccchat(chat,0," \n");
           writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
