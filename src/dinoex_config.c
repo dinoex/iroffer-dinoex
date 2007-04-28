@@ -118,8 +118,8 @@ static config_int_typ config_parse_int[] = {
 
 static int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
-{"adminpass",               &gdata.adminpass,               4 },
 {"admin_job_file",          &gdata.admin_job_file,          0 },
+{"adminpass",               &gdata.adminpass,               4 },
 {"autoadd_group",           &gdata.autoadd_group,           0 },
 {"autoaddann",              &gdata.autoaddann,              0 },
 {"creditline",              &gdata.creditline,              0 },
@@ -137,8 +137,8 @@ static config_string_typ config_parse_string[] = {
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
 {"send_statefile",          &gdata.send_statefile,          0 },
 {"uploaddir",               &gdata.uploaddir,               1 },
-{"user_nick",               &gdata.config_nick,             0 },
 {"user_modes",              &gdata.user_modes,              0 },
+{"user_nick",               &gdata.config_nick,             0 },
 {"user_realname",           &gdata.user_realname,           0 },
 {"xdcclistfile",            &gdata.xdcclistfile,            1 },
 {NULL, NULL }};
@@ -423,6 +423,7 @@ static int config_find_list(const char *key)
 int set_config_list(const char *key, char *text)
 {
   int i;
+  int j;
   char *pi;
   char *mask;
   regex_t *ah;
@@ -442,14 +443,14 @@ int set_config_list(const char *key, char *text)
   }
   switch (config_parse_list[i].flags) {
   case 3:
-     for (i=strlen(text)-1; i>=0; i--) {
-       if (text[i] == '@') {
-         i = 0;
-       } else if ((text[i] != '*') && (text[i] != '?') && (text[i] != '#')) {
+     for (j=strlen(text)-1; j>=0; j--) {
+       if (text[j] == '@') {
+         j = 0;
+       } else if ((text[j] != '*') && (text[j] != '?') && (text[j] != '#')) {
          break;
        }
      }
-     if ((i<0) || (!strchr(text,'@'))) {
+     if ((j<0) || (!strchr(text,'@'))) {
        outerror(OUTERROR_TYPE_WARN,
                 "ignored %s '%s' because it's way too vague",
                 config_parse_list[i].name, text);
