@@ -185,6 +185,7 @@ Noxx
 dondieschotte
 	reporting get_network_msg bug
 	option "adminlevel"
+	report "adminhostmask" bug
 
 dsd
 	admin command "autoadd"

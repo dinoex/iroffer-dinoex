@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 2.10:
+----------------------
+
+bugfix: adminhostmask (reported by dondieschotte)
+  versions affected: 2.9
+  Simple hostmasks for admin were not ignored as warning tells.
+
 With Version mod 2.9:
 ---------------------
 

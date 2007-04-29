@@ -459,6 +459,8 @@ int set_config_list(const char *key, char *text)
        outerror(OUTERROR_TYPE_WARN,
                 "ignored %s '%s' because it's way too vague",
                 config_parse_list[i].name, text);
+       mydelete(text);
+       return 0;
      }
      /* FALLTHROUGH */
   case 2:
