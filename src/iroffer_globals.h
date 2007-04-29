@@ -198,6 +198,7 @@ int include_subdirs;
 int restrictsend_delay;
 int adminlevel;
 int hadminlevel;
+int monitor_files;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

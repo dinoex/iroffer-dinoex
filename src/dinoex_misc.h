@@ -41,6 +41,7 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
 void sendannounce(void);
 void stoplist(const char *nick);
 void notifyqueued_nick(const char *nick);
+int check_for_file_remove(int n);
 void look_for_file_remove(void);
 void set_default_network_name(void);
 int has_closed_servers(void);

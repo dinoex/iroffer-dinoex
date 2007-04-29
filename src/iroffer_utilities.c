@@ -1467,6 +1467,7 @@ void dumpgdata(void)
   gdata_print_int(restrictsend_delay);
   gdata_print_int(adminlevel);
   gdata_print_int(hadminlevel);
+  gdata_print_int(monitor_files);
   
   /* downloadhost */
   /* nodownloadhost */

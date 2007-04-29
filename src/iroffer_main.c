@@ -533,7 +533,7 @@ static void mainloop (void) {
                (long)(lasttime-gdata.curtime)/60,(long)(lasttime-gdata.curtime)%60);
             }
          
-         if (gdata.curtime > lasttime+10) {
+         if (gdata.curtime > lasttime+3) {
             if (!gdata.attop) gototop();
             outerror(OUTERROR_TYPE_WARN,"System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
                (long)(gdata.curtime-lasttime)/60,(long)(gdata.curtime-lasttime)%60);
@@ -1602,6 +1602,12 @@ static void mainloop (void) {
         }
       
       updatecontext();
+
+      /* look to see if any files changed */
+      if (changesec)
+        look_for_file_remove();
+
+      updatecontext();
       
       /*----- 20 seconds ----- */
       if (changesec && (gdata.curtime - last20sec > 19)) {
@@ -1612,11 +1618,6 @@ static void mainloop (void) {
              close(gdata.logfd);
              gdata.logfd = FD_UNUSED;
            }
-         
-         updatecontext();
-         
-         /* look to see if any files changed */
-         look_for_file_remove();
          
          updatecontext();
          
@@ -1786,9 +1787,11 @@ static void mainloop (void) {
                   else
                     {
                       outerror(OUTERROR_TYPE_WARN,
-                               "[MD5]: Cant Access Offered File '%s': %s",
-                               xd->file, strerror(errno));
+                               "[MD5]: Pack %d: Cant Access Offered File '%s': %s",
+                               packnum, xd->file, strerror(errno));
                       gdata.md5build.file_fd = FD_UNUSED;
+                      check_for_file_remove(packnum);
+                      break;
                     }
                 }
             }

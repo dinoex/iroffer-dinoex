@@ -3,9 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.9:
 ---------------------
 
+137) monitor_files (inspired by Cheff)
+  check only given number of files per second for removal or update
+
 136) autoaddann_short (inspired by dsd)
-   When configured, each add will be announced on all channels with pack
-   Number and Filename. 
+  When configured, each add will be announced on all channels with pack
+  Number and Filename. 
 
 135) SANNOUNCE (inspired by dsd)
 

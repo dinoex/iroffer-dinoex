@@ -433,43 +433,48 @@ void notifyqueued_nick(const char *nick)
   
 }
 
-void look_for_file_remove(void)
+int check_for_file_remove(int n)
 {
-
   xdcc *xd;
   userinput *pubplist;
   char *tempstr;
-  int r;
-  int n;
   
   updatecontext();
 
-  /* look to see if any files changed */
-  n = 0;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-       n ++;
-       r = look_for_file_changes(xd);
-       if (r == 0)
-         {
-            xd = irlist_get_next(xd);
-            continue;
-         }
-       
-       pubplist = mycalloc(sizeof(userinput));
-       tempstr = mycalloc(maxtextlength);
-       snprintf(tempstr,maxtextlength-1,"remove %d", n);
-       u_fillwith_console(pubplist,tempstr);
-       u_parseit(pubplist);
-       mydelete(pubplist);
-       mydelete(tempstr);
-       
-       /* start over */
-       xd = irlist_get_head(&gdata.xdccs);
-       n = 0;
-    }
-     
+  xd = irlist_get_nth(&gdata.xdccs, n-1);
+  if (look_for_file_changes(xd) == 0)
+    return 0;
+
+  pubplist = mycalloc(sizeof(userinput));
+  tempstr = mycalloc(maxtextlength);
+  snprintf(tempstr,maxtextlength-1,"remove %d", n);
+  u_fillwith_console(pubplist,tempstr);
+  u_parseit(pubplist);
+  mydelete(pubplist);
+  mydelete(tempstr);
+  return 1;
+}
+
+static int last_look_for_file_remove = -1;
+
+void look_for_file_remove(void)
+{
+  int i;
+  int p;
+  int m;
+
+  updatecontext();
+
+  p = irlist_size(&gdata.xdccs);
+  m = min2(gdata.monitor_files, p);
+  for (i=0; i<=m; i++) {
+    last_look_for_file_remove ++;
+    if (last_look_for_file_remove < 0 || last_look_for_file_remove >= p)
+      last_look_for_file_remove = 0;
+
+    if (check_for_file_remove(last_look_for_file_remove + 1))
+      return;
+  }
   return;
 }
 
