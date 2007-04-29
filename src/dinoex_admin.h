@@ -94,6 +94,7 @@ void a_autoadd(const userinput * const u);
 /* this functions imported from iroffer-lamm */
 void a_queue(const userinput * const u);
 void a_announce(const userinput * const u);
+void a_sannounce(const userinput * const u);
 void a_addann(const userinput * const u);
 
 /* End of File */

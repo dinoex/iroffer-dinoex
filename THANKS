@@ -187,6 +187,8 @@ dondieschotte
 
 dsd
 	admin command "autoadd"
+        admin command "sannounce"
+	option "autoaddann_short"
 
 fiberOptiC
 	option "autocrc_exclude"

@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.9:
 ---------------------
 
+136) autoaddann_short (inspired by dsd)
+   When configured, each add will be announced on all channels with pack
+   Number and Filename. 
+
+135) SANNOUNCE (inspired by dsd)
+
+  new admin command:
+  SANNOUNCE n                      Short ANNOUNCE <msg> for pack <n> in all joined channels
+
 134) ignore_volumeid
   iroffer did recheck files when volume id has changed on start.
   this did slow down windows and network file systems.

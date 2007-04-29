@@ -2238,6 +2238,7 @@ void reinit_config_vars(void)
   gdata.auto_crc_check = 0;
   gdata.nocrc32 = 0;
   gdata.direct_file_access = 0;
+  gdata.autoaddann_short = 0;
   gdata.autoadd_time = 0;
   gdata.restrictsend_warning = 0;
   gdata.restrictsend_timeout = RESTRICTSEND_TIMEOUT;

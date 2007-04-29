@@ -164,6 +164,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_regroup,    "REGROUP","group new","Change all packs of <group> to group <new>"},
 {3,3,method_allow_all,a_newgroup, "NEWGROUP","group dir","Change any files in <dir> to <group>"},
 {3,2,method_allow_all,a_announce, "ANNOUNCE","n msg","ANNOUNCE <msg> for pack <n> in all joined channels"},
+{3,2,method_allow_all,a_sannounce, "SANNOUNCE","n","Short ANNOUNCE <msg> for pack <n> in all joined channels"},
 {3,3,method_allow_all,a_addann,   "ADDANN","filename","Add and announce new pack"},
 {3,2,method_allow_all,a_crc,      "CRC","[n]","Check CRC of pack <n>"},
 {3,3,method_allow_all,a_newdir,   "NEWDIR","dirname newdir","rename pathnames of all matching packs"},

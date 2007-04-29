@@ -1176,6 +1176,22 @@ void a_add(const userinput * const u)
    write_statefile();
    xdccsavetext();
    
+   if (gdata.autoaddann_short) {
+      userinput *ui;
+      char *tempstr;
+      
+      tempstr = mycalloc (maxtextlength);
+      ui = mycalloc(sizeof(userinput));
+      snprintf(tempstr, maxtextlength - 2, "A A A A A sannounce %i", irlist_size(&gdata.xdccs));
+      u_fillwith_msg(ui,NULL,tempstr);
+      ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
+      ui->net = u->net;
+      ui->level = u->level;
+      u_parseit(ui);
+      mydelete(ui);
+      mydelete(tempstr);
+      }
+
    /* iroffer-lamm: autoaddann */
    if (gdata.autoaddann) {
       userinput *ui;
@@ -2646,6 +2662,7 @@ void a_queue(const userinput * const u)
      }
 }
 
+
 /* iroffer-lamm: add-ons */
 void a_announce(const userinput * const u)
 {
@@ -2689,6 +2706,43 @@ void a_announce(const userinput * const u)
   gnetwork = backup;
   a_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);
   mydelete(tempstr2);
+  mydelete(tempstr);
+}
+
+void a_sannounce(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+  channel_t *ch;
+  char *tempstr;
+  int ss;
+  gnetwork_t *backup;
+ 
+  updatecontext ();
+ 
+  if (u->arg1) num = atoi (u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+ 
+  a_respond(u,"Pack Info for Pack #%i:",num);
+ 
+  tempstr = mycalloc(maxtextlength);
+  snprintf(tempstr,maxtextlength-2,"\2%i\2 %s",num, xd->desc);
+ 
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      ch = irlist_get_head(&(gnetwork->channels));
+      while(ch) {
+        if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
+          privmsg_chan(ch, tempstr);
+        ch = irlist_get_next(ch);
+        }
+    }
+  gnetwork = backup;
+  a_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);
   mydelete(tempstr);
 }
 
