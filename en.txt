@@ -1751,7 +1751,7 @@
 1753 "xx_trig \n"
 1754 "xx_trno %s\n"
 1755 "SANNOUNCE"
-1756 "Short ANNOUNCE <msg> for pack <n> in all joined channels"
+1756 "Short ANNOUNCE <n> <name> in all joined channels"
 1757 "\2%i\2 %s"
 1758 "A A A A A sannounce %i"
 1759 "autoaddann_short"
