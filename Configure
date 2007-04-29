@@ -77,6 +77,7 @@ case "$ostype" in
   ostype=HPUX
   ;;
  CYGWIN* )
+  VERSIONLONG="${VERSIONLONG} (Win32)"
   ostype=$short_ostype
   exe=.exe
   
