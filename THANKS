@@ -157,6 +157,7 @@ Cork
 	option "restrictsend_delay"
 	reporting QSEND bug
 	spaces in filenames
+	reporting tar in Makefile.config
 
 anibi
 	option "include_subdirs"
