@@ -59,12 +59,16 @@ mod Dinoex TODO:
 Short Term Features:
   1019  channel -pgroup GRP
   1026  annonce channel
+  1045  support qouted filenames
 
 Long Term Features:
   1008  use text or xml for statefile
   1013  notify adminnick when autoadd
   1014  mutiple filedirs
   1018  warning in chat when bot was kicked
+  1041  -nojoin for extra channels
+  1042  hentai flag
+  1043  vhosts for each network
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -85,11 +89,17 @@ Not going to happen anytime soon:
   1022  send notes on mutiple triggers
   1024  gently recover when networks are deleted
   1027  renumber <from> <to> new
-  1028  SSL
+  1028  SSL (208)
   1029  local network without getipfromserver/vhost
   1030  msg to owner whn it activates flood protection
   1032  configureable note after Record
   1033  nojoin channels for leach.
   1034  age verification for hentai
-  1035  IPV6
+  1035  IPV6 (195)
+  1036  Gracefull restart when network dropped
+  1037  getipfromserver for mutihomed bots
+  1038  shared bot, each admin manages its own files.
+  1039  new trigger per admin
+  1040  respondtochannellistmsg per admin
+  1044  autosendpack with 2 para
 
