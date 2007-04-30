@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.10:
 ----------------------
 
-bugfix: removelostfiles
+bugfix: removelostfiles (reported by dondieschotte)
   versions affected: 2.9
   iroffer does crash with no pack
 

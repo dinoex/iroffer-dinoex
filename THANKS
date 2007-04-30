@@ -186,6 +186,7 @@ dondieschotte
 	reporting get_network_msg bug
 	option "adminlevel"
 	report "adminhostmask" bug
+	report "removelostfile" bug
 
 dsd
 	admin command "autoadd"
