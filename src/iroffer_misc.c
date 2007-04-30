@@ -222,7 +222,7 @@ void getconfig_set (const char *line, int rehash)
    else if ( !strcmp(type,"channel_join_raw"))
      {
        char *cjr;
-       cjr = irlist_add(&gdata.channel_join_raw, strlen(var) + 1);
+       cjr = irlist_add(&gdata.networks[gdata.networks_online].channel_join_raw, strlen(var) + 1);
        strcpy(cjr, var);
        mydelete(var);
      }
@@ -1691,7 +1691,7 @@ void joinchannel(channel_t *c)
       writeserver(WRITESERVER_NORMAL, "JOIN %s", c->name);
     }
   
-  tptr = irlist_get_head(&gdata.channel_join_raw);
+  tptr = irlist_get_head(&(gnetwork->channel_join_raw));
   while(tptr)
     {
       writeserver(WRITESERVER_NORMAL, "%s", tptr);
@@ -2186,6 +2186,7 @@ void reinit_config_vars(void)
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);
+    irlist_delete_all(&gdata.networks[si].channel_join_raw);
   } /* networks */
   mydelete(gdata.logfile);
   gdata.logrotate = 0;
@@ -2194,7 +2195,6 @@ void reinit_config_vars(void)
   mydelete(gdata.user_modes);
   gdata.tcprangestart = 0;
   irlist_delete_all(&gdata.proxyinfo);
-  irlist_delete_all(&gdata.channel_join_raw);
   gdata.usenatip = 0;
   gdata.slotsmax = gdata.queuesize = 0;
   gdata.maxtransfersperperson = 1;

@@ -27,6 +27,7 @@ typedef struct
 /* raw on join */
 irlist_t server_join_raw;
 irlist_t server_connected_raw;
+irlist_t channel_join_raw;
 
 /* channel */
 irlist_t channels;
@@ -207,9 +208,6 @@ int quietmode;
 int smallfilebypass;
 irlist_t autoignore_exclude;
 int autoignore_threshold;
-
-/* raw on join */
-irlist_t channel_join_raw;
 
 /* rehash temp variables */
 unsigned long r_local_vhost;

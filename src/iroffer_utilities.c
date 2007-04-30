@@ -1541,6 +1541,10 @@ void dumpgdata(void)
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
+      gdata_irlist_iter_start(networks[ss].channel_join_raw, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
       gdata_irlist_iter_start(networks[ss].servers, server_t);
   gdata_iter_print_string(hostname);
   gdata_iter_print_uint(port);
@@ -1596,10 +1600,6 @@ void dumpgdata(void)
     
     } /* networks */
    
-  gdata_irlist_iter_start(channel_join_raw, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
   /* r_channel t_channel r_local_vhost r_pidfile r_config_nick */
   /* r_transferminspeed r_transfermaxspeed */
   
