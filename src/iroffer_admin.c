@@ -52,7 +52,6 @@ static void u_info(const userinput * const u);
 static void u_removedir(const userinput * const u);
 static void u_send(const userinput * const u);
 static void u_psend(const userinput * const u);
-static void u_msg(const userinput * const u);
 static void u_mesg(const userinput * const u);
 static void u_mesq(const userinput * const u);
 static void u_quit(const userinput * const u);
@@ -178,7 +177,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_fetchcancel, "FETCHCANCEL","id","stop download of fetch with <id>"},
 #endif /* USE_CURL */
 
-{4,2,method_allow_all,u_msg,      "MSG","nick message","Send <message> to user <nick>"},
+{4,2,method_allow_all,a_msg,      "MSG","nick message","Send <message> to user <nick>"},
 {4,2,method_allow_all,a_amsg,     "AMSG","msg","Announce <msg> in all joined channels"},
 {4,2,method_allow_all,a_msgnet,   "MSGNET","net nick message","Send <message> to user <nick>"},
 {4,2,method_allow_all,u_mesg,     "MESG","message","Sends <message> to all users who are transferring"},
@@ -1752,25 +1751,10 @@ static void u_psend(const userinput * const u)
   
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  ch = irlist_get_head(&(gnetwork->channels));
-  /* joinen channels only */
-  while(ch)
-    {
-      if (!strcasecmp(u->arg1,ch->name))
-        {
-          if ((ch->flags & CHAN_ONCHAN) != 0 )
-            break;
-          
-          gnetwork = backup;
-          u_respond(u,"Bot not in Channel %s", u->arg1);
-          return;
-        }
-      ch = irlist_get_next(ch);
-    }
+  ch = is_not_joined_channel(u, u->arg1);
   if (ch == NULL)
     {
        gnetwork = backup;
-       u_respond(u,"Channel %s not found", u->arg1);
        return;
     }
   
@@ -1789,24 +1773,6 @@ static void u_psend(const userinput * const u)
             u->arg2 ? u->arg2 : "full",
             u->arg1, nname);
   
-}
-
-static void u_msg(const userinput * const u)
-{
-  gnetwork_t *backup;
-  
-  updatecontext();
-
-  if (invalid_nick(u, u->arg1) != 0)
-    return;
-
-  if (invalid_message(u, u->arg2e) != 0)
-    return;
-
-  backup = gnetwork;
-  gnetwork = &(gdata.networks[0]);
-  a_msg_nick_or_chan(u, u->arg1, u->arg2e);
-  gnetwork = backup;
 }
 
 static void u_mesg(const userinput * const u)

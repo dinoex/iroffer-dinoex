@@ -33,10 +33,13 @@ a_respond(const userinput * const u, const char *format, ...);
 void a_respond(const userinput * const u, const char *format, ...)
 {
   va_list args;
+  gnetwork_t *backup;
 
   updatecontext();
  
   va_start(args, format);
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[u->net]);
  
   switch (u->method)
     {
@@ -88,6 +91,7 @@ void a_respond(const userinput * const u, const char *format, ...)
       break;
     }
 
+  gnetwork = backup;
   va_end(args);
 }
 
@@ -634,15 +638,12 @@ void a_add_delayed(const userinput * const u)
 {
    userinput u2;
    xdcc *xd;
-   gnetwork_t *backup;
    int newgroup;
    int num;
    int rc;
 
    updatecontext();
 
-   backup = gnetwork;
-   gnetwork = &(gdata.networks[u->net]);
    a_respond(u,"  Adding %s:", u->arg1);
 
    u2 = *u;
@@ -650,10 +651,7 @@ void a_add_delayed(const userinput * const u)
    a_add(&u2);
 
    if (u->arg3 == NULL)
-     {
-       gnetwork = backup;
-       return;
-     }
+     return;
 
    num = 0;
    newgroup = 0;
@@ -682,8 +680,6 @@ void a_add_delayed(const userinput * const u)
        if (rc == 1)
          a_respond(u, "New GROUPDESC: %s", u->arg3);
      }
-
-   gnetwork = backup;
 }
 
 void a_xdlock(const userinput * const u)
@@ -2404,6 +2400,22 @@ void a_amsg(const userinput * const u)
   a_respond(u,"Announced [%s]",u->arg1e);
 }
 
+channel_t *is_not_joined_channel(const userinput * const u, const char *name)
+{
+  channel_t *ch;
+
+  ch = irlist_get_head(&(gnetwork->channels));
+  while(ch) {
+    if (!strcasecmp(ch->name, name))
+      return ch;
+
+    a_respond(u,"Bot not in Channel %s on %s", name, gnetwork->name);
+    return NULL;
+  }
+  a_respond(u,"Channel %s on %s not found", name, gnetwork->name);
+  return NULL;
+}
+
 void a_msg_nick_or_chan(const userinput * const u, const char *name, const char *msg)
 { 
   channel_t *ch;
@@ -2413,20 +2425,29 @@ void a_msg_nick_or_chan(const userinput * const u, const char *name, const char 
     return;
   }
 
-  ch = irlist_get_head(&(gnetwork->channels));
-  while(ch) {
-    if (!strcasecmp(ch->name,name)) {
-      if ((ch->flags & CHAN_ONCHAN) != 0 ) {
-        privmsg_chan(ch, "%s", msg);
-        return;
-      }
+  ch = is_not_joined_channel(u, name);
+  if (ch == NULL)
+    return;
 
-      a_respond(u,"Bot not in Channel %s on %s", name, gnetwork->name);
-      return;
-    }
-    ch = irlist_get_next(ch);
-  }
-  a_respond(u,"Channel %s on %s not found", name, gnetwork->name);
+  privmsg_chan(ch, "%s", msg);
+}
+
+void a_msg(const userinput * const u)
+{
+  gnetwork_t *backup;
+
+  updatecontext();
+
+  if (invalid_nick(u, u->arg1) != 0)
+    return;
+
+  if (invalid_message(u, u->arg2e) != 0)
+    return;
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[0]);
+  a_msg_nick_or_chan(u, u->arg1, u->arg2e);
+  gnetwork = backup;
 }
 
 void a_msgnet(const userinput * const u)
@@ -2616,11 +2637,7 @@ void a_dump(const userinput * const u)
 
 void a_autoadd(const userinput * const u)
 {
-   gnetwork_t *backup;
-
-   backup = gnetwork;
    autoadd_all();
-   gnetwork = backup;
    a_respond(u,"AUTOADD done.");
 }
 

@@ -355,8 +355,6 @@
 355 "summary"
 356 "Summary Plist makes no sense with restrictprivlist set and no creditline or headline"
 357 "PLIST format is not (full|minimal|summary)"
-358 "Bot not in Channel %s"
-359 "Channel %s not found"
 360 "A A A A A xdl"
 361 "A A A A A xdlfull"
 362 "Sending PLIST with style %s to %s on network %s"
