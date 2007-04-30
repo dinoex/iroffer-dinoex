@@ -23,6 +23,7 @@ Tak0r
 	option "need_voice"
 	option "autoadd_dir"
 	option "need_level"
+	mutiple "filedir"
 
 Keichi
 	option "auto_default_group"
@@ -208,4 +209,7 @@ Kozue-chan
 
 Cheff
 	option "monitor_files"
+
+Kakashi
+	mutiple "filedir"
 

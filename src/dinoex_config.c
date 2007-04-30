@@ -128,7 +128,6 @@ static config_string_typ config_parse_string[] = {
 {"autoaddann",              &gdata.autoaddann,              0 },
 {"creditline",              &gdata.creditline,              0 },
 {"enable_nick",             &gdata.enable_nick,             0 },
-{"filedir",                 &gdata.filedir,                 1 },
 {"geoipdatabase",           &gdata.geoipdatabase,           0 },
 {"hadminpass",              &gdata.hadminpass,              4 },
 {"headline",                &gdata.headline,                0 },
@@ -156,6 +155,7 @@ static config_list_typ config_parse_list[] = {
 {"autocrc_exclude",         &gdata.autocrc_exclude,         0 },
 {"autoignore_exclude",      &gdata.autoignore_exclude,      2 },
 {"downloadhost",            &gdata.downloadhost,            2 },
+{"filedir",                 &gdata.filedir,                 1 },
 {"geoipcountry",            &gdata.geoipcountry,            0 },
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
 {"hadminhost",              &gdata.hadminhost,              3 },
@@ -473,6 +473,9 @@ int set_config_list(const char *key, char *text)
      mydelete(mask);
      mydelete(text);
      return 0;
+  case 1:
+     convert_to_unix_slash(text);
+     break;
   }
   pi = irlist_add(config_parse_list[i].list, strlen(text) + 1);
   strcpy(pi, text);

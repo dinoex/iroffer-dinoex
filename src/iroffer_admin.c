@@ -1604,7 +1604,6 @@ static void u_removedir(const userinput * const u)
 {
   DIR *d;
   char *thedir;
-  int thedirlen;
   
   updatecontext();
 
@@ -1619,24 +1618,8 @@ static void u_removedir(const userinput * const u)
       u->arg1e[strlen(u->arg1e)-1] = '\0';
     }
   
-  thedirlen = strlen(u->arg1e);
-  if (gdata.filedir)
-    {
-      thedirlen += strlen(gdata.filedir) + 1;
-    }
-  
-  thedir = mycalloc(thedirlen+1);
-  strcpy(thedir, u->arg1e);
-  
-  d = opendir(thedir);
-  
-  if (!d && (errno == ENOENT) && gdata.filedir)
-    {
-      snprintf(thedir, thedirlen+1, "%s/%s",
-               gdata.filedir, u->arg1e);
-      d = opendir(thedir);
-    }
-  
+  thedir = mystrdup(u->arg1e);
+  d = a_open_dir(&thedir);
   if (!d)
     {
       u_respond(u,"Can't Access Directory: %s",strerror(errno));
@@ -1853,7 +1836,7 @@ static void u_chfile(const userinput * const u) {
    int num = 0;
    int xfiledescriptor;
    struct stat st;
-   char tempstr[maxtextlength];
+   char *file;
    transfer *tr;
    xdcc *xd;
    
@@ -1867,22 +1850,14 @@ static void u_chfile(const userinput * const u) {
       return;
 
    /* verify file is ok first */
-   tempstr[0] = '\0';
-   
    esacpe_quotes(u->arg2e);
    convert_to_unix_slash(u->arg2e);
+   file = mystrdup(u->arg2e);
    
-   xfiledescriptor=open(u->arg2e, O_RDONLY | ADDED_OPEN_FLAGS);
-   
-   if (xfiledescriptor < 0 && (errno == ENOENT) && gdata.filedir) {
-      snprintf(tempstr, maxtextlength - 1,
-               "%s/%s", gdata.filedir, u->arg2e);
-      convert_to_unix_slash(tempstr);
-      xfiledescriptor=open(tempstr, O_RDONLY | ADDED_OPEN_FLAGS);
-      }
-   
+   xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
    if (xfiledescriptor < 0) {
       u_respond(u,"Cant Access File: %s",strerror(errno));
+      mydelete(file);
       return;
       }
    
@@ -1890,6 +1865,7 @@ static void u_chfile(const userinput * const u) {
      {
       u_respond(u,"Cant Access File Details: %s",strerror(errno));
       close(xfiledescriptor);
+      mydelete(file);
       return;
      }
       
@@ -1897,11 +1873,13 @@ static void u_chfile(const userinput * const u) {
    
    if ( st.st_size == 0 ) {
       u_respond(u,"File has size of 0 bytes!");
+      mydelete(file);
       return;
       }
    
    if ((st.st_size > gdata.max_file_size) || (st.st_size < 0)) {
       u_respond(u,"File is too large.");
+      mydelete(file);
       return;
       }
    
@@ -1919,12 +1897,10 @@ static void u_chfile(const userinput * const u) {
      }
    
    u_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
-             num,xd->file,tempstr[0] ? tempstr : u->arg2e);
+             num, xd->file, file);
    
    mydelete(xd->file);
-   xd->file = mycalloc(strlen(tempstr[0] ? tempstr : u->arg2e) + 1);
-   
-   strcpy(xd->file, tempstr[0] ? tempstr : u->arg2e);
+   xd->file     = file;
    xd->st_size  = st.st_size;
    xd->st_dev   = st.st_dev;
    xd->st_ino   = st.st_ino;
@@ -1958,7 +1934,6 @@ static void u_adddir(const userinput * const u)
 {
   DIR *d;
   char *thedir;
-  int thedirlen;
   
   updatecontext();
 
@@ -1973,24 +1948,8 @@ static void u_adddir(const userinput * const u)
       u->arg1e[strlen(u->arg1e)-1] = '\0';
     }
   
-  thedirlen = strlen(u->arg1e);
-  if (gdata.filedir)
-    {
-      thedirlen += strlen(gdata.filedir) + 1;
-    }
-  
-  thedir = mymalloc(thedirlen+1);
-  strcpy(thedir, u->arg1e);
-  
-  d = opendir(thedir);
-  
-  if (!d && (errno == ENOENT) && gdata.filedir)
-    {
-      snprintf(thedir, thedirlen+1, "%s/%s",
-               gdata.filedir, u->arg1e);
-      d = opendir(thedir);
-    }
-  
+  thedir = mystrdup(u->arg1e);
+  d = a_open_dir(&thedir);
   if (!d)
     {
       u_respond(u,"Can't Access Directory: %s",strerror(errno));
@@ -2006,7 +1965,6 @@ static void u_addnew(const userinput * const u)
 {
   DIR *d;
   char *thedir;
-  int thedirlen;
   
   updatecontext();
 
@@ -2021,24 +1979,8 @@ static void u_addnew(const userinput * const u)
       u->arg1e[strlen(u->arg1e)-1] = '\0';
     }
   
-  thedirlen = strlen(u->arg1e);
-  if (gdata.filedir)
-    {
-      thedirlen += strlen(gdata.filedir) + 1;
-    }
-  
-  thedir = mymalloc(thedirlen+1);
-  strcpy(thedir, u->arg1e);
-  
-  d = opendir(thedir);
-  
-  if (!d && (errno == ENOENT) && gdata.filedir)
-    {
-      snprintf(thedir, thedirlen+1, "%s/%s",
-               gdata.filedir, u->arg1e);
-      d = opendir(thedir);
-    }
-  
+  thedir = mystrdup(u->arg1e);
+  d = a_open_dir(&thedir);
   if (!d)
     {
       u_respond(u,"Can't Access Directory: %s",strerror(errno));

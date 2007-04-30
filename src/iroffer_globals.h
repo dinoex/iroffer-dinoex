@@ -128,7 +128,7 @@ char *adminpass;
 char *hadminpass;
 irlist_t adminhost;
 irlist_t hadminhost;
-char *filedir;
+irlist_t filedir;
 char *statefile;
 char *xdcclistfile;
 int xdcclistfileraw;

@@ -2200,7 +2200,6 @@ void reinit_config_vars(void)
   gdata.maxtransfersperperson = 1;
   gdata.maxqueueditemsperperson = 1;
   gdata.autoignore_threshold = 10;
-  mydelete(gdata.filedir);
   gdata.lowbdwth = 0;
   gdata.punishslowusers = 0;
   gdata.nomd5sum = 0;
@@ -2212,6 +2211,7 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.geoipexcludenick);
   irlist_delete_all(&gdata.autoadd_dirs);
   irlist_delete_all(&gdata.autocrc_exclude);
+  irlist_delete_all(&gdata.filedir);
   mydelete(gdata.enable_nick);
   mydelete(gdata.owner_nick);
   mydelete(gdata.geoipdatabase);

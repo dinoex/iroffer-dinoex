@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.10:
 ----------------------
 
+139) filedir (inspired by Tak0r, Kakashi)
+  filedir can now have multiple entrys
+
 bugfix: xdccremovefile
   bot could crash when deleteing a file without group
 

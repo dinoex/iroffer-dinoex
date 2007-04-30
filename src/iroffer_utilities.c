@@ -1486,9 +1486,11 @@ void dumpgdata(void)
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
   
-  gdata_print_string(filedir);
+  /* filedir */
+  gdata_irlist_iter_start(filedir, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
   
-  gdata_print_string(filedir);
   gdata_print_string(statefile);
   gdata_print_string(xdcclistfile);
   gdata_print_int(xdcclistfileraw);

@@ -60,12 +60,10 @@ Short Term Features:
   1019  channel -pgroup GRP
   1026  annonce only in channel
   1026  renumber x to y to position z
-  1045  support qouted filenames
 
 Long Term Features:
   1008  use text or xml for statefile
   1013  notify adminnick when autoadd
-  1014  mutiple filedirs
   1018  warning in chat when bot was kicked
   1041  -nojoin for extra channels
   1042  hentai flag
