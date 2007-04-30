@@ -190,10 +190,10 @@ char* esacpe_quotes(char *str)
   if (src[len] == '"')
     src[len] = 0;
 
-  dest = str;
-  for (dest = str; *src; src++) {
-    *(dest++) = *src;
+  for (dest = str; *src; ) {
+    *(dest++) = *(src++);
   }
+  *(dest++) = 0;
   return str;
 }
 
