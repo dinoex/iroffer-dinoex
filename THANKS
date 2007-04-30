@@ -187,6 +187,7 @@ dondieschotte
 	option "adminlevel"
 	report "adminhostmask" bug
 	report "removelostfile" bug
+	message to channels not joined
 
 dsd
 	admin command "autoadd"

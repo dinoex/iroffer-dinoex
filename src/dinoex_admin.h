@@ -81,6 +81,7 @@ void a_fetchcancel(const userinput * const u);
 #endif /* USE_CURL */
 
 void a_amsg(const userinput * const u);
+void a_msg_nick_or_chan(const userinput * const u, const char *name, const char *msg);
 void a_msgnet(const userinput * const u);
 void a_rawnet(const userinput * const u);
 void a_hop(const userinput * const u);

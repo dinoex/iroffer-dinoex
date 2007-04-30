@@ -2404,6 +2404,31 @@ void a_amsg(const userinput * const u)
   a_respond(u,"Announced [%s]",u->arg1e);
 }
 
+void a_msg_nick_or_chan(const userinput * const u, const char *name, const char *msg)
+{ 
+  channel_t *ch;
+
+  if (name[0] != '#') {
+    privmsg_fast(name, "%s", msg);
+    return;
+  }
+
+  ch = irlist_get_head(&(gnetwork->channels));
+  while(ch) {
+    if (!strcasecmp(ch->name,name)) {
+      if ((ch->flags & CHAN_ONCHAN) != 0 ) {
+        privmsg_chan(ch, "%s", msg);
+        return;
+      }
+
+      a_respond(u,"Bot not in Channel %s on %s", name, gnetwork->name);
+      return;
+    }
+    ch = irlist_get_next(ch);
+  }
+  a_respond(u,"Channel %s on %s not found", name, gnetwork->name);
+}
+
 void a_msgnet(const userinput * const u)
 {
   gnetwork_t *backup;
@@ -2423,7 +2448,7 @@ void a_msgnet(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  privmsg_fast(u->arg2,"%s",u->arg3e);
+  a_msg_nick_or_chan(u, u->arg2, u->arg3e);
   gnetwork = backup;
 }
 

@@ -1805,9 +1805,8 @@ static void u_msg(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[0]);
-  privmsg_fast(u->arg1,"%s",u->arg2e);
+  a_msg_nick_or_chan(u, u->arg1, u->arg2e);
   gnetwork = backup;
-  
 }
 
 static void u_mesg(const userinput * const u)
