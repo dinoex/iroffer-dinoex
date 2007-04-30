@@ -2252,7 +2252,7 @@ void reinit_config_vars(void)
   gdata.restrictsend_delay = 0;
   gdata.adminlevel = ADMIN_LEVEL_FULL;
   gdata.hadminlevel = ADMIN_LEVEL_HALF;
-  gdata.monitor_files = 50;
+  gdata.monitor_files = 20;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
