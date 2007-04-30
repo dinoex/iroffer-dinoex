@@ -467,7 +467,7 @@ void look_for_file_remove(void)
 
   p = irlist_size(&gdata.xdccs);
   m = min2(gdata.monitor_files, p);
-  for (i=0; i<=m; i++) {
+  for (i=0; i<m; i++) {
     last_look_for_file_remove ++;
     if (last_look_for_file_remove < 0 || last_look_for_file_remove >= p)
       last_look_for_file_remove = 0;
