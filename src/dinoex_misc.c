@@ -1760,6 +1760,9 @@ static const char *find_groupdesc(const char *group)
   xdcc *xd;
   int k;
 
+  if (group == NULL)
+    return "";
+
   k = 0;
   xd = irlist_get_head(&gdata.xdccs);
   while(xd)
@@ -1818,7 +1821,7 @@ void write_removed_xdcc(xdcc *xd)
   else
     len = snprintf(line, maxtextlength -1, "xx_maxs %f\n", xd->maxspeed);
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_data %s\n", xd->group);
+  len = snprintf(line, maxtextlength -1, "xx_data %s\n", xd->group ? xd->group : "");
   write(fd, line, len);
   len = snprintf(line, maxtextlength -1, "xx_trig \n");
   write(fd, line, len);

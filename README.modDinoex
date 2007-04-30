@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.10:
 ----------------------
 
+bugfix: xdccremovefile
+  bot could crash when deleteing a file without group
+
 138) esacpe_quotes
   Allow Admin handle files with spaces
 
