@@ -533,7 +533,7 @@ static void mainloop (void) {
                (long)(lasttime-gdata.curtime)/60,(long)(lasttime-gdata.curtime)%60);
             }
          
-         if (gdata.curtime > lasttime+3) {
+         if (gdata.curtime > lasttime+10) {
             if (!gdata.attop) gototop();
             outerror(OUTERROR_TYPE_WARN,"System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
                (long)(gdata.curtime-lasttime)/60,(long)(gdata.curtime-lasttime)%60);
