@@ -1029,7 +1029,6 @@ void a_add(const userinput * const u)
    xdcc *xd;
    char *group;
    char *file;
-   char *file;
    char *a1;
    char *a2;
    
