@@ -58,7 +58,8 @@ mod Dinoex TODO:
 
 Short Term Features:
   1019  channel -pgroup GRP
-  1026  annonce channel
+  1026  annonce only in channel
+  1026  renumber x to y to position z
   1045  support qouted filenames
 
 Long Term Features:

@@ -1613,7 +1613,7 @@
 1617 "%s: File has size of 0 bytes!"
 1618 "%s: File is too large."
 1619 "Try Specifying a new Directory"
-1620 "NEWFILE: %d Packs found"
+1620 "NEWDIR: %d Packs found"
 1621 "Try Specifying a new Filename"
 1622 "Cant Access File: %s: %s"
 1623 "Cant Access File Details: %s: %s"

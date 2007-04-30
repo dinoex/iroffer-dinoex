@@ -1611,6 +1611,7 @@ static void u_removedir(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
+  esacpe_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -1868,6 +1869,7 @@ static void u_chfile(const userinput * const u) {
    /* verify file is ok first */
    tempstr[0] = '\0';
    
+   esacpe_quotes(u->arg2e);
    convert_to_unix_slash(u->arg2e);
    
    xfiledescriptor=open(u->arg2e, O_RDONLY | ADDED_OPEN_FLAGS);
@@ -1963,6 +1965,7 @@ static void u_adddir(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
+  esacpe_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -2010,6 +2013,7 @@ static void u_addnew(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
+  esacpe_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -3754,6 +3758,7 @@ static void u_rmul(const userinput * const u) {
    if (invalid_file(u, u->arg1e) != 0)
       return;
 
+   esacpe_quotes(u->arg1e);
    convert_to_unix_slash(u->arg1e);
    
    if (strstr(u->arg1e,"/")) {

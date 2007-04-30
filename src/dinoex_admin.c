@@ -1029,6 +1029,7 @@ void a_add(const userinput * const u)
    xdcc *xd;
    char *group;
    char *file;
+   char *file;
    char *a1;
    char *a2;
    
@@ -1037,6 +1038,7 @@ void a_add(const userinput * const u)
    if (invalid_file(u, u->arg1e) != 0)
       return;
 
+   esacpe_quotes(u->arg1e);
    file = mystrdup(u->arg1e);
    convert_to_unix_slash(file);
    
@@ -1372,6 +1374,7 @@ void a_addgroup(const userinput * const u)
   if (invalid_dir(u, u->arg2e) != 0)
      return;
 
+  esacpe_quotes(u->arg2e);
   convert_to_unix_slash(u->arg2e);
   if (gdata.groupsincaps)
     caps(u->arg1);
@@ -1504,6 +1507,7 @@ void a_newgroup(const userinput * const u)
   if (invalid_dir(u, u->arg2e) != 0)
      return;
 
+  esacpe_quotes(u->arg2e);
   convert_to_unix_slash(u->arg2e);
   if (gdata.groupsincaps)
     caps(u->arg1);
@@ -1999,10 +2003,12 @@ void a_newdir(const userinput * const u)
       return;
       }
 
+   esacpe_quotes(u->arg1);
    dir1 = mystrdup(u->arg1);
    convert_to_unix_slash(dir1);
 
-   dir2 = mystrdup(u->arg1);
+   esacpe_quotes(u->arg2e);
+   dir2 = mystrdup(u->arg2e);
    convert_to_unix_slash(dir2);
 
    found = 0;
@@ -2018,7 +2024,7 @@ void a_newdir(const userinput * const u)
        xdccsavetext();
      }
  
-   a_respond(u, "NEWFILE: %d Packs found", found);
+   a_respond(u, "NEWDIR: %d Packs found", found);
    mydelete(dir1);
    mydelete(dir2);
 }
@@ -2043,6 +2049,7 @@ void a_filemove(const userinput * const u)
       return;
       }
    
+   esacpe_quotes(u->arg1);
    file1 = mystrdup(u->arg1);
    convert_to_unix_slash(file1);
    
@@ -2079,6 +2086,7 @@ void a_filemove(const userinput * const u)
       return;
      }
    
+   esacpe_quotes(u->arg2e);
    file2 = mystrdup(u->arg2e);
    convert_to_unix_slash(file2);
    
@@ -2159,6 +2167,7 @@ void a_movefile(const userinput * const u)
       return;
      }
    
+   esacpe_quotes(u->arg2e);
    file2 = mystrdup(u->arg2e);
    convert_to_unix_slash(file2);
    
@@ -2248,6 +2257,7 @@ void a_filedel(const userinput * const u)
    if (invalid_file(u, u->arg1e) != 0)
       return;
 
+   esacpe_quotes(u->arg1e);
    a_filedel_disk(u, u->arg1e);
 }
 
@@ -2306,6 +2316,7 @@ void a_showdir(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
  
+  esacpe_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
   
   if (u->arg1e[strlen(u->arg1e)-1] == '/')

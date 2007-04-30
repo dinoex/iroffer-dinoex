@@ -21,5 +21,6 @@ int check_level(char prefix);
 int number_of_pack(xdcc *pack);
 int verifypass2(const char *masterpass, const char *testpass);
 void checkadminpass2(const char *masterpass);
+char* esacpe_quotes(char *str);
 
 /* End of File */

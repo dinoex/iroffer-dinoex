@@ -176,4 +176,25 @@ void checkadminpass2(const char *masterpass)
 #endif
 }
 
+char* esacpe_quotes(char *str)
+{
+  char *src;
+  char *dest;
+  int len;
+ 
+  if (str[0] != '"')
+    return str;
+
+  src = str + 1;
+  len = strlen(src) - 1;
+  if (src[len] == '"')
+    src[len] = 0;
+
+  dest = str;
+  for (dest = str; *src; src++) {
+    *(dest++) = *src;
+  }
+  return str;
+}
+
 /* End of File */

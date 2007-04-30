@@ -3,6 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.10:
 ----------------------
 
+138) esacpe_quotes
+  Allow Admin handle files with spaces
+
+bugfix: NEWDIR
+  versions affected: 2.5 - 2.9
+  newdir did not change packs
+
 MULTINET: channel_join_raw
   now seperate for each network
 
