@@ -1,37 +1,42 @@
 #!/bin/sh
 lang="${1-de}"
+echo -n "parsing ... "
+echo -n "" > "${lang}.sed"
 grep -v "^#" "${lang}.txt" |
 while read nr text
 do
-	if fgrep -q "${nr} ${text}" en.txt
+	if ! grep -q "^${nr} " en.txt
 	then
 		continue
 	fi
-	en=`grep "^${nr} " en.txt`
+	en=`grep "^${nr} " "en.txt"`
 	en="${en#* }"
-	echo "s+${en}+${text}+" >> "${lang}.sed"
+	text=`grep "^${nr} " "${lang}.txt"`
+	text="${text#* }"
+	if test "${en}" = "${text}"
+	then
+		continue
+	fi
+	echo "s°${en}°${text}°" |
+	sed -e 's|\\|\\\\|g' -e 's|\*|\\*]|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' >> "${lang}.sed"
 done
-for c in src/iroffer*.c
+echo "done"
+for c in src/iroffer*.c src/dinoex*.c
 do
-	sed -f "${lang}.sed" "${c}" > "${c}.new"
+	if test ! -f "${c}.en"
+	then
+		echo \
+		cp -p "${c}" "${c}.en"
+		cp -p "${c}" "${c}.en"
+	fi
+	sed -f "${lang}.sed" "${c}".en > "${c}.new"
 	if diff -q "${c}" "${c}.new"
 	then
 		rm -f "${c}.new"
 		continue
 	fi
-	if test ! -f "${c}.en"
-	then
-		echo \
-		mv -i "${c}" "${c}.en"
-		mv -i "${c}" "${c}.en"
-	else
-		echo \
-		rm -f "${c}"
-		rm -f "${c}"
-	fi
 	echo \
-	mv -i "${c}.new" "${c}"
-	mv -i "${c}.new" "${c}"
-	rm -f "${c}.new"
+	mv -f "${c}.new" "${c}"
+	mv -f "${c}.new" "${c}"
 done
 # eof
