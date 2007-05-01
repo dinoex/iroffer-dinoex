@@ -1668,6 +1668,7 @@ static void mainloop (void) {
             tostdout(tempstr2,tempstr);
             
             tostdout("\x1b[%d;%dH]\x1b[u",gdata.termlines,gdata.termcols);
+            gdata.attop = 0;
             }
          
          admin_jobs();
