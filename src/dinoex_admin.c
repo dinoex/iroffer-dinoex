@@ -2284,11 +2284,8 @@ void a_fileremove(const userinput * const u)
       return;
       }
 
-   if (num2 == 0) {
-      xd = irlist_get_nth(&gdata.xdccs, num1-1);
-      a_remove_pack(u, xd, num1);
-      return;
-      }
+   if (num2 == 0)
+      num2 = num1;
 
    if ( num2 < num1 ) {
       a_respond(u, "Pack numbers are not in order");

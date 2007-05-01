@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.10:
 ----------------------
 
+bugfix: FILEREMOVE
+  when removing only one pack the file was not removed
+
 139) filedir (inspired by Tak0r, Kakashi)
   filedir can now have multiple entrys
 
