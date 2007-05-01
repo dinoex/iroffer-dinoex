@@ -14,7 +14,6 @@ then
 	exit 0
 fi
 echo -n "parsing ... "
-echo -n "" > "${lang}.sed"
 grep -v "^#" "${lang}.txt" |
 while read nr text
 do
@@ -30,9 +29,9 @@ do
 	then
 		continue
 	fi
-	echo "s°${en}°${text}°" |
-	sed -e 's|\\|\\\\|g' -e 's|\*|\\*]|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' >> "${lang}.sed"
-done
+	echo "s°${en}°${text}°"
+done |
+sed -e 's|\\|\\\\|g' -e 's|\*|\\*]|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
 echo "done"
 for c in src/iroffer*.c src/dinoex*.c
 do
