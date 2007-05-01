@@ -1,12 +1,44 @@
 #!/bin/sh
-awk -f ./admin.awk src/iroffer_admin.c > admin.neu
-#wdiff admin.txt admin.neu
-if diff admin.txt admin.neu
+
+copy_if_differ() {
+	if diff "${1}" "${2}"
+	then
+		rm -f "${2}"
+	else
+		mv -f "${2}" "${1}"
+	fi
+}
+
+awk -f ./admin.awk src/iroffer_admin.c > help-admin-en.neu
+copy_if_differ help-admin-en.txt help-admin-en.neu
+lang="de"
+if test ! -f "${lang}.sed"
 then
-	rm -f admin.neu
-else
-	mv -f admin.neu admin.txt
+	echo -n "parsing ... "
+	grep -v "^#" "${lang}.txt" |
+	while read nr text
+	do
+		if ! grep -q "^${nr} " en.txt
+		then
+			continue
+		fi
+		en=`grep "^${nr} " "en.txt"`
+		en="${en#* }"
+		text=`grep "^${nr} " "${lang}.txt"`
+		text="${text#* }"
+		if test "${en}" = "${text}"
+		then
+			continue
+		fi
+		echo "s°${en}°${text}°"
+	done |
+	sed -e 's|\\|\\\\|g' -e 's|\*|\\*]|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
+	echo "done"
 fi
+sed -f "${lang}.sed" src/iroffer_admin.c |
+awk -f ./admin.awk > "help-admin-${lang}.neu"
+copy_if_differ "help-admin-${lang}.txt" "help-admin-${lang}.neu"
+#
 echo "New in en.txt:"
 nr="0"
 if test -f en.txt
@@ -15,36 +47,18 @@ then
 fi
 fgrep -h \" src/iroffer*.c src/dinoex*.c |
 grep -v "^#include" |
-fgrep -v "'\"'" |
+sed -e 's|\\"|°|g' |
 awk -F \[\"\] '
 {
-	MORE = 0
 	for ( I = 2; I <= NF ; I ++ ) {
 		gsub( "[\\\\]", "\\\\", $I )
-		LEN = length( $I ) - 1
-		if ( substr( $I, LEN, 2 ) == "\\\\" ) {
-			printf( "\"%s\\", $I )
-			MORE = 1
-		} else {
-			if ( MORE == 0 ) {
-				if ( $I != "" )
-					print "\"" $I "\""
-				I ++
-			} else {
-				MORE = 0
-				if ( $I != "" ) {
-					print "\"" $I "\""
-				} else {
-					print $I "\""
-				}
-				I ++
-			}
-		}
+		if (( $I != "" ) && ( $(I+1) != "" ))
+			print "\"" $I "\""
+		I ++
 	}
-#	print
-#	print ""
 }
 ' |
+sed -e 's|°|\\\\"|g' |
 while read text
 do
 	if fgrep -q "${text}" en.txt
@@ -58,7 +72,7 @@ done
 #
 # 
 echo "Obsolete in en.txt:"
-sed -e 's|\\|\\\\|g' -e "s| \"| '\"|" -e "s|\"$|\"'|" en.txt |
+sed -e 's|\\|\\\\|g' en.txt |
 while read nr text
 do
 	text="${text#'}"
