@@ -1,5 +1,18 @@
 #!/bin/sh
 lang="${1-de}"
+if test "${lang}" = "en"
+then
+	for c in src/iroffer*.c src/dinoex*.c
+	do
+		if test -f "${c}.en"
+		then
+			echo \
+			mv -f "${c}.en" "${c}"
+			mv -f "${c}.en" "${c}"
+		fi
+	done
+	exit 0
+fi
 echo -n "parsing ... "
 echo -n "" > "${lang}.sed"
 grep -v "^#" "${lang}.txt" |
