@@ -88,7 +88,8 @@ bugfix: need_level
 128) NOCHANNEL
   
   new admin command:
-  NOCHANNEL x <channel>            leave the channel for <x> minutes
+  NOCHANNEL x <channel>            leave the channel <channel> for <x> minutes
+  NOCHANNEL x                      leave all channels for <x> minutes
 
    References TODO:
 Long Term Features:
@@ -402,7 +403,7 @@ With Version mod 1.31:
 92) extend_status_line
   print out upload and download bandwidth in status line.
 
-bugfix; unlimitedhost
+bugfix: unlimitedhost
   report all matching unlimited downloads in log
 
 bugfix: HOLDQUEUE
@@ -412,7 +413,7 @@ With Version mod 1.30:
 ----------------------
 
 80) restrictsend_warning (inspired by Terra_Knight)
-  If set, try to warn use when he leaves channel.
+  If set, try to warn user when he leaves channel.
 
 81) restrictsend_timeout (inspired by Terra_Knight)
   Timeout in seconds to cancel transfer after user left channel.
@@ -545,6 +546,14 @@ versions affected: 1.26 Multinet
 
 With Version mod 1.26:
 ----------------------
+
+MULTINET:
+  Neue Admin Kommandos:
+  MSGNET <ne> <nick> <message>   Send text <message> to user <nick>
+  RAWNET <ne> <command>          Send <command> to server (RAW IRC)
+  SERVERS <net>                  Shows the server list
+  JUMP server <net>              Switches to a random server or server <server>
+  IDENTIFY <net>                 Send stored password again to nickserv
 
 66) network
    support multiple irc networks with common queue and limits.
@@ -718,6 +727,7 @@ bugfix: need_voice
 
    new admin command:
    HOP <channel>              leave and rejoin a channel to get status
+   HOP                        leave and rejoin all channels to get status
 
 50) generate md5 password hash per default (inspired by TheDeath)
 
@@ -867,7 +877,7 @@ With Version mod 1.13:
 bugfix: channel -headline (inspired by Chobits)
    if channel headline is set, drop global headline
 
-27) removegroup (inspired by Neo2001)
+27) REMOVEGROUP (inspired by Neo2001)
 
    new admin commands:
    REMOVEGROUP <group>     remove every file within <group>
@@ -964,7 +974,7 @@ With Version mod 1.7:
 
    when adding a file, search for a similar entry, and set the same group.
 
-14) addgroup (inspired by Keichi)
+14) ADDGROUP (inspired by Keichi)
 
    new admin commands:
    ADDGROUP <group> <dir>     import new files in this dir to given group
