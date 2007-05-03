@@ -554,17 +554,16 @@ versions affected: 1.26 Multinet
 With Version mod 1.26:
 ----------------------
 
-MULTINET:
+66) network (MULTINET)
+   support multiple irc networks with common queue and limits.
+   activate with ./Configure -m
+
   Neue Admin Kommandos:
   MSGNET <ne> <nick> <message>   Send text <message> to user <nick>
   RAWNET <ne> <command>          Send <command> to server (RAW IRC)
   SERVERS <net>                  Shows the server list
   JUMP server <net>              Switches to a random server or server <server>
   IDENTIFY <net>                 Send stored password again to nickserv
-
-66) network
-   support multiple irc networks with common queue and limits.
-   activate with ./Configure -m
 
    References TODO:
 Not going to happen anytime soon:
