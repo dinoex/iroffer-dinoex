@@ -860,6 +860,7 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
       u2->chat = u->chat;
       u2->cmd = mystrdup( "REMOVE" );
       u2->net = gnetwork->net;
+      u2->level = u->level;
 
       u2->arg1 = tempstr;
       tempstr = NULL;
@@ -1359,6 +1360,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
       u2->chat = u->chat;
       u2->cmd = mystrdup( "ADD" );
       u2->net = gnetwork->net;
+      u2->level = u->level;
 
       if (u2->snick != NULL)
         {

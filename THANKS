@@ -120,6 +120,7 @@ Thunder
 	reporting multinet bug, punishslowusers
 	option "hadminhost"
 	reporting IDENTIFY bug
+	reporting add_delayed bug
 
 Alita-Chan
 	reporting XDCC LIST problem with total line
