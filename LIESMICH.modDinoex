@@ -484,36 +484,39 @@ bugfix: CRC
 
 Ab Version mod 1.27:
 --------------------
-With Version mod 1.27:
-----------------------
 
-69) iroffer parts from unwanted channels
-  this makes it easier to get unbanned in euirc.net
+69) iroffer verlässt unbekannte Channel
+  Ohne dies ist es im Eurirc schwer ein Bann loszuwerden.
 
 70) noautorejoin
-  do not rejoin the channel when bot is kicked.
+  Wenn der Bot aus dem Channel gekickt wird,
+  wird der Channel nicht wieder betreten.
 
 71) auto_crc_check
-  compute crc32 for new files and  lock them when crc does not match
-  pattern in filename.
+  Berechne die CRC32 von neuen Dateien und sperre das Paket wenn
+  die CRC32 nicht zu der im Dateinamen passt.
 
 72) nocrc32
-  disable crc32 calculation.
+  Abschalten der CRC32 Berechnung.
 
 73) CRC
   Neue Admin Kommandos:
   CRC <n>              Zeigt das Ergebnis der CRC Prüfung von Paket <n> an
   CRC                  Zeigt das Ergebnis der CRC Prüfung von allen Paketen an
 
-bugfix: crashes with mutitinet chats
-versions affected: 1.26 Multinet
+bugfix: MULTINET
+  versions affected: 1.26 Multinet
+  Bot crasht beim admin chat
 
 Ab Version mod 1.26:
 --------------------
-With Version mod 1.26:
-----------------------
 
-MULTINET:
+66) network (MULTINET)
+  Unterstützung um den Bot in mehreren IRC-Netzen zu betreiben.
+  Grenzen und Warteschlange sind allen Netzen gemeinsam.
+   
+  Zum Aktivieren muß der Bot mit "./Configure -m" gebaut werden.
+
   Neue Admin Kommandos:
   MSGNET <netz> <nick> <message>  Sendet Mitteilung <message> an Nick <nick>
   RAWNET <netz> <command>         Sendet <command> zum Server (RAW IRC)
@@ -521,15 +524,11 @@ MULTINET:
   JUMP server <netz>              Wechselt zu einem zufälligen Server oder zu <server>
   IDENTIFY <netz>                 Sende das Passwort für 'nickserv' erneut
 
-66) network
-   support multiple irc networks with common queue and limits.
-   activate with ./Configure -m
-
 67) waitafterjoin
-   do not announce plist directly after joining a channel.
+  Nicht sofort nach dem Betrenen eine Channels die PLIST senden.
 
 68) nodownloadhost
-   specify who can not download from this bot.
+  Hostmaks für Systeme die nicht vom Bot Pakete holen dürfen.
 
 Ab Version mod 1.30:
 --------------------
