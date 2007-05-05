@@ -85,6 +85,7 @@ static config_bool_typ config_parse_bool[] = {
 {"restrictprivlistmain",   &gdata.restrictprivlistmain },
 {"restrictsend",           &gdata.restrictsend },
 {"restrictsend_warning",   &gdata.restrictsend_warning },
+{"spaces_in_filenames",    &gdata.spaces_in_filenames },
 {"timestampconsole",       &gdata.timestampconsole },
 {"xdcclist_grouponly",     &gdata.xdcclist_grouponly },
 {"xdcclistfileraw",        &gdata.xdcclistfileraw },

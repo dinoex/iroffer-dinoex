@@ -1187,6 +1187,12 @@ char* getsendname(char * const full)
   /* replace any evil characters in the filename with underscores */
   for (i = 0; i < len; i++)
     {
+     if (copy[i] == ' ')
+        {
+          if (gdata.spaces_in_filenames == 0)
+            copy[i] = '_';
+          continue;
+        }
       if (copy[i] == '|' || copy[i] == ':' || copy[i] == '*' ||
           copy[i] == '?' || copy[i] == '<' || copy[i] == '>')
         {
@@ -2239,6 +2245,7 @@ void reinit_config_vars(void)
   gdata.nocrc32 = 0;
   gdata.direct_file_access = 0;
   gdata.autoaddann_short = 0;
+  gdata.spaces_in_filenames = 0;
   gdata.autoadd_time = 0;
   gdata.restrictsend_warning = 0;
   gdata.restrictsend_timeout = RESTRICTSEND_TIMEOUT;

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.11:
 ----------------------
 
+bugfix: spaces_in_filenames
+  now as option in config
+
 bugfix: autoaddann (reported by Thunder)
   versions affected: 2.9 - 2.10
   was ignored on ADDDIR, ADDNEW, AUTOADD
@@ -83,7 +86,7 @@ speedup reading config
 
 130) Better logging for QUEUED SEND (inspired by Alita-Chan)
 
-129) spaces in filenames (inspired by Cork)
+129) spaces_in_filenames (inspired by Cork)
   support spaces in filenames for transfer and resume
 
 With Version mod 2.8:

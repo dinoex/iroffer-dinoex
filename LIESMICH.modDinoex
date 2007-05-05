@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.11:
 --------------------
 
+bugfix: spaces_in_filenames
+  jetzt als konfigurierbare Option in der Konfigurationsdatei.
+
 bugfix: autoaddann
   versions affected: 2.9 - 2.10
   autoaddann wurde nicht ausgeführt bei ADDDIR, ADDNEW, AUTOADD
@@ -83,7 +86,7 @@ Konfigurationsdatei wird schneller gelesen.
 130) QUEUED SEND
   Pack Nummer ins Logfile schreiben.
 
-129) spaces in filenames
+129) spaces_in_filenames
   Es sind jetzt Leerzeichen im Dateinamen erlaubt.
 
 
