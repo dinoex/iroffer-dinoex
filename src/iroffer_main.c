@@ -3096,7 +3096,7 @@ static void privmsgparse(const char* type, char* line) {
                  {
                    if (tr->tr_status != TRANSFER_STATUS_DONE)
                      {
-                       t_closeconn(tr,"Tranfer cancelled by user",0);
+                       t_closeconn(tr,"Transfer cancelled by user",0);
                      }
                  }
              }

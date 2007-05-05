@@ -833,7 +833,7 @@
 836 "XDCC INFO %s"
 837 "XDCC QUEUE (%s on %s)"
 838 "STOP"
-839 "Tranfer cancelled by user"
+839 "Transfer cancelled by user"
 840 "XDCC CANCEL (%s on %s)"
 841 "Removed you from the queue for \"%s\", you waited %li minute%s."
 842 "You Don't Appear To Be In A Queue"
