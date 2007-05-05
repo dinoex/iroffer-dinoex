@@ -536,16 +536,15 @@ Ab Version mod 1.26:
 
 Ab Version mod 1.30:
 --------------------
-With Version mod 1.25:
-----------------------
 
 64) geoipexcludenick
-   allow downloads for this nicks, even if geoip entry differs.
+  Erlaube Downlodas an diese Nicks auch wenn GeoIP dies verbietet.
 
-65) do not response on CPTP PING response
+65) CPTP PING
+  ignoriere Antwort auf CPTP PING
 
 bugfix:
-    geoipcountry worked only when ignoreduplicateip was active.
+  geoipcountry funktinuerte nur wenn ignoreduplicateip ein war
 
 Ab Version mod 1.24:
 --------------------
@@ -553,9 +552,9 @@ With Version mod 1.24:
 ----------------------
 
 58) channel -delay
-   delay messages to this channel by seconds.
+  Keine PLIST kurz nach dem Betreten diese Channels
 
-Sample:
+Beispiel:
 channel #chan04 -plist 14 -pformat summary -delay 60
 
 59) sync with iroffer1.4.b03 (from PMG)
