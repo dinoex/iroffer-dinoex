@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.11:
 --------------------
 
+bugfix: SORT
+  Sort kommt jetzt auch mit Dateien ohne Verzeichnis klar.
+
 bugfix: spaces_in_filenames
   Iroffer vor 2.9 können diese Dateien nicht empfangen.
   Jetzt als konfigurierbare Option in der Konfigurationsdatei.

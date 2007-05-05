@@ -986,7 +986,7 @@ void a_sort(const userinput * const u)
           if (work != NULL)
             nname = work;
           else
-            nname = xdo->file;
+            nname = xdn->file;
 
           if (strcasecmp(oname,nname) < 0)
             break;
