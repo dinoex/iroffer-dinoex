@@ -3,7 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.11:
 ----------------------
 
-bugfix: spaces_in_filenames
+bugfix: spaces_in_filenames (reported by dondieschotte)
+  could not send such files to older iroffers < 2.9
   now as option in config
 
 bugfix: autoaddann (reported by Thunder)

@@ -4,7 +4,8 @@ Ab Version mod 2.11:
 --------------------
 
 bugfix: spaces_in_filenames
-  jetzt als konfigurierbare Option in der Konfigurationsdatei.
+  Iroffer vor 2.9 können diese Dateien nicht empfangen.
+  Jetzt als konfigurierbare Option in der Konfigurationsdatei.
 
 bugfix: autoaddann
   versions affected: 2.9 - 2.10

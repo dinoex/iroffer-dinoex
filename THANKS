@@ -190,6 +190,7 @@ dondieschotte
 	report "adminhostmask" bug
 	report "removelostfile" bug
 	message to channels not joined
+	report "sapces_in_filenames" bug
 
 dsd
 	admin command "autoadd"
