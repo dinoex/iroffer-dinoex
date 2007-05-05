@@ -176,7 +176,7 @@ void checkadminpass2(const char *masterpass)
 #endif
 }
 
-char* esacpe_quotes(char *str)
+char* clean_quotes(char *str)
 {
   char *src;
   char *dest;

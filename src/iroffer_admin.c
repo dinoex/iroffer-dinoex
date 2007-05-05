@@ -1610,7 +1610,7 @@ static void u_removedir(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
-  esacpe_quotes(u->arg1e);
+  clean_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -1850,7 +1850,7 @@ static void u_chfile(const userinput * const u) {
       return;
 
    /* verify file is ok first */
-   esacpe_quotes(u->arg2e);
+   clean_quotes(u->arg2e);
    convert_to_unix_slash(u->arg2e);
    file = mystrdup(u->arg2e);
    
@@ -1940,7 +1940,7 @@ static void u_adddir(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
-  esacpe_quotes(u->arg1e);
+  clean_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -1971,7 +1971,7 @@ static void u_addnew(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
-  esacpe_quotes(u->arg1e);
+  clean_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
    
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
@@ -3700,7 +3700,7 @@ static void u_rmul(const userinput * const u) {
    if (invalid_file(u, u->arg1e) != 0)
       return;
 
-   esacpe_quotes(u->arg1e);
+   clean_quotes(u->arg1e);
    convert_to_unix_slash(u->arg1e);
    
    if (strstr(u->arg1e,"/")) {
