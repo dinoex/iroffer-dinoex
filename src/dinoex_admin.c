@@ -973,18 +973,18 @@ void a_sort(const userinput * const u)
       irlist_remove(&old_list, xdo);
       work = strrchr(xdo->file, '/');
       if (work != NULL)
-        oname = work;
+        oname = work + 1;
       else
         oname = xdo->file;
 
       n = 0;
-      xdn = irlist_get_tail(&gdata.xdccs);
+      xdn = irlist_get_head(&gdata.xdccs);
       while(xdn)
         {
           n++;
           work = strrchr(xdn->file, '/');
           if (work != NULL)
-            nname = work;
+            nname = work + 1;
           else
             nname = xdn->file;
 
@@ -999,7 +999,7 @@ void a_sort(const userinput * const u)
         }
       else 
         {
-          if (n <= 1)
+          if (n == 0)
             irlist_insert_head(&gdata.xdccs, xdo);
           else
             irlist_insert_tail(&gdata.xdccs, xdo);
