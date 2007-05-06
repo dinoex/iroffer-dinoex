@@ -1179,7 +1179,7 @@ char* getsendname(char * const full)
   len -= lastslash + 1;
   copy = mycalloc(len + 1 + spaced);
   
-  if (spaced != 0)
+  if ((spaced != 0) && (gdata.spaces_in_filenames != 0))
     sprintf(copy, "\"%s\"", full + lastslash + 1);
   else
     strcpy(copy, full + lastslash + 1);
