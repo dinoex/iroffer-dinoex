@@ -1377,7 +1377,7 @@
 1381 "** Closing Connection: %s (%s)"
 1382 "** Closing Connection: %s"
 1383 "** Du hast eine ‹bertragung schwebend, Du muﬂt den Download jetzt annehmen. "
-1384 "Schreibe \"XDCC CANCEL\" an den Bot um die ‹bertragung abzubrechen. "
+1384 "Schreibe \"/MSG %s XDCC CANCEL\" an den Bot um die ‹bertragung abzubrechen. "
 1385 "(%li Sekunden bis zum Abbruch)"
 1386 "Dein Download ist mit %2.1fK/sec ist zu langsam, mindestens %2.1fK/sec erforderlich"
 1387 "Du wirst wegen zu langsamen Download bestratft"
