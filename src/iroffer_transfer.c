@@ -845,8 +845,10 @@ void t_remind(transfer * const t) {
    if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
      {
        notice(t->nick,"** You have a DCC pending, Set your client to receive the transfer. "
-              "Send XDCC CANCEL to abort the transfer. "
-	      "(%li seconds remaining until timeout)",(long)(t->lastcontact+180-gdata.curtime));
+              "Type \"/MSG %s XDCC CANCEL\" to abort the transfer. "
+	      "(%li seconds remaining until timeout)",
+              save_nick(gnetwork->user_nick),
+              (long)(t->lastcontact+180-gdata.curtime));
      }
    
    gnetwork = backup;

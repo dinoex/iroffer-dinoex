@@ -693,7 +693,7 @@ static void u_xdl_head(const userinput * const u) {
         }
       break;
     default:
-      u_respond(u,"\2**\2 To stop this listing, type /MSG %s XDCC STOP \2**\2",
+      u_respond(u,"\2**\2 To stop this listing, type \"/MSG %s XDCC STOP\" \2**\2",
                   save_nick(gnetwork->user_nick));
       break;
     }
@@ -788,11 +788,11 @@ static void u_xdl_head(const userinput * const u) {
        
        u_respond(u,"%s",tempstr);
        
-       u_respond(u,"\2**\2 To request a file, type \"/msg %s xdcc send x\" \2**\2",
+       u_respond(u,"\2**\2 To request a file, type \"/MSG %s XDCC SEND x\" \2**\2",
                  save_nick(gnetwork->user_nick));
        
        if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
-          u_respond(u,"\2**\2 To request details, type \"/msg %s xdcc info x\" \2**\2",
+          u_respond(u,"\2**\2 To request details, type \"/MSG %s XDCC INFO x\" \2**\2",
                     save_nick(gnetwork->user_nick));
        
        i = 0;
@@ -806,7 +806,7 @@ static void u_xdl_head(const userinput * const u) {
            xd = irlist_get_next(xd);
          }
        if (i > 0)
-          u_respond(u,"\2**\2 To list a group, type \"/msg %s xdcc list GROUP\" \2**\2",
+          u_respond(u,"\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
                     save_nick(gnetwork->user_nick));
      }
    
@@ -814,7 +814,7 @@ static void u_xdl_head(const userinput * const u) {
      {
        if (!gdata.restrictprivlist)
          {
-           u_respond(u,"\2**\2 For a listing type: \"/msg %s xdcc list\" \2**\2",
+           u_respond(u,"\2**\2 For a listing type: \"/MSG %s XDCC LIST\" \2**\2",
                      save_nick(gnetwork->user_nick));
          }
        if (gdata.creditline)

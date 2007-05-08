@@ -3204,7 +3204,7 @@ static void privmsgparse(const char* type, char* line) {
         strcpy(tempstr2, "");
       else
         snprintf(tempstr2, maxtextlength - 2,
-                 "Trigger:\2(\2/msg %s xdcc list\2)\2 ",
+                 "Trigger:\2(\2/MSG %s XDCC LIST\2)\2 ",
                  save_nick(gnetwork->user_nick));
       notice_slow(nick,
              "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
@@ -3736,7 +3736,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
 
          snprintf(tempstr,maxtextlength,
                   "Added you to the main queue for pack %d (\"%s\") in position %d. To Remove yourself at "
-                  "a later time type \"/msg %s xdcc remove\".",
+                  "a later time type \"/MSG %s XDCC REMOVE\".",
                   pack, tempx->desc,
                   irlist_size(&gdata.mainqueue),
                   save_nick(gnetwork->user_nick));

@@ -634,7 +634,7 @@ void check_new_connection(transfer *const tr)
                msg = mycalloc(maxtextlength);
                if (country == NULL)
                   country = "error";
-               snprintf(msg, maxtextlength - 1, "Sorry, no downloads to your country = %s", country);
+               snprintf(msg, maxtextlength - 1, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
                t_closeconn(tr, msg, 0);
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                         "IP from other country (%s) detected", country);
@@ -968,7 +968,7 @@ int noticeresults(const char *nick, const char *match)
               snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
               len = strlen(tempstr);
             }
-            snprintf(tempstr + len, maxtextlength - 1 - len, " - /msg %s xdcc send x -",
+            snprintf(tempstr + len, maxtextlength - 1 - len, " - /MSG %s XDCC SEND x -",
                      save_nick(gnetwork->user_nick));
             len = strlen(tempstr);
             if (!strcmp(match, "*"))
@@ -1795,7 +1795,7 @@ void write_removed_xdcc(xdcc *xd)
 
   if (fd < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Cant Create XDCC rEmove File '%s': %s",
+             "Cant Create XDCC Remove File '%s': %s",
              gdata.xdccremovefile, strerror(errno));
     return;
   }
