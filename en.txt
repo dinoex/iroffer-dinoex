@@ -72,7 +72,7 @@
 72 "RENUMBER"
 73 "Moves pack <x> to position <y>"
 74 "SORT"
-75 "Sort all packs by filename"
+75 "Sort all packs by filename or description"
 76 "ADD"
 77 "filename"
 78 "Add new pack with <filename>"
@@ -1758,3 +1758,4 @@
 1763 "monitor_files"
 1764 "\"%s\""
 1765 "spaces_in_filenames"
+1766 "[1]"

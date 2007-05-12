@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.11:
 --------------------
 
+140) SORT
+  Neues Admin Kommando:
+  SORT 1                           Sortiere alle Pakete nach der Beschreibung
+
 Mitteilungen erweitert und vereinheitlicht.
 
 bugfix: SORT
@@ -178,18 +182,18 @@ bugfix: IDENTIFY
 Ab Version mod 2.5:
 -------------------
 
-119: NEWDIR
+119) NEWDIR
   Neues Admin Kommando:
   NEWDIR <dirname> <neu>           Ändert das Verzeichnis in allen zutreffenden Paketen
 
-118: debug
+118) debug
   Debug geht jetzt auch in der Konfigurationsdatei.
 
 bugfix: admin_job_file
   Massenhaftes hinzufügen von Dateien per Job
   hält den Bot nicht mehr an.
 
-117: DUMP
+117) DUMP
   Neues Admin Kommando:
   DUMP                             Schreibt alle Internen Informationen in das Logfile
 
@@ -223,7 +227,7 @@ bugfix: ADDDIR
 Ab Version mod 2.2:
 -------------------
 
-116: SORT
+116) SORT
   Neues Admin Kommando:
   SORT                             Sortiere alle Pakete nach dem Dateinamen
 

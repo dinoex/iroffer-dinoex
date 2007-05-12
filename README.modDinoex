@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.11:
 ----------------------
 
+140: SORT (inspired by dondieschotte)
+  new admin commands:
+  SORT 1                            Sort all Packs by Description
+
 improve and make messages consistent
 
 bugfix: SORT (reported by dondieschotte)
@@ -187,18 +191,18 @@ bugfix: IDENTIFY
 With Version mod 2.5:
 ---------------------
 
-119: NEWDIR (inspired by chibi)
+119) NEWDIR (inspired by chibi)
 
   new admin commands:
   NEWDIR <dirname> <dirname>        rename pathnames of all matching packs
 
-118: debug
+118) debug
   allow to set debug level in config file
 
 bugfix: admin_job_file
   mass add or remove via admin_job_file will no longer stall the bot.
 
-117: DUMP
+117) DUMP
 
   new admin commands:
   DUMP                              Write a DUMP into the logfile

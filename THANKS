@@ -191,6 +191,7 @@ dondieschotte
 	report "removelostfile" bug
 	message to channels not joined
 	report "sapces_in_filenames" bug
+	admin command  "sort 1"
 
 dsd
 	admin command "autoadd"

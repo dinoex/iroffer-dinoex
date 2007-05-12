@@ -943,15 +943,31 @@ void a_removegroup(const userinput * const u)
      }
 }
 
+static const char *a_sort_key(int k, xdcc *xd)
+{
+  const char *work;
+
+  switch ( k ) {
+  case 1:
+    return xd->desc;
+  default:
+    work = strrchr(xd->file, '/');
+    if (work == NULL)
+      return xd->file;
+
+    return ++work;
+  }
+}
+
 void a_sort(const userinput * const u)
 {
   irlist_t old_list;
   xdcc *xdo, *xdn;
   const char *oname;
   const char *nname;
-  const char *work;
   char *tmpdesc;
   int n;
+  int k = 0;
 
   updatecontext();
  
@@ -960,6 +976,8 @@ void a_sort(const userinput * const u)
       a_respond(u,"No packs to sort");
       return;
     }
+
+  if (u->arg1) k = atoi(u->arg1);
 
   old_list = gdata.xdccs;
   /* clean start */
@@ -971,23 +989,14 @@ void a_sort(const userinput * const u)
     {
       xdo = irlist_get_head(&old_list);
       irlist_remove(&old_list, xdo);
-      work = strrchr(xdo->file, '/');
-      if (work != NULL)
-        oname = work + 1;
-      else
-        oname = xdo->file;
+      oname = a_sort_key(k, xdo);
 
       n = 0;
       xdn = irlist_get_head(&gdata.xdccs);
       while(xdn)
         {
           n++;
-          work = strrchr(xdn->file, '/');
-          if (work != NULL)
-            nname = work + 1;
-          else
-            nname = xdn->file;
-
+          nname = a_sort_key(k, xdo);
           if (strcasecmp(oname,nname) < 0)
             break;
 
