@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.11:
 ----------------------
 
+141) german messages for users
+  activate with "./Lang de" after "Configure"
+  to switch bach to englisch call "./Lang en"
+
 140: SORT (inspired by dondieschotte)
   new admin commands:
   SORT 1                            Sort all Packs by Description

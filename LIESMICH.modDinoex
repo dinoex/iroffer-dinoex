@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.11:
 --------------------
 
+141) Deutsche Texte für User
+  Aktiviert werde diese durch "./Lang de" nach dem "Configure"
+  Zurück zum Englischen gehts es mit "./Lang en"
+
 140) SORT
   Neues Admin Kommando:
   SORT 1                           Sortiere alle Pakete nach der Beschreibung
