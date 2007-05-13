@@ -160,6 +160,7 @@ Cork
 	reporting QSEND bug
 	spaces in filenames
 	reporting tar in Makefile.config
+	reporting msg bug
 
 anibi
 	option "include_subdirs"

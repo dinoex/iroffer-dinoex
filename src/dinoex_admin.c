@@ -2417,7 +2417,7 @@ channel_t *is_not_joined_channel(const userinput * const u, const char *name)
 
   ch = irlist_get_head(&(gnetwork->channels));
   while(ch) {
-    if (!strcasecmp(ch->name, name))
+    if (strcasecmp(ch->name, name) == 0)
       return ch;
 
     a_respond(u,"Bot not in Channel %s on %s", name, gnetwork->name);

@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 2.12:
+----------------------
+
+bugfix: MSG, MSGNET, PSEND (reported by Cork)
+  versions affected: 2.10 - 2.11
+  could not send to channels
+
 With Version mod 2.11:
 ----------------------
 
