@@ -2420,10 +2420,9 @@ channel_t *is_not_joined_channel(const userinput * const u, const char *name)
     if (strcasecmp(ch->name, name) == 0)
       return ch;
 
-    a_respond(u,"Bot not in Channel %s on %s", name, gnetwork->name);
-    return NULL;
+    ch = irlist_get_next(ch);
   }
-  a_respond(u,"Channel %s on %s not found", name, gnetwork->name);
+  a_respond(u,"Bot not in Channel %s on %s", name, gnetwork->name);
   return NULL;
 }
 
