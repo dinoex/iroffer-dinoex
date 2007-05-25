@@ -667,11 +667,14 @@ static int connectirc (server_t *tserver) {
        outerror(OUTERROR_TYPE_WARN_LOUD,"fork(): %s", strerror(errno));
        return 1;
      }
-   else if (callval == 0)
+   if (callval == 0)
      {
        struct hostent *remotehost;
        int i;
        
+       /* enable logfile */
+       gdata.logfd = FD_UNUSED;
+
        /* child */
        for (i=3; i<FD_SETSIZE; i++)
          {
