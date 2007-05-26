@@ -1646,7 +1646,7 @@ void identify_needed(int force)
 
 void identify_check(const char *line)
 {
-  if (strstr(line, "Nickname is registered to someone else.") != NULL)
+  if (strstr(line, "Nickname is registered to someone else") != NULL)
     {
       identify_needed(0);
     }
@@ -1654,11 +1654,11 @@ void identify_check(const char *line)
     {
       identify_needed(0);
     }
-  if (strstr(line, "This nickname is registered and protected.") != NULL)
+  if (strstr(line, "This nickname is registered and protected") != NULL)
     {
       identify_needed(0);
     }
-  if (strstr(line, "please choose a different nick.") != NULL)
+  if (strstr(line, "please choose a different nick") != NULL)
     {
       identify_needed(0);
     }
