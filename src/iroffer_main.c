@@ -2417,6 +2417,13 @@ static void parseline(char *line) {
                                  {
                                    nick[strlen(nick)-1] = '\0';
                                  }
+                               if (plus == 0)
+                                 {
+                                   if (strcasecmp(nick, gdata.config_nick) == 0)
+                                     {
+                                       identify_needed(1);
+                                     }
+                                 }
                                changeinmemberlist_mode(ch, nick,
                                                        gnetwork->prefixes[ii].p_symbol,
                                                        plus);
