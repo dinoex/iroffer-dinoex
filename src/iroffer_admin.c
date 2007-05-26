@@ -2757,6 +2757,11 @@ static void u_botinfo(const userinput * const u) {
                 gdata.uploadmaxsize?tempstr:"none");
       }
    
+   if (gdata.md5build.xpack) {
+      u_respond(u, "calculating MD5/CRC32 for pack %d",
+                number_of_pack(gdata.md5build.xpack));
+      }
+
    if (gdata.stdout_buffer_init)
      {
        u_respond(u,"console buffering: %u written, %u flushed, %u dropped (%u queued)",

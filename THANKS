@@ -96,6 +96,7 @@ StoVoKor
 	reporting "XDCC SEARCH" bug
 	option "hadminhost"
 	option "hadminlevel"
+	show current md5/crc32 pack
 
 conanmichi
 	reporting group descriptions problems

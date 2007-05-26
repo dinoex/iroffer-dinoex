@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.12:
 ----------------------
 
+142) BOTINFO (inspired by StoVoKor)
+  show the current pack number when hashing is running
+
+extend debug and log information for DNS resolver
+
 bugfix: MSG, MSGNET, PSEND (reported by Cork)
   versions affected: 2.10 - 2.11
   could not send to channels
