@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.12:
 ----------------------
 
+143) IDENTIFY
+  if bot looses flags, send identify again.
+
 142) BOTINFO (inspired by StoVoKor)
   show the current pack number when hashing is running
 

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.12:
 --------------------
 
+143) IDENTIFY
+  Falls der Bot den Status verliert, sende das Passwort erneut.
+
 142) BOTINFO
   Zeigt jetzt die atuelle Packennummer die der bot hasht.
 
