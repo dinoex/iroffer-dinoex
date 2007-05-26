@@ -943,31 +943,94 @@ void a_removegroup(const userinput * const u)
      }
 }
 
-static const char *a_sort_key(int k, xdcc *xd)
+
+static const char *a_basename(const char *pathname)
 {
   const char *work;
 
-  switch ( k ) {
-  case 1:
-    return xd->desc;
-  default:
-    work = strrchr(xd->file, '/');
-    if (work == NULL)
-      return xd->file;
+  work = strrchr(pathname, '/');
+  if (work == NULL)
+    return pathname;
 
-    return ++work;
+  return work;
+}
+
+static int a_sort_null(const char *str1, const char *str2)
+{
+  if ((str1 == NULL) && (str2 == NULL))
+    return 0;
+
+  if (str1 == NULL)
+    return -1;
+
+  if (str2 == NULL)
+    return 1;
+
+  return strcasecmp(str1, str2);
+}
+
+static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
+{
+  xdcc *xd3 = xd1;
+  xdcc *xd4 = xd2;
+  int rc = 0;
+
+  while (k != NULL) {
+    switch ( *k ) { 
+    case '-':
+      xd3 = xd2;
+      xd4 = xd1;
+      k ++;
+      continue;
+    case '+':
+      xd3 = xd1;
+      xd4 = xd2;
+      k ++;
+      break;
+    case 'D':
+    case 'd':
+      rc = strcasecmp(xd3->desc, xd4->desc);
+      if (rc != 0)
+        return rc;
+      break;
+    case 'P':
+    case 'p':
+      rc = strcasecmp(xd3->file, xd4->file);
+      if (rc != 0)
+        return rc;
+      break;
+    case 'G':
+    case 'g':
+      rc = a_sort_null(xd3->group, xd4->group);
+      if (rc != 0)
+        return rc;
+      break;
+    case 'N':
+    case 'r':
+    case 'F':
+    case 'f':
+      rc = strcasecmp(a_basename(xd3->file), a_basename(xd4->file));
+      if (rc != 0)
+        return rc;
+      break;
+    }
+    k = strchr(k, ' ');
+    if (k == NULL)
+      break;
+    xd3 = xd1;
+    xd4 = xd2;
+    k ++;
   }
+  return rc;
 }
 
 void a_sort(const userinput * const u)
 {
   irlist_t old_list;
   xdcc *xdo, *xdn;
-  const char *oname;
-  const char *nname;
   char *tmpdesc;
   int n;
-  int k = 0;
+  const char*k = "filename";
 
   updatecontext();
  
@@ -977,7 +1040,7 @@ void a_sort(const userinput * const u)
       return;
     }
 
-  if (u->arg1) k = atoi(u->arg1);
+  if (u->arg1) k = u->arg1;
 
   old_list = gdata.xdccs;
   /* clean start */
@@ -989,15 +1052,13 @@ void a_sort(const userinput * const u)
     {
       xdo = irlist_get_head(&old_list);
       irlist_remove(&old_list, xdo);
-      oname = a_sort_key(k, xdo);
 
       n = 0;
       xdn = irlist_get_head(&gdata.xdccs);
       while(xdn)
         {
           n++;
-          nname = a_sort_key(k, xdo);
-          if (strcasecmp(oname,nname) < 0)
+          if (a_sort_cmp(k, xdo, xdn) < 0)
             break;
 
           xdn = irlist_get_next(xdn);

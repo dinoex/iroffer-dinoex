@@ -3,6 +3,19 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.12:
 ----------------------
 
+144: SORT (inspired by TheDeath, dondieschotte, Benni-chan)
+  new admin commands:
+  SORT <field> <field> ...          Sort all Packs by given fields
+  SORT NAME                         Sort all Packs by Filename
+  SORT DESC                         Sort all Packs by Description
+  SORT GROUP                        Sort all Packs by Group
+  SORT PATH                         Sort all Packs by Directory
+  SORT -NAME                        Sort all Packs backwards by Filename
+  SORT -DESC                        Sort all Packs backwards by Description
+  SORT -GROUP                       Sort all Packs backwards by Group
+  SORT -PATH                        Sort all Packs backwards by Directory
+  SORT GROUP NAME                   Sort all Packs by Group and Filename
+
 143) IDENTIFY
   if bot looses flags, send identify again.
 

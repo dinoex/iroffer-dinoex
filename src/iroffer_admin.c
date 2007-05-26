@@ -139,7 +139,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,4,method_allow_all,u_removedir,"REMOVEDIR","dir","Remove every pack found in <dir>"},
 {3,4,method_allow_all,a_removegroup, "REMOVEGROUP","group","Remove every pack found in <group>"},
 {3,3,method_allow_all,u_renumber, "RENUMBER","x y","Moves pack <x> to position <y>"},
-{3,3,method_allow_all,a_sort,     "SORT","[1]","Sort all packs by filename or description"},
+{3,3,method_allow_all,a_sort,     "SORT","[field] [field]","Sort all packs by fields"},
 {3,3,method_allow_all,a_add,      "ADD","filename","Add new pack with <filename>"},
 {3,3,method_allow_all,u_adddir,   "ADDDIR","dir","Add every file in <dir>"},
 {3,3,method_allow_all,u_addnew,   "ADDNEW","dir","Add new files in <dir>"},

@@ -70,6 +70,8 @@ TheDeath
 	reporting crash whith geoip
 	option "geoipdatabase"
         option "channel -noannounce"
+	admin command  "sort name/group/desc"
+	admin command  "sort -name/-group/-desc"
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -194,6 +196,7 @@ dondieschotte
 	message to channels not joined
 	report "sapces_in_filenames" bug
 	admin command  "sort 1"
+	admin command  "sort name/group/desc"
 
 dsd
 	admin command "autoadd"
@@ -217,4 +220,7 @@ Cheff
 
 Kakashi
 	mutiple "filedir"
+
+Benni-chan
+	admin command  "sort group"
 

@@ -3,6 +3,19 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.12:
 --------------------
 
+144: SORT (inspired by TheDeath, dondieschotte, Benni-chan)
+  Neues Admin Kommando:
+  SORT <feld> <feld> ...           Sortiere alle Pakete nach den Feldern
+  SORT NAME                        Sortiere alle Pakete nach der Beschreibung
+  SORT DESC                        Sortiere alle Pakete nach dem Dateinamen
+  SORT GROUP                       Sortiere alle Pakete nach der Gruppe
+  SORT PATH                        Sortiere alle Pakete nach dem Verzeichnis
+  SORT -NAME                       Sortiere alle Pakete rückwärts nach der Beschreibung
+  SORT -DESC                       Sortiere alle Pakete rückwärts nach dem Dateinamen
+  SORT -GROUP                      Sortiere alle Pakete rückwärts nach der Gruppe
+  SORT -PATH                       Sortiere alle Pakete rückwärts nach dem Verzeichnis
+  SORT GROUP NAME                  Sortiere alle Pakete nach der Gruppe und dem Dateinamen
+
 143) IDENTIFY
   Falls der Bot den Status verliert, sende das Passwort erneut.
 
