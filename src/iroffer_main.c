@@ -2421,7 +2421,7 @@ static void parseline(char *line) {
                                  {
                                    if (strcasecmp(nick, gdata.config_nick) == 0)
                                      {
-                                       identify_needed(1);
+                                       identify_needed(0);
                                      }
                                  }
                                changeinmemberlist_mode(ch, nick,
@@ -2442,6 +2442,14 @@ static void parseline(char *line) {
                          }
                      }
                  }
+             }
+         }
+       else
+         {
+           if (strcasecmp(part3, gdata.config_nick) == 0)
+             {
+               if (part4[0] == '-')
+                 identify_needed(0);
              }
          }
      }
