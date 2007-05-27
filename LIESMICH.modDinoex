@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.12:
 --------------------
 
+bugfix: DCC upload 
+  Bot kann crashen wenn kein 'uloaddir' definiert ist.
+  versions affected: Alle
+
 144: SORT (inspired by TheDeath, dondieschotte, Benni-chan)
   Neues Admin Kommando:
   SORT <feld> <feld> ...           Sortiere alle Pakete nach den Feldern
