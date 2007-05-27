@@ -14,10 +14,14 @@ bugfix: DCC upload
   SORT DESC                        Sortiere alle Pakete nach dem Dateinamen
   SORT GROUP                       Sortiere alle Pakete nach der Gruppe
   SORT PATH                        Sortiere alle Pakete nach dem Verzeichnis
+  SORT SIZE                        Sortiere alle Pakete nach der Größe in Bytes
+  SORT TIME                        Sortiere alle Pakete nach dem Datum der Datei
   SORT -NAME                       Sortiere alle Pakete rückwärts nach der Beschreibung
   SORT -DESC                       Sortiere alle Pakete rückwärts nach dem Dateinamen
   SORT -GROUP                      Sortiere alle Pakete rückwärts nach der Gruppe
   SORT -PATH                       Sortiere alle Pakete rückwärts nach dem Verzeichnis
+  SORT -SIZE                       Sortiere alle Pakete rückwärts nach der Größe in Bytes
+  SORT -TIME                       Sortiere alle Pakete rückwärts nach dem Datum der Datei
   SORT GROUP NAME                  Sortiere alle Pakete nach der Gruppe und dem Dateinamen
 
 143) IDENTIFY

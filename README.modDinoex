@@ -10,14 +10,18 @@ bugfix: DCC upload
 144: SORT (inspired by TheDeath, dondieschotte, Benni-chan)
   new admin commands:
   SORT <field> <field> ...          Sort all Packs by given fields
-  SORT NAME                         Sort all Packs by Filename
-  SORT DESC                         Sort all Packs by Description
-  SORT GROUP                        Sort all Packs by Group
-  SORT PATH                         Sort all Packs by Directory
-  SORT -NAME                        Sort all Packs backwards by Filename
-  SORT -DESC                        Sort all Packs backwards by Description
-  SORT -GROUP                       Sort all Packs backwards by Group
-  SORT -PATH                        Sort all Packs backwards by Directory
+  SORT NAME                         Sort all Packs by filename
+  SORT DESC                         Sort all Packs by description
+  SORT GROUP                        Sort all Packs by group
+  SORT PATH                         Sort all Packs by directory
+  SORT SIZE                         Sort all Packs by size in bytes
+  SORT TIME                         Sort all Packs by file modification time
+  SORT -NAME                        Sort all Packs backwards by filename
+  SORT -DESC                        Sort all Packs backwards by description
+  SORT -GROUP                       Sort all Packs backwards by group
+  SORT -PATH                        Sort all Packs backwards by directory
+  SORT -SIZE                        Sort all Packs backwards by size in bytes
+  SORT -TIME                        Sort all Packs backwards by file modification time
   SORT GROUP NAME                   Sort all Packs by Group and Filename
 
 143) IDENTIFY

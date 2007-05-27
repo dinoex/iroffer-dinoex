@@ -1005,6 +1005,18 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
       if (rc != 0)
         return rc;
       break;
+    case 'B':
+    case 'b':
+    case 'S':
+    case 's':
+      if (xd3->st_size < xd4->st_size) return -1;
+      if (xd3->st_size > xd4->st_size) return 1;
+      break;
+    case 'T':
+    case 't':
+      if (xd3->mtime < xd4->mtime) return -1;
+      if (xd3->mtime > xd4->mtime) return 1;
+      break;
     case 'N':
     case 'r':
     case 'F':
