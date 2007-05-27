@@ -40,6 +40,12 @@ void l_establishcon (upload * const l)
   struct stat s;
   
   updatecontext();
+
+  if (gdata.uploaddir == NULL) 
+    {
+      l_closeconn(l, "No upload hosts or no uploaddir defined.", 0);
+      return;
+    }
   
   /* local file already exists? */
   fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(l->file) + 2);
