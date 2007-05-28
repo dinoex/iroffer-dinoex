@@ -23,6 +23,7 @@ bugfix: DCC upload
   SORT -SIZE                        Sort all Packs backwards by size in bytes
   SORT -TIME                        Sort all Packs backwards by file modification time
   SORT GROUP NAME                   Sort all Packs by Group and Filename
+  SORT GROUP DATE                   Sort all Packs by Group and Date
 
 143) IDENTIFY
   if bot looses flags, send identify again.
