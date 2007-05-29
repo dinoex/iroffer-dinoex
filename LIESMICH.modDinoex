@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+Ab Version mod 2.13:
+--------------------
+
+bugfix: SORT
+  akzetiere auch klein "name"
+  weitere Felder auswerten
+
 Ab Version mod 2.12:
 --------------------
 
@@ -23,7 +30,7 @@ bugfix: DCC upload
   SORT -SIZE                       Sortiere alle Pakete rückwärts nach der Größe in Bytes
   SORT -TIME                       Sortiere alle Pakete rückwärts nach dem Datum der Datei
   SORT GROUP NAME                  Sortiere alle Pakete nach der Gruppe und dem Dateinamen
-  SORT GROUP DATE                  Sortiere alle Pakete nach der Gruppe und dem Datum
+  SORT GROUP TIME                  Sortiere alle Pakete nach der Gruppe und dem Datum
 
 143) IDENTIFY
   Falls der Bot den Status verliert, sende das Passwort erneut.

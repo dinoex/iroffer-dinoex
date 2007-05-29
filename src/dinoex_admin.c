@@ -1018,7 +1018,7 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
       if (xd3->mtime > xd4->mtime) return 1;
       break;
     case 'N':
-    case 'r':
+    case 'n':
     case 'F':
     case 'f':
       rc = strcasecmp(a_basename(xd3->file), a_basename(xd4->file));
@@ -1052,7 +1052,7 @@ void a_sort(const userinput * const u)
       return;
     }
 
-  if (u->arg1) k = u->arg1;
+  if (u->arg1e) k = u->arg1e;
 
   old_list = gdata.xdccs;
   /* clean start */
