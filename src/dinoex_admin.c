@@ -2634,6 +2634,7 @@ void a_bannnick(const userinput * const u)
      return;
    }
  
+   nick = u->arg1;
    backup = gnetwork;
    gnetwork = &(gdata.networks[net]);
 
