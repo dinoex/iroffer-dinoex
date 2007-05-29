@@ -685,8 +685,7 @@ void check_duplicateip(transfer *const newtr)
           if (strcmp(tr->hostname,"man"))
             {
               t_closeconn(tr, "You are being punished for pararell downloads", 0);
-              bhostmask = mymalloc(strlen(tr->hostname)+5);
-              sprintf(bhostmask, "*!*@%s", tr->hostname);
+              bhostmask = to_hostmask( "*", tr->hostname);
               ignore = irlist_get_head(&gdata.ignorelist);
               while(ignore)
                 {
@@ -725,6 +724,7 @@ void check_duplicateip(transfer *const newtr)
                       "same IP detected, Ignore activated for %s which will last %i min",
                       bhostmask,num);
             }
+            mydelete(bhostmask);
         }
       tr = irlist_get_next(tr);
     }
