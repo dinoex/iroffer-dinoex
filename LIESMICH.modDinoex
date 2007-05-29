@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.13:
 --------------------
 
+145: BANNHOST, DROPNICK
+  Neues Admin Kommando:
+  BANNHOST <x> <hostmask>          Breche die Transfers ab und ignoriere <hostmask> für <x> Minuten
+  BANNNICK <nick>                  Breche die Transfers ab und entferne <nick> aus der Warteschange
+  BANNNICK <nick> <netz>           Breche die Transfers ab und entferne <nick> aus der Warteschange
+
+bugfix: ignoreduplicateip
+  ein weiteres Speicher-Leck behoben
+
 bugfix: SORT
   akzetiere auch klein "name"
   weitere Felder auswerten

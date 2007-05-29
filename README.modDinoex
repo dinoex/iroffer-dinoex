@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.13:
 ----------------------
 
+145: BANNHOST, DROPNICK
+  new admin commands:
+  BANNHOST <x> <hostmask>          Stop transfers and ignore <hostmask> for <x> minutes
+  BANNNICK <nick>                  Stop transfers and remove <nick> from queue
+  BANNNICK <nick> <netz>           Stop transfers and remove <nick> from queue
+
+bugfix: ignoreduplicateip
+  fix a small memory leak
+
 bugfix: SORT (reported by dondieschotte)
   downcase NAME was not detected
   fix parsing of all arguments

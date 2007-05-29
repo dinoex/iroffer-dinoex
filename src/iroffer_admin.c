@@ -72,6 +72,7 @@ static void u_botinfo(const userinput * const u);
 static void u_ignl(const userinput * const u);
 static void u_ignore(const userinput * const u);
 static void u_unignore(const userinput * const u);
+static void u_bannhost(const userinput * const u);
 static void u_nosave(const userinput * const u);
 static void u_nosend(const userinput * const u);
 static void u_nolist(const userinput * const u);
@@ -184,6 +185,8 @@ static const userinput_parse_t userinput_parse[] = {
 {4,2,method_allow_all,u_mesq,     "MESQ","message","Sends <message> to all users in a queue"},
 {4,2,method_allow_all,u_ignore,   "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
 {4,2,method_allow_all,u_unignore, "UNIGNORE","hostmask","Un-Ignore <hostmask>"},
+{4,2,method_allow_all,u_bannhost, "BANNHOST","x hostmask","Stop transfers and ignore <hostmask> (nick!user@host) for <x> minutes"},
+{4,2,method_allow_all,a_bannnick, "BANNNICK","nick [net]","Stop transfers and remove <nick> from queue"},
 {4,5,method_allow_all,u_nosave,   "NOSAVE","x","Disables autosave for next <x> minutes"},
 {4,2,method_allow_all,u_nosend,   "NOSEND","x","Disables XDCC SEND for next <x> minutes"},
 {4,2,method_allow_all,u_nolist,   "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
@@ -2914,6 +2917,7 @@ static void u_ignore(const userinput * const u)
       tempstr = hostmasktoregex(u->arg2);
       if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
         {
+          mydelete(ignore->regexp);
           ignore->regexp = NULL;
         }
       
@@ -2977,6 +2981,15 @@ static void u_unignore(const userinput * const u)
   return;
 }
 
+static void u_bannhost(const userinput * const u)
+{
+   u_ignore(u);
+
+   if (!u->arg1) return;
+   if (!u->arg2 || strlen(u->arg2) < 4) return;
+
+   a_bann_hostmask(u, u->arg2);
+}
 
 static void u_nosave(const userinput * const u) {
    int num = 0;

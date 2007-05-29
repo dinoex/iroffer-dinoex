@@ -2556,6 +2556,119 @@ void a_msgnet(const userinput * const u)
   gnetwork = backup;
 }
 
+void a_bann_hostmask(const userinput * const u, const char *arg)
+{
+   gnetwork_t *backup;
+   regex_t *regexp;
+   pqueue *pq;
+   transfer *tr;
+   char *tempstr;
+   char *hostmask;
+   int changed = 0;
+
+   regexp = mycalloc(sizeof(regex_t));
+   tempstr = hostmasktoregex(arg);
+   if (regcomp(regexp, tempstr, REG_ICASE|REG_NOSUB)) {
+     mydelete(regexp);
+     mydelete(tempstr);
+     return;
+   }
+
+   backup = gnetwork;
+
+   /* XDCC REMOVE */
+   pq = irlist_get_head(&gdata.mainqueue);
+   while (pq) {
+     hostmask = to_hostmask(pq->nick, pq->hostname);
+     if (!regexec(regexp, hostmask, 0, NULL, 0)) {
+       gnetwork = &(gdata.networks[pq->net]);
+       notice_slow(pq->nick,
+               "Removed from the queue for \"%s\"", pq->xpack->desc);
+       gnetwork = backup;
+       ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_YELLOW,
+               "Removed from the queue for \"%s\"", pq->xpack->desc);
+       a_respond(u, "Removed from the queue for \"%s\"", pq->xpack->desc);
+       mydelete(pq->nick);
+       mydelete(pq->hostname);
+       pq = irlist_delete(&gdata.mainqueue, pq);
+       changed ++;
+     } else {
+       pq = irlist_get_next(pq);
+     }
+     mydelete(hostmask);
+   }
+   if (changed >0)
+     write_statefile();
+
+   /* XDCC CANCEL */
+   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+     hostmask = to_hostmask(tr->nick, tr->hostname);
+     if (!regexec(regexp, hostmask, 0, NULL, 0)) {
+       if (tr->tr_status != TRANSFER_STATUS_DONE) {
+          t_closeconn(tr, "Transfer cancelled by admin", 0);
+       }
+     }
+     mydelete(hostmask);
+   }
+
+   mydelete(regexp);
+   mydelete(tempstr);
+   gnetwork = backup;
+}
+
+void a_bannnick(const userinput * const u)
+{
+   gnetwork_t *backup;
+   pqueue *pq;
+   transfer *tr;
+   char *nick;
+   int changed = 0;
+   int net = 0;
+
+   net = get_network_msg(u, u->arg2);
+   if (net < 0)
+     return;
+
+   if (!u->arg1 || !strlen(u->arg1)) {
+     a_respond(u, "Try Specifying a Nick");
+     return;
+   }
+ 
+   backup = gnetwork;
+   gnetwork = &(gdata.networks[net]);
+
+   /* XDCC REMOVE */
+   pq = irlist_get_head(&gdata.mainqueue);
+   while (pq) {
+     if ((pq->net == net) && (strcasecmp(pq->nick, nick) == 0)) {
+       notice_slow(pq->nick,
+               "Removed from the queue for \"%s\"", pq->xpack->desc);
+       ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_YELLOW,
+               "Removed from the queue for \"%s\"", pq->xpack->desc);
+       a_respond(u, "Removed from the queue for \"%s\"", pq->xpack->desc);
+       mydelete(pq->nick);
+       mydelete(pq->hostname);
+       pq = irlist_delete(&gdata.mainqueue, pq);
+       changed ++;
+     } else {
+       pq = irlist_get_next(pq);
+     }
+   }
+   if (changed >0)
+     write_statefile();
+
+   /* XDCC CANCEL */
+   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+     if ((tr->net == net) && (strcasecmp(tr->nick, nick) == 0)) {
+       if (tr->tr_status != TRANSFER_STATUS_DONE) {
+          t_closeconn(tr, "Transfer cancelled by admin", 0);
+       }
+     }
+   }
+
+   gnetwork = backup;
+}
+
 void a_rawnet(const userinput * const u)
 {
   gnetwork_t *backup;
