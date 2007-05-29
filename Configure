@@ -180,6 +180,10 @@ else
  waserror=yes
 fi
 
+if [ -n "$waserror" ]; then
+ exit 69
+fi
+
 echo -n "Checking for gcc/cc... "
 if [ -f "`type gcc | awk '{print $NF}'`" ]; then
  cctype="gcc"
@@ -201,6 +205,10 @@ else
  echo "not found. ***ERROR***: Couldn't find gcc or cc"
  maketype="gcc"
  waserror=yes
+fi
+
+if [ -n "$waserror" ]; then
+ exit 69
 fi
 
 echo -n "Seeing if $cctype works... "
