@@ -100,5 +100,13 @@ Not going to happen anytime soon:
   1038  shared bot, each admin manages its own files.
   1039  new trigger per admin
   1040  respondtochannellistmsg per admin
-  1044  autosendpack with 2 para
+  1044  autosendpack with 2 parameters
+  1046  write passwort in config
+  1047  edit config via web/admin
+  1048  cancel for MSGREAD
+  1050  stop MD5/CRC computing
+  1051  autovoice/op/hop
+  1052  autotopic
+  1053  Punish User, IGNORE, REMOVE annd CANCEL
+  1054  Donwnloadkeys
 
