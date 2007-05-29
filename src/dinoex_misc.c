@@ -723,8 +723,8 @@ void check_duplicateip(transfer *const newtr)
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                       "same IP detected, Ignore activated for %s which will last %i min",
                       bhostmask,num);
+              mydelete(bhostmask);
             }
-            mydelete(bhostmask);
         }
       tr = irlist_get_next(tr);
     }
