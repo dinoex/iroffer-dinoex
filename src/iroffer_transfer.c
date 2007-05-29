@@ -912,8 +912,7 @@ void t_checkminspeed(transfer * const t) {
        ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
        ignore->regexp = mycalloc(sizeof(regex_t));
        
-       ignore->hostmask = mycalloc(strlen(t->hostname)+5);
-       sprintf(ignore->hostmask,"*!*@%s",t->hostname);
+       ignore->hostmask = to_hostmask( "*", t->hostname);
        
        tempstr = hostmasktoregex(ignore->hostmask);
        if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))

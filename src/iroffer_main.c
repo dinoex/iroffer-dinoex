@@ -2523,7 +2523,6 @@ static void privmsgparse(const char* type, char* line) {
    
    nick = mycalloc(line_len+1);
    hostname = mycalloc(line_len+1);
-   wildhost = mycalloc(line_len+2);
    
    
    i=1; j=0;
@@ -2548,7 +2547,7 @@ static void privmsgparse(const char* type, char* line) {
       }
    hostname[j]='\0';
    
-   snprintf(wildhost,line_len+2,"*!%s",hostmask + strlen(nick) + 1);
+   wildhost = to_hostmask("*", hostmask + strlen(nick) + 1);
    
    if (isthisforme(dest, msg1))
      {
@@ -3766,7 +3765,6 @@ void sendaqueue(int type)
   transfer *tr;
   char *sendnamestr;
   char *hostmask;
-  size_t len;
   gnetwork_t *backup;
   
   updatecontext();
@@ -3853,9 +3851,7 @@ void sendaqueue(int type)
       tr->hostname = mystrdup(pq->hostname);
       
       tr->xpack = pq->xpack;
-      len = strlen(pq->hostname)+strlen(pq->nick)+4;
-      hostmask = mymalloc(len+1);
-      snprintf(hostmask,len,"%s!*@%s",tr->nick,tr->hostname);
+      hostmask = to_hostmask(tr->nick, tr->hostname);
       tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
       if (tr->unlimited)
         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,

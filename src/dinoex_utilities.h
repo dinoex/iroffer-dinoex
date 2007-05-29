@@ -21,6 +21,7 @@ int check_level(char prefix);
 int number_of_pack(xdcc *pack);
 int verifypass2(const char *masterpass, const char *testpass);
 void checkadminpass2(const char *masterpass);
-char* clean_quotes(char *str);
+char *clean_quotes(char *str);
+char *to_hostmask(const char *nick, const char *hostname);
 
 /* End of File */

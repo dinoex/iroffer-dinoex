@@ -176,7 +176,7 @@ void checkadminpass2(const char *masterpass)
 #endif
 }
 
-char* clean_quotes(char *str)
+char *clean_quotes(char *str)
 {
   char *src;
   char *dest;
@@ -197,4 +197,15 @@ char* clean_quotes(char *str)
   return str;
 }
 
+char *to_hostmask(const char *nick, const char *hostname)
+{
+  char *hostmask;
+  int len;
+
+  len = strlen(hostname) + strlen(nick) + 4;
+  hostmask = mymalloc(len + 1);
+  snprintf(hostmask, len, "%s!*@%s", nick, hostname);
+  return hostmask;
+}
+ 
 /* End of File */
