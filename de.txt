@@ -1761,3 +1761,4 @@
 1776 "** XDCC %s verboten, du brauchst Status im Channel um eine Datei bekommen"
 1777 "** XDCC %s verboten, du musst im Channel sein um eine Datei bekommen"
 1778 "** XDCC %s abgewiesen, der Meister ist gerade weg"
+1779 "Ignoring Bad XDCC Trigger Tag (len = %d)"

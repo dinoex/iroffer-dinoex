@@ -1761,3 +1761,4 @@
 1776 "** XDCC %s denied, you must have voice on a known channel to request a pack"
 1777 "** XDCC %s denied, you must be on a known channel to request a pack"
 1778 "** XDCC %s denied, owner of this bot is not online"
+1779 "Ignoring Bad XDCC Trigger Tag (len = %d)"
