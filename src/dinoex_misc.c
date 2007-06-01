@@ -1883,4 +1883,26 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
   return irlist_get_nth(&gdata.xdccs, pack-1);
 }
 
+void autotrigger_add(xdcc *xd)
+{
+  autotrigger_t *at;
+
+  at = irlist_add(&gdata.autotrigger, sizeof(autotrigger_t));
+  at->pack = xd;
+  at->word = xd->trigger;
+}
+
+void autotrigger_rebuild(void)
+{
+  xdcc *xd;
+
+  irlist_delete_all(&gdata.autotrigger);
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd) {
+    if (xd->trigger != NULL)
+      autotrigger_add(xd);
+    xd = irlist_get_next(xd);
+  }
+}
+
 /* End of File */

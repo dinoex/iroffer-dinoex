@@ -1390,6 +1390,11 @@ void dumpgdata(void)
   gdata_iter_print_string(message);
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(autotrigger, autotrigger_t);
+  ioutput(gdata_common, "GDATA * " "pack" ": " "%d", number_of_pack(iter->pack));
+  gdata_iter_print_string(word);
+  gdata_irlist_iter_end;
+
   gdata_irlist_iter_start(geoipcountry, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
@@ -1478,14 +1483,8 @@ void dumpgdata(void)
   gdata_print_string(hadminpass);
   
   /* adminhost */
-  gdata_irlist_iter_start(adminhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
 
   /* hadminhost */
-  gdata_irlist_iter_start(hadminhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
   
   /* filedir */
   gdata_irlist_iter_start(filedir, char);
@@ -1499,16 +1498,10 @@ void dumpgdata(void)
   gdata_print_string(periodicmsg_msg);
   gdata_print_int(periodicmsg_time);
   /* autoignore_exclude */
-  gdata_irlist_iter_start(autoignore_exclude, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
   
   gdata_print_int(autoignore_threshold);
   
   /* uploadhost */
-  gdata_irlist_iter_start(uploadhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
   
   gdata_print_string(uploaddir);
   gdata_print_number_cast("%" LLPRINTFMT "d",uploadmaxsize,long long);

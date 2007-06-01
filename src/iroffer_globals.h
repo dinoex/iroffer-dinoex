@@ -148,6 +148,7 @@ int getipfromserver;
 int noduplicatefiles;
 irlist_t adddir_exclude;
 irlist_t autoqueue;
+irlist_t autotrigger;
 irlist_t unlimitedhost;
 irlist_t geoipcountry;
 irlist_t geoipexcludenick;

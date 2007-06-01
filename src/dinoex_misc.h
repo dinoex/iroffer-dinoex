@@ -87,4 +87,7 @@ void write_removed_xdcc(xdcc *xd);
 
 xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text);
 
+void autotrigger_add(xdcc *xd);
+void autotrigger_rebuild(void);
+
 /* End of File */

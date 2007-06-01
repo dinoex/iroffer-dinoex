@@ -2591,6 +2591,7 @@ void startupiroffer(void) {
      {
        read_statefile();
        write_statefile();
+       autotrigger_rebuild();
      }
    
    /* fork to background if in background mode */

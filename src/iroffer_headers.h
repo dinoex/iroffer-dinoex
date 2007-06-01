@@ -449,6 +449,12 @@ typedef struct
 
 typedef struct
 {
+  xdcc *pack;
+  char *word;
+} autotrigger_t;
+
+typedef struct
+{
   int delay;
   char *chan;
   char *msg;

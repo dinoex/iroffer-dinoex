@@ -558,6 +558,7 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
    if (tmpgroup != NULL)
      mydelete(tmpgroup);
    
+   autotrigger_rebuild();
    write_statefile();
    xdccsavetext();
 }
@@ -1718,6 +1719,37 @@ void a_chlimitinfo(const userinput * const u)
     {
        a_respond(u, "DLIMIT: [Pack %i] descr: %s", num, u->arg2e);
        xd->dlimit_desc = mystrdup(u->arg2e);
+    }
+
+  write_statefile();
+  xdccsavetext();
+}
+
+void a_chtrigger(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+
+  if (!u->arg2 || !strlen(u->arg2))
+    {
+       a_respond(u, "TRIGGER: [Pack %i] removed", num);
+       mydelete(xd->trigger);
+       xd->trigger = NULL;
+       autotrigger_rebuild();
+    }
+  else
+    {
+       a_respond(u, "TRIGGER: [Pack %i] set: %s", num, u->arg2e);
+       xd->trigger = mystrdup(u->arg2e);
+       autotrigger_add(xd);
     }
 
   write_statefile();

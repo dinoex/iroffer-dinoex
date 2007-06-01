@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.13:
 --------------------
 
+147) CHTRIGGER
+  Neue Admin Kommandos:
+  CHTRIGGER n                      Entferne Trigger für Paket <n>
+  CHTRIGGER n msg                  Setze Trigger für Paket <n> auf <msg>
+
 146) CANNOUNCE
   Neues Admin Kommando:
   CANNOUNCE <channnel> <n> <msg>   ANNOUNCE <msg> für Paket <n> in Channel <channnel>

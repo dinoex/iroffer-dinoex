@@ -27,7 +27,9 @@
 static void mainloop(void);
 static void parseline(char *line);
 static void privmsgparse(const char* type, char* line);
+static void get_nick_hostname(char *nick, char *hostname, const char* line);
 static void autoqueuef(const char* line, const autoqueue_t *aq);
+static void autotriggerf(const char* line, const autotrigger_t *at);
 static int  parsecmdline(int argc, char *argv[]);
 
 /* main */
@@ -246,6 +248,7 @@ static void mainloop (void) {
          }
        
        gdata.cursendptr = 0;
+       lastautoadd = gdata.curtime + 60;
        
        first_loop = 0;
      }
@@ -2458,6 +2461,7 @@ static void parseline(char *line) {
    if (!strcmp(part2,"PRIVMSG"))
      {
        autoqueue_t *aq;
+       autotrigger_t *at;
        int autoword = 0;
        while (line)
          {
@@ -2466,6 +2470,16 @@ static void parseline(char *line) {
                if (part4 && !strcmp(caps(part4+1),caps(aq->word)))
                  {
                    autoqueuef(line, aq);
+                   autoword = 1;
+                   /* only first match is activated */
+                   break;
+                 }
+             }
+           for (at = irlist_get_head(&gdata.autotrigger); at; at = irlist_get_next(at))
+             {
+               if (part4 && !strcmp(caps(part4+1),caps(at->word)))
+                 {
+                   autotriggerf(line, at);
                    autoword = 1;
                    /* only first match is activated */
                    break;
@@ -3322,9 +3336,32 @@ static void privmsgparse(const char* type, char* line) {
    return;
    }
 
-static void autoqueuef(const char* line, const autoqueue_t *aq) {
-   char *nick, *hostname, *hostmask;
+static void get_nick_hostname(char *nick, char *hostname, const char* line)
+{
    int i,j;
+
+   i=1; j=0;
+   while(line[i] != '!' && i<sstrlen(line) && i<maxtextlengthshort-1) {
+      nick[i-1] = line[i];
+      i++;
+      }
+   nick[i-1]='\0';
+
+   while(line[i] != '@' && i<sstrlen(line)) { i++; }
+   i++;
+
+   while(line[i] != ' ' && i<sstrlen(line) && j<maxtextlength-1) {
+      hostname[j] = line[i];
+      i++;
+      j++;
+      }
+   hostname[j]='\0';
+}
+
+static void autoqueuef(const char* line, const autoqueue_t *aq)
+{
+   char *nick, *hostname, *hostmask;
+   int i;
    
    updatecontext();
 
@@ -3336,24 +3373,9 @@ static void autoqueuef(const char* line, const autoqueue_t *aq) {
    hostmask = caps(getpart(line,1));
    for (i=1; i<=sstrlen(hostmask); i++)
       hostmask[i-1] = hostmask[i];
-   
-   i=1; j=0;
-   while(line[i] != '!' && i<sstrlen(line) && i<maxtextlengthshort-1) {
-      nick[i-1] = line[i];
-      i++;
-      }
-   nick[i-1]='\0';
-   
-   while(line[i] != '@' && i<sstrlen(line)) { i++; }
-   i++;
-   
-   while(line[i] != ' ' && i<sstrlen(line) && j<maxtextlength-1) {
-      hostname[j] = line[i];
-      i++;
-      j++;
-      }
-   hostname[j]='\0';
-   
+
+   get_nick_hostname(nick, hostname, line);
+
    if ( !gdata.ignore )
      {
        char *tempstr;
@@ -3372,6 +3394,39 @@ static void autoqueuef(const char* line, const autoqueue_t *aq) {
        sendxdccfile(nick, hostname, hostmask, aq->pack, tempstr, NULL);
        
        mydelete(tempstr);
+     }
+   
+   mydelete(nick);
+   mydelete(hostname);
+
+   }
+
+static void autotriggerf(const char* line, const autotrigger_t *at)
+{
+   char *nick, *hostname, *hostmask;
+   int i;
+   
+   updatecontext();
+
+   floodchk();
+   
+   nick = mycalloc(maxtextlengthshort);
+   hostname = mycalloc(maxtextlength);
+      
+   hostmask = caps(getpart(line,1));
+   for (i=1; i<=sstrlen(hostmask); i++)
+      hostmask[i-1] = hostmask[i];
+
+   get_nick_hostname(nick, hostname, line);
+
+   if ( !gdata.ignore )
+     {
+       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+       
+       if (!gdata.attop) gototop();
+       
+       ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"AutoSend ");
+       sendxdccfile(nick, hostname, hostmask, number_of_pack(at->pack), NULL, NULL);
      }
    
    mydelete(nick);
