@@ -1827,6 +1827,8 @@ void write_removed_xdcc(xdcc *xd)
   write(fd, line, len);
   len = snprintf(line, maxtextlength -1, "xx_trno %s\n", find_groupdesc(xd->group));
   write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_size %" LLPRINTFMT "i\n", xd->st_size);
+  write(fd, line, len);
   mydelete(line)
 
   close(fd);
