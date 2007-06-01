@@ -553,8 +553,6 @@ void write_statefile(void)
                    STATEFILE_TAG_XDCCS_TRIGGER, xd->trigger);
           }
         
-        if (xd->dlimit_max != 0)
-        
         write_statefile_item(&bout, data);
         
         mydelete(data);
