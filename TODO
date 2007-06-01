@@ -59,7 +59,6 @@ mod Dinoex TODO:
 Short Term Features:
   1019  channel -pgroup GRP
   1026  renumber x to y to position z
-  1054  Donwnloadkeys
   1056  Privmsg statt notice
 
 Long Term Features:
@@ -99,7 +98,6 @@ Not going to happen anytime soon:
   1036  Gracefull restart when network dropped
   1037  getipfromserver for mutihomed bots
   1038  shared bot, each admin manages its own files.
-  1039  new trigger per admin
   1040  respondtochannellistmsg per admin
   1044  autosendpack with 2 parameters
   1046  write passwort in config
@@ -108,5 +106,6 @@ Not going to happen anytime soon:
   1050  stop MD5/CRC computing
   1051  autovoice/op/hop
   1052  auto-topic
+  1054  Donwnloadkeys
   1055  Disk_Quota
 

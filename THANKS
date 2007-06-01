@@ -104,6 +104,7 @@ conanmichi
 	reporting group descriptions problems
 	reporting ambiguous online help
 	reporting crc 64bit bug
+	admin command "CHTRIGGER"
 
 Kyu
 	groupname as default group description

@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.13:
 ----------------------
 
-147) CHTRIGGER
+147) CHTRIGGER (inspired by conanmichi)
   new admin commands:
   CHTRIGGER n                      Remove trigger for pack <n>
   CHTRIGGER n msg                  Change trigger for pack <n> to <msg>
