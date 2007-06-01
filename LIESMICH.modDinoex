@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.13:
 --------------------
 
+bugfix: XDCC INFO
+  Informiere den User falls ein Paket gesperrt ist
+
 147) CHTRIGGER
   Neue Admin Kommandos:
   CHTRIGGER n                      Entferne Trigger für Paket <n>

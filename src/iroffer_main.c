@@ -3665,6 +3665,10 @@ void sendxdccinfo(const char* nick,
     {
       notice_slow(nick, " crc32          %.8lX", xd->crc32);
     }
+  if (xd->lock)
+    {
+      notice_slow(nick, " is protected by password");
+    }
   
  done:
   

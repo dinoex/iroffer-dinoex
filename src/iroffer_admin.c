@@ -1601,7 +1601,11 @@ static void u_info(const userinput * const u)
     {
       u_respond(u, " crc32          %.8lX", xd->crc32);
     }
-  
+  if (xd->lock)
+    {
+      u_respond(u, " is protected by password");
+    }
+
   return;
 }
 

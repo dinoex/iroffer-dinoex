@@ -199,6 +199,7 @@ dondieschotte
 	report "sapces_in_filenames" bug
 	admin command  "sort 1"
 	admin command  "sort name/group/desc"
+	extend "XDCC INFO"
 
 dsd
 	admin command "autoadd"
