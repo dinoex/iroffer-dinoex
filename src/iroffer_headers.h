@@ -146,6 +146,7 @@ typedef struct {
    char *group_desc;
    char *lock;
    char *dlimit_desc;
+   char *trigger;
    int gets;
    int dlimit_max;
    int dlimit_used;

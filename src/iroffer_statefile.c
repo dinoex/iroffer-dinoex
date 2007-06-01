@@ -82,6 +82,7 @@ typedef enum
   STATEFILE_TAG_XDCCS_DLIMIT_USED,
   STATEFILE_TAG_XDCCS_DLIMIT_DESC,
   STATEFILE_TAG_XDCCS_CRC32,
+  STATEFILE_TAG_XDCCS_TRIGGER,
   
   STATEFILE_TAG_TLIMIT_DAILY_USED    = 13 << 8,
   STATEFILE_TAG_TLIMIT_DAILY_ENDS,
@@ -450,6 +451,10 @@ void write_statefile(void)
           {
             length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->dlimit_desc) + 1, 4);
           }
+        if (xd->trigger != NULL)
+          {
+            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->trigger) + 1, 4);
+          }
         
         data = mycalloc(length);
         
@@ -540,6 +545,15 @@ void write_statefile(void)
             next = prepare_statefile_string(next,
                    STATEFILE_TAG_XDCCS_DLIMIT_DESC, xd->dlimit_desc);
           }
+
+        if (xd->trigger != NULL)
+          {
+            /* group */
+            next = prepare_statefile_string(next,
+                   STATEFILE_TAG_XDCCS_TRIGGER, xd->trigger);
+          }
+        
+        if (xd->dlimit_max != 0)
         
         write_statefile_item(&bout, data);
         
@@ -1096,6 +1110,7 @@ void read_statefile(void)
             xd->group_desc = NULL;
             xd->lock = NULL;
             xd->dlimit_desc = NULL;
+            xd->trigger = NULL;
             
             hdr->length -= sizeof(*hdr);
             ihdr = &hdr[1];
@@ -1304,6 +1319,20 @@ void read_statefile(void)
                     else
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Limit Desc Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_TRIGGER:
+                    if (ihdr->length > sizeof(statefile_hdr_t))
+                      {
+                        char *data = (char*)(&ihdr[1]);
+                        data[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
+                        xd->trigger = mystrdup(data);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Trigger Tag (len = %d)",
                                  ihdr->length);
                       }
                     break;
