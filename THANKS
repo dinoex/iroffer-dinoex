@@ -154,6 +154,7 @@ Road
 
 Skyw4lker
 	admin command "REMOVE n m"
+	admin command "CANNOUCNE channel n msg" 
 
 Cork
 	option "max_find"

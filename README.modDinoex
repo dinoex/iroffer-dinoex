@@ -3,7 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.13:
 ----------------------
 
-145: BANNHOST, DROPNICK
+146) CANNOUNCE (inspired by Skyw4lker)
+  new admin command:
+  CANNOUNCE <channnel> <n> <msg>   ANNOUNCE <msg> for pack n in <channel>
+
+145) BANNHOST, DROPNICK
   new admin commands:
   BANNHOST <x> <hostmask>          Stop transfers and ignore <hostmask> for <x> minutes
   BANNNICK <nick>                  Stop transfers and remove <nick> from queue
@@ -23,7 +27,7 @@ bugfix: DCC upload
   bot can crash when no uploaddir is defined.
   versions affected: all
 
-144: SORT (inspired by TheDeath, dondieschotte, Benni-chan)
+144) SORT (inspired by TheDeath, dondieschotte, Benni-chan)
   new admin commands:
   SORT <field> <field> ...          Sort all Packs by given fields
   SORT NAME                         Sort all Packs by filename
@@ -60,7 +64,7 @@ With Version mod 2.11:
   activate with "./Lang de" after "Configure"
   to switch bach to englisch call "./Lang en"
 
-140: SORT (inspired by dondieschotte)
+140) SORT (inspired by dondieschotte)
   new admin commands:
   SORT 1                            Sort all Packs by Description
 

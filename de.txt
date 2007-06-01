@@ -1762,3 +1762,6 @@
 1777 "** XDCC %s verboten, du musst im Channel sein um eine Datei bekommen"
 1778 "** XDCC %s abgewiesen, der Meister ist gerade weg"
 1779 "Ignoring Bad XDCC Trigger Tag (len = %d)"
+1780 "CANNOUNCE"
+1781 "channel n msg"
+1782 "ANNOUNCE <msg> für Paket <n> in Channel <channel>"

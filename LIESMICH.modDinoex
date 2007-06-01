@@ -3,8 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.13:
 --------------------
 
-145: BANNHOST, DROPNICK
+146) CANNOUNCE
   Neues Admin Kommando:
+  CANNOUNCE <channnel> <n> <msg>   ANNOUNCE <msg> für Paket <n> in Channel <channnel>
+
+145) BANNHOST, DROPNICK
+  Neue Admin Kommandos:
   BANNHOST <x> <hostmask>          Breche die Transfers ab und ignoriere <hostmask> für <x> Minuten
   BANNNICK <nick>                  Breche die Transfers ab und entferne <nick> aus der Warteschange
   BANNNICK <nick> <netz>           Breche die Transfers ab und entferne <nick> aus der Warteschange
@@ -23,8 +27,8 @@ bugfix: DCC upload
   Bot kann crashen wenn kein 'uloaddir' definiert ist.
   versions affected: Alle
 
-144: SORT (inspired by TheDeath, dondieschotte, Benni-chan)
-  Neues Admin Kommando:
+144) SORT (inspired by TheDeath, dondieschotte, Benni-chan)
+  Neue Admin Kommandos:
   SORT <feld> <feld> ...           Sortiere alle Pakete nach den Feldern
   SORT NAME                        Sortiere alle Pakete nach der Beschreibung
   SORT DESC                        Sortiere alle Pakete nach dem Dateinamen

@@ -439,6 +439,16 @@ int invalid_command(const userinput * const u, const char *arg)
    return 0;
 }
 
+int invalid_channel(const userinput * const u, const char *arg)
+{  
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Channel");
+      return 1;
+    }
+   return 0;
+}
+
 int invalid_pack(const userinput * const u, int num)
 {
   if (num < 1 || num > irlist_size(&gdata.xdccs))
@@ -2901,7 +2911,6 @@ void a_queue(const userinput * const u)
      }
 }
 
-
 /* iroffer-lamm: add-ons */
 void a_announce(const userinput * const u)
 {
@@ -2941,6 +2950,56 @@ void a_announce(const userinput * const u)
           privmsg_chan(ch, tempstr);
         ch = irlist_get_next(ch);
         }
+    }
+  gnetwork = backup;
+  a_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);
+  mydelete(tempstr2);
+  mydelete(tempstr);
+}
+
+void a_cannounce(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+  channel_t *ch;
+  char *tempstr;
+  char *tempstr2;
+  int ss;
+  gnetwork_t *backup;
+  
+  updatecontext ();
+  
+  if (invalid_channel(u, u->arg1) != 0)
+    return;
+
+  if (u->arg2) num = atoi (u->arg2);
+  if (invalid_pack(u, num) != 0)
+    return;
+
+  if (invalid_announce(u, u->arg3e) != 0)
+    return;
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  
+  a_respond(u,"Pack Info for Pack #%i:",num);
+  
+  tempstr = mycalloc(maxtextlength);
+  tempstr2 = mycalloc(maxtextlength);
+  snprintf(tempstr2,maxtextlength-2,"[\2%s\2] %s",u->arg2e,xd->desc);
+  
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
+               tempstr2, save_nick(gnetwork->user_nick), num);
+      ch = irlist_get_head(&(gnetwork->channels));
+      while(ch) {
+        if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0)) {
+          if (strcasecmp(ch->name, u->arg1) == 0)
+            privmsg_chan(ch, tempstr);
+        }
+        ch = irlist_get_next(ch);
+      }
     }
   gnetwork = backup;
   a_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);

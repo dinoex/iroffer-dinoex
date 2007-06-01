@@ -36,6 +36,7 @@ int invalid_nick(const userinput * const u, const char *arg);
 int invalid_message(const userinput * const u, const char *arg);
 int invalid_announce(const userinput * const u, const char *arg);
 int invalid_command(const userinput * const u, const char *arg);
+int invalid_channel(const userinput * const u, const char *arg);
 int invalid_pack(const userinput * const u, int num);
 int get_network_msg(const userinput * const u, const char *arg);
 int disabled_config(const userinput * const u);
@@ -98,9 +99,9 @@ void a_holdqueue(const userinput * const u);
 void a_dump(const userinput * const u);
 void a_autoadd(const userinput * const u);
 
-/* this functions imported from iroffer-lamm */
 void a_queue(const userinput * const u);
 void a_announce(const userinput * const u);
+void a_cannounce(const userinput * const u);
 void a_sannounce(const userinput * const u);
 void a_addann(const userinput * const u);
 
