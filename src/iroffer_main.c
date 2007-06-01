@@ -3391,47 +3391,10 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   usertrans = 0;
   userpackok = 1;
   unlimitedhost = 0;
-  
-  if (!strcmp(hostname,"man"))
+
+  xd = get_download_pack(nick, hostname, hostmask, pack, &man, "SEND");
+  if (xd == NULL)
     {
-      man = 1;
-    }
-  else
-    {
-      man = 0;
-    }
-  
-  if (!man && (!verifyhost(&gdata.downloadhost, hostmask)) )
-    {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (host denied): ");
-      notice(nick,"** XDCC SEND denied, I don't send transfers to %s", hostmask);
-      goto done;
-    }
-  else if (!man && (verifyhost(&gdata.nodownloadhost, hostmask)) )
-    {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (host denied): ");
-      notice(nick,"** XDCC SEND denied, I don't send transfers to %s", hostmask);
-      goto done;
-    }
-  else if (!man && gdata.restrictsend && !isinmemberlist(nick))
-    {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (restricted): ");
-      if ((gdata.need_voice != 0) || (gdata.need_level != 0))
-        notice(nick,"** XDCC SEND denied, you must have voice on a known channel to request a pack");
-      else
-        notice(nick,"** XDCC SEND denied, you must be on a known channel to request a pack");
-      goto done;
-    }
-  else if (!man && gdata.enable_nick && !isinmemberlist(gdata.enable_nick))
-    {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (offline): ");
-      notice(nick,"** XDCC SEND denied, owner of this bot is not online");
-      goto done;
-    }
-  else if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1))
-    {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (Bad Pack Number): ");
-      notice(nick,"** Invalid Pack Number, Try Again");
       goto done;
     }
   
@@ -3589,37 +3552,13 @@ void sendxdccinfo(const char* nick,
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," ignored: ");
       goto done;
     }
-  
-  if (!verifyhost(&gdata.downloadhost, hostmask))
+
+  xd = get_download_pack(nick, hostname, hostmask, pack, NULL, "INFO");
+  if (xd == NULL)
     {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (host denied): ");
-      notice(nick,"** XDCC INFO denied, I don't send transfers to %s", hostmask);
       goto done;
     }
-  else if (verifyhost(&gdata.nodownloadhost, hostmask))
-    {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (host denied): ");
-      notice(nick,"** XDCC INFO denied, I don't send transfers to %s", hostmask);
-      goto done;
-    }
-  else if (gdata.restrictsend && !isinmemberlist(nick))
-    {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (restricted): ");
-      if ((gdata.need_voice != 0) || (gdata.need_level != 0))
-        notice(nick,"** XDCC INFO denied, you must have voice on a known channel to request a pack");
-      else
-        notice(nick,"** XDCC INFO denied, you must be on a known channel to request a pack");
-      goto done;
-    }
-  else if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1))
-    {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (Bad Pack Number): ");
-      notice(nick,"** Invalid Pack Number, Try Again");
-      goto done;
-    }
-  
-  xd = irlist_get_nth(&gdata.xdccs, pack-1);
-  
+
   if (hide_pack(xd) != 0)
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (locked pack): ");

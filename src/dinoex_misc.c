@@ -1832,4 +1832,55 @@ void write_removed_xdcc(xdcc *xd)
   close(fd);
 }
 
+static int check_manual_send(const char* hostname, int *man)
+{
+  if (man == NULL)
+    return 0;
+
+  if (!strcmp(hostname, "man")) {
+    *man = 1;
+  } else {
+    *man = 0;
+  }
+  return *man;
+}
+
+xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text)
+{
+  updatecontext();
+
+  if (check_manual_send(hostname, man) == 0) {
+    if (!verifyhost(&gdata.downloadhost, hostmask)) {
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (host denied): ");
+      notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
+      return NULL;
+    }
+    if (verifyhost(&gdata.nodownloadhost, hostmask)) {
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (host denied): ");
+      notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
+      return NULL;
+    }
+    if (gdata.restrictsend && !isinmemberlist(nick)) {
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (restricted): ");
+      if ((gdata.need_voice != 0) || (gdata.need_level != 0))
+        notice(nick, "** XDCC %s denied, you must have voice on a known channel to request a pack", text);
+      else
+        notice(nick, "** XDCC %s denied, you must be on a known channel to request a pack", text);
+      return NULL;
+    }
+    if (gdata.enable_nick && !isinmemberlist(gdata.enable_nick)) {
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (offline): ");
+      notice(nick, "** XDCC %s denied, owner of this bot is not online", text);
+      return NULL;
+    }
+  }
+
+  if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1)) {
+    ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (Bad Pack Number): ");
+    notice(nick, "** Invalid Pack Number, Try Again");
+    return NULL;
+  }
+  return irlist_get_nth(&gdata.xdccs, pack-1);
+}
+
 /* End of File */

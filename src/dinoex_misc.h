@@ -85,4 +85,6 @@ int admin_message(const char *nick, const char *hostmask, const char *passwd, ch
 
 void write_removed_xdcc(xdcc *xd);
 
+xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text);
+
 /* End of File */
