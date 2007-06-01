@@ -32,7 +32,7 @@ Ab Version mod 2.12:
 --------------------
 
 bugfix: DCC upload 
-  Bot kann crashen wenn kein 'uloaddir' definiert ist.
+  Bot kann crashen wenn kein 'uploaddir' definiert ist.
   versions affected: Alle
 
 144) SORT (inspired by TheDeath, dondieschotte, Benni-chan)
@@ -57,7 +57,7 @@ bugfix: DCC upload
   Falls der Bot den Status verliert, sende das Passwort erneut.
 
 142) BOTINFO
-  Zeigt jetzt die atuelle Packennummer die der bot hasht.
+  Zeigt jetzt die aktuelle Packetnummer die der Bot hasht.
 
 Debugging und Logging bei Fehlern im DNS verbessert.
 

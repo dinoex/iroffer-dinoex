@@ -35,7 +35,7 @@ bugfix: DCC upload
   bot can crash when no uploaddir is defined.
   versions affected: all
 
-144) SORT (inspired by TheDeath, dondieschotte, Benni-chan)
+144) SORT
   new admin commands:
   SORT <field> <field> ...          Sort all Packs by given fields
   SORT NAME                         Sort all Packs by filename
