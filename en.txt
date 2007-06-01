@@ -1772,3 +1772,5 @@
 1787 "TRIGGER: [Pack %i] set: %s"
 1788 "pack"
 1789 " is protected by password"
+1790 "xx_size %"
+1791 "i\n"
