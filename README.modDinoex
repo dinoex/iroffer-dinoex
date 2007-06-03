@@ -5,6 +5,7 @@ With Version mod 2.14:
 
 148) MD5 (inspired by dondieschotte)
   new admin command:
+  MD5                             Show state of curren MD5 computing
   MD5 <n>                         Calculate MD5 and CRC sums of pack <n>
 
 With Version mod 2.13:

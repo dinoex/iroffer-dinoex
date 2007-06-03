@@ -2008,7 +2008,14 @@ void a_md5(const userinput * const u)
 
   updatecontext ();
 
-  num = atoi (u->arg1);
+  /* show status */
+  if (gdata.md5build.xpack) {
+    a_respond(u, "calculating MD5/CRC32 for pack %d",
+              number_of_pack(gdata.md5build.xpack));
+    return;
+  }
+
+  if (u->arg1) num = atoi(u->arg1);
   if (invalid_pack(u, num) != 0)
     return;
 

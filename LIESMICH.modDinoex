@@ -5,6 +5,7 @@ Ab Version mod 2.14:
 
 148) MD5
   Neues Admin Kommando:
+  MD5                              Zeige den Status der MD5 Berechnung
   MD5 <n>                          Berrechne die MD5 und die CRC Prüfsummen des Pakets <n>
 
 Ab Version mod 2.13:
