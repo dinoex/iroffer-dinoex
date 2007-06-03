@@ -2001,6 +2001,22 @@ void a_regroup(const userinput * const u)
   xdccsavetext();
 }
 
+void a_md5(const userinput * const u)
+{
+  int num = 0;
+  xdcc *xd;
+
+  updatecontext ();
+
+  num = atoi (u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  a_respond(u, "Rebuilding MD5 and CRC for Pack #%i:", num);
+  start_md5_hash(xd, num);
+}
+
 void a_crc(const userinput * const u)
 {
   int num = 0;

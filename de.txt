@@ -1774,3 +1774,6 @@
 1789 " ist gesperrt mit einem Kennwort"
 1790 "xx_size %"
 1791 "i\n"
+1792 "MD5"
+1793 "Berrechne die MD5 und die CRC Prüfsummen des Pakets <n>"
+1794 "Rebuilding MD5 and CRC for Pack #%i:"

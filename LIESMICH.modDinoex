@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+Ab Version mod 2.14:
+--------------------
+
+148) MD5
+  Neues Admin Kommando:
+  MD5 <n>                          Berrechne die MD5 und die CRC Prüfsummen des Pakets <n>
+
 Ab Version mod 2.13:
 --------------------
 
@@ -8,8 +15,8 @@ bugfix: XDCC INFO
 
 147) CHTRIGGER
   Neue Admin Kommandos:
-  CHTRIGGER n                      Entferne Trigger für Paket <n>
-  CHTRIGGER n msg                  Setze Trigger für Paket <n> auf <msg>
+  CHTRIGGER <n>                    Entferne Trigger für Paket <n>
+  CHTRIGGER <n> <msg>              Setze Trigger für Paket <n> auf <msg>
 
 146) CANNOUNCE
   Neues Admin Kommando:

@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 2.14:
+----------------------
+
+148) MD5 (inspired by dondieschotte)
+  new admin command:
+  MD5 <n>                         Calculate MD5 and CRC sums of pack <n>
+
 With Version mod 2.13:
 ----------------------
 
@@ -8,8 +15,8 @@ bugfix: XDCC INFO (reported by dondieschotte)
 
 147) CHTRIGGER (inspired by conanmichi)
   new admin commands:
-  CHTRIGGER n                      Remove trigger for pack <n>
-  CHTRIGGER n msg                  Change trigger for pack <n> to <msg>
+  CHTRIGGER <n>                    Remove trigger for pack <n>
+  CHTRIGGER <n> <msg>              Change trigger for pack <n> to <msg>
 
 146) CANNOUNCE (inspired by Skyw4lker)
   new admin command:

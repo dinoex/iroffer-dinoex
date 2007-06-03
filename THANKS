@@ -200,6 +200,7 @@ dondieschotte
 	admin command  "sort 1"
 	admin command  "sort name/group/desc"
 	extend "XDCC INFO"
+	admin command  "md5 n"
 
 dsd
 	admin command "autoadd"

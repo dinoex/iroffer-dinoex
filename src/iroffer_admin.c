@@ -168,6 +168,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,2,method_allow_all,a_cannounce, "CANNOUNCE","channel n msg","ANNOUNCE <msg> for pack <n> in <channel>"},
 {3,2,method_allow_all,a_sannounce, "SANNOUNCE","n","Short ANNOUNCE <n> <name> in all joined channels"},
 {3,3,method_allow_all,a_addann,   "ADDANN","filename","Add and announce new pack"},
+{3,2,method_allow_all,a_md5,      "MD5","n","Calculate MD5 and CRC sums of pack <n>"},
 {3,2,method_allow_all,a_crc,      "CRC","[n]","Check CRC of pack <n>"},
 {3,3,method_allow_all,a_newdir,   "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
 {3,5,method_allow_all,a_filemove, "FILEMOVE","filename newfile","rename file on disk"},

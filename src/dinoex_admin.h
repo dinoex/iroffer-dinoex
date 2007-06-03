@@ -72,6 +72,7 @@ void a_groupdesc(const userinput * const u);
 void a_group(const userinput * const u);
 void a_movegroup(const userinput * const u);
 void a_regroup(const userinput * const u);
+void a_md5(const userinput * const u);
 void a_crc(const userinput * const u);
 void a_newdir(const userinput * const u);
 void a_filemove(const userinput * const u);

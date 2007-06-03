@@ -1774,3 +1774,6 @@
 1789 " is protected by password"
 1790 "xx_size %"
 1791 "i\n"
+1792 "MD5"
+1793 "Calculate MD5 and CRC sums of pack <n>"
+1794 "Rebuilding MD5 and CRC for Pack #%i:"
