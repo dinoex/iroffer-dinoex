@@ -1907,4 +1907,28 @@ void autotrigger_rebuild(void)
   }
 }
 
+void start_md5_hash(xdcc *xd, int packnum)
+{
+  if (!gdata.attop) { gototop(); }
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          "[MD5]: Calculating pack %d",packnum);
+
+  gdata.md5build.file_fd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (gdata.md5build.file_fd >= 0) {
+    gdata.md5build.xpack = xd;
+    if (!gdata.nocrc32)
+      crc32_init();
+    MD5Init(&gdata.md5build.md5sum);
+    if (set_socket_nonblocking(gdata.md5build.file_fd, 1) < 0) {
+      outerror(OUTERROR_TYPE_WARN, "[MD5]: Couldn't Set Non-Blocking");
+    }
+  } else {
+    outerror(OUTERROR_TYPE_WARN,
+             "[MD5]: Pack %d: Cant Access Offered File '%s': %s",
+             packnum, xd->file, strerror(errno));
+             gdata.md5build.file_fd = FD_UNUSED;
+             check_for_file_remove(packnum);
+  }
+}
+
 /* End of File */

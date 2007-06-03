@@ -90,4 +90,6 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
 void autotrigger_add(xdcc *xd);
 void autotrigger_rebuild(void);
 
+void start_md5_hash(xdcc *xd, int packnum);
+
 /* End of File */
