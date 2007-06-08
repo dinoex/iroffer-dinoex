@@ -60,6 +60,7 @@ Short Term Features:
   1019  channel -pgroup GRP
   1026  renumber x to y to position z
   1056  Privmsg statt notice
+  1059  XDLTRIGGER
 
 Long Term Features:
   1008  use text or xml for statefile

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
+bugfix: SERVQC (reported by chibi)
+  this will stop all qued announces too
+
 148) MD5 (inspired by dondieschotte)
   new admin command:
   MD5                             Show state of curren MD5 computing

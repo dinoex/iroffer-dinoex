@@ -3326,10 +3326,12 @@ static void u_servqc(const userinput * const u)
   for (ss=0; ss<gdata.networks_online; ss++)
     {
       u_respond(u,"Cleared server queue of %d lines",
+                irlist_size(&gdata.networks[ss].serverq_channel) +
                 irlist_size(&gdata.networks[ss].serverq_fast) +
                 irlist_size(&gdata.networks[ss].serverq_normal) +
                 irlist_size(&gdata.networks[ss].serverq_slow));
       
+      irlist_delete_all(&gdata.networks[ss].serverq_channel);
       irlist_delete_all(&gdata.networks[ss].serverq_fast);
       irlist_delete_all(&gdata.networks[ss].serverq_normal);
       irlist_delete_all(&gdata.networks[ss].serverq_slow);

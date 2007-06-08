@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.14:
 --------------------
 
+bugfix: SERVQC
+  Auch ANNOUNCE und PSEND abbrechen
+
 148) MD5
   Neues Admin Kommando:
   MD5                              Zeige den Status der MD5 Berechnung
