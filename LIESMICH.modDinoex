@@ -5,7 +5,7 @@ Ab Version mod 2.14:
 
 149) MOVEGROUPDIR
   Neues Admin Kommando:
-  MOVEGROUPDIR <g> <dir>           Alle Dateien der Gruppe <gruppe> in das Verzeichnis <dir> verschieben
+  MOVEGROUPDIR <g> <dir>           Alle Dateien der Gruppe <g> in das Verzeichnis <dir> verschieben
 
 bugfix: SERVQC
   Auch ANNOUNCE und PSEND abbrechen
