@@ -60,7 +60,6 @@ Short Term Features:
   1019  channel -pgroup GRP
   1026  renumber x to y to position z
   1056  Privmsg statt notice
-  1059  XDLTRIGGER
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -109,4 +108,7 @@ Not going to happen anytime soon:
   1052  auto-topic
   1054  Donwnloadkeys
   1055  Disk_Quota
+  1060  limited directfile_acess
+  1063  keep deleted files
+  1061  sort xxx vor announce
 
