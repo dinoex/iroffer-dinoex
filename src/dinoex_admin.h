@@ -77,6 +77,7 @@ void a_crc(const userinput * const u);
 void a_newdir(const userinput * const u);
 void a_filemove(const userinput * const u);
 void a_movefile(const userinput * const u);
+void a_movegroupdir(const userinput * const u);
 void a_filedel(const userinput * const u);
 void a_fileremove(const userinput * const u);
 void a_showdir(const userinput * const u);

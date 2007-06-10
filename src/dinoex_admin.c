@@ -963,7 +963,7 @@ static const char *a_basename(const char *pathname)
   if (work == NULL)
     return pathname;
 
-  return work;
+  return ++work;
 }
 
 static int a_sort_null(const char *str1, const char *str2)
@@ -1381,7 +1381,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
             {
               a_respond(u,"  Ignoring directory: %s", tempstr);
             }
-	  else
+          else
             {
               a_adddir_sub(u, tempstr, NULL, new, setgroup);
             }
@@ -2016,6 +2016,9 @@ void a_md5(const userinput * const u)
   }
 
   if (u->arg1) num = atoi(u->arg1);
+  if (num == 0)
+    return;
+
   if (invalid_pack(u, num) != 0)
     return;
 
@@ -2285,15 +2288,60 @@ void a_filemove(const userinput * const u)
    mydelete(file2);
 }
 
-void a_movefile(const userinput * const u)
+static int a_movefile_sub(const userinput * const u, xdcc *xd, const char *newfile)
 {
    struct stat st;
-   xdcc *xd;
    char *file1;
    char *file2;
    int xfiledescriptor;
-   int num = 0;
+
+   file1 = xd->file;
+
+   xfiledescriptor = a_open_file(&file1, O_RDONLY | ADDED_OPEN_FLAGS);
    
+   if (xfiledescriptor < 0) {
+      a_respond(u,"Cant Access File: %s: %s", file1, strerror(errno));
+      return 1;
+      }
+   
+   if (fstat(xfiledescriptor,&st) < 0)
+     {
+      a_respond(u,"Cant Access File Details: %s: %s", file1, strerror(errno));
+      close(xfiledescriptor);
+      return 1;
+     }
+   close(xfiledescriptor);
+   
+   if (!S_ISREG(st.st_mode))
+     {
+      a_respond(u,"%s is not a file", file1);
+      return 1;
+     }
+   
+   file2 = mystrdup(newfile);
+   convert_to_unix_slash(file2);
+   
+   a_target_file(&file2, file1);
+   if (rename(file1,file2) < 0)
+     {
+       a_respond(u,"File %s could not be moved to %s: %s", file1, file2, strerror(errno));
+       mydelete(file2);
+       return 1;
+     }
+   else
+     {
+       a_respond(u,"File %s was moved to %s.",file1, file2);
+       xd->file = file2;
+       mydelete(file1);
+       return 0;
+     }
+}
+
+void a_movefile(const userinput * const u)
+{
+   xdcc *xd;
+   int num = 0;
+
    updatecontext();
 
    if (disabled_config(u) != 0)
@@ -2303,52 +2351,81 @@ void a_movefile(const userinput * const u)
    if (invalid_pack(u, num) != 0)
       return;
 
-
    if (!u->arg2e || !strlen(u->arg2e)) {
       a_respond(u,"Try Specifying a new Filename");
       return;
       }
- 
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
-   file1 = xd->file;
 
-   xfiledescriptor = a_open_file(&file1, O_RDONLY | ADDED_OPEN_FLAGS);
-   
-   if (xfiledescriptor < 0) {
-      a_respond(u,"Cant Access File: %s: %s", file1, strerror(errno));
-      return;
-      }
-   
-   if (fstat(xfiledescriptor,&st) < 0)
-     {
-      a_respond(u,"Cant Access File Details: %s: %s", file1, strerror(errno));
-      close(xfiledescriptor);
-      return;
-     }
-   close(xfiledescriptor);
-   
-   if (!S_ISREG(st.st_mode))
-     {
-      a_respond(u,"%s is not a file", file1);
-      return;
-     }
-   
    clean_quotes(u->arg2e);
-   file2 = mystrdup(u->arg2e);
-   convert_to_unix_slash(file2);
-   
-   a_target_file(&file2, file1);
-   if (rename(file1,file2) < 0)
-     {
-       a_respond(u,"File %s could not be moved to %s: %s", file1, file2, strerror(errno));
-       mydelete(file2);
-     }
-   else
-     {
-       a_respond(u,"File %s was moved to %s.",file1, file2);
-       xd->file = file2;
-       mydelete(file1);
-     }
+   xd = irlist_get_nth(&gdata.xdccs, num-1);
+   a_movefile_sub(u, xd, u->arg2e);
+}
+
+void a_movegroupdir(const userinput * const u)
+{
+  DIR *d;
+  xdcc *xd;
+  char *thedir;
+  char *tempstr;
+  const char *g;
+  int num;
+  int foundit;
+
+  updatecontext();
+
+  if (invalid_group(u, u->arg1) != 0)
+     return;
+
+  if (invalid_dir(u, u->arg2e) != 0)
+     return;
+
+  clean_quotes(u->arg2e);
+  convert_to_unix_slash(u->arg2e);
+  if (gdata.groupsincaps)
+    caps(u->arg1);
+
+  thedir = mystrdup(u->arg2e);
+  d = a_open_dir(&thedir);
+  if (!d)
+    {
+      a_respond(u,"Can't Access Directory: %s",strerror(errno));
+      return;
+    }
+
+  num = 0;
+  foundit = 0;
+  tempstr = mycalloc(maxtextlength);
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      num ++;
+      if (xd->group != NULL)
+        g = xd->group;
+      else
+        g = "main";
+      if (strcasecmp(g,u->arg1) == 0)
+        {
+          foundit++;
+          if (u->arg2e[strlen(u->arg2e)-1] == '/')
+            snprintf(tempstr, maxtextlength - 2, "%s%s", u->arg2e, a_basename(xd->file));
+          else
+            snprintf(tempstr, maxtextlength - 2, "%s/%s", u->arg2e, a_basename(xd->file));
+          if (strcmp(tempstr, xd->file) != 0)
+            {
+              if (a_movefile_sub(u, xd, tempstr))
+                break;
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+  closedir(d);
+  mydelete(tempstr);
+  mydelete(thedir);
+  if (foundit == 0)
+    return;
+  write_statefile();
+  xdccsavetext();
+  return;
 }
 
 static void a_filedel_disk(const userinput * const u, const char *name)

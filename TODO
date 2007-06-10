@@ -82,7 +82,6 @@ Not going to happen anytime soon:
   1012  Leach a full group
   1013  Passive DCC
   1015  http admin
-  1016  chdirgrp grp /neued/packet
   1017  no clear if user change konsole window
   1021  add /path/dir/*animexyz*
   1022  send notes on mutiple triggers
@@ -109,6 +108,6 @@ Not going to happen anytime soon:
   1054  Donwnloadkeys
   1055  Disk_Quota
   1060  limited directfile_acess
-  1063  keep deleted files
   1061  sort xxx vor announce
+  1063  keep deleted files
 

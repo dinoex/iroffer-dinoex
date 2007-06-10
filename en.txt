@@ -1777,3 +1777,6 @@
 1792 "MD5"
 1793 "Calculate MD5 and CRC sums of pack <n>"
 1794 "Rebuilding MD5 and CRC for Pack #%i:"
+1795 "MOVEGROUPDIR"
+1796 "move any file in group <g> to dir <dir>"
+1797 "A A A A A INFO %d"

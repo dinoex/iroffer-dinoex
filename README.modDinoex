@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
+149) MOVEGROUPDIR (inspired by Kurosaki)
+  new admin command:
+  MOVEGROUPDIR <g> <dir>          move any file in group <g> to dir <dir>
+
 bugfix: SERVQC (reported by chibi)
   this will stop all qued announces too
 
