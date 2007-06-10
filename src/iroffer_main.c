@@ -3570,9 +3570,8 @@ void sendxdccinfo(const char* nick,
                   int pack,
                   const char* msg)
 {
+  userinput *pubinfo;
   xdcc *xd;
-  char *sizestrstr;
-  char *sendnamestr;
   char tempstr[maxtextlengthshort];
   
   updatecontext();
@@ -3598,54 +3597,16 @@ void sendxdccinfo(const char* nick,
     }
   
   ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," requested: ");
-  
-  notice_slow(nick, "Pack Info for Pack #%i:", pack);
-  
-  sendnamestr = getsendname(xd->file);
-  notice_slow(nick, " Filename       %s", sendnamestr);
-  
-  if (strcmp(sendnamestr, xd->desc))
-    {
-      notice_slow(nick, " Description    %s", xd->desc);
-    }
-  mydelete(sendnamestr);
-  
-  if (xd->note[0])
-    {
-      notice_slow(nick, " Note           %s", xd->note);
-    }
-  
-  sizestrstr = sizestr(1, xd->st_size);
-  notice_slow(nick, " Filesize       %" LLPRINTFMT "i [%sB]",
-            (long long)xd->st_size, sizestrstr);
-  mydelete(sizestrstr);
-  
-  getdatestr(tempstr, xd->mtime, maxtextlengthshort);
-  notice_slow(nick, " Last Modified  %s", tempstr);
-  
-  notice_slow(nick, " Gets           %d", xd->gets);
-  if (xd->minspeed)
-    {
-      notice_slow(nick, " Minspeed       %1.1fKB/sec", xd->minspeed);
-    }
-  if (xd->maxspeed)
-    {
-      notice_slow(nick, " Maxspeed       %1.1fKB/sec", xd->maxspeed);
-    }
-  
-  if (xd->has_md5sum)
-    {
-      notice_slow(nick, " md5sum         " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
-    }
-  if (xd->has_crc32)
-    {
-      notice_slow(nick, " crc32          %.8lX", xd->crc32);
-    }
-  if (xd->lock)
-    {
-      notice_slow(nick, " is protected by password");
-    }
-  
+
+  pubinfo = mycalloc(sizeof(userinput));
+  snprintf(tempstr, sizeof(tempstr), "A A A A A INFO %d", pack);
+  u_fillwith_msg(pubinfo, nick, tempstr);
+  pubinfo->method = method_xdl_user_notice;
+  pubinfo->net = gnetwork->net;
+  pubinfo->level = ADMIN_LEVEL_PUBLIC;
+  u_parseit(pubinfo);
+  mydelete(pubinfo);
+
  done:
   
   ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,

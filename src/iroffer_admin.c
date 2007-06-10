@@ -135,7 +135,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,5,method_allow_all,a_queuesize, "QUEUESIZE","[slots]","temporary change queuesize to <slots>"},
 {2,5,method_allow_all,a_requeue,  "REQUEUE","x y","Moves queue entry from postion <x> to <y>"},
 
-{3,0,method_allow_all,u_info,     "INFO","n","Show info for pack <n>"},
+{3,0,method_allow_all_xdl,u_info, "INFO","n","Show info for pack <n>"},
 {3,4,method_allow_all,a_remove,   "REMOVE","n [m]","Removes pack <n> or <n> to <m>"},
 {3,4,method_allow_all,u_removedir,"REMOVEDIR","dir","Remove every pack found in <dir>"},
 {3,4,method_allow_all,a_removegroup, "REMOVEGROUP","group","Remove every pack found in <group>"},
@@ -1562,10 +1562,17 @@ static void u_info(const userinput * const u)
   
   u_respond(u, "Pack Info for Pack #%i:", num);
   
+  sendnamestr = getsendname(xd->file);
+  if (u->level > 0) 
+    {
   u_respond(u, " Filename       %s", xd->file);
 
-  sendnamestr = getsendname(xd->file);
   u_respond(u, " Sendname       %s", sendnamestr);
+    }
+  else
+    {
+  u_respond(u, " Filename       %s", sendnamestr);
+    }
   mydelete(sendnamestr);
 
   u_respond(u, " Description    %s", xd->desc);
@@ -1582,8 +1589,11 @@ static void u_info(const userinput * const u)
   getdatestr(tempstr, xd->mtime, maxtextlengthshort);
   u_respond(u, " Last Modified  %s", tempstr);
   
+  if (u->level > 0) 
+    {
   u_respond(u, " Device/Inode   %" LLPRINTFMT "u/%" LLPRINTFMT "u",
             (unsigned long long)xd->st_dev, (unsigned long long)xd->st_ino);
+    }
   
   u_respond(u, " Gets           %d", xd->gets);
   if (xd->minspeed)
