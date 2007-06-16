@@ -1788,3 +1788,6 @@
 1803 "pattern"
 1804 "List packs that matches <pattern>"
 1805 "Try Specifying a Pattern"
+1806 "NOMD5"
+1807 "Disables MD5 and CRC calculation for next <x> minutes"
+1808 "** MD5 and CRC checksums have been disabled for the next %i minute%s"

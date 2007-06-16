@@ -196,6 +196,7 @@ static const userinput_parse_t userinput_parse[] = {
 {4,5,method_allow_all,u_nosave,   "NOSAVE","x","Disables autosave for next <x> minutes"},
 {4,2,method_allow_all,u_nosend,   "NOSEND","x","Disables XDCC SEND for next <x> minutes"},
 {4,2,method_allow_all,u_nolist,   "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
+{4,2,method_allow_all,a_nomd5,    "NOMD5","x","Disables MD5 and CRC calculation for next <x> minutes"},
 {4,3,method_allow_all,u_msgread,  "MSGREAD",NULL,"Show MSG log"},
 {4,5,method_allow_all,u_msgdel,   "MSGDEL",NULL,"Delete MSG log"},
 {4,3,method_allow_all,u_rmul,     "RMUL","filename","Delete a file in the upload dir"},

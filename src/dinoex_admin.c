@@ -2959,6 +2959,17 @@ void a_nochannel(const userinput * const u)
    gnetwork = backup;
 }
 
+void a_nomd5(const userinput * const u)
+{
+   int num = 0;
+
+   updatecontext();
+
+   if (u->arg1) num = atoi(u->arg1);
+   gdata.nomd5_start = gdata.curtime + (60 * num) - 1;
+   a_respond(u,"** MD5 and CRC checksums have been disabled for the next %i minute%s", num, num!=1 ? "s" : "");
+}
+
 void a_cleargets(const userinput * const u)
 {
    xdcc *xd;

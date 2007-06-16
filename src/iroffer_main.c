@@ -1762,6 +1762,7 @@ static void mainloop (void) {
         {
           int packnum = 1;
           /* see if any pack needs a md5sum calculated */
+          if (gdata.nomd5_start <= gdata.curtime)
           for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd), packnum++)
             {
               if (!gdata.nocrc32)

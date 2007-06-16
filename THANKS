@@ -100,6 +100,7 @@ StoVoKor
 	option "hadminhost"
 	option "hadminlevel"
 	show current md5/crc32 pack
+	admin command "NOMD5"
 
 conanmichi
 	reporting group descriptions problems

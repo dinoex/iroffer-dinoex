@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.14:
 --------------------
 
+153) NOMD5
+  Neues Admin Kommando:
+  NOMD5 <x>                        Sperrt die Berechnung von MD5 und CRC32 für die nächsten <x> Minuten
+
 152) FIND
   Neues Admin Kommando:
   FIND <muster>                    Zeige Pakete die den Text <muster> enthalten

@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
+153) NOMD5 (inspired by StoVoKor)
+  new admin command:
+  NOMD5 <x>                       Disables MD5 and CRC calculation for next <x> minutes
+
 152) FIND
   new admin command:
   FIND <pattern>                  List packs that matches <pattern>
@@ -11,7 +15,7 @@ With Version mod 2.14:
   new admin command:
   XDTRIGGER                       Show all packs with dynamic triggers
 
-150) xdcclist_by_privmsg (inspired by dondieschotte, Ang3lu5)
+150) xdcclist_by_privmsg (inspired by Ang3lu5, dondieschotte)
   send the result of XDCC LIST by privmsg instead of notice.
 
 149) MOVEGROUPDIR (inspired by Kurosaki)
