@@ -3161,9 +3161,8 @@ static void privmsgparse(const char* type, char* line) {
            {
              if (hide_pack(xd) == 0)
                {
-                 char *file;
-                 file = strrchr(xd->file, '/');
-                 if (file == NULL) file = xd->file;
+                 const char *file;
+                 file = get_basename(xd->file);
                  if (strstrnocase(file,msg3) ||
                      strstrnocase(xd->desc,msg3) ||
                      strstrnocase(xd->note,msg3))

@@ -1034,11 +1034,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
    line = mycalloc(strlen(xd->file)+1);
 
    /* ignore path */
-   x = strrchr(xd->file, '/');
-   if (x != NULL) 
-      x ++; 
-   else 
-      x = xd->file;
+   x = get_basename(xd->file);
 
    strcpy(line, x);
    /* ignore extension */

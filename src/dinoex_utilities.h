@@ -23,5 +23,6 @@ int verifypass2(const char *masterpass, const char *testpass);
 void checkadminpass2(const char *masterpass);
 char *clean_quotes(char *str);
 char *to_hostmask(const char *nick, const char *hostname);
+const char *get_basename(const char *pathname);
 
 /* End of File */

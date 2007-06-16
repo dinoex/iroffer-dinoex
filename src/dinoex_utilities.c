@@ -208,4 +208,15 @@ char *to_hostmask(const char *nick, const char *hostname)
   return hostmask;
 }
  
+const char *get_basename(const char *pathname)
+{
+  const char *work;
+
+  work = strrchr(pathname, '/');
+  if (work == NULL)
+    return pathname;
+
+  return ++work;
+}
+
 /* End of File */
