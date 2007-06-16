@@ -70,8 +70,9 @@ TheDeath
 	reporting crash whith geoip
 	option "geoipdatabase"
         option "channel -noannounce"
-	admin command  "sort name/group/desc"
-	admin command  "sort -name/-group/-desc"
+	admin command "sort name/group/desc"
+	admin command "sort -name/-group/-desc"
+	admin command "XDTRIGGER"
 
 [GFE]Lunix
 	alias xdcc list group <group>
