@@ -45,6 +45,7 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num);
 void a_remove_delayed(const userinput * const u);
 void a_add_delayed(const userinput * const u);
 void a_xdlock(const userinput * const u);
+void a_xdtrigger(const userinput * const u);
 
 void a_unlimited(const userinput * const u);
 void a_slotsmax(const userinput * const u);

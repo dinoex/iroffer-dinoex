@@ -723,6 +723,36 @@ void a_xdlock(const userinput * const u)
    mydelete(tempstr);
 }
 
+void a_xdtrigger(const userinput * const u)
+{
+   char *tempstr;
+   int i;
+   int l;
+   int s;
+   xdcc *xd;
+
+   updatecontext();
+
+   tempstr  = mycalloc(maxtextlength);
+
+   l = a_xdl_left();
+   s = a_xdl_space();
+   i = 1;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       if (xd->trigger != NULL)
+         {
+           u_xdl_pack(u,tempstr,i,l,s,xd);
+           a_respond(u," \2^-\2%*sTrigger: %s", s, "", xd->trigger);
+         }
+       i++;
+       xd = irlist_get_next(xd);
+     }
+
+   mydelete(tempstr);
+}
+
 void a_unlimited(const userinput * const u)
 {
   int num = -1;

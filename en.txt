@@ -1781,3 +1781,6 @@
 1796 "move any file in group <g> to dir <dir>"
 1797 "A A A A A INFO %d"
 1798 "xdcclist_by_privmsg"
+1799 "XDTRIGGER"
+1800 "Show all packs with dynamic triggers"
+1801 " \2^-\2%*sTrigger: %s"

@@ -112,6 +112,7 @@ static const userinput_parse_t userinput_parse[] = {
 {1,0,method_allow_all_xdl,u_xdl_group,  "XDLGROUP","group","Show packs from <group>"},
 {1,0,method_allow_all_xdl,u_xdl,  "XDL",NULL,"Lists offered groups and packs without group"},
 {1,1,method_allow_all,a_xdlock,   "XDLOCK",NULL,"Show all locked packs"},
+{1,1,method_allow_all,a_xdtrigger, "XDTRIGGER",NULL,"Show all packs with dynamic triggers"},
 {1,5,method_allow_all,u_xds,      "XDS",NULL,"Save state file"},
 {1,1,method_allow_all,u_dcl,      "DCL",NULL,"Lists current transfers"},
 {1,1,method_allow_all,u_dcld,     "DCLD",NULL,"Lists current transfers with details"},

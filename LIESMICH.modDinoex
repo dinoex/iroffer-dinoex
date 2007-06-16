@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.14:
 --------------------
 
+151) XDTRIGGER
+  Neues Admin Kommando:
+  XDTRIGGER                        Zeige alle Pakete mit einem dynamischen Trigger
+
 150) xdcclist_by_privmsg
   Sende die Ausgabe von XDCC LIST als "privmsg", normal als "notice".
 
