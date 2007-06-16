@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.14:
 --------------------
 
+152) FIND
+  Neues Admin Kommando:
+  FIND <muster>                    Zeige Pakete die den Text <muster> enthalten
+
 151) XDTRIGGER
   Neues Admin Kommando:
   XDTRIGGER                        Zeige alle Pakete mit einem dynamischen Trigger

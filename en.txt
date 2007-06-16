@@ -1784,3 +1784,7 @@
 1799 "XDTRIGGER"
 1800 "Show all packs with dynamic triggers"
 1801 " \2^-\2%*sTrigger: %s"
+1802 "FIND"
+1803 "pattern"
+1804 "List packs that matches <pattern>"
+1805 "Try Specifying a Pattern"

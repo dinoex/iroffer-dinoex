@@ -753,6 +753,53 @@ void a_xdtrigger(const userinput * const u)
    mydelete(tempstr);
 }
 
+void a_find(const userinput * const u)
+{
+   char *tempstr;
+   const char *file;
+   int i;
+   int k;
+   int l;
+   int s;
+   xdcc *xd;
+
+   updatecontext();
+
+   if (!u->arg1e || !strlen(u->arg1e)) {
+     a_respond(u, "Try Specifying a Pattern");
+     return;
+   }
+
+   tempstr  = mycalloc(maxtextlength);
+
+   l = a_xdl_left();
+   s = a_xdl_space();
+   k = 0;
+   i = 1;
+   xd = irlist_get_head(&gdata.xdccs);
+   while(xd)
+     {
+       file = get_basename(xd->file);
+       if (strstrnocase(file, u->arg1e) ||
+           strstrnocase(xd->desc, u->arg1e) ||
+           strstrnocase(xd->note, u->arg1e))
+         {
+           k++;
+           u_xdl_pack(u, tempstr, i, l, s, xd);
+           /* limit matches */
+           if ((gdata.max_find != 0) && (k >= gdata.max_find))
+             break;
+         }
+       i++;
+       xd = irlist_get_next(xd);
+     }
+
+   if (!k)
+      a_respond(u, "Sorry, nothing was found, try a XDCC LIST" );
+
+   mydelete(tempstr);
+}
+
 void a_unlimited(const userinput * const u)
 {
   int num = -1;
@@ -984,18 +1031,6 @@ void a_removegroup(const userinput * const u)
      }
 }
 
-
-static const char *a_basename(const char *pathname)
-{
-  const char *work;
-
-  work = strrchr(pathname, '/');
-  if (work == NULL)
-    return pathname;
-
-  return ++work;
-}
-
 static int a_sort_null(const char *str1, const char *str2)
 {
   if ((str1 == NULL) && (str2 == NULL))
@@ -1062,7 +1097,7 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
     case 'n':
     case 'F':
     case 'f':
-      rc = strcasecmp(a_basename(xd3->file), a_basename(xd4->file));
+      rc = strcasecmp(get_basename(xd3->file), get_basename(xd4->file));
       if (rc != 0)
         return rc;
       break;
@@ -2437,9 +2472,9 @@ void a_movegroupdir(const userinput * const u)
         {
           foundit++;
           if (u->arg2e[strlen(u->arg2e)-1] == '/')
-            snprintf(tempstr, maxtextlength - 2, "%s%s", u->arg2e, a_basename(xd->file));
+            snprintf(tempstr, maxtextlength - 2, "%s%s", u->arg2e, get_basename(xd->file));
           else
-            snprintf(tempstr, maxtextlength - 2, "%s/%s", u->arg2e, a_basename(xd->file));
+            snprintf(tempstr, maxtextlength - 2, "%s/%s", u->arg2e, get_basename(xd->file));
           if (strcmp(tempstr, xd->file) != 0)
             {
               if (a_movefile_sub(u, xd, tempstr))

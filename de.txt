@@ -1784,3 +1784,7 @@
 1799 "XDTRIGGER"
 1800 "Zeige alle Pakete mit einem dynamischen Trigger"
 1801 " \2^-\2%*sTrigger: %s"
+1802 "FIND"
+1803 "muster"
+1804 "Zeige Pakete die den Text <muster> enthalten"
+1805 "Try Specifying a Pattern"
