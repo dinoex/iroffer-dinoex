@@ -1780,3 +1780,4 @@
 1795 "MOVEGROUPDIR"
 1796 "Alle Dateien der <gruppe> in das <dir> verschieben"
 1797 "A A A A A INFO %d"
+1798 "xdcclist_by_privmsg"

@@ -1474,6 +1474,7 @@ void dumpgdata(void)
   gdata_print_int(adminlevel);
   gdata_print_int(hadminlevel);
   gdata_print_int(monitor_files);
+  gdata_print_int(xdcclist_by_privmsg);
   
   /* downloadhost */
   /* nodownloadhost */

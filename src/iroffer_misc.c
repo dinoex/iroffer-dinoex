@@ -2093,7 +2093,10 @@ void sendxdlqueue (void)
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_YELLOW,"Sending XDCC LIST to: %s",tempstr);
       
       u_fillwith_msg(&ui,tempstr,"A A A A A xdl");
-      ui.method = method_xdl_user_notice;
+      if (gdata.xdcclist_by_privmsg)
+        ui.method = method_xdl_user_privmsg;
+      else
+        ui.method = method_xdl_user_notice;
       ui.net = gnetwork->net;
       ui.level = ADMIN_LEVEL_PUBLIC;
       u_parseit(&ui);
@@ -2263,6 +2266,7 @@ void reinit_config_vars(void)
   gdata.adminlevel = ADMIN_LEVEL_FULL;
   gdata.hadminlevel = ADMIN_LEVEL_HALF;
   gdata.monitor_files = 20;
+  gdata.xdcclist_by_privmsg = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

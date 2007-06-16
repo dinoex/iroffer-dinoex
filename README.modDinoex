@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
+150) xdcclist_by_privmsg (inspired by dondieschotte, Ang3lu5)
+  send the result of XDCC LIST by privmsg instead of notice.
+
 149) MOVEGROUPDIR (inspired by Kurosaki)
   new admin command:
   MOVEGROUPDIR <g> <dir>          move any file in group <g> to dir <dir>

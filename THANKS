@@ -202,6 +202,7 @@ dondieschotte
 	admin command  "sort name/group/desc"
 	extend "XDCC INFO"
 	admin command  "md5 n"
+	option "xdcclist_by_privmsg"
 
 dsd
 	admin command "autoadd"
@@ -232,4 +233,7 @@ Benni-chan
 
 lordfiSh
 	reporting uploaddir crash
+
+Ang3lu5
+	option "xdcclist_by_privmsg"
 

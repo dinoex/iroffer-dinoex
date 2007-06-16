@@ -87,6 +87,7 @@ static config_bool_typ config_parse_bool[] = {
 {"restrictsend_warning",   &gdata.restrictsend_warning },
 {"spaces_in_filenames",    &gdata.spaces_in_filenames },
 {"timestampconsole",       &gdata.timestampconsole },
+{"xdcclist_by_privmsg",    &gdata.xdcclist_by_privmsg},
 {"xdcclist_grouponly",     &gdata.xdcclist_grouponly },
 {"xdcclistfileraw",        &gdata.xdcclistfileraw },
 {NULL, NULL }};

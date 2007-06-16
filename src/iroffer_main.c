@@ -3027,7 +3027,10 @@ static void privmsgparse(const char* type, char* line) {
                            {
                              pubplist = mycalloc(sizeof(userinput));
                              u_fillwith_msg(pubplist,nick,tempstr);
-                             pubplist->method = method_xdl_user_notice;
+                             if (gdata.xdcclist_by_privmsg)
+                               pubplist->method = method_xdl_user_privmsg;
+                             else
+                               pubplist->method = method_xdl_user_notice;
                              pubplist->net = gnetwork->net;
                              pubplist->level = ADMIN_LEVEL_PUBLIC;
                              u_parseit(pubplist);

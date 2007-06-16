@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.14:
 --------------------
 
+150) xdcclist_by_privmsg
+  Sende die Ausgabe von XDCC LIST als "privmsg", normal als "notice".
+
 149) MOVEGROUPDIR
   Neues Admin Kommando:
   MOVEGROUPDIR <g> <dir>           Alle Dateien der Gruppe <g> in das Verzeichnis <dir> verschieben
