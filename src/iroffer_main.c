@@ -663,7 +663,7 @@ static void mainloop (void) {
         {
           int callval_i;
           int connect_error;
-          int connect_error_len = sizeof(connect_error);
+          unsigned int connect_error_len = sizeof(connect_error);
           
           callval_i = getsockopt(gnetwork->ircserver,
                                  SOL_SOCKET, SO_ERROR,
@@ -817,7 +817,7 @@ static void mainloop (void) {
             {
               int callval_i;
               int connect_error;
-              int connect_error_len = sizeof(connect_error);
+              unsigned int connect_error_len = sizeof(connect_error);
               
               callval_i = getsockopt(ul->clientsocket,
                                      SOL_SOCKET, SO_ERROR,
@@ -891,7 +891,7 @@ static void mainloop (void) {
             {
               int callval_i;
               int connect_error;
-              int connect_error_len = sizeof(connect_error);
+              unsigned int connect_error_len = sizeof(connect_error);
               
               callval_i = getsockopt(chat->fd,
                                      SOL_SOCKET, SO_ERROR,
@@ -1754,7 +1754,7 @@ static void mainloop (void) {
               /* else got data */
               MD5Update(&gdata.md5build.md5sum, gdata.sendbuff, howmuch);
               if (!gdata.nocrc32)
-                crc32_update(gdata.sendbuff, howmuch);
+                crc32_update((char *)gdata.sendbuff, howmuch);
             }
         }
       

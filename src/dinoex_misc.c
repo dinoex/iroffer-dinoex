@@ -1247,8 +1247,8 @@ void start_fetch_url(const userinput *const u)
   off_t resumesize;
   fetch_curl_t *ft;
   char *fullfile;
-  unsigned char *name;
-  unsigned char *url;
+  char *name;
+  char *url;
   FILE *writefd;
   struct stat s;
   int retval;

@@ -692,7 +692,6 @@ outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid DNS response, Ignoring: %s",hstrerror(
 #ifdef NO_HOSTCODES
            exit(10);
 #else
-           extern int h_errno;
            switch (h_errno)
              {
              case HOST_NOT_FOUND:

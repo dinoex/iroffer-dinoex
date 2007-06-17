@@ -213,6 +213,7 @@ fi
 
 echo -n "Seeing if $cctype works... "
 echo "
+#include <stdlib.h>
 int main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp config.temp.c ; then
@@ -236,6 +237,7 @@ fi
 
 echo -n "Seeing if $cctype accepts '-Werror'... "
 echo "
+#include <stdlib.h>
 int main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -Werror -o config.temp config.temp.c ; then
@@ -361,6 +363,7 @@ FD_SETSIZE
 " > config.temp.c
 if $cctype -E -o config.temp.p config.temp.c $WARNS $WERROR ; then
  setsize=`tail -2 config.temp.p |grep -v "config.temp"`
+ setsize="${setsize%U}"
  echo -n " $setsize"
  
  if [ "$ostype" = CYGWIN -a $setsize -le 255 ]; then
@@ -501,7 +504,7 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {strcasecmp(\"blah\",\"blah\"); exit(0);}
+int main (int argc, char **argv) {(void)strcasecmp(\"blah\",\"blah\"); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
  echo "found"
@@ -1078,7 +1081,6 @@ echo "
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
 int main (int argc, char **argv) {
-  extern int h_errno;
   int i;
   switch (h_errno)
     {
@@ -1101,6 +1103,7 @@ echo "found"
 else
 echo "#define NO_HOSTCODES" >> src/iroffer_config.h
 echo "missing, won't report error codes"
+cat -n config.temp.c
 fi
 
 rm -f config.temp*

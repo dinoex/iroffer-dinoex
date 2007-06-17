@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
+bugfix: Configure and make with gcc-4.2
+
 153) NOMD5 (inspired by StoVoKor)
   new admin command:
   NOMD5 <x>                       Disables MD5 and CRC calculation for next <x> minutes

@@ -130,7 +130,7 @@ static int write_statefile_float(ir_boutput_t *bout, statefile_tag_t tag, float 
     return write_statefile_item(bout, &a_float);
 }
 
-static unsigned char *prepare_statefile_string(unsigned char *next, statefile_tag_t tag, unsigned char *str)
+static unsigned char *prepare_statefile_string(unsigned char *next, statefile_tag_t tag, const char *str)
 {
     statefile_hdr_t *hdr;
     size_t len;
@@ -139,7 +139,7 @@ static unsigned char *prepare_statefile_string(unsigned char *next, statefile_ta
     hdr = (statefile_hdr_t*)next;
     create_statefile_hdr(hdr, tag, sizeof(statefile_hdr_t) + len);
     next = (unsigned char*)(&hdr[1]);
-    strcpy(next, str);
+    strcpy((char *)next, str);
     next += ceiling(len, 4);
     return next;
 }

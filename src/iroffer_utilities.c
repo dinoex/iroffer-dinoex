@@ -1093,7 +1093,7 @@ char* removenonprintable(char *str1) {
    
    if (!str) return NULL;
    
-   for (i=0; i<strlen(str); i++) {
+   for (i=0; i<strlen((char *)str); i++) {
       if (!((str[i] >= 0x20 && str[i] <= 0x7E) ||
             (str[i] >= 0xA1) ||
             str[i] == 0x01 ||  /* ctcp */
@@ -1108,7 +1108,7 @@ char* removenonprintable(char *str1) {
       str[i] = '.';
       
       }
-   return str;
+   return (char *)str;
    }
 
 char* removenonprintablectrl(char *str1) {
@@ -1116,13 +1116,13 @@ char* removenonprintablectrl(char *str1) {
    unsigned char *str = (unsigned char*)str1;
    if (!str) return NULL;
    
-   for (i=0; i<strlen(str); i++) {
+   for (i=0; i<strlen((char *)str); i++) {
       if (!((str[i] >= 0x20 && str[i] <= 0x7E) ||
             (str[i] >= 0xA1)))
       str[i] = ' ';
       
       }
-   return str;
+   return (char *)str;
    }
 
 char* removenonprintablefile(char *str) {
@@ -2258,6 +2258,7 @@ int vsnprintf(char *str, size_t n, const char *format, va_list ap )
 #endif
 
 #ifdef NO_STRCASECMP
+#include <ctype.h>
 int strcasecmp(const char *s1, const char *s2)
 {
   while (*s1 && (tolower(*s1) == tolower(*s2)))
@@ -2875,7 +2876,7 @@ int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len)
   ir_boutput_segment_t *segment;
   int cur;
   int len;
-  const char *buffer_c = (const char*)buffer;
+  const unsigned char *buffer_c = (const unsigned char*)buffer;
   
   cur = 0;
   
