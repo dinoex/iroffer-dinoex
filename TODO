@@ -97,7 +97,6 @@ Not going to happen anytime soon:
   1037  getipfromserver for mutihomed bots
   1038  shared bot, each admin manages its own files.
   1040  respondtochannellistmsg per admin
-  1044  autosendpack with 2 parameters
   1046  write passwort in config
   1047  edit config via web/admin
   1048  cancel for MSGREAD

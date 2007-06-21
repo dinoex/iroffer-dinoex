@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
+bugfix: REHASH with autosendpack
+  fix a small memory leak
+
+154) autosendpack
+  autosendpack with 2 parameters
+
 bugfix: Configure and make with gcc-4.2
 
 153) NOMD5 (inspired by StoVoKor)

@@ -151,6 +151,7 @@ Yasuo|Iwakura
 	report -plist crash
 	report incomplete warning
 	QUL and DCL output
+	autosendpack with 2 parameters
 
 Road
 	user command XDCC OWNER

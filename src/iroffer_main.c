@@ -3357,7 +3357,7 @@ static void autoqueuef(const char* line, const autoqueue_t *aq)
 
    if ( !gdata.ignore )
      {
-       char *tempstr;
+       char *tempstr = NULL;
        const char *format = " :** Sending You %s by DCC";
        
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
@@ -3366,9 +3366,12 @@ static void autoqueuef(const char* line, const autoqueue_t *aq)
        
        ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"AutoSend ");
        
-       tempstr = mycalloc(strlen(aq->message) + strlen(format) - 1);
-       snprintf(tempstr, strlen(aq->message) + strlen(format) - 1,
-                       format, aq->message);
+       if (aq->message)
+         {
+           tempstr = mycalloc(strlen(aq->message) + strlen(format) - 1);
+           snprintf(tempstr, strlen(aq->message) + strlen(format) - 1,
+                    format, aq->message);
+         }
        
        sendxdccfile(nick, hostname, hostmask, aq->pack, tempstr, NULL);
        

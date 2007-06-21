@@ -388,20 +388,20 @@ void getconfig_set (const char *line, int rehash)
    else if ( ! strcmp(type,"autosendpack"))
      {
        a = getpart(var,1); b = getpart(var,2); c = getpart(var,3);
-       if (a && b && c)
+       if (a && b)
          {
            autoqueue_t *aq;
            aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
            aq->pack = between(0,atoi(a),100000);
            aq->word = b;
-           aq->message = mymalloc(strlen(var) - 2 - strlen(a) - strlen(b) + 1);
-           strcpy(aq->message, var + strlen(a) + strlen(b) + 2);
+           aq->message = c;
          }
        else
          {
            mydelete(b);
+           mydelete(c);
          }
-       mydelete(a); mydelete(c);
+       mydelete(a);
        mydelete(var);
      }
    else if ( ! strcmp(type,"logrotate")) {
@@ -2130,10 +2130,18 @@ int isthisforme (const char *dest, char *msg1) {
 
 void reinit_config_vars(void)
 {
+  autoqueue_t *aq;
   regex_t *rh;
   int si;
   
   /* clear old config items */
+  for (aq = irlist_get_head(&gdata.autoqueue);
+       aq;
+       aq = irlist_delete(&gdata.autoqueue, aq))
+    {
+       mydelete(aq->word);
+       mydelete(aq->message);
+    }
   for (rh = irlist_get_head(&gdata.autoignore_exclude);
        rh;
        rh = irlist_delete(&gdata.autoignore_exclude, rh))
@@ -2217,7 +2225,6 @@ void reinit_config_vars(void)
   gdata.getipfromserver = 0;
   gdata.noduplicatefiles = 0;
   irlist_delete_all(&gdata.adddir_exclude);
-  irlist_delete_all(&gdata.autoqueue);
   irlist_delete_all(&gdata.geoipcountry);
   irlist_delete_all(&gdata.geoipexcludenick);
   irlist_delete_all(&gdata.autoadd_dirs);
