@@ -1763,13 +1763,10 @@ static void u_psend(const userinput * const u)
        return;
     }
   
-  if ((gdata.xdcclist_grouponly) || (method != method_xdl_channel))
-    u_fillwith_msg(&manplist,u->arg1,"A A A A A xdl");
-  else
-    u_fillwith_msg(&manplist,u->arg1,"A A A A A xdlfull");
   manplist.method = method;
   manplist.net = gnetwork->net;
   manplist.level = ADMIN_LEVEL_PUBLIC;
+  a_fillwith_plist(&manplist, u->arg1, ch);
   u_parseit(&manplist);
   nname = gnetwork->name;
   gnetwork = backup;
@@ -2397,6 +2394,7 @@ static void u_rehash(const userinput * const u) {
            mydelete(ch->name);
            mydelete(ch->key);
            mydelete(ch->headline);
+           mydelete(ch->pgroup);
            ch = irlist_delete(&(gnetwork->channels), ch);
          }
        else
@@ -2406,6 +2404,7 @@ static void u_rehash(const userinput * const u) {
            mydelete(ch->name);
            mydelete(ch->key);
            mydelete(ch->headline);
+           mydelete(ch->pgroup);
            *ch = *rch;
            if (gdata.debug > 2)
              {

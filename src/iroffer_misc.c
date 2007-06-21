@@ -258,6 +258,7 @@ void getconfig_set (const char *line, int rehash)
       caps(tname);
       cptr->name = mystrdup(tname);
       cptr->headline = NULL;
+      cptr->pgroup = NULL;
       cptr->noannounce = 0;
       
       for (i=2; i<20 && ok && (tptr = getpart(var,i)); i++) {
@@ -304,6 +305,14 @@ void getconfig_set (const char *line, int rehash)
             }
          else if (!strcmp(tptr,"-noannounce")) {
             cptr->noannounce = 1;
+            }
+         else if (!strcmp(tptr,"-pgroup")) {
+            i++;
+            if ((tptr2 = getpart(var,i)))
+              {
+                cptr->pgroup = mystrdup(tptr2);
+              }
+            else ok=0;
             }
          else if (!strcmp(tptr,"-headline")) {
             i++;

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
+155) channel -pformat full -pgroup name (inspired by Jippi)
+  post the full list, but only matching give group
+
 bugfix: REHASH with autosendpack
   fix a small memory leak
 

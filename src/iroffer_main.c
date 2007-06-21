@@ -1430,6 +1430,7 @@ static void mainloop (void) {
           (gdata.nolisting <= gdata.curtime))
         {
             char *tchanf = NULL, *tchanm = NULL, *tchans = NULL;
+            channel_t *chg = NULL;
             
             ch = irlist_get_head(&(gnetwork->channels));
             while(ch)
@@ -1439,6 +1440,13 @@ static void mainloop (void) {
                     ch->plisttime &&
                     (((gdata.curtime / 60) % ch->plisttime) == ch->plistoffset))
                   {
+                    if (chg == NULL)
+                      chg = ch;
+                    else
+                      {
+                        if (ch->pgroup == NULL)
+                          chg = ch;
+                      }
                     if (ch->flags & CHAN_MINIMAL)
                       {
                         if (tchanm)
@@ -1504,13 +1512,10 @@ static void mainloop (void) {
             if (tchanf) {
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Plist sent to %s (full)",tchanf);
                pubplist = mycalloc(sizeof(userinput));
-               if (gdata.xdcclist_grouponly)
-                 u_fillwith_msg(pubplist,tchanf,"A A A A A xdl");
-               else
-                 u_fillwith_msg(pubplist,tchanf,"A A A A A xdlfull");
                pubplist->method = method_xdl_channel;
                pubplist->net = gnetwork->net;
                pubplist->level = ADMIN_LEVEL_PUBLIC;
+               a_fillwith_plist(pubplist, tchanf, chg);
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanf);

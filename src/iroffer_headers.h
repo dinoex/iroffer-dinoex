@@ -387,6 +387,7 @@ typedef struct
   char *name;
   char *key;
   char *headline;
+  char *pgroup;
   short flags;
   short plisttime;
   short plistoffset;

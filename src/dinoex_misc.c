@@ -1927,4 +1927,25 @@ void start_md5_hash(xdcc *xd, int packnum)
   }
 }
 
+void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
+{
+  char *line;
+  userinput_method_e method;
+
+  method = manplist->method;
+  if (ch->pgroup) {
+    line = mycalloc(maxtextlength);
+    snprintf(line, maxtextlength -1, "A A A A A xdlgroup %s", ch->pgroup);
+    u_fillwith_msg(manplist, name, line);
+    mydelete(line);
+  } else {
+    if ((gdata.xdcclist_grouponly) || (method != method_xdl_channel)) {
+      u_fillwith_msg(manplist, name, "A A A A A xdl");
+    } else {
+      u_fillwith_msg(manplist, name, "A A A A A xdlfull");
+    }
+  }
+  manplist->method = method;
+}
+ 
 /* End of File */
