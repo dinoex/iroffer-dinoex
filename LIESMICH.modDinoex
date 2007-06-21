@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.14:
 --------------------
 
+156 QSEND
+  Neues Admin Kommando:
+  QSEND <id>                       Starte einen neue Transfer für das Paket <id> in der Warteschlange
+
 155) channel -pformat full -pgroup name
   Sendet die Liste der Gruppe <name> im Channel
 

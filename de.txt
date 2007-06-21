@@ -1792,3 +1792,4 @@
 1807 "Sperrt die Berechnung von MD5 und CRC32 für die nächsten <x> Minuten"
 1808 "** MD5 and CRC checksums have been disabled for the next %i minute%s"
 1809 "-pgroup"
+1810 "[id]"

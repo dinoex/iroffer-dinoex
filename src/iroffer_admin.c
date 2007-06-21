@@ -132,7 +132,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,2,method_allow_all,u_send,     "SEND","nick n [net]","Sends pack <n> to <nick>"},
 {2,2,method_allow_all,a_queue,    "QUEUE","nick n [net]","Queues pack <n> for <nick>"},
 {2,2,method_allow_all,u_psend,    "PSEND","channel style [net]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
-{2,2,method_allow_all,u_qsend,    "QSEND",NULL,"Start an extra transfer from queue"},
+{2,2,method_allow_all,u_qsend,    "QSEND","[id]","Start an extra transfer from queue"},
 {2,5,method_allow_all,a_slotsmax, "SLOTSMAX","[slots]","temporary change slotsmax to <slots>"},
 {2,5,method_allow_all,a_queuesize, "QUEUESIZE","[slots]","temporary change queuesize to <slots>"},
 {2,5,method_allow_all,a_requeue,  "REQUEUE","x y","Moves queue entry from postion <x> to <y>"},
@@ -2579,7 +2579,7 @@ static void u_rehash(const userinput * const u) {
            irlist_size(&gdata.mainqueue) &&
            (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
          {
-           sendaqueue(0);
+           sendaqueue(0, 0);
          }
      }
    
@@ -3276,6 +3276,7 @@ static void u_memstat(const userinput * const u)
 
 static void u_qsend(const userinput * const u)
 {
+  int num = 0;
   
   updatecontext();
   
@@ -3291,7 +3292,8 @@ static void u_qsend(const userinput * const u)
       return;
     }
   
-  sendaqueue(2);
+  if (u->arg1) num = atoi(u->arg1);
+  sendaqueue(2, num);
   return;
 }
 

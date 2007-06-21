@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
+156 QSEND
+  new admin command:
+  QSEND <id>                      Start an extra transfer from queue entry with id <id>
+
+   References TODO:
+Short Term Features:
+   197 12/09/03 Open qsend with queue number
+
 155) channel -pformat full -pgroup name (inspired by Jippi)
   post the full list, but only matching give group
 

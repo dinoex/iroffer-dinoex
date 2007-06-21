@@ -1086,7 +1086,7 @@ static void mainloop (void) {
                   irlist_size(&gdata.mainqueue) &&
                   (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
                 {
-                  sendaqueue(0);
+                  sendaqueue(0, 0);
                 }
             }
           else
@@ -1551,7 +1551,7 @@ static void mainloop (void) {
              irlist_size(&gdata.mainqueue) &&
              (irlist_size(&gdata.trans) < MAXTRANS))
            {
-             sendaqueue(1);
+             sendaqueue(1, 0);
            }
          write_statefile();
          xdccsavetext();
@@ -2159,7 +2159,7 @@ static void parseline(char *line) {
                       irlist_size(&gdata.mainqueue) &&
                       (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
                     {
-                      sendaqueue(0);
+                      sendaqueue(0, 0);
                     }
                 }
             }
@@ -3705,7 +3705,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
    return tempstr;
    }
 
-void sendaqueue(int type)
+void sendaqueue(int type, int pos)
 {
   int usertrans;
   pqueue *pq;
@@ -3723,7 +3723,7 @@ void sendaqueue(int type)
      return;
   
   if (!gdata.attop) gototop();
-  
+
   if (irlist_size(&gdata.mainqueue))
     {
       
@@ -3734,7 +3734,13 @@ void sendaqueue(int type)
        * queue check
        */
       
-      pq = irlist_get_head(&gdata.mainqueue);
+      if (pos > 0)
+        {
+           pq = irlist_get_nth(&gdata.mainqueue, pos - 1);
+        }
+      else
+        {
+           pq = irlist_get_head(&gdata.mainqueue);
            while (pq)
             {
               usertrans=0;
@@ -3758,6 +3764,7 @@ void sendaqueue(int type)
                 }
               pq = irlist_get_next(pq);
             }
+        }
       
       if (!pq)
         {
