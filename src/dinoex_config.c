@@ -96,7 +96,7 @@ static int config_int_anzahl = 0;
 static config_int_typ config_parse_int[] = {
 {"adminlevel",              &gdata.adminlevel,              1, 5, 1 },
 {"atfind",                  &gdata.atfind,                  0, 10, 1 },
-{"autoadd_time",            &gdata.autoadd_time,            0, 2000, 1 },
+{"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1 },
 {"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1 },
 {"debug",                   &gdata.debug,                   0, 65000, 1 },
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1 },
