@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.14:
 --------------------
 
-156 QSEND
+156) QSEND
   Neues Admin Kommando:
   QSEND <id>                       Starte einen neue Transfer für das Paket <id> in der Warteschlange
 

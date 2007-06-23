@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.14:
 ----------------------
 
-156 QSEND
+156) QSEND
   new admin command:
   QSEND <id>                      Start an extra transfer from queue entry with id <id>
 
