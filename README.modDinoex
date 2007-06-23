@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.15:
 ----------------------
 
+158) HELP (inspired by TheDeath)
+  don't print out disabled commands
+
 157) autoadd_delay (inspired by dondieschotte)
   Time in seconds that a files must been unchanged to be added.
 

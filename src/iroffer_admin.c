@@ -172,62 +172,62 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_addann,   "ADDANN","filename","Add and announce new pack"},
 {3,2,method_allow_all,a_md5,      "MD5","[n]","Calculate MD5 and CRC sums of pack <n>"},
 {3,2,method_allow_all,a_crc,      "CRC","[n]","Check CRC of pack <n>"},
-{3,3,method_allow_all,a_newdir,   "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
-{3,5,method_allow_all,a_filemove, "FILEMOVE","filename newfile","rename file on disk"},
-{3,5,method_allow_all,a_movefile, "MOVEFILE","n filename","rename the file of pack <n> on disk to <filename>"},
-{3,3,method_allow_all,a_movegroupdir, "MOVEGROUPDIR","group dir","move any file in group <g> to dir <dir>"},
-{3,5,method_allow_all,a_filedel,  "FILEDEL","filename","remove file from disk"},
-{3,5,method_allow_all,a_fileremove, "FILEREMOVE","n [m]","remove pack <n> or <n> to <m> and remove its file from disk"},
-{3,5,method_allow_all,a_showdir,  "SHOWDIR","dir","list directory on disk"},
+{4,3,method_allow_all,a_newdir,   "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
+{4,5,method_allow_all,a_filemove, "FILEMOVE","filename newfile","rename file on disk"},
+{4,5,method_allow_all,a_movefile, "MOVEFILE","n filename","rename the file of pack <n> on disk to <filename>"},
+{4,3,method_allow_all,a_movegroupdir, "MOVEGROUPDIR","group dir","move any file in group <g> to dir <dir>"},
+{4,5,method_allow_all,a_filedel,  "FILEDEL","filename","remove file from disk"},
+{4,5,method_allow_all,a_fileremove, "FILEREMOVE","n [m]","remove pack <n> or <n> to <m> and remove its file from disk"},
+{4,5,method_allow_all,a_showdir,  "SHOWDIR","dir","list directory on disk"},
 #ifdef USE_CURL
-{3,3,method_allow_all,a_fetch,    "FETCH","file url","download url and save file in upload dir"},
-{3,3,method_allow_all,a_fetchcancel, "FETCHCANCEL","id","stop download of fetch with <id>"},
+{4,3,method_allow_all,a_fetch,    "FETCH","file url","download url and save file in upload dir"},
+{4,3,method_allow_all,a_fetchcancel, "FETCHCANCEL","id","stop download of fetch with <id>"},
 #endif /* USE_CURL */
 
-{4,2,method_allow_all,a_msg,      "MSG","nick message","Send <message> to user <nick>"},
-{4,2,method_allow_all,a_amsg,     "AMSG","msg","Announce <msg> in all joined channels"},
-{4,2,method_allow_all,a_msgnet,   "MSGNET","net nick message","Send <message> to user <nick>"},
-{4,2,method_allow_all,u_mesg,     "MESG","message","Sends <message> to all users who are transferring"},
-{4,2,method_allow_all,u_mesq,     "MESQ","message","Sends <message> to all users in a queue"},
-{4,2,method_allow_all,u_ignore,   "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
-{4,2,method_allow_all,u_unignore, "UNIGNORE","hostmask","Un-Ignore <hostmask>"},
-{4,2,method_allow_all,u_bannhost, "BANNHOST","x hostmask","Stop transfers and ignore <hostmask> (nick!user@host) for <x> minutes"},
-{4,2,method_allow_all,a_bannnick, "BANNNICK","nick [net]","Stop transfers and remove <nick> from queue"},
-{4,5,method_allow_all,u_nosave,   "NOSAVE","x","Disables autosave for next <x> minutes"},
-{4,2,method_allow_all,u_nosend,   "NOSEND","x","Disables XDCC SEND for next <x> minutes"},
-{4,2,method_allow_all,u_nolist,   "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
-{4,2,method_allow_all,a_nomd5,    "NOMD5","x","Disables MD5 and CRC calculation for next <x> minutes"},
-{4,3,method_allow_all,u_msgread,  "MSGREAD",NULL,"Show MSG log"},
-{4,5,method_allow_all,u_msgdel,   "MSGDEL",NULL,"Delete MSG log"},
-{4,3,method_allow_all,u_rmul,     "RMUL","filename","Delete a file in the upload dir"},
-{4,5,method_allow_all,u_raw,      "RAW","command","Send <command> to server (RAW IRC)"},
-{4,5,method_allow_all,a_rawnet,   "RAWNET","net command","Send <command> to server (RAW IRC)"},
+{5,2,method_allow_all,a_msg,      "MSG","nick message","Send <message> to user <nick>"},
+{5,2,method_allow_all,a_amsg,     "AMSG","msg","Announce <msg> in all joined channels"},
+{5,2,method_allow_all,a_msgnet,   "MSGNET","net nick message","Send <message> to user <nick>"},
+{5,2,method_allow_all,u_mesg,     "MESG","message","Sends <message> to all users who are transferring"},
+{5,2,method_allow_all,u_mesq,     "MESQ","message","Sends <message> to all users in a queue"},
+{5,2,method_allow_all,u_ignore,   "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
+{5,2,method_allow_all,u_unignore, "UNIGNORE","hostmask","Un-Ignore <hostmask>"},
+{5,2,method_allow_all,u_bannhost, "BANNHOST","x hostmask","Stop transfers and ignore <hostmask> (nick!user@host) for <x> minutes"},
+{5,2,method_allow_all,a_bannnick, "BANNNICK","nick [net]","Stop transfers and remove <nick> from queue"},
+{5,5,method_allow_all,u_nosave,   "NOSAVE","x","Disables autosave for next <x> minutes"},
+{5,2,method_allow_all,u_nosend,   "NOSEND","x","Disables XDCC SEND for next <x> minutes"},
+{5,2,method_allow_all,u_nolist,   "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
+{5,2,method_allow_all,a_nomd5,    "NOMD5","x","Disables MD5 and CRC calculation for next <x> minutes"},
+{5,3,method_allow_all,u_msgread,  "MSGREAD",NULL,"Show MSG log"},
+{5,5,method_allow_all,u_msgdel,   "MSGDEL",NULL,"Delete MSG log"},
+{5,3,method_allow_all,u_rmul,     "RMUL","filename","Delete a file in the upload dir"},
+{5,5,method_allow_all,u_raw,      "RAW","command","Send <command> to server (RAW IRC)"},
+{5,5,method_allow_all,a_rawnet,   "RAWNET","net command","Send <command> to server (RAW IRC)"},
 
-{5,2,method_allow_all,u_servers,  "SERVERS","[net]","Shows the server list"},
-{5,2,method_allow_all,a_hop,      "HOP","[channel]","leave and rejoin a channel to get status"},
-{5,2,method_allow_all,a_nochannel, "NOCHANNEL","x [channel]","leave channel for <x> minutes"},
-{5,2,method_allow_all,u_jump,     "JUMP","server [net]","Switches to a random server or server <server>"},
-{5,5,method_allow_all,u_servqc,   "SERVQC",NULL,"Clears the server send queue"},
-{5,2,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},
-{5,5,method_allow_all,u_rehash,   "REHASH",NULL,"Re-reads config file(s) and reconfigures"},
-{5,2,method_allow_all,u_botinfo,  "BOTINFO",NULL,"Show Information about the bot status"},
-{5,5,method_allow_all,u_memstat,  "MEMSTAT",NULL,"Show Information about memory usage"},
+{6,2,method_allow_all,u_servers,  "SERVERS","[net]","Shows the server list"},
+{6,2,method_allow_all,a_hop,      "HOP","[channel]","leave and rejoin a channel to get status"},
+{6,2,method_allow_all,a_nochannel, "NOCHANNEL","x [channel]","leave channel for <x> minutes"},
+{6,2,method_allow_all,u_jump,     "JUMP","server [net]","Switches to a random server or server <server>"},
+{6,5,method_allow_all,u_servqc,   "SERVQC",NULL,"Clears the server send queue"},
+{6,2,method_allow_all,u_status,   "STATUS",NULL,"Show Useful Information"},
+{6,5,method_allow_all,u_rehash,   "REHASH",NULL,"Re-reads config file(s) and reconfigures"},
+{6,2,method_allow_all,u_botinfo,  "BOTINFO",NULL,"Show Information about the bot status"},
+{6,5,method_allow_all,u_memstat,  "MEMSTAT",NULL,"Show Information about memory usage"},
 {5,5,method_allow_all,u_clearrecords, "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, total sent, and transfer limits"},
-{5,5,method_allow_all,a_cleargets, "CLEARGETS",NULL,"Clears download counters for each pack"},
-{5,5,method_console,  u_redraw,   "REDRAW",NULL,"Redraws the Screen"},
-{5,5,method_console,  u_delhist,  "DELHIST",NULL,"Deletes console history"},
-{5,1,method_dcc,      u_quit,     "QUIT",NULL,"Close this DCC chat"},
-{5,1,method_dcc,      u_quit,     "EXIT",NULL,"Close this DCC chat"},
-{5,1,method_dcc,      u_quit,     "LOGOUT",NULL,"Close this DCC chat"},
-{5,1,method_msg,      u_chatme,   "CHATME",NULL,"Sends you a DCC Chat Request"},
-{5,1,method_allow_all,u_chatl,    "CHATL",NULL,"Lists DCC chat information"},
-{5,5,method_allow_all,u_closec,   "CLOSEC","id","Closes DCC chat <id>"},
-{5,5,method_console,  u_debug,    "DEBUG","x","Set debugging level to <x>"},
-{5,1,method_allow_all,a_identify, "IDENTIFY","[net]","Send stored password again to nickserv"},
-{5,2,method_allow_all,a_holdqueue, "HOLDQUEUE","x","Change holdqueue flag, x=1 set, x=0 reset"},
-{5,5,method_allow_all,u_shutdown, "SHUTDOWN","act","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
-{5,5,method_allow_all,a_dump,      "DUMP",NULL,"Write a dump into the logfile"},
-{5,5,method_console,  u_crash,     "CRASH",NULL,"Write a dump into the logfile and exit"},
+{6,5,method_allow_all,a_cleargets, "CLEARGETS",NULL,"Clears download counters for each pack"},
+{6,5,method_console,  u_redraw,   "REDRAW",NULL,"Redraws the Screen"},
+{6,5,method_console,  u_delhist,  "DELHIST",NULL,"Deletes console history"},
+{6,1,method_dcc,      u_quit,     "QUIT",NULL,"Close this DCC chat"},
+{6,1,method_dcc,      u_quit,     "EXIT",NULL,"Close this DCC chat"},
+{6,1,method_dcc,      u_quit,     "LOGOUT",NULL,"Close this DCC chat"},
+{6,1,method_msg,      u_chatme,   "CHATME",NULL,"Sends you a DCC Chat Request"},
+{6,1,method_allow_all,u_chatl,    "CHATL",NULL,"Lists DCC chat information"},
+{6,5,method_allow_all,u_closec,   "CLOSEC","id","Closes DCC chat <id>"},
+{6,5,method_console,  u_debug,    "DEBUG","x","Set debugging level to <x>"},
+{6,1,method_allow_all,a_identify, "IDENTIFY","[net]","Send stored password again to nickserv"},
+{6,2,method_allow_all,a_holdqueue, "HOLDQUEUE","x","Change holdqueue flag, x=1 set, x=0 reset"},
+{6,5,method_allow_all,u_shutdown, "SHUTDOWN","act","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
+{6,5,method_allow_all,a_dump,      "DUMP",NULL,"Write a dump into the logfile"},
+{6,5,method_console,  u_crash,     "CRASH",NULL,"Write a dump into the logfile and exit"},
 };
 
 
@@ -566,15 +566,18 @@ static void u_help(const userinput * const u)
   
   updatecontext();
   
-  for (which=1; which<6; which++)
+  for (which=1; which<7; which++)
     {
+      if ((which == 4) && (gdata.direct_file_access == 0))
+        continue;
       
       u_respond(u,"-- %s Commands --",
                 which==1?"Info":
                 which==2?"Transfer":
                 which==3?"Pack":
-                which==4?"Misc":
-                which==5?"Bot":"<Unknown>");
+                which==4?"File":
+                which==5?"Misc":
+                which==6?"Bot":"<Unknown>");
       
       for (i=0; i<(sizeof(userinput_parse)/sizeof(userinput_parse_t)); i++)
         {

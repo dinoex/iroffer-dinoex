@@ -18,8 +18,10 @@ END {
 		if ( LEVEL == "3" )
 			M = "Pack"
 		if ( LEVEL == "4" )
-			M = "Misc"
+			M = "File"
 		if ( LEVEL == "5" )
+			M = "Misc"
+		if ( LEVEL == "6" )
 			M = "Bot"
 		printf( "** -- %s Commands --\n", M )
 	}
