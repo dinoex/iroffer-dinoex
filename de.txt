@@ -1793,3 +1793,4 @@
 1808 "** MD5 and CRC checksums have been disabled for the next %i minute%s"
 1809 "-pgroup"
 1810 "[id]"
+1811 "autoadd_delay"

@@ -204,6 +204,7 @@ int adminlevel;
 int hadminlevel;
 int monitor_files;
 int xdcclist_by_privmsg;
+int autoadd_delay;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

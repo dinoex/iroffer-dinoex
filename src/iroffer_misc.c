@@ -2282,6 +2282,7 @@ void reinit_config_vars(void)
   gdata.hadminlevel = ADMIN_LEVEL_HALF;
   gdata.monitor_files = 20;
   gdata.xdcclist_by_privmsg = 0;
+  gdata.autoadd_delay = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

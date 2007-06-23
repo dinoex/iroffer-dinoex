@@ -1,5 +1,11 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version mod 2.15:
+----------------------
+
+157) autoadd_delay (inspired by dondieschotte)
+  Time in seconds that a files must been unchanged to be added.
+
 With Version mod 2.14:
 ----------------------
 

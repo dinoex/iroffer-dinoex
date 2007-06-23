@@ -1285,7 +1285,7 @@ void a_add(const userinput * const u)
            xd = irlist_get_next(xd);
          }
       }
-   
+
    group = NULL;
    if (gdata.auto_default_group) {
       a1 = mycalloc(strlen(u->arg1e) + 1);
@@ -1470,6 +1470,11 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
 
                 xd = irlist_get_next(xd);
               }
+          }
+
+          if (gdata.autoadd_delay) {
+            if ((st.st_mtime + gdata.autoadd_delay) > gdata.curtime)
+              foundit = 2;
           }
 
           if (foundit == 0)

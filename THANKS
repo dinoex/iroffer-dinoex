@@ -207,6 +207,7 @@ dondieschotte
 	extend "XDCC INFO"
 	admin command  "md5 n"
 	option "xdcclist_by_privmsg"
+	option "autoadd_delay"
 
 dsd
 	admin command "autoadd"

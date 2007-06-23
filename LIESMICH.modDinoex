@@ -1,5 +1,11 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+Ab Version mod 2.15:
+--------------------
+
+157) autoadd_delay
+  Zeit in Sekunden die eine Datei alt sein muss um als Paket aufgenommen zu werden.
+
 Ab Version mod 2.14:
 --------------------
 
