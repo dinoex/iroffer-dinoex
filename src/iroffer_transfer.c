@@ -693,13 +693,7 @@ void t_flushed (transfer * const t)
     }
   FD_CLR(t->clientsocket, &gdata.writeset);
   FD_CLR(t->clientsocket, &gdata.readset);
-  /*
-   * cygwin close() is broke, if outstanding data is present
-   * it will block until the TCP connection is dead, sometimes
-   * upto 10-20 minutes, calling shutdown() first seems to help
-   */
-  shutdown(t->clientsocket, SHUT_RDWR);
-  close(t->clientsocket);
+  shutdown_close(t->clientsocket);
   t->xpack->file_fd_count--;
   if (!t->xpack->file_fd_count && (t->xpack->file_fd != FD_UNUSED))
     {
@@ -797,13 +791,7 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
     {
       FD_CLR(t->clientsocket, &gdata.writeset);
       FD_CLR(t->clientsocket, &gdata.readset);
-      /*
-       * cygwin close() is broke, if outstanding data is present
-       * it will block until the TCP connection is dead, sometimes
-       * upto 10-20 minutes, calling shutdown() first seems to help
-       */
-      shutdown(t->clientsocket, SHUT_RDWR);
-      close(t->clientsocket);
+      shutdown_close(t->clientsocket);
       t->clientsocket = FD_UNUSED;
     }
   t->xpack->file_fd_count--;

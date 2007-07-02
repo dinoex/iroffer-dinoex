@@ -219,4 +219,15 @@ const char *get_basename(const char *pathname)
   return ++work;
 }
 
+void shutdown_close(int handle)
+{
+  /*
+   * cygwin close() is broke, if outstanding data is present
+   * it will block until the TCP connection is dead, sometimes
+   * upto 10-20 minutes, calling shutdown() first seems to help
+   */
+  shutdown(handle, SHUT_RDWR);
+  close(handle);
+}
+
 /* End of File */

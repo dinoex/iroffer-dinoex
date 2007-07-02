@@ -19,6 +19,7 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 
 
 void l_initvalues (upload * const l) {
@@ -288,13 +289,7 @@ void l_istimeout (upload * const l)
           ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_YELLOW,"clientsock = %d",l->clientsocket);
         }
       FD_CLR(l->clientsocket, &gdata.readset);
-      /*
-       * cygwin close() is broke, if outstanding data is present
-       * it will block until the TCP connection is dead, sometimes
-       * upto 10-20 minutes, calling shutdown() first seems to help
-       */
-      shutdown(l->clientsocket, SHUT_RDWR);
-      close(l->clientsocket);
+      shutdown_close(l->clientsocket);
       close(l->filedescriptor);
       l->ul_status = UPLOAD_STATUS_DONE;
     }
@@ -333,13 +328,7 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
     {
       FD_CLR(l->clientsocket, &gdata.writeset);
       FD_CLR(l->clientsocket, &gdata.readset);
-      /*
-       * cygwin close() is broke, if outstanding data is present
-       * it will block until the TCP connection is dead, sometimes
-       * upto 10-20 minutes, calling shutdown() first seems to help
-       */
-      shutdown(l->clientsocket, SHUT_RDWR);
-      close(l->clientsocket);
+      shutdown_close(l->clientsocket);
     }
   
   if (l->filedescriptor != FD_UNUSED && l->filedescriptor > 2)

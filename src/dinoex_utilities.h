@@ -24,5 +24,6 @@ void checkadminpass2(const char *masterpass);
 char *clean_quotes(char *str);
 char *to_hostmask(const char *nick, const char *hostname);
 const char *get_basename(const char *pathname);
+void shutdown_close(int handle);
 
 /* End of File */

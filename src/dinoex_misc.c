@@ -1948,4 +1948,11 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
   manplist->method = method;
 }
  
+void close_server(void)
+{
+  FD_CLR(gnetwork->ircserver, &gdata.readset);
+  shutdown_close(gnetwork->ircserver);
+  gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+}
+
 /* End of File */

@@ -92,5 +92,6 @@ void autotrigger_rebuild(void);
 
 void start_md5_hash(xdcc *xd, int packnum);
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
+void close_server(void);
 
 /* End of File */

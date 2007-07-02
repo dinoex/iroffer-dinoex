@@ -2467,6 +2467,7 @@ static void u_rehash(const userinput * const u) {
        for (ss=0; ss<gdata.networks_online; ss++)
          {
            gnetwork = &(gdata.networks[ss]);
+           gnetwork->serverconnectbackoff = 0;
            switchserver(-1);
            /* switchserver takes care of joining channels */
          }

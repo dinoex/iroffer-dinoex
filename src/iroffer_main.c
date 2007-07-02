@@ -623,16 +623,8 @@ static void mainloop (void) {
               {
                 gnetwork->recentsent = 0;
               }
-            FD_CLR(gnetwork->ircserver, &gdata.readset);
-            /*
-             * cygwin close() is broke, if outstanding data is present
-             * it will block until the TCP connection is dead, sometimes
-             * upto 10-20 minutes, calling shutdown() first seems to help
-             */
-            shutdown(gnetwork->ircserver, SHUT_RDWR);
-            close(gnetwork->ircserver);
+            close_server();
             mydelete(gnetwork->curserveractualname);
-            gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
          else
            {
@@ -684,13 +676,7 @@ static void mainloop (void) {
           if ((callval_i < 0) || connect_error)
             {
               FD_CLR(gnetwork->ircserver, &gdata.writeset);
-              /*
-               * cygwin close() is broke, if outstanding data is present
-               * it will block until the TCP connection is dead, sometimes
-               * upto 10-20 minutes, calling shutdown() first seems to help
-               */
-              shutdown(gnetwork->ircserver, SHUT_RDWR);
-              close(gnetwork->ircserver);
+              shutdown_close(gnetwork->ircserver);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
           else
@@ -781,15 +767,7 @@ static void mainloop (void) {
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                       "Server Connection Timed Out (%d seconds) on %s", timeout, gnetwork->name);
-              FD_CLR(gnetwork->ircserver, &gdata.readset);
-              /*
-               * cygwin close() is broke, if outstanding data is present
-               * it will block until the TCP connection is dead, sometimes
-               * upto 10-20 minutes, calling shutdown() first seems to help
-               */
-              shutdown(gnetwork->ircserver, SHUT_RDWR);
-              close(gnetwork->ircserver);
-              gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+              close_server();
             }
         }
       
@@ -1337,15 +1315,7 @@ static void mainloop (void) {
                ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                        "Closing Server Connection on %s: No Response for %d minutes.",
                        gnetwork->name, SRVRTOUT/60);
-               FD_CLR(gnetwork->ircserver, &gdata.readset);
-               /*
-                * cygwin close() is broke, if outstanding data is present
-                * it will block until the TCP connection is dead, sometimes
-                * upto 10-20 minutes, calling shutdown() first seems to help
-                */
-               shutdown(gnetwork->ircserver, SHUT_RDWR);
-               close(gnetwork->ircserver);
-               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+               close_server();
                gnetwork->servertime = 0;
                }
             }
@@ -2087,16 +2057,7 @@ static void parseline(char *line) {
          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                  "Server Closed Connection on %s: %s",
                  gnetwork->name, line);
-         
-          FD_CLR(gnetwork->ircserver, &gdata.readset);
-          /*
-           * cygwin close() is broke, if outstanding data is present
-           * it will block until the TCP connection is dead, sometimes
-           * upto 10-20 minutes, calling shutdown() first seems to help
-           */
-          shutdown(gnetwork->ircserver, SHUT_RDWR);
-          close(gnetwork->ircserver);
-          gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+         close_server();
          }
       }
    

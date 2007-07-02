@@ -1060,14 +1060,7 @@ void sendserver(void)
       gdata.exiting &&
       !gnetwork->recentsent)
     {
-      FD_CLR(gnetwork->ircserver, &gdata.readset);
-      /*
-       * cygwin close() is broke, if outstanding data is present
-       * it will block until the TCP connection is dead, sometimes
-       * upto 10-20 minutes, calling shutdown() first seems to help
-       */
-      shutdown(gnetwork->ircserver, SHUT_RDWR);
-      close(gnetwork->ircserver);
+      close_server();
       gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_NO_COLOR,
               "Connection to %s (%s) Closed",
@@ -1784,13 +1777,7 @@ void shutdowniroffer(void) {
          }
        if (tr->clientsocket != FD_UNUSED)
          {
-           /*
-            * cygwin close() is broke, if outstanding data is present
-            * it will block until the TCP connection is dead, sometimes
-            * upto 10-20 minutes, calling shutdown() first seems to help
-            */
-           shutdown(tr->clientsocket, SHUT_RDWR);
-           close(tr->clientsocket);
+           shutdown_close(tr->clientsocket);
          }
        tr->xpack->file_fd_count--;
        if (!tr->xpack->file_fd_count && (tr->xpack->file_fd != FD_UNUSED))
@@ -1817,13 +1804,7 @@ void shutdowniroffer(void) {
        FD_CLR(ul->clientsocket, &gdata.readset);
        if (ul->clientsocket != FD_UNUSED)
          {
-           /*
-            * cygwin close() is broke, if outstanding data is present
-            * it will block until the TCP connection is dead, sometimes
-            * upto 10-20 minutes, calling shutdown() first seems to help
-            */
-           shutdown(ul->clientsocket, SHUT_RDWR);
-           close(ul->clientsocket);
+           shutdown_close(ul->clientsocket);
          }
        if (ul->filedescriptor != FD_UNUSED)
          {
@@ -1873,15 +1854,7 @@ void switchserver(int which)
       writeserver(WRITESERVER_NOW, "QUIT :Changing Servers");
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
               "Changing Servers on %s", gnetwork->name);
-      
-      FD_CLR(gnetwork->ircserver, &gdata.readset);
-      /*
-       * cygwin close() is broke, if outstanding data is present
-       * it will block until the TCP connection is dead, sometimes
-       * upto 10-20 minutes, calling shutdown() first seems to help
-       */
-      shutdown(gnetwork->ircserver, SHUT_RDWR);
-      close(gnetwork->ircserver);
+      close_server();
     }
   
   if (gnetwork->serverstatus == SERVERSTATUS_TRYING)
