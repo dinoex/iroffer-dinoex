@@ -485,7 +485,7 @@ MULITNET
   FloodProtecting für jedes Netz einzeln.
 
 FETCH
-  Absturz bei fejhlerhaften URLs
+  Absturz bei fehlerhaften URLs
   Zeige aktiven FETCH in DCL and DCLD
 
 
@@ -540,7 +540,8 @@ Ab Version mod 1.30:
   Neues Admin Kommando:
   FETCH <filename> <url>           Startet einen Download von <url> und speichert im Uploadverzeichnis
 
-  Dies Funktion braucht "libcurl", zum Aktivieren muß der Bot mit "./Configure -c" gebaut werden.
+  Dies Funktion braucht "libcurl",
+  zum Aktivieren muß der Bot mit "./Configure -c" gebaut werden.
 
 86) auto_path_group
   Neue files werde nach den Unterverzeichnissen auf dem Server
@@ -680,8 +681,6 @@ bugfix:
 
 Ab Version mod 1.24:
 --------------------
-With Version mod 1.24:
-----------------------
 
 58) channel -delay
   Keine PLIST kurz nach dem Betreten diese Channels
@@ -692,34 +691,31 @@ channel #chan04 -plist 14 -pformat summary -delay 60
 59) sync with iroffer1.4.b03 (from PMG)
 
 bugfix: XDCC SEARCH
-   pathnames are now ignored in search.
+  Die Namen der Verzeichnisse werden in der Suche nicht mehr berücksichtig.
 
 bugfix: ignoreduplicateip
-   versions affected: 1.18 - 1.23
-   check was counting manual sends
+  versions affected: 1.18 - 1.23
+  Dies Funktion ignoriert jetzt Übertragungen die vom Admin gestartet worden sind.
 
 bugfix: queue
-   the same pack to multiple Nicks
+  Erlaube das gleiche Paket and mehrere Nicks
 
 bugfix: send
-   allow multiple sends to the same Nick
+  Erlaube mehrere Übertragungen an den gleichen Nick
 
 60) unlimitedhost
-
-   specify nicks and hostnames which are not limited in bandwidth
+  Definiert Nicks und Hostmaks die nicht in der Bandbreite begrenzt werden.
 
 61) UNLIMITED
   Neues Admin Kommando:
   UNLIMITED id       Aufheben aller Bandbreitengrenzen für Transfer <id>
 
-62) Support for GeoIP Database lookups
-
-   Documentation at http://www.maxmind.com/geoip/
-   activate with ./Configure -g
+62) Unterstützung für Abfragen der GeoIP Datenbank
+  Beschreibung auf http://www.maxmind.com/geoip/
+  zum Aktivieren muß der Bot mit "./Configure -g" gebaut werden.
 
 63) geoipcountry
-
-   allow downloads only for users in the given countries
+  Legt fest welche Länder downloaden dürfen.
 
 Ab Version mod 1.23:
 --------------------
