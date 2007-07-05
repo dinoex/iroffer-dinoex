@@ -65,6 +65,7 @@ Long Term Features:
   1041  -nojoin for extra channels
   1042  hentai flag
   1043  vhosts for each network
+  1068  restore tty console on fatal error
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -105,4 +106,9 @@ Not going to happen anytime soon:
   1060  limited directfile_acess
   1061  sort xxx vor announce
   1063  keep deleted files
+  1069  multithreading
+  1070  balanced queue option
+  1073  sannounce per channel/server
+  1074  annew, dont add same files in different dirs
+  1075  execue programs/shell
 
