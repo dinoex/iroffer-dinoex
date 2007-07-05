@@ -3198,7 +3198,7 @@ void a_cannounce(const userinput * const u)
   
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
-  snprintf(tempstr2,maxtextlength-2,"[\2%s\2] %s",u->arg2e,xd->desc);
+  snprintf(tempstr2, maxtextlength - 2, "[\2%s\2] %s", u->arg3e, xd->desc);
   
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
@@ -3215,7 +3215,7 @@ void a_cannounce(const userinput * const u)
       }
     }
   gnetwork = backup;
-  a_respond(u,"Announced [%s] - %s",u->arg2e,xd->desc);
+  a_respond(u, "Announced [%s] - %s", u->arg3e, xd->desc);
   mydelete(tempstr2);
   mydelete(tempstr);
 }

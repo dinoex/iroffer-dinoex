@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.15:
 ----------------------
 
+bugfix: CANNOUNCE (reported by drBeSt)
+  don't send pack number twice
+
 bugfix: REHASH
   quit a deleted network
 
