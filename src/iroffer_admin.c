@@ -2364,6 +2364,16 @@ static void u_rehash(const userinput * const u) {
        for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++)
          {
            quit_server();
+           ch = irlist_get_head(&(gnetwork->channels));
+           while(ch)
+             {
+               clearmemberlist(ch);
+               mydelete(ch->name);
+               mydelete(ch->key);
+               mydelete(ch->headline);
+               mydelete(ch->pgroup);
+               ch = irlist_delete(&(gnetwork->channels), ch);
+             }
          }
      }
    
