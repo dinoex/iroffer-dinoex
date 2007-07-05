@@ -686,6 +686,7 @@ char* getfline(char* str, int slen, int descr, int ret);
 void gobackground(void);
 char* getuptime(char *str, int type, time_t fromwhen, int len);
 void shutdowniroffer(void);
+void quit_server(void);
 void switchserver(int which);
 int connectirc2 (struct in_addr *remote);
 char* getstatusline(char *str, int len);

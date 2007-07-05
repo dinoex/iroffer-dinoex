@@ -1842,10 +1842,8 @@ void shutdowniroffer(void) {
    
    }
 
-void switchserver(int which)
+void quit_server(void)
 {
-  server_t *ss;
-  
   updatecontext();
   
   /* quit */
@@ -1867,6 +1865,14 @@ void switchserver(int which)
   irlist_delete_all(&(gnetwork->serverq_slow));
   
   gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+}
+
+void switchserver(int which)
+{
+  server_t *ss;
+  
+  quit_server();
+  updatecontext();
    
   if (which < 0)
     {

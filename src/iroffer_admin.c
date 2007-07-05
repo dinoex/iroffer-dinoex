@@ -2361,6 +2361,10 @@ static void u_rehash(const userinput * const u) {
      {
        u_respond(u,"network dropped, reconnecting");
        needtojump=1;
+       for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++)
+         {
+           quit_server();
+         }
      }
    
    backup = gnetwork;
