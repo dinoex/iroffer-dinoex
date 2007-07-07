@@ -275,8 +275,7 @@ int add_default_groupdesc(const char *group)
   if (k != 1)
     return k;
 
-  firstxd->group_desc = mycalloc(strlen(group)+1);
-  strcpy(firstxd->group_desc,group); 
+  firstxd->group_desc = mystrdup(group);
   return k; 
 }
 
