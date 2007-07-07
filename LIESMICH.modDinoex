@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.15:
 --------------------
 
+bugfix: weiteres Speicher-Lecks behoben
+
 bugfix: CANNOUNCE
   Die Packnummer nicht dopplet ausgeben.
 

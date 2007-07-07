@@ -2307,6 +2307,8 @@ void reinit_config_vars(void)
   mydelete(gdata.statefile);
   mydelete(gdata.xdcclistfile);
   gdata.xdcclistfileraw = 0;
+  mydelete(gdata.adminpass);
+  mydelete(gdata.hadminpass);
   return;
 }
 
