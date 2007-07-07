@@ -290,6 +290,18 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
   return;
 }
 
+void cleanannounce(void)
+{
+  channel_announce_t *item;
+
+  for (item = irlist_get_head(&(gnetwork->serverq_channel));
+       item;
+       item = irlist_delete(&(gnetwork->serverq_channel), item)) {
+     mydelete(item->chan);
+     mydelete(item->msg);
+  }
+}
+
 void sendannounce(void)
 {
   channel_announce_t *item;

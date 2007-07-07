@@ -3364,8 +3364,8 @@ static void u_servqc(const userinput * const u)
                 irlist_size(&gdata.networks[ss].serverq_normal) +
                 irlist_size(&gdata.networks[ss].serverq_slow));
       
+      cleanannounce();
       irlist_delete_all(&gdata.networks[ss].serverq_channel);
-      irlist_delete_all(&gdata.networks[ss].serverq_fast);
       irlist_delete_all(&gdata.networks[ss].serverq_normal);
       irlist_delete_all(&gdata.networks[ss].serverq_slow);
     }

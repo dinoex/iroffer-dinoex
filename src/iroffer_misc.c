@@ -1757,6 +1757,7 @@ void shutdowniroffer(void) {
    for (ss=0; ss<gdata.networks_online; ss++)
      {
        /* empty queue */
+       cleanannounce();
        irlist_delete_all(&gdata.networks[ss].serverq_fast);
        irlist_delete_all(&gdata.networks[ss].serverq_normal);
        irlist_delete_all(&gdata.networks[ss].serverq_slow);
@@ -1862,7 +1863,10 @@ void quit_server(void)
     }
   
   /* delete the slow queue */
+  cleanannounce();
   irlist_delete_all(&(gnetwork->serverq_slow));
+  irlist_delete_all(&(gnetwork->serverq_normal));
+  irlist_delete_all(&(gnetwork->serverq_fast));
   
   gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
 }

@@ -38,6 +38,7 @@ __attribute__ ((format(printf, 3, 4)))
 #endif
 writeserver_channel (int delay, const char *chan, const char *format, ... );
 void vwriteserver_channel(int delay, const char *chan, const char *format, va_list ap);
+void cleanannounce(void);
 void sendannounce(void);
 void stoplist(const char *nick);
 void notifyqueued_nick(const char *nick);
