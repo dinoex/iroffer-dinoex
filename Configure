@@ -121,7 +121,7 @@ fi
 
 if $OPT_DEBUG; then
 echo "Configuring for debugging."
-DEBUG="-g"
+DEBUG="-g -DDEBUG"
 shift
 else
 DEBUG="-O2"
