@@ -2199,7 +2199,6 @@ void exit_iroffer(void)
   free_state();
   updatecontext();
 
-  *((int*)(0)) = 0;
   for (j=1; j<(MEMINFOHASHSIZE * gdata.meminfo_depth); j++) {
     mi = &(gdata.meminfo[j]);
     ut = mi->ptr;
