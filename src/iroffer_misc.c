@@ -1346,7 +1346,7 @@ void gobackground(void) {
       outerror(OUTERROR_TYPE_CRASH,"Unable to Fork");
    else if (s > 0) {
       /* parent exits */
-      exit(0);
+      exit(69);
       }
 
 /*   struct rlimit r = { 0 }; */
@@ -1368,7 +1368,7 @@ void gobackground(void) {
       outerror(OUTERROR_TYPE_CRASH,"Unable to Fork");
    else if (s > 0)
       /* parent exits */
-      exit(0);
+      exit(69);
    
    
    /* background continues... */
@@ -1410,7 +1410,7 @@ static void iroffer_signal_handler(int signo)
               unlink(gdata.pidfile);
             }
           
-          exit(0);
+          exit_iroffer();
         }
       else
         {
@@ -1626,7 +1626,7 @@ static void iroffer_signal_handler(int signo)
         sigprocmask(SIG_UNBLOCK, &ss, NULL);
         raise(signo);
         /* shouldn't get here */
-        exit(1);
+        exit(70);
       }
     }
   return;
@@ -1748,7 +1748,7 @@ void shutdowniroffer(void) {
       uninitscreen();
       shutdown_dinoex();
       if (gdata.pidfile) unlink(gdata.pidfile);
-      exit(0);
+      exit_iroffer();
       }
    
    
@@ -2717,7 +2717,7 @@ void createpassword(void) {
       printf("Please Enter Your Password: "); fflush(stdout);
       
       if ( (len = read(0,pw1,maxtextlengthshort-1)) < 0 )
-         { fprintf(stderr,"Couldn't Read Your Password, Try Again\n"); exit(1); }
+         { fprintf(stderr,"Couldn't Read Your Password, Try Again\n"); exit(66); }
       if (pw1[len-1] == '\n') { pw1[len-1] = '\0'; len--;}
       
       if ( len < 5 )
@@ -2730,11 +2730,11 @@ void createpassword(void) {
    fflush(stdout);
 
    if ( (len = read(0,pw2,maxtextlengthshort-1)) < 0 )
-      { fprintf(stderr,"Couldn't Read Your Password, Try Again\n"); exit(1); }
+      { fprintf(stderr,"Couldn't Read Your Password, Try Again\n"); exit(66); }
    if (pw2[len-1] == '\n') { pw2[len-1] = '\0'; len--;}
    
    if ( strcmp(pw1,pw2) )
-      { fprintf(stderr,"The Password Didn't Match, Try Again\n"); exit(1); }
+      { fprintf(stderr,"The Password Didn't Match, Try Again\n"); exit(65); }
    
    
    srand((unsigned int)( (getpid()*5000) + (time(NULL)%5000) ));

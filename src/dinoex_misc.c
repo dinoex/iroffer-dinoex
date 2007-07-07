@@ -1967,4 +1967,269 @@ void close_server(void)
   gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
 }
 
+#ifdef DEBUG
+
+static void free_state(void)
+{
+  xdcc *xd;
+  channel_t *ch;
+  transfer *tr;
+  upload *up;
+  pqueue *pq;
+  userinput *u;
+  igninfo *i;
+  msglog_t *ml;
+  gnetwork_t *backup;
+  int ss;
+
+  updatecontext();
+
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_delete(&gdata.xdccs, xd)) {
+     mydelete(xd->file);
+     mydelete(xd->desc);
+     mydelete(xd->note);
+     mydelete(xd->group);
+     mydelete(xd->group_desc);
+     mydelete(xd->lock);
+     mydelete(xd->dlimit_desc);
+     mydelete(xd->trigger);
+  }
+
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+    mydelete(gnetwork->curserveractualname);
+    mydelete(gnetwork->user_nick);
+    mydelete(gnetwork->caps_nick);
+    mydelete(gnetwork->name);
+    mydelete(gnetwork->curserver.hostname);
+    mydelete(gnetwork->curserver.password);
+    irlist_delete_all(&(gnetwork->xlistqueue));
+
+    for (ch = irlist_get_head(&(gnetwork->channels));
+         ch;
+         ch = irlist_delete(&(gnetwork->channels), ch)) {
+       clearmemberlist(ch);
+       mydelete(ch->name);
+       mydelete(ch->key);
+       mydelete(ch->headline);
+       mydelete(ch->pgroup);
+    }
+  }
+
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_delete(&gdata.trans, tr)) {
+     mydelete(tr->nick);
+     mydelete(tr->caps_nick);
+     mydelete(tr->hostname);
+  }
+
+  for (up = irlist_get_head(&gdata.uploads);
+       up;
+       up = irlist_delete(&gdata.uploads, up)) {
+     mydelete(up->nick);
+     mydelete(up->hostname);
+     mydelete(up->file);
+  }
+
+  for (pq = irlist_get_head(&gdata.mainqueue);
+       pq;
+       pq = irlist_delete(&gdata.mainqueue, pq)) {
+     mydelete(pq->nick);
+     mydelete(pq->hostname);
+  }
+  for (u = irlist_get_head(&gdata.packs_delayed);
+       u;
+       u = irlist_delete(&gdata.packs_delayed, u)) {
+     mydelete(u->cmd);
+     mydelete(u->arg1);
+     mydelete(u->arg2);
+  }
+  for (i = irlist_get_head(&gdata.ignorelist);
+       i;
+       i = irlist_delete(&gdata.ignorelist, i)) {
+     mydelete(i->regexp);
+     mydelete(i->hostmask);
+  }
+  for (ml = irlist_get_head(&gdata.msglog);
+       ml;
+       ml = irlist_delete(&gdata.msglog, ml)) {
+     mydelete(ml->hostmask);
+     mydelete(ml->message);
+  }
+  irlist_delete_all(&gdata.autotrigger);
+  irlist_delete_all(&gdata.console_history);
+  irlist_delete_all(&gdata.jobs_delayed);
+  mydelete(gdata.connectionmethod.host);
+  mydelete(gdata.connectionmethod.password);
+  mydelete(gdata.connectionmethod.vhost);
+  mydelete(gdata.sendbuff);
+  mydelete(gdata.console_input_line);
+  mydelete(gdata.osstring);
+
+
+  mydelete(xdcc_statefile.note);
+}
+
+static void free_config(void)
+{
+  autoqueue_t *aq;
+  regex_t *rh;
+  int si;
+
+  updatecontext();
+  /* clear old config items */
+  for (aq = irlist_get_head(&gdata.autoqueue);
+       aq;
+       aq = irlist_delete(&gdata.autoqueue, aq))
+    {
+       mydelete(aq->word);
+       mydelete(aq->message);
+    }
+  for (rh = irlist_get_head(&gdata.autoignore_exclude);
+       rh;
+       rh = irlist_delete(&gdata.autoignore_exclude, rh))
+    {
+      regfree(rh);
+    }
+  for (rh = irlist_get_head(&gdata.adminhost);
+       rh;
+       rh = irlist_delete(&gdata.adminhost, rh))
+    {
+      regfree(rh);
+    }
+  for (rh = irlist_get_head(&gdata.hadminhost);
+       rh;
+       rh = irlist_delete(&gdata.hadminhost, rh))
+    {
+      regfree(rh);
+    }
+  for (rh = irlist_get_head(&gdata.uploadhost);
+       rh;
+       rh = irlist_delete(&gdata.uploadhost, rh))
+    {
+      regfree(rh);
+    }
+  for (rh = irlist_get_head(&gdata.downloadhost);
+       rh;
+       rh = irlist_delete(&gdata.downloadhost, rh))
+    {
+      regfree(rh);
+    }
+  for (rh = irlist_get_head(&gdata.nodownloadhost);
+       rh;
+       rh = irlist_delete(&gdata.nodownloadhost, rh))
+    {
+      regfree(rh);
+    }
+  for (rh = irlist_get_head(&gdata.unlimitedhost);
+       rh;
+       rh = irlist_delete(&gdata.unlimitedhost, rh))
+    {
+      regfree(rh);
+    }
+  mydelete(gdata.r_pidfile);
+  mydelete(gdata.pidfile);
+  mydelete(gdata.r_config_nick);
+  mydelete(gdata.config_nick);
+  for (si=0; si<MAX_NETWORKS; si++)
+  {
+    server_t *ss;
+    for (ss = irlist_get_head(&gdata.networks[si].servers);
+         ss;
+         ss = irlist_delete(&gdata.networks[si].servers, ss))
+      {
+        mydelete(ss->hostname);
+        mydelete(ss->password);
+      }
+    irlist_delete_all(&gdata.networks[si].r_channels);
+    irlist_delete_all(&gdata.networks[si].server_join_raw);
+    irlist_delete_all(&gdata.networks[si].server_connected_raw);
+    irlist_delete_all(&gdata.networks[si].channel_join_raw);
+  } /* networks */
+  mydelete(gdata.logfile);
+  mydelete(gdata.user_realname);
+  mydelete(gdata.user_modes);
+  irlist_delete_all(&gdata.proxyinfo);
+  irlist_delete_all(&gdata.adddir_exclude);
+  irlist_delete_all(&gdata.geoipcountry);
+  irlist_delete_all(&gdata.geoipexcludenick);
+  irlist_delete_all(&gdata.autoadd_dirs);
+  irlist_delete_all(&gdata.autocrc_exclude);
+  irlist_delete_all(&gdata.filedir);
+  mydelete(gdata.enable_nick);
+  mydelete(gdata.owner_nick);
+  mydelete(gdata.geoipdatabase);
+  mydelete(gdata.respondtochannellistmsg);
+  mydelete(gdata.admin_job_file);
+  mydelete(gdata.autoaddann);
+  mydelete(gdata.autoadd_group);
+  mydelete(gdata.send_statefile);
+  mydelete(gdata.xdccremovefile);
+  mydelete(gdata.creditline);
+  mydelete(gdata.headline);
+  mydelete(gdata.nickserv_pass);
+  mydelete(gdata.periodicmsg_nick);
+  mydelete(gdata.periodicmsg_msg);
+  mydelete(gdata.uploaddir);
+  mydelete(gdata.restrictprivlistmsg);
+  mydelete(gdata.loginname);
+  mydelete(gdata.statefile);
+  mydelete(gdata.xdcclistfile);
+  mydelete(gdata.adminpass);
+  mydelete(gdata.hadminpass);
+}
+
+#endif
+
+void exit_iroffer(void)
+{
+#ifdef DEBUG
+  meminfo_t *mi;
+  unsigned char *ut;
+  int j;
+  int i;
+  int leak = 0;
+
+  signal(SIGSEGV, SIG_DFL);
+  free_config();
+  free_state();
+  updatecontext();
+
+  *((int*)(0)) = 0;
+  for (j=1; j<(MEMINFOHASHSIZE * gdata.meminfo_depth); j++) {
+    mi = &(gdata.meminfo[j]);
+    ut = mi->ptr;
+    if (ut != NULL) {
+      leak ++;
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Pointer 0x%8.8lX not free", (long)ut);
+      outerror(OUTERROR_TYPE_WARN_LOUD, "alloctime = %ld", (long)(mi->alloctime));
+      outerror(OUTERROR_TYPE_WARN_LOUD, "size      = %ld", (long)(mi->size));
+      outerror(OUTERROR_TYPE_WARN_LOUD, "src_func  = %s", mi->src_func);
+      outerror(OUTERROR_TYPE_WARN_LOUD, "src_file  = %s", mi->src_file);
+      outerror(OUTERROR_TYPE_WARN_LOUD, "src_line  = %d", mi->src_line);
+      for(i=0; i<(12*12); i+=12) {
+        outerror(OUTERROR_TYPE_WARN_LOUD," : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\"",
+               ut[i+0], ut[i+1], ut[i+2], ut[i+3], ut[i+4], ut[i+5], ut[i+6], ut[i+7], ut[i+8], ut[i+9], ut[i+10], ut[i+11],
+               onlyprintable(ut[i+0]), onlyprintable(ut[i+1]),
+               onlyprintable(ut[i+2]), onlyprintable(ut[i+3]),
+               onlyprintable(ut[i+4]), onlyprintable(ut[i+5]),
+               onlyprintable(ut[i+6]), onlyprintable(ut[i+7]),
+               onlyprintable(ut[i+8]), onlyprintable(ut[i+9]),
+               onlyprintable(ut[i+10]), onlyprintable(ut[i+11]));
+      }
+    }
+  }
+  if (leak == 0)
+    exit(0);
+
+  *((int*)(0)) = 0;
+#else
+  exit(0);
+#endif
+}
+
 /* End of File */

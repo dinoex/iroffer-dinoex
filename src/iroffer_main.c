@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 #endif
             "\n",
             argv[0]);
-      exit(0);
+      exit(64);
    case PCL_SHOW_VERSION:
       printf("iroffer v" VERSIONLONG " by Dinoex, see http://iroffer.dinoex.net/\n");
       exit(0);
@@ -1770,7 +1770,7 @@ static void mainloop (void) {
          tostdout_disable_buffering(1);
          uninitscreen();
          if (gdata.pidfile) unlink(gdata.pidfile);
-         exit(0);
+         exit_iroffer();
          }
       
       updatecontext();
