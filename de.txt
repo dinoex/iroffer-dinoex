@@ -1226,7 +1226,7 @@
 1238 "[MD5]: Canceled (file changed)"
 1239 "** Du wurdest aus der Warteschange entfernt: Zu viele Anfragen"
 1240 "Removed From Queue: To many requests for %s on %s."
-1241 "Du hast den Channel verlassen, falls du nicht zurückkommst werden deinen Afragen gelöscht"
+1241 "Du hast den Channel verlassen, falls du nicht zurückkommst werden deinen Anfragen gelöscht"
 1242 "** Du wurdest aus der Warteschange entfernt: Du hast den Channel verlassen"
 1243 "Removed From Queue: %s on %s not in known Channel."
 1244 "Cant Write To State File (%d != %d) %s"
