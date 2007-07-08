@@ -3370,7 +3370,7 @@ static void u_servqc(const userinput * const u)
       gnetwork = &(gdata.networks[ss]);
       cleanannounce();
       gnetwork = backup;
-      irlist_delete_all(&gdata.networks[ss].serverq_channel);
+      irlist_delete_all(&gdata.networks[ss].serverq_fast);
       irlist_delete_all(&gdata.networks[ss].serverq_normal);
       irlist_delete_all(&gdata.networks[ss].serverq_slow);
     }
