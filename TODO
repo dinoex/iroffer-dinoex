@@ -1,3 +1,5 @@
+[Iroffer.org]
+
 Known Problems (All Versions): 
    161 7/2/00 Open specifying a user_nick too long causes confusion
    158 10/11/99 Open some servers dont allow multiple recipiants
@@ -53,7 +55,19 @@ Not going to happen anytime soon:
 
 Page last modified: 09/01/04 
 
-mod Dinoex TODO:
+[Iroffer-lamm missing features]
+[ 1121980 ] Transfer to only +v/+o/+h (done)
+[ 1190632 ] CRC 
+[ 1571142 ] RMUL anywhere
+[ 1600818 ] Sort Packlist by name
+
+[Iroffer-lamm]
+[ 730904 ] send queue max
+[ 829114 ] hostmask check on queues
+[ 829837 ] Log nick+hostmask on DCC chat attempts
+[ 1473932 ] IP retrieval
+
+[Iroffer mod Dinoex]
 
 Short Term Features:
   1026  renumber x to y to position z
