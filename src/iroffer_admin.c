@@ -3353,9 +3353,12 @@ static void u_debug(const userinput * const u) {
 
 static void u_servqc(const userinput * const u)
 {
+  gnetwork_t *backup;
   int ss;
+
   updatecontext();
   
+  backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++)
     {
       u_respond(u,"Cleared server queue of %d lines",
@@ -3364,7 +3367,9 @@ static void u_servqc(const userinput * const u)
                 irlist_size(&gdata.networks[ss].serverq_normal) +
                 irlist_size(&gdata.networks[ss].serverq_slow));
       
+      gnetwork = &(gdata.networks[ss]);
       cleanannounce();
+      gnetwork = backup;
       irlist_delete_all(&gdata.networks[ss].serverq_channel);
       irlist_delete_all(&gdata.networks[ss].serverq_normal);
       irlist_delete_all(&gdata.networks[ss].serverq_slow);

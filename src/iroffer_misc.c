@@ -1757,6 +1757,7 @@ void shutdowniroffer(void) {
    for (ss=0; ss<gdata.networks_online; ss++)
      {
        /* empty queue */
+       gnetwork = &(gdata.networks[ss]);
        cleanannounce();
        irlist_delete_all(&gdata.networks[ss].serverq_fast);
        irlist_delete_all(&gdata.networks[ss].serverq_normal);
