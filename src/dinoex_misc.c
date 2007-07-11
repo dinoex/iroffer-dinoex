@@ -857,6 +857,7 @@ static int send_statefile(void)
   caps(tr->caps_nick);
   tr->hostname = mystrdup(hostname);
   tr->xpack = xd;
+  tr->maxspeed = xd->maxspeed;
   tr->net = gnetwork->net;
   t_setuplisten(tr);
    

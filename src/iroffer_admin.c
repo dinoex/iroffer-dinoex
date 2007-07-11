@@ -129,6 +129,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,5,method_allow_all,u_nomin,    "NOMIN","id","Disables minspeed for transfer <id>"},
 {2,5,method_allow_all,u_nomax,    "NOMAX","id","Disables maxspeed for transfer <id>"},
 {2,5,method_allow_all,a_unlimited, "UNLIMITED","id","Disables bandwidth limits for transfer <id>"},
+{2,5,method_allow_all,a_maxspeed, "MAXSPEED","id x","Set max bandwidth limit of <x> KB/s for transfer <id>"},
 {2,2,method_allow_all,u_send,     "SEND","nick n [net]","Sends pack <n> to <nick>"},
 {2,2,method_allow_all,a_queue,    "QUEUE","nick n [net]","Queues pack <n> for <nick>"},
 {2,2,method_allow_all,u_psend,    "PSEND","channel style [net]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
@@ -151,8 +152,8 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,u_chfile,   "CHFILE","n filename","Change file of pack <n> to <filename>"},
 {3,3,method_allow_all,u_chdesc,   "CHDESC","n msg","Change description of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chnote,   "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
-{3,3,method_allow_all,u_chmins,   "CHMINS","n x","Change min speed of pack <n> to <x> KB"},
-{3,3,method_allow_all,u_chmaxs,   "CHMAXS","n x","Change max speed of pack <n> to <x> KB"},
+{3,3,method_allow_all,u_chmins,   "CHMINS","n x","Change min speed of pack <n> to <x> KB/s"},
+{3,3,method_allow_all,u_chmaxs,   "CHMAXS","n x","Change max speed of pack <n> to <x> KB/s"},
 {3,3,method_allow_all,a_chlimit,  "CHLIMIT","n x","Change download limit of pack <n> to <x> transfers per day"},
 {3,3,method_allow_all,a_chlimitinfo, "CHLIMITINFO","n [msg]","Change over limit info of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtrigger, "CHTRIGGER","n [msg]","Change trigger for pack <n> to <msg>"},
@@ -1220,7 +1221,7 @@ static void u_dcld(const userinput * const u)
           snprintf(tempstr3, maxtextlengthshort - 1,
                    "%6liK", (long)(tr->startresume)/1024);
           snprintf(tempstr4, maxtextlengthshort - 1,
-                   "%1.1fK", tr->xpack->maxspeed);
+                   "%1.1fK", tr->maxspeed);
           
           u_respond(u,
                     "  ^- %5.1fK/s    %6" LLPRINTFMT "iK/%6" LLPRINTFMT "iK  %2i%c%02i%c/%2i%c%02i%c  %5s/%5s  %7s",
@@ -1236,7 +1237,7 @@ static void u_dcld(const userinput * const u)
                     left < 3600 ? left%60 : (left/60)%60 ,
                     left < 3600 ? 's' : 'm',
                     (tr->nomin || (tr->xpack->minspeed == 0.0)) ? "no" : tempstr2 ,
-                    (tr->nomax || (tr->xpack->maxspeed == 0.0)) ? "no" : tempstr4 ,
+                    (tr->nomax || (tr->maxspeed == 0.0)) ? "no" : tempstr4 ,
                     tr->startresume ? tempstr3 : "no");
         }
       else
@@ -2112,10 +2113,8 @@ static void u_chmaxs(const userinput * const u) {
    if (invalid_pack(u, num) != 0)
       return;
 
-   if (!u->arg2 || !strlen(u->arg2)) {
-      u_respond(u,"Try Specifying a Maxspeed");
-      return;
-      }
+   if (invalid_maxspeed(u, u->arg2) != 0)
+     return;
 
    xd = irlist_get_nth(&gdata.xdccs, num-1);
    

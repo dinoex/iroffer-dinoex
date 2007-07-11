@@ -448,6 +448,16 @@ int invalid_channel(const userinput * const u, const char *arg)
    return 0;
 }
 
+int invalid_maxspeed(const userinput * const u, const char *arg)
+{
+  if (!arg || !strlen(arg))
+    {
+      a_respond(u, "Try Specifying a Maxspeed");
+      return 1;
+    }
+   return 0;
+}
+
 int invalid_pack(const userinput * const u, int num)
 {
   if (num < 1 || num > irlist_size(&gdata.xdccs))
@@ -808,16 +818,41 @@ void a_unlimited(const userinput * const u)
 
   if (u->arg1) num = atoi(u->arg1);
 
-  if ((num < 0) || !does_tr_id_exist(num))
+  tr = does_tr_id_exist(num);
+  if (tr == NULL)
     {
       a_respond(u,"Invalid ID number, Try \"DCL\" for a list");
+      return;
     }
-  else
+
+  tr->nomax = 1;
+  tr->unlimited = 1;
+}
+
+void a_maxspeed(const userinput * const u)
+{
+  transfer *tr;
+  float val;
+  int num = 0;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+
+  if (invalid_maxspeed(u, u->arg2) != 0)
+     return;
+
+  tr = does_tr_id_exist(num);
+  if (tr == NULL)
     {
-      tr = does_tr_id_exist(num);
-      tr->nomax = 1;
-      tr->unlimited = 1;
+      a_respond(u,"Invalid ID number, Try \"DCL\" for a list");
+      return;
     }
+
+  val = atof(u->arg2);
+  a_respond(u, "CHMAXS: [Transfer %i] Old: %1.1f New: %1.1f",
+            num, tr->maxspeed, val);
+  tr->maxspeed = val;
 }
 
 void a_slotsmax(const userinput * const u)

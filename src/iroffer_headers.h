@@ -237,6 +237,7 @@ typedef struct
   unsigned long remoteip;
   unsigned long localip;
   float lastspeed;
+  float maxspeed;
   xdcc *xpack;
   struct sockaddr_in serveraddress;
   char *nick;

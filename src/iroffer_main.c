@@ -3482,6 +3482,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        tr->hostname = mystrdup(hostname);
        
        tr->xpack = xd;
+       tr->maxspeed = xd->maxspeed;
        tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
        unlimitedhost = tr->unlimited;
        tr->nomax = tr->unlimited;
@@ -3766,6 +3767,7 @@ void sendaqueue(int type, int pos)
       tr->hostname = mystrdup(pq->hostname);
       
       tr->xpack = pq->xpack;
+      tr->maxspeed = pq->xpack->maxspeed;
       hostmask = to_hostmask(tr->nick, tr->hostname);
       tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
       if (tr->unlimited)

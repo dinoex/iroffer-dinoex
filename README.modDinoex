@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.15:
 ----------------------
 
+159) MAXSPEED (inspired by Per Nielsen)
+  new admin command:
+  MAXSPEED <id> <x>               Set max bandwidth limit of <x> KB/s for transfer <id>
+
 bugfix: fix small memory leaks
 
 bugfix: CANNOUNCE (reported by drBeSt)

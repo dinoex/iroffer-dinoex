@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.15:
 --------------------
 
+159) MAXSPEED
+  Neues Admin Kommando:
+  MAXSPEED <id> <x>                Setzen einer Bandbreitengrenze von <x> KB/s für Transfer <id>
+
 bugfix: weiteres Speicher-Lecks behoben
 
 bugfix: CANNOUNCE

@@ -37,6 +37,7 @@ int invalid_message(const userinput * const u, const char *arg);
 int invalid_announce(const userinput * const u, const char *arg);
 int invalid_command(const userinput * const u, const char *arg);
 int invalid_channel(const userinput * const u, const char *arg);
+int invalid_maxspeed(const userinput * const u, const char *arg);
 int invalid_pack(const userinput * const u, int num);
 int get_network_msg(const userinput * const u, const char *arg);
 int disabled_config(const userinput * const u);
@@ -49,6 +50,7 @@ void a_xdtrigger(const userinput * const u);
 void a_find(const userinput * const u);
 
 void a_unlimited(const userinput * const u);
+void a_maxspeed(const userinput * const u);
 void a_slotsmax(const userinput * const u);
 void a_queuesize(const userinput * const u);
 void a_requeue(const userinput * const u);
