@@ -551,6 +551,9 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
    mydelete(xd->file);
    mydelete(xd->desc);
    mydelete(xd->note);
+   mydelete(xd->lock);
+   mydelete(xd->dlimit_desc);
+   mydelete(xd->trigger);
    /* keep group info for later work */
    tmpgroup = xd->group;
    xd->group = NULL;
