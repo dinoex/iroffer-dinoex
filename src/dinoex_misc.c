@@ -434,7 +434,7 @@ void notifyqueued_nick(const char *nick)
     remain = irlist_add(&list2, sizeof(remaining_transfer_time));
     remain->tr = tr;
     remain->left = left;
-    irlist_delete(&list2, remain);
+    irlist_remove(&list2, remain);
 
     rm = irlist_get_head(&list);
     while(rm) {
