@@ -2288,10 +2288,8 @@ void check_idle_queue(void)
   int usertrans;
 
   updatecontext();
-#if 0
   if (gdata.holdqueue)
     return;
-#endif
 
   if (gdata.restrictlist && (has_joined_channels(0) == 0))
     return;
