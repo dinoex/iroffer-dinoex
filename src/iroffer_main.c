@@ -3698,37 +3698,33 @@ void sendaqueue(int type, int pos)
        * queue check
        */
       
-      if (pos > 0)
-        {
-           pq = irlist_get_nth(&gdata.mainqueue, pos - 1);
-        }
-      else
-        {
-           pq = irlist_get_head(&gdata.mainqueue);
-           while (pq)
-            {
-              usertrans=0;
-              tr = irlist_get_head(&gdata.trans);
-              while(tr)
-                {
-                  if ((!strcmp(tr->hostname,pq->hostname)) || (!strcasecmp(tr->nick,pq->nick)))
-                    {
-                      usertrans++;
-                    }
-                  tr = irlist_get_next(tr);
-                }
-              
-              /* usertrans is the number of transfers a user has in progress */
-              if (usertrans < gdata.maxtransfersperperson)
-                {
-                  /* timeout for restart must be less then Transfer Timeout 180s */
-                  if ((gdata.networks[pq->net].serverstatus == SERVERSTATUS_CONNECTED)
-                  && (gdata.curtime - gdata.networks[pq->net].lastservercontact <= 150))
-                  break; /* found the person that will get the send */
-                }
-              pq = irlist_get_next(pq);
+      if (pos > 0) {
+        /* get specific entry */
+        pq = irlist_get_nth(&gdata.mainqueue, pos - 1);
+      } else {
+        for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_get_next(pq)) {
+          usertrans=0;
+          for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+            if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
+              usertrans++;
             }
+          }
+
+          /* usertrans is the number of transfers a user has in progress */
+          if (usertrans >= gdata.maxtransfersperperson)
+            continue;
+
+          if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
+            continue;
+
+          /* timeout for restart must be less then Transfer Timeout 180s */
+          if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
+            continue;
+
+          /* found the person that will get the send */
+          break;
         }
+      }
       
       if (!pq)
         {
