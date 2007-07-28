@@ -971,6 +971,44 @@ void a_requeue(const userinput * const u)
     }
 }
 
+void a_reiqueue(const userinput * const u)
+{
+  int oldp = 0, newp = 0;
+  pqueue *pqo;
+  pqueue *pqn;
+
+  updatecontext();
+
+  if (u->arg1) oldp = atoi(u->arg1);
+  if (u->arg2) newp = atoi(u->arg2);
+
+  if ((oldp < 1) ||
+      (oldp > irlist_size(&gdata.idlequeue)) ||
+      (newp < 1) ||
+      (newp > irlist_size(&gdata.idlequeue)) ||
+      (newp == oldp))
+    {
+      a_respond(u,"Invalid Queue Entry");
+      return;
+    }
+
+  a_respond(u,"** Moved Queue %i to %i", oldp, newp);
+
+  /* get queue we are renumbering */
+  pqo = irlist_get_nth(&gdata.idlequeue, oldp-1);
+  irlist_remove(&gdata.idlequeue, pqo);
+
+  if (newp == 1)
+    {
+      irlist_insert_head(&gdata.idlequeue, pqo);
+    }
+  else
+    {
+      pqn = irlist_get_nth(&gdata.idlequeue, newp-2);
+      irlist_insert_after(&gdata.idlequeue, pqo, pqn);
+    }
+}
+
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
 {
   struct dirent *f;
@@ -2928,6 +2966,35 @@ void a_bannnick(const userinput * const u)
    gnetwork = backup;
 }
 
+void a_rmiq(const userinput * const u)
+{
+  int num = 0;
+  pqueue *pq;
+  gnetwork_t *backup;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+  if (num < 1) {
+    a_respond(u,"Invalid ID number, Try \"QUL\" for a list");
+    return;
+  }
+
+  pq = irlist_get_nth(&gdata.idlequeue, num-1);
+  if (!pq) {
+     a_respond(u,"Invalid ID number, Try \"QUL\" for a list");
+    return;
+  }
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[pq->net]);
+  notice(pq->nick,"** Removed From Queue: Owner Requested Remove");
+  mydelete(pq->nick);
+  mydelete(pq->hostname);
+  irlist_delete(&gdata.idlequeue, pq);
+  gnetwork = backup;
+}
+
 void a_rawnet(const userinput * const u)
 {
   gnetwork_t *backup;
@@ -3164,6 +3231,81 @@ void a_queue(const userinput * const u)
    
    if (!gdata.exiting &&
        irlist_size(&gdata.mainqueue) &&
+       (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
+     {
+       sendaqueue(0, 0);
+     }
+}
+
+void a_iqueue(const userinput * const u)
+{
+   int num = 0;
+   int alreadytrans;
+   pqueue *pq;
+   xdcc *xd;
+   char *tempstr;
+   gnetwork_t *backup;
+   int net;
+   
+   updatecontext();
+
+   net = get_network_msg(u, u->arg3);
+   if (net < 0)
+      return;
+
+   if (invalid_nick(u, u->arg1) != 0)
+      return;
+
+   if (u->arg2) num = atoi(u->arg2);
+   if (invalid_pack(u, num) != 0)
+      return;
+
+   xd = irlist_get_nth(&gdata.xdccs, num-1);
+
+   alreadytrans = 0;
+   pq = irlist_get_head(&gdata.mainqueue);
+   while(pq)
+     {
+       if (!strcasecmp(pq->nick,u->arg1))
+         {
+           if (pq->xpack == xd)
+             {
+               alreadytrans++;
+               break;
+             }
+         }
+       pq = irlist_get_next(pq);
+     }
+   pq = irlist_get_head(&gdata.idlequeue);
+   while(pq)
+     {
+       if (!strcasecmp(pq->nick,u->arg1))
+         {
+           if (pq->xpack == xd)
+             {
+               alreadytrans++;
+               break;
+             }
+         }
+       pq = irlist_get_next(pq);
+     }
+
+   if (alreadytrans > 0) {
+      a_respond(u,"Already Queued %s for Pack %i!", u->arg1,num);
+      return;
+      }
+   
+   a_respond(u,"Queueing %s for Pack %i", u->arg1,num);
+   
+   backup = gnetwork;
+   gnetwork = &(gdata.networks[net]);
+   tempstr = addtoqueue(u->arg1, "man", num);
+   notice(u->arg1, "** %s", tempstr);
+   mydelete(tempstr);
+   gnetwork = backup;
+   
+   if (!gdata.exiting &&
+       irlist_size(&gdata.idlequeue) &&
        (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
      {
        sendaqueue(0, 0);

@@ -3,14 +3,22 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.16:
 ----------------------
 
-160) idlequeuesize (inspired by Protected)
+161) XDCC QUEUE
+  better computation of estimated download time
+
+160) Idle Queue (inspired by Protected)
+
+  Option: idlequeuesize
   Idle Queue Size, set to 0 for no queue
 
-161) maxidlequeuedperperson
+  Option: maxidlequeuedperperson
   maximum number of times a user can be in the idle queue simultaneously
 
-162) XDCC QUEUE
-  better computation of estimated download time
+  new admin commands:
+  RMIQ <position>                 Removes entry at <position> from idle queue
+  IQUEUE <nick> <n>               Queues pack <n> for <nick> for idle queue
+  IQUEUE <nick> <n> <net>         Queues pack <n> for <nick> in net <net> for idle queue
+  REIQUEUE <x> <y>                Moves idle queue entry from postion <x> to <y>
 
 bugfix: fix small memory leaks
 

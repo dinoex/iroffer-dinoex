@@ -57,6 +57,7 @@ void a_maxspeed(const userinput * const u);
 void a_slotsmax(const userinput * const u);
 void a_queuesize(const userinput * const u);
 void a_requeue(const userinput * const u);
+void a_reiqueue(const userinput * const u);
 
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d);
 void a_remove(const userinput * const u);
@@ -98,6 +99,7 @@ channel_t *is_not_joined_channel(const userinput * const u, const char *name);
 void a_msg_nick_or_chan(const userinput * const u, const char *name, const char *msg);
 void a_msg(const userinput * const u);
 void a_msgnet(const userinput * const u);
+void a_rmiq(const userinput * const u);
 void a_rawnet(const userinput * const u);
 void a_bannnick(const userinput * const u);
 void a_bann_hostmask(const userinput * const u, const char *arg);
@@ -111,6 +113,7 @@ void a_dump(const userinput * const u);
 void a_autoadd(const userinput * const u);
 
 void a_queue(const userinput * const u);
+void a_iqueue(const userinput * const u);
 void a_announce(const userinput * const u);
 void a_cannounce(const userinput * const u);
 void a_sannounce(const userinput * const u);

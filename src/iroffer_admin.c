@@ -125,18 +125,21 @@ static const userinput_parse_t userinput_parse[] = {
 
 {2,2,method_allow_all,u_close,    "CLOSE","id","Cancels transfer <id>"},
 {2,2,method_allow_all,u_closeu,   "CLOSEU","id","Cancels upload <id>"},
-{2,2,method_allow_all,u_rmq,      "RMQ","position","Removes entry at <position> from queue"},
+{2,2,method_allow_all,u_rmq,      "RMQ","position","Removes entry at <position> from main queue"},
+{2,2,method_allow_all,a_rmiq,     "RMIQ","position","Removes entry at <position> from idle queue"},
 {2,5,method_allow_all,u_nomin,    "NOMIN","id","Disables minspeed for transfer <id>"},
 {2,5,method_allow_all,u_nomax,    "NOMAX","id","Disables maxspeed for transfer <id>"},
 {2,5,method_allow_all,a_unlimited, "UNLIMITED","id","Disables bandwidth limits for transfer <id>"},
 {2,5,method_allow_all,a_maxspeed, "MAXSPEED","id x","Set max bandwidth limit of <x> KB/s for transfer <id>"},
 {2,2,method_allow_all,u_send,     "SEND","nick n [net]","Sends pack <n> to <nick>"},
-{2,2,method_allow_all,a_queue,    "QUEUE","nick n [net]","Queues pack <n> for <nick>"},
+{2,2,method_allow_all,a_queue,    "QUEUE","nick n [net]","Queues pack <n> for <nick> for main queue"},
+{2,2,method_allow_all,a_iqueue,   "IQUEUE","nick n [net]","Queues pack <n> for <nick> for idle queue"},
 {2,2,method_allow_all,u_psend,    "PSEND","channel style [net]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
 {2,2,method_allow_all,u_qsend,    "QSEND","[id]","Start an extra transfer from queue"},
 {2,5,method_allow_all,a_slotsmax, "SLOTSMAX","[slots]","temporary change slotsmax to <slots>"},
 {2,5,method_allow_all,a_queuesize, "QUEUESIZE","[slots]","temporary change queuesize to <slots>"},
-{2,5,method_allow_all,a_requeue,  "REQUEUE","x y","Moves queue entry from postion <x> to <y>"},
+{2,5,method_allow_all,a_requeue,  "REQUEUE","x y","Moves main queue entry from postion <x> to <y>"},
+{2,5,method_allow_all,a_reiqueue, "REIQUEUE","x y","Moves idle queue entry from postion <x> to <y>"},
 
 {3,0,method_allow_all_xdl,u_info, "INFO","n","Show info for pack <n>"},
 {3,4,method_allow_all,a_remove,   "REMOVE","n [m]","Removes pack <n> or <n> to <m>"},
@@ -1345,13 +1348,13 @@ static void u_qul(const userinput * const u)
   
   updatecontext();
   
-  if (!irlist_size(&gdata.mainqueue))
+  if (!irlist_size(&gdata.mainqueue) && !irlist_size(&gdata.idlequeue))
     {
       u_respond(u,"No Users Queued");
       return;
     }
   
-  u_respond(u,"Current Queue:");
+  u_respond(u,"Current Main Queue:");
   u_respond(u,"    #  User        Pack File                              Waiting     Left");
   
   lastrtime=0;
@@ -1418,7 +1421,51 @@ static void u_qul(const userinput * const u)
       pq = irlist_get_next(pq);
       i++;
     }
-  
+
+  u_respond(u,"Current Idle Queue:");
+  u_respond(u,"    #  User        Pack File                              Waiting     Left");
+  i=1;
+  pq = irlist_get_head(&gdata.idlequeue);
+  while(pq)
+    {
+      rtime=-1;
+      tr = irlist_get_head(&gdata.trans);
+      while(tr)
+        {
+          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
+          if (left > lastrtime && left < rtime)
+            {
+              rtime = left;
+            }
+          tr = irlist_get_next(tr);
+        }
+      lastrtime=rtime;
+      
+      if (rtime < 359999)
+        {
+          u_respond(u,"   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
+                    i,
+                    pq->nick,
+                    number_of_pack(pq->xpack),
+                    getfilename(pq->xpack->file),
+                    (long)((gdata.curtime-pq->queuedtime)/60/60),
+                    (long)(((gdata.curtime-pq->queuedtime)/60)%60),
+                    (long)(rtime/60/60),
+                    (long)(rtime/60)%60);
+        }
+      else
+        {
+          u_respond(u,"   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
+                    i,
+                    pq->nick,
+                    number_of_pack(pq->xpack),
+                    getfilename(pq->xpack->file),
+                    (long)((gdata.curtime-pq->queuedtime)/60/60),
+                    (long)(((gdata.curtime-pq->queuedtime)/60)%60));
+        }
+      pq = irlist_get_next(pq);
+      i++;
+    }
 }
 
 static void u_close(const userinput * const u)

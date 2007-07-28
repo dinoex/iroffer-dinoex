@@ -3,14 +3,22 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.16:
 --------------------
 
-160) idlequeuesize
+161) XDCC QUEUE
+  Berrechne die Wartezeit genauer.
+
+160) Idle Queue
+
+  Option: idlequeuesize
   Größe der Idle Warteschlange, 0 bedeutet keine Warteschlange.
 
-161) maxidlequeuedperperson
+  Option: maxidlequeuedperperson
   Maximale Anzahl gleichzeitiger Warteschlangeneinträge in der Idle Queue
-
-162) XDCC QUEUE
-  Berrechne die Wartezeit genauer.
+   
+  Neues Admin Kommandos:
+  RMIQ <position>                  Löschen von <position> in der 2. Warteschlange
+  IQUEUE <nick> <n>                Paket <n> in die 2. Warteschlange für <nick> einfügen
+  IQUEUE <nick> <n> <netz>         Paket <n> in die 2. Warteschlange für <nick> aus <netz> einfügen
+  REIQUEUE <x> <y>                 Verschiebe Eintrag in der 2. Warteschlange von Position <x> nach <y>
 
 bugfix: weiteres Speicher-Lecks behoben
 
