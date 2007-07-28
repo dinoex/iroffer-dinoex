@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.16:
 --------------------
 
+160) idlequeuesize
+  Größe der Idle Warteschlange, 0 bedeutet keine Warteschlange.
+
+161) maxidlequeuedperperson
+  Maximale Anzahl gleichzeitiger Warteschlangeneinträge in der Idle Queue
+
+162) XDCC QUEUE
+  Berrechne die Wartezeit genauer.
+
 bugfix: weiteres Speicher-Lecks behoben
 
 Ab Version mod 2.15:

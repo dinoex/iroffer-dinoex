@@ -1375,6 +1375,7 @@ void dumpgdata(void)
   
   gdata_print_int(maxtransfersperperson);
   gdata_print_int(maxqueueditemsperperson);
+  gdata_print_int(maxidlequeuedperperson);
   gdata_print_int(punishslowusers);
   gdata_print_int(nomd5sum);
   gdata_print_int(getipfromserver);
@@ -1707,6 +1708,7 @@ void dumpgdata(void)
   gdata_print_int(ignore);
   gdata_print_int(slotsmax);
   gdata_print_int(queuesize);
+  gdata_print_int(idlequeuesize);
   gdata_print_int(noautosave);
   gdata_print_long(nonewcons);
   gdata_print_long(nolisting);
@@ -1783,6 +1785,17 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
   
   gdata_irlist_iter_start(mainqueue, pqueue);
+  gdata_iter_print_string(nick);
+  gdata_iter_print_string(hostname);
+  ioutput(gdata_common,
+          "  : xpack=0x%.8lX queuedtime=%ld",
+          (unsigned long)iter->xpack,
+          (long)iter->queuedtime);
+  ioutput(gdata_common,"  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
+  ioutput(gdata_common, "  : net=%d", iter->net + 1 );
+  gdata_irlist_iter_end;
+  
+  gdata_irlist_iter_start(idlequeue, pqueue);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
   ioutput(gdata_common,

@@ -94,6 +94,16 @@ void autotrigger_rebuild(void);
 void start_md5_hash(xdcc *xd, int packnum);
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
 void close_server(void);
+void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick);
+void queue_reverify_restrictsend(irlist_t *list);
+void queue_punishslowusers(irlist_t *list, int network, const char *nick);
+int queue_xdcc_remove(irlist_t *list, int network, const char *nick);
+void queue_pack_limit(irlist_t *list, xdcc *xd);
+void queue_pack_remove(irlist_t *list, xdcc *xd);
+void queue_all_remove(irlist_t *list, const char *message);
+char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq);
+void check_idle_queue(void);
+
 void exit_iroffer(void);
 
 /* End of File */

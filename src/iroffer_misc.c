@@ -947,6 +947,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
   if ((type == WRITESERVER_NOW) &&
       (gnetwork->serverstatus == SERVERSTATUS_CONNECTED))
     {
+      if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<SND<: %d: %s", gnetwork->net +1, msg);
@@ -2209,8 +2210,10 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.proxyinfo);
   gdata.usenatip = 0;
   gdata.slotsmax = gdata.queuesize = 0;
+  gdata.idlequeuesize = 0;
   gdata.maxtransfersperperson = 1;
   gdata.maxqueueditemsperperson = 1;
+  gdata.maxidlequeuedperperson = 1;
   gdata.autoignore_threshold = 10;
   gdata.lowbdwth = 0;
   gdata.punishslowusers = 0;
@@ -2786,10 +2789,6 @@ char inttosaltchar (int n) {
 void notifyqueued(void)
 {
   int i;
-  unsigned long rtime, lastrtime;
-  gnetwork_t *backup;
-  pqueue *pq;
-  transfer *tr;
   ir_uint64 xdccsent;
   
   updatecontext();
@@ -2816,63 +2815,7 @@ void notifyqueued(void)
         }
     }
   
-  lastrtime=0;
-  
-  /* if we are sending more than allowed, we need to skip the difference */
-  for (i=0; i<irlist_size(&gdata.trans)-gdata.slotsmax; i++)
-    {
-      rtime=-1;
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
-        {
-          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
-          if (left > lastrtime && left < rtime)
-            {
-              rtime = left;
-            }
-          tr = irlist_get_next(tr);
-        }
-      if (rtime < 359999)
-        {
-          lastrtime=rtime;
-        }
-    }
-  
-  backup = gnetwork;
-  i=1;
-  pq = irlist_get_head(&gdata.mainqueue);
-  while(pq)
-    {
-      rtime=-1;
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
-        {
-          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
-          if (left > lastrtime && left < rtime)
-            {
-              rtime = left;
-            }
-          tr = irlist_get_next(tr);
-        }
-      if (rtime < 359999)
-        {
-          lastrtime=rtime;
-        }
-      
-      gnetwork = &(gdata.networks[pq->net]);
-      notice_slow(pq->nick,"Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
-                  (long)(gdata.curtime-pq->queuedtime)/60/60,
-                  (long)((gdata.curtime-pq->queuedtime)/60)%60,
-                  pq->xpack->desc,
-                  i,
-                  irlist_size(&gdata.mainqueue),
-                  lastrtime/60/60,
-                  (lastrtime/60)%60,
-                  (rtime >= 359999) ? "more" : "less");
-      i++;
-      pq = irlist_get_next(pq);
-    }
-  gnetwork = backup;
+  notifyqueued_nick(NULL);
 }
 
 void notifybandwidth(void)
@@ -3042,14 +2985,8 @@ void user_changed_nick(const char *oldnick, const char *newnick)
         }
     }
   
-  for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_get_next(pq))
-    {
-      if (!strcasecmp(pq->nick, oldnick))
-        {
-          mydelete(pq->nick);
-          pq->nick = mystrdup(newnick);
-        }
-    }
+  queue_update_nick(&gdata.mainqueue, oldnick, newnick);
+  queue_update_nick(&gdata.idlequeue, oldnick, newnick);
   
   for (pq = irlist_get_head(&gdata.mainqueue); pq; )
     {
@@ -3080,9 +3017,8 @@ void user_changed_nick(const char *oldnick, const char *newnick)
 
 void reverify_restrictsend(void)
 {
-  transfer *tr;
-  pqueue *pq;
   gnetwork_t *backup;
+  transfer *tr;
   
   if (!gdata.restrictsend)
     {
@@ -3119,52 +3055,9 @@ void reverify_restrictsend(void)
         }
     }
   
-  for (pq = irlist_get_head(&gdata.mainqueue); pq;)
-    {
-      gnetwork = &(gdata.networks[pq->net]);
-      if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
-        {
-          pq = irlist_get_next(pq);
-          continue;
-        }
-      if (strcmp(pq->hostname,"man"))
-        {
-          if (isinmemberlist(pq->nick))
-            {
-              pq->restrictsend_bad = 0;
-              pq = irlist_get_next(pq);
-            }
-          else if (!pq->restrictsend_bad)
-            {
-              pq->restrictsend_bad = gdata.curtime;
-              if (gdata.restrictsend_warning)
-                {
-                  notice(pq->nick, "You are no longer on a known channel");
-                }
-              pq = irlist_get_next(pq);
-            }
-          else if ((gdata.curtime - pq->restrictsend_bad) >= gdata.restrictsend_timeout)
-            {
-              notice(pq->nick,"** Removed From Queue: You are no longer on a known channel");
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                      "Removed From Queue: %s on %s not in known Channel.",
-                       pq->nick, gdata.networks[ pq->net ].name);
-              mydelete(pq->nick);
-              mydelete(pq->hostname);
-              pq = irlist_delete(&gdata.mainqueue, pq);
-            }
-          else
-            {
-              pq = irlist_get_next(pq);
-            }
-        }
-      else
-        {
-          pq = irlist_get_next(pq);
-        }
-    }
-  
   gnetwork = backup;
+  queue_reverify_restrictsend(&gdata.mainqueue);
+  queue_reverify_restrictsend(&gdata.idlequeue);
   return;
 }
 

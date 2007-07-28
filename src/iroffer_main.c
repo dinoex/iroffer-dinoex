@@ -222,7 +222,6 @@ static void mainloop (void) {
    long sum;
    upload *ul;
    transfer *tr;
-   pqueue *pq;
    channel_t *ch;
    xdcc *xd;
    dccchat_t *chat;
@@ -1195,13 +1194,8 @@ static void mainloop (void) {
                                tempstr2);
                       
                       /* remove queued users */
-                      for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_delete(&gdata.mainqueue, pq))
-                        {
-                          gnetwork = &(gdata.networks[pq->net]);
-                          notice_slow(pq->nick, tempstr);
-                          mydelete(pq->nick);
-                          mydelete(pq->hostname);
-                        }
+                      queue_all_remove(&gdata.mainqueue, tempstr);
+                      queue_all_remove(&gdata.idlequeue, tempstr);
                       
                       /* stop transfers */
                       for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
@@ -1658,6 +1652,7 @@ static void mainloop (void) {
         {
           reverify_restrictsend();
           update_hour_dinoex(lasthour, lastmin);
+          check_idle_queue();
         }
 
       updatecontext();
@@ -2449,7 +2444,6 @@ static void privmsgparse(const char* type, char* line) {
    igninfo *ignore = NULL;
    upload *ul;
    transfer *tr;
-   pqueue *pq;
    xdcc *xd;
    int line_len;
    int notnotice = 0;
@@ -3083,26 +3077,8 @@ static void privmsgparse(const char* type, char* line) {
          if (!gdata.attop) gototop();
          k=0;
          
-         pq = irlist_get_head(&gdata.mainqueue);
-         while (pq)
-           {
-             if ((pq->net == gnetwork->net) && (!strcasecmp(pq->nick,nick)))
-               {
-                 notice(nick,
-                        "Removed you from the queue for \"%s\", you waited %li minute%s.",
-                        pq->xpack->desc,
-                        (long)(gdata.curtime-pq->queuedtime)/60,
-                        ((gdata.curtime-pq->queuedtime)/60) != 1 ? "s" : "");
-                 mydelete(pq->nick);
-                 mydelete(pq->hostname);
-                 pq = irlist_delete(&gdata.mainqueue, pq);
-                 k=1;
-               }
-             else
-               {
-                 pq = irlist_get_next(pq);
-               }
-           }
+         k += queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick);
+         k += queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick);
          if (!k) notice(nick,"You Don't Appear To Be In A Queue");
            
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -3592,9 +3568,11 @@ void sendxdccinfo(const char* nick,
 char* addtoqueue(const char* nick, const char* hostname, int pack)
 {
    char *tempstr = mycalloc(maxtextlength);
+   char *idle;
    pqueue *tempq;
    xdcc *tempx;
    int inq,alreadytrans;
+   int inq2;
    int man;
    pqueue *pq;
    
@@ -3612,6 +3590,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
       }
    
    alreadytrans = inq = 0;
+   inq2 = 0;
    pq = irlist_get_head(&gdata.mainqueue);
    while(pq)
      {
@@ -3620,6 +3599,20 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
            if (!man || !strcasecmp(pq->nick,nick))
              {
                inq++;
+               if (pq->xpack == tempx)
+                 alreadytrans++;
+             }
+         }
+       pq = irlist_get_next(pq);
+     }
+   pq = irlist_get_head(&gdata.idlequeue);
+   while(pq)
+     {
+       if (!strcmp(pq->hostname,hostname))
+         {
+           if (!man || !strcasecmp(pq->nick,nick))
+             {
+               inq2++;
                if (pq->xpack == tempx)
                  alreadytrans++;
              }
@@ -3635,6 +3628,10 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
       }
     
    if (!man && (inq >= gdata.maxqueueditemsperperson)) {
+      idle = addtoidlequeue(tempstr, nick, hostname, tempx, pack, inq2);
+      if (idle != NULL)
+        return tempstr;
+
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (user/queue): ");
       snprintf(tempstr, maxtextlength,
                "Denied, You already have %i items queued, Try Again Later",
@@ -3642,13 +3639,18 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
       return tempstr;
       }
    
-      if (!man && (irlist_size(&gdata.mainqueue) >= gdata.queuesize)) {
+   if (!man && (irlist_size(&gdata.mainqueue) >= gdata.queuesize)) {
+      idle = addtoidlequeue(tempstr, nick, hostname, tempx, pack, inq2);
+      if (idle != NULL)
+        return tempstr;
+
          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (slot/queue): ");
          snprintf(tempstr, maxtextlength,
                   "Main queue of size %d is Full, Try Again Later",
                   gdata.queuesize);
+         return tempstr;
          }
-      else {
+
          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Queued (slot): ");
          tempq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
          tempq->queuedtime = gdata.curtime;
@@ -3663,7 +3665,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
                   pack, tempx->desc,
                   irlist_size(&gdata.mainqueue),
                   save_nick(gnetwork->user_nick));
-         }
+
    return tempstr;
    }
 

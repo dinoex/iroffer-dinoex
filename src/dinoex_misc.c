@@ -373,76 +373,174 @@ void stoplist(const char *nick)
   ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (stopped %d)", stopped);
 }
 
+static float guess_maxspeed(xdcc *xd)
+{
+  int nolimit = 1;
+  float speed = 0.0;
+
+  if (gdata.overallmaxspeed > 0) {
+    speed = gdata.overallmaxspeed;
+    nolimit = 0;
+  }
+  if (gdata.transfermaxspeed > 0) {
+    if (nolimit != 0) {
+      speed = gdata.transfermaxspeed;
+      nolimit = 0;
+    } else {
+      speed = min2(speed, gdata.transfermaxspeed);
+    }
+  }
+  if (xd->maxspeed > 0)
+    speed = xd->maxspeed;
+  if (speed <= 0.0)
+    speed = 1000.0;
+  return speed;
+}
+
+typedef struct {
+  transfer *tr;
+  int left;
+} remaining_transfer_time;
+
+static remaining_transfer_time *next_remaining_transfer(remaining_transfer_time *rm)
+{
+  if (rm == NULL)
+    return rm;
+  return irlist_get_next(rm);
+}
+
 void notifyqueued_nick(const char *nick)
 {
-  int i;
-  unsigned long rtime, lastrtime;
+  gnetwork_t *backup;
   pqueue *pq;
   transfer *tr;
-  
+  irlist_t list;
+  remaining_transfer_time *remain;
+  remaining_transfer_time *rm;
+  unsigned long rtime;
+  unsigned long lastrtime;
+  float speed;
+  int left;
+  int i;
+
   updatecontext();
-  
-  lastrtime=0;
-  
+
+  /* make sortd list of all transfers */
+  memset(&list, 0, sizeof(irlist_t));
+  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+    left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
+    if (irlist_size(&list) == 0) {
+      remain = irlist_add(&list, sizeof(remaining_transfer_time));
+      remain->tr = tr;
+      remain->left = left;
+      continue;
+    }
+    remain = mycalloc(sizeof(remaining_transfer_time));
+    remain->tr = tr;
+    remain->left = left;
+
+    rm = irlist_get_head(&list);
+    while(rm) {
+      if (remain->left < rm->left)
+        break;
+      rm = irlist_get_next(rm);
+    }
+    if (rm != NULL) {
+      irlist_insert_before(&list, rm, remain);
+    } else {
+      irlist_insert_tail(&list, remain);
+    }
+  }
+
+  lastrtime = 0;
+  remain = irlist_get_head(&list);
+  if (remain != NULL)
+    lastrtime = remain->left;
+
   /* if we are sending more than allowed, we need to skip the difference */
-  for (i=0; i<irlist_size(&gdata.trans)-gdata.slotsmax; i++)
-    {
-      rtime=-1;
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
-        {
-          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
-          if (left > lastrtime && left < rtime)
-            {
-              rtime = left;
-            }
-          tr = irlist_get_next(tr);
-        }
-      if (rtime < 359999)
-        {
-          lastrtime=rtime;
-        }
+  for (i=0; i<irlist_size(&gdata.trans) - gdata.slotsmax; i++) {
+    remain = next_remaining_transfer(remain);
+    if (remain == NULL)
+      break;
+    lastrtime = remain->left;
+  }
+
+  updatecontext();
+  i = 0;
+  for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_get_next(pq)) {
+    i ++;
+    rtime = lastrtime;
+    remain = next_remaining_transfer(remain);
+    if (remain != NULL)
+      lastrtime = remain->left;
+    speed = guess_maxspeed(pq->xpack);
+    left = min2(359999, (pq->xpack->st_size)/((int)(max2(speed, 0.001)*1024)));
+    lastrtime += left;
+
+updatecontext();
+    if (nick != NULL) {
+      if (pq->net != gnetwork->net)
+        continue;
+
+      if (strcasecmp(pq->nick, nick) != 0)
+        continue;
+    } else {
+      gnetwork = &(gdata.networks[pq->net]);
     }
-  
-  i=1;
-  pq = irlist_get_head(&gdata.mainqueue);
-  while(pq)
-    {
-      rtime=-1;
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
-        {
-          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
-          if (left > lastrtime && left < rtime)
-            {
-              rtime = left;
-            }
-          tr = irlist_get_next(tr);
-        }
-      if (rtime < 359999)
-        {
-          lastrtime=rtime;
-        }
-      
-      if (!strcasecmp(pq->nick, nick))
-        {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
-                  "Notifying Queued status to %s",
-                  nick);
-          notice_slow(pq->nick,"Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
-                  (long)(gdata.curtime-pq->queuedtime)/60/60,
-                  (long)((gdata.curtime-pq->queuedtime)/60)%60,
-                  pq->xpack->desc,
-                  i,
-                  irlist_size(&gdata.mainqueue),
-                  lastrtime/60/60,
-                  (lastrtime/60)%60,
-                  (rtime >= 359999) ? "more" : "less");
-        }
-      i++;
-      pq = irlist_get_next(pq);
+updatecontext();
+
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+            "Notifying Queued status to %s",
+            nick);
+    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
+                (long)(gdata.curtime-pq->queuedtime)/60/60,
+                (long)((gdata.curtime-pq->queuedtime)/60)%60,
+                pq->xpack->desc,
+                i,
+                irlist_size(&gdata.mainqueue),
+                rtime/60/60,
+                (rtime/60)%60,
+                (rtime >= 359999) ? "more" : "less");
+  }
+
+  backup = gnetwork;
+  i = 0;
+  for (pq = irlist_get_head(&gdata.idlequeue); pq; pq = irlist_get_next(pq)) {
+    i ++;
+    rtime = lastrtime;
+    remain = next_remaining_transfer(remain);
+    if (remain != NULL)
+      lastrtime = remain->left;
+    speed = guess_maxspeed(pq->xpack);
+    left = min2(359999, (pq->xpack->st_size)/((int)(max2(speed, 0.001)*1024)));
+    lastrtime += left;
+
+    if (nick != NULL) {
+      if (pq->net != gnetwork->net)
+        continue;
+
+      if (strcasecmp(pq->nick, nick) != 0)
+        continue;
+    } else {
+      gnetwork = &(gdata.networks[pq->net]);
     }
-  
+
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+            "Notifying Queued status to %s",
+            nick);
+    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
+                (long)(gdata.curtime-pq->queuedtime)/60/60,
+                (long)((gdata.curtime-pq->queuedtime)/60)%60,
+                pq->xpack->desc,
+                i,
+                irlist_size(&gdata.idlequeue),
+                rtime/60/60,
+                (rtime/60)%60,
+                (rtime >= 359999) ? "more" : "less");
+  }
+
+  irlist_delete_all(&list);
+  gnetwork = backup;
 }
 
 int check_for_file_remove(int n)
@@ -1968,6 +2066,279 @@ void close_server(void)
   gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
 }
 
+void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick)
+{
+  pqueue *pq;
+
+  for (pq = irlist_get_head(list); pq; pq = irlist_get_next(pq)) {
+    if (!strcasecmp(pq->nick, oldnick)) {
+      mydelete(pq->nick);
+      pq->nick = mystrdup(newnick);
+    }
+  }
+}
+
+void queue_reverify_restrictsend(irlist_t *list)
+{
+  gnetwork_t *backup;
+  pqueue *pq;
+
+  backup = gnetwork;
+  for (pq = irlist_get_head(list); pq;) {
+    gnetwork = &(gdata.networks[pq->net]);
+    if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+    if (strcmp(pq->hostname, "man") == 0) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+    if (isinmemberlist(pq->nick)) {
+      pq->restrictsend_bad = 0;
+      pq = irlist_get_next(pq);
+      continue;
+    }
+    if (!pq->restrictsend_bad) {
+      pq->restrictsend_bad = gdata.curtime;
+      if (gdata.restrictsend_warning) {
+        notice(pq->nick, "You are no longer on a known channel");
+      }
+      pq = irlist_get_next(pq);
+      continue;
+    }
+    if ((gdata.curtime - pq->restrictsend_bad) < gdata.restrictsend_timeout) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+
+    notice(pq->nick, "** Removed From Queue: You are no longer on a known channel");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "Removed From Queue: %s on %s not in known Channel.",
+            pq->nick, gdata.networks[ pq->net ].name);
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
+    pq = irlist_delete(list, pq);
+  }
+  gnetwork = backup;
+}
+
+void queue_pack_limit(irlist_t *list, xdcc *xd)
+{
+  gnetwork_t *backup;
+  pqueue *pq;
+
+  for (pq = irlist_get_head(list); pq;) {
+    if (pq->xpack != xd) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+
+    backup = gnetwork;
+    gnetwork = &(gdata.networks[pq->net]);
+    notice_slow(pq->nick, "** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
+    notice_slow(pq->nick, xd->dlimit_desc);
+    gnetwork = backup;
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
+    pq = irlist_delete(list, pq);
+  }
+}
+
+void queue_punishslowusers(irlist_t *list, int network, const char *nick)
+{
+  gnetwork_t *backup;
+  pqueue *pq;
+
+  for (pq = irlist_get_head(list); pq;) {
+    if (pq->net != network) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+    if (strcasecmp(pq->nick, nick) != 0) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+
+    backup = gnetwork;
+    gnetwork = &(gdata.networks[pq->net]);
+    notice(nick, "** Removed From Queue: You are being punished for your slowness");
+    gnetwork = backup;
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
+    pq = irlist_delete(list, pq);
+  }
+}
+
+int queue_xdcc_remove(irlist_t *list, int network, const char *nick)
+{
+  gnetwork_t *backup;
+  pqueue *pq;
+  int changed = 0;
+
+  for (pq = irlist_get_head(list); pq;) {
+    if (pq->net != network) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+    if (strcasecmp(pq->nick, nick) != 0) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+
+    backup = gnetwork;
+    gnetwork = &(gdata.networks[pq->net]);
+    notice(nick,
+           "Removed you from the queue for \"%s\", you waited %li minute%s.",
+           pq->xpack->desc,
+           (long)(gdata.curtime-pq->queuedtime)/60,
+           ((gdata.curtime-pq->queuedtime)/60) != 1 ? "s" : "");
+    gnetwork = backup;
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
+    pq = irlist_delete(list, pq);
+    changed ++;
+  }
+  return changed;
+}
+
+void queue_pack_remove(irlist_t *list, xdcc *xd)
+{
+  gnetwork_t *backup;
+  pqueue *pq;
+
+  for (pq = irlist_get_head(list); pq;) {
+    if (pq->xpack != xd) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+
+    backup = gnetwork;
+    gnetwork = &(gdata.networks[pq->net]);
+    notice(pq->nick, "** Removed From Queue: Pack removed");
+    gnetwork = backup;
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
+    pq = irlist_delete(list, pq);
+  }
+}
+
+void queue_all_remove(irlist_t *list, const char *message)
+{
+  gnetwork_t *backup;
+  pqueue *pq;
+
+  backup = gnetwork;
+  for (pq = irlist_get_head(list); pq; pq = irlist_delete(list, pq)) {
+    gnetwork = &(gdata.networks[pq->net]);
+    notice_slow(pq->nick, message);
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
+  }
+  gnetwork = backup;
+}
+
+char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
+{
+  pqueue *tempq;
+
+  updatecontext();
+  if (gdata.idlequeuesize == 0)
+    return NULL;
+
+  if (inq >= gdata.maxidlequeuedperperson) {
+    ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (user/idle): ");
+    snprintf(tempstr, maxtextlength,
+             "Denied, You already have %i items queued, Try Again Later",
+             inq);
+    return tempstr;
+  }
+ 
+  if (irlist_size(&gdata.idlequeue) >= gdata.idlequeuesize) {
+    ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (slot/idle): ");
+    snprintf(tempstr, maxtextlength,
+             "Idle queue of size %d is Full, Try Again Later",
+             gdata.idlequeuesize);
+    return tempstr;
+  }
+
+  ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Queued (idle slot): ");
+  tempq = irlist_add(&gdata.idlequeue, sizeof(pqueue));
+  tempq->queuedtime = gdata.curtime;
+  tempq->nick = mystrdup(nick);
+  tempq->hostname = mystrdup(hostname);
+  tempq->xpack = xd;
+  tempq->net = gnetwork->net;
+
+  snprintf(tempstr, maxtextlength,
+           "Added you to the idle queue for pack %d (\"%s\") in position %d. To Remove yourself at "
+           "a later time type \"/MSG %s XDCC REMOVE\".",
+           pack, xd->desc,
+           irlist_size(&gdata.idlequeue),
+           save_nick(gnetwork->user_nick));
+  return tempstr;
+}
+
+void check_idle_queue(void)
+{
+  pqueue *pq;
+  pqueue *mq;
+  pqueue *tempq;
+  transfer *tr;
+  int usertrans;
+
+  updatecontext();
+#if 0
+  if (gdata.holdqueue)
+    return;
+#endif
+
+  if (gdata.restrictlist && (has_joined_channels(0) == 0))
+    return;
+
+  if (irlist_size(&gdata.idlequeue) == 0)
+    return;
+
+  if (irlist_size(&gdata.mainqueue) >= gdata.queuesize)
+    return;
+
+  for (pq = irlist_get_head(&gdata.idlequeue); pq; pq = irlist_get_next(pq)) {
+    usertrans=0;
+    for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+      if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
+        usertrans++;
+      }
+    }
+    if (usertrans >= gdata.maxtransfersperperson)
+      continue;
+
+    if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
+      continue;
+
+    /* timeout for restart must be less then Transfer Timeout 180s */
+    if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
+      continue;
+
+    usertrans=0;
+    for (mq = irlist_get_head(&gdata.mainqueue); mq; mq = irlist_get_next(mq)) {
+      if ((!strcmp(mq->hostname, pq->hostname)) || (!strcasecmp(mq->nick, pq->nick))) {
+        usertrans++;
+      }
+    }
+
+    if (usertrans >= gdata.maxqueueditemsperperson)
+      continue;
+
+    break; /* found the person that will get the send */
+  }
+  if (pq == NULL)
+    return;
+
+  tempq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
+  *tempq = *pq;
+  irlist_delete(&gdata.idlequeue, pq);
+}
+
 #ifdef DEBUG
 
 static void free_state(void)
@@ -2039,6 +2410,12 @@ static void free_state(void)
   for (pq = irlist_get_head(&gdata.mainqueue);
        pq;
        pq = irlist_delete(&gdata.mainqueue, pq)) {
+     mydelete(pq->nick);
+     mydelete(pq->hostname);
+  }
+  for (pq = irlist_get_head(&gdata.idlequeue);
+       pq;
+       pq = irlist_delete(&gdata.idlequeue, pq)) {
      mydelete(pq->nick);
      mydelete(pq->hostname);
   }

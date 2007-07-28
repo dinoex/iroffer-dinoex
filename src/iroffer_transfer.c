@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_misc.h"
 
 
 void t_initvalues (transfer * const t) {
@@ -706,27 +707,12 @@ void t_flushed (transfer * const t)
   
   if ((t->xpack->dlimit_max != 0) && (t->xpack->gets >= t->xpack->dlimit_used))
     {
-      pqueue *pq;
-       
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"Reached Pack Download Limit %d for %s",
               t->xpack->dlimit_max, t->xpack->desc);
        
       /* remove queued users */
-      pq = irlist_get_head(&gdata.mainqueue);
-      while(pq)
-        {
-          if (pq->xpack == t->xpack)
-            {
-               notice_slow(pq->nick,"** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
-               if (t->xpack->dlimit_desc != NULL)
-                 notice_slow(pq->nick,t->xpack->dlimit_desc);
-               mydelete(pq->nick);
-               mydelete(pq->hostname);
-               pq = irlist_delete(&gdata.mainqueue, pq);
-               continue;
-            }
-          pq = irlist_get_next(pq);
-        }
+      queue_pack_limit(&gdata.mainqueue, t->xpack);
+      queue_pack_limit(&gdata.idlequeue, t->xpack);
     }
   
   mydelete(tempstr);
@@ -865,7 +851,6 @@ void t_checkminspeed(transfer * const t) {
      {
        char *tempstr;
        igninfo *ignore;
-       pqueue *pq;
        transfer *tr;
        gnetwork_t *backup;
        
@@ -878,24 +863,8 @@ void t_checkminspeed(transfer * const t) {
              }
          }
        
-       pq = irlist_get_head(&gdata.mainqueue);
-       while(pq)
-         {
-           if (strcasecmp(pq->nick,t->nick) == 0)
-             {
-               backup = gnetwork;
-               gnetwork = &(gdata.networks[pq->net]);
-               notice(pq->nick,"** Removed From Queue: You are being punished for your slowness");
-               mydelete(pq->nick);
-               mydelete(pq->hostname);
-               pq = irlist_delete(&gdata.mainqueue, pq);
-               gnetwork = backup;
-             }
-           else
-             {
-               pq = irlist_get_next(pq);
-             }
-         }
+       queue_punishslowusers(&gdata.mainqueue, t->net, t->nick);
+       queue_punishslowusers(&gdata.idlequeue, t->net, t->nick);
        
        ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
        ignore->regexp = mycalloc(sizeof(regex_t));

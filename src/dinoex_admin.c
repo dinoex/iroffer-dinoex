@@ -488,13 +488,76 @@ int disabled_config(const userinput * const u)
    return 0;
 }
 
+int queue_host_remove(const userinput * const u, irlist_t *list, regex_t *regexp)
+{
+  gnetwork_t *backup;
+  pqueue *pq;
+  char *hostmask;
+  int changed = 0;
+
+  for (pq = irlist_get_head(list); pq;) {
+    hostmask = to_hostmask(pq->nick, pq->hostname);
+    if (regexec(regexp, hostmask, 0, NULL, 0)) {
+      pq = irlist_get_next(pq);
+      mydelete(hostmask);
+      continue;
+    }
+
+    backup = gnetwork;
+    gnetwork = &(gdata.networks[pq->net]);
+    notice_slow(pq->nick,
+                "Removed from the queue for \"%s\"", pq->xpack->desc);
+    gnetwork = backup;
+    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_YELLOW,
+            "Removed from the queue for \"%s\"", pq->xpack->desc);
+    a_respond(u, "Removed from the queue for \"%s\"", pq->xpack->desc);
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
+    pq = irlist_delete(list, pq);
+    changed ++;
+  }
+
+  return changed;
+}
+
+int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick)
+{
+  gnetwork_t *backup;
+  pqueue *pq;
+  int changed = 0;
+
+  for (pq = irlist_get_head(list); pq;) {
+    if (pq->net != network) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+    if (strcasecmp(pq->nick, nick) != 0) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
+
+    backup = gnetwork;
+    gnetwork = &(gdata.networks[pq->net]);
+    notice_slow(pq->nick,
+                "Removed from the queue for \"%s\"", pq->xpack->desc);
+    gnetwork = backup;
+    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_YELLOW,
+            "Removed from the queue for \"%s\"", pq->xpack->desc);
+    a_respond(u, "Removed from the queue for \"%s\"", pq->xpack->desc);
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
+    pq = irlist_delete(list, pq);
+    changed ++;
+  }
+
+  return changed;
+}
+
 void a_remove_pack(const userinput * const u, xdcc *xd, int num)
 {
    char *tmpdesc;
    char *tmpgroup;
-   pqueue *pq;
    transfer *tr;
-   gnetwork_t *backup;
    
    updatecontext();
 
@@ -511,24 +574,8 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
        tr = irlist_get_next(tr);
      }
    
-   pq = irlist_get_head(&gdata.mainqueue);
-   while(pq)
-     {
-       if (pq->xpack == xd)
-         {
-           backup = gnetwork;
-           gnetwork = &(gdata.networks[pq->net]);
-           notice(pq->nick,"** Removed From Queue: Pack removed");
-           gnetwork = backup;
-           mydelete(pq->nick);
-           mydelete(pq->hostname);
-           pq = irlist_delete(&gdata.mainqueue, pq);
-         }
-       else
-         {
-           pq = irlist_get_next(pq);
-         }
-     }
+   queue_pack_remove(&gdata.mainqueue, xd);
+   queue_pack_remove(&gdata.idlequeue, xd);
    
    a_respond(u,"Removed Pack %i [%s]", num, xd->desc);
    
@@ -2807,9 +2854,7 @@ void a_msgnet(const userinput * const u)
 
 void a_bann_hostmask(const userinput * const u, const char *arg)
 {
-   gnetwork_t *backup;
    regex_t *regexp;
-   pqueue *pq;
    transfer *tr;
    char *tempstr;
    char *hostmask;
@@ -2823,29 +2868,9 @@ void a_bann_hostmask(const userinput * const u, const char *arg)
      return;
    }
 
-   backup = gnetwork;
-
    /* XDCC REMOVE */
-   pq = irlist_get_head(&gdata.mainqueue);
-   while (pq) {
-     hostmask = to_hostmask(pq->nick, pq->hostname);
-     if (!regexec(regexp, hostmask, 0, NULL, 0)) {
-       gnetwork = &(gdata.networks[pq->net]);
-       notice_slow(pq->nick,
-               "Removed from the queue for \"%s\"", pq->xpack->desc);
-       gnetwork = backup;
-       ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_YELLOW,
-               "Removed from the queue for \"%s\"", pq->xpack->desc);
-       a_respond(u, "Removed from the queue for \"%s\"", pq->xpack->desc);
-       mydelete(pq->nick);
-       mydelete(pq->hostname);
-       pq = irlist_delete(&gdata.mainqueue, pq);
-       changed ++;
-     } else {
-       pq = irlist_get_next(pq);
-     }
-     mydelete(hostmask);
-   }
+   queue_host_remove(u, &gdata.idlequeue, regexp);
+   changed = queue_host_remove(u, &gdata.mainqueue, regexp);
    if (changed >0)
      write_statefile();
 
@@ -2862,13 +2887,11 @@ void a_bann_hostmask(const userinput * const u, const char *arg)
 
    mydelete(regexp);
    mydelete(tempstr);
-   gnetwork = backup;
 }
 
 void a_bannnick(const userinput * const u)
 {
    gnetwork_t *backup;
-   pqueue *pq;
    transfer *tr;
    char *nick;
    int changed = 0;
@@ -2888,22 +2911,8 @@ void a_bannnick(const userinput * const u)
    gnetwork = &(gdata.networks[net]);
 
    /* XDCC REMOVE */
-   pq = irlist_get_head(&gdata.mainqueue);
-   while (pq) {
-     if ((pq->net == net) && (strcasecmp(pq->nick, nick) == 0)) {
-       notice_slow(pq->nick,
-               "Removed from the queue for \"%s\"", pq->xpack->desc);
-       ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_YELLOW,
-               "Removed from the queue for \"%s\"", pq->xpack->desc);
-       a_respond(u, "Removed from the queue for \"%s\"", pq->xpack->desc);
-       mydelete(pq->nick);
-       mydelete(pq->hostname);
-       pq = irlist_delete(&gdata.mainqueue, pq);
-       changed ++;
-     } else {
-       pq = irlist_get_next(pq);
-     }
-   }
+   queue_nick_remove(u, &gdata.idlequeue, net, nick);
+   changed = queue_nick_remove(u, &gdata.mainqueue, net, nick);
    if (changed >0)
      write_statefile();
 

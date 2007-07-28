@@ -122,6 +122,7 @@ int maxb;
 int overallmaxspeeddaytimestart, overallmaxspeeddaytimeend;
 char overallmaxspeeddaydays;
 int maxtransfersperperson, maxqueueditemsperperson;
+int maxidlequeuedperperson;
 irlist_t downloadhost;
 irlist_t nodownloadhost;
 char *adminpass;
@@ -265,6 +266,7 @@ int ignore;
 
 int slotsmax;
 int queuesize;
+int idlequeuesize;
 
 
 int noautosave;
@@ -295,6 +297,7 @@ irlist_t ignorelist;
 
 irlist_t xdccs;
 irlist_t mainqueue;
+irlist_t idlequeue;
 irlist_t trans;
 irlist_t uploads;
 
