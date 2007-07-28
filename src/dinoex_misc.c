@@ -415,6 +415,7 @@ void notifyqueued_nick(const char *nick)
   pqueue *pq;
   transfer *tr;
   irlist_t list;
+  irlist_t list2;
   remaining_transfer_time *remain;
   remaining_transfer_time *rm;
   unsigned long rtime;
@@ -427,17 +428,13 @@ void notifyqueued_nick(const char *nick)
 
   /* make sortd list of all transfers */
   memset(&list, 0, sizeof(irlist_t));
+  memset(&list2, 0, sizeof(irlist_t));
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
     left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
-    if (irlist_size(&list) == 0) {
-      remain = irlist_add(&list, sizeof(remaining_transfer_time));
-      remain->tr = tr;
-      remain->left = left;
-      continue;
-    }
-    remain = mycalloc(sizeof(remaining_transfer_time));
+    remain = irlist_add(&list2, sizeof(remaining_transfer_time));
     remain->tr = tr;
     remain->left = left;
+    irlist_delete(&list2, remain);
 
     rm = irlist_get_head(&list);
     while(rm) {
