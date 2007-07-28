@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.16:
 ----------------------
 
-160) idlequeuesize
+160) idlequeuesize (inspired by Protected)
   Idle Queue Size, set to 0 for no queue
 
 161) maxidlequeuedperperson

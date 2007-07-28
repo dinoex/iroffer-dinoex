@@ -248,3 +248,6 @@ drBeSt
 Per Nielsen
 	admin commamd "MAXSPEED"
 
+Protected
+	otion "idlequeuesize"
+
