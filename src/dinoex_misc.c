@@ -443,7 +443,7 @@ void notifyqueued_nick(const char *nick)
       rm = irlist_get_next(rm);
     }
     if (rm != NULL) {
-      irlist_insert_before(&list, rm, remain);
+      irlist_insert_before(&list, remain, rm);
     } else {
       irlist_insert_tail(&list, remain);
     }
