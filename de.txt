@@ -1818,3 +1818,4 @@
 1833 "REIQUEUE"
 1834 "Verschiebe Eintrag in der 2. Warteschlange von Position <x> nach <y>"
 1835 "Current Idle Queue:"
+1836 "listen on port %d for %s (%s on %s)"

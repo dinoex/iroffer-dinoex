@@ -3362,6 +3362,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
 {
   int usertrans, userpackok, man;
   int unlimitedhost;
+  int newlisten;
   xdcc *xd;
   transfer *tr;
   
@@ -3370,6 +3371,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   usertrans = 0;
   userpackok = 1;
   unlimitedhost = 0;
+  newlisten = 0;
 
   xd = get_download_pack(nick, hostname, hostmask, pack, &man, "SEND");
   if (xd == NULL)
@@ -3497,6 +3499,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
                         (unsigned long long)tr->xpack->st_size);
            
            mydelete(sendnamestr);
+           newlisten = tr->listenport;
          }
      }
    
@@ -3511,6 +3514,11 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "unlimitedhost found: %s (%s on %s)",
               nick, hostname, gnetwork->name);
+
+   if (newlisten)
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "listen on port %d for %s (%s on %s)",
+              newlisten, nick, hostname, gnetwork->name);
 }
    
 void sendxdccinfo(const char* nick,
@@ -3801,6 +3809,10 @@ void sendaqueue(int type, int pos)
       
       mydelete(sendnamestr);
       
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "listen on port %d for %s (%s on %s)",
+              tr->listenport, pq->nick, pq->hostname, gnetwork->name);
+
       mydelete(pq->nick);
       mydelete(pq->hostname);
       irlist_delete(&gdata.mainqueue, pq);

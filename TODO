@@ -71,6 +71,7 @@ Page last modified: 09/01/04
 
 Short Term Features:
   1026  renumber x to y to position z
+  1077  limit max port number
 
 Long Term Features:
   1008  use text or xml for statefile
