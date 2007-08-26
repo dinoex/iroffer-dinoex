@@ -2358,9 +2358,6 @@ void a_newdir(const userinput * const u)
 
    updatecontext();
 
-   if (disabled_config(u) != 0)
-      return;
-
    if (invalid_dir(u, u->arg1) != 0)
       return;
 
