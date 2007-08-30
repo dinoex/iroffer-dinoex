@@ -1941,11 +1941,13 @@ char* getstatusline(char *str, int len)
          }
        
        i = snprintf(str, len,
-               "Stat: %i/%i Sls, %i/%i Q, %i SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)",
+               "Stat: %i/%i Sls, %i/%i Q, %i/%i I, %i SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
                irlist_size(&gdata.mainqueue),
                gdata.queuesize,
+               irlist_size(&gdata.idlequeue),
+               gdata.idlequeuesize,
                srvq,
                (unsigned long long)(xdccsent/1024),
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
