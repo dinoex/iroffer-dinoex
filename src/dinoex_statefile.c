@@ -144,7 +144,7 @@ static unsigned char *prepare_statefile_string(unsigned char *next, statefile_ta
     return next;
 }
 
-static void write_statefile_queue(ir_boutput_t *bout)
+static void write_statefile_queue(ir_boutput_t *bout, irlist_t *list)
 {
     unsigned char *data;
     unsigned char *next;
@@ -153,7 +153,7 @@ static void write_statefile_queue(ir_boutput_t *bout)
 
     updatecontext();
 
-    pq = irlist_get_head(&gdata.mainqueue);
+    pq = irlist_get_head(list);
 
     while (pq)
       {

@@ -569,7 +569,8 @@ void write_statefile(void)
   write_statefile_ullint(&bout, STATEFILE_TAG_TLIMIT_MONTHLY_USED, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
   write_statefile_time(&bout, STATEFILE_TAG_TLIMIT_MONTHLY_ENDS, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends);
 
-  write_statefile_queue(&bout);
+  write_statefile_queue(&bout, &gdata.mainqueue);
+  write_statefile_queue(&bout, &gdata.idlequeue);
 
   updatecontext();
   {
@@ -1550,7 +1551,10 @@ void read_statefile(void)
             char *text;
             int num;
             
-            pq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
+            if (gdata.idlequeuesize > 0 )
+              pq = irlist_add(&gdata.idlequeue, sizeof(pqueue));
+            else
+              pq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
 
             pq->xpack = NULL;
             pq->nick = NULL;
@@ -1694,6 +1698,13 @@ void read_statefile(void)
               COLOR_NO_COLOR, "  [Found %d Queue%s]",
               irlist_size(&gdata.mainqueue),
               (irlist_size(&gdata.mainqueue) == 1) ? "" : "s");
+    }
+  if ((gdata.debug > 0) || irlist_size(&gdata.idlequeue))
+    {
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
+              COLOR_NO_COLOR, "  [Found %d Queue%s]",
+              irlist_size(&gdata.idlequeue),
+              (irlist_size(&gdata.idlequeue) == 1) ? "" : "s");
     }
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
