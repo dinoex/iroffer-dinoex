@@ -1356,6 +1356,7 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
 
   gdata_print_int(tcprangestart);
+  gdata_print_int(tcprangelimit);
   gdata_print_float(transferminspeed);
   gdata_print_float(transfermaxspeed);
   gdata_print_int(overallmaxspeed);
@@ -2831,7 +2832,13 @@ int ir_bind_listen_socket(int fd, struct sockaddr_in *sa)
       if (gdata.tcprangestart)
         {
           port = gdata.tcprangestart + retry;
-          
+          if (port > gdata.tcprangelimit)
+            {
+              /* give up */
+              retry = max;
+              break;
+            }
+
           if (ir_listen_port_is_in_list(port))
             {
               continue;

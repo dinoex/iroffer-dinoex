@@ -2209,6 +2209,7 @@ void reinit_config_vars(void)
   mydelete(gdata.user_realname);
   mydelete(gdata.user_modes);
   gdata.tcprangestart = 0;
+  gdata.tcprangelimit = 65535;
   irlist_delete_all(&gdata.proxyinfo);
   gdata.usenatip = 0;
   gdata.slotsmax = gdata.queuesize = 0;

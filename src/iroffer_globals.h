@@ -116,6 +116,7 @@ int transferlimits_over;
 char *pidfile;
 irlist_t proxyinfo;
 int tcprangestart;
+int tcprangelimit;
 float transferminspeed, transfermaxspeed;
 int overallmaxspeed, overallmaxspeeddayspeed;
 int maxb;

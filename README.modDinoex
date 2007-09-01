@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.16:
 ----------------------
 
+162) tcprangelimit
+  limit the maximum port number used by the bot.
+
+bugfix: tcprangestart
+  allow 65530 as maximum start port
+
 bugfix: NEWDIR
   allow NEWDIR be used without direct_file_access, same as CHFILE
 

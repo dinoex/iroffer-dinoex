@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.16:
 --------------------
 
+162) tcprangelimit
+  Begrenze die Portnummer auf einen festen Wert.
+
+bugfix: tcprangestart
+  allow 65530 as maximum start port
+
 bugfix: NEWDIR
   erlaube NEWDIR auch ohne direct_file_access, gleiche Stufe wie CHFILE
 

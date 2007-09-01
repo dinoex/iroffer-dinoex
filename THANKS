@@ -209,6 +209,7 @@ dondieschotte
 	option "xdcclist_by_privmsg"
 	option "autoadd_delay"
 	report "tcprangestart" out-of-range
+	option "tcprangelimit"
 
 dsd
 	admin command "autoadd"
