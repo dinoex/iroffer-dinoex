@@ -81,6 +81,7 @@ Long Term Features:
   1043  vhosts for each network
   1068  restore tty console on fatal error
   1078  batchrenumber
+  1083  temporary uploadhost
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
