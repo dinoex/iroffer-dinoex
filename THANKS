@@ -208,6 +208,7 @@ dondieschotte
 	admin command  "md5 n"
 	option "xdcclist_by_privmsg"
 	option "autoadd_delay"
+	report "tcprangestart" out-of-range
 
 dsd
 	admin command "autoadd"
