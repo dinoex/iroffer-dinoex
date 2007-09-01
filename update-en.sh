@@ -9,6 +9,7 @@ copy_if_differ() {
 	fi
 }
 
+LANG="C"
 awk -f ./admin.awk src/iroffer_admin.c > help-admin-en.neu
 copy_if_differ help-admin-en.txt help-admin-en.neu
 lang="de"

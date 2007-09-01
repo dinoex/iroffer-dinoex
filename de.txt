@@ -1819,3 +1819,5 @@
 1835 "Current Idle Queue:"
 1836 "listen on port %d for %s (%s on %s)"
 1837 "Stat: %i/%i Sls, %i/%i Q, %i/%i I, %i SrQ (Bdw: %"
+1838 "tcprangelimit"
+1839 "ignored %s '%s' because it contains spaces"

@@ -253,3 +253,6 @@ Per Nielsen
 Protected
 	otion "idlequeuesize"
 
+Radicant
+	warn if spaces found in parameter
+

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.16:
 ----------------------
 
+bugfix: hostmasks, adminpasswd
+  warn if spaces found in parameter
+
 162) tcprangelimit
   limit the maximum port number used by the bot.
 

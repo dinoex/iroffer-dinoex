@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.16:
 --------------------
 
+bugfix: hostmasks, adminpasswd
+  Warne wenn die Parameter Leerzeichen enthalten.
+
 162) tcprangelimit
   Begrenze die Portnummer auf einen festen Wert.
 

@@ -380,6 +380,12 @@ int set_config_string(const char *key, char *text)
   }
   switch (config_parse_string[i].flags) {
   case 4:
+     if (strchr(text, ' ') != NULL) {
+       outerror(OUTERROR_TYPE_WARN,
+                "ignored %s '%s' because it contains spaces",
+                key, text);
+       return 0;
+     }
      checkadminpass2(text);
   case 1:
      convert_to_unix_slash(text);
@@ -470,6 +476,12 @@ int set_config_list(const char *key, char *text)
      }
      /* FALLTHROUGH */
   case 2:
+     if (strchr(text, ' ') != NULL) {
+       outerror(OUTERROR_TYPE_WARN,
+                "ignored %s '%s' because it contains spaces",
+                key, text);
+       return 0;
+     }
      caps(text);
      mask = hostmasktoregex(text);
      ah = irlist_add(config_parse_list[i].list, sizeof(regex_t));

@@ -80,6 +80,7 @@ Long Term Features:
   1042  hentai flag
   1043  vhosts for each network
   1068  restore tty console on fatal error
+  1078  batchrenumber
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -125,4 +126,6 @@ Not going to happen anytime soon:
   1073  sannounce per channel/server
   1074  annew, dont add same files in different dirs
   1075  execue programs/shell
+  1080  need_voice per group
+  1081  virtuelle bots
 
