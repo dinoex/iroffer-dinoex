@@ -49,7 +49,7 @@
 49 "channel style [netz]"
 50 "Sende <style> (full|minimal|summary) XDCC LIST an <channel>"
 51 "QSEND"
-52 "Starte einen neue Transfer für das nächste Paket in der Warteschlange"
+52 "Starte einen neuen Transfer für das nächste Paket in der Warteschlange"
 53 "SLOTSMAX"
 54 "[slots]"
 55 "Ändere zeitweise den Wert von 'slotsmax' auf <slots>"
