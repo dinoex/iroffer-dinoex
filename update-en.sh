@@ -33,7 +33,7 @@ then
 		fi
 		echo "s°${en}°${text}°"
 	done |
-	sed -e 's|\\|\\\\|g' -e 's|\*|\\*]|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
+	sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
 	echo "done"
 fi
 sed -f "${lang}.sed" src/iroffer_admin.c |
