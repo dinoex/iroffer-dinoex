@@ -160,6 +160,7 @@ Road
 Skyw4lker
 	admin command "REMOVE n m"
 	admin command "CANNOUCNE channel n msg" 
+	admin command "RENUMBER" with 3 args
 
 Cork
 	option "max_find"
@@ -252,6 +253,7 @@ Per Nielsen
 
 Protected
 	otion "idlequeuesize"
+	admin command "RENUMBER" with 3 args
 
 Radicant
 	warn if spaces found in parameter

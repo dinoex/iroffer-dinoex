@@ -70,7 +70,7 @@
 70 "REMOVEGROUP"
 71 "Remove every pack found in <group>"
 72 "RENUMBER"
-73 "Moves pack <x> to position <y>"
+73 "Moves packs <x> to <y> to position <z>"
 74 "SORT"
 75 "Sort all packs by fields"
 76 "ADD"
@@ -1821,3 +1821,4 @@
 1837 "Stat: %i/%i Sls, %i/%i Q, %i/%i I, %i SrQ (Bdw: %"
 1838 "tcprangelimit"
 1839 "ignored %s '%s' because it contains spaces"
+1840 "x [y] z"

@@ -1153,6 +1153,78 @@ void a_removegroup(const userinput * const u)
      }
 }
 
+void a_renumber1(const userinput * const u, int oldp, int newp)
+{
+  xdcc *xdo;
+  xdcc *xdn;
+
+  a_respond(u, "** Moved pack %i to %i", oldp, newp);
+  /* get pack we are renumbering */
+  xdo = irlist_get_nth(&gdata.xdccs, oldp-1);
+  irlist_remove(&gdata.xdccs, xdo);
+  if (newp == 1) {
+    irlist_insert_head(&gdata.xdccs, xdo);
+  } else { 
+    xdn = irlist_get_nth(&gdata.xdccs, newp-2);
+    irlist_insert_after(&gdata.xdccs, xdo, xdn);
+  }
+  if (xdo->group != NULL)
+    reorder_groupdesc(xdo->group);
+}
+
+void a_renumber3(const userinput * const u)
+{
+  int oldp = 0;
+  int endp = 0;
+  int newp = 0;
+ 
+  updatecontext();
+ 
+  if (u->arg1) oldp = atoi(u->arg1);
+  if (invalid_pack(u, oldp) != 0)
+    return;
+
+  if (u->arg3) {
+    if (u->arg2) endp = atoi(u->arg2);
+    if (invalid_pack(u, endp) != 0)
+      return;
+
+    if (endp < oldp) {
+      a_respond(u, "Invalid pack number");
+      return;
+    }
+
+    if (u->arg3) newp = atoi(u->arg3);
+  } else {
+    endp = oldp;
+    if (u->arg2) newp = atoi(u->arg2);
+  }
+  if (invalid_pack(u, newp) != 0)
+    return;
+ 
+  if ((newp >= oldp) && (newp <= endp)) {
+    a_respond(u, "Invalid pack number");
+    return;
+  }
+
+  while (oldp <= endp) {
+    if (invalid_pack(u, newp) != 0)
+      break;
+
+    a_renumber1(u, oldp, newp);
+
+    if (oldp > newp) {
+      oldp++;
+      newp++;
+    } else {
+      endp--;
+    }
+  }
+ 
+  write_statefile();
+  xdccsavetext();
+}
+
 static int a_sort_null(const char *str1, const char *str2)
 {
   if ((str1 == NULL) && (str2 == NULL))

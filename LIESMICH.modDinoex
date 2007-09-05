@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.16:
 --------------------
 
+163) RENUMBER
+  Neues Admin Kommando:
+  RENUMBER <x> <y> <z>             Verschiebe Pakete <x> bis <y> an Position <z>
+
 bugfix: hostmasks, adminpasswd
   Warne wenn die Parameter Leerzeichen enthalten.
 

@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.16:
 ----------------------
 
+163) RENUMBER (inspired by Skyw4lker, Protected)
+  new admin command:
+  RENUMBER <x> <y> <z>            Moves packs <x> to <y> to position <z>
+
 bugfix: hostmasks, adminpasswd
   warn if spaces found in parameter
 

@@ -76,7 +76,6 @@ static void u_bannhost(const userinput * const u);
 static void u_nosave(const userinput * const u);
 static void u_nosend(const userinput * const u);
 static void u_nolist(const userinput * const u);
-static void u_renumber(const userinput * const u);
 static void u_msgread(const userinput * const u);
 static void u_msgdel(const userinput * const u);
 static void u_memstat(const userinput * const u);
@@ -145,7 +144,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,4,method_allow_all,a_remove,   "REMOVE","n [m]","Removes pack <n> or <n> to <m>"},
 {3,4,method_allow_all,u_removedir,"REMOVEDIR","dir","Remove every pack found in <dir>"},
 {3,4,method_allow_all,a_removegroup, "REMOVEGROUP","group","Remove every pack found in <group>"},
-{3,3,method_allow_all,u_renumber, "RENUMBER","x y","Moves pack <x> to position <y>"},
+{3,3,method_allow_all,a_renumber3, "RENUMBER","x [y] z","Moves packs <x> to <y> to position <z>"},
 {3,3,method_allow_all,a_sort,     "SORT","[field] [field]","Sort all packs by fields"},
 {3,3,method_allow_all,a_add,      "ADD","filename","Add new pack with <filename>"},
 {3,3,method_allow_all,u_adddir,   "ADDDIR","dir","Add every file in <dir>"},
@@ -3106,50 +3105,6 @@ static void u_nolist(const userinput * const u) {
    u_respond(u,"** XDCC List and PLIST have been disabled for the next %i minute%s",num,num!=1?"s":"");
    
    }
-
-
-static void u_renumber(const userinput * const u)
-{
-  int oldp = 0, newp = 0;
-  xdcc *xdo, *xdn;
-  
-  updatecontext();
-  
-  if (u->arg1) oldp = atoi(u->arg1);
-  if (u->arg2) newp = atoi(u->arg2);
-  
-  if ((oldp < 1) ||
-      (oldp > irlist_size(&gdata.xdccs)) ||
-      (newp < 1) ||
-      (newp > irlist_size(&gdata.xdccs)) ||
-      (newp == oldp))
-    {
-      u_respond(u,"Invalid pack number");
-      return;
-    }
-  
-  u_respond(u,"** Moved pack %i to %i",oldp,newp);
-  
-  /* get pack we are renumbering */
-  xdo = irlist_get_nth(&gdata.xdccs, oldp-1);
-  irlist_remove(&gdata.xdccs, xdo);
-
-  if (newp == 1)
-    {
-      irlist_insert_head(&gdata.xdccs, xdo);
-    }
-  else
-    {
-      xdn = irlist_get_nth(&gdata.xdccs, newp-2);
-      irlist_insert_after(&gdata.xdccs, xdo, xdn);
-    }
-  
-  if (xdo->group != NULL)
-    reorder_groupdesc(xdo->group);
-  
-  write_statefile();
-  xdccsavetext();
-}
 
 
 static void u_msgread(const userinput * const u)

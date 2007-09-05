@@ -70,7 +70,7 @@
 70 "REMOVEGROUP"
 71 "Entfernt jedes Paket aus der Gruppe <gruppe>"
 72 "RENUMBER"
-73 "Verschiebt Paket <x> an Position <y>"
+73 "Verschiebe Pakete <x> bis <y> an Position <z>"
 74 "SORT"
 75 "Sortiere alle Pakete nach den Feldern"
 76 "ADD"
@@ -1821,3 +1821,4 @@
 1837 "Stat: %i/%i Sls, %i/%i Q, %i/%i I, %i SrQ (Bdw: %"
 1838 "tcprangelimit"
 1839 "ignored %s '%s' because it contains spaces"
+1840 "x [y] z"
