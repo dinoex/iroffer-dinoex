@@ -1536,7 +1536,7 @@ static void mainloop (void) {
                  (irlist_size(&(gnetwork->serverq_normal)) >= 10) ||
                  (irlist_size(&(gnetwork->serverq_slow)) >= 50))
                {
-                 ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_NO_COLOR,
+                 ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D|OUT_L, COLOR_NO_COLOR,
                          "notifications skipped on %s, server queue is rather large",
                          gnetwork->name);
                }
