@@ -167,7 +167,7 @@
 167 "Sendet eine Mitteilung an alle Nutzer, die gerade in der Warteschlange stehen"
 168 "IGNORE"
 169 "x hostmask"
-170 "Ignoriere hostmask (nick!user@host) für <x> Minuten, wildcards (?*) sind erlaubt"
+170 "Ignoriere hostmask (nick!user@host) für <x> Minuten, Jokerzeichen (?*) sind erlaubt"
 171 "UNIGNORE"
 172 "hostmask"
 173 "Löschen des Ignores für hostmask"
