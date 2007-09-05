@@ -524,7 +524,7 @@ updatecontext();
 
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
             "Notifying Queued status to %s",
-            nick);
+            pq->nick);
     notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
                 (long)(gdata.curtime-pq->queuedtime)/60/60,
                 (long)((gdata.curtime-pq->queuedtime)/60)%60,
