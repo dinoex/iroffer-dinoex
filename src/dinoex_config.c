@@ -131,6 +131,7 @@ static config_string_typ config_parse_string[] = {
 {"admin_job_file",          &gdata.admin_job_file,          0 },
 {"adminpass",               &gdata.adminpass,               4 },
 {"autoadd_group",           &gdata.autoadd_group,           0 },
+{"autoadd_sort",            &gdata.autoadd_sort,            0 },
 {"autoaddann",              &gdata.autoaddann,              0 },
 {"creditline",              &gdata.creditline,              0 },
 {"enable_nick",             &gdata.enable_nick,             0 },

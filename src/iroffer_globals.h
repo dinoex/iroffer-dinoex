@@ -167,6 +167,7 @@ char *send_statefile;
 char *geoipdatabase;
 char *respondtochannellistmsg;
 char *xdccremovefile;
+char *autoadd_sort;
 long nomd5_start;
 int need_voice;
 int need_level;

@@ -223,6 +223,7 @@ fiberOptiC
 chibi
 	admin commamd "newdir"
 	report SERVQC bug
+	option "autoadd_sort"
 
 vegetto
 	report crash on bad config
@@ -257,4 +258,7 @@ Protected
 
 Radicant
 	warn if spaces found in parameter
+
+unlogisch
+	option "autoadd_sort"
 

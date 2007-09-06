@@ -2542,6 +2542,7 @@ static void free_config(void)
   mydelete(gdata.autoadd_group);
   mydelete(gdata.send_statefile);
   mydelete(gdata.xdccremovefile);
+  mydelete(gdata.autoadd_sort);
   mydelete(gdata.creditline);
   mydelete(gdata.headline);
   mydelete(gdata.nickserv_pass);

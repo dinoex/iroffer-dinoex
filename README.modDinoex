@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.16:
 ----------------------
 
+164) autoadd_sort (inspired by chibi, unlogisch)
+  If defined, all added packs will be inserted in the giving order.
+  The existing packs must already be sorted in the same way.
+  You can define mutiple fields to sort.
+
 163) RENUMBER (inspired by Skyw4lker, Protected)
   new admin command:
   RENUMBER <x> <y> <z>            Moves packs <x> to <y> to position <z>

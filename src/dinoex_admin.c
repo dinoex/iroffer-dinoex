@@ -1306,13 +1306,53 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
   return rc;
 }
 
+static void a_sort1(const userinput * const u, xdcc *xdo, const char *k)
+{
+  xdcc *xdn;
+  char *tmpdesc;
+  int n;
+
+  n = 0;
+  xdn = irlist_get_head(&gdata.xdccs);
+  while(xdn)
+    {
+      n++;
+      if (a_sort_cmp(k, xdo, xdn) < 0)
+        break;
+
+      xdn = irlist_get_next(xdn);
+    }
+  if (xdn != NULL)
+    {
+      irlist_insert_before(&gdata.xdccs, xdo, xdn);
+    }
+  else 
+    {
+      if (n == 0)
+        irlist_insert_head(&gdata.xdccs, xdo);
+      else
+        irlist_insert_tail(&gdata.xdccs, xdo);
+    }
+
+  if (xdo->group != NULL)
+    {
+      if (xdo->group_desc != NULL)
+        {
+           tmpdesc = xdo->group_desc;
+           xdo->group_desc = NULL;
+           reorder_new_groupdesc(xdo->group, tmpdesc);
+           mydelete(tmpdesc);
+        }
+      else
+        reorder_groupdesc(xdo->group);
+    }
+}
+
 void a_sort(const userinput * const u)
 {
   irlist_t old_list;
-  xdcc *xdo, *xdn;
-  char *tmpdesc;
-  int n;
-  const char*k = "filename";
+  xdcc *xdo;
+  const char *k = "filename";
 
   updatecontext();
  
@@ -1335,40 +1375,7 @@ void a_sort(const userinput * const u)
       xdo = irlist_get_head(&old_list);
       irlist_remove(&old_list, xdo);
 
-      n = 0;
-      xdn = irlist_get_head(&gdata.xdccs);
-      while(xdn)
-        {
-          n++;
-          if (a_sort_cmp(k, xdo, xdn) < 0)
-            break;
-
-          xdn = irlist_get_next(xdn);
-        }
-      if (xdn != NULL)
-        {
-          irlist_insert_before(&gdata.xdccs, xdo, xdn);
-        }
-      else 
-        {
-          if (n == 0)
-            irlist_insert_head(&gdata.xdccs, xdo);
-          else
-            irlist_insert_tail(&gdata.xdccs, xdo);
-        }
-
-      if (xdo->group != NULL)
-        {
-          if (xdo->group_desc != NULL)
-            {
-               tmpdesc = xdo->group_desc;
-               xdo->group_desc = NULL;
-               reorder_new_groupdesc(xdo->group, tmpdesc);
-               mydelete(tmpdesc);
-            }
-          else
-            reorder_groupdesc(xdo->group);
-        }
+      a_sort1(u, xdo, k);
     }
 
   write_statefile();
@@ -1421,6 +1428,7 @@ void a_add(const userinput * const u)
    char *file;
    char *a1;
    char *a2;
+   int n;
    
    updatecontext();
 
@@ -1540,14 +1548,21 @@ void a_add(const userinput * const u)
    xd->file_fd = FD_UNUSED;
    xd->file_fd_count = 0;
    xd->file_fd_location = 0;
-   
+
+   n = irlist_size(&gdata.xdccs);
+   if (gdata.autoadd_sort != NULL) {
+     irlist_remove(&gdata.xdccs, xd);
+     a_sort1(u, xd, gdata.autoadd_sort);
+     n = number_of_pack(xd);
+   }
+
    a_respond(u, "ADD PACK: [Pack: %i] [File: %s] Use CHDESC to change description",
-             irlist_size(&gdata.xdccs),xd->file);
+             n, xd->file);
    
    if ((gdata.auto_default_group) && (group != NULL)) {
          xd->group = mystrdup(group);
          a_respond(u,"GROUP: [Pack: %i] New: %s",
-                   irlist_size(&gdata.xdccs), xd->group);
+                   n, xd->group);
       }
    
    write_statefile();
@@ -1559,7 +1574,7 @@ void a_add(const userinput * const u)
       
       tempstr = mycalloc (maxtextlength);
       ui = mycalloc(sizeof(userinput));
-      snprintf(tempstr, maxtextlength - 2, "A A A A A sannounce %i", irlist_size(&gdata.xdccs));
+      snprintf(tempstr, maxtextlength - 2, "A A A A A sannounce %i", n);
       u_fillwith_msg(ui,NULL,tempstr);
       ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
       ui->net = u->net;
@@ -1576,7 +1591,7 @@ void a_add(const userinput * const u)
       
       tempstr = mycalloc (maxtextlength);
       ui = mycalloc(sizeof(userinput));
-      snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i %s",irlist_size(&gdata.xdccs),gdata.autoaddann);
+      snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i %s", n, gdata.autoaddann);
       u_fillwith_msg(ui,NULL,tempstr);
       ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
       ui->net = u->net;

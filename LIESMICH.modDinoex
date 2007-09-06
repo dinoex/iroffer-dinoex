@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.16:
 --------------------
 
+164) autoadd_sort
+  Wenn konfiguriert, werden alle neuen Pakete sortiert einggefügt.
+  Die existierende Pakete müssen bereits passend sortiert sein.
+  Die Reihenfolge kann durch mehrerer Argumente fetgelegt werden.
+
 163) RENUMBER
   Neues Admin Kommando:
   RENUMBER <x> <y> <z>             Verschiebe Pakete <x> bis <y> an Position <z>
@@ -142,14 +147,14 @@ bugfix: DCC upload
 144) SORT (inspired by TheDeath, dondieschotte, Benni-chan)
   Neue Admin Kommandos:
   SORT <feld> <feld> ...           Sortiere alle Pakete nach den Feldern
-  SORT NAME                        Sortiere alle Pakete nach der Beschreibung
-  SORT DESC                        Sortiere alle Pakete nach dem Dateinamen
+  SORT NAME                        Sortiere alle Pakete nach der Dateinamen
+  SORT DESC                        Sortiere alle Pakete nach dem Beschreibung
   SORT GROUP                       Sortiere alle Pakete nach der Gruppe
   SORT PATH                        Sortiere alle Pakete nach dem Verzeichnis
   SORT SIZE                        Sortiere alle Pakete nach der Größe in Bytes
   SORT TIME                        Sortiere alle Pakete nach dem Datum der Datei
-  SORT -NAME                       Sortiere alle Pakete rückwärts nach der Beschreibung
-  SORT -DESC                       Sortiere alle Pakete rückwärts nach dem Dateinamen
+  SORT -NAME                       Sortiere alle Pakete rückwärts nach der Dateinamen
+  SORT -DESC                       Sortiere alle Pakete rückwärts nach dem Beschreibung
   SORT -GROUP                      Sortiere alle Pakete rückwärts nach der Gruppe
   SORT -PATH                       Sortiere alle Pakete rückwärts nach dem Verzeichnis
   SORT -SIZE                       Sortiere alle Pakete rückwärts nach der Größe in Bytes
