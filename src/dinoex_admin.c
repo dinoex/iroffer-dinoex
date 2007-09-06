@@ -1306,7 +1306,7 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
   return rc;
 }
 
-static void a_sort1(const userinput * const u, xdcc *xdo, const char *k)
+static void a_sort_insert(xdcc *xdo, const char *k)
 {
   xdcc *xdn;
   char *tmpdesc;
@@ -1375,7 +1375,7 @@ void a_sort(const userinput * const u)
       xdo = irlist_get_head(&old_list);
       irlist_remove(&old_list, xdo);
 
-      a_sort1(u, xdo, k);
+      a_sort_insert(xdo, k);
     }
 
   write_statefile();
@@ -1552,7 +1552,7 @@ void a_add(const userinput * const u)
    n = irlist_size(&gdata.xdccs);
    if (gdata.autoadd_sort != NULL) {
      irlist_remove(&gdata.xdccs, xd);
-     a_sort1(u, xd, gdata.autoadd_sort);
+     a_sort_insert(xd, gdata.autoadd_sort);
      n = number_of_pack(xd);
    }
 
