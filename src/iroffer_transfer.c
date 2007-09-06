@@ -152,7 +152,10 @@ void t_establishcon (transfer * const t) {
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," %i",tempc);
 
    getsockopt(t->clientsocket, SOL_SOCKET, 0x1003, &tempc, &tempi);
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_YELLOW," %i\n",tempc);
+   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_YELLOW," %i\n", tempc);
+
+   tempc = 0x8; /* IPTOS_THROUGHPUT */
+   setsockopt(t->clientsocket, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
 #endif
    
 #if !defined(CANT_SET_TOS)

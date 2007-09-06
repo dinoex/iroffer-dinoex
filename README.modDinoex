@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.16:
 ----------------------
 
+bugfix: set TOS on BSD
+
 164) autoadd_sort (inspired by chibi, unlogisch)
   If defined, all added packs will be inserted in the giving order.
   The existing packs must already be sorted in the same way.

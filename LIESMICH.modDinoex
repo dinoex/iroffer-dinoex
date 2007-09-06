@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.16:
 --------------------
 
+bugfix: aktiviere TOS on BSD
+
 164) autoadd_sort
   Wenn konfiguriert, werden alle neuen Pakete sortiert einggefügt.
   Die existierende Pakete müssen bereits passend sortiert sein.
