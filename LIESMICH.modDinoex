@@ -27,7 +27,7 @@ bugfix: NEWDIR
   erlaube NEWDIR auch ohne direct_file_access, gleiche Stufe wie CHFILE
 
 161) XDCC QUEUE
-  Berrechne die Wartezeit genauer.
+  Berechne die Wartezeit genauer.
 
 160) Idle Queue
 
