@@ -276,7 +276,7 @@
 276 "\2**\2 Zum Anfordern einer Datei schreibe \"/MSG %s XDCC SEND x\" \2**\2"
 277 "\2**\2 Zum Anzeigen der Daten schreibe \"/MSG %s XDCC INFO x\" \2**\2"
 278 "\2**\2 Zum Anzeigen einer Gruppe schreibe \"/MSG %s XDCC LIST gruppe\" \2**\2"
-279 "\2**\2 Für ein Liste aller Gruppen schreibe: \"/MSG %s XDCC LIST\" \2**\2"
+279 "\2**\2 Für eine Liste aller Gruppen schreibe: \"/MSG %s XDCC LIST\" \2**\2"
 280 "Total Offered: %1.1f MB  Total Transferred: %1.2f %cB"
 281 "group: %s %s"
 282 "Leider nichts gefunden, versuche mal XDCC LIST"
