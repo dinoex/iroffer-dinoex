@@ -2285,6 +2285,9 @@ void check_idle_queue(void)
   int usertrans;
 
   updatecontext();
+  if (gdata.exiting)
+    return;
+
   if (gdata.holdqueue)
     return;
 
@@ -2332,6 +2335,11 @@ void check_idle_queue(void)
   tempq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
   *tempq = *pq;
   irlist_delete(&gdata.idlequeue, pq);
+
+  if (irlist_size(&gdata.mainqueue) &&
+      (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax))) {
+    sendaqueue(0, 0);
+  }
 }
 
 #ifdef DEBUG

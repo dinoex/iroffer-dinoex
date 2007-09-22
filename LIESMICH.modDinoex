@@ -1,5 +1,11 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+Ab Version mod 2.17:
+--------------------
+
+bugfix: Idle Queue
+  notify mainqueue if request is added
+
 Ab Version mod 2.16:
 --------------------
 
