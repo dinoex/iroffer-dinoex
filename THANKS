@@ -73,6 +73,7 @@ TheDeath
 	admin command "sort name/group/desc"
 	admin command "sort -name/-group/-desc"
 	admin command "XDTRIGGER"
+	report notify bug
 
 [GFE]Lunix
 	alias xdcc list group <group>
