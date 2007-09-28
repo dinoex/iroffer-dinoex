@@ -8,7 +8,9 @@ bugfix: Notify message on Console/Chat (reported by TheDeath)
   versions affected: 2.16
 
 bugfix: Idle Queue
+  versions affected: 2.16
   notify mainqueue if request is added
+  choose user with no transfer from idle queue
 
 With Version mod 2.16:
 ----------------------

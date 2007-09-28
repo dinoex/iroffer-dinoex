@@ -2281,6 +2281,7 @@ void check_idle_queue(void)
   pqueue *tempq;
   transfer *tr;
   int usertrans;
+  int pass;
 
   updatecontext();
   if (gdata.exiting)
@@ -2298,34 +2299,39 @@ void check_idle_queue(void)
   if (irlist_size(&gdata.mainqueue) >= gdata.queuesize)
     return;
 
-  for (pq = irlist_get_head(&gdata.idlequeue); pq; pq = irlist_get_next(pq)) {
-    usertrans=0;
-    for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
-      if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
-        usertrans++;
+  for (pass = 0; pass < 2; pass++) {
+    for (pq = irlist_get_head(&gdata.idlequeue); pq; pq = irlist_get_next(pq)) {
+      if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
+        continue;
+
+      /* timeout for restart must be less then Transfer Timeout 180s */
+      if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
+        continue;
+
+      usertrans=0;
+      for (mq = irlist_get_head(&gdata.mainqueue); mq; mq = irlist_get_next(mq)) {
+        if ((!strcmp(mq->hostname, pq->hostname)) || (!strcasecmp(mq->nick, pq->nick))) {
+          usertrans++;
+        }
       }
-    }
-    if (usertrans >= gdata.maxtransfersperperson)
-      continue;
 
-    if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
-      continue;
+      if (usertrans >= gdata.maxqueueditemsperperson)
+        continue;
 
-    /* timeout for restart must be less then Transfer Timeout 180s */
-    if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
-      continue;
+      if (pass == 0)
+        continue;
 
-    usertrans=0;
-    for (mq = irlist_get_head(&gdata.mainqueue); mq; mq = irlist_get_next(mq)) {
-      if ((!strcmp(mq->hostname, pq->hostname)) || (!strcasecmp(mq->nick, pq->nick))) {
-        usertrans++;
+      usertrans=0;
+      for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+        if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
+          usertrans++;
+        }
       }
+      if (usertrans >= gdata.maxtransfersperperson)
+        continue;
+
+      break; /* found the person that will get the send */
     }
-
-    if (usertrans >= gdata.maxqueueditemsperperson)
-      continue;
-
-    break; /* found the person that will get the send */
   }
   if (pq == NULL)
     return;

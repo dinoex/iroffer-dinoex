@@ -8,7 +8,10 @@ bugfix: Notify message auf Console/Chat
   Der Nick wird jetzt richtig ausgegeben.
 
 bugfix: Idle Queue
-  notify mainqueue if request is added
+  versions affected: 2.16
+  Wenn ein Request von der Idle in die MainQ fällt,
+  start gegebenfalls den nächsten Transfer.
+  Bevorzuge User ohne Transfer
 
 Ab Version mod 2.16:
 --------------------
