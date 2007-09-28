@@ -122,7 +122,6 @@ Not going to happen anytime soon:
   1061  sort xxx vor announce
   1063  keep deleted files
   1069  multithreading
-  1070  balanced queue option
   1073  sannounce per channel/server
   1074  annew, dont add same files in different dirs
   1075  execue programs/shell

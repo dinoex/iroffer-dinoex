@@ -2642,7 +2642,7 @@ static void u_rehash(const userinput * const u) {
            irlist_size(&gdata.mainqueue) &&
            (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
          {
-           sendaqueue(0, 0);
+           sendaqueue(0, 0, NULL);
          }
      }
    
@@ -3312,7 +3312,7 @@ static void u_qsend(const userinput * const u)
     }
   
   if (u->arg1) num = atoi(u->arg1);
-  sendaqueue(2, num);
+  sendaqueue(2, num, NULL);
   return;
 }
 

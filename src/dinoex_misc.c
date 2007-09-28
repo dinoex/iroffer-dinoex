@@ -2342,7 +2342,7 @@ void check_idle_queue(void)
 
   if (irlist_size(&gdata.mainqueue) &&
       (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax))) {
-    sendaqueue(0, 0);
+    sendaqueue(0, 0, NULL);
   }
 }
 

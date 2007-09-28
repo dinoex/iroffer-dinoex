@@ -3241,7 +3241,7 @@ void a_holdqueue(const userinput * const u)
            irlist_size(&gdata.mainqueue) &&
            (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
          {
-           sendaqueue(0, 0);
+           sendaqueue(0, 0, NULL);
          }
      }
 }
@@ -3317,7 +3317,7 @@ void a_queue(const userinput * const u)
        irlist_size(&gdata.mainqueue) &&
        (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
      {
-       sendaqueue(0, 0);
+       sendaqueue(0, 0, NULL);
      }
 }
 
@@ -3392,7 +3392,7 @@ void a_iqueue(const userinput * const u)
        irlist_size(&gdata.idlequeue) &&
        (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
      {
-       sendaqueue(0, 0);
+       sendaqueue(0, 0, NULL);
      }
 }
 

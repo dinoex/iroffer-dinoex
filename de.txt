@@ -1823,3 +1823,4 @@
 1839 "ignored %s '%s' because it contains spaces"
 1840 "x [y] z"
 1841 "autoadd_sort"
+1842 "balanced_queue"

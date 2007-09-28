@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.17:
 ----------------------
 
+195: balanced_queue	 (inspired by Protected)
+  when a user is done using a slot, the next file retrieved from the
+  queue would NOT be a file queued by the same user.
+  This helps to distribute the bandwidth better in bots with few slots.
+
 bugfix: Notify message on Console/Chat (reported by TheDeath)
   report Nick in Notify message on Console/Chat
   versions affected: 2.16

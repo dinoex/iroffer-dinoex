@@ -256,6 +256,7 @@ Per Nielsen
 Protected
 	otion "idlequeuesize"
 	admin command "RENUMBER" with 3 args
+	option "balanced_queue"
 
 Radicant
 	warn if spaces found in parameter

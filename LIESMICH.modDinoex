@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.17:
 --------------------
 
+195: balanced_queue
+  Wenn ein User einen Transfer beendet, so wird der nächste Transfer
+  von einem anderen User in der Warteschlange bevorzugt. Damit wird
+  die vorhandene Bandbreite gelichmäiger verteilt.
+
 bugfix: Notify message auf Console/Chat
   versions affected: 2.16
   Der Nick wird jetzt richtig ausgegeben.

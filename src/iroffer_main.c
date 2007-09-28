@@ -1054,7 +1054,9 @@ static void mainloop (void) {
           /*----- look for finished transfers ----- */
           if (tr->tr_status == TRANSFER_STATUS_DONE)
             {
-              mydelete(tr->nick);
+              char *trnick;
+
+              trnick = tr->nick;
               mydelete(tr->caps_nick);
               mydelete(tr->hostname);
               tr = irlist_delete(&gdata.trans, tr);
@@ -1063,8 +1065,9 @@ static void mainloop (void) {
                   irlist_size(&gdata.mainqueue) &&
                   (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
                 {
-                  sendaqueue(0, 0);
+                  sendaqueue(0, 0, trnick);
                 }
+              mydelete(trnick);
             }
           else
             {
@@ -1515,7 +1518,7 @@ static void mainloop (void) {
              irlist_size(&gdata.mainqueue) &&
              (irlist_size(&gdata.trans) < MAXTRANS))
            {
-             sendaqueue(1, 0);
+             sendaqueue(1, 0, NULL);
            }
          write_statefile();
          xdccsavetext();
@@ -2115,7 +2118,7 @@ static void parseline(char *line) {
                       irlist_size(&gdata.mainqueue) &&
                       (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
                     {
-                      sendaqueue(0, 0);
+                      sendaqueue(0, 0, NULL);
                     }
                 }
             }
@@ -3677,7 +3680,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
    return tempstr;
    }
 
-void sendaqueue(int type, int pos)
+void sendaqueue(int type, int pos, char *lastnick)
 {
   int usertrans;
   pqueue *pq;
@@ -3691,6 +3694,9 @@ void sendaqueue(int type, int pos)
   if (gdata.holdqueue)
      return;
   
+  if (!gdata.balanced_queue)
+     lastnick = NULL;
+
   if (gdata.restrictlist && (has_joined_channels(0) == 0))
      return;
   
@@ -3711,6 +3717,13 @@ void sendaqueue(int type, int pos)
         pq = irlist_get_nth(&gdata.mainqueue, pos - 1);
       } else {
         for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_get_next(pq)) {
+          if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
+            continue;
+
+          /* timeout for restart must be less then Transfer Timeout 180s */
+          if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
+            continue;
+
           usertrans=0;
           for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
             if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
@@ -3722,12 +3735,11 @@ void sendaqueue(int type, int pos)
           if (usertrans >= gdata.maxtransfersperperson)
             continue;
 
-          if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
-            continue;
-
-          /* timeout for restart must be less then Transfer Timeout 180s */
-          if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
-            continue;
+          /* skip last trasfering user */
+          if (lastnick != NULL) {
+            if (!strcasecmp(pq->nick, lastnick))
+              continue;
+          }
 
           /* found the person that will get the send */
           break;
@@ -3736,6 +3748,11 @@ void sendaqueue(int type, int pos)
       
       if (!pq)
         {
+	  if (lastnick != NULL)
+            {
+              /* try again */
+              sendaqueue(type, pos, NULL);
+            }
           return;
         }
       

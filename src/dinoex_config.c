@@ -55,6 +55,7 @@ static config_bool_typ config_parse_bool[] = {
 {"auto_default_group",     &gdata.auto_default_group },
 {"auto_path_group",        &gdata.auto_path_group },
 {"autoaddann_short",       &gdata.autoaddann_short },
+{"balanced_queue",         &gdata.balanced_queue },
 {"direct_file_access",     &gdata.direct_file_access },
 {"disablexdccinfo",        &gdata.disablexdccinfo },
 {"extend_status_line",     &gdata.extend_status_line },

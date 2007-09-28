@@ -208,6 +208,7 @@ int hadminlevel;
 int monitor_files;
 int xdcclist_by_privmsg;
 int autoadd_delay;
+int balanced_queue;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

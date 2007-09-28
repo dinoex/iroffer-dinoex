@@ -1479,6 +1479,7 @@ void dumpgdata(void)
   gdata_print_int(monitor_files);
   gdata_print_int(xdcclist_by_privmsg);
   gdata_print_int(autoadd_delay);
+  gdata_print_int(balanced_queue);
   gdata_print_long(nomd5_start);
   
   /* downloadhost */
