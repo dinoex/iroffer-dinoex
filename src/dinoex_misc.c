@@ -474,7 +474,6 @@ void notifyqueued_nick(const char *nick)
     left = min2(359999, (pq->xpack->st_size)/((int)(max2(speed, 0.001)*1024)));
     lastrtime += left;
 
-updatecontext();
     if (nick != NULL) {
       if (pq->net != gnetwork->net)
         continue;
@@ -484,11 +483,10 @@ updatecontext();
     } else {
       gnetwork = &(gdata.networks[pq->net]);
     }
-updatecontext();
 
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
             "Notifying Queued status to %s",
-            nick);
+            pq->nick);
     notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
                 (long)(gdata.curtime-pq->queuedtime)/60/60,
                 (long)((gdata.curtime-pq->queuedtime)/60)%60,

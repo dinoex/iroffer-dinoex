@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.17:
 --------------------
 
+bugfix: Notify message auf Console/Chat
+  versions affected: 2.16
+  Der Nick wird jetzt richtig ausgegeben.
+
 bugfix: Idle Queue
   notify mainqueue if request is added
 
