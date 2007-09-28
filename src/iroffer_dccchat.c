@@ -148,7 +148,9 @@ void setupdccchataccept(dccchat_t *chat)
       chat->fd = FD_UNUSED;
       return;
     }
-  
+
+  ir_listen_port_connected(chat->localport);
+
   FD_CLR(listen_fd, &gdata.readset);
   close(listen_fd);
   
@@ -537,6 +539,10 @@ void shutdowndccchat(dccchat_t *chat, int flush)
       ir_boutput_delete(&chat->boutput);
       memset(chat, 0, sizeof(dccchat_t));
       chat->fd = FD_UNUSED;
+
+      if (chat->status == DCCCHAT_LISTENING)
+        ir_listen_port_connected(chat->localport);
+
       chat->status = DCCCHAT_UNUSED;
       
       gdata.num_dccchats--;

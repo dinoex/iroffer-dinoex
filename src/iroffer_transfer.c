@@ -791,6 +791,9 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
       t->xpack->file_fd_location = 0;
     }
   
+  if (t->tr_status == TRANSFER_STATUS_LISTENING)
+    ir_listen_port_connected(t->listenport);
+
   t->tr_status = TRANSFER_STATUS_DONE;
   
   backup = gnetwork;
