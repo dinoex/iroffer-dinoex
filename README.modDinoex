@@ -9,8 +9,9 @@ bugfix: Notify message on Console/Chat (reported by TheDeath)
 
 bugfix: Idle Queue
   versions affected: 2.16
-  notify mainqueue if request is added
-  choose user with no transfer from idle queue
+  when moving a request vom Idle to Mainqueue,
+  try to start transfer if a slot is free.
+  choose user with no transfer from idle queue first.
 
 With Version mod 2.16:
 ----------------------
