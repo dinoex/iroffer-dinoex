@@ -1879,6 +1879,7 @@ void dumpgdata(void)
           iter->localip,
           iter->remoteip);
   ioutput(gdata_common,"  : net=%d", iter->net + 1 );
+  ioutput(gdata_common, "  : token=%d", iter->token);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
   gdata_iter_print_string(file);

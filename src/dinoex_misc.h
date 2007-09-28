@@ -104,6 +104,11 @@ void queue_all_remove(irlist_t *list, const char *message);
 char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq);
 void check_idle_queue(void);
 
+int l_setup_file(upload * const l, struct stat *stp);
+int l_setup_listen(upload * const l);
+int l_setup_passive(upload * const l, char *token);
+void l_setup_accept(upload * const l);
+
 void exit_iroffer(void);
 
 /* End of File */

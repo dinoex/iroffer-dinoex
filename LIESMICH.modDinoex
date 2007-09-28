@@ -3,10 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.17:
 --------------------
 
-bugfix: DCC SEND
-  fix small memory leak if connection is aborted in listen state
+196) DCC SEND
+  Unterstützung für passives DCC SEND und RESUME für Uploads.
 
-195: balanced_queue
+bugfix: DCC SEND, DCC CHAT
+  Speicherleck behoben, falls Verbindung im Zustand LISTEN abbricht.
+
+195) balanced_queue
   Wenn ein User einen Transfer beendet, so wird der nächste Transfer
   von einem anderen User in der Warteschlange bevorzugt. Damit wird
   die vorhandene Bandbreite gelichmäiger verteilt.

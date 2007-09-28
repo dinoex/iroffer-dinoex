@@ -2346,6 +2346,191 @@ void check_idle_queue(void)
   }
 }
 
+int l_setup_file(upload * const l, struct stat *stp)
+{
+  char *fullfile;
+  int retval;
+
+  updatecontext();
+
+  if (gdata.uploaddir == NULL) {
+    l_closeconn(l, "No upload hosts or no uploaddir defined.", 0);
+    return 1;
+  }
+
+  /* local file already exists? */
+  fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(l->file) + 2);
+  sprintf(fullfile, "%s/%s", gdata.uploaddir, l->file);
+ 
+  l->filedescriptor = open(fullfile,
+                           O_WRONLY | O_CREAT | O_EXCL | ADDED_OPEN_FLAGS,
+                           CREAT_PERMISSIONS );
+ 
+  if ((l->filedescriptor < 0) && (errno == EEXIST)) {
+    retval = stat(fullfile, stp);
+    if (retval < 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Stat Upload File '%s': %s",
+               fullfile, strerror(errno));
+      l_closeconn(l, "File Error, File couldn't be opened for writing", errno);
+      mydelete(fullfile);
+      return 1;
+    }
+    if (!S_ISREG(stp->st_mode) || (stp->st_size >= l->totalsize)) {
+      l_closeconn(l,"File Error, That filename already exists",0);
+      mydelete(fullfile);
+      return 1;
+    }
+    l->filedescriptor = open(fullfile, O_WRONLY | O_APPEND | ADDED_OPEN_FLAGS);
+    if (l->filedescriptor >= 0) {
+      l->resumesize = l->bytesgot = stp->st_size;
+      if (l->resumed <= 0) {
+        close(l->filedescriptor);
+        mydelete(fullfile);
+        return 2; /* RESUME */
+      }
+    }
+  }
+  if (l->filedescriptor < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access Upload File '%s': %s",
+             fullfile, strerror(errno));
+    l_closeconn(l, "File Error, File couldn't be opened for writing", errno);
+    mydelete(fullfile);
+    return 1;
+  }
+  mydelete(fullfile);
+  return 0;
+}
+
+int l_setup_listen(upload * const l)
+{
+  int tempc;
+  int listenport;
+  struct sockaddr_in listenaddr;
+
+  updatecontext();
+
+  if ((l->clientsocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Could Not Create Socket, Aborting: %s", strerror(errno));
+    l->clientsocket = FD_UNUSED;
+    l_closeconn(l, "Connection Lost", 0);
+    return 1;
+  }
+
+  if (gdata.tcprangestart) {
+      tempc = 1;
+      setsockopt(l->clientsocket, SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
+  }
+
+  bzero ((char *) &listenaddr, sizeof (struct sockaddr_in));
+  listenaddr.sin_family = AF_INET;
+  listenaddr.sin_addr.s_addr = INADDR_ANY;
+
+  if (ir_bind_listen_socket(l->clientsocket, &listenaddr) < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Couldn't Bind to Socket, Aborting: %s", strerror(errno));
+    l->clientsocket = FD_UNUSED;
+    l_closeconn(l, "Connection Lost", 0);
+    return 1;
+  }
+ 
+  listenport = ntohs (listenaddr.sin_port);
+  if (listen (l->clientsocket, 1) < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Listen, Aborting: %s", strerror(errno));
+    l->clientsocket = FD_UNUSED;
+    l_closeconn(l, "Connection Lost", 0);
+    return 1;
+  }
+
+  privmsg_fast(l->nick, "\1DCC SEND %s %lu %d %" LLPRINTFMT "i %d\1",
+               l->file, gdata.ourip, listenport, (long long)(l->totalsize), l->token);
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          "DCC SEND sent to %s on %s, waiting for connection on %lu.%lu.%lu.%lu:%d",
+          l->nick,
+          gnetwork->name,
+          (gdata.ourip >> 24) & 0xFF,
+          (gdata.ourip >> 16) & 0xFF,
+          (gdata.ourip >>  8) & 0xFF,
+          (gdata.ourip      ) & 0xFF,
+          listenport);
+
+  l->localport = listenport;
+  l->connecttime = gdata.curtime;
+  l->lastcontact = gdata.curtime;
+  l->ul_status = UPLOAD_STATUS_LISTENING;
+  return 0;
+}
+
+int l_setup_passive(upload * const l, char *token)
+{
+  int retval;
+  struct stat s;
+
+  updatecontext();
+
+  /* strip T */
+  if (token[strlen(token)-1] == 'T')
+    token[strlen(token)-1] = '\0';
+  l->token = atoi(token);
+
+  retval = l_setup_file(l, &s);
+  if (retval == 2)
+    {
+      privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u %d\1",
+                   l->file, l->remoteport, (unsigned long long)s.st_size, l->token);
+      l->connecttime = gdata.curtime;
+      l->lastcontact = gdata.curtime;
+      l->ul_status = UPLOAD_STATUS_RESUME;
+      return 0;
+    }
+  if (retval != 0)
+    {
+      return 1;
+    }
+
+  return l_setup_listen(l);
+}
+
+void l_setup_accept(upload * const l)
+{
+  SIGNEDSOCK int addrlen;
+  struct sockaddr_in remoteaddr;
+  int listen_fd;
+ 
+  updatecontext();
+
+  listen_fd = l->clientsocket;
+  addrlen = sizeof (struct sockaddr_in);
+  if ((l->clientsocket = accept(listen_fd, (struct sockaddr *) &remoteaddr, &addrlen)) < 0) {
+    outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
+    FD_CLR(listen_fd, &gdata.readset);
+    close(listen_fd);
+    l->clientsocket = FD_UNUSED;
+    l_closeconn(l, "Connection Lost", 0);
+    return;
+  }
+
+  ir_listen_port_connected(l->localport);
+
+  FD_CLR(listen_fd, &gdata.readset);
+  close(listen_fd);
+ 
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          "DCC SEND connection received");
+ 
+  if (set_socket_nonblocking(l->clientsocket, 1) < 0 ) {
+    outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
+  }
+
+  notice(l->nick, "DCC Send Accepted, Connecting...");
+
+  l->remoteip   = ntohl(remoteaddr.sin_addr.s_addr);
+  l->remoteport = ntohs(remoteaddr.sin_port);
+  l->connecttime = gdata.curtime;
+  l->lastcontact = gdata.curtime;
+  l->ul_status = UPLOAD_STATUS_GETTING;
+}
+
 #ifdef DEBUG
 
 static void free_state(void)

@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_misc.h"
 
 
 void l_initvalues (upload * const l) {
@@ -37,74 +38,21 @@ void l_establishcon (upload * const l)
   struct sockaddr_in localaddr;
   SIGNEDSOCK int addrlen;
   int retval;
-  char *fullfile;
   struct stat s;
   
   updatecontext();
-
-  if (gdata.uploaddir == NULL) 
+  
+  retval = l_setup_file(l, &s);
+  if (retval == 2)
     {
-      l_closeconn(l, "No upload hosts or no uploaddir defined.", 0);
+      privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u\1",
+                   l->file, l->remoteport, (unsigned long long)s.st_size);
       return;
     }
-  
-  /* local file already exists? */
-  fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(l->file) + 2);
-  sprintf(fullfile, "%s/%s", gdata.uploaddir, l->file);
-  
-  l->filedescriptor = open(fullfile,
-                           O_WRONLY | O_CREAT | O_EXCL | ADDED_OPEN_FLAGS,
-                           CREAT_PERMISSIONS );
-  
-  if ((l->filedescriptor < 0) && (errno == EEXIST))
+  if (retval != 0)
     {
-      retval = stat(fullfile, &s);
-      if (retval < 0)
-        {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Cant Stat Upload File '%s': %s",
-                   fullfile,strerror(errno));
-          l_closeconn(l,"File Error, File couldn't be opened for writing",errno);
-          mydelete(fullfile);
-          return;
-        }
-#if 1
-      if (!S_ISREG(s.st_mode) || (s.st_size >= l->totalsize))
-        {
-          l_closeconn(l,"File Error, That filename already exists",0);
-          mydelete(fullfile);
-          return;
-        }
-      else
-#endif
-        {
-          l->filedescriptor = open(fullfile, O_WRONLY | O_APPEND | ADDED_OPEN_FLAGS);
-          
-          if (l->filedescriptor >= 0)
-            {
-              l->resumesize = l->bytesgot = s.st_size;
-              
-              if (l->resumed <= 0)
-                {
-                  close(l->filedescriptor);
-                  privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u\1",
-                          l->file, l->remoteport, (unsigned long long)s.st_size);
-                  mydelete(fullfile);
-                  return;
-                }
-            }
-        }
-    }
-  
-  if (l->filedescriptor < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Cant Access Upload File '%s': %s",
-               fullfile,strerror(errno));
-      l_closeconn(l,"File Error, File couldn't be opened for writing",errno);
-      mydelete(fullfile);
       return;
     }
-  
-  mydelete(fullfile);
   
   bzero ((char *) &remoteaddr, sizeof (remoteaddr));
   
@@ -336,6 +284,9 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
       close(l->filedescriptor);
     }
   
+  if (l->ul_status == UPLOAD_STATUS_LISTENING)
+    ir_listen_port_connected(l->localport);
+
   l->ul_status = UPLOAD_STATUS_DONE;
   
   backup = gnetwork;

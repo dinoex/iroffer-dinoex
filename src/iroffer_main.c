@@ -350,6 +350,11 @@ static void mainloop (void) {
       ul = irlist_get_head(&gdata.uploads);
       while(ul)
         {
+          if (ul->ul_status == UPLOAD_STATUS_LISTENING)
+            {
+              FD_SET(ul->clientsocket, &gdata.readset);
+              highests = max2(highests, ul->clientsocket);
+            }
           if (ul->ul_status == UPLOAD_STATUS_CONNECTING)
             {
               FD_SET(ul->clientsocket, &gdata.writeset);
@@ -789,7 +794,12 @@ static void mainloop (void) {
             {
               l_transfersome(ul);
             }
-          
+
+          if (ul->ul_status == UPLOAD_STATUS_LISTENING && FD_ISSET(ul->clientsocket, &gdata.readset))
+            {
+              l_setup_accept(ul);
+            }
+
           if (ul->ul_status == UPLOAD_STATUS_CONNECTING && FD_ISSET(ul->clientsocket, &gdata.writeset))
             {
               int callval_i;
@@ -2822,7 +2832,21 @@ static void privmsgparse(const char* type, char* line) {
                       "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "iKB)",
                       nick, gnetwork->name, ul->file,
                       (long long)(ul->totalsize / 1024));
-              l_establishcon(ul);
+
+              if (ul->remoteport > 0)
+                {
+                  l_establishcon(ul);
+                }
+              else
+                {
+                  /* Passive DCC */
+                  char *msg7;
+                  msg7 = getpart(line, 10);
+                  if (msg7[strlen(msg7)-1] == '\1')
+                    msg7[strlen(msg7)-1] = '\0';
+                  l_setup_passive(ul, msg7);
+                  mydelete(msg7);
+                }
             }
         }
       
@@ -2865,7 +2889,15 @@ static void privmsgparse(const char* type, char* line) {
                           nick, gnetwork->name, ul->file,
                           (long long)((ul->totalsize - ul->resumesize) / 1024),
                           (long long)(ul->totalsize / 1024));
-                  l_establishcon(ul);
+                  if (ul->remoteport > 0)
+                    {
+                      l_establishcon(ul);
+                    }
+                  else
+                    {
+                      /* Passive DCC */
+                      l_setup_passive(ul, msg6 ? msg6 : msg4);
+                    }
                   break;
                 }
               ul = irlist_get_next(ul);

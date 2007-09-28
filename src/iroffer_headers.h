@@ -255,6 +255,8 @@ typedef struct
 typedef enum
 {
   UPLOAD_STATUS_UNUSED,
+  UPLOAD_STATUS_RESUME,
+  UPLOAD_STATUS_LISTENING,
   UPLOAD_STATUS_CONNECTING,
   UPLOAD_STATUS_GETTING,
   UPLOAD_STATUS_WAITING,
@@ -282,6 +284,7 @@ typedef struct
   upload_status_e ul_status;
   int resumed;
   int net;
+  int token;
 } upload;
 
 typedef struct
