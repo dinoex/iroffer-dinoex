@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_admin.h"
+#include "dinoex_http.h"
 #include "dinoex_misc.h"
 #include "dinoex_config.h"
 
@@ -859,6 +860,7 @@ void startup_dinoex(void)
   xdcc_statefile.has_md5sum = 2;
   xdcc_statefile.has_crc32 = 2;
   dinoex_lasthour = -1;
+  h_setup_listen();
 #ifdef USE_CURL
   bzero((char *)&fetch_trans, sizeof(fetch_trans));
   fetch_started = 0;
@@ -880,6 +882,7 @@ void startup_dinoex(void)
 
 void shutdown_dinoex(void)
 {
+  h_close_listen();
 #ifdef USE_GEOIP
   if (gi != NULL)
     {

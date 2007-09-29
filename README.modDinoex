@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.17:
 ----------------------
 
+197) http_port (inspired by TheDeath, StoVoKor)
+  Port for the buildin Webserver.
+
 196) DCC SEND
   support passive DCC SEND and RESUME for uploads
 

@@ -102,6 +102,7 @@ static config_int_typ config_parse_int[] = {
 {"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1 },
 {"debug",                   &gdata.debug,                   0, 65000, 1 },
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1 },
+{"http_port",               &gdata.http_port,               0, 65535, 1 },
 {"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1 },
 {"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1 },
 {"max_find",                &gdata.max_find,                0, 65000, 1 },

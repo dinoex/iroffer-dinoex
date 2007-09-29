@@ -22,6 +22,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_misc.h"
+#include "dinoex_http.h"
 
 /* local functions */
 static void mainloop(void);
@@ -374,6 +375,8 @@ static void mainloop (void) {
           FD_SET(gdata.md5build.file_fd, &gdata.readset);
           highests = max2(highests, gdata.md5build.file_fd);
         }
+      
+      highests = h_listen(highests);
       
       updatecontext();
    
@@ -1085,6 +1088,8 @@ static void mainloop (void) {
             }
          }
       gnetwork = NULL;
+
+      h_done_select(changesec);
       
       /*----- time for a delayed shutdown? ----- */
       if (changesec && gdata.delayedshutdown)

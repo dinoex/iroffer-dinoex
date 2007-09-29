@@ -74,6 +74,7 @@ TheDeath
 	admin command "sort -name/-group/-desc"
 	admin command "XDTRIGGER"
 	report notify bug
+	option "http_port"
 
 [GFE]Lunix
 	alias xdcc list group <group>

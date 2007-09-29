@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.17:
 --------------------
 
+197) http_port
+  Port für den eingebauten Webserver.
+
 196) DCC SEND
   Unterstützung für passives DCC SEND und RESUME für Uploads.
 
