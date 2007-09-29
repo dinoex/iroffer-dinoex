@@ -12,8 +12,6 @@ With Version mod 2.17:
 bugfix: DCC SEND, DCC CHAT
   fix small memory leak if connection is aborted in listen state
 
-  Speicherleck behoben, falls Verbindung im Zustand LISTEN abbricht.
-
 195) balanced_queue	 (inspired by Protected)
   when a user is done using a slot, the next file retrieved from the
   queue would NOT be a file queued by the same user.
