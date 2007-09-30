@@ -1476,6 +1476,7 @@ void dumpgdata(void)
   gdata_print_string(xdccremovefile);
   gdata_print_string(autoadd_sort);
   gdata_print_string(http_admin);
+  gdata_print_string(http_dir);
 
   gdata_print_int(need_voice);
   gdata_print_int(need_level);

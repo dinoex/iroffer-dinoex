@@ -171,6 +171,7 @@ char *respondtochannellistmsg;
 char *xdccremovefile;
 char *autoadd_sort;
 char *http_admin;
+char *http_dir;
 long nomd5_start;
 int need_voice;
 int need_level;

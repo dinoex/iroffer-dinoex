@@ -3,19 +3,23 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 2.17:
 --------------------
 
-198) http_admin
+169) http_dir
+  Ein Verrzeichnis mit weiteren Dateien für den Webserver.
+  Zum Beispiel für: robots.txt favicon.ico
+
+168) http_admin
   Erlaube Verwaltung über den eingebauten Webserver. 
 
-197) http_port
+167) http_port
   Port für den eingebauten Webserver.
 
-196) DCC SEND
+166) DCC SEND
   Unterstützung für passives DCC SEND und RESUME für Uploads.
 
 bugfix: DCC SEND, DCC CHAT
   Speicherleck behoben, falls Verbindung im Zustand LISTEN abbricht.
 
-195) balanced_queue
+165) balanced_queue
   Wenn ein User einen Transfer beendet, so wird der nächste Transfer
   von einem anderen User in der Warteschlange bevorzugt. Damit wird
   die vorhandene Bandbreite gelichmäiger verteilt.

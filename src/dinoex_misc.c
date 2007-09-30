@@ -2767,6 +2767,7 @@ static void free_config(void)
   mydelete(gdata.adminpass);
   mydelete(gdata.hadminpass);
   mydelete(gdata.http_admin);
+  mydelete(gdata.http_dir);
 }
 
 #endif

@@ -3,19 +3,23 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.17:
 ----------------------
 
-198) http_admin (inspired by TheDeath, StoVoKor)
+169) http_dir
+  Defines directory for extra files handled out by the webserver.
+  For example: robots.txt favicon.ico
+
+168) http_admin (inspired by TheDeath, StoVoKor)
   Defines admin login for the buildin Webserver.
 
-197) http_port (inspired by TheDeath, StoVoKor)
+167) http_port (inspired by TheDeath, StoVoKor)
   Port for the buildin Webserver.
 
-196) DCC SEND
+166) DCC SEND
   support passive DCC SEND and RESUME for uploads
 
 bugfix: DCC SEND, DCC CHAT
   fix small memory leak if connection is aborted in listen state
 
-195) balanced_queue (inspired by Protected)
+165) balanced_queue (inspired by Protected)
   when a user is done using a slot, the next file retrieved from the
   queue would NOT be a file queued by the same user.
   This helps to distribute the bandwidth better in bots with few slots.

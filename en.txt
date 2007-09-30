@@ -1854,3 +1854,4 @@
 1870 "Bad request"
 1871 "/admin/"
 1872 "http_admin"
+1873 "http_dir"

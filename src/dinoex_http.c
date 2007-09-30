@@ -29,7 +29,7 @@ static int http_listen = FD_UNUSED;
 static const char *http_header_status =
 "HTTP/1.0 200 OK\r\n"
 "Server: iroffer " VERSIONLONG "\r\n"
-"Content-Type: text/plain\r\n"
+"Content-Type: %s\r\n"
 "Content-Length: " LLPRINTFMT "\r\n"
 "\r\n";
 
@@ -52,6 +52,17 @@ static const char *http_header_admin =
 "\r\n";
 
 static const char *htpp_auth_key = "Authorization: Basic ";
+
+typedef struct {
+  const char *m_ext;
+  const char *m_mime;
+} http_magic_t;
+
+static const http_magic_t http_magic[] = {
+  { ".txt", "text/plain" },
+  { ".ico", "image/x-icon" },
+  { NULL, "application/octet-stream" }
+};
 
 /*
 	BASE 64
@@ -345,8 +356,10 @@ static void h_error(http * const h, const char *header)
 static void h_readfile(http * const h, const char *header, const char *file)
 {
   char *tempstr;
+  const char *ext;
   size_t len;
   struct stat st;
+  int i;
 
   h->bytessent = 0;
   h->file = mystrdup(file);
@@ -363,11 +376,19 @@ static void h_readfile(http * const h, const char *header, const char *file)
     close(h->filedescriptor);
     return;
   }
+
+  ext = strchr(h->file, '.');
+  if (ext == NULL)
+    ext = ".bin";
+  for (i=0; http_magic[i].m_ext; i++) {
+    if (strcasecmp(http_magic[i].m_ext, ext) == 0)
+      break;
+  }
   h->bytessent = 0;
   h->filepos = 0;
   h->totalsize = st.st_size;
   tempstr = mycalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength-1, header, h->totalsize);
+  len = snprintf(tempstr, maxtextlength-1, header, http_magic[i].m_mime, h->totalsize);
   write(h->clientsocket, tempstr, len);
   h->status = HTTP_STATUS_SENDING;
   mydelete(tempstr);
@@ -389,6 +410,7 @@ static void h_get(http * const h)
   char *end;
   char *tempstr;
   char *passwd;
+  size_t len;
   int howmuch, howmuch2;
   int i;
 
@@ -470,6 +492,14 @@ static void h_get(http * const h)
     }
     count_badip(h->remoteip);
     h_error(h, http_header_admin);
+    return;
+  }
+
+  if (gdata.http_dir) {
+    tempstr = mycalloc(maxtextlength);
+    len = snprintf(tempstr, maxtextlength-1, "%s%s", gdata.http_dir, url);
+    h_readfile(h, http_header_status, tempstr);
+    mydelete(tempstr);
     return;
   }
 
