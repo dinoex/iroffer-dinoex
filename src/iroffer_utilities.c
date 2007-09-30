@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_http.h"
 
 
 const char* strstrnocase (const char *str1, const char *match1)
@@ -1427,6 +1428,41 @@ void dumpgdata(void)
 
   gdata_irlist_iter_start(autocrc_exclude, char);
   gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
+  gdata_irlist_iter_start(https, http);
+  ioutput(gdata_common,
+          "  : clientsocket=%d filedescriptor=%d",
+          iter->clientsocket, iter->filedescriptor);
+  ioutput(gdata_common,
+          "  : bytesgot=%" LLPRINTFMT "d bytessent=%" LLPRINTFMT "d",
+          (long long)iter->bytesgot, (long long)iter->bytessent);
+  ioutput(gdata_common,
+          "  : filepos=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d",
+          (long long)iter->filepos, (long long)iter->totalsize);
+  ioutput(gdata_common,
+          "  : lastcontact=%ld connecttime=%ld",
+          (long)iter->lastcontact,
+          (long)iter->connecttime);
+  ioutput(gdata_common,
+          "  : localport=%d remoteport=%d localip=0x%.8lX remoteip=0x%.8lX",
+          iter->localport,
+          iter->remoteport,
+          iter->localip,
+          iter->remoteip);
+  gdata_iter_print_uint(status);
+  gdata_iter_print_string(file);
+  gdata_irlist_iter_end;
+
+  gdata_irlist_iter_start(http_ips, badip);
+  ioutput(gdata_common,
+          "  : remoteip=0x%.8lX",
+          iter->remoteip);
+  ioutput(gdata_common,
+          "  : lastcontact=%ld connecttime=%ld",
+          (long)iter->lastcontact,
+          (long)iter->connecttime);
+  gdata_iter_print_long(count);
   gdata_irlist_iter_end;
 
   gdata_print_string(enable_nick);

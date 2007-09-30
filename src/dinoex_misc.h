@@ -49,6 +49,7 @@ int has_closed_servers(void);
 int has_joined_channels(int all);
 void reset_download_limits(void);
 void startup_dinoex(void);
+void config_dinoex(void);
 void shutdown_dinoex(void);
 void rehash_dinoex(void);
 void update_hour_dinoex(int hour, int minute);

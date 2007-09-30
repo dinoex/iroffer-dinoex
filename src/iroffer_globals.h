@@ -159,6 +159,7 @@ irlist_t packs_delayed;
 irlist_t jobs_delayed;
 irlist_t autocrc_exclude;
 irlist_t https;
+irlist_t http_ips;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;

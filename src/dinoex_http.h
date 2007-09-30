@@ -17,7 +17,7 @@ typedef enum
 {
   HTTP_STATUS_UNUSED,
   HTTP_STATUS_GETTING,
-  HTTP_STATUS_WAITING,
+  HTTP_STATUS_SENDING,
   HTTP_STATUS_DONE
 } http_status_e;
 
@@ -27,27 +27,30 @@ typedef struct
   int filedescriptor;
   off_t bytesgot;
   off_t bytessent;
+  off_t filepos;
   off_t totalsize;
   time_t lastcontact;
   time_t connecttime;
   unsigned short remoteport;
   unsigned short localport;
-  unsigned long remoteip;
   unsigned long localip;
-  http_status_e ul_status;
+  unsigned long remoteip;
+  http_status_e status;
   char *file;
 } http;
 
+typedef struct
+{
+  time_t lastcontact;
+  time_t connecttime;
+  long remoteip;
+  long count;
+} badip;
+
 void h_close_listen(void);
 int h_setup_listen(void);
+void h_reash_listen(void);
 int h_listen(int highests);
-
-void h_accept(void);
-void h_closeconn(http * const h, const char *msg, int errno1);
-void h_establishcon (http * const h);
-void h_get(http * const h);
-void h_send(http * const h);
-void h_istimeout(http * const h);
 void h_done_select(int changesec);
 
 /* End of File */

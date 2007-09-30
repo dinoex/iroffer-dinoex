@@ -2637,6 +2637,7 @@ void startupiroffer(void) {
        switchserver(-1);
      }
    gnetwork = NULL;
+   config_dinoex();
    }
 
 

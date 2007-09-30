@@ -860,7 +860,6 @@ void startup_dinoex(void)
   xdcc_statefile.has_md5sum = 2;
   xdcc_statefile.has_crc32 = 2;
   dinoex_lasthour = -1;
-  h_setup_listen();
 #ifdef USE_CURL
   bzero((char *)&fetch_trans, sizeof(fetch_trans));
   fetch_started = 0;
@@ -880,6 +879,10 @@ void startup_dinoex(void)
 #endif /* USE_CURL */
 }
 
+void config_dinoex(void) {
+  h_setup_listen();
+}
+
 void shutdown_dinoex(void)
 {
   h_close_listen();
@@ -897,6 +900,7 @@ void shutdown_dinoex(void)
 
 void rehash_dinoex(void)
 {
+  h_reash_listen();
 #ifdef USE_GEOIP
   if (gi != NULL)
     {
@@ -2547,6 +2551,7 @@ static void free_state(void)
   igninfo *i;
   msglog_t *ml;
   gnetwork_t *backup;
+  http *h;
   int ss;
 
   updatecontext();
@@ -2633,9 +2638,15 @@ static void free_state(void)
      mydelete(ml->hostmask);
      mydelete(ml->message);
   }
+  for (h = irlist_get_head(&gdata.https);
+       h;
+       h = irlist_delete(&gdata.https, h)) {
+     mydelete(h->file);
+  }
   irlist_delete_all(&gdata.autotrigger);
   irlist_delete_all(&gdata.console_history);
   irlist_delete_all(&gdata.jobs_delayed);
+  irlist_delete_all(&gdata.http_ips);
   mydelete(gdata.connectionmethod.host);
   mydelete(gdata.connectionmethod.password);
   mydelete(gdata.connectionmethod.vhost);
