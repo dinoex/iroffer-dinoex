@@ -61,6 +61,9 @@ typedef struct {
 static const http_magic_t http_magic[] = {
   { ".txt", "text/plain" },
   { ".ico", "image/x-icon" },
+  { ".css", "text/css" },
+  { ".html", "text/html" },
+  { ".htm", "text/html" },
   { NULL, "application/octet-stream" }
 };
 
