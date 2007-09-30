@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 3.0:
 ---------------------
 
+removed: convertxdccfile
+
 169) http_dir
   Defines directory for extra files handled out by the webserver.
   For example: robots.txt favicon.ico
