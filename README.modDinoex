@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 2.17:
 ----------------------
 
+198) http_admin (inspired by TheDeath, StoVoKor)
+  Defines admin login for the buildin Webserver.
+
 197) http_port (inspired by TheDeath, StoVoKor)
   Port for the buildin Webserver.
 
@@ -12,7 +15,7 @@ With Version mod 2.17:
 bugfix: DCC SEND, DCC CHAT
   fix small memory leak if connection is aborted in listen state
 
-195) balanced_queue	 (inspired by Protected)
+195) balanced_queue (inspired by Protected)
   when a user is done using a slot, the next file retrieved from the
   queue would NOT be a file queued by the same user.
   This helps to distribute the bandwidth better in bots with few slots.

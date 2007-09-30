@@ -170,6 +170,7 @@ char *geoipdatabase;
 char *respondtochannellistmsg;
 char *xdccremovefile;
 char *autoadd_sort;
+char *http_admin;
 long nomd5_start;
 int need_voice;
 int need_level;

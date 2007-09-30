@@ -440,7 +440,7 @@ static void h_get(http * const h)
     return;
   }
 
-  if (strncasecmp(url, "/admin/", 7) == 0) {
+  if ((gdata.http_admin) && (strncasecmp(url, "/admin/", 7) == 0)) {
     auth = strcasestr(data, htpp_auth_key);
     if (auth != NULL) {
       auth += strlen(htpp_auth_key);
@@ -452,16 +452,18 @@ static void h_get(http * const h)
       if (passwd != NULL)
         *(passwd++) = 0;
 
-      if (verifypass2(gdata.hadminpass, passwd) ) {
-        mydelete(tempstr);
-        h_admin(h, gdata.hadminlevel, url + 7);
-        return;
-      }
+      if (strcasecmp(tempstr, gdata.http_admin) == 0) {
+        if (verifypass2(gdata.hadminpass, passwd) ) {
+          mydelete(tempstr);
+          h_admin(h, gdata.hadminlevel, url + 7);
+          return;
+        }
 
-      if (verifypass2(gdata.adminpass, passwd) ) {
-        mydelete(tempstr);
-        h_admin(h, gdata.adminlevel, url + 7);
-        return;
+        if (verifypass2(gdata.adminpass, passwd) ) {
+          mydelete(tempstr);
+          h_admin(h, gdata.adminlevel, url + 7);
+          return;
+        }
       }
 
       mydelete(tempstr);

@@ -2766,6 +2766,7 @@ static void free_config(void)
   mydelete(gdata.xdcclistfile);
   mydelete(gdata.adminpass);
   mydelete(gdata.hadminpass);
+  mydelete(gdata.http_admin);
 }
 
 #endif
