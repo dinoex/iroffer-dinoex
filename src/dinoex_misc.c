@@ -2642,6 +2642,8 @@ static void free_state(void)
        h;
        h = irlist_delete(&gdata.https, h)) {
      mydelete(h->file);
+     mydelete(h->group);
+     mydelete(h->buffer);
   }
   irlist_delete_all(&gdata.autotrigger);
   irlist_delete_all(&gdata.console_history);

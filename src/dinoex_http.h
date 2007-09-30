@@ -36,7 +36,13 @@ typedef struct
   unsigned long localip;
   unsigned long remoteip;
   http_status_e status;
+  int support_groups;
   char *file;
+  char *buffer;
+  char *end;
+  const char *nick;
+  char *group;
+  ssize_t left;
 } http;
 
 typedef struct

@@ -14,6 +14,7 @@ removed: convertxdccfile
 
 167) http_port (inspired by TheDeath, StoVoKor)
   Port for the buildin Webserver.
+  (xddclistfile and weblist)
 
 166) DCC SEND
   support passive DCC SEND and RESUME for uploads

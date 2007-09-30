@@ -14,6 +14,7 @@ entfernt: convertxdccfile
 
 167) http_port
   Port für den eingebauten Webserver.
+  (xddclistfile und webliste)
 
 166) DCC SEND
   Unterstützung für passives DCC SEND und RESUME für Uploads.

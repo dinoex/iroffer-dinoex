@@ -24,6 +24,8 @@
 #include "dinoex_config.h"
 #include "dinoex_http.h"
 
+#define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
+
 static int http_listen = FD_UNUSED;
 
 static const char *http_header_status =
@@ -350,11 +352,14 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
     h->filedescriptor = FD_UNUSED;
   }
 
+  mydelete(h->buffer);
   h->status = HTTP_STATUS_DONE;
 }
 
 static void h_error(http * const h, const char *header)
 {
+  updatecontext();
+
   h->totalsize = 0;
   write(h->clientsocket, header, strlen(header));
   h->status = HTTP_STATUS_SENDING;
@@ -368,6 +373,8 @@ static void h_readfile(http * const h, const char *header, const char *file)
   struct stat st;
   int i;
 
+  updatecontext();
+
   h->bytessent = 0;
   h->file = mystrdup(file);
   h->filedescriptor = open(h->file, O_RDONLY | ADDED_OPEN_FLAGS);
@@ -379,7 +386,7 @@ static void h_readfile(http * const h, const char *header, const char *file)
     return;
   }
   if (fstat(h->filedescriptor, &st) < 0) {
-    h_closeconn(h, "Uanble to stat file", errno);
+    h_closeconn(h, "Unable to stat file", errno);
     close(h->filedescriptor);
     return;
   }
@@ -397,12 +404,458 @@ static void h_readfile(http * const h, const char *header, const char *file)
   tempstr = mycalloc(maxtextlength);
   len = snprintf(tempstr, maxtextlength-1, header, http_magic[i].m_mime, h->totalsize);
   write(h->clientsocket, tempstr, len);
-  h->status = HTTP_STATUS_SENDING;
   mydelete(tempstr);
+  h->status = HTTP_STATUS_SENDING;
+}
+
+static void h_readbuffer(http * const h, const char *header)
+{
+  char *tempstr;
+  size_t len;
+
+  updatecontext();
+
+  h->bytessent = 0;
+  h->totalsize = strlen(h->buffer);
+  tempstr = mycalloc(maxtextlength);
+  len = snprintf(tempstr, maxtextlength-1, header, http_magic[1].m_mime, h->totalsize);
+  write(h->clientsocket, tempstr, len);
+  mydelete(tempstr);
+  h->status = HTTP_STATUS_SENDING;
+  if (gdata.debug > 1)
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "HTTP response=%ld", (long)(h->totalsize));
+}
+
+static void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+h_respond(http * const h, const char *format, ...);
+
+static void h_respond(http * const h, const char *format, ...)
+{
+  va_list args;
+  ssize_t len;
+
+  va_start(args, format);
+  if (h->left > 0 ) {
+    len = vsnprintf(h->end, h->left, format, args);
+    if (len < 0) {
+      h->end[0] = 0;
+      len = 0;
+    } else {
+      h->end += len;
+      h->left -= len;
+    }
+  }
+  va_end(args);
+}
+
+static void h_include(http * const h, const char *file)
+{
+  ssize_t len;
+  ssize_t howmuch;
+  struct stat st;
+  int fd;
+
+  fd = open(file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (fd < 0) {
+    if (gdata.debug > 1)
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+              "file not found=%s", file);
+    return;
+  }
+  if (fstat(fd, &st) < 0) {
+    outerror(OUTERROR_TYPE_WARN, "Unable to stat file '%s': %s",
+             file, strerror(errno));
+    return;
+  }
+
+  len = st.st_size;
+  if (len > h->left) {
+    len = h->left;
+    outerror(OUTERROR_TYPE_WARN, "File to big '%s'", file);
+  }
+  howmuch = read(fd, h->end, len);
+  if (howmuch < 0) {
+    outerror(OUTERROR_TYPE_WARN, "Can't read data from file '%s': %s",
+             file, strerror(errno));
+    return;
+  }
+  h->end += howmuch;
+  h->left -= howmuch;
+}
+
+static int html_hide_locked(const xdcc *xd)
+{
+  if (gdata.hidelockedpacks == 0)
+    return 0;
+
+  if (xd->lock == NULL)
+    return 0;
+
+  return 1;
+}
+
+static char *html_link(const char *caption, const char *url, const char *text)
+{
+  char *tempstr;
+
+  if (text == NULL)
+    text = caption;
+  tempstr = mycalloc(maxtextlength);
+  snprintf(tempstr, maxtextlength-1, "<a title=\"%s\" href=\"%s\">%s</a>", caption, url, text);
+  return tempstr;
+}
+
+static void h_html_main(http * const h)
+{
+  xdcc *xd;
+  irlist_t grplist = {};
+  char *tempstr;
+  char *tlink;
+  char *tref;
+  char *inlist;
+  char *desc;
+  off_t sizes = 0;
+  off_t traffic = 0;
+  int groups = 0;
+  int packs = 0;
+  int agets = 0;
+  int nogroup = 0;
+
+  updatecontext();
+
+  tempstr = mycalloc(maxtextlength);
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    packs ++;
+    agets += xd->gets;
+    traffic += xd->gets * xd->st_size;
+    if (xd->group == NULL) {
+      if (nogroup == 0) {
+        nogroup ++;
+        groups ++;
+        snprintf(tempstr, maxtextlength-1,
+                 "%s %s", ".", "no group");
+                inlist = irlist_add(&grplist, strlen(tempstr) + 1);
+        strcpy(inlist, tempstr);
+      }
+      continue;
+    }
+    if (xd->group_desc == NULL)
+      continue;
+    groups ++;
+    snprintf(tempstr, maxtextlength-1,
+             "%s %s", xd->group, xd->group_desc);
+            inlist = irlist_add(&grplist, strlen(tempstr) + 1);
+    strcpy(inlist, tempstr);
+  }
+  mydelete(tempstr);
+  irlist_sort(&grplist, irlist_sort_cmpfunc_string, NULL);
+
+  h_respond(h, "<h1>%s %s</h1>\n", h->nick, "Group list" );
+  h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
+  h_respond(h, "<th class=\"head\">%s</th>\n", "PACKs");
+  h_respond(h, "<th class=\"head\">%s</th>\n", "DLs");
+  h_respond(h, "<th class=\"head\">%s</th>\n", "Size");
+  h_respond(h, "<th class=\"head\">%s</th>\n", "GROUP");
+  h_respond(h, "<th class=\"head\">%s</th>\n", "DESCRIPTION");
+  h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
+
+  h_respond(h, "<th class=\"right\">%d</th>\n", packs);
+  h_respond(h, "<th class=\"right\">%d</th>\n", agets);
+  tempstr = sizestr(0, sizes);
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  mydelete(tempstr);
+  h_respond(h, "<th class=\"head\">%d</th>\n", groups);
+  tlink = html_link("show all packs in one list", "/?group=*", "all packs");
+  tempstr = sizestr(0, traffic);
+  h_respond(h, "<th class=\"head\">%s [%s]&nbsp;%s</th>\n", tlink, tempstr, "complete downloaded" );
+  mydelete(tempstr);
+  mydelete(tlink);
+  h_respond(h, "</tr>\n</tfoot>\n<tbody>\n");
+
+  updatecontext();
+  inlist = irlist_get_head(&grplist);
+  while (inlist) {
+    desc = strchr(inlist, ' ');
+    if (desc != NULL)
+      *(desc++) = 0;
+    sizes = 0;
+    traffic = 0;
+    groups = 0;
+    packs = 0;
+    agets = 0;
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      if (html_hide_locked(xd))
+        continue;
+      if (strcmp(inlist, ".") == 0) {
+        if (xd->group != NULL)
+          continue;
+      } else {
+        if (xd->group == NULL)
+          continue;
+        if (strcasecmp(inlist, xd->group) != 0)
+          continue;
+      }
+      packs ++;
+      agets += xd->gets;
+      sizes += xd->st_size;
+      traffic += xd->gets * xd->st_size;
+    }
+
+    h_respond(h, "<tr>\n");
+    h_respond(h, "<td class=\"right\">%d</td>\n", packs);
+    h_respond(h, "<td class=\"right\">%d</td>\n", agets);
+    tempstr = sizestr(0, sizes);
+    h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
+    mydelete(tempstr);
+/* XXXXX escape & in GROUP */
+    h_respond(h, "<td class=\"content\">%s</td>\n", inlist);
+    tref = mycalloc(maxtextlength);
+    snprintf(tref, maxtextlength-1, "/?group=%s", inlist);
+/* XXXXX escape & in DESC */
+    tlink = html_link("show list of packs", tref, desc);
+    mydelete(tref);
+    h_respond(h, "<td class=\"content\">%s</td>\n", tlink);
+    mydelete(tlink);
+    h_respond(h, "</tr>\n");
+    inlist = irlist_delete(&grplist, inlist);
+  }
+}
+
+static void h_html_file(http * const h)
+{
+  xdcc *xd;
+  char *tempstr;
+  char *tlabel;
+  off_t sizes = 0;
+  off_t traffic = 0;
+  ssize_t len;
+  int packs = 0;
+  int agets = 0;
+  int num;
+
+  updatecontext();
+
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (html_hide_locked(xd))
+      continue;
+    if (strcmp(h->group, "*") != 0) {
+      if (strcmp(h->group, ".") == 0) {
+        if (xd->group != NULL)
+          continue;
+      } else {
+        if (xd->group == NULL)
+          continue;
+        if (strcasecmp(h->group, xd->group) != 0)
+          continue;
+      }
+    }
+    packs ++;
+    agets += xd->gets;
+    sizes += xd->st_size;
+    traffic += xd->gets * xd->st_size;
+  }
+
+  h_respond(h, "<h1>%s %s</h1>\n", h->nick, "File list" );
+  h_respond(h, "%s<span class=\"cmd\">/msg %s xdcc send nummer</span></p>\n",
+            "Download in IRC with", h->nick);
+  h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
+  h_respond(h, "<th class=\"head\">%s</th>\n", "PACKs");
+  h_respond(h, "<th class=\"head\">%s</th>\n", "DLs");
+  h_respond(h, "<th class=\"head\">%s</th>\n", "Size");
+  tempstr = html_link("back", "/?", "(back)");
+  h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tempstr);
+  mydelete(tempstr);
+  h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
+  h_respond(h, "<th class=\"right\">%d</th>\n", packs);
+  h_respond(h, "<th class=\"right\">%d</th>\n", agets);
+  tempstr = sizestr(0, sizes);
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  mydelete(tempstr);
+  tempstr = sizestr(0, traffic);
+  h_respond(h, "<th class=\"head\">[%s]&nbsp;%s</th>\n", tempstr, "complete downloaded" );
+  mydelete(tempstr);
+  h_respond(h, "</tr>\n</tfoot>\n<tbody>\n");
+
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (html_hide_locked(xd))
+      continue;
+    if (strcmp(h->group, "*") != 0) {
+      if (strcmp(h->group, ".") == 0) {
+        if (xd->group != NULL)
+          continue;
+      } else {
+        if (xd->group == NULL)
+          continue;
+        if (strcasecmp(h->group, xd->group) != 0)
+          continue;
+      }
+    }
+    num = number_of_pack(xd);
+    h_respond(h, "<tr>\n");
+    h_respond(h, "<td class=\"right\">#%d</td>\n", num);
+    h_respond(h, "<td class=\"right\">%d</td>\n", xd->gets);
+    tempstr = sizestr(0, xd->st_size);
+    h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
+    mydelete(tempstr);
+    tlabel = mycalloc(maxtextlength);
+    len = snprintf(tlabel, maxtextlength-1, "%s\n/msg %s xdcc send %d",
+                   "Download with:", h->nick, num);
+    if (xd->has_md5sum)
+      len += snprintf(tlabel + len, maxtextlength - 1 - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
+    if (xd->has_crc32)
+      len += snprintf(tlabel + len, maxtextlength - 1 - len, "\ncrc32: %.8lX", xd->crc32);
+    tempstr = mycalloc(maxtextlength);
+    len = snprintf(tempstr, maxtextlength-1, "%s", xd->desc);
+    if (xd->lock)
+      len += snprintf(tempstr + len, maxtextlength - 1 - len, " (%s)", "locked");
+    if (xd->note[0])
+      len += snprintf(tempstr + len, maxtextlength - 1 - len, "<br>%s", xd->note);
+/* XXXXX escape & in DESC */
+/* XXXXX escape & in NOTE */
+    h_respond(h, "<td class=\"content\"  title=\"%s\">%s</td>\n", tlabel, tempstr);
+    mydelete(tempstr);
+    mydelete(tlabel);
+    h_respond(h, "</tr>\n");
+  }
+}
+
+static int h_html_index(http * const h)
+{
+  char *tempstr;
+  char *tlabel;
+  xdcc *xd;
+  ssize_t len;
+  ir_uint64 xdccsent;
+  int slots;
+  int i;
+
+  updatecontext();
+
+  h->support_groups = 0;
+  h->nick = gdata.config_nick ? gdata.config_nick : "??";
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (xd->group != NULL) {
+      h->support_groups = 1;
+      break;
+    }
+  }
+
+  if (h->support_groups == 0) {
+    mydelete(h->group);
+    h->group = mystrdup("*");
+  }
+
+  h_include(h, "header.html");
+  if (h->group) {
+    h_html_file(h);
+  } else {
+    h_html_main(h);
+  }
+
+  h_respond(h, "</tbody>\n</table>\n<table class=\"status\">\n<tbody>\n<tr><td>Version</td>\n");
+
+  tlabel = mycalloc(maxtextlength);
+  tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
+  len  = snprintf(tlabel,       maxtextlength - 1,       "%6s %s\n", tempstr, "Traffic today");
+  mydelete(tempstr);
+  tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
+  len += snprintf(tlabel + len, maxtextlength - 1 - len, "%6s %s\n", tempstr, "Traffic this week");
+  mydelete(tempstr);
+  tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
+  len += snprintf(tlabel + len, maxtextlength - 1 - len, "%6s %s\n", tempstr, "Traffic this month");
+  mydelete(tempstr);
+  h_respond(h, "<td title=\"%s\">%s</td>\n", tlabel, VERSIONLONG);
+  mydelete(tlabel);
+
+  tempstr = mycalloc(maxtextlength);
+  getdatestr(tempstr, gdata.curtime, maxtextlength-1);
+  h_respond(h, "<tr>\n");
+  h_respond(h, "<td>%s</td>\n", "last update");
+  h_respond(h, "<td>%s</td>\n", tempstr);
+  h_respond(h, "</tr>\n");
+  mydelete(tempstr);
+
+  slots = gdata.slotsmax - irlist_size(&gdata.trans);
+  if (slots < 0)
+    slots = 0;
+  h_respond(h, "<tr>\n");
+  h_respond(h, "<td>%s</td>\n", "slots open");
+  h_respond(h, "<td>%d</td>\n", slots);
+  h_respond(h, "</tr>\n");
+
+  for (i=0,xdccsent=0; i<XDCC_SENT_SIZE; i++) {
+    xdccsent += (ir_uint64)gdata.xdccsent[i];
+  }
+  tempstr = mycalloc(maxtextlength);
+  snprintf(tempstr, maxtextlength - 1, "%1.1fKB/s",
+           ((float)xdccsent) / XDCC_SENT_SIZE / 1024.0);
+  h_respond(h, "<tr>\n");
+  h_respond(h, "<td>%s</td>\n", "Current Bandwidth");
+  h_respond(h, "<td>%s</td>\n", tempstr);
+  h_respond(h, "</tr>\n");
+  mydelete(tempstr);
+
+  h_respond(h, "</tbody>\n</table>\n<br>\n");
+  h_respond(h, "<a class=\"credits\" href=\"http://iroffer.dinoex.net/\">%s</a>", "Sourcecode" );
+  h_include(h, "footer.html");
+  return 0;
+}
+
+static char *get_url_param(const char *url, const char *key)
+{
+  char *result;
+  char *end;
+  const char *found;
+
+  found = strcasestr(url, key);
+  if (found == NULL)
+    return NULL;
+
+  result = mystrdup(found + strlen(key));
+  end = strchr(result, ' ');
+  if (end != NULL)
+    *(end++) = 0;
+  end = strchr(result, '&');
+  if (end != NULL)
+    *(end++) = 0;
+  return result;
+}
+
+static void h_webliste(http * const h, const char *header, const char *url)
+{
+  size_t guess;
+
+  updatecontext();
+
+  h->group = get_url_param(url, "group=");
+  guess = MAX_WEBLIST_SIZE;
+  h->buffer = mycalloc(guess);
+  h->buffer[ 0 ] = 0;
+  h->end = h->buffer;
+  h->left = guess - 1;
+  h_html_index(h);
+  mydelete(h->group);
+  h_readbuffer(h, http_header_status);
 }
 
 static void h_admin(http * const h, int level, char *url)
 {
+  updatecontext();
+
   if (gdata.debug > 1)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "HTTP not found=%s", url);
@@ -422,6 +875,7 @@ static void h_get(http * const h)
   int i;
 
   updatecontext();
+
   if (h->filedescriptor != FD_UNUSED)
     return;
 
@@ -462,6 +916,12 @@ static void h_get(http * const h)
   data = strchr(url, ' ');
   if (data != NULL)
     *(data++) = 0;
+
+  if (strncasecmp(url, "/?", 2) == 0) {
+    /* send standtus */
+    h_webliste(h, http_header_status, url);
+    return;
+  }
 
   if (strcasecmp(url, "/") == 0) {
     /* send standtus */
@@ -519,6 +979,7 @@ static void h_get(http * const h)
 static void h_send(http * const h)
 {
   off_t offset;
+  char *data;
   size_t attempt;
   ssize_t howmuch, howmuch2;
   long bucket;
@@ -526,24 +987,32 @@ static void h_send(http * const h)
   updatecontext();
 
   if (h->filedescriptor == FD_UNUSED) {
-    h_closeconn(h, "Complete", 0);
-    return;
+    if (h->buffer == NULL) {
+      h_closeconn(h, "Complete", 0);
+      return;
+    }
   }
 
   bucket = TXSIZE * MAXTXPERLOOP;
   do {
-    if (h->filepos != h->bytessent) {
-      offset = lseek(h->filedescriptor, h->bytessent, SEEK_SET);
-      if (offset != h->bytessent) {
-        outerror(OUTERROR_TYPE_WARN,"Can't seek location in file '%s': %s",
-                 h->file, strerror(errno));
-        h_closeconn(h, "Unable to locate data in file", errno);
-        return;
-      }
-      h->filepos = h->bytessent;
-    }
     attempt = min2(bucket - (bucket % TXSIZE), BUFFERSIZE);
-    howmuch = read(h->filedescriptor, gdata.sendbuff, attempt);
+    if (h->filedescriptor == FD_UNUSED) {
+      howmuch = h->totalsize - h->bytessent;
+      data = h->buffer + h->bytessent;
+    } else {
+      if (h->filepos != h->bytessent) {
+        offset = lseek(h->filedescriptor, h->bytessent, SEEK_SET);
+        if (offset != h->bytessent) {
+          outerror(OUTERROR_TYPE_WARN,"Can't seek location in file '%s': %s",
+                   h->file, strerror(errno));
+          h_closeconn(h, "Unable to locate data in file", errno);
+          return;
+        }
+        h->filepos = h->bytessent;
+      }
+      howmuch = read(h->filedescriptor, gdata.sendbuff, attempt);
+      data = gdata.sendbuff;
+    }
     if (howmuch < 0 && errno != EAGAIN) {
       outerror(OUTERROR_TYPE_WARN, "Can't read data from file '%s': %s",
               h->file, strerror(errno));
@@ -554,7 +1023,7 @@ static void h_send(http * const h)
       break;
 
     h->filepos += howmuch;
-    howmuch2 = write(h->clientsocket, gdata.sendbuff, howmuch);
+    howmuch2 = write(h->clientsocket, data, howmuch);
     if (howmuch2 < 0 && errno != EAGAIN) {
       h_closeconn(h, "Connection Lost", errno);
       return;
@@ -573,8 +1042,12 @@ static void h_send(http * const h)
   } while ((bucket >= TXSIZE) && (howmuch2 > 0));
 
   if (h->bytessent >= h->totalsize) {
-    close(h->filedescriptor);
-    h->filedescriptor = FD_UNUSED;
+    if (h->filedescriptor == FD_UNUSED) {
+      mydelete(h->buffer);
+    } else {
+      close(h->filedescriptor);
+      h->filedescriptor = FD_UNUSED;
+    }
   }
 }
 
