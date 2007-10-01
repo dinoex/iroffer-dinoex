@@ -1938,3 +1938,4 @@
 1955 "Quellecode"
 1956 "footer.html"
 1957 "group="
+1958 "help-admin-de.txt"

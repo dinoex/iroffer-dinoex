@@ -856,6 +856,12 @@ static void h_admin(http * const h, int level, char *url)
 {
   updatecontext();
 
+  if (strcasecmp(url, "/") == 0) {
+    /* send standtus */
+    h_readfile(h, http_header_status, "help-admin-en.txt");
+    return;
+  }
+
   if (gdata.debug > 1)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "HTTP not found=%s", url);
