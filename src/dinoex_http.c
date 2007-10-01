@@ -23,6 +23,7 @@
 #include "dinoex_misc.h"
 #include "dinoex_config.h"
 #include "dinoex_http.h"
+#include <ctype.h>
 
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 
@@ -71,6 +72,20 @@ static const http_magic_t http_magic[] = {
   { ".gif", "image/gif" },
   { ".css", "text/css" },
   { NULL, "application/octet-stream" }
+};
+
+typedef struct {
+  char s_ch;
+  const char *s_html;
+} http_special_t;
+
+static const http_special_t http_special[] = {
+  { '&', "&amp;" },
+  { '<', "&lt;" },
+  { '>', "&gt;" },
+  { '"', "&quot;" },
+  { '\'', "&#39;" },
+  { 0, NULL },
 };
 
 /*
@@ -137,6 +152,55 @@ b64decode_string(const unsigned char *coded)
   }
   *(dest++) = 0;
   return result;
+}
+
+static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
+{
+  char *dest = buffer;
+  size_t len;
+  int i;
+  char ch;
+ 
+  max--;
+  for (;;) {
+    if (max <= 0)
+      break;
+    ch = *(src++);
+    if (ch == 0)
+      break;
+    for (i=0; http_special[i].s_ch; i++) {
+      if (ch != http_special[i].s_ch)
+        continue;
+      strncpy(dest, http_special[i].s_html, max);
+      len = strlen(http_special[i].s_html);
+      dest += len;
+      max -= len;
+      break;
+    }
+    if (http_special[i].s_ch != 0)
+      continue;
+    switch (ch) {
+    case 0x03: /* color */
+      if (!isdigit(*src)) break;
+      src++;
+      if (isdigit(*src)) src++;
+      if ((*src) != ',') break;
+      src++;
+      if (isdigit(*src)) src++;
+      if (isdigit(*src)) src++;
+      break;
+    case 0x02: /* bold */
+    case 0x0F: /* end formatting */
+    case 0x16: /* inverse */
+    case 0x1F: /* underline */
+      break;
+    default:
+      *(dest++) = ch;
+    }
+  }
+  len = dest - buffer;
+  *dest = 0;
+  return len;
 }
 
 void h_close_listen(void)
@@ -526,6 +590,8 @@ static void h_html_main(http * const h)
   char *tempstr;
   char *tlink;
   char *tref;
+  char *savegroup;
+  char *savedesc;
   char *inlist;
   char *desc;
   off_t sizes = 0;
@@ -625,17 +691,21 @@ static void h_html_main(http * const h)
     tempstr = sizestr(0, sizes);
     h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
     mydelete(tempstr);
-/* XXXXX escape & in GROUP */
-    h_respond(h, "<td class=\"content\">%s</td>\n", inlist);
+    savegroup = mycalloc(maxtextlength);
+    html_encode(savegroup, maxtextlength, inlist);
+    h_respond(h, "<td class=\"content\">%s</td>\n", savegroup);
     tref = mycalloc(maxtextlength);
-    snprintf(tref, maxtextlength-1, "/?group=%s", inlist);
-/* XXXXX escape & in DESC */
-    tlink = html_link("show list of packs", tref, desc);
+    snprintf(tref, maxtextlength-1, "/?group=%s", savegroup);
+    savedesc = mycalloc(maxtextlength);
+    html_encode(savedesc, maxtextlength, desc);
+    tlink = html_link("show list of packs", tref, savedesc);
+    mydelete(savedesc);
     mydelete(tref);
     h_respond(h, "<td class=\"content\">%s</td>\n", tlink);
     mydelete(tlink);
     h_respond(h, "</tr>\n");
     inlist = irlist_delete(&grplist, inlist);
+    mydelete(savegroup);
   }
 }
 
@@ -727,13 +797,14 @@ static void h_html_file(http * const h)
     if (xd->has_crc32)
       len += snprintf(tlabel + len, maxtextlength - 1 - len, "\ncrc32: %.8lX", xd->crc32);
     tempstr = mycalloc(maxtextlength);
-    len = snprintf(tempstr, maxtextlength-1, "%s", xd->desc);
+    html_encode(tempstr, maxtextlength, xd->desc);
+    len = strlen(tempstr);
     if (xd->lock)
       len += snprintf(tempstr + len, maxtextlength - 1 - len, " (%s)", "locked");
-    if (xd->note[0])
-      len += snprintf(tempstr + len, maxtextlength - 1 - len, "<br>%s", xd->note);
-/* XXXXX escape & in DESC */
-/* XXXXX escape & in NOTE */
+    if (xd->note[0]) {
+      len += snprintf(tempstr + len, maxtextlength - 1 - len, "<br>");
+      len += html_encode(tempstr + len, maxtextlength - 1 - len, xd->note);
+    }
     h_respond(h, "<td class=\"content\"  title=\"%s\">%s</td>\n", tlabel, tempstr);
     mydelete(tempstr);
     mydelete(tlabel);
