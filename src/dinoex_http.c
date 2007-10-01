@@ -452,6 +452,16 @@ static void h_respond(http * const h, const char *format, ...)
   va_end(args);
 }
 
+static off_t h_stat(const char *path)
+{
+  struct stat st;
+
+  if (stat(path, &st) < 0)
+    return 0;
+
+  return st.st_size;
+}
+
 static void h_include(http * const h, const char *file)
 {
   ssize_t len;
@@ -810,7 +820,7 @@ static int h_html_index(http * const h)
   mydelete(tempstr);
 
   h_respond(h, "</tbody>\n</table>\n<br>\n");
-  h_respond(h, "<a class=\"credits\" href=\"http://iroffer.dinoex.net/\">%s</a>", "Sourcecode" );
+  h_respond(h, "<a class=\"credits\" href=\"http://iroffer.dinoex.net/\">%s</a>\n", "Sourcecode" );
   h_include(h, "footer.html");
   return 0;
 }
@@ -842,7 +852,10 @@ static void h_webliste(http * const h, const char *header, const char *url)
   updatecontext();
 
   h->group = get_url_param(url, "group=");
-  guess = MAX_WEBLIST_SIZE;
+  guess = 2048;
+  guess += irlist_size(&gdata.xdccs) * 300;
+  guess += h_stat("header.html");
+  guess += h_stat("footer.html");
   h->buffer = mycalloc(guess);
   h->buffer[ 0 ] = 0;
   h->end = h->buffer;
@@ -856,7 +869,7 @@ static void h_admin(http * const h, int level, char *url)
 {
   updatecontext();
 
-  if (strcasecmp(url, "/") == 0) {
+  if (strcasecmp(url, "") == 0) {
     /* send standtus */
     h_readfile(h, http_header_status, "help-admin-en.txt");
     return;
@@ -929,7 +942,7 @@ static void h_get(http * const h)
     return;
   }
 
-  if (strcasecmp(url, "/") == 0) {
+  if (strcmp(url, "/") == 0) {
     /* send standtus */
     h_readfile(h, http_header_status, gdata.xdcclistfile);
     return;
