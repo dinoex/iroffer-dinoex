@@ -1934,7 +1934,7 @@
 1951 "%1.1fKB/s"
 1952 "Aktuelle Bandbreite"
 1953 "</tbody>\n</table>\n<br>\n"
-1954 "<a class=\"credits\" href=\"http://iroffer.dinoex.net/\">%s</a>"
+1954 "<a class=\"credits\" href=\"http://iroffer.dinoex.net/\">%s</a>\n"
 1955 "Quellecode"
 1956 "footer.html"
 1957 "group="
