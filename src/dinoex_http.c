@@ -62,15 +62,16 @@ typedef struct {
 } http_magic_t;
 
 static const http_magic_t http_magic[] = {
-  { ".txt", "text/plain" },
-  { ".html", "text/html" },
-  { ".htm", "text/html" },
-  { ".ico", "image/x-icon" },
-  { ".png", "image/png" },
-  { ".jpg", "image/jpeg" },
-  { ".jpeg", "image/jpeg" },
-  { ".gif", "image/gif" },
-  { ".css", "text/css" },
+  { "txt", "text/plain" },
+  { "html", "text/html" },
+  { "htm", "text/html" },
+  { "ico", "image/x-icon" },
+  { "png", "image/png" },
+  { "jpg", "image/jpeg" },
+  { "jpeg", "image/jpeg" },
+  { "gif", "image/gif" },
+  { "css", "text/css" },
+  { "js", "application/x-javascript" },
   { NULL, "application/octet-stream" }
 };
 
@@ -152,6 +153,24 @@ b64decode_string(const unsigned char *coded)
   }
   *(dest++) = 0;
   return result;
+}
+
+static const char *html_mime(const char *file)
+{
+  const char *ext;
+  int i;
+
+  ext = strchr(file, '.');
+  if (ext == NULL)
+    ext = file;
+  else
+    ext++;
+
+  for (i=0; http_magic[i].m_ext; i++) {
+    if (strcasecmp(http_magic[i].m_ext, ext) == 0)
+      break;
+  }
+  return http_magic[i].m_mime;
 }
 
 static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
@@ -432,10 +451,8 @@ static void h_error(http * const h, const char *header)
 static void h_readfile(http * const h, const char *header, const char *file)
 {
   char *tempstr;
-  const char *ext;
   size_t len;
   struct stat st;
-  int i;
 
   updatecontext();
 
@@ -455,18 +472,11 @@ static void h_readfile(http * const h, const char *header, const char *file)
     return;
   }
 
-  ext = strchr(h->file, '.');
-  if (ext == NULL)
-    ext = ".bin";
-  for (i=0; http_magic[i].m_ext; i++) {
-    if (strcasecmp(http_magic[i].m_ext, ext) == 0)
-      break;
-  }
   h->bytessent = 0;
   h->filepos = 0;
   h->totalsize = st.st_size;
   tempstr = mycalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength-1, header, http_magic[i].m_mime, h->totalsize);
+  len = snprintf(tempstr, maxtextlength-1, header, html_mime(h->file), h->totalsize);
   write(h->clientsocket, tempstr, len);
   mydelete(tempstr);
   h->status = HTTP_STATUS_SENDING;
@@ -482,7 +492,7 @@ static void h_readbuffer(http * const h, const char *header)
   h->bytessent = 0;
   h->totalsize = strlen(h->buffer);
   tempstr = mycalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength-1, header, http_magic[1].m_mime, h->totalsize);
+  len = snprintf(tempstr, maxtextlength-1, header, html_mime("html"), h->totalsize);
   write(h->clientsocket, tempstr, len);
   mydelete(tempstr);
   h->status = HTTP_STATUS_SENDING;
