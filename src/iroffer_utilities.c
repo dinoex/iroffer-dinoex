@@ -1451,7 +1451,15 @@ void dumpgdata(void)
           iter->localip,
           iter->remoteip);
   gdata_iter_print_uint(status);
+  gdata_iter_print_uint(support_groups);
   gdata_iter_print_string(file);
+  gdata_iter_print_string(buffer);
+  gdata_iter_print_string(end);
+  gdata_iter_print_string(nick);
+  gdata_iter_print_string(group);
+  ioutput(gdata_common,
+          "  : left=%ld",
+          (long)iter->left);
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(http_ips, badip);
