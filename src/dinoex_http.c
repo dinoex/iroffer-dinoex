@@ -229,6 +229,7 @@ void h_close_listen(void)
 
   FD_CLR(http_listen, &gdata.readset);
   close(http_listen);
+  http_listen = FD_UNUSED;
 }
 
 static int is_in_badip(long remoteip)
@@ -462,13 +463,19 @@ static void h_readfile(http * const h, const char *header, const char *file)
   if (h->filedescriptor < 0) {
     if (gdata.debug > 1)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "file not found=%s", file);
+              "File not found: '%s'", file);
+    h->filedescriptor = FD_UNUSED;
     h_error(h, http_header_notfound);
     return;
   }
   if (fstat(h->filedescriptor, &st) < 0) {
-    h_closeconn(h, "Unable to stat file", errno);
+    if (gdata.debug > 1)
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+              "Unable to stat file '%s': %s",
+              file, strerror(errno));
     close(h->filedescriptor);
+    h->filedescriptor = FD_UNUSED;
+    h_error(h, http_header_notfound);
     return;
   }
 
@@ -498,7 +505,7 @@ static void h_readbuffer(http * const h, const char *header)
   h->status = HTTP_STATUS_SENDING;
   if (gdata.debug > 1)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "HTTP response=%ld", (long)(h->totalsize));
+            "HTTP response %ld bytes", (long)(h->totalsize));
 }
 
 static void
@@ -547,7 +554,7 @@ static void h_include(http * const h, const char *file)
   if (fd < 0) {
     if (gdata.debug > 1)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "file not found=%s", file);
+              "File not found: '%s'", file);
     return;
   }
   if (fstat(fd, &st) < 0) {
@@ -958,7 +965,7 @@ static void h_admin(http * const h, int level, char *url)
 
   if (gdata.debug > 1)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "HTTP not found=%s", url);
+            "HTTP not found: '%s'", url);
   h_error(h, http_header_notfound);
 }
 
@@ -1072,7 +1079,7 @@ static void h_get(http * const h)
 
   if (gdata.debug > 1)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "HTTP not found=%s", url);
+            "HTTP not found: '%s'", url);
   h_error(h, http_header_notfound);
 }
 
