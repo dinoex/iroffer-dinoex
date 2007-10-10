@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 3.0:
 -------------------
 
+171) IPV6 support zum IRC Server
+
 170) CHDESC
   Neues Admin Kommando:
   CHDESC <n>                       Ändert die Beschreibung von Paket <n> auf den Dateinamen
