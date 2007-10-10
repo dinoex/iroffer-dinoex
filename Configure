@@ -1073,6 +1073,33 @@ echo "#define CANT_SET_TOS" >> src/iroffer_config.h
 echo "no"
 fi
 
+echo -n "Checking for getaddrinfo ... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {
+  struct addrinfo hints, *res0;
+  int error;
+
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = PF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  error = getaddrinfo(\"www.kame.net\", \"http\", &hints, &res0);
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
+echo "found"
+else
+echo "#define NO_GETADDRINFO" >> src/iroffer_config.h
+echo "missing, will use gethostbyname instead"
+cat -n config.temp.c
+exit 0
+fi
+
 echo -n "Checking for gethostbyname error values... "
 echo "
 #define GEX 
