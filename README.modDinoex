@@ -4,6 +4,7 @@ With Version mod 3.0:
 ---------------------
 
 171) IPV6 support to the irc server
+  usenatip must be set to IPv4 for DCC to work.
 
 170) CHDESC
   new admin command:
