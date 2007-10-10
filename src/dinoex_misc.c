@@ -2538,6 +2538,199 @@ void l_setup_accept(upload * const l)
   l->ul_status = UPLOAD_STATUS_GETTING;
 }
 
+void child_resolver(void)
+{
+#if !defined(NO_GETADDRINFO)
+  struct addrinfo hints;
+  struct addrinfo *results;
+  struct addrinfo *res;
+#else
+  struct hostent *remotehost;
+#endif
+  struct sockaddr_in *remoteaddr;
+  res_addrinfo_t rbuffer;
+  ssize_t bytes;
+  int i;
+#if !defined(NO_GETADDRINFO)
+  int status;
+  int found;
+  char portname[16];
+#endif
+
+  for (i=3; i<FD_SETSIZE; i++) {
+    /* include [0], but not [1] */
+    if (i != gnetwork->serv_resolv.sp_fd[1]) {
+      close(i);
+    }
+  }
+
+  /* enable logfile */
+  gdata.logfd = FD_UNUSED;
+
+#if !defined(NO_GETADDRINFO)
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = PF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  snprintf(portname, sizeof(portname), "%d",
+           gnetwork->serv_resolv.to_port);
+  status = getaddrinfo(gnetwork->serv_resolv.to_ip, portname,
+                       &hints, &results);
+  if ((status) || results == NULL) {
+#else
+  remotehost = gethostbyname(gnetwork->serv_resolv.to_ip);
+  if (remotehost == NULL) {
+#endif
+#ifdef NO_HOSTCODES
+    exit(10);
+#else
+    switch (h_errno) {
+    case HOST_NOT_FOUND:
+      exit(20);
+    case NO_ADDRESS:
+#if NO_ADDRESS != NO_DATA
+    case NO_DATA:
+#endif
+      exit(21);
+    case NO_RECOVERY:
+      exit(22);
+    case TRY_AGAIN:
+      exit(23);
+    default:
+      exit(12);
+    }
+#endif
+  }
+
+  remoteaddr = (struct sockaddr_in *)(&(rbuffer.ai_addr));
+  rbuffer.ai_reset = 0;
+#if !defined(NO_GETADDRINFO)
+  found = -1;
+  for (res = results; res; res = res->ai_next) {
+    found ++;
+    if (found < gnetwork->serv_resolv.next)
+      continue;
+    if (res->ai_next == NULL)
+      rbuffer.ai_reset = 1;
+    break;
+  }
+  if (res == NULL) {
+    res = results;
+    rbuffer.ai_reset = 1;
+  }
+
+  rbuffer.ai_family = res->ai_family;
+  rbuffer.ai_socktype = res->ai_socktype;
+  rbuffer.ai_protocol = res->ai_protocol;
+  rbuffer.ai_addrlen = res->ai_addrlen;
+  rbuffer.ai_addr = *(res->ai_addr);
+  memcpy(remoteaddr, res->ai_addr, res->ai_addrlen);
+#else
+  rbuffer.ai_family = AF_INET;
+  rbuffer.ai_socktype = SOCK_STREAM;
+  rbuffer.ai_protocol = 0;
+  rbuffer.ai_addrlen = remotehost->h_length;
+  rbuffer.ai_addr.sa_family = remotehost->h_addrtype;
+  rbuffer.ai_addr.sa_len = remotehost->h_length;
+  remoteaddr->sin_port = htons(gnetwork->serv_resolv.to_port);
+  memcpy(&(remoteaddr->sin_addr), remotehost->h_addr_list[0], sizeof(struct in_addr));
+#endif
+  bytes = write(gnetwork->serv_resolv.sp_fd[1],
+                &rbuffer,
+                sizeof(res_addrinfo_t));
+#if !defined(NO_GETADDRINFO)
+  freeaddrinfo(results);
+#endif
+  if (bytes != sizeof(res_addrinfo_t)) {
+     exit(11);
+  }
+}
+
+int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen)
+{
+#if !defined(NO_GETADDRINFO)
+  char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+
+  if (getnameinfo(sa, sa->sa_len, hbuf, sizeof(hbuf), sbuf,
+                  sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
+    return snprintf(buffer, len, "(unknown)" );
+  }
+  return snprintf(buffer, len, "host=%s, port=%s", hbuf, sbuf);
+#else
+  const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
+  unsigned long to_ip = ntohl(remoteaddr->sin_addr.s_addr);
+  return snprintf(buffer, len, "%lu.%lu.%lu.%lu:%d",
+                  (to_ip >> 24) & 0xFF,
+                  (to_ip >> 16) & 0xFF,
+                  (to_ip >>  8) & 0xFF,
+                  (to_ip      ) & 0xFF,
+                  ntohs(remoteaddr->sin_port));
+#endif
+}
+
+int connectirc2(res_addrinfo_t *remote)
+{
+  struct sockaddr_in *remoteaddr;
+  struct sockaddr_in localaddr;
+  int retval;
+  int family;
+
+  if (remote->ai_reset)
+    gnetwork->serv_resolv.next = 0;
+
+  family = remote->ai_addr.sa_family;
+  remoteaddr = (struct sockaddr_in *)(&(remote->ai_addr));
+  gnetwork->ircserver = socket(family, remote->ai_socktype, remote->ai_protocol);
+  if (gnetwork->ircserver < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,"Socket Error");
+    return 1;
+  }
+
+  if (gdata.debug > 0) {
+    char *msg;
+    msg = mycalloc(maxtextlength);
+    my_getnameinfo(msg, maxtextlength -1, &(remote->ai_addr), remote->ai_addrlen);
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "Connecting to %s", msg);
+    mydelete(msg);
+  }
+
+  if (gdata.local_vhost) {
+    bzero((char*)&localaddr, sizeof(struct sockaddr_in));
+    localaddr.sin_family = family;
+    localaddr.sin_port = 0;
+    localaddr.sin_addr.s_addr = htonl(gdata.local_vhost);
+
+    if (bind(gnetwork->ircserver, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Bind To Virtual Host");
+      close(gnetwork->ircserver);
+      return 1;
+    }
+  }
+
+  if (set_socket_nonblocking(gnetwork->ircserver,1) < 0 )
+    outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
+
+  alarm(CTIMEOUT);
+  retval = connect(gnetwork->ircserver, &(remote->ai_addr), remote->ai_addrlen);
+  if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) ) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,"Connection to Server Failed");
+    alarm(0);
+    close(gnetwork->ircserver);
+    return 1;
+  }
+  alarm(0);
+
+  if (gdata.debug > 0) {
+    ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ircserver socket = %d",gnetwork->ircserver);
+  }
+
+  gnetwork->lastservercontact=gdata.curtime;
+
+  /* good */
+  gnetwork->serverstatus = SERVERSTATUS_TRYING;
+
+  return 0;
+}
+
 #ifdef DEBUG
 
 static void free_state(void)

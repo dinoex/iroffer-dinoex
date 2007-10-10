@@ -678,57 +678,8 @@ static int connectirc (server_t *tserver) {
      }
    if (callval == 0)
      {
-       struct hostent *remotehost;
-       int i;
-       
-       /* enable logfile */
-       gdata.logfd = FD_UNUSED;
-
        /* child */
-       for (i=3; i<FD_SETSIZE; i++)
-         {
-           /* include [0], but not [1] */
-           if (i != gnetwork->serv_resolv.sp_fd[1])
-             {
-               close(i);
-             }
-         }
-       
-       remotehost = gethostbyname(gnetwork->serv_resolv.to_ip);
-       if (remotehost == NULL)
-         {
-outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid DNS response, Ignoring: %s",hstrerror(h_errno));
-#ifdef NO_HOSTCODES
-           exit(10);
-#else
-           switch (h_errno)
-             {
-             case HOST_NOT_FOUND:
-               exit(20);
-             case NO_ADDRESS:
-#if NO_ADDRESS != NO_DATA
-             case NO_DATA:
-#endif
-               exit(21);
-             case NO_RECOVERY:
-               exit(22);
-             case TRY_AGAIN:
-               exit(23);
-             default:
-               exit(12);
-             }
-#endif
-         }
-       
-       callval = write(gnetwork->serv_resolv.sp_fd[1],
-                       remotehost->h_addr_list[0],
-                       sizeof(struct in_addr));
-       
-       if (callval != sizeof(struct in_addr))
-         {
-           exit(11);
-         }
-       
+       child_resolver();
        sleep(60);
        exit(0);
      }
@@ -737,78 +688,12 @@ outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid DNS response, Ignoring: %s",hstrerror(
    gnetwork->serv_resolv.child_pid = callval;
    close(gnetwork->serv_resolv.sp_fd[1]);
    gnetwork->serv_resolv.sp_fd[1] = 0;
+   gnetwork->serv_resolv.next ++;
    
    gnetwork->serverstatus = SERVERSTATUS_RESOLVING;
    
    return 0;
 }
-
-int connectirc2 (struct in_addr *remote) {
-   struct sockaddr_in ircserverip;
-   struct sockaddr_in localaddr;
-   int retval;
-   
-   bzero ((char *) &ircserverip, sizeof (ircserverip));
-   
-   gnetwork->ircserver = socket( AF_INET, SOCK_STREAM, 0);
-   if (gnetwork->ircserver < 0) {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Socket Error");
-      return 1;
-      }
-   
-   ircserverip.sin_family = AF_INET;
-   ircserverip.sin_port = htons(gnetwork->serv_resolv.to_port);
-   
-   memcpy(&ircserverip.sin_addr, remote, sizeof(struct in_addr));
-   
-   if (gdata.debug > 0)
-     {
-       unsigned long to_ip = ntohl(ircserverip.sin_addr.s_addr);
-       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"Connecting to %lu.%lu.%lu.%lu:%d",
-               (to_ip >> 24) & 0xFF,
-               (to_ip >> 16) & 0xFF,
-               (to_ip >>  8) & 0xFF,
-               (to_ip      ) & 0xFF,
-               gnetwork->serv_resolv.to_port);
-     }
-   
-   if (gdata.local_vhost) {
-      bzero((char*)&localaddr, sizeof(struct sockaddr_in));
-      localaddr.sin_family = AF_INET;
-      localaddr.sin_port = 0;
-      localaddr.sin_addr.s_addr = htonl(gdata.local_vhost);
-      
-      if (bind(gnetwork->ircserver, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0) {
-         outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Bind To Virtual Host");
-         close(gnetwork->ircserver);
-         return 1;
-         }
-      }
-   
-   if (set_socket_nonblocking(gnetwork->ircserver,1) < 0 )
-      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
-   
-   alarm(CTIMEOUT);
-   retval = connect(gnetwork->ircserver, (struct sockaddr *) &ircserverip, sizeof(ircserverip));
-   if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) ) {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Connection to Server Failed");
-      alarm(0);
-      close(gnetwork->ircserver);
-      return 1;
-      }
-   alarm(0);
-   
-   if (gdata.debug > 0) {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ircserver socket = %d",gnetwork->ircserver);
-      }
-
-   gnetwork->lastservercontact=gdata.curtime;
-   
-   /* good */
-   gnetwork->serverstatus = SERVERSTATUS_TRYING;
-   
-   return 0;
-   }
 
 void initirc(void)
 {

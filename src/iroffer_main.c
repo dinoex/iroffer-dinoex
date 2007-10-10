@@ -726,14 +726,14 @@ static void mainloop (void) {
       if ((gnetwork->serverstatus == SERVERSTATUS_RESOLVING) &&
           FD_ISSET(gnetwork->serv_resolv.sp_fd[0], &gdata.readset))
         {
-          struct in_addr remote;
+          res_addrinfo_t remote;
           length = read(gnetwork->serv_resolv.sp_fd[0],
-                        &remote, sizeof(struct in_addr));
+                        &remote, sizeof(res_addrinfo_t));
           
           kill(gnetwork->serv_resolv.child_pid, SIGKILL);
           FD_CLR(gnetwork->serv_resolv.sp_fd[0], &gdata.readset);
           
-          if (length != sizeof(struct in_addr))
+          if (length != sizeof(res_addrinfo_t))
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                       "Error resolving server %s on %s",

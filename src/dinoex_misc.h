@@ -110,6 +110,10 @@ int l_setup_listen(upload * const l);
 int l_setup_passive(upload * const l, char *token);
 void l_setup_accept(upload * const l);
 
+void child_resolver(void);
+int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen);
+int connectirc2(res_addrinfo_t *remote);
+
 void exit_iroffer(void);
 
 /* End of File */

@@ -46,6 +46,7 @@ struct
   unsigned short to_port;
   int sp_fd[2];
   pid_t child_pid;
+  int next;
 } serv_resolv;
 
 enum

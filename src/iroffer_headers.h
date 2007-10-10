@@ -465,6 +465,16 @@ typedef struct
   char *msg;
 } channel_announce_t;
 
+typedef struct {
+        int ai_reset;
+        int ai_family;
+        int ai_socktype;
+        int ai_protocol;
+        size_t ai_addrlen;
+        struct sockaddr ai_addr;
+        char ai_buffer[16];
+} res_addrinfo_t;
+
 /*------------ function declarations ------------- */
 
 /* iroffer.c */
@@ -692,7 +702,6 @@ char* getuptime(char *str, int type, time_t fromwhen, int len);
 void shutdowniroffer(void);
 void quit_server(void);
 void switchserver(int which);
-int connectirc2 (struct in_addr *remote);
 char* getstatusline(char *str, int len);
 char* getstatuslinenums(char *str, int len);
 void sendxdlqueue(void);
