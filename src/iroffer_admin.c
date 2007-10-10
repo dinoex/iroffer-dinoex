@@ -153,7 +153,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_autoadd,  "AUTOADD",NULL,"scan autoadd_dirs for new files now"},
 {3,3,method_allow_all,u_chfile,   "CHFILE","n filename","Change file of pack <n> to <filename>"},
 {3,3,method_allow_all,a_newdir,   "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
-{3,3,method_allow_all,u_chdesc,   "CHDESC","n msg","Change description of pack <n> to <msg>"},
+{3,3,method_allow_all,u_chdesc,   "CHDESC","n [msg]","Change description of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chnote,   "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chmins,   "CHMINS","n x","Change min speed of pack <n> to <x> KB/s"},
 {3,3,method_allow_all,u_chmaxs,   "CHMAXS","n x","Change max speed of pack <n> to <x> KB/s"},
@@ -2063,6 +2063,7 @@ static void u_addnew(const userinput * const u)
 static void u_chdesc(const userinput * const u) {
    int num = 0;
    xdcc *xd;
+   const char *new;
    
    updatecontext();
    
@@ -2070,18 +2071,21 @@ static void u_chdesc(const userinput * const u) {
    if (invalid_pack(u, num) != 0)
       return;
 
+   xd = irlist_get_nth(&gdata.xdccs, num-1);
+   new = u->arg2e;
    if (!u->arg2e || !strlen(u->arg2e)) {
-      u_respond(u,"Try Specifying a Description");
-      return;
+      new = getfilename(xd->file);
+      if (strcmp(new, xd->desc) == 0) {
+        u_respond(u, "Try Specifying a Description");
+        return;
+        }
       }
    
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
-   
    u_respond(u, "CHDESC: [Pack %i] Old: %s New: %s",
-      num,xd->desc,u->arg2e);
+      num, xd->desc, new);
    
    mydelete(xd->desc);
-   xd->desc = mystrdup(u->arg2e);
+   xd->desc = mystrdup(new);
    
    write_statefile();
    xdccsavetext();
