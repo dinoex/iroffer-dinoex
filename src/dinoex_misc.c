@@ -2650,11 +2650,11 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 
-  if (getnameinfo(sa, sa->sa_len, hbuf, sizeof(hbuf), sbuf,
+  if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     return snprintf(buffer, len, "(unknown)" );
   }
-  return snprintf(buffer, len, "host=%s, port=%s", hbuf, sbuf);
+  return snprintf(buffer, len, "host=%s port=%s", hbuf, sbuf);
 #else
   const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
   unsigned long to_ip = ntohl(remoteaddr->sin_addr.s_addr);

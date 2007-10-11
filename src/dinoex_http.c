@@ -27,7 +27,7 @@
 
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 
-static int http_listen = FD_UNUSED;
+static int http_listen[2] = { FD_UNUSED, FD_UNUSED };
 
 static const char *http_header_status =
 "HTTP/1.0 200 OK\r\n"
@@ -224,12 +224,15 @@ static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
 
 void h_close_listen(void)
 {
-  if (http_listen == FD_UNUSED)
-    return;
+  int i;
 
-  FD_CLR(http_listen, &gdata.readset);
-  close(http_listen);
-  http_listen = FD_UNUSED;
+  for (i=0; i<2; i++) {
+    if (http_listen[i] != FD_UNUSED) {
+      FD_CLR(http_listen[i], &gdata.readset);
+      close(http_listen[i]);
+      http_listen[i] = FD_UNUSED;
+    }
+  }
 }
 
 static int is_in_badip(long remoteip)
@@ -284,54 +287,83 @@ static void expire_badip(void)
   }
 }
 
+static int h_open_listen(int i)
+{
+  char *msg;
+  int family;
+  int rc;
+  int tempc;
+  struct sockaddr_in listenaddr4;
+  struct sockaddr_in6 listenaddr6;
+
+  updatecontext();
+
+  if (i == 0)
+    family = AF_INET;
+  else
+    family = AF_INET6;
+  http_listen[i] = socket(family, SOCK_STREAM, 0);
+  if (http_listen[i] < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Could Not Create Socket, Aborting: %s", strerror(errno));
+    http_listen[i] = FD_UNUSED;
+    return 1;
+  }
+
+  tempc = 1;
+  setsockopt(http_listen[i], SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
+
+  if (i == 0) {
+    bzero ((char *) &listenaddr4, sizeof (struct sockaddr_in));
+    listenaddr4.sin_family = AF_INET;
+    listenaddr4.sin_addr.s_addr = INADDR_ANY;
+    listenaddr4.sin_port = htons(gdata.http_port);
+    rc = bind(http_listen[i], (struct sockaddr *)&listenaddr4, sizeof(struct sockaddr_in));
+  } else {
+    bzero ((char *) &listenaddr6, sizeof (struct sockaddr_in6));
+    listenaddr6.sin6_family = AF_INET6;
+    listenaddr6.sin6_port = htons(gdata.http_port);
+    rc = bind(http_listen[i], (struct sockaddr *)&listenaddr6, sizeof(struct sockaddr_in6));
+  }
+
+  if (rc < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Couldn't Bind to Socket, Aborting: %s", strerror(errno));
+    http_listen[i] = FD_UNUSED;
+    return 1;
+  }
+
+  if (listen(http_listen[i], 1) < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Listen, Aborting: %s", strerror(errno));
+    http_listen[i] = FD_UNUSED;
+    return 1;
+  }
+
+  msg = mycalloc(maxtextlength);
+  if (i == 0)
+    my_getnameinfo(msg, maxtextlength -1, (struct sockaddr *)&listenaddr4, sizeof(struct sockaddr_in));
+  else
+    my_getnameinfo(msg, maxtextlength -1, (struct sockaddr *)&listenaddr6, sizeof(struct sockaddr_in6));
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          "HTTP SERVER waiting for connection on %s",  msg);
+  mydelete(msg);
+  return 0;
+}
+
 int h_setup_listen(void)
 {
-  int tempc;
-  int listenport;
-  struct sockaddr_in listenaddr;
+  int i;
+  int rc = 0;
 
   updatecontext();
 
   if (gdata.http_port == 0)
     return 1;
 
-  if ((http_listen = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Could Not Create Socket, Aborting: %s", strerror(errno));
-    http_listen = FD_UNUSED;
-    return 1;
+  for (i=0; i<2; i++) {
+    rc += h_open_listen(i);
   }
-
-  tempc = 1;
-  setsockopt(http_listen, SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
-
-  bzero ((char *) &listenaddr, sizeof (struct sockaddr_in));
-  listenaddr.sin_family = AF_INET;
-  listenaddr.sin_addr.s_addr = INADDR_ANY;
-  listenaddr.sin_port = htons(gdata.http_port);
-
-  if (bind(http_listen, (struct sockaddr *)&listenaddr, sizeof(struct sockaddr_in)) < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Couldn't Bind to Socket, Aborting: %s", strerror(errno));
-    http_listen = FD_UNUSED;
-    return 1;
-  }
-
-  listenport = ntohs (listenaddr.sin_port);
-  if (listen (http_listen, 1) < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Listen, Aborting: %s", strerror(errno));
-    http_listen = FD_UNUSED;
-    return 1;
-  }
-
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "HTTP SERVER waiting for connection on %lu.%lu.%lu.%lu:%d",
-          (gdata.ourip >> 24) & 0xFF,
-          (gdata.ourip >> 16) & 0xFF,
-          (gdata.ourip >>  8) & 0xFF,
-          (gdata.ourip      ) & 0xFF,
-          listenport);
-  return 0;
+  return rc;
 }
 
 void h_reash_listen(void)
@@ -340,18 +372,19 @@ void h_reash_listen(void)
     h_close_listen();
     return;
   }
-  if (http_listen == FD_UNUSED) {
-    h_setup_listen();
-  }
+  h_setup_listen();
 }
 
 int h_listen(int highests)
 {
   http *h;
+  int i;
 
-  if (http_listen != FD_UNUSED) {
-    FD_SET(http_listen, &gdata.readset);
-    highests = max2(highests, http_listen);
+  for (i=0; i<2; i++) {
+    if (http_listen[i] != FD_UNUSED) {
+      FD_SET(http_listen[i], &gdata.readset);
+      highests = max2(highests, http_listen[i]);
+    }
   }
 
   for (h = irlist_get_head(&gdata.https);
@@ -371,17 +404,25 @@ int h_listen(int highests)
 
 /* connections */
 
-static void h_accept(void)
+static void h_accept(int i)
 {
   SIGNEDSOCK int addrlen;
-  struct sockaddr_in remoteaddr;
-  int clientsocket;
+  struct sockaddr_in remoteaddr4;
+  struct sockaddr_in6 remoteaddr6;
+  char *msg;
   http *h;
+  int clientsocket;
 
   updatecontext();
 
-  addrlen = sizeof (struct sockaddr_in);
-  if ((clientsocket = accept(http_listen, (struct sockaddr *) &remoteaddr, &addrlen)) < 0) {
+  if (i == 0) {
+    addrlen = sizeof (struct sockaddr_in);
+    clientsocket = accept(http_listen[i], (struct sockaddr *) &remoteaddr4, &addrlen);
+  } else {
+    addrlen = sizeof (struct sockaddr_in6);
+    clientsocket = accept(http_listen[i], (struct sockaddr *) &remoteaddr6, &addrlen);
+  }
+  if (clientsocket < 0) {
     outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
     return;
   }
@@ -393,19 +434,25 @@ static void h_accept(void)
   h = irlist_add(&gdata.https, sizeof(http));
   h->filedescriptor = FD_UNUSED;
   h->clientsocket = clientsocket;
-  h->remoteip   = ntohl(remoteaddr.sin_addr.s_addr);
-  h->remoteport = ntohs(remoteaddr.sin_port);
+  if (i == 0) {
+    h->remoteip   = ntohl(remoteaddr4.sin_addr.s_addr);
+    h->remoteport = ntohs(remoteaddr4.sin_port);
+  } else {
+    h->remoteip   = 0;
+    h->remoteport = ntohs(remoteaddr6.sin6_port);
+  }
   h->connecttime = gdata.curtime;
   h->lastcontact = gdata.curtime;
   h->status = HTTP_STATUS_GETTING;
 
+  msg = mycalloc(maxtextlength);
+  if (i == 0)
+    my_getnameinfo(msg, maxtextlength -1, (struct sockaddr *)&remoteaddr4, sizeof(struct sockaddr_in));
+  else
+    my_getnameinfo(msg, maxtextlength -1, (struct sockaddr *)&remoteaddr6, sizeof(struct sockaddr_in6));
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "HTTP connection received from %lu.%lu.%lu.%lu:%d",
-          (h->remoteip >> 24) & 0xFF,
-          (h->remoteip >> 16) & 0xFF,
-          (h->remoteip >>  8) & 0xFF,
-          (h->remoteip      ) & 0xFF,
-          h->remoteport);
+          "HTTP connection received from %s",  msg);
+  mydelete(msg);
 }
 
 static void h_closeconn(http * const h, const char *msg, int errno1)
@@ -1171,9 +1218,12 @@ static void h_istimeout(http * const h)
 void h_done_select(int changesec)
 {
   http *h;
+  int i;
 
-  if (FD_ISSET(http_listen, &gdata.readset)) {
-    h_accept();
+  for (i=0; i<2; i++) {
+    if (FD_ISSET(http_listen[i], &gdata.readset)) {
+      h_accept(i);
+    }
   }
   h = irlist_get_head(&gdata.https);
   while (h) {
