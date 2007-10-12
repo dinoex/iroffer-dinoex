@@ -1222,8 +1222,10 @@ void h_done_select(int changesec)
   int i;
 
   for (i=0; i<2; i++) {
-    if (FD_ISSET(http_listen[i], &gdata.readset)) {
-      h_accept(i);
+    if (http_listen[i] != FD_UNUSED) {
+      if (FD_ISSET(http_listen[i], &gdata.readset)) {
+        h_accept(i);
+      }
     }
   }
   h = irlist_get_head(&gdata.https);
