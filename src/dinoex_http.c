@@ -117,7 +117,7 @@ static unsigned char base64decode[ 256 ] = {
 };
 
 static void
-b64decode_quartet( unsigned char *decoded, const unsigned char *coded )
+b64decode_quartet(unsigned char *decoded, const unsigned char *coded )
 {
   unsigned char ch;
 
@@ -136,7 +136,7 @@ b64decode_quartet( unsigned char *decoded, const unsigned char *coded )
 }
 
 static char *
-b64decode_string(const unsigned char *coded)
+b64decode_string(const char *coded)
 {
   char *dest;
   char *result;
@@ -146,7 +146,7 @@ b64decode_string(const unsigned char *coded)
   result = mycalloc(len);
   dest = result;
   while (len >= 4) {
-    b64decode_quartet(dest, coded);
+    b64decode_quartet((unsigned char *)dest, (const unsigned char *)coded);
     dest += 3;
     coded += 4;
     len -= 4;
@@ -1058,7 +1058,8 @@ static void h_get(http * const h)
     }
   }
 
-  if (strncasecmp(gdata.sendbuff, "GET ", 4 ) != 0) {
+  url = (char *) gdata.sendbuff;
+  if (strncasecmp(url, "GET ", 4 ) != 0) {
     h_closeconn(h, "Bad request", 0);
     return;
   }
@@ -1066,7 +1067,7 @@ static void h_get(http * const h)
     h_error(h, http_header_notfound);
     return;
   }
-  url = gdata.sendbuff + 4;
+  url += 4;
   data = strchr(url, ' ');
   if (data != NULL)
     *(data++) = 0;
@@ -1165,7 +1166,7 @@ static void h_send(http * const h)
         h->filepos = h->bytessent;
       }
       howmuch = read(h->filedescriptor, gdata.sendbuff, attempt);
-      data = gdata.sendbuff;
+      data = (char *)gdata.sendbuff;
     }
     if (howmuch < 0 && errno != EAGAIN) {
       outerror(OUTERROR_TYPE_WARN, "Can't read data from file '%s': %s",
