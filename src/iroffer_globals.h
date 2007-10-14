@@ -82,6 +82,7 @@ int inamnt[INAMNT_SIZE];
 long next_identify;
 long next_restrict;
 
+ir_sockaddr_union_t myip;
 } gnetwork_t;
 
 typedef struct

@@ -689,7 +689,6 @@ static void mainloop (void) {
           else
             {
 	    SIGNEDSOCK int addrlen; 
-            ir_sockaddr_union_t localaddr;
           
 	    ioutput(CALLTYPE_NORMAL ,OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Server Connection to %s Established, Logging In",  gnetwork->name);
@@ -698,13 +697,21 @@ static void mainloop (void) {
             if (set_socket_nonblocking(gnetwork->ircserver, 0) < 0 )
 	      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
 	    
-            if (!gdata.usenatip)
+            addrlen = sizeof(gnetwork->myip);
+            bzero((char *) &(gnetwork->myip), sizeof(gnetwork->myip));
+            if (getsockname(gnetwork->ircserver, &(gnetwork->myip.sa), &addrlen) >= 0)
               {
-                addrlen = sizeof (localaddr);
-                bzero ((char *) &localaddr, sizeof (localaddr));
-                if (getsockname(gnetwork->ircserver, &localaddr.sa, &addrlen) >= 0)
+                if (gdata.debug > 0)
                   {
-                    gdata.ourip = ntohl(localaddr.sin.sin_addr.s_addr);
+                    char *msg;
+                    msg = mycalloc(maxtextlength);
+                    my_getnameinfo(msg, maxtextlength -1, &(gnetwork->myip.sa), gnetwork->myip.sa.sa_len);
+                    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "connected from = %s", msg);
+                    mydelete(msg);
+                  }
+                if (!gdata.usenatip)
+                  {
+                    gdata.ourip = ntohl(gnetwork->myip.sin.sin_addr.s_addr);
                     if (gdata.debug > 0)
                       {
                         ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ourip = %lu.%lu.%lu.%lu",
