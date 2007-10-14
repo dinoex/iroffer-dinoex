@@ -212,6 +212,22 @@ typedef enum
   TRANSFER_STATUS_DONE
 } transfer_status_e;
 
+typedef union {
+  long ip4;
+  struct in6_addr ip6;
+} ir_addr_union_t;
+
+typedef struct {
+  ir_addr_union_t u;
+  unsigned short family;
+} ir_addr_t;
+
+typedef union {
+  struct sockaddr sa;
+  struct sockaddr_in sin;
+  struct sockaddr_in6 sin6;
+} ir_sockaddr_union_t;
+
 typedef struct
 {
   int listensocket;
@@ -239,7 +255,7 @@ typedef struct
   float lastspeed;
   float maxspeed;
   xdcc *xpack;
-  struct sockaddr_in serveraddress;
+  ir_sockaddr_union_t serveraddress;
   char *nick;
   char *caps_nick;
   char *hostname;

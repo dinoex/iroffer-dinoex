@@ -31,10 +31,10 @@ typedef struct
   off_t totalsize;
   time_t lastcontact;
   time_t connecttime;
+  unsigned short family;
   unsigned short remoteport;
-  unsigned short localport;
-  unsigned long localip;
-  unsigned long remoteip;
+  long remoteip4;
+  struct in6_addr remoteip6;
   http_status_e status;
   int support_groups;
   char *file;
@@ -51,7 +51,15 @@ typedef struct
   time_t connecttime;
   long remoteip;
   long count;
-} badip;
+} badip4;
+
+typedef struct
+{
+  time_t lastcontact;
+  time_t connecttime;
+  struct in6_addr remoteip;
+  long count;
+} badip6;
 
 void h_close_listen(void);
 int h_setup_listen(void);

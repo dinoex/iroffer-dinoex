@@ -689,7 +689,7 @@ static void mainloop (void) {
           else
             {
 	    SIGNEDSOCK int addrlen; 
-	    struct sockaddr_in localaddr;
+            ir_sockaddr_union_t localaddr;
           
 	    ioutput(CALLTYPE_NORMAL ,OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Server Connection to %s Established, Logging In",  gnetwork->name);
@@ -702,9 +702,9 @@ static void mainloop (void) {
               {
                 addrlen = sizeof (localaddr);
                 bzero ((char *) &localaddr, sizeof (localaddr));
-                if (getsockname(gnetwork->ircserver,(struct sockaddr *) &localaddr, &addrlen) >= 0)
+                if (getsockname(gnetwork->ircserver, &localaddr.sa, &addrlen) >= 0)
                   {
-                    gdata.ourip = ntohl(localaddr.sin_addr.s_addr);
+                    gdata.ourip = ntohl(localaddr.sin.sin_addr.s_addr);
                     if (gdata.debug > 0)
                       {
                         ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ourip = %lu.%lu.%lu.%lu",

@@ -235,11 +235,11 @@ void h_close_listen(void)
   }
 }
 
-static int is_in_badip(long remoteip)
+static int is_in_badip4(long remoteip)
 {
-  badip *b;
+  badip4 *b;
 
-  for (b = irlist_get_head(&gdata.http_ips);
+  for (b = irlist_get_head(&gdata.http_bad_ip4);
        b;
        b = irlist_get_next(b)) {
     if (b->remoteip == remoteip) {
@@ -252,11 +252,28 @@ static int is_in_badip(long remoteip)
   return 0;
 }
 
-static void count_badip(long remoteip)
+static int is_in_badip6(struct in6_addr *remoteip)
 {
-  badip *b;
+  badip6 *b;
 
-  for (b = irlist_get_head(&gdata.http_ips);
+  for (b = irlist_get_head(&gdata.http_bad_ip6);
+       b;
+       b = irlist_get_next(b)) {
+    if (memcmp(&(b->remoteip), remoteip, sizeof(struct in6_addr)) == 0) {
+      b->lastcontact = gdata.curtime;
+      if (b->count > 10)
+        return 1;
+      break;
+    }
+  }
+  return 0;
+}
+
+static void count_badip4(long remoteip)
+{
+  badip4 *b;
+
+  for (b = irlist_get_head(&gdata.http_bad_ip4);
        b;
        b = irlist_get_next(b)) {
     if (b->remoteip == remoteip) {
@@ -266,21 +283,56 @@ static void count_badip(long remoteip)
     }
   }
 
-  b = irlist_add(&gdata.http_ips, sizeof(badip));
+  b = irlist_add(&gdata.http_bad_ip4, sizeof(badip4));
   b->remoteip = remoteip;
   b->connecttime = gdata.curtime;
   b->lastcontact = gdata.curtime;
   b->count = 1;
 }
 
-static void expire_badip(void)
+static void count_badip6(struct in6_addr *remoteip)
 {
-  badip *b;
+  badip6 *b;
 
-  b = irlist_get_head(&gdata.http_ips);
+  for (b = irlist_get_head(&gdata.http_bad_ip6);
+       b;
+       b = irlist_get_next(b)) {
+    if (memcmp(&(b->remoteip), remoteip, sizeof(struct in6_addr)) == 0) {
+      b->count ++;
+      b->lastcontact = gdata.curtime;
+      return;
+    }
+  }
+
+  b = irlist_add(&gdata.http_bad_ip6, sizeof(badip6));
+  b->remoteip = *remoteip;
+  b->connecttime = gdata.curtime;
+  b->lastcontact = gdata.curtime;
+  b->count = 1;
+}
+
+static void expire_badip4(void)
+{
+  badip4 *b;
+
+  b = irlist_get_head(&gdata.http_bad_ip4);
   while (b) {
     if ((gdata.curtime - b->lastcontact) > 3600) {
-      b = irlist_delete(&gdata.http_ips, b);
+      b = irlist_delete(&gdata.http_bad_ip4, b);
+    } else {
+      b = irlist_get_next(b);
+    }
+  }
+}
+
+static void expire_badip6(void)
+{
+  badip6 *b;
+
+  b = irlist_get_head(&gdata.http_bad_ip6);
+  while (b) {
+    if ((gdata.curtime - b->lastcontact) > 3600) {
+      b = irlist_delete(&gdata.http_bad_ip6, b);
     } else {
       b = irlist_get_next(b);
     }
@@ -293,8 +345,7 @@ static int h_open_listen(int i)
   int family;
   int rc;
   int tempc;
-  struct sockaddr_in listenaddr4;
-  struct sockaddr_in6 listenaddr6;
+  ir_sockaddr_union_t listenaddr;
 
   updatecontext();
 
@@ -313,18 +364,18 @@ static int h_open_listen(int i)
   tempc = 1;
   setsockopt(http_listen[i], SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
 
+  bzero((char *) &listenaddr, sizeof(listenaddr));
   if (i == 0) {
-    bzero ((char *) &listenaddr4, sizeof (struct sockaddr_in));
-    listenaddr4.sin_family = AF_INET;
-    listenaddr4.sin_addr.s_addr = INADDR_ANY;
-    listenaddr4.sin_port = htons(gdata.http_port);
-    rc = bind(http_listen[i], (struct sockaddr *)&listenaddr4, sizeof(struct sockaddr_in));
+    listenaddr.sa.sa_len = sizeof(struct sockaddr_in);
+    listenaddr.sin.sin_family = AF_INET;
+    listenaddr.sin.sin_addr.s_addr = INADDR_ANY;
+    listenaddr.sin.sin_port = htons(gdata.http_port);
   } else {
-    bzero ((char *) &listenaddr6, sizeof (struct sockaddr_in6));
-    listenaddr6.sin6_family = AF_INET6;
-    listenaddr6.sin6_port = htons(gdata.http_port);
-    rc = bind(http_listen[i], (struct sockaddr *)&listenaddr6, sizeof(struct sockaddr_in6));
+    listenaddr.sa.sa_len = sizeof(struct sockaddr_in6);
+    listenaddr.sin6.sin6_family = AF_INET6;
+    listenaddr.sin6.sin6_port = htons(gdata.http_port);
   }
+  rc = bind(http_listen[i], &listenaddr.sa, listenaddr.sa.sa_len);
 
   if (rc < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
@@ -340,10 +391,7 @@ static int h_open_listen(int i)
   }
 
   msg = mycalloc(maxtextlength);
-  if (i == 0)
-    my_getnameinfo(msg, maxtextlength -1, (struct sockaddr *)&listenaddr4, sizeof(struct sockaddr_in));
-  else
-    my_getnameinfo(msg, maxtextlength -1, (struct sockaddr *)&listenaddr6, sizeof(struct sockaddr_in6));
+  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, listenaddr.sa.sa_len);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "HTTP SERVER waiting for connection on %s",  msg);
   mydelete(msg);
@@ -406,8 +454,7 @@ int h_listen(int highests)
 static void h_accept(int i)
 {
   SIGNEDSOCK int addrlen;
-  struct sockaddr_in remoteaddr4;
-  struct sockaddr_in6 remoteaddr6;
+  ir_sockaddr_union_t remoteaddr;
   char *msg;
   http *h;
   int clientsocket;
@@ -416,10 +463,10 @@ static void h_accept(int i)
 
   if (i == 0) {
     addrlen = sizeof (struct sockaddr_in);
-    clientsocket = accept(http_listen[i], (struct sockaddr *) &remoteaddr4, &addrlen);
+    clientsocket = accept(http_listen[i], &remoteaddr.sa, &addrlen);
   } else {
     addrlen = sizeof (struct sockaddr_in6);
-    clientsocket = accept(http_listen[i], (struct sockaddr *) &remoteaddr6, &addrlen);
+    clientsocket = accept(http_listen[i], &remoteaddr.sa, &addrlen);
   }
   if (clientsocket < 0) {
     outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
@@ -434,21 +481,20 @@ static void h_accept(int i)
   h->filedescriptor = FD_UNUSED;
   h->clientsocket = clientsocket;
   if (i == 0) {
-    h->remoteip   = ntohl(remoteaddr4.sin_addr.s_addr);
-    h->remoteport = ntohs(remoteaddr4.sin_port);
+    h->family = remoteaddr.sin.sin_family;
+    h->remoteip4 = ntohl(remoteaddr.sin.sin_addr.s_addr);
+    h->remoteport = ntohs(remoteaddr.sin.sin_port);
   } else {
-    h->remoteip   = 0;
-    h->remoteport = ntohs(remoteaddr6.sin6_port);
+    h->family = remoteaddr.sin6.sin6_family;
+    h->remoteip6 = remoteaddr.sin6.sin6_addr;
+    h->remoteport = ntohs(remoteaddr.sin6.sin6_port);
   }
   h->connecttime = gdata.curtime;
   h->lastcontact = gdata.curtime;
   h->status = HTTP_STATUS_GETTING;
 
   msg = mycalloc(maxtextlength);
-  if (i == 0)
-    my_getnameinfo(msg, maxtextlength -1, (struct sockaddr *)&remoteaddr4, sizeof(struct sockaddr_in));
-  else
-    my_getnameinfo(msg, maxtextlength -1, (struct sockaddr *)&remoteaddr6, sizeof(struct sockaddr_in6));
+  my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, addrlen);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "HTTP connection received from %s",  msg);
   mydelete(msg);
@@ -1062,9 +1108,16 @@ static void h_get(http * const h)
     h_closeconn(h, "Bad request", 0);
     return;
   }
-  if (is_in_badip(h->remoteip)) {
-    h_error(h, http_header_notfound);
-    return;
+  if (h->family == AF_INET) {
+    if (is_in_badip4(h->remoteip4)) {
+      h_error(h, http_header_notfound);
+      return;
+    }
+  } else {
+    if (is_in_badip6(&(h->remoteip6))) {
+      h_error(h, http_header_notfound);
+      return;
+    }
   }
   url += 4;
   data = strchr(url, ' ');
@@ -1111,7 +1164,11 @@ static void h_get(http * const h)
 
       mydelete(tempstr);
     }
-    count_badip(h->remoteip);
+    if (h->family == AF_INET) {
+      count_badip4(h->remoteip4);
+    } else {
+      count_badip6(&(h->remoteip6));
+    }
     h_error(h, http_header_admin);
     return;
   }
@@ -1249,8 +1306,10 @@ void h_done_select(int changesec)
     }
   }
 
-  if (changesec)
-   expire_badip();
+  if (changesec) {
+   expire_badip4();
+   expire_badip6();
+  }
 }
 
 /* End of File */

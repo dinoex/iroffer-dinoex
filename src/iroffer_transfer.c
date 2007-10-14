@@ -56,17 +56,17 @@ void t_setuplisten (transfer * const t)
   
   bzero ((char *) &t->serveraddress, sizeof (struct sockaddr_in));
   
-  t->serveraddress.sin_family = AF_INET;
-  t->serveraddress.sin_addr.s_addr = INADDR_ANY;
+  t->serveraddress.sin.sin_family = AF_INET;
+  t->serveraddress.sin.sin_addr.s_addr = INADDR_ANY;
   
-  if (ir_bind_listen_socket(t->listensocket, &t->serveraddress) < 0)
+  if (ir_bind_listen_socket(t->listensocket, &t->serveraddress.sin) < 0)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Bind to Socket, Aborting");
       t_closeconn(t,"Connection Error, Try Again",errno);
       return;
     }
   
-  t->listenport = ntohs (t->serveraddress.sin_port);
+  t->listenport = ntohs (t->serveraddress.sin.sin_port);
   
   if (listen (t->listensocket, 1) < 0)
     {

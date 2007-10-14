@@ -2650,6 +2650,8 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 
+  if (salen == 0)
+    salen = sa->sa_len;
   if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     return snprintf(buffer, len, "(unknown)" );
@@ -2841,7 +2843,8 @@ static void free_state(void)
   irlist_delete_all(&gdata.autotrigger);
   irlist_delete_all(&gdata.console_history);
   irlist_delete_all(&gdata.jobs_delayed);
-  irlist_delete_all(&gdata.http_ips);
+  irlist_delete_all(&gdata.http_bad_ip4);
+  irlist_delete_all(&gdata.http_bad_ip6);
   mydelete(gdata.connectionmethod.host);
   mydelete(gdata.connectionmethod.password);
   mydelete(gdata.connectionmethod.vhost);

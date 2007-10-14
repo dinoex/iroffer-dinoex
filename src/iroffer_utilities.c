@@ -1318,6 +1318,7 @@ void dumpgdata(void)
 {
   int ii;
   int ss;
+  char ip6[maxtextlengthshort];
   
   ioutput(gdata_common,"GDATA DUMP BEGIN");
   
@@ -1445,11 +1446,11 @@ void dumpgdata(void)
           (long)iter->lastcontact,
           (long)iter->connecttime);
   ioutput(gdata_common,
-          "  : localport=%d remoteport=%d localip=0x%.8lX remoteip=0x%.8lX",
-          iter->localport,
+          "  : emoteport=%d remoteip=0x%.8lX",
           iter->remoteport,
-          iter->localip,
-          iter->remoteip);
+          iter->remoteip4);
+  inet_ntop(iter->family, &(iter->remoteip6), ip6, maxtextlengthshort);
+  ioutput(gdata_common, "remoteip=%s", ip6);
   gdata_iter_print_uint(status);
   gdata_iter_print_uint(support_groups);
   gdata_iter_print_string(file);
@@ -1462,10 +1463,20 @@ void dumpgdata(void)
           (long)iter->left);
   gdata_irlist_iter_end;
 
-  gdata_irlist_iter_start(http_ips, badip);
+  gdata_irlist_iter_start(http_bad_ip4, badip4);
   ioutput(gdata_common,
           "  : remoteip=0x%.8lX",
           iter->remoteip);
+  ioutput(gdata_common,
+          "  : lastcontact=%ld connecttime=%ld",
+          (long)iter->lastcontact,
+          (long)iter->connecttime);
+  gdata_iter_print_long(count);
+  gdata_irlist_iter_end;
+
+  gdata_irlist_iter_start(http_bad_ip6, badip6);
+  inet_ntop(AF_INET6, &(iter->remoteip), ip6, maxtextlengthshort);
+  ioutput(gdata_common, "remoteip=%s", ip6);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld",
           (long)iter->lastcontact,
