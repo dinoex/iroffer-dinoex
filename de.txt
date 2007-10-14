@@ -1947,3 +1947,6 @@
 1965 "host=%s port=%s"
 1966 "%lu.%lu.%lu.%lu:%d"
 1967 "Connecting to %s"
+1968 "using %s"
+1969 "  : remoteport=%d remoteip=0x%.8lX"
+1970 "  : remoteip=%s"

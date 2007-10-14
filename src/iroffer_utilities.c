@@ -1446,11 +1446,11 @@ void dumpgdata(void)
           (long)iter->lastcontact,
           (long)iter->connecttime);
   ioutput(gdata_common,
-          "  : emoteport=%d remoteip=0x%.8lX",
+          "  : remoteport=%d remoteip=0x%.8lX",
           iter->remoteport,
           iter->remoteip4);
   inet_ntop(iter->family, &(iter->remoteip6), ip6, maxtextlengthshort);
-  ioutput(gdata_common, "remoteip=%s", ip6);
+  ioutput(gdata_common, "  : remoteip=%s", ip6);
   gdata_iter_print_uint(status);
   gdata_iter_print_uint(support_groups);
   gdata_iter_print_string(file);
@@ -1476,7 +1476,7 @@ void dumpgdata(void)
 
   gdata_irlist_iter_start(http_bad_ip6, badip6);
   inet_ntop(AF_INET6, &(iter->remoteip), ip6, maxtextlengthshort);
-  ioutput(gdata_common, "remoteip=%s", ip6);
+  ioutput(gdata_common, "  : remoteip=%s", ip6);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld",
           (long)iter->lastcontact,
