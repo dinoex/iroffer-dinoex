@@ -368,10 +368,9 @@ int h_setup_listen(void)
 
 void h_reash_listen(void)
 {
-  if (gdata.http_port == 0) {
-    h_close_listen();
+  h_close_listen();
+  if (gdata.http_port == 0)
     return;
-  }
   h_setup_listen();
 }
 
