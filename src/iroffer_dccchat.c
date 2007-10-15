@@ -165,6 +165,7 @@ int setupdccchat(const char *nick,
   SIGNEDSOCK int addrlen;
   int retval;
   dccchat_t *chat;
+  char *msg;
   
   updatecontext();
   
@@ -304,16 +305,12 @@ int setupdccchat(const char *nick,
   chat->lastcontact = gdata.curtime;
   chat->net = gnetwork->net;
   
+  msg = mycalloc(maxtextlength);
+  my_getnameinfo(msg, maxtextlength -1, &remoteip.sa, remoteip.sa.sa_len);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "DCC CHAT received from %s on %s, attempting connection to %lu.%lu.%lu.%lu:%d",
-          nick,
-          gnetwork->name,
-          (chat->remoteip >> 24) & 0xFF,
-          (chat->remoteip >> 16) & 0xFF,
-          (chat->remoteip >>  8) & 0xFF,
-          (chat->remoteip      ) & 0xFF,
-          chat->remoteport);
-  
+          "DCC CHAT received from %s on %s, attempting connection to %s",
+          nick, gnetwork->name, msg);
+  mydelete(msg);
   return 0;
 }
 

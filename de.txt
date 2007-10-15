@@ -588,7 +588,7 @@
 590 "Connection to DCC Chat Failed: %s"
 591 "Couldn't get sock name: %s"
 592 "dccchat socket = %d"
-593 "DCC CHAT received from %s on %s, attempting connection to %lu.%lu.%lu.%lu:%d"
+593 "DCC CHAT received from %s on %s, attempting connection to %s"
 594 "DCC CHAT connection suceeded, authenticating"
 595 "DCC CHAT Correct password"
 596 "Entering DCC Chat Admin Interface\n"
