@@ -316,6 +316,7 @@ typedef struct
   int fd;
   int net;
   int level;
+  int family;
   ir_boutput_t boutput;
   time_t lastcontact;
   time_t connecttime;
@@ -682,7 +683,7 @@ void irlist_sort(irlist_t *list,
 transfer* does_tr_id_exist(int tr_id);
 int get_next_tr_id(void);
 void ir_listen_port_connected(ir_uint16 port);
-int ir_bind_listen_socket(int fd, struct sockaddr_in *sa);
+int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa);
 
 int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len);
 int ir_boutput_need_flush(ir_boutput_t *bout);

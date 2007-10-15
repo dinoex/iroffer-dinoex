@@ -342,53 +342,14 @@ static void expire_badip6(void)
 static int h_open_listen(int i)
 {
   char *msg;
-  int family;
   int rc;
-  int tempc;
   ir_sockaddr_union_t listenaddr;
 
   updatecontext();
 
-  if (i == 0)
-    family = AF_INET;
-  else
-    family = AF_INET6;
-  http_listen[i] = socket(family, SOCK_STREAM, 0);
-  if (http_listen[i] < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Could Not Create Socket, Aborting: %s", strerror(errno));
-    http_listen[i] = FD_UNUSED;
+  rc = open_listen(i, &listenaddr, &(http_listen[i]), gdata.http_port, 1, 0);
+  if (rc != 0)
     return 1;
-  }
-
-  tempc = 1;
-  setsockopt(http_listen[i], SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
-
-  bzero((char *) &listenaddr, sizeof(listenaddr));
-  if (i == 0) {
-    listenaddr.sa.sa_len = sizeof(struct sockaddr_in);
-    listenaddr.sin.sin_family = AF_INET;
-    listenaddr.sin.sin_addr.s_addr = INADDR_ANY;
-    listenaddr.sin.sin_port = htons(gdata.http_port);
-  } else {
-    listenaddr.sa.sa_len = sizeof(struct sockaddr_in6);
-    listenaddr.sin6.sin6_family = AF_INET6;
-    listenaddr.sin6.sin6_port = htons(gdata.http_port);
-  }
-  rc = bind(http_listen[i], &listenaddr.sa, listenaddr.sa.sa_len);
-
-  if (rc < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Couldn't Bind to Socket, Aborting: %s", strerror(errno));
-    http_listen[i] = FD_UNUSED;
-    return 1;
-  }
-
-  if (listen(http_listen[i], 1) < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Listen, Aborting: %s", strerror(errno));
-    http_listen[i] = FD_UNUSED;
-    return 1;
-  }
 
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, listenaddr.sa.sa_len);

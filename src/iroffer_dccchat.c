@@ -20,13 +20,15 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_misc.h"
 
 
 int setupdccchatout(const char *nick)
 {
-  int tempc;
+  char *msg;
+  int rc;
   int listenport;
-  struct sockaddr_in listenaddr;
+  ir_sockaddr_union_t listenaddr;
   dccchat_t *chat;
   
   updatecontext();
@@ -68,79 +70,48 @@ int setupdccchatout(const char *nick)
     }
   
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
+
+  rc = open_listen(gnetwork->myip.sa.sa_family, &listenaddr, &(chat->fd), 0, gdata.tcprangestart, 1);
+  if (rc != 0)
+    return 1;
   
-  if ((chat->fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD,
-               "Could Not Create Socket, Aborting: %s", strerror(errno));
-      chat->fd = FD_UNUSED;
-      return 1;
-    }
-  
-  if (gdata.tcprangestart)
-    {
-      tempc = 1;
-      setsockopt(chat->fd, SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
-    }
-  
-  bzero ((char *) &listenaddr, sizeof (struct sockaddr_in));
-  
-  listenaddr.sin_family = AF_INET;
-  listenaddr.sin_addr.s_addr = INADDR_ANY;
-  
-  if (ir_bind_listen_socket(chat->fd, &listenaddr) < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD,
-               "Couldn't Bind to Socket, Aborting: %s", strerror(errno));
-      chat->fd = FD_UNUSED;
-      return 1;
-    }
-  
-  listenport = ntohs (listenaddr.sin_port);
-  
-  if (listen (chat->fd, 1) < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Listen, Aborting: %s", strerror(errno));
-      chat->fd = FD_UNUSED;
-      return 1;
-    }
+  listenport = get_port(&listenaddr);
   
   gdata.num_dccchats++;
   chat->status = DCCCHAT_LISTENING;
   chat->nick = mystrdup(nick);
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
+  chat->family = listenaddr.sa.sa_family;
   chat->localip   = gdata.ourip;
   chat->localport = listenport;
   chat->net = gnetwork->net;
   
-  privmsg_fast(nick,"\1DCC CHAT CHAT %lu %d\1",gdata.ourip,listenport);
+  listenaddr.sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
+  msg = mycalloc(maxtextlength);
+  my_dcc_ip_port(msg, maxtextlength -1, &listenaddr, listenaddr.sa.sa_len);
+  privmsg_fast(nick,"\1DCC CHAT CHAT %s\1", msg);
   
+  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, listenaddr.sa.sa_len);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "DCC CHAT sent to %s on %s, waiting for connection on %lu.%lu.%lu.%lu:%d",
-          nick,
-          gnetwork->name,
-          (gdata.ourip >> 24) & 0xFF,
-          (gdata.ourip >> 16) & 0xFF,
-          (gdata.ourip >>  8) & 0xFF,
-          (gdata.ourip      ) & 0xFF,
-          listenport);
-  
+          "DCC CHAT sent to %s on %s, waiting for connection on %s",
+          nick, gnetwork->name, msg);
+  mydelete(msg);
   return 0;
 }
 
 void setupdccchataccept(dccchat_t *chat)
 {
   SIGNEDSOCK int addrlen;
-  struct sockaddr_in remoteaddr;
+  ir_sockaddr_union_t remoteaddr;
   char *tempstr;
   int listen_fd;
   
   updatecontext();
   
   listen_fd = chat->fd;
-  addrlen = sizeof (struct sockaddr_in);
-  if ((chat->fd = accept(listen_fd, (struct sockaddr *) &remoteaddr, &addrlen)) < 0)
+  addrlen = sizeof(struct sockaddr_in);
+  if ((chat->fd = accept(listen_fd, &remoteaddr.sa, &addrlen)) < 0)
     {
       outerror(OUTERROR_TYPE_WARN,"Accept Error, Aborting: %s",strerror(errno));
       FD_CLR(listen_fd, &gdata.readset);
@@ -163,8 +134,8 @@ void setupdccchataccept(dccchat_t *chat)
     }
   
   chat->status     = DCCCHAT_AUTHENTICATING;
-  chat->remoteip   = ntohl(remoteaddr.sin_addr.s_addr);
-  chat->remoteport = ntohs(remoteaddr.sin_port);
+  chat->remoteip   = ntohl(remoteaddr.sin.sin_addr.s_addr);
+  chat->remoteport = ntohs(remoteaddr.sin.sin_port);
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
   ir_boutput_init(&chat->boutput, chat->fd, 0);
@@ -188,8 +159,8 @@ void setupdccchataccept(dccchat_t *chat)
 int setupdccchat(const char *nick,
                  const char *line)
 {
-  struct sockaddr_in remoteip;
-  struct sockaddr_in localaddr;
+  ir_sockaddr_union_t remoteip;
+  ir_sockaddr_union_t localaddr;
   char *ip, *port;
   SIGNEDSOCK int addrlen;
   int retval;
@@ -245,9 +216,10 @@ int setupdccchat(const char *nick,
       return 1;
     }
   
-  bzero ((char *) &remoteip, sizeof (remoteip));
+  bzero((char *) &remoteip, sizeof(remoteip));
   
-  chat->fd = socket( AF_INET, SOCK_STREAM, 0);
+  chat->family = (strchr(ip, ':')) ? AF_INET6 : AF_INET;
+  chat->fd = socket(chat->family, SOCK_STREAM, 0);
   if (chat->fd < 0)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Socket Error: %s", strerror(errno));
@@ -258,21 +230,32 @@ int setupdccchat(const char *nick,
     }
   
   port[strlen(port)-1] = '\0';
-  
-  remoteip.sin_family = AF_INET;
-  remoteip.sin_port = htons(atoi(port));
-  
-  remoteip.sin_addr.s_addr = htonl(atoul(ip));
+  if (chat->family == AF_INET)
+    {
+      remoteip.sa.sa_len =  sizeof(struct sockaddr_in);
+      remoteip.sin.sin_family = AF_INET;
+      remoteip.sin.sin_port = htons(atoi(port));
+      remoteip.sin.sin_addr.s_addr = htonl(atoul(ip));
+    }
+  else
+    {
+      remoteip.sa.sa_len =  sizeof(struct sockaddr_in6);
+      remoteip.sin6.sin6_family = AF_INET6;
+      remoteip.sin6.sin6_port = htons(atoi(port));
+      retval = inet_pton(AF_INET6, ip, &(remoteip.sin6.sin6_addr));
+      if (retval != 0)
+        outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", ip);
+    }
   
   mydelete(port);
   mydelete(ip);
   
   if (gdata.local_vhost)
     {
-      bzero((char*)&localaddr, sizeof(struct sockaddr_in));
-      localaddr.sin_family = AF_INET;
-      localaddr.sin_port = 0;
-      localaddr.sin_addr.s_addr = htonl(gdata.local_vhost);
+      bzero((char*)&localaddr, sizeof(localaddr));
+      localaddr.sin.sin_family = AF_INET;
+      localaddr.sin.sin_port = 0;
+      localaddr.sin.sin_addr.s_addr = htonl(gdata.local_vhost);
       
       if (bind(chat->fd, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0)
         {
@@ -288,7 +271,7 @@ int setupdccchat(const char *nick,
     }
   
   alarm(CTIMEOUT);
-  retval = connect(chat->fd, (struct sockaddr *) &remoteip, sizeof(remoteip));
+  retval = connect(chat->fd, &remoteip.sa, remoteip.sa.sa_len);
   if ((retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)))
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Connection to DCC Chat Failed: %s", strerror(errno));
@@ -298,7 +281,7 @@ int setupdccchat(const char *nick,
   alarm(0);
   
   addrlen = sizeof (localaddr);
-  if (getsockname(chat->fd,(struct sockaddr *) &localaddr, &addrlen) < 0)
+  if (getsockname(chat->fd, &localaddr.sa, &addrlen) < 0)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't get sock name: %s", strerror(errno));
       chat->fd = FD_UNUSED;
@@ -313,10 +296,10 @@ int setupdccchat(const char *nick,
   gdata.num_dccchats++;
   chat->status = DCCCHAT_CONNECTING;
   chat->nick = mystrdup(nick);
-  chat->remoteip   = ntohl(remoteip.sin_addr.s_addr);
-  chat->remoteport = ntohs(remoteip.sin_port);
-  chat->localip    = ntohl(localaddr.sin_addr.s_addr);
-  chat->localport  = ntohs(localaddr.sin_port);
+  chat->remoteip   = ntohl(remoteip.sin.sin_addr.s_addr);
+  chat->remoteport = ntohs(remoteip.sin.sin_port);
+  chat->localip    = ntohl(localaddr.sin.sin_addr.s_addr);
+  chat->localport  = ntohs(localaddr.sin.sin_port);
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
   chat->net = gnetwork->net;

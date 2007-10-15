@@ -25,5 +25,6 @@ char *clean_quotes(char *str);
 char *to_hostmask(const char *nick, const char *hostname);
 const char *get_basename(const char *pathname);
 void shutdown_close(int handle);
+int get_port(ir_sockaddr_union_t *listenaddr);
 
 /* End of File */

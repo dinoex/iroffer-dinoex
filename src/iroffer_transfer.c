@@ -59,7 +59,7 @@ void t_setuplisten (transfer * const t)
   t->serveraddress.sin.sin_family = AF_INET;
   t->serveraddress.sin.sin_addr.s_addr = INADDR_ANY;
   
-  if (ir_bind_listen_socket(t->listensocket, &t->serveraddress.sin) < 0)
+  if (ir_bind_listen_socket(t->listensocket, &t->serveraddress) < 0)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Bind to Socket, Aborting");
       t_closeconn(t,"Connection Error, Try Again",errno);

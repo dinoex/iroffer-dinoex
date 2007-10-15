@@ -2353,6 +2353,67 @@ void check_idle_queue(void)
   }
 }
 
+int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search)
+{ 
+  int family;
+  int rc;
+  int tempc;
+
+  updatecontext();
+
+  if (ipv6 == 0)
+    family = AF_INET;
+  else
+    family = AF_INET6;
+  *listen_socket = socket(family, SOCK_STREAM, 0);
+  if (*listen < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Could Not Create Socket, Aborting: %s", strerror(errno));
+    *listen_socket = FD_UNUSED;
+    return 1;
+  }
+
+  if (reuse) {
+    tempc = 1;
+    setsockopt(*listen_socket, SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
+  }
+
+  bzero((char *) listenaddr, sizeof(ir_sockaddr_union_t));
+  if (ipv6 == 0) {
+    listenaddr->sa.sa_len = sizeof(struct sockaddr_in);
+    listenaddr->sin.sin_family = AF_INET;
+    listenaddr->sin.sin_addr.s_addr = INADDR_ANY;
+    listenaddr->sin.sin_port = htons(port);
+  } else {
+    listenaddr->sa.sa_len = sizeof(struct sockaddr_in6);
+    listenaddr->sin6.sin6_family = AF_INET6;
+    listenaddr->sin6.sin6_port = htons(port);
+  }
+
+  if (search) {
+    rc = ir_bind_listen_socket(*listen_socket, listenaddr);
+  } else {
+    rc = bind(*listen_socket, &(listenaddr->sa), listenaddr->sa.sa_len);
+  }
+
+  if (rc < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Couldn't Bind to Socket, Aborting: %s", strerror(errno));
+    shutdown_close(*listen_socket);
+    *listen_socket = FD_UNUSED;
+    return 1; 
+  } 
+
+  if (listen(*listen_socket, 1) < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Listen, Aborting: %s", strerror(errno));
+    shutdown_close(*listen_socket);
+    *listen_socket = FD_UNUSED;
+    return 1;
+  }
+
+  return 0;
+} 
+
 int l_setup_file(upload * const l, struct stat *stp)
 {
   char *fullfile;
@@ -2410,45 +2471,19 @@ int l_setup_file(upload * const l, struct stat *stp)
 
 int l_setup_listen(upload * const l)
 {
-  int tempc;
+  int rc;
   int listenport;
-  struct sockaddr_in listenaddr;
+  ir_sockaddr_union_t listenaddr;
 
   updatecontext();
 
-  if ((l->clientsocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Could Not Create Socket, Aborting: %s", strerror(errno));
-    l->clientsocket = FD_UNUSED;
-    l_closeconn(l, "Connection Lost", 0);
-    return 1;
-  }
-
-  if (gdata.tcprangestart) {
-      tempc = 1;
-      setsockopt(l->clientsocket, SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
-  }
-
-  bzero ((char *) &listenaddr, sizeof (struct sockaddr_in));
-  listenaddr.sin_family = AF_INET;
-  listenaddr.sin_addr.s_addr = INADDR_ANY;
-
-  if (ir_bind_listen_socket(l->clientsocket, &listenaddr) < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Couldn't Bind to Socket, Aborting: %s", strerror(errno));
-    l->clientsocket = FD_UNUSED;
+  rc = open_listen(0, &listenaddr, &(l->clientsocket), 0, gdata.tcprangestart, 1);
+  if (rc != 0) {
     l_closeconn(l, "Connection Lost", 0);
     return 1;
   }
  
-  listenport = ntohs (listenaddr.sin_port);
-  if (listen (l->clientsocket, 1) < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Listen, Aborting: %s", strerror(errno));
-    l->clientsocket = FD_UNUSED;
-    l_closeconn(l, "Connection Lost", 0);
-    return 1;
-  }
-
+  listenport = ntohs(listenaddr.sin.sin_port);
   privmsg_fast(l->nick, "\1DCC SEND %s %lu %d %" LLPRINTFMT "i %d\1",
                l->file, gdata.ourip, listenport, (long long)(l->totalsize), l->token);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
@@ -2666,6 +2701,33 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
                   (to_ip >>  8) & 0xFF,
                   (to_ip      ) & 0xFF,
                   ntohs(remoteaddr->sin_port));
+#endif
+}
+
+int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen)
+{
+#if !defined(NO_GETADDRINFO)
+  char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+#endif
+  long ip;
+
+#if !defined(NO_GETADDRINFO)
+  if (sa->sa.sa_family == AF_INET) {
+    ip = ntohl(sa->sin.sin_addr.s_addr);
+    return snprintf(buffer, len, "%lu %d",
+                    ip, ntohs(sa->sin.sin_port));
+  }
+  if (salen == 0)
+    salen = sa->sa.sa_len;
+  if (getnameinfo(&(sa->sa), salen, hbuf, sizeof(hbuf), sbuf,
+                  sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
+    return snprintf(buffer, len, "(unknown)" );
+  }
+  return snprintf(buffer, len, "%s %s", hbuf, sbuf);
+#else
+  ip = ntohl(sa->sin.sin_addr.s_addr);
+  return snprintf(buffer, len, "%lu %d",
+                  ip, ntohs(sa->sin.sin_port));
 #endif
 }
 

@@ -230,4 +230,12 @@ void shutdown_close(int handle)
   close(handle);
 }
 
+int get_port(ir_sockaddr_union_t *listenaddr)
+{
+  if (listenaddr->sa.sa_family == AF_INET)
+    return ntohs(listenaddr->sin.sin_port);
+
+  return ntohs(listenaddr->sin6.sin6_port);
+}
+
 /* End of File */

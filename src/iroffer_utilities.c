@@ -2878,7 +2878,7 @@ static int ir_listen_port_is_in_list(ir_uint16 port)
   return retval;
 }
 
-int ir_bind_listen_socket(int fd, struct sockaddr_in *sa)
+int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa)
 {
   ir_listen_port_item_t *lp;
   int retry;
@@ -2905,14 +2905,14 @@ int ir_bind_listen_socket(int fd, struct sockaddr_in *sa)
               continue;
             }
           
-          sa->sin_port = htons(port);
+          sa->sin.sin_port = htons(port);
         }
       else
         {
-          sa->sin_port = htons(0);
+          sa->sin.sin_port = htons(0);
         }
       
-      if (bind(fd, (struct sockaddr *)sa, sizeof(struct sockaddr_in)) < 0)
+      if (bind(fd, &(sa->sa), sa->sa.sa_len) < 0)
         {
           if (!gdata.tcprangestart)
             {
@@ -2932,22 +2932,23 @@ int ir_bind_listen_socket(int fd, struct sockaddr_in *sa)
       return -1;
     }
   
-  addrlen = sizeof (struct sockaddr_in);
+  addrlen = sa->sa.sa_len;
   
-  if ((getsockname (fd, (struct sockaddr *)sa, &addrlen)) < 0)
+  if ((getsockname(fd, &(sa->sa), &addrlen)) < 0)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't get Port Number, Aborting");
       return -1;
     }
   
+  port = get_port(sa);
   if (gdata.debug > 0)
     {
       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,
-              "listen got port %d", ntohs(sa->sin_port));
+              "listen got port %d", port);
     }
   
   lp = irlist_add(&gdata.listen_ports,sizeof(ir_listen_port_item_t));
-  lp->port = ntohs(sa->sin_port);
+  lp->port = port;
   lp->listen_time = gdata.curtime;
   
   return 0;
