@@ -291,7 +291,7 @@ typedef struct
   time_t connecttime;
   unsigned short remoteport;
   unsigned short localport;
-  unsigned long remoteip;
+  ir_addr_union_t remoteip;
   unsigned long localip;
   float lastspeed;
   char *nick;
@@ -301,6 +301,7 @@ typedef struct
   int resumed;
   int net;
   int token;
+  int family;
 } upload;
 
 typedef struct

@@ -34,7 +34,7 @@ void l_initvalues (upload * const l) {
 
 void l_establishcon (upload * const l)
 {
-  struct sockaddr_in remoteaddr;
+  ir_sockaddr_union_t remoteaddr;
   struct sockaddr_in localaddr;
   SIGNEDSOCK int addrlen;
   int retval;
@@ -63,9 +63,20 @@ void l_establishcon (upload * const l)
       return;
     }
   
-  remoteaddr.sin_family = AF_INET;
-  remoteaddr.sin_port = htons(l->remoteport);
-  remoteaddr.sin_addr.s_addr = htonl(l->remoteip);
+  if (l->family == AF_INET )
+    {
+      remoteaddr.sa.sa_len =  sizeof(struct sockaddr_in);
+      remoteaddr.sin.sin_family = AF_INET;
+      remoteaddr.sin.sin_port = htons(l->remoteport);
+      remoteaddr.sin.sin_addr.s_addr = htonl(l->remoteip.ip4);
+    }
+  else
+    {
+      remoteaddr.sa.sa_len =  sizeof(struct sockaddr_in6);
+      remoteaddr.sin6.sin6_family = AF_INET6;
+      remoteaddr.sin6.sin6_port = htons(l->remoteport);
+      remoteaddr.sin6.sin6_addr = l->remoteip.ip6;
+    }
   
   if (gdata.local_vhost)
     {
@@ -87,7 +98,7 @@ void l_establishcon (upload * const l)
     }
   
   alarm(CTIMEOUT);
-  retval = connect(l->clientsocket, (struct sockaddr *) &remoteaddr, sizeof(remoteaddr));
+  retval = connect(l->clientsocket, &remoteaddr.sa, remoteaddr.sa.sa_len);
   if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) )
     {
       l_closeconn(l,"Couldn't Connect",errno);
@@ -96,8 +107,8 @@ void l_establishcon (upload * const l)
     }
   alarm(0);
   
-  addrlen = sizeof (remoteaddr);
-  if (getsockname(l->clientsocket,(struct sockaddr *) &remoteaddr, &addrlen) < 0)
+  addrlen = sizeof(remoteaddr);
+  if (getsockname(l->clientsocket, &remoteaddr.sa, &addrlen) < 0)
     {
       l_closeconn(l,"Couldn't getsockname",errno);
       return;

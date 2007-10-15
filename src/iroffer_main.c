@@ -2834,7 +2834,18 @@ static void privmsgparse(const char* type, char* line) {
               l_initvalues(ul);
               removenonprintablefile(msg3);
               ul->file = mystrdup(msg3);
-              ul->remoteip = atoul(msg4);
+              ul->family = (strchr(msg4, ':')) ? AF_INET6 : AF_INET;
+              if (ul->family == AF_INET)
+                {
+                  ul->remoteip.ip4 = atoul(msg4);
+                }
+              else
+                {
+                  int retval;
+                  retval = inet_pton(AF_INET6, msg4, &(ul->remoteip.ip6));
+                  if (retval != 0)
+                    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", msg4);
+                }
               ul->remoteport = atoi(msg5);
               ul->totalsize = (off_t)atoull(msg6);
               ul->nick = mystrdup(nick);

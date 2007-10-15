@@ -2536,14 +2536,14 @@ int l_setup_passive(upload * const l, char *token)
 void l_setup_accept(upload * const l)
 {
   SIGNEDSOCK int addrlen;
-  struct sockaddr_in remoteaddr;
+  ir_sockaddr_union_t remoteaddr;
   int listen_fd;
  
   updatecontext();
 
   listen_fd = l->clientsocket;
-  addrlen = sizeof (struct sockaddr_in);
-  if ((l->clientsocket = accept(listen_fd, (struct sockaddr *) &remoteaddr, &addrlen)) < 0) {
+  addrlen = sizeof(remoteaddr);
+  if ((l->clientsocket = accept(listen_fd, &remoteaddr.sa, &addrlen)) < 0) {
     outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
     FD_CLR(listen_fd, &gdata.readset);
     close(listen_fd);
@@ -2566,8 +2566,8 @@ void l_setup_accept(upload * const l)
 
   notice(l->nick, "DCC Send Accepted, Connecting...");
 
-  l->remoteip   = ntohl(remoteaddr.sin_addr.s_addr);
-  l->remoteport = ntohs(remoteaddr.sin_port);
+  l->remoteip.ip4 = ntohl(remoteaddr.sin.sin_addr.s_addr);
+  l->remoteport = get_port(&remoteaddr);
   l->connecttime = gdata.curtime;
   l->lastcontact = gdata.curtime;
   l->ul_status = UPLOAD_STATUS_GETTING;

@@ -1935,7 +1935,7 @@ void dumpgdata(void)
           iter->localport,
           iter->remoteport,
           iter->localip,
-          iter->remoteip);
+          iter->remoteip.ip4);
   ioutput(gdata_common,"  : net=%d", iter->net + 1 );
   ioutput(gdata_common, "  : token=%d", iter->token);
   gdata_iter_print_string(nick);
