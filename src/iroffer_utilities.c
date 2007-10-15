@@ -1890,11 +1890,10 @@ void dumpgdata(void)
           iter->lastspeed,
           (unsigned long)iter->xpack);
   ioutput(gdata_common,
-          "  : listenport=%d remoteport=%d localip=0x%.8lX remoteip=0x%.8lX",
+          "  : listenport=%d local%s remote%s",
           iter->listenport,
-          iter->remoteport,
-          iter->localip,
-          iter->remoteip);
+          iter->localaddr,
+          iter->remoteaddr);
   ioutput(gdata_common, "  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
 #ifdef HAVE_MMAP
   ioutput(gdata_common, "  : mmap_info=%p", iter->mmap_info);

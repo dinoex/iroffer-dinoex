@@ -3546,9 +3546,8 @@ static void u_trinfo(const userinput * const u)
             lcontact < 3600 ? lcontact%60 : (lcontact/60)%60 ,
             lcontact < 3600 ? 's' : 'm');
   
-  u_respond(u,"Local: %ld.%ld.%ld.%ld:%d, Remote: %ld.%ld.%ld.%ld:%d",
-            tr->localip>>24, (tr->localip>>16) & 0xFF, (tr->localip>>8) & 0xFF, tr->localip & 0xFF, tr->listenport,
-            tr->remoteip>>24, (tr->remoteip>>16) & 0xFF, (tr->remoteip>>8) & 0xFF, tr->remoteip & 0xFF, tr->remoteport);
+  u_respond(u,"Local: %s, Remote: %s",
+            tr->localaddr, tr->remoteaddr);
   
   u_respond(u,"Sockets: Listen %i, Transfer %i, File %i",
             (tr->listensocket == FD_UNUSED) ? 0 : tr->listensocket,

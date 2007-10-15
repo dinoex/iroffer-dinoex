@@ -1079,6 +1079,8 @@ static void mainloop (void) {
               trnick = tr->nick;
               mydelete(tr->caps_nick);
               mydelete(tr->hostname);
+              mydelete(tr->localaddr);
+              mydelete(tr->remoteaddr);
               tr = irlist_delete(&gdata.trans, tr);
               
               if (!gdata.exiting &&
@@ -3548,14 +3550,21 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        
        if (tr->tr_status == TRANSFER_STATUS_LISTENING)
          {
+           char *dccdata;
            sendnamestr = getsendname(tr->xpack->file);
+           dccdata = mycalloc(maxtextlength);
+           if (tr->family == AF_INET)
+             tr->serveraddress.sin.sin_addr = gnetwork->myip.sin.sin_addr;
+           else
+             tr->serveraddress.sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
+           my_dcc_ip_port(dccdata, maxtextlength -1,
+                          &tr->serveraddress, tr->serveraddress.sa.sa_len);
            
-           privmsg_fast(nick,"\1DCC SEND %s %lu %i %" LLPRINTFMT "u\1",
-                        sendnamestr,
-                        gdata.ourip,
-                        tr->listenport,
+           privmsg_fast(nick,"\1DCC SEND %s %s %" LLPRINTFMT "u\1",
+                        sendnamestr, dccdata,
                         (unsigned long long)tr->xpack->st_size);
            
+           mydelete(dccdata);
            mydelete(sendnamestr);
            newlisten = tr->listenport;
          }

@@ -234,6 +234,7 @@ typedef struct
   int clientsocket;
   int id;
   int net;
+  int family;
   off_t bytessent;
   off_t bytesgot;
   off_t lastack;
@@ -248,10 +249,8 @@ typedef struct
   time_t connecttime;
   time_t restrictsend_bad;
   unsigned long long connecttimems;
-  unsigned short remoteport;
   unsigned short listenport;
-  unsigned long remoteip;
-  unsigned long localip;
+  long remoteip;
   float lastspeed;
   float maxspeed;
   xdcc *xpack;
@@ -259,6 +258,8 @@ typedef struct
   char *nick;
   char *caps_nick;
   char *hostname;
+  char *remoteaddr;
+  char *localaddr;
   char nomin;
   char nomax;
   char reminded;

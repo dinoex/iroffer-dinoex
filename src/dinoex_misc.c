@@ -720,7 +720,10 @@ void check_new_connection(transfer *const tr)
   const char *country;
   char *msg;
 #endif /* USE_GEOIP */
-  
+
+  if (tr->family != AF_INET)
+    return;
+
 #ifdef USE_GEOIP
   country = check_geoip(tr);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -764,6 +767,9 @@ void check_duplicateip(transfer *const newtr)
   transfer *tr;
   int found;
   int num;
+
+  if (newtr->family != AF_INET)
+    return;
 
   num = 24 * 60; /* 1 day */
   found = 0;
@@ -2854,6 +2860,8 @@ static void free_state(void)
      mydelete(tr->nick);
      mydelete(tr->caps_nick);
      mydelete(tr->hostname);
+     mydelete(tr->localaddr);
+     mydelete(tr->remoteaddr);
   }
 
   for (up = irlist_get_head(&gdata.uploads);

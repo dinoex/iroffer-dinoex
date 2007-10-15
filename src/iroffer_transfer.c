@@ -27,6 +27,7 @@ void t_initvalues (transfer * const t) {
 
    updatecontext();
 
+      t->family = gnetwork->myip.sa.sa_family;
       t->tr_status = TRANSFER_STATUS_UNUSED;
       t->listensocket=FD_UNUSED;
       t->clientsocket=FD_UNUSED;
@@ -37,50 +38,26 @@ void t_initvalues (transfer * const t) {
 
 void t_setuplisten (transfer * const t)
 {
-  int tempc;
+  int rc;
   
   updatecontext();
-  
-  if ((t->listensocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+
+  rc = open_listen(t->family, &(t->serveraddress), &(t->listensocket), 0, gdata.tcprangestart, 1);
+  if (rc != 0)
     {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Could Not Create Socket, Aborting");
       t_closeconn(t,"Connection Error, Try Again",errno);
       return;
     }
   
-  if (gdata.tcprangestart)
-    {
-      tempc = 1;
-      setsockopt(t->listensocket, SOL_SOCKET, SO_REUSEADDR, &tempc, sizeof(int));
-    }
-  
-  bzero ((char *) &t->serveraddress, sizeof (struct sockaddr_in));
-  
-  t->serveraddress.sin.sin_family = AF_INET;
-  t->serveraddress.sin.sin_addr.s_addr = INADDR_ANY;
-  
-  if (ir_bind_listen_socket(t->listensocket, &t->serveraddress) < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Bind to Socket, Aborting");
-      t_closeconn(t,"Connection Error, Try Again",errno);
-      return;
-    }
-  
-  t->listenport = ntohs (t->serveraddress.sin.sin_port);
-  
-  if (listen (t->listensocket, 1) < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Listen, Aborting");
-      t_closeconn(t,"Connection Error, Try Again",errno);
-      return;
-    }
-  
+  t->listenport = get_port(&(t->serveraddress));
   t->tr_status = TRANSFER_STATUS_LISTENING;
-  
 }
 
-void t_establishcon (transfer * const t) {
-   struct sockaddr_in temp1;
+void t_establishcon (transfer * const t)
+{
+   char *msg;
+   ir_sockaddr_union_t remoteaddr;
+   ir_sockaddr_union_t localaddr;
    SIGNEDSOCK int addrlen;
    
 #if !defined(_OS_SunOS)
@@ -92,11 +69,11 @@ void t_establishcon (transfer * const t) {
    
    updatecontext();
    
-   addrlen = sizeof (struct sockaddr_in);
+   addrlen = (t->family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
    
    if (!gdata.attop) gototop();
    
-   if ((t->clientsocket = accept(t->listensocket, (struct sockaddr *) &t->serveraddress, &addrlen)) < 0) {
+   if ((t->clientsocket = accept(t->listensocket, &t->serveraddress.sa, &addrlen)) < 0) {
       outerror(OUTERROR_TYPE_WARN,"Accept Error, Aborting");
       t_closeconn(t,"Connection Error, Try Again",errno);
       return;
@@ -174,27 +151,24 @@ void t_establishcon (transfer * const t) {
    t->lastspeed = t->xpack->minspeed;
    t->lastspeedamt = t->startresume;
    
-   if ((getpeername(t->clientsocket,(struct sockaddr *) &temp1,&(addrlen))) < 0)
+   if ((getpeername(t->clientsocket, &remoteaddr.sa, &(addrlen))) < 0)
       outerror(OUTERROR_TYPE_WARN,"Couldn't get Remote IP");
-   else {
-      t->remoteip = ntohl(temp1.sin_addr.s_addr);
-      t->remoteport = ntohs(temp1.sin_port);
-      }
    
-   if ((getsockname(t->clientsocket,(struct sockaddr *) &temp1,&(addrlen))) < 0)
+   if ((getsockname(t->clientsocket, &localaddr.sa, &(addrlen))) < 0)
       outerror(OUTERROR_TYPE_WARN,"Couldn't get Local IP");
-   else
-      t->localip = ntohl(temp1.sin_addr.s_addr);
    
+   msg = mycalloc(maxtextlength);
+   my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, remoteaddr.sa.sa_len);
+   t->remoteaddr = mystrdup(msg);
+   my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, localaddr.sa.sa_len);
+   t->localaddr = mystrdup(msg);
+   mydelete(msg);
+
    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC [%02i:%s on %s]: Connection established (%ld.%ld.%ld.%ld:%d -> %ld.%ld.%ld.%ld:%d)",
+            "XDCC [%02i:%s on %s]: Connection established (%s -> %s)",
             t->id, t->nick, gdata.networks[ t->net ].name,
-            t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF, t->remoteport,
-            t->localip>>24, (t->localip>>16) & 0xFF, (t->localip>>8) & 0xFF, t->localip & 0xFF, t->listenport
-            );
-   
-   
-   }
+            t->remoteaddr, t->localaddr);
+}
 
 void t_transfersome (transfer * const t)
 {
