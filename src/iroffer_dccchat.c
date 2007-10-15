@@ -87,7 +87,10 @@ int setupdccchatout(const char *nick)
   chat->localport = listenport;
   chat->net = gnetwork->net;
   
-  listenaddr.sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
+  if (chat->family == AF_INET)
+    listenaddr.sin.sin_addr = gnetwork->myip.sin.sin_addr;
+  else
+    listenaddr.sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
   msg = mycalloc(maxtextlength);
   my_dcc_ip_port(msg, maxtextlength -1, &listenaddr, listenaddr.sa.sa_len);
   privmsg_fast(nick,"\1DCC CHAT CHAT %s\1", msg);
