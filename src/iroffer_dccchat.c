@@ -83,7 +83,6 @@ int setupdccchatout(const char *nick)
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
   chat->family = listenaddr.sa.sa_family;
-  chat->localip   = gdata.ourip;
   chat->localport = listenport;
   chat->net = gnetwork->net;
   
@@ -94,12 +93,12 @@ int setupdccchatout(const char *nick)
   msg = mycalloc(maxtextlength);
   my_dcc_ip_port(msg, maxtextlength -1, &listenaddr, listenaddr.sa.sa_len);
   privmsg_fast(nick,"\1DCC CHAT CHAT %s\1", msg);
-  
   my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, listenaddr.sa.sa_len);
+  chat->localaddr = mystrdup(msg);
+  mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT sent to %s on %s, waiting for connection on %s",
-          nick, gnetwork->name, msg);
-  mydelete(msg);
+          nick, gnetwork->name, chat->localaddr);
   return 0;
 }
 
@@ -108,6 +107,7 @@ void setupdccchataccept(dccchat_t *chat)
   SIGNEDSOCK int addrlen;
   ir_sockaddr_union_t remoteaddr;
   char *tempstr;
+  char *msg;
   int listen_fd;
   
   updatecontext();
@@ -137,12 +137,15 @@ void setupdccchataccept(dccchat_t *chat)
     }
   
   chat->status     = DCCCHAT_AUTHENTICATING;
-  chat->remoteip   = ntohl(remoteaddr.sin.sin_addr.s_addr);
-  chat->remoteport = ntohs(remoteaddr.sin.sin_port);
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
   ir_boutput_init(&chat->boutput, chat->fd, 0);
   
+  msg = mycalloc(maxtextlength);
+  my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, remoteaddr.sa.sa_len);
+  chat->remoteaddr = mystrdup(msg);
+  mydelete(msg);
+
   tempstr = mycalloc(maxtextlength);
   getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
   
@@ -300,20 +303,20 @@ int setupdccchat(const char *nick,
   gdata.num_dccchats++;
   chat->status = DCCCHAT_CONNECTING;
   chat->nick = mystrdup(nick);
-  chat->remoteip   = ntohl(remoteip.sin.sin_addr.s_addr);
-  chat->remoteport = ntohs(remoteip.sin.sin_port);
-  chat->localip    = ntohl(localaddr.sin.sin_addr.s_addr);
-  chat->localport  = ntohs(localaddr.sin.sin_port);
+  chat->localport  = get_port(&localaddr);
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
   chat->net = gnetwork->net;
   
   msg = mycalloc(maxtextlength);
+  my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, localaddr.sa.sa_len);
+  chat->localaddr = mystrdup(msg);
   my_getnameinfo(msg, maxtextlength -1, &remoteip.sa, remoteip.sa.sa_len);
+  chat->remoteaddr = mystrdup(msg);
+  mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT received from %s on %s, attempting connection to %s",
-          nick, gnetwork->name, msg);
-  mydelete(msg);
+          nick, gnetwork->name, chat->remoteaddr);
   return 0;
 }
 
