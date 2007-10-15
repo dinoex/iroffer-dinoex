@@ -922,7 +922,6 @@ static int send_statefile(void)
   transfer *tr;
   char *nick;
   const char *hostname;
-  char *sendnamestr;
   struct stat st;
   int xfiledescriptor;
 
@@ -970,13 +969,7 @@ static int send_statefile(void)
   if (tr->tr_status != TRANSFER_STATUS_LISTENING)
     return 1;
 
-  sendnamestr = getsendname(tr->xpack->file);
-  privmsg_fast(nick,"\1DCC SEND %s %lu %i %" LLPRINTFMT "u\1",
-               sendnamestr,
-               gdata.ourip,
-               tr->listenport,
-               (unsigned long long)tr->xpack->st_size);
-  mydelete(sendnamestr);
+  t_setup_dcc(tr, nick);
   return 0;
 }
 
@@ -2420,6 +2413,20 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
   return 0;
 } 
 
+char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
+{
+   char *msg;
+
+   if (listenaddr->sa.sa_family == AF_INET)
+     listenaddr->sin.sin_addr = gnetwork->myip.sin.sin_addr;
+   else
+     listenaddr->sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
+   msg = mycalloc(maxtextlength);
+   my_dcc_ip_port(msg, maxtextlength -1,
+                  listenaddr, listenaddr->sa.sa_len);
+   return msg;
+}
+
 int l_setup_file(upload * const l, struct stat *stp)
 {
   char *fullfile;
@@ -2477,30 +2484,27 @@ int l_setup_file(upload * const l, struct stat *stp)
 
 int l_setup_listen(upload * const l)
 {
+  char *msg;
+  ir_sockaddr_union_t listenaddr;
   int rc;
   int listenport;
-  ir_sockaddr_union_t listenaddr;
 
   updatecontext();
 
-  rc = open_listen(0, &listenaddr, &(l->clientsocket), 0, gdata.tcprangestart, 1);
+  rc = open_listen(l->family, &listenaddr, &(l->clientsocket), 0, gdata.tcprangestart, 1);
   if (rc != 0) {
     l_closeconn(l, "Connection Lost", 0);
     return 1;
   }
  
-  listenport = ntohs(listenaddr.sin.sin_port);
-  privmsg_fast(l->nick, "\1DCC SEND %s %lu %d %" LLPRINTFMT "i %d\1",
-               l->file, gdata.ourip, listenport, (long long)(l->totalsize), l->token);
+  listenport = get_port(&listenaddr);
+  msg = setup_dcc_local(&listenaddr);
+  privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "i %d\1",
+               l->file, msg, (long long)(l->totalsize), l->token);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "DCC SEND sent to %s on %s, waiting for connection on %lu.%lu.%lu.%lu:%d",
-          l->nick,
-          gnetwork->name,
-          (gdata.ourip >> 24) & 0xFF,
-          (gdata.ourip >> 16) & 0xFF,
-          (gdata.ourip >>  8) & 0xFF,
-          (gdata.ourip      ) & 0xFF,
-          listenport);
+          "DCC SEND sent to %s on %s, waiting for connection on %s",
+          l->nick, gnetwork->name, msg);
+  mydelete(msg);
 
   l->localport = listenport;
   l->connecttime = gdata.curtime;
@@ -2544,6 +2548,7 @@ void l_setup_accept(upload * const l)
   SIGNEDSOCK int addrlen;
   ir_sockaddr_union_t remoteaddr;
   int listen_fd;
+  char *msg;
  
   updatecontext();
 
@@ -2572,7 +2577,10 @@ void l_setup_accept(upload * const l)
 
   notice(l->nick, "DCC Send Accepted, Connecting...");
 
-  l->remoteip.ip4 = ntohl(remoteaddr.sin.sin_addr.s_addr);
+  msg = mycalloc(maxtextlength);
+  my_getnameinfo(msg, maxtextlength -1, &(remoteaddr.sa), addrlen);
+  l->remoteaddr = mystrdup(msg);
+  mydelete(msg);
   l->remoteport = get_port(&remoteaddr);
   l->connecttime = gdata.curtime;
   l->lastcontact = gdata.curtime;
@@ -2801,6 +2809,25 @@ int connectirc2(res_addrinfo_t *remote)
   return 0;
 }
 
+void t_setup_dcc(transfer *tr, const char *nick)
+{
+  char *dccdata;
+  char *sendnamestr;
+
+  sendnamestr = getsendname(tr->xpack->file);
+  dccdata = setup_dcc_local(&tr->serveraddress);
+  privmsg_fast(nick,"\1DCC SEND %s %s %" LLPRINTFMT "u\1",
+               sendnamestr, dccdata,
+               (unsigned long long)tr->xpack->st_size);
+
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "listen on port %d for %s (%s on %s)",
+          tr->listenport, nick, tr->hostname, gnetwork->name);
+
+  mydelete(dccdata);
+  mydelete(sendnamestr);
+}
+
 #ifdef DEBUG
 
 static void free_state(void)
@@ -2870,6 +2897,7 @@ static void free_state(void)
      mydelete(up->nick);
      mydelete(up->hostname);
      mydelete(up->file);
+     mydelete(tr->remoteaddr);
   }
 
   for (pq = irlist_get_head(&gdata.mainqueue);
