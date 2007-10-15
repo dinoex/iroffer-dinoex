@@ -2813,6 +2813,7 @@ static void u_botinfo(const userinput * const u) {
                      transferlimit_type_to_string(ii),tempstr2 ,
                      gdata.transferlimits[ii].used / 1024 / 1024);
          }
+       mydelete(tempstr2);
      }
    
    u_respond(u, "files: pid: %s, log: %s, state: %s, xdcclist: %s",
