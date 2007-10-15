@@ -522,6 +522,8 @@ void shutdowndccchat(dccchat_t *chat, int flush)
       shutdown(chat->fd, SHUT_RDWR);
       close(chat->fd);
       mydelete(chat->nick);
+      mydelete(chat->localaddr);
+      mydelete(chat->remoteaddr);
       ir_boutput_delete(&chat->boutput);
       memset(chat, 0, sizeof(dccchat_t));
       chat->fd = FD_UNUSED;

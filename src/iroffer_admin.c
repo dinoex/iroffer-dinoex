@@ -2287,17 +2287,9 @@ static void u_chatl(const userinput * const u)
       
       mydelete(tempstr);
       
-      u_respond(u,"  Local: %lu.%lu.%lu.%lu:%d, Remote: %lu.%lu.%lu.%lu:%d",
-                (chat->localip >> 24) & 0xFF,
-                (chat->localip >> 16) & 0xFF,
-                (chat->localip >>  8) & 0xFF,
-                (chat->localip      ) & 0xFF,
-                chat->localport,
-                (chat->remoteip >> 24) & 0xFF,
-                (chat->remoteip >> 16) & 0xFF,
-                (chat->remoteip >>  8) & 0xFF,
-                (chat->remoteip      ) & 0xFF,
-                chat->remoteport);
+      u_respond(u,"  Local: %s, Remote: %s",
+                chat->localaddr,
+                chat->remoteaddr);
     }
   
   return;

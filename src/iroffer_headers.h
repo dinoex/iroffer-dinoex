@@ -322,11 +322,10 @@ typedef struct
   ir_boutput_t boutput;
   time_t lastcontact;
   time_t connecttime;
-  unsigned short remoteport;
   unsigned short localport;
-  unsigned long remoteip;
-  unsigned long localip;
   char *nick;
+  char *remoteaddr;
+  char *localaddr;
   char dcc_input_line[INPUT_BUFFER_LENGTH];
 } dccchat_t;
 

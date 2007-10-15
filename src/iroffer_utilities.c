@@ -1732,11 +1732,10 @@ void dumpgdata(void)
           (long)iter->lastcontact,
           (long)iter->connecttime);
   ioutput(gdata_common,
-          "  : localport=%d remoteport=%d localip=0x%.8lX remoteip=0x%.8lX",
+          "  : localport=%d local%s remot%s",
           iter->localport,
-          iter->remoteport,
-          iter->localip,
-          iter->remoteip);
+          iter->localaddr,
+          iter->remoteaddr);
   gdata_iter_print_string(nick);
   gdata_irlist_iter_end;
   gdata_print_int(num_dccchats);
