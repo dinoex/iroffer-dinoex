@@ -2843,7 +2843,7 @@ static void privmsgparse(const char* type, char* line) {
                 {
                   int retval;
                   retval = inet_pton(AF_INET6, msg4, &(ul->remoteip.ip6));
-                  if (retval != 0)
+                  if (retval < 0)
                     outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", msg4);
                 }
               ul->remoteport = atoi(msg5);

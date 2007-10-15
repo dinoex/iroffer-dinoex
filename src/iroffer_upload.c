@@ -56,7 +56,7 @@ void l_establishcon (upload * const l)
   
   bzero ((char *) &remoteaddr, sizeof (remoteaddr));
   
-  l->clientsocket = socket( AF_INET, SOCK_STREAM, 0);
+  l->clientsocket = socket(l->family, SOCK_STREAM, 0);
   if (l->clientsocket < 0)
     {
       l_closeconn(l,"Socket Error",errno);
