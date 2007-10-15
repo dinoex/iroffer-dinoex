@@ -292,12 +292,11 @@ typedef struct
   time_t connecttime;
   unsigned short remoteport;
   unsigned short localport;
-  ir_addr_union_t remoteip;
-  unsigned long localip;
   float lastspeed;
   char *nick;
   char *hostname;
   char *file;
+  char *remoteaddr;
   upload_status_e ul_status;
   int resumed;
   int net;

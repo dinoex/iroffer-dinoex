@@ -106,6 +106,7 @@ char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc
 void check_idle_queue(void);
 
 int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search);
+char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
 
 int l_setup_file(upload * const l, struct stat *stp);
 int l_setup_listen(upload * const l);
@@ -116,6 +117,7 @@ void child_resolver(void);
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen);
 int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen);
 int connectirc2(res_addrinfo_t *remote);
+void t_setup_dcc(transfer *tr, const char *nick);
 
 void exit_iroffer(void);
 

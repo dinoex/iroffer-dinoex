@@ -1732,7 +1732,7 @@ void dumpgdata(void)
           (long)iter->lastcontact,
           (long)iter->connecttime);
   ioutput(gdata_common,
-          "  : localport=%d local%s remot%s",
+          "  : localport=%d local%s remote%s",
           iter->localport,
           iter->localaddr,
           iter->remoteaddr);
@@ -1929,11 +1929,10 @@ void dumpgdata(void)
           (long)iter->connecttime,
           iter->lastspeed);
   ioutput(gdata_common,
-          "  : localport=%d remoteport=%d localip=0x%.8lX remoteip=0x%.8lX",
+          "  : localport=%d remoteport=%d remote=%s",
           iter->localport,
           iter->remoteport,
-          iter->localip,
-          iter->remoteip.ip4);
+          iter->remoteaddr);
   ioutput(gdata_common,"  : net=%d", iter->net + 1 );
   ioutput(gdata_common, "  : token=%d", iter->token);
   gdata_iter_print_string(nick);

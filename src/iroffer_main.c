@@ -867,6 +867,7 @@ static void mainloop (void) {
               mydelete(ul->nick);
               mydelete(ul->hostname);
               mydelete(ul->file);
+              mydelete(ul->remoteaddr);
               ul = irlist_delete(&gdata.uploads, ul);
             }
           else
@@ -2837,17 +2838,7 @@ static void privmsgparse(const char* type, char* line) {
               removenonprintablefile(msg3);
               ul->file = mystrdup(msg3);
               ul->family = (strchr(msg4, ':')) ? AF_INET6 : AF_INET;
-              if (ul->family == AF_INET)
-                {
-                  ul->remoteip.ip4 = atoul(msg4);
-                }
-              else
-                {
-                  int retval;
-                  retval = inet_pton(AF_INET6, msg4, &(ul->remoteip.ip6));
-                  if (retval < 0)
-                    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", msg4);
-                }
+              ul->remoteaddr = mystrdup(msg4);
               ul->remoteport = atoi(msg5);
               ul->totalsize = (off_t)atoull(msg6);
               ul->nick = mystrdup(nick);
@@ -3506,7 +3497,6 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
    else
      {
        char *sizestrstr;
-       char *sendnamestr;
        
        look_for_file_changes(xd);
        
@@ -3550,22 +3540,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        
        if (tr->tr_status == TRANSFER_STATUS_LISTENING)
          {
-           char *dccdata;
-           sendnamestr = getsendname(tr->xpack->file);
-           dccdata = mycalloc(maxtextlength);
-           if (tr->family == AF_INET)
-             tr->serveraddress.sin.sin_addr = gnetwork->myip.sin.sin_addr;
-           else
-             tr->serveraddress.sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
-           my_dcc_ip_port(dccdata, maxtextlength -1,
-                          &tr->serveraddress, tr->serveraddress.sa.sa_len);
-           
-           privmsg_fast(nick,"\1DCC SEND %s %s %" LLPRINTFMT "u\1",
-                        sendnamestr, dccdata,
-                        (unsigned long long)tr->xpack->st_size);
-           
-           mydelete(dccdata);
-           mydelete(sendnamestr);
+           t_setup_dcc(tr, nick);
            newlisten = tr->listenport;
          }
      }
@@ -3749,7 +3724,6 @@ void sendaqueue(int type, int pos, char *lastnick)
   int usertrans;
   pqueue *pq;
   transfer *tr;
-  char *sendnamestr;
   char *hostmask;
   gnetwork_t *backup;
   
@@ -3879,17 +3853,8 @@ void sendaqueue(int type, int pos, char *lastnick)
         }
       
       t_setuplisten(tr);
-      
-      sendnamestr = getsendname(tr->xpack->file);
-      
-      privmsg_fast(pq->nick,"\1DCC SEND %s %lu %i %" LLPRINTFMT "u\1",
-              sendnamestr,
-              gdata.ourip,
-              tr->listenport,
-              (unsigned long long)tr->xpack->st_size);
-      
-      mydelete(sendnamestr);
-      
+      t_setup_dcc(tr, pq->nick);
+
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "listen on port %d for %s (%s on %s)",
               tr->listenport, pq->nick, pq->hostname, gnetwork->name);

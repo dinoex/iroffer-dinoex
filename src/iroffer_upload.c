@@ -68,14 +68,16 @@ void l_establishcon (upload * const l)
       remoteaddr.sa.sa_len =  sizeof(struct sockaddr_in);
       remoteaddr.sin.sin_family = AF_INET;
       remoteaddr.sin.sin_port = htons(l->remoteport);
-      remoteaddr.sin.sin_addr.s_addr = htonl(l->remoteip.ip4);
+      remoteaddr.sin.sin_addr.s_addr = htonl(atoul(l->remoteaddr));
     }
   else
     {
       remoteaddr.sa.sa_len =  sizeof(struct sockaddr_in6);
       remoteaddr.sin6.sin6_family = AF_INET6;
       remoteaddr.sin6.sin6_port = htons(l->remoteport);
-      remoteaddr.sin6.sin6_addr = l->remoteip.ip6;
+      retval = inet_pton(AF_INET6, l->remoteaddr, &(remoteaddr.sin6.sin6_addr));
+      if (retval < 0)
+        outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", l->remoteaddr);
     }
   
   if (gdata.local_vhost)
