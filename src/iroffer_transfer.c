@@ -153,6 +153,9 @@ void t_establishcon (transfer * const t)
    
    if ((getpeername(t->clientsocket, &remoteaddr.sa, &(addrlen))) < 0)
       outerror(OUTERROR_TYPE_WARN,"Couldn't get Remote IP");
+   else {
+      t->remoteip = ntohl(remoteaddr.sin.sin_addr.s_addr);
+      }
    
    if ((getsockname(t->clientsocket, &localaddr.sa, &(addrlen))) < 0)
       outerror(OUTERROR_TYPE_WARN,"Couldn't get Local IP");
