@@ -6,8 +6,10 @@ With Version mod 3.0:
 172) group_seperator (inspired by TheDeath)
   printed between group name and group description.
 
-171) IPV6 support to the irc server
-  usenatip must be set to IPv4 for DCC to work.
+171) IPV6 support
+   References TODO:
+Long Term Features:
+   195 12/09/03 Open IPv6 support
 
 170) CHDESC
   new admin command:

@@ -32,7 +32,6 @@ Long Term Features:
    118 long ago Open telnet admin
    148 01/01/01 Open channel file for dynamic channels, read in like another config file and written by admin commands
    190 12/09/03 Open different bandwidth limiting for each day of the week
-   195 12/09/03 Open IPv6 support
    208 4/13/04 Open SSL connections to irc server
    209 4/25/04 Open DCC2 support
    210 5/3/04 Open hostmasks that bypass queue

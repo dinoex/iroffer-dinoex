@@ -75,6 +75,7 @@ TheDeath
 	admin command "XDTRIGGER"
 	report notify bug
 	option "http_port"
+	option "group_seperator"
 
 [GFE]Lunix
 	alias xdcc list group <group>
