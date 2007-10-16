@@ -138,6 +138,7 @@ static config_string_typ config_parse_string[] = {
 {"creditline",              &gdata.creditline,              0 },
 {"enable_nick",             &gdata.enable_nick,             0 },
 {"geoipdatabase",           &gdata.geoipdatabase,           0 },
+{"group_seperator",         &gdata.group_seperator,         5 },
 {"hadminpass",              &gdata.hadminpass,              4 },
 {"headline",                &gdata.headline,                0 },
 {"http_admin",              &gdata.http_admin,              0 },
@@ -384,6 +385,9 @@ int set_config_string(const char *key, char *text)
     return 0;
   }
   switch (config_parse_string[i].flags) {
+  case 5:
+     clean_quotes(text);
+     break;
   case 4:
      if (strchr(text, ' ') != NULL) {
        outerror(OUTERROR_TYPE_WARN,

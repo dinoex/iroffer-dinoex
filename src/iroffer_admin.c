@@ -930,7 +930,7 @@ static void u_xdl_group(const userinput * const u) {
              {
                if (xd->group_desc != NULL)
                  {
-                   u_respond(u,"group: %s %s",msg3,xd->group_desc);
+                   u_respond(u,"group: %s%s%s",msg3, gdata.group_seperator, xd->group_desc);
                  }
 
                if (hide_locked(u,xd) == 0)
@@ -994,7 +994,7 @@ static void u_xdl(const userinput * const u) {
        if ((xd->group != NULL) && (xd->group_desc != NULL))
           {
             snprintf(tempstr,maxtextlength-1,
-                     "%s %s",xd->group,xd->group_desc);
+                     "%s%s%s", xd->group, gdata.group_seperator, xd->group_desc);
             inlist = irlist_add(&grplist, strlen(tempstr) + 1);
             strcpy(inlist, tempstr);
           }

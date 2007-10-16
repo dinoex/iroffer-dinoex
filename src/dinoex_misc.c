@@ -3074,6 +3074,7 @@ static void free_config(void)
   mydelete(gdata.hadminpass);
   mydelete(gdata.http_admin);
   mydelete(gdata.http_dir);
+  mydelete(gdata.group_seperator);
 }
 
 #endif

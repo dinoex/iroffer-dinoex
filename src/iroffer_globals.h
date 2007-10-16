@@ -175,6 +175,7 @@ char *xdccremovefile;
 char *autoadd_sort;
 char *http_admin;
 char *http_dir;
+char *group_seperator;
 long nomd5_start;
 int need_voice;
 int need_level;
