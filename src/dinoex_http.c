@@ -181,6 +181,7 @@ static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
   char ch;
  
   max--;
+  max--;
   for (;;) {
     if (max <= 0)
       break;
@@ -190,8 +191,12 @@ static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
     for (i=0; http_special[i].s_ch; i++) {
       if (ch != http_special[i].s_ch)
         continue;
-      strncpy(dest, http_special[i].s_html, max);
       len = strlen(http_special[i].s_html);
+      if (len > max) {
+        max = 0;
+        break;
+      }
+      strncpy(dest, http_special[i].s_html, len);
       dest += len;
       max -= len;
       break;
