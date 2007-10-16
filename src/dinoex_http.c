@@ -423,10 +423,10 @@ static void h_accept(int i)
   updatecontext();
 
   if (i == 0) {
-    addrlen = sizeof (struct sockaddr_in);
+    addrlen = sizeof (struct sockaddr_in6);
     clientsocket = accept(http_listen[i], &remoteaddr.sa, &addrlen);
   } else {
-    addrlen = sizeof (struct sockaddr_in6);
+    addrlen = sizeof (struct sockaddr_in);
     clientsocket = accept(http_listen[i], &remoteaddr.sa, &addrlen);
   }
   if (clientsocket < 0) {
@@ -442,13 +442,13 @@ static void h_accept(int i)
   h->filedescriptor = FD_UNUSED;
   h->clientsocket = clientsocket;
   if (i == 0) {
-    h->family = remoteaddr.sin.sin_family;
-    h->remoteip4 = ntohl(remoteaddr.sin.sin_addr.s_addr);
-    h->remoteport = ntohs(remoteaddr.sin.sin_port);
-  } else {
     h->family = remoteaddr.sin6.sin6_family;
     h->remoteip6 = remoteaddr.sin6.sin6_addr;
     h->remoteport = ntohs(remoteaddr.sin6.sin6_port);
+  } else {
+    h->family = remoteaddr.sin.sin_family;
+    h->remoteip4 = ntohl(remoteaddr.sin.sin_addr.s_addr);
+    h->remoteport = ntohs(remoteaddr.sin.sin_port);
   }
   h->connecttime = gdata.curtime;
   h->lastcontact = gdata.curtime;

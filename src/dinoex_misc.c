@@ -2367,10 +2367,15 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
 
   updatecontext();
 
-  if (ipv6 == 0)
+  switch (ipv6) {
+  case AF_INET:
+  case 1:
     family = AF_INET;
-  else
+    break;
+  default:
     family = AF_INET6;
+    break;
+  }
   *listen_socket = socket(family, SOCK_STREAM, 0);
   if (*listen < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
@@ -2385,7 +2390,7 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
   }
 
   bzero((char *) listenaddr, sizeof(ir_sockaddr_union_t));
-  if (ipv6 == 0) {
+  if (family == AF_INET) {
     addrlen = sizeof(struct sockaddr_in);
     listenaddr->sin.sin_family = AF_INET;
     listenaddr->sin.sin_addr.s_addr = INADDR_ANY;
