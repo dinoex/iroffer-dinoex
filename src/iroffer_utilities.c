@@ -2884,6 +2884,7 @@ int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa)
   SIGNEDSOCK int addrlen;
   
   max = (MAXTRANS+MAXUPLDS+MAXCHATS+irlist_size(&gdata.listen_ports));
+  addrlen = (sa->sa.sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   
   for (retry = 0; retry < max; retry++)
     {
@@ -2909,7 +2910,7 @@ int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa)
           sa->sin.sin_port = htons(0);
         }
       
-      if (bind(fd, &(sa->sa), sa->sa.sa_len) < 0)
+      if (bind(fd, &(sa->sa), addrlen) < 0)
         {
           if (!gdata.tcprangestart)
             {
@@ -2928,8 +2929,6 @@ int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa)
     {
       return -1;
     }
-  
-  addrlen = sa->sa.sa_len;
   
   if ((getsockname(fd, &(sa->sa), &addrlen)) < 0)
     {

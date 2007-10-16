@@ -65,14 +65,14 @@ void l_establishcon (upload * const l)
   
   if (l->family == AF_INET )
     {
-      remoteaddr.sa.sa_len =  sizeof(struct sockaddr_in);
+      addrlen = sizeof(struct sockaddr_in);
       remoteaddr.sin.sin_family = AF_INET;
       remoteaddr.sin.sin_port = htons(l->remoteport);
       remoteaddr.sin.sin_addr.s_addr = htonl(atoul(l->remoteaddr));
     }
   else
     {
-      remoteaddr.sa.sa_len =  sizeof(struct sockaddr_in6);
+      addrlen = sizeof(struct sockaddr_in6);
       remoteaddr.sin6.sin6_family = AF_INET6;
       remoteaddr.sin6.sin6_port = htons(l->remoteport);
       retval = inet_pton(AF_INET6, l->remoteaddr, &(remoteaddr.sin6.sin6_addr));
@@ -100,7 +100,7 @@ void l_establishcon (upload * const l)
     }
   
   alarm(CTIMEOUT);
-  retval = connect(l->clientsocket, &remoteaddr.sa, remoteaddr.sa.sa_len);
+  retval = connect(l->clientsocket, &remoteaddr.sa, addrlen);
   if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) )
     {
       l_closeconn(l,"Couldn't Connect",errno);

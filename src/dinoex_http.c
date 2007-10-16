@@ -352,7 +352,7 @@ static int h_open_listen(int i)
     return 1;
 
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, listenaddr.sa.sa_len);
+  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, 0);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "HTTP SERVER waiting for connection on %s",  msg);
   mydelete(msg);

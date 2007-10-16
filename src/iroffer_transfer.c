@@ -158,9 +158,9 @@ void t_establishcon (transfer * const t)
       outerror(OUTERROR_TYPE_WARN,"Couldn't get Local IP");
    
    msg = mycalloc(maxtextlength);
-   my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, remoteaddr.sa.sa_len);
+   my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, 0);
    t->remoteaddr = mystrdup(msg);
-   my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, localaddr.sa.sa_len);
+   my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, 0);
    t->localaddr = mystrdup(msg);
    mydelete(msg);
 

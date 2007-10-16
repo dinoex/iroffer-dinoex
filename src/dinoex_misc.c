@@ -151,6 +151,12 @@ void update_natip (const char *var)
   if (var == NULL)
     return;
 
+  if (gnetwork != NULL)
+    {
+      if (gnetwork->myip.sa.sa_family != AF_INET)
+        return;
+    }
+
   gdata.usenatip = 1;
   if (gdata.r_ourip != 0)
     return;
@@ -2357,6 +2363,7 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
   int family;
   int rc;
   int tempc;
+  SIGNEDSOCK int addrlen;
 
   updatecontext();
 
@@ -2379,12 +2386,12 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
 
   bzero((char *) listenaddr, sizeof(ir_sockaddr_union_t));
   if (ipv6 == 0) {
-    listenaddr->sa.sa_len = sizeof(struct sockaddr_in);
+    addrlen = sizeof(struct sockaddr_in);
     listenaddr->sin.sin_family = AF_INET;
     listenaddr->sin.sin_addr.s_addr = INADDR_ANY;
     listenaddr->sin.sin_port = htons(port);
   } else {
-    listenaddr->sa.sa_len = sizeof(struct sockaddr_in6);
+    addrlen = sizeof(struct sockaddr_in6);
     listenaddr->sin6.sin6_family = AF_INET6;
     listenaddr->sin6.sin6_port = htons(port);
   }
@@ -2392,7 +2399,7 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
   if (search) {
     rc = ir_bind_listen_socket(*listen_socket, listenaddr);
   } else {
-    rc = bind(*listen_socket, &(listenaddr->sa), listenaddr->sa.sa_len);
+    rc = bind(*listen_socket, &(listenaddr->sa), addrlen);
   }
 
   if (rc < 0) {
@@ -2422,8 +2429,7 @@ char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
    else
      listenaddr->sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
    msg = mycalloc(maxtextlength);
-   my_dcc_ip_port(msg, maxtextlength -1,
-                  listenaddr, listenaddr->sa.sa_len);
+   my_dcc_ip_port(msg, maxtextlength -1, listenaddr, 0);
    return msg;
 }
 
@@ -2679,7 +2685,6 @@ void child_resolver(void)
   rbuffer.ai_protocol = 0;
   rbuffer.ai_addrlen = remotehost->h_length;
   rbuffer.ai_addr.sa_family = remotehost->h_addrtype;
-  rbuffer.ai_addr.sa_len = remotehost->h_length;
   remoteaddr->sin_port = htons(gnetwork->serv_resolv.to_port);
   memcpy(&(remoteaddr->sin_addr), remotehost->h_addr_list[0], sizeof(struct in_addr));
 #endif
@@ -2700,7 +2705,7 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 
   if (salen == 0)
-    salen = sa->sa_len;
+    salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     return snprintf(buffer, len, "(unknown)" );
@@ -2732,7 +2737,7 @@ int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t 
                     ip, ntohs(sa->sin.sin_port));
   }
   if (salen == 0)
-    salen = sa->sa.sa_len;
+    salen = (sa->sa.sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   if (getnameinfo(&(sa->sa), salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     return snprintf(buffer, len, "(unknown)" );

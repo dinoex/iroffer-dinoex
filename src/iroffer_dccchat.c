@@ -88,7 +88,7 @@ int setupdccchatout(const char *nick)
   
   msg = setup_dcc_local(&listenaddr);
   privmsg_fast(nick,"\1DCC CHAT CHAT %s\1", msg);
-  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, listenaddr.sa.sa_len);
+  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, 0);
   chat->localaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
@@ -137,7 +137,7 @@ void setupdccchataccept(dccchat_t *chat)
   ir_boutput_init(&chat->boutput, chat->fd, 0);
   
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, remoteaddr.sa.sa_len);
+  my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, addrlen);
   chat->remoteaddr = mystrdup(msg);
   mydelete(msg);
 
@@ -234,14 +234,14 @@ int setupdccchat(const char *nick,
   port[strlen(port)-1] = '\0';
   if (chat->family == AF_INET)
     {
-      remoteip.sa.sa_len =  sizeof(struct sockaddr_in);
+      addrlen = sizeof(struct sockaddr_in);
       remoteip.sin.sin_family = AF_INET;
       remoteip.sin.sin_port = htons(atoi(port));
       remoteip.sin.sin_addr.s_addr = htonl(atoul(ip));
     }
   else
     {
-      remoteip.sa.sa_len =  sizeof(struct sockaddr_in6);
+      addrlen = sizeof(struct sockaddr_in6);
       remoteip.sin6.sin6_family = AF_INET6;
       remoteip.sin6.sin6_port = htons(atoi(port));
       retval = inet_pton(AF_INET6, ip, &(remoteip.sin6.sin6_addr));
@@ -273,7 +273,7 @@ int setupdccchat(const char *nick,
     }
   
   alarm(CTIMEOUT);
-  retval = connect(chat->fd, &remoteip.sa, remoteip.sa.sa_len);
+  retval = connect(chat->fd, &remoteip.sa, addrlen);
   if ((retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)))
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Connection to DCC Chat Failed: %s", strerror(errno));
@@ -304,9 +304,9 @@ int setupdccchat(const char *nick,
   chat->net = gnetwork->net;
   
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, localaddr.sa.sa_len);
+  my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, 0);
   chat->localaddr = mystrdup(msg);
-  my_getnameinfo(msg, maxtextlength -1, &remoteip.sa, remoteip.sa.sa_len);
+  my_getnameinfo(msg, maxtextlength -1, &remoteip.sa, 0);
   chat->remoteaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
