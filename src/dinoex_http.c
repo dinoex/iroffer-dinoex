@@ -658,6 +658,17 @@ static char *html_link(const char *caption, const char *url, const char *text)
   return tempstr;
 }
 
+static float gets_per_pack(int agets, int packs)
+{
+  float result = 0.0;
+
+  if (packs > 0) {
+    result = (float)agets;
+    result /= packs;
+  }
+  return result;
+}
+
 static void h_html_main(http * const h)
 {
   xdcc *xd;
@@ -709,20 +720,39 @@ static void h_html_main(http * const h)
 
   h_respond(h, "<h1>%s %s</h1>\n", h->nick, "Group list" );
   h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
-  h_respond(h, "<th class=\"head\">%s</th>\n", "PACKs");
-  h_respond(h, "<th class=\"head\">%s</th>\n", "DLs");
-  h_respond(h, "<th class=\"head\">%s</th>\n", "Size");
+  h_respond(h, "<th class=\"right\">%s</th>\n", "PACKs");
+  h_respond(h, "<th class=\"right\">%s</th>\n", "DLs");
+  if (h->traffic)
+    h_respond(h, "<th class=\"right\">%s</th>\n", "DLs/Pack");
+  h_respond(h, "<th class=\"right\">%s</th>\n", "Size");
+  if (h->traffic)
+    h_respond(h, "<th class=\"right\">%s</th>\n", "Traffic");
   h_respond(h, "<th class=\"head\">%s</th>\n", "GROUP");
-  h_respond(h, "<th class=\"head\">%s</th>\n", "DESCRIPTION");
+  if (h->traffic)
+    tlink = html_link("hide traffic", "/?", "(less)");
+  else
+    tlink = html_link("show traffic", "/?traffic=1", "(more)");
+  h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tlink);
+  mydelete(tlink);
   h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
 
   h_respond(h, "<th class=\"right\">%d</th>\n", packs);
   h_respond(h, "<th class=\"right\">%d</th>\n", agets);
+  if (h->traffic)
+    h_respond(h, "<th class=\"right\">%.1f</th>\n", gets_per_pack(agets, packs));
   tempstr = sizestr(0, sizes);
   h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
   mydelete(tempstr);
+  if (h->traffic) {
+    tempstr = sizestr(0, traffic);
+    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+    mydelete(tempstr);
+  }
   h_respond(h, "<th class=\"head\">%d</th>\n", groups);
-  tlink = html_link("show all packs in one list", "/?group=*", "all packs");
+  if (h->traffic)
+    tlink = html_link("show all packs in one list", "/?group=*&amp;traffic=1", "all packs");
+  else
+    tlink = html_link("show all packs in one list", "/?group=*", "all packs");
   tempstr = sizestr(0, traffic);
   h_respond(h, "<th class=\"head\">%s [%s]&nbsp;%s</th>\n", tlink, tempstr, "complete downloaded" );
   mydelete(tempstr);
@@ -763,14 +793,24 @@ static void h_html_main(http * const h)
     h_respond(h, "<tr>\n");
     h_respond(h, "<td class=\"right\">%d</td>\n", packs);
     h_respond(h, "<td class=\"right\">%d</td>\n", agets);
+    if (h->traffic)
+      h_respond(h, "<td class=\"right\">%.1f</td>\n", gets_per_pack(agets, packs));
     tempstr = sizestr(0, sizes);
     h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
     mydelete(tempstr);
+    if (h->traffic) {
+      tempstr = sizestr(0, traffic);
+      h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
+      mydelete(tempstr);
+    }
     savegroup = mycalloc(maxtextlength);
     html_encode(savegroup, maxtextlength, inlist);
     h_respond(h, "<td class=\"content\">%s</td>\n", savegroup);
     tref = mycalloc(maxtextlength);
-    snprintf(tref, maxtextlength-1, "/?group=%s", savegroup);
+    if (h->traffic)
+      snprintf(tref, maxtextlength-1, "/?group=%s&amp;traffic=1", savegroup);
+    else
+      snprintf(tref, maxtextlength-1, "/?group=%s", savegroup);
     savedesc = mycalloc(maxtextlength);
     html_encode(savedesc, maxtextlength, desc);
     tlink = html_link("show list of packs", tref, savedesc);
@@ -821,13 +861,16 @@ static void h_html_file(http * const h)
   }
 
   h_respond(h, "<h1>%s %s</h1>\n", h->nick, "File list" );
-  h_respond(h, "%s<span class=\"cmd\">/msg %s xdcc send nummer</span></p>\n",
+  h_respond(h, "<p>%s<span class=\"cmd\">/msg %s xdcc send nummer</span></p>\n",
             "Download in IRC with", h->nick);
   h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
   h_respond(h, "<th class=\"head\">%s</th>\n", "PACKs");
   h_respond(h, "<th class=\"head\">%s</th>\n", "DLs");
   h_respond(h, "<th class=\"head\">%s</th>\n", "Size");
-  tempstr = html_link("back", "/?", "(back)");
+  if (h->traffic)
+    tempstr = html_link("back", "/?traffic=1", "(back)");
+  else
+    tempstr = html_link("back", "/?", "(back)");
   h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tempstr);
   mydelete(tempstr);
   h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
@@ -991,6 +1034,20 @@ static char *get_url_param(const char *url, const char *key)
   return result;
 }
 
+static int get_url_number(const char *url, const char *key)
+{
+  char *result;
+  int val;
+
+  result = get_url_param(url, key);
+  if (result == NULL)
+    return 0;
+
+  val = atoi(result);
+  mydelete(result);
+  return val;
+}
+
 static void h_webliste(http * const h, const char *header, const char *url)
 {
   size_t guess;
@@ -998,6 +1055,7 @@ static void h_webliste(http * const h, const char *header, const char *url)
   updatecontext();
 
   h->group = get_url_param(url, "group=");
+  h->traffic = get_url_number(url, "traffic=");
   guess = 2048;
   guess += irlist_size(&gdata.xdccs) * 300;
   guess += h_stat("header.html");

@@ -1448,6 +1448,7 @@ void dumpgdata(void)
   gdata_iter_print_string(end);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(group);
+  gdata_iter_print_int(traffic);
   ioutput(gdata_common,
           "  : left=%ld",
           (long)iter->left);

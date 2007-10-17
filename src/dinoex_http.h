@@ -43,6 +43,7 @@ typedef struct
   const char *nick;
   char *group;
   ssize_t left;
+  int traffic;
 } http;
 
 typedef struct
