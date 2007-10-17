@@ -2282,8 +2282,10 @@ void a_regroup(const userinput * const u)
 
 void a_md5(const userinput * const u)
 {
-  int num = 0;
   xdcc *xd;
+  int von = 0;
+  int bis;
+  int num;
 
   updatecontext ();
 
@@ -2291,39 +2293,65 @@ void a_md5(const userinput * const u)
   if (gdata.md5build.xpack) {
     a_respond(u, "calculating MD5/CRC32 for pack %d",
               number_of_pack(gdata.md5build.xpack));
-    return;
   }
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (num == 0)
+  if (!(u->arg1))
     return;
 
-  if (invalid_pack(u, num) != 0)
+  von = atoi (u->arg1);
+  if (von == 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-  a_respond(u, "Rebuilding MD5 and CRC for Pack #%i:", num);
-  start_md5_hash(xd, num);
+  if (invalid_pack(u, von) != 0)
+    return;
+ 
+  bis = von;
+  if (u->arg2) {
+    bis = atoi (u->arg2);
+    if (invalid_pack(u, bis) != 0)
+      return;
+  }
+
+  for (num = von; num <= bis; num++) {
+    xd = irlist_get_nth(&gdata.xdccs, num-1);
+    a_respond(u, "Rebuilding MD5 and CRC for Pack #%i:", num);
+    if (gdata.md5build.xpack) {
+      xd->has_md5sum  = 0;
+    } else {
+      start_md5_hash(xd, num);
+    }
+  }
 }
 
 void a_crc(const userinput * const u)
 {
-  int num = 0;
-  xdcc *xd;
   const char *crcmsg;
+  xdcc *xd;
+  int von = 0;
+  int bis;
+  int num;
 
   updatecontext ();
 
   if (u->arg1) {
-    num = atoi (u->arg1);
-    if (invalid_pack(u, num) != 0)
+    von = atoi (u->arg1);
+    if (invalid_pack(u, von) != 0)
       return;
+  
+    bis = von;
+    if (u->arg2) {
+      bis = atoi (u->arg2);
+      if (invalid_pack(u, bis) != 0)
+        return;
+    }
 
-    xd = irlist_get_nth(&gdata.xdccs, num-1);
-    a_respond(u,"Validating CRC for Pack #%i:",num);
-    crcmsg = validate_crc32(xd, 0);
-    if (crcmsg != NULL)
-      a_respond(u,"File '%s' %s.", xd->file, crcmsg);
+    for (num = von; num <= bis; num++) {
+      xd = irlist_get_nth(&gdata.xdccs, num-1);
+      a_respond(u,"Validating CRC for Pack #%i:",num);
+      crcmsg = validate_crc32(xd, 0);
+      if (crcmsg != NULL)
+        a_respond(u,"File '%s' %s.", xd->file, crcmsg);
+    }
   }
   else {
    num = 0;

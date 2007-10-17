@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 3.0:
 -------------------
 
+174) CRC, MD5
+  Neues Admin Kommando:
+  CRC <n> <m>                     Zeigt das Ergebnis der CRC Prüfung von Paket <n> bis <m> an
+  MD5 <n> <m>                      Berrechne die MD5 und die CRC Prüfsummen des Pakets <n> bis <m>
+
 173) BACKGROUND
   Neues Admin Kommando:
   BACKGROUND                       Bot im Hintergund weiterlaufen lassen.

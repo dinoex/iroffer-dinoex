@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 3.0:
 ---------------------
 
+174) CRC, MD5 (inspired by Takatoo)
+  new admin command:
+  CRC <n> <m>                     Check CRC of pack <n> to <m>
+  MD5 <n> <m>                     Calculate MD5 and CRC sums of pack <n> to <m>
+
 173) BACKGROUND
   new admin command:
   BACKGROUND                      Switch to background on the fly
