@@ -2688,7 +2688,7 @@ void child_resolver(void)
   rbuffer.ai_family = AF_INET;
   rbuffer.ai_socktype = SOCK_STREAM;
   rbuffer.ai_protocol = 0;
-  rbuffer.ai_addrlen = remotehost->h_length;
+  rbuffer.ai_addrlen = sizeof(struct sockaddr_in);
   rbuffer.ai_addr.sa_family = remotehost->h_addrtype;
   remoteaddr->sin_port = htons(gnetwork->serv_resolv.to_port);
   memcpy(&(remoteaddr->sin_addr), remotehost->h_addr_list[0], sizeof(struct in_addr));
@@ -2800,7 +2800,7 @@ int connectirc2(res_addrinfo_t *remote)
   alarm(CTIMEOUT);
   retval = connect(gnetwork->ircserver, &(remote->ai_addr), remote->ai_addrlen);
   if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) ) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,"Connection to Server Failed");
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Connection to Server Failed: %s", strerror(errno));
     alarm(0);
     close(gnetwork->ircserver);
     return 1;
