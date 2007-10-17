@@ -1951,3 +1951,6 @@
 1973 "  : localport=%d remoteport=%d remote=%s"
 1974 "group_seperator"
 1975 "%s%s%s"
+1976 "BACKGROUND"
+1977 "Bot im Hintergund weiterlaufen lassen"
+1978 "already in background."

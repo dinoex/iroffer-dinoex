@@ -112,6 +112,7 @@ void a_cleargets(const userinput * const u);
 void a_identify(const userinput * const u);
 void a_holdqueue(const userinput * const u);
 void a_dump(const userinput * const u);
+void a_backgroud(const userinput * const u);
 void a_autoadd(const userinput * const u);
 
 void a_queue(const userinput * const u);

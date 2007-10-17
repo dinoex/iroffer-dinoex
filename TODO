@@ -22,7 +22,6 @@ Short Term Features:
    199 12/12/03 Open dont enforce minspeed if there are free slots
    201 1/19/04 Open configurable to set how aggressive auto-ignore is  
    204 2/2/04 Open configurable to cover both maxqueueditemsperperson and maxtransfersperperson
-   205 2/12/04 Open switch to background on the fly
    207 4/02/04 Open md5sum uploads
    214 7/17/04 Open invite into channel using chanserv
 

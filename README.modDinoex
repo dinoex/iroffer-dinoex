@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 3.0:
 ---------------------
 
+173) BACKGROUND
+  new admin command:
+  BACKGROUND                      Switch to background on the fly
+ 
+   References TODO:
+Short Term Features:
+   205 2/12/04 Open switch to background on the fly
+
 172) group_seperator (inspired by TheDeath)
   printed between group name and group description.
 

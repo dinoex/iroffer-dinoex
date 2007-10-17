@@ -229,7 +229,7 @@ static const userinput_parse_t userinput_parse[] = {
 {6,1,method_allow_all,a_identify, "IDENTIFY","[net]","Send stored password again to nickserv"},
 {6,2,method_allow_all,a_holdqueue, "HOLDQUEUE","x","Change holdqueue flag, x=1 set, x=0 reset"},
 {6,5,method_allow_all,u_shutdown, "SHUTDOWN","act","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
-{6,5,method_allow_all,a_backgroud, "BACKGROUND",NULL,"Switch to background mode"},
+{6,5,method_console,  a_backgroud, "BACKGROUND",NULL,"Switch to background mode"},
 {6,5,method_allow_all,a_dump,      "DUMP",NULL,"Write a dump into the logfile"},
 {6,5,method_console,  u_crash,     "CRASH",NULL,"Write a dump into the logfile and exit"},
 };

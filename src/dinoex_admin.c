@@ -3252,6 +3252,31 @@ void a_dump(const userinput * const u)
    a_respond(u,"DUMP written into logfile.");
 }
 
+void a_backgroud(const userinput * const u)
+{
+  /* fork to background if in background mode */
+
+  if (gdata.background) {
+    a_respond(u, "already in background.");
+    return;
+  }
+
+  tostdout_disable_buffering(1);
+  uninitscreen();
+
+  gdata.background = 1;
+  gobackground();
+
+  if (gdata.pidfile)
+    writepidfile(gdata.pidfile);
+
+  if ( !gdata.noscreen && !gdata.background) {
+    printf("\x1b[%i;12H%s) >",gdata.termlines,"");
+    printf("\x1b[%i;%iH",gdata.termlines, 16);
+    gototop();
+  }
+}
+
 void a_autoadd(const userinput * const u)
 {
    autoadd_all();

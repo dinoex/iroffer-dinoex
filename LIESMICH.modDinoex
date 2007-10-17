@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version mod 3.0:
 -------------------
 
+173) BACKGROUND
+  Neues Admin Kommando:
+  BACKGROUND                       Bot im Hintergund weiterlaufen lassen.
+
 172) group_seperator
   Zeichen zwischen Gruppe und der Beschreibung der Gruppe.
 
