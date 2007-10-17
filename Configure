@@ -334,6 +334,10 @@ else
  waserror=yes
 fi
 
+if [ "$ostype" = CYGWIN ]; then
+echo "#define USE_IPV6" >> src/iroffer_config.h
+echo "#define AF_INET6 23" >> src/iroffer_config.h
+fi
 
 echo -n "Seeing if compiling with standard #include's works... "
 echo "
@@ -773,8 +777,6 @@ if [ "$ostype" = CYGWIN ]; then
 echo "#define NO_SETUID" >> src/iroffer_config.h
 echo "#define NO_CHROOT" >> src/iroffer_config.h
 echo "deactivate chroot()-ing"
-echo "#define USE_IPV6" >> src/iroffer_config.h
-echo "#define AF_INET 23" >> src/iroffer_config.h
 echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
 fi
 
