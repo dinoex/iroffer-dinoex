@@ -893,6 +893,8 @@ void startup_dinoex(void)
 
 void config_dinoex(void) {
   h_setup_listen();
+  if (!gdata.group_seperator)
+    gdata.group_seperator = mystrdup(" ");
 }
 
 void shutdown_dinoex(void)
