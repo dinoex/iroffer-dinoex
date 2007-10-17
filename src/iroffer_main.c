@@ -3818,6 +3818,9 @@ void sendaqueue(int type, int pos, char *lastnick)
       
       look_for_file_changes(pq->xpack);
       
+      backup = gnetwork;
+      gnetwork = &(gdata.networks[pq->net]);
+      
       pq->xpack->file_fd_count++;
       tr = irlist_add(&gdata.trans, sizeof(transfer));
       t_initvalues(tr);
@@ -3838,9 +3841,6 @@ void sendaqueue(int type, int pos, char *lastnick)
       tr->nomax = tr->unlimited;
       tr->net = pq->net;
       mydelete(hostmask);
-      
-      backup = gnetwork;
-      gnetwork = &(gdata.networks[tr->net]);
       
       if (!gdata.quietmode)
         {
