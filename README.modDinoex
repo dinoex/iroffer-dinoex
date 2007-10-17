@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version mod 3.0:
 ---------------------
 
+175) XDCC SEND, XDCC INFO
+  new user command:
+  XDCC SEND <trigger>             detect trigger text as number of pack
+  XDCC INFO <trigger>             detect trigger text as number of pack
+
 174) CRC, MD5 (inspired by Takatoo)
   new admin command:
   CRC <n> <m>                     Check CRC of pack <n> to <m>

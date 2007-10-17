@@ -2840,6 +2840,29 @@ void t_setup_dcc(transfer *tr, const char *nick)
   mydelete(sendnamestr);
 }
 
+int packnumtonum(const char *a)
+{
+  autoqueue_t *aq;
+  autotrigger_t *at;
+
+  if (!a) return 0;
+  
+  if (a[0] == '#') {
+    a++;
+    return atoi(a);
+  }
+
+  for (aq = irlist_get_head(&gdata.autoqueue); aq; aq = irlist_get_next(aq)) {
+    if (!strcasecmp(a, aq->word))
+      return aq->pack;
+  }
+  for (at = irlist_get_head(&gdata.autotrigger); at; at = irlist_get_next(at)) {
+    if (!strcasecmp(a, at->word))
+      return number_of_pack(at->pack);
+  }
+  return atoi(a);
+}
+
 #ifdef DEBUG
 
 static void free_state(void)

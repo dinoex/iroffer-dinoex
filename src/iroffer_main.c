@@ -29,8 +29,7 @@ static void mainloop(void);
 static void parseline(char *line);
 static void privmsgparse(const char* type, char* line);
 static void get_nick_hostname(char *nick, char *hostname, const char* line);
-static void autoqueuef(const char* line, const autoqueue_t *aq);
-static void autotriggerf(const char* line, const autotrigger_t *at);
+static void autoqueuef(const char* line, int pack, const char *message);
 static int  parsecmdline(int argc, char *argv[]);
 
 /* main */
@@ -2431,24 +2430,27 @@ static void parseline(char *line) {
        int autoword = 0;
        while (line)
          {
-           for (aq = irlist_get_head(&gdata.autoqueue); aq; aq = irlist_get_next(aq))
+           if (part4)
              {
-               if (part4 && !strcmp(caps(part4+1),caps(aq->word)))
+               for (aq = irlist_get_head(&gdata.autoqueue); aq; aq = irlist_get_next(aq))
                  {
-                   autoqueuef(line, aq);
-                   autoword = 1;
-                   /* only first match is activated */
-                   break;
+                   if (!strcasecmp(part4+1, aq->word))
+                     {
+                       autoqueuef(line, aq->pack, aq->message);
+                       autoword = 1;
+                       /* only first match is activated */
+                       break;
+                     }
                  }
-             }
-           for (at = irlist_get_head(&gdata.autotrigger); at; at = irlist_get_next(at))
-             {
-               if (part4 && !strcmp(caps(part4+1),caps(at->word)))
+               for (at = irlist_get_head(&gdata.autotrigger); at; at = irlist_get_next(at))
                  {
-                   autotriggerf(line, at);
-                   autoword = 1;
-                   /* only first match is activated */
-                   break;
+                   if (!strcasecmp(part4+1, at->word))
+                     {
+                       autoqueuef(line, number_of_pack(at->pack), NULL);
+                       autoword = 1;
+                       /* only first match is activated */
+                       break;
+                     }
                  }
              }
            /* matched lines are skipped */
@@ -3330,7 +3332,7 @@ static void get_nick_hostname(char *nick, char *hostname, const char* line)
    hostname[j]='\0';
 }
 
-static void autoqueuef(const char* line, const autoqueue_t *aq)
+static void autoqueuef(const char* line, int pack, const char *message)
 {
    char *nick, *hostname, *hostmask;
    int i;
@@ -3359,49 +3361,16 @@ static void autoqueuef(const char* line, const autoqueue_t *aq)
        
        ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"AutoSend ");
        
-       if (aq->message)
+       if (message)
          {
-           tempstr = mycalloc(strlen(aq->message) + strlen(format) - 1);
-           snprintf(tempstr, strlen(aq->message) + strlen(format) - 1,
-                    format, aq->message);
+           tempstr = mycalloc(strlen(message) + strlen(format) - 1);
+           snprintf(tempstr, strlen(message) + strlen(format) - 1,
+                    format, message);
          }
        
-       sendxdccfile(nick, hostname, hostmask, aq->pack, tempstr, NULL);
+       sendxdccfile(nick, hostname, hostmask, pack, tempstr, NULL);
        
        mydelete(tempstr);
-     }
-   
-   mydelete(nick);
-   mydelete(hostname);
-
-   }
-
-static void autotriggerf(const char* line, const autotrigger_t *at)
-{
-   char *nick, *hostname, *hostmask;
-   int i;
-   
-   updatecontext();
-
-   floodchk();
-   
-   nick = mycalloc(maxtextlengthshort);
-   hostname = mycalloc(maxtextlength);
-      
-   hostmask = caps(getpart(line,1));
-   for (i=1; i<=sstrlen(hostmask); i++)
-      hostmask[i-1] = hostmask[i];
-
-   get_nick_hostname(nick, hostname, line);
-
-   if ( !gdata.ignore )
-     {
-       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-       
-       if (!gdata.attop) gototop();
-       
-       ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"AutoSend ");
-       sendxdccfile(nick, hostname, hostmask, number_of_pack(at->pack), NULL, NULL);
      }
    
    mydelete(nick);

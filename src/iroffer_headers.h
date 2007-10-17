@@ -603,7 +603,6 @@ notice(const char *nick, const char *format, ...);
 void vnotice(const char *nick, const char *format, va_list ap);
 char* hostmasktoregex(const char *str);
 int verifyhost(irlist_t *list, const char *hmask);
-int packnumtonum(const char *a);
 int sstrlen (const char *p);
 char dayofweektomask(const char a);
 char *strrev(char *str);

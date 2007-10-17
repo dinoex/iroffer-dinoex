@@ -845,16 +845,6 @@ char* getfline(char* str, int slen, int descr, int ret)
   return NULL;
 }
 
-int packnumtonum(const char *a) {
-   
-   if (!a) return 0;
-   
-   if (a[0] == '#') a++;
-   
-   return atoi(a);
-   
-   }
-
 
 int sstrlen (const char *p) {
    if (!p) return -1;
