@@ -773,6 +773,9 @@ if [ "$ostype" = CYGWIN ]; then
 echo "#define NO_SETUID" >> src/iroffer_config.h
 echo "#define NO_CHROOT" >> src/iroffer_config.h
 echo "deactivate chroot()-ing"
+echo "#define USE_IPV6" >> src/iroffer_config.h
+echo "#define AF_INET 23" >> src/iroffer_config.h
+echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
 fi
 
 if $OPT_CURL; then
@@ -1097,7 +1100,6 @@ else
 echo "#define NO_GETADDRINFO" >> src/iroffer_config.h
 echo "missing, will use gethostbyname instead"
 cat -n config.temp.c
-exit 0
 fi
 
 echo -n "Checking for gethostbyname error values... "
