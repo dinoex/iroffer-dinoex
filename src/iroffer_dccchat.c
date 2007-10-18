@@ -146,7 +146,7 @@ void setupdccchataccept(dccchat_t *chat)
   
   writedccchat(chat,0,"Welcome to %s\n",
                save_nick(gnetwork->user_nick));
-  writedccchat(chat,0,"iroffer v" VERSIONLONG "%s%s\n",
+  writedccchat(chat,0,"iroffer-dinoex " VERSIONLONG "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);
   writedccchat(chat,0,"    running %s\n", tempstr);
@@ -332,7 +332,7 @@ void setupdccchatconnected(dccchat_t *chat)
 
   writedccchat(chat,0,"Welcome to %s\n",
                save_nick(gnetwork->user_nick));
-  writedccchat(chat,0,"iroffer v" VERSIONLONG "%s%s\n",
+  writedccchat(chat,0,"iroffer-dinoex " VERSIONLONG "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);
   writedccchat(chat,0,"    running %s\n", tempstr);

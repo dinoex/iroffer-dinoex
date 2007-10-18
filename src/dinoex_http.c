@@ -31,14 +31,14 @@ static int http_listen[2] = { FD_UNUSED, FD_UNUSED };
 
 static const char *http_header_status =
 "HTTP/1.0 200 OK\r\n"
-"Server: iroffer " VERSIONLONG "\r\n"
+"Server: iroffer-dinoex " VERSIONLONG "\r\n"
 "Content-Type: %s\r\n"
 "Content-Length: " LLPRINTFMT "\r\n"
 "\r\n";
 
 static const char *http_header_notfound =
 "HTTP/1.0 404 Not Found\r\n"
-"Server: iroffer " VERSIONLONG "\r\n"
+"Server: iroffer-dinoex " VERSIONLONG "\r\n"
 "Content-Type: text/plain\r\n"
 "Content-Length: 13\r\n"
 "\r\n"

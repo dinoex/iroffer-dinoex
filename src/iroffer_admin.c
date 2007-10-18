@@ -2659,7 +2659,7 @@ static void u_botinfo(const userinput * const u) {
    
    u_respond(u,"BotInfo:");
    
-   u_respond(u,"iroffer v" VERSIONLONG ", http://iroffer.dinoex.net/%s%s",
+   u_respond(u,"iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
 

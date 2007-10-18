@@ -267,7 +267,7 @@ void write_statefile(void)
     next = (unsigned char*)(&hdr[1]);
     
     length = snprintf((char *)next, maxtextlength-1,
-                      "iroffer v" VERSIONLONG ", %s", gdata.osstring);
+                      "iroffer-dinoex " VERSIONLONG ", %s", gdata.osstring);
     
     if ((length < 0) || (length >= maxtextlength))
       {

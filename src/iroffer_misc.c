@@ -1714,7 +1714,7 @@ void shutdowniroffer(void) {
          {
 	   gnetwork = &(gdata.networks[ss]);
        writeserver(WRITESERVER_NORMAL,
-                   "QUIT :iroffer v" VERSIONLONG "%s%s - running %s",
+                   "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
                    gdata.hideos ? "" : " - ",
                    gdata.hideos ? "" : gdata.osstring,
                    tempstr2);
@@ -2295,7 +2295,7 @@ void startupiroffer(void) {
    
    printf("\n");
    if (!gdata.background && !gdata.nocolor) printf("\x1b[1;33m");
-   printf("Welcome to iroffer mod by Dinoex - http://iroffer.dinoex.net/\n"
+   printf("Welcome to iroffer-dinoex - http://iroffer.dinoex.net/\n"
           "Version " VERSIONLONG "\n");
    if (!gdata.background && !gdata.nocolor) printf("\x1b[0m");
    printf("\n");
@@ -2328,8 +2328,8 @@ void startupiroffer(void) {
    signal(SIGHUP,SIG_IGN);
    signal(SIGTSTP,SIG_IGN);
    
-   printf("** iroffer is distributed under the GNU General Public License.\n"
-          "**    please see the README for more information.\n");
+   printf("** iroffer-dinoex is distributed under the GNU General Public License.\n"
+          "**    please see the COPYING for more information.\n");
 
    printf("\n** Starting up...\n");
    
@@ -2486,7 +2486,7 @@ void startupiroffer(void) {
    
    getconfig();
    
-   mylog(CALLTYPE_NORMAL,"iroffer started v" VERSIONLONG);
+   mylog(CALLTYPE_NORMAL,"iroffer-dinoex started " VERSIONLONG);
 
    getos();
    
@@ -2601,7 +2601,7 @@ void createpassword(void) {
    int len, ok, saltnum;
    char salt[6], *pwout;
    
-   printf("\niroffer v" VERSIONLONG " by Dinoex\n"
+   printf("\niroffer-dinoex " VERSIONLONG "\n"
           "  Configuration File Password Generator\n"
           "\n"
           "This will take a password of your choosing and encrypt it.\n"

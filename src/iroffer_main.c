@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
    case PCL_OK: break;
    case PCL_BAD_OPTION:
      printf("\n"
-            "iroffer v" VERSIONLONG " by Dinoex, see http://iroffer.dinoex.net/\n"
+            "iroffer-dinoex " VERSIONLONG ", see http://iroffer.dinoex.net/\n"
             "\n"
             "Usage: %s [-vc] [-bdkn"
 #if !defined(_OS_CYGWIN)
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
             argv[0]);
       exit(64);
    case PCL_SHOW_VERSION:
-      printf("iroffer v" VERSIONLONG " by Dinoex, see http://iroffer.dinoex.net/\n");
+      printf("iroffer-dinoex " VERSIONLONG ", see http://iroffer.dinoex.net/\n");
       exit(0);
    case PCL_GEN_PASSWORD:
       createpassword();
@@ -2664,7 +2664,7 @@ static void privmsgparse(const char* type, char* line) {
    else if ( !gdata.ignore && (!strcmp(msg1,"\1VERSION")
           || !strcmp(msg1,"\1VERSION\1") )) {
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-      notice(nick,"\1VERSION iroffer v" VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
+      notice(nick,"\1VERSION iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
