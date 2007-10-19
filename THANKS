@@ -261,8 +261,9 @@ Protected
 	admin command "RENUMBER" with 3 args
 	option "balanced_queue"
 
-Radicant
+Radicand
 	warn if spaces found in parameter
+	report CANNOUNCE bug
 
 unlogisch
 	option "autoadd_sort"

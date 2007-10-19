@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+bugfix: CANNOUNCE
+  CANNOUNCE darf für Channels mit "-noannounce" ausgeführt werden.
+
 175) XDCC SEND, XDCC INFO
   Neue User Kommandos:
   XDCC SEND <trigger>              Verwende Trigger statt Paketnummer

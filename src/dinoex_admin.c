@@ -3532,7 +3532,7 @@ void a_cannounce(const userinput * const u)
                tempstr2, save_nick(gnetwork->user_nick), num);
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch) {
-        if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0)) {
+        if (ch->flags & CHAN_ONCHAN) {
           if (strcasecmp(ch->name, u->arg1) == 0)
             privmsg_chan(ch, tempstr);
         }
