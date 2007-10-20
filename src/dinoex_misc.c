@@ -915,6 +915,8 @@ void shutdown_dinoex(void)
 void rehash_dinoex(void)
 {
   h_reash_listen();
+  if (!gdata.group_seperator)
+    gdata.group_seperator = mystrdup(" ");
 #ifdef USE_GEOIP
   if (gi != NULL)
     {
