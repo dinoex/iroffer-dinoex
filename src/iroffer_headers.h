@@ -250,7 +250,7 @@ typedef struct
   time_t restrictsend_bad;
   unsigned long long connecttimems;
   unsigned short listenport;
-  long remoteip;
+  unsigned long remoteip;
   float lastspeed;
   float maxspeed;
   xdcc *xpack;
