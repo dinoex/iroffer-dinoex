@@ -982,10 +982,6 @@ static int send_statefile(void)
   tr->xpack = xd;
   tr->maxspeed = xd->maxspeed;
   tr->net = gnetwork->net;
-  t_setuplisten(tr);
-   
-  if (tr->tr_status != TRANSFER_STATUS_LISTENING)
-    return 1;
 
   t_setup_dcc(tr, nick);
   return 0;
@@ -2840,6 +2836,11 @@ void t_setup_dcc(transfer *tr, const char *nick)
 {
   char *dccdata;
   char *sendnamestr;
+
+  t_setuplisten(tr);
+  
+  if (tr->tr_status != TRANSFER_STATUS_LISTENING)
+    return;
 
   sendnamestr = getsendname(tr->xpack->file);
   dccdata = setup_dcc_local(&tr->serveraddress);

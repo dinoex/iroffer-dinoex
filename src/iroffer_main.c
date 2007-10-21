@@ -3506,13 +3506,9 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
            mydelete(sizestrstr);
          }
        
-       t_setuplisten(tr);
+       t_setup_dcc(tr, nick);
+       newlisten = tr->listenport;
        
-       if (tr->tr_status == TRANSFER_STATUS_LISTENING)
-         {
-           t_setup_dcc(tr, nick);
-           newlisten = tr->listenport;
-         }
      }
    
  done:
@@ -3811,27 +3807,21 @@ void sendaqueue(int type, int pos, char *lastnick)
       tr->nomax = tr->unlimited;
       tr->net = pq->net;
       mydelete(hostmask);
+      mydelete(pq->nick);
+      mydelete(pq->hostname);
+      irlist_delete(&gdata.mainqueue, pq);
       
       if (!gdata.quietmode)
         {
           char *sizestrstr;
           sizestrstr = sizestr(0, tr->xpack->st_size);
-          notice_fast(pq->nick,
+          notice_fast(tr->nick,
                  "** Sending You Your Queued Pack Which Is %sB. (Resume Supported)",
                  sizestrstr);
           mydelete(sizestrstr);
         }
       
-      t_setuplisten(tr);
-      t_setup_dcc(tr, pq->nick);
-
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-              "listen on port %d for %s (%s on %s)",
-              tr->listenport, pq->nick, pq->hostname, gnetwork->name);
-
-      mydelete(pq->nick);
-      mydelete(pq->hostname);
-      irlist_delete(&gdata.mainqueue, pq);
+      t_setup_dcc(tr, tr->nick);
       
       gnetwork = backup;
       return;
