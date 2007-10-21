@@ -2688,7 +2688,7 @@ static void u_botinfo(const userinput * const u) {
                  gdata.user_realname,
                  gdata.user_modes);
        
-       switch (gdata.connectionmethod.how)
+       switch (gdata.networks[ss].connectionmethod.how)
          {
          case how_direct:
              {
@@ -2697,37 +2697,45 @@ static void u_botinfo(const userinput * const u) {
                           gdata.networks[ss].curserver.port);
              }
            break;
+         case how_ssl:
+             {
+                u_respond(u,"current server: %s:%u (ssl)",
+                          gdata.networks[ss].curserver.hostname,
+                          gdata.networks[ss].curserver.port);
+             }
+           break;
          case how_bnc:
-           if (gdata.connectionmethod.vhost)
+           if (gdata.networks[ss].connectionmethod.vhost)
              {
                u_respond(u,"current server: %s:%u (bnc at %s:%i with %s)",
                          gdata.networks[ss].curserver.hostname,
                          gdata.networks[ss].curserver.port,
-                         gdata.connectionmethod.host,gdata.connectionmethod.port,
-                         gdata.connectionmethod.vhost);
+                         gdata.networks[ss].connectionmethod.host,
+                         gdata.networks[ss].connectionmethod.port,
+                         gdata.networks[ss].connectionmethod.vhost);
              }
            else
              {
                u_respond(u,"current server: %s:%u (bnc at %s:%i)",
                          gdata.networks[ss].curserver.hostname,
                          gdata.networks[ss].curserver.port,
-                         gdata.connectionmethod.host,
-                         gdata.connectionmethod.port);
+                         gdata.networks[ss].connectionmethod.host,
+                         gdata.networks[ss].connectionmethod.port);
              }
            break;
          case how_wingate:
            u_respond(u,"current server: %s:%u (wingate at %s:%i)",
                      gdata.networks[ss].curserver.hostname,
                      gdata.networks[ss].curserver.port,
-                     gdata.connectionmethod.host,
-                     gdata.connectionmethod.port);
+                     gdata.networks[ss].connectionmethod.host,
+                     gdata.networks[ss].connectionmethod.port);
            break;
          case how_custom:
            u_respond(u,"current server: %s:%u (custom at %s:%i)",
                      gdata.networks[ss].curserver.hostname,
                      gdata.networks[ss].curserver.port,
-                     gdata.connectionmethod.host,
-                     gdata.connectionmethod.port);
+                     gdata.networks[ss].connectionmethod.host,
+                     gdata.networks[ss].connectionmethod.port);
            break;
          }
        

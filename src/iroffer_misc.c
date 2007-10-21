@@ -240,6 +240,13 @@ void getconfig_set (const char *line, int rehash)
        strcpy(cjr, var);
        mydelete(var);
      }
+   else if ( !strcmp(type,"proxyinfo"))
+     {
+       char *cjr;
+       cjr = irlist_add(&gdata.networks[gdata.networks_online].proxyinfo, strlen(var) + 1);
+       strcpy(cjr, var);
+       mydelete(var);
+     }
    else if ( ! strcmp(type,"channel")) {
       char *tptr = NULL, *tptr2 = NULL, *tname;
       int ok=1;
@@ -495,49 +502,53 @@ void getconfig_set (const char *line, int rehash)
        char *targ3 = getpart(var,4);
        char *targ4 = getpart(var,5);
        
-       mydelete(gdata.connectionmethod.host);
-       mydelete(gdata.connectionmethod.password);
-       mydelete(gdata.connectionmethod.vhost);
-       bzero((char *) &gdata.connectionmethod,sizeof(connectionmethod_t));
+       mydelete(gdata.networks[gdata.networks_online].connectionmethod.host);
+       mydelete(gdata.networks[gdata.networks_online].connectionmethod.password);
+       mydelete(gdata.networks[gdata.networks_online].connectionmethod.vhost);
+       bzero((char *) &gdata.networks[gdata.networks_online].connectionmethod, sizeof(connectionmethod_t));
        
        if (thow && !strcmp(thow,"direct"))
          {
-           gdata.connectionmethod.how = how_direct;
+           gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
+         }
+       else if (thow && !strcmp(thow, "ssl"))
+         {
+           gdata.networks[gdata.networks_online].connectionmethod.how = how_ssl;
          }
        else if (thow && targ1 && targ2 && targ3 && !strcmp(thow,"bnc"))
          {
-           gdata.connectionmethod.how = how_bnc;
+           gdata.networks[gdata.networks_online].connectionmethod.how = how_bnc;
            
-           gdata.connectionmethod.host = mystrdup(targ1);
+           gdata.networks[gdata.networks_online].connectionmethod.host = mystrdup(targ1);
            
-           gdata.connectionmethod.port = atoi(targ2);
+           gdata.networks[gdata.networks_online].connectionmethod.port = atoi(targ2);
            
-           gdata.connectionmethod.password = mystrdup(targ3);
+           gdata.networks[gdata.networks_online].connectionmethod.password = mystrdup(targ3);
            
            if (targ4)
              {
-               gdata.connectionmethod.vhost = mystrdup(targ4);
+               gdata.networks[gdata.networks_online].connectionmethod.vhost = mystrdup(targ4);
              }
          }
        else if (thow && targ1 && targ2 && !strcmp(thow,"wingate"))
          {
-           gdata.connectionmethod.how = how_wingate;
+           gdata.networks[gdata.networks_online].connectionmethod.how = how_wingate;
            
-           gdata.connectionmethod.host = mystrdup(targ1);
+           gdata.networks[gdata.networks_online].connectionmethod.host = mystrdup(targ1);
            
-           gdata.connectionmethod.port = atoi(targ2);
+           gdata.networks[gdata.networks_online].connectionmethod.port = atoi(targ2);
          }
        else if (thow && targ1 && targ2 && !strcmp(thow,"custom"))
          {
-           gdata.connectionmethod.how = how_custom;
+           gdata.networks[gdata.networks_online].connectionmethod.how = how_custom;
            
-           gdata.connectionmethod.host = mystrdup(targ1);
+           gdata.networks[gdata.networks_online].connectionmethod.host = mystrdup(targ1);
            
-           gdata.connectionmethod.port = atoi(targ2);
+           gdata.networks[gdata.networks_online].connectionmethod.port = atoi(targ2);
          }
        else
          {
-           gdata.connectionmethod.how = how_direct;
+           gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
            outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid connectionmethod in config file, defaulting to direct");
          }
        
@@ -582,7 +593,7 @@ static int connectirc (server_t *tserver) {
    
    tempstr = mycalloc(maxtextlength);
    
-   switch (gdata.connectionmethod.how)
+   switch (gnetwork->connectionmethod.how)
      {
      case how_direct:
        snprintf(tempstr,maxtextlength-1," (direct)");
@@ -590,42 +601,48 @@ static int connectirc (server_t *tserver) {
        gnetwork->serv_resolv.to_port = gnetwork->curserver.port;
        break;
        
+     case how_ssl:
+       snprintf(tempstr,maxtextlength-1," (ssl)");
+       gnetwork->serv_resolv.to_ip = gnetwork->curserver.hostname;
+       gnetwork->serv_resolv.to_port = gnetwork->curserver.port;
+       break;
+       
      case how_bnc:
-       if (gdata.connectionmethod.vhost)
+       if (gnetwork->connectionmethod.vhost)
          {
            snprintf(tempstr, maxtextlength-1,
                     " (bnc at %s:%i with %s)",
-                    gdata.connectionmethod.host,
-                    gdata.connectionmethod.port,
-                    gdata.connectionmethod.vhost);
+                    gnetwork->connectionmethod.host,
+                    gnetwork->connectionmethod.port,
+                    gnetwork->connectionmethod.vhost);
          }
        else
          {
            snprintf(tempstr, maxtextlength-1,
                     " (bnc at %s:%i)",
-                    gdata.connectionmethod.host,
-                    gdata.connectionmethod.port);
+                    gnetwork->connectionmethod.host,
+                    gnetwork->connectionmethod.port);
          }
-       gnetwork->serv_resolv.to_ip = gdata.connectionmethod.host;
-       gnetwork->serv_resolv.to_port = gdata.connectionmethod.port;
+       gnetwork->serv_resolv.to_ip = gnetwork->connectionmethod.host;
+       gnetwork->serv_resolv.to_port = gnetwork->connectionmethod.port;
        break;
        
      case how_wingate:
        snprintf(tempstr, maxtextlength-1,
                 " (wingate at %s:%i)",
-                gdata.connectionmethod.host,
-                gdata.connectionmethod.port);
-       gnetwork->serv_resolv.to_ip = gdata.connectionmethod.host;
-       gnetwork->serv_resolv.to_port = gdata.connectionmethod.port;
+                gnetwork->connectionmethod.host,
+                gnetwork->connectionmethod.port);
+       gnetwork->serv_resolv.to_ip = gnetwork->connectionmethod.host;
+       gnetwork->serv_resolv.to_port = gnetwork->connectionmethod.port;
        break;
        
      case how_custom:
        snprintf(tempstr, maxtextlength-1,
                 " (custom at %s:%i)",
-                gdata.connectionmethod.host,
-                gdata.connectionmethod.port);
-       gnetwork->serv_resolv.to_ip = gdata.connectionmethod.host;
-       gnetwork->serv_resolv.to_port = gdata.connectionmethod.port;
+                gnetwork->connectionmethod.host,
+                gnetwork->connectionmethod.port);
+       gnetwork->serv_resolv.to_ip = gnetwork->connectionmethod.host;
+       gnetwork->serv_resolv.to_port = gnetwork->connectionmethod.port;
        break;
        
      default:
@@ -704,8 +721,8 @@ void initirc(void)
   
   updatecontext();
   
-  pi = irlist_get_head(&gdata.proxyinfo);
-  while((gdata.connectionmethod.how == how_custom) && pi)
+  pi = irlist_get_head(&(gnetwork->proxyinfo));
+  while((gnetwork->connectionmethod.how == how_custom) && pi)
     {
       int len;
       char *tempstr;
@@ -757,7 +774,7 @@ void initirc(void)
       pi = irlist_get_next(pi);
     }
       
-   if (gdata.connectionmethod.how == how_wingate) {
+   if (gnetwork->connectionmethod.how == how_wingate) {
       writeserver(WRITESERVER_NOW, "%s %u",
                   gnetwork->curserver.hostname, gnetwork->curserver.port);
       }
@@ -770,12 +787,12 @@ void initirc(void)
    writeserver(WRITESERVER_NOW, "USER %s 32 . :%s",
                gdata.loginname, gdata.user_realname);
    
-   if (gdata.connectionmethod.how == how_bnc) {
+   if (gnetwork->connectionmethod.how == how_bnc) {
       writeserver(WRITESERVER_NOW, "PASS %s",
-                  gdata.connectionmethod.password);
-      if (gdata.connectionmethod.vhost) {
+                  gnetwork->connectionmethod.password);
+      if (gnetwork->connectionmethod.vhost) {
          writeserver(WRITESERVER_NOW, "VIP %s",
-                     gdata.connectionmethod.vhost);
+                     gnetwork->connectionmethod.vhost);
          }
       writeserver(WRITESERVER_NOW, "CONN %s %d",
                   gnetwork->curserver.hostname, gnetwork->curserver.port);
@@ -840,7 +857,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
       msg[len] = '\n';
       len++;
       msg[len] = '\0';
-      write(gnetwork->ircserver, msg, len);
+      writeserver_ssl(msg, len);
       gnetwork->serverbucket -= len;
     }
   else if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
@@ -973,8 +990,8 @@ void sendserver(void)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
         }
-      write(gnetwork->ircserver, item, strlen(item));
-      write(gnetwork->ircserver, "\n", 1);
+      writeserver_ssl(item, strlen(item));
+      writeserver_ssl("\n", 1);
       
       gnetwork->serverbucket -= strlen(item);
       
@@ -996,8 +1013,8 @@ void sendserver(void)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
         }
-      write(gnetwork->ircserver, item, strlen(item));
-      write(gnetwork->ircserver, "\n", 1);
+      writeserver_ssl(item, strlen(item));
+      writeserver_ssl("\n", 1);
       
       gnetwork->serverbucket -= strlen(item);
       
@@ -1019,8 +1036,8 @@ void sendserver(void)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
         }
-      write(gnetwork->ircserver, item, strlen(item));
-      write(gnetwork->ircserver, "\n", 1);
+      writeserver_ssl(item, strlen(item));
+      writeserver_ssl("\n", 1);
       
       gnetwork->serverbucket -= strlen(item);
       
@@ -1745,8 +1762,7 @@ void quit_server(void)
   
   if (gnetwork->serverstatus == SERVERSTATUS_TRYING)
     {
-      FD_CLR(gnetwork->ircserver, &gdata.readset);
-      close(gnetwork->ircserver);
+      close_server();
     }
   
   /* delete the slow queue */
@@ -2087,6 +2103,8 @@ void reinit_config_vars(void)
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);
     irlist_delete_all(&gdata.networks[si].channel_join_raw);
+    irlist_delete_all(&gdata.networks[si].proxyinfo);
+    gdata.networks[si].connectionmethod.how = how_direct;
   } /* networks */
   mydelete(gdata.logfile);
   gdata.logrotate = 0;
@@ -2095,7 +2113,6 @@ void reinit_config_vars(void)
   mydelete(gdata.user_modes);
   gdata.tcprangestart = 0;
   gdata.tcprangelimit = 65535;
-  irlist_delete_all(&gdata.proxyinfo);
   gdata.usenatip = 0;
   gdata.slotsmax = gdata.queuesize = 0;
   gdata.idlequeuesize = 0;
@@ -2201,7 +2218,6 @@ void reinit_config_vars(void)
   gdata.restrictlist = gdata.restrictsend = gdata.restrictprivlist = 0;
   mydelete(gdata.restrictprivlistmsg);
   mydelete(gdata.loginname);
-  gdata.connectionmethod.how = how_direct;
   mydelete(gdata.statefile);
   mydelete(gdata.xdcclistfile);
   gdata.xdcclistfileraw = 0;

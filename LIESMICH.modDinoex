@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+177) connectionmethod ssl
+  SSL Verbindungen zum IRC Server.
+
+  Dies Funktion braucht "OpenSSL",
+
+176) connectionmethod, proxyinfo
+  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+
 bugfix: CANNOUNCE
   CANNOUNCE darf für Channels mit "-noannounce" ausgeführt werden.
 

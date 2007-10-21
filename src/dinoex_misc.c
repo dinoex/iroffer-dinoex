@@ -34,6 +34,10 @@
 #include <curl/curl.h>
 #endif /* USE_CURL */
 
+#ifdef USE_SSL
+#include <openssl/err.h>
+#endif /* USE_SSL */
+
 extern const ir_uint32 crctable[256];
 
 static void admin_line(int fd, const char *line) {
@@ -889,6 +893,10 @@ void startup_dinoex(void)
               "curl_multi_init failed");
     }
 #endif /* USE_CURL */
+#ifdef USE_SSL
+  SSL_library_init();
+  SSL_load_error_strings();
+#endif /* USE_SSL */
 }
 
 void config_dinoex(void) {
@@ -906,7 +914,7 @@ void shutdown_dinoex(void)
       GeoIP_delete(gi);
       gi = NULL;
     }
-#endif
+#endif /* USE_GEOIP */
 #ifdef USE_CURL
   curl_global_cleanup();
 #endif /* USE_CURL */
@@ -923,7 +931,7 @@ void rehash_dinoex(void)
       GeoIP_delete(gi);
       gi = NULL;
     }
-#endif
+#endif /* USE_GEOIP */
 }
 
 static int send_statefile(void)
@@ -2072,6 +2080,11 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
  
 void close_server(void)
 {
+#ifdef USE_SSL
+  if (gnetwork->connectionmethod.how == how_ssl) {
+    SSL_free(gnetwork->ssl);
+  }
+#endif /* USE_SSL */
   FD_CLR(gnetwork->ircserver, &gdata.readset);
   shutdown_close(gnetwork->ircserver);
   gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
@@ -2865,6 +2878,77 @@ int packnumtonum(const char *a)
   return atoi(a);
 }
 
+#ifdef USE_SSL
+
+static void outerror_ssl(void)
+{
+  unsigned long err;
+
+  err = ERR_get_error();
+  if (err == 0)
+    return;
+
+  outerror(OUTERROR_TYPE_WARN_LOUD, "SSL Error %ld:%s", err, ERR_error_string(err, NULL));
+}
+
+int setup_ssl(void)
+{
+  int rc;
+
+  updatecontext();
+
+  if (gnetwork->connectionmethod.how != how_ssl)
+    return 1;
+
+  if (gnetwork->ssl_ctx == NULL) {
+    gnetwork->ssl_ctx = SSL_CTX_new( SSLv23_client_method() );
+    if (gnetwork->ssl_ctx == NULL) {
+      outerror_ssl();
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Create SSL context");
+      close_server();
+      return 0;
+    }
+  }
+  /* SSL_CTX_free() ist not called */
+
+  gnetwork->ssl = SSL_new(gnetwork->ssl_ctx);
+  rc = SSL_set_fd(gnetwork->ssl, gnetwork->ircserver);
+  outerror_ssl();
+  if (rc == 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant set SSL socket");
+    close_server();
+    return 0;
+  }
+  rc = SSL_connect(gnetwork->ssl);
+  if (rc == 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant set SSL socket");
+    close_server();
+    return 0;
+  }
+  outerror_ssl();
+  return 1;
+}
+#endif /* USE_SSL */
+   
+ssize_t readserver_ssl(void *buf, size_t nbytes)
+{
+#ifdef USE_SSL
+  if (gnetwork->connectionmethod.how == how_ssl)
+    return SSL_read(gnetwork->ssl, buf, nbytes);
+#endif /* USE_SSL */
+  return read(gnetwork->ircserver, buf, nbytes);
+}
+
+ssize_t writeserver_ssl(const void *buf, size_t nbytes)
+{
+#ifdef USE_SSL
+  if (gnetwork->connectionmethod.how == how_ssl)
+    return SSL_write(gnetwork->ssl, buf, nbytes);
+#endif /* USE_SSL */
+  return write(gnetwork->ircserver, buf, nbytes);
+}
+
+
 #ifdef DEBUG
 
 static void free_state(void)
@@ -2905,6 +2989,9 @@ static void free_state(void)
     mydelete(gnetwork->name);
     mydelete(gnetwork->curserver.hostname);
     mydelete(gnetwork->curserver.password);
+    mydelete(gnetwork->connectionmethod.host);
+    mydelete(gnetwork->connectionmethod.password);
+    mydelete(gnetwork->connectionmethod.vhost);
     irlist_delete_all(&(gnetwork->xlistqueue));
 
     for (ch = irlist_get_head(&(gnetwork->channels));
@@ -2980,9 +3067,6 @@ static void free_state(void)
   irlist_delete_all(&gdata.jobs_delayed);
   irlist_delete_all(&gdata.http_bad_ip4);
   irlist_delete_all(&gdata.http_bad_ip6);
-  mydelete(gdata.connectionmethod.host);
-  mydelete(gdata.connectionmethod.password);
-  mydelete(gdata.connectionmethod.vhost);
   mydelete(gdata.sendbuff);
   mydelete(gdata.console_input_line);
   mydelete(gdata.osstring);
@@ -3066,11 +3150,11 @@ static void free_config(void)
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);
     irlist_delete_all(&gdata.networks[si].channel_join_raw);
+    irlist_delete_all(&gdata.networks[si].proxyinfo);
   } /* networks */
   mydelete(gdata.logfile);
   mydelete(gdata.user_realname);
   mydelete(gdata.user_modes);
-  irlist_delete_all(&gdata.proxyinfo);
   irlist_delete_all(&gdata.adddir_exclude);
   irlist_delete_all(&gdata.geoipcountry);
   irlist_delete_all(&gdata.geoipexcludenick);

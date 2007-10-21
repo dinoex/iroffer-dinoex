@@ -27,6 +27,7 @@ echo "   -p           Compile with profiling flags"
 echo "   -w           Compile with extra warning flags"
 echo "   -g           Compile GeoIP lib"
 echo "   -c           Compile Curl lib (for the FETCH-Command)"
+echo "   -s           Compile without OpenSSL lib"
 exit 1
 }
 
@@ -36,6 +37,7 @@ OPT_WARN=false
 OPT_PROF=false
 OPT_GEOIP=false
 OPT_CURL=false
+OPT_SSL=true
 
 while getopts 'hedpwgcm' OPTNAME; do
   case "$OPTNAME" in
@@ -47,6 +49,7 @@ while getopts 'hedpwgcm' OPTNAME; do
     p) OPT_PROF=true;;
     g) OPT_GEOIP=true;;
     c) OPT_CURL=true;;
+    s) OPT_SSL=false;;
     m) ;;
     *) usage;;
   esac
@@ -799,6 +802,33 @@ int main (int argc, char **argv) {exit(0);}
 	else
 		echo "not found"
 		echo "***Disable the FETCH-Command. If u want to use this feature, please install libcurl.***"
+		CURLLIB=""
+		CURLINC=""
+		CURLLDF=""
+		shift
+	fi
+fi
+
+if $OPT_SSL; then
+	echo -n "Seeing if OpenSSL libraries exist... "
+	echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $WERROR; then
+		echo "found"
+		echo "Configuring for OpenSSL."
+		CURLLIB="-lssl"
+		CURLINC="-DUSE_SSL -I/usr/local/include"
+		CURLLDF="-L/usr/local/lib"
+		shift
+	else
+		echo "not found"
+		echo "***Disable the SSL Features. If u want to use this feature, please install OpenSSL.***"
 		CURLLIB=""
 		CURLINC=""
 		CURLLDF=""

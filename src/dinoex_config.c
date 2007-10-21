@@ -172,7 +172,6 @@ static config_list_typ config_parse_list[] = {
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
 {"hadminhost",              &gdata.hadminhost,              3 },
 {"nodownloadhost",          &gdata.nodownloadhost,          2 },
-{"proxyinfo",               &gdata.proxyinfo,               0 },
 {"unlimitedhost",           &gdata.unlimitedhost,           2 },
 {"uploadhost",              &gdata.uploadhost,              2 },
 {NULL, NULL }};

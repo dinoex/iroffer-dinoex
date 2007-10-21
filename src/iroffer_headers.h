@@ -95,6 +95,10 @@
 #include <strings.h>
 #endif
 
+#ifdef USE_SSL
+#include <openssl/ssl.h>
+#endif
+
 #include "iroffer_md5.h"
 
 /*------------ structures ------------- */
@@ -421,6 +425,7 @@ typedef struct
 
 typedef enum {
    how_direct = 1,
+   how_ssl,
    how_bnc,
    how_wingate,
    how_custom

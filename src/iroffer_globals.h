@@ -23,6 +23,8 @@
 
 typedef struct
 {
+connectionmethod_t connectionmethod;
+irlist_t proxyinfo;
 
 /* raw on join */
 irlist_t server_join_raw;
@@ -67,6 +69,10 @@ irlist_t xlistqueue;
 int serverbucket;
 int ircserver;
 int serverconnectbackoff;
+#ifdef USE_SSL
+SSL_CTX *ssl_ctx;
+SSL *ssl;
+#endif
 prefix_t prefixes[MAX_PREFIX];
 char chanmodes[MAX_CHANMODES];
 char server_input_line[INPUT_BUFFER_LENGTH];
@@ -88,7 +94,6 @@ ir_sockaddr_union_t myip;
 typedef struct
 {
 /* config */
-connectionmethod_t connectionmethod;
 char* configfile[MAXCONFIG];
 char* osstring;
 int hideos;
@@ -116,7 +121,6 @@ struct
 int transferlimits_over;
 
 char *pidfile;
-irlist_t proxyinfo;
 int tcprangestart;
 int tcprangelimit;
 float transferminspeed, transfermaxspeed;

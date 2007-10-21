@@ -3,6 +3,18 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+177) connectionmethod ssl
+  SSL connections to irc server.
+
+   References TODO:
+Long Term Features:
+   208 4/13/04 Open SSL connections to irc server
+
+  this needs OpenSSL installed.
+
+176) connectionmethod
+  you can set connectionmethod for each network differently.
+
 bugfix: CANNOUNCE (reported by Radicand)
   Allow admin to send to a channel with "-noannounce" set.
 

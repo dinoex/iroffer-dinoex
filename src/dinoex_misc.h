@@ -120,6 +120,12 @@ int connectirc2(res_addrinfo_t *remote);
 void t_setup_dcc(transfer *tr, const char *nick);
 int packnumtonum(const char *a);
 
+#ifdef USE_SSL
+int setup_ssl(void);
+#endif
+ssize_t readserver_ssl(void *buf, size_t nbytes);
+ssize_t writeserver_ssl(const void *buf, size_t nbytes);
+
 void exit_iroffer(void);
 
 /* End of File */

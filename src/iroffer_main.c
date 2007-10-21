@@ -619,7 +619,7 @@ static void mainloop (void) {
          gnetwork->lastservercontact = gdata.curtime;
          gnetwork->servertime = 0;
          memset(&tempbuffa, 0, INPUT_BUFFER_LENGTH);
-         length = read (gnetwork->ircserver, &tempbuffa, INPUT_BUFFER_LENGTH);
+         length = readserver_ssl(&tempbuffa, INPUT_BUFFER_LENGTH);
          
          if (length < 1) {
             ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
@@ -681,9 +681,7 @@ static void mainloop (void) {
           
           if ((callval_i < 0) || connect_error)
             {
-              FD_CLR(gnetwork->ircserver, &gdata.writeset);
-              shutdown_close(gnetwork->ircserver);
-              gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+              close_server();
             }
           else
             {
@@ -725,6 +723,9 @@ static void mainloop (void) {
             else
               outerror(OUTERROR_TYPE_WARN, "couldn't get ourip on %s", gnetwork->name);
 	    
+#ifdef USE_SSL
+            if (setup_ssl())
+#endif /* USE_SSL */
 	    initirc();
             }
          }
@@ -1322,7 +1323,7 @@ static void mainloop (void) {
                 int        len       = 6 + strlen(servname);
                 char       *tempstr3 = mycalloc(len + 1);
                 snprintf(tempstr3, len + 1, "PING %s\n", servname);
-                write(gnetwork->ircserver, tempstr3, len);
+                writeserver_ssl(tempstr3, len);
                 if (gdata.debug > 0)
                   {
                     tempstr3[len-1] = '\0';

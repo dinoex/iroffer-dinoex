@@ -1313,12 +1313,6 @@ void dumpgdata(void)
   ioutput(gdata_common,"GDATA DUMP BEGIN");
   
   gdata_print_int(transfermethod);
-  ioutput(gdata_common,"GDATA * connectionmethod: how=%d host=%s port=%d passwd=%s vhost=%s",
-          (int)gdata.connectionmethod.how,
-          gdata_string(gdata.connectionmethod.host),
-          (int)gdata.connectionmethod.port,
-          gdata_string(gdata.connectionmethod.password),
-          gdata_string(gdata.connectionmethod.vhost));
   
   for (ii=0; ii<MAXCONFIG; ii++)
     {
@@ -1342,10 +1336,6 @@ void dumpgdata(void)
   gdata_print_string(headline);
   gdata_print_string(creditline);
   gdata_print_string(pidfile);
-
-  gdata_irlist_iter_start(proxyinfo, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
 
   gdata_print_int(tcprangestart);
   gdata_print_int(tcprangelimit);
@@ -1581,28 +1571,39 @@ void dumpgdata(void)
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)
     {
+      ioutput(gdata_common,"GDATA * connectionmethod: how=%d host=%s port=%d passwd=%s vhost=%s",
+              (int)gdata.networks[ss].connectionmethod.how,
+              gdata_string(gdata.networks[ss].connectionmethod.host),
+              (int)gdata.networks[ss].connectionmethod.port,
+              gdata_string(gdata.networks[ss].connectionmethod.password),
+              gdata_string(gdata.networks[ss].connectionmethod.vhost));
+
       gdata_print_int(networks[ss].net);
       gdata_print_string(networks[ss].name);
       gdata_print_string(networks[ss].user_nick);
       gdata_print_string(networks[ss].caps_nick);
   
+      gdata_irlist_iter_start(networks[ss].proxyinfo, char);
+      gdata_iter_as_print_string;
+      gdata_irlist_iter_end;
+
       gdata_irlist_iter_start(networks[ss].server_join_raw, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
+      gdata_iter_as_print_string;
+      gdata_irlist_iter_end;
 
       gdata_irlist_iter_start(networks[ss].server_connected_raw, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
+      gdata_iter_as_print_string;
+      gdata_irlist_iter_end;
 
       gdata_irlist_iter_start(networks[ss].channel_join_raw, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
+      gdata_iter_as_print_string;
+      gdata_irlist_iter_end;
 
       gdata_irlist_iter_start(networks[ss].servers, server_t);
-  gdata_iter_print_string(hostname);
-  gdata_iter_print_uint(port);
-  gdata_iter_print_string(password);
-  gdata_irlist_iter_end;
+      gdata_iter_print_string(hostname);
+      gdata_iter_print_uint(port);
+      gdata_iter_print_string(password);
+      gdata_irlist_iter_end;
   
       gdata_print_string(networks[ss].curserver.hostname);
       gdata_print_uint(networks[ss].curserver.port);
@@ -1615,16 +1616,16 @@ void dumpgdata(void)
       gdata_print_long(networks[ss].lastnotify);
   
       gdata_irlist_iter_start(networks[ss].serverq_fast, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
+      gdata_iter_as_print_string;
+      gdata_irlist_iter_end;
   
       gdata_irlist_iter_start(networks[ss].serverq_normal, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
+      gdata_iter_as_print_string;
+      gdata_irlist_iter_end;
   
       gdata_irlist_iter_start(networks[ss].serverq_slow, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
+      gdata_iter_as_print_string;
+      gdata_irlist_iter_end;
   
       gdata_irlist_iter_start(networks[ss].serverq_channel, channel_announce_t);
       gdata_iter_print_int(delay);
