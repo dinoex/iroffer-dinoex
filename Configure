@@ -139,8 +139,7 @@ WARNS="-Wshadow
 -Wmissing-prototypes
 -Wmissing-declarations
 -Winline
--Wwrite-strings
--Werror"
+-Wwrite-strings"
 shift
 fi
 
