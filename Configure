@@ -39,7 +39,7 @@ OPT_GEOIP=false
 OPT_CURL=false
 OPT_SSL=true
 
-while getopts 'hedpwgcm' OPTNAME; do
+while getopts 'hedpwgcsm' OPTNAME; do
   case "$OPTNAME" in
     h) usage;;
 
