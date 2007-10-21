@@ -491,7 +491,7 @@ int disabled_config(const userinput * const u)
 int queue_host_remove(const userinput * const u, irlist_t *list, regex_t *regexp)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
   char *hostmask;
   int changed = 0;
 
@@ -523,7 +523,7 @@ int queue_host_remove(const userinput * const u, irlist_t *list, regex_t *regexp
 int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
   int changed = 0;
 
   for (pq = irlist_get_head(list); pq;) {
@@ -936,8 +936,8 @@ void a_queuesize(const userinput * const u)
 void a_requeue(const userinput * const u)
 {
   int oldp = 0, newp = 0;
-  pqueue *pqo;
-  pqueue *pqn;
+  ir_pqueue *pqo;
+  ir_pqueue *pqn;
 
   updatecontext();
 
@@ -974,8 +974,8 @@ void a_requeue(const userinput * const u)
 void a_reiqueue(const userinput * const u)
 {
   int oldp = 0, newp = 0;
-  pqueue *pqo;
-  pqueue *pqn;
+  ir_pqueue *pqo;
+  ir_pqueue *pqn;
 
   updatecontext();
 
@@ -3081,7 +3081,7 @@ void a_bannnick(const userinput * const u)
 void a_rmiq(const userinput * const u)
 {
   int num = 0;
-  pqueue *pq;
+  ir_pqueue *pq;
   gnetwork_t *backup;
 
   updatecontext();
@@ -3316,7 +3316,7 @@ void a_queue(const userinput * const u)
 {
    int num = 0;
    int alreadytrans;
-   pqueue *pq;
+   ir_pqueue *pq;
    xdcc *xd;
    char *tempstr;
    gnetwork_t *backup;
@@ -3378,7 +3378,7 @@ void a_iqueue(const userinput * const u)
 {
    int num = 0;
    int alreadytrans;
-   pqueue *pq;
+   ir_pqueue *pq;
    xdcc *xd;
    char *tempstr;
    gnetwork_t *backup;

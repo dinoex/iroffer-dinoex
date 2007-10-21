@@ -1343,7 +1343,7 @@ static void u_qul(const userinput * const u)
 {
   int i;
   unsigned long rtime, lastrtime; 
-  pqueue *pq;
+  ir_pqueue *pq;
   transfer *tr;
   
   updatecontext();
@@ -1549,7 +1549,7 @@ static void u_nomax(const userinput * const u)
 static void u_rmq(const userinput * const u)
 {
   int num = 0;
-  pqueue *pq;
+  ir_pqueue *pq;
   gnetwork_t *backup;
   
   updatecontext();
@@ -1855,7 +1855,7 @@ static void u_mesg(const userinput * const u)
 static void u_mesq(const userinput * const u)
 {
   int count;
-  pqueue *pq;
+  ir_pqueue *pq;
   gnetwork_t *backup;
   
   updatecontext();

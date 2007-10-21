@@ -2888,8 +2888,8 @@ int look_for_file_changes(xdcc *xpack)
 void user_changed_nick(const char *oldnick, const char *newnick)
 {
   transfer *tr;
-  pqueue *pq;
-  pqueue *old;
+  ir_pqueue *pq;
+  ir_pqueue *old;
   int userinqueue = 0;
   
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))

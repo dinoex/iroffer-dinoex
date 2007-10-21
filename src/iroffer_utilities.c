@@ -1837,7 +1837,7 @@ void dumpgdata(void)
 #endif
   gdata_irlist_iter_end;
   
-  gdata_irlist_iter_start(mainqueue, pqueue);
+  gdata_irlist_iter_start(mainqueue, ir_pqueue);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
   ioutput(gdata_common,
@@ -1848,7 +1848,7 @@ void dumpgdata(void)
   ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   gdata_irlist_iter_end;
   
-  gdata_irlist_iter_start(idlequeue, pqueue);
+  gdata_irlist_iter_start(idlequeue, ir_pqueue);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
   ioutput(gdata_common,

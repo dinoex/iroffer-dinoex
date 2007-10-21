@@ -3589,12 +3589,12 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
 {
    char *tempstr = mycalloc(maxtextlength);
    char *idle;
-   pqueue *tempq;
+   ir_pqueue *tempq;
    xdcc *tempx;
    int inq,alreadytrans;
    int inq2;
    int man;
-   pqueue *pq;
+   ir_pqueue *pq;
    
    updatecontext();
 
@@ -3672,7 +3672,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
          }
 
          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Queued (slot): ");
-         tempq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
+         tempq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
          tempq->queuedtime = gdata.curtime;
          tempq->nick = mystrdup(nick);
          tempq->hostname = mystrdup(hostname);
@@ -3692,7 +3692,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
 void sendaqueue(int type, int pos, char *lastnick)
 {
   int usertrans;
-  pqueue *pq;
+  ir_pqueue *pq;
   transfer *tr;
   char *hostmask;
   gnetwork_t *backup;

@@ -180,7 +180,7 @@ typedef struct
   time_t queuedtime;
   time_t restrictsend_bad;
   int net;
-} pqueue;
+} ir_pqueue;
 
 typedef struct
 {

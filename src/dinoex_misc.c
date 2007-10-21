@@ -423,7 +423,7 @@ static remaining_transfer_time *next_remaining_transfer(remaining_transfer_time 
 void notifyqueued_nick(const char *nick)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
   transfer *tr;
   irlist_t list;
   irlist_t list2;
@@ -2092,7 +2092,7 @@ void close_server(void)
 
 void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick)
 {
-  pqueue *pq;
+  ir_pqueue *pq;
 
   for (pq = irlist_get_head(list); pq; pq = irlist_get_next(pq)) {
     if (!strcasecmp(pq->nick, oldnick)) {
@@ -2105,7 +2105,7 @@ void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick)
 void queue_reverify_restrictsend(irlist_t *list)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
 
   backup = gnetwork;
   for (pq = irlist_get_head(list); pq;) {
@@ -2150,7 +2150,7 @@ void queue_reverify_restrictsend(irlist_t *list)
 void queue_pack_limit(irlist_t *list, xdcc *xd)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
 
   for (pq = irlist_get_head(list); pq;) {
     if (pq->xpack != xd) {
@@ -2172,7 +2172,7 @@ void queue_pack_limit(irlist_t *list, xdcc *xd)
 void queue_punishslowusers(irlist_t *list, int network, const char *nick)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
 
   for (pq = irlist_get_head(list); pq;) {
     if (pq->net != network) {
@@ -2197,7 +2197,7 @@ void queue_punishslowusers(irlist_t *list, int network, const char *nick)
 int queue_xdcc_remove(irlist_t *list, int network, const char *nick)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
   int changed = 0;
 
   for (pq = irlist_get_head(list); pq;) {
@@ -2229,7 +2229,7 @@ int queue_xdcc_remove(irlist_t *list, int network, const char *nick)
 void queue_pack_remove(irlist_t *list, xdcc *xd)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
 
   for (pq = irlist_get_head(list); pq;) {
     if (pq->xpack != xd) {
@@ -2250,7 +2250,7 @@ void queue_pack_remove(irlist_t *list, xdcc *xd)
 void queue_all_remove(irlist_t *list, const char *message)
 {
   gnetwork_t *backup;
-  pqueue *pq;
+  ir_pqueue *pq;
 
   backup = gnetwork;
   for (pq = irlist_get_head(list); pq; pq = irlist_delete(list, pq)) {
@@ -2264,7 +2264,7 @@ void queue_all_remove(irlist_t *list, const char *message)
 
 char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
 {
-  pqueue *tempq;
+  ir_pqueue *tempq;
 
   updatecontext();
   if (gdata.idlequeuesize == 0)
@@ -2287,7 +2287,7 @@ char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc
   }
 
   ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Queued (idle slot): ");
-  tempq = irlist_add(&gdata.idlequeue, sizeof(pqueue));
+  tempq = irlist_add(&gdata.idlequeue, sizeof(ir_pqueue));
   tempq->queuedtime = gdata.curtime;
   tempq->nick = mystrdup(nick);
   tempq->hostname = mystrdup(hostname);
@@ -2305,9 +2305,9 @@ char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc
 
 void check_idle_queue(void)
 {
-  pqueue *pq;
-  pqueue *mq;
-  pqueue *tempq;
+  ir_pqueue *pq;
+  ir_pqueue *mq;
+  ir_pqueue *tempq;
   transfer *tr;
   int usertrans;
   int pass;
@@ -2365,7 +2365,7 @@ void check_idle_queue(void)
   if (pq == NULL)
     return;
 
-  tempq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
+  tempq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
   *tempq = *pq;
   irlist_delete(&gdata.idlequeue, pq);
 
@@ -2957,7 +2957,7 @@ static void free_state(void)
   channel_t *ch;
   transfer *tr;
   upload *up;
-  pqueue *pq;
+  ir_pqueue *pq;
   userinput *u;
   igninfo *i;
   msglog_t *ml;

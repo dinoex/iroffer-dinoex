@@ -1544,7 +1544,7 @@ void read_statefile(void)
           
         case STATEFILE_TAG_QUEUE:
           {
-            pqueue *pq;
+            ir_pqueue *pq;
             statefile_hdr_t *ihdr;
             statefile_item_generic_int_t *g_int;
             statefile_item_generic_time_t *g_time;
@@ -1552,9 +1552,9 @@ void read_statefile(void)
             int num;
             
             if (gdata.idlequeuesize > 0 )
-              pq = irlist_add(&gdata.idlequeue, sizeof(pqueue));
+              pq = irlist_add(&gdata.idlequeue, sizeof(ir_pqueue));
             else
-              pq = irlist_add(&gdata.mainqueue, sizeof(pqueue));
+              pq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
 
             pq->xpack = NULL;
             pq->nick = NULL;

@@ -148,7 +148,7 @@ static void write_statefile_queue(ir_boutput_t *bout, irlist_t *list)
 {
     unsigned char *data;
     unsigned char *next;
-    pqueue *pq;
+    ir_pqueue *pq;
     ir_int32 length;
 
     updatecontext();
