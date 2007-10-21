@@ -513,7 +513,12 @@ void getconfig_set (const char *line, int rehash)
          }
        else if (thow && !strcmp(thow, "ssl"))
          {
+#ifdef USE_SSL
            gdata.networks[gdata.networks_online].connectionmethod.how = how_ssl;
+#else
+           gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
+           outerror(OUTERROR_TYPE_WARN_LOUD,"connectionmethod ssl not compiled, defaulting to direct");
+#endif /* USE_SSL */
          }
        else if (thow && targ1 && targ2 && targ3 && !strcmp(thow,"bnc"))
          {

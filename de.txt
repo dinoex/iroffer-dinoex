@@ -1971,3 +1971,4 @@
 1994 "SSL Error %ld:%s"
 1995 "Cant Create SSL context"
 1996 "Cant set SSL socket"
+1997 "connectionmethod ssl not compiled, defaulting to direct"
