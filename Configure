@@ -819,7 +819,7 @@ if $OPT_SSL; then
 #include \"src/iroffer_globals.h\"
 int main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $WERROR; then
+	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
 		echo "found"
 		echo "Configuring for OpenSSL."
 		SSLLIB="-lssl"
