@@ -73,7 +73,6 @@ Short Term Features:
 Long Term Features:
   1008  use text or xml for statefile
   1013  notify adminnick when autoadd
-  1014  passive DCC
   1018  warning in chat when bot was kicked
   1041  -nojoin for extra channels
   1042  hentai flag
