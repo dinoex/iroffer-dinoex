@@ -3,7 +3,7 @@
  * Copyright (C) 2004-2007 Dirk Meyer
  * 
  * By using this file, you agree to the terms and conditions set
- * forth in the GNU General Public License.  More information is    
+ * forth in the GNU General Public License.  More information is
  * available in the README file.
  * 
  * If you received this file without documentation, it can be
@@ -43,10 +43,10 @@ extern const ir_uint32 crctable[256];
 static void admin_line(int fd, const char *line) {
    userinput *uxdl;
    char *full;
-   
+
    if (line == NULL)
       return;
-   
+
    uxdl = mycalloc(sizeof(userinput));
    full = mycalloc(maxtextlength);
 
@@ -57,7 +57,7 @@ static void admin_line(int fd, const char *line) {
    uxdl->net = 0;
    uxdl->level = ADMIN_LEVEL_CONSOLE;
    u_parseit(uxdl);
-   
+
    mydelete(uxdl);
    mydelete(full);
 }
@@ -66,7 +66,7 @@ static void admin_run(const char *cmd) {
    int fd;
    const char *job;
    char *done;
-   
+
    job = gdata.admin_job_file;
    if (job == NULL)
       return;
@@ -98,7 +98,7 @@ void admin_jobs(void) {
    char *l;
    char *r;
    char *new;
-   
+
    job = gdata.admin_job_file;
    if (job == NULL)
       return;
@@ -128,10 +128,10 @@ int hide_pack(const xdcc *xd)
 {
   if (gdata.hidelockedpacks == 0)
     return 0;
-  
+
   if (xd->lock == NULL)
     return 0;
-  
+
   return 1;
 }
 
@@ -181,7 +181,7 @@ void update_natip (const char *var)
         }
       memcpy(&in, hp->h_addr_list[0], sizeof(in));
     }
- 
+
   old.s_addr = htonl(gdata.ourip);
   if (old.s_addr == in.s_addr)
     return;
@@ -195,7 +195,7 @@ void update_natip (const char *var)
               "DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
       mydelete(oldtxt);
     }
- 
+
   if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ip=0x%8.8lX\n",gdata.ourip);
 
   /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
@@ -223,18 +223,18 @@ void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   int len;
-  
+
   if (!ch) return;
   if (!ch->name) return;
-  
+
   len = vsnprintf(tempstr,maxtextlength,format,ap);
-  
+
   if ((len < 0) || (len >= maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"PRVMSG-CHAN: Output too large, ignoring!");
       return;
     }
-  
+
   writeserver_channel(ch->delay, ch->name, "PRIVMSG %s :%s", ch->name, tempstr);
 }
 
@@ -255,36 +255,36 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
   char *msg;
   channel_announce_t *item;
   int len;
-  
+
   msg = mycalloc(maxtextlength+1);
-  
+
   len = vsnprintf(msg,maxtextlength,format,ap);
-  
+
   if ((len < 0) || (len >= maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"WRITESERVER: Output too large, ignoring!");
       mydelete(msg);
       return;
     }
-  
+
   if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
     {
       mydelete(msg);
       return;
     }
-  
+
   if (gdata.debug > 0)
     {
       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<QUES<: %s",msg);
     }
-  
+
   if (len > EXCESS_BUCKET_MAX)
     {
       outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
       msg[EXCESS_BUCKET_MAX] = '\0';
       len = EXCESS_BUCKET_MAX;
     }
-  
+
   if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ)
     {
       item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
@@ -296,7 +296,7 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
     {
       outerror(OUTERROR_TYPE_WARN,"Server queue is very large. Dropping additional output.");
     }
-  
+
   mydelete(msg);
   return;
 }
@@ -316,7 +316,7 @@ void cleanannounce(void)
 void sendannounce(void)
 {
   channel_announce_t *item;
-  
+
   item = irlist_get_head(&(gnetwork->serverq_channel));
   if (!item)
     return;
@@ -337,7 +337,7 @@ void stoplist(const char *nick)
   char *end;
   char *inick;
   int stopped = 0;
-  
+
   ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC STOP from (%s on %s)",
           nick, gnetwork->name);
@@ -352,7 +352,7 @@ void stoplist(const char *nick)
          }
       item = irlist_get_next(item);
     }
-  
+
   item = irlist_get_head(&(gnetwork->serverq_slow));
   while (item)
     {
@@ -554,7 +554,7 @@ int check_for_file_remove(int n)
   xdcc *xd;
   userinput *pubplist;
   char *tempstr;
-  
+
   updatecontext();
 
   xd = irlist_get_nth(&gdata.xdccs, n-1);
@@ -743,7 +743,7 @@ void check_new_connection(transfer *const tr)
             tr->remoteip>>24, (tr->remoteip>>16) & 0xFF,
             (tr->remoteip>>8) & 0xFF, tr->remoteip & 0xFF,
             country);
-   
+
    if (irlist_size(&gdata.geoipcountry))
      {
        if (!verifyshell(&gdata.geoipcountry, country))
@@ -763,7 +763,7 @@ void check_new_connection(transfer *const tr)
          }
      }
 #endif /* USE_GEOIP */
-  
+
   if ((gdata.ignoreduplicateip) && (gdata.maxtransfersperperson > 0))
     {
       check_duplicateip(tr);
@@ -817,31 +817,31 @@ void check_duplicateip(transfer *const newtr)
                     }
                   ignore = irlist_get_next(ignore);
                 }
-              
+
               if (!ignore)
                 {
                   char *tempstr;
-                  
+
                   ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
                   ignore->regexp = mycalloc(sizeof(regex_t));
-                  
+
                   ignore->hostmask = mystrdup(bhostmask);
-                  
+
                   tempstr = hostmasktoregex(bhostmask);
                   if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
                     {
                       ignore->regexp = NULL;
                     }
-                  
+
                   ignore->flags |= IGN_IGNORING;
                   ignore->lastcontact = gdata.curtime;
-                  
+
                   mydelete(tempstr);
                 }
-              
+
               ignore->flags |= IGN_MANUAL;
               ignore->bucket = (num*60)/gdata.autoignore_threshold;
-              
+
               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                       "same IP detected, Ignore activated for %s which will last %i min",
                       bhostmask,num);
@@ -955,7 +955,7 @@ static int send_statefile(void)
   xfiledescriptor = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (xfiledescriptor < 0)
     return 1;
-  
+
   if (fstat(xfiledescriptor,&st) < 0)
     {
       close(xfiledescriptor);
@@ -1040,13 +1040,13 @@ void update_hour_dinoex(int hour, int minute)
           sendrunning++;
         }
       tr = irlist_get_next(tr);
-    } 
+    }
   if (sendrunning == 0)
     {
        if (send_statefile() == 0)
          dinoex_lasthour = hour;
-    } 
-    
+    }
+
 }
 
 /* iroffer-lamm: @find and long !list */
@@ -1054,13 +1054,13 @@ int noticeresults(const char *nick, const char *match)
 {
   int             i, j, k, len;
   char           *tempstr = mycalloc(maxtextlength);
-  char           *sizestrstr; 
+  char           *sizestrstr;
   char           *tempr;
   regex_t        *regexp = mycalloc(sizeof(regex_t));
   xdcc           *xd;
-  
+
   len = k = 0;
-  
+
   tempr = hostmasktoregex(match);
 
   if (!regcomp(regexp, tempr, REG_ICASE | REG_NOSUB)) {
@@ -1122,7 +1122,7 @@ int noticeresults(const char *nick, const char *match)
       xd = irlist_get_next(xd);
     }
   }
-  
+
   if (k)
     notice_slow(nick, tempstr);
   mydelete(tempr);
@@ -1140,7 +1140,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
    const char *x;
    char *w;
    regex_t *regexp;
-  
+
    if (xd->has_crc32 == 0) {
      if (quiet)
        return NULL;
@@ -1165,7 +1165,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
    strcpy(line, x);
    /* ignore extension */
    w = strrchr(line, '.');
-   if (w != NULL) 
+   if (w != NULL)
       *w = 0;
 
    caps(line);
@@ -1411,7 +1411,7 @@ void start_fetch_url(const userinput *const u)
       mydelete(fullfile);
       return;
     }
-  
+
   updatecontext();
   ft = irlist_add(&fetch_trans, sizeof(fetch_curl_t));
   ft->u.method = u->method;
@@ -1543,7 +1543,7 @@ void dinoex_dcl(const userinput *const u)
   updatecontext();
   ft = irlist_get_head(&fetch_trans);
   while(ft)
-    { 
+    {
       i ++;
       dl_size = 0.0;
       curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD, &dl_size);
@@ -1586,7 +1586,7 @@ void dinoex_dcld(const userinput *const u)
 
       dl_time = 0.0;
       curl_easy_getinfo(ft->curlhandle, CURLINFO_TOTAL_TIME, &dl_time);
-      
+
       started = min2(359999, gdata.curtime - ft->starttime);
       left = min2(359999, (dl_total - dl_size) /
                           ((int)(max2(dl_speed, 1))));
@@ -1618,9 +1618,9 @@ char* getpart_eol(const char *line, int howmany)
   int li;
   size_t plen;
   int hi;
-  
+
   li=0;
-  
+
   for (hi = 1; hi < howmany; hi++)
     {
       while (line[li] != ' ')
@@ -1636,33 +1636,33 @@ char* getpart_eol(const char *line, int howmany)
         }
       li++;
     }
-  
+
   if (line[li] == '\0')
     {
       return NULL;
     }
-  
+
   plen = strlen(line+li);
   part = mycalloc(plen+1);
   memcpy(part, line+li, plen);
   part[plen] = '\0';
-  
+
   return part;
 }
 
 int get_network(const char *arg1)
 {
   int net;
-  
+
   /* default */
   if (arg1 == NULL)
     return 0;
-  
+
   /* numeric */
   net = atoi(arg1);
   if ((net > 0) && (net <= gdata.networks_online))
     return --net;
-  
+
   /* text */
   for (net=0; net<gdata.networks_online; net++)
     {
@@ -1671,7 +1671,7 @@ int get_network(const char *arg1)
       if (strcasecmp(gdata.networks[net].name,arg1) == 0)
         return net;
     }
-  
+
   /* unknown */
   return -1;
 }
@@ -1740,7 +1740,7 @@ int disk_full(const char *path)
 #endif
 #endif
 
-  if (gdata.debug > 0) 
+  if (gdata.debug > 0)
     ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
            "disk_free= %" LLPRINTFMT "d, required= %" LLPRINTFMT "d",
            (long long)freebytes, (long long)gdata.uploadminspace);
@@ -2073,7 +2073,7 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
   }
   manplist->method = method;
 }
- 
+
 void close_server(void)
 {
 #ifdef USE_SSL
@@ -2273,7 +2273,7 @@ char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc
              inq);
     return tempstr;
   }
- 
+
   if (irlist_size(&gdata.idlequeue) >= gdata.idlequeuesize) {
     ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (slot/idle): ");
     snprintf(tempstr, maxtextlength,
@@ -2372,7 +2372,7 @@ void check_idle_queue(void)
 }
 
 int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search)
-{ 
+{
   int family;
   int rc;
   int tempc;
@@ -2425,8 +2425,8 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
              "Couldn't Bind to Socket, Aborting: %s", strerror(errno));
     shutdown_close(*listen_socket);
     *listen_socket = FD_UNUSED;
-    return 1; 
-  } 
+    return 1;
+  }
 
   if (listen(*listen_socket, 1) < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Listen, Aborting: %s", strerror(errno));
@@ -2436,7 +2436,7 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
   }
 
   return 0;
-} 
+}
 
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
 {
@@ -2466,11 +2466,11 @@ int l_setup_file(upload * const l, struct stat *stp)
   /* local file already exists? */
   fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(l->file) + 2);
   sprintf(fullfile, "%s/%s", gdata.uploaddir, l->file);
- 
+
   l->filedescriptor = open(fullfile,
                            O_WRONLY | O_CREAT | O_EXCL | ADDED_OPEN_FLAGS,
                            CREAT_PERMISSIONS );
- 
+
   if ((l->filedescriptor < 0) && (errno == EEXIST)) {
     retval = stat(fullfile, stp);
     if (retval < 0) {
@@ -2520,7 +2520,7 @@ int l_setup_listen(upload * const l)
     l_closeconn(l, "Connection Lost", 0);
     return 1;
   }
- 
+
   listenport = get_port(&listenaddr);
   msg = setup_dcc_local(&listenaddr);
   privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "i %d\1",
@@ -2573,7 +2573,7 @@ void l_setup_accept(upload * const l)
   ir_sockaddr_union_t remoteaddr;
   int listen_fd;
   char *msg;
- 
+
   updatecontext();
 
   listen_fd = l->clientsocket;
@@ -2591,10 +2591,10 @@ void l_setup_accept(upload * const l)
 
   FD_CLR(listen_fd, &gdata.readset);
   close(listen_fd);
- 
+
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND connection received");
- 
+
   if (set_socket_nonblocking(l->clientsocket, 1) < 0 ) {
     outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
   }
@@ -2837,23 +2837,190 @@ void t_setup_dcc(transfer *tr, const char *nick)
   char *dccdata;
   char *sendnamestr;
 
-  t_setuplisten(tr);
-  
-  if (tr->tr_status != TRANSFER_STATUS_LISTENING)
-    return;
+  updatecontext();
+
+  if (gdata.passive_dcc) {
+    bzero((char *) &(tr->serveraddress), sizeof(ir_sockaddr_union_t));
+    if (tr->family == AF_INET) {
+      tr->serveraddress.sin.sin_family = AF_INET;
+      if (gdata.local_vhost)
+        tr->serveraddress.sin.sin_addr.s_addr = htonl(gdata.local_vhost);
+      else
+        tr->serveraddress.sin.sin_addr.s_addr = gnetwork->myip.sin.sin_addr.s_addr;
+    } else {
+      tr->serveraddress.sin6.sin6_family = AF_INET6;
+      tr->serveraddress.sin6.sin6_port = htons(0);
+    }
+    tr->tr_status = TRANSFER_STATUS_RESUME;
+    tr->listenport = 0;
+  } else {
+    t_setuplisten(tr);
+
+    if (tr->tr_status != TRANSFER_STATUS_LISTENING)
+      return;
+  }
 
   sendnamestr = getsendname(tr->xpack->file);
   dccdata = setup_dcc_local(&tr->serveraddress);
-  privmsg_fast(nick,"\1DCC SEND %s %s %" LLPRINTFMT "u\1",
-               sendnamestr, dccdata,
-               (unsigned long long)tr->xpack->st_size);
+  if (gdata.passive_dcc) {
+    bzero((char *) &(tr->serveraddress), sizeof(ir_sockaddr_union_t));
+    privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "u %d\1",
+                 sendnamestr, dccdata,
+                 (unsigned long long)tr->xpack->st_size,
+                 tr->id);
+  } else {
+    privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "u\1",
+                 sendnamestr, dccdata,
+                 (unsigned long long)tr->xpack->st_size);
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "listen on port %d for %s (%s on %s)",
-          tr->listenport, nick, tr->hostname, gnetwork->name);
-
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "listen on port %d for %s (%s on %s)",
+            tr->listenport, nick, tr->hostname, gnetwork->name);
+  }
   mydelete(dccdata);
   mydelete(sendnamestr);
+}
+
+static void t_passive(transfer * const tr, unsigned short remoteport)
+{
+  char *msg;
+  ir_sockaddr_union_t remoteaddr;
+  struct sockaddr_in localaddr;
+  SIGNEDSOCK int addrlen;
+  int retval;
+
+  updatecontext();
+
+  bzero ((char *) &remoteaddr, sizeof (remoteaddr));
+  tr->clientsocket = socket(tr->family, SOCK_STREAM, 0);
+  if (tr->clientsocket < 0) {
+      t_closeconn(tr, "Socket Error", errno);
+      return;
+  }
+
+  if (tr->family == AF_INET ) {
+    addrlen = sizeof(struct sockaddr_in);
+    remoteaddr.sin.sin_family = AF_INET;
+    remoteaddr.sin.sin_port = htons(remoteport);
+    remoteaddr.sin.sin_addr.s_addr = htonl(atoul(tr->remoteaddr));
+  } else {
+    addrlen = sizeof(struct sockaddr_in6);
+    remoteaddr.sin6.sin6_family = AF_INET6;
+    remoteaddr.sin6.sin6_port = htons(remoteport);
+    retval = inet_pton(AF_INET6, tr->remoteaddr, &(remoteaddr.sin6.sin6_addr));
+    if (retval < 0)
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", tr->remoteaddr);
+  }
+
+  if (gdata.local_vhost) {
+    bzero((char*)&localaddr, sizeof(struct sockaddr_in));
+    localaddr.sin_family = AF_INET;
+    localaddr.sin_port = 0;
+    localaddr.sin_addr.s_addr = htonl(gdata.local_vhost);
+
+    if (bind(tr->clientsocket, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0) {
+      t_closeconn(tr, "Couldn't Bind Virtual Host, Sorry", errno);
+      return;
+    }
+  }
+
+  if (set_socket_nonblocking(tr->clientsocket, 1) < 0 ) {
+    outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
+  }
+
+  if (gdata.debug > 0) {
+    msg = mycalloc(maxtextlength);
+    my_getnameinfo(msg, maxtextlength -1, &(remoteaddr.sa), addrlen);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC SEND passive sent to %s on %s, connecting to %s",
+            tr->nick, gnetwork->name, msg);
+    mydelete(msg);
+  }
+
+  alarm(CTIMEOUT);
+  retval = connect(tr->clientsocket, &remoteaddr.sa, addrlen);
+  if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) ) {
+    t_closeconn(tr, "Couldn't Connect", errno);
+    alarm(0);
+    return;
+  }
+  alarm(0);
+
+  tr->tr_status = TRANSFER_STATUS_CONNECTING;
+}
+
+int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport, char *filesize, char *token)
+{
+  transfer *tr;
+  int myid;
+
+  myid = atoi(token);
+  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+    if ((tr->tr_status != TRANSFER_STATUS_CONNECTING) && (tr->tr_status != TRANSFER_STATUS_RESUME))
+      continue;
+    if (tr->id != myid)
+      continue;
+    if (strcasecmp(tr->caps_nick, nick))
+      continue;
+    if (strstrnocase(tr->xpack->file, filename) == NULL)
+      continue;
+
+    tr->remoteaddr = mystrdup(remoteip);
+    t_passive(tr, atoi(remoteport));
+    return 1;
+  }
+  outerror(OUTERROR_TYPE_WARN,
+           "Couldn't find transfer that %s on %s tried to resume!",
+           nick, gnetwork->name);
+  if (gdata.debug == 0)
+    return 0;
+
+  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+    ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
+            "resume trying %i: %s == %s, %s == %s, %i == %i\n",
+            tr->tr_status,
+            tr->caps_nick,nick,
+            tr->xpack->file,
+            filename,
+            tr->listenport,
+            atoi(remoteport));
+  }
+  return 0;
+}
+
+void t_connected(transfer *tr)
+{
+  int callval_i;
+  int connect_error;
+  unsigned int connect_error_len = sizeof(connect_error);
+
+  callval_i = getsockopt(tr->clientsocket,
+                         SOL_SOCKET, SO_ERROR,
+                         &connect_error, &connect_error_len);
+
+  if (callval_i < 0) {
+    outerror(OUTERROR_TYPE_WARN,
+             "Couldn't determine upload connection status on %s: %s",
+             gnetwork->name, strerror(errno));
+    t_closeconn(tr, "Download Connection Failed status:", errno);
+  } else if (connect_error) {
+    t_closeconn(tr, "Download Connection Failed", connect_error);
+  }
+
+  if ((callval_i < 0) || connect_error) {
+    FD_CLR(tr->clientsocket, &gdata.writeset);
+  } else {
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "Download Connection Established on %s", gnetwork->name);
+    FD_CLR(tr->clientsocket, &gdata.writeset);
+    tr->connecttime = gdata.curtime;
+    if (set_socket_nonblocking(tr->clientsocket, 0) < 0 ) {
+      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
+    }
+  }
+
+  t_setup_send(tr);
+  return;
 }
 
 int packnumtonum(const char *a)
@@ -2862,7 +3029,7 @@ int packnumtonum(const char *a)
   autotrigger_t *at;
 
   if (!a) return 0;
-  
+
   if (a[0] == '#') {
     a++;
     return atoi(a);
@@ -2930,7 +3097,7 @@ int setup_ssl(void)
   return 1;
 }
 #endif /* USE_SSL */
-   
+
 ssize_t readserver_ssl(void *buf, size_t nbytes)
 {
 #ifdef USE_SSL

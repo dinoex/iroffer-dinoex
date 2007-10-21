@@ -210,7 +210,9 @@ typedef enum
 typedef enum
 {
   TRANSFER_STATUS_UNUSED,
+  TRANSFER_STATUS_RESUME,
   TRANSFER_STATUS_LISTENING,
+  TRANSFER_STATUS_CONNECTING,
   TRANSFER_STATUS_SENDING,
   TRANSFER_STATUS_WAITING,
   TRANSFER_STATUS_DONE
@@ -780,6 +782,7 @@ void plugin_ircinput (const char *fullline, const char *part2, const char *part3
 void t_initvalues (transfer * const t);
 void t_setuplisten (transfer * const t);
 void t_establishcon (transfer * const t);
+void t_setup_send(transfer * const t);
 void t_transfersome (transfer * const t);
 void t_readjunk (transfer * const t);
 void t_istimeout (transfer * const t);

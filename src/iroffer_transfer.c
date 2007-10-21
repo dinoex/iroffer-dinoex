@@ -55,17 +55,7 @@ void t_setuplisten (transfer * const t)
 
 void t_establishcon (transfer * const t)
 {
-   char *msg;
-   ir_sockaddr_union_t remoteaddr;
-   ir_sockaddr_union_t localaddr;
    SIGNEDSOCK int addrlen;
-   
-#if !defined(_OS_SunOS)
-   SIGNEDSOCK int tempi;
-#endif
-#if !defined(_OS_SunOS) || defined(_OS_BSD_ANY) || !defined(CANT_SET_TOS)
-   int tempc;
-#endif
    
    updatecontext();
    
@@ -82,10 +72,27 @@ void t_establishcon (transfer * const t)
    ir_listen_port_connected(t->listenport);
    
    FD_CLR(t->listensocket, &gdata.readset);
-   t->tr_status = TRANSFER_STATUS_SENDING;
    close(t->listensocket);
    t->listensocket = FD_UNUSED;
+
+   t_setup_send(t);
+}
+
+void t_setup_send(transfer * const t)
+{
+   char *msg;
+   ir_sockaddr_union_t remoteaddr;
+   ir_sockaddr_union_t localaddr;
+   SIGNEDSOCK int addrlen;
    
+#if !defined(_OS_SunOS)
+   SIGNEDSOCK int tempi;
+#endif
+#if !defined(_OS_SunOS) || defined(_OS_BSD_ANY) || !defined(CANT_SET_TOS)
+   int tempc;
+#endif
+   
+   t->tr_status = TRANSFER_STATUS_SENDING;
    if (gdata.debug > 0) {
       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"clientsock = %d",t->clientsocket);
       }
@@ -150,18 +157,21 @@ void t_establishcon (transfer * const t)
    t->connecttimems = gdata.curtimems;
    t->lastspeed = t->xpack->minspeed;
    t->lastspeedamt = t->startresume;
+   addrlen = (t->family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
    
    if ((getpeername(t->clientsocket, &remoteaddr.sa, &(addrlen))) < 0)
-      outerror(OUTERROR_TYPE_WARN,"Couldn't get Remote IP");
+      outerror(OUTERROR_TYPE_WARN, "Couldn't get Remote IP: %s", strerror(errno));
+
    else {
       t->remoteip = ntohl(remoteaddr.sin.sin_addr.s_addr);
       }
    
    if ((getsockname(t->clientsocket, &localaddr.sa, &(addrlen))) < 0)
-      outerror(OUTERROR_TYPE_WARN,"Couldn't get Local IP");
+      outerror(OUTERROR_TYPE_WARN, "Couldn't get Local IP: %s", strerror(errno));
    
    msg = mycalloc(maxtextlength);
    my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, 0);
+   mydelete(t->remoteaddr);
    t->remoteaddr = mystrdup(msg);
    my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, 0);
    t->localaddr = mystrdup(msg);

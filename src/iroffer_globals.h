@@ -222,6 +222,7 @@ int xdcclist_by_privmsg;
 int autoadd_delay;
 int balanced_queue;
 int http_port;
+int passive_dcc;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

@@ -326,6 +326,11 @@ static void mainloop (void) {
               FD_SET(tr->listensocket, &gdata.readset);
               highests = max2(highests, tr->listensocket);
             }
+          if (tr->tr_status == TRANSFER_STATUS_CONNECTING)
+            {
+              FD_SET(tr->clientsocket, &gdata.writeset);
+              highests = max2(highests, tr->clientsocket);
+            }
           if (tr->tr_status == TRANSFER_STATUS_SENDING)
             {
               if (!overlimit && !tr->overlimit)
@@ -1043,7 +1048,14 @@ static void mainloop (void) {
             {
               t_remind(tr);
             }
-          
+
+         if (changesec &&
+             (tr->tr_status == TRANSFER_STATUS_CONNECTING) &&
+             FD_ISSET(tr->clientsocket, &gdata.writeset))
+            {
+              t_connected(tr);
+            }
+  
           /*----- look for listen->connected ----- */
           if ((tr->tr_status == TRANSFER_STATUS_LISTENING) &&
               FD_ISSET(tr->listensocket, &gdata.readset))
@@ -2715,7 +2727,7 @@ static void privmsgparse(const char* type, char* line) {
           tr = irlist_get_head(&gdata.trans);
           while(tr)
             {
-              if ((tr->tr_status == TRANSFER_STATUS_LISTENING) && 
+              if (((tr->tr_status == TRANSFER_STATUS_LISTENING) || (tr->tr_status == TRANSFER_STATUS_RESUME)) && 
                   !strcmp(tr->caps_nick,nick) &&
                   (strstrnocase(tr->xpack->file,msg3) || (tr->listenport == atoi(msg4))))
                 {
@@ -2730,7 +2742,10 @@ static void privmsgparse(const char* type, char* line) {
                   else
                     {
                       t_setresume(tr,msg5);
-                      privmsg_fast(nick,"\1DCC ACCEPT %s %s %s\1",msg3,msg4,msg5);
+                      if (tr->tr_status == TRANSFER_STATUS_RESUME)
+                        privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", msg3, msg4, msg5, msg6);
+                      else
+                        privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", msg3, msg4, msg5);
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                               "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "iK", tr->id,
                               tr->nick, gnetwork->name, (long long)(tr->startresume / 1024));
@@ -2788,10 +2803,22 @@ static void privmsgparse(const char* type, char* line) {
       
       else if (!strcmp(caps(msg2), "SEND") && msg3 && msg4 && msg5 && msg6)
         {
+          char *msg7;
+          int down = 0;
+
           if (msg6[strlen(msg6)-1] == '\1')
             {
               msg6[strlen(msg6)-1] = '\0';
             }
+          msg7 = getpart(line, 10);
+          if (msg7)
+            {
+              if (msg7[strlen(msg7)-1] == '\1')
+                msg7[strlen(msg7)-1] = '\0';
+              down = t_find_transfer(nick, msg3, msg4, msg5, msg6, msg7);
+            }
+          if (!down)
+           {
           if ( !verifyhost(&gdata.uploadhost, hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
@@ -2859,14 +2886,11 @@ static void privmsgparse(const char* type, char* line) {
               else
                 {
                   /* Passive DCC */
-                  char *msg7;
-                  msg7 = getpart(line, 10);
-                  if (msg7[strlen(msg7)-1] == '\1')
-                    msg7[strlen(msg7)-1] = '\0';
                   l_setup_passive(ul, msg7);
-                  mydelete(msg7);
                 }
+             }
             }
+           mydelete(msg7);
         }
       
       else if (!strcmp(caps(msg2), "ACCEPT") && msg3 && msg4 && msg5)

@@ -118,6 +118,8 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
 int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen);
 int connectirc2(res_addrinfo_t *remote);
 void t_setup_dcc(transfer *tr, const char *nick);
+int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport, char *filesize, char *token);
+void t_connected(transfer *tr);
 int packnumtonum(const char *a);
 
 #ifdef USE_SSL

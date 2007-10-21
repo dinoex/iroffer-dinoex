@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+178) passive_dcc
+  Unterstützung für passives DCC SEND und RESUME für Downloads.
+
 177) connectionmethod ssl
   SSL Verbindungen zum IRC Server.
 
