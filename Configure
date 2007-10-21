@@ -822,16 +822,16 @@ int main (int argc, char **argv) {exit(0);}
 	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $WERROR; then
 		echo "found"
 		echo "Configuring for OpenSSL."
-		CURLLIB="-lssl"
-		CURLINC="-DUSE_SSL -I/usr/local/include"
-		CURLLDF="-L/usr/local/lib"
+		SSLLIB="-lssl"
+		SSLINC="-DUSE_SSL -I/usr/local/include"
+		SSLLDF="-L/usr/local/lib"
 		shift
 	else
 		echo "not found"
 		echo "***Disable the SSL Features. If u want to use this feature, please install OpenSSL.***"
-		CURLLIB=""
-		CURLINC=""
-		CURLLDF=""
+		SSLLIB=""
+		SSLINC=""
+		SSLLDF=""
 		shift
 	fi
 fi
@@ -1179,10 +1179,10 @@ echo
 echo VERSION=$VERSION
 echo CC=$cctype
 echo CONFIG_EXE=$exe
-echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB
-echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF $CURLLDF
+echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $SSLLIB
+echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF $CURLLDF $SSLLDF
 echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG
-echo CONFIG_CPPFLAGS=$GEOINC $CURLINC
+echo CONFIG_CPPFLAGS=$GEOINC $CURLINC $SSLINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
  echo CONFIG_TARGETS=
