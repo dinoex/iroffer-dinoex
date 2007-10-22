@@ -3050,6 +3050,7 @@ int packnumtonum(const char *a)
 
 static void outerror_ssl(void)
 {
+#if !defined(_OS_CYGWIN)
   unsigned long err;
 
   err = ERR_get_error();
@@ -3057,6 +3058,7 @@ static void outerror_ssl(void)
     return;
 
   outerror(OUTERROR_TYPE_WARN_LOUD, "SSL Error %ld:%s", err, ERR_error_string(err, NULL));
+#endif
 }
 
 int setup_ssl(void)
