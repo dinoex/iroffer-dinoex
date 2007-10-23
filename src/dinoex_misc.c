@@ -2954,15 +2954,16 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
   transfer *tr;
   int myid;
 
+  if (atoi(remoteport) == 0)
+    return 0;
+
   myid = atoi(token);
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
-    if ((tr->tr_status != TRANSFER_STATUS_CONNECTING) && (tr->tr_status != TRANSFER_STATUS_RESUME))
+    if (tr->tr_status != TRANSFER_STATUS_RESUME)
       continue;
     if (tr->id != myid)
       continue;
     if (strcasecmp(tr->caps_nick, nick))
-      continue;
-    if (strstrnocase(tr->xpack->file, filename) == NULL)
       continue;
 
     tr->remoteaddr = mystrdup(remoteip);
@@ -2973,7 +2974,7 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
            "Couldn't find transfer that %s on %s tried to resume!",
            nick, gnetwork->name);
   if (gdata.debug == 0)
-    return 0;
+    return 1;
 
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
     ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
@@ -2985,7 +2986,7 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
             tr->listenport,
             atoi(remoteport));
   }
-  return 0;
+  return 1;
 }
 
 void t_connected(transfer *tr)
