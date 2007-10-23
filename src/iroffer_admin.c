@@ -667,7 +667,7 @@ static void u_xdl_head(const userinput * const u) {
    char *tempstr;
    char *tempnick;
    char *chan;
-   int a,i,m,m1;
+   int a, i, m, m1;
    int len;
    int head;
    xdcc *xd;
@@ -849,7 +849,7 @@ static void u_xdl_foot(const userinput * const u) {
 
    if (gdata.creditline)
      {
-       u_respond(u,"\2**\2 %s \2**\2",gdata.creditline);
+       u_respond(u, "\2**\2 %s \2**\2", gdata.creditline);
      }
    
    if (u->method != method_xdl_channel_min)
@@ -1201,17 +1201,17 @@ static void u_dcld(const userinput * const u)
           break;
         }
       
-      u_respond(u,"network: %d: %s", tr->net, gdata.networks[tr->net].name);
+      u_respond(u, "network: %d: %s", tr->net, gdata.networks[tr->net].name);
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
-          u_respond(u,"%3i  %-9s   %-4d %-32s   %s %2.0f%%",
+          u_respond(u, "%3i  %-9s   %-4d %-32s   %s %2.0f%%",
                     tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y,
                     ((float)tr->bytessent)*100.0/((float)tr->xpack->st_size));
         }
       else
         {
-          u_respond(u,"%3i  %-9s   %-4d %-32s   %s",
+          u_respond(u, "%3i  %-9s   %-4d %-32s   %s",
                     tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y);
         }
       
@@ -1822,7 +1822,7 @@ static void u_psend(const userinput * const u)
   nname = gnetwork->name;
   gnetwork = backup;
   
-  u_respond(u,"Sending PLIST with style %s to %s on network %s",
+  u_respond(u, "Sending PLIST with style %s to %s on network %s",
             u->arg2 ? u->arg2 : "full",
             u->arg1, nname);
   
@@ -2288,7 +2288,7 @@ static void u_chatl(const userinput * const u)
       
       mydelete(tempstr);
       
-      u_respond(u,"  Local: %s, Remote: %s",
+      u_respond(u, "  Local: %s, Remote: %s",
                 chat->localaddr,
                 chat->remoteaddr);
     }
@@ -3368,7 +3368,7 @@ static void u_servqc(const userinput * const u)
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++)
     {
-      u_respond(u,"Cleared server queue of %d lines",
+      u_respond(u, "Cleared server queue of %d lines",
                 irlist_size(&gdata.networks[ss].serverq_channel) +
                 irlist_size(&gdata.networks[ss].serverq_fast) +
                 irlist_size(&gdata.networks[ss].serverq_normal) +
