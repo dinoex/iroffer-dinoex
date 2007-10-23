@@ -1218,6 +1218,7 @@ static void h_send(http * const h)
   size_t attempt;
   ssize_t howmuch, howmuch2;
   long bucket;
+  int errno2;
 
   updatecontext();
 
@@ -1238,9 +1239,10 @@ static void h_send(http * const h)
       if (h->filepos != h->bytessent) {
         offset = lseek(h->filedescriptor, h->bytessent, SEEK_SET);
         if (offset != h->bytessent) {
+          errno2 = errno;
           outerror(OUTERROR_TYPE_WARN, "Can't seek location in file '%s': %s",
                    h->file, strerror(errno));
-          h_closeconn(h, "Unable to locate data in file", errno);
+          h_closeconn(h, "Unable to locate data in file", errno2);
           return;
         }
         h->filepos = h->bytessent;
@@ -1249,9 +1251,10 @@ static void h_send(http * const h)
       data = (char *)gdata.sendbuff;
     }
     if (howmuch < 0 && errno != EAGAIN) {
+      errno2 = errno;
       outerror(OUTERROR_TYPE_WARN, "Can't read data from file '%s': %s",
               h->file, strerror(errno));
-      h_closeconn(h, "Unable to read data from file", errno);
+      h_closeconn(h, "Unable to read data from file", errno2);
       return;
     }
     if (howmuch <= 0)

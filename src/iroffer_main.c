@@ -827,10 +827,11 @@ static void mainloop (void) {
               
               if (callval_i < 0)
                 {
+                  int errno2 = errno;
                   outerror(OUTERROR_TYPE_WARN,
                            "Couldn't determine upload connection status on %s: %s",
                            gnetwork->name, strerror(errno));
-                  l_closeconn(ul,"Upload Connection Failed status:",errno);
+                  l_closeconn(ul,"Upload Connection Failed status:",errno2);
                 }
               else if (connect_error)
                 {
@@ -902,10 +903,11 @@ static void mainloop (void) {
               
               if (callval_i < 0)
                 {
+                  int errno2 = errno;
                   outerror(OUTERROR_TYPE_WARN,
                            "Couldn't determine dcc connection status on %s: %s",
                            gnetwork->name, strerror(errno));
-                  notice(chat->nick, "DCC Chat Connect Attempt Failed: %s", strerror(errno));
+                  notice(chat->nick, "DCC Chat Connect Attempt Failed: %s", strerror(errno2));
                 }
               else if (connect_error)
                 {

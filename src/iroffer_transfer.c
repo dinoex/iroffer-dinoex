@@ -64,8 +64,9 @@ void t_establishcon (transfer * const t)
    if (!gdata.attop) gototop();
    
    if ((t->clientsocket = accept(t->listensocket, &t->serveraddress.sa, &addrlen)) < 0) {
-      outerror(OUTERROR_TYPE_WARN,"Accept Error, Aborting");
-      t_closeconn(t,"Connection Error, Try Again",errno);
+      int errno2 = errno;
+      outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
+      t_closeconn(t, "Connection Error, Try Again", errno2);
       return;
       }
    
@@ -101,9 +102,10 @@ void t_setup_send(transfer * const t)
      {
        t->xpack->file_fd = open(t->xpack->file, O_RDONLY | ADDED_OPEN_FLAGS);
        if (t->xpack->file_fd < 0) {
+         int errno2 = errno;
          t->xpack->file_fd = FD_UNUSED;
          outerror(OUTERROR_TYPE_WARN_LOUD,"Cant Access Offered File '%s': %s",t->xpack->file,strerror(errno));
-         t_closeconn(t,"File Error, Report the Problem to the Owner",errno);
+         t_closeconn(t, "File Error, Report the Problem to the Owner", errno2);
          return;
        }
        t->xpack->file_fd_location = 0;
@@ -306,9 +308,10 @@ void t_transfersome (transfer * const t)
               
               if (offset != t->bytessent)
                 {
+                  int errno2 = errno;
                   outerror(OUTERROR_TYPE_WARN,"Can't seek location in file '%s': %s",
                            t->xpack->file, strerror(errno));
-                  t_closeconn(t,"Unable to locate data in file",errno);
+                  t_closeconn(t, "Unable to locate data in file", errno2);
                   return;
                 }
               t->xpack->file_fd_location = t->bytessent;
@@ -318,9 +321,10 @@ void t_transfersome (transfer * const t)
           
           if (howmuch < 0 && errno != EAGAIN)
             {
+              int errno2 = errno;
               outerror(OUTERROR_TYPE_WARN,"Can't read data from file '%s': %s",
                        t->xpack->file, strerror(errno));
-              t_closeconn(t,"Unable to read data from file",errno);
+              t_closeconn(t, "Unable to read data from file", errno2);
               return;
             }
           else if (howmuch <= 0)
