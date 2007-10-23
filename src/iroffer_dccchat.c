@@ -87,7 +87,7 @@ int setupdccchatout(const char *nick)
   chat->net = gnetwork->net;
   
   msg = setup_dcc_local(&listenaddr);
-  privmsg_fast(nick,"\1DCC CHAT CHAT %s\1", msg);
+  privmsg_fast(nick, "\1DCC CHAT CHAT %s\1", msg);
   my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, 0);
   chat->localaddr = mystrdup(msg);
   mydelete(msg);
@@ -97,11 +97,29 @@ int setupdccchatout(const char *nick)
   return 0;
 }
 
+static void setup_chat_banner(dccchat_t *chat)
+{
+  char *tempstr;
+
+  tempstr = mycalloc(maxtextlength);
+  getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
+  
+  writedccchat(chat, 0, "Welcome to %s\n",
+               save_nick(gnetwork->user_nick));
+  writedccchat(chat, 0, "iroffer-dinoex " VERSIONLONG "%s%s\n",
+               gdata.hideos ? "" : " - ",
+               gdata.hideos ? "" : gdata.osstring);
+  writedccchat(chat, 0, "    running %s\n", tempstr);
+  writedccchat(chat, 0, " \n");
+  writedccchat(chat, 0, "Enter Your Password:\n");
+  
+  mydelete(tempstr);
+}
+
 void setupdccchataccept(dccchat_t *chat)
 {
   SIGNEDSOCK int addrlen;
   ir_sockaddr_union_t remoteaddr;
-  char *tempstr;
   char *msg;
   int listen_fd;
   
@@ -141,20 +159,7 @@ void setupdccchataccept(dccchat_t *chat)
   chat->remoteaddr = mystrdup(msg);
   mydelete(msg);
 
-  tempstr = mycalloc(maxtextlength);
-  getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
-  
-  writedccchat(chat,0,"Welcome to %s\n",
-               save_nick(gnetwork->user_nick));
-  writedccchat(chat,0,"iroffer-dinoex " VERSIONLONG "%s%s\n",
-               gdata.hideos ? "" : " - ",
-               gdata.hideos ? "" : gdata.osstring);
-  writedccchat(chat,0,"    running %s\n", tempstr);
-  writedccchat(chat,0," \n");
-  writedccchat(chat,0,"Enter Your Password:\n");
-  
-  mydelete(tempstr);
-  
+  setup_chat_banner(chat);
 }
 
 int setupdccchat(const char *nick,
@@ -317,8 +322,6 @@ int setupdccchat(const char *nick,
 
 void setupdccchatconnected(dccchat_t *chat)
 {
-  char *tempstr;
-  
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT connection suceeded, authenticating");
   
@@ -327,20 +330,7 @@ void setupdccchatconnected(dccchat_t *chat)
   chat->lastcontact = gdata.curtime;
   ir_boutput_init(&chat->boutput, chat->fd, 0);
   
-  tempstr = mycalloc(maxtextlength);
-  getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
-
-  writedccchat(chat,0,"Welcome to %s\n",
-               save_nick(gnetwork->user_nick));
-  writedccchat(chat,0,"iroffer-dinoex " VERSIONLONG "%s%s\n",
-               gdata.hideos ? "" : " - ",
-               gdata.hideos ? "" : gdata.osstring);
-  writedccchat(chat,0,"    running %s\n", tempstr);
-  writedccchat(chat,0," \n");
-  writedccchat(chat,0,"Enter Your Password:\n");
-
-  mydelete(tempstr);
-  
+  setup_chat_banner(chat);
 }
 
 
