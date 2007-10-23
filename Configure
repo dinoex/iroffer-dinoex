@@ -28,7 +28,7 @@ echo "   -w           Compile with extra warning flags"
 echo "   -g           Compile GeoIP lib"
 echo "   -c           Compile Curl lib (for the FETCH-Command)"
 echo "   -s           Compile without OpenSSL lib"
-exit 1
+exit 64
 }
 
 OPT_ERRORS=false
@@ -39,20 +39,21 @@ OPT_GEOIP=false
 OPT_CURL=false
 OPT_SSL=true
 
-while getopts 'hedpwgcsm' OPTNAME; do
-  case "$OPTNAME" in
-    h) usage;;
-
-    e) OPT_ERRORS=true;;
-    d) OPT_DEBUG=true;;
-    w) OPT_WARN=true;;
-    p) OPT_PROF=true;;
-    g) OPT_GEOIP=true;;
-    c) OPT_CURL=true;;
-    s) OPT_SSL=false;;
-    m) ;;
-    *) usage;;
+while test "${1}" != ""
+do
+  case "${1}" in
+  -h) usage ;;
+  -e) OPT_ERRORS=true ;;
+  -d) OPT_DEBUG=true ;;
+  -w) OPT_WARN=true ;;
+  -p) OPT_PROF=true ;;
+  -g) OPT_GEOIP=true ;;
+  -c) OPT_CURL=true ;;
+  -s) OPT_SSL=false ;;
+  -m) ;;
+  *)  usage ;;
   esac
+  shift
 done
 
 echo -n "Determining OS... "
@@ -116,7 +117,6 @@ echo "#define _OS_$ostype" >> src/iroffer_config.h
 
 if $OPT_ERRORS; then
  echo "Printing Errors During Execution..."
- shift
 else
  exec 2>/dev/null
 fi
@@ -124,7 +124,6 @@ fi
 if $OPT_DEBUG; then
 echo "Configuring for debugging."
 DEBUG="-g -DDEBUG"
-shift
 else
 DEBUG="-O2"
 fi
@@ -140,23 +139,24 @@ WARNS="-Wshadow
 -Wmissing-declarations
 -Winline
 -Wwrite-strings"
-shift
 fi
 
 if $OPT_PROF; then
 echo "Configuring for profiling."
 PROF="-pg"
-shift
 fi
 
 if $OPT_GEOIP; then
 echo "Configuring for GeoIP."
-GEOLIB="-lGeoIP"
-GEOINC="-DUSE_GEOIP -I/usr/local/include"
-GEOLDF="-L/usr/local/lib"
-shift
 fi
 
+if $OPT_CURL; then
+echo "Configuring for Curl."
+fi
+
+if ! $OPT_SSL; then
+echo "Configuring without SSL."
+fi
 
 echo -n "Checking for make... "
 if [ -f "`type make | awk '{print $NF}'`" ]; then
