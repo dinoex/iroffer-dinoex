@@ -4,7 +4,7 @@
  * 
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
- * available in the README file.
+ * available in the LICENSE file.
  * 
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
@@ -498,7 +498,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
           tempnick = mystrdup(u->snick);
           for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
             {
-              if (!strcasecmp(ch->name,chan))
+              if (!strcasecmp(ch->name, chan))
                 {
                   vprivmsg_chan(ch, format, args);
                   va_end(args);
@@ -551,12 +551,12 @@ void u_parseit(userinput * const u) {
       u_respond(u,"** User Command Not Recognized, try \"HELP\"");
    
    if (found && u->method==method_console)
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s requested (console)",u->cmd);
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (console)", u->cmd);
    if (found && u->method==method_dcc)
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s requested (DCC Chat: %s) (network: %s)",
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (DCC Chat: %s) (network: %s)",
                u->cmd, save_nick(u->chat->nick), gnetwork->name);
    if (found && u->method==method_msg)
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,"ADMIN %s requested (MSG: %s) (network: %s)",
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (MSG: %s) (network: %s)",
               u->cmd, u->snick, gnetwork->name);
    
    u_fillwith_clean(u);
@@ -597,7 +597,7 @@ static void u_help(const userinput * const u)
                   spaces -= sstrlen(userinput_parse[i].command);
                   spaces = max2(0,spaces);
                   
-                  u_respond(u,"  %s %-*s : %s",
+                  u_respond(u, "  %s %-*s : %s",
                             userinput_parse[i].command,
                             spaces,
                             userinput_parse[i].args,
@@ -612,7 +612,7 @@ static void u_help(const userinput * const u)
             }
         }
     }
-  u_respond(u,"For additional help, see the documentation at http://iroffer.dinoex.net/");
+  u_respond(u, "For additional help, see the documentation at http://iroffer.dinoex.net/");
   
 }
 
@@ -655,11 +655,11 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
         len = strlen(tempstr);
      }
    
-   u_respond(u,"%s",tempstr);
+   u_respond(u, "%s", tempstr);
    
    if (xd->note && strlen(xd->note))
      {
-       u_respond(u," \2^-\2%*s%s", s, "", xd->note);
+       u_respond(u, " \2^-\2%*s%s", s, "", xd->note);
      }
 }
 
@@ -694,13 +694,13 @@ static void u_xdl_head(const userinput * const u) {
               tempnick = mystrdup(u->snick);
               for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
                 {
-                  if (!strcasecmp(ch->name,chan))
+                  if (!strcasecmp(ch->name, chan))
                     {
                       userinput u2;
                       
                       u2 = *u;
                       u2.snick = chan;
-                      u_respond(&u2,"\2**\2 %s \2**\2", ch->headline);
+                      u_respond(&u2, "\2**\2 %s \2**\2", ch->headline);
                       head ++;
                     }
                 }
@@ -710,7 +710,7 @@ static void u_xdl_head(const userinput * const u) {
         }
       break;
     default:
-      u_respond(u,"\2**\2 To stop this listing, type \"/MSG %s XDCC STOP\" \2**\2",
+      u_respond(u, "\2**\2 To stop this listing, type \"/MSG %s XDCC STOP\" \2**\2",
                   save_nick(gnetwork->user_nick));
       break;
     }
@@ -718,7 +718,7 @@ static void u_xdl_head(const userinput * const u) {
    if (gdata.headline)
      {
        if (head == 0)
-          u_respond(u,"\2**\2 %s \2**\2",gdata.headline);
+          u_respond(u, "\2**\2 %s \2**\2", gdata.headline);
      }
    
    if (!m && !m1)
@@ -805,11 +805,11 @@ static void u_xdl_head(const userinput * const u) {
        
        u_respond(u,"%s",tempstr);
        
-       u_respond(u,"\2**\2 To request a file, type \"/MSG %s XDCC SEND x\" \2**\2",
+       u_respond(u, "\2**\2 To request a file, type \"/MSG %s XDCC SEND x\" \2**\2",
                  save_nick(gnetwork->user_nick));
        
        if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
-          u_respond(u,"\2**\2 To request details, type \"/MSG %s XDCC INFO x\" \2**\2",
+          u_respond(u, "\2**\2 To request details, type \"/MSG %s XDCC INFO x\" \2**\2",
                     save_nick(gnetwork->user_nick));
        
        i = 0;
@@ -823,7 +823,7 @@ static void u_xdl_head(const userinput * const u) {
            xd = irlist_get_next(xd);
          }
        if (i > 0)
-          u_respond(u,"\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
+          u_respond(u, "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
                     save_nick(gnetwork->user_nick));
      }
    
@@ -831,12 +831,12 @@ static void u_xdl_head(const userinput * const u) {
      {
        if (!gdata.restrictprivlist)
          {
-           u_respond(u,"\2**\2 For a listing type: \"/MSG %s XDCC LIST\" \2**\2",
+           u_respond(u, "\2**\2 For a listing type: \"/MSG %s XDCC LIST\" \2**\2",
                      save_nick(gnetwork->user_nick));
          }
        if (gdata.creditline)
          {
-           u_respond(u,"\2**\2 %s \2**\2",gdata.creditline);
+           u_respond(u, "\2**\2 %s \2**\2", gdata.creditline);
          }
      }
    
@@ -889,8 +889,8 @@ static void u_xdl_full(const userinput * const u) {
    xd = irlist_get_head(&gdata.xdccs);
    while(xd)
      {
-       if (hide_locked(u,xd) == 0)
-         u_xdl_pack(u,tempstr,i,l,s,xd);
+       if (hide_locked(u, xd) == 0)
+         u_xdl_pack(u, tempstr, i, l, s, xd);
        i++;
        xd = irlist_get_next(xd);
      }
@@ -927,15 +927,15 @@ static void u_xdl_group(const userinput * const u) {
      {
        if (xd->group != NULL)
          {
-           if (strcasecmp(xd->group,msg3) == 0 )
+           if (strcasecmp(xd->group, msg3) == 0 )
              {
                if (xd->group_desc != NULL)
                  {
-                   u_respond(u,"group: %s%s%s",msg3, gdata.group_seperator, xd->group_desc);
+                   u_respond(u, "group: %s%s%s", msg3, gdata.group_seperator, xd->group_desc);
                  }
 
-               if (hide_locked(u,xd) == 0)
-                 u_xdl_pack(u,tempstr,i,l,s,xd);
+               if (hide_locked(u, xd) == 0)
+                 u_xdl_pack(u, tempstr, i, l, s, xd);
                k++;
              }
          }
@@ -949,7 +949,7 @@ static void u_xdl_group(const userinput * const u) {
    
    if (!k)
      {
-       u_respond(u,"Sorry, nothing was found, try a XDCC LIST");
+       u_respond(u, "Sorry, nothing was found, try a XDCC LIST");
      }
 }
 
@@ -981,8 +981,8 @@ static void u_xdl(const userinput * const u) {
        /* skip is group is set */
        if (xd->group == NULL)
          {
-           if (hide_locked(u,xd) == 0)
-             u_xdl_pack(u,tempstr,i,l,s,xd);
+           if (hide_locked(u, xd) == 0)
+             u_xdl_pack(u, tempstr, i, l, s, xd);
          }
        i++;
        xd = irlist_get_next(xd);
@@ -994,7 +994,7 @@ static void u_xdl(const userinput * const u) {
        /* groupe entry and entry is visible */
        if ((xd->group != NULL) && (xd->group_desc != NULL))
           {
-            snprintf(tempstr,maxtextlength-1,
+            snprintf(tempstr, maxtextlength-1,
                      "%s%s%s", xd->group, gdata.group_seperator, xd->group_desc);
             inlist = irlist_add(&grplist, strlen(tempstr) + 1);
             strcpy(inlist, tempstr);
@@ -1006,7 +1006,7 @@ static void u_xdl(const userinput * const u) {
      inlist = irlist_get_head(&grplist);
      while (inlist)
        {
-         u_respond(u,"group: %s",inlist);
+         u_respond(u, "group: %s", inlist);
          inlist = irlist_delete(&grplist, inlist);
        }
    
@@ -1044,7 +1044,7 @@ static void u_dcl(const userinput * const u)
   if (irlist_size(&gdata.trans))
     {
       u_respond(u,"Current Transfer%s",irlist_size(&gdata.trans)!=1?"s":"");
-      u_respond(u,"   ID  User        Pack File                               Status");
+      u_respond(u, "   ID  User        Pack File                               Status");
     }
   
   tr = irlist_get_head(&gdata.trans);
@@ -1075,14 +1075,14 @@ static void u_dcl(const userinput * const u)
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
-          u_respond(u,"  %3i  %-9s   %-4d %-32s   %s %2.0f%%",
-                    tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y,
+          u_respond(u, "  %3i  %-9s   %-4d %-32s   %s %2.0f%%",
+                    tr->id, tr->nick, number_of_pack(tr->xpack), getfilename(tr->xpack->file), y,
                     ((float)tr->bytessent)*100.0/((float)tr->xpack->st_size));
         }
       else
         {
-          u_respond(u,"  %3i  %-9s   %-4d %-32s   %s",
-                    tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y);
+          u_respond(u, "  %3i  %-9s   %-4d %-32s   %s",
+                    tr->id, tr->nick, number_of_pack(tr->xpack), getfilename(tr->xpack->file), y);
         }
       tr = irlist_get_next(tr);
     }
@@ -1170,7 +1170,7 @@ static void u_dcld(const userinput * const u)
    if (irlist_size(&gdata.trans))
      {
        u_respond(u,"Current Transfer%s",irlist_size(&gdata.trans)!=1?"s":"");
-       u_respond(u," ID  User        Pack File                               Status");
+       u_respond(u, " ID  User        Pack File                               Status");
        u_respond(u,"  ^-    Speed    Current/    End   Start/Remain    Min/  Max  Resumed");
        u_respond(u," --------------------------------------------------------------------");
      }
@@ -1336,7 +1336,7 @@ static void u_dcld(const userinput * const u)
   dinoex_dcld(u);
 #endif
   
-  u_respond(u," --------------------------------------------------------------------");
+  u_respond(u, " --------------------------------------------------------------------");
 }
 
 static void u_qul(const userinput * const u)
@@ -1354,8 +1354,8 @@ static void u_qul(const userinput * const u)
       return;
     }
   
-  u_respond(u,"Current Main Queue:");
-  u_respond(u,"    #  User        Pack File                              Waiting     Left");
+  u_respond(u, "Current Main Queue:");
+  u_respond(u, "    #  User        Pack File                              Waiting     Left");
   
   lastrtime=0;
   
@@ -1398,7 +1398,7 @@ static void u_qul(const userinput * const u)
       
       if (rtime < 359999)
         {
-          u_respond(u,"   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
+          u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
                     i,
                     pq->nick,
                     number_of_pack(pq->xpack),
@@ -1410,7 +1410,7 @@ static void u_qul(const userinput * const u)
         }
       else
         {
-          u_respond(u,"   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
+          u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
                     i,
                     pq->nick,
                     number_of_pack(pq->xpack),
@@ -1422,8 +1422,8 @@ static void u_qul(const userinput * const u)
       i++;
     }
 
-  u_respond(u,"Current Idle Queue:");
-  u_respond(u,"    #  User        Pack File                              Waiting     Left");
+  u_respond(u, "Current Idle Queue:");
+  u_respond(u, "    #  User        Pack File                              Waiting     Left");
   i=1;
   pq = irlist_get_head(&gdata.idlequeue);
   while(pq)
@@ -1432,7 +1432,7 @@ static void u_qul(const userinput * const u)
       tr = irlist_get_head(&gdata.trans);
       while(tr)
         {
-          int left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
+          int left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
           if (left > lastrtime && left < rtime)
             {
               rtime = left;
@@ -1443,7 +1443,7 @@ static void u_qul(const userinput * const u)
       
       if (rtime < 359999)
         {
-          u_respond(u,"   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
+          u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
                     i,
                     pq->nick,
                     number_of_pack(pq->xpack),
@@ -1455,7 +1455,7 @@ static void u_qul(const userinput * const u)
         }
       else
         {
-          u_respond(u,"   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
+          u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
                     i,
                     pq->nick,
                     number_of_pack(pq->xpack),
@@ -1748,7 +1748,7 @@ static void u_send(const userinput * const u) {
    
    backup = gnetwork;
    gnetwork = &(gdata.networks[net]);
-   sendxdccfile(u->arg1,"man","man",num,NULL,NULL);
+   sendxdccfile(u->arg1, "man", "man", num, NULL, NULL);
    gnetwork = backup;
    
    }
@@ -2395,13 +2395,13 @@ static void u_rehash(const userinput * const u) {
    needtojump=0;
    if (gdata.local_vhost != gdata.r_local_vhost)
      {
-       u_respond(u,"vhost changed, reconnecting");
+       u_respond(u, "vhost changed, reconnecting");
        needtojump=1;
      }
    /* dopped networks */
    if (gdata.networks_online < gdata.r_networks_online)
      {
-       u_respond(u,"network dropped, reconnecting");
+       u_respond(u, "network dropped, reconnecting");
        needtojump=1;
        for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++)
          {
@@ -2508,7 +2508,7 @@ static void u_rehash(const userinput * const u) {
          }
        else
          {
-           outerror(OUTERROR_TYPE_WARN_LOUD,"could not add channel %s twice!", rch->name);
+           outerror(OUTERROR_TYPE_WARN_LOUD, "could not add channel %s twice!", rch->name);
            rch = irlist_delete(&(gnetwork->r_channels), rch);
          }
      }
@@ -2559,7 +2559,7 @@ static void u_rehash(const userinput * const u) {
            for (ss=0; ss<gdata.networks_online; ss++)
              {
 	        gnetwork = &(gdata.networks[ss]);
-                u_respond(u,"user_nick changed, renaming nick to %s", gdata.config_nick);
+                u_respond(u, "user_nick changed, renaming nick to %s", gdata.config_nick);
                 writeserver(WRITESERVER_NOW, "NICK %s", gdata.config_nick);
              }
            gnetwork = backup;
@@ -2613,7 +2613,7 @@ static void u_rehash(const userinput * const u) {
             || gdata.config_nick == NULL || gdata.user_realname == NULL
             || gdata.user_modes == NULL
             || gdata.slotsmax == 0)
-          u_respond(u,"**WARNING** missing vital information, fix and re-rehash ASAP");
+          u_respond(u, "**WARNING** missing vital information, fix and re-rehash ASAP");
      }
    
    if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2 ) )
@@ -2659,7 +2659,7 @@ static void u_botinfo(const userinput * const u) {
    
    u_respond(u,"BotInfo:");
    
-   u_respond(u,"iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s",
+   u_respond(u, "iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
 
@@ -2680,9 +2680,9 @@ static void u_botinfo(const userinput * const u) {
 
    for (ss=0; ss<gdata.networks_online; ss++)
      {
-       u_respond(u,"network: %d: %s", ss + 1, gdata.networks[ss].name);
+       u_respond(u, "network: %d: %s", ss + 1, gdata.networks[ss].name);
        
-       u_respond(u,"configured nick: %s, actual nick: %s, realname: %s, modes: %s",
+       u_respond(u, "configured nick: %s, actual nick: %s, realname: %s, modes: %s",
                  gdata.config_nick,
                  (gdata.networks[ss].user_nick ? gdata.networks[ss].user_nick : "??"),
                  gdata.user_realname,
@@ -2692,14 +2692,14 @@ static void u_botinfo(const userinput * const u) {
          {
          case how_direct:
              {
-                u_respond(u,"current server: %s:%u (direct)",
+                u_respond(u, "current server: %s:%u (direct)",
                           gdata.networks[ss].curserver.hostname,
                           gdata.networks[ss].curserver.port);
              }
            break;
          case how_ssl:
              {
-                u_respond(u,"current server: %s:%u (ssl)",
+                u_respond(u, "current server: %s:%u (ssl)",
                           gdata.networks[ss].curserver.hostname,
                           gdata.networks[ss].curserver.port);
              }
@@ -2707,7 +2707,7 @@ static void u_botinfo(const userinput * const u) {
          case how_bnc:
            if (gdata.networks[ss].connectionmethod.vhost)
              {
-               u_respond(u,"current server: %s:%u (bnc at %s:%i with %s)",
+               u_respond(u, "current server: %s:%u (bnc at %s:%i with %s)",
                          gdata.networks[ss].curserver.hostname,
                          gdata.networks[ss].curserver.port,
                          gdata.networks[ss].connectionmethod.host,
@@ -2716,7 +2716,7 @@ static void u_botinfo(const userinput * const u) {
              }
            else
              {
-               u_respond(u,"current server: %s:%u (bnc at %s:%i)",
+               u_respond(u, "current server: %s:%u (bnc at %s:%i)",
                          gdata.networks[ss].curserver.hostname,
                          gdata.networks[ss].curserver.port,
                          gdata.networks[ss].connectionmethod.host,
@@ -2724,14 +2724,14 @@ static void u_botinfo(const userinput * const u) {
              }
            break;
          case how_wingate:
-           u_respond(u,"current server: %s:%u (wingate at %s:%i)",
+           u_respond(u, "current server: %s:%u (wingate at %s:%i)",
                      gdata.networks[ss].curserver.hostname,
                      gdata.networks[ss].curserver.port,
                      gdata.networks[ss].connectionmethod.host,
                      gdata.networks[ss].connectionmethod.port);
            break;
          case how_custom:
-           u_respond(u,"current server: %s:%u (custom at %s:%i)",
+           u_respond(u, "current server: %s:%u (custom at %s:%i)",
                      gdata.networks[ss].curserver.hostname,
                      gdata.networks[ss].curserver.port,
                      gdata.networks[ss].connectionmethod.host,
@@ -2739,7 +2739,7 @@ static void u_botinfo(const userinput * const u) {
            break;
          }
        
-       u_respond(u,"current server actual name: %s ",
+       u_respond(u, "current server actual name: %s ",
                  gdata.networks[ss].curserveractualname ? gdata.networks[ss].curserveractualname : "<unknown>");
        
        ch = irlist_get_head(&gdata.networks[ss].channels);
@@ -2767,7 +2767,7 @@ static void u_botinfo(const userinput * const u) {
                         ch->flags & CHAN_MINIMAL ? "minimal" : (ch->flags & CHAN_SUMMARY ? "summary" : "full"));
              }
            
-           u_respond(u,"%s",tempstr);
+           u_respond(u, "%s", tempstr);
            
            ch = irlist_get_next(ch);
          }
@@ -3547,7 +3547,7 @@ static void u_trinfo(const userinput * const u)
             lcontact < 3600 ? lcontact%60 : (lcontact/60)%60 ,
             lcontact < 3600 ? 's' : 'm');
   
-  u_respond(u,"Local: %s, Remote: %s",
+  u_respond(u, "Local: %s, Remote: %s",
             tr->localaddr, tr->remoteaddr);
   
   u_respond(u,"Sockets: Listen %i, Transfer %i, File %i",
@@ -3592,7 +3592,7 @@ void u_listdir(const userinput * const u, const char *dir)
   
   if (!d)
     {
-      u_respond(u,"Can't Access Directory: %s",strerror(errno));
+      u_respond(u, "Can't Access Directory: %s", strerror(errno));
       return;
     }
   
@@ -3615,7 +3615,7 @@ void u_listdir(const userinput * const u, const char *dir)
     }
   else
     {
-      u_respond(u,"Listing '%s':", dir);
+      u_respond(u, "Listing '%s':", dir);
       
       thefile = irlist_get_head(&dirlist);
       while (thefile)
@@ -3727,7 +3727,7 @@ static void u_listul(const userinput * const u)
   
   if (!irlist_size(&gdata.uploadhost) || !gdata.uploaddir)
     {
-      u_respond(u,"No upload hosts or no uploaddir defined.");
+      u_respond(u, "No upload hosts or no uploaddir defined.");
       return;
     }
   

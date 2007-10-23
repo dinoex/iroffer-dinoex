@@ -4,7 +4,7 @@
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
- * available in the README file.
+ * available in the LICENSE file.
  *
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.dinoex.net/
@@ -179,7 +179,7 @@ static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
   size_t len;
   int i;
   char ch;
- 
+
   max--;
   max--;
   for (;;) {
@@ -471,15 +471,15 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   updatecontext();
 
   if (errno1) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "HTTP: Connection closed: %s (%s)", msg, strerror(errno1));
   } else {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "HTTP: Connection closed: %s", msg);
   }
 
   if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S,COLOR_YELLOW, "clientsock = %d", h->clientsocket);
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", h->clientsocket);
   }
 
   if (h->clientsocket != FD_UNUSED && h->clientsocket > 2) {
@@ -996,7 +996,7 @@ static int h_html_index(http * const h)
   h_respond(h, "<td>%d</td>\n", slots);
   h_respond(h, "</tr>\n");
 
-  for (i=0,xdccsent=0; i<XDCC_SENT_SIZE; i++) {
+  for (i=0, xdccsent=0; i<XDCC_SENT_SIZE; i++) {
     xdccsent += (ir_uint64)gdata.xdccsent[i];
   }
   tempstr = mycalloc(maxtextlength);
@@ -1089,7 +1089,7 @@ static void h_get(http * const h)
 {
   char *data;
   char *url;
-  char *auth;
+  const char *auth;
   char *end;
   char *tempstr;
   char *passwd;
@@ -1238,7 +1238,7 @@ static void h_send(http * const h)
       if (h->filepos != h->bytessent) {
         offset = lseek(h->filedescriptor, h->bytessent, SEEK_SET);
         if (offset != h->bytessent) {
-          outerror(OUTERROR_TYPE_WARN,"Can't seek location in file '%s': %s",
+          outerror(OUTERROR_TYPE_WARN, "Can't seek location in file '%s': %s",
                    h->file, strerror(errno));
           h_closeconn(h, "Unable to locate data in file", errno);
           return;

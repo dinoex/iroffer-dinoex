@@ -1,16 +1,16 @@
 /*
  * by Dirk Meyer (dinoex)
  * Copyright (C) 2004-2007 Dirk Meyer
- * 
+ *
  * By using this file, you agree to the terms and conditions set
- * forth in the GNU General Public License.  More information is    
- * available in the README file.
- * 
+ * forth in the GNU General Public License.  More information is
+ * available in the LICENSE file.
+ *
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.dinoex.net/
- * 
+ *
  * $Id$
- * 
+ *
  */
 
 /* include the headers */
@@ -40,7 +40,7 @@ int verifyshell(irlist_t *list, const char *file)
   pattern = irlist_get_head(list);
   while (pattern)
     {
-    if (fnmatch(pattern,file,FNM_CASEFOLD) == 0)
+    if (fnmatch(pattern, file, FNM_CASEFOLD) == 0)
       {
         return 1;
       }
@@ -107,9 +107,9 @@ int number_of_pack(xdcc *pack)
 {
   xdcc *xd;
   int n;
-  
+
   updatecontext();
-  
+
   n = 0;
   xd = irlist_get_head(&gdata.xdccs);
   while(xd)
@@ -120,7 +120,7 @@ int number_of_pack(xdcc *pack)
 
       xd = irlist_get_next(xd);
     }
-  
+
   return 0;
 }
 
@@ -140,7 +140,7 @@ int verifypass2(const char *masterpass, const char *testpass)
     return 0;
 
   pwout = crypt(testpass, masterpass);
-  if (strcmp(pwout,masterpass)) return 0;
+  if (strcmp(pwout, masterpass)) return 0;
 #else
   if (!masterpass || !testpass)
     return 0;
@@ -181,7 +181,7 @@ char *clean_quotes(char *str)
   char *src;
   char *dest;
   int len;
- 
+
   if (str[0] != '"')
     return str;
 
@@ -207,7 +207,7 @@ char *to_hostmask(const char *nick, const char *hostname)
   snprintf(hostmask, len, "%s!*@%s", nick, hostname);
   return hostmask;
 }
- 
+
 const char *get_basename(const char *pathname)
 {
   const char *work;

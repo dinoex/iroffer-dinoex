@@ -1,16 +1,16 @@
 /*
  * by Dirk Meyer (dinoex)
  * Copyright (C) 2004-2007 Dirk Meyer
- * 
+ *
  * By using this file, you agree to the terms and conditions set
- * forth in the GNU General Public License.  More information is    
- * available in the README file.
- * 
+ * forth in the GNU General Public License.  More information is
+ * available in the LICENSE file.
+ *
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.dinoex.net/
- * 
+ *
  * $Id$
- * 
+ *
  */
 
 /* include the headers */
@@ -195,12 +195,12 @@ static void config_sorted_bool(void)
 }
 
 static int config_find_bool(const char *key)
-{ 
+{
   int how_far;
   int bin_mid;
   int bin_low;
   int bin_high;
-  
+
   if (config_bool_anzahl > 0L) {
     bin_low = 0;
     bin_high = config_bool_anzahl - 1;
@@ -423,12 +423,12 @@ static void config_sorted_list(void)
 }
 
 static int config_find_list(const char *key)
-{ 
+{
   int how_far;
   int bin_mid;
   int bin_low;
   int bin_high;
-  
+
   if (config_list_anzahl > 0L) {
     bin_low = 0;
     bin_high = config_list_anzahl - 1;
@@ -476,7 +476,7 @@ int set_config_list(const char *key, char *text)
          break;
        }
      }
-     if ((j<0) || (!strchr(text,'@'))) {
+     if ((j<0) || (!strchr(text, '@'))) {
        outerror(OUTERROR_TYPE_WARN,
                 "ignored %s '%s' because it's way too vague",
                 config_parse_list[i].name, text);

@@ -1,16 +1,16 @@
 /*
  * by Dirk Meyer (dinoex)
  * Copyright (C) 2004-2007 Dirk Meyer
- * 
+ *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
- * available in the README file.
- * 
+ * available in the LICENSE file.
+ *
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.dinoex.net/
- * 
+ *
  * $Id$
- * 
+ *
  */
 
 /* include the headers */
@@ -50,8 +50,8 @@ static void admin_line(int fd, const char *line) {
    uxdl = mycalloc(sizeof(userinput));
    full = mycalloc(maxtextlength);
 
-   snprintf(full,maxtextlength -1,"A A A A A %s", line);
-   u_fillwith_msg(uxdl,NULL,full);
+   snprintf(full, maxtextlength -1, "A A A A A %s", line);
+   u_fillwith_msg(uxdl, NULL, full);
    uxdl->method = method_fd;
    uxdl->fd = fd;
    uxdl->net = 0;
@@ -72,8 +72,8 @@ static void admin_run(const char *cmd) {
       return;
 
    done = mycalloc(strlen(job)+6);
-   strcpy(done,job);
-   strcat(done,".done");
+   strcpy(done, job);
+   strcat(done, ".done");
    fd = open(done,
              O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
              CREAT_PERMISSIONS);
@@ -171,12 +171,12 @@ void update_natip (const char *var)
       hp = gethostbyname(var);
       if (hp == NULL)
         {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid NAT Host, Ignoring: %s",hstrerror(h_errno));
+          outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid NAT Host, Ignoring: %s", hstrerror(h_errno));
           return;
         }
       if ((unsigned)hp->h_length > sizeof(in) || hp->h_length < 0)
         {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid DNS response, Ignoring: %s",hstrerror(h_errno));
+          outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid DNS response, Ignoring: %s", hstrerror(h_errno));
           return;
         }
       memcpy(&in, hp->h_addr_list[0], sizeof(in));
@@ -191,19 +191,19 @@ void update_natip (const char *var)
   if (oldip != 0 )
     {
       oldtxt = mystrdup(inet_ntoa(old));
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
       mydelete(oldtxt);
     }
 
-  if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ip=0x%8.8lX\n",gdata.ourip);
+  if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "ip=0x%8.8lX\n", gdata.ourip);
 
   /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
   if (((gdata.ourip & 0xFF000000UL) == 0x0A000000UL) ||
       ((gdata.ourip & 0xFFF00000UL) == 0xAC100000UL) ||
       ((gdata.ourip & 0xFFFF0000UL) == 0xC0A80000UL))
     {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"usenatip of %lu.%lu.%lu.%lu looks wrong, this is probably not what you want to do",
+      outerror(OUTERROR_TYPE_WARN_LOUD, "usenatip of %lu.%lu.%lu.%lu looks wrong, this is probably not what you want to do",
                 (gdata.ourip >> 24) & 0xFF,
                 (gdata.ourip >> 16) & 0xFF,
                 (gdata.ourip >>  8) & 0xFF,
@@ -227,11 +227,11 @@ void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
   if (!ch) return;
   if (!ch->name) return;
 
-  len = vsnprintf(tempstr,maxtextlength,format,ap);
+  len = vsnprintf(tempstr, maxtextlength, format, ap);
 
   if ((len < 0) || (len >= maxtextlength))
     {
-      outerror(OUTERROR_TYPE_WARN,"PRVMSG-CHAN: Output too large, ignoring!");
+      outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
       return;
     }
 
@@ -258,11 +258,11 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
 
   msg = mycalloc(maxtextlength+1);
 
-  len = vsnprintf(msg,maxtextlength,format,ap);
+  len = vsnprintf(msg, maxtextlength, format, ap);
 
   if ((len < 0) || (len >= maxtextlength))
     {
-      outerror(OUTERROR_TYPE_WARN,"WRITESERVER: Output too large, ignoring!");
+      outerror(OUTERROR_TYPE_WARN, "WRITESERVER: Output too large, ignoring!");
       mydelete(msg);
       return;
     }
@@ -275,12 +275,12 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
 
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<QUES<: %s",msg);
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
     }
 
   if (len > EXCESS_BUCKET_MAX)
     {
-      outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
+      outerror(OUTERROR_TYPE_WARN, "Message Truncated!");
       msg[EXCESS_BUCKET_MAX] = '\0';
       len = EXCESS_BUCKET_MAX;
     }
@@ -294,7 +294,7 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
     }
   else
     {
-      outerror(OUTERROR_TYPE_WARN,"Server queue is very large. Dropping additional output.");
+      outerror(OUTERROR_TYPE_WARN, "Server queue is very large. Dropping additional output.");
     }
 
   mydelete(msg);
@@ -344,7 +344,7 @@ void stoplist(const char *nick)
   item = irlist_get_head(&(gnetwork->xlistqueue));
   while (item)
     {
-      if (strcasecmp(item,nick) == 0)
+      if (strcasecmp(item, nick) == 0)
         {
            stopped ++;
            item = irlist_delete(&(gnetwork->xlistqueue), item);
@@ -366,9 +366,9 @@ void stoplist(const char *nick)
           if (end != NULL)
             {
               *(end++) = 0;
-              if (strcasecmp(inick,nick) == 0)
+              if (strcasecmp(inick, nick) == 0)
                 {
-                   if ( (strcmp(copy,"PRIVMSG") == 0) || (strcmp(copy,"NOTICE") == 0) )
+                   if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) )
                      {
                        stopped ++;
                        mydelete(copy);
@@ -381,7 +381,7 @@ void stoplist(const char *nick)
       mydelete(copy);
       item = irlist_get_next(item);
     }
-  ioutput(CALLTYPE_MULTI_END,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (stopped %d)", stopped);
+  ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (stopped %d)", stopped);
 }
 
 static float guess_maxspeed(xdcc *xd)
@@ -531,7 +531,7 @@ void notifyqueued_nick(const char *nick)
       gnetwork = &(gdata.networks[pq->net]);
     }
 
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
             "Notifying Queued status to %s",
             pq->nick);
     notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
@@ -563,8 +563,8 @@ int check_for_file_remove(int n)
 
   pubplist = mycalloc(sizeof(userinput));
   tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr,maxtextlength-1,"remove %d", n);
-  u_fillwith_console(pubplist,tempstr);
+  snprintf(tempstr, maxtextlength-1, "remove %d", n);
+  u_fillwith_console(pubplist, tempstr);
   u_parseit(pubplist);
   mydelete(pubplist);
   mydelete(tempstr);
@@ -672,7 +672,7 @@ void reset_download_limits(void)
       if (xd->dlimit_max != 0)
         {
           new = xd->gets + xd->dlimit_max;
-          ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                   "Resetting download limit of pack %d, used %d",
                   num, new - xd->dlimit_used);
           xd->dlimit_used = new;
@@ -755,7 +755,7 @@ void check_new_connection(transfer *const tr)
                   country = "error";
                snprintf(msg, maxtextlength - 1, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
                t_closeconn(tr, msg, 0);
-               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                         "IP from other country (%s) detected", country);
                mydelete(msg);
                return;
@@ -789,7 +789,7 @@ void check_duplicateip(transfer *const newtr)
       if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
          (tr->remoteip == newtr->remoteip))
         {
-          if (strcmp(tr->hostname,"man"))
+          if (strcmp(tr->hostname, "man"))
             found ++;
         }
       tr = irlist_get_next(tr);
@@ -804,14 +804,14 @@ void check_duplicateip(transfer *const newtr)
       if ((tr->tr_status == TRANSFER_STATUS_SENDING) &&
          (tr->remoteip == newtr->remoteip))
         {
-          if (strcmp(tr->hostname,"man"))
+          if (strcmp(tr->hostname, "man"))
             {
               t_closeconn(tr, "You are being punished for pararell downloads", 0);
               bhostmask = to_hostmask( "*", tr->hostname);
               ignore = irlist_get_head(&gdata.ignorelist);
               while(ignore)
                 {
-                  if (ignore->regexp && !regexec(ignore->regexp,bhostmask,0,NULL,0))
+                  if (ignore->regexp && !regexec(ignore->regexp, bhostmask, 0, NULL, 0))
                     {
                       break;
                     }
@@ -828,7 +828,7 @@ void check_duplicateip(transfer *const newtr)
                   ignore->hostmask = mystrdup(bhostmask);
 
                   tempstr = hostmasktoregex(bhostmask);
-                  if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
+                  if (regcomp(ignore->regexp, tempstr, REG_ICASE|REG_NOSUB))
                     {
                       ignore->regexp = NULL;
                     }
@@ -842,9 +842,9 @@ void check_duplicateip(transfer *const newtr)
               ignore->flags |= IGN_MANUAL;
               ignore->bucket = (num*60)/gdata.autoignore_threshold;
 
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                       "same IP detected, Ignore activated for %s which will last %i min",
-                      bhostmask,num);
+                      bhostmask, num);
               mydelete(bhostmask);
             }
         }
@@ -883,13 +883,13 @@ void startup_dinoex(void)
   cs = curl_global_init(CURL_GLOBAL_ALL);
   if (cs != 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
               "curl_global_init failed with %d", cs);
     }
   cm = curl_multi_init();
   if (cm == NULL)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
               "curl_multi_init failed");
     }
 #endif /* USE_CURL */
@@ -956,7 +956,7 @@ static int send_statefile(void)
   if (xfiledescriptor < 0)
     return 1;
 
-  if (fstat(xfiledescriptor,&st) < 0)
+  if (fstat(xfiledescriptor, &st) < 0)
     {
       close(xfiledescriptor);
       return 1;
@@ -968,7 +968,7 @@ static int send_statefile(void)
   xd->mtime    = st.st_mtime;
   close(xfiledescriptor);
 
-  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "Send: %s to %s bytes=%" LLPRINTFMT "u",
           gdata.statefile, nick, (unsigned long long)xd->st_size);
   xd->file_fd_count++;
@@ -1156,7 +1156,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
    }
 
    newcrc = mycalloc(10);
-   snprintf(newcrc,10,"%.8lX", xd->crc32);
+   snprintf(newcrc, 10, "%.8lX", xd->crc32);
    line = mycalloc(strlen(xd->file)+1);
 
    /* ignore path */
@@ -1176,8 +1176,8 @@ const char *validate_crc32(xdcc *xd, int quiet)
        x = "CRC32 verified OK";
      /* unlock pack */
      if ((quiet == 2) && (xd->lock != NULL)) {
-       if (strcmp(xd->lock,badcrc) == 0) {
-         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"unlock Pack %d, File %s",
+       if (strcmp(xd->lock, badcrc) == 0) {
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "unlock Pack %d, File %s",
                  number_of_pack(xd), line);
          mydelete(xd->lock);
          xd->lock = NULL;
@@ -1189,10 +1189,10 @@ const char *validate_crc32(xdcc *xd, int quiet)
      regexp = mycalloc(sizeof(regex_t));
      if (!regcomp(regexp, "[0-9A-F]{8,}", REG_EXTENDED | REG_ICASE | REG_NOSUB)) {
        if (!regexec(regexp, line, 0, NULL, 0)) {
-         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"crc expected %s, failed %s", newcrc, line);
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
          x = "CRC32 failed";
          if (quiet == 2) {
-           ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"lock Pack %d, File %s",
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %d, File %s",
                    number_of_pack(xd), line);
            xd->lock = mystrdup(badcrc);
          }
@@ -1217,15 +1217,15 @@ void autoadd_scan(const char *dir, const char *group)
    updatecontext();
 
    gnetwork = &(gdata.networks[net]);
-   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"autoadd scan %s", dir);
+   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
    line = mycalloc(maxtextlength);
    if (group != NULL)
-     snprintf(line,maxtextlength -1,"A A A A A ADDGROUP %s %s", group, dir);
+     snprintf(line, maxtextlength -1, "A A A A A ADDGROUP %s %s", group, dir);
    else
-     snprintf(line,maxtextlength -1,"A A A A A ADDNEW %s", dir);
+     snprintf(line, maxtextlength -1, "A A A A A ADDNEW %s", dir);
 
    uxdl = mycalloc(sizeof(userinput));
-   u_fillwith_msg(uxdl,NULL,line);
+   u_fillwith_msg(uxdl, NULL, line);
    uxdl->method = method_out_all;
    uxdl->net = 0;
    uxdl->level = ADMIN_LEVEL_AUTO;
@@ -1302,7 +1302,7 @@ void fetch_cancel(int num)
           ft = irlist_get_next(ft);
           continue;
         }
-      a_respond(&(ft->u),"fetch %s canceled", ft->name);
+      a_respond(&(ft->u), "fetch %s canceled", ft->name);
       curl_multi_remove_handle(cm, ft->curlhandle);
       curl_easy_cleanup(ft->curlhandle);
       fetch_started --;
@@ -1343,14 +1343,14 @@ void fetch_perform(void)
            {
              gnetwork = &(gdata.networks[ft->net]);
              if (ft->errorbuf[0] != 0)
-               outerror(OUTERROR_TYPE_WARN_LOUD,"fetch: %s",ft->errorbuf);
+               outerror(OUTERROR_TYPE_WARN_LOUD, "fetch: %s", ft->errorbuf);
              if (msg->data.result != 0 )
                {
-                 a_respond(&(ft->u),"fetch %s failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
+                 a_respond(&(ft->u), "fetch %s failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
                }
               else
                {
-                 a_respond(&(ft->u),"fetch %s completed", ft->name);
+                 a_respond(&(ft->u), "fetch %s completed", ft->name);
                }
              updatecontext();
              curl_easy_cleanup(ft->curlhandle);
@@ -1364,7 +1364,7 @@ void fetch_perform(void)
   } while (msgs_in_queue > 0);
   updatecontext();
   if (seen == 0)
-    outerror(OUTERROR_TYPE_WARN_LOUD,"curlhandle not found ");
+    outerror(OUTERROR_TYPE_WARN_LOUD, "curlhandle not found ");
   gnetwork = backup;
 }
 
@@ -1394,9 +1394,9 @@ void start_fetch_url(const userinput *const u)
       retval = stat(fullfile, &s);
       if (retval < 0)
         {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Cant Stat Upload File '%s': %s",
-                   fullfile,strerror(errno));
-          a_respond(u,"File Error, File couldn't be opened for writing");
+          outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Stat Upload File '%s': %s",
+                   fullfile, strerror(errno));
+          a_respond(u, "File Error, File couldn't be opened for writing");
           mydelete(fullfile);
           return;
         }
@@ -1405,9 +1405,9 @@ void start_fetch_url(const userinput *const u)
     }
   if (writefd == NULL)
     {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Cant Access Upload File '%s': %s",
-               fullfile,strerror(errno));
-      a_respond(u,"File Error, File couldn't be opened for writing");
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access Upload File '%s': %s",
+               fullfile, strerror(errno));
+      a_respond(u, "File Error, File couldn't be opened for writing");
       mydelete(fullfile);
       return;
     }
@@ -1433,7 +1433,7 @@ void start_fetch_url(const userinput *const u)
   ch = curl_easy_init();
   if (ch == NULL)
     {
-      a_respond(u,"Curl not ready");
+      a_respond(u, "Curl not ready");
       clean_fetch(ft);
       return;
     }
@@ -1443,7 +1443,7 @@ void start_fetch_url(const userinput *const u)
   ces = curl_easy_setopt(ch, CURLOPT_ERRORBUFFER, ft->errorbuf);
   if (ces != 0)
     {
-      a_respond(u,"curl_easy_setopt ERRORBUFFER failed with %d", ces);
+      a_respond(u, "curl_easy_setopt ERRORBUFFER failed with %d", ces);
       clean_fetch(ft);
       return;
     }
@@ -1454,7 +1454,7 @@ void start_fetch_url(const userinput *const u)
       char *vhosttext;
 
       ft->vhosttext = mycalloc(40);
-      snprintf(ft->vhosttext,40,"%ld.%ld.%ld.%ld",
+      snprintf(ft->vhosttext, 40, "%ld.%ld.%ld.%ld",
                gdata.local_vhost>>24,
                (gdata.local_vhost>>16) & 0xFF,
                (gdata.local_vhost>>8) & 0xFF,
@@ -1462,7 +1462,7 @@ void start_fetch_url(const userinput *const u)
       ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
       if (ces != 0)
         {
-          a_respond(u,"curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
+          a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
           clean_fetch(ft);
           return;
         }
@@ -1472,42 +1472,42 @@ void start_fetch_url(const userinput *const u)
   ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
   if (ces != 0)
     {
-      a_respond(u,"curl_easy_setopt NOPROGRESS failed with %d", ces);
+      a_respond(u, "curl_easy_setopt NOPROGRESS failed with %d", ces);
       return;
     }
 
   ces = curl_easy_setopt(ch, CURLOPT_NOSIGNAL, 1);
   if (ces != 0)
     {
-      a_respond(u,"curl_easy_setopt NOSIGNAL failed with %d", ces);
+      a_respond(u, "curl_easy_setopt NOSIGNAL failed with %d", ces);
       return;
     }
 
   ces = curl_easy_setopt(ch, CURLOPT_FAILONERROR, 1);
   if (ces != 0)
     {
-      a_respond(u,"curl_easy_setopt FAILONERROR failed with %d", ces);
+      a_respond(u, "curl_easy_setopt FAILONERROR failed with %d", ces);
       return;
     }
 
   ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
   if (ces != 0)
     {
-      a_respond(u,"curl_easy_setopt SSL_VERIFYPEER failed with %d", ces);
+      a_respond(u, "curl_easy_setopt SSL_VERIFYPEER failed with %d", ces);
       return;
     }
 
   ces = curl_easy_setopt(ch, CURLOPT_URL, ft->url);
   if (ces != 0)
     {
-      a_respond(u,"curl_easy_setopt URL failed with %d", ces);
+      a_respond(u, "curl_easy_setopt URL failed with %d", ces);
       return;
     }
 
   ces = curl_easy_setopt(ch, CURLOPT_WRITEDATA, ft->writefd);
   if (ces != 0)
     {
-      a_respond(u,"curl_easy_setopt WRITEDATA failed with %d", ces);
+      a_respond(u, "curl_easy_setopt WRITEDATA failed with %d", ces);
       return;
     }
 
@@ -1516,7 +1516,7 @@ void start_fetch_url(const userinput *const u)
       ces = curl_easy_setopt(ch, CURLOPT_RESUME_FROM_LARGE, ft->resumesize);
       if (ces != 0)
         {
-          a_respond(u,"curl_easy_setopt RESUME_FROM failed with %d", ces);
+          a_respond(u, "curl_easy_setopt RESUME_FROM failed with %d", ces);
           return;
         }
     }
@@ -1524,11 +1524,11 @@ void start_fetch_url(const userinput *const u)
   cms = curl_multi_add_handle(cm, ch);
   if (cms != 0)
     {
-      a_respond(u,"curl_multi_add_handle failed with %d", cms);
+      a_respond(u, "curl_multi_add_handle failed with %d", cms);
       return;
     }
 
-    a_respond(u,"fetch %s started", ft->name);
+    a_respond(u, "fetch %s started", ft->name);
     fetch_started ++;
 }
 
@@ -1553,7 +1553,7 @@ void dinoex_dcl(const userinput *const u)
 
       progress = 0;
       progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
-      a_respond(u,"   %2i  fetch       %-32s   Receiving %d%%", i, ft->name, progress);
+      a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", i, ft->name, progress);
       ft = irlist_get_next(ft);
     }
 }
@@ -1591,9 +1591,9 @@ void dinoex_dcld(const userinput *const u)
       left = min2(359999, (dl_total - dl_size) /
                           ((int)(max2(dl_speed, 1))));
       progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
-      a_respond(u,"   %2i  fetch       %-32s   Receiving %d%%", i, ft->name, progress);
-      a_respond(u,"                   %s", ft->url);
-      a_respond(u,"  ^- %5.1fK/s    %6" LLPRINTFMT "iK/%6" LLPRINTFMT "iK  %2i%c%02i%c/%2i%c%02i%c",
+      a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", i, ft->name, progress);
+      a_respond(u, "                   %s", ft->url);
+      a_respond(u, "  ^- %5.1fK/s    %6" LLPRINTFMT "iK/%6" LLPRINTFMT "iK  %2i%c%02i%c/%2i%c%02i%c",
                   (float)(dl_speed/1024),
                   (long long)(dl_size/1024),
                   (long long)(dl_total/1024),
@@ -1668,7 +1668,7 @@ int get_network(const char *arg1)
     {
       if (gdata.networks[net].name == NULL)
         continue;
-      if (strcasecmp(gdata.networks[net].name,arg1) == 0)
+      if (strcasecmp(gdata.networks[net].name, arg1) == 0)
         return net;
     }
 
@@ -1717,7 +1717,7 @@ int disk_full(const char *path)
 #ifndef NO_STATVFS
   if (statvfs(path, &stf) < 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "Unable to determine device sizes: %s",
               strerror(errno));
     }
@@ -1729,7 +1729,7 @@ int disk_full(const char *path)
 #ifndef NO_STATFS
   if (statfs(dpath, &stf) < 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "Unable to determine device sizes: %s",
               strerror(errno));
     }
@@ -1741,7 +1741,7 @@ int disk_full(const char *path)
 #endif
 
   if (gdata.debug > 0)
-    ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
            "disk_free= %" LLPRINTFMT "d, required= %" LLPRINTFMT "d",
            (long long)freebytes, (long long)gdata.uploadminspace);
 
@@ -1794,7 +1794,7 @@ void changesec_dinoex(void)
   u = irlist_get_head(&gdata.packs_delayed);
   while (u)
     {
-      if (strcmp(u->cmd,"REMOVE") == 0)
+      if (strcmp(u->cmd, "REMOVE") == 0)
         {
           a_remove_delayed(u);
           mydelete(u->cmd);
@@ -1804,7 +1804,7 @@ void changesec_dinoex(void)
           /* process only one file */
           return;
         }
-      if (strcmp(u->cmd,"ADD") == 0)
+      if (strcmp(u->cmd, "ADD") == 0)
         {
           a_add_delayed(u);
           mydelete(u->cmd);
@@ -1891,7 +1891,7 @@ static const char *find_groupdesc(const char *group)
     {
       if (xd->group != NULL)
         {
-          if (strcasecmp(xd->group,group) == 0)
+          if (strcasecmp(xd->group, group) == 0)
             {
               return xd->group_desc;
             }
@@ -2033,7 +2033,7 @@ void start_md5_hash(xdcc *xd, int packnum)
 {
   if (!gdata.attop) { gototop(); }
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-          "[MD5]: Calculating pack %d",packnum);
+          "[MD5]: Calculating pack %d", packnum);
 
   gdata.md5build.file_fd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (gdata.md5build.file_fd >= 0) {
@@ -2267,7 +2267,7 @@ char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc
     return NULL;
 
   if (inq >= gdata.maxidlequeuedperperson) {
-    ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (user/idle): ");
+    ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (user/idle): ");
     snprintf(tempstr, maxtextlength,
              "Denied, You already have %i items queued, Try Again Later",
              inq);
@@ -2366,7 +2366,7 @@ void check_idle_queue(void)
   irlist_delete(&gdata.idlequeue, pq);
 
   if (irlist_size(&gdata.mainqueue) &&
-      (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax))) {
+      (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax))) {
     sendaqueue(0, 0, NULL);
   }
 }
@@ -2481,7 +2481,7 @@ int l_setup_file(upload * const l, struct stat *stp)
       return 1;
     }
     if (!S_ISREG(stp->st_mode) || (stp->st_size >= l->totalsize)) {
-      l_closeconn(l,"File Error, That filename already exists",0);
+      l_closeconn(l, "File Error, That filename already exists", 0);
       mydelete(fullfile);
       return 1;
     }
@@ -2782,7 +2782,7 @@ int connectirc2(res_addrinfo_t *remote)
   remoteaddr = (struct sockaddr_in *)(&(remote->ai_addr));
   gnetwork->ircserver = socket(family, remote->ai_socktype, remote->ai_protocol);
   if (gnetwork->ircserver < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,"Socket Error");
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Socket Error");
     return 1;
   }
 
@@ -2801,14 +2801,14 @@ int connectirc2(res_addrinfo_t *remote)
     localaddr.sin_addr.s_addr = htonl(gdata.local_vhost);
 
     if (bind(gnetwork->ircserver, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0) {
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Bind To Virtual Host");
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Bind To Virtual Host");
       close(gnetwork->ircserver);
       return 1;
     }
   }
 
-  if (set_socket_nonblocking(gnetwork->ircserver,1) < 0 )
-    outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
+  if (set_socket_nonblocking(gnetwork->ircserver, 1) < 0 )
+    outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
 
   alarm(CTIMEOUT);
   retval = connect(gnetwork->ircserver, &(remote->ai_addr), remote->ai_addrlen);
@@ -2821,7 +2821,7 @@ int connectirc2(res_addrinfo_t *remote)
   alarm(0);
 
   if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ircserver socket = %d",gnetwork->ircserver);
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "ircserver socket = %d", gnetwork->ircserver);
   }
 
   gnetwork->lastservercontact=gdata.curtime;
@@ -2976,10 +2976,10 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
     return 0;
 
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
-    ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
             "resume trying %i: %s == %s, %s == %s, %i == %i\n",
             tr->tr_status,
-            tr->caps_nick,nick,
+            tr->caps_nick, nick,
             tr->xpack->file,
             filename,
             tr->listenport,
@@ -3015,7 +3015,7 @@ void t_connected(transfer *tr)
     FD_CLR(tr->clientsocket, &gdata.writeset);
     tr->connecttime = gdata.curtime;
     if (set_socket_nonblocking(tr->clientsocket, 0) < 0 ) {
-      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
+      outerror(OUTERROR_TYPE_WARN, "Couldn't Set Blocking");
     }
   }
 
@@ -3386,7 +3386,7 @@ void exit_iroffer(void)
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_file  = %s", mi->src_file);
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_line  = %d", mi->src_line);
       for(i=0; i<(12*12); i+=12) {
-        outerror(OUTERROR_TYPE_WARN_LOUD," : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\"",
+        outerror(OUTERROR_TYPE_WARN_LOUD, " : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\"",
                ut[i+0], ut[i+1], ut[i+2], ut[i+3], ut[i+4], ut[i+5], ut[i+6], ut[i+7], ut[i+8], ut[i+9], ut[i+10], ut[i+11],
                onlyprintable(ut[i+0]), onlyprintable(ut[i+1]),
                onlyprintable(ut[i+2]), onlyprintable(ut[i+3]),
