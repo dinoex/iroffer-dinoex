@@ -3311,6 +3311,49 @@ void a_autoadd(const userinput * const u)
    a_respond(u, "AUTOADD done.");
 }
 
+void a_autogroup(const userinput * const u)
+{
+  char *tempstr;
+  char *new;
+  xdcc *xd;
+  int num;
+
+  num = 0;
+  for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd)) {
+    num ++;
+    if (xd->group != NULL)
+      continue;
+
+    tempstr = mystrdup(xd->file);
+    new = strrchr(tempstr, '/');
+    if (new == NULL) {
+      mydelete(tempstr);
+      continue;
+    }
+
+    *new = 0;
+    new = strrchr(tempstr, '/');
+    if (new == NULL) {
+      mydelete(tempstr);
+      continue;
+    }
+
+    new ++;
+    if (strlen(new) == 0) {
+      mydelete(tempstr);
+      continue;
+    }
+
+    if (gdata.groupsincaps)
+      caps(new);
+
+    a_set_group(u, xd, num, new);
+    mydelete(tempstr);
+  }
+  write_statefile();
+  xdccsavetext();
+}
+
 /* this function imported from iroffer-lamm */
 void a_queue(const userinput * const u)
 {

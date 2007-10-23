@@ -114,6 +114,7 @@ void a_holdqueue(const userinput * const u);
 void a_dump(const userinput * const u);
 void a_backgroud(const userinput * const u);
 void a_autoadd(const userinput * const u);
+void a_autogroup(const userinput * const u);
 
 void a_queue(const userinput * const u);
 void a_iqueue(const userinput * const u);

@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+179) AUTOGROUP
+  new admin command:
+  AUTOGROUP                       Create a group for each directory with packs
+
 178) passive_dcc
   support passive DCC SEND and RESUME for downloads
 
