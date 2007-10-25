@@ -2745,7 +2745,10 @@ static void privmsgparse(const char* type, char* line) {
                     {
                       t_setresume(tr,msg5);
                       if (tr->tr_status == TRANSFER_STATUS_RESUME)
-                        privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", msg3, msg4, msg5, msg6);
+                        {
+                          if (msg6[strlen(msg6)-1] == '\1') msg6[strlen(msg6)-1] = '\0';
+                          privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", msg3, msg4, msg5, msg6);
+                        }
                       else
                         privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", msg3, msg4, msg5);
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
