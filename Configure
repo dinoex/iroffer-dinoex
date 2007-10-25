@@ -1095,7 +1095,7 @@ echo "
 int main (int argc, char **argv) {
   int fd = 0;
   int tempc = 0x8; /* IPTOS_THROUGHPUT */
-  setsockopt(fd, SOL_IP, IP_TOS, &tempc, sizeof(int));
+  setsockopt(fd, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
   exit(0);
 }
 " > config.temp.c
