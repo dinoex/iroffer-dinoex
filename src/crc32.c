@@ -16,12 +16,12 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
 
+#include "iroffer_config.h"
+
 #include <sys/types.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "iroffer_config.h"
 
 #define BUFFERSIZE 16384   /* (16k) buffer size for reading from the file */
 
