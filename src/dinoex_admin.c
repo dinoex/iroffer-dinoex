@@ -708,9 +708,7 @@ void a_add_delayed(const userinput * const u)
 {
    userinput u2;
    xdcc *xd;
-   int newgroup;
    int num;
-   int rc;
 
    updatecontext();
 
@@ -718,38 +716,16 @@ void a_add_delayed(const userinput * const u)
 
    u2 = *u;
    u2.arg1e = u->arg1;
-   a_add(&u2);
+   xd = a_add2(&u2);
 
    if (u->arg3 == NULL)
      return;
 
-   num = 0;
-   newgroup = 0;
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       num++;
-       if (!strcmp(u->arg1, xd->file))
-         {
-           if (xd->group != NULL)
-             {
-               if (strcmp(xd->group, u->arg3) == 0 )
-                 break;
-             }
-           xd->group = mystrdup(u->arg3);
-           a_respond(u, "GROUP: [Pack %i] New: %s",
-                        num, u->arg3);
-           break;
-         }
-       xd = irlist_get_next(xd);
-     }
+   if (xd == NULL)
+     return;
 
-   if ((++newgroup) == 1)
-     {
-       rc = add_default_groupdesc(u->arg3);
-       if (rc == 1)
-         a_respond(u, "New GROUPDESC: %s", u->arg3);
-     }
+   num = number_of_pack(xd);
+   a_set_group(u, xd, num, u->arg3);
 }
 
 void a_xdlock(const userinput * const u)
@@ -1419,7 +1395,7 @@ int a_open_file(char **file, int mode)
    return -1;
 }
 
-void a_add(const userinput * const u)
+xdcc *a_add2(const userinput * const u)
 {
    int xfiledescriptor;
    struct stat st;
@@ -1433,7 +1409,7 @@ void a_add(const userinput * const u)
    updatecontext();
 
    if (invalid_file(u, u->arg1e) != 0)
-      return;
+      return NULL;
 
    clean_quotes(u->arg1e);
    file = mystrdup(u->arg1e);
@@ -1443,7 +1419,7 @@ void a_add(const userinput * const u)
    if (xfiledescriptor < 0) {
       a_respond(u, "Cant Access File: %s", strerror(errno));
       mydelete(file);
-      return;
+      return NULL;
       }
 
    if (fstat(xfiledescriptor, &st) < 0)
@@ -1451,7 +1427,7 @@ void a_add(const userinput * const u)
       a_respond(u, "Cant Access File Details: %s", strerror(errno));
       close(xfiledescriptor);
       mydelete(file);
-      return;
+      return NULL;
      }
    close(xfiledescriptor);
 
@@ -1459,19 +1435,19 @@ void a_add(const userinput * const u)
      {
       a_respond(u, "%s is not a file", file);
       mydelete(file);
-      return;
+      return NULL;
      }
 
    if ( st.st_size == 0 ) {
       a_respond(u, "File has size of 0 bytes!");
       mydelete(file);
-      return;
+      return NULL;
       }
 
    if ((st.st_size > gdata.max_file_size) || (st.st_size < 0)) {
       a_respond(u, "File is too large.");
       mydelete(file);
-      return;
+      return NULL;
       }
 
    if (gdata.noduplicatefiles) {
@@ -1482,7 +1458,7 @@ void a_add(const userinput * const u)
               (xd->st_ino == st.st_ino))
              {
                a_respond(u, "File '%s' is already added.", u->arg1e);
-               return;
+               return NULL;
              }
            xd = irlist_get_next(xd);
          }
@@ -1600,6 +1576,13 @@ void a_add(const userinput * const u)
       mydelete(ui);
       mydelete(tempstr);
       }
+
+   return xd;
+}
+
+void a_add(const userinput * const u)
+{
+  a_add2(u);
 }
 
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup)
@@ -3629,16 +3612,17 @@ void a_sannounce(const userinput * const u)
 void a_addann(const userinput * const u)
 {
   char *tempstr;
+  xdcc *xd;
   userinput *ui;
-  int i;
+  int num;
 
   updatecontext ();
-  i = irlist_size(&gdata.xdccs);
-  a_add(u);
-  if (irlist_size(&gdata.xdccs) > i) {
+  xd = a_add2(u);
+  if (xd != NULL) {
+    num = number_of_pack(xd);
     tempstr = mycalloc (maxtextlength);
     ui = mycalloc(sizeof(userinput));
-    snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i added", irlist_size(&gdata.xdccs));
+    snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i added", num);
     u_fillwith_msg(ui, NULL, tempstr);
     ui->method = method_out_all;       /* just OUT_S|OUT_L|OUT_D it */
     ui->net = u->net;

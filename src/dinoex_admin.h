@@ -66,6 +66,7 @@ void a_renumber1(const userinput * const u, int oldp, int newp);
 void a_renumber3(const userinput * const u);
 void a_sort(const userinput * const u);
 int a_open_file(char **file, int mode);
+xdcc *a_add2(const userinput * const u);
 void a_add(const userinput * const u);
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup);
 DIR *a_open_dir(char **dir);

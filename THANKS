@@ -228,6 +228,7 @@ chibi
 	admin commamd "newdir"
 	report SERVQC bug
 	option "autoadd_sort"
+	report "AUTOADD" bug
 
 vegetto
 	report crash on bad config

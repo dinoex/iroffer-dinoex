@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+bugfix: AUTOADD (reported by chibi)
+  announe correct pack number with autoadd_sort
+
 179) AUTOGROUP
   new admin command:
   AUTOGROUP                       Create a group for each directory with packs
