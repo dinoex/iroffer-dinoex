@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+bugfix; spaces_in_filenames (reported by Radicand)
+  Allow spaces in upload via DCC
+
 bugfix: AUTOADD (reported by chibi)
   announe correct pack number with autoadd_sort
 

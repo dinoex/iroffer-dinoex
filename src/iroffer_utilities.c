@@ -1124,8 +1124,18 @@ char* removenonprintablefile(char *str) {
    
    for (i=0; i<strlen(str); i++) {
       if (str[i] >= 0x7E) str[i] = '_';
-      if (str[i] <  0x28) str[i] = '_';
+      if (str[i] <  0x20) str[i] = '_';
       switch (str[i]) {
+         case 0x20:
+            if (gdata.spaces_in_filenames)
+               break;
+         case 0x21:
+         case 0x22:
+         case 0x23:
+         case 0x24:
+         case 0x25:
+         case 0x26:
+         case 0x27:
          case 0x2F:
          case 0x3A:
          case 0x3D:

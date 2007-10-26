@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+bugfix; spaces_in_filenames
+  Erlaube Leerzeichnen beim Upload via DCC
+
 bugfix: AUTOADD
   Announce auch mit autoadd_sort die richtige Paket Nummer.
 
