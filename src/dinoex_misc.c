@@ -2508,6 +2508,7 @@ int l_setup_file(upload * const l, struct stat *stp)
 
 int l_setup_listen(upload * const l)
 {
+  char *tempstr;
   char *msg;
   ir_sockaddr_union_t listenaddr;
   int rc;
@@ -2523,11 +2524,13 @@ int l_setup_listen(upload * const l)
 
   listenport = get_port(&listenaddr);
   msg = setup_dcc_local(&listenaddr);
+  tempstr = getsendname(l->file);
   privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "i %d\1",
-               l->file, msg, (long long)(l->totalsize), l->token);
+               tempstr, msg, (long long)(l->totalsize), l->token);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND sent to %s on %s, waiting for connection on %s",
           l->nick, gnetwork->name, msg);
+  mydelete(tempstr);
   mydelete(msg);
 
   l->localport = listenport;
@@ -2539,8 +2542,9 @@ int l_setup_listen(upload * const l)
 
 int l_setup_passive(upload * const l, char *token)
 {
-  int retval;
+  char *tempstr;
   struct stat s;
+  int retval;
 
   updatecontext();
 
@@ -2552,8 +2556,10 @@ int l_setup_passive(upload * const l, char *token)
   retval = l_setup_file(l, &s);
   if (retval == 2)
     {
+      tempstr = getsendname(l->file);
       privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u %d\1",
-                   l->file, l->remoteport, (unsigned long long)s.st_size, l->token);
+                   tempstr, l->remoteport, (unsigned long long)s.st_size, l->token);
+      mydelete(tempstr);
       l->connecttime = gdata.curtime;
       l->lastcontact = gdata.curtime;
       l->ul_status = UPLOAD_STATUS_RESUME;

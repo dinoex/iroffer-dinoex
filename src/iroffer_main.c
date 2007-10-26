@@ -2809,6 +2809,7 @@ static void privmsgparse(const char* type, char* line) {
       else if (!strcmp(caps(msg2), "SEND") && msg3 && msg4 && msg5 && msg6)
         {
           char *msg7;
+          char *tempstr;
           int down = 0;
 
           if (msg6[strlen(msg6)-1] == '\1')
@@ -2870,6 +2871,7 @@ static void privmsgparse(const char* type, char* line) {
             {
               ul = irlist_add(&gdata.uploads, sizeof(upload));
               l_initvalues(ul);
+              clean_quotes(msg3);
               removenonprintablefile(msg3);
               ul->file = mystrdup(msg3);
               ul->family = (strchr(msg4, ':')) ? AF_INET6 : AF_INET;
@@ -2879,10 +2881,12 @@ static void privmsgparse(const char* type, char* line) {
               ul->nick = mystrdup(nick);
               ul->hostname = mystrdup(hostname);
               ul->net = gnetwork->net;
+              tempstr = getsendname(ul->file);
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                       "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "iKB)",
-                      nick, gnetwork->name, ul->file,
+                      nick, gnetwork->name, tempstr,
                       (long long)(ul->totalsize / 1024));
+              mydelete(tempstr);
 
               if (ul->remoteport > 0)
                 {
@@ -2931,12 +2935,15 @@ static void privmsgparse(const char* type, char* line) {
             {
               if ((ul->remoteport == atoi(msg4)) && !strcmp(ul->nick, nick))
                 {
+                  char *tempstr;
                   ul->resumed = 1;
+                  tempstr = getsendname(ul->file);
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                           "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "i of %" LLPRINTFMT "iKB left)",
-                          nick, gnetwork->name, ul->file,
+                          nick, gnetwork->name, tempstr,
                           (long long)((ul->totalsize - ul->resumesize) / 1024),
                           (long long)(ul->totalsize / 1024));
+                  mydelete(tempstr);
                   if (ul->remoteport > 0)
                     {
                       l_establishcon(ul);

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+bugfix; DCC SEND
+  Handle Quoted filesnames in upload via DCC
+
 bugfix; spaces_in_filenames (reported by Radicand)
   Allow spaces in upload via DCC
 

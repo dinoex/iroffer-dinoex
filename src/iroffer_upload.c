@@ -34,6 +34,7 @@ void l_initvalues (upload * const l) {
 
 void l_establishcon (upload * const l)
 {
+  char *tempstr;
   ir_sockaddr_union_t remoteaddr;
   struct sockaddr_in localaddr;
   SIGNEDSOCK int addrlen;
@@ -45,8 +46,10 @@ void l_establishcon (upload * const l)
   retval = l_setup_file(l, &s);
   if (retval == 2)
     {
+      tempstr = getsendname(l->file);
       privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u\1",
-                   l->file, l->remoteport, (unsigned long long)s.st_size);
+                   tempstr, l->remoteport, (unsigned long long)s.st_size);
+      mydelete(tempstr);
       return;
     }
   if (retval != 0)
