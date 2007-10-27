@@ -197,6 +197,7 @@ SpiegelEiXXL
 	admin commamd "fetchcancel"
 	admin commamd "fileremove"
 	admin commamd "JOIN"
+	admin commamd "PART"
 
 Noxx
 	hidlockepacks for xdcclistfile

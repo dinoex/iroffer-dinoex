@@ -74,7 +74,6 @@ Long Term Features:
   1008  use text or xml for statefile
   1013  notify adminnick when autoadd
   1018  warning in chat when bot was kicked
-  1041  -nojoin for extra channels
   1042  hentai flag
   1043  vhosts for each network
   1068  restore tty console on fatal error
@@ -102,7 +101,6 @@ Not going to happen anytime soon:
   1029  local network without getipfromserver/vhost
   1030  msg to owner whn it activates flood protection
   1032  configureable note after Record
-  1033  nojoin channels for leach.
   1034  age verification for hentai
   1036  Gracefull restart when network dropped
   1037  getipfromserver for mutihomed bots
