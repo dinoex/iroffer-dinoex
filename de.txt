@@ -1982,3 +1982,4 @@
 2006 "channel [netz]"
 2007 "Betrete den Channel <channel> bis zum REHASH"
 2008 "Channel already in list, Try \"HOP\" for rejoin"
+2009 "Verlasse den Channel <channel> bis zum REHASH"

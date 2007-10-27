@@ -3213,6 +3213,41 @@ void a_join(const userinput * const u)
   gnetwork = backup;
 }
 
+void a_part(const userinput * const u)
+{
+  channel_t *ch;
+  gnetwork_t *backup;
+  int net;
+
+  updatecontext();
+
+  if (invalid_channel(u, u->arg1) != 0)
+    return;
+
+  net = get_network_msg(u, u->arg2);
+  if (net < 0)
+    return;
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  for (ch = irlist_get_head(&(gnetwork->channels)); ch; ch = irlist_get_next(ch)) {
+    if (strcasecmp(u->arg1, ch->name) != 0)
+      continue;
+
+    writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
+    clearmemberlist(ch);
+    mydelete(ch->name);
+    mydelete(ch->key);
+    mydelete(ch->headline);
+    mydelete(ch->pgroup);
+    irlist_delete(&(gnetwork->channels), ch);
+    gnetwork = backup;
+    return;
+  }
+  a_respond(u, "Bot not in Channel %s on %s", u->arg1, gnetwork->name);
+  gnetwork = backup;
+}
+
 void a_nomd5(const userinput * const u)
 {
    int num = 0;

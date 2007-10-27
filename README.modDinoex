@@ -3,10 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
-180) JOIN (inspired by SpiegelEiXXL)
+180) JOIN, PART (inspired by SpiegelEiXXL)
   new admin command:
   JOIN <channel>                  join channel till rehash
   JOIN <channel> <net>            join channel till rehash
+  PART <channel>                  part channel till rehash
+  PART <channel> <net>            part channel till rehash
 
 bugfix; DCC SEND
   Handle Quoted filesnames in upload via DCC

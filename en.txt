@@ -1982,3 +1982,4 @@
 2006 "channel [net]"
 2007 "join channel till rehash"
 2008 "Channel already in list, Try \"HOP\" for rejoin"
+2009 "part channel till rehash"
