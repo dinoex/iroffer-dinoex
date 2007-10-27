@@ -21,12 +21,13 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
-#include "dinoex_misc.h"
 #include "dinoex_http.h"
 #include "dinoex_upload.h"
 #include "dinoex_transfer.h"
 #include "dinoex_ssl.h"
 #include "dinoex_curl.h"
+#include "dinoex_irc.h"
+#include "dinoex_misc.h"
 
 /* local functions */
 static void mainloop(void);

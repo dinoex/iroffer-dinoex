@@ -20,7 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
-#include "dinoex_misc.h"
+#include "dinoex_irc.h"
 
 
 int setupdccchatout(const char *nick)

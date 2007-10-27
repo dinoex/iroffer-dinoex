@@ -25,7 +25,6 @@ void admin_jobs(void);
 int hide_pack(const xdcc *xd);
 int check_lock(const char* lockstr, const char* pwd);
 
-void update_natip (const char *var);
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
@@ -94,13 +93,6 @@ void queue_all_remove(irlist_t *list, const char *message);
 char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq);
 void check_idle_queue(void);
 
-int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search);
-char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
-
-void child_resolver(void);
-int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen);
-int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen);
-int connectirc2(res_addrinfo_t *remote);
 int packnumtonum(const char *a);
 
 void exit_iroffer(void);
