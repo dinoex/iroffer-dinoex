@@ -1167,6 +1167,10 @@ fi
 
 rm -f config.temp*
 
+if $OPT_WARN; then
+WERROR2=$WERROR
+fi
+
 echo "Creating src/iroffer_config.h... Done"
 
 echo -n "Creating Makefile... "
@@ -1180,7 +1184,7 @@ echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $SSLLIB
 echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF $CURLLDF $SSLLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $WERROR2
 echo CONFIG_CPPFLAGS=$GEOINC $CURLINC $SSLINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
