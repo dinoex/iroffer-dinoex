@@ -3174,6 +3174,45 @@ void a_nochannel(const userinput * const u)
    gnetwork = backup;
 }
 
+void a_join(const userinput * const u)
+{
+  channel_t *ch;
+  gnetwork_t *backup;
+  int net;
+
+  updatecontext();
+
+  if (invalid_channel(u, u->arg1) != 0)
+    return;
+
+  net = get_network_msg(u, u->arg2);
+  if (net < 0)
+    return;
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  for (ch = irlist_get_head(&(gnetwork->channels)); ch; ch = irlist_get_next(ch)) {
+    if (strcasecmp(u->arg1, ch->name) != 0)
+      continue;
+    a_respond(u, "Channel already in list, Try \"HOP\" for rejoin");
+    gnetwork = backup;
+    return;
+  }
+
+  ch = irlist_add(&(gnetwork->channels), sizeof(channel_t));
+  caps(u->arg1);
+  ch->name = mystrdup(u->arg1);
+  ch->noannounce = 1;
+  ch->flags = 0;
+  ch->delay = 0;
+  ch->plistoffset = 0;
+  ch->headline = NULL;
+  ch->pgroup = NULL;
+  ch->key = NULL;
+  ch->nextjoin = gdata.curtime;
+  gnetwork = backup;
+}
+
 void a_nomd5(const userinput * const u)
 {
    int num = 0;

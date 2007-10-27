@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+180) JOIN 
+  Neues Admin Kommando:
+  JOIN <channel>                   Betrete den Channel <channel> bis zum REHASH
+  JOIN <channel> <netz>            Betrete den Channel <channel> bis zum REHASH
+
 bugfix; DCC SEND
   Erkenne Dateinamen in Anführungszeichen beim Upload via DCC
 

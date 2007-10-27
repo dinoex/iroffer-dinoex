@@ -1979,3 +1979,6 @@
 2003 "Download Connection Established on %s"
 2004 "AUTOGROUP"
 2005 "Erstelle ein Gruppe für jedes Verzeichnis mit Paketen"
+2006 "channel [netz]"
+2007 "Betrete den Channel <channel> bis zum REHASH"
+2008 "Channel already in list, Try \"HOP\" for rejoin"
