@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_admin.h"
+#include "dinoex_curl.h"
 #include "dinoex_misc.h"
 
 #include <ctype.h>

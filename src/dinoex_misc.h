@@ -54,20 +54,10 @@ void shutdown_dinoex(void);
 void rehash_dinoex(void);
 void update_hour_dinoex(int hour, int minute);
 void check_new_connection(transfer *const tr);
-void check_duplicateip(transfer *const newtr);
 int noticeresults(const char *nick, const char *match);
 const char *validate_crc32(xdcc *xd, int quiet);
 void autoadd_scan(const char *dir, const char *group);
 void autoadd_all(void);
-#ifdef USE_CURL
-extern int fetch_started;
-void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd);
-void fetch_cancel(int num);
-void fetch_perform(void);
-void start_fetch_url(const userinput *const u);
-void dinoex_dcl(const userinput *const u);
-void dinoex_dcld(const userinput *const u);
-#endif /* USE_CURL */
 
 char* getpart_eol(const char *line, int howmany);
 int get_network(const char *arg1);
@@ -94,7 +84,6 @@ void autotrigger_rebuild(void);
 
 void start_md5_hash(xdcc *xd, int packnum);
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
-void close_server(void);
 void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick);
 void queue_reverify_restrictsend(irlist_t *list);
 void queue_punishslowusers(irlist_t *list, int network, const char *nick);
@@ -108,25 +97,11 @@ void check_idle_queue(void);
 int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search);
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
 
-int l_setup_file(upload * const l, struct stat *stp);
-int l_setup_listen(upload * const l);
-int l_setup_passive(upload * const l, char *token);
-void l_setup_accept(upload * const l);
-
 void child_resolver(void);
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen);
 int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen);
 int connectirc2(res_addrinfo_t *remote);
-void t_setup_dcc(transfer *tr, const char *nick);
-int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport, char *filesize, char *token);
-void t_connected(transfer *tr);
 int packnumtonum(const char *a);
-
-#ifdef USE_SSL
-int setup_ssl(void);
-#endif
-ssize_t readserver_ssl(void *buf, size_t nbytes);
-ssize_t writeserver_ssl(const void *buf, size_t nbytes);
 
 void exit_iroffer(void);
 

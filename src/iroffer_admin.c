@@ -22,6 +22,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_admin.h"
 #include "dinoex_misc.h"
+#include "dinoex_curl.h"
 
 /* local functions */
 static void

@@ -22,6 +22,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_misc.h"
 #include "dinoex_config.h"
+#include "dinoex_ssl.h"
 
 
 void getconfig (void) {
@@ -726,6 +727,9 @@ void initirc(void)
   
   updatecontext();
   
+  if (!setup_ssl())
+    return;
+
   pi = irlist_get_head(&(gnetwork->proxyinfo));
   while((gnetwork->connectionmethod.how == how_custom) && pi)
     {

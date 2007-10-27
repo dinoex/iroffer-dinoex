@@ -23,6 +23,10 @@
 #include "dinoex_utilities.h"
 #include "dinoex_misc.h"
 #include "dinoex_http.h"
+#include "dinoex_upload.h"
+#include "dinoex_transfer.h"
+#include "dinoex_ssl.h"
+#include "dinoex_curl.h"
 
 /* local functions */
 static void mainloop(void);
@@ -728,9 +732,6 @@ static void mainloop (void) {
             else
               outerror(OUTERROR_TYPE_WARN, "couldn't get ourip on %s", gnetwork->name);
 	    
-#ifdef USE_SSL
-            if (setup_ssl())
-#endif /* USE_SSL */
 	    initirc();
             }
          }
