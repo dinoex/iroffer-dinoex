@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_upload.h"
+#include "dinoex_irc.h"
 #include "dinoex_misc.h"
 
 int l_setup_file(upload * const l, struct stat *stp)

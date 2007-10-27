@@ -20,9 +20,11 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_admin.h"
-#include "dinoex_misc.h"
 #include "dinoex_config.h"
 #include "dinoex_http.h"
+#include "dinoex_irc.h"
+#include "dinoex_misc.h"
+
 #include <ctype.h>
 
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)

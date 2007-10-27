@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_transfer.h"
+#include "dinoex_irc.h"
 #include "dinoex_misc.h"
 
 void t_setup_dcc(transfer *tr, const char *nick)
