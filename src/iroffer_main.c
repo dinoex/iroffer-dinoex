@@ -27,6 +27,7 @@
 #include "dinoex_ssl.h"
 #include "dinoex_curl.h"
 #include "dinoex_irc.h"
+#include "dinoex_queue.h"
 #include "dinoex_misc.h"
 
 /* local functions */

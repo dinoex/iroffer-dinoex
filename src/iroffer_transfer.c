@@ -21,7 +21,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
-#include "dinoex_misc.h"
+#include "dinoex_queue.h"
 
 
 void t_initvalues (transfer * const t) {
