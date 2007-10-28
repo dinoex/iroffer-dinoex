@@ -27,6 +27,7 @@ void t_setup_dcc(transfer *tr, const char *nick)
 {
   char *dccdata;
   char *sendnamestr;
+  int e = 1;
 
   updatecontext();
 
@@ -35,13 +36,20 @@ void t_setup_dcc(transfer *tr, const char *nick)
     if (tr->family == AF_INET) {
       tr->serveraddress.sin.sin_family = AF_INET;
       tr->serveraddress.sin.sin_port = htons(0);
-      if (gdata.local_vhost)
-        tr->serveraddress.sin.sin_addr.s_addr = htonl(gdata.local_vhost);
-      else
+      if (gdata.local_vhost) {
+        e = inet_pton(tr->family, gdata.local_vhost, &(tr->serveraddress.sin.sin_addr));
+      } else {
         tr->serveraddress.sin.sin_addr.s_addr = gnetwork->myip.sin.sin_addr.s_addr;
+      }
     } else {
       tr->serveraddress.sin6.sin6_family = AF_INET6;
       tr->serveraddress.sin6.sin6_port = htons(0);
+      if (gdata.local_vhost) {
+        e = inet_pton(tr->family, gdata.local_vhost, &(tr->serveraddress.sin6.sin6_addr));
+      }
+    }
+    if (e != 1) {
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", gdata.local_vhost);
     }
     tr->tr_status = TRANSFER_STATUS_RESUME;
     tr->listenport = 0;

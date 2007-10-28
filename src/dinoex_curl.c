@@ -255,11 +255,7 @@ void start_fetch_url(const userinput *const u)
     char *vhosttext;
 
     ft->vhosttext = mycalloc(40);
-    snprintf(ft->vhosttext, 40, "%ld.%ld.%ld.%ld",
-             gdata.local_vhost>>24,
-             (gdata.local_vhost>>16) & 0xFF,
-             (gdata.local_vhost>>8) & 0xFF,
-             gdata.local_vhost & 0xFF);
+    snprintf(ft->vhosttext, 40, "%s", gdata.local_vhost);
     ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
     if (ces != 0) {
       a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);

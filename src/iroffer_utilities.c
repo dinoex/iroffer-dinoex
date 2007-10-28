@@ -1338,7 +1338,7 @@ void dumpgdata(void)
   gdata_print_int(background);
   gdata_print_number("0x%.8lX",ourip);
   gdata_print_int(usenatip);
-  gdata_print_number("0x%.8lX",local_vhost);
+  gdata_print_string(local_vhost);
   gdata_print_int(logstats);
   gdata_print_string(logfile);
   gdata_print_number_cast("%d",logrotate,int);

@@ -112,6 +112,7 @@ int bind_irc_vhost(int family, int clientsocket)
 {
   ir_sockaddr_union_t localaddr;
   SIGNEDSOCK int addrlen;
+  int e;
 
   if (!gdata.local_vhost)
     return 0;
@@ -121,11 +122,17 @@ int bind_irc_vhost(int family, int clientsocket)
     addrlen = sizeof(struct sockaddr_in);
     localaddr.sin.sin_family = AF_INET;
     localaddr.sin.sin_port = 0;
-    localaddr.sin.sin_addr.s_addr = htonl(gdata.local_vhost);
-
+    e = inet_pton(family, gdata.local_vhost, &(localaddr.sin.sin_addr));
   } else {
-    /* ignore vhost */
-    return 0;
+    addrlen = sizeof(struct sockaddr_in6);
+    localaddr.sin6.sin6_family = AF_INET6;
+    localaddr.sin6.sin6_port = 0;
+    e = inet_pton(family, gdata.local_vhost, &(localaddr.sin6.sin6_addr));
+  }
+
+  if (e != 1) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", gdata.local_vhost);
+    return 1;
   }
 
   if (bind(clientsocket, &(localaddr.sa), addrlen) < 0)
@@ -380,7 +387,6 @@ int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t 
 int connectirc2(res_addrinfo_t *remote)
 {
   struct sockaddr_in *remoteaddr;
-  struct sockaddr_in localaddr;
   int retval;
   int family;
 
@@ -403,17 +409,10 @@ int connectirc2(res_addrinfo_t *remote)
     mydelete(msg);
   }
 
-  if (gdata.local_vhost) {
-    bzero((char*)&localaddr, sizeof(struct sockaddr_in));
-    localaddr.sin_family = family;
-    localaddr.sin_port = 0;
-    localaddr.sin_addr.s_addr = htonl(gdata.local_vhost);
-
-    if (bind(gnetwork->ircserver, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0) {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Bind To Virtual Host");
-      close(gnetwork->ircserver);
-      return 1;
-    }
+  if (bind_irc_vhost(family, gnetwork->ircserver) != 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Bind To Virtual Host");
+    close(gnetwork->ircserver);
+    return 1;
   }
 
   if (set_socket_nonblocking(gnetwork->ircserver, 1) < 0 )

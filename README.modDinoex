@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+184) local_vhost
+  supports binding to IPV6
+
 183) telnet_vhost
   If the computer you want to run iroffer on has multiple local IP
   addresses, you can run the telnet server on any of those IP addresses.

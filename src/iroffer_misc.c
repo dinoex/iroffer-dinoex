@@ -471,24 +471,6 @@ void getconfig_set (const char *line, int rehash)
       update_natip(var);
       mydelete(var);
      }
-   else if ( ! strcmp(type,"local_vhost"))
-     {
-      unsigned long ipparts[4];
-      if (sscanf(var, "%lu.%lu.%lu.%lu", &ipparts[0], &ipparts[1], &ipparts[2], &ipparts[3]) < 4)
-        {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid VHost, Ignoring");
-        }
-      else if ((ipparts[0] > 255) || (ipparts[1] > 255) ||
-               (ipparts[2] > 255) || (ipparts[3] > 255))
-        {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Invalid VHost, Ignoring");
-        }
-      else
-        {
-          gdata.local_vhost = (ipparts[0] << 24) | (ipparts[1] << 16) | (ipparts[2] << 8) | ipparts[3];
-        }
-      mydelete(var);
-     }
    else if ( ! strcmp(type,"uploadmaxsize")) {
       gdata.uploadmaxsize = (off_t)(max2(0,atoull(var)*1024*1024));
       mydelete(var);
@@ -661,13 +643,10 @@ static int connectirc (server_t *tserver) {
    if (gdata.local_vhost)
      {
        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-               "Attempting Connection to %s:%u from %ld.%ld.%ld.%ld%s",
+               "Attempting Connection to %s:%u from %s%s",
                gnetwork->curserver.hostname,
                gnetwork->curserver.port,
-               gdata.local_vhost>>24,
-               (gdata.local_vhost>>16) & 0xFF,
-               (gdata.local_vhost>>8) & 0xFF,
-               gdata.local_vhost & 0xFF,
+               gdata.local_vhost,
                tempstr);
      }
    else

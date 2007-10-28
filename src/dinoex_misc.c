@@ -1692,6 +1692,7 @@ static void free_config(void)
   mydelete(gdata.http_admin);
   mydelete(gdata.http_dir);
   mydelete(gdata.group_seperator);
+  mydelete(gdata.local_vhost);
 }
 
 #endif

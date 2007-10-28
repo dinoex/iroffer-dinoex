@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+184) local_vhost
+  Auch für IPV6 Adressen möglich.
+
 183) telnet_vhost
   Wenn der Computer/Server mehr als eine lokale IP-Adresse hat kann,
   mit http_vhost <ip> angegeben werden, welche der Telnet Server nutzen soll.

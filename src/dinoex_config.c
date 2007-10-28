@@ -145,6 +145,7 @@ static config_string_typ config_parse_string[] = {
 {"headline",                &gdata.headline,                0 },
 {"http_admin",              &gdata.http_admin,              0 },
 {"http_dir",                &gdata.http_dir,                1 },
+{"local_vhost",             &gdata.local_vhost,             0 },
 {"logfile",                 &gdata.logfile,                 1 },
 {"loginname",               &gdata.loginname,               0 },
 {"nickserv_pass",           &gdata.nickserv_pass,           0 },

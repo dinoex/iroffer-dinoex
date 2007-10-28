@@ -100,8 +100,8 @@ int hideos;
 int lognotices;
 int logmessages;
 int timestampconsole;
+char *local_vhost;
 long startuptime;
-unsigned long local_vhost;
 int lowbdwth;
 int logstats;
 char *logfile;
@@ -236,7 +236,7 @@ irlist_t autoignore_exclude;
 int autoignore_threshold;
 
 /* rehash temp variables */
-unsigned long r_local_vhost;
+char *r_local_vhost;
 char *r_pidfile;
 char *r_config_nick;
 float r_transferminspeed, r_transfermaxspeed;
