@@ -89,14 +89,12 @@ Not going to happen anytime soon:
   1010  strip logfiles
   1011  flexible auth mech for nicserver
   1012  Leach a full group
-  1013  Passive DCC
   1015  http admin
   1017  no clear if user change konsole window
   1021  add /path/dir/*animexyz*
   1022  send notes on mutiple triggers
   1024  gently recover when networks are deleted
   1027  renumber <from> <to> new
-  1028  SSL (208)
   1029  local network without getipfromserver/vhost
   1030  msg to owner whn it activates flood protection
   1032  configureable note after Record
