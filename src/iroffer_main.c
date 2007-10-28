@@ -28,6 +28,7 @@
 #include "dinoex_curl.h"
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
+#include "dinoex_telnet.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -386,6 +387,7 @@ static void mainloop (void) {
           highests = max2(highests, gdata.md5build.file_fd);
         }
       
+      highests = telnet_select_listen(highests);
       highests = h_listen(highests);
       
       updatecontext();
@@ -1116,6 +1118,7 @@ static void mainloop (void) {
          }
       gnetwork = NULL;
 
+      telnet_done_select(changesec);
       h_done_select(changesec);
       
       /*----- time for a delayed shutdown? ----- */

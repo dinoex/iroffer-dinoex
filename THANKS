@@ -178,6 +178,7 @@ Cork
 
 anibi
 	option "include_subdirs"
+	option "telnet_port"
 
 Tass
 	option "include_subdirs"

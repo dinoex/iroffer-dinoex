@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+181) telnet_port
+  Port für den eingebauten Telnet Server.
+
 180) JOIN, PART
   Neues Admin Kommando:
   JOIN <channel>                   Betrete den Channel <channel> bis zum REHASH

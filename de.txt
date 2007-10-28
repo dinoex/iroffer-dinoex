@@ -1983,3 +1983,7 @@
 2007 "Betrete den Channel <channel> bis zum REHASH"
 2008 "Channel already in list, Try \"HOP\" for rejoin"
 2009 "Verlasse den Channel <channel> bis zum REHASH"
+2010 "telnet_port"
+2011 "Telnet SERVER waiting for connection on %s"
+2012 ".telnet"
+2013 "Telnet connection received from %s"

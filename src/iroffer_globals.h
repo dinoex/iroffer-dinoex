@@ -223,6 +223,7 @@ int autoadd_delay;
 int balanced_queue;
 int http_port;
 int passive_dcc;
+int telnet_port;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

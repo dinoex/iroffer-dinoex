@@ -3,6 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+181) telnet_port (inspired by anibi)
+  Port for the buildin Telnet server.
+
+   References TODO:
+Long Term Features:
+   118 long ago Open telnet admin
+
 180) JOIN, PART (inspired by SpiegelEiXXL)
   new admin command:
   JOIN <channel>                  join channel till rehash

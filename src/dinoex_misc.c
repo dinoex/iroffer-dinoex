@@ -27,6 +27,7 @@
 #include "dinoex_ssl.h"
 #include "dinoex_curl.h"
 #include "dinoex_irc.h"
+#include "dinoex_telnet.h"
 #include "dinoex_misc.h"
 
 #include <ctype.h>
@@ -630,6 +631,7 @@ void startup_dinoex(void)
 }
 
 void config_dinoex(void) {
+  telnet_setup_listen();
   h_setup_listen();
   if (!gdata.group_seperator)
     gdata.group_seperator = mystrdup(" ");
@@ -637,6 +639,7 @@ void config_dinoex(void) {
 
 void shutdown_dinoex(void)
 {
+  telnet_close_listen();
   h_close_listen();
   geoip_shutdown();
   curl_shutdown();
@@ -644,6 +647,7 @@ void shutdown_dinoex(void)
 
 void rehash_dinoex(void)
 {
+  telnet_reash_listen();
   h_reash_listen();
   if (!gdata.group_seperator)
     gdata.group_seperator = mystrdup(" ");

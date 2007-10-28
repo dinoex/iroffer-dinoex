@@ -2189,6 +2189,7 @@ void reinit_config_vars(void)
   gdata.balanced_queue = 0;
   gdata.http_port = 0;
   gdata.passive_dcc = 0;
+  gdata.telnet_port = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

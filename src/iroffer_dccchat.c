@@ -97,7 +97,7 @@ int setupdccchatout(const char *nick)
   return 0;
 }
 
-static void setup_chat_banner(dccchat_t *chat)
+void setup_chat_banner(dccchat_t *chat)
 {
   char *tempstr;
 
