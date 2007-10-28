@@ -45,6 +45,7 @@ void getconfig (void) {
            outerror(OUTERROR_TYPE_CRASH,"Cant Access Config File '%s': %s",gdata.configfile[h],strerror(errno));
          }
        
+       gdata.bracket = 0;
        while (getfline(templine,maxtextlength,filedescriptor,1))
          {
            if ((templine[0] != '#') && templine[0])
@@ -91,7 +92,7 @@ void getconfig_set (const char *line, int rehash)
 {
   char *type;
   char *var;
-  char *a,*b,*c;
+  char *a,*b;
   const char *found;
   int i,j;
   
@@ -100,16 +101,20 @@ void getconfig_set (const char *line, int rehash)
   i = strlen(line);
   type = mycalloc(i+1);
   var = mycalloc(i+1);
+
+  /* ignore leading spaces */
+  for (i=0; line[i] == ' '; i++)
+    continue;
   
-  for (i=0; ; i++)
+  for (j=0; ; j++,i++)
     {
       if (line[i] == ' ')
         {
-          type[i] = '\0';
+          type[j] = '\0';
           i++;
           break;
         }
-      type[i] = line[i];
+      type[j] = line[i];
       if (line[i] == '\0')
         {
           break;
@@ -125,27 +130,36 @@ void getconfig_set (const char *line, int rehash)
         }
     }
   
-  if (set_config_bool(type, var) == 0)
+  if (gdata.bracket == 0)
     {
-      mydelete(type);
-      mydelete(var);
-      return;
+      if (set_config_bool(type, var) == 0)
+        {
+          mydelete(type);
+          mydelete(var);
+          return;
+        }
+  
+      if (set_config_int(type, var) == 0)
+        {
+          mydelete(type);
+          mydelete(var);
+          return;
+        }
+
+      if (set_config_string(type, var) == 0)
+        {
+          mydelete(type);
+          return;
+        }
+
+      if (set_config_list(type, var) == 0)
+        {
+          mydelete(type);
+          return;
+        }
     }
 
-  if (set_config_int(type, var) == 0)
-    {
-      mydelete(type);
-      mydelete(var);
-      return;
-    }
-
-  if (set_config_string(type, var) == 0)
-    {
-      mydelete(type);
-      return;
-    }
-
-  if (set_config_list(type, var) == 0)
+  if (set_config_func(type, var) == 0)
     {
       mydelete(type);
       return;
@@ -189,38 +203,12 @@ void getconfig_set (const char *line, int rehash)
          }
        mydelete(var);
      }
-   else if ( ! strcmp(type,"network"))
+   else if ( ! strcmp(type,"proxyinfo"))
      {
-       if (gdata.networks_online == 0)
-         {
-           /* add new network only when server defined */
-           if (irlist_size(&gdata.networks[gdata.networks_online].servers))
-             gdata.networks_online ++;
-         }
-       else
-         {
-           gdata.networks_online ++;
-         }
-       if (gdata.networks_online >= MAX_NETWORKS)
-         {
-           outerror(OUTERROR_TYPE_WARN,
-                    "ignored network '%s' because we have to many.",
-                    var);
-           mydelete(var);
-         }
-       else
-         {
-           mydelete(gdata.networks[gdata.networks_online].name);
-           if (strlen(var) == 0)
-             {
-               mydelete(var);
-               var = mymalloc(10);
-               snprintf(var, 10, "%d", gdata.networks_online);
-             }
-           gdata.networks[gdata.networks_online].name = var;
-           set_default_network_name();
-           gdata.networks[gdata.networks_online].net = gdata.networks_online;
-         }
+       char *pi;
+       pi = irlist_add(&gdata.networks[gdata.networks_online].proxyinfo, strlen(var) + 1);
+       strcpy(pi, var);
+       mydelete(var);
      }
    else if ( !strcmp(type,"channel_join_raw"))
      {
@@ -240,13 +228,6 @@ void getconfig_set (const char *line, int rehash)
      {
        char *cjr;
        cjr = irlist_add(&gdata.networks[gdata.networks_online].server_connected_raw, strlen(var) + 1);
-       strcpy(cjr, var);
-       mydelete(var);
-     }
-   else if ( !strcmp(type,"proxyinfo"))
-     {
-       char *cjr;
-       cjr = irlist_add(&gdata.networks[gdata.networks_online].proxyinfo, strlen(var) + 1);
        strcpy(cjr, var);
        mydelete(var);
      }
@@ -404,25 +385,6 @@ void getconfig_set (const char *line, int rehash)
              }
          }
      }
-   else if ( ! strcmp(type,"autosendpack"))
-     {
-       a = getpart(var,1); b = getpart(var,2); c = getpart(var,3);
-       if (a && b)
-         {
-           autoqueue_t *aq;
-           aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
-           aq->pack = between(0,atoi(a),100000);
-           aq->word = b;
-           aq->message = c;
-         }
-       else
-         {
-           mydelete(b);
-           mydelete(c);
-         }
-       mydelete(a);
-       mydelete(var);
-     }
    else if ( ! strcmp(type,"logrotate")) {
       if (!strcmp(var,"daily")) gdata.logrotate = 24*60*60;
       if (!strcmp(var,"weekly")) gdata.logrotate = 7*24*60*60;
@@ -473,10 +435,6 @@ void getconfig_set (const char *line, int rehash)
      }
    else if ( ! strcmp(type,"uploadmaxsize")) {
       gdata.uploadmaxsize = (off_t)(max2(0,atoull(var)*1024*1024));
-      mydelete(var);
-      }
-   else if ( ! strcmp(type,"uploadminspace")) {
-      gdata.uploadminspace = (off_t)(max2(0,atoull(var)*1024*1024));
       mydelete(var);
       }
    else if ( ! strcmp(type,"connectionmethod"))

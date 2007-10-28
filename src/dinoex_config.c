@@ -48,6 +48,11 @@ typedef struct {
   int flags;
 } config_list_typ;
 
+typedef struct {
+  const char *name;
+  void (*func)(char *var);
+} config_func_typ;
+
 
 static int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
@@ -515,12 +520,157 @@ int set_config_list(const char *key, char *text)
 }
 
 
+void set_default_network_name(void)
+{
+  char *var;
+
+  if (gdata.networks[gdata.networks_online].name != NULL) {
+    if (strlen(gdata.networks[gdata.networks_online].name) != 0) {
+      return;
+    }
+    mydelete(gdata.networks[gdata.networks_online].name);
+  }
+
+  var = mymalloc(10);
+  snprintf(var, 10, "%d", gdata.networks_online + 1);
+  gdata.networks[gdata.networks_online].name = var;
+  mydelete(var);
+  return;
+}
+
+
+static void c_autosendpack(char *var)
+{
+  char *a;
+  char *b;
+  char *c;
+
+  a = getpart(var,1); b = getpart(var,2); c = getpart(var,3);
+  if (a && b) {
+    autoqueue_t *aq;
+    aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
+    aq->pack = between(0,atoi(a),100000);
+    aq->word = b;
+    aq->message = c;
+  } else {
+    mydelete(b);
+    mydelete(c);
+  }
+  mydelete(a);
+  mydelete(var);
+}
+
+static void c_network(char *var)
+{
+  gdata.bracket = 0;
+  if (gdata.networks_online == 0) {
+     /* add new network only when server defined */
+     if (irlist_size(&gdata.networks[gdata.networks_online].servers))
+       gdata.networks_online ++;
+  } else {
+    gdata.networks_online ++;
+  }
+  if (gdata.networks_online >= MAX_NETWORKS) {
+    outerror(OUTERROR_TYPE_WARN,
+             "ignored network '%s' because we have to many.",
+             var);
+    mydelete(var);
+    return;
+  }
+  gdata.networks[gdata.networks_online].net = gdata.networks_online;
+  mydelete(gdata.networks[gdata.networks_online].name);
+  if (strlen(var) != 0) {
+    gdata.networks[gdata.networks_online].name = var;
+  } else {
+    set_default_network_name();
+  }
+}
+
+static void c_uploadminspace(char *var)
+{
+  gdata.uploadminspace = (off_t)(max2(0,atoull(var)*1024*1024));
+}
+
+static void c_bracket_open(char *var)
+{
+  gdata.bracket ++;
+}
+
+static void c_bracket_close(char *var)
+{
+  gdata.bracket --;
+}
+
+static int config_func_anzahl = 0;
+static config_func_typ config_parse_func[] = {
+{"autosendpack",           c_autosendpack },
+{"network",                c_network },
+{"uploadminspace",         c_uploadminspace },
+{"{",                      c_bracket_open },
+{"}",                      c_bracket_close },
+{NULL, NULL }};
+
+static void config_sorted_func(void)
+{
+  long i;
+  
+  for (i = 0L; config_parse_func[i].name != NULL; i ++) {
+    if (config_parse_func[i + 1].name == NULL)
+      break;
+    if (strcmp(config_parse_func[i].name, config_parse_func[i + 1].name) < 0)
+      continue;
+
+    outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
+             config_parse_func[i].name, config_parse_func[i + 1].name);
+  };
+  config_func_anzahl = i + 1;
+}
+
+static int config_find_func(const char *key)
+{
+  int how_far;
+  int bin_mid;
+  int bin_low;
+  int bin_high;
+  
+  if (config_func_anzahl > 0L) {
+    bin_low = 0;
+    bin_high = config_func_anzahl - 1;
+    while (bin_low <= bin_high) {
+      bin_mid = (bin_low + bin_high) / 2;
+      how_far = strcmp(config_parse_func[bin_mid].name, key);
+      if (how_far == 0)
+        return bin_mid;
+      if (how_far < 0)
+        bin_low = bin_mid + 1;
+      else
+        bin_high = bin_mid - 1;
+    }
+  };
+  return -1;
+} 
+
+int set_config_func(const char *key, char *text)
+{
+  int i;
+
+  updatecontext();
+
+  i = config_find_func(key);
+  if (i < 0)
+    return 1;
+
+  (*config_parse_func[i].func)(text);
+  return 0;
+}
+
 void config_startup(void)
 {
   config_sorted_bool();
   config_sorted_int();
   config_sorted_string();
   config_sorted_list();
+  config_sorted_func();
 }
 
 /* EOF */

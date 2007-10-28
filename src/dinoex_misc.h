@@ -43,7 +43,6 @@ void stoplist(const char *nick);
 void notifyqueued_nick(const char *nick);
 int check_for_file_remove(int n);
 void look_for_file_remove(void);
-void set_default_network_name(void);
 int has_closed_servers(void);
 int has_joined_channels(int all);
 void reset_download_limits(void);

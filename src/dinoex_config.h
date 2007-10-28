@@ -18,6 +18,10 @@ int set_config_int(const char *key, const char *text);
 int set_config_string(const char *key, char *text);
 int set_config_list(const char *key, char *text);
 
+void set_default_network_name(void);
+
+int set_config_func(const char *key, char *text);
+
 void config_startup(void);
 
 /* EOF */

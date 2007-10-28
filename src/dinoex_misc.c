@@ -521,30 +521,6 @@ void look_for_file_remove(void)
   return;
 }
 
-void set_default_network_name(void)
-{
-  char *var;
-
-  var = mymalloc(10);
-  snprintf(var, 10, "%d", gdata.networks_online + 1);
-
-  if (gdata.networks[gdata.networks_online].name == NULL)
-    {
-      gdata.networks[gdata.networks_online].name = var;
-      return;
-    }
-
-  if (strlen(gdata.networks[gdata.networks_online].name) == 0)
-    {
-      mydelete(gdata.networks[gdata.networks_online].name);
-      gdata.networks[gdata.networks_online].name = var;
-      return;
-    }
-
-  mydelete(var);
-  return;
-}
-
 int has_closed_servers(void)
 {
   int ss;

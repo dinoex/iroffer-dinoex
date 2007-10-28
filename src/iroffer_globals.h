@@ -312,6 +312,7 @@ unsigned char *sendbuff;
 
 context_t context_log[MAXCONTEXTS];
 int context_cur_ptr;
+int bracket;
 
 irlist_t ignorelist;
 
