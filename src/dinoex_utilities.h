@@ -26,5 +26,6 @@ char *to_hostmask(const char *nick, const char *hostname);
 const char *get_basename(const char *pathname);
 void shutdown_close(int handle);
 int get_port(ir_sockaddr_union_t *listenaddr);
+int strcmp_null(const char *s1, const char *s2);
 
 /* End of File */

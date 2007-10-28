@@ -238,4 +238,18 @@ int get_port(ir_sockaddr_union_t *listenaddr)
   return ntohs(listenaddr->sin6.sin6_port);
 }
 
+int strcmp_null(const char *s1, const char *s2)
+{
+  if ((s1 == NULL) && (s2 == NULL))
+    return 0;
+
+  if (s1 == NULL)
+    return -1;
+
+  if (s2 == NULL)
+    return 1;
+
+  return strcmp(s1, s2);
+}
+
 /* End of File */
