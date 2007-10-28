@@ -2350,7 +2350,9 @@ static void u_rehash(const userinput * const u) {
    gdata.r_transferminspeed = gdata.transferminspeed;
    gdata.r_transfermaxspeed = gdata.transfermaxspeed;
    gdata.r_ourip = gdata.getipfromserver ? gdata.ourip : 0;
-   gdata.r_local_vhost = mystrdup(gdata.local_vhost);
+   gdata.r_local_vhost = NULL;
+   if (gdata.local_vhost)
+     gdata.r_local_vhost = mystrdup(gdata.local_vhost);
    
    if (gdata.logfd != FD_UNUSED)
      {
@@ -2397,7 +2399,7 @@ static void u_rehash(const userinput * const u) {
    gdata.r_ourip = 0;
    
    needtojump=0;
-   if (strcmp(gdata.local_vhost, gdata.r_local_vhost) != 0)
+   if (strcmp_null(gdata.local_vhost, gdata.r_local_vhost) != 0)
      {
        u_respond(u, "vhost changed, reconnecting");
        needtojump=1;
