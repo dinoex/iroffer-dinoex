@@ -88,7 +88,7 @@ int l_setup_listen(upload * const l)
 
   updatecontext();
 
-  rc = open_listen(l->family, &listenaddr, &(l->clientsocket), 0, gdata.tcprangestart, 1);
+  rc = open_listen(l->family, &listenaddr, &(l->clientsocket), 0, gdata.tcprangestart, 1, NULL);
   if (rc != 0) {
     l_closeconn(l, "Connection Lost", 0);
     return 1;

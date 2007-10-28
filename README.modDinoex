@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+183) telnet_vhost
+  If the computer you want to run iroffer on has multiple local IP
+  addresses, you can run the telnet server on any of those IP addresses.
+
+182) http_vhost
+  If the computer you want to run iroffer on has multiple local IP
+  addresses, you can run the webserver on any of those IP addresses.
+
 181) telnet_port (inspired by anibi)
   Port for the buildin Telnet server.
 
@@ -85,10 +93,10 @@ removed: convertxdccfile
   For example: robots.txt favicon.ico
 
 168) http_admin (inspired by TheDeath, StoVoKor)
-  Defines admin login for the buildin Webserver.
+  Defines admin login for the buildin webserver.
 
 167) http_port (inspired by TheDeath, StoVoKor)
-  Port for the buildin Webserver.
+  Port for the buildin webserver.
   (xddclistfile and weblist)
 
 166) DCC SEND

@@ -71,7 +71,7 @@ int setupdccchatout(const char *nick)
   
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
 
-  rc = open_listen(gnetwork->myip.sa.sa_family, &listenaddr, &(chat->fd), 0, gdata.tcprangestart, 1);
+  rc = open_listen(gnetwork->myip.sa.sa_family, &listenaddr, &(chat->fd), 0, gdata.tcprangestart, 1, NULL);
   if (rc != 0)
     return 1;
   

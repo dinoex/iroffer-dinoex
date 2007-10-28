@@ -43,7 +43,7 @@ void t_setuplisten (transfer * const t)
   
   updatecontext();
 
-  rc = open_listen(t->family, &(t->serveraddress), &(t->listensocket), 0, gdata.tcprangestart, 1);
+  rc = open_listen(t->family, &(t->serveraddress), &(t->listensocket), 0, gdata.tcprangestart, 1, NULL);
   if (rc != 0)
     {
       t_closeconn(t,"Connection Error, Try Again",errno);

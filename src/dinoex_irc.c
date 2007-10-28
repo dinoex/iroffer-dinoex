@@ -82,7 +82,33 @@ void update_natip(const char *var)
   }
 }
 
-int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search)
+static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, char *vhost)
+{
+  SIGNEDSOCK int addrlen;
+  int e;
+
+  if (vhost == NULL)
+    return 0;
+
+  if (family == AF_INET) {
+    addrlen = sizeof(struct sockaddr_in);
+    listenaddr->sin.sin_family = AF_INET;
+    e = inet_pton(family, vhost, &(listenaddr->sin.sin_addr));
+   } else {
+    addrlen = sizeof(struct sockaddr_in6);
+    listenaddr->sin6.sin6_family = AF_INET6;
+    e = inet_pton(family, vhost, &(listenaddr->sin6.sin6_addr));
+  }
+
+  if (e != 1) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't set Virtual Host %s: %s", vhost, strerror(errno));
+    return 1;
+  }
+
+  return 0;
+}
+
+int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, char *vhost)
 {
   int family;
   int rc;
@@ -91,14 +117,18 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
 
   updatecontext();
 
-  switch (ipv6) {
-  case AF_INET:
-  case 1:
-    family = AF_INET;
-    break;
-  default:
-    family = AF_INET6;
-    break;
+  if (vhost == NULL) {
+    switch (ipv6) {
+    case AF_INET:
+    case 1:
+      family = AF_INET;
+      break;
+    default:
+      family = AF_INET6;
+      break;
+    }
+  } else {
+    family = strchr(vhost, ':') ? AF_INET6 : AF_INET;
   }
   *listen_socket = socket(family, SOCK_STREAM, 0);
   if (*listen < 0) {
@@ -124,6 +154,8 @@ int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, i
     listenaddr->sin6.sin6_family = AF_INET6;
     listenaddr->sin6.sin6_port = htons(port);
   }
+
+  bind_vhost(listenaddr, family, vhost);
 
   if (search) {
     rc = ir_bind_listen_socket(*listen_socket, listenaddr);

@@ -167,6 +167,8 @@ irlist_t autocrc_exclude;
 irlist_t https;
 irlist_t http_bad_ip4;
 irlist_t http_bad_ip6;
+irlist_t http_vhost;
+irlist_t telnet_vhost;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;

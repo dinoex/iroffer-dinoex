@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+183) telnet_vhost
+  Wenn der Computer/Server mehr als eine lokale IP-Adresse hat kann,
+  mit http_vhost <ip> angegeben werden, welche der Telnet Server nutzen soll.
+
+182) http_vhost
+  Wenn der Computer/Server mehr als eine lokale IP-Adresse hat kann,
+  mit http_vhost <ip> angegeben werden, welche der Webserver nutzen soll.
+
 181) telnet_port
   Port für den eingebauten Telnet Server.
 

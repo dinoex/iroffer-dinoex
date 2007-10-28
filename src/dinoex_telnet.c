@@ -23,6 +23,7 @@
 #include "dinoex_telnet.h"
 
 static int telnet_listen[2] = { FD_UNUSED, FD_UNUSED };
+static int telnet_family[2] = { AF_INET6, AF_INET };
 
 void telnet_close_listen(void)
 {
@@ -39,16 +40,24 @@ void telnet_close_listen(void)
 
 static int telnet_open_listen(int i)
 {
+  char *vhost = NULL;
   char *msg;
   int rc;
   ir_sockaddr_union_t listenaddr;
 
   updatecontext();
 
-  rc = open_listen(i, &listenaddr, &(telnet_listen[i]), gdata.telnet_port, 1, 0);
+  if (irlist_size(&gdata.telnet_vhost) != 0) {
+    vhost = irlist_get_nth(&gdata.telnet_vhost, i);
+    if (vhost == NULL)
+      return 1;
+  }
+
+  rc = open_listen(i, &listenaddr, &(telnet_listen[i]), gdata.telnet_port, 1, 0, vhost);
   if (rc != 0)
     return 1;
 
+  telnet_family[i] = listenaddr.sa.sa_family;
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, 0);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,

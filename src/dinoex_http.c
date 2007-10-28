@@ -27,6 +27,7 @@
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 
 static int http_listen[2] = { FD_UNUSED, FD_UNUSED };
+static int http_family[2] = { AF_INET6, AF_INET };
 
 static const char *http_header_status =
 "HTTP/1.0 200 OK\r\n"
@@ -345,16 +346,24 @@ static void expire_badip6(void)
 
 static int h_open_listen(int i)
 {
+  char *vhost = NULL;
   char *msg;
   int rc;
   ir_sockaddr_union_t listenaddr;
 
   updatecontext();
 
-  rc = open_listen(i, &listenaddr, &(http_listen[i]), gdata.http_port, 1, 0);
+  if (irlist_size(&gdata.http_vhost) != 0) {
+    vhost = irlist_get_nth(&gdata.http_vhost, i);
+    if (vhost == NULL)
+      return 1;
+  }
+
+  rc = open_listen(i, &listenaddr, &(http_listen[i]), gdata.http_port, 1, 0, vhost);
   if (rc != 0)
     return 1;
 
+  http_family[i] = listenaddr.sa.sa_family;
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, 0);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,

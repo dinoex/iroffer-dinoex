@@ -14,7 +14,7 @@
  */
 
 void update_natip (const char *var);
-int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search);
+int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, char *vhost);
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
 void child_resolver(void);
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen);

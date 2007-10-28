@@ -2142,6 +2142,8 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.autoadd_dirs);
   irlist_delete_all(&gdata.autocrc_exclude);
   irlist_delete_all(&gdata.filedir);
+  irlist_delete_all(&gdata.http_vhost);
+  irlist_delete_all(&gdata.telnet_vhost);
   mydelete(gdata.enable_nick);
   mydelete(gdata.owner_nick);
   mydelete(gdata.geoipdatabase);

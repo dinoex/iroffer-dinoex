@@ -1421,6 +1421,14 @@ void dumpgdata(void)
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(http_vhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
+  gdata_irlist_iter_start(telnet_vhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+
   gdata_irlist_iter_start(https, http);
   ioutput(gdata_common,
           "  : clientsocket=%d filedescriptor=%d",
