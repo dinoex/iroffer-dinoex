@@ -2907,7 +2907,7 @@ void a_amsg(const userinput * const u)
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch) {
         if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
-          privmsg_chan(ch, u->arg1e);
+          privmsg_chan(ch, "%s", u->arg1e);
         ch = irlist_get_next(ch);
         }
     }
@@ -3587,7 +3587,7 @@ void a_announce(const userinput * const u)
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch) {
         if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
-          privmsg_chan(ch, tempstr);
+          privmsg_chan(ch, "%s", tempstr);
         ch = irlist_get_next(ch);
         }
     }
@@ -3636,7 +3636,7 @@ void a_cannounce(const userinput * const u)
       while(ch) {
         if (ch->flags & CHAN_ONCHAN) {
           if (strcasecmp(ch->name, u->arg1) == 0)
-            privmsg_chan(ch, tempstr);
+            privmsg_chan(ch, "%s", tempstr);
         }
         ch = irlist_get_next(ch);
       }
@@ -3675,7 +3675,7 @@ void a_sannounce(const userinput * const u)
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch) {
         if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
-          privmsg_chan(ch, tempstr);
+          privmsg_chan(ch, "%s", tempstr);
         ch = irlist_get_next(ch);
         }
     }

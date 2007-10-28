@@ -82,7 +82,7 @@ Not going to happen anytime soon:
   1001  need voice seperate for each channel
   1003  write notice and logs in a seperate file
   1004  daily/weekly/monthly transferlimits for uploads 
-  1005  part annd join channel after netsplit
+  1005  auto part annd join channel after netsplit
   1006  resume transfer even is name has diffrent encoding
   1007  bot with fixed number of packs, last in first out
   1009  limit file access to upload and download

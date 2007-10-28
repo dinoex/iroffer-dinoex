@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG (bugfix: AUTOADD Misha-SU)
+  Handle '%' in Announce-text.
+
 184) local_vhost
   supports binding to IPV6
 

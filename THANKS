@@ -273,3 +273,6 @@ Radicand
 unlogisch
 	option "autoadd_sort"
 
+Misha-SU
+	report "ANNOUNCE" bug
+

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG
+  Gebe '%' im Announce-Text richtig aus.
+
 184) local_vhost
   Auch für IPV6 Adressen möglich.
 
