@@ -117,7 +117,7 @@ static void telnet_accept(int i)
 
   updatecontext();
 
-  if (i == 0) {
+  if (telnet_family[i] != AF_INET) {
     addrlen = sizeof (struct sockaddr_in6);
     clientsocket = accept(telnet_listen[i], &remoteaddr.sa, &addrlen);
   } else {
@@ -141,7 +141,7 @@ static void telnet_accept(int i)
  
   gdata.num_dccchats++;
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
-  chat->family = (i == 0) ? AF_INET6 : AF_INET;
+  chat->family = telnet_family[i];
   chat->fd = clientsocket;
   chat->status = DCCCHAT_AUTHENTICATING;
   chat->net = 0;

@@ -435,7 +435,7 @@ static void h_accept(int i)
 
   updatecontext();
 
-  if (i == 0) {
+  if (http_family[i] != AF_INET) {
     addrlen = sizeof (struct sockaddr_in6);
     clientsocket = accept(http_listen[i], &remoteaddr.sa, &addrlen);
   } else {
@@ -454,7 +454,7 @@ static void h_accept(int i)
   h = irlist_add(&gdata.https, sizeof(http));
   h->filedescriptor = FD_UNUSED;
   h->clientsocket = clientsocket;
-  if (i == 0) {
+  if (http_family[i] != AF_INET) {
     h->family = remoteaddr.sin6.sin6_family;
     h->remoteip6 = remoteaddr.sin6.sin6_addr;
     h->remoteport = ntohs(remoteaddr.sin6.sin6_port);
