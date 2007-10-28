@@ -257,19 +257,11 @@ int setupdccchat(const char *nick,
   mydelete(port);
   mydelete(ip);
   
-  if (gdata.local_vhost)
+  if (bind_irc_vhost(chat->family, chat->fd) != 0)
     {
-      bzero((char*)&localaddr, sizeof(localaddr));
-      localaddr.sin.sin_family = AF_INET;
-      localaddr.sin.sin_port = 0;
-      localaddr.sin.sin_addr.s_addr = htonl(gdata.local_vhost);
-      
-      if (bind(chat->fd, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0)
-        {
-          outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't Bind To Virtual Host: %s", strerror(errno));
-          chat->fd = FD_UNUSED;
-          return 1;
-        }
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Bind To Virtual Host: %s", strerror(errno));
+      chat->fd = FD_UNUSED;
+      return 1;
     }
   
   if (set_socket_nonblocking(chat->fd,1) < 0 )

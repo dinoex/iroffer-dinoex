@@ -1989,4 +1989,3 @@
 2013 "Telnet connection received from %s"
 2014 "http_vhost"
 2015 "telnet_vhost"
-2016 "Couldn't set Virtual Host %s: %s"

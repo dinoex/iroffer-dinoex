@@ -101,9 +101,35 @@ static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, char *vhost)
   }
 
   if (e != 1) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't set Virtual Host %s: %s", vhost, strerror(errno));
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", vhost);
     return 1;
   }
+
+  return 0;
+}
+
+int bind_irc_vhost(int family, int clientsocket)
+{
+  ir_sockaddr_union_t localaddr;
+  SIGNEDSOCK int addrlen;
+
+  if (!gdata.local_vhost)
+    return 0;
+
+  bzero((char*)&localaddr, sizeof(ir_sockaddr_union_t));
+  if (family == AF_INET ) {
+    addrlen = sizeof(struct sockaddr_in);
+    localaddr.sin.sin_family = AF_INET;
+    localaddr.sin.sin_port = 0;
+    localaddr.sin.sin_addr.s_addr = htonl(gdata.local_vhost);
+
+  } else {
+    /* ignore vhost */
+    return 0;
+  }
+
+  if (bind(clientsocket, &(localaddr.sa), addrlen) < 0)
+    return 1;
 
   return 0;
 }

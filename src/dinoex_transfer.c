@@ -34,6 +34,7 @@ void t_setup_dcc(transfer *tr, const char *nick)
     bzero((char *) &(tr->serveraddress), sizeof(ir_sockaddr_union_t));
     if (tr->family == AF_INET) {
       tr->serveraddress.sin.sin_family = AF_INET;
+      tr->serveraddress.sin.sin_port = htons(0);
       if (gdata.local_vhost)
         tr->serveraddress.sin.sin_addr.s_addr = htonl(gdata.local_vhost);
       else
@@ -76,7 +77,6 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
 {
   char *msg;
   ir_sockaddr_union_t remoteaddr;
-  struct sockaddr_in localaddr;
   SIGNEDSOCK int addrlen;
   int retval;
 
@@ -103,16 +103,9 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
       outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", tr->remoteaddr);
   }
 
-  if (gdata.local_vhost) {
-    bzero((char*)&localaddr, sizeof(struct sockaddr_in));
-    localaddr.sin_family = AF_INET;
-    localaddr.sin_port = 0;
-    localaddr.sin_addr.s_addr = htonl(gdata.local_vhost);
-
-    if (bind(tr->clientsocket, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0) {
-      t_closeconn(tr, "Couldn't Bind Virtual Host, Sorry", errno);
-      return;
-    }
+  if (bind_irc_vhost(tr->family, tr->clientsocket) != 0) {
+    t_closeconn(tr, "Couldn't Bind Virtual Host, Sorry", errno);
+    return;
   }
 
   if (set_socket_nonblocking(tr->clientsocket, 1) < 0 ) {

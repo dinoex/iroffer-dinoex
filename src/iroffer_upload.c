@@ -21,6 +21,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_upload.h"
+#include "dinoex_irc.h"
 
 
 void l_initvalues (upload * const l) {
@@ -36,7 +37,6 @@ void l_establishcon (upload * const l)
 {
   char *tempstr;
   ir_sockaddr_union_t remoteaddr;
-  struct sockaddr_in localaddr;
   SIGNEDSOCK int addrlen;
   int retval;
   struct stat s;
@@ -83,18 +83,10 @@ void l_establishcon (upload * const l)
         outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", l->remoteaddr);
     }
   
-  if (gdata.local_vhost)
+  if (bind_irc_vhost(l->family, l->clientsocket) != 0)
     {
-      bzero((char*)&localaddr, sizeof(struct sockaddr_in));
-      localaddr.sin_family = AF_INET;
-      localaddr.sin_port = 0;
-      localaddr.sin_addr.s_addr = htonl(gdata.local_vhost);
-      
-      if (bind(l->clientsocket, (struct sockaddr *) &localaddr, sizeof(localaddr)) < 0)
-        {
-          l_closeconn(l,"Couldn't Bind Virtual Host, Sorry",errno);
-          return;
-        }
+      l_closeconn(l, "Couldn't Bind Virtual Host, Sorry", errno);
+      return;
     }
   
   if (set_socket_nonblocking(l->clientsocket,1) < 0 )
