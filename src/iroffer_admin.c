@@ -219,7 +219,7 @@ static const userinput_parse_t userinput_parse[] = {
 {6,5,method_allow_all,u_rehash,        "REHASH",NULL,"Re-reads config file(s) and reconfigures"},
 {6,2,method_allow_all,u_botinfo,       "BOTINFO",NULL,"Show Information about the bot status"},
 {6,5,method_allow_all,u_memstat,       "MEMSTAT",NULL,"Show Information about memory usage"},
-{5,5,method_allow_all,u_clearrecords,  "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, total sent, and transfer limits"},
+{6,5,method_allow_all,u_clearrecords,  "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, total sent, and transfer limits"},
 {6,5,method_allow_all,a_cleargets,     "CLEARGETS",NULL,"Clears download counters for each pack"},
 {6,5,method_console,  u_redraw,        "REDRAW",NULL,"Redraws the Screen"},
 {6,5,method_console,  u_delhist,       "DELHIST",NULL,"Deletes console history"},
