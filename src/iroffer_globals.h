@@ -226,6 +226,7 @@ int balanced_queue;
 int http_port;
 int passive_dcc;
 int telnet_port;
+int remove_dead_users;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

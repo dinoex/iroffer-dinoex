@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+185) remove_dead_users
+  if the bot can't notify a nick:
+  if set not 0, further queued messages are dropped.
+  if set to 2, all this nicks queed packs are removed.
+  Default: 0, no action.
+
+Short Term Features:
+  164 02/03/01 Open remove dead users from queue
+
 bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG (bugfix: AUTOADD Misha-SU)
   Handle '%' in Announce-text.
 

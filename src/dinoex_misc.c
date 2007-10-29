@@ -28,6 +28,7 @@
 #include "dinoex_curl.h"
 #include "dinoex_irc.h"
 #include "dinoex_telnet.h"
+#include "dinoex_queue.h"
 #include "dinoex_misc.h"
 
 #include <ctype.h>
@@ -1429,6 +1430,16 @@ int packnumtonum(const char *a)
   return atoi(a);
 }
 
+void lost_nick(char *nick)
+{
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "Nickname %s on %s left",
+          nick,
+          gnetwork->name);
+  stoplist(nick);
+  queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick);
+  queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick);
+}
 #ifdef DEBUG
 
 static void free_state(void)

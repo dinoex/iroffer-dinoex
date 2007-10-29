@@ -2042,7 +2042,13 @@ static void parseline(char *line) {
            mydelete(item);
          }
      }
-
+  
+ /* :server 401 botnick usernick :No such nick/channel */
+   if ( !strcmp(part2,"401") && part3 && !strcmp(part3,"*") && part4 )
+     {
+       lost_nick(part4);
+     }
+  
  /* :server 433 old new :Nickname is already in use. */
    if ( !strcmp(part2,"433") && part3 && !strcmp(part3,"*") && part4 )
      {

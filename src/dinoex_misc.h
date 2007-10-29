@@ -85,6 +85,8 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
 
 int packnumtonum(const char *a);
 
+void lost_nick(char *nick);
+
 void exit_iroffer(void);
 
 /* End of File */

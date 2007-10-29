@@ -1540,6 +1540,7 @@ void dumpgdata(void)
   gdata_print_int(http_port);
   gdata_print_int(passive_dcc);
   gdata_print_int(telnet_port);
+  gdata_print_int(remove_dead_users);
   gdata_print_long(nomd5_start);
   
   /* downloadhost */

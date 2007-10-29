@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+185) remove_dead_users
+  Wenn der Bot einen Nick nicht mehr erreichen kann:
+  Wert ungleich 0, weitere Nachrichten and den Nick werden gelöscht.
+  Wert gleich 2, alle Packs in den Warteschalngen werden entfernt.
+  Default: 0, keine Aktion.
+
 bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG
   Gebe '%' im Announce-Text richtig aus.
 
