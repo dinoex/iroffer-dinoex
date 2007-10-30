@@ -590,16 +590,19 @@ static void c_network(char *var)
 static void c_uploadminspace(char *var)
 {
   gdata.uploadminspace = (off_t)(max2(0,atoull(var)*1024*1024));
+  mydelete(var);
 }
 
 static void c_bracket_open(char *var)
 {
   gdata.bracket ++;
+  mydelete(var);
 }
 
 static void c_bracket_close(char *var)
 {
   gdata.bracket --;
+  mydelete(var);
 }
 
 static int config_func_anzahl = 0;
