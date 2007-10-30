@@ -16,12 +16,14 @@ bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG
   Auch für IPV6 Adressen möglich.
 
 183) telnet_vhost
-  Wenn der Computer/Server mehr als eine lokale IP-Adresse hat kann,
-  mit http_vhost <ip> angegeben werden, welche der Telnet Server nutzen soll.
+  Liste von bis zu zwei lokale IP-Adressen die der Telnet Server nutzen soll.
+  z.B.: "::" oder "0.0.0.0" für alle IP-Adressen.
+  z.B. "::1" oder "127.0.0.1" um auf den Rechner zu begrenzen.
 
 182) http_vhost
-  Wenn der Computer/Server mehr als eine lokale IP-Adresse hat kann,
-  mit http_vhost <ip> angegeben werden, welche der Webserver nutzen soll.
+  Liste von bis zu zwei lokale IP-Adressen die der Webserver nutzen soll.
+  z.B.: "::" oder "0.0.0.0" für alle IP-Adressen.
+  z.B. "::1" oder "127.0.0.1" um auf den Rechner zu begrenzen.
 
 181) telnet_port
   Port für den eingebauten Telnet Server.

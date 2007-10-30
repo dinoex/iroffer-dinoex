@@ -19,12 +19,14 @@ bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG (bugfix: AUTOADD Misha-SU)
   supports binding to IPV6
 
 183) telnet_vhost
-  If the computer you want to run iroffer on has multiple local IP
-  addresses, you can run the telnet server on any of those IP addresses.
+  List of up to 2 local IP addresses for the Telnet server to run on.
+  Use "::" or "0.0.0.0" to allow any IP address.
+  Use "::1" or "127.0.0.1" to limit access to localhost only.
 
 182) http_vhost
-  If the computer you want to run iroffer on has multiple local IP
-  addresses, you can run the webserver on any of those IP addresses.
+  List of up to 2 local IP addresses for the Webserver to run on.
+  Use "::" or "0.0.0.0" to allow any IP address.
+  Use "::1" or "127.0.0.1" to limit access to localhost only.
 
 181) telnet_port (inspired by anibi)
   Port for the buildin Telnet server.
