@@ -51,7 +51,7 @@ static int telnet_open_listen(int i)
   if (vhost == NULL)
     return 1;
 
-  rc = open_listen(i, &listenaddr, &(telnet_listen[i]), gdata.telnet_port, 1, 0, vhost);
+  rc = open_listen(0, &listenaddr, &(telnet_listen[i]), gdata.telnet_port, 1, 0, vhost);
   if (rc != 0)
     return 1;
 

@@ -141,26 +141,15 @@ int bind_irc_vhost(int family, int clientsocket)
   return 0;
 }
 
-int open_listen(int ipv6, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, char *vhost)
+int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, char *vhost)
 {
-  int family;
   int rc;
   int tempc;
   SIGNEDSOCK int addrlen;
 
   updatecontext();
 
-  if (vhost == NULL) {
-    switch (ipv6) {
-    case AF_INET:
-    case 1:
-      family = AF_INET;
-      break;
-    default:
-      family = AF_INET6;
-      break;
-    }
-  } else {
+  if (vhost != NULL) {
     family = strchr(vhost, ':') ? AF_INET6 : AF_INET;
   }
   *listen_socket = socket(family, SOCK_STREAM, 0);
