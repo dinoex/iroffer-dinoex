@@ -27,7 +27,7 @@
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 
 static int http_listen[2] = { FD_UNUSED, FD_UNUSED };
-static int http_family[2] = { AF_INET6, AF_INET };
+static int http_family[2] = { 0, 0 };
 
 static const char *http_header_status =
 "HTTP/1.0 200 OK\r\n"
@@ -353,13 +353,11 @@ static int h_open_listen(int i)
 
   updatecontext();
 
-  if (irlist_size(&gdata.http_vhost) != 0) {
-    vhost = irlist_get_nth(&gdata.http_vhost, i);
-    if (vhost == NULL)
-      return 1;
-  }
+  vhost = irlist_get_nth(&gdata.http_vhost, i);
+  if (vhost == NULL)
+    return 1;
 
-  rc = open_listen(i, &listenaddr, &(http_listen[i]), gdata.http_port, 1, 0, vhost);
+  rc = open_listen(0, &listenaddr, &(http_listen[i]), gdata.http_port, 1, 0, vhost);
   if (rc != 0)
     return 1;
 
