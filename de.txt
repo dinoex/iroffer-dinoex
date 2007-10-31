@@ -1795,7 +1795,7 @@
 1819 "MAXSPEED"
 1820 "id x"
 1821 "Setzen einer Bandbreitengrenze von <x> KB/s für Transfer <id>"
-1822 "CHMAXS: [Transfer %i] Old: %1.1f New: %1.1f"
+1822 "MAXSPEED: [Transfer %i] Old: %1.1f New: %1.1f"
 1823 "idlequeuesize"
 1824 "maxidlequeuedperperson"
 1825 " Denied (user/idle): "
