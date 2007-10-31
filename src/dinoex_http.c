@@ -20,7 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
-#include "dinoex_ignore.h"
+#include "dinoex_badip.h"
 #include "dinoex_http.h"
 
 #include <ctype.h>

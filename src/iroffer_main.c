@@ -29,7 +29,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
 #include "dinoex_telnet.h"
-#include "dinoex_ignore.h"
+#include "dinoex_badip.h"
 #include "dinoex_misc.h"
 
 /* local functions */

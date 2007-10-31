@@ -21,7 +21,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_http.h"
-#include "dinoex_ignore.h"
+#include "dinoex_badip.h"
 
 
 const char* strstrnocase (const char *str1, const char *match1)

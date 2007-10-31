@@ -19,7 +19,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
-#include "dinoex_ignore.h"
+#include "dinoex_badip.h"
 
 int is_in_badip4(long remoteip)
 {
