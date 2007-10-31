@@ -607,10 +607,10 @@ static void mainloop (void) {
           while(tr)
             {
               if ( !tr->nomax &&
-                   (tr->xpack->maxspeed > 0))
+                   (tr->maxspeed > 0))
                 {
-                  tr->tx_bucket += tr->xpack->maxspeed * (1024 / 4);
-                  tr->tx_bucket = min2(tr->tx_bucket, MAX_TRANSFER_TX_BURST_SIZE * tr->xpack->maxspeed * 1024);
+                  tr->tx_bucket += tr->maxspeed * (1024 / 4);
+                  tr->tx_bucket = min2(tr->tx_bucket, MAX_TRANSFER_TX_BURST_SIZE * tr->maxspeed * 1024);
                 }
               tr = irlist_get_next(tr);
             }

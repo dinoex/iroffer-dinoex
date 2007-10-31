@@ -2736,15 +2736,15 @@ void notifybandwidthtrans(void)
   while(tr)
     {
       if (!tr->nomax &&
-          (tr->xpack->maxspeed > 0) &&
+          (tr->maxspeed > 0) &&
           (gdata.curtime-tr->connecttime > MIN_TL) &&
-          (tr->lastspeed*10 > tr->xpack->maxspeed*9))
+          (tr->lastspeed*10 > tr->maxspeed*9))
         {
           /* send if over 90% */
           gnetwork = &(gdata.networks[tr->net]);
           notice_slow(tr->nick,"Pack bandwidth limit: %2.1f of %2.1fKB/sec used.",
                       tr->lastspeed,
-                      tr->xpack->maxspeed);
+                      tr->maxspeed);
         }
       tr = irlist_get_next(tr);
     }

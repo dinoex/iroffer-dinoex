@@ -3527,12 +3527,12 @@ static void u_trinfo(const userinput * const u)
   tempstr3 = mycalloc(maxtextlengthshort);
   
   snprintf(tempstr2,maxtextlengthshort-1,"%1.1fK/s",tr->xpack->minspeed);
-  snprintf(tempstr3,maxtextlengthshort-1,"%1.1fK/s",tr->xpack->maxspeed);
+  snprintf(tempstr3,maxtextlengthshort-1,"%1.1fK/s",tr->maxspeed);
   
   u_respond(u,"Min %s, Current %1.1fK/s, Max %s, In Transit %" LLPRINTFMT "iK",
             (tr->nomin || (tr->xpack->minspeed == 0.0)) ? "no" : tempstr2 ,
             tr->lastspeed,
-            (tr->nomax || (tr->xpack->maxspeed == 0.0)) ? "no" : tempstr3 ,
+            (tr->nomax || (tr->maxspeed == 0.0)) ? "no" : tempstr3 ,
             (long long)(tr->bytessent-tr->lastack)/1024);
   
   mydelete(tempstr2);

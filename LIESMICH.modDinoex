@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+bugfix: MAXSPEED
+  Downloads liefen mit Paket-geschindigkeit.
+
 187) ADDMATCH
   Neues Admin Kommando:
   ADDMATCH <muster>                Fügt neue Dateien hinzu die auf <muster> passen

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+bugfix: MAXSPEED (reported by Lamarr)
+  transfer did still run with pack speed.
+
 187) ADDMATCH (inspired by Yasuo|Iwakura)
   new admin command:
   ADDMATCH <pattern>              Add new files matching this pattern

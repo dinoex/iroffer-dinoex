@@ -880,7 +880,7 @@ void a_maxspeed(const userinput * const u)
     }
 
   val = atof(u->arg2);
-  a_respond(u, "CHMAXS: [Transfer %i] Old: %1.1f New: %1.1f",
+  a_respond(u, "MAXSPEED: [Transfer %i] Old: %1.1f New: %1.1f",
             num, tr->maxspeed, val);
   tr->maxspeed = val;
 }

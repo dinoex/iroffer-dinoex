@@ -199,7 +199,7 @@ void t_transfersome (transfer * const t)
   
   /* max bandwidth start.... */
   
-  if (!t->nomax && (t->xpack->maxspeed > 0))
+  if (!t->nomax && (t->maxspeed > 0))
     {
       if (t->tx_bucket < TXSIZE)
         {

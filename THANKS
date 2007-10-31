@@ -157,6 +157,7 @@ Yasuo|Iwakura
 	report incomplete warning
 	QUL and DCL output
 	autosendpack with 2 parameters
+	admin command "ADDMATCH"
 
 Road
 	user command XDCC OWNER
@@ -275,4 +276,7 @@ unlogisch
 
 Misha-SU
 	report "ANNOUNCE" bug
+
+Lamarr
+	report "MAXSPEED" bug
 
