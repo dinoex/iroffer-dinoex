@@ -784,6 +784,29 @@ void lost_nick(char *nick)
   queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick);
 }
 
+int is_unsave_directory(const char *dir)
+{
+  char *line;
+  char *word;
+  int bad = 0;
+
+  /* no device letters */
+  if (strchr(dir, ':'))
+    return 1;
+
+  line = mystrdup(dir);
+  for (word = strtok(line, "/");
+       word;
+       word = strtok(NULL, "/")) {
+    if (strcmp(word, "..") == 0) {
+      bad ++;
+      break;
+    }
+  }
+  mydelete(line);
+  return bad;
+}
+
 #ifdef DEBUG
 
 static void free_state(void)

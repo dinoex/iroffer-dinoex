@@ -51,6 +51,7 @@ void a_add_delayed(const userinput * const u);
 void a_xdlock(const userinput * const u);
 void a_xdtrigger(const userinput * const u);
 void a_find(const userinput * const u);
+void a_listul(const userinput * const u);
 
 void a_unlimited(const userinput * const u);
 void a_maxspeed(const userinput * const u);

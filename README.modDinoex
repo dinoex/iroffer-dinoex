@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+188) LISTUL (inspired by dondieschotte)
+  new admin command:
+  LISTUL <dir>                    Shows contents of upload subdirectory
+
 bugfix: MAXSPEED (reported by Lamarr)
   transfer did still run with pack speed.
 

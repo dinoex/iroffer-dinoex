@@ -42,6 +42,8 @@ int packnumtonum(const char *a);
 
 void lost_nick(char *nick);
 
+int is_unsave_directory(const char *dir);
+
 void exit_iroffer(void);
 
 /* End of File */

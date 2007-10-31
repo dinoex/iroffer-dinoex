@@ -219,6 +219,7 @@ dondieschotte
 	option "autoadd_delay"
 	report "tcprangestart" out-of-range
 	option "tcprangelimit"
+	admin command "listul dir"
 
 dsd
 	admin command "autoadd"

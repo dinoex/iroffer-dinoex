@@ -839,6 +839,38 @@ void a_find(const userinput * const u)
    mydelete(tempstr);
 }
 
+void a_listul(const userinput * const u)
+{
+  char *tempstr;
+  size_t len;
+
+  updatecontext();
+  
+  if (!irlist_size(&gdata.uploadhost) || !gdata.uploaddir) {
+    a_respond(u, "No upload hosts or no uploaddir defined.");
+    return;
+  }
+  
+  if (u->arg1 == NULL) {
+    u_listdir(u, gdata.uploaddir);
+    return;
+  }
+
+  clean_quotes(u->arg1e);
+  convert_to_unix_slash(u->arg1e);
+
+  if (is_unsave_directory(u->arg1e)) {
+    a_respond(u, "Try Specifying a Directory");
+    return;
+  }
+
+  len = strlen(gdata.uploaddir) + strlen(u->arg1e) + 2;
+  tempstr = mycalloc(len + 1);
+  snprintf(tempstr, len, "%s/%s", gdata.uploaddir, u->arg1e);
+  u_listdir(u, tempstr);
+  mydelete(tempstr);
+}
+
 void a_unlimited(const userinput * const u)
 {
   int num = -1;

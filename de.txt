@@ -1995,3 +1995,4 @@
 2021 "Nickname %s on %s left"
 2022 "ADDMATCH"
 2023 "Fügt neue Dateien hinzu die auf <muster> passen."
+2024 "[dir]"

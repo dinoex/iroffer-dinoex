@@ -88,7 +88,6 @@ static void u_jump(const userinput * const u);
 static void u_servqc(const userinput * const u);
 static void u_servers(const userinput * const u);
 static void u_trinfo(const userinput * const u);
-static void u_listul(const userinput * const u);
 static void u_clearrecords(const userinput * const u);
 static void u_rmul(const userinput * const u);
 static void u_crash(const userinput * const u);
@@ -121,7 +120,7 @@ static const userinput_parse_t userinput_parse[] = {
 {1,1,method_allow_all,u_trinfo,        "TRINFO","id","Lists information about transfer <id>"},
 {1,1,method_allow_all,u_qul,           "QUL",NULL,"Lists current queue"},
 {1,1,method_allow_all,u_ignl,          "IGNL",NULL,"Show ignored list"},
-{1,5,method_allow_all,u_listul,        "LISTUL",NULL,"Shows contents of upload directory"},
+{1,5,method_allow_all,a_listul,        "LISTUL","[dir]","Shows contents of upload directory"},
 {1,5,method_allow_all,u_chanl,         "CHANL","[net]","Shows channel list with member list"},
 
 {2,2,method_allow_all,u_close,         "CLOSE","id","Cancels transfer <id>"},
@@ -3725,21 +3724,6 @@ void u_listdir(const userinput * const u, const char *dir)
 #endif
 #endif
   
-  return;
-  
-}
-
-static void u_listul(const userinput * const u)
-{
-  updatecontext();
-  
-  if (!irlist_size(&gdata.uploadhost) || !gdata.uploaddir)
-    {
-      u_respond(u, "No upload hosts or no uploaddir defined.");
-      return;
-    }
-  
-  u_listdir(u, gdata.uploaddir);
   return;
   
 }
