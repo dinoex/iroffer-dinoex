@@ -97,6 +97,8 @@ int setup_ssl(void)
   }
   outerror_ssl();
   return 1;
+#else
+  return 0;
 #endif /* USE_SSL */
 }
 
