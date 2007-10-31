@@ -55,6 +55,15 @@ int is_in_badip6(struct in6_addr *remoteip)
   return 0;
 }
 
+int is_in_badip(ir_sockaddr_union_t *sa)
+{
+  if (sa->sa.sa_family == AF_INET) {
+    return is_in_badip4(ntohl(sa->sin.sin_addr.s_addr));
+  } else {
+    return is_in_badip6(&(sa->sin6.sin6_addr));
+  }
+}
+
 void count_badip4(long remoteip)
 {
   badip4 *b;
@@ -97,6 +106,15 @@ void count_badip6(struct in6_addr *remoteip)
   b->count = 1;
 }
 
+void count_badip(ir_sockaddr_union_t *sa)
+{
+  if (sa->sa.sa_family == AF_INET) {
+    count_badip4(ntohl(sa->sin.sin_addr.s_addr));
+  } else {
+    count_badip6(&(sa->sin6.sin6_addr));
+  }
+}
+ 
 void expire_badip4(void)
 {
   badip4 *b;

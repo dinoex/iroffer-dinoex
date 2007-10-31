@@ -331,6 +331,7 @@ typedef struct
   char *nick;
   char *remoteaddr;
   char *localaddr;
+  ir_sockaddr_union_t remote;
   char dcc_input_line[INPUT_BUFFER_LENGTH];
 } dccchat_t;
 

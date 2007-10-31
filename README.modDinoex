@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+186) DCC CHAT
+  Block remote host after a number of failed passwords.
+
 185) remove_dead_users
   if the bot can't notify a nick:
   if set not 0, further queued messages are dropped.

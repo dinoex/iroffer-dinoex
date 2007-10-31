@@ -21,6 +21,8 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
+#include "dinoex_badip.h"
+#include "dinoex_misc.h"
 
 
 int setupdccchatout(const char *nick)
@@ -119,7 +121,6 @@ void setup_chat_banner(dccchat_t *chat)
 void setupdccchataccept(dccchat_t *chat)
 {
   SIGNEDSOCK int addrlen;
-  ir_sockaddr_union_t remoteaddr;
   char *msg;
   int listen_fd;
   
@@ -127,7 +128,7 @@ void setupdccchataccept(dccchat_t *chat)
   
   listen_fd = chat->fd;
   addrlen = sizeof(struct sockaddr_in);
-  if ((chat->fd = accept(listen_fd, &remoteaddr.sa, &addrlen)) < 0)
+  if ((chat->fd = accept(listen_fd, &(chat->remote.sa), &addrlen)) < 0)
     {
       outerror(OUTERROR_TYPE_WARN,"Accept Error, Aborting: %s",strerror(errno));
       FD_CLR(listen_fd, &gdata.readset);
@@ -149,13 +150,18 @@ void setupdccchataccept(dccchat_t *chat)
       outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
     }
   
+  if (is_in_badip(&(chat->remote))) {
+    shutdowndccchat(chat, 0);
+    return;
+  }
+  
   chat->status     = DCCCHAT_AUTHENTICATING;
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
   ir_boutput_init(&chat->boutput, chat->fd, 0);
   
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, addrlen);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->remote.sa), addrlen);
   chat->remoteaddr = mystrdup(msg);
   mydelete(msg);
 
@@ -165,7 +171,6 @@ void setupdccchataccept(dccchat_t *chat)
 int setupdccchat(const char *nick,
                  const char *line)
 {
-  ir_sockaddr_union_t remoteip;
   ir_sockaddr_union_t localaddr;
   char *ip, *port;
   SIGNEDSOCK int addrlen;
@@ -223,7 +228,7 @@ int setupdccchat(const char *nick,
       return 1;
     }
   
-  bzero((char *) &remoteip, sizeof(remoteip));
+  bzero((char *) &(chat->remote), sizeof(ir_sockaddr_union_t));
   
   chat->family = (strchr(ip, ':')) ? AF_INET6 : AF_INET;
   chat->fd = socket(chat->family, SOCK_STREAM, 0);
@@ -240,22 +245,27 @@ int setupdccchat(const char *nick,
   if (chat->family == AF_INET)
     {
       addrlen = sizeof(struct sockaddr_in);
-      remoteip.sin.sin_family = AF_INET;
-      remoteip.sin.sin_port = htons(atoi(port));
-      remoteip.sin.sin_addr.s_addr = htonl(atoul(ip));
+      chat->remote.sin.sin_family = AF_INET;
+      chat->remote.sin.sin_port = htons(atoi(port));
+      chat->remote.sin.sin_addr.s_addr = htonl(atoul(ip));
     }
   else
     {
       addrlen = sizeof(struct sockaddr_in6);
-      remoteip.sin6.sin6_family = AF_INET6;
-      remoteip.sin6.sin6_port = htons(atoi(port));
-      retval = inet_pton(AF_INET6, ip, &(remoteip.sin6.sin6_addr));
+      chat->remote.sin6.sin6_family = AF_INET6;
+      chat->remote.sin6.sin6_port = htons(atoi(port));
+      retval = inet_pton(AF_INET6, ip, &(chat->remote.sin6.sin6_addr));
       if (retval != 0)
         outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", ip);
     }
   
   mydelete(port);
   mydelete(ip);
+  
+  if (is_in_badip(&(chat->remote))) {
+    shutdowndccchat(chat, 0);
+    return 1;
+  }
   
   if (bind_irc_vhost(chat->family, chat->fd) != 0)
     {
@@ -270,7 +280,7 @@ int setupdccchat(const char *nick,
     }
   
   alarm(CTIMEOUT);
-  retval = connect(chat->fd, &remoteip.sa, addrlen);
+  retval = connect(chat->fd, &(chat->remote.sa), addrlen);
   if ((retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)))
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Connection to DCC Chat Failed: %s", strerror(errno));
@@ -303,7 +313,7 @@ int setupdccchat(const char *nick,
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, 0);
   chat->localaddr = mystrdup(msg);
-  my_getnameinfo(msg, maxtextlength -1, &remoteip.sa, 0);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->remote.sa), 0);
   chat->remoteaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
@@ -380,6 +390,7 @@ void parsedccchat(dccchat_t *chat,
                   "DCC CHAT: Incorrect password");
           
           writedccchat(chat,0,"Incorrect Password\n");
+          count_badip(&(chat->remote));
           shutdowndccchat(chat,1);
           /* caller deletes */
         }

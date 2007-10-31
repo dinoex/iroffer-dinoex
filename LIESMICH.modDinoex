@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+186) DCC CHAT
+  Sperre den entfernten Rechnern nach zahlreichen fehlhaften Passworten.
+
 185) remove_dead_users
   Wenn der Bot einen Nick nicht mehr erreichen kann:
   Wert ungleich 0, weitere Nachrichten and den Nick werden gelöscht.

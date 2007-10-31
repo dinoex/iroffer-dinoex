@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
+#include "dinoex_badip.h"
 #include "dinoex_telnet.h"
 
 static int telnet_listen[MAX_VHOSTS];
@@ -152,15 +153,21 @@ static void telnet_accept(int i)
   chat->localport = gdata.telnet_port;
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
+  chat->remote = remoteaddr;
 
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, addrlen);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->remote.sa), addrlen);
   chat->localaddr = mystrdup(msg);
   my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, 0);
   chat->remoteaddr = mystrdup(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "Telnet connection received from %s",  msg);
   mydelete(msg);
+
+  if (is_in_badip(&(chat->remote))) {
+    shutdowndccchat(chat, 0);
+    return;
+  }
 
   ir_boutput_init(&chat->boutput, chat->fd, 0);
 

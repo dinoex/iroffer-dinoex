@@ -405,14 +405,8 @@ static void h_accept(int i)
           "HTTP connection received from %s",  msg);
   mydelete(msg);
 
-  if (h->family == AF_INET) {
-    if (is_in_badip4(h->remoteip4) == 0)
-      return;
-  } else {
-    if (is_in_badip6(&(h->remoteip6)) == 0)
-      return;
-  }
-  h_closeconn(h, "HTTP connection ignored", 0);
+  if (is_in_badip(&remoteaddr))
+    h_closeconn(h, "HTTP connection ignored", 0);
 }
 
 static void h_error(http * const h, const char *header)
