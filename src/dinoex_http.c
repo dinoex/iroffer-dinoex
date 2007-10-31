@@ -325,6 +325,38 @@ int h_listen(int highests)
 
 /* connections */
 
+static void h_closeconn(http * const h, const char *msg, int errno1)
+{
+  updatecontext();
+
+  if (errno1) {
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+              "HTTP: Connection closed: %s (%s)", msg, strerror(errno1));
+  } else {
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+              "HTTP: Connection closed: %s", msg);
+  }
+
+  if (gdata.debug > 0) {
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", h->clientsocket);
+  }
+
+  if (h->clientsocket != FD_UNUSED && h->clientsocket > 2) {
+    FD_CLR(h->clientsocket, &gdata.writeset);
+    FD_CLR(h->clientsocket, &gdata.readset);
+    shutdown_close(h->clientsocket);
+    h->clientsocket = FD_UNUSED;
+  }
+
+  if (h->filedescriptor != FD_UNUSED && h->filedescriptor > 2) {
+    close(h->filedescriptor);
+    h->filedescriptor = FD_UNUSED;
+  }
+
+  mydelete(h->buffer);
+  h->status = HTTP_STATUS_DONE;
+}
+
 static void h_accept(int i)
 {
   SIGNEDSOCK int addrlen;
@@ -372,38 +404,15 @@ static void h_accept(int i)
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "HTTP connection received from %s",  msg);
   mydelete(msg);
-}
 
-static void h_closeconn(http * const h, const char *msg, int errno1)
-{
-  updatecontext();
-
-  if (errno1) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "HTTP: Connection closed: %s (%s)", msg, strerror(errno1));
+  if (h->family == AF_INET) {
+    if (is_in_badip4(h->remoteip4) == 0)
+      return;
   } else {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "HTTP: Connection closed: %s", msg);
+    if (is_in_badip6(&(h->remoteip6)) == 0)
+      return;
   }
-
-  if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", h->clientsocket);
-  }
-
-  if (h->clientsocket != FD_UNUSED && h->clientsocket > 2) {
-    FD_CLR(h->clientsocket, &gdata.writeset);
-    FD_CLR(h->clientsocket, &gdata.readset);
-    shutdown_close(h->clientsocket);
-    h->clientsocket = FD_UNUSED;
-  }
-
-  if (h->filedescriptor != FD_UNUSED && h->filedescriptor > 2) {
-    close(h->filedescriptor);
-    h->filedescriptor = FD_UNUSED;
-  }
-
-  mydelete(h->buffer);
-  h->status = HTTP_STATUS_DONE;
+  h_closeconn(h, "HTTP connection ignored", 0);
 }
 
 static void h_error(http * const h, const char *header)
@@ -1039,17 +1048,6 @@ static void h_get(http * const h)
   if (strncasecmp(url, "GET ", 4 ) != 0) {
     h_closeconn(h, "Bad request", 0);
     return;
-  }
-  if (h->family == AF_INET) {
-    if (is_in_badip4(h->remoteip4)) {
-      h_error(h, http_header_notfound);
-      return;
-    }
-  } else {
-    if (is_in_badip6(&(h->remoteip6))) {
-      h_error(h, http_header_notfound);
-      return;
-    }
   }
   url += 4;
   data = strchr(url, ' ');
