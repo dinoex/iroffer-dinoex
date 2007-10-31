@@ -46,22 +46,6 @@ typedef struct
   int traffic;
 } http;
 
-typedef struct
-{
-  time_t lastcontact;
-  time_t connecttime;
-  long remoteip;
-  long count;
-} badip4;
-
-typedef struct
-{
-  time_t lastcontact;
-  time_t connecttime;
-  struct in6_addr remoteip;
-  long count;
-} badip6;
-
 void h_close_listen(void);
 int h_setup_listen(void);
 void h_reash_listen(void);

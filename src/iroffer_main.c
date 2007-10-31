@@ -29,6 +29,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
 #include "dinoex_telnet.h"
+#include "dinoex_ignore.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -1631,6 +1632,7 @@ static void mainloop (void) {
       
       /*----- 20 seconds ----- */
       if (changesec && (gdata.curtime - last20sec > 19)) {
+         expire_badip();
          
          if (gdata.logfd != FD_UNUSED)
            {

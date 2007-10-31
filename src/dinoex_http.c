@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
+#include "dinoex_ignore.h"
 #include "dinoex_http.h"
 
 #include <ctype.h>
@@ -236,110 +237,6 @@ void h_close_listen(void)
       FD_CLR(http_listen[i], &gdata.readset);
       close(http_listen[i]);
       http_listen[i] = FD_UNUSED;
-    }
-  }
-}
-
-static int is_in_badip4(long remoteip)
-{
-  badip4 *b;
-
-  for (b = irlist_get_head(&gdata.http_bad_ip4);
-       b;
-       b = irlist_get_next(b)) {
-    if (b->remoteip == remoteip) {
-      b->lastcontact = gdata.curtime;
-      if (b->count > 10)
-        return 1;
-      break;
-    }
-  }
-  return 0;
-}
-
-static int is_in_badip6(struct in6_addr *remoteip)
-{
-  badip6 *b;
-
-  for (b = irlist_get_head(&gdata.http_bad_ip6);
-       b;
-       b = irlist_get_next(b)) {
-    if (memcmp(&(b->remoteip), remoteip, sizeof(struct in6_addr)) == 0) {
-      b->lastcontact = gdata.curtime;
-      if (b->count > 10)
-        return 1;
-      break;
-    }
-  }
-  return 0;
-}
-
-static void count_badip4(long remoteip)
-{
-  badip4 *b;
-
-  for (b = irlist_get_head(&gdata.http_bad_ip4);
-       b;
-       b = irlist_get_next(b)) {
-    if (b->remoteip == remoteip) {
-      b->count ++;
-      b->lastcontact = gdata.curtime;
-      return;
-    }
-  }
-
-  b = irlist_add(&gdata.http_bad_ip4, sizeof(badip4));
-  b->remoteip = remoteip;
-  b->connecttime = gdata.curtime;
-  b->lastcontact = gdata.curtime;
-  b->count = 1;
-}
-
-static void count_badip6(struct in6_addr *remoteip)
-{
-  badip6 *b;
-
-  for (b = irlist_get_head(&gdata.http_bad_ip6);
-       b;
-       b = irlist_get_next(b)) {
-    if (memcmp(&(b->remoteip), remoteip, sizeof(struct in6_addr)) == 0) {
-      b->count ++;
-      b->lastcontact = gdata.curtime;
-      return;
-    }
-  }
-
-  b = irlist_add(&gdata.http_bad_ip6, sizeof(badip6));
-  b->remoteip = *remoteip;
-  b->connecttime = gdata.curtime;
-  b->lastcontact = gdata.curtime;
-  b->count = 1;
-}
-
-static void expire_badip4(void)
-{
-  badip4 *b;
-
-  b = irlist_get_head(&gdata.http_bad_ip4);
-  while (b) {
-    if ((gdata.curtime - b->lastcontact) > 3600) {
-      b = irlist_delete(&gdata.http_bad_ip4, b);
-    } else {
-      b = irlist_get_next(b);
-    }
-  }
-}
-
-static void expire_badip6(void)
-{
-  badip6 *b;
-
-  b = irlist_get_head(&gdata.http_bad_ip6);
-  while (b) {
-    if ((gdata.curtime - b->lastcontact) > 3600) {
-      b = irlist_delete(&gdata.http_bad_ip6, b);
-    } else {
-      b = irlist_get_next(b);
     }
   }
 }
@@ -1342,11 +1239,6 @@ void h_done_select(int changesec)
         h_istimeout(h);
       h = irlist_get_next(h);
     }
-  }
-
-  if (changesec) {
-   expire_badip4();
-   expire_badip6();
   }
 }
 
