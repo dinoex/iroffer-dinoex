@@ -26,8 +26,8 @@
 
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 
-static int http_listen[2] = { FD_UNUSED, FD_UNUSED };
-static int http_family[2] = { 0, 0 };
+static int http_listen[MAX_VHOSTS];
+static int http_family[MAX_VHOSTS];
 
 static const char *http_header_status =
 "HTTP/1.0 200 OK\r\n"
@@ -231,7 +231,7 @@ void h_close_listen(void)
 {
   int i;
 
-  for (i=0; i<2; i++) {
+  for (i=0; i<MAX_VHOSTS; i++) {
     if (http_listen[i] != FD_UNUSED) {
       FD_CLR(http_listen[i], &gdata.readset);
       close(http_listen[i]);
@@ -377,10 +377,15 @@ int h_setup_listen(void)
 
   updatecontext();
 
+  for (i=0; i<MAX_VHOSTS; i++) {
+    http_listen[i] = FD_UNUSED;
+    http_family[i] = 0;
+  }
+
   if (gdata.http_port == 0)
     return 1;
 
-  for (i=0; i<2; i++) {
+  for (i=0; i<MAX_VHOSTS; i++) {
     rc += h_open_listen(i);
   }
   return rc;
@@ -399,7 +404,7 @@ int h_listen(int highests)
   http *h;
   int i;
 
-  for (i=0; i<2; i++) {
+  for (i=0; i<MAX_VHOSTS; i++) {
     if (http_listen[i] != FD_UNUSED) {
       FD_SET(http_listen[i], &gdata.readset);
       highests = max2(highests, http_listen[i]);
@@ -1310,7 +1315,7 @@ void h_done_select(int changesec)
   http *h;
   int i;
 
-  for (i=0; i<2; i++) {
+  for (i=0; i<MAX_VHOSTS; i++) {
     if (http_listen[i] != FD_UNUSED) {
       if (FD_ISSET(http_listen[i], &gdata.readset)) {
         h_accept(i);

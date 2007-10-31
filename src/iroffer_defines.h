@@ -58,6 +58,9 @@
 /*       max number of networks */
 #define  MAX_NETWORKS	5
 
+/*       max number of vhosts */
+#define  MAX_VHOSTS	2
+
 /*       max size for xdcc list queue */
 #define  MAXXLQUE  5
 /*       max config files */

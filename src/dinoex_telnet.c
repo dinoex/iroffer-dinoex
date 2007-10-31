@@ -22,14 +22,14 @@
 #include "dinoex_irc.h"
 #include "dinoex_telnet.h"
 
-static int telnet_listen[2] = { FD_UNUSED, FD_UNUSED };
-static int telnet_family[2] = { 0, 0 };
+static int telnet_listen[MAX_VHOSTS];
+static int telnet_family[MAX_VHOSTS];
 
 void telnet_close_listen(void)
 {
   int i;
 
-  for (i=0; i<2; i++) {
+  for (i=0; i<MAX_VHOSTS; i++) {
     if (telnet_listen[i] != FD_UNUSED) {
       FD_CLR(telnet_listen[i], &gdata.readset);
       close(telnet_listen[i]);
@@ -71,10 +71,15 @@ int telnet_setup_listen(void)
 
   updatecontext();
 
+  for (i=0; i<MAX_VHOSTS; i++) {
+    telnet_listen[i] = FD_UNUSED;
+    telnet_family[i] = 0;
+  }
+
   if (gdata.telnet_port == 0)
     return 1;
 
-  for (i=0; i<2; i++) {
+  for (i=0; i<MAX_VHOSTS; i++) {
     rc += telnet_open_listen(i);
   }
   return rc;
@@ -92,7 +97,7 @@ int telnet_select_listen(int highests)
 {
   int i;
 
-  for (i=0; i<2; i++) {
+  for (i=0; i<MAX_VHOSTS; i++) {
     if (telnet_listen[i] != FD_UNUSED) {
       FD_SET(telnet_listen[i], &gdata.readset);
       highests = max2(highests, telnet_listen[i]);
@@ -169,7 +174,7 @@ void telnet_done_select(int changesec)
 {
   int i;
 
-  for (i=0; i<2; i++) {
+  for (i=0; i<MAX_VHOSTS; i++) {
     if (telnet_listen[i] != FD_UNUSED) {
       if (FD_ISSET(telnet_listen[i], &gdata.readset)) {
         telnet_accept(i);
