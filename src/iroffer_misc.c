@@ -24,6 +24,7 @@
 #include "dinoex_ssl.h"
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
+#include "dinoex_jobs.h"
 #include "dinoex_misc.h"
 
 

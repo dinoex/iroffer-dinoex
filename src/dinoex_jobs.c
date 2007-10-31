@@ -1,0 +1,561 @@
+/*
+ * by Dirk Meyer (dinoex)
+ * Copyright (C) 2004-2007 Dirk Meyer
+ *
+ * By using this file, you agree to the terms and conditions set
+ * forth in the GNU General Public License.  More information is
+ * available in the LICENSE file.
+ *
+ * If you received this file without documentation, it can be
+ * downloaded from http://iroffer.dinoex.net/
+ *
+ * $Id$
+ *
+ */
+
+/* include the headers */
+#include "iroffer_config.h"
+#include "iroffer_defines.h"
+#include "iroffer_headers.h"
+#include "iroffer_globals.h"
+#include "dinoex_utilities.h"
+#include "dinoex_admin.h"
+#include "dinoex_jobs.h"
+
+#include <ctype.h>
+
+extern const ir_uint32 crctable[256];
+
+static void admin_line(int fd, const char *line) {
+   userinput *uxdl;
+   char *full;
+
+   if (line == NULL)
+      return;
+
+   uxdl = mycalloc(sizeof(userinput));
+   full = mycalloc(maxtextlength);
+
+   snprintf(full, maxtextlength -1, "A A A A A %s", line);
+   u_fillwith_msg(uxdl, NULL, full);
+   uxdl->method = method_fd;
+   uxdl->fd = fd;
+   uxdl->net = 0;
+   uxdl->level = ADMIN_LEVEL_CONSOLE;
+   u_parseit(uxdl);
+
+   mydelete(uxdl);
+   mydelete(full);
+}
+
+static void admin_run(const char *cmd) {
+   int fd;
+   const char *job;
+   char *done;
+
+   job = gdata.admin_job_file;
+   if (job == NULL)
+      return;
+
+   done = mycalloc(strlen(job)+6);
+   strcpy(done, job);
+   strcat(done, ".done");
+   fd = open(done,
+             O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+             CREAT_PERMISSIONS);
+   if (fd < 0)
+    {
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+               "Cant Create Admin Job Done File '%s': %s",
+               done, strerror(errno));
+    }
+  else
+    {
+      admin_line(fd, cmd);
+      close(fd);
+    }
+   mydelete(done)
+}
+
+void admin_jobs(void) {
+   FILE *fin;
+   const char *job;
+   char *line;
+   char *l;
+   char *r;
+   char *new;
+
+   job = gdata.admin_job_file;
+   if (job == NULL)
+      return;
+
+   fin = fopen(job, "ra" );
+   if (fin == NULL)
+      return;
+
+   line = mycalloc(maxtextlength);
+   while (!feof(fin)) {
+      r = fgets(line, maxtextlength - 1, fin);
+      if (r == NULL )
+         break;
+      l = line + strlen(line) - 1;
+      while (( *l == '\r' ) || ( *l == '\n' ))
+         *(l--) = 0;
+      new = irlist_add(&gdata.jobs_delayed, strlen(line) + 1);
+      strcpy(new, line);
+   }
+   mydelete(line)
+   fclose(fin);
+   unlink(job);
+}
+
+int check_for_file_remove(int n)
+{
+  xdcc *xd;
+  userinput *pubplist;
+  char *tempstr;
+
+  updatecontext();
+
+  xd = irlist_get_nth(&gdata.xdccs, n-1);
+  if (look_for_file_changes(xd) == 0)
+    return 0;
+
+  pubplist = mycalloc(sizeof(userinput));
+  tempstr = mycalloc(maxtextlength);
+  snprintf(tempstr, maxtextlength-1, "remove %d", n);
+  u_fillwith_console(pubplist, tempstr);
+  u_parseit(pubplist);
+  mydelete(pubplist);
+  mydelete(tempstr);
+  return 1;
+}
+
+static int last_look_for_file_remove = -1;
+
+void look_for_file_remove(void)
+{
+  int i;
+  int p;
+  int m;
+
+  updatecontext();
+
+  p = irlist_size(&gdata.xdccs);
+  m = min2(gdata.monitor_files, p);
+  for (i=0; i<m; i++) {
+    last_look_for_file_remove ++;
+    if (last_look_for_file_remove < 0 || last_look_for_file_remove >= p)
+      last_look_for_file_remove = 0;
+
+    if (check_for_file_remove(last_look_for_file_remove + 1))
+      return;
+  }
+  return;
+}
+
+void reset_download_limits(void)
+{
+  int num;
+  int new;
+  xdcc *xd;
+
+  num = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      num++;
+      if (xd->dlimit_max != 0)
+        {
+          new = xd->gets + xd->dlimit_max;
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                  "Resetting download limit of pack %d, used %d",
+                  num, new - xd->dlimit_used);
+          xd->dlimit_used = new;
+        }
+      xd = irlist_get_next(xd);
+    }
+}
+
+static const char *badcrc = "badcrc";
+
+const char *validate_crc32(xdcc *xd, int quiet)
+{
+   char *newcrc;
+   char *line;
+   const char *x;
+   char *w;
+   regex_t *regexp;
+
+   if (xd->has_crc32 == 0) {
+     if (quiet)
+       return NULL;
+     else
+       return "no CRC32 calculated";
+   }
+
+   if (verifyshell(&gdata.autocrc_exclude, xd->file)) {
+     if (quiet)
+       return NULL;
+     else
+       return "skipped CRC32";
+   }
+
+   newcrc = mycalloc(10);
+   snprintf(newcrc, 10, "%.8lX", xd->crc32);
+   line = mycalloc(strlen(xd->file)+1);
+
+   /* ignore path */
+   x = get_basename(xd->file);
+
+   strcpy(line, x);
+   /* ignore extension */
+   w = strrchr(line, '.');
+   if (w != NULL)
+      *w = 0;
+
+   caps(line);
+   if (strstr(line, newcrc) != NULL) {
+     if (quiet)
+       x = NULL;
+     else
+       x = "CRC32 verified OK";
+     /* unlock pack */
+     if ((quiet == 2) && (xd->lock != NULL)) {
+       if (strcmp(xd->lock, badcrc) == 0) {
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "unlock Pack %d, File %s",
+                 number_of_pack(xd), line);
+         mydelete(xd->lock);
+         xd->lock = NULL;
+       }
+     }
+   }
+   else {
+     x = "CRC32 not found";
+     regexp = mycalloc(sizeof(regex_t));
+     if (!regcomp(regexp, "[0-9A-F]{8,}", REG_EXTENDED | REG_ICASE | REG_NOSUB)) {
+       if (!regexec(regexp, line, 0, NULL, 0)) {
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
+         x = "CRC32 failed";
+         if (quiet == 2) {
+           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %d, File %s",
+                   number_of_pack(xd), line);
+           xd->lock = mystrdup(badcrc);
+         }
+       }
+     }
+     mydelete(regexp);
+   }
+   mydelete(line)
+   mydelete(newcrc)
+   return x;
+}
+
+
+void crc32_init(void)
+{
+  gdata.crc32build.crc = ~0;
+  gdata.crc32build.crc_total = ~0;
+}
+
+void crc32_update(char *buf, unsigned long len)
+{
+  char *p;
+  ir_uint32 crc = gdata.crc32build.crc;
+  ir_uint32 crc_total = gdata.crc32build.crc_total;
+
+  for (p = buf; len--; ++p) {
+    crc = (crc >> 8) ^ crctable[(crc ^ *p) & 0xff];
+    crc_total = (crc >> 8) ^ crctable[(crc_total ^ *p) & 0xff];
+  }
+  gdata.crc32build.crc = crc;
+  gdata.crc32build.crc_total = crc_total;
+}
+
+void crc32_final(xdcc *xd)
+{
+  xd->crc32 = ~gdata.crc32build.crc;
+  xd->has_crc32 = 1;
+}
+
+void autoadd_scan(const char *dir, const char *group)
+{
+   userinput *uxdl;
+   char *line;
+   int net = 0;
+
+   if (dir == NULL)
+      return;
+
+   updatecontext();
+
+   gnetwork = &(gdata.networks[net]);
+   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
+   line = mycalloc(maxtextlength);
+   if (group != NULL)
+     snprintf(line, maxtextlength -1, "A A A A A ADDGROUP %s %s", group, dir);
+   else
+     snprintf(line, maxtextlength -1, "A A A A A ADDNEW %s", dir);
+
+   uxdl = mycalloc(sizeof(userinput));
+   u_fillwith_msg(uxdl, NULL, line);
+   uxdl->method = method_out_all;
+   uxdl->net = 0;
+   uxdl->level = ADMIN_LEVEL_AUTO;
+   u_parseit(uxdl);
+   mydelete(uxdl);
+   mydelete(line);
+}
+
+void autoadd_all(void)
+{
+  char *dir;
+
+  updatecontext();
+
+  dir = irlist_get_head(&gdata.autoadd_dirs);
+  while (dir)
+    {
+      autoadd_scan(dir, gdata.autoadd_group);
+      dir = irlist_get_next(dir);
+    }
+}
+
+void run_delayed_jobs(void)
+{
+  userinput *u;
+  char *job;
+
+  u = irlist_get_head(&gdata.packs_delayed);
+  while (u)
+    {
+      if (strcmp(u->cmd, "REMOVE") == 0)
+        {
+          a_remove_delayed(u);
+          mydelete(u->cmd);
+          mydelete(u->arg1);
+          mydelete(u->arg2);
+          u = irlist_delete(&gdata.packs_delayed, u);
+          /* process only one file */
+          return;
+        }
+      if (strcmp(u->cmd, "ADD") == 0)
+        {
+          a_add_delayed(u);
+          mydelete(u->cmd);
+          mydelete(u->arg1);
+          mydelete(u->arg2);
+          u = irlist_delete(&gdata.packs_delayed, u);
+          /* process only one file */
+          return;
+        }
+      /* ignore */
+      outerror(OUTERROR_TYPE_WARN, "Unknown cmd %s in packs_delayed", u->cmd);
+      u = irlist_delete(&gdata.packs_delayed, u);
+    }
+
+  job = irlist_get_head(&gdata.jobs_delayed);
+  while (job)
+    {
+       admin_run(job);
+       job = irlist_delete(&gdata.jobs_delayed, job);
+       return;
+    }
+}
+
+static void admin_msg_line(const char *nick, char *line, int line_len, int level)
+{
+  userinput ui;
+
+  if (line[line_len-1] == '\n') {
+    line[line_len-1] = '\0';
+    line_len--;
+  }
+  u_fillwith_msg(&ui, nick, line);
+  ui.net = gnetwork->net;
+  ui.level = level;
+  u_parseit(&ui);
+}
+
+int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len)
+{
+  int err = 0;
+
+  if ( verifyhost(&gdata.adminhost, hostmask) ) {
+    if ( verifypass2(gdata.adminpass, passwd) ) {
+      admin_msg_line(nick, line, line_len, gdata.adminlevel);
+      return 1;
+    } else {
+      err ++;
+    }
+  }
+  if ( verifyhost(&gdata.hadminhost, hostmask) ) {
+    if ( verifypass2(gdata.hadminpass, passwd) ) {
+      admin_msg_line(nick, line, line_len, gdata.hadminlevel);
+      return 1;
+    } else {
+      err ++;
+    }
+  }
+  if (err == 0) {
+    notice(nick, "ADMIN: %s is not allowed to issue admin commands", hostmask);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "Incorrect ADMIN Hostname (%s on %s)",
+            hostmask, gnetwork->name);
+  }
+  if (err > 0) {
+    notice(nick, "ADMIN: Incorrect Password");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "Incorrect ADMIN Password (%s on %s)",
+            hostmask, gnetwork->name);
+  }
+  return 0;
+}
+
+static const char *find_groupdesc(const char *group)
+{
+  xdcc *xd;
+  int k;
+
+  if (group == NULL)
+    return "";
+
+  k = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd)
+    {
+      if (xd->group != NULL)
+        {
+          if (strcasecmp(xd->group, group) == 0)
+            {
+              return xd->group_desc;
+            }
+        }
+      xd = irlist_get_next(xd);
+    }
+
+  return "";
+}
+
+void write_removed_xdcc(xdcc *xd)
+{
+  char *line;
+  int len;
+  int fd;
+
+  if (gdata.xdccremovefile == NULL)
+    return;
+
+  fd = open(gdata.xdccremovefile,
+            O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+            CREAT_PERMISSIONS);
+
+  if (fd < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Cant Create XDCC Remove File '%s': %s",
+             gdata.xdccremovefile, strerror(errno));
+    return;
+  }
+
+  line = mycalloc(maxtextlength);
+  len = snprintf(line, maxtextlength -1, "\n");
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_file %s\n", xd->file);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_desc %s\n", xd->desc);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_note %s\n", xd->note);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_size %" LLPRINTFMT "i\n", xd->st_size);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_gets %d\n", xd->gets);
+  write(fd, line, len);
+  if (gdata.transferminspeed == xd->minspeed)
+    len = snprintf(line, maxtextlength -1, "xx_mins \n");
+  else
+    len = snprintf(line, maxtextlength -1, "xx_mins %f\n", xd->minspeed);
+  write(fd, line, len);
+  if (gdata.transferminspeed == xd->minspeed)
+    len = snprintf(line, maxtextlength -1, "xx_maxs \n");
+  else
+    len = snprintf(line, maxtextlength -1, "xx_maxs %f\n", xd->maxspeed);
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_data %s\n", xd->group ? xd->group : "");
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_trig \n");
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength -1, "xx_trno %s\n", find_groupdesc(xd->group));
+  write(fd, line, len);
+  mydelete(line)
+
+  close(fd);
+}
+
+void autotrigger_add(xdcc *xd)
+{
+  autotrigger_t *at;
+
+  at = irlist_add(&gdata.autotrigger, sizeof(autotrigger_t));
+  at->pack = xd;
+  at->word = xd->trigger;
+}
+
+void autotrigger_rebuild(void)
+{
+  xdcc *xd;
+
+  irlist_delete_all(&gdata.autotrigger);
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd) {
+    if (xd->trigger != NULL)
+      autotrigger_add(xd);
+    xd = irlist_get_next(xd);
+  }
+}
+
+void start_md5_hash(xdcc *xd, int packnum)
+{
+  if (!gdata.attop) { gototop(); }
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          "[MD5]: Calculating pack %d", packnum);
+
+  gdata.md5build.file_fd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (gdata.md5build.file_fd >= 0) {
+    gdata.md5build.xpack = xd;
+    if (!gdata.nocrc32)
+      crc32_init();
+    MD5Init(&gdata.md5build.md5sum);
+    if (set_socket_nonblocking(gdata.md5build.file_fd, 1) < 0) {
+      outerror(OUTERROR_TYPE_WARN, "[MD5]: Couldn't Set Non-Blocking");
+    }
+  } else {
+    outerror(OUTERROR_TYPE_WARN,
+             "[MD5]: Pack %d: Cant Access Offered File '%s': %s",
+             packnum, xd->file, strerror(errno));
+             gdata.md5build.file_fd = FD_UNUSED;
+             check_for_file_remove(packnum);
+  }
+}
+
+void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
+{
+  char *line;
+  userinput_method_e method;
+
+  method = manplist->method;
+  if (ch->pgroup) {
+    line = mycalloc(maxtextlength);
+    snprintf(line, maxtextlength -1, "A A A A A xdlgroup %s", ch->pgroup);
+    u_fillwith_msg(manplist, name, line);
+    mydelete(line);
+  } else {
+    if ((gdata.xdcclist_grouponly) || (method != method_xdl_channel)) {
+      u_fillwith_msg(manplist, name, "A A A A A xdl");
+    } else {
+      u_fillwith_msg(manplist, name, "A A A A A xdlfull");
+    }
+  }
+  manplist->method = method;
+}
+
+/* End of File */

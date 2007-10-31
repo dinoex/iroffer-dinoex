@@ -30,6 +30,7 @@
 #include "dinoex_queue.h"
 #include "dinoex_telnet.h"
 #include "dinoex_badip.h"
+#include "dinoex_jobs.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -597,7 +598,7 @@ static void mainloop (void) {
             gdata.sentrecord = ((float)xdccsent)/XDCC_SENT_SIZE/1024.0;
          gdata.xdccsum[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
 
-         changesec_dinoex();
+         run_delayed_jobs();
       }
 
       if (changequartersec)
