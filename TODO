@@ -40,7 +40,6 @@ Not going to happen anytime soon:
    113 1/2/00 Deferred different packs for different plist channels
    112 1/2/00 Deferred multi-language support  
    111 12/3/99 Deferred exec a shell command
-?  108 long ago Deferred wildcards in add pack
    129 12/5/00 Deferred built-in identd server for windows
    171 12/09/03 Deferred online config file editor
    176 12/09/03 Deferred customize xdcc list output
@@ -90,7 +89,6 @@ Not going to happen anytime soon:
   1012  Leach a full group
   1015  http admin
   1017  no clear if user change konsole window
-  1021  add /path/dir/*animexyz*
   1022  send notes on mutiple triggers
   1024  gently recover when networks are deleted
   1027  renumber <from> <to> new

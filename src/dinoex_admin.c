@@ -25,6 +25,7 @@
 #include "dinoex_jobs.h"
 #include "dinoex_misc.h"
 
+#include <fnmatch.h>
 #include <ctype.h>
 
 void
@@ -1588,7 +1589,7 @@ void a_add(const userinput * const u)
   a_add2(u);
 }
 
-void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup)
+void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup, const char *match)
 {
   userinput *u2;
   struct dirent *f;
@@ -1619,6 +1620,11 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
       if (verifyshell(&gdata.adddir_exclude, f->d_name))
         continue;
 
+      if (match != NULL) {
+        if (fnmatch(match, f->d_name, FNM_CASEFOLD))
+          continue;
+      }
+
       tempstr = mycalloc(len + thedirlen + 2);
 
       snprintf(tempstr, len + thedirlen + 2,
@@ -1643,7 +1649,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
             }
           else
             {
-              a_adddir_sub(u, tempstr, NULL, new, setgroup);
+              a_adddir_sub(u, tempstr, NULL, new, setgroup, match);
             }
           mydelete(tempstr);
           continue;
@@ -1806,15 +1812,47 @@ void a_addgroup(const userinput * const u)
 
   thedir = mystrdup(u->arg2e);
   d = a_open_dir(&thedir);
-  if (!d)
-    {
-      a_respond(u, "Can't Access Directory: %s", strerror(errno));
-      return;
-    }
+  if (!d) {
+    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    return;
+  }
 
-  a_adddir_sub(u, thedir, d, 1, u->arg1);
+  a_adddir_sub(u, thedir, d, 1, u->arg1, NULL);
   mydelete(thedir);
-  return;
+}
+
+void a_addmatch(const userinput * const u)
+{
+  DIR *d;
+  char *thedir;
+  char *end;
+
+  updatecontext();
+
+  if (invalid_dir(u, u->arg1e) != 0)
+     return;
+
+  clean_quotes(u->arg1e);
+  convert_to_unix_slash(u->arg1e);
+
+  thedir = mystrdup(u->arg1e);
+  end = strrchr(thedir, '/' );
+  if (end == NULL) {
+    a_respond(u, "Try Specifying a Directory");
+    mydelete(thedir);
+    return;
+  }
+
+  *(end++) = 0;
+  d = a_open_dir(&thedir);
+  if (!d) {
+    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    mydelete(thedir);
+    return;
+  }
+
+  a_adddir_sub(u, thedir, d, 1, NULL, end);
+  mydelete(thedir);
 }
 
 static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d, const char *group)

@@ -1993,3 +1993,5 @@
 2019 "remove_dead_users"
 2020 "HTTP connection ignored"
 2021 "Nickname %s on %s left"
+2022 "ADDMATCH"
+2023 "Add new files matching this pattern"

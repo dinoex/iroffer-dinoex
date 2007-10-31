@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+187) ADDMATCH
+  Neues Admin Kommando:
+  ADDMATCH <muster>                Fügt neue Dateien hinzu die auf <muster> passen
+
 186) DCC CHAT
   Sperre den entfernten Rechnern nach zahlreichen fehlhaften Passworten.
 
@@ -32,7 +36,7 @@ bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG
   Port für den eingebauten Telnet Server.
 
 180) JOIN, PART
-  Neues Admin Kommando:
+  Neue Admin Kommandos:
   JOIN <channel>                   Betrete den Channel <channel> bis zum REHASH
   JOIN <channel> <netz>            Betrete den Channel <channel> bis zum REHASH
   PART <channel>                   Verlasse den Channel <channel> bis zum REHASH
@@ -71,7 +75,7 @@ bugfix: CANNOUNCE
   XDCC INFO <trigger>              Verwende Trigger statt Paketnummer
 
 174) CRC, MD5
-  Neues Admin Kommando:
+  Neue Admin Kommandos:
   CRC <n> <m>                      Zeigt das Ergebnis der CRC Prüfung von Paket <n> bis <m> an
   MD5 <n> <m>                      Berrechne die MD5 und die CRC Prüfsummen des Pakets <n> bis <m>
 
