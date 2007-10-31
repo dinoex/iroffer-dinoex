@@ -21,6 +21,21 @@
 #define ADMIN_LEVEL_INFO	1
 #define ADMIN_LEVEL_PUBLIC	0
 
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+privmsg_chan(const channel_t *ch, const char *format, ...);
+void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 3, 4)))
+#endif
+writeserver_channel (int delay, const char *chan, const char *format, ... );
+void vwriteserver_channel(int delay, const char *chan, const char *format, va_list ap);
+void cleanannounce(void);
+void sendannounce(void);
+
 void admin_jobs(void);
 int check_for_file_remove(int n);
 void look_for_file_remove(void);

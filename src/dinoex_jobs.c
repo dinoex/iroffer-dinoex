@@ -26,6 +26,125 @@
 
 extern const ir_uint32 crctable[256];
 
+void privmsg_chan(const channel_t *ch, const char *format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  vprivmsg_chan(ch, format, args);
+  va_end(args);
+}
+
+void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
+{
+  char tempstr[maxtextlength];
+  int len;
+
+  if (!ch) return;
+  if (!ch->name) return;
+
+  len = vsnprintf(tempstr, maxtextlength, format, ap);
+
+  if ((len < 0) || (len >= maxtextlength))
+    {
+      outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
+      return;
+    }
+
+  writeserver_channel(ch->delay, ch->name, "PRIVMSG %s :%s", ch->name, tempstr);
+}
+
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 3, 4)))
+#endif
+writeserver_channel (int delay, const char *chan, const char *format, ... )
+{
+  va_list args;
+  va_start(args, format);
+  vwriteserver_channel(delay, chan, format, args);
+  va_end(args);
+}
+
+void vwriteserver_channel(int delay, const char *chan, const char *format, va_list ap)
+{
+  char *msg;
+  channel_announce_t *item;
+  int len;
+
+  msg = mycalloc(maxtextlength+1);
+
+  len = vsnprintf(msg, maxtextlength, format, ap);
+
+  if ((len < 0) || (len >= maxtextlength))
+    {
+      outerror(OUTERROR_TYPE_WARN, "WRITESERVER: Output too large, ignoring!");
+      mydelete(msg);
+      return;
+    }
+
+  if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
+    {
+      mydelete(msg);
+      return;
+    }
+
+  if (gdata.debug > 0)
+    {
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
+    }
+
+  if (len > EXCESS_BUCKET_MAX)
+    {
+      outerror(OUTERROR_TYPE_WARN, "Message Truncated!");
+      msg[EXCESS_BUCKET_MAX] = '\0';
+      len = EXCESS_BUCKET_MAX;
+    }
+
+  if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ)
+    {
+      item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
+      item->delay = delay;
+      item->chan = mystrdup(chan);
+      item->msg = mystrdup(msg);
+    }
+  else
+    {
+      outerror(OUTERROR_TYPE_WARN, "Server queue is very large. Dropping additional output.");
+    }
+
+  mydelete(msg);
+  return;
+}
+
+void cleanannounce(void)
+{
+  channel_announce_t *item;
+
+  for (item = irlist_get_head(&(gnetwork->serverq_channel));
+       item;
+       item = irlist_delete(&(gnetwork->serverq_channel), item)) {
+     mydelete(item->chan);
+     mydelete(item->msg);
+  }
+}
+
+void sendannounce(void)
+{
+  channel_announce_t *item;
+
+  item = irlist_get_head(&(gnetwork->serverq_channel));
+  if (!item)
+    return;
+
+  if ( --(item->delay) > 0 )
+    return;
+
+  writeserver(WRITESERVER_SLOW, "%s", item->msg);
+  mydelete(item->chan);
+  mydelete(item->msg);
+  irlist_delete(&(gnetwork->serverq_channel), item);
+}
+
 static void admin_line(int fd, const char *line) {
    userinput *uxdl;
    char *full;
