@@ -1989,3 +1989,7 @@
 2015 "telnet_vhost"
 2016 "{"
 2017 "}"
+2018 "401"
+2019 "remove_dead_users"
+2020 "HTTP connection ignored"
+2021 "Nickname %s on %s left"
