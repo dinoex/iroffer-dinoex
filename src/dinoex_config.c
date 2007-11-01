@@ -591,6 +591,12 @@ static void c_network(char *var)
   }
 }
 
+static void c_nickserv_pass(char *var)
+{
+  mydelete(gdata.networks[gdata.networks_online].nickserv_pass);
+  gdata.networks[gdata.networks_online].nickserv_pass = var;
+}
+
 static void c_uploadminspace(char *var)
 {
   gdata.uploadminspace = (off_t)(max2(0,atoull(var)*1024*1024));
@@ -613,6 +619,7 @@ static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
 {"autosendpack",           c_autosendpack },
 {"network",                c_network },
+{"nickserv_pass",          c_nickserv_pass },
 {"uploadminspace",         c_uploadminspace },
 {"{",                      c_bracket_open },
 {"}",                      c_bracket_close },

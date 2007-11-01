@@ -24,6 +24,7 @@ Tak0r
 	option "autoadd_dir"
 	option "need_level"
 	mutiple "filedir"
+	option "nickserv_pass" per network
 
 Keichi
 	option "auto_default_group"
@@ -220,6 +221,7 @@ dondieschotte
 	report "tcprangestart" out-of-range
 	option "tcprangelimit"
 	admin command "listul dir"
+	option "nickserv_pass" per network
 
 dsd
 	admin command "autoadd"

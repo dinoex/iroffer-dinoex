@@ -80,6 +80,7 @@ char server_input_line[INPUT_BUFFER_LENGTH];
 char *user_nick;
 char *caps_nick;
 char *name;
+char *nickserv_pass;
 int net;
 int recentsent;
 int nick_number;

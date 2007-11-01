@@ -3120,13 +3120,14 @@ void a_identify(const userinput * const u)
   if (net < 0)
     return;
 
-  if (!gdata.nickserv_pass) {
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  if ((!gdata.nickserv_pass) && (!gnetwork->nickserv_pass)) {
     a_respond(u, "No nickserv_pass set!");
+    gnetwork = backup;
     return;
   }
 
-  backup = gnetwork;
-  gnetwork = &(gdata.networks[net]);
   identify_needed(1);
   gnetwork = backup;
   a_respond(u, "nickserv identify send.");

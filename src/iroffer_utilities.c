@@ -1608,6 +1608,7 @@ void dumpgdata(void)
       gdata_print_string(networks[ss].name);
       gdata_print_string(networks[ss].user_nick);
       gdata_print_string(networks[ss].caps_nick);
+      gdata_print_string(networks[ss].nickserv_pass);
   
       gdata_irlist_iter_start(networks[ss].proxyinfo, char);
       gdata_iter_as_print_string;

@@ -2048,6 +2048,7 @@ void reinit_config_vars(void)
         mydelete(ss->hostname);
         mydelete(ss->password);
       }
+    mydelete(gdata.networks[si].nickserv_pass);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);

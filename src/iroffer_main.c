@@ -1925,10 +1925,7 @@ static void parseline(char *line) {
    if (part3 && gnetwork->caps_nick && !strcmp(caps(part2),"NOTICE") && !strcmp(caps(part3),gnetwork->caps_nick))
      {
        /* nickserv */
-       if (gdata.nickserv_pass)
-         {
-           identify_check(line);
-         }
+       identify_check(line);
        privmsgparse("NOTICE",line);
      }
  
@@ -1976,10 +1973,7 @@ static void parseline(char *line) {
          }
        
        /* nickserv */
-       if (gdata.nickserv_pass)
-         {
-           identify_needed(0);
-         }
+       identify_needed(0);
      }
 
    /* :server 005 xxxx aaa bbb=x ccc=y :are supported... */
@@ -2308,10 +2302,7 @@ static void parseline(char *line) {
        if (gnetwork->caps_nick && !strcmp(caps(oldnick),gnetwork->caps_nick))
 	 {
            /* nickserv */
-           if (gdata.nickserv_pass)
-             {
-               identify_needed(0);
-             }
+           identify_needed(0);
            
            /* we changed, update nick */
            mydelete(gnetwork->user_nick);

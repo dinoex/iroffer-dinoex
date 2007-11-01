@@ -635,19 +635,31 @@ int disk_full(const char *path)
 
 void identify_needed(int force)
 {
+  char *pwd;
+
+  pwd = (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
+  if (pwd == NULL)
+    return;
+
   if (force == 0) {
     if ((gnetwork->next_identify > 0) && (gnetwork->next_identify >= gdata.curtime))
       return;
   }
   /* wait 1 sec before idetify again */
   gnetwork->next_identify = gdata.curtime + 1;
-  privmsg("nickserv", "IDENTIFY %s", gdata.nickserv_pass);
+  privmsg("nickserv", "IDENTIFY %s", pwd);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "IDENTIFY send to nickserv on %s.", gnetwork->name);
 }
 
 void identify_check(const char *line)
 {
+  char *pwd;
+
+  pwd = (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
+  if (pwd == NULL)
+    return;
+
   if (strstr(line, "Nickname is registered to someone else") != NULL) {
       identify_needed(0);
   }
@@ -983,6 +995,7 @@ static void free_config(void)
         mydelete(ss->hostname);
         mydelete(ss->password);
       }
+    mydelete(gdata.networks[si].nickserv_pass);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);
