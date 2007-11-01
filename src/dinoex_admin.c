@@ -3182,11 +3182,7 @@ void a_backgroud(const userinput * const u)
   if (gdata.pidfile)
     writepidfile(gdata.pidfile);
 
-  if ( !gdata.noscreen && !gdata.background) {
-    printf("\x1b[%i;12H%s) >", gdata.termlines, "");
-    printf("\x1b[%i;%iH", gdata.termlines, 16);
-    gototop();
-  }
+  gdata.debug = 0;
 }
 
 void a_autoadd(const userinput * const u)
