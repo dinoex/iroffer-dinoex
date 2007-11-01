@@ -1996,3 +1996,4 @@
 2022 "ADDMATCH"
 2023 "Fügt neue Dateien hinzu die auf <muster> passen."
 2024 "[dir]"
+2025 "$"

@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+189) XDCC GET $
+  Neues User Kommando:
+  XDCC GET $                      Downloads list of packages
+
 188) LISTUL
   Neues Admin Kommando:
   LISTUL <dir>                     Inhalt des Upload-Unterverzeichnisses anzeigen

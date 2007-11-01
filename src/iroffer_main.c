@@ -3451,7 +3451,6 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       goto done;
     }
   
-  xd = irlist_get_nth(&gdata.xdccs, pack-1);
   if (!man && (check_lock(xd->lock, pwd) != 0))
     {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (pack locked): ");

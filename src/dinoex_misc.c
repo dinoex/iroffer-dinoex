@@ -316,16 +316,23 @@ void check_new_connection(transfer *const tr)
 }
 
 static xdcc xdcc_statefile;
+static xdcc xdcc_listfile;
 static int dinoex_lasthour;
+
+static void init_xdcc(xdcc *xd)
+{
+  bzero((char *)xd, sizeof(xdcc));
+  xd->note = mystrdup("");
+  xd->file_fd = FD_UNUSED;
+  xd->has_md5sum = 0;
+  xd->has_crc32 = 0;
+}
 
 void startup_dinoex(void)
 {
   config_startup();
-  bzero((char *)&xdcc_statefile, sizeof(xdcc_statefile));
-  xdcc_statefile.note = mystrdup("");
-  xdcc_statefile.file_fd = FD_UNUSED;
-  xdcc_statefile.has_md5sum = 2;
-  xdcc_statefile.has_crc32 = 2;
+  init_xdcc(&xdcc_statefile);
+  init_xdcc(&xdcc_listfile);
   dinoex_lasthour = -1;
   curl_startup();
   ssl_startup();
@@ -355,44 +362,47 @@ void rehash_dinoex(void)
   geoip_shutdown();
 }
 
-static int send_statefile(void)
+static int init_xdcc_file(xdcc *xd, char *file)
 {
-  xdcc *xd;
-  transfer *tr;
-  char *nick;
-  const char *hostname;
   struct stat st;
   int xfiledescriptor;
 
   updatecontext();
 
-  nick = gdata.send_statefile;
-  hostname = "man";
-  xd = &xdcc_statefile;
-  xd->file = gdata.statefile;
-  xd->desc = gdata.statefile;
+  xd->file = file;
+  mydelete(xd->desc);
+  xd->desc = mystrdup( getfilename(xd->file) );
   xd->minspeed = gdata.transferminspeed;
   xd->maxspeed = gdata.transfermaxspeed;
+
   xfiledescriptor = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (xfiledescriptor < 0)
     return 1;
 
-  if (fstat(xfiledescriptor, &st) < 0)
-    {
-      close(xfiledescriptor);
-      return 1;
-    }
+  if (fstat(xfiledescriptor, &st) < 0) {
+    close(xfiledescriptor);
+    return 1;
+  }
 
   xd->st_size  = st.st_size;
   xd->st_dev   = st.st_dev;
   xd->st_ino   = st.st_ino;
   xd->mtime    = st.st_mtime;
   close(xfiledescriptor);
+  return 0;
+}
 
+static int send_xdcc_file(xdcc *xd, char *file, const char *nick, const char *hostname)
+{
+  transfer *tr;
+
+  updatecontext();
+
+  if (init_xdcc_file(xd, file))
+    return 1;
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "Send: %s to %s bytes=%" LLPRINTFMT "u",
-          gdata.statefile, nick, (unsigned long long)xd->st_size);
-  xd->file_fd_count++;
+          file, nick, (unsigned long long)xd->st_size);
   tr = irlist_add(&gdata.trans, sizeof(transfer));
   t_initvalues(tr);
   tr->id = get_next_tr_id();
@@ -412,7 +422,6 @@ void update_hour_dinoex(int hour, int minute)
 {
   xdcc *xd;
   transfer *tr;
-  int sendrunning;
   int lastminute;
   int net = 0;
 
@@ -426,19 +435,16 @@ void update_hour_dinoex(int hour, int minute)
 
   minute %= 60;
   lastminute = gdata.send_statefile_minute + 10;
-  if (lastminute < 60)
-    {
-      if (minute < gdata.send_statefile_minute)
-        return;
-      if (minute >= lastminute)
-        return;
-    }
-  else
-    {
-      lastminute = lastminute % 60;
-      if ((minute < gdata.send_statefile_minute) && (minute > lastminute))
-        return;
-    }
+  if (lastminute < 60) {
+    if (minute < gdata.send_statefile_minute)
+      return;
+    if (minute >= lastminute)
+      return;
+  } else {
+    lastminute = lastminute % 60;
+    if ((minute < gdata.send_statefile_minute) && (minute > lastminute))
+      return;
+  }
 
   gnetwork = &(gdata.networks[net]);
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
@@ -452,22 +458,12 @@ void update_hour_dinoex(int hour, int minute)
      return;
 
   xd = &xdcc_statefile;
-  sendrunning = 0;
-  tr = irlist_get_head(&gdata.trans);
-  while(tr)
-    {
-      if (xd == tr->xpack)
-        {
-          sendrunning++;
-        }
-      tr = irlist_get_next(tr);
-    }
-  if (sendrunning == 0)
-    {
-       if (send_statefile() == 0)
-         dinoex_lasthour = hour;
-    }
-
+  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+    if (xd == tr->xpack)
+      return;
+  }
+  if (send_xdcc_file(&xdcc_statefile, gdata.statefile, gdata.send_statefile, "man") == 0)
+    dinoex_lasthour = hour;
 }
 
 /* iroffer-lamm: @find and long !list */
@@ -742,6 +738,12 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
     }
   }
 
+  if (pack == -1) {
+    if (init_xdcc_file(&xdcc_listfile, gdata.xdcclistfile))
+      return NULL;
+    return &xdcc_listfile;
+  }
+
   if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1)) {
     ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (Bad Pack Number): ");
     notice(nick, "** Invalid Pack Number, Try Again");
@@ -761,6 +763,9 @@ int packnumtonum(const char *a)
     a++;
     return atoi(a);
   }
+
+  if (strcmp(a, "$") == 0)
+    return -1;
 
   for (aq = irlist_get_head(&gdata.autoqueue); aq; aq = irlist_get_next(aq)) {
     if (!strcasecmp(a, aq->word))
@@ -931,6 +936,9 @@ static void free_state(void)
 
 
   mydelete(xdcc_statefile.note);
+  mydelete(xdcc_statefile.desc);
+  mydelete(xdcc_listfile.note);
+  mydelete(xdcc_listfile.desc);
 }
 
 static void free_config(void)
