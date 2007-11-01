@@ -52,6 +52,7 @@ void write_removed_xdcc(xdcc *xd);
 void autotrigger_add(xdcc *xd);
 void autotrigger_rebuild(void);
 void start_md5_hash(xdcc *xd, int packnum);
+void cancel_md5_hash(xdcc *xd, const char *msg);
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
 
 /* End of File */

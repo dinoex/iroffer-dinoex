@@ -2811,24 +2811,7 @@ int look_for_file_changes(xdcc *xpack)
           tr = irlist_get_next(tr);
         }
       
-      if (gdata.md5build.xpack == xpack)
-        {
-          outerror(OUTERROR_TYPE_WARN,"[MD5]: Canceled (file changed)");
-          
-          FD_CLR(gdata.md5build.file_fd, &gdata.readset);
-          close(gdata.md5build.file_fd);
-          gdata.md5build.file_fd = FD_UNUSED;
-          gdata.md5build.xpack = NULL;
-        }
-      xpack->has_md5sum = 0;
-      xpack->has_crc32 = 0;
-      memset(xpack->md5sum,0,sizeof(MD5Digest));
-      
-      assert(xpack->file_fd == FD_UNUSED);
-      assert(xpack->file_fd_count == 0);
-#ifdef HAVE_MMAP
-      assert(!irlist_size(&xpack->mmaps));
-#endif
+      cancel_md5_hash(xpack, "file changed");
     }
   
   return 0;

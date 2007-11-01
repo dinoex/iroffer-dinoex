@@ -638,6 +638,27 @@ void start_md5_hash(xdcc *xd, int packnum)
   }
 }
 
+void cancel_md5_hash(xdcc *xd, const char *msg)
+{
+  if (gdata.md5build.xpack == xd) {
+    outerror(OUTERROR_TYPE_WARN, "[MD5]: Canceled (%s)", msg);
+
+    FD_CLR(gdata.md5build.file_fd, &gdata.readset);
+    close(gdata.md5build.file_fd);
+    gdata.md5build.file_fd = FD_UNUSED;
+    gdata.md5build.xpack = NULL;
+  }
+  xd->has_md5sum = 0;
+  xd->has_crc32 = 0;
+  memset(xd->md5sum, 0, sizeof(MD5Digest));
+
+  assert(xd->file_fd == FD_UNUSED);
+  assert(xd->file_fd_count == 0);
+#ifdef HAVE_MMAP
+  assert(!irlist_size(&xd->mmaps));
+#endif
+}
+
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
 {
   char *line;
