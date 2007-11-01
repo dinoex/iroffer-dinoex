@@ -281,3 +281,6 @@ Misha-SU
 Lamarr
 	report "MAXSPEED" bug
 
+Akropolis
+	user commamd "XDCC GET $"
+

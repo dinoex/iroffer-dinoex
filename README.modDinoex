@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
-189) XDCC GET $
+189) XDCC GET $ (inspired by Akropolis)
   new user commands:
   XDCC GET $                      Downloads list of packages
 
