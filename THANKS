@@ -178,6 +178,8 @@ Cork
 	reporting tar in Makefile.config
 	reporting msg bug
 	reporting "REHASH" bug
+	option "vhost" per network
+	option "usenatip" per network
 
 anibi
 	option "include_subdirs"

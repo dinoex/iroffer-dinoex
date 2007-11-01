@@ -88,11 +88,9 @@ Not going to happen anytime soon:
   1022  send notes on mutiple triggers
   1024  gently recover when networks are deleted
   1027  renumber <from> <to> new
-  1029  local network without getipfromserver/vhost
   1030  msg to owner whn it activates flood protection
   1032  configureable note after Record
   1034  age verification for hentai
-  1037  getipfromserver for mutihomed bots
   1038  shared bot, each admin manages its own files.
   1040  respondtochannellistmsg per admin
   1046  write passwort in config
