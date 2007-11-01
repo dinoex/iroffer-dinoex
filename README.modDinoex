@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+190) window resize (inspired by Yasuo|Iwakura)
+  Changing window size will no longer delete screen.
+
 189) XDCC GET $ (inspired by Akropolis)
   new user commands:
   XDCC GET $                      Downloads list of packages
