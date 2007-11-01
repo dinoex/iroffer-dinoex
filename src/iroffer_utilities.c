@@ -1337,8 +1337,6 @@ void dumpgdata(void)
   gdata_print_long(startuptime);
   gdata_print_int(lowbdwth);
   gdata_print_int(background);
-  gdata_print_number("0x%.8lX",ourip);
-  gdata_print_int(usenatip);
   gdata_print_string(local_vhost);
   gdata_print_int(logstats);
   gdata_print_string(logfile);
@@ -1501,6 +1499,7 @@ void dumpgdata(void)
   gdata_print_string(http_admin);
   gdata_print_string(http_dir);
   gdata_print_string(group_seperator);
+  gdata_print_string(usenatip);
 
   gdata_print_int(need_voice);
   gdata_print_int(need_level);
@@ -1612,6 +1611,9 @@ void dumpgdata(void)
       gdata_print_string(networks[ss].config_nick);
       gdata_print_string(networks[ss].local_vhost);
       /* r_config_nick */
+      gdata_print_number("0x%.8lX", networks[ss].ourip);
+      /* r_ourip */
+      gdata_print_int(networks[ss].usenatip);
   
       gdata_irlist_iter_start(networks[ss].proxyinfo, char);
       gdata_iter_as_print_string;

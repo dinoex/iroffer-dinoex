@@ -721,16 +721,16 @@ static void mainloop (void) {
                     ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "using %s", msg);
                     mydelete(msg);
                   }
-                if (!gdata.usenatip)
+                if (!gnetwork->usenatip)
                   {
-                    gdata.ourip = ntohl(gnetwork->myip.sin.sin_addr.s_addr);
+                    gnetwork->ourip = ntohl(gnetwork->myip.sin.sin_addr.s_addr);
                     if (gdata.debug > 0)
                       {
                         ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ourip = %lu.%lu.%lu.%lu",
-                                (gdata.ourip >> 24) & 0xFF,
-                                (gdata.ourip >> 16) & 0xFF,
-                                (gdata.ourip >>  8) & 0xFF,
-                                (gdata.ourip      ) & 0xFF
+                                (gnetwork->ourip >> 24) & 0xFF,
+                                (gnetwork->ourip >> 16) & 0xFF,
+                                (gnetwork->ourip >>  8) & 0xFF,
+                                (gnetwork->ourip      ) & 0xFF
                                 );
                       }
                   }

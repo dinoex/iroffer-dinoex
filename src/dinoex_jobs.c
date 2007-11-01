@@ -689,7 +689,6 @@ void a_rehash_prepare(void)
   int ss;
 
   gdata.r_networks_online = gdata.networks_online;
-  gdata.r_ourip = gdata.getipfromserver ? gdata.ourip : 0;
 
   gdata.r_pidfile = NULL;
   if (gdata.pidfile)
@@ -704,6 +703,7 @@ void a_rehash_prepare(void)
   for (ss=0; ss<gdata.networks_online; ss++) {
     gdata.networks[ss].r_needtojump = 0;
     gdata.networks[ss].r_config_nick = NULL;
+    gdata.networks[ss].r_ourip = gdata.getipfromserver ? gdata.networks[ss].ourip : 0;
     if (gdata.networks[ss].config_nick)
       gdata.networks[ss].r_config_nick = mystrdup(gdata.networks[ss].config_nick);
     gdata.networks[ss].r_local_vhost = NULL;
@@ -722,14 +722,14 @@ void a_rehash_needtojump(const userinput *u)
 
   updatecontext();
 
-  /* keep dynamic IP */
-  if (gdata.getipfromserver)
-    gdata.ourip = gdata.r_ourip;
-  gdata.r_ourip = 0;
 
   backup = gnetwork;
   for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
+    /* keep dynamic IP */
+    if (gdata.getipfromserver)
+      gnetwork->ourip = gnetwork->r_ourip;
+    gnetwork->r_ourip = 0;
     new_vhost = get_local_vhost();
     old_vhost = (gnetwork->r_local_vhost) ? gnetwork->r_local_vhost : r_local_vhost;
     if (strcmp_null(new_vhost, old_vhost) != 0) {
@@ -796,6 +796,11 @@ void a_rehash_cleanup(const userinput *u)
     a_respond(u, "user_nick missing! keeping old nick!");
     gdata.config_nick = r_config_nick;
     r_config_nick = NULL;
+    for (ss=0; ss<gdata.networks_online; ss++) {
+      mydelete(gnetwork->config_nick);
+      gnetwork->config_nick = gnetwork->r_config_nick;
+      mydelete(gnetwork->r_local_vhost);
+    }
   } else {
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ss++) {
@@ -811,8 +816,8 @@ void a_rehash_cleanup(const userinput *u)
     }
     gnetwork = backup;
     mydelete(r_config_nick);
-    mydelete(r_local_vhost);
   }
+  mydelete(r_local_vhost);
 }
 
 /* End of File */

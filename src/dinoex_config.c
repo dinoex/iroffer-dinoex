@@ -19,6 +19,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_irc.h"
 #include "dinoex_config.h"
 
 #include <ctype.h>
@@ -609,6 +610,23 @@ static void c_uploadminspace(char *var)
   mydelete(var);
 }
 
+static void c_usenatip(char *var)
+{
+  gnetwork_t *backup;
+
+  if (gdata.bracket == 0) {
+    mydelete(gdata.usenatip);
+    gdata.usenatip = var;
+    return;
+  }
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[gdata.networks_online]);
+  update_natip(var);
+  gnetwork = backup;
+  mydelete(var);
+}
+
 static void c_user_nick(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].config_nick);
@@ -634,6 +652,7 @@ static config_func_typ config_parse_func[] = {
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },
 {"uploadminspace",         c_uploadminspace },
+{"usenatip",               c_usenatip },
 {"user_nick",              c_user_nick },
 {"{",                      c_bracket_open },
 {"}",                      c_bracket_close },

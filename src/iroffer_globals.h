@@ -90,9 +90,12 @@ int recentsent;
 int nick_number;
 int inamnt[INAMNT_SIZE];
 int r_needtojump;
+int usenatip;
 
 long next_identify;
 long next_restrict;
+unsigned long ourip;
+unsigned long r_ourip;
 
 ir_sockaddr_union_t myip;
 } gnetwork_t;
@@ -115,8 +118,6 @@ time_t logrotate;
 char *headline;
 char *creditline;
 int background;
-unsigned long ourip;
-int usenatip;
 
 struct
 {
@@ -189,6 +190,7 @@ char *autoadd_sort;
 char *http_admin;
 char *http_dir;
 char *group_seperator;
+char *usenatip;
 long nomd5_start;
 int need_voice;
 int need_level;
@@ -246,7 +248,6 @@ int autoignore_threshold;
 /* rehash temp variables */
 char *r_pidfile;
 float r_transferminspeed, r_transfermaxspeed;
-unsigned long r_ourip;
 
 gnetwork_t networks[MAX_NETWORKS];
 int networks_online;

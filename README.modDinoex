@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
-193) local_vhost
+193) local_vhost, usenatip (inspired by Cork)
   you can set local_vhost for each network differently.
 
 bugfix: REHASH (reported by Cork)

@@ -293,11 +293,30 @@ void startup_dinoex(void)
   ssl_startup();
 }
 
-void config_dinoex(void) {
-  telnet_setup_listen();
-  h_setup_listen();
+static void global_defaults(void)
+{
+  gnetwork_t *backup;
+  int ss;
+
   if (!gdata.group_seperator)
     gdata.group_seperator = mystrdup(" ");
+
+  if (gdata.usenatip) {
+    backup = gnetwork;
+    for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[gdata.networks_online]);
+      if (gnetwork->usenatip == 0)
+        update_natip(gdata.usenatip);
+    }
+    gnetwork = backup;
+  }
+}
+
+void config_dinoex(void)
+{
+  telnet_setup_listen();
+  h_setup_listen();
+  global_defaults();
 }
 
 void shutdown_dinoex(void)
@@ -312,8 +331,7 @@ void rehash_dinoex(void)
 {
   telnet_reash_listen();
   h_reash_listen();
-  if (!gdata.group_seperator)
-    gdata.group_seperator = mystrdup(" ");
+  global_defaults();
   geoip_shutdown();
 }
 
@@ -988,6 +1006,7 @@ static void free_config(void)
   mydelete(gdata.http_dir);
   mydelete(gdata.group_seperator);
   mydelete(gdata.local_vhost);
+  mydelete(gdata.usenatip);
 }
 
 #endif

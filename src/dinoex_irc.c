@@ -32,13 +32,11 @@ void update_natip(const char *var)
   if (var == NULL)
     return;
 
-  if (gnetwork != NULL) {
-    if (gnetwork->myip.sa.sa_family != AF_INET)
-      return;
-  }
+  if (gnetwork->myip.sa.sa_family != AF_INET)
+    return;
 
-  gdata.usenatip = 1;
-  if (gdata.r_ourip != 0)
+  gnetwork->usenatip = 1;
+  if (gnetwork->r_ourip != 0)
     return;
 
   bzero((char *)&in, sizeof(in));
@@ -55,30 +53,27 @@ void update_natip(const char *var)
     memcpy(&in, hp->h_addr_list[0], sizeof(in));
   }
 
-  old.s_addr = htonl(gdata.ourip);
+  old.s_addr = htonl(gnetwork->ourip);
   if (old.s_addr == in.s_addr)
     return;
 
-  oldip = gdata.ourip;
-  gdata.ourip = ntohl(in.s_addr);
+  oldip = gnetwork->ourip;
+  gnetwork->ourip = ntohl(in.s_addr);
   if (oldip != 0 ) {
     oldtxt = mystrdup(inet_ntoa(old));
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "DCC IP changed from %s to %s", oldtxt, inet_ntoa(in));
+            "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
     mydelete(oldtxt);
   }
 
-  if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "ip=0x%8.8lX\n", gdata.ourip);
+  if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
 
   /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
-  if (((gdata.ourip & 0xFF000000UL) == 0x0A000000UL) ||
-      ((gdata.ourip & 0xFFF00000UL) == 0xAC100000UL) ||
-      ((gdata.ourip & 0xFFFF0000UL) == 0xC0A80000UL)) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "usenatip of %lu.%lu.%lu.%lu looks wrong, this is probably not what you want to do",
-             (gdata.ourip >> 24) & 0xFF,
-             (gdata.ourip >> 16) & 0xFF,
-             (gdata.ourip >>  8) & 0xFF,
-             (gdata.ourip      ) & 0xFF);
+  if (((gnetwork->ourip & 0xFF000000UL) == 0x0A000000UL) ||
+      ((gnetwork->ourip & 0xFFF00000UL) == 0xAC100000UL) ||
+      ((gnetwork->ourip & 0xFFFF0000UL) == 0xC0A80000UL)) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "usenatip of %s looks wrong, this is probably not what you want to do",
+             inet_ntoa(in));
   }
 }
 

@@ -429,11 +429,6 @@ void getconfig_set (const char *line, int rehash)
       
       mydelete(tnum);
       }
-   else if ( ! strcmp(type,"usenatip"))
-     {
-      update_natip(var);
-      mydelete(var);
-     }
    else if ( ! strcmp(type,"uploadmaxsize")) {
       gdata.uploadmaxsize = (off_t)(max2(0,atoull(var)*1024*1024));
       mydelete(var);
@@ -2054,6 +2049,7 @@ void reinit_config_vars(void)
     irlist_delete_all(&gdata.networks[si].channel_join_raw);
     irlist_delete_all(&gdata.networks[si].proxyinfo);
     gdata.networks[si].connectionmethod.how = how_direct;
+    gdata.networks[si].usenatip = 0;
   } /* networks */
   mydelete(gdata.logfile);
   gdata.logrotate = 0;
@@ -2062,7 +2058,6 @@ void reinit_config_vars(void)
   mydelete(gdata.user_modes);
   gdata.tcprangestart = 0;
   gdata.tcprangelimit = 65535;
-  gdata.usenatip = 0;
   gdata.slotsmax = gdata.queuesize = 0;
   gdata.idlequeuesize = 0;
   gdata.maxtransfersperperson = 1;
@@ -2141,6 +2136,7 @@ void reinit_config_vars(void)
   mydelete(gdata.http_admin);
   mydelete(gdata.http_dir);
   mydelete(gdata.group_seperator);
+  mydelete(gdata.usenatip);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;
