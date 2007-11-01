@@ -1396,13 +1396,13 @@ static void a_make_announce_long(const userinput * const u, int n)
 static int a_access_file(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
 {
   if (xfiledescriptor < 0) {
-    a_respond(u, "Cant Access File: %s", strerror(errno));
+    a_respond(u, "Cant Access File: %s: %s", *file, strerror(errno));
     mydelete(*file);
     return 1;
   }
 
   if (fstat(xfiledescriptor, st) < 0) {
-    a_respond(u, "Cant Access File Details: %s", strerror(errno));
+    a_respond(u, "Cant Access File Details: %s: %s", *file, strerror(errno));
     close(xfiledescriptor);
     mydelete(*file);
     return 1;
@@ -1423,13 +1423,13 @@ int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, 
     return 1;
 
   if ( st->st_size == 0 ) {
-    a_respond(u, "File has size of 0 bytes!");
+    a_respond(u, "File %s has size of 0 bytes!", *file);
     mydelete(*file);
     return 1;
   }
 
   if ((st->st_size > gdata.max_file_size) || (st->st_size < 0)) {
-    a_respond(u, "File is too large.");
+    a_respond(u, "File %s is too large.", *file);
     mydelete(*file);
     return 1;
   }
