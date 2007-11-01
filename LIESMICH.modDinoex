@@ -4,7 +4,7 @@ Ab Version 3.0:
 ---------------
 
 190) window resize
-  Aenderung der Fenstergröße führt nicht mehr zum Löschen des Fensterinhaltes.
+  Änderung der Fenstergröße führt nicht mehr zum Löschen des Fensterinhaltes.
 
 189) XDCC GET $
   Neues User Kommando:
