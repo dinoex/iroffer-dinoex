@@ -45,6 +45,7 @@ int disabled_config(const userinput * const u);
 int queue_host_remove(const userinput * const u, irlist_t *list, regex_t *regexp);
 int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick);
 
+void a_cancel_transfers(xdcc *xd, const char *msg);
 void a_remove_pack(const userinput * const u, xdcc *xd, int num);
 void a_remove_delayed(const userinput * const u);
 void a_add_delayed(const userinput * const u);
@@ -67,6 +68,7 @@ void a_renumber1(const userinput * const u, int oldp, int newp);
 void a_renumber3(const userinput * const u);
 void a_sort(const userinput * const u);
 int a_open_file(char **file, int mode);
+int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, struct stat *st);
 xdcc *a_add2(const userinput * const u);
 void a_add(const userinput * const u);
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup, const char *match);

@@ -1912,7 +1912,6 @@ static void u_chfile(const userinput * const u) {
    struct stat st;
    char *file;
    char *old;
-   transfer *tr;
    xdcc *xd;
    
    updatecontext();
@@ -1930,46 +1929,12 @@ static void u_chfile(const userinput * const u) {
    file = mystrdup(u->arg2e);
    
    xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
-   if (xfiledescriptor < 0) {
-      u_respond(u,"Cant Access File: %s",strerror(errno));
-      mydelete(file);
+   if (a_access_fstat(u, xfiledescriptor, &file, &st))
       return;
-      }
-   
-   if (fstat(xfiledescriptor,&st) < 0)
-     {
-      u_respond(u,"Cant Access File Details: %s",strerror(errno));
-      close(xfiledescriptor);
-      mydelete(file);
-      return;
-     }
-      
-   close(xfiledescriptor);
-   
-   if ( st.st_size == 0 ) {
-      u_respond(u,"File has size of 0 bytes!");
-      mydelete(file);
-      return;
-      }
-   
-   if ((st.st_size > gdata.max_file_size) || (st.st_size < 0)) {
-      u_respond(u,"File is too large.");
-      mydelete(file);
-      return;
-      }
    
    xd = irlist_get_nth(&gdata.xdccs, num-1);
    
-   tr = irlist_get_head(&gdata.trans);
-   while(tr)
-     {
-       if ((tr->tr_status != TRANSFER_STATUS_DONE) &&
-           (tr->xpack == xd))
-         {
-           t_closeconn(tr,"Pack file changed",0);
-         }
-       tr = irlist_get_next(tr);
-     }
+   a_cancel_transfers(xd, "Pack file changed");
    
    u_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
              num, xd->file, file);
@@ -1989,6 +1954,7 @@ static void u_chfile(const userinput * const u) {
    mydelete(old);
    
    cancel_md5_hash(xd, "CHFILE");
+   
    write_statefile();
    xdccsavetext();
    

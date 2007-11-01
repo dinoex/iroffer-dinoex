@@ -532,7 +532,7 @@ int queue_nick_remove(const userinput * const u, irlist_t *list, int network, co
   return changed;
 }
 
-static void a_cancel_transfers(xdcc *xd, const char *msg)
+void a_cancel_transfers(xdcc *xd, const char *msg)
 {
   transfer *tr;
 
@@ -1393,6 +1393,50 @@ static void a_make_announce_long(const userinput * const u, int n)
   mydelete(tempstr);
 }
 
+static int a_access_file(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
+{
+  if (xfiledescriptor < 0) {
+    a_respond(u, "Cant Access File: %s", strerror(errno));
+    mydelete(*file);
+    return 1;
+  }
+
+  if (fstat(xfiledescriptor, st) < 0) {
+    a_respond(u, "Cant Access File Details: %s", strerror(errno));
+    close(xfiledescriptor);
+    mydelete(*file);
+    return 1;
+  }
+  close(xfiledescriptor);
+
+  if (!S_ISREG(st->st_mode)) {
+    a_respond(u, "%s is not a file", *file);
+    mydelete(file);
+    return 1;
+  }
+  return 0;
+}
+
+int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
+{
+  if (a_access_file(u, xfiledescriptor, file, st))
+    return 1;
+
+  if ( st->st_size == 0 ) {
+    a_respond(u, "File has size of 0 bytes!");
+    mydelete(*file);
+    return 1;
+  }
+
+  if ((st->st_size > gdata.max_file_size) || (st->st_size < 0)) {
+    a_respond(u, "File is too large.");
+    mydelete(*file);
+    return 1;
+  }
+
+  return 0;
+}
+
 xdcc *a_add2(const userinput * const u)
 {
   int xfiledescriptor;
@@ -1414,39 +1458,8 @@ xdcc *a_add2(const userinput * const u)
   convert_to_unix_slash(file);
 
   xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
-  if (xfiledescriptor < 0) {
-      a_respond(u, "Cant Access File: %s", strerror(errno));
-      mydelete(file);
-      return NULL;
-  }
-
-  if (fstat(xfiledescriptor, &st) < 0)
-     {
-      a_respond(u, "Cant Access File Details: %s", strerror(errno));
-      close(xfiledescriptor);
-      mydelete(file);
-      return NULL;
-  }
-  close(xfiledescriptor);
-
-  if (!S_ISREG(st.st_mode))
-     {
-      a_respond(u, "%s is not a file", file);
-      mydelete(file);
-      return NULL;
-  }
-
-  if ( st.st_size == 0 ) {
-      a_respond(u, "File has size of 0 bytes!");
-      mydelete(file);
-      return NULL;
-  }
-
-  if ((st.st_size > gdata.max_file_size) || (st.st_size < 0)) {
-      a_respond(u, "File is too large.");
-      mydelete(file);
-      return NULL;
-  }
+  if (a_access_fstat(u, xfiledescriptor, &file, &st))
+    return NULL;
 
   if (gdata.noduplicatefiles) {
     for (xd = irlist_get_head(&gdata.xdccs);
@@ -2324,34 +2337,9 @@ static int a_newdir_check(const userinput * const u, const char *dir1, const cha
   snprintf(tempstr, max,
            "%s%s", dir2, off2);
 
-  xfiledescriptor=open(tempstr, O_RDONLY | ADDED_OPEN_FLAGS);
-
-  if (xfiledescriptor < 0) {
-    a_respond(u, "%s: Cant Access File: %s", tempstr, strerror(errno));
-    mydelete(tempstr);
+  xfiledescriptor = open(tempstr, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (a_access_fstat(u, xfiledescriptor, &tempstr, &st))
     return 0;
-  }
-
-  if (fstat(xfiledescriptor, &st) < 0) {
-    a_respond(u, "%s: Cant Access File Details: %s", tempstr, strerror(errno));
-    close(xfiledescriptor);
-    mydelete(tempstr);
-    return 0;
-  }
-
-  close(xfiledescriptor);
-
-  if ( st.st_size == 0 ) {
-    a_respond(u, "%s: File has size of 0 bytes!", tempstr);
-    mydelete(tempstr);
-    return 0;
-  }
-
-  if ((st.st_size > gdata.max_file_size) || (st.st_size < 0)) {
-    a_respond(u, "%s: File is too large.", tempstr);
-    mydelete(tempstr);
-    return 0;
-  }
 
   a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
             number_of_pack(xd), xd->file, tempstr);
@@ -2455,26 +2443,8 @@ void a_filemove(const userinput * const u)
   convert_to_unix_slash(file1);
 
   xfiledescriptor = a_open_file(&file1, O_RDONLY | ADDED_OPEN_FLAGS);
-
-  if (xfiledescriptor < 0) {
-    a_respond(u, "Cant Access File: %s: %s", file1, strerror(errno));
-    mydelete(file1);
+  if (a_access_file(u, xfiledescriptor, &file1, &st))
     return;
-  }
-
-  if (fstat(xfiledescriptor, &st) < 0) {
-    a_respond(u, "Cant Access File Details: %s: %s", file1, strerror(errno));
-    close(xfiledescriptor);
-    mydelete(file1);
-    return;
-  }
-  close(xfiledescriptor);
-
-  if (!S_ISREG(st.st_mode)) {
-    a_respond(u, "%s is not a file", file1);
-    mydelete(file1);
-    return;
-  }
 
   clean_quotes(u->arg2e);
   file2 = mystrdup(u->arg2e);
@@ -2500,23 +2470,8 @@ static int a_movefile_sub(const userinput * const u, xdcc *xd, const char *newfi
   file1 = xd->file;
 
   xfiledescriptor = a_open_file(&file1, O_RDONLY | ADDED_OPEN_FLAGS);
-
-  if (xfiledescriptor < 0) {
-    a_respond(u, "Cant Access File: %s: %s", file1, strerror(errno));
+  if (a_access_file(u, xfiledescriptor, &file1, &st))
     return 1;
-  }
-
-  if (fstat(xfiledescriptor, &st) < 0) {
-    a_respond(u, "Cant Access File Details: %s: %s", file1, strerror(errno));
-    close(xfiledescriptor);
-    return 1;
-  }
-  close(xfiledescriptor);
-
-  if (!S_ISREG(st.st_mode)) {
-    a_respond(u, "%s is not a file", file1);
-    return 1;
-  }
 
   file2 = mystrdup(newfile);
   convert_to_unix_slash(file2);
@@ -2633,26 +2588,8 @@ static void a_filedel_disk(const userinput * const u, const char *name)
   convert_to_unix_slash(file);
 
   xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
-
-  if (xfiledescriptor < 0) {
-    a_respond(u, "Cant Access File: %s: %s", file, strerror(errno));
-    mydelete(file);
+  if (a_access_file(u, xfiledescriptor, &file, &st))
     return;
-  }
-
-  if (fstat(xfiledescriptor, &st) < 0) {
-    a_respond(u, "Cant Access File Details: %s: %s", file, strerror(errno));
-    close(xfiledescriptor);
-    mydelete(file);
-    return;
-  }
-  close(xfiledescriptor);
-
-  if (!S_ISREG(st.st_mode)) {
-    a_respond(u, "%s is not a file", file);
-    mydelete(file);
-    return;
-  }
 
   if (unlink(file) < 0) {
     a_respond(u, "File %s could not be deleted: %s", file, strerror(errno));
