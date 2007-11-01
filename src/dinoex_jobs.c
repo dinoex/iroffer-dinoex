@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_admin.h"
+#include "dinoex_irc.h"
 #include "dinoex_jobs.h"
 
 #include <ctype.h>
@@ -682,7 +683,6 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
 
 static char *r_local_vhost;
 static char *r_config_nick;
-static int r_needtojump;
 
 void a_rehash_prepare(void)
 {
@@ -702,14 +702,20 @@ void a_rehash_prepare(void)
     r_local_vhost = mystrdup(gdata.local_vhost);
 
   for (ss=0; ss<gdata.networks_online; ss++) {
+    gdata.networks[ss].r_needtojump = 0;
     gdata.networks[ss].r_config_nick = NULL;
     if (gdata.networks[ss].config_nick)
       gdata.networks[ss].r_config_nick = mystrdup(gdata.networks[ss].config_nick);
+    gdata.networks[ss].r_local_vhost = NULL;
+    if (gdata.networks[ss].local_vhost)
+      gdata.networks[ss].r_local_vhost = mystrdup(gdata.networks[ss].local_vhost);
   }
 }
 
 void a_rehash_needtojump(const userinput *u)
 {
+  char *new_vhost;
+  char *old_vhost;
   gnetwork_t *backup;
   channel_t *ch;
   int ss;
@@ -721,11 +727,17 @@ void a_rehash_needtojump(const userinput *u)
     gdata.ourip = gdata.r_ourip;
   gdata.r_ourip = 0;
 
-  r_needtojump = 0;
-  if (strcmp_null(gdata.local_vhost, r_local_vhost) != 0) {
-    a_respond(u, "vhost changed, reconnecting");
-    r_needtojump = 1;
+  backup = gnetwork;
+  for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+    new_vhost = get_local_vhost();
+    old_vhost = (gnetwork->r_local_vhost) ? gnetwork->r_local_vhost : r_local_vhost;
+    if (strcmp_null(new_vhost, old_vhost) != 0) {
+      a_respond(u, "vhost changed, reconnecting");
+      gnetwork->r_needtojump = 1;
+    }
   }
+  gnetwork = backup;
 
   /* dopped networks */
   if (gdata.networks_online < gdata.r_networks_online) {
@@ -755,25 +767,17 @@ void a_rehash_jump(const userinput *u)
 
   updatecontext();
 
-  if (!r_needtojump)
-    return;
-
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
+    if (gnetwork->r_needtojump == 0)
+      continue;
+
     gnetwork->serverconnectbackoff = 0;
     switchserver(-1);
     /* switchserver takes care of joining channels */
   }
   gnetwork = backup;
-}
-
-char *get_config_nick(void)
-{
-  if (gnetwork == NULL)
-    return gdata.config_nick;
-
-  return (gnetwork->config_nick) ? gnetwork->config_nick : gdata.config_nick;
 }
 
 void a_rehash_cleanup(const userinput *u)
@@ -803,9 +807,11 @@ void a_rehash_cleanup(const userinput *u)
         writeserver(WRITESERVER_NOW, "NICK %s", new_nick);
       }
       mydelete(gnetwork->r_config_nick);
+      mydelete(gnetwork->r_local_vhost);
     }
     gnetwork = backup;
     mydelete(r_config_nick);
+    mydelete(r_local_vhost);
   }
 }
 

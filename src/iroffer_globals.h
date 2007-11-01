@@ -83,10 +83,13 @@ char *name;
 char *nickserv_pass;
 char *config_nick;
 char *r_config_nick;
+char *local_vhost;
+char *r_local_vhost;
 int net;
 int recentsent;
 int nick_number;
 int inamnt[INAMNT_SIZE];
+int r_needtojump;
 
 long next_identify;
 long next_restrict;

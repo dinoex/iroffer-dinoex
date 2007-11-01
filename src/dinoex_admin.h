@@ -20,6 +20,7 @@ __attribute__ ((format(printf, 2, 3)))
 a_respond(const userinput * const u, const char *format, ...);
 
 int hide_locked(const userinput * const u, const xdcc *xd);
+int get_network(const char *arg1);
 int a_xdl_space(void);
 int a_xdl_left(void);
 int reorder_new_groupdesc(const char *group, const char *desc);

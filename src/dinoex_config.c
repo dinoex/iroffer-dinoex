@@ -565,6 +565,12 @@ static void c_autosendpack(char *var)
   mydelete(var);
 }
 
+static void c_local_vhost(char *var)
+{
+  mydelete(gdata.networks[gdata.networks_online].local_vhost);
+  gdata.networks[gdata.networks_online].local_vhost = var;
+}
+
 static void c_network(char *var)
 {
   gdata.bracket = 0;
@@ -624,6 +630,7 @@ static void c_bracket_close(char *var)
 static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
 {"autosendpack",           c_autosendpack },
+{"local_vhost",            c_local_vhost },
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },
 {"uploadminspace",         c_uploadminspace },

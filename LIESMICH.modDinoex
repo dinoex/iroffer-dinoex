@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+193) local_vhost
+  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+
 bugfix: REHASH
   Weicher restart wenn ein Netzwerk gelöscht wird.
 

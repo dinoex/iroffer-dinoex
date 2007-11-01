@@ -22,4 +22,10 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
 int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen);
 int connectirc2(res_addrinfo_t *remote);
 
+char *get_local_vhost(void);
+char *get_config_nick(void);
+
+int has_closed_servers(void);
+int has_joined_channels(int all);
+
 /* End of File */

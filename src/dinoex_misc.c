@@ -264,39 +264,6 @@ void notifyqueued_nick(const char *nick)
   gnetwork = backup;
 }
 
-int has_closed_servers(void)
-{
-  int ss;
-
-  for (ss=0; ss<gdata.networks_online; ss++) {
-    if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
-      return 0;
-  }
-  return 1;
-}
-
-int has_joined_channels(int all)
-{
-  int j;
-  int n;
-  int ss;
-  channel_t *ch;
-
-  j=0;
-  for (ss=0; ss<gdata.networks_online; ss++) {
-    for (ch = irlist_get_head(&gdata.networks[ss].channels); ch; ch = irlist_get_next(ch)) {
-      if ((ch->flags & CHAN_ONCHAN) == 0) {
-        if (all != 0)
-          return 0;
-      } else {
-        j++;
-        n++;
-      }
-    }
-  }
-  return j;
-}
-
 void check_new_connection(transfer *const tr)
 {
   geoip_new_connection(tr);
@@ -563,31 +530,6 @@ char* getpart_eol(const char *line, int howmany)
   part[plen] = '\0';
 
   return part;
-}
-
-int get_network(const char *arg1)
-{
-  int net;
-
-  /* default */
-  if (arg1 == NULL)
-    return 0;
-
-  /* numeric */
-  net = atoi(arg1);
-  if ((net > 0) && (net <= gdata.networks_online))
-    return --net;
-
-  /* text */
-  for (net=0; net<gdata.networks_online; net++) {
-    if (gdata.networks[net].name == NULL)
-      continue;
-    if (strcasecmp(gdata.networks[net].name, arg1) == 0)
-      return net;
-  }
-
-  /* unknown */
-  return -1;
 }
 
 int disk_full(const char *path)
@@ -1001,7 +943,7 @@ static void free_config(void)
       }
     mydelete(gdata.networks[si].nickserv_pass);
     mydelete(gdata.networks[si].config_nick);
-    mydelete(gdata.networks[si].r_config_nick);
+    mydelete(gdata.networks[si].local_vhost);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);

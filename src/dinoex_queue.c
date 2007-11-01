@@ -19,8 +19,8 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_irc.h"
 #include "dinoex_queue.h"
-#include "dinoex_misc.h"
 
 void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick)
 {

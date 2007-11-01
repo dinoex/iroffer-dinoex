@@ -21,35 +21,36 @@
 #include "dinoex_utilities.h"
 #include "dinoex_transfer.h"
 #include "dinoex_irc.h"
-#include "dinoex_misc.h"
 
 void t_setup_dcc(transfer *tr, const char *nick)
 {
   char *dccdata;
   char *sendnamestr;
+  char *vhost;
   int e = 1;
 
   updatecontext();
 
+  vhost = get_local_vhost();
   if (gdata.passive_dcc) {
     bzero((char *) &(tr->serveraddress), sizeof(ir_sockaddr_union_t));
     if (tr->family == AF_INET) {
       tr->serveraddress.sin.sin_family = AF_INET;
       tr->serveraddress.sin.sin_port = htons(0);
-      if (gdata.local_vhost) {
-        e = inet_pton(tr->family, gdata.local_vhost, &(tr->serveraddress.sin.sin_addr));
+      if (vhost) {
+        e = inet_pton(tr->family, vhost, &(tr->serveraddress.sin.sin_addr));
       } else {
         tr->serveraddress.sin.sin_addr.s_addr = gnetwork->myip.sin.sin_addr.s_addr;
       }
     } else {
       tr->serveraddress.sin6.sin6_family = AF_INET6;
       tr->serveraddress.sin6.sin6_port = htons(0);
-      if (gdata.local_vhost) {
-        e = inet_pton(tr->family, gdata.local_vhost, &(tr->serveraddress.sin6.sin6_addr));
+      if (vhost) {
+        e = inet_pton(tr->family, vhost, &(tr->serveraddress.sin6.sin6_addr));
       }
     }
     if (e != 1) {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", gdata.local_vhost);
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", vhost);
     }
     tr->tr_status = TRANSFER_STATUS_RESUME;
     tr->listenport = 0;

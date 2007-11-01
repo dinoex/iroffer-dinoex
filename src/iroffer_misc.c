@@ -518,6 +518,7 @@ void getconfig_set (const char *line, int rehash)
 
 static int connectirc (server_t *tserver) {
    char *tempstr;
+   char *vhost;
    int callval;
    
    updatecontext();
@@ -599,13 +600,14 @@ static int connectirc (server_t *tserver) {
        return 1; /* error */
      }
       
-   if (gdata.local_vhost)
+   vhost = get_local_vhost();
+   if (vhost)
      {
        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                "Attempting Connection to %s:%u from %s%s",
                gnetwork->curserver.hostname,
                gnetwork->curserver.port,
-               gdata.local_vhost,
+               vhost,
                tempstr);
      }
    else
@@ -2045,6 +2047,7 @@ void reinit_config_vars(void)
       }
     mydelete(gdata.networks[si].nickserv_pass);
     mydelete(gdata.networks[si].config_nick);
+    mydelete(gdata.networks[si].local_vhost);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);

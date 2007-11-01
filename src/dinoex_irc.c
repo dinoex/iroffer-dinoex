@@ -110,11 +110,13 @@ static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, char *vhost)
 
 int bind_irc_vhost(int family, int clientsocket)
 {
+  char *vhost;
   ir_sockaddr_union_t localaddr;
   SIGNEDSOCK int addrlen;
   int e;
 
-  if (!gdata.local_vhost)
+  vhost = get_local_vhost();
+  if (!vhost)
     return 0;
 
   bzero((char*)&localaddr, sizeof(ir_sockaddr_union_t));
@@ -122,16 +124,16 @@ int bind_irc_vhost(int family, int clientsocket)
     addrlen = sizeof(struct sockaddr_in);
     localaddr.sin.sin_family = AF_INET;
     localaddr.sin.sin_port = 0;
-    e = inet_pton(family, gdata.local_vhost, &(localaddr.sin.sin_addr));
+    e = inet_pton(family, vhost, &(localaddr.sin.sin_addr));
   } else {
     addrlen = sizeof(struct sockaddr_in6);
     localaddr.sin6.sin6_family = AF_INET6;
     localaddr.sin6.sin6_port = 0;
-    e = inet_pton(family, gdata.local_vhost, &(localaddr.sin6.sin6_addr));
+    e = inet_pton(family, vhost, &(localaddr.sin6.sin6_addr));
   }
 
   if (e != 1) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", gdata.local_vhost);
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", vhost);
     return 1;
   }
 
@@ -427,6 +429,52 @@ int connectirc2(res_addrinfo_t *remote)
   gnetwork->serverstatus = SERVERSTATUS_TRYING;
 
   return 0;
+}
+
+char *get_local_vhost(void)
+{
+  return (gnetwork->local_vhost) ? gnetwork->local_vhost : gdata.local_vhost;
+}
+
+char *get_config_nick(void)
+{
+  if (gnetwork == NULL)
+    return gdata.config_nick;
+
+  return (gnetwork->config_nick) ? gnetwork->config_nick : gdata.config_nick;
+}
+
+int has_closed_servers(void)
+{
+  int ss;
+
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
+      return 0;
+  }
+  return 1;
+}
+
+int has_joined_channels(int all)
+{
+  int j;
+  int n;
+  int ss;
+  channel_t *ch;
+
+  j=0;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    for (ch = irlist_get_head(&gdata.networks[ss].channels); ch; ch = irlist_get_next(ch)) {
+      if ((ch->flags & CHAN_ONCHAN) == 0) {
+        if (all != 0)
+          return 0;
+      } else {
+        j++;
+        n++;
+      }
+    }
+  }
+  return j;
 }
 
 /* End of File */

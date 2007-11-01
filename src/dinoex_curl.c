@@ -251,16 +251,18 @@ void start_fetch_url(const userinput *const u)
   }
 
 #if 0
-  if (gdata.local_vhost) {
-    char *vhosttext;
+  {
+    char *vhost;
 
-    ft->vhosttext = mycalloc(40);
-    snprintf(ft->vhosttext, 40, "%s", gdata.local_vhost);
-    ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
-    if (ces != 0) {
-      a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
-      clean_fetch(ft);
-      return;
+    vhost = get_local_vhost();
+    if (vhost) {
+      ft->vhosttext = mystrdup(vhost);
+      ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
+      if (ces != 0) {
+        a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
+        clean_fetch(ft);
+        return;
+      }
     }
   }
 #endif

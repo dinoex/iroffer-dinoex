@@ -58,7 +58,6 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
 void a_rehash_prepare(void);
 void a_rehash_needtojump(const userinput *u);
 void a_rehash_jump(const userinput *u);
-char *get_config_nick(void);
 void a_rehash_cleanup(const userinput *u);
 
 /* End of File */

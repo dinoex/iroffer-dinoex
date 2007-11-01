@@ -99,6 +99,31 @@ void a_respond(const userinput * const u, const char *format, ...)
   va_end(args);
 }
 
+int get_network(const char *arg1)
+{
+  int net;
+
+  /* default */
+  if (arg1 == NULL)
+    return 0;
+
+  /* numeric */
+  net = atoi(arg1);
+  if ((net > 0) && (net <= gdata.networks_online))
+    return --net;
+
+  /* text */
+  for (net=0; net<gdata.networks_online; net++) {
+    if (gdata.networks[net].name == NULL)
+      continue;
+    if (strcasecmp(gdata.networks[net].name, arg1) == 0)
+      return net;
+  }
+
+  /* unknown */
+  return -1;
+}
+
 int hide_locked(const userinput * const u, const xdcc *xd)
 {
   if (gdata.hidelockedpacks == 0)

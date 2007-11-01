@@ -18,8 +18,6 @@ int check_lock(const char* lockstr, const char* pwd);
 
 void stoplist(const char *nick);
 void notifyqueued_nick(const char *nick);
-int has_closed_servers(void);
-int has_joined_channels(int all);
 void startup_dinoex(void);
 void config_dinoex(void);
 void shutdown_dinoex(void);
@@ -29,7 +27,6 @@ void check_new_connection(transfer *const tr);
 int noticeresults(const char *nick, const char *match);
 
 char* getpart_eol(const char *line, int howmany);
-int get_network(const char *arg1);
 
 int disk_full(const char *path);
 
