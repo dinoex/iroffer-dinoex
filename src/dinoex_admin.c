@@ -129,7 +129,6 @@ int a_xdl_space(void)
        xd;
        xd = irlist_get_next(xd)) {
     i = max2(i, xd->gets);
-    xd = irlist_get_next(xd);
   }
   s = 5;
   if (i < 10000) s = 4;
