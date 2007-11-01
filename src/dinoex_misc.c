@@ -988,7 +988,6 @@ static void free_config(void)
     }
   mydelete(gdata.r_pidfile);
   mydelete(gdata.pidfile);
-  mydelete(gdata.r_config_nick);
   mydelete(gdata.config_nick);
   for (si=0; si<MAX_NETWORKS; si++)
   {
@@ -1001,6 +1000,8 @@ static void free_config(void)
         mydelete(ss->password);
       }
     mydelete(gdata.networks[si].nickserv_pass);
+    mydelete(gdata.networks[si].config_nick);
+    mydelete(gdata.networks[si].r_config_nick);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);

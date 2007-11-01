@@ -603,6 +603,12 @@ static void c_uploadminspace(char *var)
   mydelete(var);
 }
 
+static void c_user_nick(char *var)
+{
+  mydelete(gdata.networks[gdata.networks_online].config_nick);
+  gdata.networks[gdata.networks_online].config_nick = var;
+}
+
 static void c_bracket_open(char *var)
 {
   gdata.bracket ++;
@@ -621,6 +627,7 @@ static config_func_typ config_parse_func[] = {
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },
 {"uploadminspace",         c_uploadminspace },
+{"user_nick",              c_user_nick },
 {"{",                      c_bracket_open },
 {"}",                      c_bracket_close },
 {NULL, NULL }};

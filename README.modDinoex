@@ -3,8 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
-192) nickserv_pass (inspired by Tak0r, dondieschotte)
-  you can set nickserv_pass for each network differently.
+bugfix: REHASH (reported by Cork)
+  graceful restart when network dropped
+
+192) nickserv_pass, user_nick (inspired by Tak0r, dondieschotte)
+  you can set nickserv_pass and user_nick for each network differently.
 
 191) weblist_info
   Show additional information in the html page.

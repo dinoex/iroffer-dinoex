@@ -177,6 +177,7 @@ Cork
 	spaces in filenames
 	reporting tar in Makefile.config
 	reporting msg bug
+	reporting "REHASH" bug
 
 anibi
 	option "include_subdirs"

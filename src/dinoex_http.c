@@ -916,7 +916,7 @@ static int h_html_index(http * const h)
   updatecontext();
 
   h->support_groups = 0;
-  h->nick = gdata.config_nick ? gdata.config_nick : "??";
+  h->nick = save_nick(gdata.config_nick);
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {

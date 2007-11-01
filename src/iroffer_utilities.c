@@ -1609,6 +1609,8 @@ void dumpgdata(void)
       gdata_print_string(networks[ss].user_nick);
       gdata_print_string(networks[ss].caps_nick);
       gdata_print_string(networks[ss].nickserv_pass);
+      gdata_print_string(networks[ss].config_nick);
+      /* r_config_nick */
   
       gdata_irlist_iter_start(networks[ss].proxyinfo, char);
       gdata_iter_as_print_string;
@@ -1681,7 +1683,7 @@ void dumpgdata(void)
     
     } /* networks */
    
-  /* r_channel t_channel r_local_vhost r_pidfile r_config_nick */
+  /* r_channel t_channel r_pidfile */
   /* r_transferminspeed r_transfermaxspeed */
   
   gdata_print_int(adjustcore);

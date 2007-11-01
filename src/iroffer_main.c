@@ -1667,9 +1667,9 @@ static void mainloop (void) {
          for (ss=0; ss<gdata.networks_online; ss++) {
            gnetwork = &(gdata.networks[ss]);
            /* try to regain nick */
-           if (!gnetwork->user_nick || strcmp(gdata.config_nick,gnetwork->user_nick))
+           if (!gnetwork->user_nick || strcmp(get_config_nick(),gnetwork->user_nick))
              {
-               writeserver(WRITESERVER_NORMAL, "NICK %s", gdata.config_nick);
+               writeserver(WRITESERVER_NORMAL, "NICK %s", get_config_nick());
              }
            } /* networks */
          gnetwork = NULL;
@@ -2053,12 +2053,12 @@ static void parseline(char *line) {
                "Nickname %s already in use on %s, trying %s%d",
                part4,
                gnetwork->name,
-               gdata.config_nick,
+               get_config_nick(),
                gnetwork->nick_number);
        
        /* generate new nick and retry */
        writeserver(WRITESERVER_NORMAL, "NICK %s%d",
-                   gdata.config_nick,
+                   get_config_nick(),
                    gnetwork->nick_number++);
      }
 
@@ -2408,7 +2408,7 @@ static void parseline(char *line) {
                                  }
                                if (plus == 0)
                                  {
-                                   if (strcasecmp(nick, gdata.config_nick) == 0)
+                                   if (strcasecmp(nick, get_config_nick()) == 0)
                                      {
                                        identify_needed(0);
                                      }
@@ -2435,7 +2435,7 @@ static void parseline(char *line) {
          }
        else
          {
-           if (strcasecmp(part3, gdata.config_nick) == 0)
+           if (strcasecmp(part3, get_config_nick()) == 0)
              {
                if (part4[0] == '-')
                  identify_needed(0);

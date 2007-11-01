@@ -2306,10 +2306,7 @@ static void u_rehash(const userinput * const u) {
    
    gdata.r_transferminspeed = gdata.transferminspeed;
    gdata.r_transfermaxspeed = gdata.transfermaxspeed;
-   gdata.r_ourip = gdata.getipfromserver ? gdata.ourip : 0;
-   gdata.r_local_vhost = NULL;
-   if (gdata.local_vhost)
-     gdata.r_local_vhost = mystrdup(gdata.local_vhost);
+   a_rehash_prepare();
    
    if (gdata.logfd != FD_UNUSED)
      {
@@ -2349,38 +2346,7 @@ static void u_rehash(const userinput * const u) {
    
    u_respond(u,"Reconfiguring...");
    rehash_dinoex();
-   
-   /* keep dynamic IP */
-   if (gdata.getipfromserver)
-     gdata.ourip = gdata.r_ourip;
-   gdata.r_ourip = 0;
-   
-   needtojump=0;
-   if (strcmp_null(gdata.local_vhost, gdata.r_local_vhost) != 0)
-     {
-       u_respond(u, "vhost changed, reconnecting");
-       needtojump=1;
-     }
-   /* dopped networks */
-   if (gdata.networks_online < gdata.r_networks_online)
-     {
-       u_respond(u, "network dropped, reconnecting");
-       needtojump=1;
-       for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++)
-         {
-           quit_server();
-           ch = irlist_get_head(&(gnetwork->channels));
-           while(ch)
-             {
-               clearmemberlist(ch);
-               mydelete(ch->name);
-               mydelete(ch->key);
-               mydelete(ch->headline);
-               mydelete(ch->pgroup);
-               ch = irlist_delete(&(gnetwork->channels), ch);
-             }
-         }
-     }
+   a_rehash_needtojump(u);
    
    backup = gnetwork;
    for (ss=0; ss<gdata.networks_online; ss++)
@@ -2479,18 +2445,7 @@ static void u_rehash(const userinput * const u) {
      } /* networks */
    gnetwork = backup;
    
-   mydelete(gdata.r_local_vhost);
-   
-   if (needtojump)
-     {
-       for (ss=0; ss<gdata.networks_online; ss++)
-         {
-           gnetwork = &(gdata.networks[ss]);
-           gnetwork->serverconnectbackoff = 0;
-           switchserver(-1);
-           /* switchserver takes care of joining channels */
-         }
-     }
+   a_rehash_jump(u);
    
    if (((!gdata.pidfile) && (gdata.r_pidfile)) ||
        ((gdata.pidfile) && (!gdata.r_pidfile)) ||
@@ -2506,29 +2461,7 @@ static void u_rehash(const userinput * const u) {
            writepidfile(gdata.r_pidfile);
          }
      }
-   mydelete(gdata.r_pidfile);
-   
-   if (!gdata.config_nick)
-     {
-       u_respond(u,"user_nick missing! keeping old nick!");
-       gdata.config_nick = gdata.r_config_nick;
-       gdata.r_config_nick = NULL;
-     }
-   else
-     {
-       if (strcmp(gdata.config_nick,gdata.r_config_nick))
-         {
-           backup = gnetwork;
-           for (ss=0; ss<gdata.networks_online; ss++)
-             {
-	        gnetwork = &(gdata.networks[ss]);
-                u_respond(u, "user_nick changed, renaming nick to %s", gdata.config_nick);
-                writeserver(WRITESERVER_NOW, "NICK %s", gdata.config_nick);
-             }
-           gnetwork = backup;
-         }
-       mydelete(gdata.r_config_nick);
-     }
+   a_rehash_cleanup(u);
    
    gdata.maxb = gdata.overallmaxspeed;
    if (gdata.overallmaxspeeddayspeed != gdata.overallmaxspeed) {

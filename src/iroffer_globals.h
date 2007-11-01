@@ -81,6 +81,8 @@ char *user_nick;
 char *caps_nick;
 char *name;
 char *nickserv_pass;
+char *config_nick;
+char *r_config_nick;
 int net;
 int recentsent;
 int nick_number;
@@ -239,9 +241,7 @@ irlist_t autoignore_exclude;
 int autoignore_threshold;
 
 /* rehash temp variables */
-char *r_local_vhost;
 char *r_pidfile;
-char *r_config_nick;
 float r_transferminspeed, r_transfermaxspeed;
 unsigned long r_ourip;
 

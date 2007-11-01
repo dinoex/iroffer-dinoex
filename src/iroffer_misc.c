@@ -732,7 +732,7 @@ void initirc(void)
      {
        writeserver(WRITESERVER_NOW, "PASS %s", gnetwork->curserver.password);
      }
-   writeserver(WRITESERVER_NOW, "NICK %s", gdata.config_nick);
+   writeserver(WRITESERVER_NOW, "NICK %s", get_config_nick());
    writeserver(WRITESERVER_NOW, "USER %s 32 . :%s",
                gdata.loginname, gdata.user_realname);
    
@@ -2030,13 +2030,8 @@ void reinit_config_vars(void)
     {
       regfree(rh);
     }
-  mydelete(gdata.r_pidfile);
-  gdata.r_pidfile = gdata.pidfile;
-  gdata.pidfile = NULL;
-  mydelete(gdata.r_config_nick);
-  gdata.r_config_nick = gdata.config_nick;
-  gdata.config_nick = NULL;
-  gdata.r_networks_online = gdata.networks_online;
+  mydelete(gdata.pidfile);
+  mydelete(gdata.config_nick);
   gdata.networks_online = 0;
   for (si=0; si<MAX_NETWORKS; si++)
   {
@@ -2049,6 +2044,7 @@ void reinit_config_vars(void)
         mydelete(ss->password);
       }
     mydelete(gdata.networks[si].nickserv_pass);
+    mydelete(gdata.networks[si].config_nick);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);

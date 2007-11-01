@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
-192) nickserv_pass
+bugfix: REHASH
+  Weicher restart wenn ein Netzwerk gelöscht wird.
+
+192) nickserv_pass, user_nick
   Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
 
 191) weblist_info

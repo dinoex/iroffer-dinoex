@@ -680,4 +680,133 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
   manplist->method = method;
 }
 
+static char *r_local_vhost;
+static char *r_config_nick;
+static int r_needtojump;
+
+void a_rehash_prepare(void)
+{
+  int ss;
+
+  gdata.r_networks_online = gdata.networks_online;
+  gdata.r_ourip = gdata.getipfromserver ? gdata.ourip : 0;
+
+  gdata.r_pidfile = NULL;
+  if (gdata.pidfile)
+    gdata.r_pidfile = mystrdup(gdata.pidfile);
+  r_config_nick = NULL;
+  if (gdata.config_nick)
+    r_config_nick = mystrdup(gdata.config_nick);
+  r_local_vhost = NULL;
+  if (gdata.local_vhost)
+    r_local_vhost = mystrdup(gdata.local_vhost);
+
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gdata.networks[ss].r_config_nick = NULL;
+    if (gdata.networks[ss].config_nick)
+      gdata.networks[ss].r_config_nick = mystrdup(gdata.networks[ss].config_nick);
+  }
+}
+
+void a_rehash_needtojump(const userinput *u)
+{
+  gnetwork_t *backup;
+  channel_t *ch;
+  int ss;
+
+  updatecontext();
+
+  /* keep dynamic IP */
+  if (gdata.getipfromserver)
+    gdata.ourip = gdata.r_ourip;
+  gdata.r_ourip = 0;
+
+  r_needtojump = 0;
+  if (strcmp_null(gdata.local_vhost, r_local_vhost) != 0) {
+    a_respond(u, "vhost changed, reconnecting");
+    r_needtojump = 1;
+  }
+
+  /* dopped networks */
+  if (gdata.networks_online < gdata.r_networks_online) {
+    a_respond(u, "network dropped, reconnecting");
+    backup = gnetwork;
+    for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      quit_server();
+      ch = irlist_get_head(&(gnetwork->channels));
+      while(ch) {
+        clearmemberlist(ch);
+        mydelete(ch->name);
+        mydelete(ch->key);
+        mydelete(ch->headline);
+        mydelete(ch->pgroup);
+        ch = irlist_delete(&(gnetwork->channels), ch);
+      }
+    }
+    gnetwork = backup;
+  }
+}
+
+void a_rehash_jump(const userinput *u)
+{
+  gnetwork_t *backup;
+  int ss;
+
+  updatecontext();
+
+  if (!r_needtojump)
+    return;
+
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+    gnetwork->serverconnectbackoff = 0;
+    switchserver(-1);
+    /* switchserver takes care of joining channels */
+  }
+  gnetwork = backup;
+}
+
+char *get_config_nick(void)
+{
+  if (gnetwork == NULL)
+    return gdata.config_nick;
+
+  return (gnetwork->config_nick) ? gnetwork->config_nick : gdata.config_nick;
+}
+
+void a_rehash_cleanup(const userinput *u)
+{
+  gnetwork_t *backup;
+  char *new_nick;
+  char *old_nick;
+  int ss;
+
+  updatecontext();
+
+  mydelete(r_local_vhost);
+  mydelete(gdata.r_pidfile);
+
+  if (!gdata.config_nick) {
+    a_respond(u, "user_nick missing! keeping old nick!");
+    gdata.config_nick = r_config_nick;
+    r_config_nick = NULL;
+  } else {
+    backup = gnetwork;
+    for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      old_nick = (gnetwork->r_config_nick) ? gnetwork->r_config_nick : r_config_nick;
+      new_nick = get_config_nick();
+      if (strcmp(new_nick, old_nick)) {
+        a_respond(u, "user_nick changed, renaming nick to %s", new_nick);
+        writeserver(WRITESERVER_NOW, "NICK %s", new_nick);
+      }
+      mydelete(gnetwork->r_config_nick);
+    }
+    gnetwork = backup;
+    mydelete(r_config_nick);
+  }
+}
+
 /* End of File */
