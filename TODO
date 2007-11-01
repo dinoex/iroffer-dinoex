@@ -64,6 +64,11 @@ Page last modified: 09/01/04
 [Iroffer mod Dinoex]
 
 Short Term Features:
+  1089  sort weblist
+  1096  autoadd_group with predefined matchings
+  1097  short-announce seperator
+  1098  queue all XDCC LIST
+  1100  fix broken debug output
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -72,6 +77,9 @@ Long Term Features:
   1042  hentai flag
   1068  restore tty console on fatal error
   1083  temporary uploadhost
+  1092  Javascript for cut&paste
+  1094  search in weblist
+  1101  Universal Plug'n'Play Support (UPNP Support)
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -109,4 +117,5 @@ Not going to happen anytime soon:
   1075  execue programs/shell
   1080  need_voice per group
   1081  virtuelle bots
+  1090  password to get http list
 
