@@ -1911,6 +1911,7 @@ static void u_chfile(const userinput * const u) {
    int xfiledescriptor;
    struct stat st;
    char *file;
+   char *old;
    transfer *tr;
    xdcc *xd;
    
@@ -1973,12 +1974,19 @@ static void u_chfile(const userinput * const u) {
    u_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
              num, xd->file, file);
    
-   mydelete(xd->file);
+   old = xd->file;
    xd->file     = file;
    xd->st_size  = st.st_size;
    xd->st_dev   = st.st_dev;
    xd->st_ino   = st.st_ino;
    xd->mtime    = st.st_mtime;
+   /* change default description */
+   if (strcmp(xd->desc, getfilename(old)) == 0)
+     {
+       mydelete(xd->desc);
+       xd->desc = mystrdup(getfilename(xd->file));
+     }
+   mydelete(old);
    
    if (gdata.md5build.xpack == xd)
      {
