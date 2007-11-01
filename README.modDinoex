@@ -3,6 +3,18 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+191) weblist_info
+  Show additional information in the html page.
+  weblist_info uptime "Online"
+  weblist_info minspeed "Min speed"
+  weblist_info maxspeed "Max speed"
+  weblist_info cap "Max bandwidth"
+  weblist_info record "Record bandwidth"
+  weblist_info send "Rekord download"
+  weblist_info daily "Traffic today"
+  weblist_info weekly "Traffic this week"
+  weblist_info monthly "Traffic this month"
+
 190) window resize (inspired by Yasuo|Iwakura)
   Changing window size will no longer delete screen.
 

@@ -185,6 +185,7 @@ static config_list_typ config_parse_list[] = {
 {"telnet_vhost",            &gdata.telnet_vhost,            0 },
 {"unlimitedhost",           &gdata.unlimitedhost,           2 },
 {"uploadhost",              &gdata.uploadhost,              2 },
+{"weblist_info",            &gdata.weblist_info,            0 },
 {NULL, NULL }};
 
 
@@ -478,6 +479,9 @@ int set_config_list(const char *key, char *text)
     return 0;
   }
   switch (config_parse_list[i].flags) {
+  case 5:
+     clean_quotes(text);
+     break;
   case 3:
      for (j=strlen(text)-1; j>=0; j--) {
        if (text[j] == '@') {

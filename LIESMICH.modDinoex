@@ -3,6 +3,18 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+191) weblist_info
+  Zeige zusätliche Information auf den HTML Seiten.
+  weblist_info uptime "Online"
+  weblist_info minspeed "Mindest-Rate"
+  weblist_info maxspeed "Maximale-Rate"
+  weblist_info cap "Maximale Bandbreite"
+  weblist_info record "Rekord-Rate"
+  weblist_info send "Rekord-Download"
+  weblist_info daily "Traffic heute"
+  weblist_info weekly "Traffic diese Woche"
+  weblist_info monthly "Traffic diesem Monat"
+  
 190) window resize
   Änderung der Fenstergröße führt nicht mehr zum Löschen des Fensterinhaltes.
 

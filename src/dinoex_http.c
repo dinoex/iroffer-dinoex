@@ -841,8 +841,70 @@ static void h_html_file(http * const h)
   }
 }
 
+static void h_html_weblist_info(http * const h, char *key, char *text)
+{
+  char *tempstr = NULL;
+
+  updatecontext();
+
+  while (text != NULL) {
+    if (strcmp(key, "uptime") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
+      break;
+    }
+    if (strcmp(key, "minspeed") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
+      snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.transferminspeed);
+      break;
+    }
+    if (strcmp(key, "maxspeed") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
+      snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.transfermaxspeed);
+      break;
+    }
+    if (strcmp(key, "cap") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
+      snprintf(tempstr, maxtextlengthshort - 1, "%i.0KB/s", gdata.maxb / 4);
+      break;
+    }
+    if (strcmp(key, "record") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
+      snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.record);
+      break;
+    }
+    if (strcmp(key, "send") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
+      snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.sentrecord);
+      break;
+    }
+    if (strcmp(key, "daily") == 0) {
+      tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
+      break;
+    }
+    if (strcmp(key, "weekly") == 0) {
+      tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
+      break;
+    }
+    if (strcmp(key, "monthly") == 0) {
+      tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
+      break;
+    }
+    outerror(OUTERROR_TYPE_WARN, "Unknown weblist_info: %s", key);
+    return;
+  }
+  h_respond(h, "<tr>\n");
+  h_respond(h, "<td>%s</td>\n", text);
+  h_respond(h, "<td>%s</td>\n", tempstr);
+  h_respond(h, "</tr>\n");
+  mydelete(tempstr);
+}
+
 static int h_html_index(http * const h)
 {
+  char *info;
+  char *buffer;
+  char *text;
   char *tempstr;
   char *tlabel;
   xdcc *xd;
@@ -918,6 +980,22 @@ static int h_html_index(http * const h)
   h_respond(h, "<td>%s</td>\n", tempstr);
   h_respond(h, "</tr>\n");
   mydelete(tempstr);
+
+  for (info = irlist_get_head(&gdata.weblist_info);
+       info;
+       info = irlist_get_next(info)) {
+
+    buffer = mystrdup(info);
+    text = strchr(buffer, ' ');
+    if (text == NULL) {
+      mydelete(buffer);
+      continue;
+    }
+    *(text++) = 0;
+    clean_quotes(text);
+    h_html_weblist_info(h, buffer, text);
+    mydelete(buffer);
+  }
 
   h_respond(h, "</tbody>\n</table>\n<br>\n");
   h_respond(h, "<a class=\"credits\" href=\"http://iroffer.dinoex.net/\">%s</a>\n", "Sourcecode" );
