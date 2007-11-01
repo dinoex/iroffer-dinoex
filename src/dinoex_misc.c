@@ -633,11 +633,16 @@ int disk_full(const char *path)
   return 1;
 }
 
+char *get_nickserv_pass(void)
+{
+  return (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
+}
+
 void identify_needed(int force)
 {
   char *pwd;
 
-  pwd = (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
+  pwd = get_nickserv_pass();
   if (pwd == NULL)
     return;
 
@@ -656,7 +661,7 @@ void identify_check(const char *line)
 {
   char *pwd;
 
-  pwd = (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
+  pwd = get_nickserv_pass();
   if (pwd == NULL)
     return;
 

@@ -33,6 +33,7 @@ int get_network(const char *arg1);
 
 int disk_full(const char *path);
 
+char *get_nickserv_pass(void);
 void identify_needed(int force);
 void identify_check(const char *line);
 
