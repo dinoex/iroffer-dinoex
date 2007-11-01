@@ -145,8 +145,8 @@ void expire_badip6(void)
 
 void expire_badip(void)
 {
-   expire_badip4();
-   expire_badip6();
+  expire_badip4();
+  expire_badip6();
 }
 
 /* End of File */

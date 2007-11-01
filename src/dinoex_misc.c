@@ -61,46 +61,37 @@ void stoplist(const char *nick)
   ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC STOP from (%s on %s)",
           nick, gnetwork->name);
-  item = irlist_get_head(&(gnetwork->xlistqueue));
-  while (item)
-    {
-      if (strcasecmp(item, nick) == 0)
-        {
-           stopped ++;
-           item = irlist_delete(&(gnetwork->xlistqueue), item);
-           continue;
-         }
-      item = irlist_get_next(item);
+  for (item = irlist_get_head(&(gnetwork->xlistqueue)); item; ) {
+    if (strcasecmp(item, nick) == 0) {
+      stopped ++;
+      item = irlist_delete(&(gnetwork->xlistqueue), item);
+      continue;
     }
+    item = irlist_get_next(item);
+  }
 
-  item = irlist_get_head(&(gnetwork->serverq_slow));
-  while (item)
-    {
-      inick = NULL;
-      copy = mystrdup(item);
-      inick = strchr(copy, ' ');
-      if (inick != NULL)
-        {
-          *(inick++) = 0;
-          end = strchr(inick, ' ');
-          if (end != NULL)
-            {
-              *(end++) = 0;
-              if (strcasecmp(inick, nick) == 0)
-                {
-                   if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) )
-                     {
-                       stopped ++;
-                       mydelete(copy);
-                       item = irlist_delete(&(gnetwork->serverq_slow), item);
-                       continue;
-                     }
-                }
-            }
+  for (item = irlist_get_head(&(gnetwork->serverq_slow)); item; ) {
+    inick = NULL;
+    copy = mystrdup(item);
+    inick = strchr(copy, ' ');
+    if (inick != NULL) {
+      *(inick++) = 0;
+      end = strchr(inick, ' ');
+      if (end != NULL) {
+        *(end++) = 0;
+        if (strcasecmp(inick, nick) == 0) {
+          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
+            stopped ++;
+            mydelete(copy);
+            item = irlist_delete(&(gnetwork->serverq_slow), item);
+            continue;
+          }
         }
-      mydelete(copy);
-      item = irlist_get_next(item);
+      }
     }
+    mydelete(copy);
+    item = irlist_get_next(item);
+  }
   ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (stopped %d)", stopped);
 }
 
@@ -195,7 +186,9 @@ void notifyqueued_nick(const char *nick)
 
   updatecontext();
   i = 0;
-  for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_get_next(pq)) {
+  for (pq = irlist_get_head(&gdata.mainqueue);
+       pq;
+       pq = irlist_get_next(pq)) {
     i ++;
     rtime = lastrtime;
     remain = next_remaining_transfer(remain);
@@ -231,7 +224,9 @@ void notifyqueued_nick(const char *nick)
 
   backup = gnetwork;
   i = 0;
-  for (pq = irlist_get_head(&gdata.idlequeue); pq; pq = irlist_get_next(pq)) {
+  for (pq = irlist_get_head(&gdata.idlequeue);
+       pq;
+       pq = irlist_get_next(pq)) {
     i ++;
     rtime = lastrtime;
     remain = next_remaining_transfer(remain);
@@ -273,11 +268,10 @@ int has_closed_servers(void)
 {
   int ss;
 
-  for (ss=0; ss<gdata.networks_online; ss++)
-    {
-      if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
-        return 0;
-    }
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
+      return 0;
+  }
   return 1;
 }
 
@@ -290,22 +284,16 @@ int has_joined_channels(int all)
 
   j=0;
   for (ss=0; ss<gdata.networks_online; ss++) {
-    ch = irlist_get_head(&gdata.networks[ss].channels);
-    while(ch)
-      {
-         if ((ch->flags & CHAN_ONCHAN) == 0)
-           {
-             if (all != 0)
-               return 0;
-           }
-         else
-           {
-             j++;
-             n++;
-           }
-         ch = irlist_get_next(ch);
-       }
+    for (ch = irlist_get_head(&gdata.networks[ss].channels); ch; ch = irlist_get_next(ch)) {
+      if ((ch->flags & CHAN_ONCHAN) == 0) {
+        if (all != 0)
+          return 0;
+      } else {
+        j++;
+        n++;
+      }
     }
+  }
   return j;
 }
 
@@ -458,7 +446,9 @@ void update_hour_dinoex(int hour, int minute)
      return;
 
   xd = &xdcc_statefile;
-  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
     if (xd == tr->xpack)
       return;
   }
@@ -469,74 +459,72 @@ void update_hour_dinoex(int hour, int minute)
 /* iroffer-lamm: @find and long !list */
 int noticeresults(const char *nick, const char *match)
 {
-  int             i, j, k, len;
-  char           *tempstr = mycalloc(maxtextlength);
-  char           *sizestrstr;
-  char           *tempr;
-  regex_t        *regexp = mycalloc(sizeof(regex_t));
-  xdcc           *xd;
+  int i, j, k, len;
+  char *tempstr = mycalloc(maxtextlength);
+  char *sizestrstr;
+  char *tempr;
+  regex_t *regexp = mycalloc(sizeof(regex_t));
+  xdcc *xd;
 
   len = k = 0;
 
   tempr = hostmasktoregex(match);
 
   if (!regcomp(regexp, tempr, REG_ICASE | REG_NOSUB)) {
-    i = 1;
-    xd = irlist_get_head(&gdata.xdccs);
-    while (xd) {
-      if (hide_pack(xd) == 0) {
-        if (!regexec(regexp, xd->file, 0, NULL, 0) ||
-            !regexec(regexp, xd->desc, 0, NULL, 0) ||
-            !regexec(regexp, xd->note, 0, NULL, 0)) {
-          if (!k) {
-            if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
-              j = irlist_size(&gdata.trans);
-            else
-              j = gdata.slotsmax;
-            snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - Slot%s:[%i/%i]", j != 1 ? "s" : "", j - irlist_size(&gdata.trans), j);
-            len = strlen(tempstr);
-            if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
-              snprintf(tempstr + len, maxtextlength - 1 - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
-              len = strlen(tempstr);
-            }
-            if (gdata.transferminspeed > 0) {
-              snprintf(tempstr + len, maxtextlength - 1 - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
-              len = strlen(tempstr);
-            }
-            if (gdata.transfermaxspeed > 0) {
-              snprintf(tempstr + len, maxtextlength - 1 - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
-              len = strlen(tempstr);
-            }
-            if (gdata.maxb) {
-              snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
-              len = strlen(tempstr);
-            }
-            snprintf(tempstr + len, maxtextlength - 1 - len, " - /MSG %s XDCC SEND x -",
-                     save_nick(gnetwork->user_nick));
-            len = strlen(tempstr);
-            if (!strcmp(match, "*"))
-              snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");
-            else
-              snprintf(tempstr + len, maxtextlength - 1 - len, " Found:");
-          len = strlen(tempstr);
-        }
-        sizestrstr = sizestr(0, xd->st_size);
-        snprintf(tempstr + len, maxtextlength - 1 - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
-        if (strlen(tempstr) > 400) {
-          snprintf(tempstr + len, maxtextlength - 1 - len, " [...]");
-          notice_slow(nick, tempstr);
-          snprintf(tempstr, maxtextlength - 2, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
-        }
-        len = strlen(tempstr);
-        mydelete(sizestrstr);
-        k++;
-        /* limit matches */
-        if ((gdata.max_find != 0) && (k >= gdata.max_find))
-          break;
-        }
-      }
+    i = 0;
+    for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd)) {
       i++;
-      xd = irlist_get_next(xd);
+      if (hide_pack(xd))
+        continue;
+      if (!regexec(regexp, xd->file, 0, NULL, 0) ||
+          !regexec(regexp, xd->desc, 0, NULL, 0) ||
+          !regexec(regexp, xd->note, 0, NULL, 0)) {
+        if (!k) {
+          if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
+            j = irlist_size(&gdata.trans);
+          else
+            j = gdata.slotsmax;
+          snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - Slot%s:[%i/%i]", j != 1 ? "s" : "", j - irlist_size(&gdata.trans), j);
+          len = strlen(tempstr);
+          if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
+            len = strlen(tempstr);
+          }
+          if (gdata.transferminspeed > 0) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
+            len = strlen(tempstr);
+          }
+          if (gdata.transfermaxspeed > 0) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
+            len = strlen(tempstr);
+          }
+          if (gdata.maxb) {
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
+            len = strlen(tempstr);
+          }
+          snprintf(tempstr + len, maxtextlength - 1 - len, " - /MSG %s XDCC SEND x -",
+                   save_nick(gnetwork->user_nick));
+          len = strlen(tempstr);
+          if (!strcmp(match, "*"))
+            snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");
+          else
+            snprintf(tempstr + len, maxtextlength - 1 - len, " Found:");
+        len = strlen(tempstr);
+      }
+      sizestrstr = sizestr(0, xd->st_size);
+      snprintf(tempstr + len, maxtextlength - 1 - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
+      if (strlen(tempstr) > 400) {
+        snprintf(tempstr + len, maxtextlength - 1 - len, " [...]");
+        notice_slow(nick, tempstr);
+        snprintf(tempstr, maxtextlength - 2, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
+      }
+      len = strlen(tempstr);
+      mydelete(sizestrstr);
+      k++;
+      /* limit matches */
+      if ((gdata.max_find != 0) && (k >= gdata.max_find))
+        break;
+      }
     }
   }
 
@@ -557,26 +545,17 @@ char* getpart_eol(const char *line, int howmany)
 
   li=0;
 
-  for (hi = 1; hi < howmany; hi++)
-    {
-      while (line[li] != ' ')
-        {
-          if (line[li] == '\0')
-            {
-              return NULL;
-            }
-          else
-            {
-              li++;
-            }
-        }
+  for (hi = 1; hi < howmany; hi++) {
+    while (line[li] != ' ') {
+      if (line[li] == '\0')
+        return NULL;
       li++;
     }
+    li++;
+  }
 
   if (line[li] == '\0')
-    {
       return NULL;
-    }
 
   plen = strlen(line+li);
   part = mycalloc(plen+1);
@@ -600,13 +579,12 @@ int get_network(const char *arg1)
     return --net;
 
   /* text */
-  for (net=0; net<gdata.networks_online; net++)
-    {
-      if (gdata.networks[net].name == NULL)
-        continue;
-      if (strcasecmp(gdata.networks[net].name, arg1) == 0)
-        return net;
-    }
+  for (net=0; net<gdata.networks_online; net++) {
+    if (gdata.networks[net].name == NULL)
+      continue;
+    if (strcasecmp(gdata.networks[net].name, arg1) == 0)
+      return net;
+  }
 
   /* unknown */
   return -1;
@@ -625,28 +603,22 @@ int disk_full(const char *path)
 
   freebytes = 0L;
 #ifndef NO_STATVFS
-  if (statvfs(path, &stf) < 0)
-    {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-              "Unable to determine device sizes: %s",
-              strerror(errno));
-    }
-  else
-    {
-      freebytes = (off_t)stf.f_bavail * (off_t)stf.f_frsize;
-    }
+  if (statvfs(path, &stf) < 0) {
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "Unable to determine device sizes: %s",
+            strerror(errno));
+  } else {
+    freebytes = (off_t)stf.f_bavail * (off_t)stf.f_frsize;
+  }
 #else
 #ifndef NO_STATFS
-  if (statfs(dpath, &stf) < 0)
-    {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-              "Unable to determine device sizes: %s",
-              strerror(errno));
-    }
-  else
-    {
-      freebytes = (off_t)stf.f_bavail * (off_t)stf.f_bsize;
-    }
+  if (statfs(dpath, &stf) < 0) {
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "Unable to determine device sizes: %s",
+            strerror(errno));
+  } else {
+    freebytes = (off_t)stf.f_bavail * (off_t)stf.f_bsize;
+  }
 #endif
 #endif
 
@@ -663,11 +635,10 @@ int disk_full(const char *path)
 
 void identify_needed(int force)
 {
-  if (force == 0)
-    {
-      if ((gnetwork->next_identify > 0) && (gnetwork->next_identify >= gdata.curtime))
-        return;
-    }
+  if (force == 0) {
+    if ((gnetwork->next_identify > 0) && (gnetwork->next_identify >= gdata.curtime))
+      return;
+  }
   /* wait 1 sec before idetify again */
   gnetwork->next_identify = gdata.curtime + 1;
   privmsg("nickserv", "IDENTIFY %s", gdata.nickserv_pass);
@@ -677,22 +648,18 @@ void identify_needed(int force)
 
 void identify_check(const char *line)
 {
-  if (strstr(line, "Nickname is registered to someone else") != NULL)
-    {
+  if (strstr(line, "Nickname is registered to someone else") != NULL) {
       identify_needed(0);
-    }
-  if (strstr(line, "This nickname has been registered") != NULL)
-    {
+  }
+  if (strstr(line, "This nickname has been registered") != NULL) {
       identify_needed(0);
-    }
-  if (strstr(line, "This nickname is registered and protected") != NULL)
-    {
+  }
+  if (strstr(line, "This nickname is registered and protected") != NULL) {
       identify_needed(0);
-    }
-  if (strstr(line, "please choose a different nick") != NULL)
-    {
+  }
+  if (strstr(line, "please choose a different nick") != NULL) {
       identify_needed(0);
-    }
+  }
 }
 
 static int check_manual_send(const char* hostname, int *man)
@@ -767,11 +734,15 @@ int packnumtonum(const char *a)
   if (strcmp(a, "$") == 0)
     return -1;
 
-  for (aq = irlist_get_head(&gdata.autoqueue); aq; aq = irlist_get_next(aq)) {
+  for (aq = irlist_get_head(&gdata.autoqueue);
+       aq;
+       aq = irlist_get_next(aq)) {
     if (!strcasecmp(a, aq->word))
       return aq->pack;
   }
-  for (at = irlist_get_head(&gdata.autotrigger); at; at = irlist_get_next(at)) {
+  for (at = irlist_get_head(&gdata.autotrigger);
+       at;
+       at = irlist_get_next(at)) {
     if (!strcasecmp(a, at->word))
       return number_of_pack(at->pack);
   }

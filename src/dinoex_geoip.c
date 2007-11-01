@@ -81,21 +81,21 @@ void geoip_new_connection(transfer *const tr)
             (tr->remoteip>>8) & 0xFF, tr->remoteip & 0xFF,
             country);
 
-   if (irlist_size(&gdata.geoipcountry)) {
-     if (!verifyshell(&gdata.geoipcountry, country)) {
-       if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
-          msg = mycalloc(maxtextlength);
-          if (country == NULL)
-            country = "error";
-          snprintf(msg, maxtextlength - 1, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
-          t_closeconn(tr, msg, 0);
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                  "IP from other country (%s) detected", country);
-          mydelete(msg);
-          return;
-       }
-     }
-   }
+  if (irlist_size(&gdata.geoipcountry)) {
+    if (!verifyshell(&gdata.geoipcountry, country)) {
+      if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
+         msg = mycalloc(maxtextlength);
+         if (country == NULL)
+           country = "error";
+         snprintf(msg, maxtextlength - 1, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
+         t_closeconn(tr, msg, 0);
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                 "IP from other country (%s) detected", country);
+         mydelete(msg);
+         return;
+      }
+    }
+  }
 #endif /* USE_GEOIP */
 }
 

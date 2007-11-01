@@ -94,7 +94,7 @@ static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, char *vhost)
     addrlen = sizeof(struct sockaddr_in);
     listenaddr->sin.sin_family = AF_INET;
     e = inet_pton(family, vhost, &(listenaddr->sin.sin_addr));
-   } else {
+  } else {
     addrlen = sizeof(struct sockaddr_in6);
     listenaddr->sin6.sin6_family = AF_INET6;
     e = inet_pton(family, vhost, &(listenaddr->sin6.sin6_addr));
@@ -205,15 +205,15 @@ int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket,
 
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
 {
-   char *msg;
+  char *msg;
 
-   if (listenaddr->sa.sa_family == AF_INET)
-     listenaddr->sin.sin_addr = gnetwork->myip.sin.sin_addr;
-   else
-     listenaddr->sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
-   msg = mycalloc(maxtextlength);
-   my_dcc_ip_port(msg, maxtextlength -1, listenaddr, 0);
-   return msg;
+  if (listenaddr->sa.sa_family == AF_INET)
+    listenaddr->sin.sin_addr = gnetwork->myip.sin.sin_addr;
+  else
+    listenaddr->sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
+  msg = mycalloc(maxtextlength);
+  my_dcc_ip_port(msg, maxtextlength -1, listenaddr, 0);
+  return msg;
 }
 
 void child_resolver(void)

@@ -26,7 +26,9 @@ void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick)
 {
   ir_pqueue *pq;
 
-  for (pq = irlist_get_head(list); pq; pq = irlist_get_next(pq)) {
+  for (pq = irlist_get_head(list);
+       pq;
+       pq = irlist_get_next(pq)) {
     if (!strcasecmp(pq->nick, oldnick)) {
       mydelete(pq->nick);
       pq->nick = mystrdup(newnick);
@@ -185,7 +187,9 @@ void queue_all_remove(irlist_t *list, const char *message)
   ir_pqueue *pq;
 
   backup = gnetwork;
-  for (pq = irlist_get_head(list); pq; pq = irlist_delete(list, pq)) {
+  for (pq = irlist_get_head(list);
+       pq;
+       pq = irlist_delete(list, pq)) {
     gnetwork = &(gdata.networks[pq->net]);
     notice_slow(pq->nick, message);
     mydelete(pq->nick);
@@ -261,7 +265,9 @@ void check_idle_queue(void)
     return;
 
   for (pass = 0; pass < 2; pass++) {
-    for (pq = irlist_get_head(&gdata.idlequeue); pq; pq = irlist_get_next(pq)) {
+    for (pq = irlist_get_head(&gdata.idlequeue);
+         pq;
+         pq = irlist_get_next(pq)) {
       if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
         continue;
 
@@ -270,7 +276,9 @@ void check_idle_queue(void)
         continue;
 
       usertrans=0;
-      for (mq = irlist_get_head(&gdata.mainqueue); mq; mq = irlist_get_next(mq)) {
+      for (mq = irlist_get_head(&gdata.mainqueue);
+           mq;
+           mq = irlist_get_next(mq)) {
         if ((!strcmp(mq->hostname, pq->hostname)) || (!strcasecmp(mq->nick, pq->nick))) {
           usertrans++;
         }
@@ -283,7 +291,9 @@ void check_idle_queue(void)
         continue;
 
       usertrans=0;
-      for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+      for (tr = irlist_get_head(&gdata.trans);
+           tr;
+           tr = irlist_get_next(tr)) {
         if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
           usertrans++;
         }

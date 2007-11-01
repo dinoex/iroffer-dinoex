@@ -44,11 +44,10 @@ void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
 
   len = vsnprintf(tempstr, maxtextlength, format, ap);
 
-  if ((len < 0) || (len >= maxtextlength))
-    {
-      outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
-      return;
-    }
+  if ((len < 0) || (len >= maxtextlength)) {
+    outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
+    return;
+  }
 
   writeserver_channel(ch->delay, ch->name, "PRIVMSG %s :%s", ch->name, tempstr);
 }
@@ -75,42 +74,35 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
 
   len = vsnprintf(msg, maxtextlength, format, ap);
 
-  if ((len < 0) || (len >= maxtextlength))
-    {
-      outerror(OUTERROR_TYPE_WARN, "WRITESERVER: Output too large, ignoring!");
-      mydelete(msg);
-      return;
-    }
+  if ((len < 0) || (len >= maxtextlength)) {
+    outerror(OUTERROR_TYPE_WARN, "WRITESERVER: Output too large, ignoring!");
+    mydelete(msg);
+    return;
+  }
 
-  if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
-    {
-      mydelete(msg);
-      return;
-    }
+  if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)) {
+    mydelete(msg);
+    return;
+  }
 
-  if (gdata.debug > 0)
-    {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
-    }
+  if (gdata.debug > 0) {
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
+  }
 
-  if (len > EXCESS_BUCKET_MAX)
-    {
-      outerror(OUTERROR_TYPE_WARN, "Message Truncated!");
-      msg[EXCESS_BUCKET_MAX] = '\0';
-      len = EXCESS_BUCKET_MAX;
-    }
+  if (len > EXCESS_BUCKET_MAX) {
+    outerror(OUTERROR_TYPE_WARN, "Message Truncated!");
+    msg[EXCESS_BUCKET_MAX] = '\0';
+    len = EXCESS_BUCKET_MAX;
+  }
 
-  if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ)
-    {
-      item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
-      item->delay = delay;
-      item->chan = mystrdup(chan);
-      item->msg = mystrdup(msg);
-    }
-  else
-    {
-      outerror(OUTERROR_TYPE_WARN, "Server queue is very large. Dropping additional output.");
-    }
+  if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ) {
+    item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
+    item->delay = delay;
+    item->chan = mystrdup(chan);
+    item->msg = mystrdup(msg);
+  } else {
+    outerror(OUTERROR_TYPE_WARN, "Server queue is very large. Dropping additional output.");
+  }
 
   mydelete(msg);
   return;
@@ -146,86 +138,83 @@ void sendannounce(void)
 }
 
 static void admin_line(int fd, const char *line) {
-   userinput *uxdl;
-   char *full;
+  userinput *uxdl;
+  char *full;
 
-   if (line == NULL)
-      return;
+  if (line == NULL)
+    return;
 
-   uxdl = mycalloc(sizeof(userinput));
-   full = mycalloc(maxtextlength);
+  uxdl = mycalloc(sizeof(userinput));
+  full = mycalloc(maxtextlength);
 
-   snprintf(full, maxtextlength -1, "A A A A A %s", line);
-   u_fillwith_msg(uxdl, NULL, full);
-   uxdl->method = method_fd;
-   uxdl->fd = fd;
-   uxdl->net = 0;
-   uxdl->level = ADMIN_LEVEL_CONSOLE;
-   u_parseit(uxdl);
+  snprintf(full, maxtextlength -1, "A A A A A %s", line);
+  u_fillwith_msg(uxdl, NULL, full);
+  uxdl->method = method_fd;
+  uxdl->fd = fd;
+  uxdl->net = 0;
+  uxdl->level = ADMIN_LEVEL_CONSOLE;
+  u_parseit(uxdl);
 
-   mydelete(uxdl);
-   mydelete(full);
+  mydelete(uxdl);
+  mydelete(full);
 }
 
 static void admin_run(const char *cmd) {
-   int fd;
-   const char *job;
-   char *done;
+  int fd;
+  const char *job;
+  char *done;
 
-   job = gdata.admin_job_file;
-   if (job == NULL)
-      return;
+  job = gdata.admin_job_file;
+  if (job == NULL)
+    return;
 
-   done = mycalloc(strlen(job)+6);
-   strcpy(done, job);
-   strcat(done, ".done");
-   fd = open(done,
-             O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
-             CREAT_PERMISSIONS);
-   if (fd < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD,
-               "Cant Create Admin Job Done File '%s': %s",
-               done, strerror(errno));
-    }
-  else
-    {
-      admin_line(fd, cmd);
-      close(fd);
-    }
-   mydelete(done)
+  done = mycalloc(strlen(job)+6);
+  strcpy(done, job);
+  strcat(done, ".done");
+  fd = open(done,
+            O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+            CREAT_PERMISSIONS);
+  if (fd < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Cant Create Admin Job Done File '%s': %s",
+             done, strerror(errno));
+  } else {
+    admin_line(fd, cmd);
+    close(fd);
+  }
+  mydelete(done)
 }
 
 void admin_jobs(void) {
-   FILE *fin;
-   const char *job;
-   char *line;
-   char *l;
-   char *r;
-   char *new;
+  FILE *fin;
+  const char *job;
+  char *line;
+  char *l;
+  char *r;
+  char *new;
 
-   job = gdata.admin_job_file;
-   if (job == NULL)
-      return;
+  job = gdata.admin_job_file;
+  if (job == NULL)
+    return;
 
-   fin = fopen(job, "ra" );
-   if (fin == NULL)
-      return;
+  fin = fopen(job, "ra" );
+  if (fin == NULL)
+    return;
 
-   line = mycalloc(maxtextlength);
-   while (!feof(fin)) {
-      r = fgets(line, maxtextlength - 1, fin);
-      if (r == NULL )
-         break;
-      l = line + strlen(line) - 1;
-      while (( *l == '\r' ) || ( *l == '\n' ))
-         *(l--) = 0;
-      new = irlist_add(&gdata.jobs_delayed, strlen(line) + 1);
-      strcpy(new, line);
-   }
-   mydelete(line)
-   fclose(fin);
-   unlink(job);
+  line = mycalloc(maxtextlength);
+  while (!feof(fin)) {
+    r = fgets(line, maxtextlength - 1, fin);
+    if (r == NULL )
+      break;
+    l = line + strlen(line) - 1;
+    while (( *l == '\r' ) || ( *l == '\n' ))
+      *(l--) = 0;
+    new = irlist_add(&gdata.jobs_delayed, strlen(line) + 1);
+    strcpy(new, line);
+  }
+  mydelete(line)
+  fclose(fin);
+  unlink(job);
 }
 
 int check_for_file_remove(int n)
@@ -300,74 +289,73 @@ static const char *badcrc = "badcrc";
 
 const char *validate_crc32(xdcc *xd, int quiet)
 {
-   char *newcrc;
-   char *line;
-   const char *x;
-   char *w;
-   regex_t *regexp;
+  char *newcrc;
+  char *line;
+  const char *x;
+  char *w;
+  regex_t *regexp;
 
-   if (xd->has_crc32 == 0) {
-     if (quiet)
-       return NULL;
-     else
-       return "no CRC32 calculated";
-   }
+  if (xd->has_crc32 == 0) {
+    if (quiet)
+      return NULL;
+    else
+      return "no CRC32 calculated";
+  }
 
-   if (verifyshell(&gdata.autocrc_exclude, xd->file)) {
-     if (quiet)
-       return NULL;
-     else
-       return "skipped CRC32";
-   }
+  if (verifyshell(&gdata.autocrc_exclude, xd->file)) {
+    if (quiet)
+      return NULL;
+    else
+      return "skipped CRC32";
+  }
 
-   newcrc = mycalloc(10);
-   snprintf(newcrc, 10, "%.8lX", xd->crc32);
-   line = mycalloc(strlen(xd->file)+1);
+  newcrc = mycalloc(10);
+  snprintf(newcrc, 10, "%.8lX", xd->crc32);
+  line = mycalloc(strlen(xd->file)+1);
 
-   /* ignore path */
-   x = get_basename(xd->file);
+  /* ignore path */
+  x = get_basename(xd->file);
 
-   strcpy(line, x);
-   /* ignore extension */
-   w = strrchr(line, '.');
-   if (w != NULL)
-      *w = 0;
+  strcpy(line, x);
+  /* ignore extension */
+  w = strrchr(line, '.');
+  if (w != NULL)
+    *w = 0;
 
-   caps(line);
-   if (strstr(line, newcrc) != NULL) {
-     if (quiet)
-       x = NULL;
-     else
-       x = "CRC32 verified OK";
-     /* unlock pack */
-     if ((quiet == 2) && (xd->lock != NULL)) {
-       if (strcmp(xd->lock, badcrc) == 0) {
-         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "unlock Pack %d, File %s",
-                 number_of_pack(xd), line);
-         mydelete(xd->lock);
-         xd->lock = NULL;
-       }
-     }
-   }
-   else {
-     x = "CRC32 not found";
-     regexp = mycalloc(sizeof(regex_t));
-     if (!regcomp(regexp, "[0-9A-F]{8,}", REG_EXTENDED | REG_ICASE | REG_NOSUB)) {
-       if (!regexec(regexp, line, 0, NULL, 0)) {
-         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
-         x = "CRC32 failed";
-         if (quiet == 2) {
-           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %d, File %s",
-                   number_of_pack(xd), line);
-           xd->lock = mystrdup(badcrc);
-         }
-       }
-     }
-     mydelete(regexp);
-   }
-   mydelete(line)
-   mydelete(newcrc)
-   return x;
+  caps(line);
+  if (strstr(line, newcrc) != NULL) {
+    if (quiet)
+      x = NULL;
+    else
+      x = "CRC32 verified OK";
+    /* unlock pack */
+    if ((quiet == 2) && (xd->lock != NULL)) {
+      if (strcmp(xd->lock, badcrc) == 0) {
+        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "unlock Pack %d, File %s",
+                number_of_pack(xd), line);
+        mydelete(xd->lock);
+        xd->lock = NULL;
+      }
+    }
+  } else {
+    x = "CRC32 not found";
+    regexp = mycalloc(sizeof(regex_t));
+    if (!regcomp(regexp, "[0-9A-F]{8,}", REG_EXTENDED | REG_ICASE | REG_NOSUB)) {
+      if (!regexec(regexp, line, 0, NULL, 0)) {
+        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
+        x = "CRC32 failed";
+        if (quiet == 2) {
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %d, File %s",
+                  number_of_pack(xd), line);
+          xd->lock = mystrdup(badcrc);
+        }
+      }
+    }
+    mydelete(regexp);
+  }
+  mydelete(line)
+  mydelete(newcrc)
+  return x;
 }
 
 
@@ -399,31 +387,31 @@ void crc32_final(xdcc *xd)
 
 void autoadd_scan(const char *dir, const char *group)
 {
-   userinput *uxdl;
-   char *line;
-   int net = 0;
+  userinput *uxdl;
+  char *line;
+  int net = 0;
 
-   if (dir == NULL)
-      return;
+  if (dir == NULL)
+    return;
 
-   updatecontext();
+  updatecontext();
 
-   gnetwork = &(gdata.networks[net]);
-   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
-   line = mycalloc(maxtextlength);
-   if (group != NULL)
-     snprintf(line, maxtextlength -1, "A A A A A ADDGROUP %s %s", group, dir);
-   else
-     snprintf(line, maxtextlength -1, "A A A A A ADDNEW %s", dir);
+  gnetwork = &(gdata.networks[net]);
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
+  line = mycalloc(maxtextlength);
+  if (group != NULL)
+    snprintf(line, maxtextlength -1, "A A A A A ADDGROUP %s %s", group, dir);
+  else
+    snprintf(line, maxtextlength -1, "A A A A A ADDNEW %s", dir);
 
-   uxdl = mycalloc(sizeof(userinput));
-   u_fillwith_msg(uxdl, NULL, line);
-   uxdl->method = method_out_all;
-   uxdl->net = 0;
-   uxdl->level = ADMIN_LEVEL_AUTO;
-   u_parseit(uxdl);
-   mydelete(uxdl);
-   mydelete(line);
+  uxdl = mycalloc(sizeof(userinput));
+  u_fillwith_msg(uxdl, NULL, line);
+  uxdl->method = method_out_all;
+  uxdl->net = 0;
+  uxdl->level = ADMIN_LEVEL_AUTO;
+  u_parseit(uxdl);
+  mydelete(uxdl);
+  mydelete(line);
 }
 
 void autoadd_all(void)
@@ -432,12 +420,11 @@ void autoadd_all(void)
 
   updatecontext();
 
-  dir = irlist_get_head(&gdata.autoadd_dirs);
-  while (dir)
-    {
-      autoadd_scan(dir, gdata.autoadd_group);
-      dir = irlist_get_next(dir);
-    }
+  for (dir = irlist_get_head(&gdata.autoadd_dirs);
+       dir;
+       dir = irlist_get_next(dir)) {
+    autoadd_scan(dir, gdata.autoadd_group);
+  }
 }
 
 void run_delayed_jobs(void)
@@ -445,41 +432,36 @@ void run_delayed_jobs(void)
   userinput *u;
   char *job;
 
-  u = irlist_get_head(&gdata.packs_delayed);
-  while (u)
-    {
-      if (strcmp(u->cmd, "REMOVE") == 0)
-        {
-          a_remove_delayed(u);
-          mydelete(u->cmd);
-          mydelete(u->arg1);
-          mydelete(u->arg2);
-          u = irlist_delete(&gdata.packs_delayed, u);
-          /* process only one file */
-          return;
-        }
-      if (strcmp(u->cmd, "ADD") == 0)
-        {
-          a_add_delayed(u);
-          mydelete(u->cmd);
-          mydelete(u->arg1);
-          mydelete(u->arg2);
-          u = irlist_delete(&gdata.packs_delayed, u);
-          /* process only one file */
-          return;
-        }
-      /* ignore */
-      outerror(OUTERROR_TYPE_WARN, "Unknown cmd %s in packs_delayed", u->cmd);
+  for (u = irlist_get_head(&gdata.packs_delayed); u; ) {
+    if (strcmp(u->cmd, "REMOVE") == 0) {
+      a_remove_delayed(u);
+      mydelete(u->cmd);
+      mydelete(u->arg1);
+      mydelete(u->arg2);
       u = irlist_delete(&gdata.packs_delayed, u);
+      /* process only one file */
+      return;
     }
+    if (strcmp(u->cmd, "ADD") == 0) {
+      a_add_delayed(u);
+      mydelete(u->cmd);
+      mydelete(u->arg1);
+      mydelete(u->arg2);
+      u = irlist_delete(&gdata.packs_delayed, u);
+      /* process only one file */
+      return;
+    }
+    /* ignore */
+    outerror(OUTERROR_TYPE_WARN, "Unknown cmd %s in packs_delayed", u->cmd);
+    u = irlist_delete(&gdata.packs_delayed, u);
+  }
 
-  job = irlist_get_head(&gdata.jobs_delayed);
-  while (job)
-    {
-       admin_run(job);
-       job = irlist_delete(&gdata.jobs_delayed, job);
-       return;
-    }
+  for (job = irlist_get_head(&gdata.jobs_delayed); job; ) {
+    admin_run(job);
+    job = irlist_delete(&gdata.jobs_delayed, job);
+    /* process only one job */
+    return;
+  }
 }
 
 static void admin_msg_line(const char *nick, char *line, int line_len, int level)

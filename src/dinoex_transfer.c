@@ -150,7 +150,9 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
     return 0;
 
   myid = atoi(token);
-  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
     if (tr->tr_status != TRANSFER_STATUS_RESUME)
       continue;
     if (tr->id != myid)
@@ -168,7 +170,9 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
   if (gdata.debug == 0)
     return 1;
 
-  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
     ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
             "resume trying %i: %s == %s, %s == %s, %i == %i\n",
             tr->tr_status,
@@ -235,7 +239,9 @@ void t_check_duplicateip(transfer *const newtr)
 
   num = 24 * 60; /* 1 day */
   found = 0;
-  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
     if (tr->tr_status != TRANSFER_STATUS_SENDING)
       continue;
     if (tr->remoteip != newtr->remoteip)
@@ -249,7 +255,9 @@ void t_check_duplicateip(transfer *const newtr)
   if (found <= gdata.maxtransfersperperson)
     return;
 
-  for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
     if (tr->tr_status != TRANSFER_STATUS_SENDING)
       continue;
     if (tr->remoteip != newtr->remoteip)
@@ -259,7 +267,9 @@ void t_check_duplicateip(transfer *const newtr)
 
     t_closeconn(tr, "You are being punished for pararell downloads", 0);
     bhostmask = to_hostmask( "*", tr->hostname);
-    for (ignore = irlist_get_head(&gdata.ignorelist); ignore; ignore = irlist_get_next(ignore)) {
+    for (ignore = irlist_get_head(&gdata.ignorelist);
+         ignore;
+         ignore = irlist_get_next(ignore)) {
       if (ignore->regexp && !regexec(ignore->regexp, bhostmask, 0, NULL, 0)) {
         break;
       }
