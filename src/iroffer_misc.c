@@ -664,7 +664,7 @@ void initirc(void)
   
   updatecontext();
   
-  if (!setup_ssl())
+  if (setup_ssl())
     return;
 
   pi = irlist_get_head(&(gnetwork->proxyinfo));

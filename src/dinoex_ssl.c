@@ -68,7 +68,7 @@ int setup_ssl(void)
   updatecontext();
 
   if (gnetwork->connectionmethod.how != how_ssl)
-    return 1;
+    return 0;
 
   if (gnetwork->ssl_ctx == NULL) {
     gnetwork->ssl_ctx = SSL_CTX_new( SSLv23_client_method() );
@@ -76,7 +76,7 @@ int setup_ssl(void)
       outerror_ssl();
       outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Create SSL context");
       close_server();
-      return 0;
+      return 1;
     }
   }
   /* SSL_CTX_free() ist not called */
@@ -87,17 +87,17 @@ int setup_ssl(void)
   if (rc == 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant set SSL socket");
     close_server();
-    return 0;
+    return 1;
   }
   rc = SSL_connect(gnetwork->ssl);
   if (rc == 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant set SSL socket");
     close_server();
-    return 0;
+    return 1;
   }
   outerror_ssl();
 #endif /* USE_SSL */
-  return 1;
+  return 0;
 }
 
 ssize_t readserver_ssl(void *buf, size_t nbytes)
