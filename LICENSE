@@ -1,22 +1,41 @@
 
-iroffer by David Johnson (PMG)
-Copyright (C) 1998-2005 David Johnson
-
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+version 2 as published by the Free Software Foundation;
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-------
+src/iroffer*.[ch], README-iroffer.txt
+are copyrighted by David Johnson (PMG) under GPL2 below.
 
-All files except src/iroffer_md5.[ch] are covered by the GPL below.
-src/iroffer_md5.[ch] (written by Colin Plumb in 1993 and modified
-by Ian Jackson in 1995) are in the public domain.
+Configure, Makefile.config, sample.config are written by
+David Johnson (PMG) and where extended by Dirk Meyer.
+These files are under GPL2 below.
+
+src/plumb_md5.[ch] was written by Colin Plumb in 1993 and modified
+by Ian Jackson in 1995, this files are in the public domain.
+
+src/crc32.c is copyrighted by Bryan Call under GPL2 or later.
+
+src/upnp.[ch] is writen by Thomas Bernard under BSD license.
+
+All other files are written by Dirk Meyer, and are under GPL2,
+In addition, as a special exception, Dirk Meyer gives
+permission to link the code of portions of this program with the
+OpenSSL library under certain conditions as described in each
+individual source file, and distribute linked combinations
+including the two.
+
+You must obey the GNU General Public License in all respects
+for all of the code used other than OpenSSL.  If you modify
+file(s) with this exception, you may extend this exception to your
+version of the file(s), but you are not obligated to do so.  If you
+do not wish to do so, delete this exception statement from your
+version.  If you delete this exception statement from all source
+files in the program, then also delete it here.
 
 =====================================================================
 
