@@ -24,6 +24,9 @@
 #include "dinoex_badip.h"
 #include "dinoex_misc.h"
 
+#ifdef USE_UPNP
+#include "upnp.h"
+#endif /* USE_UPNP */
 
 int setupdccchatout(const char *nick)
 {
@@ -305,7 +308,7 @@ int setupdccchat(const char *nick,
   gdata.num_dccchats++;
   chat->status = DCCCHAT_CONNECTING;
   chat->nick = mystrdup(nick);
-  chat->localport  = get_port(&localaddr);
+  chat->localport  = 0;
   chat->connecttime = gdata.curtime;
   chat->lastcontact = gdata.curtime;
   chat->net = gnetwork->net;
@@ -518,6 +521,11 @@ void shutdowndccchat(dccchat_t *chat, int flush)
 
       if (chat->status == DCCCHAT_LISTENING)
         ir_listen_port_connected(chat->localport);
+
+#ifdef USE_UPNP
+      if (gdata.upnp_router && (chat->family == AF_INET))
+        upnp_rem_redir(chat->localport);
+#endif /* USE_UPNP */
 
       chat->status = DCCCHAT_UNUSED;
       

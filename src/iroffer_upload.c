@@ -23,6 +23,9 @@
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
 
+#ifdef USE_UPNP
+#include "upnp.h"
+#endif /* USE_UPNP */
 
 void l_initvalues (upload * const l) {
    updatecontext();
@@ -30,6 +33,7 @@ void l_initvalues (upload * const l) {
       l->ul_status = UPLOAD_STATUS_UNUSED;
       l->clientsocket=FD_UNUSED;
       l->filedescriptor=FD_UNUSED;
+      l->localport = 0;
       l->lastcontact = gdata.curtime;
    }
 
@@ -295,6 +299,10 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
   if (l->ul_status == UPLOAD_STATUS_LISTENING)
     ir_listen_port_connected(l->localport);
 
+#ifdef USE_UPNP
+  if (gdata.upnp_router && (l->family == AF_INET))
+    upnp_rem_redir(l->localport);
+#endif /* USE_UPNP */
   l->ul_status = UPLOAD_STATUS_DONE;
   
   backup = gnetwork;

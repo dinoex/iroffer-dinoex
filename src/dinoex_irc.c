@@ -21,6 +21,10 @@
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
 
+#ifdef USE_UPNP
+#include "upnp.h"
+#endif /* USE_UPNP */
+
 void update_natip(const char *var)
 {
   struct hostent *hp;
@@ -138,6 +142,40 @@ int bind_irc_vhost(int family, int clientsocket)
   return 0;
 }
 
+#ifdef USE_UPNP
+static void my_get_upnp_data(const struct sockaddr *sa, socklen_t salen)
+{ 
+#if !defined(NO_GETADDRINFO)
+  char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+
+  if (salen == 0)
+    salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+  if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
+                  sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", "upnp_router");
+    return;
+  }
+#else
+  const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
+  unsigned long to_ip;
+  char hbuf[maxtextlengthshort], sbuf[maxtextlengthshort];
+
+  to_ip = ntohl(remoteaddr->sin_addr.s_addr);
+  snprintf(hbuf, sizeof(hbuf), "%lu.%lu.%lu.%lu",
+           (to_ip >> 24) & 0xFF,
+           (to_ip >> 16) & 0xFF,
+           (to_ip >>  8) & 0xFF,
+           (to_ip      ) & 0xFF);
+  snprintf(sbuf, sizeof(sbuf), "%d", ntohs(remoteaddr->sin_port));
+#endif
+  if (sa->sa_family != AF_INET)
+    return;
+
+  updatecontext();
+  upnp_add_redir(hbuf, sbuf);
+}
+#endif /* USE_UPNP */
+
 int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, char *vhost)
 {
   int rc;
@@ -197,6 +235,11 @@ int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket,
     return 1;
   }
 
+#ifdef USE_UPNP
+  if (gdata.upnp_router) {
+    my_get_upnp_data(&(listenaddr->sa), addrlen);
+  }
+#endif /* USE_UPNP */
   return 0;
 }
 

@@ -2,6 +2,8 @@
 Copyright (c) 2005-2007, Thomas BERNARD
 All rights reserved.
 
+Copyright (c) 2007, Dirk Meyer
+
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
@@ -29,11 +31,12 @@ $Id$
 
 */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #ifdef USE_UPNP
+
+/* include the headers */
+#include "iroffer_config.h"
+#include "iroffer_defines.h"
+#include "iroffer_headers.h"
 
 #include "upnp.h"
 
@@ -50,7 +53,9 @@ void init_upnp (void)
 	struct UPNPDev * dev;
 	char * descXML;
 	int descXMLsize = 0;
-	printf("TB : init_upnp()\n");
+
+	ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP discover" );
+	tostdout_write();
 	memset(&urls, 0, sizeof(struct UPNPUrls));
 	memset(&data, 0, sizeof(struct IGDdatas));
 	devlist = upnpDiscover(2000, NULL);
@@ -66,9 +71,9 @@ void init_upnp (void)
 		if (!dev)
 			dev = devlist; /* defaulting to first device */
 
-		printf("UPnP device :\n"
-		       " desc: %s\n st: %s\n",
-			   dev->descURL, dev->st);
+		ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+			"UPnP device : desc: %s\n st: %s",
+			dev->descURL, dev->st);
 
 		descXML = miniwget(dev->descURL, &descXMLsize);
 		if (descXML)
@@ -81,33 +86,47 @@ void init_upnp (void)
 	}
 }
 
-void upnp_add_redir (const char * addr, int port)
+void upnp_add_redir (const char * addr, const char * port)
 {
-	char port_str[16];
 	int r;
-	printf("TB : upnp_add_redir (%s, %d)\n", addr, port);
-	if(urls.controlURL[0] == '\0')
+
+	ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP add redirect (%s, %s)", addr, port);
+	if(urls.controlURL == NULL)
 	{
-		printf("TB : the init was not done !\n");
+		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
 		return;
 	}
-	sprintf(port_str, "%d", port);
+	if(urls.controlURL[0] == '\0')
+	{
+		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
+		return;
+	}
 	r = UPNP_AddPortMapping(urls.controlURL, data.servicetype,
-	                        port_str, port_str, addr, 0, "TCP");
+	                        port, port, addr, 0, "TCP");
 	if(r==0)
-		printf("AddPortMapping(%s, %s, %s) failed\n", port_str, port_str, addr);
+		ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+			"AddPortMapping(%s, %s, %s) failed" , port, port, addr);
 }
 
 void upnp_rem_redir (int port)
 {
 	char port_str[16];
-	printf("TB : upnp_rem_redir (%d)\n", port);
-	if(urls.controlURL[0] == '\0')
+
+	if (port == 0)
+		return;
+
+	sprintf(port_str, "%d", port);
+	ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP remove redirect (%s)", port_str);
+	if(urls.controlURL == NULL)
 	{
-		printf("TB : the init was not done !\n");
+		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
 		return;
 	}
-	sprintf(port_str, "%d", port);
+	if(urls.controlURL[0] == '\0')
+	{
+		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
+		return;
+	}
 	UPNP_DeletePortMapping(urls.controlURL, data.servicetype, port_str, "TCP");
 }
 

@@ -23,6 +23,9 @@
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
 
+#ifdef USE_UPNP
+#include "upnp.h"
+#endif /* USE_UPNP */
 
 void t_initvalues (transfer * const t) {
 
@@ -33,6 +36,7 @@ void t_initvalues (transfer * const t) {
       t->listensocket=FD_UNUSED;
       t->clientsocket=FD_UNUSED;
       t->lastcontact = gdata.curtime;
+      t->listenport = 0;
       t->id = 200;
       t->overlimit = 0;
    }
@@ -782,6 +786,11 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
   
   if (t->tr_status == TRANSFER_STATUS_LISTENING)
     ir_listen_port_connected(t->listenport);
+
+#ifdef USE_UPNP
+  if (gdata.upnp_router && (t->family == AF_INET))
+    upnp_rem_redir(t->listenport);
+#endif /* USE_UPNP */
 
   t->tr_status = TRANSFER_STATUS_DONE;
   

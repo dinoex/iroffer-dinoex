@@ -30,7 +30,7 @@ $Id$
 */
 
 void init_upnp (void);
-void upnp_add_redir (const char * addr, int port);
+void upnp_add_redir (const char * addr, const char * port);
 void upnp_rem_redir (int port);
 
 /* End of File */

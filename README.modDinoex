@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+194) upnp_router (inspired by TheDeath)
+  avtivate UPnP support
+
+  this needs libminiupnpc, activate with ./Configure -u
+
 193) local_vhost, usenatip (inspired by Cork)
   you can set local_vhost for each network differently.
 

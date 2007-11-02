@@ -27,6 +27,7 @@ echo "   -w           Compile with extra warning flags"
 echo "   -g           Compile GeoIP lib"
 echo "   -c           Compile Curl lib (for the FETCH-Command)"
 echo "   -s           Compile without OpenSSL lib"
+echo "   -u           Compile wit UPNP suport with miniupnpc"
 exit 64
 }
 
@@ -37,6 +38,7 @@ OPT_PROF=false
 OPT_GEOIP=false
 OPT_CURL=false
 OPT_SSL=true
+OPT_UPNP=false
 cctype="gcc"
 
 while test "${1}" != ""
@@ -51,6 +53,7 @@ do
   -g) OPT_GEOIP=true ;;
   -c) OPT_CURL=true ;;
   -s) OPT_SSL=false ;;
+  -u) OPT_UPNP=true ;;
   -m) ;;
   *)  usage ;;
   esac
@@ -160,6 +163,13 @@ fi
 
 if ! $OPT_SSL; then
 echo "Configuring without SSL."
+fi
+
+if $OPT_UPNP; then
+echo "Configuring for UPNP with lminiupnpc."
+UPNPLIB="-lminiupnpc"
+UPNPINC="-DUSE_UPNP -I/usr/local/include"
+UPNPLDF="-L/usr/local/lib"
 fi
 
 echo -n "Checking for make... "
@@ -1186,10 +1196,10 @@ echo
 echo VERSION=$VERSION
 echo CC=$cctype
 echo CONFIG_EXE=$exe
-echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $SSLLIB
-echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF
+echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB
+echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF
 echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $WERROR2 
-echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC
+echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
  echo CONFIG_TARGETS=

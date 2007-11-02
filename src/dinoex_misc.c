@@ -30,6 +30,10 @@
 #include "dinoex_queue.h"
 #include "dinoex_misc.h"
 
+#ifdef USE_UPNP
+#include "upnp.h"
+#endif /* USE_UPNP */
+
 int hide_pack(const xdcc *xd)
 {
   if (gdata.hidelockedpacks == 0)
@@ -314,6 +318,10 @@ static void global_defaults(void)
 
 void config_dinoex(void)
 {
+#ifdef USE_UPNP
+  if (gdata.upnp_router)
+    init_upnp();
+#endif /* USE_UPNP */
   telnet_setup_listen();
   h_setup_listen();
   global_defaults();
