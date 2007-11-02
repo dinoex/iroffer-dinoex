@@ -1,8 +1,7 @@
 #!/bin/sh
 
 #
-# @(#) Configure 1.115@(#)
-# pmg@wellington.i202.centerclick.org|Configure|20051213024432|40052
+# $Id$
 #
 
 VERSION="3.0"
@@ -38,11 +37,13 @@ OPT_PROF=false
 OPT_GEOIP=false
 OPT_CURL=false
 OPT_SSL=true
+cctype="gcc"
 
 while test "${1}" != ""
 do
   case "${1}" in
   -h) usage ;;
+  CC=*) cctype="${1#CC=}" ;;
   -e) OPT_ERRORS=true ;;
   -d) OPT_DEBUG=true ;;
   -w) OPT_WARN=true ;;
@@ -189,26 +190,28 @@ if [ -n "$waserror" ]; then
 fi
 
 echo -n "Checking for gcc/cc... "
-if [ -f "`type gcc | awk '{print $NF}'`" ]; then
- cctype="gcc"
- if [ -x "`type $cctype | awk '{print $NF}'`" ]; then
-  echo "found $cctype"
- else
-  echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
-  waserror=yes
- fi
-elif [ -f "`type cc | awk '{print $NF}'`" ]; then
- cctype="cc"
- if [ -x "`type $cctype | awk '{print $NF}'`" ]; then
+ccrun=`type $cctype | awk '{print $NF}'`
+if [ -f "${ccrun}" ]; then
+ if [ -x "${ccrun}" ]; then
   echo "found $cctype"
  else
   echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
   waserror=yes
  fi
 else
- echo "not found. ***ERROR***: Couldn't find gcc or cc"
- maketype="gcc"
- waserror=yes
+ cctype="cc"
+ if [ -f "${ccrun}" ]; then
+  if [ -x "${ccrun}" ]; then
+   echo "found $cctype"
+  else
+   echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
+   waserror=yes
+  fi
+ else
+  echo "not found. ***ERROR***: Couldn't find gcc or cc"
+  maketype="gcc"
+  waserror=yes
+ fi
 fi
 
 if [ -n "$waserror" ]; then
@@ -1186,9 +1189,9 @@ echo VERSION=$VERSION
 echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $SSLLIB
-echo CONFIG_LDFLAGS=$PROF $DEBUG $GEOLDF $CURLLDF $SSLLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $WERROR2
-echo CONFIG_CPPFLAGS=$GEOINC $CURLINC $SSLINC
+echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $WERROR2 
+echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
  echo CONFIG_TARGETS=
