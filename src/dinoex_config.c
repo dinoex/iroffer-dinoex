@@ -544,7 +544,6 @@ void set_default_network_name(void)
   var = mymalloc(10);
   snprintf(var, 10, "%d", gdata.networks_online + 1);
   gdata.networks[gdata.networks_online].name = var;
-  mydelete(var);
   return;
 }
 
