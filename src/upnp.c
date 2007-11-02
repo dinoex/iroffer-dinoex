@@ -31,9 +31,10 @@ $Id$
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-#include "xchat.h"
-#include "network.h"
+#ifdef USE_UPNP
+
 #include "upnp.h"
 
 #include <miniupnpc/miniwget.h>
@@ -52,7 +53,7 @@ void init_upnp (void)
 	printf("TB : init_upnp()\n");
 	memset(&urls, 0, sizeof(struct UPNPUrls));
 	memset(&data, 0, sizeof(struct IGDdatas));
-	devlist = upnpDiscover(2000);
+	devlist = upnpDiscover(2000, NULL);
 	if (devlist)
 	{
 		dev = devlist;
@@ -78,7 +79,6 @@ void init_upnp (void)
 		}
 		freeUPNPDevlist(devlist);
 	}
-
 }
 
 void upnp_add_redir (const char * addr, int port)
@@ -101,7 +101,6 @@ void upnp_add_redir (const char * addr, int port)
 void upnp_rem_redir (int port)
 {
 	char port_str[16];
-	int t;
 	printf("TB : upnp_rem_redir (%d)\n", port);
 	if(urls.controlURL[0] == '\0')
 	{
@@ -111,5 +110,7 @@ void upnp_rem_redir (int port)
 	sprintf(port_str, "%d", port);
 	UPNP_DeletePortMapping(urls.controlURL, data.servicetype, port_str, "TCP");
 }
+
+#endif /* USE_UPNP */
 
 /* End of File */
