@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
+#include "dinoex_misc.h"
 #include "dinoex_http.h"
 
 #include <ctype.h>
@@ -547,17 +548,6 @@ static void h_include(http * const h, const char *file)
   h->left -= howmuch;
 }
 
-static int html_hide_locked(const xdcc *xd)
-{
-  if (gdata.hidelockedpacks == 0)
-    return 0;
-
-  if (xd->lock == NULL)
-    return 0;
-
-  return 1;
-}
-
 static char *html_link(const char *caption, const char *url, const char *text)
 {
   char *tempstr;
@@ -684,7 +674,7 @@ static void h_html_main(http * const h)
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
-      if (html_hide_locked(xd))
+      if (hide_pack(xd))
         continue;
       if (strcmp(inlist, ".") == 0) {
         if (xd->group != NULL)
@@ -752,7 +742,7 @@ static void h_html_file(http * const h)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    if (html_hide_locked(xd))
+    if (hide_pack(xd))
       continue;
     if (strcmp(h->group, "*") != 0) {
       if (strcmp(h->group, ".") == 0) {
@@ -798,7 +788,7 @@ static void h_html_file(http * const h)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    if (html_hide_locked(xd))
+    if (hide_pack(xd))
       continue;
     if (strcmp(h->group, "*") != 0) {
       if (strcmp(h->group, ".") == 0) {
@@ -909,9 +899,7 @@ static int h_html_index(http * const h)
   char *tlabel;
   xdcc *xd;
   ssize_t len;
-  ir_uint64 xdccsent;
   int slots;
-  int i;
 
   updatecontext();
 
@@ -969,12 +957,7 @@ static int h_html_index(http * const h)
   h_respond(h, "<td>%d</td>\n", slots);
   h_respond(h, "</tr>\n");
 
-  for (i=0, xdccsent=0; i<XDCC_SENT_SIZE; i++) {
-    xdccsent += (ir_uint64)gdata.xdccsent[i];
-  }
-  tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength - 1, "%1.1fKB/s",
-           ((float)xdccsent) / XDCC_SENT_SIZE / 1024.0);
+  tempstr = get_current_bandwidth();
   h_respond(h, "<tr>\n");
   h_respond(h, "<td>%s</td>\n", "Current Bandwidth");
   h_respond(h, "<td>%s</td>\n", tempstr);

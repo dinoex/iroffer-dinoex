@@ -811,6 +811,21 @@ void logfile_add(const char *logfile, const char *line)
   }
 }
 
+char *get_current_bandwidth(void)
+{
+  char *tempstr;
+  ir_uint64 xdccsent;
+  int i;
+
+  for (i=0, xdccsent=0; i<XDCC_SENT_SIZE; i++) {
+    xdccsent += (ir_uint64)gdata.xdccsent[i];
+  }
+  tempstr = mycalloc(maxtextlength);
+  snprintf(tempstr, maxtextlength - 1, "%1.1fKB/s",
+           ((float)xdccsent) / XDCC_SENT_SIZE / 1024.0);
+  return tempstr;
+}
+
 #ifdef DEBUG
 
 static void free_state(void)

@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_admin.h"
 #include "dinoex_irc.h"
+#include "dinoex_misc.h"
 #include "dinoex_jobs.h"
 
 #include <ctype.h>
@@ -786,6 +787,7 @@ static void xdcc_save_xml(void)
   char *filename_bak;
   char *tempstr;
   xdcc *xd;
+  off_t toffered;
   int fd;
   int num;
 
@@ -819,6 +821,10 @@ static void xdcc_save_xml(void)
        xd;
        xd = irlist_get_next(xd)) {
     num++;
+    if (hide_pack(xd))
+      continue;
+
+    toffered += xd->st_size;
     write_string(fd, "<pack>\n");
     write_string(fd, "  <packnr>");
     write_asc_int(fd, num);
@@ -836,6 +842,45 @@ static void xdcc_save_xml(void)
     write_string(fd, "</packgets>\n");
     write_string(fd, "</pack>\n\n");
   }
+
+  write_string(fd, "<sysinfo>\n");
+  write_string(fd, "  <slots>\n");
+  write_string(fd, "    <slotsfree>");
+  write_asc_int(fd, gdata.slotsmax - irlist_size(&gdata.trans));
+  write_string(fd, "</slotsfree>\n");
+  write_string(fd, "    <slotsmax>");
+  write_asc_int(fd, gdata.slotsmax);
+  write_string(fd, "</slotsmax>\n");
+  write_string(fd, "  </slots>\n");
+  write_string(fd, "  <bandwith>\n");
+  write_string(fd, "    <banduse>");
+  tempstr = get_current_bandwidth();
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</banduse>\n");
+  write_string(fd, "    <bandmax>");
+  tempstr = mycalloc(maxtextlengthshort);
+  snprintf(tempstr, maxtextlengthshort - 1, "%i.0KB/s", gdata.maxb / 4);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</bandmax>\n");
+  write_string(fd, "  </bandwith>\n");
+  write_string(fd, "  <quota>\n");
+  write_string(fd, "    <packsum>");
+  write_asc_int(fd, num);
+  write_string(fd, "</packsum>\n");
+  write_string(fd, "    <diskspace>");
+  tempstr = sizestr(0, toffered);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</diskspace>\n");
+  write_string(fd, "    <transferedtotal>");
+  tempstr = sizestr(0, gdata.totalsent);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</transferedtotal>\n");
+  write_string(fd, "  </quota>\n");
+  write_string(fd, "</sysinfo>\n\n");
 
   write_string(fd, "</packlist>\n");
   close(fd);

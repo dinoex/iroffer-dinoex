@@ -44,6 +44,8 @@ int is_unsave_directory(const char *dir);
 
 void logfile_add(const char *logfile, const char *line);
 
+char *get_current_bandwidth(void);
+
 void exit_iroffer(void);
 
 /* End of File */
