@@ -732,6 +732,12 @@ int save_unlink(const char *path)
   return unlink(path);
 }
 
+void write_files(void)
+{
+  write_statefile();
+  xdccsavetext();
+}
+
 static char *r_local_vhost;
 static char *r_config_nick;
 

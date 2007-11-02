@@ -1567,8 +1567,7 @@ static void mainloop (void) {
            {
              sendaqueue(1, 0, NULL);
            }
-         write_statefile();
-         xdccsavetext();
+         write_files();
          }
       
       updatecontext();

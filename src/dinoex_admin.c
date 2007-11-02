@@ -611,8 +611,7 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
     mydelete(tmpgroup);
 
   autotrigger_rebuild();
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_remove_delayed(const userinput * const u)
@@ -1189,8 +1188,7 @@ void a_renumber3(const userinput * const u)
     }
   }
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 static int a_sort_null(const char *str1, const char *str2)
@@ -1337,8 +1335,7 @@ void a_sort(const userinput * const u)
     a_sort_insert(xdo, k);
   }
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 int a_open_file(char **file, int mode)
@@ -1570,8 +1567,7 @@ xdcc *a_add2(const userinput * const u)
               n, xd->group);
   }
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 
   if (gdata.autoaddann_short)
     a_make_announce_short(u, n);
@@ -1899,8 +1895,8 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
   closedir(d);
   if (foundit == 0)
     return;
-  write_statefile();
-  xdccsavetext();
+
+  write_files();
 }
 
 void a_newgroup(const userinput * const u)
@@ -1962,8 +1958,7 @@ void a_chlimit(const userinput * const u)
   else
     xd->dlimit_used = xd->gets + xd->dlimit_max;
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_chlimitinfo(const userinput * const u)
@@ -1988,8 +1983,7 @@ void a_chlimitinfo(const userinput * const u)
     xd->dlimit_desc = mystrdup(u->arg2e);
   }
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_chtrigger(const userinput * const u)
@@ -2016,8 +2010,7 @@ void a_chtrigger(const userinput * const u)
     autotrigger_add(xd);
   }
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_lock(const userinput * const u)
@@ -2039,8 +2032,7 @@ void a_lock(const userinput * const u)
   a_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2);
   xd->lock = mystrdup(u->arg2);
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_unlock(const userinput * const u)
@@ -2060,8 +2052,7 @@ void a_unlock(const userinput * const u)
   mydelete(xd->lock);
   xd->lock = NULL;
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_lockgroup(const userinput * const u)
@@ -2091,8 +2082,7 @@ void a_lockgroup(const userinput * const u)
     a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2);
     xd->lock = mystrdup(u->arg2);
   }
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_unlockgroup(const userinput * const u)
@@ -2120,8 +2110,7 @@ void a_unlockgroup(const userinput * const u)
     mydelete(xd->lock);
     xd->lock = NULL;
   }
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_groupdesc(const userinput * const u)
@@ -2143,8 +2132,7 @@ void a_groupdesc(const userinput * const u)
   if (k == 0)
     return;
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_group(const userinput * const u)
@@ -2174,8 +2162,7 @@ void a_group(const userinput * const u)
   }
 
   a_set_group(u, xd, num, new);
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_movegroup(const userinput * const u)
@@ -2205,8 +2192,7 @@ void a_movegroup(const userinput * const u)
     a_set_group(u, xd, num, u->arg3);
   }
 
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_regroup(const userinput * const u)
@@ -2248,8 +2234,7 @@ void a_regroup(const userinput * const u)
   a_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2);
   if (strcasecmp(u->arg1, "main") == 0)
     add_default_groupdesc(u->arg2);
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 void a_md5(const userinput * const u)
@@ -2412,14 +2397,12 @@ void a_newdir(const userinput * const u)
        xd = irlist_get_next(xd)) {
     found += a_newdir_check(u, dir1, dir2, xd);
   }
-  if (found > 0) {
-    write_statefile();
-    xdccsavetext();
-  }
-
-  a_respond(u, "NEWDIR: %d Packs found", found);
   mydelete(dir1);
   mydelete(dir2);
+  a_respond(u, "NEWDIR: %d Packs found", found);
+
+  if (found > 0)
+    write_files();
 }
 
 static void a_target_file(char **file2, const char *file1)
@@ -2593,11 +2576,8 @@ void a_movegroupdir(const userinput * const u)
   closedir(d);
   mydelete(tempstr);
   mydelete(thedir);
-  if (foundit == 0)
-    return;
-  write_statefile();
-  xdccsavetext();
-  return;
+  if (foundit > 0)
+    write_files();
 }
 
 static void a_filedel_disk(const userinput * const u, const char *name)
@@ -3257,8 +3237,7 @@ void a_autogroup(const userinput * const u)
     a_set_group(u, xd, num, new);
     mydelete(tempstr);
   }
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 /* this function imported from iroffer-lamm */

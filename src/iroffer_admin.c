@@ -1023,8 +1023,7 @@ static void u_xdl(const userinput * const u) {
 static void u_xds(const userinput * const u)
 {
   updatecontext();
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 static void u_dcl(const userinput * const u)
@@ -1955,9 +1954,7 @@ static void u_chfile(const userinput * const u) {
    
    cancel_md5_hash(xd, "CHFILE");
    
-   write_statefile();
-   xdccsavetext();
-   
+   write_files();
    }
 
 static void u_adddir(const userinput * const u)
@@ -2049,9 +2046,7 @@ static void u_chdesc(const userinput * const u) {
    mydelete(xd->desc);
    xd->desc = mystrdup(new);
    
-   write_statefile();
-   xdccsavetext();
-   
+   write_files();
    }
 
 static void u_chnote(const userinput * const u) {
@@ -2081,9 +2076,7 @@ static void u_chnote(const userinput * const u) {
        xd->note = mystrdup(u->arg2e);
      }
    
-   write_statefile();
-   xdccsavetext();
-   
+   write_files();
    }
 
 static void u_chmins(const userinput * const u) {
@@ -2110,9 +2103,7 @@ static void u_chmins(const userinput * const u) {
    if ( atof(u->arg2) != gdata.transferminspeed )
       xd->minspeed = atof(u->arg2);
    
-   write_statefile();
-   xdccsavetext();
-   
+   write_files();
    }
 
 static void u_chmaxs(const userinput * const u) {
@@ -2137,9 +2128,7 @@ static void u_chmaxs(const userinput * const u) {
    if ( atof(u->arg2) != gdata.transfermaxspeed )
       xd->maxspeed = atof(u->arg2);
    
-   write_statefile();
-   xdccsavetext();
-   
+   write_files();
    }
 
 static void u_chgets(const userinput * const u)
@@ -2170,8 +2159,7 @@ static void u_chgets(const userinput * const u)
   
   xd->gets = atoi(u->arg2);
   
-  write_statefile();
-  xdccsavetext();
+  write_files();
 }
 
 static void u_chatme(const userinput * const u) {
