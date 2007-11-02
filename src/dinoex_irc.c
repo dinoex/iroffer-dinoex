@@ -395,7 +395,10 @@ int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t 
 
 #if !defined(NO_GETADDRINFO)
   if (sa->sa.sa_family == AF_INET) {
-    ip = ntohl(sa->sin.sin_addr.s_addr);
+    if (gnetwork->usenatip)
+      ip = gnetwork->ourip;
+    else
+      ip = ntohl(sa->sin.sin_addr.s_addr);
     return snprintf(buffer, len, "%lu %d",
                     ip, ntohs(sa->sin.sin_port));
   }
@@ -407,7 +410,10 @@ int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t 
   }
   return snprintf(buffer, len, "%s %s", hbuf, sbuf);
 #else
-  ip = ntohl(sa->sin.sin_addr.s_addr);
+  if (gnetwork->usenatip)
+    ip = gnetwork->ourip;
+  else
+    ip = ntohl(sa->sin.sin_addr.s_addr);
   return snprintf(buffer, len, "%lu %d",
                   ip, ntohs(sa->sin.sin_port));
 #endif
