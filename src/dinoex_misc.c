@@ -776,7 +776,7 @@ static void mylog_write(int logfd, const char *logfile, const char *msg, ssize_t
   if (len2 == len)
     return;
 
-  outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
+  outerror(OUTERROR_TYPE_WARN_LOUD,
            "Cant Write Log File '%s': %s",
            logfile, strerror(errno));
 }
@@ -791,7 +791,7 @@ void logfile_add(const char *logfile, const char *line)
                O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
                CREAT_PERMISSIONS);
   if (logfd < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
+    outerror(OUTERROR_TYPE_WARN_LOUD,
              "Cant Access Log File '%s': %s",
              logfile, strerror(errno));
     return;
@@ -805,12 +805,12 @@ void logfile_add(const char *logfile, const char *line)
   mylog_write(logfd, logfile, "\n", 1);
   rc = close(logfd);
   if (rc != 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
+    outerror(OUTERROR_TYPE_WARN_LOUD,
              "Cant Write Log File '%s': %s",
              logfile, strerror(errno));
   }
 }
- 
+
 #ifdef DEBUG
 
 static void free_state(void)
