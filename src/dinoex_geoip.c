@@ -18,7 +18,10 @@
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
+#include "dinoex_utilities.h"
 #include "dinoex_geoip.h"
+
+#include <ctype.h>
 
 #ifdef USE_GEOIP
 
