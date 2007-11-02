@@ -243,6 +243,7 @@ chibi
 	report SERVQC bug
 	option "autoadd_sort"
 	report "AUTOADD" bug
+	option "xdccxmlfile"
 
 vegetto
 	report crash on bad config

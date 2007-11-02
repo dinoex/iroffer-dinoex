@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+197) xdccxmlfile
+  Exportiert die Packliste als einfache XML Datei. 
+
 196) trashcan_dir
   Dateien werden nicht gelöscht, sondern in dieses Verzeichnis verschoben.
 

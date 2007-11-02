@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+197) xdccxmlfile (inspired by chibi)
+  if you want to export your packlist in XML define xdccxmlfile
+
 196) trashcan_dir (inspired by Thunder)
   Instead of deleting files, they are moved to this directory.
 

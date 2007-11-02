@@ -1080,7 +1080,6 @@ void xdccsavetext(void)
   char *xdcclistfile_tmp, *xdcclistfile_bkup;
   int fd;
   userinput *uxdl;
-  int callval;
   gnetwork_t *backup;
   
   updatecontext();
@@ -1127,32 +1126,7 @@ void xdccsavetext(void)
   close(fd);
   gnetwork = backup;
   
-  /* remove old bkup */
-  callval = unlink(xdcclistfile_bkup);
-  if ((callval < 0) && (errno != ENOENT))
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Remove Old XDCC List File '%s': %s",
-               xdcclistfile_bkup, strerror(errno));
-      /* ignore, continue */
-    }
-  
-  /* backup old -> bkup */
-  callval = link(gdata.xdcclistfile, xdcclistfile_bkup);
-  if ((callval < 0) && (errno != ENOENT))
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Backup Old XDCC List File '%s' -> '%s': %s",
-               gdata.xdcclistfile, xdcclistfile_bkup, strerror(errno));
-      /* ignore, continue */
-    }
-  
-  /* rename new -> current */
-  callval = rename(xdcclistfile_tmp, gdata.xdcclistfile);
-  if (callval < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Save New XDCC List File '%s': %s",
-               gdata.xdcclistfile, strerror(errno));
-      /* ignore, continue */
-    }
+  rename_with_backup(gdata.xdcclistfile, xdcclistfile_bkup, xdcclistfile_tmp, "XDCC List");
   
  error_out:
   mydelete(xdcclistfile_tmp);
@@ -2141,6 +2115,7 @@ void reinit_config_vars(void)
   mydelete(gdata.logfile_notices);
   mydelete(gdata.logfile_messages);
   mydelete(gdata.trashcan_dir);
+  mydelete(gdata.xdccxmlfile);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;

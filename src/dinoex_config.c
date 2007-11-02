@@ -175,6 +175,7 @@ static config_string_typ config_parse_string[] = {
 {"user_realname",           &gdata.user_realname,           0 },
 {"xdcclistfile",            &gdata.xdcclistfile,            1 },
 {"xdccremovefile",          &gdata.xdccremovefile,          1 },
+{"xdccxmlfile",             &gdata.xdccxmlfile,             1 },
 {NULL, NULL }};
 
 static int config_list_anzahl = 0;

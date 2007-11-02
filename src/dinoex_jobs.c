@@ -270,20 +270,19 @@ void reset_download_limits(void)
   xdcc *xd;
 
   num = 0;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      num++;
-      if (xd->dlimit_max != 0)
-        {
-          new = xd->gets + xd->dlimit_max;
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                  "Resetting download limit of pack %d, used %d",
-                  num, new - xd->dlimit_used);
-          xd->dlimit_used = new;
-        }
-      xd = irlist_get_next(xd);
-    }
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    num++;
+    if (xd->dlimit_max == 0)
+      continue;
+
+    new = xd->gets + xd->dlimit_max;
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            "Resetting download limit of pack %d, used %d",
+            num, new - xd->dlimit_used);
+    xd->dlimit_used = new;
+  }
 }
 
 static const char *badcrc = "badcrc";
@@ -732,10 +731,127 @@ int save_unlink(const char *path)
   return unlink(path);
 }
 
+void rename_with_backup(const char *filename, const char *backup, const char *temp, const char *msg)
+{
+  int callval;
+
+  /* remove old bkup */
+  callval = unlink(backup);
+  if ((callval < 0) && (errno != ENOENT)) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Remove Old %s '%s': %s",
+             msg, backup, strerror(errno));
+    /* ignore, continue */
+  }
+
+  /* backup old -> bkup */
+  callval = link(filename, backup);
+  if ((callval < 0) && (errno != ENOENT)) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Backup Old %s '%s' -> '%s': %s",
+             msg, filename, backup, strerror(errno));
+    /* ignore, continue */
+  }
+
+  /* rename new -> current */
+  callval = rename(temp, filename);
+  if (callval < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Save New %s '%s': %s",
+             msg, filename, strerror(errno));
+    /* ignore, continue */
+  }
+}
+
+static size_t write_string(int fd, const char *line)
+{
+  size_t len;
+
+  len = strlen(line);
+  return write(fd, line, len);
+}
+
+static size_t write_asc_int(int fd, int val)
+{
+  char *tempstr;
+  size_t len;
+
+  tempstr = mycalloc(maxtextlengthshort + 1);
+  len = snprintf(tempstr, maxtextlengthshort, "%d", val);
+  len = write(fd, tempstr, len);
+  mydelete(tempstr);
+  return len;
+}
+
+static void xdcc_save_xml(void)
+{
+  char *filename_tmp;
+  char *filename_bak;
+  char *tempstr;
+  xdcc *xd;
+  int fd;
+  int num;
+
+  updatecontext();
+
+  if (!gdata.xdccxmlfile)
+    return;
+
+  filename_tmp = mycalloc(strlen(gdata.xdccxmlfile)+5);
+  sprintf(filename_tmp, "%s.tmp", gdata.xdccxmlfile);
+  filename_bak = mycalloc(strlen(gdata.xdccxmlfile)+2);
+  sprintf(filename_bak, "%s~", gdata.xdccxmlfile);
+
+  fd = open(filename_tmp,
+            O_WRONLY | O_CREAT | O_TRUNC | ADDED_OPEN_FLAGS,
+            CREAT_PERMISSIONS);
+  if (fd < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Cant Create XDCC List File '%s': %s",
+             filename_tmp, strerror(errno));
+    mydelete(filename_tmp);
+    mydelete(filename_bak);
+    return;
+  }
+
+  write_string(fd, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+  write_string(fd, "<packlist>\n\n");
+
+  num = 0;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    num++;
+    write_string(fd, "<pack>\n");
+    write_string(fd, "  <packnr>");
+    write_asc_int(fd, num);
+    write_string(fd, "</packnr>\n");
+    write_string(fd, "  <packname><![CDATA[");
+    write_string(fd, xd->desc);
+    write_string(fd, "]]></packname>\n");
+    write_string(fd, "  <packsize>");
+    tempstr = sizestr(0, xd->st_size);
+    write_string(fd, tempstr);
+    mydelete(tempstr);
+    write_string(fd, "</packsize>\n");
+    write_string(fd, "  <packgets>");
+    write_asc_int(fd, xd->gets);
+    write_string(fd, "</packgets>\n");
+    write_string(fd, "</pack>\n\n");
+  }
+
+  write_string(fd, "</packlist>\n");
+  close(fd);
+
+  rename_with_backup(gdata.xdccxmlfile, filename_bak, filename_tmp, "XDCC XML");
+
+  mydelete(filename_tmp);
+  mydelete(filename_bak);
+  return;
+}
+
 void write_files(void)
 {
   write_statefile();
   xdccsavetext();
+  xdcc_save_xml();
 }
 
 static char *r_local_vhost;
