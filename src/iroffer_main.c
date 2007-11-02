@@ -2339,7 +2339,7 @@ static void parseline(char *line) {
                    /* we were kicked */
                    if ( gdata.noautorejoin )
                      {
-                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                       outerror(OUTERROR_TYPE_WARN_LOUD,
                                "Kicked on %s: %s", gnetwork->name, line);
                        ch->flags |= CHAN_KICKED;
                        clearmemberlist(ch);
@@ -2347,7 +2347,7 @@ static void parseline(char *line) {
                      }
                    else
                      {
-                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                       outerror(OUTERROR_TYPE_WARN_LOUD,
                                "Kicked on %s, Rejoining: %s", gnetwork->name, line);
                        joinchannel(ch);
                        ch->flags &= ~CHAN_ONCHAN;
