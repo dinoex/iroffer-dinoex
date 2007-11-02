@@ -30,7 +30,7 @@
 #include <sys/types.h>		/* for stupid systems */
 #include <netinet/in.h>		/* for ntohl() */
 
-#include "iroffer_md5.h"
+#include "plumb_md5.h"
 
 static void MD5Transform(UWORD32 buf[4], UWORD32 const in[16]);
 
