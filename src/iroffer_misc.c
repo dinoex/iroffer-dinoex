@@ -2296,7 +2296,7 @@ void startupiroffer(void) {
    signal(SIGTSTP,SIG_IGN);
    
    printf("** iroffer-dinoex is distributed under the GNU General Public License.\n"
-          "**    please see the COPYING for more information.\n");
+          "**    please see the LICENSE for more information.\n");
 
    printf("\n** Starting up...\n");
    
