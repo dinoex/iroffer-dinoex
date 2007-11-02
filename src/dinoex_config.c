@@ -146,7 +146,9 @@ static config_string_typ config_parse_string[] = {
 {"autoaddann",              &gdata.autoaddann,              0 },
 {"creditline",              &gdata.creditline,              0 },
 {"enable_nick",             &gdata.enable_nick,             0 },
+#ifdef USE_GEOIP
 {"geoipdatabase",           &gdata.geoipdatabase,           0 },
+#endif
 {"group_seperator",         &gdata.group_seperator,         5 },
 {"hadminpass",              &gdata.hadminpass,              4 },
 {"headline",                &gdata.headline,                0 },
@@ -178,8 +180,10 @@ static config_list_typ config_parse_list[] = {
 {"autoignore_exclude",      &gdata.autoignore_exclude,      2 },
 {"downloadhost",            &gdata.downloadhost,            2 },
 {"filedir",                 &gdata.filedir,                 1 },
+#ifdef USE_GEOIP
 {"geoipcountry",            &gdata.geoipcountry,            0 },
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
+#endif
 {"hadminhost",              &gdata.hadminhost,              3 },
 {"http_vhost",              &gdata.http_vhost,              0 },
 {"nodownloadhost",          &gdata.nodownloadhost,          2 },
