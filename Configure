@@ -1135,7 +1135,6 @@ echo "found"
 else
 echo "#define NO_GETADDRINFO" >> src/iroffer_config.h
 echo "missing, will use gethostbyname instead"
-cat -n config.temp.c
 fi
 
 echo -n "Checking for gethostbyname error values... "
@@ -1168,7 +1167,6 @@ echo "found"
 else
 echo "#define NO_HOSTCODES" >> src/iroffer_config.h
 echo "missing, won't report error codes"
-cat -n config.temp.c
 fi
 
 rm -f config.temp*
