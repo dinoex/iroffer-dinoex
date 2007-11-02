@@ -148,6 +148,9 @@ fi
 
 if $OPT_GEOIP; then
 echo "Configuring for GeoIP."
+GEOLIB="-lGeoIP"
+GEOINC="-DUSE_GEOIP -I/usr/local/include"
+GEOLDF="-L/usr/local/lib"
 fi
 
 if $OPT_CURL; then
