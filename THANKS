@@ -135,6 +135,7 @@ Thunder
 	option "hadminhost"
 	reporting IDENTIFY bug
 	reporting add_delayed bug
+	option "trashcan_dir"
 
 Alita-Chan
 	reporting XDCC LIST problem with total line

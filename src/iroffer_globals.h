@@ -193,6 +193,7 @@ char *group_seperator;
 char *usenatip;
 char *logfile_notices;
 char *logfile_messages;
+char *trashcan_dir;
 long nomd5_start;
 int need_voice;
 int need_level;

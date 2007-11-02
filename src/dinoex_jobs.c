@@ -681,6 +681,57 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
   manplist->method = method;
 }
 
+static int file_not_exits(const char *path)
+{
+  int fd;
+
+  fd = open(path, O_WRONLY | ADDED_OPEN_FLAGS);
+  if (fd < 0) {
+    if (errno != ENOENT)
+      return 1;
+    return 0;
+  }
+  close(fd);
+  return 1;
+}
+
+int save_unlink(const char *path)
+{
+  const char *file;
+  char *dest;
+  size_t len;
+  int rc;
+  int num;
+
+  if (gdata.trashcan_dir) {
+    file = getfilename(path);
+    len = strlen(gdata.trashcan_dir) + strlen(file) + 15;
+    dest = mycalloc(len);
+    snprintf(dest, len - 1, "%s/%s", gdata.trashcan_dir, file);
+    num = 0;
+    while (file_not_exits(dest)) {
+      snprintf(dest, len - 1, "%s/%s.%03d", gdata.trashcan_dir, file, ++num);
+      if (num >= 200) {
+         outerror(OUTERROR_TYPE_WARN_LOUD,
+                  "Cant move file '%s' to '%s': %s",
+                  path, dest, strerror(errno));
+         mydelete(dest);
+         return unlink(path);
+      }
+    }
+    rc = rename(path, dest);
+    if (rc != 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+               "Cant move file '%s' to '%s': %s",
+               path, dest, strerror(errno));
+    }
+    mydelete(dest);
+    if (rc == 0)
+      return 0;
+  }
+  return unlink(path);
+}
+
 static char *r_local_vhost;
 static char *r_config_nick;
 

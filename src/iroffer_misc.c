@@ -2140,6 +2140,7 @@ void reinit_config_vars(void)
   mydelete(gdata.usenatip);
   mydelete(gdata.logfile_notices);
   mydelete(gdata.logfile_messages);
+  mydelete(gdata.trashcan_dir);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;

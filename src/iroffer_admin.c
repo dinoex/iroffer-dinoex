@@ -3661,7 +3661,7 @@ static void u_rmul(const userinput * const u) {
    sprintf(tempstr,"%s/%s",gdata.uploaddir,u->arg1e);
    
    if (doesfileexist(tempstr)) {
-      if (unlink(tempstr) < 0)
+      if (save_unlink(tempstr) < 0)
          u_respond(u,"Unable to remove the file");
       else
          u_respond(u,"Deleted");

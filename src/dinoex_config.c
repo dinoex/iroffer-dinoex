@@ -168,6 +168,7 @@ static config_string_typ config_parse_string[] = {
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
 {"send_statefile",          &gdata.send_statefile,          0 },
+{"trashcan_dir",            &gdata.trashcan_dir,            1 },
 {"uploaddir",               &gdata.uploaddir,               1 },
 {"user_modes",              &gdata.user_modes,              0 },
 {"user_nick",               &gdata.config_nick,             0 },

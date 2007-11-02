@@ -2004,3 +2004,6 @@
 2042 "logfile_messages"
 2043 "logfile_notices"
 2044 "Cant Write Log File '%s': %s"
+2045 "trashcan_dir"
+2046 "%s/%s.%03d"
+2047 "Cant move file '%s' to '%s': %s"

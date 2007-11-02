@@ -54,6 +54,7 @@ void autotrigger_rebuild(void);
 void start_md5_hash(xdcc *xd, int packnum);
 void cancel_md5_hash(xdcc *xd, const char *msg);
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
+int save_unlink(const char *path);
 
 void a_rehash_prepare(void);
 void a_rehash_needtojump(const userinput *u);

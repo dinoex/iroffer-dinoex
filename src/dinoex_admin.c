@@ -2615,7 +2615,7 @@ static void a_filedel_disk(const userinput * const u, const char *name)
   if (a_access_file(u, xfiledescriptor, &file, &st))
     return;
 
-  if (unlink(file) < 0) {
+  if (save_unlink(file) < 0) {
     a_respond(u, "File %s could not be deleted: %s", file, strerror(errno));
   } else {
     a_respond(u, "File %s was deleted.", file);

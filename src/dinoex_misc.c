@@ -1060,6 +1060,7 @@ static void free_config(void)
   mydelete(gdata.usenatip);
   mydelete(gdata.logfile_notices);
   mydelete(gdata.logfile_messages);
+  mydelete(gdata.trashcan_dir);
 }
 
 #endif

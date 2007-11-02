@@ -93,7 +93,6 @@ Not going to happen anytime soon:
   1012  Leach a full group
   1015  http admin
   1022  send notes on mutiple triggers
-  1024  gently recover when networks are deleted
   1027  renumber <from> <to> new
   1030  msg to owner whn it activates flood protection
   1032  configureable note after Record
@@ -109,7 +108,6 @@ Not going to happen anytime soon:
   1055  Disk_Quota
   1060  limited directfile_acess
   1061  sort xxx vor announce
-  1063  keep deleted files
   1069  multithreading
   1073  sannounce per channel/server
   1074  annew, dont add same files in different dirs
