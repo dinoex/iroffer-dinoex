@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+195) logfile_notices, logfile_messages (inspired by Tak0r)
+  If defined, iroffer will log notices and/or messages to the given logfile.
+
 194) upnp_router (inspired by TheDeath)
   avtivate UPnP support
 

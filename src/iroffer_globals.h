@@ -191,6 +191,8 @@ char *http_admin;
 char *http_dir;
 char *group_seperator;
 char *usenatip;
+char *logfile_notices;
+char *logfile_messages;
 long nomd5_start;
 int need_voice;
 int need_level;

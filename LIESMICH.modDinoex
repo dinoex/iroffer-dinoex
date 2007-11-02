@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+195) logfile_notices, logfile_messages
+  Wenn aktiviert, zeichnet Iroffer alle Notices und/oder Messages im dem
+  angegebenen Logfile auf.
+
 194) upnp_router
   UPnP Support
 

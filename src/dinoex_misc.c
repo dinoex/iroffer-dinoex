@@ -768,6 +768,49 @@ int is_unsave_directory(const char *dir)
   return bad;
 }
 
+static void mylog_write(int logfd, const char *logfile, const char *msg, ssize_t len)
+{
+  ssize_t len2;
+
+  len2 = write(logfd, msg, len);
+  if (len2 == len)
+    return;
+
+  outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
+           "Cant Write Log File '%s': %s",
+           logfile, strerror(errno));
+}
+
+void logfile_add(const char *logfile, const char *line)
+{
+  char tempstr[maxtextlength];
+  int rc;
+  int logfd;
+
+  logfd = open(logfile,
+               O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+               CREAT_PERMISSIONS);
+  if (logfd < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
+             "Cant Access Log File '%s': %s",
+             logfile, strerror(errno));
+    return;
+  }
+
+  getdatestr(tempstr, 0, maxtextlength);
+  mylog_write(logfd, logfile, "** ", 3);
+  mylog_write(logfd, logfile, tempstr, strlen(tempstr));
+  mylog_write(logfd, logfile, ": ", 2);
+  mylog_write(logfd, logfile, line, strlen(line));
+  mylog_write(logfd, logfile, "\n", 1);
+  rc = close(logfd);
+  if (rc != 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
+             "Cant Write Log File '%s': %s",
+             logfile, strerror(errno));
+  }
+}
+ 
 #ifdef DEBUG
 
 static void free_state(void)
@@ -1015,6 +1058,8 @@ static void free_config(void)
   mydelete(gdata.group_seperator);
   mydelete(gdata.local_vhost);
   mydelete(gdata.usenatip);
+  mydelete(gdata.logfile_notices);
+  mydelete(gdata.logfile_messages);
 }
 
 #endif

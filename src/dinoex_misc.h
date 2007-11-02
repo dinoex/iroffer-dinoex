@@ -42,6 +42,8 @@ void lost_nick(char *nick);
 
 int is_unsave_directory(const char *dir);
 
+void logfile_add(const char *logfile, const char *line);
+
 void exit_iroffer(void);
 
 /* End of File */

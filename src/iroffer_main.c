@@ -3324,6 +3324,14 @@ static void privmsgparse(const char* type, char* line) {
               
               write_statefile();
             }
+          else if (gdata.logfile_notices && !strcmp(type,"NOTICE"))
+            {
+              logfile_add(gdata.logfile_notices, line);
+            }
+          else if (gdata.logfile_messages && !strcmp(type,"PRIVMSG"))
+            {
+              logfile_add(gdata.logfile_messages, line);
+            }
           else
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_GREEN,

@@ -83,7 +83,6 @@ Long Term Features:
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
-  1003  write notice and logs in a seperate file
   1004  daily/weekly/monthly transferlimits for uploads 
   1005  auto part annd join channel after netsplit
   1006  resume transfer even is name has diffrent encoding
