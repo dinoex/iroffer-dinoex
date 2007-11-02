@@ -3425,7 +3425,6 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
 {
   int usertrans, userpackok, man;
   int unlimitedhost;
-  int newlisten;
   xdcc *xd;
   transfer *tr;
   
@@ -3434,7 +3433,6 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   usertrans = 0;
   userpackok = 1;
   unlimitedhost = 0;
-  newlisten = 0;
 
   xd = get_download_pack(nick, hostname, hostmask, pack, &man, "SEND");
   if (xd == NULL)
@@ -3524,13 +3522,15 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        tr->xpack = xd;
        tr->maxspeed = xd->maxspeed;
        tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
-       unlimitedhost = tr->unlimited;
        tr->nomax = tr->unlimited;
        tr->net = gnetwork->net;
        
        if (!man)
          {
            ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," requested: ");
+           ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                   "%s (%s on %s)",
+                   nick, hostname, gnetwork->name);
          }
        if (!gdata.quietmode)
          {
@@ -3548,9 +3548,13 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
            mydelete(sizestrstr);
          }
        
-       t_setup_dcc(tr, nick);
-       newlisten = tr->listenport;
+       if (tr->unlimited)
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                 "unlimitedhost found: %s (%s on %s)",
+                 nick, hostname, gnetwork->name);
        
+       t_setup_dcc(tr, nick);
+       return;
      }
    
  done:
@@ -3559,16 +3563,6 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "%s (%s on %s)",
               nick, hostname, gnetwork->name);
-   
-   if (unlimitedhost)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-              "unlimitedhost found: %s (%s on %s)",
-              nick, hostname, gnetwork->name);
-
-   if (newlisten)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-              "listen on port %d for %s (%s on %s)",
-              newlisten, nick, hostname, gnetwork->name);
 }
    
 void sendxdccinfo(const char* nick,
