@@ -198,6 +198,28 @@ void queue_all_remove(irlist_t *list, const char *message)
   gnetwork = backup;
 }
 
+int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const char *hostname, xdcc *xd)
+{
+  ir_pqueue *pq;
+  int alreadytrans = 0;
+
+  *inq = 0; 
+  for (pq = irlist_get_head(&gdata.mainqueue);
+       pq;
+       pq = irlist_get_next(pq)) {
+    if (strcmp(pq->hostname, hostname))
+      continue;
+
+    if (man && strcasecmp(pq->nick, nick))
+      continue;
+
+    (*inq)++;
+    if (pq->xpack == xd)
+      alreadytrans ++;
+  }
+  return alreadytrans;
+}
+
 char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
 {
   ir_pqueue *tempq;

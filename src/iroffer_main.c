@@ -3495,6 +3495,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        mydelete(tempstr);
      }
    else if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) ||
+            (gdata.restrictlist && (has_joined_channels(0) == 0)) ||
             (!man &&
              (((xd->st_size < gdata.smallfilebypass) && (gdata.slotsmax >= MAXTRANS)) ||
               ((xd->st_size >= gdata.smallfilebypass) && (gdata.slotsmax-irlist_size(&gdata.trans) <= 0)))))
@@ -3631,10 +3632,9 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
    int inq,alreadytrans;
    int inq2;
    int man;
-   ir_pqueue *pq;
    
    updatecontext();
-
+   
    tempx = irlist_get_nth(&gdata.xdccs, pack-1);
    
    if (!strcmp(hostname,"man"))
@@ -3646,36 +3646,10 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
         man = 0;
       }
    
-   alreadytrans = inq = 0;
+   inq = 0;
    inq2 = 0;
-   pq = irlist_get_head(&gdata.mainqueue);
-   while(pq)
-     {
-       if (!strcmp(pq->hostname,hostname))
-         {
-           if (!man || !strcasecmp(pq->nick,nick))
-             {
-               inq++;
-               if (pq->xpack == tempx)
-                 alreadytrans++;
-             }
-         }
-       pq = irlist_get_next(pq);
-     }
-   pq = irlist_get_head(&gdata.idlequeue);
-   while(pq)
-     {
-       if (!strcmp(pq->hostname,hostname))
-         {
-           if (!man || !strcasecmp(pq->nick,nick))
-             {
-               inq2++;
-               if (pq->xpack == tempx)
-                 alreadytrans++;
-             }
-         }
-       pq = irlist_get_next(pq);
-     }
+   alreadytrans = queue_count_host(&gdata.mainqueue, &inq, man, nick, hostname, tempx);
+   alreadytrans += queue_count_host(&gdata.idlequeue, &inq2, man, nick, hostname, tempx);
    
    if (alreadytrans) {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (queue/dup): ");
