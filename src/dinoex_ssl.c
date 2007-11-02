@@ -96,10 +96,8 @@ int setup_ssl(void)
     return 0;
   }
   outerror_ssl();
-  return 1;
-#else
-  return 0;
 #endif /* USE_SSL */
+  return 1;
 }
 
 ssize_t readserver_ssl(void *buf, size_t nbytes)
