@@ -2294,7 +2294,7 @@ static void u_rehash(const userinput * const u) {
    
    /* other variables */
    char *templine = mycalloc(maxtextlength);
-   int h,i,filedescriptor,needtojump;
+   int h,i,filedescriptor;
    int ss;
    gnetwork_t *backup;
    channel_t *ch, *rch;
@@ -2369,7 +2369,7 @@ static void u_rehash(const userinput * const u) {
        
        if (!rch)
          {
-           if (!needtojump && (ch->flags & CHAN_ONCHAN))
+           if (!gnetwork->r_needtojump && (ch->flags & CHAN_ONCHAN))
              {
                writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
              }
@@ -2424,7 +2424,7 @@ static void u_rehash(const userinput * const u) {
            ch = irlist_add(&(gnetwork->channels), sizeof(channel_t));
            *ch = *rch;
            ch->flags &= ~CHAN_ONCHAN;
-           if (!needtojump)
+           if (!gnetwork->r_needtojump)
              {
                joinchannel(ch);
              }
