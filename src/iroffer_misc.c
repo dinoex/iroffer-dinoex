@@ -430,7 +430,7 @@ void getconfig_set (const char *line, int rehash)
       mydelete(tnum);
       }
    else if ( ! strcmp(type,"uploadmaxsize")) {
-      gdata.uploadmaxsize = (off_t)(max2(0,atoull(var)*1024*1024));
+      gdata.uploadmaxsize = atoull(var)*1024*1024;
       mydelete(var);
       }
    else if ( ! strcmp(type,"connectionmethod"))
@@ -1435,7 +1435,7 @@ static void iroffer_signal_handler(int signo)
         
         ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Crashing... Please report this problem to dinoex");
         
-        tostdout_disable_buffering(1);
+        tostdout_disable_buffering();
         
         uninitscreen();
         
@@ -1560,7 +1560,7 @@ void shutdowniroffer(void) {
       
       mylog(CALLTYPE_NORMAL,"iroffer exited (shutdown)\n\n");
 
-      tostdout_disable_buffering(1);
+      tostdout_disable_buffering();
       uninitscreen();
       shutdown_dinoex();
       if (gdata.pidfile) unlink(gdata.pidfile);

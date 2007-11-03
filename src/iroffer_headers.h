@@ -504,7 +504,7 @@ typedef struct {
 
 /* iroffer.c */
 void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd);
-void sendxdccinfo(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg);
+void sendxdccinfo(const char* nick, const char* hostname, const char* hostmask, int pack);
 void sendaqueue(int type, int pos, char *lastnick);
 
 /* display.c */
@@ -524,7 +524,7 @@ tostdout(const char *format, ...);
 
 void vtostdout(const char *format, va_list ap);
 void tostdout_write(void);
-void tostdout_disable_buffering(int flush);
+void tostdout_disable_buffering(void);
 
 /* utilities.c */
 const char* strstrnocase (const char *str1, const char *match1);
@@ -680,12 +680,11 @@ int irlist_size(const irlist_t *list);
 void* irlist_get_nth(irlist_t *list, int nth); /* zero based n */
 
 /* other */
-int irlist_sort_cmpfunc_string(void *userdata, const void *a, const void *b);
-int irlist_sort_cmpfunc_int(void *userdata, const void *a, const void *b);
-int irlist_sort_cmpfunc_off_t(void *userdata, const void *a, const void *b);
+int irlist_sort_cmpfunc_string(const void *a, const void *b);
+int irlist_sort_cmpfunc_int(const void *a, const void *b);
+int irlist_sort_cmpfunc_off_t(const void *a, const void *b);
 void irlist_sort(irlist_t *list,
-                 int (*cmpfunc)(void *userdata, const void *a, const void *b),
-                 void *userdata);
+                 int (*cmpfunc)(const void *a, const void *b));
 
 transfer* does_tr_id_exist(int tr_id);
 int get_next_tr_id(void);

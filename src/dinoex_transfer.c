@@ -142,7 +142,7 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
   tr->tr_status = TRANSFER_STATUS_CONNECTING;
 }
 
-int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport, char *filesize, char *token)
+int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport, char *token)
 {
   transfer *tr;
   int myid;

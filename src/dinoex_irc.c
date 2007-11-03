@@ -188,7 +188,7 @@ int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket,
     family = strchr(vhost, ':') ? AF_INET6 : AF_INET;
   }
   *listen_socket = socket(family, SOCK_STREAM, 0);
-  if (*listen < 0) {
+  if (*listen_socket < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "Could Not Create Socket, Aborting: %s", strerror(errno));
     *listen_socket = FD_UNUSED;

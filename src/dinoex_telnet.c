@@ -177,7 +177,7 @@ static void telnet_accept(int i)
   gnetwork = backup;
 }
 
-void telnet_done_select(int changesec)
+void telnet_done_select(void)
 {
   int i;
 

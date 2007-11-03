@@ -127,24 +127,71 @@ fi
 
 if $OPT_DEBUG; then
 echo "Configuring for debugging."
-DEBUG="-g -DDEBUG"
+DEBUG="-g -DDEBUG
+-Waggregate-return
+-Wchar-subscripts
+-Wcomment
+-Wendif-labels
+-Wformat-security
+-Wimplicit-int
+-Winline
+-Wmissing-braces
+-Wmissing-noreturn
+-Wmain
+-Wnested-externs
+-Wnonnull
+-Wparentheses
+-Wpacked
+-Wredundant-decls
+-Wreturn-type
+-Wstrict-aliasing
+-Wswitch
+-Wsystem-headers
+-Wtrigraphs
+-Wuninitialized -O 
+-Wunknown-pragmas
+-Wunused
+-Wunused-function
+-Wunused-label
+-Wunused-value
+-Wunused-variable 
+"
 else
 DEBUG="-O2"
 fi
 
 if $OPT_WARN; then
 echo "Configuring for extra warnings."
-WARNS="-Wshadow
--Wpointer-arith
+WARNS="-Wbad-function-cast
 -Wcast-qual
 -Wcast-align
--Wstrict-prototypes
--Wmissing-prototypes
+-Wformat
+-Wimplicit
 -Wmissing-declarations
--Winline
+-Wmissing-prototypes
+-Wpointer-arith
+-Wredundant-decls
+-Wreturn-type
+-Wshadow
 -Wsign-compare
+-Wstrict-prototypes
 -Wwrite-strings"
 fi
+
+TODOWARN="
+-Wconversion
+-Wformat-nonliteral
+-Wformat=2
+-Wfloat-equal
+-Wlarger-than-20000
+-Wmissing-format-attribute
+-Wpadded
+-Wswitch-default
+-Wswitch-enum
+-Wundef
+-Wunreachable-code
+-Wunused-parameter
+"
 
 if $OPT_PROF; then
 echo "Configuring for profiling."

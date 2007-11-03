@@ -1116,7 +1116,7 @@ static void mainloop (void) {
          }
       gnetwork = NULL;
 
-      telnet_done_select(changesec);
+      telnet_done_select();
       h_done_select(changesec);
       
       /*----- time for a delayed shutdown? ----- */
@@ -1805,7 +1805,7 @@ static void mainloop (void) {
          
          mylog(CALLTYPE_NORMAL,"iroffer exited\n\n");
          
-         tostdout_disable_buffering(1);
+         tostdout_disable_buffering();
          uninitscreen();
          if (gdata.pidfile) unlink(gdata.pidfile);
          exit_iroffer();
@@ -2821,7 +2821,7 @@ static void privmsgparse(const char* type, char* line) {
             {
               if (msg7[strlen(msg7)-1] == '\1')
                 msg7[strlen(msg7)-1] = '\0';
-              down = t_find_transfer(nick, msg3, msg4, msg5, msg6, msg7);
+              down = t_find_transfer(nick, msg3, msg4, msg5, msg7);
             }
           if (!down)
            {
@@ -3133,7 +3133,7 @@ static void privmsgparse(const char* type, char* line) {
            ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                    "XDCC INFO %s",
                    msg3);
-           sendxdccinfo(nick, hostname, hostmask, packnumtonum(msg3), NULL);
+           sendxdccinfo(nick, hostname, hostmask, packnumtonum(msg3));
          }
          else if ( msg2 && !strcmp(msg2,"QUEUE")) {
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -3472,7 +3472,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (Over Pack Transfer Limit): ");
       notice(nick,"** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
       if (xd->dlimit_desc != NULL)
-        notice(nick,xd->dlimit_desc);
+        notice(nick, "%s", xd->dlimit_desc);
      }
    /* if maxtransfersperperson is reached, queue the file, unless queues are used up, which is checked in addtoqueue() */
    else if ( !man && usertrans >= gdata.maxtransfersperperson)
@@ -3561,8 +3561,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
 void sendxdccinfo(const char* nick,
                   const char* hostname,
                   const char* hostmask,
-                  int pack,
-                  const char* msg)
+                  int pack)
 {
   userinput *pubinfo;
   xdcc *xd;

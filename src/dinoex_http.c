@@ -573,7 +573,7 @@ static float gets_per_pack(int agets, int packs)
 static void h_html_main(http * const h)
 {
   xdcc *xd;
-  irlist_t grplist = {};
+  irlist_t grplist = {0, 0, 0};
   char *tempstr;
   char *tlink;
   char *tref;
@@ -617,7 +617,7 @@ static void h_html_main(http * const h)
     strcpy(inlist, tempstr);
   }
   mydelete(tempstr);
-  irlist_sort(&grplist, irlist_sort_cmpfunc_string, NULL);
+  irlist_sort(&grplist, irlist_sort_cmpfunc_string);
 
   h_respond(h, "<h1>%s %s</h1>\n", h->nick, "Group list" );
   h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
@@ -1038,7 +1038,7 @@ static void h_webliste(http * const h, const char *header, const char *url)
   h->left = guess - 1;
   h_html_index(h);
   mydelete(h->group);
-  h_readbuffer(h, http_header_status);
+  h_readbuffer(h, header);
 }
 
 static void h_admin(http * const h, int level, char *url)

@@ -60,7 +60,7 @@ void rename_with_backup(const char *file, const char *backup, const char *tmp, c
 
 void a_rehash_prepare(void);
 void a_rehash_needtojump(const userinput *u);
-void a_rehash_jump(const userinput *u);
+void a_rehash_jump(void);
 void a_rehash_cleanup(const userinput *u);
 
 /* End of File */

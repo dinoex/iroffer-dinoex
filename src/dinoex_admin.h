@@ -114,7 +114,6 @@ void a_bann_hostmask(const userinput * const u, const char *arg);
 void a_hop(const userinput * const u);
 void a_nochannel(const userinput * const u);
 void a_join(const userinput * const u);
-void a_join(const userinput * const u);
 void a_part(const userinput * const u);
 void a_nomd5(const userinput * const u);
 void a_cleargets(const userinput * const u);

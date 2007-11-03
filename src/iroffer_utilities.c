@@ -306,7 +306,7 @@ void outerror (outerror_type_e type, const char *format, ...) {
       
       ioutput(CALLTYPE_NORMAL,ioutput_options,COLOR_RED|COLOR_BOLD,"ERROR: %s",tempstr);
       
-      tostdout_disable_buffering(1);
+      tostdout_disable_buffering();
       
       uninitscreen();
       
@@ -869,7 +869,6 @@ char dayofweektomask(const char a) {
       default:
          return 0x00;
       }
-   return 0;
    }
 
 
@@ -2756,12 +2755,12 @@ void* irlist_get_nth(irlist_t *list, int nth)
     }
 }
 
-int irlist_sort_cmpfunc_string(void *userdata, const void *a, const void *b)
+int irlist_sort_cmpfunc_string(const void *a, const void *b)
 {
   return strcmp((const char *)a, (const char *)b);
 }
 
-int irlist_sort_cmpfunc_int(void *userdata, const void *a, const void *b)
+int irlist_sort_cmpfunc_int(const void *a, const void *b)
 {
   int ai, bi;
   ai = *(const int*)a;
@@ -2769,7 +2768,7 @@ int irlist_sort_cmpfunc_int(void *userdata, const void *a, const void *b)
   return ai - bi;
 }
 
-int irlist_sort_cmpfunc_off_t(void *userdata, const void *a, const void *b)
+int irlist_sort_cmpfunc_off_t(const void *a, const void *b)
 {
   off_t ai, bi;
   ai = *(const off_t*)a;
@@ -2778,10 +2777,9 @@ int irlist_sort_cmpfunc_off_t(void *userdata, const void *a, const void *b)
 }
 
 void irlist_sort(irlist_t *list,
-                 int (*cmpfunc)(void *userdata, const void *a, const void *b),
-                 void *userdata)
+                 int (*cmpfunc)(const void *a, const void *b))
 {
-  irlist_t newlist = {};
+  irlist_t newlist = {0, 0, 0};
   void *cur, *try;
   
   while ((cur = irlist_get_head(list)))
@@ -2797,7 +2795,7 @@ void irlist_sort(irlist_t *list,
       
       while (try)
         {
-          if (cmpfunc(userdata, cur, try) < 0)
+          if (cmpfunc(cur, try) < 0)
             {
               irlist_insert_before(&newlist, cur, try);
               break;

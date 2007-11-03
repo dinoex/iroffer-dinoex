@@ -544,13 +544,14 @@ void u_parseit(userinput * const u) {
       return;
       }
    
-   for (i=0; !found && i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++)
+   for (i=0; !found && i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
       if ( (!strcmp(userinput_parse[i].command,u->cmd)) &&
            (userinput_parse[i].level <= u->level ) &&
            (userinput_parse[i].methods_allowed & u->method) ) {
          found=1;
          userinput_parse[i].handler(u);
          }
+      }
    
    if (!found)
       u_respond(u,"** User Command Not Recognized, try \"HELP\"");
@@ -966,7 +967,7 @@ static void u_xdl(const userinput * const u) {
    int l;
    int s;
    xdcc *xd;
-   irlist_t grplist = {};
+   irlist_t grplist = {0, 0, 0};
 
    updatecontext();
    
@@ -1007,7 +1008,7 @@ static void u_xdl(const userinput * const u) {
        xd = irlist_get_next(xd);
      }
 
-     irlist_sort(&grplist, irlist_sort_cmpfunc_string, NULL);
+     irlist_sort(&grplist, irlist_sort_cmpfunc_string);
      inlist = irlist_get_head(&grplist);
      while (inlist)
        {
@@ -2433,7 +2434,7 @@ static void u_rehash(const userinput * const u) {
      } /* networks */
    gnetwork = backup;
    
-   a_rehash_jump(u);
+   a_rehash_jump();
    
    if (((!gdata.pidfile) && (gdata.r_pidfile)) ||
        ((gdata.pidfile) && (!gdata.r_pidfile)) ||
@@ -3160,7 +3161,7 @@ static void u_memstat(const userinput * const u)
         {
           mmap_info_t *mm;
           
-          irlist_sort(&xd->mmaps, irlist_sort_cmpfunc_off_t, NULL);
+          irlist_sort(&xd->mmaps, irlist_sort_cmpfunc_off_t);
           
           for (mm = irlist_get_head(&xd->mmaps); mm; mm = irlist_get_next(mm))
             {
@@ -3458,7 +3459,7 @@ void u_listdir(const userinput * const u, const char *dir)
   DIR *d;
   struct dirent *f;
   char *thefile, *tempstr;
-  irlist_t dirlist = {};
+  irlist_t dirlist = {0, 0, 0};
   int thedirlen;
 #ifndef NO_STATVFS
   struct statvfs stf;
@@ -3491,7 +3492,7 @@ void u_listdir(const userinput * const u, const char *dir)
   
   closedir(d);
   
-  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
+  irlist_sort(&dirlist, irlist_sort_cmpfunc_string);
   
   if (!irlist_size(&dirlist))
     {

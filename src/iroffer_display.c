@@ -199,7 +199,7 @@ void gotobot (void)
     }
 
 
-void tostdout_disable_buffering(int flush)
+void tostdout_disable_buffering(void)
 {
   if (!gdata.stdout_buffer_init)
     {

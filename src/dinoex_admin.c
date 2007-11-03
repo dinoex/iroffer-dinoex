@@ -28,12 +28,6 @@
 #include <fnmatch.h>
 #include <ctype.h>
 
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
-#endif
-a_respond(const userinput * const u, const char *format, ...);
-
 void a_respond(const userinput * const u, const char *format, ...)
 {
   va_list args;
@@ -1590,7 +1584,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
   struct stat st;
   struct stat *sta;
   char *thefile, *tempstr;
-  irlist_t dirlist = {};
+  irlist_t dirlist = {0, 0, 0};
   int thedirlen;
 
   updatecontext();
@@ -1688,7 +1682,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
   if (irlist_size(&dirlist) == 0)
     return;
 
-  irlist_sort(&dirlist, irlist_sort_cmpfunc_string, NULL);
+  irlist_sort(&dirlist, irlist_sort_cmpfunc_string);
 
   a_respond(u, "Adding %d files from dir %s",
             irlist_size(&dirlist), thedir);
@@ -3178,7 +3172,7 @@ void a_backgroud(const userinput * const u)
     return;
   }
 
-  tostdout_disable_buffering(1);
+  tostdout_disable_buffering();
   uninitscreen();
 
   gdata.background = 1;

@@ -188,13 +188,14 @@ void t_setup_send(transfer * const t)
 void t_transfersome (transfer * const t)
 {
   unsigned int j;
+  int jj;
   int ii;
   ssize_t howmuch, howmuch2;
   size_t attempt;
   unsigned char *dataptr;
   off_t offset;
 #if defined(HAVE_FREEBSD_SENDFILE)
-  struct sf_hdtr sendfile_header = {};
+  struct sf_hdtr sendfile_header = {0, 0, 0, 0};
 #endif
   
   updatecontext();
@@ -272,7 +273,7 @@ void t_transfersome (transfer * const t)
           
           offset = t->bytessent;
           
-          j = sendfile(t->xpack->file_fd,
+          jj = sendfile(t->xpack->file_fd,
                        t->clientsocket,
                        offset,
                        attempt,
@@ -280,7 +281,7 @@ void t_transfersome (transfer * const t)
                        &offset,
                        0);
           
-          if ((j < 0) && (errno != EAGAIN))
+          if ((jj < 0) && (errno != EAGAIN))
             {
               t_closeconn(t,"Unable to transfer data",errno);
               return;

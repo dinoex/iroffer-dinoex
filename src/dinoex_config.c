@@ -138,7 +138,7 @@ static config_int_typ config_parse_int[] = {
 {"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1 },
 {"telnet_port",             &gdata.telnet_port,             0, 65535, 1 },
 {"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1 },
-{NULL, NULL }};
+{NULL, NULL, 0, 0, 0 }};
 
 static int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
@@ -176,7 +176,7 @@ static config_string_typ config_parse_string[] = {
 {"xdcclistfile",            &gdata.xdcclistfile,            1 },
 {"xdccremovefile",          &gdata.xdccremovefile,          1 },
 {"xdccxmlfile",             &gdata.xdccxmlfile,             1 },
-{NULL, NULL }};
+{NULL, NULL, 0 }};
 
 static int config_list_anzahl = 0;
 static config_list_typ config_parse_list[] = {
@@ -198,7 +198,7 @@ static config_list_typ config_parse_list[] = {
 {"unlimitedhost",           &gdata.unlimitedhost,           2 },
 {"uploadhost",              &gdata.uploadhost,              2 },
 {"weblist_info",            &gdata.weblist_info,            0 },
-{NULL, NULL }};
+{NULL, NULL, 0 }};
 
 
 static void config_sorted_bool(void)
@@ -616,7 +616,7 @@ static void c_nickserv_pass(char *var)
 
 static void c_uploadminspace(char *var)
 {
-  gdata.uploadminspace = (off_t)(max2(0,atoull(var)*1024*1024));
+  gdata.uploadminspace = atoull(var)*1024*1024;
   mydelete(var);
 }
 

@@ -815,6 +815,7 @@ static void xdcc_save_xml(void)
   write_string(fd, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
   write_string(fd, "<packlist>\n\n");
 
+  toffered = 0;
   num = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
@@ -977,7 +978,7 @@ void a_rehash_needtojump(const userinput *u)
   }
 }
 
-void a_rehash_jump(const userinput *u)
+void a_rehash_jump(void)
 {
   gnetwork_t *backup;
   int ss;
