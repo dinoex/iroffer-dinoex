@@ -256,7 +256,6 @@ void l_istimeout (upload * const l)
   
   if ((gdata.curtime - l->lastcontact) > 180)
     {
-      if (!gdata.attop) gototop();
       l_closeconn(l,"DCC Timeout (180 Sec Timeout)",0);
     }
 }

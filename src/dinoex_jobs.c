@@ -617,7 +617,6 @@ void autotrigger_rebuild(void)
 
 void start_md5_hash(xdcc *xd, int packnum)
 {
-  if (!gdata.attop) { gototop(); }
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "[MD5]: Calculating pack %d", packnum);
 

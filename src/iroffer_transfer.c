@@ -66,8 +66,6 @@ void t_establishcon (transfer * const t)
    
    addrlen = (t->family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
    
-   if (!gdata.attop) gototop();
-   
    if ((t->clientsocket = accept(t->listensocket, &t->serveraddress.sa, &addrlen)) < 0) {
       int errno2 = errno;
       outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
@@ -549,18 +547,10 @@ void t_readjunk (transfer * const t)
   
   if (i < 0)
     {
-      if (!gdata.attop)
-        {
-          gototop();
-        }
       t_closeconn(t,"Connection Lost",errno);
     }
   else if (i < 1)
     {
-      if (!gdata.attop)
-        {
-          gototop();
-        }
       t_closeconn(t,"Connection Lost",0);
     }
   else
@@ -591,14 +581,12 @@ void t_istimeout (transfer * const t)
   
   if ((gdata.curtime - t->lastcontact) > 180)
     {
-      if (!gdata.attop) gototop();
       t_closeconn(t,"DCC Timeout (180 Sec Timeout)",0);
     }
   else if ((gdata.curtime - t->lastcontact) > 150)
     {
       if (!t->close_to_timeout)
         {
-          if (!gdata.attop) gototop();
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                   "XDCC [%02i:%s on %s]: Connection close to timeout 30 sec remain",
                   t->id, t->nick, gdata.networks[ t->net ].name);
@@ -847,7 +835,6 @@ void t_checkminspeed(transfer * const t) {
    snprintf(tempstr2,maxtextlength-1,
         "Under Min Speed Requirement, %2.1fK/sec is less than %2.1fK/sec",
          t->lastspeed,t->xpack->minspeed);
-   if (!gdata.attop) gototop();
    t_closeconn(t,tempstr2,0);
    mydelete(tempstr2);
    

@@ -302,8 +302,6 @@ void outerror (outerror_type_e type, const char *format, ...) {
       snprintf(tempstr, maxtextlength-1, "OUTERROR-INT: Output too large, ignoring!");
     }
 
-   if (!gdata.background && !gdata.attop) gototop();
-   
    if ( type == OUTERROR_TYPE_CRASH ) {
       
       ioutput(CALLTYPE_NORMAL,ioutput_options,COLOR_RED|COLOR_BOLD,"ERROR: %s",tempstr);

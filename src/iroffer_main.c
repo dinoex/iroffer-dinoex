@@ -184,8 +184,6 @@ static void select_dump(const char *desc, int highests)
 {
   int ii;
   
-  if (!gdata.attop) gototop();
-  
   ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_CYAN,
           "select %s: [read",desc);
   for (ii=0; ii<highests+1; ii++)
@@ -552,13 +550,11 @@ static void mainloop (void) {
       if (gdata.curtime != lasttime) {
          
          if (gdata.curtime < lasttime-3) {
-            if (!gdata.attop) gototop();
             outerror(OUTERROR_TYPE_WARN,"System Time Changed Backwards %lim %lis!!\n",
                (long)(lasttime-gdata.curtime)/60,(long)(lasttime-gdata.curtime)%60);
             }
          
          if (gdata.curtime > lasttime+10) {
-            if (!gdata.attop) gototop();
             outerror(OUTERROR_TYPE_WARN,"System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
                (long)(gdata.curtime-lasttime)/60,(long)(gdata.curtime-lasttime)%60);
             if (gdata.debug > 0)
@@ -1286,7 +1282,6 @@ static void mainloop (void) {
           
           while(ignore)
             {
-              if (!gdata.attop) gototop();
               ignore->bucket--;
               if ((ignore->flags & IGN_IGNORING) && (ignore->bucket < 0))
                 {
@@ -1690,7 +1685,6 @@ static void mainloop (void) {
             tostdout(tempstr2,tempstr);
             
             tostdout("\x1b[%d;%dH]\x1b[u",gdata.termlines,gdata.termcols);
-            gdata.attop = 0;
             }
          
          admin_jobs();
@@ -1721,7 +1715,6 @@ static void mainloop (void) {
               
               if (gdata.debug > 4)
                 {
-                  if (!gdata.attop) { gototop(); }
                   ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"[MD5]: read %ld", (long)howmuch);
                 }
               
@@ -1747,8 +1740,6 @@ static void mainloop (void) {
                   if (!gdata.nocrc32)
                     crc32_final(gdata.md5build.xpack);
                   gdata.md5build.xpack->has_md5sum = 1;
-                  
-                  if (!gdata.attop) { gototop(); }
                   
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                           "[MD5]: is " MD5_PRINT_FMT, MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
@@ -2722,7 +2713,6 @@ static void privmsgparse(const char* type, char* line) {
    
    /*----- DCC SEND/CHAT/RESUME ----- */
    else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"\1DCC") && msg2) {
-      if (!gdata.attop) gototop();
       if (!strcmp(caps(msg2),"RESUME") && msg3 && msg4 && msg5)
         {
           gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
@@ -2976,7 +2966,6 @@ static void privmsgparse(const char* type, char* line) {
    /*----- ADMIN ----- */
    else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"ADMIN") ) {
 /*      msg2 = getpart(line,5); */
-      if (!gdata.attop) gototop();
       if (admin_message(nick, hostmask, msg2, line, line_len) != 0 )
          {
             /* admin commands shouldn't count against ignore */
@@ -2997,8 +2986,6 @@ static void privmsgparse(const char* type, char* line) {
          msg3[strlen(msg3)-1] = '\0';
       
       if ( msg2 && ( !strcmp(msg2,"LIST") || !strcmp(msg2,"LIST\1"))) {
-         if (!gdata.attop) gototop();
-         
          if (gdata.restrictprivlist)
 	   {
 	     j = 2; /* deny */
@@ -3128,21 +3115,18 @@ static void privmsgparse(const char* type, char* line) {
 	{
          
          if ( msg2 && msg3 && (!strcmp(msg2,"SEND") || !strcmp(msg2,"GET"))) {
-           if (!gdata.attop) gototop();
            ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                    "XDCC SEND %s",
                    msg3);
            sendxdccfile(nick, hostname, hostmask, packnumtonum(msg3), NULL, msg4);
          }
          else if ( msg2 && msg3 && (!strcmp(msg2,"INFO"))) {
-           if (!gdata.attop) gototop();
            ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                    "XDCC INFO %s",
                    msg3);
            sendxdccinfo(nick, hostname, hostmask, packnumtonum(msg3), NULL);
          }
          else if ( msg2 && !strcmp(msg2,"QUEUE")) {
-           if (!gdata.attop) gototop();
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                    "XDCC QUEUE (%s on %s)",
                    hostmask, gnetwork->name);
@@ -3152,7 +3136,6 @@ static void privmsgparse(const char* type, char* line) {
            stoplist(nick);
          }
          else if ( msg2 && !strcmp(msg2,"CANCEL")) {
-         if (!gdata.attop) gototop();
            /* stop transfers */
            for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
              {
@@ -3169,7 +3152,6 @@ static void privmsgparse(const char* type, char* line) {
                    hostmask, gnetwork->name);
          }
 	 else if ( msg2 && !strcmp(msg2,"REMOVE")) {
-         if (!gdata.attop) gototop();
          k=0;
          
          k += queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick);
@@ -3188,7 +3170,6 @@ static void privmsgparse(const char* type, char* line) {
                   gdata.owner_nick ? gdata.owner_nick : "(unknown)");
          }
          else if ( msg2 && !strcmp(msg2,"SEARCH") && msg3) {
-         if (!gdata.attop) gototop();
          
          notice_slow(nick,"Searching for \"%s\"...",msg3);
          
@@ -3289,8 +3270,6 @@ static void privmsgparse(const char* type, char* line) {
         snprintf(atfindmatch, maxtextlength - 2, "*%s*", msg2e);
         k = noticeresults(nick, atfindmatch);
         if (k) {
-          if (!gdata.attop)
-            gototop();
           ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
                   "@FIND %s (%s on %s) - %i pack%s found.",
                   msg2e, hostmask, gnetwork->name, k, k != 1 ? "s" : "");
@@ -3406,8 +3385,6 @@ static void autoqueuef(const char* line, int pack, const char *message)
        const char *format = " :** Sending You %s by DCC";
        
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-       
-       if (!gdata.attop) gototop();
        
        ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"AutoSend ");
        
@@ -3720,8 +3697,6 @@ void sendaqueue(int type, int pos, char *lastnick)
   if (gdata.restrictlist && (has_joined_channels(0) == 0))
      return;
   
-  if (!gdata.attop) gototop();
-
   if (irlist_size(&gdata.mainqueue))
     {
       

@@ -795,7 +795,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
   if ((type == WRITESERVER_NOW) &&
       (gnetwork->serverstatus == SERVERSTATUS_CONNECTED))
     {
-      if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<SND<: %d: %s", gnetwork->net +1, msg);
@@ -931,7 +930,6 @@ void sendserver(void)
   
   while (item && (strlen(item) < gnetwork->serverbucket))
     {
-      if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
@@ -954,7 +952,6 @@ void sendserver(void)
   
   while (item && (strlen(item) < gnetwork->serverbucket))
     {
-      if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
@@ -977,7 +974,6 @@ void sendserver(void)
   
   while (item && (strlen(item) < gnetwork->serverbucket))
     {
-      if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
@@ -1474,11 +1470,9 @@ void floodchk(void) {
       gdata.ignore = 0;
    
    if (last - gdata.ignore == -1) {
-      if (!gdata.attop) gototop();
       outerror(OUTERROR_TYPE_WARN,"Flood Protection Activated");
       }
    if (last - gdata.ignore == 1) {
-      if (!gdata.attop) gototop();
       outerror(OUTERROR_TYPE_WARN,"Flood Protection Deactivated");
       }
    
@@ -1546,7 +1540,6 @@ void shutdowniroffer(void) {
    updatecontext();
 
    backup = gnetwork;
-   if (!gdata.attop) gototop();
    
    if ( SAVEQUIT )
       write_statefile();

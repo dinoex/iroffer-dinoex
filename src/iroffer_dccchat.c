@@ -400,7 +400,6 @@ void parsedccchat(dccchat_t *chat,
       break;
       
     case DCCCHAT_CONNECTED:
-      if (!gdata.attop) gototop();
       if (gdata.debug > 0)
         {
           ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_CYAN,">DCC>: %s",line);
