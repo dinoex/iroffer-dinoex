@@ -1332,6 +1332,8 @@ static void mainloop (void) {
          /*----- server timeout ----- */
          for (ss=0; ss<gdata.networks_online; ss++) {
            gnetwork = &(gdata.networks[ss]);
+           if (gdata.needsshutdown)
+             continue;
          if ((gnetwork->serverstatus == SERVERSTATUS_CONNECTED) &&
              (gdata.curtime - gnetwork->lastservercontact > SRVRTOUT)) {
             if (gnetwork->servertime < 3)
