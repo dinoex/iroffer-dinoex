@@ -156,7 +156,7 @@ void checkadminpass2(const char *masterpass)
 {
 #ifndef NO_CRYPT
   int err=0;
-  int i;
+  unsigned int i;
 
   updatecontext();
 

@@ -419,7 +419,7 @@ void getconfig_set (const char *line, int rehash)
          gdata.periodicmsg_time = max2(1,atoi(tnum));
          
          offset = strlen(gdata.periodicmsg_nick) + strlen(tnum) + 2;
-         for (i=offset; i<=strlen(var); i++)
+         for (i=offset; i<=(int)(strlen(var)); i++)
             var[i-offset] = var[i];
          
          mydelete(gdata.periodicmsg_msg);
@@ -928,7 +928,7 @@ void sendserver(void)
   
   item = irlist_get_head(&(gnetwork->serverq_fast));
   
-  while (item && (strlen(item) < gnetwork->serverbucket))
+  while (item && (((int)strlen(item)) < gnetwork->serverbucket))
     {
       if (gdata.debug > 0)
         {
@@ -950,7 +950,7 @@ void sendserver(void)
   
   item = irlist_get_head(&(gnetwork->serverq_normal));
   
-  while (item && (strlen(item) < gnetwork->serverbucket))
+  while (item && (((int)strlen(item)) < gnetwork->serverbucket))
     {
       if (gdata.debug > 0)
         {
@@ -972,7 +972,7 @@ void sendserver(void)
   
   item = irlist_get_head(&(gnetwork->serverq_slow));
   
-  while (item && (strlen(item) < gnetwork->serverbucket))
+  while (item && (((int)strlen(item)) < gnetwork->serverbucket))
     {
       if (gdata.debug > 0)
         {

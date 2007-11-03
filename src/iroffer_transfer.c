@@ -187,7 +187,7 @@ void t_setup_send(transfer * const t)
 
 void t_transfersome (transfer * const t)
 {
-  int j;
+  unsigned int j;
   int ii;
   ssize_t howmuch, howmuch2;
   size_t attempt;
@@ -426,7 +426,7 @@ void t_transfersome (transfer * const t)
                       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_BLUE,
                               "mmap() [%p] offset=0x%.8" LLPRINTFMT "X size=0x%.8" LLPRINTFMT "X",
                               mm->mmap_ptr,
-                              (unsigned long long)mm->mmap_offset,
+                              mm->mmap_offset,
                               (unsigned long long)mm->mmap_size);
                     }
                 }
@@ -640,9 +640,9 @@ void t_flushed (transfer * const t)
            " %" LLPRINTFMT "u.%03" LLPRINTFMT "u sec", (timetookms%(60*1000))/1000, (timetookms%1000));
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC [%02i:%s on %s]: Transfer Completed (%" LLPRINTFMT "i KB,%s, %0.1f KB/sec)",
+          "XDCC [%02i:%s on %s]: Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec)",
           t->id, t->nick, gdata.networks[ t->net ].name,
-          (long long )(t->xpack->st_size-t->startresume)/1024,
+          (t->xpack->st_size-t->startresume/1024),
           tempstr,
           ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0));
   
@@ -657,16 +657,16 @@ void t_flushed (transfer * const t)
     {
       if (t->xpack->has_md5sum)
         {
-          notice(t->nick,"** Transfer Completed (%" LLPRINTFMT "i KB,%s, %0.1f KB/sec, md5sum: " MD5_PRINT_FMT ")",
-                 (long long)(t->xpack->st_size-t->startresume)/1024,
+          notice(t->nick,"** Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec, md5sum: " MD5_PRINT_FMT ")",
+                 (t->xpack->st_size-t->startresume/1024),
                  tempstr,
                  ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0),
                  MD5_PRINT_DATA(t->xpack->md5sum));
         }
       else
         {
-          notice(t->nick,"** Transfer Completed (%" LLPRINTFMT "i KB,%s, %0.1f KB/sec)",
-                 (long long)(t->xpack->st_size-t->startresume)/1024,
+          notice(t->nick,"** Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec)",
+                 (t->xpack->st_size-t->startresume/1024),
                  tempstr,
                  ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0));
         }

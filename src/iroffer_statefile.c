@@ -102,7 +102,7 @@ typedef enum
 typedef struct
 {
   statefile_tag_t tag;
-  ir_int32 length; /* includes header */
+  ir_uint32 length; /* includes header */
 } statefile_hdr_t;
 
 #define STATEFILE_MAGIC (('I' << 24) | ('R' << 16) | ('F' << 8) | 'R')
@@ -650,7 +650,7 @@ void write_statefile(void)
 }
 
 
-static statefile_hdr_t* read_statefile_item(ir_uint32 **buffer, int *buffer_len)
+static statefile_hdr_t* read_statefile_item(ir_uint32 **buffer, ir_uint32 *buffer_len)
 {
   statefile_hdr_t *all;
   
@@ -682,12 +682,12 @@ void read_statefile(void)
 {
   int fd;
   ir_uint32 *buffer, *buffer_begin;
-  int buffer_len;
+  ir_uint32 buffer_len;
   struct MD5Context md5sum;
   MD5Digest digest;
   struct stat st;
   statefile_hdr_t *hdr;
-  int callval;
+  ir_uint32 callval;
   time_t timestamp = 0;
   
   updatecontext();

@@ -52,7 +52,7 @@ void l_establishcon (upload * const l)
     {
       tempstr = getsendname(l->file);
       privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u\1",
-                   tempstr, l->remoteport, (unsigned long long)s.st_size);
+                   tempstr, l->remoteport, s.st_size);
       mydelete(tempstr);
       return;
     }
@@ -222,7 +222,7 @@ void l_transfersome (upload * const l) {
                " %li sec", timetook%60);
       
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-              "DCC Upload: Transfer Completed (%" LLPRINTFMT "i KB,%s, %0.1f KB/sec)",
+              "DCC Upload: Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec)",
               (long long)((mysize)/1024),
               tempstr,
               ((float)mysize)/1024.0/((float)timetook));

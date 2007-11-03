@@ -132,7 +132,7 @@ int tcprangestart;
 int tcprangelimit;
 float transferminspeed, transfermaxspeed;
 int overallmaxspeed, overallmaxspeeddayspeed;
-int maxb;
+unsigned int maxb;
 int overallmaxspeeddaytimestart, overallmaxspeeddaytimeend;
 char overallmaxspeeddaydays;
 int maxtransfersperperson, maxqueueditemsperperson;

@@ -97,8 +97,8 @@ int l_setup_listen(upload * const l)
   listenport = get_port(&listenaddr);
   msg = setup_dcc_local(&listenaddr);
   tempstr = getsendname(l->file);
-  privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "i %d\1",
-               tempstr, msg, (long long)(l->totalsize), l->token);
+  privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "u %d\1",
+               tempstr, msg, l->totalsize, l->token);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND sent to %s on %s, waiting for connection on %s",
           l->nick, gnetwork->name, msg);

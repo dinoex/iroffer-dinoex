@@ -378,7 +378,7 @@ void dinoex_dcld(const userinput *const u)
     progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", i, ft->name, progress);
     a_respond(u, "                   %s", ft->url);
-    a_respond(u, "  ^- %5.1fK/s    %6" LLPRINTFMT "iK/%6" LLPRINTFMT "iK  %2i%c%02i%c/%2i%c%02i%c",
+    a_respond(u, "  ^- %5.1fK/s    %6" LLPRINTFMT "uK/%6" LLPRINTFMT "uK  %2i%c%02i%c/%2i%c%02i%c",
                 (float)(dl_speed/1024),
                 (long long)(dl_size/1024),
                 (long long)(dl_total/1024),

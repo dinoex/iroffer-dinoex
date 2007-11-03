@@ -275,7 +275,7 @@ void child_resolver(void)
   char portname[16];
 #endif
 
-  for (i=3; i<FD_SETSIZE; i++) {
+  for (i=3; i<((int)FD_SETSIZE); i++) {
     /* include [0], but not [1] */
     if (i != gnetwork->serv_resolv.sp_fd[1]) {
       close(i);

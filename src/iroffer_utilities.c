@@ -121,14 +121,14 @@ char* sizestr(int spaces, off_t num)
 #define SIZESTR_SIZE 5
   char *str = mycalloc(SIZESTR_SIZE);
   
-  if (num >= 1024*1024*1024*1000ULL)
+  if (num >= 1024*1024*1024*1000LL)
     {
       /* >1000GB */
       snprintf(str, SIZESTR_SIZE,
                "%2.1fT",
                (((float)num)/(1024.0*1024.0*1024.0*1024.0)));
     }
-  else if (num >= 1024*1024*1024*10ULL)
+  else if (num >= 1024*1024*1024*10LL)
     {
       /* >10GB */
       snprintf(str, SIZESTR_SIZE,
@@ -332,7 +332,7 @@ void outerror (outerror_type_e type, const char *format, ...) {
 char* getdatestr(char* str, time_t Tp, int len)
 {
   struct tm *localt = NULL;
-  size_t llen;
+  ssize_t llen;
     
   if (Tp == 0)
     {
@@ -1078,7 +1078,7 @@ void mydelete2(void *t) {
    }
 
 char* removenonprintable(char *str1) {
-   int i;
+   unsigned int i;
    unsigned char *str = (unsigned char*)str1;
    
    if (!str) return NULL;
@@ -1102,7 +1102,7 @@ char* removenonprintable(char *str1) {
    }
 
 char* removenonprintablectrl(char *str1) {
-   int i;
+   unsigned int i;
    unsigned char *str = (unsigned char*)str1;
    if (!str) return NULL;
    
@@ -1116,7 +1116,7 @@ char* removenonprintablectrl(char *str1) {
    }
 
 char* removenonprintablefile(char *str) {
-   int i;
+   unsigned int i;
    char last='.';
    
    if (!str) return NULL;
@@ -1431,11 +1431,11 @@ void dumpgdata(void)
           "  : clientsocket=%d filedescriptor=%d",
           iter->clientsocket, iter->filedescriptor);
   ioutput(gdata_common,
-          "  : bytesgot=%" LLPRINTFMT "d bytessent=%" LLPRINTFMT "d",
-          (long long)iter->bytesgot, (long long)iter->bytessent);
+          "  : bytesgot=%" LLPRINTFMT "u bytessent=%" LLPRINTFMT "u",
+          iter->bytesgot, iter->bytessent);
   ioutput(gdata_common,
-          "  : filepos=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d",
-          (long long)iter->filepos, (long long)iter->totalsize);
+          "  : filepos=%" LLPRINTFMT "u totalsize=%" LLPRINTFMT "u",
+          iter->filepos, iter->totalsize);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld",
           (long)iter->lastcontact,
@@ -1579,8 +1579,8 @@ void dumpgdata(void)
   /* uploadhost */
   
   gdata_print_string(uploaddir);
-  gdata_print_number_cast("%" LLPRINTFMT "d",uploadmaxsize,long long);
-  gdata_print_number_cast("%" LLPRINTFMT "d",uploadminspace,long long);
+  gdata_print_number("%" LLPRINTFMT "u", uploadmaxsize);
+  gdata_print_number("%" LLPRINTFMT "u", uploadminspace);
   gdata_print_string(config_nick);
   gdata_print_string(user_realname);
   gdata_print_string(user_modes);
@@ -1807,7 +1807,7 @@ void dumpgdata(void)
   gdata_print_int(delayedshutdown);
   gdata_print_int(cursendptr);
   gdata_print_int(next_tr_id);
-  gdata_print_number_cast("%" LLPRINTFMT "d",max_file_size,long long);
+  gdata_print_number("%" LLPRINTFMT "u", max_file_size);
   
   gdata_print_uint(max_fds_from_rlimit);
   
@@ -1829,18 +1829,18 @@ void dumpgdata(void)
   gdata_iter_print_string(desc);
   gdata_iter_print_string(note);
   ioutput(gdata_common,
-          "  : ptr=0x%.8lX gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "d",
-          (unsigned long)iter,
+          "  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "u",
+          iter,
           iter->gets,
           iter->minspeed,
           iter->maxspeed,
-          (long long)iter->st_size);
+          iter->st_size);
   /* st_dev st_ino */
   ioutput(gdata_common,
-          "  : fd=%d fd_count=%d fd_loc=%" LLPRINTFMT "d",
+          "  : fd=%d fd_count=%d fd_loc=%" LLPRINTFMT "u",
           iter->file_fd,
           iter->file_fd_count,
-          (long long)iter->file_fd_location);
+          iter->file_fd_location);
   ioutput(gdata_common,
           "  : has_md5=%d md5sum=" MD5_PRINT_FMT,
           iter->has_md5sum, MD5_PRINT_DATA(iter->md5sum));
@@ -1865,7 +1865,7 @@ void dumpgdata(void)
                 iter2,
                 iter2->ref_count,
                 iter2->mmap_ptr,
-                (unsigned long long)iter2->mmap_offset,
+                iter2->mmap_offset,
                 (unsigned long long)iter2->mmap_size);
       }
   }
@@ -1876,8 +1876,8 @@ void dumpgdata(void)
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
   ioutput(gdata_common,
-          "  : xpack=0x%.8lX queuedtime=%ld",
-          (unsigned long)iter->xpack,
+          "  : xpack=%p queuedtime=%ld",
+          iter->xpack,
           (long)iter->queuedtime);
   ioutput(gdata_common,"  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
   ioutput(gdata_common, "  : net=%d", iter->net + 1 );
@@ -1887,8 +1887,8 @@ void dumpgdata(void)
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
   ioutput(gdata_common,
-          "  : xpack=0x%.8lX queuedtime=%ld",
-          (unsigned long)iter->xpack,
+          "  : xpack=%p queuedtime=%ld",
+          iter->xpack,
           (long)iter->queuedtime);
   ioutput(gdata_common,"  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
   ioutput(gdata_common, "  : net=%d", iter->net + 1 );
@@ -1902,20 +1902,20 @@ void dumpgdata(void)
           iter->id);
   ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   ioutput(gdata_common,
-          "  : sent=%" LLPRINTFMT "d got=%" LLPRINTFMT "d lastack=%" LLPRINTFMT "d curack=%" LLPRINTFMT "d resume=%" LLPRINTFMT "d speedamt=%" LLPRINTFMT "d tx_bucket=%li",
-          (long long)iter->bytessent,
-          (long long)iter->bytesgot,
-          (long long)iter->lastack,
-          (long long)iter->curack,
-          (long long)iter->startresume,
-          (long long)iter->lastspeedamt,
-          (long)iter->tx_bucket);
+          "  : sent=%" LLPRINTFMT "u got=%" LLPRINTFMT "u lastack=%" LLPRINTFMT "u curack=%" LLPRINTFMT "u resume=%" LLPRINTFMT "u speedamt=%" LLPRINTFMT "u tx_bucket=%li",
+          iter->bytessent,
+          iter->bytesgot,
+          iter->lastack,
+          iter->curack,
+          iter->startresume,
+          iter->lastspeedamt,
+          iter->tx_bucket);
   ioutput(gdata_common,
-          "  : lastcontact=%ld connecttime=%ld lastspeed=%.1f pack=0x%.8lX",
+          "  : lastcontact=%ld connecttime=%ld lastspeed=%.1f pack=%p",
           (long)iter->lastcontact,
           (long)iter->connecttime,
           iter->lastspeed,
-          (unsigned long)iter->xpack);
+          iter->xpack);
   ioutput(gdata_common,
           "  : listenport=%d local%s remote%s",
           iter->listenport,
@@ -1946,11 +1946,11 @@ void dumpgdata(void)
           iter->filedescriptor,
           iter->ul_status);
   ioutput(gdata_common,
-          "  : got=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d resume=%" LLPRINTFMT "d speedamt=%" LLPRINTFMT "d",
-          (long long)iter->bytesgot,
-          (long long)iter->totalsize,
-          (long long)iter->resumesize,
-          (long long)iter->lastspeedamt);
+          "  : got=%" LLPRINTFMT "u totalsize=%" LLPRINTFMT "u resume=%" LLPRINTFMT "u speedamt=%" LLPRINTFMT "u",
+          iter->bytesgot,
+          iter->totalsize,
+          iter->resumesize,
+          iter->lastspeedamt);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld lastspeed=%.1f",
           (long)iter->lastcontact,
@@ -2984,6 +2984,7 @@ int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len)
   ir_boutput_segment_t *segment;
   int cur;
   int len;
+  int all;
   const unsigned char *buffer_c = (const unsigned char*)buffer;
   
   cur = 0;
@@ -3028,8 +3029,8 @@ int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len)
             }
         }
       
-      len = min2(IR_BOUTPUT_SEGMENT_SIZE - segment->end,
-                 buffer_len - cur);
+      all = IR_BOUTPUT_SEGMENT_SIZE - segment->end;
+      len = min2(all, buffer_len - cur);
       
       if (bout->md5sum)
         {

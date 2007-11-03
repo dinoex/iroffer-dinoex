@@ -568,7 +568,7 @@ void write_removed_xdcc(xdcc *xd)
   write(fd, line, len);
   len = snprintf(line, maxtextlength -1, "xx_note %s\n", xd->note);
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_size %" LLPRINTFMT "i\n", xd->st_size);
+  len = snprintf(line, maxtextlength -1, "xx_size %" LLPRINTFMT "u\n", xd->st_size);
   write(fd, line, len);
   len = snprintf(line, maxtextlength -1, "xx_gets %d\n", xd->gets);
   write(fd, line, len);

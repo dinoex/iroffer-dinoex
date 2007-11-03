@@ -178,7 +178,7 @@ static const char *html_mime(const char *file)
 static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
 {
   char *dest = buffer;
-  size_t len;
+  ssize_t len;
   int i;
   char ch;
 

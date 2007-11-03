@@ -226,7 +226,7 @@ static void mainloop (void) {
    int overlimit;
    int highests;
    int ss;
-   long sum;
+   unsigned long sum;
    upload *ul;
    transfer *tr;
    channel_t *ch;
@@ -1555,7 +1555,7 @@ static void mainloop (void) {
             xdccsent += (ir_uint64)gdata.xdccsent[i];
          xdccsent /= XDCC_SENT_SIZE*1024;
          
-         if ((xdccsent < gdata.lowbdwth) &&
+         if ((xdccsent < (unsigned)gdata.lowbdwth) &&
              !gdata.exiting &&
              irlist_size(&gdata.mainqueue) &&
              (irlist_size(&gdata.trans) < MAXTRANS))
@@ -2728,13 +2728,15 @@ static void privmsgparse(const char* type, char* line) {
                   !strcmp(tr->caps_nick,nick) &&
                   (strstrnocase(tr->xpack->file,msg3) || (tr->listenport == atoi(msg4))))
                 {
-                  if (atoull(msg5) >= (unsigned long long)tr->xpack->st_size)
+                  off_t len;
+                  len = atoull(msg5);
+                  if (len >= tr->xpack->st_size)
                     {
                       notice(nick,"You can't resume the transfer at a point greater than the size of the file");
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                               "XDCC [%02i:%s on %s]: Resume attempted beyond end of file ( %" LLPRINTFMT "u >= %" LLPRINTFMT "u )",
-                              tr->id, tr->nick, gnetwork->name, atoull(msg5),
-                              (unsigned long long)tr->xpack->st_size);
+                              tr->id, tr->nick, gnetwork->name, len,
+                              tr->xpack->st_size);
                     }
                   else
                     {
@@ -2747,7 +2749,7 @@ static void privmsgparse(const char* type, char* line) {
                       else
                         privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", msg3, msg4, msg5);
                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                              "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "iK", tr->id,
+                              "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "uK", tr->id,
                               tr->nick, gnetwork->name, (long long)(tr->startresume / 1024));
                     }
                   break;
@@ -2806,6 +2808,7 @@ static void privmsgparse(const char* type, char* line) {
           char *msg7;
           char *tempstr;
           int down = 0;
+          off_t len;
 
           if (msg6[strlen(msg6)-1] == '\1')
             {
@@ -2820,6 +2823,7 @@ static void privmsgparse(const char* type, char* line) {
             }
           if (!down)
            {
+          len = atoull(msg6);
           if ( !verifyhost(&gdata.uploadhost, hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
@@ -2827,14 +2831,14 @@ static void privmsgparse(const char* type, char* line) {
                       "DCC Send Denied from %s on %s",
                       hostmask, gnetwork->name);
             }
-          else if ( gdata.uploadmaxsize && atoull(msg6) > gdata.uploadmaxsize)
+          else if (gdata.uploadmaxsize && (len > gdata.uploadmaxsize))
             {
               notice(nick,"DCC Send Denied, I don't accept transfers that big");
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
                       "DCC Send Denied (Too Big) from %s on %s",
                       hostmask, gnetwork->name);
             }
-          else if ( atoull(msg6) > gdata.max_file_size)
+          else if (len > gdata.max_file_size)
             {
               notice(nick,"DCC Send Denied, I can't accept transfers that large");
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
@@ -2872,15 +2876,15 @@ static void privmsgparse(const char* type, char* line) {
               ul->family = (strchr(msg4, ':')) ? AF_INET6 : AF_INET;
               ul->remoteaddr = mystrdup(msg4);
               ul->remoteport = atoi(msg5);
-              ul->totalsize = (off_t)atoull(msg6);
+              ul->totalsize = len;
               ul->nick = mystrdup(nick);
               ul->hostname = mystrdup(hostname);
               ul->net = gnetwork->net;
               tempstr = getsendname(ul->file);
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                      "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "iKB)",
+                      "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "uKB)",
                       nick, gnetwork->name, tempstr,
-                      (long long)(ul->totalsize / 1024));
+                      (ul->totalsize / 1024));
               mydelete(tempstr);
 
               if (ul->remoteport > 0)
@@ -2899,10 +2903,13 @@ static void privmsgparse(const char* type, char* line) {
       
       else if (!strcmp(caps(msg2), "ACCEPT") && msg3 && msg4 && msg5)
         {
+          off_t len;
+          
           if (msg5[strlen(msg5)-1] == '\1')
             {
               msg5[strlen(msg5)-1] = '\0';
             }
+          len = atoull(msg5);
           if ( !verifyhost(&gdata.uploadhost, hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
@@ -2910,14 +2917,14 @@ static void privmsgparse(const char* type, char* line) {
                       "DCC Send Denied from %s on %s",
                       hostmask, gnetwork->name);
             }
-          else if ( gdata.uploadmaxsize && atoull(msg5) > gdata.uploadmaxsize)
+          else if (gdata.uploadmaxsize && (len > gdata.uploadmaxsize))
             {
               notice(nick,"DCC Send Denied, I don't accept transfers that big");
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                       "DCC Send denied from %s on %s (too big)",
                       hostmask, gnetwork->name);
             }
-          else if ( atoull(msg5) > gdata.max_file_size)
+          else if (len > gdata.max_file_size)
             {
               notice(nick,"DCC Send Denied, I can't accept transfers that large");
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
@@ -2934,10 +2941,10 @@ static void privmsgparse(const char* type, char* line) {
                   ul->resumed = 1;
                   tempstr = getsendname(ul->file);
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                          "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "i of %" LLPRINTFMT "iKB left)",
+                          "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "u of %" LLPRINTFMT "uKB left)",
                           nick, gnetwork->name, tempstr,
-                          (long long)((ul->totalsize - ul->resumesize) / 1024),
-                          (long long)(ul->totalsize / 1024));
+                          ((ul->totalsize - ul->resumesize) / 1024),
+                          (ul->totalsize / 1024));
                   mydelete(tempstr);
                   if (ul->remoteport > 0)
                     {
@@ -3261,11 +3268,11 @@ static void privmsgparse(const char* type, char* line) {
       char *msg2e;
       msg2e = getpart_eol(line,5);
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-      for (i = k = 0; i < strlen(msg2e); i++)
+      for (i = k = 0; i < (int)(strlen(msg2e)); i++)
         if (msg2e[i] == ' ') msg2e[i] = '*';
         if ((msg2e[i] == '*') || (msg2e[i] == '#') || (msg2e[i] == '?'))
           k++;
-      if ((strlen(msg2e) - k) >= gdata.atfind) {
+      if ((int)(strlen(msg2e) - k) >= gdata.atfind) {
         char *atfindmatch = mycalloc(maxtextlength);
         snprintf(atfindmatch, maxtextlength - 2, "*%s*", msg2e);
         k = noticeresults(nick, atfindmatch);

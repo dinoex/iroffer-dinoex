@@ -383,7 +383,7 @@ static int send_xdcc_file(xdcc *xd, char *file, const char *nick, const char *ho
     return 1;
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "Send: %s to %s bytes=%" LLPRINTFMT "u",
-          file, nick, (unsigned long long)xd->st_size);
+          file, nick, xd->st_size);
   tr = irlist_add(&gdata.trans, sizeof(transfer));
   t_initvalues(tr);
   tr->id = get_next_tr_id();
@@ -592,7 +592,7 @@ int disk_full(const char *path)
 
   if (gdata.debug > 0)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-           "disk_free= %" LLPRINTFMT "d, required= %" LLPRINTFMT "d",
+           "disk_free= %" LLPRINTFMT "u, required= %" LLPRINTFMT "u",
            (long long)freebytes, (long long)gdata.uploadminspace);
 
   if (freebytes >= gdata.uploadminspace)
