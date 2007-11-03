@@ -184,7 +184,7 @@ void l_transfersome (upload * const l) {
       
       }
    
-   g = htonl((unsigned long)l->bytesgot);
+   g = htonl((unsigned long)(l->bytesgot & 0xFFFFFFFF));
    write(l->clientsocket,(unsigned char*)&g,4);
    
    if (l->bytesgot >= l->totalsize) {

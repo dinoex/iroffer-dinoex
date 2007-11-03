@@ -2190,8 +2190,7 @@ void initvars(void)
   
 #if defined(_FILE_OFFSET_BITS) && (_FILE_OFFSET_BITS == 64)
   /* 4GB max size */
-  /* NOTE: DCC protocol can't handle more than 32bit file size, 4GB is it, sorry */
-  gdata.max_file_size = (4*1024*1024*1024UL)-1;
+  gdata.max_file_size = (1024*1024*1024*1024UL)-1;
 #else
   /* 2GB max size */
   gdata.max_file_size = (2*1024*1024*1024UL)-1;

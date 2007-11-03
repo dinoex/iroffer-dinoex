@@ -565,6 +565,11 @@ void t_readjunk (transfer * const t)
           
           if (byte == 0)
             {
+              if (t->xpack->st_size > 0xFFFFFFFF)
+                {
+                  while (t->curack < t->lastack)
+                    t->curack += 0x100000000ULL;
+                }
               t->lastack = t->curack;
             }
         }
