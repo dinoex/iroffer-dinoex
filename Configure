@@ -142,6 +142,7 @@ WARNS="-Wshadow
 -Wmissing-prototypes
 -Wmissing-declarations
 -Winline
+-Wsign-compare
 -Wwrite-strings"
 fi
 
