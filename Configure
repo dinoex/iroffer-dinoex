@@ -170,7 +170,6 @@ WARNS="-Wbad-function-cast
 -Wmissing-declarations
 -Wmissing-prototypes
 -Wpointer-arith
--Wredundant-decls
 -Wreturn-type
 -Wshadow
 -Wsign-compare
