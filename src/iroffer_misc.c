@@ -2234,7 +2234,7 @@ void startupiroffer(void) {
    srand((unsigned int)( (getpid()*5000) + (gdata.curtime%5000) ));
    
    if (!gdata.background) {
-      initscreen(1);
+      initscreen(1, 1);
       gotobot();
       gototop();
       }

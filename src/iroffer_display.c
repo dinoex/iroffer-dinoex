@@ -21,7 +21,7 @@
 #include "iroffer_globals.h"
 
 
-void initscreen(int startup) {
+void initscreen(int startup, int clear) {
    struct winsize win;
    char *tempstr;
    struct termios tio;
@@ -36,7 +36,7 @@ void initscreen(int startup) {
    if ( gdata.noscreen )
       return;
    
-   if (startup)
+   if (clear)
      {
         tostdout("\x1b[H\x1b[J\x1b[r");
      }
@@ -120,7 +120,7 @@ void checktermsize(void) {
       if (gdata.termcols != win.ws_col) notok++;
       if (gdata.termlines != win.ws_row) notok++;
       if (notok) {
-         initscreen(0);
+         initscreen(0, 0);
          if (!gdata.attop) gototop();
          tostdout("** Window Size Changed To: %dx%d\n",gdata.termcols,gdata.termlines);
          gotobot();

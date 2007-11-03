@@ -1713,7 +1713,7 @@ static void u_removedir(const userinput * const u)
 static void u_redraw(const userinput * const u) {
    updatecontext();
    
-   initscreen(0);
+   initscreen(0, 1);
    gotobot();
    }
 

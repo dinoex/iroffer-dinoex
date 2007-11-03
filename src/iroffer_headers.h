@@ -508,7 +508,7 @@ void sendxdccinfo(const char* nick, const char* hostname, const char* hostmask, 
 void sendaqueue(int type, int pos, char *lastnick);
 
 /* display.c */
-void initscreen(int startup);
+void initscreen(int startup, int clear);
 void uninitscreen(void);
 void checktermsize(void);
 void gototop(void);
