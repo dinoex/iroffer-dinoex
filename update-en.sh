@@ -84,6 +84,11 @@ do
 	fi
 	echo "${nr} ${text}"
 done
+echo "Doppelt in en.txt:"
+cut -d " " -f2- en.txt | sort >en.txt.1
+cut -d " " -f2- en.txt | sort -u >en.txt.2
+diff en.txt.1 en.txt.2
+rm -f en.txt.1 en.txt.2
 sort -n de.txt en.txt -u >de.txt.neu
 if diff -q de.txt de.txt.neu
 then
