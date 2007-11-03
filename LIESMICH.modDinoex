@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+bugfix: XDCC SEND
+  Gebe '%' im Pack Beschreibung richtig aus.
+
 198) DCC SEND, XDCC upload
   Unterstützung für Dateien >4GB
 
