@@ -76,6 +76,8 @@ Long Term Features:
   1068  restore tty console on fatal error
   1083  temporary uploadhost
   1092  Javascript for cut&paste
+  1103  Silc Support
+  1104  Mime-Tyypes for Webserver in config
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
