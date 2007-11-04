@@ -1448,10 +1448,14 @@ void dumpgdata(void)
   gdata_iter_print_uint(status);
   gdata_iter_print_uint(support_groups);
   gdata_iter_print_string(file);
-  gdata_iter_print_string(buffer);
+  gdata_iter_print_string(buffer_out);
   gdata_iter_print_string(end);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(group);
+  gdata_iter_print_string(order);
+  gdata_iter_print_string(search);
+  gdata_iter_print_string(pattern);
+  gdata_iter_print_string(modified);
   gdata_iter_print_int(traffic);
   ioutput(gdata_common,
           "  : left=%ld",
@@ -1547,6 +1551,7 @@ void dumpgdata(void)
   gdata_print_int(telnet_port);
   gdata_print_int(remove_dead_users);
   gdata_print_int(upnp_router);
+  gdata_print_int(http_search);
   gdata_print_long(nomd5_start);
   
   /* downloadhost */

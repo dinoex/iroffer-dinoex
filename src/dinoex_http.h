@@ -17,6 +17,7 @@ typedef enum
 {
   HTTP_STATUS_UNUSED,
   HTTP_STATUS_GETTING,
+  HTTP_STATUS_POST,
   HTTP_STATUS_SENDING,
   HTTP_STATUS_DONE
 } http_status_e;
@@ -37,12 +38,19 @@ typedef struct
   struct in6_addr remoteip6;
   http_status_e status;
   int support_groups;
+  int post;
+  int head;
   char *file;
-  char *buffer;
+  char *buffer_out;
   char *end;
   const char *nick;
+  char *url;
+  char *authorization;
   char *group;
   char *order;
+  char *search;
+  char *pattern;
+  char *modified;
   ssize_t left;
   int traffic;
 } http;
