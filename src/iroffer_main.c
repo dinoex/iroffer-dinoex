@@ -3017,16 +3017,15 @@ static void privmsgparse(const char* type, char* line) {
 	   }
 	 else
 	   {
-             char *user;
-             user = irlist_get_head(&(gnetwork->xlistqueue));
-             
-             while (user)
+             xlistqueue_t *user;
+             for (user = irlist_get_head(&(gnetwork->xlistqueue));
+                  user;
+                  user = irlist_get_next(user))
                {
-                 if (!strcmp(user,nick))
+                 if (!strcmp(user->nick, nick))
                    {
                      break;
                    }
-                 user = irlist_get_next(user);
                }
              
              if (!user)
@@ -3106,8 +3105,10 @@ static void privmsgparse(const char* type, char* line) {
                            }
                          else
                            {
-                             user = irlist_add(&(gnetwork->xlistqueue), strlen(nick) + 1);
-                             strcpy(user,nick);
+                             user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
+                             user->nick = mystrdup(nick);
+                             if (msg3)
+                               user->msg = mystrdup(msg3);
                            }
                        }
                    }

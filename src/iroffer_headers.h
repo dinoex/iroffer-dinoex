@@ -491,6 +491,11 @@ typedef struct
 } channel_announce_t;
 
 typedef struct {
+  char *nick;
+  char *msg;
+} xlistqueue_t;
+
+typedef struct {
         int ai_reset;
         int ai_family;
         int ai_socktype;

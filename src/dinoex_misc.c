@@ -832,6 +832,7 @@ static void free_state(void)
   igninfo *i;
   msglog_t *ml;
   gnetwork_t *backup;
+  xlistqueue_t *user;
   http *h;
   int ss;
 
@@ -863,6 +864,13 @@ static void free_state(void)
     mydelete(gnetwork->connectionmethod.password);
     mydelete(gnetwork->connectionmethod.vhost);
     irlist_delete_all(&(gnetwork->xlistqueue));
+
+    for (user = irlist_get_head(&(gnetwork->xlistqueue));
+         user;
+         user = irlist_delete(&(gnetwork->xlistqueue), user)) {
+       mydelete(user->nick);
+       mydelete(user->msg);
+    }
 
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;

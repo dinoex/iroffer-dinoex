@@ -1852,7 +1852,8 @@ char* getstatuslinenums(char *str, int len)
 void sendxdlqueue (void)
 {
   char *tempstr;
-  char *user;
+  char *group;
+  xlistqueue_t *user;
   int len;
   userinput ui;
   
@@ -1867,7 +1868,7 @@ void sendxdlqueue (void)
   user = irlist_get_head(&(gnetwork->xlistqueue));
   while (user)
     {
-      len += strlen(user) + 1;
+      len += strlen(user->nick) + 1;
       user = irlist_get_next(user);
     }
   
@@ -1875,16 +1876,24 @@ void sendxdlqueue (void)
   
   len = 0;
   user = irlist_get_head(&(gnetwork->xlistqueue));
-  strcpy(tempstr+len, user);
+  strcpy(tempstr+len, user->nick);
   len += strlen(tempstr+len);
+  group = user->msg;
   
   user = irlist_delete(&(gnetwork->xlistqueue), user);
   while (user)
     {
+      if (strcmp_null(user->msg, group) != 0)
+        {
+          user = irlist_get_next(user);
+          continue;
+        }
       strcpy(tempstr+len, ",");
       len += strlen(tempstr+len);
-      strcpy(tempstr+len, user);
+      strcpy(tempstr+len, user->nick);
       len += strlen(tempstr+len);
+      mydelete(user->nick);
+      mydelete(user->msg);
       
       user = irlist_delete(&(gnetwork->xlistqueue), user);
     }

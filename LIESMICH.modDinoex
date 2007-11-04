@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+bugfix: XDCC LIST GROUP
+  Unter Last konnte die Gruppe verlorengehen.
+
 bugfix: MULTINET
   Keine doppelten Benachrichtigungen mehr wen die max Bandbreite erreicht ist.
 

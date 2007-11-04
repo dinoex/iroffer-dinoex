@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+bugfix: XDCC LIST GROUP
+  under load the bot did forget the given group.
+
 bugfix: MULTINET
   no duplicate notifys when max badnwidth is reached.
 

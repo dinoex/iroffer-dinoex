@@ -1740,8 +1740,9 @@ void dumpgdata(void)
       gdata_print_int(networks[ss].recentsent);
       gdata_print_int(networks[ss].nick_number);
   
-      gdata_irlist_iter_start(networks[ss].xlistqueue, char);
-      gdata_iter_as_print_string;
+      gdata_irlist_iter_start(networks[ss].xlistqueue, xlistqueue_t);
+      gdata_iter_print_string(nick);
+      gdata_iter_print_string(msg);
       gdata_irlist_iter_end;
       
     }
