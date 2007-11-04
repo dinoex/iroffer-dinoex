@@ -2760,14 +2760,6 @@ int irlist_sort_cmpfunc_string(const void *a, const void *b)
   return strcmp((const char *)a, (const char *)b);
 }
 
-int irlist_sort_cmpfunc_int(const void *a, const void *b)
-{
-  int ai, bi;
-  ai = *(const int*)a;
-  bi = *(const int*)b;
-  return ai - bi;
-}
-
 int irlist_sort_cmpfunc_off_t(const void *a, const void *b)
 {
   off_t ai, bi;
