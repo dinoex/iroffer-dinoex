@@ -385,6 +385,7 @@ void getconfig_set (const char *line, int rehash)
                mydelete(part);
              }
          }
+       mydelete(var);
      }
    else if ( ! strcmp(type,"logrotate")) {
       if (!strcmp(var,"daily")) gdata.logrotate = 24*60*60;
