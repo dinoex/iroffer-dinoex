@@ -137,7 +137,6 @@ static remaining_transfer_time *next_remaining_transfer(remaining_transfer_time 
 
 void notifyqueued_nick(const char *nick)
 {
-  gnetwork_t *backup;
   ir_pqueue *pq;
   transfer *tr;
   irlist_t list;
@@ -202,14 +201,12 @@ void notifyqueued_nick(const char *nick)
     left = min2(359999, (pq->xpack->st_size)/((int)(max2(speed, 0.001)*1024)));
     lastrtime += left;
 
-    if (nick != NULL) {
-      if (pq->net != gnetwork->net)
-        continue;
+    if (pq->net != gnetwork->net)
+      continue;
 
+    if (nick != NULL) {
       if (strcasecmp(pq->nick, nick) != 0)
         continue;
-    } else {
-      gnetwork = &(gdata.networks[pq->net]);
     }
 
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
@@ -226,7 +223,6 @@ void notifyqueued_nick(const char *nick)
                 (rtime >= 359999) ? "more" : "less");
   }
 
-  backup = gnetwork;
   i = 0;
   for (pq = irlist_get_head(&gdata.idlequeue);
        pq;
@@ -240,14 +236,12 @@ void notifyqueued_nick(const char *nick)
     left = min2(359999, (pq->xpack->st_size)/((int)(max2(speed, 0.001)*1024)));
     lastrtime += left;
 
-    if (nick != NULL) {
-      if (pq->net != gnetwork->net)
-        continue;
+    if (pq->net != gnetwork->net)
+      continue;
 
+    if (nick != NULL) {
       if (strcasecmp(pq->nick, nick) != 0)
         continue;
-    } else {
-      gnetwork = &(gdata.networks[pq->net]);
     }
 
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
@@ -265,7 +259,6 @@ void notifyqueued_nick(const char *nick)
   }
 
   irlist_delete_all(&list);
-  gnetwork = backup;
 }
 
 void check_new_connection(transfer *const tr)

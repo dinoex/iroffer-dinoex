@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+bugfix: MULTINET
+  no duplicate notifys when max badnwidth is reached.
+
 199) http_search (inspired by chibi)
   Enables search form in html page.
 

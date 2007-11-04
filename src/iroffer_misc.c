@@ -2675,16 +2675,17 @@ void notifybandwidth(void)
   if ( (xdccsent*10) > (gdata.maxb*30*9) )
     {
       backup = gnetwork;
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
+      for (tr = irlist_get_head(&gdata.trans);
+           tr;
+           tr = irlist_get_next(tr))
         {
-          gnetwork = &(gdata.networks[tr->net]);
+          if (gnetwork->net != tr->net)
+            continue;
           notice_slow(tr->nick,"%s bandwidth limit: %2.1f of %2.1fKB/sec used. Your share: %2.1fKB/sec.",
                       save_nick(gnetwork->user_nick),
                       ((float)xdccsent)/XDCC_SENT_SIZE,
                       ((float)gdata.maxb)/4.0,
                       tr->lastspeed);
-          tr = irlist_get_next(tr);
         }
       gnetwork = backup;
     }
@@ -2701,9 +2702,12 @@ void notifybandwidthtrans(void)
   if (gdata.exiting) return;
   
   backup = gnetwork;
-  tr = irlist_get_head(&gdata.trans);
-  while(tr)
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr))
     {
+      if (gnetwork->net != tr->net)
+        continue;
       if (!tr->nomax &&
           (tr->maxspeed > 0) &&
           (gdata.curtime-tr->connecttime > MIN_TL) &&
@@ -2715,7 +2719,6 @@ void notifybandwidthtrans(void)
                       tr->lastspeed,
                       tr->maxspeed);
         }
-      tr = irlist_get_next(tr);
     }
   gnetwork = backup;
 }
