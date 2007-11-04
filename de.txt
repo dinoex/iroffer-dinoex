@@ -2052,7 +2052,7 @@
 2102 "sortieren nach Downloads per Datei"
 2103 "sortieren nach nach Göße der Files"
 2104 "sortieren nach Übertragusngsvolumen"
-2105 "sortieren nach Gruppe
+2105 "sortieren nach Gruppe"
 2106 "order="
 2107 "http_search"
 2108 "%2x"
