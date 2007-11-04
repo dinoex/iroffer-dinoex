@@ -42,6 +42,7 @@ typedef struct
   char *end;
   const char *nick;
   char *group;
+  char *order;
   ssize_t left;
   int traffic;
 } http;

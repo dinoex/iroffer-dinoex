@@ -28,6 +28,16 @@
 
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 
+typedef struct {
+  const char *hg_group;
+  const char *hg_desc;
+  int hg_packs;
+  int hg_agets;
+  float hg_rgets;
+  off_t hg_sizes;
+  off_t hg_traffic;
+} html_group_t;
+
 static int http_listen[MAX_VHOSTS];
 static int http_family[MAX_VHOSTS];
 
@@ -548,15 +558,151 @@ static void h_include(http * const h, const char *file)
   h->left -= howmuch;
 }
 
-static char *html_link(const char *caption, const char *url, const char *text)
+typedef int (*cmpfunc_t)(const void *a, const void *b);
+
+static int html_order_group(const void *a, const void *b)
+{
+  const html_group_t *hg1 = (const html_group_t *)a;
+  const html_group_t *hg2 = (const html_group_t *)b;
+
+  return strcmp(hg1->hg_group, hg2->hg_group);
+}
+
+static int html_order_pack(const void *a, const void *b)
+{
+  const html_group_t *hg1 = (const html_group_t *)a;
+  const html_group_t *hg2 = (const html_group_t *)b;
+
+  return hg2->hg_packs - hg1->hg_packs;
+}
+
+static int html_order_gets(const void *a, const void *b)
+{
+  const html_group_t *hg1 = (const html_group_t *)a;
+  const html_group_t *hg2 = (const html_group_t *)b;
+
+  return hg2->hg_agets - hg1->hg_agets;
+}
+
+static int html_order_rget(const void *a, const void *b)
+{
+  const html_group_t *hg1 = (const html_group_t *)a;
+  const html_group_t *hg2 = (const html_group_t *)b;
+
+  return hg2->hg_rgets - hg1->hg_rgets;
+}
+
+static int html_cmp_offset(off_t diff)
+{
+  if (diff < 0)
+    return -1;
+  if (diff > 0)
+    return 1;
+  return 0;
+}
+
+static int html_order_size(const void *a, const void *b)
+{
+  const html_group_t *hg1 = (const html_group_t *)a;
+  const html_group_t *hg2 = (const html_group_t *)b;
+
+  return html_cmp_offset(hg2->hg_sizes - hg1->hg_sizes);
+}
+
+static int html_order_tvol(const void *a, const void *b)
+{
+  const html_group_t *hg1 = (const html_group_t *)a;
+  const html_group_t *hg2 = (const html_group_t *)b;
+
+  return html_cmp_offset(hg2->hg_traffic - hg1->hg_traffic);
+}
+
+static cmpfunc_t html_order_func(const char *order)
+{
+  if (order == NULL)
+    return html_order_group;
+
+  if (strcmp(order, "pack") == 0)
+    return html_order_pack;
+
+  if (strcmp(order, "gets") == 0)
+    return html_order_gets;
+
+  if (strcmp(order, "rget") == 0)
+    return html_order_rget;
+
+  if (strcmp(order, "size") == 0)
+    return html_order_size;
+
+  if (strcmp(order, "tvol") == 0)
+    return html_order_tvol;
+
+  return html_order_group;
+}
+
+static int html_link_start;
+
+static int html_link_option(char *str, size_t size, const char *option, const char *val)
 {
   char *tempstr;
 
-  if (text == NULL)
-    text = caption;
+  size_t len = 0;
+  if (html_link_start++ > 0) {
+    len = snprintf(str, size, "&amp;");
+  }
   tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength-1, "<a title=\"%s\" href=\"%s\">%s</a>", caption, url, text);
+  html_encode(tempstr, maxtextlength - 1, val);
+  len += snprintf(str + len, size - len, "%s=%s", option, tempstr);
+  mydelete(tempstr);
+  return len;
+}
+
+static char *html_link_build(const char *class, const char *caption, const char *text,
+				const char *group, int traffic, const char *order)
+{
+  char *tempstr;
+  size_t len;
+
+  tempstr = mycalloc(maxtextlength);
+  len = snprintf(tempstr, maxtextlength - 1, "<a%s title=\"%s\" href=\"/?", class, caption);
+  html_link_start = 0;
+  if (group)
+    len += html_link_option(tempstr + len, maxtextlength -1 - len, "group", group);
+  if (traffic)
+    len += html_link_option(tempstr + len, maxtextlength -1 - len, "traffic", "1");
+  if (order)
+    len += html_link_option(tempstr + len, maxtextlength -1 - len, "order", order);
+  len += snprintf(tempstr + len, maxtextlength -1 - len, "\">%s</a>", text);
   return tempstr;
+}
+
+static char *h_html_link_more(http * const h, const char *caption, const char *text)
+{
+  int traffic;
+
+  traffic = (h->traffic) ? 0 : 1; /* Toggle Traffic */
+  return html_link_build("", caption, text, h->group, traffic, h->order);
+}
+
+static char *h_html_link_group(http * const h, const char *caption, const char *text, const char *group)
+{
+  return html_link_build("", caption, text, group, h->traffic, h->order);
+}
+
+static char *h_html_link_order(http * const h, const char *caption, const char *text, const char *order)
+{
+  if (order == NULL) {
+    if (h->order == NULL) {
+      return mystrdup(text);
+    }
+  } else {
+    if (h->order != NULL) {
+      if (strcasecmp(order, h->order) == 0) {
+        return mystrdup(text);
+      }
+    }
+  }
+  return html_link_build(" class=\"head\"", caption, text, h->group, h->traffic, order);
 }
 
 static float gets_per_pack(int agets, int packs)
@@ -570,17 +716,49 @@ static float gets_per_pack(int agets, int packs)
   return result;
 }
 
+static int h_html_filter_main(http * const h, xdcc *xd, const char *group)
+{
+  if (strcmp(group, ".") == 0) {
+    if (xd->group != NULL)
+      return 1;
+  } else {
+    if (xd->group == NULL)
+      return 1;
+    if (strcasecmp(group, xd->group) != 0)
+      return 1;
+  }
+  return 0;
+}
+
+static int h_html_filter_group(http * const h, xdcc *xd)
+{
+  if (h->group == NULL)
+    return 0;
+
+  if (strcmp(h->group, "*") != 0) {
+    if (strcmp(h->group, ".") == 0) {
+      if (xd->group != NULL)
+        return 1;
+    } else {
+      if (xd->group == NULL)
+        return 1;
+      if (strcasecmp(h->group, xd->group) != 0)
+        return 1;
+    }
+  }
+  return 0;
+}
+
 static void h_html_main(http * const h)
 {
   xdcc *xd;
   irlist_t grplist = {0, 0, 0};
   char *tempstr;
   char *tlink;
-  char *tref;
   char *savegroup;
   char *savedesc;
-  char *inlist;
-  char *desc;
+  html_group_t *hg;
+  cmpfunc_t order_func;
   off_t sizes = 0;
   off_t traffic = 0;
   int groups = 0;
@@ -596,6 +774,7 @@ static void h_html_main(http * const h)
        xd = irlist_get_next(xd)) {
     packs ++;
     agets += xd->gets;
+    sizes += xd->st_size;
     traffic += xd->gets * xd->st_size;
     if (xd->group == NULL) {
       if (nogroup == 0) {
@@ -603,36 +782,80 @@ static void h_html_main(http * const h)
         groups ++;
         snprintf(tempstr, maxtextlength-1,
                  "%s %s", ".", "no group");
-                inlist = irlist_add(&grplist, strlen(tempstr) + 1);
-        strcpy(inlist, tempstr);
+        hg = irlist_add(&grplist, sizeof(html_group_t));
+        hg->hg_group = ".";
+        hg->hg_desc = "no group";
       }
       continue;
     }
     if (xd->group_desc == NULL)
       continue;
     groups ++;
+
     snprintf(tempstr, maxtextlength-1,
              "%s %s", xd->group, xd->group_desc);
-            inlist = irlist_add(&grplist, strlen(tempstr) + 1);
-    strcpy(inlist, tempstr);
+    hg = irlist_add(&grplist, sizeof(html_group_t));
+    hg->hg_group = xd->group;
+    hg->hg_desc = xd->group_desc;
   }
   mydelete(tempstr);
-  irlist_sort(&grplist, irlist_sort_cmpfunc_string);
+  for (hg = irlist_get_head(&grplist);
+       hg;
+       hg = irlist_get_next(hg)) {
+    hg->hg_sizes = 0;
+    hg->hg_traffic = 0;
+    hg->hg_packs = 0;
+    hg->hg_agets = 0;
+    hg->hg_rgets = 0;
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      if (hide_pack(xd))
+        continue;
+
+      if (h_html_filter_main(h, xd, hg->hg_group))
+        continue;
+
+      hg->hg_packs ++;
+      hg->hg_agets += xd->gets;
+      hg->hg_sizes += xd->st_size;
+      if (h->traffic)
+        hg->hg_traffic += xd->gets * xd->st_size;
+    }
+    if (h->traffic)
+      hg->hg_rgets = gets_per_pack(hg->hg_agets, hg->hg_packs);
+  }
+  order_func = html_order_func(h->order);
+  irlist_sort(&grplist, order_func);
 
   h_respond(h, "<h1>%s %s</h1>\n", h->nick, "Group list" );
   h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
-  h_respond(h, "<th class=\"right\">%s</th>\n", "PACKs");
-  h_respond(h, "<th class=\"right\">%s</th>\n", "DLs");
+  tempstr = h_html_link_order(h, "sort by pack-Nr.", "PACKs", "pack");
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  mydelete(tempstr);
+  tempstr = h_html_link_order(h, "sort by downloads", "DLs", "gets");
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  mydelete(tempstr);
+  if (h->traffic) {
+    tempstr = h_html_link_order(h, "sort by downloads per file", "DLs/Pack", "rget");
+    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+    mydelete(tempstr);
+  }
+  tempstr = h_html_link_order(h, "sort by size of file", "Size", "size");
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  mydelete(tempstr);
+  if (h->traffic) {
+    tempstr = h_html_link_order(h, "sort by traffic", "Traffic", "tvol");
+    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+    mydelete(tempstr);
+  }
+  tempstr = h_html_link_order(h, "sort by group", "GROUP", NULL);
+  h_respond(h, "<th class=\"head\">%s</th>\n", tempstr);
+  mydelete(tempstr);
   if (h->traffic)
-    h_respond(h, "<th class=\"right\">%s</th>\n", "DLs/Pack");
-  h_respond(h, "<th class=\"right\">%s</th>\n", "Size");
-  if (h->traffic)
-    h_respond(h, "<th class=\"right\">%s</th>\n", "Traffic");
-  h_respond(h, "<th class=\"head\">%s</th>\n", "GROUP");
-  if (h->traffic)
-    tlink = html_link("hide traffic", "/?", "(less)");
+    tlink = h_html_link_more(h, "hide traffic", "(less)");
   else
-    tlink = html_link("show traffic", "/?traffic=1", "(more)");
+    tlink = h_html_link_more(h, "show traffic", "(more)");
   h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tlink);
   mydelete(tlink);
   h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
@@ -650,10 +873,7 @@ static void h_html_main(http * const h)
     mydelete(tempstr);
   }
   h_respond(h, "<th class=\"head\">%d</th>\n", groups);
-  if (h->traffic)
-    tlink = html_link("show all packs in one list", "/?group=*&amp;traffic=1", "all packs");
-  else
-    tlink = html_link("show all packs in one list", "/?group=*", "all packs");
+  tlink = h_html_link_group(h, "show all packs in one list", "all packs", "*");
   tempstr = sizestr(0, traffic);
   h_respond(h, "<th class=\"head\">%s [%s]&nbsp;%s</th>\n", tlink, tempstr, "complete downloaded" );
   mydelete(tempstr);
@@ -661,67 +881,33 @@ static void h_html_main(http * const h)
   h_respond(h, "</tr>\n</tfoot>\n<tbody>\n");
 
   updatecontext();
-  inlist = irlist_get_head(&grplist);
-  while (inlist) {
-    desc = strchr(inlist, ' ');
-    if (desc != NULL)
-      *(desc++) = 0;
-    sizes = 0;
-    traffic = 0;
-    groups = 0;
-    packs = 0;
-    agets = 0;
-    for (xd = irlist_get_head(&gdata.xdccs);
-         xd;
-         xd = irlist_get_next(xd)) {
-      if (hide_pack(xd))
-        continue;
-      if (strcmp(inlist, ".") == 0) {
-        if (xd->group != NULL)
-          continue;
-      } else {
-        if (xd->group == NULL)
-          continue;
-        if (strcasecmp(inlist, xd->group) != 0)
-          continue;
-      }
-      packs ++;
-      agets += xd->gets;
-      sizes += xd->st_size;
-      traffic += xd->gets * xd->st_size;
-    }
-
+  hg = irlist_get_head(&grplist);
+  while (hg) {
     h_respond(h, "<tr>\n");
-    h_respond(h, "<td class=\"right\">%d</td>\n", packs);
-    h_respond(h, "<td class=\"right\">%d</td>\n", agets);
+    h_respond(h, "<td class=\"right\">%d</td>\n", hg->hg_packs);
+    h_respond(h, "<td class=\"right\">%d</td>\n", hg->hg_agets);
     if (h->traffic)
-      h_respond(h, "<td class=\"right\">%.1f</td>\n", gets_per_pack(agets, packs));
-    tempstr = sizestr(0, sizes);
+      h_respond(h, "<td class=\"right\">%.1f</td>\n", hg->hg_rgets);
+    tempstr = sizestr(0, hg->hg_sizes);
     h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
     mydelete(tempstr);
     if (h->traffic) {
-      tempstr = sizestr(0, traffic);
+      tempstr = sizestr(0, hg->hg_traffic);
       h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
       mydelete(tempstr);
     }
     savegroup = mycalloc(maxtextlength);
-    html_encode(savegroup, maxtextlength, inlist);
+    html_encode(savegroup, maxtextlength, hg->hg_group);
     h_respond(h, "<td class=\"content\">%s</td>\n", savegroup);
-    tref = mycalloc(maxtextlength);
-    if (h->traffic)
-      snprintf(tref, maxtextlength-1, "/?group=%s&amp;traffic=1", savegroup);
-    else
-      snprintf(tref, maxtextlength-1, "/?group=%s", savegroup);
+    mydelete(savegroup);
     savedesc = mycalloc(maxtextlength);
-    html_encode(savedesc, maxtextlength, desc);
-    tlink = html_link("show list of packs", tref, savedesc);
+    html_encode(savedesc, maxtextlength, hg->hg_desc);
+    tlink = h_html_link_group(h, "show list of packs", savedesc, hg->hg_group);
     mydelete(savedesc);
-    mydelete(tref);
     h_respond(h, "<td class=\"content\">%s</td>\n", tlink);
     mydelete(tlink);
     h_respond(h, "</tr>\n");
-    inlist = irlist_delete(&grplist, inlist);
-    mydelete(savegroup);
+    hg = irlist_delete(&grplist, hg);
   }
 }
 
@@ -744,17 +930,10 @@ static void h_html_file(http * const h)
        xd = irlist_get_next(xd)) {
     if (hide_pack(xd))
       continue;
-    if (strcmp(h->group, "*") != 0) {
-      if (strcmp(h->group, ".") == 0) {
-        if (xd->group != NULL)
-          continue;
-      } else {
-        if (xd->group == NULL)
-          continue;
-        if (strcasecmp(h->group, xd->group) != 0)
-          continue;
-      }
-    }
+
+    if (h_html_filter_group(h, xd))
+      continue;
+
     packs ++;
     agets += xd->gets;
     sizes += xd->st_size;
@@ -768,10 +947,7 @@ static void h_html_file(http * const h)
   h_respond(h, "<th class=\"head\">%s</th>\n", "PACKs");
   h_respond(h, "<th class=\"head\">%s</th>\n", "DLs");
   h_respond(h, "<th class=\"head\">%s</th>\n", "Size");
-  if (h->traffic)
-    tempstr = html_link("back", "/?traffic=1", "(back)");
-  else
-    tempstr = html_link("back", "/?", "(back)");
+  tempstr = h_html_link_group(h, "back", "(back)", NULL);
   h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tempstr);
   mydelete(tempstr);
   h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
@@ -790,17 +966,10 @@ static void h_html_file(http * const h)
        xd = irlist_get_next(xd)) {
     if (hide_pack(xd))
       continue;
-    if (strcmp(h->group, "*") != 0) {
-      if (strcmp(h->group, ".") == 0) {
-        if (xd->group != NULL)
-          continue;
-      } else {
-        if (xd->group == NULL)
-          continue;
-        if (strcasecmp(h->group, xd->group) != 0)
-          continue;
-      }
-    }
+
+    if (h_html_filter_group(h, xd))
+      continue;
+
     num = number_of_pack(xd);
     h_respond(h, "<tr>\n");
     h_respond(h, "<td class=\"right\">#%d</td>\n", num);
@@ -1027,6 +1196,7 @@ static void h_webliste(http * const h, const char *header, const char *url)
   updatecontext();
 
   h->group = get_url_param(url, "group=");
+  h->order = get_url_param(url, "order=");
   h->traffic = get_url_number(url, "traffic=");
   guess = 2048;
   guess += irlist_size(&gdata.xdccs) * 300;
@@ -1038,6 +1208,7 @@ static void h_webliste(http * const h, const char *header, const char *url)
   h->left = guess - 1;
   h_html_index(h);
   mydelete(h->group);
+  mydelete(h->order);
   h_readbuffer(h, header);
 }
 
