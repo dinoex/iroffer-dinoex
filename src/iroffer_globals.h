@@ -241,6 +241,7 @@ int passive_dcc;
 int telnet_port;
 int remove_dead_users;
 int upnp_router;
+int http_search;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

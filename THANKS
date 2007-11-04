@@ -244,6 +244,7 @@ chibi
 	option "autoadd_sort"
 	report "AUTOADD" bug
 	option "xdccxmlfile"
+	option "http_search"
 
 vegetto
 	report crash on bad config

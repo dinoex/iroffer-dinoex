@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+199) http_search
+  Aktiviert den Suchen-Dialog auf der HTML Seite.
+
 bugfix: XDCC SEND
   Gebe '%' im Pack Beschreibung richtig aus.
 

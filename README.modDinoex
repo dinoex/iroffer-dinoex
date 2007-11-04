@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+199) http_search (inspired by chibi)
+  Enables search form in html page.
+
 bugfix: XDCC SEND
   Handle '%' in pack description.
 
