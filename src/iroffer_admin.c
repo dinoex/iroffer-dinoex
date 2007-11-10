@@ -2427,6 +2427,11 @@ static void u_rehash(const userinput * const u) {
        else
          {
            outerror(OUTERROR_TYPE_WARN_LOUD, "could not add channel %s twice!", rch->name);
+           clearmemberlist(rch);
+           mydelete(rch->name);
+           mydelete(rch->key);
+           mydelete(rch->headline);
+           mydelete(rch->pgroup);
            rch = irlist_delete(&(gnetwork->r_channels), rch);
          }
      }
