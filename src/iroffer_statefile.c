@@ -1011,7 +1011,8 @@ void read_statefile(void)
                 tempr = hostmasktoregex(ignore->hostmask);
                 if (regcomp(ignore->regexp,tempr,REG_ICASE|REG_NOSUB))
                   {
-                    ignore->regexp = NULL;
+                    outerror(OUTERROR_TYPE_WARN, "Ignoring Incomplete Ignore (mask = %s)", ignore->hostmask);
+                    mydelete(ignore->regexp);
                   }
                 mydelete(tempr);
               }
