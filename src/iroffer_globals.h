@@ -91,6 +91,7 @@ int nick_number;
 int inamnt[INAMNT_SIZE];
 int r_needtojump;
 int usenatip;
+int getip_net;
 
 long next_identify;
 long next_restrict;

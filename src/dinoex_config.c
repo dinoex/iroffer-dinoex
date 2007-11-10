@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
+#include "dinoex_admin.h"
 #include "dinoex_config.h"
 
 #include <ctype.h>
@@ -577,6 +578,12 @@ static void c_autosendpack(char *var)
   mydelete(var);
 }
 
+static void c_getip_network(char *var)
+{
+  gdata.networks[gdata.networks_online].getip_net = get_network(var);
+  mydelete(var);
+}
+
 static void c_local_vhost(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].local_vhost);
@@ -659,6 +666,7 @@ static void c_bracket_close(char *var)
 static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
 {"autosendpack",           c_autosendpack },
+{"getip_network",          c_getip_network },
 {"local_vhost",            c_local_vhost },
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },

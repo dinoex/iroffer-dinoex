@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+200) getip_network
+  Hole die IP-Adresse von einem anderen Netzwerk.
+  Nützlich ween ein Netzwerk nicht die IP Addresse liefert.
+
 bugfix: XDCC LIST GROUP
   Unter Last konnte die Gruppe verlorengehen.
 

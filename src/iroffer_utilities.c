@@ -1621,6 +1621,7 @@ void dumpgdata(void)
       gdata_print_number("0x%.8lX", networks[ss].ourip);
       /* r_ourip */
       gdata_print_int(networks[ss].usenatip);
+      gdata_print_int(networks[ss].getip_net);
   
       gdata_irlist_iter_start(networks[ss].proxyinfo, char);
       gdata_iter_as_print_string;

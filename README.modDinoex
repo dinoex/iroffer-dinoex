@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+200) getip_network
+  Get my own IP for the current Network from the a diffrent network.
+  You need this when the given network does not returns your IP.
+
 bugfix: XDCC LIST GROUP
   under load the bot did forget the given group.
 

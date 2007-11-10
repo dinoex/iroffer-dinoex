@@ -2048,6 +2048,7 @@ void reinit_config_vars(void)
     irlist_delete_all(&gdata.networks[si].proxyinfo);
     gdata.networks[si].connectionmethod.how = how_direct;
     gdata.networks[si].usenatip = 0;
+    gdata.networks[si].getip_net = -1;
   } /* networks */
   mydelete(gdata.logfile);
   gdata.logrotate = 0;

@@ -25,6 +25,26 @@
 #include "upnp.h"
 #endif /* USE_UPNP */
 
+static void udpate_getip_net(int net, unsigned long ourip)
+{
+  gnetwork_t *backup;
+  int ss;
+
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+    if (gnetwork->net == net)
+      continue;
+
+    if (gnetwork->getip_net != net)
+      continue;
+ 
+    gnetwork->ourip = ourip;
+  }
+  gnetwork = backup;
+}
+
+
 void update_natip(const char *var)
 {
   struct hostent *hp;
@@ -32,6 +52,8 @@ void update_natip(const char *var)
   struct in_addr in;
   long oldip;
   char *oldtxt;
+
+  updatecontext();
 
   if (var == NULL)
     return;
@@ -68,6 +90,7 @@ void update_natip(const char *var)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
     mydelete(oldtxt);
+    udpate_getip_net(gnetwork->net, gnetwork->ourip);
   }
 
   if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
