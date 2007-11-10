@@ -2068,3 +2068,5 @@
 2119 "HEAD "
 2120 "If-Modified-Since"
 2121 "Authorization"
+2122 "Ignoring Incomplete Ignore (mask = %s)"
+2123 "getip_network"

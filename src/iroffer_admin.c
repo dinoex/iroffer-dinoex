@@ -2888,8 +2888,8 @@ static void u_ignore(const userinput * const u)
       tempstr = hostmasktoregex(u->arg2);
       if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
         {
+          u_respond(u, "Ignoring Incomplete Ignore (mask = %s)", ignore->hostmask);
           mydelete(ignore->regexp);
-          ignore->regexp = NULL;
         }
       
       ignore->flags |= IGN_IGNORING;
