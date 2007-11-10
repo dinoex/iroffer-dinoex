@@ -27,9 +27,13 @@
 
 static void udpate_getip_net(int net, unsigned long ourip)
 {
+  char *oldtxt;
   gnetwork_t *backup;
+  struct in_addr old;
+  struct in_addr in;
   int ss;
 
+  in.s_addr = htonl(ourip);
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
@@ -39,11 +43,18 @@ static void udpate_getip_net(int net, unsigned long ourip)
     if (gnetwork->getip_net != net)
       continue;
  
+    if (gnetwork->ourip == ourip)
+      continue;
+
+    old.s_addr = htonl(gnetwork->ourip);
+    oldtxt = mystrdup(inet_ntoa(old));
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
+    mydelete(oldtxt);
     gnetwork->ourip = ourip;
   }
   gnetwork = backup;
 }
-
 
 void update_natip(const char *var)
 {
