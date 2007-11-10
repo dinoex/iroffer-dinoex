@@ -942,7 +942,7 @@ void a_rehash_needtojump(const userinput *u)
 
 
   backup = gnetwork;
-  for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
     /* keep dynamic IP */
     if (gdata.getipfromserver)
