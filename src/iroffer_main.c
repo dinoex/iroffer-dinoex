@@ -3067,15 +3067,14 @@ static void privmsgparse(const char* type, char* line) {
                                }
                              else
                                {
-                                 snprintf(tempstr,maxtextlength-1,"A A A A A xdlfull %s",msg3);
+                                 user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
+                                 user->nick = mystrdup(nick);
+                                 user->msg = mystrdup(msg3);
                                }
                            }
                          else
                            {
                              snprintf(tempstr,maxtextlength-1,"A A A A A xdlgroup %s",msg3);
-                           }
-                         if ( j == 3 )
-                           {
                              pubplist = mycalloc(sizeof(userinput));
                              u_fillwith_msg(pubplist,nick,tempstr);
                              if (gdata.xdcclist_by_privmsg)

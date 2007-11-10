@@ -815,7 +815,6 @@
 825 "XDCC LIST verboten. Du musst im Channel sein"
 826 "XDCC LIST abgewiesen. Ich bin zu beschäftigt"
 827 "ALL"
-828 "A A A A A xdlfull %s"
 829 "A A A A A xdlgroup %s"
 830 "XDCC LIST %s: (%s on %s)"
 831 "ignored"

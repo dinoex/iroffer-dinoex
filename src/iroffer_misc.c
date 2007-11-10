@@ -1853,6 +1853,7 @@ void sendxdlqueue (void)
 {
   char *tempstr;
   char *group;
+  char *cmd;
   xlistqueue_t *user;
   int len;
   userinput ui;
@@ -1879,6 +1880,7 @@ void sendxdlqueue (void)
   strcpy(tempstr+len, user->nick);
   len += strlen(tempstr+len);
   group = user->msg;
+  mydelete(user->nick);
   
   user = irlist_delete(&(gnetwork->xlistqueue), user);
   while (user)
@@ -1911,7 +1913,25 @@ void sendxdlqueue (void)
     {
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_YELLOW,"Sending XDCC LIST to: %s",tempstr);
       
-      u_fillwith_msg(&ui,tempstr,"A A A A A xdl");
+      cmd = NULL;
+      if (group)
+        {
+           if (strcasecmp(group, "ALL") == 0)
+             {
+                u_fillwith_msg(&ui,tempstr, "A A A A A xdlfull");
+             }
+           else
+             {
+                cmd = mycalloc(maxtextlength);
+                snprintf(cmd, maxtextlength-1, "A A A A A xdlgroup %s", group);
+                u_fillwith_msg(&ui,tempstr, cmd);
+             }
+           mydelete(group);
+        }
+      else
+        {
+          u_fillwith_msg(&ui,tempstr,"A A A A A xdl");
+        }
       if (gdata.xdcclist_by_privmsg)
         ui.method = method_xdl_user_privmsg;
       else
@@ -1919,6 +1939,7 @@ void sendxdlqueue (void)
       ui.net = gnetwork->net;
       ui.level = ADMIN_LEVEL_PUBLIC;
       u_parseit(&ui);
+      mydelete(cmd);
     }
   
   mydelete(tempstr);
