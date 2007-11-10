@@ -3039,9 +3039,6 @@ static void privmsgparse(const char* type, char* line) {
                    {
                      if (msg3)
                        {
-                         userinput *pubplist;
-                         char *tempstr = mycalloc(maxtextlength);
-                         
                          j = 3; /* msg3 */
                          /* detect xdcc list group xxx */
                          if ((msg4) && (strcmp(caps(msg3),"GROUP") == 0))
@@ -3074,18 +3071,9 @@ static void privmsgparse(const char* type, char* line) {
                            }
                          else
                            {
-                             snprintf(tempstr,maxtextlength-1,"A A A A A xdlgroup %s",msg3);
-                             pubplist = mycalloc(sizeof(userinput));
-                             u_fillwith_msg(pubplist,nick,tempstr);
-                             if (gdata.xdcclist_by_privmsg)
-                               pubplist->method = method_xdl_user_privmsg;
-                             else
-                               pubplist->method = method_xdl_user_notice;
-                             pubplist->net = gnetwork->net;
-                             pubplist->level = ADMIN_LEVEL_PUBLIC;
-                             u_parseit(pubplist);
-                             mydelete(pubplist);
-                             mydelete(tempstr);
+                             user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
+                             user->nick = mystrdup(nick);
+                             user->msg = mystrdup(msg3);
                            }
                        }
                      else
@@ -3106,8 +3094,6 @@ static void privmsgparse(const char* type, char* line) {
                            {
                              user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
                              user->nick = mystrdup(nick);
-                             if (msg3)
-                               user->msg = mystrdup(msg3);
                            }
                        }
                    }
