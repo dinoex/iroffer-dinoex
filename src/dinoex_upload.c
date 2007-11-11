@@ -83,17 +83,15 @@ int l_setup_listen(upload * const l)
   char *tempstr;
   char *msg;
   int rc;
-  int listenport;
 
   updatecontext();
 
-  rc = open_listen(l->con.family, &(l->con.local), &(l->con.clientsocket), 0, gdata.tcprangestart, 1, NULL);
+  rc = irc_open_listen(&(l->con));
   if (rc != 0) {
     l_closeconn(l, "Connection Lost", 0);
     return 1;
   }
 
-  listenport = get_port(&(l->con.local));
   msg = setup_dcc_local(&(l->con.local));
   tempstr = getsendname(l->file);
   privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "u %d\1",
@@ -104,9 +102,6 @@ int l_setup_listen(upload * const l)
   mydelete(tempstr);
   mydelete(msg);
 
-  l->con.localport = listenport;
-  l->con.connecttime = gdata.curtime;
-  l->con.lastcontact = gdata.curtime;
   l->ul_status = UPLOAD_STATUS_LISTENING;
   return 0;
 }
@@ -147,17 +142,13 @@ int l_setup_passive(upload * const l, char *token)
 void l_setup_accept(upload * const l)
 {
   SIGNEDSOCK int addrlen;
-  int listen_fd;
   char *msg;
 
   updatecontext();
 
-  listen_fd = l->con.clientsocket;
   addrlen = sizeof(l->con.remote);
-  if ((l->con.clientsocket = accept(listen_fd, &(l->con.remote.sa), &addrlen)) < 0) {
+  if ((l->con.clientsocket = accept(l->con.listensocket, &(l->con.remote.sa), &addrlen)) < 0) {
     outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
-    FD_CLR(listen_fd, &gdata.readset);
-    close(listen_fd);
     l->con.clientsocket = FD_UNUSED;
     l_closeconn(l, "Connection Lost", 0);
     return;
@@ -165,8 +156,9 @@ void l_setup_accept(upload * const l)
 
   ir_listen_port_connected(l->con.localport);
 
-  FD_CLR(listen_fd, &gdata.readset);
-  close(listen_fd);
+  FD_CLR(l->con.listensocket, &gdata.readset);
+  close(l->con.listensocket);
+  l->con.clientsocket = FD_UNUSED;
 
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND connection received");

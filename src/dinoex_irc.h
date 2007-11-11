@@ -16,6 +16,7 @@
 void update_natip (const char *var);
 int bind_irc_vhost(int family, int clientsocket);
 int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, char *vhost);
+int irc_open_listen(ir_connection_t *con);
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
 void child_resolver(void);
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen);

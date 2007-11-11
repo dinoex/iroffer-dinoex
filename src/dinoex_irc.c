@@ -277,6 +277,20 @@ int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket,
   return 0;
 }
 
+int irc_open_listen(ir_connection_t *con)
+{
+  int rc;
+
+  rc = open_listen(con->family, &(con->local), &(con->listensocket), 0, gdata.tcprangestart, 1, NULL);
+  if (rc != 0)
+    return rc;
+
+  con->connecttime = gdata.curtime;
+  con->lastcontact = gdata.curtime;
+  con->localport = get_port(&(con->local));
+  return 0;
+}
+
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
 {
   char *msg;

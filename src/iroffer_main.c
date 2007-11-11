@@ -303,6 +303,11 @@ static void mainloop (void) {
               FD_SET(chat->con.clientsocket, &gdata.writeset);
               highests = max2(highests, chat->con.clientsocket);
             }
+          else if (chat->status == DCCCHAT_LISTENING)
+            {
+              FD_SET(chat->con.listensocket, &gdata.readset);
+              highests = max2(highests, chat->con.listensocket);
+            }
           else if (chat->status != DCCCHAT_UNUSED)
             {
               FD_SET(chat->con.clientsocket, &gdata.readset);
@@ -364,8 +369,8 @@ static void mainloop (void) {
         {
           if (ul->ul_status == UPLOAD_STATUS_LISTENING)
             {
-              FD_SET(ul->con.clientsocket, &gdata.readset);
-              highests = max2(highests, ul->con.clientsocket);
+              FD_SET(ul->con.listensocket, &gdata.readset);
+              highests = max2(highests, ul->con.listensocket);
             }
           if (ul->ul_status == UPLOAD_STATUS_CONNECTING)
             {
@@ -813,7 +818,7 @@ static void mainloop (void) {
               l_transfersome(ul);
             }
 
-          if (ul->ul_status == UPLOAD_STATUS_LISTENING && FD_ISSET(ul->con.clientsocket, &gdata.readset))
+          if (ul->ul_status == UPLOAD_STATUS_LISTENING && FD_ISSET(ul->con.listensocket, &gdata.readset))
             {
               l_setup_accept(ul);
             }
@@ -929,16 +934,17 @@ static void mainloop (void) {
                   setupdccchatconnected(chat);
                 }
             }
+          if ((chat->status == DCCCHAT_LISTENING) &&
+              FD_ISSET(chat->con.listensocket, &gdata.readset))
+            {
+              setupdccchataccept(chat);
+            }
           if ((chat->status != DCCCHAT_UNUSED) &&
               FD_ISSET(chat->con.clientsocket, &gdata.readset))
             {
               char tempbuffa[INPUT_BUFFER_LENGTH];
               switch (chat->status)
                 {
-                case DCCCHAT_LISTENING:
-                  setupdccchataccept(chat);
-                  break;
-                  
                 case DCCCHAT_AUTHENTICATING:
                 case DCCCHAT_CONNECTED:
                   memset(tempbuffa, 0, INPUT_BUFFER_LENGTH);

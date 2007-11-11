@@ -47,14 +47,13 @@ void t_setuplisten (transfer * const t)
   
   updatecontext();
 
-  rc = open_listen(t->con.family, &(t->con.local), &(t->con.listensocket), 0, gdata.tcprangestart, 1, NULL);
+  rc = irc_open_listen(&(t->con));
   if (rc != 0)
     {
       t_closeconn(t,"Connection Error, Try Again",errno);
       return;
     }
   
-  t->con.localport = get_port(&(t->con.local));
   t->tr_status = TRANSFER_STATUS_LISTENING;
 }
 

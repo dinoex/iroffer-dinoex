@@ -32,7 +32,6 @@ int setupdccchatout(const char *nick)
 {
   char *msg;
   int rc;
-  int listenport;
   dccchat_t *chat;
   
   updatecontext();
@@ -75,20 +74,16 @@ int setupdccchatout(const char *nick)
   
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
   chat->status = DCCCHAT_UNUSED;
+  chat->con.family = gnetwork->myip.sa.sa_family;
 
-  rc = open_listen(gnetwork->myip.sa.sa_family, &(chat->con.local), &(chat->con.clientsocket), 0, gdata.tcprangestart, 1, NULL);
+  rc = irc_open_listen(&(chat->con));
   if (rc != 0)
     return 1;
   
-  listenport = get_port(&(chat->con.local));
-  
   gdata.num_dccchats++;
   chat->status = DCCCHAT_LISTENING;
+  chat->con.clientsocket = FD_UNUSED;
   chat->nick = mystrdup(nick);
-  chat->con.connecttime = gdata.curtime;
-  chat->con.lastcontact = gdata.curtime;
-  chat->con.family = chat->con.local.sa.sa_family;
-  chat->con.localport = listenport;
   chat->net = gnetwork->net;
   
   msg = setup_dcc_local(&(chat->con.local));
@@ -125,25 +120,25 @@ void setupdccchataccept(dccchat_t *chat)
 {
   SIGNEDSOCK int addrlen;
   char *msg;
-  int listen_fd;
   
   updatecontext();
   
-  listen_fd = chat->con.clientsocket;
   addrlen = sizeof(struct sockaddr_in);
-  if ((chat->con.clientsocket = accept(listen_fd, &(chat->con.remote.sa), &addrlen)) < 0)
+  if ((chat->con.clientsocket = accept(chat->con.listensocket, &(chat->con.remote.sa), &addrlen)) < 0)
     {
       outerror(OUTERROR_TYPE_WARN,"Accept Error, Aborting: %s",strerror(errno));
-      FD_CLR(listen_fd, &gdata.readset);
-      close(listen_fd);
+      FD_CLR(chat->con.listensocket, &gdata.readset);
+      close(chat->con.listensocket);
       chat->con.clientsocket = FD_UNUSED;
+      chat->con.listensocket = FD_UNUSED;
       return;
     }
 
   ir_listen_port_connected(chat->con.localport);
 
-  FD_CLR(listen_fd, &gdata.readset);
-  close(listen_fd);
+  FD_CLR(chat->con.listensocket, &gdata.readset);
+  close(chat->con.listensocket);
+  chat->con.listensocket = FD_UNUSED;
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT connection received, authenticating");

@@ -31,6 +31,7 @@ void l_initvalues (upload * const l) {
    updatecontext();
 
       l->ul_status = UPLOAD_STATUS_UNUSED;
+      l->con.listensocket = FD_UNUSED;
       l->con.clientsocket = FD_UNUSED;
       l->filedescriptor=FD_UNUSED;
       l->con.localport = 0;
@@ -280,6 +281,12 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
   if (gdata.debug > 0)
     {
       ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
+    }
+  
+  if (l->con.listensocket != FD_UNUSED && l->con.listensocket > 2)
+    {
+      FD_CLR(l->con.listensocket, &gdata.readset);
+      close(l->con.listensocket);
     }
   
   if (l->con.clientsocket != FD_UNUSED && l->con.clientsocket > 2)
