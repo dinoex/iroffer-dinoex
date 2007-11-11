@@ -3627,7 +3627,7 @@ static void u_rmul(const userinput * const u) {
    tempstr = mymalloc(strlen(gdata.uploaddir) + 1 + strlen(u->arg1e) + 1);
    sprintf(tempstr,"%s/%s",gdata.uploaddir,u->arg1e);
    
-   if (doesfileexist(tempstr)) {
+   if (is_file_writeable(tempstr)) {
       if (save_unlink(tempstr) < 0)
          u_respond(u,"Unable to remove the file");
       else

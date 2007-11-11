@@ -872,21 +872,6 @@ char dayofweektomask(const char a) {
    }
 
 
-/* reverse a string */
-char *strrev(char *str) {
-   int i,len;
-   char c;
-   
-   len = sstrlen(str);
-   for (i=0; i<len/2; i++) {
-      c = str[i];
-      str[i] = str[len-i];
-      str[len-i] = c;
-      }
-   
-   return str;
-   }
-
 int isprintable(char a) {
    if ( a >= 0x20 && a <= 0x7E )
       return 1;
@@ -1150,26 +1135,6 @@ char* removenonprintablefile(char *str) {
       }
       
    return str;
-   }
-
-
-int doesfileexist(const char *f) {
-   int fd;
-   
-   updatecontext();
-
-   if (!f) return 0;
-   
-   if ((fd = open(f,O_RDONLY | O_CREAT | O_EXCL | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS)) < 0 && errno == EEXIST)
-      return 1;
-   else if (fd < 0)
-      return 0;
-   
-   close(fd);
-   unlink(f);
-   return 0;
-   
-   
    }
 
 
@@ -2712,23 +2677,6 @@ void* irlist_get_next(const void *cur)
     }
 }
 
-
-void* irlist_get_prev(const void *cur)
-{
-  const irlist_item_t *iitem = IRLIST_EXT_TO_INT_CONST(cur);
-  
-  updatecontext();
-  
-  if (iitem->prev)
-    {
-      assert(iitem->prev->next == iitem);
-      return IRLIST_INT_TO_EXT(iitem->prev);
-    }
-  else
-    {
-      return NULL;
-    }
-}
 
 int irlist_size(const irlist_t *list)
 {

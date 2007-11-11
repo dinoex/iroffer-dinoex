@@ -252,4 +252,20 @@ int strcmp_null(const char *s1, const char *s2)
   return strcmp(s1, s2);
 }
 
+int is_file_writeable(const char *f)
+{
+   int fd;
+
+   updatecontext();
+
+   if (!f) return 0;
+
+   fd = open(f, O_WRONLY | O_EXCL | O_APPEND | ADDED_OPEN_FLAGS);
+   if (fd < 0)
+     return 0;
+
+   close(fd);
+   return 1;
+}
+
 /* End of File */

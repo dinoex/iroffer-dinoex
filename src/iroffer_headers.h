@@ -611,13 +611,11 @@ char* hostmasktoregex(const char *str);
 int verifyhost(irlist_t *list, const char *hmask);
 int sstrlen (const char *p);
 char dayofweektomask(const char a);
-char *strrev(char *str);
 int isprintable(char a);
 char onlyprintable(char a);
 char* removenonprintable(char *str1);
 char* removenonprintablectrl(char *str1);
 char* removenonprintablefile(char *str);
-int doesfileexist(const char *f);
 void joinchannel(channel_t *c);
 void updatecontext_f(const char *file, const char *func, int line);
 void dumpcontext(void);
@@ -673,7 +671,6 @@ void irlist_insert_after(irlist_t *list, void *item, void *after_this);
 void* irlist_get_head(const irlist_t *list);
 void* irlist_get_tail(const irlist_t *list);
 void* irlist_get_next(const void *cur);
-void* irlist_get_prev(const void *cur);
 int irlist_size(const irlist_t *list);
 void* irlist_get_nth(irlist_t *list, int nth); /* zero based n */
 
