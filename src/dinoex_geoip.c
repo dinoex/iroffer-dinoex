@@ -71,7 +71,7 @@ void geoip_new_connection(transfer *const tr)
   char *msg;
 #endif /* USE_GEOIP */
 
-  if (tr->family != AF_INET)
+  if (tr->con.family != AF_INET)
     return;
 
 #ifdef USE_GEOIP

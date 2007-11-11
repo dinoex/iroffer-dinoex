@@ -425,16 +425,16 @@ int h_listen(int highests)
        h;
        h = irlist_get_next(h)) {
     if (h->status == HTTP_STATUS_GETTING) {
-      FD_SET(h->clientsocket, &gdata.readset);
-      highests = max2(highests, h->clientsocket);
+      FD_SET(h->con.clientsocket, &gdata.readset);
+      highests = max2(highests, h->con.clientsocket);
     }
     if (h->status == HTTP_STATUS_POST) {
-      FD_SET(h->clientsocket, &gdata.readset);
-      highests = max2(highests, h->clientsocket);
+      FD_SET(h->con.clientsocket, &gdata.readset);
+      highests = max2(highests, h->con.clientsocket);
     }
     if (h->status == HTTP_STATUS_SENDING) {
-      FD_SET(h->clientsocket, &gdata.writeset);
-      highests = max2(highests, h->clientsocket);
+      FD_SET(h->con.clientsocket, &gdata.writeset);
+      highests = max2(highests, h->con.clientsocket);
     }
   }
   return highests;
@@ -455,14 +455,14 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   }
 
   if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", h->clientsocket);
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", h->con.clientsocket);
   }
 
-  if (h->clientsocket != FD_UNUSED && h->clientsocket > 2) {
-    FD_CLR(h->clientsocket, &gdata.writeset);
-    FD_CLR(h->clientsocket, &gdata.readset);
-    shutdown_close(h->clientsocket);
-    h->clientsocket = FD_UNUSED;
+  if (h->con.clientsocket != FD_UNUSED && h->con.clientsocket > 2) {
+    FD_CLR(h->con.clientsocket, &gdata.writeset);
+    FD_CLR(h->con.clientsocket, &gdata.readset);
+    shutdown_close(h->con.clientsocket);
+    h->con.clientsocket = FD_UNUSED;
   }
 
   if (h->filedescriptor != FD_UNUSED && h->filedescriptor > 2) {
@@ -479,6 +479,7 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   mydelete(h->pattern);
   mydelete(h->modified);
   mydelete(h->buffer_out);
+  mydelete(h->con.remoteaddr);
   h->status = HTTP_STATUS_DONE;
 }
 
@@ -510,27 +511,27 @@ static void h_accept(int i)
 
   h = irlist_add(&gdata.https, sizeof(http));
   h->filedescriptor = FD_UNUSED;
-  h->clientsocket = clientsocket;
+  h->con.clientsocket = clientsocket;
+  h->con.remote = remoteaddr;
   if (http_family[i] != AF_INET) {
-    h->family = remoteaddr.sin6.sin6_family;
-    h->remoteip6 = remoteaddr.sin6.sin6_addr;
-    h->remoteport = ntohs(remoteaddr.sin6.sin6_port);
+    h->con.family = remoteaddr.sin6.sin6_family;
+    h->con.remoteport = ntohs(remoteaddr.sin6.sin6_port);
   } else {
-    h->family = remoteaddr.sin.sin_family;
-    h->remoteip4 = ntohl(remoteaddr.sin.sin_addr.s_addr);
-    h->remoteport = ntohs(remoteaddr.sin.sin_port);
+    h->con.family = remoteaddr.sin.sin_family;
+    h->con.remoteport = ntohs(remoteaddr.sin.sin_port);
   }
-  h->connecttime = gdata.curtime;
-  h->lastcontact = gdata.curtime;
+  h->con.connecttime = gdata.curtime;
+  h->con.lastcontact = gdata.curtime;
   h->status = HTTP_STATUS_GETTING;
 
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, addrlen);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "HTTP connection received from %s",  msg);
+  h->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          "HTTP connection received from %s",  h->con.remoteaddr);
 
-  if (is_in_badip(&remoteaddr))
+  if (is_in_badip(&(h->con.remote)))
     h_closeconn(h, "HTTP connection ignored", 0);
 }
 
@@ -547,7 +548,7 @@ static void h_write_header(http * const h, const char *header)
   strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); 
   len = snprintf(tempstr, maxtextlength-1, header, date);
   mydelete(date);
-  write(h->clientsocket, tempstr, len);
+  write(h->con.clientsocket, tempstr, len);
   mydelete(tempstr);
 }
 
@@ -578,7 +579,7 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
   len = snprintf(tempstr, maxtextlength-1, http_header_status, http_status, date, last ? last : date, html_mime(mime), h->totalsize);
   mydelete(last);
   mydelete(date);
-  write(h->clientsocket, tempstr, len);
+  write(h->con.clientsocket, tempstr, len);
   mydelete(tempstr);
   if (h->head)
     h->totalsize = 0;
@@ -1456,9 +1457,9 @@ static char *h_read_http(http * const h)
   for (i=0; i<MAXTXPERLOOP; i++) {
     if (h->bytesgot >= BUFFERSIZE - 1)
       break;
-    if (!is_fd_readable(h->clientsocket))
+    if (!is_fd_readable(h->con.clientsocket))
       continue;
-    howmuch = read(h->clientsocket, gdata.sendbuff + h->bytesgot, howmuch2);
+    howmuch = read(h->con.clientsocket, gdata.sendbuff + h->bytesgot, howmuch2);
     if (howmuch < 0) {
       h_closeconn(h, "Connection Lost", errno);
       return NULL;
@@ -1467,7 +1468,7 @@ static char *h_read_http(http * const h)
       h_closeconn(h, "Connection Lost", 0);
       return NULL;
     }
-    h->lastcontact = gdata.curtime;
+    h->con.lastcontact = gdata.curtime;
     h->bytesgot += howmuch;
     howmuch2 -= howmuch;
     gdata.sendbuff[h->bytesgot] = 0;
@@ -1539,11 +1540,7 @@ static void h_parse(http * const h, char *body)
 
       mydelete(tempstr);
     }
-    if (h->family == AF_INET) {
-      count_badip4(h->remoteip4);
-    } else {
-      count_badip6(&(h->remoteip6));
-    }
+    count_badip(&(h->con.remote));
     h_error(h, http_header_admin);
     return;
   }
@@ -1686,7 +1683,7 @@ static void h_send(http * const h)
       break;
 
     h->filepos += howmuch;
-    howmuch2 = write(h->clientsocket, data, howmuch);
+    howmuch2 = write(h->con.clientsocket, data, howmuch);
     if (howmuch2 < 0 && errno != EAGAIN) {
       h_closeconn(h, "Connection Lost", errno);
       return;
@@ -1694,7 +1691,7 @@ static void h_send(http * const h)
 
     howmuch2 = max2(0, howmuch2);
     if (howmuch2 > 0) {
-      h->lastcontact = gdata.curtime;
+      h->con.lastcontact = gdata.curtime;
     }
 
     h->bytessent += howmuch2;
@@ -1718,7 +1715,7 @@ static void h_istimeout(http * const h)
 {
   updatecontext();
 
-  if ((gdata.curtime - h->lastcontact) > 5)
+  if ((gdata.curtime - h->con.lastcontact) > 5)
     {
       h_closeconn(h, "HTTP Timeout (5 Sec Timeout)", 0);
     }
@@ -1739,17 +1736,17 @@ void h_done_select(int changesec)
   h = irlist_get_head(&gdata.https);
   while (h) {
     if (h->status == HTTP_STATUS_GETTING) {
-      if (FD_ISSET(h->clientsocket, &gdata.readset)) {
+      if (FD_ISSET(h->con.clientsocket, &gdata.readset)) {
         h_get(h);
       }
     }
     if (h->status == HTTP_STATUS_POST) {
-      if (FD_ISSET(h->clientsocket, &gdata.readset)) {
+      if (FD_ISSET(h->con.clientsocket, &gdata.readset)) {
         h_post(h);
       }
     }
     if (h->status == HTTP_STATUS_SENDING) {
-      if (FD_ISSET(h->clientsocket, &gdata.writeset)) {
+      if (FD_ISSET(h->con.clientsocket, &gdata.writeset)) {
         h_send(h);
       }
     }

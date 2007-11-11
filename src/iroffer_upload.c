@@ -31,16 +31,15 @@ void l_initvalues (upload * const l) {
    updatecontext();
 
       l->ul_status = UPLOAD_STATUS_UNUSED;
-      l->clientsocket=FD_UNUSED;
+      l->con.clientsocket = FD_UNUSED;
       l->filedescriptor=FD_UNUSED;
-      l->localport = 0;
-      l->lastcontact = gdata.curtime;
+      l->con.localport = 0;
+      l->con.lastcontact = gdata.curtime;
    }
 
 void l_establishcon (upload * const l)
 {
   char *tempstr;
-  ir_sockaddr_union_t remoteaddr;
   SIGNEDSOCK int addrlen;
   int retval;
   struct stat s;
@@ -52,7 +51,7 @@ void l_establishcon (upload * const l)
     {
       tempstr = getsendname(l->file);
       privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u\1",
-                   tempstr, l->remoteport, s.st_size);
+                   tempstr, l->con.remoteport, s.st_size);
       mydelete(tempstr);
       return;
     }
@@ -61,45 +60,45 @@ void l_establishcon (upload * const l)
       return;
     }
   
-  bzero ((char *) &remoteaddr, sizeof (remoteaddr));
+  bzero ((char *) &(l->con.remote), sizeof(l->con.remote));
   
-  l->clientsocket = socket(l->family, SOCK_STREAM, 0);
-  if (l->clientsocket < 0)
+  l->con.clientsocket = socket(l->con.family, SOCK_STREAM, 0);
+  if (l->con.clientsocket < 0)
     {
       l_closeconn(l,"Socket Error",errno);
       return;
     }
   
-  if (l->family == AF_INET )
+  if (l->con.family == AF_INET )
     {
       addrlen = sizeof(struct sockaddr_in);
-      remoteaddr.sin.sin_family = AF_INET;
-      remoteaddr.sin.sin_port = htons(l->remoteport);
-      remoteaddr.sin.sin_addr.s_addr = htonl(atoul(l->remoteaddr));
+      l->con.remote.sin.sin_family = AF_INET;
+      l->con.remote.sin.sin_port = htons(l->con.remoteport);
+      l->con.remote.sin.sin_addr.s_addr = htonl(atoul(l->con.remoteaddr));
     }
   else
     {
       addrlen = sizeof(struct sockaddr_in6);
-      remoteaddr.sin6.sin6_family = AF_INET6;
-      remoteaddr.sin6.sin6_port = htons(l->remoteport);
-      retval = inet_pton(AF_INET6, l->remoteaddr, &(remoteaddr.sin6.sin6_addr));
+      l->con.remote.sin6.sin6_family = AF_INET6;
+      l->con.remote.sin6.sin6_port = htons(l->con.remoteport);
+      retval = inet_pton(AF_INET6, l->con.remoteaddr, &(l->con.remote.sin6.sin6_addr));
       if (retval < 0)
-        outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", l->remoteaddr);
+        outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", l->con.remoteaddr);
     }
   
-  if (bind_irc_vhost(l->family, l->clientsocket) != 0)
+  if (bind_irc_vhost(l->con.family, l->con.clientsocket) != 0)
     {
       l_closeconn(l, "Couldn't Bind Virtual Host, Sorry", errno);
       return;
     }
   
-  if (set_socket_nonblocking(l->clientsocket,1) < 0 )
+  if (set_socket_nonblocking(l->con.clientsocket, 1) < 0 )
     {
       outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
     }
   
   alarm(CTIMEOUT);
-  retval = connect(l->clientsocket, &remoteaddr.sa, addrlen);
+  retval = connect(l->con.clientsocket, &(l->con.remote.sa), addrlen);
   if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) )
     {
       l_closeconn(l,"Couldn't Connect",errno);
@@ -108,8 +107,8 @@ void l_establishcon (upload * const l)
     }
   alarm(0);
   
-  addrlen = sizeof(remoteaddr);
-  if (getsockname(l->clientsocket, &remoteaddr.sa, &addrlen) < 0)
+  addrlen = sizeof(l->con.remote);
+  if (getsockname(l->con.clientsocket, &(l->con.remote.sa), &addrlen) < 0)
     {
       l_closeconn(l,"Couldn't getsockname",errno);
       return;
@@ -133,7 +132,7 @@ void l_transfersome (upload * const l) {
    howmuch = BUFFERSIZE;
    howmuch2 = 1;
    for (i=0; i<MAXTXPERLOOP; i++) {
-      if ((howmuch == BUFFERSIZE && howmuch2 > 0) && is_fd_readable(l->clientsocket)) {
+      if ((howmuch == BUFFERSIZE && howmuch2 > 0) && is_fd_readable(l->con.clientsocket)) {
          
          if ( gdata.max_upspeed )
            {
@@ -147,7 +146,7 @@ void l_transfersome (upload * const l) {
                }
            }
          
-         howmuch  = read(l->clientsocket, gdata.sendbuff, BUFFERSIZE);
+         howmuch  = read(l->con.clientsocket, gdata.sendbuff, BUFFERSIZE);
          if (howmuch < 0)
            {
              l_closeconn(l,"Connection Lost",errno);
@@ -166,7 +165,7 @@ void l_transfersome (upload * const l) {
              return;
            }
          
-         if (howmuch > 0) l->lastcontact = gdata.curtime;
+         if (howmuch > 0) l->con.lastcontact = gdata.curtime;
          
          l->bytesgot += howmuch2;
          gdata.xdccrecv[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
@@ -185,14 +184,14 @@ void l_transfersome (upload * const l) {
       }
    
    g = htonl((unsigned long)(l->bytesgot & 0xFFFFFFFF));
-   write(l->clientsocket,(unsigned char*)&g,4);
+   write(l->con.clientsocket, (unsigned char*)&g, 4);
    
    if (l->bytesgot >= l->totalsize) {
       long timetook;
       char *tempstr;
       l->ul_status = UPLOAD_STATUS_WAITING;
       
-      timetook = gdata.curtime - l->connecttime - 1;
+      timetook = gdata.curtime - l->con.connecttime - 1;
       if (timetook < 1)
          timetook = 1;
       
@@ -242,19 +241,19 @@ void l_istimeout (upload * const l)
 {
   updatecontext();
   
-  if ((l->ul_status == UPLOAD_STATUS_WAITING) && (gdata.curtime - l->lastcontact > 1))
+  if ((l->ul_status == UPLOAD_STATUS_WAITING) && (gdata.curtime - l->con.lastcontact > 1))
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_YELLOW,"clientsock = %d",l->clientsocket);
+          ioutput(CALLTYPE_MULTI_FIRST, OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
         }
-      FD_CLR(l->clientsocket, &gdata.readset);
-      shutdown_close(l->clientsocket);
+      FD_CLR(l->con.clientsocket, &gdata.readset);
+      shutdown_close(l->con.clientsocket);
       close(l->filedescriptor);
       l->ul_status = UPLOAD_STATUS_DONE;
     }
   
-  if ((gdata.curtime - l->lastcontact) > 180)
+  if ((gdata.curtime - l->con.lastcontact) > 180)
     {
       l_closeconn(l,"DCC Timeout (180 Sec Timeout)",0);
     }
@@ -280,14 +279,14 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"clientsock = %d",l->clientsocket);
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
     }
   
-  if (l->clientsocket != FD_UNUSED && l->clientsocket > 2)
+  if (l->con.clientsocket != FD_UNUSED && l->con.clientsocket > 2)
     {
-      FD_CLR(l->clientsocket, &gdata.writeset);
-      FD_CLR(l->clientsocket, &gdata.readset);
-      shutdown_close(l->clientsocket);
+      FD_CLR(l->con.clientsocket, &gdata.writeset);
+      FD_CLR(l->con.clientsocket, &gdata.readset);
+      shutdown_close(l->con.clientsocket);
     }
   
   if (l->filedescriptor != FD_UNUSED && l->filedescriptor > 2)
@@ -296,11 +295,11 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
     }
   
   if (l->ul_status == UPLOAD_STATUS_LISTENING)
-    ir_listen_port_connected(l->localport);
+    ir_listen_port_connected(l->con.localport);
 
 #ifdef USE_UPNP
-  if (gdata.upnp_router && (l->family == AF_INET))
-    upnp_rem_redir(l->localport);
+  if (gdata.upnp_router && (l->con.family == AF_INET))
+    upnp_rem_redir(l->con.localport);
 #endif /* USE_UPNP */
   l->ul_status = UPLOAD_STATUS_DONE;
   

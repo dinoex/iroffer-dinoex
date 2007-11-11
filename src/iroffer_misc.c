@@ -1588,15 +1588,15 @@ void shutdowniroffer(void) {
        gnetwork = &(gdata.networks[tr->net]);
        notice(tr->nick,"** Shutting Down. Closing Connection. (Resume Supported)");
        
-       FD_CLR(tr->clientsocket, &gdata.writeset);
-       FD_CLR(tr->clientsocket, &gdata.readset);
-       if (tr->listensocket != FD_UNUSED)
+       FD_CLR(tr->con.clientsocket, &gdata.writeset);
+       FD_CLR(tr->con.clientsocket, &gdata.readset);
+       if (tr->con.listensocket != FD_UNUSED)
          {
-           close(tr->listensocket);
+           close(tr->con.listensocket);
          }
-       if (tr->clientsocket != FD_UNUSED)
+       if (tr->con.clientsocket != FD_UNUSED)
          {
-           shutdown_close(tr->clientsocket);
+           shutdown_close(tr->con.clientsocket);
          }
        tr->xpack->file_fd_count--;
        if (!tr->xpack->file_fd_count && (tr->xpack->file_fd != FD_UNUSED))
@@ -1619,11 +1619,11 @@ void shutdowniroffer(void) {
        gnetwork = &(gdata.networks[ul->net]);
        notice(ul->nick,"** Shutting Down. Closing Upload Connection. (Resume Supported)");
        
-       FD_CLR(ul->clientsocket, &gdata.writeset);
-       FD_CLR(ul->clientsocket, &gdata.readset);
-       if (ul->clientsocket != FD_UNUSED)
+       FD_CLR(ul->con.clientsocket, &gdata.writeset);
+       FD_CLR(ul->con.clientsocket, &gdata.readset);
+       if (ul->con.clientsocket != FD_UNUSED)
          {
-           shutdown_close(ul->clientsocket);
+           shutdown_close(ul->con.clientsocket);
          }
        if (ul->filedescriptor != FD_UNUSED)
          {
@@ -2742,7 +2742,7 @@ void notifybandwidthtrans(void)
         continue;
       if (!tr->nomax &&
           (tr->maxspeed > 0) &&
-          (gdata.curtime-tr->connecttime > MIN_TL) &&
+          (gdata.curtime-tr->con.connecttime > MIN_TL) &&
           (tr->lastspeed*10 > tr->maxspeed*9))
         {
           /* send if over 90% */

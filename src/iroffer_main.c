@@ -300,13 +300,13 @@ static void mainloop (void) {
         {
           if (chat->status == DCCCHAT_CONNECTING)
             {
-              FD_SET(chat->fd, &gdata.writeset);
-              highests = max2(highests, chat->fd);
+              FD_SET(chat->con.clientsocket, &gdata.writeset);
+              highests = max2(highests, chat->con.clientsocket);
             }
           else if (chat->status != DCCCHAT_UNUSED)
             {
-              FD_SET(chat->fd, &gdata.readset);
-              highests = max2(highests, chat->fd);
+              FD_SET(chat->con.clientsocket, &gdata.readset);
+              highests = max2(highests, chat->con.clientsocket);
             }
         }
 
@@ -330,31 +330,31 @@ static void mainloop (void) {
         {
           if (tr->tr_status == TRANSFER_STATUS_LISTENING)
             {
-              FD_SET(tr->listensocket, &gdata.readset);
-              highests = max2(highests, tr->listensocket);
+              FD_SET(tr->con.listensocket, &gdata.readset);
+              highests = max2(highests, tr->con.listensocket);
             }
           if (tr->tr_status == TRANSFER_STATUS_CONNECTING)
             {
-              FD_SET(tr->clientsocket, &gdata.writeset);
-              highests = max2(highests, tr->clientsocket);
+              FD_SET(tr->con.clientsocket, &gdata.writeset);
+              highests = max2(highests, tr->con.clientsocket);
             }
           if (tr->tr_status == TRANSFER_STATUS_SENDING)
             {
               if (!overlimit && !tr->overlimit)
                 {
-                  FD_SET(tr->clientsocket, &gdata.writeset);
-                  highests = max2(highests, tr->clientsocket);
+                  FD_SET(tr->con.clientsocket, &gdata.writeset);
+                  highests = max2(highests, tr->con.clientsocket);
                 }
               if (changequartersec || ((tr->bytessent-tr->lastack) > 512*1024))
                 {
-                  FD_SET(tr->clientsocket, &gdata.readset);
-                  highests = max2(highests, tr->clientsocket);
+                  FD_SET(tr->con.clientsocket, &gdata.readset);
+                  highests = max2(highests, tr->con.clientsocket);
                 }
             }
           if (tr->tr_status == TRANSFER_STATUS_WAITING)
             {
-              FD_SET(tr->clientsocket, &gdata.readset);
-              highests = max2(highests, tr->clientsocket);
+              FD_SET(tr->con.clientsocket, &gdata.readset);
+              highests = max2(highests, tr->con.clientsocket);
             }
           tr = irlist_get_next(tr);
         }
@@ -364,18 +364,18 @@ static void mainloop (void) {
         {
           if (ul->ul_status == UPLOAD_STATUS_LISTENING)
             {
-              FD_SET(ul->clientsocket, &gdata.readset);
-              highests = max2(highests, ul->clientsocket);
+              FD_SET(ul->con.clientsocket, &gdata.readset);
+              highests = max2(highests, ul->con.clientsocket);
             }
           if (ul->ul_status == UPLOAD_STATUS_CONNECTING)
             {
-              FD_SET(ul->clientsocket, &gdata.writeset);
-              highests = max2(highests, ul->clientsocket);
+              FD_SET(ul->con.clientsocket, &gdata.writeset);
+              highests = max2(highests, ul->con.clientsocket);
             }
           if (ul->ul_status == UPLOAD_STATUS_GETTING)
             {
-              FD_SET(ul->clientsocket, &gdata.readset);
-              highests = max2(highests, ul->clientsocket);
+              FD_SET(ul->con.clientsocket, &gdata.readset);
+              highests = max2(highests, ul->con.clientsocket);
             }
           ul = irlist_get_next(ul);
         }
@@ -808,23 +808,23 @@ static void mainloop (void) {
         {
           gnetwork = &(gdata.networks[ul->net]);
           /*----- see if uploads are sending anything to us ----- */
-          if (ul->ul_status == UPLOAD_STATUS_GETTING && FD_ISSET(ul->clientsocket, &gdata.readset))
+          if (ul->ul_status == UPLOAD_STATUS_GETTING && FD_ISSET(ul->con.clientsocket, &gdata.readset))
             {
               l_transfersome(ul);
             }
 
-          if (ul->ul_status == UPLOAD_STATUS_LISTENING && FD_ISSET(ul->clientsocket, &gdata.readset))
+          if (ul->ul_status == UPLOAD_STATUS_LISTENING && FD_ISSET(ul->con.clientsocket, &gdata.readset))
             {
               l_setup_accept(ul);
             }
 
-          if (ul->ul_status == UPLOAD_STATUS_CONNECTING && FD_ISSET(ul->clientsocket, &gdata.writeset))
+          if (ul->ul_status == UPLOAD_STATUS_CONNECTING && FD_ISSET(ul->con.clientsocket, &gdata.writeset))
             {
               int callval_i;
               int connect_error;
               unsigned int connect_error_len = sizeof(connect_error);
               
-              callval_i = getsockopt(ul->clientsocket,
+              callval_i = getsockopt(ul->con.clientsocket,
                                      SOL_SOCKET, SO_ERROR,
                                      &connect_error, &connect_error_len);
               
@@ -843,26 +843,26 @@ static void mainloop (void) {
               
               if ((callval_i < 0) || connect_error)
                 {
-                  FD_CLR(ul->clientsocket, &gdata.writeset);
+                  FD_CLR(ul->con.clientsocket, &gdata.writeset);
                 }
               else
                 {
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                           "Upload Connection Established on %s", gnetwork->name);
                   ul->ul_status = UPLOAD_STATUS_GETTING;
-                  FD_CLR(ul->clientsocket, &gdata.writeset);
+                  FD_CLR(ul->con.clientsocket, &gdata.writeset);
                   notice(ul->nick,"DCC Connection Established");
-                  ul->connecttime = gdata.curtime;
-                  if (set_socket_nonblocking(ul->clientsocket,0) < 0 )
+                  ul->con.connecttime = gdata.curtime;
+                  if (set_socket_nonblocking(ul->con.clientsocket, 0) < 0 )
                     {
                       outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
                     }
                 }
             }
           
-          if (changesec && ul->ul_status == UPLOAD_STATUS_CONNECTING && ul->lastcontact + CTIMEOUT < gdata.curtime)
+          if (changesec && ul->ul_status == UPLOAD_STATUS_CONNECTING && ul->con.lastcontact + CTIMEOUT < gdata.curtime)
             {
-              FD_CLR(ul->clientsocket, &gdata.readset);
+              FD_CLR(ul->con.clientsocket, &gdata.readset);
               l_closeconn(ul,"Upload Connection Timed Out",0);
             }
           
@@ -876,7 +876,7 @@ static void mainloop (void) {
               mydelete(ul->nick);
               mydelete(ul->hostname);
               mydelete(ul->file);
-              mydelete(ul->remoteaddr);
+              mydelete(ul->con.remoteaddr);
               ul = irlist_delete(&gdata.uploads, ul);
             }
           else
@@ -894,13 +894,13 @@ static void mainloop (void) {
         {
           gnetwork = &(gdata.networks[chat->net]);
           if ((chat->status == DCCCHAT_CONNECTING) &&
-              FD_ISSET(chat->fd, &gdata.writeset))
+              FD_ISSET(chat->con.clientsocket, &gdata.writeset))
             {
               int callval_i;
               int connect_error;
               unsigned int connect_error_len = sizeof(connect_error);
               
-              callval_i = getsockopt(chat->fd,
+              callval_i = getsockopt(chat->con.clientsocket,
                                      SOL_SOCKET, SO_ERROR,
                                      &connect_error, &connect_error_len);
               
@@ -930,7 +930,7 @@ static void mainloop (void) {
                 }
             }
           if ((chat->status != DCCCHAT_UNUSED) &&
-              FD_ISSET(chat->fd, &gdata.readset))
+              FD_ISSET(chat->con.clientsocket, &gdata.readset))
             {
               char tempbuffa[INPUT_BUFFER_LENGTH];
               switch (chat->status)
@@ -942,7 +942,7 @@ static void mainloop (void) {
                 case DCCCHAT_AUTHENTICATING:
                 case DCCCHAT_CONNECTED:
                   memset(tempbuffa, 0, INPUT_BUFFER_LENGTH);
-                  length = read(chat->fd, &tempbuffa, INPUT_BUFFER_LENGTH);
+                  length = read(chat->con.clientsocket, &tempbuffa, INPUT_BUFFER_LENGTH);
                   
                   if (length < 1)
                     {
@@ -1002,7 +1002,7 @@ static void mainloop (void) {
           if (tr->tr_status == TRANSFER_STATUS_SENDING)
             {
               /*----- look for transfer some -----  send at least once a second, or more if necessary */
-              if (changequartersec || FD_ISSET(tr->clientsocket, &gdata.writeset))
+              if (changequartersec || FD_ISSET(tr->con.clientsocket, &gdata.writeset))
                 {
                   gnetwork = &(gdata.networks[tr->net]);
                   t_transfersome(tr);
@@ -1018,7 +1018,7 @@ static void mainloop (void) {
           if (tr->tr_status == TRANSFER_STATUS_SENDING)
             {
               /*----- look for transfer some -----  send at least once a second, or more if necessary */
-              if (changequartersec || FD_ISSET(tr->clientsocket, &gdata.writeset))
+              if (changequartersec || FD_ISSET(tr->con.clientsocket, &gdata.writeset))
                 {
                   gnetwork = &(gdata.networks[tr->net]);
                   t_transfersome(tr);
@@ -1034,21 +1034,21 @@ static void mainloop (void) {
           /*----- look for listen reminders ----- */
           if (changesec &&
               (tr->tr_status == TRANSFER_STATUS_LISTENING) &&
-              ((gdata.curtime - tr->lastcontact) >= 30) &&
+              ((gdata.curtime - tr->con.lastcontact) >= 30) &&
               (tr->reminded == 0))
             {
               t_remind(tr);
             }
           if (changesec &&
               (tr->tr_status == TRANSFER_STATUS_LISTENING) &&
-              ((gdata.curtime - tr->lastcontact) >= 90) &&
+              ((gdata.curtime - tr->con.lastcontact) >= 90) &&
               (tr->reminded == 1) && !gdata.quietmode)
             {
               t_remind(tr);
             }
           if (changesec &&
               (tr->tr_status == TRANSFER_STATUS_LISTENING) &&
-              ((gdata.curtime - tr->lastcontact) >= 150) &&
+              ((gdata.curtime - tr->con.lastcontact) >= 150) &&
               (tr->reminded == 2) && !gdata.quietmode)
             {
               t_remind(tr);
@@ -1056,14 +1056,14 @@ static void mainloop (void) {
 
          if (changesec &&
              (tr->tr_status == TRANSFER_STATUS_CONNECTING) &&
-             FD_ISSET(tr->clientsocket, &gdata.writeset))
+             FD_ISSET(tr->con.clientsocket, &gdata.writeset))
             {
               t_connected(tr);
             }
   
           /*----- look for listen->connected ----- */
           if ((tr->tr_status == TRANSFER_STATUS_LISTENING) &&
-              FD_ISSET(tr->listensocket, &gdata.readset))
+              FD_ISSET(tr->con.listensocket, &gdata.readset))
             {
               t_establishcon(tr);
               check_new_connection(tr);
@@ -1072,7 +1072,7 @@ static void mainloop (void) {
           /*----- look for junk to read ----- */
           if (((tr->tr_status == TRANSFER_STATUS_SENDING) ||
                (tr->tr_status == TRANSFER_STATUS_WAITING)) &&
-              FD_ISSET(tr->clientsocket, &gdata.readset))
+              FD_ISSET(tr->con.clientsocket, &gdata.readset))
             {
               t_readjunk(tr);
             }
@@ -1097,8 +1097,8 @@ static void mainloop (void) {
               trnick = tr->nick;
               mydelete(tr->caps_nick);
               mydelete(tr->hostname);
-              mydelete(tr->localaddr);
-              mydelete(tr->remoteaddr);
+              mydelete(tr->con.localaddr);
+              mydelete(tr->con.remoteaddr);
               tr = irlist_delete(&gdata.trans, tr);
               
               if (!gdata.exiting &&
@@ -1380,7 +1380,7 @@ static void mainloop (void) {
           tr = irlist_get_head(&gdata.trans);
           while(tr)
             {
-              if ( tr->connecttime+(MIN_TL/2) > gdata.curtime ) /* initial */
+              if ( tr->con.connecttime+(MIN_TL/2) > gdata.curtime ) /* initial */
                 {
                   tr->lastspeed = 
                     (tr->lastspeed)*DCL_SPDW_I + 
@@ -1403,7 +1403,7 @@ static void mainloop (void) {
           ul = irlist_get_head(&gdata.uploads);
           while(ul)
             {
-              if ( ul->connecttime+(MIN_TL/2) > gdata.curtime ) /* initial */
+              if ( ul->con.connecttime+(MIN_TL/2) > gdata.curtime ) /* initial */
                 {
                   ul->lastspeed = 
                     (ul->lastspeed)*DCL_SPDW_I + 
@@ -2728,7 +2728,7 @@ static void privmsgparse(const char* type, char* line) {
             {
               if (((tr->tr_status == TRANSFER_STATUS_LISTENING) || (tr->tr_status == TRANSFER_STATUS_RESUME)) && 
                   !strcmp(tr->caps_nick,nick) &&
-                  (strstrnocase(tr->xpack->file,msg3) || (tr->listenport == atoi(msg4))))
+                  (strstrnocase(tr->xpack->file, msg3) || (tr->con.localport == atoi(msg4))))
                 {
                   off_t len;
                   len = atoull(msg5);
@@ -2774,7 +2774,7 @@ static void privmsgparse(const char* type, char* line) {
                               tr->tr_status,
                               tr->caps_nick,nick,
                               tr->xpack->file,msg3,
-                              tr->listenport,atoi(msg4));
+                              tr->con.localport, atoi(msg4));
                     }
                   tr = irlist_get_next(tr);
                 }
@@ -2875,9 +2875,9 @@ static void privmsgparse(const char* type, char* line) {
               clean_quotes(msg3);
               removenonprintablefile(msg3);
               ul->file = mystrdup(msg3);
-              ul->family = (strchr(msg4, ':')) ? AF_INET6 : AF_INET;
-              ul->remoteaddr = mystrdup(msg4);
-              ul->remoteport = atoi(msg5);
+              ul->con.family = (strchr(msg4, ':')) ? AF_INET6 : AF_INET;
+              ul->con.remoteaddr = mystrdup(msg4);
+              ul->con.remoteport = atoi(msg5);
               ul->totalsize = len;
               ul->nick = mystrdup(nick);
               ul->hostname = mystrdup(hostname);
@@ -2889,7 +2889,7 @@ static void privmsgparse(const char* type, char* line) {
                       (ul->totalsize / 1024));
               mydelete(tempstr);
 
-              if (ul->remoteport > 0)
+              if (ul->con.remoteport > 0)
                 {
                   l_establishcon(ul);
                 }
@@ -2937,7 +2937,7 @@ static void privmsgparse(const char* type, char* line) {
           ul = irlist_get_head(&gdata.uploads);
           while (ul)
             {
-              if ((ul->remoteport == atoi(msg4)) && !strcmp(ul->nick, nick))
+              if ((ul->con.remoteport == atoi(msg4)) && !strcmp(ul->nick, nick))
                 {
                   char *tempstr;
                   ul->resumed = 1;
@@ -2948,7 +2948,7 @@ static void privmsgparse(const char* type, char* line) {
                           ((ul->totalsize - ul->resumesize) / 1024),
                           (ul->totalsize / 1024));
                   mydelete(tempstr);
-                  if (ul->remoteport > 0)
+                  if (ul->con.remoteport > 0)
                     {
                       l_establishcon(ul);
                     }

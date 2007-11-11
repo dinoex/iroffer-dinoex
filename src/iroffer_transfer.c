@@ -31,12 +31,12 @@ void t_initvalues (transfer * const t) {
 
    updatecontext();
 
-      t->family = gnetwork->myip.sa.sa_family;
+      t->con.family = gnetwork->myip.sa.sa_family;
       t->tr_status = TRANSFER_STATUS_UNUSED;
-      t->listensocket=FD_UNUSED;
-      t->clientsocket=FD_UNUSED;
-      t->lastcontact = gdata.curtime;
-      t->listenport = 0;
+      t->con.listensocket = FD_UNUSED;
+      t->con.clientsocket = FD_UNUSED;
+      t->con.lastcontact = gdata.curtime;
+      t->con.localport = 0;
       t->id = 200;
       t->overlimit = 0;
    }
@@ -47,14 +47,14 @@ void t_setuplisten (transfer * const t)
   
   updatecontext();
 
-  rc = open_listen(t->family, &(t->serveraddress), &(t->listensocket), 0, gdata.tcprangestart, 1, NULL);
+  rc = open_listen(t->con.family, &(t->con.local), &(t->con.listensocket), 0, gdata.tcprangestart, 1, NULL);
   if (rc != 0)
     {
       t_closeconn(t,"Connection Error, Try Again",errno);
       return;
     }
   
-  t->listenport = get_port(&(t->serveraddress));
+  t->con.localport = get_port(&(t->con.local));
   t->tr_status = TRANSFER_STATUS_LISTENING;
 }
 
@@ -64,20 +64,20 @@ void t_establishcon (transfer * const t)
    
    updatecontext();
    
-   addrlen = (t->family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+   addrlen = (t->con.family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
    
-   if ((t->clientsocket = accept(t->listensocket, &t->serveraddress.sa, &addrlen)) < 0) {
+   if ((t->con.clientsocket = accept(t->con.listensocket, &t->con.local.sa, &addrlen)) < 0) {
       int errno2 = errno;
       outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
       t_closeconn(t, "Connection Error, Try Again", errno2);
       return;
       }
    
-   ir_listen_port_connected(t->listenport);
+   ir_listen_port_connected(t->con.localport);
    
-   FD_CLR(t->listensocket, &gdata.readset);
-   close(t->listensocket);
-   t->listensocket = FD_UNUSED;
+   FD_CLR(t->con.listensocket, &gdata.readset);
+   close(t->con.listensocket);
+   t->con.listensocket = FD_UNUSED;
 
    t_setup_send(t);
 }
@@ -85,8 +85,6 @@ void t_establishcon (transfer * const t)
 void t_setup_send(transfer * const t)
 {
    char *msg;
-   ir_sockaddr_union_t remoteaddr;
-   ir_sockaddr_union_t localaddr;
    SIGNEDSOCK int addrlen;
    
 #if !defined(_OS_SunOS)
@@ -98,7 +96,7 @@ void t_setup_send(transfer * const t)
    
    t->tr_status = TRANSFER_STATUS_SENDING;
    if (gdata.debug > 0) {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"clientsock = %d",t->clientsocket);
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", t->con.clientsocket);
       }
       
    if (t->xpack->file_fd == FD_UNUSED)
@@ -119,70 +117,70 @@ void t_setup_send(transfer * const t)
 #if !defined(_OS_SunOS)
    tempi = sizeof(int);
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_YELLOW,"SO_SNDBUF ");
-   getsockopt(t->clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, &tempi);
+   getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, &tempi);
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," a %li",(long)tempc);
    
    tempc = 65535;
-   setsockopt(t->clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, sizeof(int));
+   setsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, sizeof(int));
 
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," b %li",(long)tempc);
-   getsockopt(t->clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, &tempi);
+   getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, &tempi);
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_YELLOW," c %li",(long)tempc);
 #endif
    
 #if defined(_OS_BSD_ANY)
    /* #define SO_SNDLOWAT     0x1003     */
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_YELLOW,"SO_SNDLOWAT ");
-   getsockopt(t->clientsocket, SOL_SOCKET, 0x1003, &tempc, &tempi);
+   getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc, &tempi);
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," %i",tempc);
       
    tempc = 24577;
-   setsockopt(t->clientsocket, SOL_SOCKET, 0x1003, &tempc, sizeof(int));
+   setsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc, sizeof(int));
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," %i",tempc);
 
-   getsockopt(t->clientsocket, SOL_SOCKET, 0x1003, &tempc, &tempi);
+   getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc, &tempi);
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_YELLOW," %i\n", tempc);
 #endif
    
 #if !defined(CANT_SET_TOS)
    /* Set TOS socket option to max throughput */
    tempc = 0x8; /* IPTOS_THROUGHPUT */
-   setsockopt(t->clientsocket, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
+   setsockopt(t->con.clientsocket, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
 #endif
    
-   if (set_socket_nonblocking(t->clientsocket,1) < 0 )
+   if (set_socket_nonblocking(t->con.clientsocket, 1) < 0 )
       outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
    
    
-   t->lastcontact = gdata.curtime;
-   t->connecttime = gdata.curtime;
+   t->con.lastcontact = gdata.curtime;
+   t->con.connecttime = gdata.curtime;
    t->connecttimems = gdata.curtimems;
    t->lastspeed = t->xpack->minspeed;
    t->lastspeedamt = t->startresume;
-   addrlen = (t->family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+   addrlen = (t->con.family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
    
-   if ((getpeername(t->clientsocket, &remoteaddr.sa, &(addrlen))) < 0)
+   if ((getpeername(t->con.clientsocket, &(t->con.remote.sa), &(addrlen))) < 0)
       outerror(OUTERROR_TYPE_WARN, "Couldn't get Remote IP: %s", strerror(errno));
 
    else {
-      t->remoteip = ntohl(remoteaddr.sin.sin_addr.s_addr);
+      t->remoteip = ntohl(t->con.remote.sin.sin_addr.s_addr);
       }
    
-   if ((getsockname(t->clientsocket, &localaddr.sa, &(addrlen))) < 0)
+   if ((getsockname(t->con.clientsocket, &(t->con.local.sa), &(addrlen))) < 0)
       outerror(OUTERROR_TYPE_WARN, "Couldn't get Local IP: %s", strerror(errno));
    
    msg = mycalloc(maxtextlength);
-   my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, 0);
-   mydelete(t->remoteaddr);
-   t->remoteaddr = mystrdup(msg);
-   my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, 0);
-   t->localaddr = mystrdup(msg);
+   my_getnameinfo(msg, maxtextlength -1, &(t->con.remote.sa), 0);
+   mydelete(t->con.remoteaddr);
+   t->con.remoteaddr = mystrdup(msg);
+   my_getnameinfo(msg, maxtextlength -1, &(t->con.local.sa), 0);
+   t->con.localaddr = mystrdup(msg);
    mydelete(msg);
 
    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "XDCC [%02i:%s on %s]: Connection established (%s -> %s)",
             t->id, t->nick, gdata.networks[ t->net ].name,
-            t->remoteaddr, t->localaddr);
+            t->con.remoteaddr, t->con.localaddr);
 }
 
 void t_transfersome (transfer * const t)
@@ -241,7 +239,7 @@ void t_transfersome (transfer * const t)
           
           offset = t->bytessent;
           
-          howmuch = sendfile(t->clientsocket,
+          howmuch = sendfile(t->con.clientsocket,
                              t->xpack->file_fd,
                              &offset,
                              attempt);
@@ -274,7 +272,7 @@ void t_transfersome (transfer * const t)
           offset = t->bytessent;
           
           jj = sendfile(t->xpack->file_fd,
-                       t->clientsocket,
+                       t->con.clientsocket,
                        offset,
                        attempt,
                        &sendfile_header,
@@ -335,7 +333,7 @@ void t_transfersome (transfer * const t)
           
           t->xpack->file_fd_location += howmuch;
           
-          howmuch2 = write(t->clientsocket, dataptr, howmuch);
+          howmuch2 = write(t->con.clientsocket, dataptr, howmuch);
           
           if (howmuch2 < 0 && errno != EAGAIN)
             {
@@ -450,7 +448,7 @@ void t_transfersome (transfer * const t)
               goto done;
             }
           
-          howmuch2 = write(t->clientsocket, dataptr, howmuch);
+          howmuch2 = write(t->con.clientsocket, dataptr, howmuch);
           
           if (howmuch2 < 0 && errno != EAGAIN)
             {
@@ -469,7 +467,7 @@ void t_transfersome (transfer * const t)
       
       if (howmuch2 > 0)
         {
-          t->lastcontact = gdata.curtime;
+          t->con.lastcontact = gdata.curtime;
         }
       
       t->bytessent += howmuch2;
@@ -533,7 +531,7 @@ void t_readjunk (transfer * const t)
   
   updatecontext();
   
-  i = read(t->clientsocket, gdata.sendbuff, BUFFERSIZE);
+  i = read(t->con.clientsocket, gdata.sendbuff, BUFFERSIZE);
   
   if (gdata.debug > 4)
     {
@@ -556,7 +554,7 @@ void t_readjunk (transfer * const t)
     }
   else
     {
-      t->lastcontact = gdata.curtime;
+      t->con.lastcontact = gdata.curtime;
       
       for (j=0; j<i; j++)
         {
@@ -585,11 +583,11 @@ void t_istimeout (transfer * const t)
 {
   updatecontext();
   
-  if ((gdata.curtime - t->lastcontact) > 180)
+  if ((gdata.curtime - t->con.lastcontact) > 180)
     {
       t_closeconn(t,"DCC Timeout (180 Sec Timeout)",0);
     }
-  else if ((gdata.curtime - t->lastcontact) > 150)
+  else if ((gdata.curtime - t->con.lastcontact) > 150)
     {
       if (!t->close_to_timeout)
         {
@@ -680,11 +678,11 @@ void t_flushed (transfer * const t)
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"clientsock = %d",t->clientsocket);
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", t->con.clientsocket);
     }
-  FD_CLR(t->clientsocket, &gdata.writeset);
-  FD_CLR(t->clientsocket, &gdata.readset);
-  shutdown_close(t->clientsocket);
+  FD_CLR(t->con.clientsocket, &gdata.writeset);
+  FD_CLR(t->con.clientsocket, &gdata.readset);
+  shutdown_close(t->con.clientsocket);
   t->xpack->file_fd_count--;
   if (!t->xpack->file_fd_count && (t->xpack->file_fd != FD_UNUSED))
     {
@@ -734,8 +732,8 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,
-              "clientsock = %d",t->clientsocket);
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW,
+              "clientsock = %d", t->con.clientsocket);
     }
   
 #ifdef HAVE_MMAP
@@ -757,18 +755,18 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
     }
 #endif
   
-  if (t->listensocket != FD_UNUSED && t->listensocket > 2)
+  if (t->con.listensocket != FD_UNUSED && t->con.listensocket > 2)
     {
-      FD_CLR(t->listensocket, &gdata.readset);
-      close (t->listensocket);
-      t->listensocket = FD_UNUSED;
+      FD_CLR(t->con.listensocket, &gdata.readset);
+      close (t->con.listensocket);
+      t->con.listensocket = FD_UNUSED;
     }
-  if (t->clientsocket != FD_UNUSED && t->clientsocket > 2)
+  if (t->con.clientsocket != FD_UNUSED && t->con.clientsocket > 2)
     {
-      FD_CLR(t->clientsocket, &gdata.writeset);
-      FD_CLR(t->clientsocket, &gdata.readset);
-      shutdown_close(t->clientsocket);
-      t->clientsocket = FD_UNUSED;
+      FD_CLR(t->con.clientsocket, &gdata.writeset);
+      FD_CLR(t->con.clientsocket, &gdata.readset);
+      shutdown_close(t->con.clientsocket);
+      t->con.clientsocket = FD_UNUSED;
     }
   t->xpack->file_fd_count--;
   if (!t->xpack->file_fd_count && (t->xpack->file_fd != FD_UNUSED))
@@ -779,11 +777,11 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
     }
   
   if (t->tr_status == TRANSFER_STATUS_LISTENING)
-    ir_listen_port_connected(t->listenport);
+    ir_listen_port_connected(t->con.localport);
 
 #ifdef USE_UPNP
-  if (gdata.upnp_router && (t->family == AF_INET))
-    upnp_rem_redir(t->listenport);
+  if (gdata.upnp_router && (t->con.family == AF_INET))
+    upnp_rem_redir(t->con.localport);
 #endif /* USE_UPNP */
 
   t->tr_status = TRANSFER_STATUS_DONE;
@@ -820,7 +818,7 @@ void t_remind(transfer * const t) {
               "Type \"/MSG %s XDCC CANCEL\" to abort the transfer. "
               "(%li seconds remaining until timeout)",
               save_nick(gnetwork->user_nick),
-              (long)(t->lastcontact+180-gdata.curtime));
+              (long)(t->con.lastcontact+180-gdata.curtime));
      }
    
    gnetwork = backup;
@@ -833,7 +831,7 @@ void t_checkminspeed(transfer * const t) {
    updatecontext();
 
    if (t->tr_status != TRANSFER_STATUS_SENDING)      return; /* no checking unless we're sending */
-   if (t->connecttime+MIN_TL > gdata.curtime)        return; /* no checking until time has passed */
+   if (t->con.connecttime+MIN_TL > gdata.curtime)    return; /* no checking until time has passed */
    if (t->nomin || (t->xpack->minspeed) == 0.0)      return; /* no minspeed for this transfer */
    if ( t->lastspeed+0.11 > t->xpack->minspeed )     return; /* over minspeed */
    

@@ -24,18 +24,12 @@ typedef enum
 
 typedef struct
 {
-  int clientsocket;
   int filedescriptor;
   off_t bytesgot;
   off_t bytessent;
   off_t filepos;
   off_t totalsize;
-  time_t lastcontact;
-  time_t connecttime;
-  unsigned short family;
-  unsigned short remoteport;
-  long remoteip4;
-  struct in6_addr remoteip6;
+  ir_connection_t con;
   http_status_e status;
   int support_groups;
   int post;

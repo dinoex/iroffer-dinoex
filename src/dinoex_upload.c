@@ -82,20 +82,19 @@ int l_setup_listen(upload * const l)
 {
   char *tempstr;
   char *msg;
-  ir_sockaddr_union_t listenaddr;
   int rc;
   int listenport;
 
   updatecontext();
 
-  rc = open_listen(l->family, &listenaddr, &(l->clientsocket), 0, gdata.tcprangestart, 1, NULL);
+  rc = open_listen(l->con.family, &(l->con.local), &(l->con.clientsocket), 0, gdata.tcprangestart, 1, NULL);
   if (rc != 0) {
     l_closeconn(l, "Connection Lost", 0);
     return 1;
   }
 
-  listenport = get_port(&listenaddr);
-  msg = setup_dcc_local(&listenaddr);
+  listenport = get_port(&(l->con.local));
+  msg = setup_dcc_local(&(l->con.local));
   tempstr = getsendname(l->file);
   privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "u %d\1",
                tempstr, msg, l->totalsize, l->token);
@@ -105,9 +104,9 @@ int l_setup_listen(upload * const l)
   mydelete(tempstr);
   mydelete(msg);
 
-  l->localport = listenport;
-  l->connecttime = gdata.curtime;
-  l->lastcontact = gdata.curtime;
+  l->con.localport = listenport;
+  l->con.connecttime = gdata.curtime;
+  l->con.lastcontact = gdata.curtime;
   l->ul_status = UPLOAD_STATUS_LISTENING;
   return 0;
 }
@@ -130,10 +129,10 @@ int l_setup_passive(upload * const l, char *token)
     {
       tempstr = getsendname(l->file);
       privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u %d\1",
-                   tempstr, l->remoteport, (unsigned long long)s.st_size, l->token);
+                   tempstr, l->con.remoteport, (unsigned long long)s.st_size, l->token);
       mydelete(tempstr);
-      l->connecttime = gdata.curtime;
-      l->lastcontact = gdata.curtime;
+      l->con.connecttime = gdata.curtime;
+      l->con.lastcontact = gdata.curtime;
       l->ul_status = UPLOAD_STATUS_RESUME;
       return 0;
     }
@@ -148,24 +147,23 @@ int l_setup_passive(upload * const l, char *token)
 void l_setup_accept(upload * const l)
 {
   SIGNEDSOCK int addrlen;
-  ir_sockaddr_union_t remoteaddr;
   int listen_fd;
   char *msg;
 
   updatecontext();
 
-  listen_fd = l->clientsocket;
-  addrlen = sizeof(remoteaddr);
-  if ((l->clientsocket = accept(listen_fd, &remoteaddr.sa, &addrlen)) < 0) {
+  listen_fd = l->con.clientsocket;
+  addrlen = sizeof(l->con.remote);
+  if ((l->con.clientsocket = accept(listen_fd, &(l->con.remote.sa), &addrlen)) < 0) {
     outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
     FD_CLR(listen_fd, &gdata.readset);
     close(listen_fd);
-    l->clientsocket = FD_UNUSED;
+    l->con.clientsocket = FD_UNUSED;
     l_closeconn(l, "Connection Lost", 0);
     return;
   }
 
-  ir_listen_port_connected(l->localport);
+  ir_listen_port_connected(l->con.localport);
 
   FD_CLR(listen_fd, &gdata.readset);
   close(listen_fd);
@@ -173,19 +171,19 @@ void l_setup_accept(upload * const l)
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND connection received");
 
-  if (set_socket_nonblocking(l->clientsocket, 1) < 0 ) {
+  if (set_socket_nonblocking(l->con.clientsocket, 1) < 0 ) {
     outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
   }
 
   notice(l->nick, "DCC Send Accepted, Connecting...");
 
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(remoteaddr.sa), addrlen);
-  l->remoteaddr = mystrdup(msg);
+  my_getnameinfo(msg, maxtextlength -1, &(l->con.remote.sa), addrlen);
+  l->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
-  l->remoteport = get_port(&remoteaddr);
-  l->connecttime = gdata.curtime;
-  l->lastcontact = gdata.curtime;
+  l->con.remoteport = get_port(&(l->con.remote));
+  l->con.connecttime = gdata.curtime;
+  l->con.lastcontact = gdata.curtime;
   l->ul_status = UPLOAD_STATUS_GETTING;
 }
 

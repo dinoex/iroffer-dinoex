@@ -33,27 +33,27 @@ void t_setup_dcc(transfer *tr, const char *nick)
 
   vhost = get_local_vhost();
   if (gdata.passive_dcc) {
-    bzero((char *) &(tr->serveraddress), sizeof(ir_sockaddr_union_t));
-    if (tr->family == AF_INET) {
-      tr->serveraddress.sin.sin_family = AF_INET;
-      tr->serveraddress.sin.sin_port = htons(0);
+    bzero((char *) &(tr->con.local), sizeof(tr->con.local));
+    if (tr->con.family == AF_INET) {
+      tr->con.local.sin.sin_family = AF_INET;
+      tr->con.local.sin.sin_port = htons(0);
       if (vhost) {
-        e = inet_pton(tr->family, vhost, &(tr->serveraddress.sin.sin_addr));
+        e = inet_pton(tr->con.family, vhost, &(tr->con.local.sin.sin_addr));
       } else {
-        tr->serveraddress.sin.sin_addr.s_addr = gnetwork->myip.sin.sin_addr.s_addr;
+        tr->con.local.sin.sin_addr.s_addr = gnetwork->myip.sin.sin_addr.s_addr;
       }
     } else {
-      tr->serveraddress.sin6.sin6_family = AF_INET6;
-      tr->serveraddress.sin6.sin6_port = htons(0);
+      tr->con.local.sin6.sin6_family = AF_INET6;
+      tr->con.local.sin6.sin6_port = htons(0);
       if (vhost) {
-        e = inet_pton(tr->family, vhost, &(tr->serveraddress.sin6.sin6_addr));
+        e = inet_pton(tr->con.family, vhost, &(tr->con.local.sin6.sin6_addr));
       }
     }
     if (e != 1) {
       outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", vhost);
     }
     tr->tr_status = TRANSFER_STATUS_RESUME;
-    tr->listenport = 0;
+    tr->con.localport = 0;
   } else {
     t_setuplisten(tr);
 
@@ -62,9 +62,9 @@ void t_setup_dcc(transfer *tr, const char *nick)
   }
 
   sendnamestr = getsendname(tr->xpack->file);
-  dccdata = setup_dcc_local(&tr->serveraddress);
+  dccdata = setup_dcc_local(&tr->con.local);
   if (gdata.passive_dcc) {
-    bzero((char *) &(tr->serveraddress), sizeof(ir_sockaddr_union_t));
+    bzero((char *) &(tr->con.local), sizeof(tr->con.local));
     privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "u %d\1",
                  sendnamestr, dccdata,
                  (unsigned long long)tr->xpack->st_size,
@@ -76,7 +76,7 @@ void t_setup_dcc(transfer *tr, const char *nick)
 
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "listen on port %d for %s (%s on %s)",
-            tr->listenport, nick, tr->hostname, gnetwork->name);
+            tr->con.localport, nick, tr->hostname, gnetwork->name);
   }
   mydelete(dccdata);
   mydelete(sendnamestr);
@@ -85,45 +85,44 @@ void t_setup_dcc(transfer *tr, const char *nick)
 static void t_passive(transfer * const tr, unsigned short remoteport)
 {
   char *msg;
-  ir_sockaddr_union_t remoteaddr;
   SIGNEDSOCK int addrlen;
   int retval;
 
   updatecontext();
 
-  bzero ((char *) &remoteaddr, sizeof (remoteaddr));
-  tr->clientsocket = socket(tr->family, SOCK_STREAM, 0);
-  if (tr->clientsocket < 0) {
+  bzero ((char *) &(tr->con.remote), sizeof(tr->con.remote));
+  tr->con.clientsocket = socket(tr->con.family, SOCK_STREAM, 0);
+  if (tr->con.clientsocket < 0) {
       t_closeconn(tr, "Socket Error", errno);
       return;
   }
 
-  if (tr->family == AF_INET ) {
+  if (tr->con.family == AF_INET ) {
     addrlen = sizeof(struct sockaddr_in);
-    remoteaddr.sin.sin_family = AF_INET;
-    remoteaddr.sin.sin_port = htons(remoteport);
-    remoteaddr.sin.sin_addr.s_addr = htonl(atoul(tr->remoteaddr));
+    tr->con.remote.sin.sin_family = AF_INET;
+    tr->con.remote.sin.sin_port = htons(remoteport);
+    tr->con.remote.sin.sin_addr.s_addr = htonl(atoul(tr->con.remoteaddr));
   } else {
     addrlen = sizeof(struct sockaddr_in6);
-    remoteaddr.sin6.sin6_family = AF_INET6;
-    remoteaddr.sin6.sin6_port = htons(remoteport);
-    retval = inet_pton(AF_INET6, tr->remoteaddr, &(remoteaddr.sin6.sin6_addr));
+    tr->con.remote.sin6.sin6_family = AF_INET6;
+    tr->con.remote.sin6.sin6_port = htons(remoteport);
+    retval = inet_pton(AF_INET6, tr->con.remoteaddr, &(tr->con.remote.sin6.sin6_addr));
     if (retval < 0)
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", tr->remoteaddr);
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", tr->con.remoteaddr);
   }
 
-  if (bind_irc_vhost(tr->family, tr->clientsocket) != 0) {
+  if (bind_irc_vhost(tr->con.family, tr->con.clientsocket) != 0) {
     t_closeconn(tr, "Couldn't Bind Virtual Host, Sorry", errno);
     return;
   }
 
-  if (set_socket_nonblocking(tr->clientsocket, 1) < 0 ) {
+  if (set_socket_nonblocking(tr->con.clientsocket, 1) < 0 ) {
     outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
   }
 
   if (gdata.debug > 0) {
     msg = mycalloc(maxtextlength);
-    my_getnameinfo(msg, maxtextlength -1, &(remoteaddr.sa), addrlen);
+    my_getnameinfo(msg, maxtextlength -1, &(tr->con.remote.sa), addrlen);
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "DCC SEND passive sent to %s on %s, connecting to %s",
             tr->nick, gnetwork->name, msg);
@@ -131,7 +130,7 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
   }
 
   alarm(CTIMEOUT);
-  retval = connect(tr->clientsocket, &remoteaddr.sa, addrlen);
+  retval = connect(tr->con.clientsocket, &(tr->con.remote.sa), addrlen);
   if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) ) {
     t_closeconn(tr, "Couldn't Connect", errno);
     alarm(0);
@@ -161,7 +160,7 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
     if (strcasecmp(tr->caps_nick, nick))
       continue;
 
-    tr->remoteaddr = mystrdup(remoteip);
+    tr->con.remoteaddr = mystrdup(remoteip);
     t_passive(tr, atoi(remoteport));
     return 1;
   }
@@ -180,7 +179,7 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
             tr->caps_nick, nick,
             tr->xpack->file,
             filename,
-            tr->listenport,
+            tr->con.localport,
             atoi(remoteport));
   }
   return 1;
@@ -192,7 +191,7 @@ void t_connected(transfer *tr)
   int connect_error;
   unsigned int connect_error_len = sizeof(connect_error);
 
-  callval_i = getsockopt(tr->clientsocket,
+  callval_i = getsockopt(tr->con.clientsocket,
                          SOL_SOCKET, SO_ERROR,
                          &connect_error, &connect_error_len);
 
@@ -206,13 +205,13 @@ void t_connected(transfer *tr)
   }
 
   if ((callval_i < 0) || connect_error) {
-    FD_CLR(tr->clientsocket, &gdata.writeset);
+    FD_CLR(tr->con.clientsocket, &gdata.writeset);
   } else {
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "Download Connection Established on %s", gnetwork->name);
-    FD_CLR(tr->clientsocket, &gdata.writeset);
-    tr->connecttime = gdata.curtime;
-    if (set_socket_nonblocking(tr->clientsocket, 0) < 0 ) {
+    FD_CLR(tr->con.clientsocket, &gdata.writeset);
+    tr->con.connecttime = gdata.curtime;
+    if (set_socket_nonblocking(tr->con.clientsocket, 0) < 0 ) {
       outerror(OUTERROR_TYPE_WARN, "Couldn't Set Blocking");
     }
   }
@@ -235,7 +234,7 @@ void t_check_duplicateip(transfer *const newtr)
   if (gdata.maxtransfersperperson == 0)
     return;
 
-  if (newtr->family != AF_INET)
+  if (newtr->con.family != AF_INET)
     return;
 
   num = 24 * 60; /* 1 day */

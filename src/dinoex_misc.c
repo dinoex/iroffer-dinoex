@@ -889,8 +889,8 @@ static void free_state(void)
      mydelete(tr->nick);
      mydelete(tr->caps_nick);
      mydelete(tr->hostname);
-     mydelete(tr->localaddr);
-     mydelete(tr->remoteaddr);
+     mydelete(tr->con.localaddr);
+     mydelete(tr->con.remoteaddr);
   }
 
   for (up = irlist_get_head(&gdata.uploads);
@@ -899,7 +899,7 @@ static void free_state(void)
      mydelete(up->nick);
      mydelete(up->hostname);
      mydelete(up->file);
-     mydelete(tr->remoteaddr);
+     mydelete(tr->con.remoteaddr);
   }
 
   for (pq = irlist_get_head(&gdata.mainqueue);
@@ -945,6 +945,7 @@ static void free_state(void)
      mydelete(h->pattern);
      mydelete(h->modified);
      mydelete(h->buffer_out);
+     mydelete(h->con.remoteaddr);
   }
   irlist_delete_all(&gdata.autotrigger);
   irlist_delete_all(&gdata.console_history);

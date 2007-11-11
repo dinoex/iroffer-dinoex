@@ -33,7 +33,6 @@ int setupdccchatout(const char *nick)
   char *msg;
   int rc;
   int listenport;
-  ir_sockaddr_union_t listenaddr;
   dccchat_t *chat;
   
   updatecontext();
@@ -75,30 +74,31 @@ int setupdccchatout(const char *nick)
     }
   
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
+  chat->status = DCCCHAT_UNUSED;
 
-  rc = open_listen(gnetwork->myip.sa.sa_family, &listenaddr, &(chat->fd), 0, gdata.tcprangestart, 1, NULL);
+  rc = open_listen(gnetwork->myip.sa.sa_family, &(chat->con.local), &(chat->con.clientsocket), 0, gdata.tcprangestart, 1, NULL);
   if (rc != 0)
     return 1;
   
-  listenport = get_port(&listenaddr);
+  listenport = get_port(&(chat->con.local));
   
   gdata.num_dccchats++;
   chat->status = DCCCHAT_LISTENING;
   chat->nick = mystrdup(nick);
-  chat->connecttime = gdata.curtime;
-  chat->lastcontact = gdata.curtime;
-  chat->family = listenaddr.sa.sa_family;
-  chat->localport = listenport;
+  chat->con.connecttime = gdata.curtime;
+  chat->con.lastcontact = gdata.curtime;
+  chat->con.family = chat->con.local.sa.sa_family;
+  chat->con.localport = listenport;
   chat->net = gnetwork->net;
   
-  msg = setup_dcc_local(&listenaddr);
+  msg = setup_dcc_local(&(chat->con.local));
   privmsg_fast(nick, "\1DCC CHAT CHAT %s\1", msg);
-  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, 0);
-  chat->localaddr = mystrdup(msg);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa), 0);
+  chat->con.localaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT sent to %s on %s, waiting for connection on %s",
-          nick, gnetwork->name, chat->localaddr);
+          nick, gnetwork->name, chat->con.localaddr);
   return 0;
 }
 
@@ -129,18 +129,18 @@ void setupdccchataccept(dccchat_t *chat)
   
   updatecontext();
   
-  listen_fd = chat->fd;
+  listen_fd = chat->con.clientsocket;
   addrlen = sizeof(struct sockaddr_in);
-  if ((chat->fd = accept(listen_fd, &(chat->remote.sa), &addrlen)) < 0)
+  if ((chat->con.clientsocket = accept(listen_fd, &(chat->con.remote.sa), &addrlen)) < 0)
     {
       outerror(OUTERROR_TYPE_WARN,"Accept Error, Aborting: %s",strerror(errno));
       FD_CLR(listen_fd, &gdata.readset);
       close(listen_fd);
-      chat->fd = FD_UNUSED;
+      chat->con.clientsocket = FD_UNUSED;
       return;
     }
 
-  ir_listen_port_connected(chat->localport);
+  ir_listen_port_connected(chat->con.localport);
 
   FD_CLR(listen_fd, &gdata.readset);
   close(listen_fd);
@@ -148,24 +148,24 @@ void setupdccchataccept(dccchat_t *chat)
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT connection received, authenticating");
   
-  if (set_socket_nonblocking(chat->fd,1) < 0 )
+  if (set_socket_nonblocking(chat->con.clientsocket, 1) < 0 )
     {
       outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
     }
   
-  if (is_in_badip(&(chat->remote))) {
+  if (is_in_badip(&(chat->con.remote))) {
     shutdowndccchat(chat, 0);
     return;
   }
   
   chat->status     = DCCCHAT_AUTHENTICATING;
-  chat->connecttime = gdata.curtime;
-  chat->lastcontact = gdata.curtime;
-  ir_boutput_init(&chat->boutput, chat->fd, 0);
+  chat->con.connecttime = gdata.curtime;
+  chat->con.lastcontact = gdata.curtime;
+  ir_boutput_init(&chat->boutput, chat->con.clientsocket, 0);
   
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->remote.sa), addrlen);
-  chat->remoteaddr = mystrdup(msg);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa), addrlen);
+  chat->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
 
   setup_chat_banner(chat);
@@ -174,7 +174,6 @@ void setupdccchataccept(dccchat_t *chat)
 int setupdccchat(const char *nick,
                  const char *line)
 {
-  ir_sockaddr_union_t localaddr;
   char *ip, *port;
   SIGNEDSOCK int addrlen;
   int retval;
@@ -231,33 +230,33 @@ int setupdccchat(const char *nick,
       return 1;
     }
   
-  bzero((char *) &(chat->remote), sizeof(ir_sockaddr_union_t));
+  bzero((char *) &(chat->con.remote), sizeof(chat->con.remote));
   
-  chat->family = (strchr(ip, ':')) ? AF_INET6 : AF_INET;
-  chat->fd = socket(chat->family, SOCK_STREAM, 0);
-  if (chat->fd < 0)
+  chat->con.family = (strchr(ip, ':')) ? AF_INET6 : AF_INET;
+  chat->con.clientsocket = socket(chat->con.family, SOCK_STREAM, 0);
+  if (chat->con.clientsocket < 0)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Socket Error: %s", strerror(errno));
-      chat->fd = FD_UNUSED;
+      chat->con.clientsocket = FD_UNUSED;
       mydelete(ip);
       mydelete(port);
       return 1;
     }
   
   port[strlen(port)-1] = '\0';
-  if (chat->family == AF_INET)
+  if (chat->con.family == AF_INET)
     {
       addrlen = sizeof(struct sockaddr_in);
-      chat->remote.sin.sin_family = AF_INET;
-      chat->remote.sin.sin_port = htons(atoi(port));
-      chat->remote.sin.sin_addr.s_addr = htonl(atoul(ip));
+      chat->con.remote.sin.sin_family = AF_INET;
+      chat->con.remote.sin.sin_port = htons(atoi(port));
+      chat->con.remote.sin.sin_addr.s_addr = htonl(atoul(ip));
     }
   else
     {
       addrlen = sizeof(struct sockaddr_in6);
-      chat->remote.sin6.sin6_family = AF_INET6;
-      chat->remote.sin6.sin6_port = htons(atoi(port));
-      retval = inet_pton(AF_INET6, ip, &(chat->remote.sin6.sin6_addr));
+      chat->con.remote.sin6.sin6_family = AF_INET6;
+      chat->con.remote.sin6.sin6_port = htons(atoi(port));
+      retval = inet_pton(AF_INET6, ip, &(chat->con.remote.sin6.sin6_addr));
       if (retval != 0)
         outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", ip);
     }
@@ -265,63 +264,63 @@ int setupdccchat(const char *nick,
   mydelete(port);
   mydelete(ip);
   
-  if (is_in_badip(&(chat->remote))) {
+  if (is_in_badip(&(chat->con.remote))) {
     shutdowndccchat(chat, 0);
     return 1;
   }
   
-  if (bind_irc_vhost(chat->family, chat->fd) != 0)
+  if (bind_irc_vhost(chat->con.family, chat->con.clientsocket) != 0)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Bind To Virtual Host: %s", strerror(errno));
-      chat->fd = FD_UNUSED;
+      chat->con.clientsocket = FD_UNUSED;
       return 1;
     }
   
-  if (set_socket_nonblocking(chat->fd,1) < 0 )
+  if (set_socket_nonblocking(chat->con.clientsocket, 1) < 0 )
     {
       outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
     }
   
   alarm(CTIMEOUT);
-  retval = connect(chat->fd, &(chat->remote.sa), addrlen);
+  retval = connect(chat->con.clientsocket, &(chat->con.remote.sa), addrlen);
   if ((retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)))
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Connection to DCC Chat Failed: %s", strerror(errno));
-      chat->fd = FD_UNUSED;
+      chat->con.clientsocket = FD_UNUSED;
       return 1;
     }
   alarm(0);
   
-  addrlen = sizeof (localaddr);
-  if (getsockname(chat->fd, &localaddr.sa, &addrlen) < 0)
+  addrlen = sizeof(chat->con.local);
+  if (getsockname(chat->con.clientsocket, &(chat->con.local.sa), &addrlen) < 0)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Couldn't get sock name: %s", strerror(errno));
-      chat->fd = FD_UNUSED;
+      chat->con.clientsocket = FD_UNUSED;
       return 1;
     }
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"dccchat socket = %d",chat->fd);
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "dccchat socket = %d", chat->con.clientsocket);
     }
   
   gdata.num_dccchats++;
   chat->status = DCCCHAT_CONNECTING;
   chat->nick = mystrdup(nick);
-  chat->localport  = 0;
-  chat->connecttime = gdata.curtime;
-  chat->lastcontact = gdata.curtime;
+  chat->con.localport  = 0;
+  chat->con.connecttime = gdata.curtime;
+  chat->con.lastcontact = gdata.curtime;
   chat->net = gnetwork->net;
   
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, 0);
-  chat->localaddr = mystrdup(msg);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->remote.sa), 0);
-  chat->remoteaddr = mystrdup(msg);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa), 0);
+  chat->con.localaddr = mystrdup(msg);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa), 0);
+  chat->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT received from %s on %s, attempting connection to %s",
-          nick, gnetwork->name, chat->remoteaddr);
+          nick, gnetwork->name, chat->con.remoteaddr);
   return 0;
 }
 
@@ -331,9 +330,9 @@ void setupdccchatconnected(dccchat_t *chat)
           "DCC CHAT connection suceeded, authenticating");
   
   chat->status = DCCCHAT_AUTHENTICATING;
-  chat->connecttime = gdata.curtime;
-  chat->lastcontact = gdata.curtime;
-  ir_boutput_init(&chat->boutput, chat->fd, 0);
+  chat->con.connecttime = gdata.curtime;
+  chat->con.lastcontact = gdata.curtime;
+  ir_boutput_init(&chat->boutput, chat->con.clientsocket, 0);
   
   setup_chat_banner(chat);
 }
@@ -351,7 +350,7 @@ void parsedccchat(dccchat_t *chat,
   linec = mystrdup(line);
   caps(linec);
   
-  chat->lastcontact = gdata.curtime;
+  chat->con.lastcontact = gdata.curtime;
   
   switch (chat->status)
     {
@@ -393,7 +392,7 @@ void parsedccchat(dccchat_t *chat,
                   "DCC CHAT: Incorrect password");
           
           writedccchat(chat,0,"Incorrect Password\n");
-          count_badip(&(chat->remote));
+          count_badip(&(chat->con.remote));
           shutdowndccchat(chat,1);
           /* caller deletes */
         }
@@ -501,29 +500,29 @@ void shutdowndccchat(dccchat_t *chat, int flush)
           flushdccchat(chat);
         }
       
-      FD_CLR(chat->fd, &gdata.readset);
-      FD_CLR(chat->fd, &gdata.writeset);
+      FD_CLR(chat->con.clientsocket, &gdata.readset);
+      FD_CLR(chat->con.clientsocket, &gdata.writeset);
       usleep(100*1000);
       /*
        * cygwin close() is broke, if outstanding data is present
        * it will block until the TCP connection is dead, sometimes
        * upto 10-20 minutes, calling shutdown() first seems to help
        */
-      shutdown(chat->fd, SHUT_RDWR);
-      close(chat->fd);
+      shutdown(chat->con.clientsocket, SHUT_RDWR);
+      close(chat->con.clientsocket);
       mydelete(chat->nick);
-      mydelete(chat->localaddr);
-      mydelete(chat->remoteaddr);
+      mydelete(chat->con.localaddr);
+      mydelete(chat->con.remoteaddr);
       ir_boutput_delete(&chat->boutput);
       memset(chat, 0, sizeof(dccchat_t));
-      chat->fd = FD_UNUSED;
+      chat->con.clientsocket = FD_UNUSED;
 
       if (chat->status == DCCCHAT_LISTENING)
-        ir_listen_port_connected(chat->localport);
+        ir_listen_port_connected(chat->con.localport);
 
 #ifdef USE_UPNP
-      if (gdata.upnp_router && (chat->family == AF_INET))
-        upnp_rem_redir(chat->localport);
+      if (gdata.upnp_router && (chat->con.family == AF_INET))
+        upnp_rem_redir(chat->con.localport);
 #endif /* USE_UPNP */
 
       chat->status = DCCCHAT_UNUSED;

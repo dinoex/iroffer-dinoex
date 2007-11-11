@@ -234,13 +234,24 @@ typedef union {
   struct sockaddr_in6 sin6;
 } ir_sockaddr_union_t;
 
-typedef struct
-{
+typedef struct {
+  int family;
   int listensocket;
   int clientsocket;
+  char *remoteaddr;
+  char *localaddr;
+  time_t lastcontact;
+  time_t connecttime;
+  unsigned short localport;
+  unsigned short remoteport;
+  ir_sockaddr_union_t remote;
+  ir_sockaddr_union_t local;
+} ir_connection_t;
+
+typedef struct
+{
   int id;
   int net;
-  int family;
   off_t bytessent;
   off_t bytesgot;
   off_t lastack;
@@ -251,21 +262,16 @@ typedef struct
   mmap_info_t *mmap_info;
 #endif
   long tx_bucket;
-  time_t lastcontact;
-  time_t connecttime;
   time_t restrictsend_bad;
   unsigned long long connecttimems;
-  unsigned short listenport;
   unsigned long remoteip;
   float lastspeed;
   float maxspeed;
   xdcc *xpack;
-  ir_sockaddr_union_t serveraddress;
+  ir_connection_t con;
   char *nick;
   char *caps_nick;
   char *hostname;
-  char *remoteaddr;
-  char *localaddr;
   char nomin;
   char nomax;
   char reminded;
@@ -288,26 +294,20 @@ typedef enum
 
 typedef struct
 {
-  int clientsocket;
   int filedescriptor;
   off_t bytesgot;
   off_t totalsize;
   off_t lastspeedamt;
   off_t resumesize;
-  time_t lastcontact;
-  time_t connecttime;
-  unsigned short remoteport;
-  unsigned short localport;
   float lastspeed;
   char *nick;
   char *hostname;
   char *file;
-  char *remoteaddr;
+  ir_connection_t con;
   upload_status_e ul_status;
   int resumed;
   int net;
   int token;
-  int family;
 } upload;
 
 typedef struct
@@ -320,18 +320,11 @@ typedef struct
       DCCCHAT_AUTHENTICATING,
       DCCCHAT_CONNECTED,
     } status;
-  int fd;
   int net;
   int level;
-  int family;
   ir_boutput_t boutput;
-  time_t lastcontact;
-  time_t connecttime;
-  unsigned short localport;
   char *nick;
-  char *remoteaddr;
-  char *localaddr;
-  ir_sockaddr_union_t remote;
+  ir_connection_t con;
   char dcc_input_line[INPUT_BUFFER_LENGTH];
 } dccchat_t;
 

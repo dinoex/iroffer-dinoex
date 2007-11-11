@@ -114,62 +114,60 @@ static void telnet_accept(int i)
   gnetwork_t *backup;
   char *msg;
   dccchat_t *chat;
-  ir_sockaddr_union_t remoteaddr;
-  ir_sockaddr_union_t localaddr;
   SIGNEDSOCK int addrlen;
-  int clientsocket;
 
   updatecontext();
 
-  if (telnet_family[i] != AF_INET) {
+  chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
+  chat->status = DCCCHAT_UNUSED;
+  chat->con.family = telnet_family[i];
+  if (chat->con.family != AF_INET) {
     addrlen = sizeof (struct sockaddr_in6);
-    clientsocket = accept(telnet_listen[i], &remoteaddr.sa, &addrlen);
+    chat->con.clientsocket = accept(telnet_listen[i], &(chat->con.remote.sa), &addrlen);
   } else {
     addrlen = sizeof (struct sockaddr_in);
-    clientsocket = accept(telnet_listen[i], &remoteaddr.sa, &addrlen);
+    chat->con.clientsocket = accept(telnet_listen[i], &(chat->con.remote.sa), &addrlen);
   }
-  if (clientsocket < 0) {
+  if (chat->con.clientsocket < 0) {
     outerror(OUTERROR_TYPE_WARN, "Accept Error, Aborting: %s", strerror(errno));
     return;
   }
 
-  if (set_socket_nonblocking(clientsocket, 1) < 0 ) {
+  if (set_socket_nonblocking(chat->con.clientsocket, 1) < 0 ) {
     outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
   }
 
-  addrlen = sizeof(localaddr);
-  if (getsockname(clientsocket, &localaddr.sa, &addrlen) < 0) {
+  addrlen = sizeof(chat->con.local);
+  if (getsockname(chat->con.clientsocket, &(chat->con.local.sa), &addrlen) < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't get sock name: %s", strerror(errno));
+    close(chat->con.clientsocket);
+    chat->con.clientsocket = FD_UNUSED;
     return;
   }
  
   gdata.num_dccchats++;
-  chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
-  chat->family = telnet_family[i];
-  chat->fd = clientsocket;
   chat->status = DCCCHAT_AUTHENTICATING;
   chat->net = 0;
   chat->nick = mystrdup(".telnet");
-  chat->localport = gdata.telnet_port;
-  chat->connecttime = gdata.curtime;
-  chat->lastcontact = gdata.curtime;
-  chat->remote = remoteaddr;
+  chat->con.localport = gdata.telnet_port;
+  chat->con.connecttime = gdata.curtime;
+  chat->con.lastcontact = gdata.curtime;
 
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->remote.sa), addrlen);
-  chat->localaddr = mystrdup(msg);
-  my_getnameinfo(msg, maxtextlength -1, &localaddr.sa, 0);
-  chat->remoteaddr = mystrdup(msg);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa), addrlen);
+  chat->con.localaddr = mystrdup(msg);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa), 0);
+  chat->con.remoteaddr = mystrdup(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "Telnet connection received from %s",  msg);
   mydelete(msg);
 
-  if (is_in_badip(&(chat->remote))) {
+  if (is_in_badip(&(chat->con.remote))) {
     shutdowndccchat(chat, 0);
     return;
   }
 
-  ir_boutput_init(&chat->boutput, chat->fd, 0);
+  ir_boutput_init(&chat->boutput, chat->con.clientsocket, 0);
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[chat->net]);

@@ -1223,7 +1223,7 @@ static void u_dcld(const userinput * const u)
       if (tr->tr_status == TRANSFER_STATUS_SENDING || tr->tr_status == TRANSFER_STATUS_WAITING)
         {
           left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
-          started = min2(359999,gdata.curtime-tr->connecttime);
+          started = min2(359999, gdata.curtime-tr->con.connecttime);
           snprintf(tempstr2, maxtextlengthshort - 1,
                    "%1.1fK", tr->xpack->minspeed);
           snprintf(tempstr3, maxtextlengthshort - 1,
@@ -1309,7 +1309,7 @@ static void u_dcld(const userinput * const u)
       if (ul->ul_status == UPLOAD_STATUS_GETTING || ul->ul_status == UPLOAD_STATUS_WAITING)
         {
           left = min2(359999,(ul->totalsize-ul->bytesgot)/((int)(max2(ul->lastspeed,0.001)*1024)));
-          started = min2(359999,gdata.curtime-ul->connecttime);
+          started = min2(359999, gdata.curtime-ul->con.connecttime);
           
           u_respond(u,
                     "  ^- %5.1fK/s    %6" LLPRINTFMT "uK/%6" LLPRINTFMT "uK  %2i%c%02i%c/%2i%c%02i%c",
@@ -2230,17 +2230,17 @@ static void u_chatl(const userinput * const u)
       
       tempstr = mycalloc(maxtextlengthshort);
       
-      getdatestr(tempstr,chat->connecttime,maxtextlengthshort);
+      getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
       u_respond(u,"  Connected at %s",tempstr);
       
-      getdatestr(tempstr,chat->connecttime,maxtextlengthshort);
+      getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
       u_respond(u,"  Last contact %s",tempstr);
       
       mydelete(tempstr);
       
       u_respond(u, "  Local: %s, Remote: %s",
-                chat->localaddr,
-                chat->remoteaddr);
+                chat->con.localaddr,
+                chat->con.remoteaddr);
     }
   
   return;
@@ -3421,8 +3421,8 @@ static void u_trinfo(const userinput * const u)
   mydelete(tempstr3);
   
   left     = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
-  started  = min2(359999,gdata.curtime-tr->connecttime);
-  lcontact = min2(359999,gdata.curtime-tr->lastcontact);
+  started  = min2(359999, gdata.curtime-tr->con.connecttime);
+  lcontact = min2(359999, gdata.curtime-tr->con.lastcontact);
   u_respond(u,"Transfer started %i%c %i%c ago, Finish in %i%c %i%c, Last contact %i%c %i%c ago.",
             started < 3600 ? started/60 : started/60/60 ,
             started < 3600 ? 'm' : 'h',
@@ -3438,11 +3438,11 @@ static void u_trinfo(const userinput * const u)
             lcontact < 3600 ? 's' : 'm');
   
   u_respond(u, "Local: %s, Remote: %s",
-            tr->localaddr, tr->remoteaddr);
+            tr->con.localaddr, tr->con.remoteaddr);
   
   u_respond(u,"Sockets: Listen %i, Transfer %i, File %i",
-            (tr->listensocket == FD_UNUSED) ? 0 : tr->listensocket,
-            (tr->clientsocket == FD_UNUSED) ? 0 : tr->clientsocket,
+            (tr->con.listensocket == FD_UNUSED) ? 0 : tr->con.listensocket,
+            (tr->con.clientsocket == FD_UNUSED) ? 0 : tr->con.clientsocket,
             (tr->xpack->file_fd == FD_UNUSED) ? 0 : tr->xpack->file_fd);
   
 #ifdef HAVE_MMAP

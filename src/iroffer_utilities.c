@@ -1428,7 +1428,7 @@ void dumpgdata(void)
   gdata_irlist_iter_start(https, http);
   ioutput(gdata_common,
           "  : clientsocket=%d filedescriptor=%d",
-          iter->clientsocket, iter->filedescriptor);
+          iter->con.clientsocket, iter->filedescriptor);
   ioutput(gdata_common,
           "  : bytesgot=%" LLPRINTFMT "u bytessent=%" LLPRINTFMT "u",
           iter->bytesgot, iter->bytessent);
@@ -1437,14 +1437,11 @@ void dumpgdata(void)
           iter->filepos, iter->totalsize);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld",
-          (long)iter->lastcontact,
-          (long)iter->connecttime);
+          (long)iter->con.lastcontact,
+          (long)iter->con.connecttime);
   ioutput(gdata_common,
-          "  : remoteport=%d remoteip=0x%.8lX",
-          iter->remoteport,
-          iter->remoteip4);
-  inet_ntop(iter->family, &(iter->remoteip6), ip6, maxtextlengthshort);
-  ioutput(gdata_common, "  : remoteip=%s", ip6);
+          "  : remote%s",
+          iter->con.remoteaddr);
   gdata_iter_print_uint(status);
   gdata_iter_print_uint(support_groups);
   gdata_iter_print_string(file);
@@ -1760,16 +1757,16 @@ void dumpgdata(void)
   ioutput(gdata_common,
           "  : status=%d fd=%d",
           iter->status,
-          iter->fd);
+          iter->con.clientsocket);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld",
-          (long)iter->lastcontact,
-          (long)iter->connecttime);
+          (long)iter->con.lastcontact,
+          (long)iter->con.connecttime);
   ioutput(gdata_common,
           "  : localport=%d local%s remote%s",
-          iter->localport,
-          iter->localaddr,
-          iter->remoteaddr);
+          iter->con.localport,
+          iter->con.localaddr,
+          iter->con.remoteaddr);
   gdata_iter_print_string(nick);
   gdata_irlist_iter_end;
   gdata_print_int(num_dccchats);
@@ -1903,8 +1900,8 @@ void dumpgdata(void)
   gdata_irlist_iter_start(trans, transfer);
   ioutput(gdata_common,
           "  : listen=%d client=%d id=%d",
-          iter->listensocket,
-          iter->clientsocket,
+          iter->con.listensocket,
+          iter->con.clientsocket,
           iter->id);
   ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   ioutput(gdata_common,
@@ -1918,15 +1915,15 @@ void dumpgdata(void)
           iter->tx_bucket);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld lastspeed=%.1f pack=%p",
-          (long)iter->lastcontact,
-          (long)iter->connecttime,
+          (long)iter->con.lastcontact,
+          (long)iter->con.connecttime,
           iter->lastspeed,
           iter->xpack);
   ioutput(gdata_common,
           "  : listenport=%d local%s remote%s",
-          iter->listenport,
-          iter->localaddr,
-          iter->remoteaddr);
+          iter->con.localport,
+          iter->con.localaddr,
+          iter->con.remoteaddr);
   ioutput(gdata_common, "  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
 #ifdef HAVE_MMAP
   ioutput(gdata_common, "  : mmap_info=%p", iter->mmap_info);
@@ -1948,7 +1945,7 @@ void dumpgdata(void)
   gdata_irlist_iter_start(uploads, upload);
   ioutput(gdata_common,
           "  : client=%d file=%d ul_status=%d",
-          iter->clientsocket,
+          iter->con.clientsocket,
           iter->filedescriptor,
           iter->ul_status);
   ioutput(gdata_common,
@@ -1959,14 +1956,14 @@ void dumpgdata(void)
           iter->lastspeedamt);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld lastspeed=%.1f",
-          (long)iter->lastcontact,
-          (long)iter->connecttime,
+          (long)iter->con.lastcontact,
+          (long)iter->con.connecttime,
           iter->lastspeed);
   ioutput(gdata_common,
           "  : localport=%d remoteport=%d remote=%s",
-          iter->localport,
-          iter->remoteport,
-          iter->remoteaddr);
+          iter->con.localport,
+          iter->con.remoteport,
+          iter->con.remoteaddr);
   ioutput(gdata_common,"  : net=%d", iter->net + 1 );
   ioutput(gdata_common, "  : token=%d", iter->token);
   gdata_iter_print_string(nick);

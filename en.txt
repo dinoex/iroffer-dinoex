@@ -1918,7 +1918,7 @@
 1966 "%lu.%lu.%lu.%lu:%d"
 1967 "Connecting to %s"
 1968 "using %s"
-1969 "  : remoteport=%d remoteip=0x%.8lX"
+1969 "  : remote%s"
 1970 "  : remoteip=%s"
 1971 "%lu %d"
 1972 "Invalid IP: %s"
