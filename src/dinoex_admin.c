@@ -187,7 +187,7 @@ int reorder_new_groupdesc(const char *group, const char *desc)
 
     if (strcasecmp(xd->group, group) != 0)
       continue;
- 
+
     k++;
     /* delete all matching entires */
     if (xd->group_desc != NULL)
@@ -223,7 +223,7 @@ int reorder_groupdesc(const char *group)
 
     if (strcasecmp(xd->group, group) != 0)
       continue;
- 
+
     k++;
     if (xd->group_desc != NULL) {
       if (descxd == NULL) {
@@ -815,12 +815,12 @@ void a_listul(const userinput * const u)
   size_t len;
 
   updatecontext();
-  
+
   if (!irlist_size(&gdata.uploadhost) || !gdata.uploaddir) {
     a_respond(u, "No upload hosts or no uploaddir defined.");
     return;
   }
-  
+
   if (u->arg1 == NULL) {
     u_listdir(u, gdata.uploaddir);
     return;
@@ -1391,7 +1391,7 @@ static void a_make_announce_long(const userinput * const u, int n)
 {
   const char *msg;
   char *tempstr;
-  userinput *ui; 
+  userinput *ui;
 
   msg = gdata.autoaddann;
   if (msg == NULL)

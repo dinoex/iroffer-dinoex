@@ -545,7 +545,7 @@ static void h_write_header(http * const h, const char *header)
   localt = gmtime(&gdata.curtime);
   tempstr = mycalloc(maxtextlength);
   date = mycalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); 
+  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
   len = snprintf(tempstr, maxtextlength-1, header, date);
   mydelete(date);
   write(h->con.clientsocket, tempstr, len);
@@ -568,7 +568,7 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
   if (now) {
     last = mycalloc(maxtextlengthshort);
     localt = gmtime(now);
-    strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); 
+    strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
     if (h->modified) {
       if (strcmp(last, h->modified) == 0) {
         http_status = 304;

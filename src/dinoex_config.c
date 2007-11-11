@@ -680,7 +680,7 @@ static config_func_typ config_parse_func[] = {
 static void config_sorted_func(void)
 {
   long i;
-  
+
   for (i = 0L; config_parse_func[i].name != NULL; i ++) {
     if (config_parse_func[i + 1].name == NULL)
       break;
@@ -699,7 +699,7 @@ static int config_find_func(const char *key)
   int bin_mid;
   int bin_low;
   int bin_high;
-  
+
   if (config_func_anzahl > 0L) {
     bin_low = 0;
     bin_high = config_func_anzahl - 1;
@@ -715,7 +715,7 @@ static int config_find_func(const char *key)
     }
   };
   return -1;
-} 
+}
 
 int set_config_func(const char *key, char *text)
 {

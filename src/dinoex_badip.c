@@ -114,7 +114,7 @@ void count_badip(ir_sockaddr_union_t *sa)
     count_badip6(&(sa->sin6.sin6_addr));
   }
 }
- 
+
 void expire_badip4(void)
 {
   badip4 *b;

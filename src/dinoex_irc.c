@@ -42,7 +42,7 @@ static void udpate_getip_net(int net, unsigned long ourip)
 
     if (gnetwork->getip_net != net)
       continue;
- 
+
     if (gnetwork->ourip == ourip)
       continue;
 
@@ -178,7 +178,7 @@ int bind_irc_vhost(int family, int clientsocket)
 
 #ifdef USE_UPNP
 static void my_get_upnp_data(const struct sockaddr *sa, socklen_t salen)
-{ 
+{
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 

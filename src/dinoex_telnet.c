@@ -144,7 +144,7 @@ static void telnet_accept(int i)
     chat->con.clientsocket = FD_UNUSED;
     return;
   }
- 
+
   gdata.num_dccchats++;
   chat->status = DCCCHAT_AUTHENTICATING;
   chat->net = 0;

@@ -203,7 +203,7 @@ int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const 
   ir_pqueue *pq;
   int alreadytrans = 0;
 
-  *inq = 0; 
+  *inq = 0;
   for (pq = irlist_get_head(list);
        pq;
        pq = irlist_get_next(pq)) {
