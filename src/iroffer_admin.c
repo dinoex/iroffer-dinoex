@@ -85,7 +85,6 @@ static void u_qsend(const userinput * const u);
 static void u_shutdown(const userinput * const u);
 static void u_debug(const userinput * const u);
 static void u_jump(const userinput * const u);
-static void u_servqc(const userinput * const u);
 static void u_servers(const userinput * const u);
 static void u_trinfo(const userinput * const u);
 static void u_clearrecords(const userinput * const u);
@@ -215,7 +214,7 @@ static const userinput_parse_t userinput_parse[] = {
 {6,2,method_allow_all,a_join,          "JOIN","channel [net]","join channel till rehash"},
 {6,2,method_allow_all,a_part,          "PART","channel [net]","part channel till rehash"},
 {6,2,method_allow_all,u_jump,          "JUMP","server [net]","Switches to a random server or server <server>"},
-{6,5,method_allow_all,u_servqc,        "SERVQC",NULL,"Clears the server send queue"},
+{6,5,method_allow_all,a_servqc,        "SERVQC",NULL,"Clears the server send queue"},
 {6,2,method_allow_all,u_status,        "STATUS",NULL,"Show Useful Information"},
 {6,5,method_allow_all,u_rehash,        "REHASH",NULL,"Re-reads config file(s) and reconfigures"},
 {6,2,method_allow_all,u_botinfo,       "BOTINFO",NULL,"Show Information about the bot status"},
@@ -3247,32 +3246,6 @@ static void u_debug(const userinput * const u) {
    
    gdata.debug = atoi(u->arg1);
    }
-
-static void u_servqc(const userinput * const u)
-{
-  gnetwork_t *backup;
-  int ss;
-
-  updatecontext();
-  
-  backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++)
-    {
-      u_respond(u, "Cleared server queue of %d lines",
-                irlist_size(&gdata.networks[ss].serverq_channel) +
-                irlist_size(&gdata.networks[ss].serverq_fast) +
-                irlist_size(&gdata.networks[ss].serverq_normal) +
-                irlist_size(&gdata.networks[ss].serverq_slow));
-      
-      gnetwork = &(gdata.networks[ss]);
-      cleanannounce();
-      gnetwork = backup;
-      irlist_delete_all(&gdata.networks[ss].serverq_fast);
-      irlist_delete_all(&gdata.networks[ss].serverq_normal);
-      irlist_delete_all(&gdata.networks[ss].serverq_slow);
-    }
-  return;
-}
 
 static void u_jump(const userinput * const u)
 {
