@@ -29,4 +29,6 @@ char *get_config_nick(void);
 int has_closed_servers(void);
 int has_joined_channels(int all);
 
+int irc_select(int highests);
+
 /* End of File */

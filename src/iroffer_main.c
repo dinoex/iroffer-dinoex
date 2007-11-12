@@ -269,24 +269,7 @@ static void mainloop (void) {
       fetch_multi_fdset(&gdata.readset, &gdata.writeset, &gdata.execset, &highests);
 #endif /* USE_CURL */
       
-      for (ss=0; ss<gdata.networks_online; ss++)
-        {
-          if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
-            {
-              FD_SET(gdata.networks[ss].ircserver, &gdata.readset);
-              highests = max2(highests, gdata.networks[ss].ircserver);
-            }
-          else if (gdata.networks[ss].serverstatus == SERVERSTATUS_TRYING)
-            {
-              FD_SET(gdata.networks[ss].ircserver, &gdata.writeset);
-              highests = max2(highests, gdata.networks[ss].ircserver);
-            }
-          else if (gdata.networks[ss].serverstatus == SERVERSTATUS_RESOLVING)
-            {
-              FD_SET(gdata.networks[ss].serv_resolv.sp_fd[0], &gdata.readset);
-              highests = max2(highests, gdata.networks[ss].serv_resolv.sp_fd[0]);
-            }
-        } /*networks */
+      highests = irc_select(highests);
       
       if (!gdata.background)
         {

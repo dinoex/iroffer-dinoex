@@ -569,4 +569,28 @@ int has_joined_channels(int all)
   return j;
 }
 
+int irc_select(int highests)
+{
+  int ss;
+
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) {
+      FD_SET(gdata.networks[ss].ircserver, &gdata.readset);
+      highests = max2(highests, gdata.networks[ss].ircserver);
+      continue;
+    }
+    if (gdata.networks[ss].serverstatus == SERVERSTATUS_TRYING) {
+      FD_SET(gdata.networks[ss].ircserver, &gdata.writeset);
+      highests = max2(highests, gdata.networks[ss].ircserver);
+      continue;
+    }
+    if (gdata.networks[ss].serverstatus == SERVERSTATUS_RESOLVING) {
+      FD_SET(gdata.networks[ss].serv_resolv.sp_fd[0], &gdata.readset);
+      highests = max2(highests, gdata.networks[ss].serv_resolv.sp_fd[0]);
+      continue;
+    }
+  }
+  return highests;
+}
+
 /* End of File */
