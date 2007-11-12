@@ -1579,6 +1579,7 @@ void shutdowniroffer(void) {
        irlist_delete_all(&gdata.networks[ss].serverq_fast);
        irlist_delete_all(&gdata.networks[ss].serverq_normal);
        irlist_delete_all(&gdata.networks[ss].serverq_slow);
+       irlist_delete_all(&gdata.networks[ss].serverq_channel);
      }
    
    /* close connections */
