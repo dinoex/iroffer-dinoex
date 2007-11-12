@@ -16,7 +16,7 @@
 void telnet_close_listen(void);
 int telnet_setup_listen(void);
 void telnet_reash_listen(void);
-int telnet_select_listen(int highests);
-void telnet_done_select(void);
+int telnet_select_fdset(int highests);
+void telnet_perform(void);
 
 /* End of File */

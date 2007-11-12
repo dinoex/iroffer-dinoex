@@ -52,7 +52,7 @@ typedef struct
 void h_close_listen(void);
 int h_setup_listen(void);
 void h_reash_listen(void);
-int h_listen(int highests);
-void h_done_select(int changesec);
+int h_select_fdset(int highests);
+void h_perform(int changesec);
 
 /* End of File */

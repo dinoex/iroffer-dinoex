@@ -409,7 +409,7 @@ void h_reash_listen(void)
   h_setup_listen();
 }
 
-int h_listen(int highests)
+int h_select_fdset(int highests)
 {
   http *h;
   int i;
@@ -1721,7 +1721,7 @@ static void h_istimeout(http * const h)
     }
 }
 
-void h_done_select(int changesec)
+void h_perform(int changesec)
 {
   http *h;
   int i;

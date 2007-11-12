@@ -94,7 +94,7 @@ void telnet_reash_listen(void)
   telnet_setup_listen();
 }
 
-int telnet_select_listen(int highests)
+int telnet_select_fdset(int highests)
 {
   int i;
 
@@ -175,7 +175,7 @@ static void telnet_accept(int i)
   gnetwork = backup;
 }
 
-void telnet_done_select(void)
+void telnet_perform(void)
 {
   int i;
 

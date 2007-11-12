@@ -298,8 +298,8 @@ static void mainloop (void) {
       
       highests = t_select_fdset(highests, changequartersec);
       highests = l_select_fdset(highests);
-      highests = telnet_select_listen(highests);
-      highests = h_listen(highests);
+      highests = telnet_select_fdset(highests);
+      highests = h_select_fdset(highests);
       
       if (gdata.md5build.file_fd != FD_UNUSED)
         {
@@ -1035,8 +1035,8 @@ static void mainloop (void) {
          }
       gnetwork = NULL;
 
-      telnet_done_select();
-      h_done_select(changesec);
+      telnet_perform();
+      h_perform(changesec);
       
       /*----- time for a delayed shutdown? ----- */
       if (changesec && gdata.delayedshutdown)
