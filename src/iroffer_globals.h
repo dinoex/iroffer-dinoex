@@ -167,6 +167,7 @@ irlist_t autoqueue;
 irlist_t autotrigger;
 irlist_t unlimitedhost;
 irlist_t geoipcountry;
+irlist_t nogeoipcountry;
 irlist_t geoipexcludenick;
 irlist_t autoadd_dirs;
 irlist_t packs_delayed;

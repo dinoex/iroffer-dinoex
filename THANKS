@@ -288,6 +288,7 @@ unlogisch
 
 Misha-SU
 	report "ANNOUNCE" bug
+	option "nogeoipcountry"
 
 Lamarr
 	report "MAXSPEED" bug

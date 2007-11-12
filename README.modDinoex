@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+201) nogeoipcountry (inspired by Misha-SU)
+  disallow downloads only for users in the given countries.
+  this sets default acces to allow and disables geoipcountry.
+
 200) getip_network
   Get my own IP for the current Network from the a diffrent network.
   You need this when the given network does not returns your IP.

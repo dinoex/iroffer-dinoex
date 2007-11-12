@@ -1618,7 +1618,6 @@
 1658 "Resetting download limit of pack %d, used %d"
 1659 "%ld.%ld.%ld.%ld"
 1660 "GeoIP [%s on %s]: Info %ld.%ld.%ld.%ld -> %s)"
-1661 "error"
 1662 "Sorry, no downloads to your country = \"%s\", ask owner."
 1663 "IP from other country (%s) detected"
 1664 "You are being punished for pararell downloads"
@@ -2070,3 +2069,4 @@
 2121 "Authorization"
 2122 "Ignoring Incomplete Ignore (mask = %s)"
 2123 "getip_network"
+2124 "nogeoipcountry"

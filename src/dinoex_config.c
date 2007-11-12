@@ -196,6 +196,9 @@ static config_list_typ config_parse_list[] = {
 {"hadminhost",              &gdata.hadminhost,              3 },
 {"http_vhost",              &gdata.http_vhost,              0 },
 {"nodownloadhost",          &gdata.nodownloadhost,          2 },
+#ifdef USE_GEOIP
+{"nogeoipcountry",          &gdata.nogeoipcountry,          0 },
+#endif
 {"telnet_vhost",            &gdata.telnet_vhost,            0 },
 {"unlimitedhost",           &gdata.unlimitedhost,           2 },
 {"uploadhost",              &gdata.uploadhost,              2 },

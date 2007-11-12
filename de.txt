@@ -1618,7 +1618,6 @@
 1658 "Resetting download limit of pack %d, used %d"
 1659 "%ld.%ld.%ld.%ld"
 1660 "GeoIP [%s on %s]: Info %ld.%ld.%ld.%ld -> %s)"
-1661 "error"
 1662 "Leider sind Downloads zu deinem Land = \"%s\" gesperrt. Frage den Besitzer des Bots."
 1663 "IP from other country (%s) detected"
 1664 "Du wirst bestraft, weil du gleichzeitig mehrere Übertragungen zum Bot hast"
@@ -2070,3 +2069,4 @@
 2121 "Authorization"
 2122 "Ignoring Incomplete Ignore (mask = %s)"
 2123 "getip_network"
+2124 "nogeoipcountry"

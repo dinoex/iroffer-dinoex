@@ -1047,6 +1047,7 @@ static void free_config(void)
   mydelete(gdata.user_modes);
   irlist_delete_all(&gdata.adddir_exclude);
   irlist_delete_all(&gdata.geoipcountry);
+  irlist_delete_all(&gdata.nogeoipcountry);
   irlist_delete_all(&gdata.geoipexcludenick);
   irlist_delete_all(&gdata.autoadd_dirs);
   irlist_delete_all(&gdata.autocrc_exclude);

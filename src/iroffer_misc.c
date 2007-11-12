@@ -2070,6 +2070,7 @@ void reinit_config_vars(void)
   gdata.noduplicatefiles = 0;
   irlist_delete_all(&gdata.adddir_exclude);
   irlist_delete_all(&gdata.geoipcountry);
+  irlist_delete_all(&gdata.nogeoipcountry);
   irlist_delete_all(&gdata.geoipexcludenick);
   irlist_delete_all(&gdata.autoadd_dirs);
   irlist_delete_all(&gdata.autocrc_exclude);

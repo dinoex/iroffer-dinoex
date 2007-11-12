@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+201) nogeoipcountry
+  Verhindere Downloads zu hier angegebenen Ländern.
+  Wenn konfiguriert ist der Zugriff für alle anderen Länder erlaubt,
+  und geoipcountry ist nicht nutzbar.
+
 200) getip_network
   Hole die IP-Adresse von einem anderen Netzwerk.
   Nützlich ween ein Netzwerk nicht die IP Addresse liefert.
