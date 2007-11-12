@@ -223,10 +223,8 @@ static void mainloop (void) {
    ir_uint64 xdccsent;
    int i, j;
    int length;
-   int overlimit;
    int highests;
    int ss;
-   unsigned long sum;
    upload *ul;
    transfer *tr;
    channel_t *ch;
@@ -297,76 +295,11 @@ static void mainloop (void) {
               highests = max2(highests, chat->con.clientsocket);
             }
         }
-
-      sum = gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE] 
-          + gdata.xdccsent[(gdata.curtime-1)%XDCC_SENT_SIZE]
-          + gdata.xdccsent[(gdata.curtime-2)%XDCC_SENT_SIZE]
-          + gdata.xdccsent[(gdata.curtime-3)%XDCC_SENT_SIZE];
       
-      if ( gdata.maxb && (sum >= gdata.maxb*1024))
-        {
-          overlimit = 1;
-        }
-      else
-        {
-          overlimit = 0;
-        }
-      
-      
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
-        {
-          if (tr->tr_status == TRANSFER_STATUS_LISTENING)
-            {
-              FD_SET(tr->con.listensocket, &gdata.readset);
-              highests = max2(highests, tr->con.listensocket);
-            }
-          if (tr->tr_status == TRANSFER_STATUS_CONNECTING)
-            {
-              FD_SET(tr->con.clientsocket, &gdata.writeset);
-              highests = max2(highests, tr->con.clientsocket);
-            }
-          if (tr->tr_status == TRANSFER_STATUS_SENDING)
-            {
-              if (!overlimit && !tr->overlimit)
-                {
-                  FD_SET(tr->con.clientsocket, &gdata.writeset);
-                  highests = max2(highests, tr->con.clientsocket);
-                }
-              if (changequartersec || ((tr->bytessent-tr->lastack) > 512*1024))
-                {
-                  FD_SET(tr->con.clientsocket, &gdata.readset);
-                  highests = max2(highests, tr->con.clientsocket);
-                }
-            }
-          if (tr->tr_status == TRANSFER_STATUS_WAITING)
-            {
-              FD_SET(tr->con.clientsocket, &gdata.readset);
-              highests = max2(highests, tr->con.clientsocket);
-            }
-          tr = irlist_get_next(tr);
-        }
-      
-      ul = irlist_get_head(&gdata.uploads);
-      while(ul)
-        {
-          if (ul->ul_status == UPLOAD_STATUS_LISTENING)
-            {
-              FD_SET(ul->con.listensocket, &gdata.readset);
-              highests = max2(highests, ul->con.listensocket);
-            }
-          if (ul->ul_status == UPLOAD_STATUS_CONNECTING)
-            {
-              FD_SET(ul->con.clientsocket, &gdata.writeset);
-              highests = max2(highests, ul->con.clientsocket);
-            }
-          if (ul->ul_status == UPLOAD_STATUS_GETTING)
-            {
-              FD_SET(ul->con.clientsocket, &gdata.readset);
-              highests = max2(highests, ul->con.clientsocket);
-            }
-          ul = irlist_get_next(ul);
-        }
+      highests = t_select_fdset(highests, changequartersec);
+      highests = l_select_fdset(highests);
+      highests = telnet_select_listen(highests);
+      highests = h_listen(highests);
       
       if (gdata.md5build.file_fd != FD_UNUSED)
         {
@@ -374,9 +307,6 @@ static void mainloop (void) {
           FD_SET(gdata.md5build.file_fd, &gdata.readset);
           highests = max2(highests, gdata.md5build.file_fd);
         }
-      
-      highests = telnet_select_listen(highests);
-      highests = h_listen(highests);
       
       updatecontext();
    

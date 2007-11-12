@@ -306,4 +306,48 @@ void t_check_duplicateip(transfer *const newtr)
   write_statefile();
 }
 
+int t_select_fdset(int highests, int changequartersec)
+{
+  transfer *tr;
+  unsigned long sum;
+  int overlimit;
+
+  sum = gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE]
+      + gdata.xdccsent[(gdata.curtime-1)%XDCC_SENT_SIZE]
+      + gdata.xdccsent[(gdata.curtime-2)%XDCC_SENT_SIZE]
+      + gdata.xdccsent[(gdata.curtime-3)%XDCC_SENT_SIZE];
+  overlimit = (gdata.maxb && (sum >= gdata.maxb*1024));
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
+    if (tr->tr_status == TRANSFER_STATUS_LISTENING) {
+      FD_SET(tr->con.listensocket, &gdata.readset);
+      highests = max2(highests, tr->con.listensocket);
+      continue;
+    }
+    if (tr->tr_status == TRANSFER_STATUS_CONNECTING) {
+      FD_SET(tr->con.clientsocket, &gdata.writeset);
+      highests = max2(highests, tr->con.clientsocket);
+      continue;
+    }
+    if (tr->tr_status == TRANSFER_STATUS_SENDING) {
+      if (!overlimit && !tr->overlimit) {
+        FD_SET(tr->con.clientsocket, &gdata.writeset);
+        highests = max2(highests, tr->con.clientsocket);
+      }
+      if (changequartersec || ((tr->bytessent - tr->lastack) > 512*1024)) {
+        FD_SET(tr->con.clientsocket, &gdata.readset);
+        highests = max2(highests, tr->con.clientsocket);
+      }
+      continue;
+    }
+    if (tr->tr_status == TRANSFER_STATUS_WAITING) {
+      FD_SET(tr->con.clientsocket, &gdata.readset);
+      highests = max2(highests, tr->con.clientsocket);
+      continue;
+    }
+  }
+  return highests;
+}
+
 /* End of File */

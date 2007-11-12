@@ -179,4 +179,31 @@ void l_setup_accept(upload * const l)
   l->ul_status = UPLOAD_STATUS_GETTING;
 }
 
+int l_select_fdset(int highests)
+{
+  upload *ul;
+
+  for (ul = irlist_get_head(&gdata.uploads);
+       ul;
+       ul = irlist_get_next(ul)) {
+    if (ul->ul_status == UPLOAD_STATUS_GETTING) {
+      FD_SET(ul->con.clientsocket, &gdata.readset);
+      highests = max2(highests, ul->con.clientsocket);
+      continue;
+    }
+    if (ul->ul_status == UPLOAD_STATUS_CONNECTING) {
+      FD_SET(ul->con.clientsocket, &gdata.writeset);
+      highests = max2(highests, ul->con.clientsocket);
+      continue;
+    }
+    if (ul->ul_status == UPLOAD_STATUS_LISTENING) {
+      FD_SET(ul->con.listensocket, &gdata.readset);
+      highests = max2(highests, ul->con.listensocket);
+      continue;
+    }
+  }
+  return highests;
+}
+
+ 
 /* End of File */
