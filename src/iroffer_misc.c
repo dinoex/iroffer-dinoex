@@ -2611,12 +2611,18 @@ void createpassword(void) {
    
    srand((unsigned int)( (getpid()*5000) + (time(NULL)%5000) ));
    saltnum = (int)(4096.0*rand()/(RAND_MAX+0.0));
+#if !defined(_OS_CYGWIN)
    salt[0] = '$';
    salt[1] = '1';
    salt[2] = '$';
    salt[3] = inttosaltchar((saltnum>>6) %64);
    salt[4] = inttosaltchar( saltnum     %64);
    salt[5] = '\0';
+#else
+   salt[0] = inttosaltchar((saltnum>>6) %64);
+   salt[1] = inttosaltchar( saltnum     %64);
+   salt[2] = '\0';
+#endif
    
    pwout = crypt(pw1,salt);
    
