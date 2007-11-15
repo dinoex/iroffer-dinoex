@@ -128,12 +128,14 @@ int verifypass2(const char *masterpass, const char *testpass)
 {
 #ifndef NO_CRYPT
   char *pwout;
+#endif
 
   updatecontext();
 
   if (!masterpass || !testpass)
     return 0;
 
+#ifndef NO_CRYPT
   if ((strlen(masterpass) < 13) ||
       (strlen(testpass) < 5) ||
       (strlen(testpass) > 59))
