@@ -54,6 +54,43 @@ int check_lock(const char* lockstr, const char* pwd)
   return strcmp(lockstr, pwd);
 }
 
+void send_help(const char *nick)
+{
+  const char *mynick;
+  xdcc *xd;
+  int support_groups;
+
+  updatecontext();
+
+  support_groups = 0;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (xd->group != NULL) {
+      support_groups = 1;
+      break;
+    }
+  }
+
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC HELP from (%s on %s)",
+          nick, gnetwork->name);
+
+  mynick = save_nick(gnetwork->user_nick);
+  if (!gdata.restrictprivlist) {
+    notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST\"", mynick);
+    if (support_groups)
+      notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST group\" \2**\2", mynick);
+  }
+  notice_slow(nick, "\2**\2 Stop listing:      \"/MSG %s XDCC STOP\" \2**\2", mynick);
+  if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
+    notice_slow(nick, "\2**\2 Request details:   \"/MSG %s XDCC INFO pack\" \2**\2", mynick);
+  notice_slow(nick, "\2**\2 Request download:  \"/MSG %s XDCC SEND pack\" \2**\2", mynick);
+  notice_slow(nick, "\2**\2 Show time to wait: \"/MSG %s XDCC QUEUE\" \2**\2", mynick);
+  notice_slow(nick, "\2**\2 Remove from queue: \"/MSG %s XDCC REMOVE\" \2**\2", mynick);
+  notice_slow(nick, "\2**\2 Cancel download:   \"/MSG %s XDCC CANCEL\" \2**\2", mynick);
+}
+
 void stoplist(const char *nick)
 {
   char *item;
