@@ -86,6 +86,8 @@ void send_help(const char *nick)
       notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST group\" \2**\2", mynick);
   }
   notice_slow(nick, "\2**\2 Stop listing:      \"/MSG %s XDCC STOP\" \2**\2", mynick);
+  if (gdata.send_listfile)
+    notice_slow(nick, "\2**\2 Download listing:  \"/MSG %s XDCC SEND LIST\" \2**\2", mynick);
   if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
     notice_slow(nick, "\2**\2 Request details:   \"/MSG %s XDCC INFO pack\" \2**\2", mynick);
   notice_slow(nick, "\2**\2 Request download:  \"/MSG %s XDCC SEND pack\" \2**\2", mynick);
@@ -754,9 +756,10 @@ int packnumtonum(const char *a)
     a++;
     return atoi(a);
   }
-
-  if (strcmp(a, "$") == 0)
-    return -1;
+  if (gdata.send_listfile) {
+    if (strcasecmp(a, "LIST") == 0)
+      return gdata.send_listfile;
+  }
 
   for (aq = irlist_get_head(&gdata.autoqueue);
        aq;

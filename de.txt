@@ -1970,7 +1970,6 @@
 2022 "ADDMATCH"
 2023 "Fügt neue Dateien hinzu die auf <muster> passen."
 2024 "[dir]"
-2025 "$"
 2026 "file changed"
 2027 "added"
 2028 "[MD5]: Canceled (%s)"
@@ -2079,3 +2078,5 @@
 2131 "\2**\2 Show tail to wait:            \"/MSG %s XDCC QUEUE\" \2**\2"
 2132 "\2**\2 Aus Warteschlangen entfernen: \"/MSG %s XDCC REMOVE\" \2**\2"
 2133 "\2**\2 Donwload abbrechnen:          \"/MSG %s XDCC CANCEL\" \2**\2"
+2134 "send_listfile"
+2135 "\2**\2 Download Liste der Pakete:    \"/MSG %s XDCC SEND LIST\" \2**\2"

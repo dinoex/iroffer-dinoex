@@ -1518,6 +1518,7 @@ void dumpgdata(void)
   gdata_print_int(remove_dead_users);
   gdata_print_int(upnp_router);
   gdata_print_int(http_search);
+  gdata_print_int(send_listfile);
   gdata_print_long(nomd5_start);
   
   /* downloadhost */

@@ -246,6 +246,7 @@ int telnet_port;
 int remove_dead_users;
 int upnp_router;
 int http_search;
+int send_listfile;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

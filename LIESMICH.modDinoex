@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+204) send_listfile
+  Nummer des Paketes mit dem xdcclistfile, aktiviert den Befehl:
+  XDCC SEND LIST.
+
 203) XDCC HELP
   Hilfe für die Benutzer
 
@@ -73,9 +77,9 @@ bugfix: REHASH
 190) window resize
   Änderung der Fenstergröße führt nicht mehr zum Löschen des Fensterinhaltes.
 
-189) XDCC GET $
+189) XDCC SEND LIST
   Neues User Kommando:
-  XDCC GET $                      Downloads list of packages
+  XDCC SEND LIST                   Downloads list of packages
 
 188) LISTUL
   Neues Admin Kommando:

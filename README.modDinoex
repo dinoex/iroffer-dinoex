@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+204) send_listfile
+  Packnumber of xdcclistfile, eanbles XDCC SEND LIST.
+
 203) XDCC HELP
   show help for users
 
@@ -70,9 +73,9 @@ bugfix: REHASH (reported by Cork)
 190) window resize (inspired by Yasuo|Iwakura)
   Changing window size will no longer delete screen.
 
-189) XDCC GET $ (inspired by Akropolis)
+189) XDCC SEND LIST (inspired by Akropolis)
   new user commands:
-  XDCC GET $                      Downloads list of packages
+  XDCC SEND LIST                  Downloads list of packages
 
 188) LISTUL (inspired by dondieschotte)
   new admin command:
