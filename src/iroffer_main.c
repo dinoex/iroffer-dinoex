@@ -3041,16 +3041,16 @@ static void privmsgparse(const char* type, char* line) {
                    msg3);
            sendxdccinfo(nick, hostname, hostmask, packnumtonum(msg3));
          }
-         else if ( msg2 && !strcmp(msg2,"QUEUE")) {
+         else if ( msg2 && !strcmp(msg2, "QUEUE")) {
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                    "XDCC QUEUE (%s on %s)",
                    hostmask, gnetwork->name);
            notifyqueued_nick(nick);
          }
-         else if ( msg2 && !strcmp(msg2,"STOP")) {
+         else if ( msg2 && !strcmp(msg2, "STOP")) {
            stoplist(nick);
          }
-         else if ( msg2 && !strcmp(msg2,"CANCEL")) {
+         else if ( msg2 && !strcmp(msg2, "CANCEL")) {
            /* stop transfers */
            for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
              {
@@ -3083,6 +3083,9 @@ static void privmsgparse(const char* type, char* line) {
                  hostmask, gnetwork->name);
            notice(nick, "Owner for this bots is: %s",
                   gdata.owner_nick ? gdata.owner_nick : "(unknown)");
+         }
+         else if ( msg2 && !strcmp(msg2, "HELP")) {
+           send_help(nick);
          }
          else if ( msg2 && !strcmp(msg2,"SEARCH") && msg3) {
          
