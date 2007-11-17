@@ -1453,6 +1453,11 @@ void dumpgdata(void)
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(mime_type, http_magic_t);
+  gdata_iter_print_string(m_ext);
+  gdata_iter_print_string(m_mime);
+  gdata_irlist_iter_end;
+
   gdata_print_string(enable_nick);
   gdata_print_string(owner_nick);
   gdata_print_string(admin_job_file);

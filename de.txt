@@ -2080,3 +2080,4 @@
 2133 "\2**\2 Donwload abbrechnen:          \"/MSG %s XDCC CANCEL\" \2**\2"
 2134 "send_listfile"
 2135 "\2**\2 Download Liste der Pakete:    \"/MSG %s XDCC SEND LIST\" \2**\2"
+2136 "mime_type"

@@ -181,6 +181,7 @@ irlist_t http_bad_ip6;
 irlist_t http_vhost;
 irlist_t telnet_vhost;
 irlist_t weblist_info;
+irlist_t mime_type;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;

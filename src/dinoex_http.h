@@ -49,6 +49,11 @@ typedef struct
   int traffic;
 } http;
 
+typedef struct {
+  char *m_ext;
+  const char *m_mime;
+} http_magic_t;
+
 void h_close_listen(void);
 int h_setup_listen(void);
 void h_reash_listen(void);

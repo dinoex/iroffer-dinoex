@@ -883,6 +883,7 @@ static void free_state(void)
   gnetwork_t *backup;
   xlistqueue_t *user;
   http *h;
+  http_magic_t *mime;
   int ss;
 
   updatecontext();
@@ -995,6 +996,11 @@ static void free_state(void)
      mydelete(h->modified);
      mydelete(h->buffer_out);
      mydelete(h->con.remoteaddr);
+  }
+  for (mime = irlist_get_head(&gdata.mime_type);
+       mime;
+       mime = irlist_delete(&gdata.mime_type, mime)) {
+     mydelete(mime->m_ext);
   }
   irlist_delete_all(&gdata.autotrigger);
   irlist_delete_all(&gdata.console_history);

@@ -66,7 +66,6 @@ Page last modified: 09/01/04
 Short Term Features:
   1096  autoadd_group with predefined matchings
   1097  short-announce seperator
-  1098  queue all XDCC LIST
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -77,7 +76,6 @@ Long Term Features:
   1083  temporary uploadhost
   1092  Javascript for cut&paste
   1103  Silc Support
-  1104  Mime-Tyypes for Webserver in config
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

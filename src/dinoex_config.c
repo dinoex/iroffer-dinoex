@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
 #include "dinoex_admin.h"
+#include "dinoex_http.h"
 #include "dinoex_config.h"
 
 #include <ctype.h>
@@ -594,6 +595,26 @@ static void c_local_vhost(char *var)
   gdata.networks[gdata.networks_online].local_vhost = var;
 }
 
+static void c_mime_type(char *var)
+{
+  char *split;
+  http_magic_t *mime;
+
+  split = strchr(var, ' ');
+  if (split == NULL) {
+    outerror(OUTERROR_TYPE_WARN,
+             "ignored '%s' because it has invalid args: '%s'",
+             "mime_type", var);
+    mydelete(var);
+    return;
+  }
+
+  *(split++) = 0;
+  mime = irlist_add(&(gdata.mime_type), sizeof(http_magic_t));
+  mime->m_ext = var;
+  mime->m_mime = split;
+}
+
 static void c_network(char *var)
 {
   gdata.bracket = 0;
@@ -678,6 +699,7 @@ static config_func_typ config_parse_func[] = {
 {"autosendpack",           c_autosendpack },
 {"getip_network",          c_getip_network },
 {"local_vhost",            c_local_vhost },
+{"mime_type",              c_mime_type },
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },
 {"uploadminspace",         c_uploadminspace },

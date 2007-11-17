@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+205) mime_type
+  Lege zusätzliche Mime-Typen für die HTML Seiten fest.
+  Beispiel: mime_type torrent application/x-bittorrent
+
 204) send_listfile
   Nummer des Paketes mit dem xdcclistfile, aktiviert den Befehl:
   XDCC SEND LIST.

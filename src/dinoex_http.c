@@ -79,9 +79,9 @@ static const char *htpp_auth_key = "Basic ";
 typedef struct {
   const char *m_ext;
   const char *m_mime;
-} http_magic_t;
+} http_magic_const_t;
 
-static const http_magic_t http_magic[] = {
+static const http_magic_const_t http_magic[] = {
   { "txt", "text/plain" },
   { "html", "text/html" },
   { "htm", "text/html" },
@@ -178,6 +178,7 @@ b64decode_string(const char *coded)
 static const char *html_mime(const char *file)
 {
   const char *ext;
+  http_magic_t *mime;
   int i;
 
   ext = strchr(file, '.');
@@ -185,6 +186,13 @@ static const char *html_mime(const char *file)
     ext = file;
   else
     ext++;
+
+  for (mime = irlist_get_head(&gdata.mime_type);
+       mime;
+       mime = irlist_delete(&gdata.mime_type, mime)) {
+    if (strcasecmp(mime->m_ext, ext) != 0)
+      return mime->m_mime;
+  }
 
   for (i=0; http_magic[i].m_ext; i++) {
     if (strcasecmp(http_magic[i].m_ext, ext) == 0)

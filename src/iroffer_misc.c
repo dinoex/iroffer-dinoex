@@ -2080,6 +2080,7 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.http_vhost);
   irlist_delete_all(&gdata.telnet_vhost);
   irlist_delete_all(&gdata.weblist_info);
+  irlist_delete_all(&gdata.mime_type);
   mydelete(gdata.enable_nick);
   mydelete(gdata.owner_nick);
   mydelete(gdata.geoipdatabase);
