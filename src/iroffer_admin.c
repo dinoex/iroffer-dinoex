@@ -672,6 +672,7 @@ static void u_xdl_head(const userinput * const u) {
    char *tempstr;
    char *tempnick;
    char *chan;
+   const char *mynick;
    int a, i, m, m1;
    int len;
    int head;
@@ -684,6 +685,7 @@ static void u_xdl_head(const userinput * const u) {
 
    if (u->method==method_xdl_channel_min) m = 1; else m = 0;
    if (u->method==method_xdl_channel_sum) m1 = 1; else m1 = 0;
+   mynick = save_nick(gnetwork->user_nick);
    
    head = 0;
    switch (u->method)
@@ -716,7 +718,7 @@ static void u_xdl_head(const userinput * const u) {
       break;
     default:
       u_respond(u, "\2**\2 To stop this listing, type \"/MSG %s XDCC STOP\" \2**\2",
-                  save_nick(gnetwork->user_nick));
+                mynick);
       break;
     }
    
@@ -811,11 +813,11 @@ static void u_xdl_head(const userinput * const u) {
        u_respond(u,"%s",tempstr);
        
        u_respond(u, "\2**\2 To request a file, type \"/MSG %s XDCC SEND x\" \2**\2",
-                 save_nick(gnetwork->user_nick));
+                 mynick);
        
        if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
           u_respond(u, "\2**\2 To request details, type \"/MSG %s XDCC INFO x\" \2**\2",
-                    save_nick(gnetwork->user_nick));
+                    mynick);
        
        i = 0;
        xd = irlist_get_head(&gdata.xdccs);
@@ -829,7 +831,7 @@ static void u_xdl_head(const userinput * const u) {
          }
        if (i > 0)
           u_respond(u, "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
-                    save_nick(gnetwork->user_nick));
+                    mynick);
      }
    
    if (m1)
@@ -837,7 +839,7 @@ static void u_xdl_head(const userinput * const u) {
        if (!gdata.restrictprivlist)
          {
            u_respond(u, "\2**\2 For a listing type: \"/MSG %s XDCC LIST\" \2**\2",
-                     save_nick(gnetwork->user_nick));
+                     mynick);
          }
        if (gdata.creditline)
          {
