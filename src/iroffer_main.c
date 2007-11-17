@@ -1869,10 +1869,11 @@ static void parseline(char *line) {
        gnetwork->next_restrict = gdata.curtime + gdata.restrictsend_delay;
        gdata.needsclear = 1;
        
-       if (gdata.user_modes && strlen(gdata.user_modes))
+       tptr = get_user_modes();
+       if (tptr && strlen(tptr))
          {
            writeserver(WRITESERVER_NOW, "MODE %s %s",
-                       gnetwork->user_nick, gdata.user_modes);
+                       gnetwork->user_nick, tptr);
          }
        
        /* server connected raw command */

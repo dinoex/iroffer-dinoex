@@ -648,6 +648,12 @@ static void c_usenatip(char *var)
   mydelete(var);
 }
 
+static void c_user_modes(char *var)
+{
+  mydelete(gdata.networks[gdata.networks_online].user_modes);
+  gdata.networks[gdata.networks_online].user_modes = var;
+}
+
 static void c_user_nick(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].config_nick);
@@ -675,6 +681,7 @@ static config_func_typ config_parse_func[] = {
 {"nickserv_pass",          c_nickserv_pass },
 {"uploadminspace",         c_uploadminspace },
 {"usenatip",               c_usenatip },
+{"user_modes",             c_user_modes },
 {"user_nick",              c_user_nick },
 {"{",                      c_bracket_open },
 {"}",                      c_bracket_close },

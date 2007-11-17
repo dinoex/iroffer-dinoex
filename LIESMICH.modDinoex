@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+202) user_modes
+  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+
 201) nogeoipcountry
   Verhindere Downloads zu hier angegebenen Ländern.
   Wenn konfiguriert ist der Zugriff für alle anderen Länder erlaubt,

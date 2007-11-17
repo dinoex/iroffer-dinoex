@@ -1582,6 +1582,7 @@ void dumpgdata(void)
       gdata_print_string(networks[ss].caps_nick);
       gdata_print_string(networks[ss].nickserv_pass);
       gdata_print_string(networks[ss].config_nick);
+      gdata_print_string(networks[ss].user_modes);
       gdata_print_string(networks[ss].local_vhost);
       /* r_config_nick */
       gdata_print_number("0x%.8lX", networks[ss].ourip);

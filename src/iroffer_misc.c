@@ -2041,6 +2041,7 @@ void reinit_config_vars(void)
       }
     mydelete(gdata.networks[si].nickserv_pass);
     mydelete(gdata.networks[si].config_nick);
+    mydelete(gdata.networks[si].user_modes);
     mydelete(gdata.networks[si].local_vhost);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);

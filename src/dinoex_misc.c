@@ -594,6 +594,11 @@ int disk_full(const char *path)
   return 1;
 }
 
+char *get_user_modes(void)
+{
+  return (gnetwork->user_modes) ? gnetwork->user_modes : gdata.user_modes;
+}
+
 char *get_nickserv_pass(void)
 {
   return (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
@@ -1035,6 +1040,7 @@ static void free_config(void)
       }
     mydelete(gdata.networks[si].nickserv_pass);
     mydelete(gdata.networks[si].config_nick);
+    mydelete(gdata.networks[si].user_modes);
     mydelete(gdata.networks[si].local_vhost);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);

@@ -2500,7 +2500,7 @@ static void u_rehash(const userinput * const u) {
      {
        if ( !irlist_size(&(gdata.networks[ss].servers))
             || gdata.config_nick == NULL || gdata.user_realname == NULL
-            || gdata.user_modes == NULL
+            || get_user_modes() == NULL
             || gdata.slotsmax == 0)
           u_respond(u, "**WARNING** missing vital information, fix and re-rehash ASAP");
      }
@@ -2575,7 +2575,7 @@ static void u_botinfo(const userinput * const u) {
                  gdata.config_nick,
                  (gdata.networks[ss].user_nick ? gdata.networks[ss].user_nick : "??"),
                  gdata.user_realname,
-                 gdata.user_modes);
+                 get_user_modes());
        
        switch (gdata.networks[ss].connectionmethod.how)
          {

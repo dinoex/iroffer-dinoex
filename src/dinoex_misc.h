@@ -30,6 +30,7 @@ char* getpart_eol(const char *line, int howmany);
 
 int disk_full(const char *path);
 
+char *get_user_modes(void);
 char *get_nickserv_pass(void);
 void identify_needed(int force);
 void identify_check(const char *line);

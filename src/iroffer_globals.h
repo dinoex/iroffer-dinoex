@@ -85,6 +85,7 @@ char *config_nick;
 char *r_config_nick;
 char *local_vhost;
 char *r_local_vhost;
+char *user_modes;
 int net;
 int recentsent;
 int nick_number;
