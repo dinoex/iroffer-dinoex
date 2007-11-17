@@ -1163,7 +1163,7 @@ void gobackground(void) {
    /* parent forks */
    s = fork();
    if (s < 0)
-      outerror(OUTERROR_TYPE_CRASH,"Unable to Fork");
+      outerror(OUTERROR_TYPE_CRASH,"Unable to Fork: %s", strerror(errno));
    else if (s > 0) {
       /* parent exits */
       exit(69);
@@ -1180,12 +1180,12 @@ void gobackground(void) {
    
    s = setsid();
    if (s < 0)
-      outerror(OUTERROR_TYPE_CRASH,"Couldn't setsid");
+      outerror(OUTERROR_TYPE_CRASH,"Couldn't setsid: %s", strerror(errno));
    
    /* parent forks */
    s = fork();
    if (s < 0)
-      outerror(OUTERROR_TYPE_CRASH,"Unable to Fork");
+      outerror(OUTERROR_TYPE_CRASH,"Unable to Fork: %s", strerror(errno));
    else if (s > 0)
       /* parent exits */
       exit(69);
