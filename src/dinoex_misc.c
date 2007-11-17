@@ -54,23 +54,26 @@ int check_lock(const char* lockstr, const char* pwd)
   return strcmp(lockstr, pwd);
 }
 
-void send_help(const char *nick)
+void set_support_groups(void)
 {
-  const char *mynick;
   xdcc *xd;
-  int support_groups;
 
-  updatecontext();
-
-  support_groups = 0;
+  gdata.support_groups = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
     if (xd->group != NULL) {
-      support_groups = 1;
-      break;
+      gdata.support_groups = 1;
+      return;
     }
   }
+}
+
+void send_help(const char *nick)
+{
+  const char *mynick;
+
+  updatecontext();
 
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC HELP from (%s on %s)",
@@ -79,7 +82,7 @@ void send_help(const char *nick)
   mynick = save_nick(gnetwork->user_nick);
   if (!gdata.restrictprivlist) {
     notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST\"", mynick);
-    if (support_groups)
+    if (gdata.support_groups)
       notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST group\" \2**\2", mynick);
   }
   notice_slow(nick, "\2**\2 Stop listing:      \"/MSG %s XDCC STOP\" \2**\2", mynick);
@@ -319,6 +322,7 @@ static void init_xdcc(xdcc *xd)
 
 void startup_dinoex(void)
 {
+  gdata.support_groups = 0;
   config_startup();
   init_xdcc(&xdcc_statefile);
   init_xdcc(&xdcc_listfile);

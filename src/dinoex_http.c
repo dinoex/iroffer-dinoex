@@ -1240,24 +1240,13 @@ static int h_html_index(http * const h)
   char *tempstr;
   char *clean;
   char *tlabel;
-  xdcc *xd;
   ssize_t len;
   int slots;
 
   updatecontext();
 
-  h->support_groups = 0;
   h->nick = save_nick(gdata.config_nick);
-  for (xd = irlist_get_head(&gdata.xdccs);
-       xd;
-       xd = irlist_get_next(xd)) {
-    if (xd->group != NULL) {
-      h->support_groups = 1;
-      break;
-    }
-  }
-
-  if (h->support_groups == 0) {
+  if (gdata.support_groups == 0) {
     mydelete(h->group);
     h->group = mystrdup("*");
   }

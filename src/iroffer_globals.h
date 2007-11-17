@@ -120,6 +120,7 @@ time_t logrotate;
 char *headline;
 char *creditline;
 int background;
+int support_groups;
 
 struct
 {

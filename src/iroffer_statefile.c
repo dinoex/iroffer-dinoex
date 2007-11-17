@@ -516,6 +516,7 @@ void write_statefile(void)
             /* group */
             next = prepare_statefile_string(next,
                    STATEFILE_TAG_XDCCS_GROUP, xd->group);
+            gdata.support_groups = 1;
           }
         if (xd->group_desc != NULL)
           {

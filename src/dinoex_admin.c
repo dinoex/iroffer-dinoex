@@ -604,6 +604,7 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
   if (tmpgroup != NULL)
     mydelete(tmpgroup);
 
+  set_support_groups();
   autotrigger_rebuild();
   write_files();
 }
@@ -678,6 +679,7 @@ static int a_set_group(const userinput * const u, xdcc *xd, int num, const char 
   rc = add_default_groupdesc(group);
   if (rc == 1)
     a_respond(u, "New GROUPDESC: %s", group);
+  set_support_groups();
   return rc;
 }
 
@@ -1561,6 +1563,7 @@ xdcc *a_add2(const userinput * const u)
               n, xd->group);
   }
 
+  set_support_groups();
   write_files();
 
   if (gdata.autoaddann_short)

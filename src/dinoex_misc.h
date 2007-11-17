@@ -16,6 +16,7 @@
 int hide_pack(const xdcc *xd);
 int check_lock(const char* lockstr, const char* pwd);
 
+void set_support_groups(void);
 void send_help(const char *nick);
 
 void stoplist(const char *nick);
