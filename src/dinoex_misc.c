@@ -81,7 +81,7 @@ void send_help(const char *nick)
 
   mynick = save_nick(gnetwork->user_nick);
   if (!gdata.restrictprivlist) {
-    notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST\"", mynick);
+    notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST\" \2**\2", mynick);
     if (gdata.support_groups)
       notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST group\" \2**\2", mynick);
   }
