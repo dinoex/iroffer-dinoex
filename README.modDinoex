@@ -161,7 +161,8 @@ bugfix: AUTOADD (reported by chibi)
 Long Term Features:
    208 4/13/04 Open SSL connections to irc server
 
-  this needs OpenSSL installed.
+  this needs OpenSSL or "GNU TLS" installed,
+  the latter activate with "./Configure -t".
 
 176) connectionmethod
   you can set connectionmethod for each network differently.

@@ -39,6 +39,21 @@ files in the program, then also delete it here.
 
 =====================================================================
 
+Due to restrictive license of the GPL you are not allowed to
+distribute binaries that are linked against OpenSSL.
+Please ask David Johnson (PMG) for an execption.
+
+Please make sure if you distribute binaries, that the "libcurl"
+is not linked against OpenSSL too.
+To get a full featured version you have to build it yourself.
+
+Compatible Licenses:
+MaxMind GeoIP Country library is availible under LGPL v2.1 license.
+libminiupnp by Thomas Bernard is availible under BSD license.
+GNU TLS is availible under GPL 2 license.
+
+=====================================================================
+
 		    GNU GENERAL PUBLIC LICENSE
 		       Version 2, June 1991
 

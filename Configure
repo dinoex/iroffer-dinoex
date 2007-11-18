@@ -27,6 +27,7 @@ echo "   -w           Compile with extra warning flags"
 echo "   -g           Compile GeoIP lib"
 echo "   -c           Compile Curl lib (for the FETCH-Command)"
 echo "   -s           Compile without OpenSSL lib"
+echo "   -t           Compile wit GNU TLS lib"
 echo "   -u           Compile wit UPNP suport with miniupnpc"
 exit 64
 }
@@ -38,6 +39,7 @@ OPT_PROF=false
 OPT_GEOIP=false
 OPT_CURL=false
 OPT_SSL=true
+OPT_TLS=false
 OPT_UPNP=false
 cctype="gcc"
 
@@ -53,6 +55,7 @@ do
   -g) OPT_GEOIP=true ;;
   -c) OPT_CURL=true ;;
   -s) OPT_SSL=false ;;
+  -t) OPT_TLS=true ;;
   -u) OPT_UPNP=true ;;
   -m) ;;
   *)  usage ;;
@@ -211,6 +214,11 @@ fi
 
 if ! $OPT_SSL; then
 echo "Configuring without SSL."
+fi
+
+if $OPT_TLS; then
+echo "Configuring for GNU TLS."
+OPT_SSL=false
 fi
 
 if $OPT_UPNP; then
@@ -857,7 +865,6 @@ int main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs -lcurl -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR; then
 		echo "found"
-		echo "Configuring for Curl."
 		CURLLIB="-lcurl"
 		CURLINC="-DUSE_CURL -I/usr/local/include"
 		CURLLDF="-L/usr/local/lib"
@@ -886,12 +893,38 @@ int main (int argc, char **argv) {exit(0);}
 		echo "found"
 		echo "Configuring for OpenSSL."
 		SSLLIB="-lssl"
-		SSLINC="-DUSE_SSL -I/usr/local/include"
+		SSLINC="-DUSE_SSL -I/usr/local/include/"
 		SSLLDF="-L/usr/local/lib"
 		shift
 	else
 		echo "not found"
 		echo "***Disable the SSL Features. If u want to use this feature, please install OpenSSL.***"
+		SSLLIB=""
+		SSLINC=""
+		SSLLDF=""
+		shift
+	fi
+fi
+
+if $OPT_TLS; then
+	echo -n "Seeing if GNU TLS libraries exist... "
+	echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+	if $cctype config.temp.c $libs -lgnutls-openssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
+		echo "found"
+		SSLLIB="-lgnutls-openssl"
+		SSLINC="-DUSE_SSL -I/usr/local/include/gnutls"
+		SSLLDF="-L/usr/local/lib"
+		shift
+	else
+		echo "not found"
+		echo "***Disable the SSL Features. If u want to use this feature, please install GNU TLS.***"
 		SSLLIB=""
 		SSLINC=""
 		SSLLDF=""

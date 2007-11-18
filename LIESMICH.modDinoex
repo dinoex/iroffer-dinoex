@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+206)
+
 205) mime_type
   Lege zusätzliche Mime-Typen für die HTML Seiten fest.
   Beispiel: mime_type torrent application/x-bittorrent
@@ -150,7 +152,8 @@ bugfix: AUTOADD
 177) connectionmethod ssl
   SSL Verbindungen zum IRC Server.
 
-  Dies Funktion braucht "OpenSSL",
+  Dies Funktion braucht "OpenSSL" oder "GNU TLS",
+  zum Aktivieren von "GNU TLS" muß der Bot mit "./Configure -t" gebaut werden.
 
 176) connectionmethod, proxyinfo
   Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
