@@ -218,7 +218,7 @@ int file_uploading(const char *file)
     if (ul->file == NULL)
       continue;
 
-    if (strcmp(l->file, file))
+    if (strcmp(ul->file, file))
       continue;
 
     return 1;
