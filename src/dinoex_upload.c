@@ -205,5 +205,25 @@ int l_select_fdset(int highests)
   return highests;
 }
 
+int file_uploading(const char *file)
+{
+  upload *ul;
+
+  for (ul = irlist_get_head(&gdata.uploads);
+       ul;
+       ul = irlist_get_next(ul)) {
+    if (ul->ul_status == UPLOAD_STATUS_DONE)
+      continue;
+
+    if (ul->file == NULL)
+      continue;
+
+    if (strcmp(l->file, file))
+      continue;
+
+    return 1;
+  }
+  return 0;
+}
  
 /* End of File */

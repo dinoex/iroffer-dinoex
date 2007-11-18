@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.0:
 ---------------
 
+206) XDCC upload
+  Erkenne wen der Admin zweimal die gleiche Datei hochlädt.
+
 205) mime_type
   Lege zusätzliche Mime-Typen für die HTML Seiten fest.
   Beispiel: mime_type torrent application/x-bittorrent

@@ -282,6 +282,7 @@ Radicand
 	warn if spaces found in parameter
 	report CANNOUNCE bug
 	report spaces_in_filenames bug
+	report double upload problem
 
 unlogisch
 	option "autoadd_sort"

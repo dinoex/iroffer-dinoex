@@ -2745,6 +2745,8 @@ static void privmsgparse(const char* type, char* line) {
             }
           if (!down)
            {
+          clean_quotes(msg3);
+          removenonprintablefile(msg3);
           len = atoull(msg6);
           if ( !verifyhost(&gdata.uploadhost, hostmask) )
             {
@@ -2788,12 +2790,17 @@ static void privmsgparse(const char* type, char* line) {
                       "DCC Send Denied (not enough free space on disk) from %s on %s",
                       hostmask, gnetwork->name);
             }
+          else if (file_uploading(msg3) != 0)
+            {
+              notice(nick,"DCC Send Denied, I'm already getting this file");
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+                      "DCC Send Denied (upload running) from %s on %s",
+                      hostmask, gnetwork->name);
+            }
           else
             {
               ul = irlist_add(&gdata.uploads, sizeof(upload));
               l_initvalues(ul);
-              clean_quotes(msg3);
-              removenonprintablefile(msg3);
               ul->file = mystrdup(msg3);
               ul->con.family = (strchr(msg4, ':')) ? AF_INET6 : AF_INET;
               ul->con.remoteaddr = mystrdup(msg4);
