@@ -245,6 +245,7 @@ static void mainloop (void) {
        lastmin=(lasttime/60)-1;
        lasthour=(lasttime/60/60)-1;
        last4sec = last5sec = last20sec = last2min = last3min = lasttime;
+       lastignoredec = lasttime;
        for (ss=0; ss<gdata.networks_online; ss++)
          {
            gdata.networks[ss].lastnotify = lasttime;

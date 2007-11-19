@@ -290,6 +290,7 @@ unlogisch
 Misha-SU
 	report "ANNOUNCE" bug
 	option "nogeoipcountry"
+	report ignore bug
 
 Lamarr
 	report "MAXSPEED" bug

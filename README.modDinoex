@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.0:
 -----------------
 
+bufix: ignore (reported by Misha-SU)
+  versions affected: 2.4 - 2.16
+  ignore was expiring to fast
+
 206) XDCC upload (inspired by Radicand)
   detect when admin uploads the same file twice.
 
