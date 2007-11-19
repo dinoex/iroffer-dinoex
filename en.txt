@@ -2083,3 +2083,4 @@
 2136 "mime_type"
 2137 "DCC Send Denied, I'm already getting this file"
 2138 "DCC Send Denied (upload running) from %s on %s"
+2139 "\2**\2 Search listing:    \"/MSG %s XDCC SEARCH pattern\" \2**\2"

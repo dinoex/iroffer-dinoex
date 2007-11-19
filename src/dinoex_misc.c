@@ -88,6 +88,7 @@ void send_help(const char *nick)
   notice_slow(nick, "\2**\2 Stop listing:      \"/MSG %s XDCC STOP\" \2**\2", mynick);
   if (gdata.send_listfile)
     notice_slow(nick, "\2**\2 Download listing:  \"/MSG %s XDCC SEND LIST\" \2**\2", mynick);
+  notice_slow(nick, "\2**\2 Search listing:    \"/MSG %s XDCC SEARCH pattern\" \2**\2", mynick);
   if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
     notice_slow(nick, "\2**\2 Request details:   \"/MSG %s XDCC INFO pack\" \2**\2", mynick);
   notice_slow(nick, "\2**\2 Request download:  \"/MSG %s XDCC SEND pack\" \2**\2", mynick);
