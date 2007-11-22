@@ -51,7 +51,7 @@ grep -v "^#include" |
 sed -e 's|\\"|°|g' |
 awk -F \[\"\] '
 {
-	for ( I = 2; I <= NF ; I ++ ) {
+	for ( I = 2; I < NF ; I ++ ) {
 		gsub( "[\\\\]", "\\\\", $I )
 		if (( $I != "" ))
 			print "\"" $I "\""
