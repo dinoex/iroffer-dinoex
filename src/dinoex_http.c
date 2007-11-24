@@ -209,7 +209,6 @@ static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
   char ch;
 
   max--;
-  max--;
   for (;;) {
     if (max <= 0)
       break;
@@ -265,7 +264,6 @@ static ssize_t html_decode(char *buffer, ssize_t max, const char *src)
   char ch;
 
   max--;
-  max--;
   for (;;) {
     if (max <= 0)
       break;
@@ -312,7 +310,6 @@ static ssize_t pattern_decode(char *buffer, ssize_t max, const char *src)
   ssize_t len;
   char ch;
 
-  max--;
   max--;
   max--;
   max--;
@@ -1262,16 +1259,19 @@ static int h_html_index(http * const h)
     if (gdata.http_search) {
       mydelete(h->group);
       h->group = mystrdup("*");
-      len = strlen(h->search);
+      len = strlen(h->search) + 1;
+outerror(OUTERROR_TYPE_WARN, "Unknown weblist_search: %s", h->search);
       clean = mycalloc(len);
-      html_decode(clean, len - 1, h->search);
+      html_decode(clean, len, h->search);
       mydelete(h->search);
       len = strlen(clean) + 3;
       h->pattern = mycalloc(len);
       pattern_decode(h->pattern, len, clean);
+outerror(OUTERROR_TYPE_WARN, "Unknown weblist_pattern: %s", h->pattern);
       h->search = mycalloc(maxtextlength);
       html_encode(h->search, maxtextlength - 1, clean);
       mydelete(clean);
+outerror(OUTERROR_TYPE_WARN, "Unknown weblist_search: %s", h->search);
     } else {
       mydelete(h->search);
     }

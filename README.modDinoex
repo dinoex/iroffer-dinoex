@@ -1,7 +1,10 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
 bugfix: http_search
-  german translation missing a parameter
+  Short search strings did not work.
+
+bugfix: http_search
+  German translation missing a parameter.
 
 With Version 3.0:
 -----------------

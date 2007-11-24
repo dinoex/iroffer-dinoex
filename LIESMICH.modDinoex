@@ -1,6 +1,9 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
 bugfix: http_search
+  Kurze Suchwörter funktionierten nicht.
+
+bugfix: http_search
   In der deutschen Übersetzung fehlte ein Parameter.
 
 Ab Version 3.0:
