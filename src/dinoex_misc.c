@@ -684,7 +684,7 @@ void identify_check(const char *line)
   if (strstr(line, "This nickname is registered and protected") != NULL) {
       identify_needed(0);
   }
-  if (strstr(line, "please choose a different nick") != NULL) {
+  if (strcasestr(line, "please choose a different nick") != NULL) {
       identify_needed(0);
   }
 }
