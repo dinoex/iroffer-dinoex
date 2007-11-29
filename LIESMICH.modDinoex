@@ -1,5 +1,9 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bugfix: sentrecord
+  versions affected: 2.4 - 3.0
+  Wert wurde nicht aktualisiert.
+
 bugfix: http_search
   Kurze Suchwörter funktionierten nicht.
 

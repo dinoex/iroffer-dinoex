@@ -298,3 +298,6 @@ Lamarr
 Akropolis
 	user commamd "XDCC GET $"
 
+SDoggy
+	report sentrecord bug
+

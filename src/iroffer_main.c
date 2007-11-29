@@ -505,10 +505,8 @@ static void mainloop (void) {
          gdata.xdccrecv[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
          
          xdccsent = 0;
-#if 0
          for (i=0; i<XDCC_SENT_SIZE; i++)
             xdccsent += (ir_uint64)gdata.xdccsum[i];
-#endif
          if (((float)xdccsent)/XDCC_SENT_SIZE/1024.0 > gdata.sentrecord)
             gdata.sentrecord = ((float)xdccsent)/XDCC_SENT_SIZE/1024.0;
          gdata.xdccsum[(gdata.curtime+1)%XDCC_SENT_SIZE] = 0;
