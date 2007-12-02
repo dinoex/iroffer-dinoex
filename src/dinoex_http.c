@@ -1260,18 +1260,15 @@ static int h_html_index(http * const h)
       mydelete(h->group);
       h->group = mystrdup("*");
       len = strlen(h->search) + 1;
-outerror(OUTERROR_TYPE_WARN, "Unknown weblist_search: %s", h->search);
       clean = mycalloc(len);
       html_decode(clean, len, h->search);
       mydelete(h->search);
       len = strlen(clean) + 3;
       h->pattern = mycalloc(len);
       pattern_decode(h->pattern, len, clean);
-outerror(OUTERROR_TYPE_WARN, "Unknown weblist_pattern: %s", h->pattern);
       h->search = mycalloc(maxtextlength);
       html_encode(h->search, maxtextlength - 1, clean);
       mydelete(clean);
-outerror(OUTERROR_TYPE_WARN, "Unknown weblist_search: %s", h->search);
     } else {
       mydelete(h->search);
     }
