@@ -1,5 +1,8 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bugfix: FETCH
+  Ignoriere Dateien die über FETCH auf den Bot geladen werden.
+
 bugfix: sentrecord
   versions affected: 2.4 - 3.0
   Wert wurde nicht aktualisiert.

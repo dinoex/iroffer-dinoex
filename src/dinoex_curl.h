@@ -23,6 +23,7 @@ void fetch_perform(void);
 void start_fetch_url(const userinput *const u);
 void dinoex_dcl(const userinput *const u);
 void dinoex_dcld(const userinput *const u);
+int fetch_is_running(const char *file);
 #endif /* USE_CURL */
 
 /* End of File */

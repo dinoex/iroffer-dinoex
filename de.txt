@@ -2099,3 +2099,4 @@
 2152 "Content-Length: 26\r\n"
 2153 "Authorization Required\r\n"
 2154 "Du bist jetzt in der 2. Warteschlange für Datei %d (\"%s\") in Position %d. Wenn Du später Abbrechen "
+2155 "Upload still running"

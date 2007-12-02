@@ -1,5 +1,8 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bugfix: FETCH (reported by Misha-SU)
+  avoid to use files the are uploaded vie FETCH.
+
 bugfix: sentrecord (reported by SDoggy)
   versions affected: 2.4 - 3.0
   Stats where not updated.

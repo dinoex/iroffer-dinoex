@@ -2796,6 +2796,15 @@ static void privmsgparse(const char* type, char* line) {
                       "DCC Send Denied (upload running) from %s on %s",
                       hostmask, gnetwork->name);
             }
+#ifdef USE_CURL
+          else if (fetch_is_running(msg3) != 0)
+            {
+              notice(nick, "DCC Send Denied, I'm already getting this file");
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                      "DCC Send Denied (upload running) from %s on %s",
+                      hostmask, gnetwork->name);
+            }
+#endif /* USE_CURL */
           else
             {
               ul = irlist_add(&gdata.uploads, sizeof(upload));

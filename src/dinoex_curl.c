@@ -393,6 +393,18 @@ void dinoex_dcld(const userinput *const u)
   }
 }
 
+int fetch_is_running(const char *file)
+{
+  fetch_curl_t *ft;
+
+  updatecontext();
+  for (ft = irlist_get_head(&fetch_trans); ft; ft = irlist_get_next(ft)) {
+    if (strcmp(ft->name, file) == 0)
+      return 1;
+  }
+  return 0;
+}
+
 #endif /* USE_CURL */
 
 /* End of File */

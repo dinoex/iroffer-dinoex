@@ -23,6 +23,7 @@
 #include "dinoex_curl.h"
 #include "dinoex_queue.h"
 #include "dinoex_jobs.h"
+#include "dinoex_upload.h"
 #include "dinoex_misc.h"
 
 #include <fnmatch.h>
@@ -382,6 +383,21 @@ int invalid_dir(const userinput * const u, const char *arg)
     a_respond(u, "Try Specifying a Directory");
     return 1;
   }
+  return 0;
+}
+
+int is_upload_file(const userinput * const u, const char *arg)
+{
+  if (file_uploading(arg)) {
+    a_respond(u, "Upload still running");
+    return 1;
+  }
+#ifdef USE_CURL
+  if (fetch_is_running(arg)) {
+    a_respond(u, "Upload still running");
+    return 1;
+  }
+#endif /* USE_CURL */
   return 0;
 }
 
@@ -1613,6 +1629,10 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
       if (fnmatch(match, f->d_name, FNM_CASEFOLD))
         continue;
     }
+#ifdef USE_CURL
+    if (fetch_is_running(f->d_name))
+      continue;
+#endif /* USE_CURL */
 
     tempstr = mycalloc(len + thedirlen + 2);
     snprintf(tempstr, len + thedirlen + 2,
@@ -2432,14 +2452,14 @@ void a_filemove(const userinput * const u)
   updatecontext();
 
   if (disabled_config(u) != 0)
-      return;
+    return;
 
   if (invalid_file(u, u->arg1) != 0)
-      return;
+    return;
 
   if (!u->arg2e || !strlen(u->arg2e)) {
-      a_respond(u, "Try Specifying a new Filename");
-      return;
+    a_respond(u, "Try Specifying a new Filename");
+    return;
   }
 
   clean_quotes(u->arg1);
@@ -2697,6 +2717,9 @@ void a_fetch(const userinput * const u)
   }
 
   if (invalid_file(u, u->arg1) != 0)
+    return;
+
+  if (is_upload_file(u, u->arg1) != 0)
     return;
 
   if (!u->arg2e || !strlen(u->arg2e)) {
