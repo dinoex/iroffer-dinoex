@@ -1,5 +1,9 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bugfix: window resize (reported by dondieschotte)
+  versions affected: 3.0
+  under CYGWIN widow resize did not complete.
+
 bugfix: FETCH (reported by Misha-SU)
   avoid to use files the are uploaded vie FETCH.
 
