@@ -284,6 +284,7 @@ Radicand
 	report CANNOUNCE bug
 	report spaces_in_filenames bug
 	report double upload problem
+	report "connectionmethod ssl" bug
 
 unlogisch
 	option "autoadd_sort"

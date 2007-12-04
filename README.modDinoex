@@ -1,5 +1,9 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bugfix: connectionmethod ssl (reported by Radicand)
+  bot will crash when reconnect fails with timeout
+  before completing SSL handshake.
+
 bugfix: window resize (reported by dondieschotte)
   versions affected: 3.0
   under CYGWIN widow resize did not complete.

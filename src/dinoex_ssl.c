@@ -37,7 +37,10 @@ void close_server(void)
 {
 #ifdef USE_SSL
   if (gnetwork->connectionmethod.how == how_ssl) {
-    SSL_free(gnetwork->ssl);
+    if (gnetwork->ssl != NULL) {
+      SSL_free(gnetwork->ssl);
+      gnetwork->ssl = NULL;
+    }
   }
 #endif /* USE_SSL */
   FD_CLR(gnetwork->ircserver, &gdata.readset);
