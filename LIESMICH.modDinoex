@@ -1,5 +1,8 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+207) xdccxmlfile
+  Exportiert jetzt auch Gruppen.
+
 bugfix: connectionmethod ssl
   bot crasht wenn beim Reconnect ein Timeout vor
   dem SSL-Handshake auftritt.

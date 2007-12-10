@@ -789,6 +789,7 @@ static void xdcc_save_xml(void)
   off_t toffered;
   int fd;
   int num;
+  int groups;
 
   updatecontext();
 
@@ -815,6 +816,7 @@ static void xdcc_save_xml(void)
   write_string(fd, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
   write_string(fd, "<packlist>\n\n");
 
+  groups = 0;
   toffered = 0;
   num = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
@@ -840,7 +842,36 @@ static void xdcc_save_xml(void)
     write_string(fd, "  <packgets>");
     write_asc_int(fd, xd->gets);
     write_string(fd, "</packgets>\n");
+    if (xd->group != NULL) {
+      groups ++;
+      write_string(fd, "  <groupname><![CDATA[");
+      write_string(fd, xd->group);
+      write_string(fd, "]]></groupname>\n");
+    }
     write_string(fd, "</pack>\n\n");
+  }
+
+  if (groups > 0) {
+    write_string(fd, "<grouplist>\n");
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      if (xd->group == NULL)
+        continue;
+
+      if (xd->group_desc == NULL)
+        continue;
+
+      write_string(fd, "  <group>\n");
+      write_string(fd, "    <groupname><![CDATA[");
+      write_string(fd, xd->group);
+      write_string(fd, "]]></groupname>\n");
+      write_string(fd, "    <groupdesc><![CDATA[");
+      write_string(fd, xd->group_desc);
+      write_string(fd, "]]></groupdesc>\n");
+      write_string(fd, "  </group>\n");
+    }
+    write_string(fd, "</grouplist>\n\n");
   }
 
   write_string(fd, "<sysinfo>\n");
