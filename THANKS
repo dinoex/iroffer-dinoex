@@ -81,6 +81,7 @@ TheDeath
 	option "http_port"
 	option "group_seperator"
 	option "upnp_router"
+	report CRC bug
 
 [GFE]Lunix
 	alias xdcc list group <group>

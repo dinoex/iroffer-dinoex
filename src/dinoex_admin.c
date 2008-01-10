@@ -2336,7 +2336,6 @@ void a_crc(const userinput * const u)
     crcmsg = validate_crc32(xd, 1);
     if (crcmsg != NULL)
       a_respond(u, "Pack %d, File '%s' %s.", num, xd->file, crcmsg);
-    xd = irlist_get_next(xd);
   }
 }
 

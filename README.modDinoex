@@ -1,5 +1,9 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bugfix: CRC (reported by ThzeDeath)
+  versions affected: 3.0 - 3.1
+  CRC command did crash when completed.
+
 With Version 3.1:
 -----------------
 
