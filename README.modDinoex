@@ -1,5 +1,7 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bugfix: fix small memory leaks
+
 208) http_date
   Define output from of dates on the webpage.
 
@@ -1107,7 +1109,7 @@ Long Term Features:
 With Version mod 1.23:
 ----------------------
 
-bugifx: fix memory leak (reported by TheDeath)
+bugfix: fix memory leak (reported by TheDeath)
 
 56) CHLIMIT (inspired by TheDeath)
 

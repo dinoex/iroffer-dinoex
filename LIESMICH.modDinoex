@@ -1,5 +1,7 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bugfix: Speicherlecks behoben
+
 208) http_date
   Legt die Ausgabe des Datum auf der Website fest.
 
@@ -1036,7 +1038,7 @@ Ab Version mod 1.23:
 With Version mod 1.23:
 ----------------------
 
-bugifx: fix memory leak
+bugfix: Speicherleck behoben
 
 56) CHLIMIT
 
