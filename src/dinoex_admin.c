@@ -2047,6 +2047,7 @@ void a_lock(const userinput * const u)
   xd = irlist_get_nth(&gdata.xdccs, num-1);
 
   a_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2);
+  mydelete(xd->lock);
   xd->lock = mystrdup(u->arg2);
 
   write_files();
