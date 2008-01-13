@@ -247,6 +247,7 @@ chibi
 	report "AUTOADD" bug
 	option "xdccxmlfile"
 	option "http_search"
+	report "xdccxmlfile" bug
 
 vegetto
 	report crash on bad config

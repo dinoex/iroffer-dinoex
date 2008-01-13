@@ -832,7 +832,10 @@ static void xdcc_save_xml(void)
     write_asc_int(fd, num);
     write_string(fd, "</packnr>\n");
     write_string(fd, "  <packname><![CDATA[");
-    write_string(fd, xd->desc);
+    tempstr = mystrdup(xd->desc);
+    removenonprintablectrl(tempstr);
+    write_string(fd, tempstr);
+    mydelete(tempstr);
     write_string(fd, "]]></packname>\n");
     write_string(fd, "  <packsize>");
     tempstr = sizestr(0, xd->st_size);
@@ -867,7 +870,10 @@ static void xdcc_save_xml(void)
       write_string(fd, xd->group);
       write_string(fd, "]]></groupname>\n");
       write_string(fd, "    <groupdesc><![CDATA[");
-      write_string(fd, xd->group_desc);
+      tempstr = mystrdup(xd->group_desc);
+      removenonprintablectrl(tempstr);
+      write_string(fd, tempstr);
+      mydelete(tempstr);
       write_string(fd, "]]></groupdesc>\n");
       write_string(fd, "  </group>\n");
     }
