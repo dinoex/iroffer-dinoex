@@ -1093,6 +1093,9 @@ static void free_config(void)
     mydelete(gdata.networks[si].config_nick);
     mydelete(gdata.networks[si].user_modes);
     mydelete(gdata.networks[si].local_vhost);
+    mydelete(gdata.networks[si].curserver.hostname);
+    mydelete(gdata.networks[si].curserver.password);
+    mydelete(gdata.networks[si].curserveractualname);
     irlist_delete_all(&gdata.networks[si].r_channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);
