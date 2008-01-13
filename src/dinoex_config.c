@@ -160,6 +160,7 @@ static config_string_typ config_parse_string[] = {
 {"hadminpass",              &gdata.hadminpass,              4 },
 {"headline",                &gdata.headline,                0 },
 {"http_admin",              &gdata.http_admin,              0 },
+{"http_date",               &gdata.http_date,               0 },
 {"http_dir",                &gdata.http_dir,                1 },
 {"local_vhost",             &gdata.local_vhost,             0 },
 {"logfile",                 &gdata.logfile,                 1 },

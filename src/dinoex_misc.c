@@ -1143,6 +1143,7 @@ static void free_config(void)
   mydelete(gdata.logfile_messages);
   mydelete(gdata.trashcan_dir);
   mydelete(gdata.xdccxmlfile);
+  mydelete(gdata.http_date);
 }
 
 #endif

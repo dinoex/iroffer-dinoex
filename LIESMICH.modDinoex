@@ -1,5 +1,8 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+208) http_date
+  Legt die Ausgabe des Datum auf der Website fest.
+
 bugfix: CRC
   versions affected: 3.0 - 3.1
   Nach dem CRC Befehl wuder der Bot beendet.

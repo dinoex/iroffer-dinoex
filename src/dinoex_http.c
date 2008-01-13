@@ -1237,6 +1237,20 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
   mydelete(tempstr);
 }
 
+static char* html_getdatestr(char* str, time_t Tp, int len)
+{
+  const char *format;
+  struct tm *localt = NULL;
+  ssize_t llen;
+
+  localt = localtime(&Tp);
+  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
+  llen = strftime(str, len, format, localt);
+  if ((llen == 0) || (llen == len))
+    str[0] = '\0';
+  return str;
+}
+
 static int h_html_index(http * const h)
 {
   char *info;
@@ -1297,7 +1311,7 @@ static int h_html_index(http * const h)
   mydelete(tlabel);
 
   tempstr = mycalloc(maxtextlength);
-  getdatestr(tempstr, gdata.curtime, maxtextlength-1);
+  html_getdatestr(tempstr, gdata.curtime, maxtextlength-1);
   h_respond(h, "<tr>\n");
   h_respond(h, "<td>%s</td>\n", "last update");
   h_respond(h, "<td>%s</td>\n", tempstr);

@@ -1476,6 +1476,7 @@ void dumpgdata(void)
   gdata_print_string(logfile_messages);
   gdata_print_string(trashcan_dir);
   gdata_print_string(xdccxmlfile);
+  gdata_print_string(http_date);
 
   gdata_print_int(need_voice);
   gdata_print_int(need_level);

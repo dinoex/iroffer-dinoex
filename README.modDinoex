@@ -1,5 +1,8 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+208) http_date
+  Define output from of dates on the webpage.
+
 bugfix: CRC (reported by ThzeDeath)
   versions affected: 3.0 - 3.1
   CRC command did crash when completed.
