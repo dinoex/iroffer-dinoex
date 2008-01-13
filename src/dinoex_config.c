@@ -639,6 +639,7 @@ static void c_network(char *var)
     gdata.networks[gdata.networks_online].name = var;
   } else {
     set_default_network_name();
+    mydelete(var);
   }
 }
 
