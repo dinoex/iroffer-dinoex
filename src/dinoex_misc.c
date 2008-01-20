@@ -345,7 +345,7 @@ static void global_defaults(void)
   if (gdata.usenatip) {
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ss++) {
-      gnetwork = &(gdata.networks[gdata.networks_online]);
+      gnetwork = &(gdata.networks[ss]);
       if (gnetwork->usenatip == 0)
         update_natip(gdata.usenatip);
     }
