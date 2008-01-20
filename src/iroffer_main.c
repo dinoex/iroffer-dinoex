@@ -1846,6 +1846,7 @@ static void parseline(char *line) {
        mylog(CALLTYPE_NORMAL,"Server welcome: %s",line);
        if (gdata.getipfromserver)
          {
+           gnetwork->usenatip = 1;
            tptr = strchr(line, '@');
            if (tptr != NULL)
              {
