@@ -1,5 +1,9 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bug_fix: need_level
+  versions affected: 2.13 - 3.1
+  need_level was always 0
+
 bugfix: xdccxmlfile (reported by chibi)
   Cleanup IRC special chars
 

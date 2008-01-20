@@ -125,7 +125,7 @@ static config_int_typ config_parse_int[] = {
 {"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1 },
 {"maxtransfersperperson",   &gdata.maxtransfersperperson,   1, 1000000, 1 },
 {"monitor_files",           &gdata.monitor_files,           1, 65000, 1 },
-{"need_level",              &gdata.need_level,              0, 3, 0 },
+{"need_level",              &gdata.need_level,              0, 3, 1 },
 {"notifytime",              &gdata.notifytime,              0, 1000000, 1 },
 {"overallmaxspeed",         &gdata.overallmaxspeed,         0, 1000000, 4 },
 {"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, 0, 1000000, 4 },
