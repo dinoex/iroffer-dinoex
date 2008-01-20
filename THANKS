@@ -185,6 +185,7 @@ Cork
 	reporting "REHASH" bug
 	option "vhost" per network
 	option "usenatip" per network
+	reporting "usenatip" bug
 
 anibi
 	option "include_subdirs"

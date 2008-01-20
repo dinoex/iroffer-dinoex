@@ -1,8 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bug_fix: usenatip
+  versions affected: 3.0 - 3.1
+  usenatip wurde nur für das erste Netzwerk gesetzt.
+
 bug_fix: getipfromserver
   versions affected: 3.0 - 3.1
-  use_natip wurde ignoriert wenn der Server beim Wilkomme keine IP angibt
+  usenatip wurde ignoriert wenn der Server beim Wilkomme keine IP angibt
 
 bug_fix: need_level
   versions affected: 2.13 - 3.1
