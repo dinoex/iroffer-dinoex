@@ -46,6 +46,7 @@ static void udpate_getip_net(int net, unsigned long ourip)
     if (gnetwork->ourip == ourip)
       continue;
 
+    gnetwork->usenatip = 1;
     old.s_addr = htonl(gnetwork->ourip);
     oldtxt = mystrdup(inet_ntoa(old));
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -112,6 +113,32 @@ void update_natip(const char *var)
       ((gnetwork->ourip & 0xFFFF0000UL) == 0xC0A80000UL)) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "usenatip of %s looks wrong, this is probably not what you want to do",
              inet_ntoa(in));
+  }
+}
+
+void update_server_welcome(char *line)
+{ 
+  const char *tptr;
+
+  if (!gdata.getipfromserver)
+    return;
+
+  tptr = strchr(line, '@');
+  if (tptr != NULL) {
+    tptr ++;
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "IP From Server: %s", tptr);
+    update_natip(tptr);
+    return;
+  }
+  if (gnetwork->getip_net != -1) {
+    /* copy IP from master */
+    gnetwork->usenatip = 1;
+    udpate_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
+    return;
+  }
+  if (gdata.usenatip) {
+    /* use global */
+    update_natip(gdata.usenatip);
   }
 }
 

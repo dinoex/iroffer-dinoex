@@ -14,6 +14,7 @@
  */
 
 void update_natip (const char *var);
+void update_server_welcome(char *line);
 int bind_irc_vhost(int family, int clientsocket);
 int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, char *vhost);
 int irc_open_listen(ir_connection_t *con);

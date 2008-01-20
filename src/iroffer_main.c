@@ -1844,16 +1844,7 @@ static void parseline(char *line) {
      {
        ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Server welcome: %s",line);
        mylog(CALLTYPE_NORMAL,"Server welcome: %s",line);
-       if (gdata.getipfromserver)
-         {
-           gnetwork->usenatip = 1;
-           tptr = strchr(line, '@');
-           if (tptr != NULL)
-             {
-             ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"IP From Server: %s",tptr+1);
-	     update_natip(tptr+1);
-             }
-         }
+       update_server_welcome(line);
        
        /* update server name */
        mydelete(gnetwork->curserveractualname);
