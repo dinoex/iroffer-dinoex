@@ -1,5 +1,9 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+bug_fix: getipfromserver
+  versions affected: 3.0 - 3.1
+  use_natip wurde ignoriert wenn der Server beim Wilkomme keine IP angibt
+
 bug_fix: need_level
   versions affected: 2.13 - 3.1
   need_level war immer 0

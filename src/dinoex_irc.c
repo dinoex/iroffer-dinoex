@@ -120,21 +120,20 @@ void update_server_welcome(char *line)
 { 
   const char *tptr;
 
-  if (!gdata.getipfromserver)
-    return;
-
-  tptr = strchr(line, '@');
-  if (tptr != NULL) {
-    tptr ++;
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "IP From Server: %s", tptr);
-    update_natip(tptr);
-    return;
-  }
-  if (gnetwork->getip_net != -1) {
-    /* copy IP from master */
-    gnetwork->usenatip = 1;
-    udpate_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
-    return;
+  if (gdata.getipfromserver) {
+    tptr = strchr(line, '@');
+    if (tptr != NULL) {
+      tptr ++;
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "IP From Server: %s", tptr);
+      update_natip(tptr);
+      return;
+    }
+    if (gnetwork->getip_net != -1) {
+      /* copy IP from master */
+      gnetwork->usenatip = 1;
+      udpate_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
+      return;
+    }
   }
   if (gdata.usenatip) {
     /* use global */
