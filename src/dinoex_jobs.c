@@ -982,8 +982,10 @@ void a_rehash_needtojump(const userinput *u)
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
     /* keep dynamic IP */
-    if (gdata.getipfromserver)
+    if (gdata.getipfromserver) {
       gnetwork->ourip = gnetwork->r_ourip;
+      gnetwork->usenatip = 1;
+    }
     gnetwork->r_ourip = 0;
     new_vhost = get_local_vhost();
     old_vhost = (gnetwork->r_local_vhost) ? gnetwork->r_local_vhost : r_local_vhost;

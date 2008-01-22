@@ -1596,6 +1596,7 @@ void dumpgdata(void)
       /* r_ourip */
       gdata_print_int(networks[ss].usenatip);
       gdata_print_int(networks[ss].getip_net);
+      gdata_print_string(networks[ss].natip);
   
       gdata_irlist_iter_start(networks[ss].proxyinfo, char);
       gdata_iter_as_print_string;

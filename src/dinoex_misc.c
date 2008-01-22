@@ -346,8 +346,9 @@ static void global_defaults(void)
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
-      if (gnetwork->usenatip == 0)
-        update_natip(gdata.usenatip);
+      if (gnetwork->usenatip != 0)
+        continue;
+      update_natip(gnetwork->natip ? gnetwork->natip : gdata.usenatip);
     }
     gnetwork = backup;
   }
@@ -1093,6 +1094,7 @@ static void free_config(void)
     mydelete(gdata.networks[si].config_nick);
     mydelete(gdata.networks[si].user_modes);
     mydelete(gdata.networks[si].local_vhost);
+    mydelete(gdata.networks[si].natip);
     mydelete(gdata.networks[si].curserver.hostname);
     mydelete(gdata.networks[si].curserver.password);
     mydelete(gdata.networks[si].curserveractualname);

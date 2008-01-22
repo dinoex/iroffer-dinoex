@@ -667,9 +667,10 @@ static void c_usenatip(char *var)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[gdata.networks_online]);
+  gnetwork->natip = var;
+  gnetwork->usenatip = 1;
   update_natip(var);
   gnetwork = backup;
-  mydelete(var);
 }
 
 static void c_user_modes(char *var)

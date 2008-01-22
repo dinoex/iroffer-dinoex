@@ -70,10 +70,10 @@ void update_natip(const char *var)
   if (var == NULL)
     return;
 
+  gnetwork->usenatip = 1;
   if (gnetwork->myip.sa.sa_family != AF_INET)
     return;
 
-  gnetwork->usenatip = 1;
   if (gnetwork->r_ourip != 0)
     return;
 
@@ -134,6 +134,10 @@ void update_server_welcome(char *line)
       udpate_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
       return;
     }
+  }
+  if (gnetwork->natip) {
+    update_natip(gnetwork->natip);
+    return;
   }
   if (gdata.usenatip) {
     /* use global */
