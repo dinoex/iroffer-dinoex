@@ -493,6 +493,20 @@ int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t 
 #endif
 }
 
+const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, int net)
+{
+  long ip;
+
+  if (sa->sa.sa_family == AF_INET) {
+    if (gdata.networks[net].usenatip)
+      ip = htonl(gdata.networks[net].ourip);
+    else
+      ip = sa->sin.sin_addr.s_addr;
+    return inet_ntop(sa->sa.sa_family, &(ip), buffer, len);
+  }
+  return inet_ntop(sa->sa.sa_family, &(sa->sin6.sin6_addr), buffer, len);
+}
+
 int connectirc2(res_addrinfo_t *remote)
 {
   struct sockaddr_in *remoteaddr;

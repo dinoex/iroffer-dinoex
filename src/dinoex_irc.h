@@ -22,6 +22,7 @@ char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
 void child_resolver(void);
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen);
 int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen);
+const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, int net);
 int connectirc2(res_addrinfo_t *remote);
 
 char *get_local_vhost(void);

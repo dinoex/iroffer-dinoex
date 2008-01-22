@@ -1,5 +1,8 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+208) BOTINFO
+  Display DCC IP on BOTINFO.
+
 bug_fix: usenatip (reported by Cork)
   versions affected: 3.0 - 3.1
   usenatip was only in effect for the first network.

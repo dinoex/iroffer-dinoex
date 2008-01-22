@@ -23,6 +23,7 @@
 #include "dinoex_admin.h"
 #include "dinoex_curl.h"
 #include "dinoex_jobs.h"
+#include "dinoex_irc.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -2571,7 +2572,12 @@ static void u_botinfo(const userinput * const u) {
 
    for (ss=0; ss<gdata.networks_online; ss++)
      {
+       char *msg;
        u_respond(u, "network: %d: %s", ss + 1, gdata.networks[ss].name);
+       msg = mycalloc(maxtextlength);
+       my_dcc_ip_show(msg, maxtextlength - 1, &(gdata.networks[ss].myip), ss);
+       u_respond(u, "DCC IP: %s NAT=%d", msg, gdata.networks[ss].usenatip);
+       mydelete(msg);
        
        u_respond(u, "configured nick: %s, actual nick: %s, realname: %s, modes: %s",
                  gdata.config_nick,
