@@ -2109,3 +2109,6 @@
 2162 "]]></groupdesc>\n"
 2163 "  </group>\n"
 2164 "</grouplist>\n\n"
+2165 "http_date"
+2166 "%Y-%m-%d %H:%M"
+2167 "DCC IP: %s NAT=%d"
