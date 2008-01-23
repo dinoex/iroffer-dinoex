@@ -2155,6 +2155,7 @@ void a_relock(const userinput * const u)
     if (strcmp(xd->lock, u->arg1) != 0)
       continue;
 
+    mydelete(xd->lock);
     a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2);
     xd->lock = mystrdup(u->arg2);
   }
