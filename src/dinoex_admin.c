@@ -2131,6 +2131,36 @@ void a_unlockgroup(const userinput * const u)
   write_files();
 }
 
+void a_relock(const userinput * const u)
+{
+  xdcc *xd;
+  int n;
+
+  updatecontext();
+
+  if (invalid_pwd(u, u->arg1) != 0)
+    return;
+
+  if (invalid_pwd(u, u->arg2) != 0)
+    return;
+
+  n = 0;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    n++;
+    if (xd->lock == NULL)
+      continue;
+
+    if (strcmp(xd->lock, u->arg1) != 0)
+      continue;
+
+    a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2);
+    xd->lock = mystrdup(u->arg2);
+  }
+  write_files();
+}
+
 void a_groupdesc(const userinput * const u)
 {
   int k;

@@ -85,6 +85,7 @@ void a_lock(const userinput * const u);
 void a_unlock(const userinput * const u);
 void a_lockgroup(const userinput * const u);
 void a_unlockgroup(const userinput * const u);
+void a_relock(const userinput * const u);
 void a_groupdesc(const userinput * const u);
 void a_group(const userinput * const u);
 void a_movegroup(const userinput * const u);

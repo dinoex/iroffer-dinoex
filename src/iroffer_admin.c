@@ -168,6 +168,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,2,method_allow_all,a_unlock,        "UNLOCK","n","Unlock the pack <n>"},
 {3,2,method_allow_all,a_lockgroup,     "LOCKGROUP","group password","Lock all packs in <group> with <password>"},
 {3,2,method_allow_all,a_unlockgroup,   "UNLOCKGROUP","group","Unlock all packs in <group>"},
+{3,2,method_allow_all,a_relock,        "RELOCK","old-password password","Lock all packs with <old-password> with <password>"},
 {3,3,method_allow_all,a_groupdesc,     "GROUPDESC","group msg","Change description of <group> to <msg>"},
 {3,3,method_allow_all,a_group,         "GROUP","n group","Change group of pack <n> to <group>"},
 {3,3,method_allow_all,a_movegroup,     "MOVEGROUP","n m group","Change group to <group> for pack <n> to <m>"},

@@ -2112,3 +2112,6 @@
 2165 "http_date"
 2166 "%d.%m.%Y %H:%M"
 2167 "DCC IP: %s NAT=%d"
+2168 "RELOCK"
+2169 "altes-passwort passwort"
+2170 "Sichert alle Packet mit <altes-password> mit <passwort>
