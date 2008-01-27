@@ -1,8 +1,11 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+Ab Version 3.2:
+---------------
+
 210) RELOCK
   Neues Admin Kommando:
-  RELOCK <altes-passwort> <passwort> Sichert alle Packet mit <altes-password> mit <passwort>
+  RELOCK <altes-passwort> <passwort> Ändert alle Packet mit <altes-password> zu <passwort>
 
 209) BOTINFO
   Zeige DCC IP bei BOTINFO.

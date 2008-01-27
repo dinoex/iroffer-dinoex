@@ -1,5 +1,8 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version 3.2:
+-----------------
+
 210) RELOCK
   new admin command:
   RELOCK <old-password> <password> Lock all packs with <old-password> with <password>
