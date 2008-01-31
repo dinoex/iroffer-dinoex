@@ -613,6 +613,7 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
+#include <regex.h>
 int main (int argc, char **argv) {regex_t *t; regcomp(t,\"blah\",REG_ICASE|REG_NOSUB); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
