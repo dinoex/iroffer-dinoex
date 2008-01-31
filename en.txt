@@ -2066,7 +2066,6 @@
 2119 "HEAD "
 2120 "If-Modified-Since"
 2121 "Authorization"
-2122 "Ignoring Incomplete Ignore (mask = %s)"
 2123 "getip_network"
 2124 "nogeoipcountry"
 2125 "XDCC HELP from (%s on %s)"
@@ -2115,3 +2114,4 @@
 2168 "RELOCK"
 2169 "old-password password"
 2170 "Lock all packs with <old-password> with <password>"
+2171 "You don't have a transfer running"

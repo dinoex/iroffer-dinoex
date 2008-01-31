@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+bugfix: XDCC CANCEL
+  Melde den Benutzer wenn kein Transfer gefunden wurde.
+
 bugfix: Speicherlecks behoben
 
 bugfix: autoignore

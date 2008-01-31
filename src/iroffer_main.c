@@ -3041,6 +3041,7 @@ static void privmsgparse(const char* type, char* line) {
            stoplist(nick);
          }
          else if ( msg2 && !strcmp(msg2, "CANCEL")) {
+           k = 0;
            /* stop transfers */
            for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
              {
@@ -3048,10 +3049,12 @@ static void privmsgparse(const char* type, char* line) {
                  {
                    if (tr->tr_status != TRANSFER_STATUS_DONE)
                      {
+                       k += 1;
                        t_closeconn(tr,"Transfer cancelled by user",0);
                      }
                  }
              }
+           if (!k) notice(nick, "You don't have a transfer running");
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                    "XDCC CANCEL (%s on %s)",
                    hostmask, gnetwork->name);
