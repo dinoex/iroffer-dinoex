@@ -25,6 +25,7 @@
 #include "dinoex_jobs.h"
 
 #include <ctype.h>
+#include <regex.h>
 
 extern const ir_uint32 crctable[256];
 
@@ -483,7 +484,7 @@ int admin_message(const char *nick, const char *hostmask, const char *passwd, ch
 {
   int err = 0;
 
-  if ( verifyhost(&gdata.adminhost, hostmask) ) {
+  if ( verifyshell(&gdata.adminhost, hostmask) ) {
     if ( verifypass2(gdata.adminpass, passwd) ) {
       admin_msg_line(nick, line, line_len, gdata.adminlevel);
       return 1;
@@ -491,7 +492,7 @@ int admin_message(const char *nick, const char *hostmask, const char *passwd, ch
       err ++;
     }
   }
-  if ( verifyhost(&gdata.hadminhost, hostmask) ) {
+  if ( verifyshell(&gdata.hadminhost, hostmask) ) {
     if ( verifypass2(gdata.hadminpass, passwd) ) {
       admin_msg_line(nick, line, line_len, gdata.hadminlevel);
       return 1;

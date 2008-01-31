@@ -270,28 +270,18 @@ void t_check_duplicateip(transfer *const newtr)
     for (ignore = irlist_get_head(&gdata.ignorelist);
          ignore;
          ignore = irlist_get_next(ignore)) {
-      if (ignore->regexp && !regexec(ignore->regexp, bhostmask, 0, NULL, 0)) {
+      
+      if (fnmatch(ignore->hostmask, bhostmask, FNM_CASEFOLD) == 0)
         break;
-      }
     }
 
     if (!ignore) {
-      char *tempstr;
-
       ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
-      ignore->regexp = mycalloc(sizeof(regex_t));
 
       ignore->hostmask = mystrdup(bhostmask);
 
-      tempstr = hostmasktoregex(bhostmask);
-      if (regcomp(ignore->regexp, tempstr, REG_ICASE|REG_NOSUB)) {
-        ignore->regexp = NULL;
-      }
-
       ignore->flags |= IGN_IGNORING;
       ignore->lastcontact = gdata.curtime;
-
-      mydelete(tempstr);
     }
 
     ignore->flags |= IGN_MANUAL;

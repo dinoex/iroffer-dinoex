@@ -26,7 +26,6 @@
 #include "dinoex_upload.h"
 #include "dinoex_misc.h"
 
-#include <fnmatch.h>
 #include <ctype.h>
 
 void a_respond(const userinput * const u, const char *format, ...)
@@ -501,20 +500,21 @@ int disabled_config(const userinput * const u)
   return 0;
 }
 
-int queue_host_remove(const userinput * const u, irlist_t *list, regex_t *regexp)
+int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
-  char *hostmask;
+  char *hostmask2;
   int changed = 0;
 
   for (pq = irlist_get_head(list); pq;) {
-    hostmask = to_hostmask(pq->nick, pq->hostname);
-    if (regexec(regexp, hostmask, 0, NULL, 0)) {
+    hostmask2 = to_hostmask(pq->nick, pq->hostname);
+    if (fnmatch(hostmask, hostmask2, FNM_CASEFOLD)) {
       pq = irlist_get_next(pq);
-      mydelete(hostmask);
+      mydelete(hostmask2);
       continue;
     }
+    mydelete(hostmask2);
 
     backup = gnetwork;
     gnetwork = &(gdata.networks[pq->net]);
@@ -2874,23 +2874,13 @@ void a_msgnet(const userinput * const u)
 
 void a_bann_hostmask(const userinput * const u, const char *arg)
 {
-  regex_t *regexp;
   transfer *tr;
-  char *tempstr;
   char *hostmask;
   int changed = 0;
 
-  regexp = mycalloc(sizeof(regex_t));
-  tempstr = hostmasktoregex(arg);
-  if (regcomp(regexp, tempstr, REG_ICASE|REG_NOSUB)) {
-    mydelete(regexp);
-    mydelete(tempstr);
-    return;
-  }
-
   /* XDCC REMOVE */
-  queue_host_remove(u, &gdata.idlequeue, regexp);
-  changed = queue_host_remove(u, &gdata.mainqueue, regexp);
+  queue_host_remove(u, &gdata.idlequeue, arg);
+  changed = queue_host_remove(u, &gdata.mainqueue, arg);
   if (changed >0)
     write_statefile();
 
@@ -2899,16 +2889,13 @@ void a_bann_hostmask(const userinput * const u, const char *arg)
        tr;
        tr = irlist_get_next(tr)) {
     hostmask = to_hostmask(tr->nick, tr->hostname);
-    if (!regexec(regexp, hostmask, 0, NULL, 0)) {
+    if (fnmatch(arg, hostmask, FNM_CASEFOLD) == 0) {
       if (tr->tr_status != TRANSFER_STATUS_DONE) {
          t_closeconn(tr, "Transfer cancelled by admin", 0);
       }
     }
     mydelete(hostmask);
   }
-
-  mydelete(regexp);
-  mydelete(tempstr);
 }
 
 void a_bannnick(const userinput * const u)

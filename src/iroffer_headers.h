@@ -31,7 +31,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <pwd.h>
-#include <regex.h>
+#include <fnmatch.h>
 #include <sys/types.h>
 #include <sys/times.h>
 #include <sys/socket.h>
@@ -185,7 +185,6 @@ typedef struct
 typedef struct
 {
   char *hostmask;
-  regex_t *regexp;
   short flags;
   long bucket;
   time_t lastcontact;
@@ -607,8 +606,6 @@ __attribute__ ((format(printf, 2, 3)))
 notice(const char *nick, const char *format, ...);
 
 void vnotice(const char *nick, const char *format, va_list ap);
-char* hostmasktoregex(const char *str);
-int verifyhost(irlist_t *list, const char *hmask);
 int sstrlen (const char *p);
 char dayofweektomask(const char a);
 int isprintable(char a);

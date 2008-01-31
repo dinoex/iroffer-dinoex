@@ -482,8 +482,6 @@ int set_config_list(const char *key, char *text)
   int i;
   int j;
   char *pi;
-  char *mask;
-  regex_t *ah;
 
   updatecontext();
 
@@ -523,17 +521,10 @@ int set_config_list(const char *key, char *text)
        outerror(OUTERROR_TYPE_WARN,
                 "ignored %s '%s' because it contains spaces",
                 key, text);
+       mydelete(text);
        return 0;
      }
-     caps(text);
-     mask = hostmasktoregex(text);
-     ah = irlist_add(config_parse_list[i].list, sizeof(regex_t));
-     if (regcomp(ah, mask, REG_ICASE|REG_NOSUB)) {
-         irlist_delete(config_parse_list[i].list, ah);
-     }
-     mydelete(mask);
-     mydelete(text);
-     return 0;
+     break;
   case 1:
      convert_to_unix_slash(text);
      break;

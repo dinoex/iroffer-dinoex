@@ -1210,11 +1210,6 @@ static void mainloop (void) {
                 }
               if (ignore->bucket < 0)
                 {
-                  if (ignore->regexp)
-                    {
-                      regfree(ignore->regexp);
-                    }
-                  mydelete(ignore->regexp);
                   mydelete(ignore->hostmask);
                   ignore = irlist_delete(&gdata.ignorelist, ignore);
                 }
@@ -2453,12 +2448,12 @@ static void privmsgparse(const char* type, char* line) {
       }
    hostname[j]='\0';
    
-   wildhost = to_hostmask("*", hostmask + strlen(nick) + 1);
+   wildhost = to_hostmask("*", hostname);
    
    if (isthisforme(dest, msg1))
      {
        
-       if (verifyhost(&gdata.autoignore_exclude, hostmask))
+       if (verifyshell(&gdata.autoignore_exclude, hostmask))
          {
            /* host matches autoignore_exclude */
            goto noignore;
@@ -2469,8 +2464,7 @@ static void privmsgparse(const char* type, char* line) {
        
        while(ignore)
          {
-           if ((ignore->regexp != NULL) &&
-               !regexec(ignore->regexp,hostmask,0,NULL,0))
+           if (fnmatch(ignore->hostmask, hostmask, FNM_CASEFOLD) == 0)
              {
                /* already in list */
                j=1;
@@ -2515,25 +2509,14 @@ static void privmsgparse(const char* type, char* line) {
        
        if (!ignore)
          {
-           char *tempr;
-           
            /* not in list */
            ignore = irlist_add(&gdata.ignorelist,sizeof(igninfo));
-           ignore->regexp = mycalloc(sizeof(regex_t));
            
            ignore->hostmask = mystrdup(wildhost);
-           
-           tempr = hostmasktoregex(wildhost);
-           if (regcomp(ignore->regexp,tempr,REG_ICASE|REG_NOSUB))
-             {
-               ignore->regexp = NULL;
-             }
            
            ignore->bucket = 1;
            ignore->flags &= ~IGN_MANUAL & ~IGN_IGNORING;
            ignore->lastcontact = gdata.curtime;
-           
-           mydelete(tempr);
          }
       }
  noignore:
@@ -2693,14 +2676,14 @@ static void privmsgparse(const char* type, char* line) {
         }
       else if (!strcmp(caps(msg2), "CHAT"))
         {
-          if ( verifyhost(&gdata.adminhost, hostmask) )
+          if ( verifyshell(&gdata.adminhost, hostmask) )
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                       "DCC CHAT attempt authorized from %s on %s",
                       hostmask, gnetwork->name);
               setupdccchat(nick, line);
             }
-          else if ( verifyhost(&gdata.hadminhost, hostmask) )
+          else if ( verifyshell(&gdata.hadminhost, hostmask) )
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                       "DCC CHAT attempt authorized from %s on %s",
@@ -2739,7 +2722,7 @@ static void privmsgparse(const char* type, char* line) {
           clean_quotes(msg3);
           removenonprintablefile(msg3);
           len = atoull(msg6);
-          if ( !verifyhost(&gdata.uploadhost, hostmask) )
+          if ( !verifyshell(&gdata.uploadhost, hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
@@ -2839,7 +2822,7 @@ static void privmsgparse(const char* type, char* line) {
               msg5[strlen(msg5)-1] = '\0';
             }
           len = atoull(msg5);
-          if ( !verifyhost(&gdata.uploadhost, hostmask) )
+          if ( !verifyshell(&gdata.uploadhost, hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
@@ -3430,7 +3413,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        
        tr->xpack = xd;
        tr->maxspeed = xd->maxspeed;
-       tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
+       tr->unlimited = verifyshell(&gdata.unlimitedhost, hostmask);
        tr->nomax = tr->unlimited;
        tr->net = gnetwork->net;
        
@@ -3714,7 +3697,7 @@ void sendaqueue(int type, int pos, char *lastnick)
       tr->xpack = pq->xpack;
       tr->maxspeed = pq->xpack->maxspeed;
       hostmask = to_hostmask(tr->nick, tr->hostname);
-      tr->unlimited = verifyhost(&gdata.unlimitedhost, hostmask);
+      tr->unlimited = verifyshell(&gdata.unlimitedhost, hostmask);
       if (tr->unlimited)
         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                 "unlimitedhost found: %s (%s on %s)",

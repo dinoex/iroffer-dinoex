@@ -843,7 +843,6 @@ void t_checkminspeed(transfer * const t) {
    
    if (gdata.punishslowusers)
      {
-       char *tempstr;
        igninfo *ignore;
        transfer *tr;
        gnetwork_t *backup;
@@ -861,16 +860,8 @@ void t_checkminspeed(transfer * const t) {
        queue_punishslowusers(&gdata.idlequeue, t->net, t->nick);
        
        ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
-       ignore->regexp = mycalloc(sizeof(regex_t));
        
        ignore->hostmask = to_hostmask( "*", t->hostname);
-       
-       tempstr = hostmasktoregex(ignore->hostmask);
-       if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
-         {
-           ignore->regexp = NULL;
-         }
-       mydelete(tempstr);
        
        ignore->flags |= IGN_IGNORING;
        ignore->lastcontact = gdata.curtime;

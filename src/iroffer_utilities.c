@@ -718,77 +718,6 @@ void vnotice(const char *nick, const char *format, va_list ap)
   writeserver(WRITESERVER_NORMAL, "NOTICE %s :%s", nick, tempstr);
 }
 
-char* hostmasktoregex(const char *str) {
-   char *tempstr;
-   int i,j;
-   int maxlen;
-   
-   updatecontext();
-
-   if (!str) return NULL;
-   
-   maxlen = 2 + (strlen(str) * 11);
-   
-   tempstr = mycalloc(maxlen+1);
-   
-   tempstr[0] = '^';
-   
-   for (i=0,j=1; i<sstrlen(str); i++,j++) {
-      if ( (str[i] >= 'a' && str[i] <= 'z')
-        || (str[i] >= 'A' && str[i] <= 'Z')
-        || (str[i] >= '0' && str[i] <= '9') )
-         tempstr[j] = str[i];
-      else if (str[i] == '?')
-         tempstr[j] = '.';
-      else if (str[i] == '*') {
-         tempstr[j] = '.'; j++;
-         tempstr[j] = '*';
-         }
-      else if (str[i] == '#') {
-         tempstr[j] = '['; j++;
-         tempstr[j] = '0'; j++;
-         tempstr[j] = '-'; j++;
-         tempstr[j] = '9'; j++;
-         tempstr[j] = ']'; j++;
-         tempstr[j] = '['; j++;
-         tempstr[j] = '0'; j++;
-         tempstr[j] = '-'; j++;
-         tempstr[j] = '9'; j++;
-         tempstr[j] = ']'; j++;
-         tempstr[j] = '*';
-         }
-      else {
-         tempstr[j] = '\\'; j++;
-         tempstr[j] = str[i];
-         }
-      }
-   
-   tempstr[j] = '$';
-   tempstr[j+1] = '\0';
-   
-   return tempstr;
-   
-   }
-
-int verifyhost(irlist_t *list, const char *hmask)
-{
-  regex_t *ah;
-  
-  updatecontext();
-  
-  ah = irlist_get_head(list);
-  while (ah)
-    {
-    if (!regexec(ah,hmask,0,NULL,0))
-      {
-        return 1;
-      }
-    ah = irlist_get_next(ah);
-    }
-  
-  return 0;
-}
-
 char* getfline(char* str, int slen, int descr, int ret)
 {
   char *tempbuf;
@@ -1527,16 +1456,25 @@ void dumpgdata(void)
   gdata_print_int(send_listfile);
   gdata_print_long(nomd5_start);
   
-  /* downloadhost */
-  /* nodownloadhost */
-  /* unlimitedhost */
+  gdata_irlist_iter_start(downloadhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  gdata_irlist_iter_start(nodownloadhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  gdata_irlist_iter_start(unlimitedhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
   
   gdata_print_string(adminpass);
   gdata_print_string(hadminpass);
   
-  /* adminhost */
-
-  /* hadminhost */
+  gdata_irlist_iter_start(adminhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  gdata_irlist_iter_start(hadminhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
   
   /* filedir */
   gdata_irlist_iter_start(filedir, char);
@@ -1549,11 +1487,15 @@ void dumpgdata(void)
   gdata_print_string(periodicmsg_nick);
   gdata_print_string(periodicmsg_msg);
   gdata_print_int(periodicmsg_time);
-  /* autoignore_exclude */
+  gdata_irlist_iter_start(autoignore_exclude, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
   
   gdata_print_int(autoignore_threshold);
   
-  /* uploadhost */
+  gdata_irlist_iter_start(uploadhost, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
   
   gdata_print_string(uploaddir);
   gdata_print_number("%" LLPRINTFMT "u", uploadmaxsize);

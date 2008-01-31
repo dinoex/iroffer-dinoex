@@ -1973,7 +1973,6 @@ int isthisforme (const char *dest, char *msg1) {
 void reinit_config_vars(void)
 {
   autoqueue_t *aq;
-  regex_t *rh;
   int si;
   
   /* clear old config items */
@@ -1984,48 +1983,13 @@ void reinit_config_vars(void)
        mydelete(aq->word);
        mydelete(aq->message);
     }
-  for (rh = irlist_get_head(&gdata.autoignore_exclude);
-       rh;
-       rh = irlist_delete(&gdata.autoignore_exclude, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.adminhost);
-       rh;
-       rh = irlist_delete(&gdata.adminhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.hadminhost);
-       rh;
-       rh = irlist_delete(&gdata.hadminhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.uploadhost);
-       rh;
-       rh = irlist_delete(&gdata.uploadhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.downloadhost);
-       rh;
-       rh = irlist_delete(&gdata.downloadhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.nodownloadhost);
-       rh;
-       rh = irlist_delete(&gdata.nodownloadhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.unlimitedhost);
-       rh;
-       rh = irlist_delete(&gdata.unlimitedhost, rh))
-    {
-      regfree(rh);
-    }
+  irlist_delete_all(&gdata.autoignore_exclude);
+  irlist_delete_all(&gdata.adminhost);
+  irlist_delete_all(&gdata.hadminhost);
+  irlist_delete_all(&gdata.uploadhost);
+  irlist_delete_all(&gdata.downloadhost);
+  irlist_delete_all(&gdata.nodownloadhost);
+  irlist_delete_all(&gdata.unlimitedhost);
   mydelete(gdata.pidfile);
   mydelete(gdata.config_nick);
   gdata.networks_online = 0;

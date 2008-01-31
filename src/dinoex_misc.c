@@ -493,23 +493,18 @@ int noticeresults(const char *nick, const char *match)
   int i, j, k, len;
   char *tempstr = mycalloc(maxtextlength);
   char *sizestrstr;
-  char *tempr;
-  regex_t *regexp = mycalloc(sizeof(regex_t));
   xdcc *xd;
 
   len = k = 0;
 
-  tempr = hostmasktoregex(match);
-
-  if (!regcomp(regexp, tempr, REG_ICASE | REG_NOSUB)) {
     i = 0;
     for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd)) {
       i++;
       if (hide_pack(xd))
         continue;
-      if (!regexec(regexp, xd->file, 0, NULL, 0) ||
-          !regexec(regexp, xd->desc, 0, NULL, 0) ||
-          !regexec(regexp, xd->note, 0, NULL, 0)) {
+      if ((fnmatch(match, xd->file, FNM_CASEFOLD) == 0) ||
+          (fnmatch(match, xd->desc, FNM_CASEFOLD) == 0) ||
+          (fnmatch(match, xd->note, FNM_CASEFOLD) == 0)) {
         if (!k) {
           if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
             j = irlist_size(&gdata.trans);
@@ -557,12 +552,9 @@ int noticeresults(const char *nick, const char *match)
         break;
       }
     }
-  }
 
   if (k)
     notice_slow(nick, "%s", tempstr);
-  mydelete(tempr);
-  mydelete(regexp);
   mydelete(tempstr);
   return k;
 }
@@ -708,12 +700,12 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
   updatecontext();
 
   if (check_manual_send(hostname, man) == 0) {
-    if (!verifyhost(&gdata.downloadhost, hostmask)) {
+    if (!verifyshell(&gdata.downloadhost, hostmask)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (host denied): ");
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
       return NULL;
     }
-    if (verifyhost(&gdata.nodownloadhost, hostmask)) {
+    if (verifyshell(&gdata.nodownloadhost, hostmask)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (host denied): ");
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
       return NULL;
@@ -976,7 +968,6 @@ static void free_state(void)
   for (i = irlist_get_head(&gdata.ignorelist);
        i;
        i = irlist_delete(&gdata.ignorelist, i)) {
-     mydelete(i->regexp);
      mydelete(i->hostmask);
   }
   for (ml = irlist_get_head(&gdata.msglog);
@@ -1023,7 +1014,6 @@ static void free_state(void)
 static void free_config(void)
 {
   autoqueue_t *aq;
-  regex_t *rh;
   int si;
 
   updatecontext();
@@ -1035,48 +1025,13 @@ static void free_config(void)
        mydelete(aq->word);
        mydelete(aq->message);
     }
-  for (rh = irlist_get_head(&gdata.autoignore_exclude);
-       rh;
-       rh = irlist_delete(&gdata.autoignore_exclude, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.adminhost);
-       rh;
-       rh = irlist_delete(&gdata.adminhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.hadminhost);
-       rh;
-       rh = irlist_delete(&gdata.hadminhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.uploadhost);
-       rh;
-       rh = irlist_delete(&gdata.uploadhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.downloadhost);
-       rh;
-       rh = irlist_delete(&gdata.downloadhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.nodownloadhost);
-       rh;
-       rh = irlist_delete(&gdata.nodownloadhost, rh))
-    {
-      regfree(rh);
-    }
-  for (rh = irlist_get_head(&gdata.unlimitedhost);
-       rh;
-       rh = irlist_delete(&gdata.unlimitedhost, rh))
-    {
-      regfree(rh);
-    }
+  irlist_delete_all(&gdata.autoignore_exclude);
+  irlist_delete_all(&gdata.adminhost);
+  irlist_delete_all(&gdata.hadminhost);
+  irlist_delete_all(&gdata.uploadhost);
+  irlist_delete_all(&gdata.downloadhost);
+  irlist_delete_all(&gdata.nodownloadhost);
+  irlist_delete_all(&gdata.unlimitedhost);
   mydelete(gdata.r_pidfile);
   mydelete(gdata.pidfile);
   mydelete(gdata.config_nick);

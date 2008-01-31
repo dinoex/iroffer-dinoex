@@ -44,7 +44,7 @@ int invalid_pack(const userinput * const u, int num);
 int get_network_msg(const userinput * const u, const char *arg);
 int disabled_config(const userinput * const u);
 
-int queue_host_remove(const userinput * const u, irlist_t *list, regex_t *regexp);
+int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask);
 int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick);
 
 void a_cancel_transfers(xdcc *xd, const char *msg);

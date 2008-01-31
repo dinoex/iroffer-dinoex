@@ -2882,7 +2882,7 @@ static void u_ignore(const userinput * const u)
   ignore = irlist_get_head(&gdata.ignorelist);
   while(ignore)
     {
-      if (ignore->regexp && !regexec(ignore->regexp,u->arg2,0,NULL,0))
+      if (fnmatch(ignore->hostmask, u->arg2, FNM_CASEFOLD) == 0)
         {
           break;
         }
@@ -2891,24 +2891,12 @@ static void u_ignore(const userinput * const u)
   
   if (!ignore)
     {
-      char *tempstr;
-      
       ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
-      ignore->regexp = mycalloc(sizeof(regex_t));
       
       ignore->hostmask = mystrdup(u->arg2);
       
-      tempstr = hostmasktoregex(u->arg2);
-      if (regcomp(ignore->regexp,tempstr,REG_ICASE|REG_NOSUB))
-        {
-          u_respond(u, "Ignoring Incomplete Ignore (mask = %s)", ignore->hostmask);
-          mydelete(ignore->regexp);
-        }
-      
       ignore->flags |= IGN_IGNORING;
       ignore->lastcontact = gdata.curtime;
-      
-      mydelete(tempstr);
     }
   
   ignore->flags |= IGN_MANUAL;
@@ -2939,11 +2927,6 @@ static void u_unignore(const userinput * const u)
       if (strcmp(ignore->hostmask,u->arg1) == 0)
         {
           mydelete(ignore->hostmask);
-          if (ignore->regexp)
-            {
-              regfree(ignore->regexp);
-            }
-          mydelete(ignore->regexp);
           irlist_delete(&gdata.ignorelist, ignore);
           
           u_respond(u, "Ignore removed for %s",u->arg1);

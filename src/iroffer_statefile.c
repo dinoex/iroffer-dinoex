@@ -922,7 +922,6 @@ void read_statefile(void)
         case STATEFILE_TAG_IGNORE:
           {
             igninfo *ignore;
-            char *tempr;
             statefile_hdr_t *ihdr;
 
             ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
@@ -1007,15 +1006,6 @@ void read_statefile(void)
             else
               {
                 ignore->bucket -= (gdata.curtime - timestamp)/gdata.autoignore_threshold;
-                
-                ignore->regexp = mycalloc(sizeof(regex_t));
-                tempr = hostmasktoregex(ignore->hostmask);
-                if (regcomp(ignore->regexp,tempr,REG_ICASE|REG_NOSUB))
-                  {
-                    outerror(OUTERROR_TYPE_WARN, "Ignoring Incomplete Ignore (mask = %s)", ignore->hostmask);
-                    mydelete(ignore->regexp);
-                  }
-                mydelete(tempr);
               }
           }
           

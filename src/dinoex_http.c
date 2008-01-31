@@ -25,7 +25,6 @@
 #include "dinoex_http.h"
 
 #include <ctype.h>
-#include <fnmatch.h>
 
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 

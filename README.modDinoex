@@ -3,7 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
+bugfix: fix small memory leaks
+
+bugfix: autoignore
+  versions affected: 2.13 - 3.2
+  no user was added to ignore.
+
 bugfix: Configure (reported by Shock)
+  versions affected: 3.0 - 3.2
   certain combinations did not complete.
 
 With Version 3.2:
