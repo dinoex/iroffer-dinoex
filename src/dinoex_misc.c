@@ -192,8 +192,13 @@ void notifyqueued_nick(const char *nick)
   float speed;
   int left;
   int i;
+  struct tm *localt;
+  char ntime[ 16 ];
 
   updatecontext();
+
+  localt = localtime(&gdata.curtime);
+  strftime( ntime, sizeof(ntime) - 1, "%H:%M", localt);
 
   /* make sortd list of all transfers */
   memset(&list, 0, sizeof(irlist_t));
@@ -256,7 +261,7 @@ void notifyqueued_nick(const char *nick)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
             "Notifying Queued status to %s",
             pq->nick);
-    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
+    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining. (at %s)",
                 (long)(gdata.curtime-pq->queuedtime)/60/60,
                 (long)((gdata.curtime-pq->queuedtime)/60)%60,
                 pq->xpack->desc,
@@ -264,7 +269,8 @@ void notifyqueued_nick(const char *nick)
                 irlist_size(&gdata.mainqueue),
                 rtime/60/60,
                 (rtime/60)%60,
-                (rtime >= 359999) ? "more" : "less");
+                (rtime >= 359999) ? "more" : "less",
+                ntime);
   }
 
   i = 0;
@@ -291,7 +297,7 @@ void notifyqueued_nick(const char *nick)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
             "Notifying Queued status to %s",
             pq->nick);
-    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining.",
+    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining. (at %s)",
                 (long)(gdata.curtime-pq->queuedtime)/60/60,
                 (long)((gdata.curtime-pq->queuedtime)/60)%60,
                 pq->xpack->desc,
@@ -299,7 +305,9 @@ void notifyqueued_nick(const char *nick)
                 irlist_size(&gdata.idlequeue),
                 rtime/60/60,
                 (rtime/60)%60,
-                (rtime >= 359999) ? "more" : "less");
+                (rtime >= 359999) ? "more" : "less",
+                ntime);
+    break;
   }
 
   irlist_delete_all(&list);

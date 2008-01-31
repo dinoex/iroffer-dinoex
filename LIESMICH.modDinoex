@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+bugfix: XDCC QUEUE
+  Melde den Benutzer auch die Uhrzeit.
+  Melde nur einen Eintrag der zweiten Warteschange.
+
 bugfix: XDCC STOP
   Melde den Benutzer das die Ausgabe angehalten wurde.
 

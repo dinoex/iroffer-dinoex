@@ -1199,7 +1199,7 @@
 1226 "iroffer was compiled without encrypted password support.  You do not need to ecrypt your password.\n"
 1227 "Notifying %d Queued People (%.1fK/sec used, %dK/sec limit)"
 1228 "Notifying %d Queued People"
-1229 "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining."
+1229 "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining. (at %s)"
 1230 "more"
 1231 "less"
 1232 "%s bandwidth limit: %2.1f of %2.1fKB/sec used. Your share: %2.1fKB/sec."
@@ -2116,3 +2116,4 @@
 2170 "Lock all packs with <old-password> with <password>"
 2171 "You don't have a transfer running"
 2172 "LIST stopped (%d lines deleted)"
+2173 "%H:%M"
