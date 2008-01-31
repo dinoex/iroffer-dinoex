@@ -2115,3 +2115,4 @@
 2169 "altes-passwort passwort"
 2170 "Ändert alle Packet mit <altes-password> zu <passwort>"
 2171 "Du hast keinen Download am laufen"
+2172 "LIST angehalten (%d Zeilen gelöscht)"

@@ -140,6 +140,7 @@ void stoplist(const char *nick)
     item = irlist_get_next(item);
   }
   ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (stopped %d)", stopped);
+  notice(nick, "LIST stopped (%d lines deleted)", stopped);
 }
 
 static float guess_maxspeed(xdcc *xd)

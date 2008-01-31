@@ -2115,3 +2115,4 @@
 2169 "old-password password"
 2170 "Lock all packs with <old-password> with <password>"
 2171 "You don't have a transfer running"
+2172 "LIST stopped (%d lines deleted)"
