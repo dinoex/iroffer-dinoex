@@ -868,14 +868,12 @@ int main (int argc, char **argv) {exit(0);}
 		CURLLIB="-lcurl"
 		CURLINC="-DUSE_CURL -I/usr/local/include"
 		CURLLDF="-L/usr/local/lib"
-		shift
 	else
 		echo "not found"
 		echo "***Disable the FETCH-Command. If u want to use this feature, please install libcurl.***"
 		CURLLIB=""
 		CURLINC=""
 		CURLLDF=""
-		shift
 	fi
 fi
 
@@ -895,14 +893,12 @@ int main (int argc, char **argv) {exit(0);}
 		SSLLIB="-lssl"
 		SSLINC="-DUSE_SSL -I/usr/local/include/"
 		SSLLDF="-L/usr/local/lib"
-		shift
 	else
 		echo "not found"
 		echo "***Disable the SSL Features. If u want to use this feature, please install OpenSSL.***"
 		SSLLIB=""
 		SSLINC=""
 		SSLLDF=""
-		shift
 	fi
 fi
 
@@ -921,14 +917,12 @@ int main (int argc, char **argv) {exit(0);}
 		SSLLIB="-lgnutls-openssl"
 		SSLINC="-DUSE_SSL -I/usr/local/include/gnutls"
 		SSLLDF="-L/usr/local/lib"
-		shift
 	else
 		echo "not found"
 		echo "***Disable the SSL Features. If u want to use this feature, please install GNU TLS.***"
 		SSLLIB=""
 		SSLINC=""
 		SSLLDF=""
-		shift
 	fi
 fi
 
