@@ -9,6 +9,9 @@ bugfix: autoignore
   versions affected: 2.13 - 3.2
   Es wurden keine Benutzer ignoriert.
 
+bugfix: hostmasks with "|" on some linux builds
+  Statt regexp wird jetzt fnmatch benutzt.
+
 bugfix: Configure
   versions affected: 3.0 - 3.2
   Einige Optionen liefen nicht durch.

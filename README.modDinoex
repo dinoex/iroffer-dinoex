@@ -9,6 +9,9 @@ bugfix: autoignore
   versions affected: 2.13 - 3.2
   no user was added to ignore.
 
+bugfix: hostmasks with "|" on some linux builds
+  drop regexp in favor of fnmatch.
+
 bugfix: Configure (reported by Shock)
   versions affected: 3.0 - 3.2
   certain combinations did not complete.

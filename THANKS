@@ -288,6 +288,7 @@ Radicand
 	report spaces_in_filenames bug
 	report double upload problem
 	report "connectionmethod ssl" bug
+	report "nodownloadhost" regexp problem
 
 unlogisch
 	option "autoadd_sort"
