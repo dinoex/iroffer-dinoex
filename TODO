@@ -69,6 +69,7 @@ Short Term Features:
 
 Long Term Features:
   1008  use text or xml for statefile
+  1012  Leach a full group
   1013  notify adminnick when autoadd
   1018  warning in chat when bot was kicked
   1042  hentai flag
@@ -76,6 +77,11 @@ Long Term Features:
   1083  temporary uploadhost
   1092  Javascript for cut&paste
   1103  Silc Support
+  1105  CONFIGLINE key val
+  1110  XDCC QUEUE compact output
+  1111  accept uploads for x min
+  1113  trim spaces in config
+  1114  service script for linux
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -86,7 +92,6 @@ Not going to happen anytime soon:
   1009  limit file access to upload and download
   1010  strip logfiles
   1011  flexible auth mech for nicserver
-  1012  Leach a full group
   1015  http admin
   1022  send notes on mutiple triggers
   1027  renumber <from> <to> new
@@ -110,4 +115,6 @@ Not going to happen anytime soon:
   1080  need_voice per group
   1081  virtuelle bots
   1090  password to get http list
+  1108  MySQL Support
+  1112  botinfo with queue size
 
