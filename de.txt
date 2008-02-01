@@ -1642,7 +1642,7 @@
 1683 "CRC32 verified OK"
 1684 "unlock Pack %d, File %s"
 1685 "CRC32 not found"
-1686 "[0-9A-F]{8,}"
+1686 "*[0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F]*"
 1687 "crc expected %s, failed %s"
 1688 "CRC32 failed"
 1689 "lock Pack %d, File %s"

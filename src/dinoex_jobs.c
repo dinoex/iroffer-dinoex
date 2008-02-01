@@ -25,7 +25,6 @@
 #include "dinoex_jobs.h"
 
 #include <ctype.h>
-#include <regex.h>
 
 extern const ir_uint32 crctable[256];
 
@@ -295,7 +294,6 @@ const char *validate_crc32(xdcc *xd, int quiet)
   char *line;
   const char *x;
   char *w;
-  regex_t *regexp;
 
   if (xd->has_crc32 == 0) {
     if (quiet)
@@ -341,19 +339,15 @@ const char *validate_crc32(xdcc *xd, int quiet)
     }
   } else {
     x = "CRC32 not found";
-    regexp = mycalloc(sizeof(regex_t));
-    if (!regcomp(regexp, "[0-9A-F]{8,}", REG_EXTENDED | REG_ICASE | REG_NOSUB)) {
-      if (!regexec(regexp, line, 0, NULL, 0)) {
-        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
-        x = "CRC32 failed";
-        if (quiet == 2) {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %d, File %s",
-                  number_of_pack(xd), line);
-          xd->lock = mystrdup(badcrc);
-        }
+    if (fnmatch("*[0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F]*", line, FNM_CASEFOLD) == 0) {
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
+      x = "CRC32 failed";
+      if (quiet == 2) {
+        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %d, File %s",
+                number_of_pack(xd), line);
+        xd->lock = mystrdup(badcrc);
       }
     }
-    mydelete(regexp);
   }
   mydelete(line)
   mydelete(newcrc)

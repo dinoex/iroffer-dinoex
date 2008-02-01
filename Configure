@@ -606,23 +606,6 @@ else
  echo "missing, will emulate"
 fi
 
-echo -n "Checking for regcomp()... "
-echo "
-#define GEX 
-#include \"src/iroffer_config.h\"
-#include \"src/iroffer_defines.h\"
-#include \"src/iroffer_headers.h\"
-#include \"src/iroffer_globals.h\"
-#include <regex.h>
-int main (int argc, char **argv) {regex_t *t; regcomp(t,\"blah\",REG_ICASE|REG_NOSUB); exit(0);}
-" > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
- echo "found"
-else
- echo "Missing. ***ERROR***: couldn't find regcomp()"
- waserror=yes
-fi
-
 echo -n "Seeing if 'sys/mman.h' exists... "
 echo "
 #define GEX 
