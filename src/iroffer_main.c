@@ -3102,7 +3102,10 @@ static void privmsgparse(const char* type, char* line) {
                       k++;
                       /* limit matches */
                       if ((gdata.max_find != 0) && (k >= gdata.max_find))
-                        break;
+                        {
+                           notice_slow(nick, "Search limit exceeded, please check the packlist.");
+                           break;
+                        }
                    }
                }
              i++;

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+bugfix: XDCC SEARCH (submitted by xtr)
+  Melde den Benutzer wenn die Suche abgebrochen wurde.
+
 bugfix: XDCC QUEUE
   Melde den Benutzer auch die Uhrzeit.
   Melde nur einen Eintrag der zweiten Warteschange.

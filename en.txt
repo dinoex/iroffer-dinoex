@@ -2117,3 +2117,4 @@
 2171 "You don't have a transfer running"
 2172 "LIST stopped (%d lines deleted)"
 2173 "%H:%M"
+2174 "Search limit exceeded, please check the packlist."

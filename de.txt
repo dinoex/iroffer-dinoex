@@ -2117,3 +2117,4 @@
 2171 "Du hast keinen Download am laufen"
 2172 "LIST angehalten (%d Zeilen gelöscht)"
 2173 "%H:%M"
+2174 "Suche Abgebrochen. Schau in der Liste der Pakete nach."

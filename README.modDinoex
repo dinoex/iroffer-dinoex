@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
+bugfix: XDCC SEARCH (submitted by xtr)
+  Report to the user if the search limit has been met.
+
 bugfix: XDCC QUEUE
   Report to the user the time of the message.
   Report only first item in idle queue.
