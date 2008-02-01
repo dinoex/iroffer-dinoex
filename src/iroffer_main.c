@@ -2723,7 +2723,7 @@ static void privmsgparse(const char* type, char* line) {
           clean_quotes(msg3);
           removenonprintablefile(msg3);
           len = atoull(msg6);
-          if ( !verify_uploadhost( hostmask) )
+          if ( verify_uploadhost( hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
@@ -2823,7 +2823,7 @@ static void privmsgparse(const char* type, char* line) {
               msg5[strlen(msg5)-1] = '\0';
             }
           len = atoull(msg5);
-          if ( !verify_uploadhost( hostmask) )
+          if ( verify_uploadhost( hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,

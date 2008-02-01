@@ -877,7 +877,7 @@ int verify_uploadhost(const char *hostmask)
 
   updatecontext();
 
-  if ( verifyshell(&gdata.uploadhost, hostmask) == 0 )
+  if ( verifyshell(&gdata.uploadhost, hostmask) != 0 )
     return 0;
 
   for (tu = irlist_get_head(&gdata.tuploadhost);
