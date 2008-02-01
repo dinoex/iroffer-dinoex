@@ -311,6 +311,12 @@ typedef struct
 
 typedef struct
 {
+  char *u_host;
+  long u_time;
+} tupload_t;
+
+typedef struct
+{
   enum
     {
       DCCCHAT_UNUSED,

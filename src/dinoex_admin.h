@@ -109,6 +109,7 @@ channel_t *is_not_joined_channel(const userinput * const u, const char *name);
 void a_msg_nick_or_chan(const userinput * const u, const char *name, const char *msg);
 void a_msg(const userinput * const u);
 void a_msgnet(const userinput * const u);
+void a_acceptu(const userinput * const u);
 void a_rmiq(const userinput * const u);
 void a_rawnet(const userinput * const u);
 void a_bannnick(const userinput * const u);

@@ -1496,6 +1496,10 @@ void dumpgdata(void)
   gdata_irlist_iter_start(uploadhost, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
+  gdata_irlist_iter_start(tuploadhost, tupload_t);
+  gdata_iter_print_string(u_host);
+  gdata_iter_print_long(u_time);
+  gdata_irlist_iter_end;
   
   gdata_print_string(uploaddir);
   gdata_print_number("%" LLPRINTFMT "u", uploadmaxsize);

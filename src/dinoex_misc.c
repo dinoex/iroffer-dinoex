@@ -871,6 +871,44 @@ char *get_current_bandwidth(void)
   return tempstr;
 }
 
+int verify_uploadhost(const char *hostmask)
+{
+  tupload_t *tu;
+
+  updatecontext();
+
+  if ( verifyshell(&gdata.uploadhost, hostmask) == 0 )
+    return 0;
+
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu;
+       tu = irlist_get_next(tu)) {
+    if (tu->u_time <= gdata.curtime)
+      continue;
+
+    if (fnmatch(tu->u_host, hostmask, FNM_CASEFOLD) == 0)
+      return 0;
+  }
+  return 1;
+}
+
+void clean_uploadhost(void)
+{
+  tupload_t *tu;
+
+  updatecontext();
+
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu; ) {
+    if (tu->u_time >= gdata.curtime) {
+      tu = irlist_get_next(tu);
+      continue;
+    }
+    mydelete(tu->u_host);
+    tu = irlist_delete(&gdata.tuploadhost, tu);
+  }
+}
+
 #ifdef DEBUG
 
 static void free_state(void)
@@ -1023,6 +1061,7 @@ static void free_state(void)
 static void free_config(void)
 {
   autoqueue_t *aq;
+  tupload_t *tu;
   int si;
 
   updatecontext();
@@ -1038,6 +1077,12 @@ static void free_config(void)
   irlist_delete_all(&gdata.adminhost);
   irlist_delete_all(&gdata.hadminhost);
   irlist_delete_all(&gdata.uploadhost);
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu;
+       tu = irlist_delete(&gdata.tuploadhost, tu))
+    {
+       mydelete(tu->u_host);
+    }
   irlist_delete_all(&gdata.downloadhost);
   irlist_delete_all(&gdata.nodownloadhost);
   irlist_delete_all(&gdata.unlimitedhost);

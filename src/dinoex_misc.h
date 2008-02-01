@@ -50,6 +50,9 @@ void logfile_add(const char *logfile, const char *line);
 
 char *get_current_bandwidth(void);
 
+int verify_uploadhost(const char *hostmask);
+void clean_uploadhost(void);
+
 void exit_iroffer(void);
 
 /* End of File */

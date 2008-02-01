@@ -79,7 +79,6 @@ Long Term Features:
   1103  Silc Support
   1105  CONFIGLINE key val
   1110  XDCC QUEUE compact output
-  1111  accept uploads for x min
   1113  trim spaces in config
   1114  service script for linux
 

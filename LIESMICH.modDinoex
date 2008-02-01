@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+211) ACCEPTU
+  Neue Admin Kommandos:
+  ACCEPTU <min>                   Erlaube Uploads von jedem für <x> Minuten
+  ACCEPTU <min> <hostmask>        Erlaube Uploads von <hostmask> für <x> Minuten
+
 bugfix: XDCC SEARCH (submitted by xtr)
   Melde den Benutzer wenn die Suche abgebrochen wurde.
 

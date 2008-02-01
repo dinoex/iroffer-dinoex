@@ -1973,6 +1973,7 @@ int isthisforme (const char *dest, char *msg1) {
 void reinit_config_vars(void)
 {
   autoqueue_t *aq;
+  tupload_t *tu;
   int si;
   
   /* clear old config items */
@@ -1987,6 +1988,13 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.adminhost);
   irlist_delete_all(&gdata.hadminhost);
   irlist_delete_all(&gdata.uploadhost);
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu;
+       tu = irlist_delete(&gdata.tuploadhost, tu))
+    {
+       mydelete(tu->u_host);
+    }
+  irlist_delete_all(&gdata.autoignore_exclude);
   irlist_delete_all(&gdata.downloadhost);
   irlist_delete_all(&gdata.nodownloadhost);
   irlist_delete_all(&gdata.unlimitedhost);

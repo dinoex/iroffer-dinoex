@@ -125,6 +125,7 @@ static const userinput_parse_t userinput_parse[] = {
 
 {2,2,method_allow_all,u_close,         "CLOSE","id","Cancels transfer <id>"},
 {2,2,method_allow_all,u_closeu,        "CLOSEU","id","Cancels upload <id>"},
+{2,2,method_allow_all,a_acceptu,       "ACCEPTU","min [hostmask]","Accepting uploads from <hostmask> for <x> minutes"},
 {2,2,method_allow_all,u_rmq,           "RMQ","position","Removes entry at <position> from main queue"},
 {2,2,method_allow_all,a_rmiq,          "RMIQ","position","Removes entry at <position> from idle queue"},
 {2,5,method_allow_all,u_nomin,         "NOMIN","id","Disables minspeed for transfer <id>"},

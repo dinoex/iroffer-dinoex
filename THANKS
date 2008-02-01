@@ -210,6 +210,7 @@ SpiegelEiXXL
 	admin commamd "fileremove"
 	admin commamd "JOIN"
 	admin commamd "PART"
+	admin command "ACCEPTU"
 
 Noxx
 	hidlockepacks for xdcclistfile

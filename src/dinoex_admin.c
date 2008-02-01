@@ -2944,6 +2944,26 @@ void a_bannnick(const userinput * const u)
   gnetwork = backup;
 }
 
+void a_acceptu(const userinput * const u)
+{
+  int min = 0;
+  tupload_t *tu;
+  const char *hostmask;
+
+  updatecontext();
+
+  if (u->arg1) min = atoi(u->arg1);
+  if (min < 1) {
+    a_respond(u, "Invalid Time");
+    return;
+  }
+  hostmask = u->arg2 ? u->arg2 : "*!*@*";
+  tu = irlist_add(&gdata.tuploadhost, sizeof(tupload_t));
+  tu->u_host = mystrdup( hostmask );
+  tu->u_time = gdata.curtime + (min * 60);
+  a_respond(u, "Uplohost %s valid for %d minutes", hostmask, min);
+}
+
 void a_rmiq(const userinput * const u)
 {
   int num = 0;
