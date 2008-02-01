@@ -27,8 +27,8 @@ echo "   -w           Compile with extra warning flags"
 echo "   -g           Compile GeoIP lib"
 echo "   -c           Compile Curl lib (for the FETCH-Command)"
 echo "   -s           Compile without OpenSSL lib"
-echo "   -t           Compile wit GNU TLS lib"
-echo "   -u           Compile wit UPNP suport with miniupnpc"
+echo "   -t           Compile with GNU TLS lib"
+echo "   -u           Compile with UPNP suport with miniupnpc"
 exit 64
 }
 
