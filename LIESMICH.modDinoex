@@ -7,6 +7,8 @@ Ab Version 3.3:
   Neue Admin Kommandos:
   ACCEPTU <min>                   Erlaube Uploads von jedem für <x> Minuten
   ACCEPTU <min> <hostmask>        Erlaube Uploads von <hostmask> für <x> Minuten
+  ACCEPTU 0                       Entferne jeden von der Liste der erlaubten Uploads
+  ACCEPTU 0 <hostmask>            Entferne <hostmask> von der Liste der erlaubten Uploads
 
 bugfix: XDCC SEARCH (submitted by xtr)
   Melde den Benutzer wenn die Suche abgebrochen wurde.

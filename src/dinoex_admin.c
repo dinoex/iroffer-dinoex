@@ -2953,15 +2953,24 @@ void a_acceptu(const userinput * const u)
   updatecontext();
 
   if (u->arg1) min = atoi(u->arg1);
-  if (min < 1) {
-    a_respond(u, "Invalid Time");
+  hostmask = u->arg2 ? u->arg2 : "*!*@*";
+  if (min > 0) {
+    tu = irlist_add(&gdata.tuploadhost, sizeof(tupload_t));
+    tu->u_host = mystrdup( hostmask );
+    tu->u_time = gdata.curtime + (min * 60);
+    a_respond(u, "Uplohost %s valid for %d minutes", hostmask, min);
     return;
   }
-  hostmask = u->arg2 ? u->arg2 : "*!*@*";
-  tu = irlist_add(&gdata.tuploadhost, sizeof(tupload_t));
-  tu->u_host = mystrdup( hostmask );
-  tu->u_time = gdata.curtime + (min * 60);
-  a_respond(u, "Uplohost %s valid for %d minutes", hostmask, min);
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu; ) {
+    if (strcmp(tu->u_host, hostmask) != 0) {
+      tu = irlist_get_next(tu);
+      continue;
+    }
+    a_respond(u, "Uplohost %s deactivated", hostmask);
+    mydelete(tu->u_host);
+    tu = irlist_delete(&gdata.tuploadhost, tu);
+  }
 }
 
 void a_rmiq(const userinput * const u)

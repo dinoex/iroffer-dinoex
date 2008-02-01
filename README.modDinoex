@@ -3,10 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
-211) ACCEPTU
+211) ACCEPTU (inspired by SpiegelEiXXL)
   new admin commands:
   ACCEPTU <min>                   Accepting uploads from everybody for <x> minutes
   ACCEPTU <min> <hostmask>        Accepting uploads from <hostmask> for <x> minutes
+  ACCEPTU 0                       Remove everybody from list of allowed uploads
+  ACCEPTU 0 <hostmask>            Remove <hostmask> from list of allowed uploads
 
 bugfix: XDCC SEARCH (submitted by xtr)
   Report to the user if the search limit has been met.
