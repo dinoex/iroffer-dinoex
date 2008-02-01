@@ -1,5 +1,6 @@
 #!/bin/sh
 lang="${1-de}"
+lang="${lang%.txt}"
 if test "${lang}" = "en"
 then
 	for c in src/iroffer*.c src/dinoex*.c
