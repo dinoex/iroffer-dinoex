@@ -2896,26 +2896,8 @@ static void u_ignore(const userinput * const u)
       return;
     }
   
-  ignore = irlist_get_head(&gdata.ignorelist);
-  while(ignore)
-    {
-      if (fnmatch(ignore->hostmask, u->arg2, FNM_CASEFOLD) == 0)
-        {
-          break;
-        }
-      ignore = irlist_get_next(ignore);
-    }
-  
-  if (!ignore)
-    {
-      ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
-      
-      ignore->hostmask = mystrdup(u->arg2);
-      
-      ignore->flags |= IGN_IGNORING;
-      ignore->lastcontact = gdata.curtime;
-    }
-  
+  ignore = get_ignore(u->arg2);
+  ignore->flags |= IGN_IGNORING;
   ignore->flags |= IGN_MANUAL;
   ignore->bucket = (num*60)/gdata.autoignore_threshold;
   

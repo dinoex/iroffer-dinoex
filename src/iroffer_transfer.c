@@ -825,6 +825,7 @@ void t_remind(transfer * const t) {
    }
 
 void t_checkminspeed(transfer * const t) {
+   char *hostmask;
    char *tempstr2;
 
    updatecontext();
@@ -859,12 +860,11 @@ void t_checkminspeed(transfer * const t) {
        queue_punishslowusers(&gdata.mainqueue, t->net, t->nick);
        queue_punishslowusers(&gdata.idlequeue, t->net, t->nick);
        
+       hostmask = to_hostmask( "*", t->hostname);
+       ignore = get_ignore(hostmask);
+       mydelete(hostmask);
        ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
-       
-       ignore->hostmask = to_hostmask( "*", t->hostname);
-       
        ignore->flags |= IGN_IGNORING;
-       ignore->lastcontact = gdata.curtime;
        ignore->bucket = (gdata.punishslowusers*60)/gdata.autoignore_threshold;
        
        backup = gnetwork;

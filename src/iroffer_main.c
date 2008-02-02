@@ -2461,13 +2461,8 @@ static void privmsgparse(const char* type, char* line) {
          }
 
        /* add/increment ignore list */
-       ignore = irlist_get_head(&gdata.ignorelist);
+       ignore = get_ignore(hostmask);
        
-       while(ignore)
-         {
-           if (fnmatch(ignore->hostmask, hostmask, FNM_CASEFOLD) == 0)
-             {
-               /* already in list */
                j=1;
                ignore->bucket++;
                ignore->lastcontact = gdata.curtime;
@@ -2503,22 +2498,6 @@ static void privmsgparse(const char* type, char* line) {
                  {
                    goto privmsgparse_cleanup;
                  }
-               break;
-             }
-           ignore = irlist_get_next(ignore);
-         }
-       
-       if (!ignore)
-         {
-           /* not in list */
-           ignore = irlist_add(&gdata.ignorelist,sizeof(igninfo));
-           
-           ignore->hostmask = mystrdup(wildhost);
-           
-           ignore->bucket = 1;
-           ignore->flags &= ~IGN_MANUAL & ~IGN_IGNORING;
-           ignore->lastcontact = gdata.curtime;
-         }
       }
  noignore:
    

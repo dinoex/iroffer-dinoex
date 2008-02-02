@@ -621,6 +621,29 @@ int has_joined_channels(int all)
   return j;
 }
 
+igninfo *get_ignore(const char *hostmask)
+{
+  igninfo *ignore;
+
+  for (ignore = irlist_get_head(&gdata.ignorelist);
+       ignore;
+       ignore = irlist_get_next(ignore)) {
+
+    if (fnmatch(ignore->hostmask, hostmask, FNM_CASEFOLD) != 0)
+      continue;
+
+    ignore->lastcontact = gdata.curtime;
+    return ignore;
+  }
+
+  ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
+  ignore->hostmask = mystrdup(hostmask);
+  ignore->lastcontact = gdata.curtime;
+  ignore->bucket = 0;
+  ignore->flags = 0;
+  return ignore;
+}
+
 int irc_select(int highests)
 {
   int ss;

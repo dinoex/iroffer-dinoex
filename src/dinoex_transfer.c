@@ -267,23 +267,8 @@ void t_check_duplicateip(transfer *const newtr)
 
     t_closeconn(tr, "You are being punished for pararell downloads", 0);
     bhostmask = to_hostmask( "*", tr->hostname);
-    for (ignore = irlist_get_head(&gdata.ignorelist);
-         ignore;
-         ignore = irlist_get_next(ignore)) {
-      
-      if (fnmatch(ignore->hostmask, bhostmask, FNM_CASEFOLD) == 0)
-        break;
-    }
-
-    if (!ignore) {
-      ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
-
-      ignore->hostmask = mystrdup(bhostmask);
-
-      ignore->flags |= IGN_IGNORING;
-      ignore->lastcontact = gdata.curtime;
-    }
-
+    ignore = get_ignore(bhostmask);
+    ignore->flags |= IGN_IGNORING;
     ignore->flags |= IGN_MANUAL;
     ignore->bucket = (num*60)/gdata.autoignore_threshold;
 
