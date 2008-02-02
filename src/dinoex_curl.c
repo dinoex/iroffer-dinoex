@@ -80,9 +80,12 @@ typedef struct
 
 void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd)
 {
-  CURLMcode cs;
+  CURLMcode cms;
 
-  cs = curl_multi_fdset(cm, read_fd_set, write_fd_set, exc_fd_set, max_fd);
+  cms = curl_multi_fdset(cm, read_fd_set, write_fd_set, exc_fd_set, max_fd);
+  if (cms != 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "curl_multi_fdset() = %d", cms);
+  }
 }
 
 static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
@@ -102,20 +105,24 @@ static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
 void fetch_cancel(int num)
 {
   fetch_curl_t *ft;
+  CURLMcode cms;
   int i;
 
   updatecontext();
 
   i = 0;
   ft = irlist_get_head(&fetch_trans);
-  while(ft) {
+  while (ft) {
     i++;
     if (++i == num) {
       ft = irlist_get_next(ft);
       continue;
     }
     a_respond(&(ft->u), "fetch %s canceled", ft->name);
-    curl_multi_remove_handle(cm, ft->curlhandle);
+    cms = curl_multi_remove_handle(cm, ft->curlhandle);
+    if ( cms != 0 ) {
+      outerror(OUTERROR_TYPE_WARN_LOUD, "curl_multi_remove_handle() = %d", cms);
+    }
     curl_easy_cleanup(ft->curlhandle);
     fetch_started --;
     ft = clean_fetch(ft);
@@ -136,6 +143,9 @@ void fetch_perform(void)
   do {
     cms = curl_multi_perform(cm, &running);
   } while (cms == CURLM_CALL_MULTI_PERFORM);
+  if ( cms != 0 ) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "curl_multi_perform() = %d", cms);
+  }
 
   if (running == fetch_started)
     return;
