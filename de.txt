@@ -2124,3 +2124,7 @@
 2178 "*!*@*"
 2179 "Uplohost %s valid for %d minutes"
 2180 "Uplohost %s deactivated"
+2181 "Resume"
+2182 "curl_multi_fdset() = %d"
+2183 "curl_multi_remove_handle() = %d"
+2184 "curl_multi_perform() = %d"

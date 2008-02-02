@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+Debugging und Logging verbessert.
+
 bugfix: DCL
   versions affected: 3.0 - 3.2
   Crash wenn ungerade Anzahl von Donwloads per fetch.

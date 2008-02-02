@@ -1128,6 +1128,14 @@ static void u_dcl(const userinput * const u)
           y = "Done";
           break;
           
+        case UPLOAD_STATUS_RESUME:
+          y = "Resume";
+          break;
+          
+        case UPLOAD_STATUS_LISTENING:
+          y = "Listening";
+          break;
+          
         default:
           y = "Unknown!";
           break;
