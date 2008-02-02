@@ -203,6 +203,7 @@ char *logfile_messages;
 char *trashcan_dir;
 char *xdccxmlfile;
 char *http_date;
+char *announce_seperator;
 long nomd5_start;
 int need_voice;
 int need_level;

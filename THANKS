@@ -234,6 +234,7 @@ dondieschotte
 	option "nickserv_pass" per network
 	report window resize bug
 	report "Transfer Complete" bug
+	option "announce_separator"
 
 dsd
 	admin command "autoadd"

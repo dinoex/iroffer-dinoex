@@ -148,6 +148,7 @@ static int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
 {"admin_job_file",          &gdata.admin_job_file,          0 },
 {"adminpass",               &gdata.adminpass,               4 },
+{"announce_seperator",      &gdata.announce_seperator,      5 },
 {"autoadd_group",           &gdata.autoadd_group,           0 },
 {"autoadd_sort",            &gdata.autoadd_sort,            0 },
 {"autoaddann",              &gdata.autoaddann,              0 },

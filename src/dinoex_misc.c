@@ -350,6 +350,8 @@ static void global_defaults(void)
 
   if (!gdata.group_seperator)
     gdata.group_seperator = mystrdup(" ");
+  if (!gdata.announce_seperator)
+    gdata.announce_seperator = mystrdup(" ");
 
   if (gdata.usenatip) {
     backup = gnetwork;
@@ -1158,6 +1160,7 @@ static void free_config(void)
   mydelete(gdata.trashcan_dir);
   mydelete(gdata.xdccxmlfile);
   mydelete(gdata.http_date);
+  mydelete(gdata.announce_seperator);
 }
 
 #endif

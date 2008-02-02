@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+212) announce_seperator
+  Zeichen zwischen Pack Nummer und Name beim Announce.
+
 bugfix: Transfer Complete
   versions affected: 3.0 - 3.2
   Zeige KB richtig an.

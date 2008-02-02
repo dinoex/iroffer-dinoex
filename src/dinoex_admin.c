@@ -3488,7 +3488,7 @@ void a_announce(const userinput * const u)
 
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
-  snprintf(tempstr2, maxtextlength-2, "[\2%s\2] %s", u->arg2e, xd->desc);
+  snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s%s", u->arg2e, gdata.announce_seperator, xd->desc);
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
@@ -3536,7 +3536,7 @@ void a_cannounce(const userinput * const u)
 
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
-  snprintf(tempstr2, maxtextlength - 2, "[\2%s\2] %s", u->arg3e, xd->desc);
+  snprintf(tempstr2, maxtextlength - 2, "[\2%s\2]%s%s", u->arg3e, gdata.announce_seperator, xd->desc);
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
@@ -3578,7 +3578,7 @@ void a_sannounce(const userinput * const u)
   a_respond(u, "Pack Info for Pack #%i:", num);
 
   tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength-2, "\2%i\2 %s", num, xd->desc);
+  snprintf(tempstr, maxtextlength-2, "\2%i\2%s%s", num, gdata.announce_seperator, xd->desc);
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {

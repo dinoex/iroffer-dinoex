@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
+212) announce_seperator (inspired by dondieschotte)
+  printed between pack number and name on annoucne
+
 bugfix: Transfer Complete
   versions affected: 3.0 - 3.2
   show size of transfer in kb instead of bytes.

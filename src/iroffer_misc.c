@@ -2121,6 +2121,7 @@ void reinit_config_vars(void)
   mydelete(gdata.trashcan_dir);
   mydelete(gdata.xdccxmlfile);
   mydelete(gdata.http_date);
+  mydelete(gdata.announce_seperator);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;
