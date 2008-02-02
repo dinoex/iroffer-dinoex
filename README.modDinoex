@@ -4,11 +4,13 @@ With Version 3.3:
 -----------------
 
 bugfix: user_nick
+  versions affected: 3.0 - 3.2
   show user_nick in all mesaages before connect
 
 extend debug and log information.
 
 bugfix: DCL
+  versions affected: 3.0 - 3.2
   fix crash when odd nummber of downloads active
 
 211) ACCEPTU (inspired by SpiegelEiXXL)

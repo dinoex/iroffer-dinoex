@@ -4,6 +4,7 @@ Ab Version 3.3:
 ---------------
 
 bugfix: user_nick
+  versions affected: 3.0 - 3.2
   Zeige user_nick in allen Texten wenn nicht verbunden.
 
 Debugging und Logging verbessert.
