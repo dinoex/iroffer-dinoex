@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+213) autoadd_group_match
+  Gruppen für Pakete auf dem Verzeichnis autoadd_dir abhängig vom dem
+  Namen der Datei wird das Paket der Gruppe zugewiesen.
+
 bugfix: channel -headline
   Syntax geändert, Text muß mit " eingeschlossen werden.
 

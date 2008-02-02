@@ -1387,6 +1387,11 @@ void dumpgdata(void)
   gdata_iter_print_string(m_mime);
   gdata_irlist_iter_end;
 
+  gdata_irlist_iter_start(autoadd_group_match, autoadd_group_t);
+  gdata_iter_print_string(a_group);
+  gdata_iter_print_string(a_pattern);
+  gdata_irlist_iter_end;
+
   gdata_print_string(enable_nick);
   gdata_print_string(owner_nick);
   gdata_print_string(admin_job_file);

@@ -25,6 +25,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
 #include "dinoex_jobs.h"
+#include "dinoex_http.h"
 #include "dinoex_misc.h"
 
 
@@ -1901,6 +1902,8 @@ void reinit_config_vars(void)
 {
   autoqueue_t *aq;
   tupload_t *tu;
+  http_magic_t *mime;
+  autoadd_group_t *ag;
   int si;
   
   /* clear old config items */
@@ -1980,7 +1983,16 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.http_vhost);
   irlist_delete_all(&gdata.telnet_vhost);
   irlist_delete_all(&gdata.weblist_info);
-  irlist_delete_all(&gdata.mime_type);
+  for (mime = irlist_get_head(&gdata.mime_type);
+       mime;
+       mime = irlist_delete(&gdata.mime_type, mime)) {
+     mydelete(mime->m_ext);
+  }
+  for (ag = irlist_get_head(&gdata.autoadd_group_match);
+       ag;
+       ag = irlist_delete(&gdata.autoadd_group_match, ag)) {
+     mydelete(ag->a_group);
+  }
   mydelete(gdata.enable_nick);
   mydelete(gdata.owner_nick);
   mydelete(gdata.geoipdatabase);

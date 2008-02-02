@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
+213) autoadd_group_match (inspired by dondieschotte)
+  Define groups for files added in autoadd_dir based on filename.
+
 bugfix: channel -headline
   Syntax changed, text has to be escaped with ".
 

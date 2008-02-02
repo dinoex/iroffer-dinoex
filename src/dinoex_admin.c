@@ -1476,6 +1476,7 @@ xdcc *a_add2(const userinput * const u)
   int xfiledescriptor;
   struct stat st;
   xdcc *xd;
+  autoadd_group_t *ag;
   char *group;
   char *file;
   char *a1;
@@ -1541,6 +1542,17 @@ xdcc *a_add2(const userinput * const u)
       mydelete(a2);
     }
     mydelete(a1);
+  }
+  if (group == NULL) {
+    for (ag = irlist_get_head(&gdata.autoadd_group_match);
+         ag;
+         ag = irlist_get_next(ag)) {
+       if (fnmatch(ag->a_pattern, u->arg1e, FNM_CASEFOLD) != 0)
+         continue;
+
+       group = ag->a_group;
+       break;
+    }
   }
 
   xd = irlist_add(&gdata.xdccs, sizeof(xdcc));

@@ -184,6 +184,7 @@ irlist_t http_vhost;
 irlist_t telnet_vhost;
 irlist_t weblist_info;
 irlist_t mime_type;
+irlist_t autoadd_group_match;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;

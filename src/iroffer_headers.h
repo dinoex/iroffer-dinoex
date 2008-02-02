@@ -315,6 +315,11 @@ typedef struct
   long u_time;
 } tupload_t;
 
+typedef struct {
+  char *a_group;
+  const char *a_pattern;
+} autoadd_group_t;
+
 typedef struct
 {
   enum

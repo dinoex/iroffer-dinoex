@@ -608,6 +608,27 @@ static void c_mime_type(char *var)
   mime->m_mime = split;
 }
 
+static void c_autoadd_group_match(char *var)
+{
+  char *split;
+  autoadd_group_t *ag;
+
+
+  split = strchr(var, ' ');
+  if (split == NULL) {
+    outerror(OUTERROR_TYPE_WARN,
+             "ignored '%s' because it has invalid args: '%s'",
+             "autoadd_group_match", var);
+    mydelete(var);
+    return;
+  }
+
+  *(split++) = 0;
+  ag = irlist_add(&(gdata.autoadd_group_match), sizeof(autoadd_group_t));
+  ag->a_group = var;
+  ag->a_pattern = split;
+}
+
 static void c_network(char *var)
 {
   gdata.bracket = 0;
@@ -691,6 +712,7 @@ static void c_bracket_close(char *var)
 
 static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
+{"autoadd_group_match",    c_autoadd_group_match },
 {"autosendpack",           c_autosendpack },
 {"getip_network",          c_getip_network },
 {"local_vhost",            c_local_vhost },

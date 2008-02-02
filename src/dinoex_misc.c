@@ -927,6 +927,7 @@ static void free_state(void)
   xlistqueue_t *user;
   http *h;
   http_magic_t *mime;
+  autoadd_group_t *ag;
   int ss;
 
   updatecontext();
@@ -1043,6 +1044,11 @@ static void free_state(void)
        mime;
        mime = irlist_delete(&gdata.mime_type, mime)) {
      mydelete(mime->m_ext);
+  }
+  for (ag = irlist_get_head(&gdata.autoadd_group_match);
+       ag;
+       ag = irlist_delete(&gdata.autoadd_group_match, ag)) {
+     mydelete(ag->a_group);
   }
   irlist_delete_all(&gdata.autotrigger);
   irlist_delete_all(&gdata.console_history);
