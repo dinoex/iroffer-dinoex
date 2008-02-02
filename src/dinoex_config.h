@@ -22,6 +22,8 @@ void set_default_network_name(void);
 
 int set_config_func(const char *key, char *text);
 
+int parse_channel_options(channel_t *cptr, char * var);
+
 void config_startup(void);
 
 /* EOF */

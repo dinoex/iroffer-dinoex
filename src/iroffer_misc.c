@@ -94,7 +94,6 @@ void getconfig_set (const char *line, int rehash)
   char *type;
   char *var;
   char *a,*b;
-  const char *found;
   int i,j;
   
   updatecontext();
@@ -233,8 +232,7 @@ void getconfig_set (const char *line, int rehash)
        mydelete(var);
      }
    else if ( ! strcmp(type,"channel")) {
-      char *tptr = NULL, *tptr2 = NULL, *tname;
-      int ok=1;
+      char *tname;
       channel_t *cptr = NULL;
       
       if (!rehash)
@@ -252,80 +250,11 @@ void getconfig_set (const char *line, int rehash)
       cptr->headline = NULL;
       cptr->pgroup = NULL;
       cptr->noannounce = 0;
+      cptr->delay = 0;
+      cptr->plistoffset = 0;
       
-      for (i=2; i<20 && ok && (tptr = getpart(var,i)); i++) {
-         if (!strcmp(tptr,"-plist")) {
-            i++;
-            if ((tptr2 = getpart(var,i)))
-               cptr->plisttime = atoi(tptr2);
-            else ok=0;
-            }
-         else if (!strcmp(tptr,"-pformat")) {
-            i++;
-            if ((tptr2 = getpart(var,i))) {
-               if (!strcmp(tptr2,"full"))
-                  ;
-               else if (!strcmp(tptr2,"minimal"))
-                  cptr->flags |= CHAN_MINIMAL;
-               else if (!strcmp(tptr2,"summary"))
-                  cptr->flags |= CHAN_SUMMARY;
-               else ok=0;
-               }
-            else ok=0;
-            }
-          else if (!strcmp(tptr, "-plistoffset")) {
-            i++;
-            if ((tptr2 = getpart(var, i)))
-              cptr->plistoffset = atoi(tptr2);
-            else
-              cptr->plistoffset = 0;
-            }
-         else if (!strcmp(tptr,"-key")) {
-            i++;
-            if ((tptr2 = getpart(var,i)))
-              {
-                cptr->key = mystrdup(tptr2);
-              }
-            else ok=0;
-            }
-         else if (!strcmp(tptr,"-delay")) {
-            i++;
-            if ((tptr2 = getpart(var, i)))
-              cptr->delay = atoi(tptr2);
-            else
-              cptr->delay = 0;
-            }
-         else if (!strcmp(tptr,"-noannounce")) {
-            cptr->noannounce = 1;
-            }
-         else if (!strcmp(tptr,"-pgroup")) {
-            i++;
-            if ((tptr2 = getpart(var,i)))
-              {
-                cptr->pgroup = mystrdup(tptr2);
-              }
-            else ok=0;
-            }
-         else if (!strcmp(tptr,"-headline")) {
-            i++;
-            found = strstr(line, "-headline");
-            if (found != NULL)
-              {
-		found += strlen( "-headline" );
-		found ++;
-                cptr->headline = mystrdup(found);
-                mydelete(tptr);
-		break;
-              }
-            else ok=0;
-            }
-         else ok=0;
-         
-         mydelete(tptr);
-         mydelete(tptr2);
-         }
-      
-      if (!ok) ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+      if (parse_channel_options(cptr, var) < 0)
+        outerror(OUTERROR_TYPE_WARN,
                        " !!! Bad syntax for channel %s on %s in config file !!!",
                        tname, gdata.networks[gdata.networks_online].name);
       
@@ -335,8 +264,6 @@ void getconfig_set (const char *line, int rehash)
           cptr->plistoffset = 0;
         }
       
-      mydelete(tptr);
-      mydelete(tptr2);
       mydelete(tname);
       mydelete(var);
       }

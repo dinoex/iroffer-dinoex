@@ -759,6 +759,105 @@ int set_config_func(const char *key, char *text)
   return 0;
 }
 
+static int parse_channel_int(short *iptr, char *var, int i)
+{
+  char *tptr2;
+
+  tptr2 = getpart(var, ++i);
+  if (!tptr2)
+    return -1;
+  *iptr = atoi(tptr2);
+  mydelete(tptr2);
+  return 1;
+}
+
+static int parse_channel_string(char **cptr, char *var, int i)
+{
+  char *tptr2;
+
+  tptr2 = getpart(var, ++i);
+  if (!tptr2)
+    return -1;
+  clean_quotes(tptr2);
+  *cptr = tptr2;
+  return 1;
+}
+
+static int parse_channel_format(short *iptr, char *tptr2)
+{
+  if (!tptr2)
+    return -1;
+
+  if (!strcmp(tptr2, "full"))
+    return 1;
+  if (!strcmp(tptr2, "minimal")) {
+    *iptr |= CHAN_MINIMAL;
+    return 1;
+  }
+  if (!strcmp(tptr2, "summary")) {
+    *iptr |= CHAN_SUMMARY;
+    return 1;
+  }
+  return -1;
+}
+
+static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
+{
+  char *tptr2;
+  int j;
+
+  if (!strcmp(tptr, "-plist")) {
+    return parse_channel_int(&(cptr->plisttime), var, i);
+  }
+  if (!strcmp(tptr, "-plistoffset")) {
+    return parse_channel_int(&(cptr->plistoffset), var, i);
+  }
+  if (!strcmp(tptr, "-delay")) {
+    return parse_channel_int(&(cptr->delay), var, i);
+  }
+
+  if (!strcmp(tptr, "-key")) {
+    return parse_channel_string(&(cptr->key), var, i);
+  }
+  if (!strcmp(tptr, "-pgroup")) {
+    return parse_channel_string(&(cptr->pgroup), var, i);
+  }
+  if (!strcmp(tptr, "-headline")) {
+    return parse_channel_string(&(cptr->headline), var, i);
+  }
+
+  if (!strcmp(tptr,"-noannounce")) {
+    cptr->noannounce = 1;
+    return 0;
+  }
+
+  if (!strcmp(tptr, "-pformat")) {
+    tptr2 = getpart(var, ++i);
+    j = parse_channel_format(&(cptr->flags), tptr2);
+    mydelete(tptr2);
+    return j;
+  }
+
+  return -1;
+}
+
+int parse_channel_options(channel_t *cptr, char * var)
+{
+  char *tptr;
+  int i;
+  int j;
+
+  for (i=2; i<20 && (tptr = getpart(var,i)); i++) {
+    j = parse_channel_option(cptr, tptr, var, i);
+    mydelete(tptr);
+    if (j < 0 )
+      return -1;
+    i += j;
+  }
+  return 0;
+}
+
+
 void config_startup(void)
 {
   config_sorted_bool();
