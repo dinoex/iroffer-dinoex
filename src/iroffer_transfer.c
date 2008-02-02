@@ -816,7 +816,7 @@ void t_remind(transfer * const t) {
        notice(t->nick,"** You have a DCC pending, Set your client to receive the transfer. "
               "Type \"/MSG %s XDCC CANCEL\" to abort the transfer. "
               "(%li seconds remaining until timeout)",
-              save_nick(gnetwork->user_nick),
+              get_user_nick(),
               (long)(t->con.lastcontact+180-gdata.curtime));
      }
    

@@ -105,7 +105,7 @@ void setup_chat_banner(dccchat_t *chat)
   getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
   
   writedccchat(chat, 0, "Welcome to %s\n",
-               save_nick(gnetwork->user_nick));
+               get_user_nick());
   writedccchat(chat, 0, "iroffer-dinoex " VERSIONLONG "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);

@@ -27,6 +27,7 @@ int connectirc2(res_addrinfo_t *remote);
 
 char *get_local_vhost(void);
 char *get_config_nick(void);
+char *get_user_nick(void);
 
 int has_closed_servers(void);
 int has_joined_channels(int all);

@@ -139,11 +139,27 @@ void gototop (void) {
    tostdout("\x1b[%d;1H",gdata.termlines-2);
    }
 
+static const char *get_console_nick(void)
+{
+  const char *mynick;
+
+  mynick = gdata.networks[0].user_nick;
+  if (mynick == NULL)
+    mynick = gdata.networks[0].config_nick;
+  if (mynick == NULL)
+    mynick = gdata.config_nick;
+  if (mynick == NULL)
+    mynick = "";
+  return mynick;
+}
+
 void drawbot(void)
 {
+  const char *mynick;
   char tchar = 0;
   int len;
   int maxlen;
+  int nicklen;
   
   if ((gdata.background == 2) || gdata.noscreen)
     {
@@ -152,7 +168,9 @@ void drawbot(void)
   
   len = strlen(gdata.console_input_line);
   
-  maxlen = gdata.termcols - (gdata.networks[0].user_nick ? 17+strlen(gdata.networks[0].user_nick) : 17);
+  mynick = get_console_nick();
+  nicklen = 16 + strlen(mynick);
+  maxlen = gdata.termcols - 1 - nicklen;
   
   if (maxlen < 0)
     {
@@ -168,14 +186,14 @@ void drawbot(void)
   /* draw bottom line */
   tostdout("\x1b[%d;1H[ iroffer (%s) > %-*s]",
            gdata.termlines,
-           (gdata.networks[0].user_nick ? gdata.networks[0].user_nick : ""),
-           gdata.termcols - (int)(gdata.networks[0].user_nick ? 16+strlen(gdata.networks[0].user_nick) : 16),
+           mynick,
+           gdata.termcols - nicklen,
            gdata.console_input_line);
   
   /* move cursor */
   tostdout("\x1b[%d;%dH",
            gdata.termlines,
-           ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + (gdata.networks[0].user_nick ? 16+(int)strlen(gdata.networks[0].user_nick) : 16));
+           ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + nicklen);
   
   if ((len > maxlen))
     {
@@ -187,17 +205,21 @@ void drawbot(void)
 
 void gotobot (void)
 {
+  const char *mynick;
   int maxlen;
+  int nicklen;
   
   if (gdata.background == 2) return;
   gdata.attop = 0;
   if ( gdata.noscreen )
     return;
   
-  maxlen = gdata.termcols - (gdata.networks[0].user_nick ? 17+strlen(gdata.networks[0].user_nick) : 17);
+  mynick = get_console_nick();
+  nicklen = 16 + strlen(mynick);
+  maxlen = gdata.termcols - 1 - nicklen;
   
   tostdout("\x1b[%d;%dH", gdata.termlines,
-           ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + (gdata.networks[0].user_nick ? 16+(int)strlen(gdata.networks[0].user_nick) : 16));
+           ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + nicklen);
     }
 
 

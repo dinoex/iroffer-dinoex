@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
+bugfix: user_nick
+  show user_nick in all mesaages before connect
+
 extend debug and log information.
 
 bugfix: DCL

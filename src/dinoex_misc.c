@@ -79,7 +79,7 @@ void send_help(const char *nick)
           "XDCC HELP from (%s on %s)",
           nick, gnetwork->name);
 
-  mynick = save_nick(gnetwork->user_nick);
+  mynick = get_user_nick();
   if (!gdata.restrictprivlist) {
     notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST\" \2**\2", mynick);
     if (gdata.support_groups)
@@ -538,7 +538,7 @@ int noticeresults(const char *nick, const char *match)
             len = strlen(tempstr);
           }
           snprintf(tempstr + len, maxtextlength - 1 - len, " - /MSG %s XDCC SEND x -",
-                   save_nick(gnetwork->user_nick));
+                   get_user_nick());
           len = strlen(tempstr);
           if (!strcmp(match, "*"))
             snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");

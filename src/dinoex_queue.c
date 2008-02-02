@@ -257,7 +257,7 @@ char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc
            "a later time type \"/MSG %s XDCC REMOVE\".",
            pack, xd->desc,
            irlist_size(&gdata.idlequeue),
-           save_nick(gnetwork->user_nick));
+           get_user_nick());
   return tempstr;
 }
 

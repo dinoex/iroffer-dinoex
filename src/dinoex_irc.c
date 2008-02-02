@@ -580,6 +580,14 @@ char *get_config_nick(void)
   return (gnetwork->config_nick) ? gnetwork->config_nick : gdata.config_nick;
 }
 
+char *get_user_nick(void)
+{
+  if (gnetwork == NULL)
+    return gdata.config_nick;
+
+  return (gnetwork->user_nick) ? gnetwork->user_nick : get_config_nick();
+}
+
 int has_closed_servers(void)
 {
   int ss;

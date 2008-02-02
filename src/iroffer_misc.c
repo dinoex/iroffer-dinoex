@@ -2466,6 +2466,9 @@ void startupiroffer(void) {
      {
        ir_boutput_init(&gdata.stdout_buffer, fileno(stdout), 0);
        gdata.stdout_buffer_init = 1;
+       gotobot();
+       drawbot();
+       gototop();
      }
    
    for (ss=0; ss<gdata.networks_online; ss++)
@@ -2699,7 +2702,7 @@ void notifybandwidth(void)
           if (gnetwork->net != tr->net)
             continue;
           notice_slow(tr->nick,"%s bandwidth limit: %2.1f of %2.1fKB/sec used. Your share: %2.1fKB/sec.",
-                      save_nick(gnetwork->user_nick),
+                      get_user_nick(),
                       ((float)xdccsent)/XDCC_SENT_SIZE,
                       ((float)gdata.maxb)/4.0,
                       tr->lastspeed);

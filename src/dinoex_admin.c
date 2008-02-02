@@ -24,6 +24,7 @@
 #include "dinoex_queue.h"
 #include "dinoex_jobs.h"
 #include "dinoex_upload.h"
+#include "dinoex_irc.h"
 #include "dinoex_misc.h"
 
 #include <ctype.h>
@@ -3493,7 +3494,7 @@ void a_announce(const userinput * const u)
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
     snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
-             tempstr2, save_nick(gnetwork->user_nick), num);
+             tempstr2, get_user_nick(), num);
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;
          ch = irlist_get_next(ch)) {
@@ -3541,7 +3542,7 @@ void a_cannounce(const userinput * const u)
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
     snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
-             tempstr2, save_nick(gnetwork->user_nick), num);
+             tempstr2, get_user_nick(), num);
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;
          ch = irlist_get_next(ch)) {

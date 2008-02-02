@@ -688,7 +688,7 @@ static void u_xdl_head(const userinput * const u) {
 
    if (u->method==method_xdl_channel_min) m = 1; else m = 0;
    if (u->method==method_xdl_channel_sum) m1 = 1; else m1 = 0;
-   mynick = save_nick(gnetwork->user_nick);
+   mynick = get_user_nick();
    
    head = 0;
    switch (u->method)
@@ -2598,8 +2598,8 @@ static void u_botinfo(const userinput * const u) {
        mydelete(msg);
        
        u_respond(u, "configured nick: %s, actual nick: %s, realname: %s, modes: %s",
-                 gdata.config_nick,
-                 (gdata.networks[ss].user_nick ? gdata.networks[ss].user_nick : "??"),
+                 get_config_nick(),
+                 get_user_nick(),
                  gdata.user_realname,
                  get_user_modes());
        
