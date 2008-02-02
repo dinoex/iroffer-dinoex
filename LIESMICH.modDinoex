@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+bugfix: Transfer Complete
+  versions affected: 3.0 - 3.2
+  Zeige KB richtig an.
+
 bugfix: user_nick
   versions affected: 3.0 - 3.2
   Zeige user_nick in allen Texten wenn nicht verbunden.

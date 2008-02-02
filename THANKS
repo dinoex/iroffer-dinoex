@@ -233,6 +233,7 @@ dondieschotte
 	admin command "listul dir"
 	option "nickserv_pass" per network
 	report window resize bug
+	report "Transfer Complete" bug
 
 dsd
 	admin command "autoadd"
