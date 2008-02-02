@@ -218,6 +218,7 @@ void start_fetch_url(const userinput *const u)
   }
 
   updatecontext();
+  mydelete(fullfile);
   ft = irlist_add(&fetch_trans, sizeof(fetch_curl_t));
   ft->u.method = u->method;
   if (u->snick != NULL) {
@@ -341,7 +342,6 @@ void dinoex_dcl(const userinput *const u)
     progress = 0;
     progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", i, ft->name, progress);
-    ft = irlist_get_next(ft);
   }
 }
 

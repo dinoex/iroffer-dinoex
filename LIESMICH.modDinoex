@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+bugfix: DCL
+  versions affected: 3.0 - 3.2
+  Crash wenn ungerade Anzahl von Donwloads per fetch.
+
 211) ACCEPTU
   Neue Admin Kommandos:
   ACCEPTU <min>                   Erlaube Uploads von jedem für <x> Minuten
