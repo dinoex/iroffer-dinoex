@@ -1205,6 +1205,14 @@ static void u_dcld(const userinput * const u)
           y = "Closing";
           break;
           
+        case TRANSFER_STATUS_RESUME:
+          y = "Resume";
+          break;
+          
+        case TRANSFER_STATUS_CONNECTING:
+          y = "Connecting";
+          break;
+          
         default:
           y = "Unknown!";
           break;
