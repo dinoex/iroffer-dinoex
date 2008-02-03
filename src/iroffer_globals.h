@@ -94,6 +94,7 @@ int inamnt[INAMNT_SIZE];
 int r_needtojump;
 int usenatip;
 int getip_net;
+how_e r_connectionmethod;
 
 long next_identify;
 long next_restrict;

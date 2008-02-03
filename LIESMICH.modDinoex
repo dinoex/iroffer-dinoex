@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+bugfix: connectionmethod ssl
+  versions affected: 3.0 - 3.2
+  Bot crasht wenn beim REHASH connectionmethod auf ssl geändert wird.
+
 213) autoadd_group_match
   Gruppen für Pakete auf dem Verzeichnis autoadd_dir abhängig vom dem
   Namen der Datei wird das Paket der Gruppe zugewiesen.
@@ -102,7 +106,7 @@ Ab Version 3.1:
   Exportiert jetzt auch Gruppen.
 
 bugfix: connectionmethod ssl
-  bot crasht wenn beim Reconnect ein Timeout vor
+  Bot crasht wenn beim Reconnect ein Timeout vor
   dem SSL-Handshake auftritt.
 
 bugfix: window resize

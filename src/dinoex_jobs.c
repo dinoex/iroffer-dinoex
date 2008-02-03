@@ -952,6 +952,7 @@ void a_rehash_prepare(void)
 
   for (ss=0; ss<gdata.networks_online; ss++) {
     gdata.networks[ss].r_needtojump = 0;
+    gdata.networks[ss].r_connectionmethod = gdata.networks[ss].connectionmethod.how;
     gdata.networks[ss].r_config_nick = NULL;
     gdata.networks[ss].r_ourip = gdata.getipfromserver ? gdata.networks[ss].ourip : 0;
     if (gdata.networks[ss].config_nick)
@@ -982,6 +983,11 @@ void a_rehash_needtojump(const userinput *u)
       gnetwork->usenatip = 1;
     }
     gnetwork->r_ourip = 0;
+    if (gnetwork->r_connectionmethod != gnetwork->connectionmethod.how) {
+      a_respond(u, "connectionmethod changed, reconnecting");
+      gnetwork->r_needtojump = 1;
+    }
+    gnetwork->r_connectionmethod = 0;
     new_vhost = get_local_vhost();
     old_vhost = (gnetwork->r_local_vhost) ? gnetwork->r_local_vhost : r_local_vhost;
     if (strcmp_null(new_vhost, old_vhost) != 0) {
