@@ -2129,3 +2129,4 @@
 2185 "[\2%s\2]%s%s"
 2186 "\2%i\2%s%s"
 2187 "announce_seperator"
+2188 "autoadd_group_match"
