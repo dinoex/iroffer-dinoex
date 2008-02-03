@@ -64,11 +64,13 @@ Page last modified: 09/01/04
 [Iroffer mod Dinoex]
 
 Short Term Features:
+  1118  bugfix: WARNING: curlhandle not found
 
 Long Term Features:
   1008  use text or xml for statefile
   1012  Leach a full group
   1013  notify adminnick when autoadd
+  1015  http admin
   1018  warning in chat when bot was kicked
   1042  hentai flag
   1068  restore tty console on fatal error
@@ -89,9 +91,7 @@ Not going to happen anytime soon:
   1009  limit file access to upload and download
   1010  strip logfiles
   1011  flexible auth mech for nicserver
-  1015  http admin
   1022  send notes on mutiple triggers
-  1027  renumber <from> <to> new
   1030  msg to owner whn it activates flood protection
   1032  configureable note after Record
   1034  age verification for hentai
@@ -114,4 +114,8 @@ Not going to happen anytime soon:
   1090  password to get http list
   1108  MySQL Support
   1112  botinfo with queue size
+  1119  Variable Substition %random in Nickname
+  1121  make dir
+  1122  add date added to descripotion
+  1123  new! trigger
 
