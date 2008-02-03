@@ -268,4 +268,52 @@ int is_file_writeable(const char *f)
    return 1;
 }
 
+char *hostmask_to_fnmatch(const char *str)
+{
+  char *tempstr;
+  size_t i,j;
+  size_t len;
+  size_t maxlen;
+
+  updatecontext();
+
+  if (!str) return NULL;
+
+  len = strlen(str);
+  maxlen = 0;
+  for (i=0; str[i]; i++, maxlen ++) {
+    if (str[i] == '#') {
+      maxlen += 10;
+      continue;
+    }
+    if ( (str[i] == '[') || (str[i] == ']') )
+      maxlen ++;
+  }
+  tempstr = mycalloc(maxlen + 1);
+  for (i=0, j=0; str[i]; i++, j++) {
+    if (str[i] == '#') {
+      tempstr[j] = '['; j++;
+      tempstr[j] = '0'; j++;
+      tempstr[j] = '-'; j++;
+      tempstr[j] = '9'; j++;
+      tempstr[j] = ']'; j++;
+      tempstr[j] = '['; j++;
+      tempstr[j] = '0'; j++;
+      tempstr[j] = '-'; j++;
+      tempstr[j] = '9'; j++;
+      tempstr[j] = ']'; j++;
+      tempstr[j] = '*';
+      continue;
+    }
+    if ( (str[i] == '[') || (str[i] == ']') ) {
+      tempstr[j] = '\\'; j++;
+      tempstr[j] = str[i];
+      continue;
+    }
+    tempstr[j] = str[i];
+  }
+  tempstr[j+1] = 0;
+  return tempstr;
+}
+
 /* End of File */

@@ -28,5 +28,6 @@ void shutdown_close(int handle);
 int get_port(ir_sockaddr_union_t *listenaddr);
 int strcmp_null(const char *s1, const char *s2);
 int is_file_writeable(const char *f);
+char *hostmask_to_fnmatch(const char *str);
 
 /* End of File */

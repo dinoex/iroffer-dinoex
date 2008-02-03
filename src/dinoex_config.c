@@ -483,6 +483,7 @@ int set_config_list(const char *key, char *text)
   int i;
   int j;
   char *pi;
+  char *old;
 
   updatecontext();
 
@@ -525,6 +526,9 @@ int set_config_list(const char *key, char *text)
        mydelete(text);
        return 0;
      }
+     old = text;
+     text = hostmask_to_fnmatch(old);
+     mydelete(old);
      break;
   case 1:
      convert_to_unix_slash(text);
