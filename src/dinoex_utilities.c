@@ -312,7 +312,7 @@ char *hostmask_to_fnmatch(const char *str)
     }
     tempstr[j] = str[i];
   }
-  tempstr[j+1] = 0;
+  tempstr[j] = 0;
   return tempstr;
 }
 
