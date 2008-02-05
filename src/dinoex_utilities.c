@@ -270,50 +270,47 @@ int is_file_writeable(const char *f)
 
 char *hostmask_to_fnmatch(const char *str)
 {
-  char *tempstr;
-  size_t i,j;
-  size_t len;
+  char *base;
+  char *dest;
+  const char *src;
   size_t maxlen;
 
   updatecontext();
 
   if (!str) return NULL;
 
-  len = strlen(str);
   maxlen = 0;
-  for (i=0; str[i]; i++, maxlen ++) {
-    if (str[i] == '#') {
+  for (src=str; *src; src++, maxlen++) {
+    if (*src == '#') {
       maxlen += 10;
       continue;
     }
-    if ( (str[i] == '[') || (str[i] == ']') )
+    if ( (*src == '[') || (*src == ']') )
       maxlen ++;
   }
-  tempstr = mycalloc(maxlen + 1);
-  for (i=0, j=0; str[i]; i++, j++) {
-    if (str[i] == '#') {
-      tempstr[j] = '['; j++;
-      tempstr[j] = '0'; j++;
-      tempstr[j] = '-'; j++;
-      tempstr[j] = '9'; j++;
-      tempstr[j] = ']'; j++;
-      tempstr[j] = '['; j++;
-      tempstr[j] = '0'; j++;
-      tempstr[j] = '-'; j++;
-      tempstr[j] = '9'; j++;
-      tempstr[j] = ']'; j++;
-      tempstr[j] = '*';
+  base = mycalloc(maxlen + 1);
+  for (src=str, dest=base; *src; src++) {
+    if (*src == '#') {
+      *(dest++) = '[';
+      *(dest++) = '0';
+      *(dest++) = '-';
+      *(dest++) = '9';
+      *(dest++) = ']';
+      *(dest++) = '[';
+      *(dest++) = '0';
+      *(dest++) = '-';
+      *(dest++) = '9';
+      *(dest++) = ']';
+      *(dest++) = '*';
       continue;
     }
-    if ( (str[i] == '[') || (str[i] == ']') ) {
-      tempstr[j] = '\\'; j++;
-      tempstr[j] = str[i];
-      continue;
+    if ( (*src == '[') || (*src == ']') ) {
+      *(dest++) = '\\';
     }
-    tempstr[j] = str[i];
+    *(dest++) = *src;
   }
-  tempstr[j] = 0;
-  return tempstr;
+  *dest = 0;
+  return base;
 }
 
 /* End of File */
