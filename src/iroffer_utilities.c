@@ -1107,7 +1107,7 @@ void dumpcontext(void)
     {
       c = &gdata.context_log[(gdata.context_cur_ptr + 1 + i) % MAXCONTEXTS];
       
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L, COLOR_NO_COLOR,
               "Trace %3i  %-20s %-16s:%5i  %lu.%06lu",
               i-MAXCONTEXTS+1,
               c->func ? c->func : "UNKNOWN",
