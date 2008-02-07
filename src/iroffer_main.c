@@ -2594,6 +2594,7 @@ static void privmsgparse(const char* type, char* line) {
           gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
           
           caps(nick);
+          clean_quotes(msg3);
           
           if (msg5[strlen(msg5)-1] == '\1') msg5[strlen(msg5)-1] = '\0';
           

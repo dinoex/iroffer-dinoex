@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+bugfix: DCC RESUME
+  Sonderbehandlung für Clients die den Dateinames escapen.
+
 bugfix: connectionmethod ssl
   versions affected: 3.0 - 3.2
   Bot crasht wenn beim REHASH connectionmethod auf ssl geändert wird.
