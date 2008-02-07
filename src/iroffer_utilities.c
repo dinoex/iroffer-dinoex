@@ -1077,10 +1077,10 @@ void updatecontext_f(const char *file, const char *func, int line)
     }
   
   gdata.context_cur_ptr++;
-  if (gdata.context_cur_ptr > (2*MAXCONTEXTS))
-    gdata.context_cur_ptr = gdata.context_cur_ptr % MAXCONTEXTS;
+  if (gdata.context_cur_ptr >= MAXCONTEXTS)
+    gdata.context_cur_ptr %= MAXCONTEXTS;
   
-  c = &gdata.context_log[gdata.context_cur_ptr % MAXCONTEXTS];
+  c = &gdata.context_log[gdata.context_cur_ptr];
   
   c->file = file;
   c->func = func;
