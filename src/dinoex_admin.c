@@ -2306,7 +2306,7 @@ void a_md5(const userinput * const u)
   int bis;
   int num;
 
-  updatecontext ();
+  updatecontext();
 
   /* show status */
   if (gdata.md5build.xpack) {
@@ -2350,7 +2350,7 @@ void a_crc(const userinput * const u)
   int bis;
   int num;
 
-  updatecontext ();
+  updatecontext();
 
   if (u->arg1) {
     von = atoi (u->arg1);
@@ -2795,7 +2795,7 @@ void a_amsg(const userinput * const u)
   int ss;
   gnetwork_t *backup;
 
-  updatecontext ();
+  updatecontext();
 
   if (invalid_announce(u, u->arg1e) != 0)
     return;
@@ -3485,7 +3485,7 @@ void a_announce(const userinput * const u)
   int ss;
   gnetwork_t *backup;
 
-  updatecontext ();
+  updatecontext();
 
   if (u->arg1) num = atoi (u->arg1);
   if (invalid_pack(u, num) != 0)
@@ -3530,7 +3530,7 @@ void a_cannounce(const userinput * const u)
   int ss;
   gnetwork_t *backup;
 
-  updatecontext ();
+  updatecontext();
 
   if (invalid_channel(u, u->arg1) != 0)
     return;
@@ -3579,7 +3579,7 @@ void a_sannounce(const userinput * const u)
   int ss;
   gnetwork_t *backup;
 
-  updatecontext ();
+  updatecontext();
 
   if (u->arg1) num = atoi (u->arg1);
   if (invalid_pack(u, num) != 0)
