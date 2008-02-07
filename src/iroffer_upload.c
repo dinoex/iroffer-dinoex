@@ -147,6 +147,10 @@ void l_transfersome (upload * const l) {
                }
            }
          
+         /* read more later */
+         if ( time(NULL) > gdata.curtime + 30 )
+           return;
+         
          howmuch  = read(l->con.clientsocket, gdata.sendbuff, BUFFERSIZE);
          if (howmuch < 0)
            {
