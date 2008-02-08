@@ -2626,9 +2626,7 @@ static void privmsgparse(const char* type, char* line) {
       else if (!strcmp(caps(msg2), "SEND") && msg3 && msg4 && msg5 && msg6)
         {
           char *msg7;
-          char *tempstr;
           int down = 0;
-          off_t len;
 
           if (msg6[strlen(msg6)-1] == '\1')
             {
@@ -2642,99 +2640,12 @@ static void privmsgparse(const char* type, char* line) {
               down = t_find_transfer(nick, msg3, msg4, msg5, msg7);
             }
           if (!down)
-           {
-          clean_quotes(msg3);
-          removenonprintablefile(msg3);
-          len = atoull(msg6);
-          if ( verify_uploadhost( hostmask) )
             {
-              notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied from %s on %s",
-                      hostmask, gnetwork->name);
+             clean_quotes(msg3);
+             removenonprintablefile(msg3);
+             upload_start(nick, hostname, hostmask, msg3, msg4, msg5, msg6, msg7);
             }
-          else if (gdata.uploadmaxsize && (len > gdata.uploadmaxsize))
-            {
-              notice(nick,"DCC Send Denied, I don't accept transfers that big");
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (Too Big) from %s on %s",
-                      hostmask, gnetwork->name);
-            }
-          else if (len > gdata.max_file_size)
-            {
-              notice(nick,"DCC Send Denied, I can't accept transfers that large");
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (Too Large) from %s on %s",
-                      hostmask, gnetwork->name);
-            }
-          else if (irlist_size(&gdata.uploads) >= MAXUPLDS)
-            {
-              notice(nick,"DCC Send Denied, I'm already getting too many files");
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (too many uploads) from %s on %s",
-                      hostmask, gnetwork->name);
-            }
-          else if (irlist_size(&gdata.uploads) >= gdata.max_uploads)
-            {
-              notice(nick,"DCC Send Denied, I'm already getting too many files");
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (too many uploads) from %s on %s",
-                      hostmask, gnetwork->name);
-            }
-          else if (disk_full(gdata.uploaddir) != 0)
-            {
-              notice(nick,"DCC Send Denied, not enough free space on disk");
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (not enough free space on disk) from %s on %s",
-                      hostmask, gnetwork->name);
-            }
-          else if (file_uploading(msg3) != 0)
-            {
-              notice(nick,"DCC Send Denied, I'm already getting this file");
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-                      "DCC Send Denied (upload running) from %s on %s",
-                      hostmask, gnetwork->name);
-            }
-#ifdef USE_CURL
-          else if (fetch_is_running(msg3) != 0)
-            {
-              notice(nick, "DCC Send Denied, I'm already getting this file");
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                      "DCC Send Denied (upload running) from %s on %s",
-                      hostmask, gnetwork->name);
-            }
-#endif /* USE_CURL */
-          else
-            {
-              ul = irlist_add(&gdata.uploads, sizeof(upload));
-              l_initvalues(ul);
-              ul->file = mystrdup(msg3);
-              ul->con.family = (strchr(msg4, ':')) ? AF_INET6 : AF_INET;
-              ul->con.remoteaddr = mystrdup(msg4);
-              ul->con.remoteport = atoi(msg5);
-              ul->totalsize = len;
-              ul->nick = mystrdup(nick);
-              ul->hostname = mystrdup(hostname);
-              ul->net = gnetwork->net;
-              tempstr = getsendname(ul->file);
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                      "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "uKB)",
-                      nick, gnetwork->name, tempstr,
-                      (ul->totalsize / 1024));
-              mydelete(tempstr);
-
-              if (ul->con.remoteport > 0)
-                {
-                  l_establishcon(ul);
-                }
-              else
-                {
-                  /* Passive DCC */
-                  l_setup_passive(ul, msg7);
-                }
-             }
-            }
-           mydelete(msg7);
+          mydelete(msg7);
         }
       
       else if (!strcmp(caps(msg2), "ACCEPT") && msg3 && msg4 && msg5)

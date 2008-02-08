@@ -20,5 +20,6 @@ void l_setup_accept(upload * const l);
 int l_select_fdset(int highests);
 
 int file_uploading(const char *file);
+void upload_start(char *nick, char *hostname, char *hostmask, char *filename, char *remoteip, char *remoteport, char *bytes, char *token);
 
 /* End of File */

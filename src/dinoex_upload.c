@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
+#include "dinoex_curl.h"
 #include "dinoex_misc.h"
 
 int l_setup_file(upload * const l, struct stat *stp)
@@ -224,6 +225,96 @@ int file_uploading(const char *file)
     return 1;
   }
   return 0;
+}
+
+void upload_start(char *nick, char *hostname, char *hostmask, char *filename, char *remoteip, char *remoteport, char *bytes, char *token)
+{
+  upload *ul;
+  char *tempstr;
+  off_t len;
+
+  if (verify_uploadhost(hostmask)) {
+    notice(nick, "DCC Send Denied, I don't accept transfers from %s", hostmask);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied from %s on %s",
+            hostmask, gnetwork->name);
+    return;
+  }
+  len = atoull(bytes);
+  if (gdata.uploadmaxsize && (len > gdata.uploadmaxsize)) {
+    notice(nick, "DCC Send Denied, I don't accept transfers that big");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied (Too Big) from %s on %s",
+            hostmask, gnetwork->name);
+    return;
+  }
+  if (len > gdata.max_file_size) {
+    notice(nick, "DCC Send Denied, I can't accept transfers that large");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied (Too Large) from %s on %s",
+            hostmask, gnetwork->name);
+    return;
+  }
+  if (irlist_size(&gdata.uploads) >= MAXUPLDS) {
+    notice(nick, "DCC Send Denied, I'm already getting too many files");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied (too many uploads) from %s on %s",
+            hostmask, gnetwork->name);
+    return;
+  }
+  if (irlist_size(&gdata.uploads) >= gdata.max_uploads) {
+    notice(nick, "DCC Send Denied, I'm already getting too many files");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied (too many uploads) from %s on %s",
+            hostmask, gnetwork->name);
+    return;
+  }
+  if (disk_full(gdata.uploaddir) != 0) {
+    notice(nick, "DCC Send Denied, not enough free space on disk");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied (not enough free space on disk) from %s on %s",
+            hostmask, gnetwork->name);
+    return;
+  }
+  if (file_uploading(filename) != 0) {
+    notice(nick, "DCC Send Denied, I'm already getting this file");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied (upload running) from %s on %s",
+            hostmask, gnetwork->name);
+    return;
+  }
+#ifdef USE_CURL
+  if (fetch_is_running(filename) != 0) {
+    notice(nick, "DCC Send Denied, I'm already getting this file");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied (upload running) from %s on %s",
+            hostmask, gnetwork->name);
+    return;
+  }
+#endif /* USE_CURL */
+  ul = irlist_add(&gdata.uploads, sizeof(upload));
+  l_initvalues(ul);
+  ul->file = mystrdup(filename);
+  ul->con.family = (strchr(remoteip, ':')) ? AF_INET6 : AF_INET;
+  ul->con.remoteaddr = mystrdup(remoteip);
+  ul->con.remoteport = atoi(remoteport);
+  ul->totalsize = len;
+  ul->nick = mystrdup(nick);
+  ul->hostname = mystrdup(hostname);
+  ul->net = gnetwork->net;
+  tempstr = getsendname(ul->file);
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "uKB)",
+          nick, gnetwork->name, tempstr,
+          (ul->totalsize / 1024));
+  mydelete(tempstr);
+
+  if (ul->con.remoteport > 0) {
+    l_establishcon(ul);
+  } else {
+    /* Passive DCC */
+    l_setup_passive(ul, token);
+  }
 }
 
 /* End of File */
