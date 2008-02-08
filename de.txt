@@ -2131,5 +2131,5 @@
 2188 "autoadd_group_match"
 2189 "connectionmethod changed, reconnecting"
 2190 "Guessed transfer that %s on %s tried to resume!"
-2191 "resume trying %s, %s, %i\n"
-2192 "transfer %i: %s, %s, %i\n"
+2191 "resume trying %s, %s, %i"
+2192 "transfer %i: %s on %s, %s, %i\n"
