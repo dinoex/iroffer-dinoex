@@ -116,9 +116,13 @@ int l_setup_passive(upload * const l, char *token)
   updatecontext();
 
   /* strip T */
-  if (token[strlen(token)-1] == 'T')
-    token[strlen(token)-1] = '\0';
-  l->token = atoi(token);
+  if (token != NULL) {
+    if (token[strlen(token)-1] == 'T')
+      token[strlen(token)-1] = '\0';
+    l->token = atoi(token);
+  } else {
+    l->token = 0;
+  }
 
   retval = l_setup_file(l, &s);
   if (retval == 2)
