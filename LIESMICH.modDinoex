@@ -7,6 +7,7 @@ bugfix: IQUEUE
   Immer in 2. Warteschlenge einfügen, auch wenn 1. leer ist.
 
 bugfix: DCC RESUME
+  versions affected: 2.10 - 3.2
   Sonderbehandlung für Clients die den Dateinames escapen.
 
 bugfix: connectionmethod ssl
