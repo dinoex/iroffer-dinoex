@@ -3350,11 +3350,12 @@ void a_queue(const userinput * const u)
 {
   int num = 0;
   int alreadytrans;
-  ir_pqueue *pq;
   xdcc *xd;
   char *tempstr;
+  const char *hostname = "man";
   gnetwork_t *backup;
   int net;
+  int inq;
 
   updatecontext();
 
@@ -3371,18 +3372,8 @@ void a_queue(const userinput * const u)
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
 
-  alreadytrans = 0;
-  for (pq = irlist_get_head(&gdata.mainqueue);
-       pq;
-       pq = irlist_get_next(pq)) {
-    if (strcasecmp(pq->nick, u->arg1))
-      continue;
-
-    if (pq->xpack != xd)
-      continue;
-
-    alreadytrans++;
-  }
+  alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, u->arg1, hostname, xd);
+  alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, u->arg1, hostname, xd);
   if (alreadytrans > 0) {
     a_respond(u, "Already Queued %s for Pack %i!", u->arg1, num);
     return;
@@ -3392,7 +3383,10 @@ void a_queue(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  tempstr = addtoqueue(u->arg1, "man", num);
+  tempstr = addtoqueue(u->arg1, hostname, num);
+  ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "%s (%s on %s)",
+          u->arg1, hostname, gnetwork->name);
   notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
   gnetwork = backup;
@@ -3408,11 +3402,12 @@ void a_iqueue(const userinput * const u)
 {
   int num = 0;
   int alreadytrans;
-  ir_pqueue *pq;
   xdcc *xd;
   char *tempstr;
+  const char *hostname = "man";
   gnetwork_t *backup;
   int net;
+  int inq;
 
   updatecontext();
 
@@ -3429,29 +3424,8 @@ void a_iqueue(const userinput * const u)
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
 
-  alreadytrans = 0;
-  for (pq = irlist_get_head(&gdata.mainqueue);
-       pq;
-       pq = irlist_get_next(pq)) {
-    if (strcasecmp(pq->nick, u->arg1))
-      continue;
-
-    if (pq->xpack != xd)
-      continue;
-
-    alreadytrans++;
-  }
-  for (pq = irlist_get_head(&gdata.idlequeue);
-       pq;
-       pq = irlist_get_next(pq)) {
-    if (strcasecmp(pq->nick, u->arg1))
-      continue;
-
-    if (pq->xpack != xd)
-      continue;
-
-    alreadytrans++;
-  }
+  alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, u->arg1, hostname, xd);
+  alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, u->arg1, hostname, xd);
   if (alreadytrans > 0) {
       a_respond(u, "Already Queued %s for Pack %i!", u->arg1, num);
       return;
@@ -3461,7 +3435,11 @@ void a_iqueue(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  tempstr = addtoqueue(u->arg1, "man", num);
+  tempstr = mycalloc(maxtextlength);
+  tempstr = addtoidlequeue(tempstr, u->arg1, hostname, xd, num, 0);
+  ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "%s (%s on %s)",
+          u->arg1, hostname, gnetwork->name);
   notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
   gnetwork = backup;
