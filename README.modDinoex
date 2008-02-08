@@ -7,6 +7,9 @@ bugfix: IQUEUE
   insert in idle queue, even if main queue is empty
 
 bugfix: DCC RESUME
+  Allow RESUME even when portnumber is changed by broken NAT routers.
+
+bugfix: DCC RESUME
   versions affected: 2.10 - 3.2
   handle clients that send the filenams in DCC SEND esacped.
 
