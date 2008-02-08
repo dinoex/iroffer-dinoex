@@ -774,7 +774,6 @@
 784 "\1DCC ACCEPT %s %s %s\1"
 785 "XDCC [%02i:%s on %s]: Resumed at %"
 786 "Couldn't find transfer that %s on %s tried to resume!"
-787 "resume trying %i: %s == %s, %s == %s, %i == %i\n"
 788 "CHAT"
 789 "DCC CHAT attempt authorized from %s on %s"
 790 "DCC Chat denied from %s"
@@ -2132,3 +2131,5 @@
 2188 "autoadd_group_match"
 2189 "connectionmethod changed, reconnecting"
 2190 "Guessed transfer that %s on %s tried to resume!"
+2191 "resume trying %s, %s, %i\n"
+2192 "transfer %i: %s, %s, %i\n"

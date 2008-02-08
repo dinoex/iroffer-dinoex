@@ -148,6 +148,9 @@ static void t_find_debug(char *nick, char *filename, char *remoteport)
   outerror(OUTERROR_TYPE_WARN,
            "Couldn't find transfer that %s on %s tried to resume!",
            nick, gnetwork->name);
+  outerror(OUTERROR_TYPE_WARN,
+          "resume trying %s, %s, %i\n",
+          nick, filename, atoi(remoteport));
   if (gdata.debug == 0)
     return;
 
@@ -155,13 +158,11 @@ static void t_find_debug(char *nick, char *filename, char *remoteport)
        tr;
        tr = irlist_get_next(tr)) {
     ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
-            "resume trying %i: %s == %s, %s == %s, %i == %i\n",
+            "transfer %i: %s, %s, %i\n",
             tr->tr_status,
-            tr->caps_nick, nick,
+            tr->caps_nick,
             tr->xpack->file,
-            filename,
-            tr->con.localport,
-            atoi(remoteport));
+            tr->con.localport);
   }
 }
 
