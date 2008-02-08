@@ -154,7 +154,7 @@
 154 "stop download of fetch with <id>"
 155 "MSG"
 156 "nick message"
-157 "Send <message> to user <nick>"
+157 "Send <message> to user or channel <nick>"
 158 "AMSG"
 159 "msg"
 160 "Announce <msg> in all joined channels"

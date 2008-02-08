@@ -194,7 +194,7 @@ static const userinput_parse_t userinput_parse[] = {
 
 {5,2,method_allow_all,a_msg,           "MSG","nick message","Send <message> to user or channel <nick>"},
 {5,2,method_allow_all,a_amsg,          "AMSG","msg","Announce <msg> in all joined channels"},
-{5,2,method_allow_all,a_msgnet,        "MSGNET","net nick message","Send <message> to user <nick>"},
+{5,2,method_allow_all,a_msgnet,        "MSGNET","net nick message","Send <message> to user or channel <nick>"},
 {5,2,method_allow_all,u_mesg,          "MESG","message","Sends <message> to all users who are transferring"},
 {5,2,method_allow_all,u_mesq,          "MESQ","message","Sends <message> to all users in a queue"},
 {5,2,method_allow_all,u_ignore,        "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
