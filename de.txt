@@ -2131,3 +2131,4 @@
 2187 "announce_seperator"
 2188 "autoadd_group_match"
 2189 "connectionmethod changed, reconnecting"
+2190 "Guessed transfer that %s on %s tried to resume!"

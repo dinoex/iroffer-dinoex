@@ -2593,67 +2593,10 @@ static void privmsgparse(const char* type, char* line) {
         {
           gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
           
-          caps(nick);
           clean_quotes(msg3);
-          
           if (msg5[strlen(msg5)-1] == '\1') msg5[strlen(msg5)-1] = '\0';
           
-          tr = irlist_get_head(&gdata.trans);
-          while(tr)
-            {
-              if (((tr->tr_status == TRANSFER_STATUS_LISTENING) || (tr->tr_status == TRANSFER_STATUS_RESUME)) && 
-                  !strcmp(tr->caps_nick,nick) &&
-                  (strstrnocase(tr->xpack->file, msg3) || (tr->con.localport == atoi(msg4))))
-                {
-                  off_t len;
-                  len = atoull(msg5);
-                  if (len >= tr->xpack->st_size)
-                    {
-                      notice(nick,"You can't resume the transfer at a point greater than the size of the file");
-                      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                              "XDCC [%02i:%s on %s]: Resume attempted beyond end of file ( %" LLPRINTFMT "u >= %" LLPRINTFMT "u )",
-                              tr->id, tr->nick, gnetwork->name, len,
-                              tr->xpack->st_size);
-                    }
-                  else
-                    {
-                      t_setresume(tr,msg5);
-                      if (tr->tr_status == TRANSFER_STATUS_RESUME)
-                        {
-                          if (msg6[strlen(msg6)-1] == '\1') msg6[strlen(msg6)-1] = '\0';
-                          privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", msg3, msg4, msg5, msg6);
-                        }
-                      else
-                        privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", msg3, msg4, msg5);
-                      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                              "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "uK", tr->id,
-                              tr->nick, gnetwork->name, (long long)(tr->startresume / 1024));
-                    }
-                  break;
-                }
-              tr = irlist_get_next(tr);
-            }
-          
-          if (!tr)
-            {
-              outerror(OUTERROR_TYPE_WARN,
-                       "Couldn't find transfer that %s on %s tried to resume!",
-                       nick, gnetwork->name);
-              tr = irlist_get_head(&gdata.trans);
-              while(tr)
-                {
-                  if (gdata.debug > 0)
-                    {
-                      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
-                              "resume trying %i: %s == %s, %s == %s, %i == %i\n",
-                              tr->tr_status,
-                              tr->caps_nick,nick,
-                              tr->xpack->file,msg3,
-                              tr->con.localport, atoi(msg4));
-                    }
-                  tr = irlist_get_next(tr);
-                }
-            }
+          t_find_resume(nick, msg3, msg4, msg5, msg6);
         }
       else if (!strcmp(caps(msg2), "CHAT"))
         {

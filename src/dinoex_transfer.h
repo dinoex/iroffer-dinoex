@@ -15,6 +15,7 @@
 
 void t_setup_dcc(transfer *tr, const char *nick);
 int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport, char *token);
+int t_find_resume(char *nick, char *filename, char *localport, char *bytes, char *token);
 void t_connected(transfer *tr);
 void t_check_duplicateip(transfer *const newtr);
 int t_select_fdset(int highests, int changequartersec);
