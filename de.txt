@@ -1870,7 +1870,7 @@
 1922 "</tr>\n"
 1923 "Datei-Liste"
 1924 "<p>%s<span class=\"cmd\">/msg %s xdcc send nummer</span></p>\n"
-1925 "Download im IRC mit"
+1925 "Download im IRC mit: "
 1926 "zurück"
 1927 "/?"
 1928 "(zurück)"

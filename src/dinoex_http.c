@@ -1122,7 +1122,7 @@ static void h_html_file(http * const h)
   h_respond(h, "<h1>%s %s</h1>\n", h->nick, "File list" );
   h_html_search(h);
   h_respond(h, "<p>%s<span class=\"cmd\">/msg %s xdcc send nummer</span></p>\n",
-            "Download in IRC with", h->nick);
+            "Download in IRC with: ", h->nick);
   h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
   h_respond(h, "<th class=\"head\">%s</th>\n", "PACKs");
   h_respond(h, "<th class=\"head\">%s</th>\n", "DLs");
