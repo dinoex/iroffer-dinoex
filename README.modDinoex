@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
+Configure -nh
+  Baue Bot ohne HTTP Server
+
+Configure -nt
+  Baue Bot ohne Telenet Server
+
 bugfix: http_port (reported by TheTheath)
   versions affected: 3.0 - 3.2
   leak of filehanlde in header/footer

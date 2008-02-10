@@ -23,6 +23,8 @@
 #include "dinoex_badip.h"
 #include "dinoex_telnet.h"
 
+#ifndef WITHOUT_TELNET
+
 static int telnet_listen[MAX_VHOSTS];
 static int telnet_family[MAX_VHOSTS];
 
@@ -187,5 +189,7 @@ void telnet_perform(void)
     }
   }
 }
+
+#endif
 
 /* End of File */

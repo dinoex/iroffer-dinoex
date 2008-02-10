@@ -29,6 +29,8 @@ echo "   -c           Compile Curl lib (for the FETCH-Command)"
 echo "   -s           Compile without OpenSSL lib"
 echo "   -t           Compile with GNU TLS lib"
 echo "   -u           Compile with UPNP suport with miniupnpc"
+echo "   -nh          Compile without HTTP server"
+echo "   -nt          Compile without Telnet server"
 exit 64
 }
 
@@ -41,6 +43,8 @@ OPT_CURL=false
 OPT_SSL=true
 OPT_TLS=false
 OPT_UPNP=false
+OPT_NOHTTP=false
+OPT_NOTELNET=false
 cctype="gcc"
 
 while test "${1}" != ""
@@ -57,6 +61,8 @@ do
   -s) OPT_SSL=false ;;
   -t) OPT_TLS=true ;;
   -u) OPT_UPNP=true ;;
+  -nh) OPT_NOHTTP=true ;;
+  -nt) OPT_NOTELNET=true ;;
   -m) ;;
   *)  usage ;;
   esac
@@ -226,6 +232,16 @@ echo "Configuring for UPNP with lminiupnpc."
 UPNPLIB="-lminiupnpc"
 UPNPINC="-DUSE_UPNP -I/usr/local/include"
 UPNPLDF="-L/usr/local/lib"
+fi
+
+if $OPT_NOHTTP; then
+echo "Configuring without HTTP Server"
+NOFLAGS="${NOFLAGS} -DWITHOUT_HTTP"
+fi
+
+if $OPT_NOTELNET; then
+echo "Configuring without Telent Server"
+NOFLAGS="${NOFLAGS} -DWITHOUT_TELNET"
 fi
 
 echo -n "Checking for make... "
@@ -1257,7 +1273,7 @@ echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB
 echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $NOFLAGS
 echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then

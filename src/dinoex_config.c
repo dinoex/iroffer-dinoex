@@ -140,7 +140,9 @@ static config_int_typ config_parse_int[] = {
 {"start_of_month",          &gdata.start_of_month,          1, 31, 1 },
 {"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1 },
 {"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1 },
+#ifndef WITHOUT_TELNET
 {"telnet_port",             &gdata.telnet_port,             0, 65535, 1 },
+#endif
 {"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1 },
 {NULL, NULL, 0, 0, 0 }};
 
@@ -203,7 +205,9 @@ static config_list_typ config_parse_list[] = {
 #ifdef USE_GEOIP
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 },
 #endif
+#ifndef WITHOUT_TELNET
 {"telnet_vhost",            &gdata.telnet_vhost,            0 },
+#endif
 {"unlimitedhost",           &gdata.unlimitedhost,           2 },
 {"uploadhost",              &gdata.uploadhost,              2 },
 {"weblist_info",            &gdata.weblist_info,            0 },

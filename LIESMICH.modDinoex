@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+Configure -nh 
+  Build without HTTP server
+
+Configure -nt 
+  Build without Telnet server
+
 bugfix: http_port
   versions affected: 3.0 - 3.2
   Leck an Filehandles behoben.

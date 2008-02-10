@@ -371,23 +371,35 @@ void config_dinoex(void)
   if (gdata.upnp_router)
     init_upnp();
 #endif /* USE_UPNP */
+#ifndef WITHOUT_TELNET
   telnet_setup_listen();
+#endif
+#ifndef WITHOUT_HTTP
   h_setup_listen();
+#endif
   global_defaults();
 }
 
 void shutdown_dinoex(void)
 {
+#ifndef WITHOUT_TELNET
   telnet_close_listen();
+#endif
+#ifndef WITHOUT_HTTP
   h_close_listen();
+#endif
   geoip_shutdown();
   curl_shutdown();
 }
 
 void rehash_dinoex(void)
 {
+#ifndef WITHOUT_TELNET
   telnet_reash_listen();
+#endif
+#ifndef WITHOUT_HTTP
   h_reash_listen();
+#endif
   global_defaults();
   geoip_shutdown();
 }

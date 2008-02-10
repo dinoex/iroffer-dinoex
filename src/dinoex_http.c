@@ -26,6 +26,8 @@
 
 #include <ctype.h>
 
+#ifndef WITHOUT_HTTP
+
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 
 typedef struct {
@@ -1768,5 +1770,7 @@ void h_perform(int changesec)
     }
   }
 }
+
+#endif
 
 /* End of File */
