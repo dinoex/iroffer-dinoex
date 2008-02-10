@@ -250,7 +250,7 @@ void l_istimeout (upload * const l)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_MULTI_FIRST, OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
         }
       FD_CLR(l->con.clientsocket, &gdata.readset);
       shutdown_close(l->con.clientsocket);
