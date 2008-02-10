@@ -712,6 +712,7 @@ static void h_include(http * const h, const char *file)
              file, strerror(errno));
     return;
   }
+  close(fd);
   h->end += howmuch;
   h->left -= howmuch;
 }

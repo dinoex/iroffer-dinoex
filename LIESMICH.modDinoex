@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+bugfix: http_port
+  versions affected: 3.0 - 3.2
+  Leck an Filehandles behoben.
+
 bugfix: IQUEUE
   Immer in 2. Warteschlenge einfügen, auch wenn 1. leer ist.
 

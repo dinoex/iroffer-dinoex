@@ -82,6 +82,7 @@ TheDeath
 	option "group_seperator"
 	option "upnp_router"
 	report CRC bug
+	report leak of filehandles
 
 [GFE]Lunix
 	alias xdcc list group <group>

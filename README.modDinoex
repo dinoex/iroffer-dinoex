@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
+bugfix: http_port (reported by TheTheath)
+  versions affected: 3.0 - 3.2
+  leak of filehanlde in header/footer
+
 bugfix: IQUEUE
   insert in idle queue, even if main queue is empty
 
