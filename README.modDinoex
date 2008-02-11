@@ -3,11 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.3:
 -----------------
 
+Configure -nm
+  Build without memory protection
+
 Configure -nh
-  Baue Bot ohne HTTP Server
+  Build without HTTP server
 
 Configure -nt
-  Baue Bot ohne Telenet Server
+  Build without Telnet server
 
 bugfix: http_port (reported by TheTheath)
   versions affected: 3.0 - 3.2

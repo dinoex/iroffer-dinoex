@@ -13,8 +13,12 @@
  *
  */
 
+#ifndef WITHOUT_MEMSAVE
 #define mystrdup(x) mystrdup2(x,__FUNCTION__,__FILE__,__LINE__)
 char *mystrdup2(const char *str, const char *src_function, const char *src_file, int src_line);
+#else
+#define mystrdup(x) strdup(x)
+#endif
 int verifyshell(irlist_t *list, const char *file);
 const char *save_nick(const char * nick);
 int check_level(char prefix);

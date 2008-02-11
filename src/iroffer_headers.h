@@ -536,8 +536,12 @@ void tostdout_disable_buffering(void);
 
 /* utilities.c */
 const char* strstrnocase (const char *str1, const char *match1);
+#ifndef WITHOUT_MEMSAVE
 #define getpart(x,y) getpart2(x,y,__FUNCTION__,__FILE__,__LINE__)
 char* getpart2(const char *line, int howmany, const char *src_function, const char *src_file, int src_line);
+#else
+char* getpart(const char *line, int howmany);
+#endif
 char* caps(char *text);
 char* nocaps(char *text);
 char* sizestr(int spaces, off_t num);
@@ -662,9 +666,13 @@ const char *strsignal(int sig);
 #endif
 
 /* permanently add/delete items (includes malloc/free) */
+#ifndef WITHOUT_MEMSAVE
 #define irlist_add(x,y) irlist_add2(x,y,__FUNCTION__,__FILE__,__LINE__)
 void* irlist_add2(irlist_t *list, unsigned int size,
                   const char *src_function, const char *src_file, int src_line);
+#else
+void* irlist_add(irlist_t *list, unsigned int size);
+#endif
 void* irlist_delete(irlist_t *list, void *item);
 void irlist_delete_all(irlist_t *list);
 

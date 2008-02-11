@@ -31,6 +31,7 @@ echo "   -t           Compile with GNU TLS lib"
 echo "   -u           Compile with UPNP suport with miniupnpc"
 echo "   -nh          Compile without HTTP server"
 echo "   -nt          Compile without Telnet server"
+echo "   -nm          Compile without memory protection"
 exit 64
 }
 
@@ -45,6 +46,7 @@ OPT_TLS=false
 OPT_UPNP=false
 OPT_NOHTTP=false
 OPT_NOTELNET=false
+OPT_NOMEMSAVE=false
 cctype="gcc"
 
 while test "${1}" != ""
@@ -63,6 +65,7 @@ do
   -u) OPT_UPNP=true ;;
   -nh) OPT_NOHTTP=true ;;
   -nt) OPT_NOTELNET=true ;;
+  -nm) OPT_NOMEMSAVE=true ;;
   -m) ;;
   *)  usage ;;
   esac
@@ -242,6 +245,11 @@ fi
 if $OPT_NOTELNET; then
 echo "Configuring without Telent Server"
 NOFLAGS="${NOFLAGS} -DWITHOUT_TELNET"
+fi
+
+if $OPT_NOMEMSAVE; then
+echo "Configuring without memory protection"
+NOFLAGS="${NOFLAGS} -DWITHOUT_MEMSAVE"
 fi
 
 echo -n "Checking for make... "

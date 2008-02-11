@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.3:
 ---------------
 
+Configure -nm
+  Baue Bot ohne Speicher-Schutz
+
+Configure -nh
+  Baue Bot ohne HTTP Server
+
+Configure -nt
+  Baue Bot ohne Telenet Server
+
 Configure -nh 
   Build without HTTP server
 

@@ -125,10 +125,16 @@
 #define MAX_PREFIX     16
 #define MAX_CHANMODES  16
 
+#ifndef WITHOUT_MEMSAVE
 /* free'ing just leads to trouble if we dont check first and then make NULL */
 #define mydelete(x) { mydelete2(x); x = NULL; }
 #define mymalloc(x) mymalloc2(x, 0, __FUNCTION__, __FILE__, __LINE__)
 #define mycalloc(x) mymalloc2(x, 1, __FUNCTION__, __FILE__, __LINE__)
+#else
+#define mydelete(x) { free(x); x = NULL; }
+#define mymalloc(x) malloc(x)
+#define mycalloc(x) calloc(1,x)
+#endif
 
 #define  maxtextlengthshort 60
 #define  maxtextlength 512

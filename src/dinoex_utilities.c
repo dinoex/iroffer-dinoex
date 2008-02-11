@@ -20,14 +20,19 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 
+#ifndef WITHOUT_MEMSAVE
+
 char *mystrdup2(const char *str, const char *src_function, const char *src_file, int src_line)
 {
   char *copy;
 
   copy = mymalloc2(strlen(str)+1, 0, src_function, src_file, src_line);
+  copy = mymalloc(strlen(str)+1);
   strcpy(copy, str);
   return copy;
 }
+
+#endif
 
 int verifyshell(irlist_t *list, const char *file)
 {
