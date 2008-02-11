@@ -189,6 +189,8 @@ void l_transfersome (upload * const l) {
       }
    
    g = htonl((unsigned long)(l->bytesgot & 0xFFFFFFFF));
+   /* don't block if max window is reached */
+   if (is_fd_writeable(l->con.clientsocket))
    write(l->con.clientsocket, (unsigned char*)&g, 4);
    
    if (l->bytesgot >= l->totalsize) {
