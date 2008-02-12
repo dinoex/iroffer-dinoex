@@ -294,6 +294,7 @@ Radicand
 	report double upload problem
 	report "connectionmethod ssl" bug
 	report "nodownloadhost" regexp problem
+	report tcp send window bug
 
 unlogisch
 	option "autoadd_sort"
