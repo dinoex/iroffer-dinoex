@@ -258,6 +258,8 @@ void t_connected(transfer *tr)
   int connect_error;
   unsigned int connect_error_len = sizeof(connect_error);
 
+  tr->con.connecttime = gdata.curtime;
+  FD_CLR(tr->con.clientsocket, &gdata.writeset);
   callval_i = getsockopt(tr->con.clientsocket,
                          SOL_SOCKET, SO_ERROR,
                          &connect_error, &connect_error_len);
@@ -267,21 +269,15 @@ void t_connected(transfer *tr)
              "Couldn't determine upload connection status on %s: %s",
              gnetwork->name, strerror(errno));
     t_closeconn(tr, "Download Connection Failed status:", errno);
-  } else if (connect_error) {
+    return;
+  }
+  if (connect_error) {
     t_closeconn(tr, "Download Connection Failed", connect_error);
+    return;
   }
 
-  if ((callval_i < 0) || connect_error) {
-    FD_CLR(tr->con.clientsocket, &gdata.writeset);
-  } else {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "Download Connection Established on %s", gnetwork->name);
-    FD_CLR(tr->con.clientsocket, &gdata.writeset);
-    tr->con.connecttime = gdata.curtime;
-    if (set_socket_nonblocking(tr->con.clientsocket, 0) < 0 ) {
-      outerror(OUTERROR_TYPE_WARN, "Couldn't Set Blocking");
-    }
-  }
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          "Download Connection Established on %s", gnetwork->name);
 
   t_setup_send(tr);
   return;
