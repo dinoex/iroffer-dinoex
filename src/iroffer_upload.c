@@ -154,6 +154,8 @@ void l_transfersome (upload * const l) {
          howmuch  = read(l->con.clientsocket, gdata.sendbuff, BUFFERSIZE);
          if (howmuch < 0)
            {
+             if (errno == EAGAIN)
+               return;
              l_closeconn(l,"Connection Lost",errno);
              return;
            }

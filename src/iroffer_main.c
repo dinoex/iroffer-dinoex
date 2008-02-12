@@ -774,10 +774,6 @@ static void mainloop (void) {
                   FD_CLR(ul->con.clientsocket, &gdata.writeset);
                   notice(ul->nick,"DCC Connection Established");
                   ul->con.connecttime = gdata.curtime;
-                  if (set_socket_nonblocking(ul->con.clientsocket, 0) < 0 )
-                    {
-                      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
-                    }
                 }
             }
           
