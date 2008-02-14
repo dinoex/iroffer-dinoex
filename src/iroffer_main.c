@@ -2773,6 +2773,7 @@ static void privmsgparse(const char* type, char* line) {
                {
                  if (!strcmp(user->nick, nick))
                    {
+                     j = 1; /* ignore */
                      break;
                    }
                }
@@ -2786,9 +2787,9 @@ static void privmsgparse(const char* type, char* line) {
                    }
                  else
                    {
+                     j = 3; /* queued */
                      if (msg3)
                        {
-                         j = 3; /* msg3 */
                          /* detect xdcc list group xxx */
                          if ((msg4) && (strcmp(caps(msg3),"GROUP") == 0))
                            {

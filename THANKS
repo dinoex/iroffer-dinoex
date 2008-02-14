@@ -237,6 +237,7 @@ dondieschotte
 	report "Transfer Complete" bug
 	option "announce_separator"
 	option "autoadd_group_match"
+	report "XDCC LIST" logfile bug
 
 dsd
 	admin command "autoadd"

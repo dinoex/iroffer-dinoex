@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.4:
 -----------------
 
+bugfix: XDCC LIST GROUP (reported by dondieschotte)
+  versions affected: 3.0 - 3.3
+  Fix message in logfile.
+
 With Version 3.3:
 -----------------
 
