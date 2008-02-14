@@ -305,6 +305,7 @@ Misha-SU
 	option "nogeoipcountry"
 	report ignore bug
 	report FETCH problem
+	report punishslowusers bug
 
 Lamarr
 	report "MAXSPEED" bug

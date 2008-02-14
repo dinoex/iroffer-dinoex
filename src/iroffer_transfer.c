@@ -863,7 +863,6 @@ void t_checkminspeed(transfer * const t) {
        hostmask = to_hostmask( "*", t->hostname);
        ignore = get_ignore(hostmask);
        mydelete(hostmask);
-       ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
        ignore->flags |= IGN_IGNORING;
        ignore->bucket = (gdata.punishslowusers*60)/gdata.autoignore_threshold;
        

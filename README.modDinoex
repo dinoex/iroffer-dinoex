@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.4:
 -----------------
 
+bugfix: punishslowusers (reported by Misha-SU)
+  versions affected: 3.3
+  Bot will crash if punishslowusers ist executed.
+
 bugfix: XDCC LIST GROUP (reported by dondieschotte)
   versions affected: 3.0 - 3.3
   Fix message in logfile.
