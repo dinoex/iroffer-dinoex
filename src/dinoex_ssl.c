@@ -36,11 +36,9 @@ void ssl_startup(void)
 void close_server(void)
 {
 #ifdef USE_SSL
-  if (gnetwork->connectionmethod.how == how_ssl) {
-    if (gnetwork->ssl != NULL) {
-      SSL_free(gnetwork->ssl);
-      gnetwork->ssl = NULL;
-    }
+  if (gnetwork->ssl != NULL) {
+    SSL_free(gnetwork->ssl);
+    gnetwork->ssl = NULL;
   }
 #endif /* USE_SSL */
   FD_CLR(gnetwork->ircserver, &gdata.readset);
@@ -99,6 +97,8 @@ int setup_ssl(void)
     return 1;
   }
   outerror_ssl();
+#else
+  gnetwork->ssl = NULL;
 #endif /* USE_SSL */
   return 0;
 }
@@ -106,7 +106,7 @@ int setup_ssl(void)
 ssize_t readserver_ssl(void *buf, size_t nbytes)
 {
 #ifdef USE_SSL
-  if (gnetwork->connectionmethod.how == how_ssl)
+  if (gnetwork->ssl != NULL)
     return SSL_read(gnetwork->ssl, buf, nbytes);
 #endif /* USE_SSL */
   return read(gnetwork->ircserver, buf, nbytes);
@@ -115,7 +115,7 @@ ssize_t readserver_ssl(void *buf, size_t nbytes)
 ssize_t writeserver_ssl(const void *buf, size_t nbytes)
 {
 #ifdef USE_SSL
-  if (gnetwork->connectionmethod.how == how_ssl)
+  if (gnetwork->ssl != NULL)
     return SSL_write(gnetwork->ssl, buf, nbytes);
 #endif /* USE_SSL */
   return write(gnetwork->ircserver, buf, nbytes);

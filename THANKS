@@ -77,12 +77,12 @@ TheDeath
 	admin command "sort name/group/desc"
 	admin command "sort -name/-group/-desc"
 	admin command "XDTRIGGER"
-	report notify bug
+	reporting notify bug
 	option "http_port"
 	option "group_seperator"
 	option "upnp_router"
-	report CRC bug
-	report leak of filehandles
+	reporting CRC bug
+	reporting leak of filehandles
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -160,8 +160,8 @@ Jippi
 	automatic unlock if crc matches
 
 Yasuo|Iwakura
-	report -plist crash
-	report incomplete warning
+	reporting -plist crash
+	reporting incomplete warning
 	QUL and DCL output
 	autosendpack with 2 parameters
 	admin command "ADDMATCH"
@@ -219,25 +219,25 @@ Noxx
 dondieschotte
 	reporting get_network_msg bug
 	option "adminlevel"
-	report "adminhostmask" bug
-	report "removelostfile" bug
+	reporting "adminhostmask" bug
+	reporting "removelostfile" bug
 	message to channels not joined
-	report "sapces_in_filenames" bug
+	reporting "sapces_in_filenames" bug
 	admin command  "sort 1"
 	admin command  "sort name/group/desc"
 	extend "XDCC INFO"
 	admin command  "md5 n"
 	option "xdcclist_by_privmsg"
 	option "autoadd_delay"
-	report "tcprangestart" out-of-range
+	reporting "tcprangestart" out-of-range
 	option "tcprangelimit"
 	admin command "listul dir"
 	option "nickserv_pass" per network
-	report window resize bug
-	report "Transfer Complete" bug
+	reporting window resize bug
+	reporting "Transfer Complete" bug
 	option "announce_separator"
 	option "autoadd_group_match"
-	report "XDCC LIST" logfile bug
+	reporting "XDCC LIST" logfile bug
 
 dsd
 	admin command "autoadd"
@@ -249,15 +249,15 @@ fiberOptiC
 
 chibi
 	admin commamd "newdir"
-	report SERVQC bug
+	reporting SERVQC bug
 	option "autoadd_sort"
-	report "AUTOADD" bug
+	reporting "AUTOADD" bug
 	option "xdccxmlfile"
 	option "http_search"
-	report "xdccxmlfile" bug
+	reporting "xdccxmlfile" bug
 
 vegetto
-	report crash on bad config
+	reporting crash on bad config
 
 Kozue-chan
 	option "hadminhost"
@@ -278,7 +278,7 @@ Ang3lu5
 	option "xdcclist_by_privmsg"
 
 drBeSt
-	report CANNOUNCE bug
+	reporting CANNOUNCE bug
 
 Per Nielsen
 	admin commamd "MAXSPEED"
@@ -290,31 +290,32 @@ Protected
 
 Radicand
 	warn if spaces found in parameter
-	report CANNOUNCE bug
-	report spaces_in_filenames bug
-	report double upload problem
-	report "connectionmethod ssl" bug
-	report "nodownloadhost" regexp problem
-	report tcp send window bug
+	reporting CANNOUNCE bug
+	reporting spaces_in_filenames bug
+	reporting double upload problem
+	reporting "connectionmethod ssl" bug
+	reporting "nodownloadhost" regexp problem
+	reporting tcp send window bug
 
 unlogisch
 	option "autoadd_sort"
 
 Misha-SU
-	report "ANNOUNCE" bug
+	reporting "ANNOUNCE" bug
 	option "nogeoipcountry"
-	report ignore bug
-	report FETCH problem
-	report punishslowusers bug
+	reporting ignore bug
+	reporting FETCH problem
+	reporting punishslowusers bug
+	reporting "connectionmethod ssl" bug
 
 Lamarr
-	report "MAXSPEED" bug
+	reporting "MAXSPEED" bug
 
 Akropolis
 	user commamd "XDCC GET $"
 
 SDoggy
-	report sentrecord bug
+	reporting sentrecord bug
 
 Mutsumi
 	suggestion "xdccxmlfile" with groups

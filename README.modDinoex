@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version 3.5:
+-----------------
+
+bugfix: connectionmethod ssl (reported by Misha-SU)
+  versions affected: 3.0 - 3.4
+  Bot will crash when rehash and connectionmethod chnaged to ssl when connected
+
 With Version 3.4:
 -----------------
 
