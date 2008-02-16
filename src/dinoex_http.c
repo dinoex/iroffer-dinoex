@@ -1094,6 +1094,7 @@ static void h_html_file(http * const h)
 {
   xdcc *xd;
   char *tempstr;
+  char *javalink;
   char *tlabel;
   off_t sizes = 0;
   off_t traffic = 0;
@@ -1173,8 +1174,13 @@ static void h_html_file(http * const h)
       len += snprintf(tempstr + len, maxtextlength - 1 - len, "<br>");
       len += html_encode(tempstr + len, maxtextlength - 1 - len, xd->note);
     }
-    h_respond(h, "<td class=\"content\"  title=\"%s\">%s</td>\n", tlabel, tempstr);
+    javalink = mycalloc(maxtextlength);
+    len = snprintf(javalink, maxtextlength - 1,
+                   "<a href=\"javascript:ToClipboard('/msg %s xdcc send %d');\">%s</a>",
+                   h->nick, num, tempstr);
     mydelete(tempstr);
+    h_respond(h, "<td class=\"content\"  title=\"%s\">%s</td>\n", tlabel, javalink);
+    mydelete(javalink);
     mydelete(tlabel);
     h_respond(h, "</tr>\n");
   }

@@ -2156,3 +2156,4 @@
 2213 "    <lastupdate>"
 2214 "</lastupdate>\n"
 2215 "  </stats>\n"
+2216 "<a href=\"javascript:ToClipboard('/msg %s xdcc send %d');\">%s</a>"
