@@ -2055,6 +2055,7 @@ void reinit_config_vars(void)
   mydelete(gdata.http_dir);
   mydelete(gdata.group_seperator);
   mydelete(gdata.usenatip);
+  mydelete(gdata.local_vhost);
   mydelete(gdata.logfile_notices);
   mydelete(gdata.logfile_messages);
   mydelete(gdata.trashcan_dir);

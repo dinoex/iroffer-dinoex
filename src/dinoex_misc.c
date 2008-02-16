@@ -1080,105 +1080,16 @@ static void free_state(void)
 
 static void free_config(void)
 {
-  autoqueue_t *aq;
-  tupload_t *tu;
   int si;
 
   updatecontext();
-  /* clear old config items */
-  for (aq = irlist_get_head(&gdata.autoqueue);
-       aq;
-       aq = irlist_delete(&gdata.autoqueue, aq))
-    {
-       mydelete(aq->word);
-       mydelete(aq->message);
-    }
-  irlist_delete_all(&gdata.autoignore_exclude);
-  irlist_delete_all(&gdata.adminhost);
-  irlist_delete_all(&gdata.hadminhost);
-  irlist_delete_all(&gdata.uploadhost);
-  for (tu = irlist_get_head(&gdata.tuploadhost);
-       tu;
-       tu = irlist_delete(&gdata.tuploadhost, tu))
-    {
-       mydelete(tu->u_host);
-    }
-  irlist_delete_all(&gdata.downloadhost);
-  irlist_delete_all(&gdata.nodownloadhost);
-  irlist_delete_all(&gdata.unlimitedhost);
+
   mydelete(gdata.r_pidfile);
-  mydelete(gdata.pidfile);
-  mydelete(gdata.config_nick);
-  for (si=0; si<MAX_NETWORKS; si++)
-  {
-    server_t *ss;
-    for (ss = irlist_get_head(&gdata.networks[si].servers);
-         ss;
-         ss = irlist_delete(&gdata.networks[si].servers, ss))
-      {
-        mydelete(ss->hostname);
-        mydelete(ss->password);
-      }
-    mydelete(gdata.networks[si].nickserv_pass);
-    mydelete(gdata.networks[si].config_nick);
-    mydelete(gdata.networks[si].user_modes);
-    mydelete(gdata.networks[si].local_vhost);
-    mydelete(gdata.networks[si].natip);
+  for (si=0; si<MAX_NETWORKS; si++) {
     mydelete(gdata.networks[si].curserver.hostname);
     mydelete(gdata.networks[si].curserver.password);
     mydelete(gdata.networks[si].curserveractualname);
-    irlist_delete_all(&gdata.networks[si].r_channels);
-    irlist_delete_all(&gdata.networks[si].server_join_raw);
-    irlist_delete_all(&gdata.networks[si].server_connected_raw);
-    irlist_delete_all(&gdata.networks[si].channel_join_raw);
-    irlist_delete_all(&gdata.networks[si].proxyinfo);
   } /* networks */
-  mydelete(gdata.logfile);
-  mydelete(gdata.user_realname);
-  mydelete(gdata.user_modes);
-  irlist_delete_all(&gdata.adddir_exclude);
-  irlist_delete_all(&gdata.geoipcountry);
-  irlist_delete_all(&gdata.nogeoipcountry);
-  irlist_delete_all(&gdata.geoipexcludenick);
-  irlist_delete_all(&gdata.autoadd_dirs);
-  irlist_delete_all(&gdata.autocrc_exclude);
-  irlist_delete_all(&gdata.filedir);
-  irlist_delete_all(&gdata.http_vhost);
-  irlist_delete_all(&gdata.telnet_vhost);
-  irlist_delete_all(&gdata.weblist_info);
-  mydelete(gdata.enable_nick);
-  mydelete(gdata.owner_nick);
-  mydelete(gdata.geoipdatabase);
-  mydelete(gdata.respondtochannellistmsg);
-  mydelete(gdata.admin_job_file);
-  mydelete(gdata.autoaddann);
-  mydelete(gdata.autoadd_group);
-  mydelete(gdata.send_statefile);
-  mydelete(gdata.xdccremovefile);
-  mydelete(gdata.autoadd_sort);
-  mydelete(gdata.creditline);
-  mydelete(gdata.headline);
-  mydelete(gdata.nickserv_pass);
-  mydelete(gdata.periodicmsg_nick);
-  mydelete(gdata.periodicmsg_msg);
-  mydelete(gdata.uploaddir);
-  mydelete(gdata.restrictprivlistmsg);
-  mydelete(gdata.loginname);
-  mydelete(gdata.statefile);
-  mydelete(gdata.xdcclistfile);
-  mydelete(gdata.adminpass);
-  mydelete(gdata.hadminpass);
-  mydelete(gdata.http_admin);
-  mydelete(gdata.http_dir);
-  mydelete(gdata.group_seperator);
-  mydelete(gdata.local_vhost);
-  mydelete(gdata.usenatip);
-  mydelete(gdata.logfile_notices);
-  mydelete(gdata.logfile_messages);
-  mydelete(gdata.trashcan_dir);
-  mydelete(gdata.xdccxmlfile);
-  mydelete(gdata.http_date);
-  mydelete(gdata.announce_seperator);
 }
 
 #endif
@@ -1193,8 +1104,9 @@ void exit_iroffer(void)
   int leak = 0;
 
   signal(SIGSEGV, SIG_DFL);
-  free_config();
   free_state();
+  free_config();
+  reinit_config_vars();
   updatecontext();
 
   for (j=1; j<(MEMINFOHASHSIZE * gdata.meminfo_depth); j++) {
@@ -1209,6 +1121,8 @@ void exit_iroffer(void)
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_file  = %s", mi->src_file);
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_line  = %d", mi->src_line);
       for(i=0; i<(12*12); i+=12) {
+        if (i >= mi->size)
+          break;
         outerror(OUTERROR_TYPE_WARN_LOUD, " : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\"",
                ut[i+0], ut[i+1], ut[i+2], ut[i+3], ut[i+4], ut[i+5], ut[i+6], ut[i+7], ut[i+8], ut[i+9], ut[i+10], ut[i+11],
                onlyprintable(ut[i+0]), onlyprintable(ut[i+1]),
