@@ -884,6 +884,7 @@ static void xdcc_save_xml(void)
   write_asc_int(fd, gdata.slotsmax);
   write_string(fd, "</slotsmax>\n");
   write_string(fd, "  </slots>\n");
+
   write_string(fd, "  <bandwith>\n");
   write_string(fd, "    <banduse>");
   tempstr = get_current_bandwidth();
@@ -897,6 +898,7 @@ static void xdcc_save_xml(void)
   mydelete(tempstr);
   write_string(fd, "</bandmax>\n");
   write_string(fd, "  </bandwith>\n");
+
   write_string(fd, "  <quota>\n");
   write_string(fd, "    <packsum>");
   write_asc_int(fd, num);
@@ -906,12 +908,57 @@ static void xdcc_save_xml(void)
   write_string(fd, tempstr);
   mydelete(tempstr);
   write_string(fd, "</diskspace>\n");
+  write_string(fd, "    <transfereddaily>");
+  tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</transfereddaily>\n");
+  write_string(fd, "    <transferedweekly>");
+  tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</transferedweekly>\n");
+  write_string(fd, "    <transferedmonthly>");
+  tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</transferedmonthly>\n");
   write_string(fd, "    <transferedtotal>");
   tempstr = sizestr(0, gdata.totalsent);
   write_string(fd, tempstr);
   mydelete(tempstr);
   write_string(fd, "</transferedtotal>\n");
   write_string(fd, "  </quota>\n");
+
+  write_string(fd, "  <limits>\n");
+  write_string(fd, "    <minspeed>");
+  tempstr = mycalloc(maxtextlengthshort);
+  snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.transferminspeed);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</minspeed>\n");
+  write_string(fd, "    <maxspeed>");
+  tempstr = mycalloc(maxtextlengthshort);
+  snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.transfermaxspeed);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</maxspeed>\n");
+  write_string(fd, "  </limits>\n");
+
+  write_string(fd, "  <stats>\n");
+  write_string(fd, "    <version>");
+  write_string(fd, "iroffer-dinoex " VERSIONLONG );
+  write_string(fd, "</version>\n");
+  write_string(fd, "    <totaluptime>");
+  tempstr = mycalloc(maxtextlengthshort);
+  tempstr = getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</totaluptime>\n");
+  write_string(fd, "    <lastupdate>");
+  write_asc_int(fd, gdata.curtime);
+  write_string(fd, "</lastupdate>\n");
+  write_string(fd, "  </stats>\n");
   write_string(fd, "</sysinfo>\n\n");
 
   write_string(fd, "</packlist>\n");
