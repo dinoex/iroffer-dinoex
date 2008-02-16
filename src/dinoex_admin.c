@@ -3452,12 +3452,31 @@ void a_iqueue(const userinput * const u)
   }
 }
 
-/* iroffer-lamm: add-ons */
-void a_announce(const userinput * const u)
+static void a_announce_channels(const char *msg, const char *match)
 {
-  int num = 0;
-  xdcc *xd;
   channel_t *ch;
+
+  for (ch = irlist_get_head(&(gnetwork->channels));
+       ch;
+       ch = irlist_get_next(ch)) {
+    if ((ch->flags & CHAN_ONCHAN) == 0)
+      continue;
+    if (match != NULL) {
+      if (strcasecmp(ch->name, match) != 0)
+        continue;
+    } else {
+      if (ch->noannounce != 0)
+        continue;
+    }
+    privmsg_chan(ch, "%s", msg);
+  }
+}
+
+static void a_announce_sub(const userinput * const u, const char *arg1, const char *arg2, const char *msg)
+{
+  int num1 = 0;
+  int num2 = 0;
+  xdcc *xd;
   char *tempstr;
   char *tempstr2;
   int ss;
@@ -3465,44 +3484,61 @@ void a_announce(const userinput * const u)
 
   updatecontext();
 
-  if (u->arg1) num = atoi (u->arg1);
-  if (invalid_pack(u, num) != 0)
+  if (arg1) num1 = atoi (arg1);
+  if (invalid_pack(u, num1) != 0)
     return;
 
-  if (invalid_announce(u, u->arg2e) != 0)
+  if (arg2) num2 = atoi(arg2);
+  if (invalid_pack(u, num2) != 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-
-  a_respond(u, "Pack Info for Pack #%i:", num);
-
-  tempstr = mycalloc(maxtextlength);
-  tempstr2 = mycalloc(maxtextlength);
-  snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s%s", u->arg2e, gdata.announce_seperator, xd->desc);
-
-  backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
-    gnetwork = &(gdata.networks[ss]);
-    snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
-             tempstr2, get_user_nick(), num);
-    for (ch = irlist_get_head(&(gnetwork->channels));
-         ch;
-         ch = irlist_get_next(ch)) {
-      if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
-        privmsg_chan(ch, "%s", tempstr);
-    }
+  if ( num2 < num1 ) {
+    a_respond(u, "Pack numbers are not in order");
+    return;
   }
-  gnetwork = backup;
-  a_respond(u, "Announced [%s] - %s", u->arg2e, xd->desc);
-  mydelete(tempstr2);
-  mydelete(tempstr);
+
+  if (invalid_announce(u, msg) != 0)
+    return;
+
+  for (; num1 <= num2; num1++) {
+    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    a_respond(u, "Pack Info for Pack #%i:", num1);
+
+    tempstr = mycalloc(maxtextlength);
+    tempstr2 = mycalloc(maxtextlength);
+    snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s%s", msg, gdata.announce_seperator, xd->desc);
+
+    backup = gnetwork;
+    for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
+               tempstr2, get_user_nick(), num1);
+      a_announce_channels(tempstr, NULL);
+      gnetwork = backup;
+      a_respond(u, "Announced [%s] - %s", msg, xd->desc);
+    }
+    gnetwork = backup;
+    mydelete(tempstr2);
+    mydelete(tempstr);
+  }
+}
+
+void a_announce(const userinput * const u)
+{
+  updatecontext();
+  a_announce_sub(u, u->arg1, u->arg1, u->arg2e);
+}
+
+void a_mannounce(const userinput * const u)
+{
+  updatecontext();
+  a_announce_sub(u, u->arg1, u->arg2, u->arg3e);
 }
 
 void a_cannounce(const userinput * const u)
 {
   int num = 0;
   xdcc *xd;
-  channel_t *ch;
   char *tempstr;
   char *tempstr2;
   int ss;
@@ -3533,14 +3569,7 @@ void a_cannounce(const userinput * const u)
     gnetwork = &(gdata.networks[ss]);
     snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
              tempstr2, get_user_nick(), num);
-    for (ch = irlist_get_head(&(gnetwork->channels));
-         ch;
-         ch = irlist_get_next(ch)) {
-      if (ch->flags & CHAN_ONCHAN) {
-        if (strcasecmp(ch->name, u->arg1) == 0)
-          privmsg_chan(ch, "%s", tempstr);
-      }
-    }
+    a_announce_channels(tempstr, u->arg1);
   }
   gnetwork = backup;
   a_respond(u, "Announced [%s] - %s", u->arg3e, xd->desc);
@@ -3550,39 +3579,50 @@ void a_cannounce(const userinput * const u)
 
 void a_sannounce(const userinput * const u)
 {
-  int num = 0;
+  int num1 = 0;
+  int num2 = 0;
   xdcc *xd;
-  channel_t *ch;
   char *tempstr;
   int ss;
   gnetwork_t *backup;
 
   updatecontext();
 
-  if (u->arg1) num = atoi (u->arg1);
-  if (invalid_pack(u, num) != 0)
+  if (u->arg1) num1 = atoi (u->arg1);
+  if (invalid_pack(u, num1) != 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-
-  a_respond(u, "Pack Info for Pack #%i:", num);
-
-  tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength-2, "\2%i\2%s%s", num, gdata.announce_seperator, xd->desc);
-
-  backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
-    gnetwork = &(gdata.networks[ss]);
-    for (ch = irlist_get_head(&(gnetwork->channels));
-         ch;
-         ch = irlist_get_next(ch)) {
-      if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
-        privmsg_chan(ch, "%s", tempstr);
-    }
+  if (u->arg2) num2 = atoi(u->arg2);
+  if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
+    a_respond(u, "Try Specifying a Valid Pack Number");
+    return;
   }
-  gnetwork = backup;
-  a_respond(u, "Announced [%s] - %s", u->arg2e, xd->desc);
-  mydelete(tempstr);
+
+  if (num2 == 0)
+    num2 = num1;
+
+  if ( num2 < num1 ) {
+    a_respond(u, "Pack numbers are not in order");
+    return;
+  }
+
+  for (; num1 <= num2; num1++) {
+    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    a_respond(u, "Pack Info for Pack #%i:", num1);
+
+    tempstr = mycalloc(maxtextlength);
+    snprintf(tempstr, maxtextlength-2, "\2%i\2%s%s", num1, gdata.announce_seperator, xd->desc);
+
+    backup = gnetwork;
+    for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      a_announce_channels(tempstr, NULL);
+      gnetwork = backup;
+      a_respond(u, "Announced [%s] - %s", xd->desc, xd->desc);
+    }
+    gnetwork = backup;
+    mydelete(tempstr);
+  }
 }
 
 /* iroffer-lamm: add-ons */

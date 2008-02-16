@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.5:
 ---------------
 
+214) MANNOUNCE
+  Neue Admin Kommandos:
+  MANNOUNCE <n> <m> <msg>         ANNOUNCE <msg> für Paket <n> bis <m> in allen Channels
+  SANNOUNCE <n> <m>               Kurzes ANNOUNCE für Paket <n> bis <m> in allen Channels
+
 bugfix: großes Speicherleck behoben
   versions affected: 3.3 - 3.4
 
@@ -1238,7 +1243,7 @@ bugfix: HELP
 
 52) ANNOUNCE, ADDANN
   Neues Admin Kommando:
-  ANNOUNCE <n> <msg           ANNOUNCE <msg> für Paket <n> in allen Channels
+  ANNOUNCE <n> <msg>          ANNOUNCE <msg> für Paket <n> in allen Channels
   ADDANN <filename>           Fügt Datei <filename> als neues Paket hinzu und sendet ein ANNOUNCE
 
 53) autoaddann

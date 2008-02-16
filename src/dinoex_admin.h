@@ -131,6 +131,7 @@ void a_autogroup(const userinput * const u);
 void a_queue(const userinput * const u);
 void a_iqueue(const userinput * const u);
 void a_announce(const userinput * const u);
+void a_mannounce(const userinput * const u);
 void a_cannounce(const userinput * const u);
 void a_sannounce(const userinput * const u);
 void a_addann(const userinput * const u);
