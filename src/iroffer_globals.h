@@ -286,11 +286,7 @@ struct
   struct MD5Context md5sum;
 } md5build;
 
-struct
-{
-  ir_uint32 crc;
-  ir_uint32 crc_total;
-} crc32build;
+crc32build_t crc32build;
 
 enum
 {

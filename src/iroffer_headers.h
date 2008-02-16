@@ -218,16 +218,6 @@ typedef enum
 } transfer_status_e;
 
 typedef union {
-  long ip4;
-  struct in6_addr ip6;
-} ir_addr_union_t;
-
-typedef struct {
-  ir_addr_union_t u;
-  unsigned short family;
-} ir_addr_t;
-
-typedef union {
   struct sockaddr sa;
   struct sockaddr_in sin;
   struct sockaddr_in6 sin6;
@@ -308,17 +298,6 @@ typedef struct
   int net;
   int token;
 } upload;
-
-typedef struct
-{
-  char *u_host;
-  long u_time;
-} tupload_t;
-
-typedef struct {
-  char *a_group;
-  const char *a_pattern;
-} autoadd_group_t;
 
 typedef struct
 {
@@ -472,41 +451,6 @@ typedef struct
   ir_uint16 port;
   char *password;
 } server_t;
-
-typedef struct
-{
-  int pack;
-  char *word;
-  char *message;
-} autoqueue_t;
-
-typedef struct
-{
-  xdcc *pack;
-  char *word;
-} autotrigger_t;
-
-typedef struct
-{
-  int delay;
-  char *chan;
-  char *msg;
-} channel_announce_t;
-
-typedef struct {
-  char *nick;
-  char *msg;
-} xlistqueue_t;
-
-typedef struct {
-        int ai_reset;
-        int ai_family;
-        int ai_socktype;
-        int ai_protocol;
-        size_t ai_addrlen;
-        struct sockaddr ai_addr;
-        char ai_buffer[16];
-} res_addrinfo_t;
 
 /*------------ function declarations ------------- */
 
