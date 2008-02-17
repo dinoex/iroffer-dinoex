@@ -2783,9 +2783,28 @@ void a_fetchcancel(const userinput * const u)
 }
 #endif /* USE_CURL */
 
-void a_amsg(const userinput * const u)
+static void a_announce_channels(const char *msg, const char *match)
 {
   channel_t *ch;
+
+  for (ch = irlist_get_head(&(gnetwork->channels));
+       ch;
+       ch = irlist_get_next(ch)) {
+    if ((ch->flags & CHAN_ONCHAN) == 0)
+      continue;
+    if (match != NULL) {
+      if (strcasecmp(ch->name, match) != 0)
+        continue;
+    } else {
+      if (ch->noannounce != 0)
+        continue;
+    }
+    privmsg_chan(ch, "%s", msg);
+  }
+}
+
+void a_amsg(const userinput * const u)
+{
   int ss;
   gnetwork_t *backup;
 
@@ -2797,12 +2816,7 @@ void a_amsg(const userinput * const u)
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
-    for (ch = irlist_get_head(&(gnetwork->channels));
-         ch;
-         ch = irlist_get_next(ch)) {
-      if ((ch->flags & CHAN_ONCHAN) && (ch->noannounce == 0))
-        privmsg_chan(ch, "%s", u->arg1e);
-    }
+    a_announce_channels(u->arg1e, NULL);
   }
   gnetwork = backup;
   a_respond(u, "Announced [%s]", u->arg1e);
@@ -3443,26 +3457,6 @@ void a_iqueue(const userinput * const u)
        (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax)))
      {
        sendaqueue(0, 0, NULL);
-  }
-}
-
-static void a_announce_channels(const char *msg, const char *match)
-{
-  channel_t *ch;
-
-  for (ch = irlist_get_head(&(gnetwork->channels));
-       ch;
-       ch = irlist_get_next(ch)) {
-    if ((ch->flags & CHAN_ONCHAN) == 0)
-      continue;
-    if (match != NULL) {
-      if (strcasecmp(ch->name, match) != 0)
-        continue;
-    } else {
-      if (ch->noannounce != 0)
-        continue;
-    }
-    privmsg_chan(ch, "%s", msg);
   }
 }
 
