@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.5:
 ---------------
 
+bugfix: XDCC LIST
+  Text geändert, damit keine Befehle bei einem anderen Bot ausgelöst werden.
+
 216) http_port
   Javascript eingebaut um in die Zwischenablage zu kopieren.
 

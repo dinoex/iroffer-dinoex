@@ -2744,111 +2744,11 @@ static void privmsgparse(const char* type, char* line) {
          msg3[strlen(msg3)-1] = '\0';
       
       if ( msg2 && ( !strcmp(msg2,"LIST") || !strcmp(msg2,"LIST\1"))) {
-         if (gdata.restrictprivlist)
-	   {
-	     j = 2; /* deny */
-	     if (gdata.restrictprivlistmsg)
-               {
-                 notice(nick,"XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
-               }
-	     else
-               {
-                 notice(nick,"XDCC LIST Denied. Wait for the public list in the channel.");
-               }
-	   }
-	 else if (gdata.restrictlist && (!isinmemberlist(nick)))
-	   {
-	     j = 2; /* deny */
-	     if ((gdata.need_voice != 0) || (gdata.need_level != 0))
-	        notice(nick,"XDCC LIST Denied. You must have voice or more on this channel to request a list");
-             else
-	        notice(nick,"XDCC LIST Denied. You must be on a known channel to request a list");
-	   }
-	 else
-	   {
-             xlistqueue_t *user;
-             for (user = irlist_get_head(&(gnetwork->xlistqueue));
-                  user;
-                  user = irlist_get_next(user))
-               {
-                 if (!strcmp(user->nick, nick))
-                   {
-                     j = 1; /* ignore */
-                     break;
-                   }
-               }
-             
-             if (!user)
-               {
-                 if (irlist_size(&(gnetwork->xlistqueue)) >= MAXXLQUE)
-                   {
-                     j = 2; /* deny */
-                     notice_slow(nick,"XDCC LIST Denied. I'm rather busy at the moment, try again later");
-                   }
-                 else
-                   {
-                     j = 3; /* queued */
-                     if (msg3)
-                       {
-                         /* detect xdcc list group xxx */
-                         if ((msg4) && (strcmp(caps(msg3),"GROUP") == 0))
-                           {
-                             char *msg0;
-                             msg0 = msg4;
-                             msg4 = msg3;
-                             msg3 = msg0;
-                           }
-                         if ((msg3) && (strcmp(caps(msg3),"ALL") == 0))
-                           {
-                             if (gdata.restrictprivlistfull)
-                               {
-                                 j = 2; /* deny */
-                                 if (gdata.restrictprivlistmsg)
-                                   {
-                                     notice(nick,"XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
-                                   }
-                                 else
-                                   {
-                                     notice(nick,"XDCC LIST Denied. Wait for the public list in the channel.");
-                                   }
-                               }
-                             else
-                               {
-                                 user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
-                                 user->nick = mystrdup(nick);
-                                 user->msg = mystrdup(msg3);
-                               }
-                           }
-                         else
-                           {
-                             user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
-                             user->nick = mystrdup(nick);
-                             user->msg = mystrdup(msg3);
-                           }
-                       }
-                     else
-                       {
-                         if (gdata.restrictprivlistmain)
-                           {
-                             j = 2; /* deny */
-                             if (gdata.restrictprivlistmsg)
-                               {
-                                 notice(nick,"XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
-                               }
-                             else
-                               {
-                                 notice(nick,"XDCC LIST Denied. Wait for the public list in the channel.");
-                               }
-                           }
-                         else
-                           {
-                             user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
-                             user->nick = mystrdup(nick);
-                           }
-                       }
-                   }
-               }
-	   }
+         /* detect xdcc list group xxx */
+         if ((msg3) && (msg4) && (strcmp(caps(msg3),"GROUP") == 0))
+            j = parse_xdcc_list(nick, msg4);
+         else
+            j = parse_xdcc_list(nick, msg3);
 	 
          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                  "XDCC LIST %s: (%s on %s)",

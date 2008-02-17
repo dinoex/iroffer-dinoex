@@ -705,6 +705,74 @@ void identify_check(const char *line)
   }
 }
 
+static void restrictprivlistmsg(const char *nick)
+{
+  if (gdata.restrictprivlistmsg) {
+    notice(nick,"** XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
+  } else {
+    notice(nick,"** XDCC LIST Denied. Wait for the public list in the channel.");
+  }
+}
+
+static int access_need_level(const char *nick, const char *text)
+{
+  if (gdata.restrictlist && (!isinmemberlist(nick))) {
+    if ((gdata.need_voice != 0) || (gdata.need_level != 0))
+      notice(nick, "** XDCC %s denied, you must have voice or more on a known channel to request a pack", text);
+    else
+      notice(nick, "** XDCC %s denied, you must be on a known channel to request a pack", text);
+    return 1;
+  }
+  return 0;
+}
+
+int parse_xdcc_list(const char *nick, char*msg3)
+{
+  xlistqueue_t *user;
+
+  if (gdata.restrictprivlist) {
+    restrictprivlistmsg(nick);
+    return 2; /* deny */
+  }
+  if (gdata.restrictlist && (!isinmemberlist(nick))) {
+    access_need_level(nick, "LIST");
+    return 2; /* deny */
+  }
+  for (user = irlist_get_head(&(gnetwork->xlistqueue));
+       user;
+       user = irlist_get_next(user)) {
+    if (!strcmp(user->nick, nick))
+      return 1; /* ignore */
+  }
+  if (irlist_size(&(gnetwork->xlistqueue)) >= MAXXLQUE) {
+    notice(nick, "** XDCC LIST Denied. I'm rather busy at the moment, try again later");
+    return 1; /* ignore */
+  }
+  if (!msg3) {
+    if (gdata.restrictprivlistmain) {
+      restrictprivlistmsg(nick);
+      return 2; /* deny */
+    }
+    user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
+    user->nick = mystrdup(nick);
+    return 3; /* queued */
+  }
+  if (strcmp(caps(msg3),"ALL") == 0) {
+    if (gdata.restrictprivlistfull) {
+      restrictprivlistmsg(nick);
+      return 2; /* deny */
+    }
+    user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
+    user->nick = mystrdup(nick);
+    user->msg = mystrdup(msg3);
+    return 3; /* queued */
+  }
+  user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
+  user->nick = mystrdup(nick);
+  user->msg = mystrdup(msg3);
+  return 3; /* queued */
+}
+
 static int check_manual_send(const char* hostname, int *man)
 {
   if (man == NULL)
@@ -733,12 +801,8 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
       return NULL;
     }
-    if (gdata.restrictsend && !isinmemberlist(nick)) {
+    if (access_need_level(nick, text)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (restricted): ");
-      if ((gdata.need_voice != 0) || (gdata.need_level != 0))
-        notice(nick, "** XDCC %s denied, you must have voice on a known channel to request a pack", text);
-      else
-        notice(nick, "** XDCC %s denied, you must be on a known channel to request a pack", text);
       return NULL;
     }
     if (gdata.enable_nick && !isinmemberlist(gdata.enable_nick)) {
