@@ -2840,6 +2840,12 @@ void a_msg_nick_or_chan(const userinput * const u, const char *name, const char 
 {
   channel_t *ch;
 
+  if (invalid_nick(u, name) != 0)
+    return;
+
+  if (invalid_message(u, msg) != 0)
+    return;
+
   if (name[0] != '#') {
     privmsg_fast(name, "%s", msg);
     return;
@@ -2858,12 +2864,6 @@ void a_msg(const userinput * const u)
 
   updatecontext();
 
-  if (invalid_nick(u, u->arg1) != 0)
-    return;
-
-  if (invalid_message(u, u->arg2e) != 0)
-    return;
-
   backup = gnetwork;
   gnetwork = &(gdata.networks[0]);
   a_msg_nick_or_chan(u, u->arg1, u->arg2e);
@@ -2879,12 +2879,6 @@ void a_msgnet(const userinput * const u)
 
   net = get_network_msg(u, u->arg1);
   if (net < 0)
-    return;
-
-  if (invalid_nick(u, u->arg2) != 0)
-    return;
-
-  if (invalid_message(u, u->arg3e) != 0)
     return;
 
   backup = gnetwork;
