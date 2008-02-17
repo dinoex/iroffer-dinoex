@@ -228,7 +228,11 @@ int file_uploading(const char *file)
 
     return 1;
   }
+#ifdef USE_CURL
+  return fetch_is_running(file);
+#else
   return 0;
+#endif /* USE_CURL */
 }
 
 void upload_start(char *nick, char *hostname, char *hostmask, char *filename, char *remoteip, char *remoteport, char *bytes, char *token)
@@ -287,15 +291,6 @@ void upload_start(char *nick, char *hostname, char *hostmask, char *filename, ch
             hostmask, gnetwork->name);
     return;
   }
-#ifdef USE_CURL
-  if (fetch_is_running(filename) != 0) {
-    notice(nick, "DCC Send Denied, I'm already getting this file");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC Send Denied (upload running) from %s on %s",
-            hostmask, gnetwork->name);
-    return;
-  }
-#endif /* USE_CURL */
   ul = irlist_add(&gdata.uploads, sizeof(upload));
   l_initvalues(ul);
   ul->file = mystrdup(filename);

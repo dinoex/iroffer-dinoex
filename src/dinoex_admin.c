@@ -392,12 +392,6 @@ int is_upload_file(const userinput * const u, const char *arg)
     a_respond(u, "Upload still running");
     return 1;
   }
-#ifdef USE_CURL
-  if (fetch_is_running(arg)) {
-    a_respond(u, "Upload still running");
-    return 1;
-  }
-#endif /* USE_CURL */
   return 0;
 }
 
