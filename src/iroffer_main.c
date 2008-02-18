@@ -1625,7 +1625,11 @@ static void mainloop (void) {
           FD_ISSET(gdata.md5build.file_fd, &gdata.readset))
         {
           ssize_t howmuch;
+#if defined(_OS_CYGWIN)
+          int reads_per_loop = 32;
+#else
           int reads_per_loop = 64;
+#endif
           
           assert(gdata.md5build.xpack);
           
