@@ -117,7 +117,7 @@ void update_natip(const char *var)
 }
 
 void update_server_welcome(char *line)
-{ 
+{
   const char *tptr;
 
   if (gdata.getipfromserver) {

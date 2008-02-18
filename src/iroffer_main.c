@@ -2745,7 +2745,7 @@ static void privmsgparse(const char* type, char* line) {
       
       if ( msg2 && ( !strcmp(msg2,"LIST") || !strcmp(msg2,"LIST\1"))) {
          /* detect xdcc list group xxx */
-         if ((msg3) && (msg4) && (strcmp(caps(msg3),"GROUP") == 0))
+         if ((msg3) && (msg4) && (strcmp(caps(msg3), "GROUP") == 0))
             j = parse_xdcc_list(nick, msg4);
          else
             j = parse_xdcc_list(nick, msg3);

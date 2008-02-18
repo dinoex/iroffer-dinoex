@@ -1362,7 +1362,7 @@ static void iroffer_signal_handler(int signo)
         dumpcontext();
         dumpgdata();
         
-        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Crashing... Please report this problem to dinoex");
+        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Crashing... Please report this problem to dinoex");
         
         tostdout_disable_buffering();
         
