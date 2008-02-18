@@ -1439,7 +1439,7 @@ static int a_access_file(const userinput * const u, int xfiledescriptor, char **
 
   if (!S_ISREG(st->st_mode)) {
     a_respond(u, "%s is not a file", *file);
-    mydelete(file);
+    mydelete(*file);
     return 1;
   }
   return 0;
@@ -1497,6 +1497,7 @@ xdcc *a_add2(const userinput * const u)
       if ((xd->st_dev == st.st_dev) &&
           (xd->st_ino == st.st_ino)) {
         a_respond(u, "File '%s' is already added.", u->arg1e);
+        mydelete(file);
         return NULL;
       }
     }

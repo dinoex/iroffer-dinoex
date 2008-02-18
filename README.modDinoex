@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.5:
 -----------------
 
+bugfix: ADD (reported by xtr)
+  versions affected: 3.0 - 3.4
+  Fix crash when try to add a Path that is not file.
+
 bugfix: XDCC LIST
   Change messages to avoid triggering commands on the downloader.
 
