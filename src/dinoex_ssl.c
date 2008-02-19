@@ -97,8 +97,6 @@ int setup_ssl(void)
     return 1;
   }
   outerror_ssl();
-#else
-  gnetwork->ssl = NULL;
 #endif /* USE_SSL */
   return 0;
 }
