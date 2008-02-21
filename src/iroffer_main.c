@@ -2756,7 +2756,7 @@ static void privmsgparse(const char* type, char* line) {
 	 
          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                  "XDCC LIST %s: (%s on %s)",
-                 (j==1?"ignored":(j==2?"denied":(j==3?msg3:"queued"))),
+                 (j==1?"ignored":(j==2?"denied":"queued")),
                  hostmask, gnetwork->name);
          
          }
