@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+216) xdccxmlfile
+  packinfo erweitert um md5 und crc
+
 bugfix: XDCC LIST
   Status "queued" fehlt im Logfile.
 

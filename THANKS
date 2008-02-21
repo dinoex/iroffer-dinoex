@@ -139,6 +139,7 @@ Thunder
 	reporting add_delayed bug
 	option "trashcan_dir"
 	suggestion "xdccxmlfile" with version
+	suggestion "xdccxmlfile" with crc/md5
 
 Alita-Chan
 	reporting XDCC LIST problem with total line

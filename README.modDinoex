@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+216) xdccxmlfile (inspired by Thunder)
+  packinfo extended with md5 and crc
+
 bugfix: XDCC LIST
   Fix loggin in "queued" state
 

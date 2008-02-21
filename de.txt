@@ -2155,3 +2155,7 @@
 2214 "</lastupdate>\n"
 2215 "  </stats>\n"
 2216 "<a href=\"javascript:ToClipboard('/msg %s xdcc send %d');\">%s</a>"
+2217 "  <md5sum>"
+2218 "</md5sum>\n"
+2219 "  <crc32>"
+2220 "</crc32>\n"

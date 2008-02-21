@@ -775,6 +775,18 @@ static size_t write_asc_int(int fd, int val)
   return len;
 }
 
+static size_t write_asc_hex(int fd, long val)
+{
+  char *tempstr;
+  size_t len;
+
+  tempstr = mycalloc(maxtextlengthshort + 1);
+  len = snprintf(tempstr, maxtextlengthshort, "%.8lX", val);
+  len = write(fd, tempstr, len);
+  mydelete(tempstr);
+  return len;
+}
+
 static void xdcc_save_xml(void)
 {
   char *filename_tmp;
@@ -845,6 +857,21 @@ static void xdcc_save_xml(void)
       write_string(fd, "  <groupname><![CDATA[");
       write_string(fd, xd->group);
       write_string(fd, "]]></groupname>\n");
+    }
+    if (xd->has_md5sum) {
+      size_t len;
+
+      write_string(fd, "  <md5sum>");
+      tempstr = mycalloc(maxtextlengthshort + 1);
+      len = snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
+      write(fd, tempstr, len);
+      mydelete(tempstr);
+      write_string(fd, "</md5sum>\n");
+    }
+    if (xd->has_crc32) {
+      write_string(fd, "  <crc32>");
+      write_asc_hex(fd, xd->crc32);
+      write_string(fd, "</crc32>\n");
     }
     write_string(fd, "</pack>\n\n");
   }
