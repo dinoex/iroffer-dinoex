@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+Debugging und Logging verbessert.
+
 216) xdccxmlfile
   packinfo erweitert um md5 und crc
 

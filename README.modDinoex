@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+extend debug and log information.
+
 216) xdccxmlfile (inspired by Thunder)
   packinfo extended with md5 and crc
 
