@@ -20,7 +20,8 @@ void set_support_groups(void);
 void send_help(const char *nick);
 
 void stoplist(const char *nick);
-void notifyqueued_nick(const char *nick);
+int notifyqueued_nick(const char *nick);
+void notifyqueued(void);
 void startup_dinoex(void);
 void config_dinoex(void);
 void shutdown_dinoex(void);

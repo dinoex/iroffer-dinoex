@@ -179,7 +179,7 @@ static remaining_transfer_time *next_remaining_transfer(remaining_transfer_time 
   return irlist_get_next(rm);
 }
 
-void notifyqueued_nick(const char *nick)
+int notifyqueued_nick(const char *nick)
 {
   ir_pqueue *pq;
   transfer *tr;
@@ -192,6 +192,7 @@ void notifyqueued_nick(const char *nick)
   float speed;
   int left;
   int i;
+  int found = 0;
   struct tm *localt;
   char ntime[ 16 ];
 
@@ -258,9 +259,10 @@ void notifyqueued_nick(const char *nick)
         continue;
     }
 
+    found ++;
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
-            "Notifying Queued status to %s",
-            pq->nick);
+            "Notifying Queued status to %s on %s",
+            pq->nick, gnetwork->name);
     notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining. (at %s)",
                 (long)(gdata.curtime-pq->queuedtime)/60/60,
                 (long)((gdata.curtime-pq->queuedtime)/60)%60,
@@ -294,9 +296,10 @@ void notifyqueued_nick(const char *nick)
         continue;
     }
 
+    found ++;
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
-            "Notifying Queued status to %s",
-            pq->nick);
+            "Notifying Queued status to %s on %s",
+            pq->nick, gnetwork->name);
     notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining. (at %s)",
                 (long)(gdata.curtime-pq->queuedtime)/60/60,
                 (long)((gdata.curtime-pq->queuedtime)/60)%60,
@@ -311,6 +314,39 @@ void notifyqueued_nick(const char *nick)
   }
 
   irlist_delete_all(&list);
+  return found;
+}
+
+void notifyqueued(void)
+{
+  int i;
+  int found;
+  ir_uint64 xdccsent;
+ 
+  updatecontext();
+ 
+  if (gdata.exiting)
+    return;
+
+  if (irlist_size(&gdata.mainqueue) == 0)
+    return;
+
+  found = notifyqueued_nick(NULL);
+  if (gdata.lowbdwth) {
+    xdccsent = 0;
+    for (i=0; i<XDCC_SENT_SIZE; i++)
+      xdccsent += gdata.xdccsent[i];
+   
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
+            "Notifying %d Queued People on %s (%.1fK/sec used, %dK/sec limit)",
+            found, gnetwork->name,
+            ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
+            gdata.lowbdwth);
+  } else {
+     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+             "Notifying %d Queued People on %s",
+             found, gnetwork->name);
+  }
 }
 
 void check_new_connection(transfer *const tr)

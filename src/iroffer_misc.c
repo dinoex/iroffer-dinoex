@@ -2581,38 +2581,6 @@ char inttosaltchar (int n) {
    
    }
 
-void notifyqueued(void)
-{
-  int i;
-  ir_uint64 xdccsent;
-  
-  updatecontext();
-  
-  if ( !gdata.exiting && irlist_size(&gdata.mainqueue))
-    {
-      if (gdata.lowbdwth)
-        {
-          xdccsent = 0;
-          for (i=0; i<XDCC_SENT_SIZE; i++)
-            xdccsent += gdata.xdccsent[i];
-          
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
-                  "Notifying %d Queued People (%.1fK/sec used, %dK/sec limit)",
-                  irlist_size(&gdata.mainqueue),
-                  ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
-                  gdata.lowbdwth);
-        }
-      else
-        {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
-                  "Notifying %d Queued People",
-                  irlist_size(&gdata.mainqueue));
-        }
-    }
-  
-  notifyqueued_nick(NULL);
-}
-
 void notifybandwidth(void)
 {
   int i;

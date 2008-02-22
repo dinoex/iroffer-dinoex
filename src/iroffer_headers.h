@@ -691,7 +691,6 @@ void startupiroffer(void);
 void isrotatelog(void);
 void createpassword(void);
 char inttosaltchar (int n);
-void notifyqueued(void);
 void notifybandwidth(void);
 void notifybandwidthtrans(void);
 int look_for_file_changes(xdcc *xpack);
