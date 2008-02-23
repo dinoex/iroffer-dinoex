@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+217) weblist_info running
+  Zeige totaluptime, uptime zeigt wieder Zeit des letzen Starts.
+
 Debugging und Logging verbessert.
 
 216) xdccxmlfile
@@ -28,7 +31,7 @@ bugfix: XDCC LIST
   sysinfo erweitert um stats, limits und transfers.
 
 bugfix: weblist_info uptime
-  show total uptime
+  Zeige totaluptime
 
 214) MANNOUNCE
   Neue Admin Kommandos:

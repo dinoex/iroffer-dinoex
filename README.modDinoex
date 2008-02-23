@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+217) weblist_info running (inspired by Wetter)
+  Show total uptime, revert uptime to last started
+
 extend debug and log information.
 
 216) xdccxmlfile (inspired by Thunder)

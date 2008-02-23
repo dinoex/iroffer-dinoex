@@ -1195,6 +1195,11 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
   while (text != NULL) {
     if (strcmp(key, "uptime") == 0) {
       tempstr = mycalloc(maxtextlengthshort);
+      tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
+      break;
+    }
+    if (strcmp(key, "running") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
       tempstr = getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);
       break;
     }

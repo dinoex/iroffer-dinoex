@@ -334,3 +334,6 @@ xtr
 	admin command "MANNOUNCE"
 	reporting "not a file" bug
 
+Wetter
+	option "weblist_info running"
+
