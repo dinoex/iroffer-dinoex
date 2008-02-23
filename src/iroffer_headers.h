@@ -398,6 +398,7 @@ typedef struct
   char *key;
   char *headline;
   char *pgroup;
+  char *joinmsg;
   short flags;
   short plisttime;
   short plistoffset;

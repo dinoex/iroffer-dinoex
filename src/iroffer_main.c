@@ -2051,6 +2051,10 @@ static void parseline(char *line) {
                 {
                   ch->flags |= CHAN_ONCHAN;
                   ch->nextann = gdata.curtime + gdata.waitafterjoin;
+                  if (ch->joinmsg)
+                    {
+                      writeserver(WRITESERVER_NOW, "PRIVMSG %s %s", ch->name, ch->joinmsg);
+                    }
                   break;
                 }
               ch = irlist_get_next(ch);

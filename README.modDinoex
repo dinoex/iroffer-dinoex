@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+218) channel -joinmsg (inspired by eagle_bot)
+   joinmsg: text after this keyword is posted in channel after join
+
+   Sample:
+channel #chan04 -joinmsg "!voiceme"
+
 217) weblist_info running (inspired by Wetter)
   Show total uptime, revert uptime to last started
 
@@ -1545,7 +1551,7 @@ With Version mod 1.12:
    channel specific headline.
 
    Sample:
-channel #chan04 -plist 14 -pformat summary -headline moving soon
+channel #chan04 -plist 14 -pformat summary -headline "moving soon"
 
 With Version mod 1.11:
 ----------------------

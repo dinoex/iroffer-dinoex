@@ -1023,6 +1023,16 @@ void clean_uploadhost(void)
   }
 }
 
+void free_channel_data(channel_t *ch) 
+{
+  clearmemberlist(ch);
+  mydelete(ch->name);
+  mydelete(ch->key);
+  mydelete(ch->headline);
+  mydelete(ch->pgroup);
+  mydelete(ch->joinmsg);
+}
+
 #ifdef DEBUG
 
 static void free_state(void)
@@ -1082,10 +1092,7 @@ static void free_state(void)
          ch;
          ch = irlist_delete(&(gnetwork->channels), ch)) {
        clearmemberlist(ch);
-       mydelete(ch->name);
-       mydelete(ch->key);
-       mydelete(ch->headline);
-       mydelete(ch->pgroup);
+       free_channel_data(ch);
     }
   }
 

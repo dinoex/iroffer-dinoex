@@ -337,3 +337,6 @@ xtr
 Wetter
 	option "weblist_info running"
 
+eagle_bot
+	option "channel -joinmsg"
+

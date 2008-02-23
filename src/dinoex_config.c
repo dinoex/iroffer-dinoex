@@ -852,6 +852,9 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
   if (!strcmp(tptr, "-pgroup")) {
     return parse_channel_string(&(cptr->pgroup), var, i);
   }
+  if (!strcmp(tptr, "-joinmsg")) {
+    return parse_channel_string(&(cptr->joinmsg), var, i);
+  }
   if (!strcmp(tptr, "-headline")) {
     return parse_channel_string(&(cptr->headline), var, i);
   }

@@ -55,6 +55,8 @@ char *get_current_bandwidth(void);
 int verify_uploadhost(const char *hostmask);
 void clean_uploadhost(void);
 
+void free_channel_data(channel_t *ch);
+
 void exit_iroffer(void);
 
 /* End of File */

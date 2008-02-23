@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+218) channel -joinmsg
+  joinmsg: Text nach diesem Wort wird bei Betreten des Channels gesendet.
+
+Beispiel:
+channel #chan04 -joinmsg "!voiceme"
+
 217) weblist_info running
   Zeige totaluptime, uptime zeigt wieder Zeit des letzen Starts.
 
@@ -1481,7 +1487,7 @@ With Version mod 1.12:
    channel specific headline.
 
    Sample:
-channel #chan04 -plist 14 -pformat summary -headline moving soon
+channel #chan04 -plist 14 -pformat summary -headline "moving soon"
 
 Ab Version mod 1.11:
 --------------------

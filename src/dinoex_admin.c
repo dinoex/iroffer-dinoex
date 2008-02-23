@@ -3130,6 +3130,7 @@ void a_join(const userinput * const u)
   ch->plistoffset = 0;
   ch->headline = NULL;
   ch->pgroup = NULL;
+  ch->joinmsg = NULL;
   ch->key = NULL;
   ch->nextjoin = gdata.curtime;
   gnetwork = backup;
@@ -3160,10 +3161,7 @@ void a_part(const userinput * const u)
 
     writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
     clearmemberlist(ch);
-    mydelete(ch->name);
-    mydelete(ch->key);
-    mydelete(ch->headline);
-    mydelete(ch->pgroup);
+    free_channel_data(ch);
     irlist_delete(&(gnetwork->channels), ch);
     gnetwork = backup;
     return;
