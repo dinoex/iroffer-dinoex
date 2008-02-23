@@ -988,6 +988,7 @@ char *get_current_bandwidth(void)
 int verify_uploadhost(const char *hostmask)
 {
   tupload_t *tu;
+  qupload_t *qu;
 
   updatecontext();
 
@@ -1001,6 +1002,15 @@ int verify_uploadhost(const char *hostmask)
       continue;
 
     if (fnmatch(tu->u_host, hostmask, FNM_CASEFOLD) == 0)
+      return 0;
+  }
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (gnetwork->net != qu->q_net)
+      continue;
+
+    if (fnmatch(qu->q_host, hostmask, FNM_CASEFOLD) == 0)
       return 0;
   }
   return 1;

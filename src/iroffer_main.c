@@ -790,6 +790,7 @@ static void mainloop (void) {
           
           if (changesec && ul->ul_status == UPLOAD_STATUS_DONE)
             {
+              close_qupload(ul->net, ul->nick);
               mydelete(ul->nick);
               mydelete(ul->hostname);
               mydelete(ul->file);

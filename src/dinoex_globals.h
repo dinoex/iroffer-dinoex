@@ -23,6 +23,15 @@ typedef struct {
 } tupload_t;
 
 typedef struct {
+  char *q_host;
+  char *q_nick;
+  char *q_pack;
+  int q_state;
+  int q_net;
+  long q_time;
+} qupload_t;
+
+typedef struct {
   char *a_group;
   const char *a_pattern;
 } autoadd_group_t;

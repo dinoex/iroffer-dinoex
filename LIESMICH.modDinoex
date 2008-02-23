@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+219) GET
+  Neue Admin Kommandos:
+  GETL                             Zeige aktuelle Upload Wartschlange
+  GET <netz> <nick> <n> [passwort] Fordere Paket <n> von Bot <nick> an
+
 218) channel -joinmsg
   joinmsg: Text nach diesem Wort wird bei Betreten des Channels gesendet.
 

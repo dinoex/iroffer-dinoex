@@ -298,6 +298,7 @@ Radicand
 	reporting "connectionmethod ssl" bug
 	reporting "nodownloadhost" regexp problem
 	reporting tcp send window bug
+	admin command "GET"
 
 unlogisch
 	option "autoadd_sort"

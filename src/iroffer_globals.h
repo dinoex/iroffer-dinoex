@@ -78,6 +78,7 @@ off_t uploadmaxsize;
 off_t uploadminspace;
 irlist_t uploadhost;
 irlist_t tuploadhost;
+irlist_t quploadhost;
 char *config_nick;
 char *user_realname, *user_modes, *loginname;
 int restrictlist, restrictsend, restrictprivlist;

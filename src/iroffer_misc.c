@@ -1903,6 +1903,7 @@ void reinit_config_vars(void)
 {
   autoqueue_t *aq;
   tupload_t *tu;
+  qupload_t *qu;
   http_magic_t *mime;
   autoadd_group_t *ag;
   int si;
@@ -1924,6 +1925,14 @@ void reinit_config_vars(void)
        tu = irlist_delete(&gdata.tuploadhost, tu))
     {
        mydelete(tu->u_host);
+    }
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_delete(&gdata.quploadhost, qu))
+    {
+       mydelete(qu->q_host);
+       mydelete(qu->q_nick);
+       mydelete(qu->q_pack);
     }
   irlist_delete_all(&gdata.autoignore_exclude);
   irlist_delete_all(&gdata.downloadhost);

@@ -1518,6 +1518,13 @@ void dumpgdata(void)
   gdata_iter_print_string(u_host);
   gdata_iter_print_long(u_time);
   gdata_irlist_iter_end;
+  gdata_irlist_iter_start(quploadhost, qupload_t);
+  gdata_iter_print_string(q_host);
+  gdata_iter_print_string(q_nick);
+  gdata_iter_print_string(q_pack);
+  gdata_iter_print_int(q_net);
+  gdata_iter_print_long(q_time);
+  gdata_irlist_iter_end;
   
   gdata_print_string(uploaddir);
   gdata_print_number("%" LLPRINTFMT "u", uploadmaxsize);

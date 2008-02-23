@@ -1005,6 +1005,65 @@ void write_files(void)
   xdcc_save_xml();
 }
 
+void start_qupload(void)
+{
+  gnetwork_t *backup;
+  qupload_t *qu;
+
+  updatecontext();
+
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (qu->q_state == 2)
+      return; /* busy */
+  }
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (qu->q_state != 1)
+      continue;
+
+    backup = gnetwork;
+    gnetwork = &(gdata.networks[qu->q_net]);
+    privmsg_fast(qu->q_nick, "XDCC GET %s", qu->q_pack);
+    gnetwork = backup;
+    qu->q_state = 2;
+    return;
+  }
+}
+
+int close_qupload(int net, const char *nick)
+{
+  qupload_t *qu;
+
+  updatecontext();
+
+  if (nick == NULL)
+    return 0;
+
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (qu->q_net != net)
+      continue;
+
+    if (qu->q_state != 2)
+      continue;
+
+    if (strcmp(qu->q_nick, nick) != 0)
+      continue;
+
+    mydelete(qu->q_host);
+    mydelete(qu->q_nick);
+    mydelete(qu->q_pack);
+    irlist_delete(&gdata.quploadhost, qu);
+    start_qupload();
+    return 1;
+  }
+  return 0;
+}
+
 static char *r_local_vhost;
 static char *r_config_nick;
 

@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+219) GET (inspired by Radicand)
+  new admin commands:
+  GETL                            Lists current upload queue
+  GET <net> <nick> <n> [password] Request pack <n> from bot <nick>
+
 218) channel -joinmsg (inspired by eagle_bot)
    joinmsg: text after this keyword is posted in channel after join
 

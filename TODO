@@ -65,7 +65,6 @@ Page last modified: 09/01/04
 
 Short Term Features:
   1118  bugfix: WARNING: curlhandle not found
-  1126  RMUL ohne uploadhost
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -75,13 +74,12 @@ Long Term Features:
   1018  warning in chat when bot was kicked
   1042  hentai flag
   1068  restore tty console on fatal error
-  1083  temporary uploadhost
   1103  Silc Support
   1105  CONFIGLINE key val
   1110  XDCC QUEUE compact output
   1113  trim spaces in config
   1114  service script for linux
-  1135  compress Notifying for Queue
+  1126  RMUL ohne uploadhost
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -120,7 +118,7 @@ Not going to happen anytime soon:
   1122  add date added to descripotion
   1123  new! trigger
   1128  Metalink, aria2c, proz support
-  1130  multithread sends vis XDCC
+  1130  multithread sends via XDCC
   1133  add pack to a certain number
   1134  qsend with overwrite limits
 

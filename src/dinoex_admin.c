@@ -2989,6 +2989,61 @@ void a_acceptu(const userinput * const u)
   }
 }
 
+void a_getl(const userinput * const u)
+{
+  qupload_t *qu;
+
+  updatecontext();
+
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    a_respond(u, "GET %s started for %s on %s",
+              qu->q_pack, qu->q_nick, gdata.networks[ qu->q_net ].name);
+    switch (qu->q_state) {
+    case 1:
+      a_respond(u, "queued");
+      break;
+    case 2:
+      a_respond(u, "running");
+      break;
+    }
+  }
+}
+
+void a_get(const userinput * const u)
+{
+  qupload_t *qu;
+  int net;
+  int found;
+
+  updatecontext();
+
+  net = get_network_msg(u, u->arg1);
+  if (net < 0)
+    return;
+
+  if (invalid_nick(u, u->arg2) != 0)
+    return;
+
+  if (u->arg3e) {
+    qu = irlist_add(&gdata.quploadhost, sizeof(qupload_t));
+    qu->q_net = net;
+    qu->q_nick = mystrdup(u->arg2);
+    qu->q_pack = mystrdup(u->arg3e);
+    qu->q_host = to_hostmask(qu->q_nick, "*");
+    qu->q_time = gdata.curtime;
+    a_respond(u, "GET %s started for %s on %s",
+              qu->q_pack, qu->q_nick, gdata.networks[ qu->q_net ].name);
+    qu->q_state = 1;
+    start_qupload();
+    return;
+  }
+  found = close_qupload(net, u->arg2);
+  if ( found > 0 )
+    a_respond(u, "GET %s deactivated", u->arg2);
+}
+
 void a_rmiq(const userinput * const u)
 {
   int num = 0;
