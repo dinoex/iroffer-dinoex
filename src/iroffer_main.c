@@ -2053,7 +2053,7 @@ static void parseline(char *line) {
                   ch->nextann = gdata.curtime + gdata.waitafterjoin;
                   if (ch->joinmsg)
                     {
-                      writeserver(WRITESERVER_NOW, "PRIVMSG %s %s", ch->name, ch->joinmsg);
+                      writeserver(WRITESERVER_NOW, "PRIVMSG %s :%s", ch->name, ch->joinmsg);
                     }
                   break;
                 }
