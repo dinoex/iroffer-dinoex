@@ -827,16 +827,22 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
 void sendserver(void)
 {
   char *item;
+  int clean;
   
   sendannounce();
   gnetwork->serverbucket += EXCESS_BUCKET_ADD;
   gnetwork->serverbucket = min2(gnetwork->serverbucket,EXCESS_BUCKET_MAX);
   
-  if ((irlist_size(&(gnetwork->serverq_fast)) == 0) &&
-      (irlist_size(&(gnetwork->serverq_normal)) == 0) &&
-      (irlist_size(&(gnetwork->serverq_slow)) == 0) &&
-      gdata.exiting &&
-      !gnetwork->recentsent)
+  clean = ((irlist_size(&(gnetwork->serverq_fast)) == 0) &&
+           (irlist_size(&(gnetwork->serverq_normal)) == 0) &&
+           (irlist_size(&(gnetwork->serverq_slow)) == 0));
+  
+  if (clean || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
+    {
+      return;
+    }
+  
+  if (clean && gdata.exiting && !gnetwork->recentsent)
     {
       close_server();
       gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
@@ -846,15 +852,6 @@ void sendserver(void)
               gnetwork->curserveractualname ? gnetwork->curserveractualname : "<unknown>");
       return;
     }
-  
-  if (((irlist_size(&(gnetwork->serverq_fast)) == 0) &&
-       (irlist_size(&(gnetwork->serverq_normal)) == 0) &&
-       (irlist_size(&(gnetwork->serverq_slow)) == 0)) ||
-      (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
-    {
-      return;
-    }
-  
   
   item = irlist_get_head(&(gnetwork->serverq_fast));
   

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+bugfix: QUIT
+  Now cleaner shutdown when bot exits.
+
 219) GET (inspired by Radicand)
   new admin commands:
   GETL                            Lists current upload queue

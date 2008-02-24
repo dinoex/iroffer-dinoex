@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+bugfix: QUIT
+  Jetzt sauberes Beenden des Bots
+
 219) GET
   Neue Admin Kommandos:
   GETL                             Zeige aktuelle Upload Wartschlange
