@@ -330,6 +330,9 @@ void notifyqueued(void)
     return;
 
   found = notifyqueued_nick(NULL);
+  if (found == 0)
+    return;
+
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
           "Notifying %d Queued People on %s",
           found, gnetwork->name);
