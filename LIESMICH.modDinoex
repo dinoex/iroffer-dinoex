@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+Configure 
+  Jetzt lange Optionen
+
 bugfix: QUIT
   Jetzt sauberes Beenden des Bots
 
@@ -76,20 +79,14 @@ Ab Version 3.3:
 bugfix: XDCC upload
   Bot war blockiert, wenn das TCP Fenster vollgelaufen ist.
 
-Configure -nm
+Configure -no-memsave
   Baue Bot ohne Speicher-Schutz
 
-Configure -nh
+Configure -no-http
   Baue Bot ohne HTTP Server
 
-Configure -nt
+Configure -no-telnet
   Baue Bot ohne Telenet Server
-
-Configure -nh 
-  Build without HTTP server
-
-Configure -nt 
-  Build without Telnet server
 
 bugfix: http_port
   versions affected: 3.0 - 3.2
