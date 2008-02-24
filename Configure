@@ -19,19 +19,19 @@ echo "Configure for iroffer-dinoex $VERSIONLONG"
 usage()
 {
 echo "Usage: Configure [ options ]"
-echo "   -h           This help"
-echo "   -e           Print errors while running Configure"
-echo "   -d           Compile with debug symbols"
-echo "   -p           Compile with profiling flags"
-echo "   -w           Compile with extra warning flags"
-echo "   -g           Compile GeoIP lib"
-echo "   -c           Compile Curl lib (for the FETCH-Command)"
-echo "   -s           Compile without OpenSSL lib"
-echo "   -t           Compile with GNU TLS lib"
-echo "   -u           Compile with UPNP suport with miniupnpc"
-echo "   -nh          Compile without HTTP server"
-echo "   -nt          Compile without Telnet server"
-echo "   -nm          Compile without memory protection"
+echo "   -help        This help"
+echo "   -error       Print errors while running Configure"
+echo "   -debug       Compile with debug symbols"
+echo "   -profiling   Compile with profiling flags"
+echo "   -warn        Compile with extra warning flags"
+echo "   -geoip       Compile GeoIP lib"
+echo "   -curl        Compile Curl lib (for the FETCH-Command)"
+echo "   -tls         Compile with GNU TLS lib"
+echo "   -upnp        Compile with UPNP suport with miniupnpc"
+echo "   -no-openssl  Compile without OpenSSL lib"
+echo "   -no-http     Compile without HTTP server"
+echo "   -no-telnet   Compile without Telnet server"
+echo "   -no-memsave  Compile without memory protection"
 exit 64
 }
 
@@ -52,21 +52,22 @@ cctype="gcc"
 while test "${1}" != ""
 do
   case "${1}" in
-  -h) usage ;;
+  -h*) usage ;;
   CC=*) cctype="${1#CC=}" ;;
-  -e) OPT_ERRORS=true ;;
-  -d) OPT_DEBUG=true ;;
-  -w) OPT_WARN=true ;;
-  -p) OPT_PROF=true ;;
-  -g) OPT_GEOIP=true ;;
-  -c) OPT_CURL=true ;;
-  -s) OPT_SSL=false ;;
-  -t) OPT_TLS=true ;;
-  -u) OPT_UPNP=true ;;
-  -nh) OPT_NOHTTP=true ;;
-  -nt) OPT_NOTELNET=true ;;
-  -nm) OPT_NOMEMSAVE=true ;;
-  -m) ;;
+  -e*) OPT_ERRORS=true ;;
+  -d*) OPT_DEBUG=true ;;
+  -w*) OPT_WARN=true ;;
+  -p*) OPT_PROF=true ;;
+  -g*) OPT_GEOIP=true ;;
+  -c*) OPT_CURL=true ;;
+  -s*) OPT_SSL=false ;;
+  -t*) OPT_TLS=true; OPT_SSL=false ;;
+  -u*) OPT_UPNP=true ;;
+  -no-h*) OPT_NOHTTP=true ;;
+  -no-t*) OPT_NOTELNET=true ;;
+  -no-o*) OPT_SSL=false ;;
+  -no-m*) OPT_NOMEMSAVE=true ;;
+  -m) ;; # multinet
   *)  usage ;;
   esac
   shift
