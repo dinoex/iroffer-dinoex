@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+Configure -no-admin
+ Build without HTTP Admin
+
 Configure
   Now use long options
 

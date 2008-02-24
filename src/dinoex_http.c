@@ -64,6 +64,7 @@ static const char *http_header_notfound =
 "Not Found\r\n"
 "\r\n";
 
+#ifndef WITHOUT_HTTP_ADMIN
 static const char *http_header_admin =
 "HTTP/1.1 401 Unauthorized\r\n"
 "Date: %s\r\n"
@@ -76,6 +77,7 @@ static const char *http_header_admin =
 "\r\n";
 
 static const char *htpp_auth_key = "Basic ";
+#endif
 
 typedef struct {
   const char *m_ext;
@@ -117,6 +119,7 @@ static const http_special_t http_special[] = {
         | octect1 | octect2 | octect3 |
 */
 
+#ifndef WITHOUT_HTTP_ADMIN
 static unsigned char base64decode[ 256 ] = {
 /* 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F */
    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -175,6 +178,7 @@ b64decode_string(const char *coded)
   *(dest++) = 0;
   return result;
 }
+#endif
 
 static const char *html_mime(const char *file)
 {
@@ -1424,6 +1428,7 @@ static void h_webliste(http * const h, const char *body)
   h_readbuffer(h);
 }
 
+#ifndef WITHOUT_HTTP_ADMIN
 static void h_admin(http * const h, int level)
 {
   updatecontext();
@@ -1439,6 +1444,7 @@ static void h_admin(http * const h, int level)
             "HTTP not found: '%s'", h->url);
   h_error(h, http_header_notfound);
 }
+#endif
 
 static char *h_bad_request(http * const h)
 {
@@ -1501,6 +1507,7 @@ static char *h_read_http(http * const h)
   return (char *)gdata.sendbuff;
 }
 
+#ifndef WITHOUT_HTTP_ADMIN
 static void html_str_prefix(char **str, int len)
 {
   char *new;
@@ -1509,13 +1516,11 @@ static void html_str_prefix(char **str, int len)
   mydelete(*str);
   *str = new;
 }
+#endif
 
 static void h_parse(http * const h, char *body)
 {
-  const char *auth;
-  char *end;
   char *tempstr;
-  char *passwd;
   size_t len;
 
   updatecontext();
@@ -1532,7 +1537,12 @@ static void h_parse(http * const h, char *body)
     return;
   }
 
+#ifndef WITHOUT_HTTP_ADMIN
   if ((gdata.http_admin) && (strncasecmp(h->url, "/admin/", 7) == 0)) {
+    const char *auth;
+i   char *passwd;
+    char *end;
+
     html_str_prefix(&(h->url), 0);
     auth = strcasestr(body, htpp_auth_key);
     if (auth != NULL) {
@@ -1565,6 +1575,7 @@ static void h_parse(http * const h, char *body)
     h_error(h, http_header_admin);
     return;
   }
+#endif
 
   if (gdata.http_dir) {
     tempstr = mycalloc(maxtextlength);

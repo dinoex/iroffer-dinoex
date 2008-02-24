@@ -30,6 +30,7 @@ echo "   -tls         Compile with GNU TLS lib"
 echo "   -upnp        Compile with UPNP suport with miniupnpc"
 echo "   -no-openssl  Compile without OpenSSL lib"
 echo "   -no-http     Compile without HTTP server"
+echo "   -no-admin    Compile without HTTP Admin"
 echo "   -no-telnet   Compile without Telnet server"
 echo "   -no-memsave  Compile without memory protection"
 exit 64
@@ -44,6 +45,7 @@ OPT_CURL=false
 OPT_SSL=true
 OPT_TLS=false
 OPT_UPNP=false
+OPT_NOADMIN=false
 OPT_NOHTTP=false
 OPT_NOTELNET=false
 OPT_NOMEMSAVE=false
@@ -63,6 +65,7 @@ do
   -s*) OPT_SSL=false ;;
   -t*) OPT_TLS=true; OPT_SSL=false ;;
   -u*) OPT_UPNP=true ;;
+  -no-a*) OPT_NOADMIN=true ;;
   -no-h*) OPT_NOHTTP=true ;;
   -no-t*) OPT_NOTELNET=true ;;
   -no-o*) OPT_SSL=false ;;
@@ -239,17 +242,22 @@ UPNPLDF="-L/usr/local/lib"
 fi
 
 if $OPT_NOHTTP; then
-echo "Configuring without HTTP Server"
+echo "Configuring without HTTP Server."
 NOFLAGS="${NOFLAGS} -DWITHOUT_HTTP"
 fi
 
+if $OPT_NOADMIN; then
+echo "Configuring without HTTP Admin."
+NOFLAGS="${NOFLAGS} -DWITHOUT_HTTP_ADMIN"
+fi
+
 if $OPT_NOTELNET; then
-echo "Configuring without Telent Server"
+echo "Configuring without Telent Server."
 NOFLAGS="${NOFLAGS} -DWITHOUT_TELNET"
 fi
 
 if $OPT_NOMEMSAVE; then
-echo "Configuring without memory protection"
+echo "Configuring without memory protection."
 NOFLAGS="${NOFLAGS} -DWITHOUT_MEMSAVE"
 fi
 
