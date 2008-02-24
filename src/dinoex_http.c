@@ -1540,7 +1540,7 @@ static void h_parse(http * const h, char *body)
 #ifndef WITHOUT_HTTP_ADMIN
   if ((gdata.http_admin) && (strncasecmp(h->url, "/admin/", 7) == 0)) {
     const char *auth;
-i   char *passwd;
+    char *passwd;
     char *end;
 
     html_str_prefix(&(h->url), 0);
