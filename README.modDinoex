@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+bugfix: http_admin
+  versions affected: 3.0 - 3.5
+  Fix crash with invalid URL.
+
 Configure -no-admin
  Build without HTTP Admin
 

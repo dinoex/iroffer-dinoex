@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+bugfix: http_admin
+  versions affected: 3.0 - 3.5
+  Crash wenn ungültige Daten in URL.
+
 Configure -no-admin
   Baue Bot ohne HTTP Admin
 

@@ -68,7 +68,7 @@ static const char *http_header_notfound =
 static const char *http_header_admin =
 "HTTP/1.1 401 Unauthorized\r\n"
 "Date: %s\r\n"
-"WWW-Authenticate: Basic realm= \"iroffer admin\"\r\n"
+"WWW-Authenticate: Basic realm=\"iroffer admin\"\r\n"
 "Content-Type: text/plain\r\n"
 "Connection: close\r\n"
 "Content-Length: 26\r\n"
@@ -1305,7 +1305,6 @@ static int h_html_index(http * const h)
     }
   }
 
-  h_include(h, "header.html");
   if (h->group) {
     h_html_file(h);
   } else {
@@ -1368,7 +1367,6 @@ static int h_html_index(http * const h)
 
   h_respond(h, "</tbody>\n</table>\n<br>\n");
   h_respond(h, "<a class=\"credits\" href=\"http://iroffer.dinoex.net/\">%s</a>\n", "Sourcecode" );
-  h_include(h, "footer.html");
   return 0;
 }
 
@@ -1401,6 +1399,28 @@ static int get_url_number(const char *url, const char *key)
   return val;
 }
 
+static void h_prepare_respond(http * const h, size_t guess)
+{
+  h->buffer_out = mycalloc(guess);
+  h->buffer_out[ 0 ] = 0;
+  h->end = h->buffer_out;
+  h->left = guess - 1;
+}
+
+static void h_prepare_header(http * const h, size_t guess)
+{
+  guess += h_stat("header.html");
+  guess += h_stat("footer.html");
+  h_prepare_respond(h, guess);
+  h_include(h, "header.html");
+}
+
+static void h_prepare_footer(http * const h)
+{
+  h_include(h, "footer.html");
+  h_readbuffer(h);
+}
+
 static void h_webliste(http * const h, const char *body)
 {
   size_t guess;
@@ -1414,27 +1434,32 @@ static void h_webliste(http * const h, const char *body)
   h->traffic = get_url_number(h->url, "traffic=");
   guess = 2048;
   guess += irlist_size(&gdata.xdccs) * 300;
-  guess += h_stat("header.html");
-  guess += h_stat("footer.html");
-  h->buffer_out = mycalloc(guess);
-  h->buffer_out[ 0 ] = 0;
-  h->end = h->buffer_out;
-  h->left = guess - 1;
+  h_prepare_header(h, guess);
   h_html_index(h);
   mydelete(h->group);
   mydelete(h->order);
   mydelete(h->search);
   mydelete(h->pattern);
-  h_readbuffer(h);
+  h_prepare_footer(h);
 }
 
 #ifndef WITHOUT_HTTP_ADMIN
-static void h_admin(http * const h, int level)
+static void h_admin(http * const h, int level, const char *body)
 {
+  size_t guess;
+
   updatecontext();
 
-  if (strcasecmp(h->url, "") == 0) {
-    /* send standtus */
+  if (strcasecmp(h->url, "/") == 0) {
+    guess = 2048;
+    h_prepare_header(h, guess);
+    h_respond(h, "<a class=\"credits\" href=\"/admin%s/\">%s</a>\n", "/help", "Help" );
+    h_respond(h, "</form>\n" );
+    h_prepare_footer(h);
+    return;
+  }
+  if (strcasecmp(h->url, "/help") == 0) {
+    /* send hilfe */
     h_readfile(h, "help-admin-en.txt");
     return;
   }
@@ -1516,7 +1541,53 @@ static void html_str_prefix(char **str, int len)
   mydelete(*str);
   *str = new;
 }
+
+static int h_admin_auth(http * const h, char *body)
+{
+  const char *auth;
+  char *tempstr;
+  char *passwd;
+  char *end;
+
+  updatecontext();
+
+  /* check for header */
+  if (h->authorization == NULL)
+    return 1;
+
+  html_str_prefix(&(h->url), 6);
+  auth = strcasestr(h->authorization, htpp_auth_key);
+  if (auth == NULL)
+    return 1;
+
+  auth += strlen(htpp_auth_key);
+  end = strchr(auth, ' ');
+  if (end != NULL)
+    *(end++) = 0;
+  tempstr = b64decode_string(auth);
+  passwd = strchr(tempstr, ':');
+  if (passwd != NULL)
+    *(passwd++) = 0;
+
+  if (strcasecmp(tempstr, gdata.http_admin) == 0) {
+    if (verifypass2(gdata.hadminpass, passwd) ) {
+      mydelete(tempstr);
+      h_admin(h, gdata.hadminlevel, body);
+      return 0;
+    }
+
+   if (verifypass2(gdata.adminpass, passwd) ) {
+      mydelete(tempstr);
+      h_admin(h, gdata.adminlevel, body);
+      return 0;
+    }
+
+  }
+  mydelete(tempstr);
+  return 1;
+}
 #endif
+
 
 static void h_parse(http * const h, char *body)
 {
@@ -1539,40 +1610,10 @@ static void h_parse(http * const h, char *body)
 
 #ifndef WITHOUT_HTTP_ADMIN
   if ((gdata.http_admin) && (strncasecmp(h->url, "/admin/", 7) == 0)) {
-    const char *auth;
-    char *passwd;
-    char *end;
-
-    html_str_prefix(&(h->url), 0);
-    auth = strcasestr(body, htpp_auth_key);
-    if (auth != NULL) {
-      auth += strlen(htpp_auth_key);
-      end = strchr(auth, ' ');
-      if (end != NULL)
-        *(end++) = 0;
-      tempstr = b64decode_string(auth);
-      passwd = strchr(tempstr, ':');
-      if (passwd != NULL)
-        *(passwd++) = 0;
-
-      if (strcasecmp(tempstr, gdata.http_admin) == 0) {
-        if (verifypass2(gdata.hadminpass, passwd) ) {
-          mydelete(tempstr);
-          h_admin(h, gdata.hadminlevel);
-          return;
-        }
-
-        if (verifypass2(gdata.adminpass, passwd) ) {
-          mydelete(tempstr);
-          h_admin(h, gdata.adminlevel);
-          return;
-        }
-      }
-
-      mydelete(tempstr);
+    if (h_admin_auth(h, body)) {
+      count_badip(&(h->con.remote));
+      h_error(h, http_header_admin);
     }
-    count_badip(&(h->con.remote));
-    h_error(h, http_header_admin);
     return;
   }
 #endif
