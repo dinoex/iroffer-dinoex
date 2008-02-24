@@ -319,9 +319,7 @@ int notifyqueued_nick(const char *nick)
 
 void notifyqueued(void)
 {
-  int i;
   int found;
-  ir_uint64 xdccsent;
  
   updatecontext();
  
@@ -332,21 +330,9 @@ void notifyqueued(void)
     return;
 
   found = notifyqueued_nick(NULL);
-  if (gdata.lowbdwth) {
-    xdccsent = 0;
-    for (i=0; i<XDCC_SENT_SIZE; i++)
-      xdccsent += gdata.xdccsent[i];
-   
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
-            "Notifying %d Queued People on %s (%.1fK/sec used, %dK/sec limit)",
-            found, gnetwork->name,
-            ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
-            gdata.lowbdwth);
-  } else {
-     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
-             "Notifying %d Queued People on %s",
-             found, gnetwork->name);
-  }
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+          "Notifying %d Queued People on %s",
+          found, gnetwork->name);
 }
 
 void check_new_connection(transfer *const tr)

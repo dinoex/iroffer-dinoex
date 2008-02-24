@@ -1194,7 +1194,6 @@
 1224 "adminpass %s\n"
 1225 "The crypt() function does not appear to be working correctly\n"
 1226 "iroffer was compiled without encrypted password support.  You do not need to ecrypt your password.\n"
-1227 "Notifying %d Queued People on %s (%.1fK/sec used, %dK/sec limit)"
 1228 "Notifying %d Queued People on %s"
 1229 "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining. (at %s)"
 1230 "more"
