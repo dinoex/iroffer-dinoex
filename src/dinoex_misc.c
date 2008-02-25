@@ -1028,7 +1028,6 @@ void clean_uploadhost(void)
 
 void free_channel_data(channel_t *ch) 
 {
-  clearmemberlist(ch);
   mydelete(ch->name);
   mydelete(ch->key);
   mydelete(ch->headline);
