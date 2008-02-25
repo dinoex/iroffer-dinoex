@@ -389,7 +389,7 @@ typedef struct
 typedef struct
 {
   char prefixes[MAX_PREFIX];
-  char nick[1]; /* last, make this bigger on alloc */
+  char *nick;
 } member_t;
 
 typedef struct

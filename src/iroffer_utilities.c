@@ -1946,6 +1946,8 @@ void dumpgdata(void)
 
 void clearmemberlist(channel_t *c)
 {
+  member_t *member;
+  
   /* clear members list */
   if (gdata.debug > 2)
     {
@@ -1953,7 +1955,12 @@ void clearmemberlist(channel_t *c)
               "clearing %s",c->name);
     }
   
-  irlist_delete_all(&c->members);
+  for (member = irlist_get_head(&c->members);
+       member;
+       member = irlist_delete(&c->members, member))
+    {
+      mydelete(member->nick);
+    }
   return;
 }
 
@@ -2009,12 +2016,12 @@ void addtomemberlist(channel_t *c, const char *nick)
   if (*nick)
     {
       int pi;
-      for (pi = 0; (pi < MAX_PREFIX && gnetwork->prefixes[pi].p_symbol); pi++)
+      for (pi = 0; ((pi < MAX_PREFIX) && gnetwork->prefixes[pi].p_symbol); pi++)
         {
           if (*nick == gnetwork->prefixes[pi].p_symbol)
             {
               for (pi = 0;
-                   (pi < MAX_PREFIX && prefixes[pi] && prefixes[pi] != *nick);
+                   ((pi < MAX_PREFIX) && prefixes[pi] && (prefixes[pi] != *nick));
                    pi++) ;
               if (pi < MAX_PREFIX)
                 {
@@ -2040,9 +2047,9 @@ void addtomemberlist(channel_t *c, const char *nick)
   if (!member)
     {
       /* add it */
-      member = irlist_add(&c->members, sizeof(member_t) + strlen(nick));
-      strcpy(member->nick, nick);
-      memcpy(member->prefixes, prefixes, sizeof(prefixes));
+      member = irlist_add(&c->members, sizeof(member_t));
+      member->nick = mystrdup(nick);
+      memcpy(member->prefixes, prefixes, sizeof(member->prefixes));
     }
   
   return;
@@ -2058,6 +2065,8 @@ void removefrommemberlist(channel_t *c, const char *nick)
     {
       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
               "removing %s from %s",nick,c->name);
+      ioutput(CALLTYPE_NORMAL,OUT_L,COLOR_NO_COLOR,
+              "removing %s from %s",nick,c->name);
     }
   
   /* is in list for this channel? */
@@ -2066,6 +2075,7 @@ void removefrommemberlist(channel_t *c, const char *nick)
     {
       if (!strcasecmp(member->nick,nick))
         {
+          mydelete(member->nick);
           irlist_delete(&c->members, member);
           return;
         }
@@ -2140,7 +2150,6 @@ void changeinmemberlist_mode(channel_t *c, const char *nick, char mode, int add)
 void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newnick)
 {
   member_t *oldmember;
-  member_t *newmember;
   
   updatecontext();
   
@@ -2156,27 +2165,12 @@ void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newn
     {
       if (!strcasecmp(oldmember->nick,oldnick))
         {
-          break;
+          mydelete(oldmember->nick);
+          oldmember->nick = mystrdup(newnick);
+          return;
         }
       oldmember = irlist_get_next(oldmember);
     }
-  
-  /* add it */
-  newmember = irlist_add(&c->members, sizeof(member_t) + strlen(newnick));
-  strcpy(newmember->nick, newnick);
-  
-  if (oldmember)
-    {
-      memcpy(newmember->prefixes, oldmember->prefixes, sizeof(oldmember->prefixes));
-      irlist_delete(&c->members, oldmember);
-    }
-  else
-    {
-      /* this shouldn't happen, set no prefixes */
-      memset(newmember->prefixes, 0, sizeof(newmember->prefixes));
-    }
-  
-  return;
 }
 
 int set_socket_nonblocking (int s, int nonblock)
