@@ -1198,11 +1198,8 @@ static void free_config(void)
   } /* networks */
 }
 
-#endif
-
-void exit_iroffer(void)
+static void debug_memory(void)
 {
-#ifdef DEBUG
   meminfo_t *mi;
   unsigned char *ut;
   int j;
@@ -1244,9 +1241,28 @@ void exit_iroffer(void)
     exit(0);
 
   *((int*)(0)) = 0;
-#else
+  free(gdata.meminfo);
+  gdata.meminfo = NULL;
   exit(0);
+}
 #endif
+
+void
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+exit_iroffer(void)
+{
+  shutdown_dinoex();
+  tostdout_disable_buffering();
+  uninitscreen();
+  if (gdata.pidfile)
+    unlink(gdata.pidfile);
+
+#ifdef DEBUG
+  debug_memory();
+#endif
+  exit(0);
 }
 
 /* End of File */

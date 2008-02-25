@@ -1151,11 +1151,6 @@ static void iroffer_signal_handler(int signo)
           mylog(CALLTYPE_NORMAL,"iroffer exited (signal forced!)\n\n");
           printf("iroffer exited (signal forced!)\n");
           
-          if (gdata.pidfile)
-            {
-              unlink(gdata.pidfile);
-            }
-          
           exit_iroffer();
         }
       else
@@ -1487,10 +1482,6 @@ void shutdowniroffer(void) {
       
       mylog(CALLTYPE_NORMAL,"iroffer exited (shutdown)\n\n");
 
-      tostdout_disable_buffering();
-      uninitscreen();
-      shutdown_dinoex();
-      if (gdata.pidfile) unlink(gdata.pidfile);
       exit_iroffer();
       }
    

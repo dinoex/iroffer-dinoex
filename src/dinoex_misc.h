@@ -57,6 +57,10 @@ void clean_uploadhost(void);
 
 void free_channel_data(channel_t *ch);
 
-void exit_iroffer(void);
+void
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+exit_iroffer(void);
 
 /* End of File */
