@@ -24,21 +24,15 @@
 
 #ifdef USE_CURL
 #include <curl/curl.h>
-#endif /* USE_CURL */
 
-#ifdef USE_CURL
 static CURLM *cm;
 static irlist_t fetch_trans;
 int fetch_started;
-#endif /* USE_CURL */
 
 void curl_startup(void)
 {
-#ifdef USE_CURL
   CURLcode cs;
-#endif /* USE_CURL */
 
-#ifdef USE_CURL
   bzero((char *)&fetch_trans, sizeof(fetch_trans));
   fetch_started = 0;
 
@@ -52,17 +46,17 @@ void curl_startup(void)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "curl_multi_init failed");
   }
-#endif /* USE_CURL */
 }
 
 void curl_shutdown(void)
 {
-#ifdef USE_CURL
+  if (cm == NULL) {
+    curl_multi_cleanup(cm);
+    cm = NULL;
+  }
   curl_global_cleanup();
-#endif /* USE_CURL */
 }
 
-#ifdef USE_CURL
 
 typedef struct
 {

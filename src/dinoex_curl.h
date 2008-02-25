@@ -13,9 +13,9 @@
  *
  */
 
+#ifdef USE_CURL
 void curl_startup(void);
 void curl_shutdown(void);
-#ifdef USE_CURL
 extern int fetch_started;
 void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd);
 void fetch_cancel(int num);

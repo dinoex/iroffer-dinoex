@@ -364,7 +364,9 @@ void startup_dinoex(void)
   init_xdcc(&xdcc_statefile);
   init_xdcc(&xdcc_listfile);
   dinoex_lasthour = -1;
+#ifdef USE_CURL
   curl_startup();
+#endif /* USE_CURL */
   ssl_startup();
 }
 
@@ -414,7 +416,9 @@ void shutdown_dinoex(void)
   h_close_listen();
 #endif
   geoip_shutdown();
+#ifdef USE_CURL
   curl_shutdown();
+#endif /* USE_CURL */
 }
 
 void rehash_dinoex(void)
