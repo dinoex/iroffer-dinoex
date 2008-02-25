@@ -320,9 +320,9 @@ int notifyqueued_nick(const char *nick)
 void notifyqueued(void)
 {
   int found;
- 
+
   updatecontext();
- 
+
   if (gdata.exiting)
     return;
 
@@ -1026,7 +1026,7 @@ void clean_uploadhost(void)
   }
 }
 
-void free_channel_data(channel_t *ch) 
+void free_channel_data(channel_t *ch)
 {
   mydelete(ch->name);
   mydelete(ch->key);
