@@ -1137,14 +1137,11 @@ void a_rehash_needtojump(const userinput *u)
     for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
       quit_server();
-      ch = irlist_get_head(&(gnetwork->channels));
-      while(ch) {
+      for (ch = irlist_get_head(&(gnetwork->channels));
+           ch;
+           ch = irlist_delete(&(gnetwork->channels), ch)) {
         clearmemberlist(ch);
-        mydelete(ch->name);
-        mydelete(ch->key);
-        mydelete(ch->headline);
-        mydelete(ch->pgroup);
-        ch = irlist_delete(&(gnetwork->channels), ch);
+        free_channel_data(ch);
       }
     }
     gnetwork = backup;
