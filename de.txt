@@ -864,7 +864,7 @@
 882 " Denied (dup): "
 883 "** Du hast diese Datei bereits angefordert"
 884 " (No New Cons): "
-885 "** Keine neuen Verbindungen in den nächsten %li Minute%s"
+885 "** Keine neuen Verbindungen in den nächsten %li Minuten%s%s"
 886 " (Over Transfer Limit): "
 887 "** Leider habe ich mein max. Übertargungsvolumen erreicht.  Versuche es morgen nochmal."
 888 " (Over Pack Transfer Limit): "
@@ -2170,3 +2170,4 @@
 2230 "<a class=\"credits\" href=\"/admin%s/\">%s</a>\n"
 2231 "/help"
 2232 "Help"
+2233 "x [msg]"

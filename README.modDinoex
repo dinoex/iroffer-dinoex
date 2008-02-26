@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+220) NOSEND (inspired by Lamune)
+  new admin command:
+  NOSEND <x> <msg>                Disables XDCC SEND for next <x> minutes
+                                  The response to user will have the <msg> inlcuded.
+
 bugfix: http_admin
   versions affected: 3.0 - 3.5
   Fix crash with invalid URL.

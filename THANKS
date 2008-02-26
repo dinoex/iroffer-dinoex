@@ -341,3 +341,6 @@ Wetter
 eagle_bot
 	option "channel -joinmsg"
 
+Lamune
+	admin command "NOSEND x msg"
+

@@ -205,7 +205,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,2,method_allow_all,u_bannhost,      "BANNHOST","x hostmask","Stop transfers and ignore <hostmask> (nick!user@host) for <x> minutes"},
 {5,2,method_allow_all,a_bannnick,      "BANNNICK","nick [net]","Stop transfers and remove <nick> from queue"},
 {5,5,method_allow_all,u_nosave,        "NOSAVE","x","Disables autosave for next <x> minutes"},
-{5,2,method_allow_all,u_nosend,        "NOSEND","x","Disables XDCC SEND for next <x> minutes"},
+{5,2,method_allow_all,u_nosend,        "NOSEND","x [msg]","Disables XDCC SEND for next <x> minutes"},
 {5,2,method_allow_all,u_nolist,        "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
 {5,2,method_allow_all,a_nomd5,         "NOMD5","x","Disables MD5 and CRC calculation for next <x> minutes"},
 {5,3,method_allow_all,u_msgread,       "MSGREAD",NULL,"Show MSG log"},
@@ -2969,6 +2969,8 @@ static void u_nosend(const userinput * const u) {
    updatecontext();
    
    if (u->arg1) num = atoi(u->arg1);
+   mydelete(gdata.nosendmsg);
+   if (u->arg2e) gdata.nosendmsg=mystrdup(u->arg2e);
    gdata.nonewcons=gdata.curtime + 60*num - 1;
    u_respond(u,"** XDCC Send has been disabled for the next %i minute%s",num,num!=1?"s":"");
    

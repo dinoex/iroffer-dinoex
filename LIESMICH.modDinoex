@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+220) NOSEND
+  Neues Admin Kommando:
+  NOSEND <x> <msg>                 Verhindert das Versenden von Dateien in den nächsten <x> Minuten
+                                   Die Antwort and den Benutzer enthält <msg>.
+
 bugfix: http_admin
   versions affected: 3.0 - 3.5
   Crash wenn ungültige Daten in URL.

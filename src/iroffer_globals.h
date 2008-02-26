@@ -126,6 +126,7 @@ char *trashcan_dir;
 char *xdccxmlfile;
 char *http_date;
 char *announce_seperator;
+char *nosendmsg;
 long nomd5_start;
 int need_voice;
 int need_level;

@@ -1193,6 +1193,7 @@ static void free_config(void)
 
   updatecontext();
 
+  mydelete(gdata.nosendmsg);
   mydelete(gdata.r_pidfile);
   for (si=0; si<MAX_NETWORKS; si++) {
     mydelete(gdata.networks[si].curserver.hostname);

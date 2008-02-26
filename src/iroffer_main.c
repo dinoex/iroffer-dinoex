@@ -3111,7 +3111,10 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       }
    else if (!man && gdata.nonewcons > gdata.curtime ) {
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (No New Cons): ");
-      notice(nick,"** The Owner Has Requested That No New Connections Are Made In The Next %li Minute%s",(gdata.nonewcons-gdata.curtime+1)/60,((gdata.nonewcons-gdata.curtime+1)/60)!=1?"s":"");
+      notice(nick, "** The Owner Has Requested That No New Connections Are Made In The Next %li Minutes%s%s",
+             (gdata.nonewcons-gdata.curtime+1)/60,
+             gdata.nosendmsg?", ":"",
+             gdata.nosendmsg?gdata.nosendmsg:"");
       }   
    else if (!man && gdata.transferlimits_over)
      {
