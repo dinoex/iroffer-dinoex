@@ -2974,7 +2974,7 @@ void a_acceptu(const userinput * const u)
     tu = irlist_add(&gdata.tuploadhost, sizeof(tupload_t));
     tu->u_host = mystrdup( hostmask );
     tu->u_time = gdata.curtime + (min * 60);
-    a_respond(u, "Uplohost %s valid for %d minutes", hostmask, min);
+    a_respond(u, "Uploadhost %s valid for %d minutes", hostmask, min);
     return;
   }
   for (tu = irlist_get_head(&gdata.tuploadhost);
@@ -2983,7 +2983,7 @@ void a_acceptu(const userinput * const u)
       tu = irlist_get_next(tu);
       continue;
     }
-    a_respond(u, "Uplohost %s deactivated", hostmask);
+    a_respond(u, "Uploadhost %s deactivated", hostmask);
     mydelete(tu->u_host);
     tu = irlist_delete(&gdata.tuploadhost, tu);
   }
