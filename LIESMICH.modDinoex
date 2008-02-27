@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+221) XDCC SEARCH, FIND
+  Die Zeichen *,?,# sind Sonderfunktionen.
+
+bugfix: atfind
+  Suche nicht im Namen der Verzeichnisse.
+
 220) NOSEND
   Neues Admin Kommando:
   NOSEND <x> <msg>                 Verhindert das Versenden von Dateien in den nächsten <x> Minuten

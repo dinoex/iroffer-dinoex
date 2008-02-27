@@ -536,6 +536,36 @@ void update_hour_dinoex(int hour, int minute)
     dinoex_lasthour = hour;
 }
 
+char *grep_to_fnmatch(char *grep)
+{
+  char *raw;
+  char *match;
+  size_t len;
+
+  len = strlen(grep) + 3;
+  raw = mycalloc(len);
+  snprintf(raw, len, "*%s*", grep);
+  match = hostmask_to_fnmatch(raw);
+  mydelete(raw);
+  return match;
+}
+ 
+int fnmatch_xdcc(const char *match, xdcc *xd)
+{
+  const char *file;
+
+  file = get_basename(xd->file);
+  if (fnmatch(match, file, FNM_CASEFOLD) == 0)
+    return 1;
+  if (fnmatch(match, xd->desc, FNM_CASEFOLD) == 0)
+    return 1;
+  if (xd->note != NULL) {
+    if (fnmatch(match, xd->note, FNM_CASEFOLD) == 0)
+      return 1;
+  }
+  return 0;
+}
+
 /* iroffer-lamm: @find and long !list */
 int noticeresults(const char *nick, const char *match)
 {
@@ -551,9 +581,7 @@ int noticeresults(const char *nick, const char *match)
       i++;
       if (hide_pack(xd))
         continue;
-      if ((fnmatch(match, xd->file, FNM_CASEFOLD) == 0) ||
-          (fnmatch(match, xd->desc, FNM_CASEFOLD) == 0) ||
-          ((xd->note != NULL) && (fnmatch(match, xd->note, FNM_CASEFOLD) == 0))) {
+      if (fnmatch_xdcc(match, xd)) {
         if (!k) {
           if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
             j = irlist_size(&gdata.trans);

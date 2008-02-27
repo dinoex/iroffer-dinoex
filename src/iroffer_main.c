@@ -2827,8 +2827,10 @@ static void privmsgparse(const char* type, char* line) {
            send_help(nick);
          }
          else if ( msg2 && !strcmp(msg2,"SEARCH") && msg3) {
+           char *match;
          
          notice_slow(nick,"Searching for \"%s\"...",msg3);
+           match = grep_to_fnmatch(msg3);
          
          i = 1;
          k = 0;
@@ -2837,11 +2839,7 @@ static void privmsgparse(const char* type, char* line) {
            {
              if (hide_pack(xd) == 0)
                {
-                 const char *file;
-                 file = get_basename(xd->file);
-                 if (strstrnocase(file,msg3) ||
-                     strstrnocase(xd->desc,msg3) ||
-                     ((xd->note != NULL) && strstrnocase(xd->note, msg3)))
+                 if (fnmatch_xdcc(match, xd))
                    {
                       notice_slow(nick," - Pack #%i matches, \"%s\"",
                                   i, xd->desc);
@@ -2858,6 +2856,7 @@ static void privmsgparse(const char* type, char* line) {
              xd = irlist_get_next(xd);
            }
          
+         mydelete(match);
          if (!k)
            {
              notice_slow(nick,"Sorry, nothing was found, try a XDCC LIST");
@@ -2926,8 +2925,7 @@ static void privmsgparse(const char* type, char* line) {
         if ((msg2e[i] == '*') || (msg2e[i] == '#') || (msg2e[i] == '?'))
           k++;
       if ((int)(strlen(msg2e) - k) >= gdata.atfind) {
-        char *atfindmatch = mycalloc(maxtextlength);
-        snprintf(atfindmatch, maxtextlength - 2, "*%s*", msg2e);
+        char *atfindmatch = grep_to_fnmatch(msg2e);
         k = noticeresults(nick, atfindmatch);
         if (k) {
           ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,

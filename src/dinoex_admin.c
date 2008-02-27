@@ -778,8 +778,8 @@ void a_xdtrigger(const userinput * const u)
 
 void a_find(const userinput * const u)
 {
+  char *match;
   char *tempstr;
-  const char *file;
   int i;
   int k;
   int l;
@@ -793,8 +793,8 @@ void a_find(const userinput * const u)
     return;
   }
 
-  tempstr  = mycalloc(maxtextlength);
-
+  tempstr = mycalloc(maxtextlength);
+  match = grep_to_fnmatch(u->arg1e);
   l = a_xdl_left();
   s = a_xdl_space();
   k = 0;
@@ -803,11 +803,7 @@ void a_find(const userinput * const u)
        xd;
        xd = irlist_get_next(xd)) {
     i++;
-    file = get_basename(xd->file);
-    if (strstrnocase(file, u->arg1e) ||
-        strstrnocase(xd->desc, u->arg1e) ||
-        ((xd->note != NULL) && strstrnocase(xd->note, u->arg1e)))
-         {
+    if (fnmatch_xdcc(match, xd)) {
       k++;
       u_xdl_pack(u, tempstr, i, l, s, xd);
       /* limit matches */
@@ -819,6 +815,7 @@ void a_find(const userinput * const u)
   if (!k)
     a_respond(u, "Sorry, nothing was found, try a XDCC LIST" );
 
+  mydelete(match);
   mydelete(tempstr);
 }
 
