@@ -768,6 +768,9 @@ char* getfline(char* str, int slen, int descr, int ret)
               if (j >= slen)
                 {
                   outerror(OUTERROR_TYPE_WARN,"Line too long, truncating");
+                  str[j - 1] = '\0';
+                  mydelete(tempbuf);
+                  return str;
                 }
               else
                 {
