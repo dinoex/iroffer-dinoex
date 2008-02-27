@@ -2174,3 +2174,6 @@
 2234 " Pack Added     %s"
 2235 "Ignoring Bad XDCC Time Tag (len = %d)"
 2236 "old_statefile"
+2237 "CHTIME"
+2238 "Setze Datum des Eintrags des Paketes <n> auf <msg>"
+2239 "CHTIME: [Pack %i] Old: %lu New: %lu"

@@ -1950,6 +1950,41 @@ void a_newgroup(const userinput * const u)
   return;
 }
 
+void a_chtime(const userinput * const u)
+{
+  const char *format;
+  char *cptr;
+  int num = 0;
+  unsigned long val = 0;
+  xdcc *xd;
+  struct tm tmval;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+  if (invalid_pack(u, num) != 0)
+    return;
+
+  if (!u->arg2e || !strlen(u->arg2e)) {
+    val = 0;
+  } else {
+    val = atoi(u->arg2e);
+    if (val < 5000) {
+      format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
+      bzero((char *)&tmval, sizeof(tmval));
+      cptr = strptime(u->arg2e, format, &tmval);
+      val = mktime(&tmval);
+    }
+  }
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  a_respond(u, "CHTIME: [Pack %i] Old: %lu New: %lu",
+            num, (unsigned long)xd->xtime, val);
+
+  xd->xtime = val;
+  write_files();
+}
+
 void a_chlimit(const userinput * const u)
 {
   int num = 0;

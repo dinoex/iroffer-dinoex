@@ -161,6 +161,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_newdir,        "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
 {3,3,method_allow_all,u_chdesc,        "CHDESC","n [msg]","Change description of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chnote,        "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
+{3,3,method_allow_all,a_chtime,        "CHTIME","n [msg]","Change add time of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chmins,        "CHMINS","n x","Change min speed of pack <n> to <x> KB/s"},
 {3,3,method_allow_all,u_chmaxs,        "CHMAXS","n x","Change max speed of pack <n> to <x> KB/s"},
 {3,3,method_allow_all,a_chlimit,       "CHLIMIT","n x","Change download limit of pack <n> to <x> transfers per day"},

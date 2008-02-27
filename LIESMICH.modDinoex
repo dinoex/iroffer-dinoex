@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+223) CHTIME
+  Neue Admin Kommandos:
+  CHTIME <n>                       Löscht das Datum für das Paket <n>.
+  CHTIME <n> <date>                Setzt das Datum für das Paket <n>.
+
 extend debug and log information.
 
 222) old_statefile
