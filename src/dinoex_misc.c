@@ -549,7 +549,7 @@ char *grep_to_fnmatch(char *grep)
   mydelete(raw);
   return match;
 }
- 
+
 int fnmatch_xdcc(const char *match, xdcc *xd)
 {
   const char *file;
