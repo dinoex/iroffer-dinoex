@@ -83,6 +83,7 @@ typedef enum
   STATEFILE_TAG_XDCCS_DLIMIT_DESC,
   STATEFILE_TAG_XDCCS_CRC32,
   STATEFILE_TAG_XDCCS_TRIGGER,
+  STATEFILE_TAG_XDCCS_XTIME,
   
   STATEFILE_TAG_TLIMIT_DAILY_USED    = 13 << 8,
   STATEFILE_TAG_TLIMIT_DAILY_ENDS,
@@ -455,6 +456,10 @@ void write_statefile(void)
           {
             length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->trigger) + 1, 4);
           }
+        if (xd->xtime != 0)
+          {
+            length += sizeof(statefile_item_generic_int_t);
+          }
         
         data = mycalloc(length);
         
@@ -549,9 +554,16 @@ void write_statefile(void)
 
         if (xd->trigger != NULL)
           {
-            /* group */
+            /* trigger */
             next = prepare_statefile_string(next,
                    STATEFILE_TAG_XDCCS_TRIGGER, xd->trigger);
+          }
+        
+        if (xd->xtime != 0)
+          {
+            /* xtime */
+            next = prepare_statefile_int(next,
+                   STATEFILE_TAG_XDCCS_XTIME, xd->xtime);
           }
         
         write_statefile_item(&bout, data);
@@ -1324,6 +1336,19 @@ void read_statefile(void)
                     else
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Trigger Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+                    
+                  case STATEFILE_TAG_XDCCS_XTIME:
+                    if (ihdr->length > sizeof(statefile_hdr_t))
+                      {
+                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
+                        xd->xtime = ntohl(g_int->g_int);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Time Tag (len = %d)",
                                  ihdr->length);
                       }
                     break;

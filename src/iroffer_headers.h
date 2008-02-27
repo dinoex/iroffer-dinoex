@@ -160,6 +160,7 @@ typedef struct {
    dev_t st_dev;
    ino_t st_ino;
    time_t mtime;
+   time_t xtime;
    int has_md5sum;
    int has_crc32;
    unsigned long crc32;

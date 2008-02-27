@@ -1551,6 +1551,7 @@ xdcc *a_add2(const userinput * const u)
   }
 
   xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
+  xd->xtime = gdata.curtime;
 
   xd->file = file;
 

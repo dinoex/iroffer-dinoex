@@ -1782,6 +1782,8 @@ void dumpgdata(void)
   gdata_iter_print_string(file);
   gdata_iter_print_string(desc);
   gdata_iter_print_string(note);
+  gdata_iter_print_string(trigger);
+  gdata_iter_print_number_cast("%d",xtime,int);
   ioutput(gdata_common,
           "  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "u",
           iter,

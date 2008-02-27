@@ -1695,6 +1695,11 @@ static void u_info(const userinput * const u)
     {
       u_respond(u, " crc32          %.8lX", xd->crc32);
     }
+  if ((u->level > 0) && (xd->xtime != 0))
+    {
+      getdatestr(tempstr, xd->xtime, maxtextlengthshort);
+      u_respond(u, " Pack Added     %s", tempstr);
+    }
   if (xd->lock)
     {
       u_respond(u, " is protected by password");
