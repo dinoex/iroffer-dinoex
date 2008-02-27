@@ -175,6 +175,7 @@ int remove_dead_users;
 int upnp_router;
 int http_search;
 int send_listfile;
+int old_statefile;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

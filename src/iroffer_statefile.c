@@ -401,7 +401,8 @@ void write_statefile(void)
     unsigned char *next;
     xdcc *xd;
     statefile_item_md5sum_info_t *md5sum_info;
-    int has_desc;
+    int has_desc = 1;
+    int has_note = 1;
     int has_minspeed;
     int has_maxspeed;
     
@@ -409,7 +410,11 @@ void write_statefile(void)
     
     while (xd)
       {
-        has_desc = strcmp(xd->desc, getfilename(xd->file));
+        if (!gdata.old_statefile)
+          {
+            has_desc = strcmp(xd->desc, getfilename(xd->file));
+            has_note = (xd->note != NULL) && xd->note[0];
+          }
         has_minspeed = xd->minspeed && (gdata.transferminspeed != xd->minspeed);
         has_maxspeed = xd->maxspeed && (gdata.transfermaxspeed != xd->maxspeed);
         /*
@@ -429,9 +434,9 @@ void write_statefile(void)
           {
             length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->desc) + 1, 4);
           }
-        if (xd->note != NULL)
+        if (has_note)
           {
-            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->note) + 1, 4);
+            length += sizeof(statefile_hdr_t) + ceiling( xd->note ? strlen(xd->note) + 1 : 2, 4);
           }
         if (has_minspeed)
           {
@@ -495,11 +500,12 @@ void write_statefile(void)
                    STATEFILE_TAG_XDCCS_DESC, xd->desc);
           }
 
-        if (xd->note != NULL)
+        if (has_note)
           {
             /* note */
 	    next = prepare_statefile_string(next,
-                   STATEFILE_TAG_XDCCS_NOTE, xd->note);
+                   STATEFILE_TAG_XDCCS_NOTE,
+                   xd->note ? xd->note : "");
           }
 
         /* gets */

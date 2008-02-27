@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+222) old_statefile
+  Kein Speicheren von unnötigen Daten im statefile im default.
+  Diese Option schreibt ein zu alten Versionen passendes statefile.
+  
 221) XDCC SEARCH, FIND
   Die Zeichen *,?,# sind Sonderfunktionen.
 

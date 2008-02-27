@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+222) old_statefile
+  Write smaller irofer statefile by default.
+  Set this option to write a statefile that is compatible to old versions.
+
 221) XDCC SEARCH, FIND
   Allow *,?,# as jokers
 

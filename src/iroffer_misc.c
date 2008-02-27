@@ -2043,6 +2043,7 @@ void reinit_config_vars(void)
   gdata.upnp_router = 0;
   gdata.http_search = 0;
   gdata.send_listfile = 0;
+  gdata.old_statefile = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
