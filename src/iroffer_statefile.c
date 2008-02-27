@@ -401,11 +401,13 @@ void write_statefile(void)
     unsigned char *next;
     xdcc *xd;
     statefile_item_md5sum_info_t *md5sum_info;
+    int has_desc;
     
     xd = irlist_get_head(&gdata.xdccs);
     
     while (xd)
       {
+        has_desc = strcmp(xd->desc, getfilename(xd->file));
         /*
          * need room to write:
          *  file          string
@@ -417,12 +419,15 @@ void write_statefile(void)
          */
         length = sizeof(statefile_hdr_t) +
           sizeof(statefile_hdr_t) + ceiling(strlen(xd->file) + 1, 4) +
-          sizeof(statefile_hdr_t) + ceiling(strlen(xd->desc) + 1, 4) +
           sizeof(statefile_hdr_t) + ceiling(strlen(xd->note) + 1, 4) +
           sizeof(statefile_item_generic_int_t) + 
           sizeof(statefile_item_generic_float_t) + 
           sizeof(statefile_item_generic_float_t);
         
+        if (has_desc)
+          {
+            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->desc) + 1, 4);
+          }
         if (xd->has_md5sum)
           {
             length += ceiling(sizeof(statefile_item_md5sum_info_t), 4);
@@ -470,9 +475,12 @@ void write_statefile(void)
         next = prepare_statefile_string(next,
                STATEFILE_TAG_XDCCS_FILE, xd->file);
 
-        /* desc */
-        next = prepare_statefile_string(next,
-               STATEFILE_TAG_XDCCS_DESC, xd->desc);
+        if (has_desc)
+          {
+            /* desc */
+            next = prepare_statefile_string(next,
+                   STATEFILE_TAG_XDCCS_DESC, xd->desc);
+          }
 
         /* note */
 	next = prepare_statefile_string(next,
@@ -1130,6 +1138,7 @@ void read_statefile(void)
                         char *file = (char*)(&ihdr[1]);
                         file[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
                         xd->file = mystrdup(file);
+                        xd->desc = mystrdup(getfilename(xd->file));
                       }
                     else
                       {
@@ -1143,6 +1152,7 @@ void read_statefile(void)
                       {
                         char *desc = (char*)(&ihdr[1]);
                         desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
+                        mydelete(xd->desc);
                         xd->desc = mystrdup(desc);
                       }
                     else
