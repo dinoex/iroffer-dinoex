@@ -668,7 +668,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
    
    u_respond(u, "%s", tempstr);
    
-   if (xd->note && strlen(xd->note))
+   if (xd->note && xd->note[0])
      {
        u_respond(u, " \2^-\2%*s%s", s, "", xd->note);
      }
@@ -1658,7 +1658,7 @@ static void u_info(const userinput * const u)
   mydelete(sendnamestr);
 
   u_respond(u, " Description    %s", xd->desc);
-  if (xd->note[0])
+  if (xd->note && xd->note[0])
     {
       u_respond(u, " Note           %s", xd->note);
     }
@@ -2098,7 +2098,7 @@ static void u_chnote(const userinput * const u) {
    
    if (!u->arg2e)
      {
-       xd->note = mystrdup("");
+       xd->note = NULL;
      }
    else
      {

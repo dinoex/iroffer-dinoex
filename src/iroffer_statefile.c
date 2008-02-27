@@ -402,12 +402,16 @@ void write_statefile(void)
     xdcc *xd;
     statefile_item_md5sum_info_t *md5sum_info;
     int has_desc;
+    int has_minspeed;
+    int has_maxspeed;
     
     xd = irlist_get_head(&gdata.xdccs);
     
     while (xd)
       {
         has_desc = strcmp(xd->desc, getfilename(xd->file));
+        has_minspeed = xd->minspeed && (gdata.transferminspeed != xd->minspeed);
+        has_maxspeed = xd->maxspeed && (gdata.transfermaxspeed != xd->maxspeed);
         /*
          * need room to write:
          *  file          string
@@ -419,14 +423,23 @@ void write_statefile(void)
          */
         length = sizeof(statefile_hdr_t) +
           sizeof(statefile_hdr_t) + ceiling(strlen(xd->file) + 1, 4) +
-          sizeof(statefile_hdr_t) + ceiling(strlen(xd->note) + 1, 4) +
-          sizeof(statefile_item_generic_int_t) + 
-          sizeof(statefile_item_generic_float_t) + 
-          sizeof(statefile_item_generic_float_t);
+          sizeof(statefile_item_generic_int_t);
         
         if (has_desc)
           {
             length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->desc) + 1, 4);
+          }
+        if (xd->note != NULL)
+          {
+            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->note) + 1, 4);
+          }
+        if (has_minspeed)
+          {
+            length += sizeof(statefile_item_generic_float_t);
+          }
+        if (has_maxspeed)
+          {
+            length += sizeof(statefile_item_generic_float_t);
           }
         if (xd->has_md5sum)
           {
@@ -482,23 +495,30 @@ void write_statefile(void)
                    STATEFILE_TAG_XDCCS_DESC, xd->desc);
           }
 
-        /* note */
-	next = prepare_statefile_string(next,
-               STATEFILE_TAG_XDCCS_NOTE, xd->note);
+        if (xd->note != NULL)
+          {
+            /* note */
+	    next = prepare_statefile_string(next,
+                   STATEFILE_TAG_XDCCS_NOTE, xd->note);
+          }
 
         /* gets */
         next = prepare_statefile_int(next,
                STATEFILE_TAG_XDCCS_GETS, xd->gets);
 
-        /* minspeed */
-        next = prepare_statefile_float(next,
-               STATEFILE_TAG_XDCCS_MINSPEED,
-               (gdata.transferminspeed == xd->minspeed)? 0 : xd->minspeed);
+        if (has_minspeed)
+          {
+            /* minspeed */
+            next = prepare_statefile_float(next,
+                   STATEFILE_TAG_XDCCS_MINSPEED, xd->minspeed);
+          }
 
-        /* maxspeed */
-        next = prepare_statefile_float(next,
-               STATEFILE_TAG_XDCCS_MAXSPEED,
-               (gdata.transfermaxspeed == xd->maxspeed)? 0 : xd->maxspeed);
+        if (has_maxspeed)
+          {
+            /* maxspeed */
+            next = prepare_statefile_float(next,
+                   STATEFILE_TAG_XDCCS_MAXSPEED, xd->maxspeed);
+          }
 
         if (xd->has_md5sum)
           {
@@ -1167,7 +1187,8 @@ void read_statefile(void)
                       {
                         char *note = (char*)(&ihdr[1]);
                         note[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->note = mystrdup(note);
+                        if (note[0])
+                          xd->note = mystrdup(note);
                       }
                     else
                       {
@@ -1373,13 +1394,17 @@ void read_statefile(void)
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
               }
             
-            if ((!xd->file) || (!xd->desc) || (!xd->note))
+            if ((!xd->file) || (!xd->desc))
               {
                 outerror(OUTERROR_TYPE_WARN, "Ignoring Incomplete XDCC Tag");
                 
                 mydelete(xd->file);
                 mydelete(xd->desc);
                 mydelete(xd->note);
+                mydelete(xd->group);
+                mydelete(xd->group_desc);
+                mydelete(xd->lock);
+                mydelete(xd->trigger);
                 irlist_delete(&gdata.xdccs, xd);
               }
             else

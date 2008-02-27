@@ -351,10 +351,7 @@ static int dinoex_lasthour;
 static void init_xdcc(xdcc *xd)
 {
   bzero((char *)xd, sizeof(xdcc));
-  xd->note = mystrdup("");
   xd->file_fd = FD_UNUSED;
-  xd->has_md5sum = 0;
-  xd->has_crc32 = 0;
 }
 
 void startup_dinoex(void)
@@ -556,7 +553,7 @@ int noticeresults(const char *nick, const char *match)
         continue;
       if ((fnmatch(match, xd->file, FNM_CASEFOLD) == 0) ||
           (fnmatch(match, xd->desc, FNM_CASEFOLD) == 0) ||
-          (fnmatch(match, xd->note, FNM_CASEFOLD) == 0)) {
+          ((xd->note != NULL) && (fnmatch(match, xd->note, FNM_CASEFOLD) == 0))) {
         if (!k) {
           if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
             j = irlist_size(&gdata.trans);
@@ -1181,9 +1178,7 @@ static void free_state(void)
   mydelete(gdata.osstring);
 
 
-  mydelete(xdcc_statefile.note);
   mydelete(xdcc_statefile.desc);
-  mydelete(xdcc_listfile.note);
   mydelete(xdcc_listfile.desc);
 }
 

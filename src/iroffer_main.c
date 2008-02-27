@@ -2841,7 +2841,7 @@ static void privmsgparse(const char* type, char* line) {
                  file = get_basename(xd->file);
                  if (strstrnocase(file,msg3) ||
                      strstrnocase(xd->desc,msg3) ||
-                     strstrnocase(xd->note,msg3))
+                     ((xd->note != NULL) && strstrnocase(xd->note, msg3)))
                    {
                       notice_slow(nick," - Pack #%i matches, \"%s\"",
                                   i, xd->desc);

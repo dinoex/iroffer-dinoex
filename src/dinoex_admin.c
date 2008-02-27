@@ -806,7 +806,7 @@ void a_find(const userinput * const u)
     file = get_basename(xd->file);
     if (strstrnocase(file, u->arg1e) ||
         strstrnocase(xd->desc, u->arg1e) ||
-        strstrnocase(xd->note, u->arg1e))
+        ((xd->note != NULL) && strstrnocase(xd->note, u->arg1e)))
          {
       k++;
       u_xdl_pack(u, tempstr, i, l, s, xd);
@@ -1554,8 +1554,6 @@ xdcc *a_add2(const userinput * const u)
   xd->xtime = gdata.curtime;
 
   xd->file = file;
-
-  xd->note = mystrdup("");
 
   xd->desc = mystrdup(getfilename(u->arg1e));
 

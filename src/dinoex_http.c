@@ -1174,9 +1174,11 @@ static void h_html_file(http * const h)
     len = strlen(tempstr);
     if (xd->lock)
       len += snprintf(tempstr + len, maxtextlength - 1 - len, " (%s)", "locked");
-    if (xd->note[0]) {
-      len += snprintf(tempstr + len, maxtextlength - 1 - len, "<br>");
-      len += html_encode(tempstr + len, maxtextlength - 1 - len, xd->note);
+    if (xd->note != NULL) {
+      if (xd->note[0]) {
+        len += snprintf(tempstr + len, maxtextlength - 1 - len, "<br>");
+        len += html_encode(tempstr + len, maxtextlength - 1 - len, xd->note);
+      }
     }
     javalink = mycalloc(maxtextlength);
     len = snprintf(javalink, maxtextlength - 1,
