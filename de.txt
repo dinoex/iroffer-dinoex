@@ -2171,3 +2171,6 @@
 2231 "/help"
 2232 "Help"
 2233 "x [msg]"
+2234 " Pack Added     %s"
+2235 "Ignoring Bad XDCC Time Tag (len = %d)"
+2236 "old_statefile"

@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+extend debug and log information.
+
 222) old_statefile
   Kein Speicheren von unnötigen Daten im statefile im default.
   Diese Option schreibt ein zu alten Versionen passendes statefile.
