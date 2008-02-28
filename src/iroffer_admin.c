@@ -2451,7 +2451,7 @@ static void u_rehash(const userinput * const u) {
          {
            outerror(OUTERROR_TYPE_WARN_LOUD, "could not add channel %s twice!", rch->name);
            clearmemberlist(rch);
-           free_channel_data(ch);
+           free_channel_data(rch);
            rch = irlist_delete(&(gnetwork->r_channels), rch);
          }
      }
