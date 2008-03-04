@@ -310,6 +310,7 @@ Misha-SU
 	reporting FETCH problem
 	reporting punishslowusers bug
 	reporting "connectionmethod ssl" bug
+	reporting "DCC RESUME" bug
 
 Lamarr
 	reporting "MAXSPEED" bug

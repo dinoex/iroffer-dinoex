@@ -196,6 +196,7 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
 
 int t_find_resume(char *nick, char *filename, char *localport, char *bytes, char *token)
 {
+  char *sendnamestr;
   transfer *guess;
   transfer *tr;
   off_t len;
@@ -240,12 +241,14 @@ int t_find_resume(char *nick, char *filename, char *localport, char *bytes, char
     return 1;
   }
   t_setresume(tr, bytes);
+  sendnamestr = getsendname(filename);
   if ((tr->tr_status == TRANSFER_STATUS_RESUME) && (token != NULL)) {
     if (token[strlen(token)-1] == '\1') token[strlen(token)-1] = '\0';
-    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", filename, localport, bytes, token);
+    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", sendnamestr, localport, bytes, token);
   } else {
-    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", filename, localport, bytes);
+    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", sendnamestr, localport, bytes);
   }
+  mydelete(sendnamestr);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "uK", tr->id,
           tr->nick, gnetwork->name, (long long)(tr->startresume / 1024));

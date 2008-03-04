@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+bugfix; DCC RESUME (reported by Misha-SU)
+  versions affected: 2.10 - 3.5
+  Fix resume with quoted filenames.
+
 223) CHTIME
   new admin commands:
   CHTIME <n>                      Delete date of add for pack <n>.
