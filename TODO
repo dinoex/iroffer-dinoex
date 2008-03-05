@@ -65,6 +65,10 @@ Page last modified: 09/01/04
 
 Short Term Features:
   1118  bugfix: WARNING: curlhandle not found
+  1122  add date added to descripotion
+  1139  add date added to descripotion
+  1144  fetch_is_runnign within autoadd_delay
+  1147  be more detaild on transferlimt
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -80,6 +84,10 @@ Long Term Features:
   1113  trim spaces in config
   1114  service script for linux
   1126  RMUL ohne uploadhost
+  1135  Compress output per nick.
+  1136  Save size even when nomd5
+  1145  mnake autoadd reentrant
+  1149  move after upload to dir
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -115,10 +123,10 @@ Not going to happen anytime soon:
   1112  botinfo with queue size
   1119  Variable Substition %random in Nickname
   1121  make dir
-  1122  add date added to descripotion
   1123  new! trigger
   1128  Metalink, aria2c, proz support
   1130  multithread sends via XDCC
   1133  add pack to a certain number
   1134  qsend with overwrite limits
+  1141  priority que'ing for user with level
 
