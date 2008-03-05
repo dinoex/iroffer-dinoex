@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
-bugfix; DCC RESUME
+bugfix: FETCH
+  Erlaube extra Leerzeichen am Anfang der URL
+
+bugfix: DCC RESUME
   versions affected: 2.10 - 3.5
   Sonderbehandlung für Clients die den Dateinames escapen.
 

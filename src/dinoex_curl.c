@@ -196,6 +196,7 @@ void start_fetch_url(const userinput *const u)
 
   name = u->arg1;
   url = u->arg2e;
+  while (*url == ' ') url ++;
 
   resumesize = 0;
   fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(name) + 2);

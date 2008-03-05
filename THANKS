@@ -344,4 +344,5 @@ eagle_bot
 
 Lamune
 	admin command "NOSEND x msg"
+	reporting FETCH with spaces problem
 
