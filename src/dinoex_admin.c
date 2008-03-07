@@ -1662,6 +1662,14 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
         mydelete(tempstr);
         continue;
       }
+      if (file_uploading(f->d_name)) {
+        mydelete(tempstr);
+        continue;
+      }
+      if (file_uploading(tempstr)) {
+        mydelete(tempstr);
+        continue;
+      }
       if (S_ISREG(st.st_mode)) {
         if (gdata.autoadd_delay) {
           if ((st.st_mtime + gdata.autoadd_delay) > gdata.curtime) {

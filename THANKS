@@ -138,8 +138,8 @@ Thunder
 	reporting IDENTIFY bug
 	reporting add_delayed bug
 	option "trashcan_dir"
-	suggestion "xdccxmlfile" with version
-	suggestion "xdccxmlfile" with crc/md5
+	suggesting "xdccxmlfile" with version
+	suggesting "xdccxmlfile" with crc/md5
 
 Alita-Chan
 	reporting XDCC LIST problem with total line
@@ -240,6 +240,7 @@ dondieschotte
 	option "announce_separator"
 	option "autoadd_group_match"
 	reporting "XDCC LIST" logfile bug
+	suggesting to check upload names in autoadd
 
 dsd
 	admin command "autoadd"
@@ -322,10 +323,10 @@ SDoggy
 	reporting sentrecord bug
 
 Mutsumi
-	suggestion "xdccxmlfile" with groups
+	suggesting "xdccxmlfile" with groups
 
 Galatea
-	suggestion "xdccxmlfile" with groups
+	suggesting "xdccxmlfile" with groups
 
 Shock
 	reporting configure problem on ubuntu
