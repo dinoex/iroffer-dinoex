@@ -338,6 +338,7 @@ xtr
 
 Wetter
 	option "weblist_info running"
+	reporting truncated weblist
 
 eagle_bot
 	option "channel -joinmsg"

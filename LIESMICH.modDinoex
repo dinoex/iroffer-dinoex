@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+bugfix: http_port
+  versions affected: 3.5
+  Webliste konnte unvollständig ausgegeben werden.
+
 bugfix: FETCH
   Erlaube extra Leerzeichen am Anfang der URL
 

@@ -259,6 +259,48 @@ static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
   return len;
 }
 
+static ssize_t html_encode_size(const char *src)
+{
+  ssize_t len = 0;
+  int i;
+  char ch;
+
+  if (src == NULL)
+    return len;
+  for (;;) {
+    ch = *(src++);
+    if (ch == 0)
+      break;
+    for (i=0; http_special[i].s_ch; i++) {
+      if (ch != http_special[i].s_ch)
+        continue;
+      len += strlen(http_special[i].s_html);
+      break;
+    }
+    if (http_special[i].s_ch != 0)
+      continue;
+    switch (ch) {
+    case 0x03: /* color */
+      if (!isdigit(*src)) break;
+      src++;
+      if (isdigit(*src)) src++;
+      if ((*src) != ',') break;
+      src++;
+      if (isdigit(*src)) src++;
+      if (isdigit(*src)) src++;
+      break;
+    case 0x02: /* bold */
+    case 0x0F: /* end formatting */
+    case 0x16: /* inverse */
+    case 0x1F: /* underline */
+      break;
+    default:
+      len++;
+    }
+  }
+  return len;
+}
+
 static ssize_t html_decode(char *buffer, ssize_t max, const char *src)
 {
   char *dest = buffer;
@@ -1170,8 +1212,7 @@ static void h_html_file(http * const h)
     if (xd->has_crc32)
       len += snprintf(tlabel + len, maxtextlength - 1 - len, "\ncrc32: %.8lX", xd->crc32);
     tempstr = mycalloc(maxtextlength);
-    html_encode(tempstr, maxtextlength, xd->desc);
-    len = strlen(tempstr);
+    len = html_encode(tempstr, maxtextlength, xd->desc);
     if (xd->lock)
       len += snprintf(tempstr + len, maxtextlength - 1 - len, " (%s)", "locked");
     if (xd->note != NULL) {
@@ -1283,7 +1324,6 @@ static int h_html_index(http * const h)
 
   updatecontext();
 
-  h->nick = save_nick(gdata.config_nick);
   if (gdata.support_groups == 0) {
     mydelete(h->group);
     h->group = mystrdup("*");
@@ -1423,6 +1463,36 @@ static void h_prepare_footer(http * const h)
   h_readbuffer(h);
 }
 
+static size_t h_guess_weblist(http * const h)
+{
+  xdcc *xd;
+  size_t len;
+  size_t nicklen;
+
+  h->nick = save_nick(gdata.config_nick);
+  nicklen = html_encode_size(h->nick);
+  len = nicklen;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    len += 304;
+    len += nicklen;
+    len += nicklen;
+    len += html_encode_size(xd->desc);
+    if (xd->lock) {
+      len += strlen(" (%s)");
+      len += html_encode_size("locked");
+    }
+    if (xd->note != NULL) {
+      if (xd->note[0]) {
+        len += strlen("<br>");
+        len += html_encode_size(xd->note);
+      }
+    }
+  }
+  return len;
+}
+
 static void h_webliste(http * const h, const char *body)
 {
   size_t guess;
@@ -1435,7 +1505,7 @@ static void h_webliste(http * const h, const char *body)
   h->order = get_url_param(h->url, "order=");
   h->traffic = get_url_number(h->url, "traffic=");
   guess = 2048;
-  guess += irlist_size(&gdata.xdccs) * 300;
+  guess += h_guess_weblist(h);
   h_prepare_header(h, guess);
   h_html_index(h);
   mydelete(h->group);
