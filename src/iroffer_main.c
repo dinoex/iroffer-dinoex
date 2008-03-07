@@ -1142,25 +1142,16 @@ static void mainloop (void) {
                   gdata.transferlimits[ii].limit &&
                   (gdata.transferlimits[ii].used >= gdata.transferlimits[ii].limit))
                 {
-                  transferlimits_over = 1;
+                  transferlimits_over = 1 + ii;
                   
                   if (!gdata.transferlimits_over)
                     {
-                      char *tempstr = mycalloc(maxtextlength);
-                      char *tempstr2 = mycalloc(maxtextlength);
+                      char *tempstr = transfer_limit_exceeded_msg(ii);
                       
                       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                               "All %" LLPRINTFMT "uMB of the %s transfer limit used. Stopping transfers.",
                               gdata.transferlimits[ii].limit / 1024 / 1024,
                               transferlimit_type_to_string(ii));
-                      
-                      getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlength);
-                      
-                      snprintf(tempstr, maxtextlength,
-                               "Sorry, I have exceeded my %s transfer limit of %" LLPRINTFMT "uMB.  Try again after %s.",
-                               transferlimit_type_to_string(ii),
-                               gdata.transferlimits[ii].limit / 1024 / 1024,
-                               tempstr2);
                       
                       /* remove queued users */
                       queue_all_remove(&gdata.mainqueue, tempstr);
@@ -1178,7 +1169,6 @@ static void mainloop (void) {
                       
                       gnetwork = NULL;
                       mydelete(tempstr);
-                      mydelete(tempstr2);
                     }
                 }
             }
@@ -3116,8 +3106,10 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       }   
    else if (!man && gdata.transferlimits_over)
      {
+      char *tempstr = transfer_limit_exceeded_msg(gdata.transferlimits_over - 1);
       ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (Over Transfer Limit): ");
-      notice(nick,"** Sorry, I have exceeded my transfer limit for today.  Try again tomorrow.");
+      notice(nick, "** %s", tempstr);
+      mydelete(tempstr);
      }
    else if (!man && (xd->dlimit_max != 0) && (xd->gets >= xd->dlimit_used))
      {

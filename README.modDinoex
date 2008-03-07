@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+224) transferlimits (inspired by DevelDoll)
+  Tell user which transferlimit was reached
+
 bugfix: http_port (reported by Wetter)
   versions affected: 3.5
   fix truncation of page within weblist

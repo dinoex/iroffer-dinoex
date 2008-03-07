@@ -53,6 +53,7 @@ int is_unsave_directory(const char *dir);
 void logfile_add(const char *logfile, const char *line);
 
 char *get_current_bandwidth(void);
+char *transfer_limit_exceeded_msg(int ii);
 
 int verify_uploadhost(const char *hostmask);
 void clean_uploadhost(void);

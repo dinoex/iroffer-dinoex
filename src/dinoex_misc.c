@@ -1003,6 +1003,21 @@ char *get_current_bandwidth(void)
   return tempstr;
 }
 
+char *transfer_limit_exceeded_msg(int ii)
+{
+   char *tempstr = mycalloc(maxtextlength);
+   char *tempstr2 = mycalloc(maxtextlengthshort);
+
+   getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlengthshort);
+   snprintf(tempstr, maxtextlength,
+            "Sorry, I have exceeded my %s transfer limit of %" LLPRINTFMT "uMB.  Try again after %s.",
+            transferlimit_type_to_string(ii),
+            gdata.transferlimits[ii].limit / 1024 / 1024,
+            tempstr2);
+   mydelete(tempstr2);
+   return tempstr;
+}
+
 int verify_uploadhost(const char *hostmask)
 {
   tupload_t *tu;

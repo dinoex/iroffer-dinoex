@@ -347,3 +347,6 @@ Lamune
 	admin command "NOSEND x msg"
 	reporting FETCH with spaces problem
 
+DevelDoll
+	report transferlimits to user
+

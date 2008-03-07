@@ -866,7 +866,6 @@
 884 " (No New Cons): "
 885 "** The Owner Has Requested That No New Connections Are Made In The Next %li Minutes%s%s"
 886 " (Over Transfer Limit): "
-887 "** Sorry, I have exceeded my transfer limit for today.  Try again tomorrow."
 888 " (Over Pack Transfer Limit): "
 889 "** Sorry, This Pack is over download limit for today.  Try again tomorrow."
 890 "** You can only have %d transfer%s at a time, %s"
