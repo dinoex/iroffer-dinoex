@@ -163,9 +163,13 @@ static config_string_typ config_parse_string[] = {
 {"group_seperator",         &gdata.group_seperator,         5 },
 {"hadminpass",              &gdata.hadminpass,              4 },
 {"headline",                &gdata.headline,                0 },
+#ifndef WITHOUT_HTTP_ADMIN
 {"http_admin",              &gdata.http_admin,              0 },
+#endif
 {"http_date",               &gdata.http_date,               0 },
+#ifndef WITHOUT_HTTP
 {"http_dir",                &gdata.http_dir,                1 },
+#endif
 {"local_vhost",             &gdata.local_vhost,             0 },
 {"logfile",                 &gdata.logfile,                 1 },
 {"logfile_messages",        &gdata.logfile_messages,        1 },
@@ -201,7 +205,9 @@ static config_list_typ config_parse_list[] = {
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
 #endif
 {"hadminhost",              &gdata.hadminhost,              3 },
+#ifndef WITHOUT_HTTP
 {"http_vhost",              &gdata.http_vhost,              0 },
+#endif
 {"nodownloadhost",          &gdata.nodownloadhost,          2 },
 #ifdef USE_GEOIP
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 },
