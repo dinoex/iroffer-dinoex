@@ -81,7 +81,6 @@ Long Term Features:
   1110  XDCC QUEUE compact output
   1113  trim spaces in config
   1114  service script for linux
-  1126  RMUL ohne uploadhost
   1135  Compress output per nick.
   1136  Save size even when nomd5
   1145  mnake autoadd reentrant

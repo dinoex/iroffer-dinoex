@@ -32,7 +32,7 @@ int l_setup_file(upload * const l, struct stat *stp)
   updatecontext();
 
   if (gdata.uploaddir == NULL) {
-    l_closeconn(l, "No upload hosts or no uploaddir defined.", 0);
+    l_closeconn(l, "No uploaddir defined.", 0);
     return 1;
   }
 

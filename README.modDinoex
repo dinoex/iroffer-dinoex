@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.6:
 -----------------
 
+bugfix: RMUL (reported by Thunder)
+  Allow RMUL even if uploadhost is not defined.
+
 bugfix: autoadd (inspired by dondieschotte)
   check upload names in autoadd
 

@@ -3601,8 +3601,8 @@ static void u_rmul(const userinput * const u) {
    
    updatecontext();
    
-   if (!irlist_size(&gdata.uploadhost) || !gdata.uploaddir) {
-      u_respond(u,"No upload hosts or no uploaddir defined.");
+   if (!gdata.uploaddir) {
+      u_respond(u,"No uploaddir defined.");
       return;
       }
 

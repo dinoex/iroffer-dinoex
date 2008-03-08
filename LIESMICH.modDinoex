@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.6:
 ---------------
 
+bugfix: RMUL
+  Erlaube RMUL auch wenn kein uploadhost konfiguriert ist.
+
 bugfix: autoadd
   Ignoriere Datein die grade als Upload laufen.
 

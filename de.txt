@@ -552,7 +552,6 @@
 560 "???"
 561 "Unable to determine device sizes: %s"
 562 "Device size: %s, used %s, free %s, reserved %s"
-563 "No upload hosts or no uploaddir defined."
 564 "Cleared transfer record, bandwidth record, total sent, total uptime, and transfer limits"
 565 "/"
 566 "Filename contains invalid characters"

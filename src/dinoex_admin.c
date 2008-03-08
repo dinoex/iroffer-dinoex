@@ -826,8 +826,8 @@ void a_listul(const userinput * const u)
 
   updatecontext();
 
-  if (!irlist_size(&gdata.uploadhost) || !gdata.uploaddir) {
-    a_respond(u, "No upload hosts or no uploaddir defined.");
+  if (!gdata.uploaddir) {
+    a_respond(u, "No uploaddir defined.");
     return;
   }
 

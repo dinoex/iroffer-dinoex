@@ -140,6 +140,7 @@ Thunder
 	option "trashcan_dir"
 	suggesting "xdccxmlfile" with version
 	suggesting "xdccxmlfile" with crc/md5
+	reporting RLUL bug
 
 Alita-Chan
 	reporting XDCC LIST problem with total line
