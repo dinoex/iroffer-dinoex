@@ -23,7 +23,7 @@ bugfix: DCC RESUME
 223) CHTIME
   Neue Admin Kommandos:
   CHTIME <n>                       Löscht das Datum für das Paket <n>.
-  CHTIME <n> <date>                Setzt das Datum für das Paket <n>.
+  CHTIME <n> <datum>               Setzt das Datum für das Paket <n>.
 
 extend debug and log information.
 
@@ -40,7 +40,7 @@ bugfix: atfind
 220) NOSEND
   Neues Admin Kommando:
   NOSEND <x> <msg>                 Verhindert das Versenden von Dateien in den nächsten <x> Minuten
-                                   Die Antwort and den Benutzer enthält <msg>.
+                                   Die Antwort an den Benutzer enthält <msg>.
 
 bugfix: http_admin
   versions affected: 3.0 - 3.5
