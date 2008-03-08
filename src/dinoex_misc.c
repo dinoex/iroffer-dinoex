@@ -1280,12 +1280,12 @@ static void debug_memory(void)
     }
   }
   if (leak == 0)
-    exit(0);
+    return;
 
   *((int*)(0)) = 0;
   free(gdata.meminfo);
   gdata.meminfo = NULL;
-  exit(0);
+  return;
 }
 #endif
 
