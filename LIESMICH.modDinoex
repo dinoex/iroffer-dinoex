@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+225) IRC 470
+  Betrete den Channel nicht mehr, wenn ein Bann den bot in anderen anderen Channel schubst.
+
 Ab Version 3.6:
 ---------------
 

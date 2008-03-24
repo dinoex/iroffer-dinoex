@@ -1957,6 +1957,23 @@ static void parseline(char *line) {
                    gnetwork->nick_number++);
      }
 
+ /* :server 470 botnick #channel :(you are banned) transfering you to #newchannel */
+   if ( !strcmp(part2, "470") && part3 && part4 && part5 )
+     {
+       outerror(OUTERROR_TYPE_WARN_LOUD,
+                "channel on %s: %s", gnetwork->name, strstr(line, "470"));
+       for (ch = irlist_get_head(&(gnetwork->channels));
+            ch;
+            ch = irlist_get_next(ch))
+         {
+           if (strcmp(caps(part3), gnetwork->caps_nick))
+             continue;
+           if (strcmp(caps(part4), ch->name))
+             continue;
+           ch->flags |= CHAN_KICKED;
+         }
+     }
+
    /* names list for a channel */
    /* :server 353 our_nick = #channel :nick @nick +nick nick */
    if ( !strcmp(part2,"353") && part3 && part4 && part5 )

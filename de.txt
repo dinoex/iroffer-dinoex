@@ -2175,3 +2175,5 @@
 2237 "CHTIME"
 2238 "Setze Datum des Eintrags des Paketes <n> auf <msg>"
 2239 "CHTIME: [Pack %i] Old: %lu New: %lu"
+2240 "470"
+2241 "channel on %s: %s"

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+225) IRC 470 (inspired by Road)
+  stop autorejoin when bot is tranfered in a different channel
+
 With Version 3.6:
 -----------------
 
