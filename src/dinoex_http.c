@@ -1365,7 +1365,7 @@ static int h_html_index(http * const h)
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
   len += snprintf(tlabel + len, maxtextlength - 1 - len, "%6s %s\n", tempstr, "Traffic this month");
   mydelete(tempstr);
-  h_respond(h, "<td title=\"%s\">%s</td>\n", tlabel, VERSIONLONG);
+  h_respond(h, "<td title=\"%s\">%s</td>\n", tlabel, "iroffer-dinoex " VERSIONLONG);
   mydelete(tlabel);
 
   tempstr = mycalloc(maxtextlength);
