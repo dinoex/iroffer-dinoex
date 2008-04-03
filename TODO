@@ -85,6 +85,7 @@ Long Term Features:
   1136  Save size even when nomd5
   1145  mnake autoadd reentrant
   1149  move after upload to dir
+  1163  blowfish encryption
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -126,4 +127,11 @@ Not going to happen anytime soon:
   1133  add pack to a certain number
   1134  qsend with overwrite limits
   1141  priority que'ing for user with level
+  1150  extend addnew to uploaddir
+  1153  show last user on xdl (admin only)
+  1156  report XDCC LIST ALL if enabled
+  1157  config modify per admin chat
+  1161  send list over dcc
+  1162  group within a group
+  1170  telnet with more terminal codes
 
