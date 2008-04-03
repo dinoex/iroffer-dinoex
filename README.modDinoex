@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+bugfix: channel -pformat full -pgroup (reported by DrX)
+  force spereate announces in each channel.
+  join other annoucnes in channel.
+
 225) IRC 470 (inspired by Road)
   stop autorejoin when bot is tranfered in a different channel
 

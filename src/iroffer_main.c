@@ -1349,22 +1349,27 @@ static void mainloop (void) {
           (gdata.nolisting <= gdata.curtime))
         {
             char *tchanf = NULL, *tchanm = NULL, *tchans = NULL;
-            channel_t *chg = NULL;
             
-            ch = irlist_get_head(&(gnetwork->channels));
-            while(ch)
+            for(ch = irlist_get_head(&(gnetwork->channels));
+                ch;
+                ch = irlist_get_next(ch))
               {
                 if ((ch->flags & CHAN_ONCHAN) &&
                     (ch->nextann < gdata.curtime) &&
                     ch->plisttime &&
                     (((gdata.curtime / 60) % ch->plisttime) == ch->plistoffset))
                   {
-                    if (chg == NULL)
-                      chg = ch;
-                    else
+                    if (ch->pgroup != NULL)
                       {
-                        if (ch->pgroup == NULL)
-                          chg = ch;
+                        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_NO_COLOR, "Plist sent to %s (pgroup)", ch->name);
+                        pubplist = mycalloc(sizeof(userinput));
+                        pubplist->method = method_xdl_channel;
+                        pubplist->net = gnetwork->net;
+                        pubplist->level = ADMIN_LEVEL_PUBLIC;
+                        a_fillwith_plist(pubplist, ch->name, ch);
+                        u_parseit(pubplist);
+                        mydelete(pubplist);
+                        continue;
                       }
                     if (ch->flags & CHAN_MINIMAL)
                       {
@@ -1406,7 +1411,6 @@ static void mainloop (void) {
                           }
                       }
                   }
-               ch = irlist_get_next(ch);
               }
             
             if (tchans)
@@ -1434,7 +1438,7 @@ static void mainloop (void) {
                pubplist->method = method_xdl_channel;
                pubplist->net = gnetwork->net;
                pubplist->level = ADMIN_LEVEL_PUBLIC;
-               a_fillwith_plist(pubplist, tchanf, chg);
+               a_fillwith_plist(pubplist, tchanf, NULL);
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanf);

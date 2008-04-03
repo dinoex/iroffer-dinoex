@@ -28,21 +28,24 @@
 
 extern const ir_uint32 crctable[256];
 
-void privmsg_chan(const channel_t *ch, const char *format, ...)
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+privmsg_chan(const channel_t *ch, const char *format, ...)
 {
   va_list args;
   va_start(args, format);
-  vprivmsg_chan(ch, format, args);
+  vprivmsg_chan(ch->delay, ch->name, format, args);
   va_end(args);
 }
 
-void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
+void vprivmsg_chan(int delay, const char *name, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   int len;
 
-  if (!ch) return;
-  if (!ch->name) return;
+  if (!name) return;
 
   len = vsnprintf(tempstr, maxtextlength, format, ap);
 
@@ -51,22 +54,22 @@ void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
     return;
   }
 
-  writeserver_channel(ch->delay, ch->name, "PRIVMSG %s :%s", ch->name, tempstr);
+  writeserver_channel(delay, "PRIVMSG %s :%s", name, tempstr);
 }
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 3, 4)))
+__attribute__ ((format(printf, 2, 3)))
 #endif
-writeserver_channel (int delay, const char *chan, const char *format, ... )
+writeserver_channel (int delay, const char *format, ... )
 {
   va_list args;
   va_start(args, format);
-  vwriteserver_channel(delay, chan, format, args);
+  vwriteserver_channel(delay, format, args);
   va_end(args);
 }
 
-void vwriteserver_channel(int delay, const char *chan, const char *format, va_list ap)
+void vwriteserver_channel(int delay, const char *format, va_list ap)
 {
   char *msg;
   channel_announce_t *item;
@@ -100,13 +103,12 @@ void vwriteserver_channel(int delay, const char *chan, const char *format, va_li
   if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ) {
     item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
     item->delay = delay;
-    item->chan = mystrdup(chan);
-    item->msg = mystrdup(msg);
+    item->msg = msg;
   } else {
     outerror(OUTERROR_TYPE_WARN, "Server queue is very large. Dropping additional output.");
+    mydelete(msg);
   }
 
-  mydelete(msg);
   return;
 }
 
@@ -117,7 +119,6 @@ void cleanannounce(void)
   for (item = irlist_get_head(&(gnetwork->serverq_channel));
        item;
        item = irlist_delete(&(gnetwork->serverq_channel), item)) {
-     mydelete(item->chan);
      mydelete(item->msg);
   }
 }
@@ -134,7 +135,6 @@ void sendannounce(void)
     return;
 
   writeserver(WRITESERVER_SLOW, "%s", item->msg);
-  mydelete(item->chan);
   mydelete(item->msg);
   irlist_delete(&(gnetwork->serverq_channel), item);
 }

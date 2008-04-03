@@ -449,6 +449,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
   channel_t *ch;
   char *tempnick;
   char *chan;
+  int delay;
 
   updatecontext();
   
@@ -503,22 +504,25 @@ static void u_respond(const userinput * const u, const char *format, ...)
     case method_xdl_channel:
     case method_xdl_channel_min:
     case method_xdl_channel_sum:
-      ch = irlist_get_head(&(gnetwork->channels));
-      while(ch)
+      delay = 0;
+      tempnick = mystrdup(u->snick);
+      for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
         {
-          tempnick = mystrdup(u->snick);
-          for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
+          for (ch = irlist_get_head(&(gnetwork->channels));
+               ch;
+               ch = irlist_get_next(ch))
             {
               if (!strcasecmp(ch->name, chan))
                 {
-                  vprivmsg_chan(ch, format, args);
-                  va_end(args);
-                  va_start(args, format);
+                  delay = ch->delay;
+                  break;
                 }
             }
-          mydelete(tempnick);
-          ch = irlist_get_next(ch);
+          if (ch != NULL)
+            break;
         }
+      mydelete(tempnick);
+      vprivmsg_chan(delay, u->snick, format, args);
       break;
     case method_xdl_user_privmsg:
       vprivmsg_slow(u->snick, format, args);

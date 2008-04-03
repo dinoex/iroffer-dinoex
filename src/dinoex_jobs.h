@@ -26,13 +26,13 @@ void
 __attribute__ ((format(printf, 2, 3)))
 #endif
 privmsg_chan(const channel_t *ch, const char *format, ...);
-void vprivmsg_chan(const channel_t *ch, const char *format, va_list ap);
+void vprivmsg_chan(int delay, const char *name, const char *format, va_list ap);
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 3, 4)))
+__attribute__ ((format(printf, 2, 3)))
 #endif
-writeserver_channel (int delay, const char *chan, const char *format, ... );
-void vwriteserver_channel(int delay, const char *chan, const char *format, va_list ap);
+writeserver_channel (int delay, const char *format, ... );
+void vwriteserver_channel(int delay, const char *format, va_list ap);
 void cleanannounce(void);
 void sendannounce(void);
 

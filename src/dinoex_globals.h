@@ -52,7 +52,6 @@ typedef struct
 typedef struct
 {
   int delay;
-  char *chan;
   char *msg;
 } channel_announce_t;
 
