@@ -15,7 +15,7 @@
 
 #ifdef USE_SSL
 #include <openssl/ssl.h>
-#endif
+#endif /* USE_SSL */
 
 typedef struct {
   char *u_host;
@@ -124,10 +124,10 @@ typedef struct {
   int serverbucket;
   int ircserver;
   int serverconnectbackoff;
-  #ifdef USE_SSL
+#ifdef USE_SSL
   SSL_CTX *ssl_ctx;
   SSL *ssl;
-  #endif
+#endif /* USE_SSL */
   prefix_t prefixes[MAX_PREFIX];
   char chanmodes[MAX_CHANMODES];
   char server_input_line[INPUT_BUFFER_LENGTH];
