@@ -247,6 +247,7 @@ dsd
 	admin command "autoadd"
         admin command "sannounce"
 	option "autoaddann_short"
+	reporting "restrictsend" bug
 
 fiberOptiC
 	option "autocrc_exclude"
