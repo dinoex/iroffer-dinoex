@@ -10,7 +10,7 @@ bugfix: fix small memory leaks
   are removed from disk.
   Default: 0 = disabled.
 
-226) channel -fish key (inspired by dondieschotte)
+226) channel -fish key (inspired by dondieschotte, Vision)
   blowfish encryption for channel announces.
 
 bugfix: restrictsend (reported by dsd)

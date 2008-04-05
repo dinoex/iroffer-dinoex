@@ -243,6 +243,7 @@ dondieschotte
 	option "autoadd_group_match"
 	reporting "XDCC LIST" logfile bug
 	suggesting to check upload names in autoadd
+	suggesting "fish" channel option
 
 dsd
 	admin command "autoadd"
@@ -356,4 +357,7 @@ DevelDoll
 
 DrX
 	report "pgroup" bug
+
+Vision
+	suggesting "fish" channel option
 
