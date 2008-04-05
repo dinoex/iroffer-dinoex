@@ -2184,3 +2184,7 @@
 2246 "fileremove_max_packs"
 2247 "File '%s' not added, you reached your quoata"
 2248 "disk_quota"
+2249 "CONFIG"
+2250 "name wert"
+2251 "Setze Konfigurationsvariable <name> auf <wert>"
+2252 "direct_config_access"

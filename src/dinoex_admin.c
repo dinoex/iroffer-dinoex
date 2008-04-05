@@ -3361,6 +3361,17 @@ void a_cleargets(const userinput * const u)
   write_statefile();
 }
 
+void a_config(const userinput * const u)
+{
+  if (u->method != method_console) {
+    if (!gdata.direct_config_access) {
+      a_respond(u, "Disabled in Config");
+      return;
+    }
+  }
+  getconfig_set(u->arg1e, 0);
+}
+
 void a_identify(const userinput * const u)
 {
   gnetwork_t *backup;

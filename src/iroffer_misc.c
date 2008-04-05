@@ -2046,6 +2046,7 @@ void reinit_config_vars(void)
   gdata.old_statefile = 0;
   gdata.fileremove_max_packs = 0;
   gdata.disk_quota = 0;
+  gdata.direct_config_access = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

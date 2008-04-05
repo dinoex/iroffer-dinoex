@@ -124,6 +124,7 @@ void a_part(const userinput * const u);
 void a_servqc(const userinput * const u);
 void a_nomd5(const userinput * const u);
 void a_cleargets(const userinput * const u);
+void a_config(const userinput * const u);
 void a_identify(const userinput * const u);
 void a_holdqueue(const userinput * const u);
 void a_dump(const userinput * const u);

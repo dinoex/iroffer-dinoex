@@ -237,6 +237,7 @@ static const userinput_parse_t userinput_parse[] = {
 {6,1,method_allow_all,u_chatl,         "CHATL",NULL,"Lists DCC chat information"},
 {6,5,method_allow_all,u_closec,        "CLOSEC","id","Closes DCC chat <id>"},
 {6,5,method_console,  u_debug,         "DEBUG","x","Set debugging level to <x>"},
+{6,5,method_allow_all,a_config,        "CONFIG","key value","Set config variable <key> to <value>"},
 {6,1,method_allow_all,a_identify,      "IDENTIFY","[net]","Send stored password again to nickserv"},
 {6,2,method_allow_all,a_holdqueue,     "HOLDQUEUE","x","Change holdqueue flag, x=1 set, x=0 reset"},
 {6,5,method_allow_all,u_shutdown,      "SHUTDOWN","act","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},

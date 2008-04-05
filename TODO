@@ -77,7 +77,6 @@ Long Term Features:
   1042  hentai flag
   1068  restore tty console on fatal error
   1103  Silc Support
-  1105  CONFIGLINE key val
   1110  XDCC QUEUE compact output
   1113  trim spaces in config
   1114  service script for linux
