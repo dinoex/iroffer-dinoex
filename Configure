@@ -28,6 +28,7 @@ echo "   -geoip       Compile GeoIP lib"
 echo "   -curl        Compile Curl lib (for the FETCH-Command)"
 echo "   -tls         Compile with GNU TLS lib"
 echo "   -upnp        Compile with UPNP suport with miniupnpc"
+echo "   -no-blowfish Compile without blowfish encryption"
 echo "   -no-openssl  Compile without OpenSSL lib"
 echo "   -no-http     Compile without HTTP server"
 echo "   -no-admin    Compile without HTTP Admin"
@@ -46,6 +47,7 @@ OPT_SSL=true
 OPT_TLS=false
 OPT_UPNP=false
 OPT_NOADMIN=false
+OPT_NOBLOWFISH=false
 OPT_NOHTTP=false
 OPT_NOTELNET=false
 OPT_NOMEMSAVE=false
@@ -66,6 +68,7 @@ do
   -t*) OPT_TLS=true; OPT_SSL=false ;;
   -u*) OPT_UPNP=true ;;
   -no-a*) OPT_NOADMIN=true ;;
+  -no-b*) OPT_NOBLOWFISH=true ;;
   -no-h*) OPT_NOHTTP=true ;;
   -no-t*) OPT_NOTELNET=true ;;
   -no-o*) OPT_SSL=false ;;
@@ -254,6 +257,11 @@ fi
 if $OPT_NOTELNET; then
 echo "Configuring without Telent Server."
 NOFLAGS="${NOFLAGS} -DWITHOUT_TELNET"
+fi
+
+if $OPT_NOBLOWFISH; then
+echo "Configuring without blowfish encryption."
+NOFLAGS="${NOFLAGS} -DWITHOUT_BLOWFISH"
 fi
 
 if $OPT_NOMEMSAVE; then

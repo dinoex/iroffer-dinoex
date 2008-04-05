@@ -397,6 +397,7 @@ typedef struct
 {
   char *name;
   char *key;
+  char *fish;
   char *headline;
   char *pgroup;
   char *joinmsg;

@@ -85,7 +85,6 @@ Long Term Features:
   1136  Save size even when nomd5
   1145  mnake autoadd reentrant
   1149  move after upload to dir
-  1163  blowfish encryption
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

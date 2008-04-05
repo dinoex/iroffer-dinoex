@@ -20,6 +20,9 @@ by Ian Jackson in 1995, this files are in the public domain.
 
 src/crc32.c is copyrighted by Bryan Call under GPL2 or later.
 
+src/blowfish.[ch] are copyrighted 1997 by Paul Kocher
+and released under LGPL 2.1.
+
 src/upnp.[ch] is writen by Thomas Bernard under BSD license.
 
 All other files are written by Dirk Meyer, and are under GPL2,

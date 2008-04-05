@@ -449,6 +449,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
   channel_t *ch;
   char *tempnick;
   char *chan;
+  char *fish;
   int delay;
 
   updatecontext();
@@ -505,6 +506,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
     case method_xdl_channel_min:
     case method_xdl_channel_sum:
       delay = 0;
+      fish = NULL;
       tempnick = mystrdup(u->snick);
       for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
         {
@@ -515,6 +517,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
               if (!strcasecmp(ch->name, chan))
                 {
                   delay = ch->delay;
+                  fish = ch->fish;
                   break;
                 }
             }
@@ -522,7 +525,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
             break;
         }
       mydelete(tempnick);
-      vprivmsg_chan(delay, u->snick, format, args);
+      vprivmsg_chan(delay, u->snick, fish, format, args);
       break;
     case method_xdl_user_privmsg:
       vprivmsg_slow(u->snick, format, args);

@@ -28,6 +28,61 @@
 
 extern const ir_uint32 crctable[256];
 
+#ifndef WITHOUT_BLOWFISH
+
+#include "blowfish.h"
+
+static const unsigned char BASE64[] = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+static char *encrypt_fish( const char *str, int len, const char *key)
+{
+  BLOWFISH_CTX ctx;
+  char *dest;
+  char *msg;
+  size_t max;
+  unsigned long left, right;
+  int i;
+
+  if (key == NULL)
+    return NULL;
+
+  if (key[0] == 0)
+    return NULL;
+
+  updatecontext();
+
+  max = len + 3 / 4; /* immer 32bit */
+  max *= 12; /* base64 */
+  msg = mycalloc(max+1);
+
+  dest = msg;
+  Blowfish_Init(&ctx, (const unsigned char*)key, strlen(key));
+  while (*str) {
+    left = (*(str++) << 24);
+    left += (*(str++) << 16);
+    left += (*(str++) << 8);
+    left += (*str++);
+    right = (*(str++) << 24);
+    right += (*(str++) << 16);
+    right += (*(str++) << 8);
+    right += *(str++);
+    Blowfish_Encrypt(&ctx, &left, &right);
+    for (i = 0; i < 6; i++) {
+      *(dest++) = BASE64[right & 0x3f];
+      right = (right >> 6);
+    }
+    for (i = 0; i < 6; i++) {
+      *(dest++) = BASE64[left & 0x3f];
+      left = (left >> 6);
+    }
+  }
+  *dest = 0;
+  memset(&ctx, 0, sizeof(BLOWFISH_CTX));
+  return msg;
+}
+
+#endif /* WITHOUT_BLOWFISH */
+
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
@@ -36,11 +91,11 @@ privmsg_chan(const channel_t *ch, const char *format, ...)
 {
   va_list args;
   va_start(args, format);
-  vprivmsg_chan(ch->delay, ch->name, format, args);
+  vprivmsg_chan(ch->delay, ch->name, ch->fish, format, args);
   va_end(args);
 }
 
-void vprivmsg_chan(int delay, const char *name, const char *format, va_list ap)
+void vprivmsg_chan(int delay, const char *name, const char *fish, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   int len;
@@ -54,6 +109,20 @@ void vprivmsg_chan(int delay, const char *name, const char *format, va_list ap)
     return;
   }
 
+#ifndef WITHOUT_BLOWFISH
+  updatecontext();
+  if (fish) {
+    char *tempcrypt;
+
+    tempcrypt = encrypt_fish(tempstr, len, fish);
+    if (tempcrypt) {
+      writeserver_channel(delay, "PRIVMSG %s :+OK %s", name, tempcrypt);
+  updatecontext();
+      mydelete(tempcrypt);
+      return;
+    }
+  }
+#endif /* WITHOUT_BLOWFISH */
   writeserver_channel(delay, "PRIVMSG %s :%s", name, tempstr);
 }
 

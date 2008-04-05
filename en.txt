@@ -2177,3 +2177,7 @@
 2239 "CHTIME: [Pack %i] Old: %lu New: %lu"
 2240 "470"
 2241 "channel on %s: %s"
+2242 "Plist sent to %s (pgroup)"
+2243 "-fish"
+2244 "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+2245 "PRIVMSG %s :+OK %s"

@@ -1069,6 +1069,7 @@ void free_channel_data(channel_t *ch)
 {
   mydelete(ch->name);
   mydelete(ch->key);
+  mydelete(ch->fish);
   mydelete(ch->headline);
   mydelete(ch->pgroup);
   mydelete(ch->joinmsg);

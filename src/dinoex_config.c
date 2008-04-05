@@ -858,6 +858,11 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
   if (!strcmp(tptr, "-key")) {
     return parse_channel_string(&(cptr->key), var, i);
   }
+#ifndef WITHOUT_BLOWFISH
+  if (!strcmp(tptr, "-fish")) {
+    return parse_channel_string(&(cptr->fish), var, i);
+  }
+#endif /* WITHOUT_BLOWFISH */
   if (!strcmp(tptr, "-pgroup")) {
     return parse_channel_string(&(cptr->pgroup), var, i);
   }

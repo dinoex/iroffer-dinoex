@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
-bugfix: restrictsend (reported by dsd)
+226) channel -fish key
+  Verschlüsselung der Announces mit blowfish.
+
+bugfix: restrictsend
   versions affected: 3.5 - 3.6
   restrictsend wurde nicht geprüft, stattdessen wurde restrictlist benutzt.
 

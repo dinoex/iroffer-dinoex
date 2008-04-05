@@ -26,7 +26,7 @@ void
 __attribute__ ((format(printf, 2, 3)))
 #endif
 privmsg_chan(const channel_t *ch, const char *format, ...);
-void vprivmsg_chan(int delay, const char *name, const char *format, va_list ap);
+void vprivmsg_chan(int delay, const char *name, const char *fish, const char *format, va_list ap);
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
