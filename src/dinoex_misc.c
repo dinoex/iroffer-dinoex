@@ -636,6 +636,72 @@ int noticeresults(const char *nick, const char *match)
   return k;
 }
 
+static void add_newest_xdcc(irlist_t *list)
+{
+  xdcc **best;
+  xdcc *xd;
+  xdcc *old;
+
+  old = NULL;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    for (best = irlist_get_head(list);
+         best;
+         best = irlist_get_next(best)) {
+      if (*best == xd)
+        break;
+    }
+    if (best != NULL)
+      continue;
+
+    if (old != NULL) {
+      if (old->xtime > xd->xtime)
+        continue;
+    }
+    old = xd;
+  }
+  best = irlist_add(list, sizeof(void *));
+  *best = old;
+}
+
+int run_new_trigger(const char *nick)
+{
+  struct tm *localt = NULL;
+  irlist_t list;
+  xdcc **best;
+  xdcc *xd;
+  const char *format;
+  char *tempstr;
+  time_t now;
+  ssize_t llen;
+  int i;
+
+  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
+
+  memset(&list, 0, sizeof(irlist_t));
+  for (i=0; i<gdata.new_trigger; i++)
+    add_newest_xdcc(&list);
+
+  i = 0;
+  for (best = irlist_get_head(&list);
+       best;
+       best = irlist_delete(&list, best)) {
+    xd = *best;
+    now = xd->xtime;
+    localt = localtime(&now);
+    tempstr = mycalloc(maxtextlengthshort);
+    llen = strftime(tempstr, maxtextlengthshort - 1, format, localt);
+    if (llen == 0)
+      tempstr[0] = '\0';
+    notice_slow(nick, "Added: %s \2%i\2%s%s",
+                tempstr, number_of_pack(xd), gdata.announce_seperator, xd->desc);
+    mydelete(tempstr);
+    i++;
+  }
+  return i;
+}
+
 char* getpart_eol(const char *line, int howmany)
 {
   char *part;

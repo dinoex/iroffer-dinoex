@@ -31,6 +31,7 @@ void check_new_connection(transfer *const tr);
 char *grep_to_fnmatch(char *grep);
 int fnmatch_xdcc(const char *match, xdcc *xd);
 int noticeresults(const char *nick, const char *match);
+int run_new_trigger(const char *nick);
 
 char* getpart_eol(const char *line, int howmany);
 

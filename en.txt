@@ -2188,3 +2188,7 @@
 2250 "key value"
 2251 "Set config variable <key> to <value>"
 2252 "direct_config_access"
+2253 "!new"
+2254 "!new (%s on %s) - %i packs."
+2255 "new_trigger"
+2256 "Added: %s \2%i\2%s%s"

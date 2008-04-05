@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+229) new_trigger (inspired by TheBotKiller, Vision)
+  iroffer will respond to "!new" requests sent to a channel.
+  It will respond with lastest <n> packs added.
+  default: 0 = no response at all
+
 228) direct_config_access, CONFIG
   Enable admin commands to manipulate configuration.
 

@@ -1479,6 +1479,7 @@ void dumpgdata(void)
   gdata_print_int(old_statefile);
   gdata_print_int(fileremove_max_packs);
   gdata_print_int(direct_config_access);
+  gdata_print_int(new_trigger);
   gdata_print_long(nomd5_start);
   
   gdata_irlist_iter_start(downloadhost, char);

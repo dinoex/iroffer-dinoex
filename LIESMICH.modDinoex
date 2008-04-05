@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+229) new_trigger
+  Antwortet auf den Befehl "!new" im Channel geschrieben.
+  Als Antwort gibe es die <n> zuletzt hinzugefügten Pakete.
+  Bei n = 0 ist diese Funktion abgeschaltet.
+
 228) direct_config_access, CONFIG
   Erlaube dem Admin die Konfiguration zu ändern.
 

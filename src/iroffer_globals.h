@@ -179,6 +179,7 @@ int send_listfile;
 int old_statefile;
 int fileremove_max_packs;
 int direct_config_access;
+int new_trigger;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

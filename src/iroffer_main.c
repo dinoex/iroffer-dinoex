@@ -2948,6 +2948,18 @@ static void privmsgparse(const char* type, char* line) {
       mydelete(msg2e);
      }
    
+   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.new_trigger && !strcasecmp(caps(msg1),"!new") )
+     {
+      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+      k = run_new_trigger(nick);
+      if (k)
+        {
+           ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
+                   "!new (%s on %s) - %i packs.",
+                   hostmask, gnetwork->name, k);
+        }
+     }
+
    else {
       if (dest && gnetwork->caps_nick && !strcmp(dest,gnetwork->caps_nick))
         {
