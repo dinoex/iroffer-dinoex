@@ -2017,6 +2017,7 @@ static void u_adddir(const userinput * const u)
   if (!d)
     {
       u_respond(u,"Can't Access Directory: %s",strerror(errno));
+      mydelete(thedir);
       return;
     }
   
