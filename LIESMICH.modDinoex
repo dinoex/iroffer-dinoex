@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+226) fileremove_max_packs
+  Maximale Zahl der Pakete auf diesem Bot. Wenn mehr Pakete hinzugefügt
+  werden, so werden die ältesten von der Festplatte gelöscht.
+  Default: 0 = keine Aktion.
+
 226) channel -fish key
   Verschlüsselung der Announces mit blowfish.
 

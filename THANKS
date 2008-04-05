@@ -141,6 +141,7 @@ Thunder
 	suggesting "xdccxmlfile" with version
 	suggesting "xdccxmlfile" with crc/md5
 	reporting RLUL bug
+	suggesting "fileremove_max_packs"
 
 Alita-Chan
 	reporting XDCC LIST problem with total line

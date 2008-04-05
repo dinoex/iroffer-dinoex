@@ -1462,6 +1462,47 @@ int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, 
   return 0;
 }
 
+static void a_filedel_disk(const userinput * const u, const char *name)
+{
+  int xfiledescriptor;
+  struct stat st;
+  char *file;
+
+  updatecontext();
+
+  file = mystrdup(name);
+  convert_to_unix_slash(file);
+
+  xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (a_access_file(u, xfiledescriptor, &file, &st))
+    return;
+
+  if (save_unlink(file) < 0) {
+    a_respond(u, "File %s could not be deleted: %s", file, strerror(errno));
+  } else {
+    a_respond(u, "File %s was deleted.", file);
+  }
+  mydelete(file);
+}
+
+static xdcc *a_oldest_xdcc(void)
+{
+  xdcc *xd;
+  xdcc *old;
+ 
+  old = NULL;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (old != NULL) {
+      if (old->xtime <= xd->xtime)
+        continue;
+    }
+    old = xd;
+  }
+  return old;
+}
+
 xdcc *a_add2(const userinput * const u)
 {
   int xfiledescriptor;
@@ -1544,6 +1585,21 @@ xdcc *a_add2(const userinput * const u)
 
        group = ag->a_group;
        break;
+    }
+  }
+
+  if (gdata.fileremove_max_packs) {
+    char *filename;
+
+    while (gdata.fileremove_max_packs <= irlist_size(&gdata.xdccs)) {
+      xd = a_oldest_xdcc();
+      if (xd == NULL)
+        break;
+
+      filename = mystrdup(xd->file);
+      a_remove_pack(u, xd, number_of_pack(xd));
+      a_filedel_disk(u, filename);
+      mydelete(filename);
     }
   }
 
@@ -2673,29 +2729,6 @@ void a_movegroupdir(const userinput * const u)
   mydelete(thedir);
   if (foundit > 0)
     write_files();
-}
-
-static void a_filedel_disk(const userinput * const u, const char *name)
-{
-  int xfiledescriptor;
-  struct stat st;
-  char *file;
-
-  updatecontext();
-
-  file = mystrdup(name);
-  convert_to_unix_slash(file);
-
-  xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
-  if (a_access_file(u, xfiledescriptor, &file, &st))
-    return;
-
-  if (save_unlink(file) < 0) {
-    a_respond(u, "File %s could not be deleted: %s", file, strerror(errno));
-  } else {
-    a_respond(u, "File %s was deleted.", file);
-  }
-  mydelete(file);
 }
 
 void a_filedel(const userinput * const u)

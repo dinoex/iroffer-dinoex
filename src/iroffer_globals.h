@@ -176,6 +176,7 @@ int upnp_router;
 int http_search;
 int send_listfile;
 int old_statefile;
+int fileremove_max_packs;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

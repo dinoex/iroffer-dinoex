@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+226) fileremove_max_packs (inspired by Thunder)
+  Max number of packs on this bot, if more are added, the oldest ones
+  are removed from disk.
+  Default: 0 = disabled.
+
 226) channel -fish key (inspired by dondieschotte)
   blowfish encryption for channel announces.
 

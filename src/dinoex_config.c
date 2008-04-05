@@ -115,6 +115,7 @@ static config_int_typ config_parse_int[] = {
 {"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1 },
 {"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1 },
 {"debug",                   &gdata.debug,                   0, 65000, 1 },
+{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 65000, 1 },
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1 },
 #ifndef WITHOUT_HTTP
 {"http_port",               &gdata.http_port,               0, 65535, 1 },

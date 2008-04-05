@@ -1477,6 +1477,7 @@ void dumpgdata(void)
   gdata_print_int(http_search);
   gdata_print_int(send_listfile);
   gdata_print_int(old_statefile);
+  gdata_print_int(fileremove_max_packs);
   gdata_print_long(nomd5_start);
   
   gdata_irlist_iter_start(downloadhost, char);
