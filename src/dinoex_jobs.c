@@ -34,6 +34,28 @@ extern const ir_uint32 crctable[256];
 
 static const unsigned char BASE64[] = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+static unsigned long bytes_to_long( const char **str )
+{
+  unsigned long result;
+  char ch;
+
+  ch = (*(*str)++);
+  result = ch << 24;
+  if (ch == 0) return result;
+
+  ch = (*(*str)++);
+  result |= ch << 16;
+  if (ch == 0) return result;
+
+  ch = (*(*str)++);
+  result |= ch << 8;
+  if (ch == 0) return result;
+
+  ch = (*(*str)++);
+  result |= ch;
+  return result;
+}
+
 static char *encrypt_fish( const char *str, int len, const char *key)
 {
   BLOWFISH_CTX ctx;
@@ -58,14 +80,8 @@ static char *encrypt_fish( const char *str, int len, const char *key)
   dest = msg;
   Blowfish_Init(&ctx, (const unsigned char*)key, strlen(key));
   while (*str) {
-    left = (*(str++) << 24);
-    left += (*(str++) << 16);
-    left += (*(str++) << 8);
-    left += (*str++);
-    right = (*(str++) << 24);
-    right += (*(str++) << 16);
-    right += (*(str++) << 8);
-    right += *(str++);
+    left = bytes_to_long(&str);
+    right = bytes_to_long(&str);
     Blowfish_Encrypt(&ctx, &left, &right);
     for (i = 0; i < 6; i++) {
       *(dest++) = BASE64[right & 0x3f];
