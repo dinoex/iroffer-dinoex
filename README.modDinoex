@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+227) disk_quota
+  Check used space on disk for files and do not add more packs.
+  Specifies the maximum size in MB used in all packs.
+
 bugfix: fix small memory leaks
 
 226) fileremove_max_packs (inspired by Thunder)

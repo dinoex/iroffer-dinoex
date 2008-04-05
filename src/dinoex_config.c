@@ -115,7 +115,7 @@ static config_int_typ config_parse_int[] = {
 {"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1 },
 {"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1 },
 {"debug",                   &gdata.debug,                   0, 65000, 1 },
-{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 65000, 1 },
+{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1 },
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1 },
 #ifndef WITHOUT_HTTP
 {"http_port",               &gdata.http_port,               0, 65535, 1 },
@@ -594,6 +594,12 @@ static void c_autosendpack(char *var)
   mydelete(var);
 }
 
+static void c_disk_quota(char *var)
+{
+  gdata.disk_quota = atoull(var)*1024*1024;
+  mydelete(var);
+}
+
 static void c_getip_network(char *var)
 {
   gdata.networks[gdata.networks_online].getip_net = get_network(var);
@@ -732,6 +738,7 @@ static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
 {"autoadd_group_match",    c_autoadd_group_match },
 {"autosendpack",           c_autosendpack },
+{"disk_quota",             c_disk_quota },
 {"getip_network",          c_getip_network },
 {"local_vhost",            c_local_vhost },
 {"mime_type",              c_mime_type },

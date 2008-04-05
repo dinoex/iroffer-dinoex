@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+227) disk_quota
+  Prüfe den genutzten Platz auf der Disk (MBytes). Neue Pakete werden
+  nicht hinzugefügt, wenn diese Summe erreicht wird.
+
 bugfix: Speicherlecks behoben
 
 226) fileremove_max_packs

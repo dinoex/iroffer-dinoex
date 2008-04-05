@@ -1541,6 +1541,20 @@ xdcc *a_add2(const userinput * const u)
     }
   }
 
+  if (gdata.disk_quota) {
+    off_t usedbytes = st.st_size;
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      usedbytes += xd->st_size;
+    }
+    if (usedbytes >= gdata.disk_quota) {
+      a_respond(u, "File '%s' not added, you reached your quoata", u->arg1e);
+      mydelete(file);
+      return NULL;
+    }
+  }
+
   group = NULL;
   if (gdata.auto_default_group) {
     a1 = mycalloc(strlen(u->arg1e) + 1);

@@ -1535,6 +1535,7 @@ void dumpgdata(void)
   gdata_print_string(uploaddir);
   gdata_print_number("%" LLPRINTFMT "u", uploadmaxsize);
   gdata_print_number("%" LLPRINTFMT "u", uploadminspace);
+  gdata_print_number("%" LLPRINTFMT "u", disk_quota);
   gdata_print_string(config_nick);
   gdata_print_string(user_realname);
   gdata_print_string(user_modes);

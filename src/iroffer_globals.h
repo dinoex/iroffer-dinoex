@@ -76,6 +76,7 @@ int  periodicmsg_time;
 char *uploaddir;
 off_t uploadmaxsize;
 off_t uploadminspace;
+off_t disk_quota;
 irlist_t uploadhost;
 irlist_t tuploadhost;
 irlist_t quploadhost;

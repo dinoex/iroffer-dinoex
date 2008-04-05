@@ -2181,3 +2181,6 @@
 2243 "-fish"
 2244 "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 2245 "PRIVMSG %s :+OK %s"
+2246 "fileremove_max_packs"
+2247 "File '%s' not added, you reached your quoata"
+2248 "disk_quota"
