@@ -244,6 +244,7 @@ dondieschotte
 	reporting "XDCC LIST" logfile bug
 	suggesting to check upload names in autoadd
 	suggesting "fish" channel option
+	suggesting "psend nick" command
 
 dsd
 	admin command "autoadd"

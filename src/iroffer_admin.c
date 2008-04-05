@@ -1847,13 +1847,17 @@ static void u_psend(const userinput * const u)
         }
     }
   
+  ch = NULL;
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  ch = is_not_joined_channel(u, u->arg1);
-  if (ch == NULL)
+  if (u->arg1[0] == '#')
     {
-       gnetwork = backup;
-       return;
+      ch = is_not_joined_channel(u, u->arg1);
+      if (ch == NULL)
+        {
+           gnetwork = backup;
+           return;
+        }
     }
   
   manplist.method = method;

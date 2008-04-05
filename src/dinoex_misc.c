@@ -97,25 +97,13 @@ void send_help(const char *nick)
   notice_slow(nick, "\2**\2 Cancel download:   \"/MSG %s XDCC CANCEL\" \2**\2", mynick);
 }
 
-void stoplist(const char *nick)
+static int stoplist_queue(const char *nick, irlist_t *list)
 {
   char *item;
   char *copy;
   char *end;
   char *inick;
   int stopped = 0;
-
-  ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC STOP from (%s on %s)",
-          nick, gnetwork->name);
-  for (item = irlist_get_head(&(gnetwork->xlistqueue)); item; ) {
-    if (strcasecmp(item, nick) == 0) {
-      stopped ++;
-      item = irlist_delete(&(gnetwork->xlistqueue), item);
-      continue;
-    }
-    item = irlist_get_next(item);
-  }
 
   for (item = irlist_get_head(&(gnetwork->serverq_slow)); item; ) {
     inick = NULL;
@@ -139,6 +127,65 @@ void stoplist(const char *nick)
     mydelete(copy);
     item = irlist_get_next(item);
   }
+  return stopped;
+}
+
+static int stoplist_announce(const char *nick)
+{
+  channel_announce_t *item;
+  char *copy;
+  char *end;
+  char *inick;
+  int stopped = 0;
+
+  item = irlist_get_head(&(gnetwork->serverq_channel));
+  while (item) {
+    inick = NULL;
+    copy = mystrdup(item->msg);
+    inick = strchr(copy, ' ');
+    if (inick != NULL) {
+      *(inick++) = 0;
+      end = strchr(inick, ' ');
+      if (end != NULL) {
+        *(end++) = 0;
+        if (strcasecmp(inick, nick) == 0) {
+          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
+            stopped ++;
+            mydelete(copy);
+            mydelete(item->msg);
+            item = irlist_delete(&(gnetwork->serverq_channel), item);
+            continue;
+          }
+        }
+      }
+    }
+    mydelete(copy);
+    item = irlist_get_next(item);
+  }
+  return stopped;
+}
+
+void stoplist(const char *nick)
+{
+  char *item;
+  int stopped = 0;
+
+  ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC STOP from (%s on %s)",
+          nick, gnetwork->name);
+  for (item = irlist_get_head(&(gnetwork->xlistqueue)); item; ) {
+    if (strcasecmp(item, nick) == 0) {
+      stopped ++;
+      item = irlist_delete(&(gnetwork->xlistqueue), item);
+      continue;
+    }
+    item = irlist_get_next(item);
+  }
+
+  stopped += stoplist_queue(nick, &(gnetwork->serverq_slow));
+  stopped += stoplist_queue(nick, &(gnetwork->serverq_channel));
+  stopped += stoplist_announce(nick);
+
   ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (stopped %d)", stopped);
   notice(nick, "LIST stopped (%d lines deleted)", stopped);
 }

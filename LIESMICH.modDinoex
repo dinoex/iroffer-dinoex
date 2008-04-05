@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+bugfix: PSEND (reported by dondieschotte)
+  versions affected: 2.10 - 3.6
+  Erlaube wieder an nicks zu senden, ausgabe abbrechbar.
+
 229) new_trigger
   Antwortet auf den Befehl "!new" im Channel geschrieben.
   Als Antwort gibe es die <n> zuletzt hinzugefügten Pakete.
