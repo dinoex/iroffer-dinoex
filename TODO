@@ -84,6 +84,9 @@ Long Term Features:
   1136  Save size even when nomd5
   1145  mnake autoadd reentrant
   1149  move after upload to dir
+  1170  telnet with more terminal codes
+  1171  slow channel join
+  1173  delayed channel join
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -127,5 +130,5 @@ Not going to happen anytime soon:
   1157  config modify per admin chat
   1161  send list over dcc
   1162  group within a group
-  1170  telnet with more terminal codes
+  1172  check nodownloadhost on nickchange
 
