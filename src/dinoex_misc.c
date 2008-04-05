@@ -770,7 +770,7 @@ static void restrictprivlistmsg(const char *nick)
 
 static int access_need_level(const char *nick, const char *text)
 {
-  if (gdata.restrictlist && (!isinmemberlist(nick))) {
+  if (!isinmemberlist(nick)) {
     if ((gdata.need_voice != 0) || (gdata.need_level != 0))
       notice(nick, "** XDCC %s denied, you must have voice or more on a known channel to request a pack", text);
     else
@@ -788,8 +788,7 @@ int parse_xdcc_list(const char *nick, char*msg3)
     restrictprivlistmsg(nick);
     return 2; /* deny */
   }
-  if (gdata.restrictlist && (!isinmemberlist(nick))) {
-    access_need_level(nick, "LIST");
+  if (gdata.restrictlist && access_need_level(nick, "LIST")) {
     return 2; /* deny */
   }
   for (user = irlist_get_head(&(gnetwork->xlistqueue));
@@ -855,7 +854,7 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
       return NULL;
     }
-    if (access_need_level(nick, text)) {
+    if (gdata.restrictsend && access_need_level(nick, text)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (restricted): ");
       return NULL;
     }
