@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+bugfix: Speicherlecks behoben
+
 226) fileremove_max_packs
   Maximale Zahl der Pakete auf diesem Bot. Wenn mehr Pakete hinzugefügt
   werden, so werden die ältesten von der Festplatte gelöscht.

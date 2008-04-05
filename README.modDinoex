@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+bugfix: fix small memory leaks
+
 226) fileremove_max_packs (inspired by Thunder)
   Max number of packs on this bot, if more are added, the oldest ones
   are removed from disk.
