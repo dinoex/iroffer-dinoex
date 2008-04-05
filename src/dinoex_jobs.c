@@ -126,14 +126,12 @@ void vprivmsg_chan(int delay, const char *name, const char *fish, const char *fo
   }
 
 #ifndef WITHOUT_BLOWFISH
-  updatecontext();
   if (fish) {
     char *tempcrypt;
 
     tempcrypt = encrypt_fish(tempstr, len, fish);
     if (tempcrypt) {
       writeserver_channel(delay, "PRIVMSG %s :+OK %s", name, tempcrypt);
-  updatecontext();
       mydelete(tempcrypt);
       return;
     }
