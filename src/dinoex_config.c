@@ -441,6 +441,7 @@ int set_config_string(const char *key, char *text)
        outerror(OUTERROR_TYPE_WARN,
                 "ignored %s '%s' because it contains spaces",
                 key, text);
+       mydelete(text);
        return 0;
      }
      checkadminpass2(text);
