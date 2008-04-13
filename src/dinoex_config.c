@@ -225,6 +225,8 @@ static config_list_typ config_parse_list[] = {
 {"weblist_info",            &gdata.weblist_info,            0 },
 {NULL, NULL, 0 }};
 
+const char *current_config;
+long current_line;
 
 static void config_sorted_bool(void)
 {
@@ -289,8 +291,8 @@ int set_config_bool(const char *key, const char *text)
     return 0;
   }
   outerror(OUTERROR_TYPE_WARN,
-           "ignored '%s' because it has unknown args: '%s'",
-           key, text);
+           "%s:%ld ignored '%s' because it has unknown args: '%s'",
+           current_config, current_line, key, text);
   return 0;
 }
 
@@ -350,23 +352,23 @@ int set_config_int(const char *key, const char *text)
 
   if (*text == 0) {
     outerror(OUTERROR_TYPE_WARN,
-             "ignored '%s' because it has no args.",
-             key);
+             "%s:%ld ignored '%s' because it has no args.",
+             current_config, current_line, key);
     return 0;
   }
 
   rawval = (int)strtol(text, &endptr, 0);
   if (endptr[0] != 0) {
     outerror(OUTERROR_TYPE_WARN,
-             "ignored '%s' because it has invalid args: '%s'",
-             key, text);
+             "%s:%ld ignored '%s' because it has invalid args: '%s'",
+             current_config, current_line, key, text);
     return 0;
   }
 
   if ((rawval < config_parse_int[i].min) || (rawval > config_parse_int[i].max)) {
     outerror(OUTERROR_TYPE_WARN,
-             "'%s': %d is out-of-range",
-             key, rawval);
+             "%s:%ld '%s': %d is out-of-range",
+             current_config, current_line, key, rawval);
   }
   rawval = between(config_parse_int[i].min, rawval, config_parse_int[i].max);
   rawval *= config_parse_int[i].mult;
@@ -427,8 +429,8 @@ int set_config_string(const char *key, char *text)
 
   if (*text == 0) {
     outerror(OUTERROR_TYPE_WARN,
-             "ignored '%s' because it has no args.",
-             key);
+             "%s:%ld ignored '%s' because it has no args.",
+             current_config, current_line, key);
     mydelete(text);
     return 0;
   }
@@ -439,8 +441,8 @@ int set_config_string(const char *key, char *text)
   case 4:
      if (strchr(text, ' ') != NULL) {
        outerror(OUTERROR_TYPE_WARN,
-                "ignored %s '%s' because it contains spaces",
-                key, text);
+                "%s:%ld ignored %s '%s' because it contains spaces",
+                current_config, current_line, key, text);
        mydelete(text);
        return 0;
      }
@@ -510,8 +512,8 @@ int set_config_list(const char *key, char *text)
 
   if (*text == 0) {
     outerror(OUTERROR_TYPE_WARN,
-             "ignored '%s' because it has no args.",
-             key);
+             "%s:%ld ignored '%s' because it has no args.",
+             current_config, current_line, key);
     mydelete(text);
     return 0;
   }
@@ -529,8 +531,8 @@ int set_config_list(const char *key, char *text)
      }
      if ((j<0) || (!strchr(text, '@'))) {
        outerror(OUTERROR_TYPE_WARN,
-                "ignored %s '%s' because it's way too vague",
-                config_parse_list[i].name, text);
+                "%s:%ld ignored %s '%s' because it's way too vague",
+                current_config, current_line, config_parse_list[i].name, text);
        mydelete(text);
        return 0;
      }
@@ -538,8 +540,8 @@ int set_config_list(const char *key, char *text)
   case 2:
      if (strchr(text, ' ') != NULL) {
        outerror(OUTERROR_TYPE_WARN,
-                "ignored %s '%s' because it contains spaces",
-                key, text);
+                "%s:%ld ignored %s '%s' because it contains spaces",
+                current_config, current_line, key, text);
        mydelete(text);
        return 0;
      }
@@ -623,8 +625,8 @@ static void c_mime_type(char *var)
   split = strchr(var, ' ');
   if (split == NULL) {
     outerror(OUTERROR_TYPE_WARN,
-             "ignored '%s' because it has invalid args: '%s'",
-             "mime_type", var);
+             "%s:%ld ignored '%s' because it has invalid args: '%s'",
+             current_config, current_line, "mime_type", var);
     mydelete(var);
     return;
   }
@@ -644,8 +646,8 @@ static void c_autoadd_group_match(char *var)
   split = strchr(var, ' ');
   if (split == NULL) {
     outerror(OUTERROR_TYPE_WARN,
-             "ignored '%s' because it has invalid args: '%s'",
-             "autoadd_group_match", var);
+             "%s:%ld ignored '%s' because it has invalid args: '%s'",
+             current_config, current_line, "autoadd_group_match", var);
     mydelete(var);
     return;
   }
@@ -668,8 +670,8 @@ static void c_network(char *var)
   }
   if (gdata.networks_online >= MAX_NETWORKS) {
     outerror(OUTERROR_TYPE_WARN,
-             "ignored network '%s' because we have to many.",
-             var);
+             "%s:%ld ignored network '%s' because we have to many.",
+             current_config, current_line, var);
     mydelete(var);
     return;
   }
@@ -923,6 +925,8 @@ void config_startup(void)
   config_sorted_string();
   config_sorted_list();
   config_sorted_func();
+  current_config = "";
+  current_line = 0;
 }
 
 /* EOF */

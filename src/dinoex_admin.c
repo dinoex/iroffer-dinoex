@@ -25,6 +25,7 @@
 #include "dinoex_jobs.h"
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
+#include "dinoex_config.h"
 #include "dinoex_misc.h"
 
 #include <ctype.h>
@@ -3369,6 +3370,8 @@ void a_config(const userinput * const u)
       return;
     }
   }
+  current_config = "ADMIN";
+  current_line = 0;
   getconfig_set(u->arg1e, 0);
 }
 

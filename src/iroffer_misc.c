@@ -47,9 +47,12 @@ void getconfig (void) {
            outerror(OUTERROR_TYPE_CRASH,"Cant Access Config File '%s': %s",gdata.configfile[h],strerror(errno));
          }
        
+       current_config = gdata.configfile[h];
+       current_line = 0;
        gdata.bracket = 0;
        while (getfline(templine,maxtextlength,filedescriptor,1))
          {
+	   current_line ++;
            if ((templine[0] != '#') && templine[0])
              {
                getconfig_set(templine,0);

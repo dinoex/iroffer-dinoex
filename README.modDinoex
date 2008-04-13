@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+extend debug and log information.
+
 bugfix: PSEND (reported by dondieschotte)
   could not send to nicks, make output stopable.
 

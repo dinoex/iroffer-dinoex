@@ -26,4 +26,7 @@ int parse_channel_options(channel_t *cptr, char * var);
 
 void config_startup(void);
 
+extern const char *current_config;
+extern long current_line;
+
 /* EOF */
