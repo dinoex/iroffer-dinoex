@@ -239,7 +239,7 @@ static const userinput_parse_t userinput_parse[] = {
 {6,5,method_console,  u_debug,         "DEBUG","x","Set debugging level to <x>"},
 {6,5,method_allow_all,a_config,        "CONFIG","key value","Set config variable <key> to <value>"},
 {6,1,method_allow_all,a_identify,      "IDENTIFY","[net]","Send stored password again to nickserv"},
-{6,2,method_allow_all,a_holdqueue,     "HOLDQUEUE","x","Change holdqueue flag, x=1 set, x=0 reset"},
+{6,2,method_allow_all,a_holdqueue,     "HOLDQUEUE","[x]","Change holdqueue flag, x=1 set, x=0 reset"},
 {6,5,method_allow_all,u_shutdown,      "SHUTDOWN","act","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
 {6,5,method_console,  a_backgroud,     "BACKGROUND",NULL,"Switch to background mode"},
 {6,5,method_allow_all,a_dump,          "DUMP",NULL,"Write a dump into the logfile"},
@@ -596,16 +596,33 @@ int u_expand_command(void)
   cmd = mystrdup(gdata.console_input_line);
   end = strchr(cmd, ' ');
   if (end != NULL) {
+    *end = 0;
+    for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
+      if (strcmp(userinput_parse[i].command, cmd))
+        continue;
+
+      if ((userinput_parse[i].methods_allowed & method_console) == 0)
+        continue;
+
+      tostdout("** Command: %s %s, %s\n",
+               cmd, userinput_parse[i].args ? userinput_parse[i].args : "(no args)",
+               userinput_parse[i].desc);
+      break;
+    }
     mydelete(cmd);
-    return 0;
+    return found;
   }
   caps(cmd);
   j = strlen(cmd);
   for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
-    if (!strncmp(userinput_parse[i].command, cmd, j)) {
-      found++;
-      if (first < 0) first = i;
-    }
+    if (strncmp(userinput_parse[i].command, cmd, j))
+      continue;
+
+    if ((userinput_parse[i].methods_allowed & method_console) == 0)
+      continue;
+
+    found++;
+    if (first < 0) first = i;
   }
   if (found == 0) {
     tostdout("** User Command Not Recognized, try \"HELP\"");
@@ -620,11 +637,15 @@ int u_expand_command(void)
   }
   tostdout("** Commands:");
   for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
-    if (!strncmp(userinput_parse[i].command, cmd, j)) {
-       if (i != first)
-         tostdout(",");
-       tostdout(" %s", userinput_parse[i].command);
-    }
+    if (strncmp(userinput_parse[i].command, cmd, j))
+      continue;
+
+    if ((userinput_parse[i].methods_allowed & method_console) == 0)
+      continue;
+
+    if (i != first)
+      tostdout(",");
+    tostdout(" %s", userinput_parse[i].command);
   }
   tostdout("\n");
   mydelete(cmd);
