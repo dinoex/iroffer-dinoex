@@ -2192,3 +2192,8 @@
 2254 "!new (%s on %s) - %i packs."
 2255 "new_trigger"
 2256 "Neu: %s \2%i\2%s%s"
+2257 "[x]"
+2258 "** Befehl: %s %s, %s\n"
+2259 "(keine Argumente)"
+2260 "** Befehle:"
+2261 " %s"
