@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+230) <TAB>
+  Command expansion with <TAB> in the console.
+
 extend debug and log information.
 
 bugfix: PSEND (reported by dondieschotte)

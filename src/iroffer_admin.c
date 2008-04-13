@@ -584,6 +584,53 @@ void u_parseit(userinput * const u) {
    
    }
 
+int u_expand_command(void)
+{
+  char *cmd;
+  char *end;
+  size_t j;
+  int i;
+  int found = 0;
+  int first = -1;
+
+  cmd = mystrdup(gdata.console_input_line);
+  end = strchr(cmd, ' ');
+  if (end != NULL) {
+    mydelete(cmd);
+    return 0;
+  }
+  caps(cmd);
+  j = strlen(cmd);
+  for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
+    if (!strncmp(userinput_parse[i].command, cmd, j)) {
+      found++;
+      if (first < 0) first = i;
+    }
+  }
+  if (found == 0) {
+    tostdout("** User Command Not Recognized, try \"HELP\"");
+    tostdout("\n");
+    mydelete(cmd);
+    return 0;
+  }
+  if (found == 1) {
+    mydelete(cmd);
+    strcpy(gdata.console_input_line, userinput_parse[first].command);
+    return strlen(userinput_parse[first].command) - j;
+  }
+  tostdout("** Commands:");
+  for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
+    if (!strncmp(userinput_parse[i].command, cmd, j)) {
+       if (i != first)
+         tostdout(",");
+       tostdout(" %s", userinput_parse[i].command);
+    }
+  }
+  tostdout("\n");
+  mydelete(cmd);
+  return 0;
+}
+
 static void u_help(const userinput * const u)
 {
   int i,which=0;

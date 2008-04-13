@@ -436,6 +436,13 @@ void parseconsole(void)
             {
               console_escape_seq[0]=tempbuffa[i];
             }
+          else if ((tempbuffa[i] == '\t') && gdata.console_input_line[0])
+            {
+              if (!gdata.attop) gototop();
+              j = u_expand_command();
+              gdata.curcol += j;
+              linelength += j;
+            }
           else if (tempbuffa[i] == '\n')
             {
               char *hist;

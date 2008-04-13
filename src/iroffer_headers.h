@@ -470,6 +470,7 @@ void gototop(void);
 void drawbot(void);
 void gotobot(void);
 void parseconsole(void);
+int u_expand_command(void);
 
 void
 #ifdef __GNUC__
