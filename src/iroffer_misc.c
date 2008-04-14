@@ -658,6 +658,8 @@ void initirc(void)
       writeserver(WRITESERVER_NOW, "%s %u",
                   gnetwork->curserver.hostname, gnetwork->curserver.port);
       }
+
+   initirc2();
 }
    
 void initirc2(void)
