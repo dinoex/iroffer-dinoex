@@ -3,6 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+231) BOTINFO
+  Erweitere BOTINFO um die Zeit wi lang der bot auf dem Server und im Channel ist.
+
+bugfix: connectionmethod ssl
+  versions affected: 3.0 - 3.6
+  Bot konnte Probleme beim beim erneuten verbinden haben.
+
 230) <TAB>
   Befehlesergänzung mit der Takste <TAB> in der Konsole.
 

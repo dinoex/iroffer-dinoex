@@ -114,6 +114,7 @@ typedef struct {
   serv_resolv_t serv_resolv;
   serverstatus_e serverstatus;
 
+  long connecttime;
   long lastservercontact;
   long lastnotify;
   irlist_t serverq_fast;

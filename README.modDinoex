@@ -3,6 +3,17 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+231) BOTINFO
+  Extend BOTINFO to report how long its been since on a server and on each channel.
+
+  References TODO:
+Short Term Features:
+  150 01/30/01 Open keep track of how long its been since on a server and/or on a channel
+
+bugfix: connectionmethod ssl
+  versions affected: 3.0 - 3.6
+  Bot could show problems on reconnecting to server.
+
 230) <TAB>
   Command expansion with <TAB> in the console.
 

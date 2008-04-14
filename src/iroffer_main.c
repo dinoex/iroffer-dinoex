@@ -622,6 +622,7 @@ static void mainloop (void) {
 	    ioutput(CALLTYPE_NORMAL ,OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Server Connection to %s Established, Logging In",  gnetwork->name);
             gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
+            gnetwork->connecttime = gdata.curtime;
             FD_CLR(gnetwork->ircserver, &gdata.writeset);
             if (set_socket_nonblocking(gnetwork->ircserver, 0) < 0 )
 	      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
@@ -2059,6 +2060,7 @@ static void parseline(char *line) {
               if (!strcmp(part3a,ch->name))
                 {
                   ch->flags |= CHAN_ONCHAN;
+                  ch->lastjoin = gdata.curtime;
                   ch->nextann = gdata.curtime + gdata.waitafterjoin;
                   if (ch->joinmsg)
                     {

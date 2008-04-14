@@ -408,6 +408,7 @@ typedef struct
   short noannounce;
   long nextann;
   long nextjoin;
+  long lastjoin;
   irlist_t members;
 } channel_t;
 

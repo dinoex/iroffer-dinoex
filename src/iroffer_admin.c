@@ -2737,6 +2737,11 @@ static void u_botinfo(const userinput * const u) {
        
        u_respond(u, "current server actual name: %s ",
                  gdata.networks[ss].curserveractualname ? gdata.networks[ss].curserveractualname : "<unknown>");
+       if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
+         {
+           getuptime(tempstr, 0, gdata.networks[ss].connecttime, maxtextlength - 1);
+           u_respond(u, "current server connected for: %s ", tempstr);
+         }
        
        ch = irlist_get_head(&gdata.networks[ss].channels);
        while(ch)
@@ -2744,8 +2749,14 @@ static void u_botinfo(const userinput * const u) {
            snprintf(tempstr, maxtextlength - 1,
                     "channel %10s: joined: %3s",
                     ch->name,
-                    ch->flags & CHAN_ONCHAN ? "yes" : "no ");
+                    ch->flags & CHAN_ONCHAN ? "for " : "no");
            len = strlen(tempstr);
+           
+           if (ch->flags & CHAN_ONCHAN )
+             {
+               getuptime(tempstr + len, 0, ch->lastjoin, maxtextlength - 1 - len);
+               len = strlen(tempstr);
+             }
            
            if (ch->key)
              {
@@ -2753,6 +2764,13 @@ static void u_botinfo(const userinput * const u) {
                         ", key: %s",
                         ch->key);
                len = strlen(tempstr);
+             }
+           
+           if (ch->fish)
+             {
+               len += snprintf(tempstr + len, maxtextlength - 1 - len,
+                               ", fish: %s",
+                               ch->fish);
              }
            
            if (ch->plisttime)
@@ -2774,9 +2792,9 @@ static void u_botinfo(const userinput * const u) {
    
    if (gdata.overallmaxspeed != gdata.overallmaxspeeddayspeed)
      {
-       u_respond(u, "           default max: %i, day max: %i ( %i:00 -> %i:59, days=\"%s%s%s%s%s%s%s\" )",
+       u_respond(u, "           default max: %i, day max: %i ( %i:00 -> %i:00, days=\"%s%s%s%s%s%s%s\" )",
                  gdata.overallmaxspeed/4,gdata.overallmaxspeeddayspeed/4,
-                 gdata.overallmaxspeeddaytimestart,gdata.overallmaxspeeddaytimeend-1,
+                 gdata.overallmaxspeeddaytimestart, gdata.overallmaxspeeddaytimeend,
                  (gdata.overallmaxspeeddaydays & (1 << 1)) ? "M":"",
                  (gdata.overallmaxspeeddaydays & (1 << 2)) ? "T":"",
                  (gdata.overallmaxspeeddaydays & (1 << 3)) ? "W":"",
