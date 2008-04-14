@@ -36,8 +36,6 @@ Long Term Features:
 Not going to happen anytime soon:
    115 long ago Deferred fserve
    114 3/2/00 Deferred multiple files per pack
-   113 1/2/00 Deferred different packs for different plist channels
-   112 1/2/00 Deferred multi-language support  
    111 12/3/99 Deferred exec a shell command
    129 12/5/00 Deferred built-in identd server for windows
    171 12/09/03 Deferred online config file editor
