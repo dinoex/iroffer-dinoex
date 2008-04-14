@@ -591,14 +591,15 @@ static int connectirc (server_t *tserver) {
 void initirc(void)
 {
   int i,j,k;
-  channel_t *ch;
   char *pi;
-  char *tptr;
   
   updatecontext();
   
   if (setup_ssl())
-    return;
+    {
+      initirc2();
+      return;
+    }
 
   pi = irlist_get_head(&(gnetwork->proxyinfo));
   while((gnetwork->connectionmethod.how == how_custom) && pi)
@@ -657,7 +658,13 @@ void initirc(void)
       writeserver(WRITESERVER_NOW, "%s %u",
                   gnetwork->curserver.hostname, gnetwork->curserver.port);
       }
+}
    
+void initirc2(void)
+{
+   channel_t *ch;
+   char *tptr;
+
    if (gnetwork->curserver.password)
      {
        writeserver(WRITESERVER_NOW, "PASS %s", gnetwork->curserver.password);

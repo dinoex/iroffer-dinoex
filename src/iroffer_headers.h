@@ -663,6 +663,7 @@ const char *transferlimit_type_to_string(transferlimit_type_e type);
 void getconfig (void);
 void getconfig_set (const char *line, int rehash);
 void initirc(void);
+void initirc2(void);
 
 void
 #ifdef __GNUC__
