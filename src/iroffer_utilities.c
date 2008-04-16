@@ -2400,7 +2400,7 @@ void* irlist_add(irlist_t *list, unsigned int size)
   iitem = mymalloc2(sizeof(irlist_item_t) + size, 1,
                     src_function, src_file, src_line);
 #else
-  iitem = mymalloc(sizeof(irlist_item_t) + size);
+  iitem = mycalloc(sizeof(irlist_item_t) + size);
 #endif
   
   irlist_insert_tail(list, IRLIST_INT_TO_EXT(iitem));
