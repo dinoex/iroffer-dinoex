@@ -73,7 +73,7 @@ static char *encrypt_fish( const char *str, int len, const char *key)
 
   updatecontext();
 
-  max = len + 3 / 4; /* immer 32bit */
+  max = ( len + 3 ) / 4; /* immer 32bit */
   max *= 12; /* base64 */
   msg = mycalloc(max+1);
 
