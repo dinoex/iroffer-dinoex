@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+bugfix: -no-memsave (reported by dondieschotte)
+  Fix crash on startup
+
 231) BOTINFO
   Extend BOTINFO to report how long its been since on a server and on each channel.
 

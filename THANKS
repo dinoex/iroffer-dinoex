@@ -245,6 +245,7 @@ dondieschotte
 	suggesting to check upload names in autoadd
 	suggesting "fish" channel option
 	suggesting "psend nick" command
+	reporting "-no-memsave" bug
 
 dsd
 	admin command "autoadd"
