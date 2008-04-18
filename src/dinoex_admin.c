@@ -2030,6 +2030,8 @@ void a_chtime(const userinput * const u)
 {
   const char *format;
   char *cptr;
+  char *oldstr;
+  char *newstr;
   int num = 0;
   unsigned long val = 0;
   xdcc *xd;
@@ -2054,9 +2056,14 @@ void a_chtime(const userinput * const u)
   }
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
-  a_respond(u, "CHTIME: [Pack %i] Old: %lu New: %lu",
-            num, (unsigned long)xd->xtime, val);
-
+  newstr = mycalloc(maxtextlengthshort);
+  user_getdatestr(newstr, val, maxtextlengthshort);
+  oldstr = mycalloc(maxtextlengthshort);
+  user_getdatestr(oldstr, xd->xtime, maxtextlengthshort);
+  a_respond(u, "CHTIME: [Pack %i] Old: %s New: %s",
+            num, oldstr, newstr);
+  mydelete(oldstr);
+  mydelete(newstr);
   xd->xtime = val;
   write_files();
 }
@@ -3598,15 +3605,52 @@ void a_iqueue(const userinput * const u)
   }
 }
 
+static void a_announce_msg(const userinput * const u, int num, const char *msg)
+{
+  gnetwork_t *backup;
+  xdcc *xd;
+  char *tempstr;
+  char *tempstr2;
+  char *tempstr3;
+  char *datestr;
+  int ss;
+
+  a_respond(u, "Pack Info for Pack #%i:", num);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
+  tempstr = mycalloc(maxtextlength);
+  tempstr2 = mycalloc(maxtextlength);
+  tempstr3 = mycalloc(maxtextlength);
+  if (gdata.show_date_added) {
+    datestr = mycalloc(maxtextlengthshort);
+    user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
+    snprintf(tempstr3, maxtextlength - 1, "%s%s%s%s",
+             gdata.announce_seperator, datestr, gdata.announce_seperator, xd->desc);
+    mydelete(datestr);
+  } else {
+    snprintf(tempstr3, maxtextlength - 1, "%s%s",
+             gdata.announce_seperator, xd->desc);
+  }
+  snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s", msg, tempstr3);
+
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+    snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
+             tempstr2, get_user_nick(), num);
+    a_announce_channels(tempstr, NULL);
+    gnetwork = backup;
+    a_respond(u, "Announced [%s]%s", msg, tempstr3);
+  }
+  gnetwork = backup;
+  mydelete(tempstr3);
+  mydelete(tempstr2);
+  mydelete(tempstr);
+}
+
 static void a_announce_sub(const userinput * const u, const char *arg1, const char *arg2, const char *msg)
 {
   int num1 = 0;
   int num2 = 0;
-  xdcc *xd;
-  char *tempstr;
-  char *tempstr2;
-  int ss;
-  gnetwork_t *backup;
 
   updatecontext();
 
@@ -3627,25 +3671,7 @@ static void a_announce_sub(const userinput * const u, const char *arg1, const ch
     return;
 
   for (; num1 <= num2; num1++) {
-    xd = irlist_get_nth(&gdata.xdccs, num1-1);
-    a_respond(u, "Pack Info for Pack #%i:", num1);
-
-    tempstr = mycalloc(maxtextlength);
-    tempstr2 = mycalloc(maxtextlength);
-    snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s%s", msg, gdata.announce_seperator, xd->desc);
-
-    backup = gnetwork;
-    for (ss=0; ss<gdata.networks_online; ss++) {
-      gnetwork = &(gdata.networks[ss]);
-      snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
-               tempstr2, get_user_nick(), num1);
-      a_announce_channels(tempstr, NULL);
-      gnetwork = backup;
-      a_respond(u, "Announced [%s] - %s", msg, xd->desc);
-    }
-    gnetwork = backup;
-    mydelete(tempstr2);
-    mydelete(tempstr);
+    a_announce_msg(u, num1, msg);
   }
 }
 
@@ -3664,11 +3690,6 @@ void a_mannounce(const userinput * const u)
 void a_cannounce(const userinput * const u)
 {
   int num = 0;
-  xdcc *xd;
-  char *tempstr;
-  char *tempstr2;
-  int ss;
-  gnetwork_t *backup;
 
   updatecontext();
 
@@ -3682,25 +3703,7 @@ void a_cannounce(const userinput * const u)
   if (invalid_announce(u, u->arg3e) != 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-
-  a_respond(u, "Pack Info for Pack #%i:", num);
-
-  tempstr = mycalloc(maxtextlength);
-  tempstr2 = mycalloc(maxtextlength);
-  snprintf(tempstr2, maxtextlength - 2, "[\2%s\2]%s%s", u->arg3e, gdata.announce_seperator, xd->desc);
-
-  backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
-    gnetwork = &(gdata.networks[ss]);
-    snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
-             tempstr2, get_user_nick(), num);
-    a_announce_channels(tempstr, u->arg1);
-  }
-  gnetwork = backup;
-  a_respond(u, "Announced [%s] - %s", u->arg3e, xd->desc);
-  mydelete(tempstr2);
-  mydelete(tempstr);
+  a_announce_msg(u, num, u->arg3e);
 }
 
 void a_sannounce(const userinput * const u)
@@ -3709,6 +3712,7 @@ void a_sannounce(const userinput * const u)
   int num2 = 0;
   xdcc *xd;
   char *tempstr;
+  char *tempstr3;
   int ss;
   gnetwork_t *backup;
 
@@ -3733,18 +3737,20 @@ void a_sannounce(const userinput * const u)
   }
 
   for (; num1 <= num2; num1++) {
-    xd = irlist_get_nth(&gdata.xdccs, num1-1);
     a_respond(u, "Pack Info for Pack #%i:", num1);
+    xd = irlist_get_nth(&gdata.xdccs, num1-1);
 
     tempstr = mycalloc(maxtextlength);
-    snprintf(tempstr, maxtextlength-2, "\2%i\2%s%s", num1, gdata.announce_seperator, xd->desc);
+    tempstr3 = mycalloc(maxtextlength);
+    snprintf(tempstr3, maxtextlength - 1, "%s%s", gdata.announce_seperator, xd->desc);
+    snprintf(tempstr, maxtextlength-2, "\2%i\2%s", num1, tempstr3);
 
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
       a_announce_channels(tempstr, NULL);
       gnetwork = backup;
-      a_respond(u, "Announced [%s] - %s", xd->desc, xd->desc);
+      a_respond(u, "Announced [%i]%s", num1, tempstr3);
     }
     gnetwork = backup;
     mydelete(tempstr);

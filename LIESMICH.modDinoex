@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+232) show_date_added
+  Zeige das Datum, an dem das Paket hinzugefügt wurde, bei XDCC LIST an.
+
 bugfix: -no-memsave
   Bot kann beim Start abstürzen
 

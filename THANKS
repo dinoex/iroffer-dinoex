@@ -246,6 +246,7 @@ dondieschotte
 	suggesting "fish" channel option
 	suggesting "psend nick" command
 	reporting "-no-memsave" bug
+	option "show_date_added"
 
 dsd
 	admin command "autoadd"
@@ -366,4 +367,7 @@ Vision
 
 TheBotKiller
 	suggesting "!new" trigger
+
+Gotham
+	option "show_date_added"
 

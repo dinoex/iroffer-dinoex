@@ -59,6 +59,8 @@ char *transfer_limit_exceeded_msg(int ii);
 int verify_uploadhost(const char *hostmask);
 void clean_uploadhost(void);
 
+char *user_getdatestr(char* str, time_t Tp, int len);
+
 void free_channel_data(channel_t *ch);
 
 void

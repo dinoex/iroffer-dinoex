@@ -2060,6 +2060,7 @@ void reinit_config_vars(void)
   gdata.disk_quota = 0;
   gdata.direct_config_access = 0;
   gdata.new_trigger = 0;
+  gdata.show_date_added = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

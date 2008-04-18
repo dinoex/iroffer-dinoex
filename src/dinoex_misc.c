@@ -1178,6 +1178,20 @@ void clean_uploadhost(void)
   }
 }
 
+char *user_getdatestr(char* str, time_t Tp, int len)
+{
+  const char *format;
+  struct tm *localt = NULL;
+  ssize_t llen;
+
+  localt = localtime(&Tp);
+  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
+  llen = strftime(str, len, format, localt);
+  if ((llen == 0) || (llen == len))
+    str[0] = '\0';
+  return str;
+}
+
 void free_channel_data(channel_t *ch)
 {
   mydelete(ch->name);

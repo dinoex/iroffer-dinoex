@@ -705,16 +705,25 @@ static void u_help(const userinput * const u)
 }
 
 void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, const xdcc *xd) {
+   char datestr[maxtextlengthshort];
    char *sizestrstr;
    int len;
    
    sizestrstr = sizestr(1, xd->st_size);
+   datestr[0] = 0;
+   if (gdata.show_date_added)
+     {
+       datestr[0] = ' ';
+       datestr[1] = 0;
+       getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
+     }
    snprintf(tempstr, maxtextlength - 1,
-           "\2#%-*i\2 %*ix [%s] %s",
+           "\2#%-*i\2 %*ix [%s]%s %s",
             l,
             i,
             s, xd->gets,
             sizestrstr,
+            datestr,
             xd->desc);
    len = strlen(tempstr);
    mydelete(sizestrstr);

@@ -1212,7 +1212,14 @@ static void h_html_file(http * const h)
     if (xd->has_crc32)
       len += snprintf(tlabel + len, maxtextlength - 1 - len, "\ncrc32: %.8lX", xd->crc32);
     tempstr = mycalloc(maxtextlength);
-    len = html_encode(tempstr, maxtextlength, xd->desc);
+    len = 0;
+    if (gdata.show_date_added) {
+       getdatestr(tempstr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlength - 1);
+       len = strlen(tempstr);
+       tempstr[len++] = ' ';
+       tempstr[len] = 0;
+    }
+    len += html_encode(tempstr + len, maxtextlength - 1 - len, xd->desc);
     if (xd->lock)
       len += snprintf(tempstr + len, maxtextlength - 1 - len, " (%s)", "locked");
     if (xd->note != NULL) {
@@ -1297,20 +1304,6 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
   mydelete(tempstr);
 }
 
-static char* html_getdatestr(char* str, time_t Tp, int len)
-{
-  const char *format;
-  struct tm *localt = NULL;
-  ssize_t llen;
-
-  localt = localtime(&Tp);
-  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
-  llen = strftime(str, len, format, localt);
-  if ((llen == 0) || (llen == len))
-    str[0] = '\0';
-  return str;
-}
-
 static int h_html_index(http * const h)
 {
   char *info;
@@ -1369,7 +1362,7 @@ static int h_html_index(http * const h)
   mydelete(tlabel);
 
   tempstr = mycalloc(maxtextlength);
-  html_getdatestr(tempstr, gdata.curtime, maxtextlength-1);
+  user_getdatestr(tempstr, gdata.curtime, maxtextlength-1);
   h_respond(h, "<tr>\n");
   h_respond(h, "<td>%s</td>\n", "last update");
   h_respond(h, "<td>%s</td>\n", tempstr);

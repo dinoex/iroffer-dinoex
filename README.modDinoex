@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+232) show_date_added (inspired by dondieschotte, Gotham)
+  Show date the pack was added whith XDCC LIST.
+
 bugfix: -no-memsave (reported by dondieschotte)
   Fix crash on startup
 
