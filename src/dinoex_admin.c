@@ -1490,7 +1490,7 @@ static xdcc *a_oldest_xdcc(void)
 {
   xdcc *xd;
   xdcc *old;
- 
+
   old = NULL;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
