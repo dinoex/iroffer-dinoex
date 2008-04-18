@@ -639,8 +639,6 @@ igninfo *get_ignore(const char *hostmask)
   ignore = irlist_add(&gdata.ignorelist, sizeof(igninfo));
   ignore->hostmask = mystrdup(hostmask);
   ignore->lastcontact = gdata.curtime;
-  ignore->bucket = 0;
-  ignore->flags = 0;
   return ignore;
 }
 

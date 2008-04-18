@@ -1625,7 +1625,6 @@ xdcc *a_add2(const userinput * const u)
 
   xd->desc = mystrdup(getfilename(u->arg1e));
 
-  xd->gets = 0;
   xd->minspeed = gdata.transferminspeed;
   xd->maxspeed = gdata.transfermaxspeed;
 
@@ -1635,8 +1634,6 @@ xdcc *a_add2(const userinput * const u)
   xd->mtime    = st.st_mtime;
 
   xd->file_fd = FD_UNUSED;
-  xd->file_fd_count = 0;
-  xd->file_fd_location = 0;
 
   n = irlist_size(&gdata.xdccs);
   if (gdata.autoadd_sort != NULL) {
@@ -3267,13 +3264,6 @@ void a_join(const userinput * const u)
   caps(u->arg1);
   ch->name = mystrdup(u->arg1);
   ch->noannounce = 1;
-  ch->flags = 0;
-  ch->delay = 0;
-  ch->plistoffset = 0;
-  ch->headline = NULL;
-  ch->pgroup = NULL;
-  ch->joinmsg = NULL;
-  ch->key = NULL;
   ch->nextjoin = gdata.curtime;
   gnetwork = backup;
 }

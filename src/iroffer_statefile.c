@@ -1143,11 +1143,6 @@ void read_statefile(void)
             
             xd->minspeed = gdata.transferminspeed;
             xd->maxspeed = gdata.transfermaxspeed;
-            xd->group = NULL;
-            xd->group_desc = NULL;
-            xd->lock = NULL;
-            xd->dlimit_desc = NULL;
-            xd->trigger = NULL;
             
             hdr->length -= sizeof(*hdr);
             ihdr = &hdr[1];
@@ -1614,12 +1609,7 @@ void read_statefile(void)
             else
               pq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
 
-            pq->xpack = NULL;
-            pq->nick = NULL;
-            pq->hostname = NULL;
-            pq->queuedtime = 0L;
             pq->restrictsend_bad = gdata.curtime;
-            pq->net = 0;
             
             hdr->length -= sizeof(*hdr);
             ihdr = &hdr[1];
