@@ -380,7 +380,7 @@ void notifyqueued(void)
   if (found == 0)
     return;
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_YELLOW,
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
           "Notifying %d Queued People on %s",
           found, gnetwork->name);
 }
@@ -875,9 +875,9 @@ void identify_check(const char *line)
 static void restrictprivlistmsg(const char *nick)
 {
   if (gdata.restrictprivlistmsg) {
-    notice(nick,"** XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
+    notice(nick, "** XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
   } else {
-    notice(nick,"** XDCC LIST Denied. Wait for the public list in the channel.");
+    notice(nick, "** XDCC LIST Denied. Wait for the public list in the channel.");
   }
 }
 
@@ -923,7 +923,7 @@ int parse_xdcc_list(const char *nick, char*msg3)
     user->nick = mystrdup(nick);
     return 3; /* queued */
   }
-  if (strcmp(caps(msg3),"ALL") == 0) {
+  if (strcmp(caps(msg3), "ALL") == 0) {
     if (gdata.restrictprivlistfull) {
       restrictprivlistmsg(nick);
       return 2; /* deny */

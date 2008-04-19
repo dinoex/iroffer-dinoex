@@ -585,11 +585,11 @@ static void c_autosendpack(char *var)
   char *b;
   char *c;
 
-  a = getpart(var,1); b = getpart(var,2); c = getpart(var,3);
+  a = getpart(var, 1); b = getpart(var, 2); c = getpart(var, 3);
   if (a && b) {
     autoqueue_t *aq;
     aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
-    aq->pack = between(0,atoi(a),100000);
+    aq->pack = between(0, atoi(a), 100000);
     aq->word = b;
     aq->message = c;
   } else {
@@ -887,7 +887,7 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
     return parse_channel_string(&(cptr->headline), var, i);
   }
 
-  if (!strcmp(tptr,"-noannounce")) {
+  if (!strcmp(tptr, "-noannounce")) {
     cptr->noannounce = 1;
     return 0;
   }
@@ -908,7 +908,7 @@ int parse_channel_options(channel_t *cptr, char * var)
   int i;
   int j;
 
-  for (i=2; i<20 && (tptr = getpart(var,i)); i++) {
+  for (i=2; i<20 && (tptr = getpart(var, i)); i++) {
     j = parse_channel_option(cptr, tptr, var, i);
     mydelete(tptr);
     if (j < 0 )
