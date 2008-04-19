@@ -2202,3 +2202,6 @@
 2265 "%s%s%s%s"
 2266 "Announced [%i]%s"
 2267 "show_date_added"
+2268 ":+OK"
+2269 "%s :%s"
+2270 ">FISH>: %s"

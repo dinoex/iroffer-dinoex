@@ -34,6 +34,26 @@ extern const ir_uint32 crctable[256];
 
 static const unsigned char BASE64[] = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+static unsigned char base64decode[ 256 ] = {
+/* 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F */
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+   2, 3, 4, 5, 6, 7, 8, 9,10,11, 0, 0, 0, 0, 0, 0,
+   0,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,
+  53,54,55,56,57,58,59,60,61,62,63, 0, 0, 0, 0, 0,
+   0,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,
+  27,28,29,39,31,32,33,34,35,36,37, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
 static unsigned long bytes_to_long( const char **str )
 {
   unsigned long result;
@@ -95,6 +115,123 @@ static char *encrypt_fish( const char *str, int len, const char *key)
   *dest = 0;
   memset(&ctx, 0, sizeof(BLOWFISH_CTX));
   return msg;
+}
+
+static unsigned long base64_to_long( const char **str )
+{
+  unsigned long result;
+  unsigned char ch;
+  int i;
+
+  result = 0L;
+  for (i = 0; i < 6; i++) {
+    ch = (unsigned char)(*(*str)++);
+    result |= base64decode[ ch ] << (i * 6);
+  }
+  return result;
+}
+
+
+static char *decrypt_fish( const char *str, int len, const char *key)
+{
+  BLOWFISH_CTX ctx;
+  char *dest;
+  char *work;
+  char *msg;
+  size_t max;
+  unsigned long left, right;
+  int i;
+
+  if (key == NULL)
+    return NULL;
+
+  if (key[0] == 0)
+    return NULL;
+
+  updatecontext();
+
+  max = ( len + 11 / 12 );
+  max *= 4;
+  msg = mycalloc(max+1);
+
+  dest = msg;
+  Blowfish_Init(&ctx, (const unsigned char*)key, strlen(key));
+  while (*str) {
+    right = base64_to_long(&str);
+    left = base64_to_long(&str);
+    Blowfish_Decrypt(&ctx, &left, &right);
+    dest += 4;
+    work = dest;
+    for (i = 0; i < 4; i++) {
+      *(--work) = left & 0xff;
+      left >>= 8;
+    }
+    dest += 4;
+    work = dest;
+    for (i = 0; i < 4; i++) {
+      *(--work) = right & 0xff;
+      right >>= 8;
+    }
+  }
+  *dest = 0;
+  memset(&ctx, 0, sizeof(BLOWFISH_CTX));
+  return msg;
+}
+
+char *test_fish_message(char *line, char *channel, char *str, char *data)
+{
+  channel_t *ch;
+  char *newstr;
+  char *newline;
+  char *end;
+  size_t len;
+
+  if (!str)
+    return NULL;
+
+  if (!data)
+    return NULL;
+
+  if (strcmp(str, ":+OK") != 0)
+    return NULL;
+
+  updatecontext();
+
+  for (ch = irlist_get_head(&(gnetwork->channels));
+       ch;
+       ch = irlist_get_next(ch)) {
+    if (ch->fish == NULL)
+      continue;
+    if ((ch->flags & CHAN_ONCHAN) == 0)
+      continue;
+    if (strcasecmp(ch->name, channel) != 0)
+      continue;
+
+    newstr = decrypt_fish(data, strlen(data), ch->fish);
+    if (newstr == NULL)
+      return NULL;
+
+    newline = mystrdup(line);
+    len = strlen(newline);
+    end = strchr(newline, ' ');
+    if (end == NULL)
+      return NULL;
+
+    end = strchr(++end, ' ');
+    if (end == NULL)
+      return NULL;
+
+    *end = 0;
+    len -= strlen(newline) - 1;
+    *(end++) = ' ';
+    snprintf(end, len, "%s :%s", channel, newstr);
+    mydelete(newstr);
+    if (gdata.debug > 0) {
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
+    }
+    return newline;
+  }
+  return NULL;
 }
 
 #endif /* WITHOUT_BLOWFISH */

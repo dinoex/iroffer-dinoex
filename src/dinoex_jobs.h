@@ -21,6 +21,10 @@
 #define ADMIN_LEVEL_INFO	1
 #define ADMIN_LEVEL_PUBLIC	0
 
+#ifndef WITHOUT_BLOWFISH
+char *test_fish_message(char *line, char *channel, char *str, char *data);
+#endif /* WITHOUT_BLOWFISH */
+
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))

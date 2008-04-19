@@ -51,7 +51,7 @@ bugfix: fix small memory leaks
   Default: 0 = disabled.
 
 226) channel -fish key (inspired by dondieschotte, Vision)
-  blowfish encryption for channel announces.
+  blowfish encryption for channel announces and triggers.
 
 bugfix: restrictsend (reported by dsd)
   versions affected: 3.5 - 3.6

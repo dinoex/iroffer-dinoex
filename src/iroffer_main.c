@@ -2366,11 +2366,22 @@ static void parseline(char *line) {
  /* PRIVMSG */
    if (!strcmp(part2,"PRIVMSG"))
      {
-       int autoword = 0;
-       autoword = check_trigger(line, part4);
+#ifndef WITHOUT_BLOWFISH
+       char *line2;
+
+       line2 = test_fish_message(line, part3, part4, part5);
+       if (line2)
+         {
+           /* use decrypted line */
+           line = line2;
+         }
+#endif /* WITHOUT_BLOWFISH */
        /* matched lines are skipped */
-       if (autoword == 0)
+       if (check_trigger(line, part4) == 0)
          privmsgparse("PRIVMSG", line);
+#ifndef WITHOUT_BLOWFISH
+       mydelete(line2);
+#endif /* WITHOUT_BLOWFISH */
      }
    
    mydelete(part2);

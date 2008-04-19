@@ -48,7 +48,7 @@ bugfix: Speicherlecks behoben
   Default: 0 = keine Aktion.
 
 226) channel -fish key
-  Verschlüsselung der Announces mit blowfish.
+  Verschlüsselung der Announces und Trigger mit blowfish.
 
 bugfix: restrictsend
   versions affected: 3.5 - 3.6
