@@ -1023,6 +1023,36 @@ int packnumtonum(const char *a)
   return atoi(a);
 }
 
+int check_trigger(char *line, char *part4)
+{
+  autoqueue_t *aq;
+  autotrigger_t *at;
+
+  if (!part4)
+    return 0;
+
+  for (aq = irlist_get_head(&gdata.autoqueue);
+       aq;
+       aq = irlist_get_next(aq)) {
+    if (!strcasecmp(part4+1, aq->word)) {
+      autoqueuef(line, aq->pack, aq->message);
+      /* only first match is activated */
+      return 1;
+    }
+  }
+  for (at = irlist_get_head(&gdata.autotrigger);
+       at;
+       at = irlist_get_next(at)) {
+    if (!strcasecmp(part4+1, at->word)) {
+      autoqueuef(line, number_of_pack(at->pack), NULL);
+      /* only first match is activated */
+      return 1;
+    }
+  }
+  /* nothing found */
+  return 0;
+}
+
 void lost_nick(char *nick)
 {
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,

@@ -37,8 +37,6 @@
 static void mainloop(void);
 static void parseline(char *line);
 static void privmsgparse(const char* type, char* line);
-static void get_nick_hostname(char *nick, char *hostname, const char* line);
-static void autoqueuef(const char* line, int pack, const char *message);
 static int  parsecmdline(int argc, char *argv[]);
 
 /* main */
@@ -2368,39 +2366,11 @@ static void parseline(char *line) {
  /* PRIVMSG */
    if (!strcmp(part2,"PRIVMSG"))
      {
-       autoqueue_t *aq;
-       autotrigger_t *at;
        int autoword = 0;
-       while (line)
-         {
-           if (part4)
-             {
-               for (aq = irlist_get_head(&gdata.autoqueue); aq; aq = irlist_get_next(aq))
-                 {
-                   if (!strcasecmp(part4+1, aq->word))
-                     {
-                       autoqueuef(line, aq->pack, aq->message);
-                       autoword = 1;
-                       /* only first match is activated */
-                       break;
-                     }
-                 }
-               for (at = irlist_get_head(&gdata.autotrigger); at; at = irlist_get_next(at))
-                 {
-                   if (!strcasecmp(part4+1, at->word))
-                     {
-                       autoqueuef(line, number_of_pack(at->pack), NULL);
-                       autoword = 1;
-                       /* only first match is activated */
-                       break;
-                     }
-                 }
-             }
-           /* matched lines are skipped */
-           if (autoword == 0)
-             privmsgparse("PRIVMSG",line);
-           break;
-         }
+       autoword = check_trigger(line, part4);
+       /* matched lines are skipped */
+       if (autoword == 0)
+         privmsgparse("PRIVMSG", line);
      }
    
    mydelete(part2);
@@ -3022,7 +2992,7 @@ static void privmsgparse(const char* type, char* line) {
    return;
    }
 
-static void get_nick_hostname(char *nick, char *hostname, const char* line)
+void get_nick_hostname(char *nick, char *hostname, const char* line)
 {
    int i,j;
 
@@ -3044,7 +3014,7 @@ static void get_nick_hostname(char *nick, char *hostname, const char* line)
    hostname[j]='\0';
 }
 
-static void autoqueuef(const char* line, int pack, const char *message)
+void autoqueuef(const char* line, int pack, const char *message)
 {
    char *nick, *hostname, *hostmask;
    int i;
