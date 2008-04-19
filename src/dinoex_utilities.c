@@ -309,4 +309,72 @@ char *hostmask_to_fnmatch(const char *str)
   return base;
 }
 
+/*
+	BASE 64
+
+	| b64  | b64   | b64   |  b64 |
+	| octect1 | octect2 | octect3 |
+*/
+
+#if !defined(WITHOUT_HTTP_ADMIN) && !defined(WITHOUT_BLOWFISH)
+static unsigned char base64decode[ 256 ] = {
+/* 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F */
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,62, 0, 0, 0,63,
+  52,53,54,55,56,57,58,59,60,61, 0, 0, 0, 0, 0, 0,
+   0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,
+  15,16,17,18,19,20,21,22,23,24,25, 0, 0, 0, 0, 0,
+   0,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,
+  41,42,43,44,45,46,47,48,49,50,51, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
+static void
+b64decode_quartet(unsigned char *decoded, const unsigned char *coded )
+{
+  unsigned char ch;
+
+  ch = base64decode[ coded[ 0 ] ];
+  decoded[ 0 ]  = (unsigned char)( ch << 2 );
+  ch = base64decode[ coded[ 1 ] ];
+  decoded[ 0 ] |= ch >> 4;
+  ch &= 0x0F;
+  decoded[ 1 ]  = (unsigned char)( ch << 4 );
+  ch = base64decode[ coded[ 2 ] ];
+  decoded[ 1 ] |= ch >> 2;
+  ch &= 0x03;
+  decoded[ 2 ]  = (unsigned char)( ch << 6 );
+  ch = base64decode[ coded[ 3 ] ];
+  decoded[ 2 ] |= ch;
+}
+
+char *
+b64decode_string(const char *coded)
+{
+  char *dest;
+  char *result;
+  size_t len;
+
+  len = strlen(coded);
+  result = mycalloc(len);
+  dest = result;
+  while (len >= 4) {
+    b64decode_quartet((unsigned char *)dest, (const unsigned char *)coded);
+    dest += 3;
+    coded += 4;
+    len -= 4;
+  }
+  *(dest++) = 0;
+  return result;
+}
+#endif
+
 /* End of File */
