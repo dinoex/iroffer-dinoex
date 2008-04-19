@@ -34,6 +34,5 @@ int strcmp_null(const char *s1, const char *s2);
 int is_file_writeable(const char *f);
 char *hostmask_to_fnmatch(const char *str);
 extern unsigned char base64decode[ 256 ];
-char *b64decode_string(const char *coded);
 
 /* End of File */

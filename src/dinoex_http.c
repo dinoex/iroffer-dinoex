@@ -112,6 +112,47 @@ static const http_special_t http_special[] = {
   { 0, NULL },
 };
 
+#ifndef WITHOUT_HTTP_ADMIN
+static void
+b64decode_quartet(unsigned char *decoded, const unsigned char *coded )
+{
+  unsigned char ch;
+
+  ch = base64decode[ coded[ 0 ] ];
+  decoded[ 0 ]  = (unsigned char)( ch << 2 );
+  ch = base64decode[ coded[ 1 ] ];
+  decoded[ 0 ] |= ch >> 4;
+  ch &= 0x0F;
+  decoded[ 1 ]  = (unsigned char)( ch << 4 );
+  ch = base64decode[ coded[ 2 ] ];
+  decoded[ 1 ] |= ch >> 2;
+  ch &= 0x03;
+  decoded[ 2 ]  = (unsigned char)( ch << 6 );
+  ch = base64decode[ coded[ 3 ] ];
+  decoded[ 2 ] |= ch;
+}
+
+char *
+b64decode_string(const char *coded)
+{
+  char *dest;
+  char *result;
+  size_t len;
+
+  len = strlen(coded);
+  result = mycalloc(len);
+  dest = result;
+  while (len >= 4) {
+    b64decode_quartet((unsigned char *)dest, (const unsigned char *)coded);
+    dest += 3;
+    coded += 4;
+    len -= 4;
+  }
+  *(dest++) = 0;
+  return result;
+}
+#endif
+
 static const char *html_mime(const char *file)
 {
   const char *ext;
