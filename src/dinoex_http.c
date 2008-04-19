@@ -132,7 +132,7 @@ b64decode_quartet(unsigned char *decoded, const unsigned char *coded )
   decoded[ 2 ] |= ch;
 }
 
-char *
+static char *
 b64decode_string(const char *coded)
 {
   char *dest;
