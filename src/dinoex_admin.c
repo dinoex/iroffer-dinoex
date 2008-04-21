@@ -1258,6 +1258,11 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
       if (xd3->mtime < xd4->mtime) return -1;
       if (xd3->mtime > xd4->mtime) return 1;
       break;
+    case 'A':
+    case 'a':
+      if (xd3->xtime < xd4->xtime) return -1;
+      if (xd3->xtime > xd4->xtime) return 1;
+      break;
     case 'N':
     case 'n':
     case 'F':

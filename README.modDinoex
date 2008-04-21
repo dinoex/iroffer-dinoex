@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+233) SORT
+  new admin commands:
+  SORT ADDED                        Sort all Packs by time added
+  SORT -ADDED                       Sort all Packs backwards by time added
+
 232) show_date_added (inspired by dondieschotte, Gotham)
   Show date the pack was added whith XDCC LIST.
 

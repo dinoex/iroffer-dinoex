@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+233) SORT
+  Neue Admin Kommandos:
+  SORT ADDED                       Sortiere alle Pakete nach dem Datum des Hinzufügens
+  SORT -ADDED                      Sortiere alle Pakete rückwärts nach dem Datum des Hinzufügens
+
 232) show_date_added
   Zeige das Datum, an dem das Paket hinzugefügt wurde, bei XDCC LIST an.
 
