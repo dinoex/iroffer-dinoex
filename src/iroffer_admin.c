@@ -715,7 +715,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
      {
        datestr[0] = ' ';
        datestr[1] = 0;
-       getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
+       user_getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
      }
    snprintf(tempstr, maxtextlength - 1,
            "\2#%-*i\2 %*ix [%s]%s %s",
@@ -1783,7 +1783,7 @@ static void u_info(const userinput * const u)
     }
   if ((u->level > 0) && (xd->xtime != 0))
     {
-      getdatestr(tempstr, xd->xtime, maxtextlengthshort);
+      user_getdatestr(tempstr, xd->xtime, maxtextlengthshort);
       u_respond(u, " Pack Added     %s", tempstr);
     }
   if (xd->lock)
