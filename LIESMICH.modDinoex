@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+234) reconnect_delay
+  Nach Verbindungsverlust, warte noch für n Sekunden.
+
+bugfix: reconnect
+  Bei Verbindunsverlust wird nicht sofort wiederverbunden.
+
 233) SORT
   Neue Admin Kommandos:
   SORT ADDED                       Sortiere alle Pakete nach dem Datum des Hinzufügens

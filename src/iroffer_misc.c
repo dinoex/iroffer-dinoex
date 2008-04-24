@@ -2061,6 +2061,7 @@ void reinit_config_vars(void)
   gdata.direct_config_access = 0;
   gdata.new_trigger = 0;
   gdata.show_date_added = 0;
+  gdata.reconnect_delay = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

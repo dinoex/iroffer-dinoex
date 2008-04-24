@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+234) reconnect_delay (inspired by dondieschotte)
+  Do not reconnect when connections is dropped for given seconds.
+
+bugfix: reconnect
+  If connection drops, do not immediatly reconnect.
+
 233) SORT
   new admin commands:
   SORT ADDED                        Sort all Packs by time added

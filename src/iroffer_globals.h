@@ -181,6 +181,7 @@ int fileremove_max_packs;
 int direct_config_access;
 int new_trigger;
 int show_date_added;
+int reconnect_delay;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

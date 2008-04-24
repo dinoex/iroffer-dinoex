@@ -247,6 +247,7 @@ dondieschotte
 	suggesting "psend nick" command
 	reporting "-no-memsave" bug
 	option "show_date_added"
+	option "reconnect_delay"
 
 dsd
 	admin command "autoadd"

@@ -138,6 +138,7 @@ static config_int_typ config_parse_int[] = {
 {"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, 0, 1000000, 4 },
 {"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1 },
 {"queuesize",               &gdata.queuesize,               0, 1000000, 1 },
+{"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1 },
 {"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1 },
 {"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1 },
 {"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1 },

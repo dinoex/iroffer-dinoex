@@ -44,6 +44,8 @@ void close_server(void)
   FD_CLR(gnetwork->ircserver, &gdata.readset);
   shutdown_close(gnetwork->ircserver);
   gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+  /* do not reconnect immediatly */
+  gnetwork->lastservercontact = gdata.curtime + gdata.reconnect_delay;
 }
 
 #ifdef USE_SSL
