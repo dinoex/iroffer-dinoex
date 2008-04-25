@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.7:
 -----------------
 
+235) @find, XDCC SEARCH (inspired by dondieschotte)
+  search for date added if configured
+
 234) reconnect_delay (inspired by dondieschotte)
   Do not reconnect when connections is dropped for given seconds.
 

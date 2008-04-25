@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.7:
 ---------------
 
+235) @find, XDCC SEARCH
+  Suche auch nach dem Datum, falls konfiguriert.
+
 234) reconnect_delay
   Nach Verbindungsverlust, warte noch für n Sekunden.
 

@@ -600,6 +600,7 @@ char *grep_to_fnmatch(char *grep)
 int fnmatch_xdcc(const char *match, xdcc *xd)
 {
   const char *file;
+  char datestr[maxtextlengthshort];
 
   file = get_basename(xd->file);
   if (fnmatch(match, file, FNM_CASEFOLD) == 0)
@@ -608,6 +609,11 @@ int fnmatch_xdcc(const char *match, xdcc *xd)
     return 1;
   if (xd->note != NULL) {
     if (fnmatch(match, xd->note, FNM_CASEFOLD) == 0)
+      return 1;
+  }
+  if (gdata.show_date_added) {
+    user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
+    if (fnmatch(match, datestr, FNM_CASEFOLD) == 0)
       return 1;
   }
   return 0;
