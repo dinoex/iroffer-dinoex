@@ -1650,7 +1650,7 @@ xdcc *a_add2(const userinput * const u)
   a_respond(u, "ADD PACK: [Pack: %i] [File: %s] Use CHDESC to change description",
             n, xd->file);
 
-  if ((gdata.auto_default_group) && (group != NULL)) {
+  if (group != NULL) {
     xd->group = mystrdup(group);
     a_respond(u, "GROUP: [Pack: %i] New: %s",
               n, xd->group);

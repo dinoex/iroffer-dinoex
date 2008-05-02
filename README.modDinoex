@@ -1,5 +1,11 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version 3.8:
+-----------------
+
+bugfix: autoadd_group_match (reported by dondieschotte, disi)
+  autoadd_group_match works now without auto_default_group.
+
 With Version 3.7:
 -----------------
 

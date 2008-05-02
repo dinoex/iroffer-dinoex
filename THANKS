@@ -249,6 +249,7 @@ dondieschotte
 	option "show_date_added"
 	option "reconnect_delay"
 	search for date added
+	reporting "autoadd_group_match" bug
 
 dsd
 	admin command "autoadd"
@@ -373,4 +374,7 @@ TheBotKiller
 
 Gotham
 	option "show_date_added"
+
+disi
+	reporting "autoadd_group_match" bug
 
