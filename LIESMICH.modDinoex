@@ -24,7 +24,7 @@ bugfix: -no-memsave
   Bot kann beim Start abstürzen
 
 231) BOTINFO
-  Erweitere BOTINFO um die Zeit wi lang der bot auf dem Server und im Channel ist.
+  Erweitere BOTINFO um die Zeit wie lang der bot auf dem Server und im Channel ist.
 
 bugfix: connectionmethod ssl
   versions affected: 3.0 - 3.6
