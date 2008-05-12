@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+236) fish_only (inspired by Vision)
+  If set, irnore not encryted triggers in channles with a fish key.
+
 bugfix: autoadd_group_match (reported by dondieschotte, disi)
   autoadd_group_match works now without auto_default_group.
 

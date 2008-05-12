@@ -1482,6 +1482,7 @@ void dumpgdata(void)
   gdata_print_int(new_trigger);
   gdata_print_int(show_date_added);
   gdata_print_int(reconnect_delay);
+  gdata_print_int(fish_only);
   gdata_print_long(nomd5_start);
   
   gdata_irlist_iter_start(downloadhost, char);

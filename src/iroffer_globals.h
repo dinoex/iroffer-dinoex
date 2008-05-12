@@ -182,6 +182,7 @@ int direct_config_access;
 int new_trigger;
 int show_date_added;
 int reconnect_delay;
+int fish_only;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

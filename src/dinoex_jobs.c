@@ -192,8 +192,10 @@ char *test_fish_message(char *line, char *channel, char *str, char *data)
   if (!data)
     return NULL;
 
-  if (strcmp(str, ":+OK") != 0)
-    return NULL;
+  if (!gdata.fish_only) {
+    if (strcmp(str, ":+OK") != 0)
+      return NULL;
+  }
 
   updatecontext();
 
@@ -207,9 +209,16 @@ char *test_fish_message(char *line, char *channel, char *str, char *data)
     if (strcasecmp(ch->name, channel) != 0)
       continue;
 
-    newstr = decrypt_fish(data, strlen(data), ch->fish);
-    if (newstr == NULL)
-      return NULL;
+    newstr= NULL;
+    if (gdata.fish_only) {
+      if (strcmp(str, ":+OK") != 0)
+        newstr = mystrdup( ":+OK" );
+    }
+    if (newstr == NULL) {
+      newstr = decrypt_fish(data, strlen(data), ch->fish);
+      if (newstr == NULL)
+        return NULL;
+    }
 
     newline = mystrdup(line);
     len = strlen(newline);

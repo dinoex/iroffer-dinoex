@@ -68,6 +68,7 @@ static config_bool_typ config_parse_bool[] = {
 {"direct_file_access",     &gdata.direct_file_access },
 {"disablexdccinfo",        &gdata.disablexdccinfo },
 {"extend_status_line",     &gdata.extend_status_line },
+{"fish_only",              &gdata.fish_only },
 {"getipfromserver",        &gdata.getipfromserver },
 {"groupsincaps",           &gdata.groupsincaps },
 {"hide_list_info",         &gdata.hide_list_info },
