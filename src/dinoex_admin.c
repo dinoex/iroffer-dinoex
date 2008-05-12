@@ -1647,12 +1647,12 @@ xdcc *a_add2(const userinput * const u)
     n = number_of_pack(xd);
   }
 
-  a_respond(u, "ADD PACK: [Pack: %i] [File: %s] Use CHDESC to change description",
+  a_respond(u, "ADD PACK: [Pack %i] [File %s] Use CHDESC to change description",
             n, xd->file);
 
   if (group != NULL) {
     xd->group = mystrdup(group);
-    a_respond(u, "GROUP: [Pack: %i] New: %s",
+    a_respond(u, "GROUP: [Pack %i] New: %s",
               n, xd->group);
   }
 
