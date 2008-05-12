@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+bugfix: fix small memory leaks
+
 236) fish_only (inspired by Vision)
   If set, irnore not encryted triggers in channles with a fish key.
 

@@ -3064,6 +3064,7 @@ void autoqueuef(const char* line, int pack, const char *message)
        mydelete(tempstr);
      }
    
+   mydelete(hostmask);
    mydelete(nick);
    mydelete(hostname);
 
