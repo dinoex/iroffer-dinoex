@@ -2207,4 +2207,3 @@
 2270 ">FISH>: %s"
 2271 "reconnect_delay"
 2272 "fish_only"
-
