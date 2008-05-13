@@ -85,6 +85,8 @@ void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd
 static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
 {
   updatecontext();
+  if (ft->curlhandle != 0 )
+    curl_easy_cleanup(ft->curlhandle);
   fclose(ft->writefd);
   mydelete(ft->errorbuf);
   mydelete(ft->name);
@@ -107,7 +109,6 @@ void fetch_cancel(int num)
   i = 0;
   ft = irlist_get_head(&fetch_trans);
   while (ft) {
-    i++;
     if (++i == num) {
       ft = irlist_get_next(ft);
       continue;
@@ -117,7 +118,6 @@ void fetch_cancel(int num)
     if ( cms != 0 ) {
       outerror(OUTERROR_TYPE_WARN_LOUD, "curl_multi_remove_handle() = %d", cms);
     }
-    curl_easy_cleanup(ft->curlhandle);
     fetch_started --;
     ft = clean_fetch(ft);
   }
@@ -157,15 +157,13 @@ void fetch_perform(void)
       if (ft->curlhandle == ch) {
         gnetwork = &(gdata.networks[ft->net]);
         if (ft->errorbuf[0] != 0)
-          outerror(OUTERROR_TYPE_WARN_LOUD, "fetch: %s", ft->errorbuf);
+          outerror(OUTERROR_TYPE_WARN_LOUD, "fetch %s failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
         if (msg->data.result != 0 ) {
           a_respond(&(ft->u), "fetch %s failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
-        }
-              else {
+        } else {
           a_respond(&(ft->u), "fetch %s completed", ft->name);
         }
         updatecontext();
-        curl_easy_cleanup(ft->curlhandle);
         seen ++;
         fetch_started --;
         ft = clean_fetch(ft);
@@ -176,8 +174,99 @@ void fetch_perform(void)
   } while (msgs_in_queue > 0);
   updatecontext();
   if (seen == 0)
-    outerror(OUTERROR_TYPE_WARN_LOUD, "curlhandle not found ");
+    outerror(OUTERROR_TYPE_WARN_LOUD, "curlhandle not found %d/%d", running, fetch_started);
+  fetch_started = running;
   gnetwork = backup;
+}
+
+static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
+{
+  CURL *ch;
+  CURLcode ces;
+  CURLcode cms;
+
+  updatecontext();
+
+  ch = curl_easy_init();
+  if (ch == NULL) {
+    a_respond(u, "Curl not ready");
+    return 1;
+  }
+  ft->curlhandle = ch;
+
+  ces = curl_easy_setopt(ch, CURLOPT_ERRORBUFFER, ft->errorbuf);
+  if (ces != 0) {
+    a_respond(u, "curl_easy_setopt ERRORBUFFER failed with %d", ces);
+    return 1;
+  }
+
+#if 0
+  {
+    char *vhost;
+
+    vhost = get_local_vhost();
+    if (vhost) {
+      ft->vhosttext = mystrdup(vhost);
+      ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
+      if (ces != 0) {
+        a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
+        return 1;
+      }
+    }
+  }
+#endif
+
+  ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
+  if (ces != 0) {
+    a_respond(u, "curl_easy_setopt NOPROGRESS failed with %d", ces);
+    return 1;
+  }
+
+  ces = curl_easy_setopt(ch, CURLOPT_NOSIGNAL, 1);
+  if (ces != 0) {
+    a_respond(u, "curl_easy_setopt NOSIGNAL failed with %d", ces);
+    return 1;
+  }
+
+  ces = curl_easy_setopt(ch, CURLOPT_FAILONERROR, 1);
+  if (ces != 0) {
+    a_respond(u, "curl_easy_setopt FAILONERROR failed with %d", ces);
+    return 1;
+  }
+
+  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
+  if (ces != 0) {
+    a_respond(u, "curl_easy_setopt SSL_VERIFYPEER failed with %d", ces);
+    return 1;
+  }
+
+  ces = curl_easy_setopt(ch, CURLOPT_URL, ft->url);
+  if (ces != 0) {
+    a_respond(u, "curl_easy_setopt URL failed with %d", ces);
+    return 1;
+  }
+
+  ces = curl_easy_setopt(ch, CURLOPT_WRITEDATA, ft->writefd);
+  if (ces != 0) {
+    a_respond(u, "curl_easy_setopt WRITEDATA failed with %d", ces);
+    return 1;
+  }
+
+  if (ft->resumesize > 0L) {
+    ces = curl_easy_setopt(ch, CURLOPT_RESUME_FROM_LARGE, ft->resumesize);
+    if (ces != 0) {
+      a_respond(u, "curl_easy_setopt RESUME_FROM failed with %d", ces);
+      return 1;
+    }
+  }
+
+  cms = curl_multi_add_handle(cm, ch);
+  if (cms != 0) {
+    a_respond(u, "curl_multi_add_handle failed with %d", cms);
+    return 1;
+  }
+
+  return 0;
 }
 
 void start_fetch_url(const userinput *const u)
@@ -190,9 +279,6 @@ void start_fetch_url(const userinput *const u)
   FILE *writefd;
   struct stat s;
   int retval;
-  CURL *ch;
-  CURLcode ces;
-  CURLcode cms;
 
   name = u->arg1;
   url = u->arg2e;
@@ -239,87 +325,8 @@ void start_fetch_url(const userinput *const u)
   ft->errorbuf = mycalloc(CURL_ERROR_SIZE);
   ft->starttime = gdata.curtime;
 
-  updatecontext();
-  ch = curl_easy_init();
-  if (ch == NULL) {
-    a_respond(u, "Curl not ready");
+  if (curl_fetch(u, ft)) {
     clean_fetch(ft);
-    return;
-  }
-
-  ft->curlhandle = ch;
-
-  ces = curl_easy_setopt(ch, CURLOPT_ERRORBUFFER, ft->errorbuf);
-  if (ces != 0) {
-    a_respond(u, "curl_easy_setopt ERRORBUFFER failed with %d", ces);
-    clean_fetch(ft);
-    return;
-  }
-
-#if 0
-  {
-    char *vhost;
-
-    vhost = get_local_vhost();
-    if (vhost) {
-      ft->vhosttext = mystrdup(vhost);
-      ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
-      if (ces != 0) {
-        a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
-        clean_fetch(ft);
-        return;
-      }
-    }
-  }
-#endif
-
-  ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
-  if (ces != 0) {
-    a_respond(u, "curl_easy_setopt NOPROGRESS failed with %d", ces);
-    return;
-  }
-
-  ces = curl_easy_setopt(ch, CURLOPT_NOSIGNAL, 1);
-  if (ces != 0) {
-    a_respond(u, "curl_easy_setopt NOSIGNAL failed with %d", ces);
-    return;
-  }
-
-  ces = curl_easy_setopt(ch, CURLOPT_FAILONERROR, 1);
-  if (ces != 0) {
-    a_respond(u, "curl_easy_setopt FAILONERROR failed with %d", ces);
-    return;
-  }
-
-  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
-  if (ces != 0) {
-    a_respond(u, "curl_easy_setopt SSL_VERIFYPEER failed with %d", ces);
-    return;
-  }
-
-  ces = curl_easy_setopt(ch, CURLOPT_URL, ft->url);
-  if (ces != 0) {
-    a_respond(u, "curl_easy_setopt URL failed with %d", ces);
-    return;
-  }
-
-  ces = curl_easy_setopt(ch, CURLOPT_WRITEDATA, ft->writefd);
-  if (ces != 0) {
-    a_respond(u, "curl_easy_setopt WRITEDATA failed with %d", ces);
-    return;
-  }
-
-  if (resumesize > 0L) {
-    ces = curl_easy_setopt(ch, CURLOPT_RESUME_FROM_LARGE, ft->resumesize);
-    if (ces != 0) {
-      a_respond(u, "curl_easy_setopt RESUME_FROM failed with %d", ces);
-      return;
-    }
-  }
-
-  cms = curl_multi_add_handle(cm, ch);
-  if (cms != 0) {
-    a_respond(u, "curl_multi_add_handle failed with %d", cms);
     return;
   }
 

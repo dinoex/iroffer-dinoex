@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+bugfix: FETCHCANCEL (reported by Radicand, Lamune)
+  Bot printed "curlhandle not found" again and again.
+
 extend debug and log information.
 
 bugfix: fix small memory leaks

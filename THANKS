@@ -310,6 +310,7 @@ Radicand
 	reporting "nodownloadhost" regexp problem
 	reporting tcp send window bug
 	admin command "GET"
+	reporting "FETCHCANCEL" bug
 
 unlogisch
 	option "autoadd_sort"
@@ -357,6 +358,7 @@ eagle_bot
 Lamune
 	admin command "NOSEND x msg"
 	reporting FETCH with spaces problem
+	reporting "FETCHCANCEL" bug
 
 DevelDoll
 	report transferlimits to user
