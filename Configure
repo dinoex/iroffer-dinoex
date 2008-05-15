@@ -272,6 +272,7 @@ echo "Configuring without memory protection."
 echo "#define WITHOUT_MEMSAVE" >> src/iroffer_config.h
 fi
 
+
 echo -n "Checking for make... "
 if [ -f "`type make | awk '{print $NF}'`" ]; then
  maketype="make"
@@ -881,72 +882,6 @@ echo "deactivate chroot()-ing"
 echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
 fi
 
-if $OPT_CURL; then
-	echo -n "Seeing if libcurl libraries exist (for the FETCH-Command)... "
-	echo "
-#define GEX 
-#include \"src/iroffer_config.h\"
-#include \"src/iroffer_defines.h\"
-#include \"src/iroffer_headers.h\"
-#include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
-" > config.temp.c
-	if $cctype config.temp.c $libs -lcurl -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR; then
-		echo "found"
-		echo "#define USE_CURL" >> src/iroffer_config.h
-		CURLLIB="-lcurl"
-		CURLINC="-I/usr/local/include"
-		CURLLDF="-L/usr/local/lib"
-	else
-		echo "not found"
-		echo "***Disable the FETCH-Command. If u want to use this feature, please install libcurl.***"
-	fi
-fi
-
-if $OPT_SSL; then
-	echo -n "Seeing if OpenSSL libraries exist... "
-	echo "
-#define GEX 
-#include \"src/iroffer_config.h\"
-#include \"src/iroffer_defines.h\"
-#include \"src/iroffer_headers.h\"
-#include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
-" > config.temp.c
-	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
-		echo "found"
-		echo "Configuring for OpenSSL."
-		echo "#define USE_SSL" >> src/iroffer_config.h
-		SSLLIB="-lssl"
-		SSLINC="-I/usr/local/include/"
-		SSLLDF="-L/usr/local/lib"
-	else
-		echo "not found"
-		echo "***Disable the SSL Features. If u want to use this feature, please install OpenSSL.***"
-	fi
-fi
-
-if $OPT_TLS; then
-	echo -n "Seeing if GNU TLS libraries exist... "
-	echo "
-#define GEX 
-#include \"src/iroffer_config.h\"
-#include \"src/iroffer_defines.h\"
-#include \"src/iroffer_headers.h\"
-#include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
-" > config.temp.c
-	if $cctype config.temp.c $libs -lgnutls-openssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
-		echo "found"
-		echo "#define USE_SSL" >> src/iroffer_config.h
-		SSLLIB="-lgnutls-openssl"
-		SSLINC="-I/usr/local/include/gnutls"
-		SSLLDF="-L/usr/local/lib"
-	else
-		echo "not found"
-		echo "***Disable the SSL Features. If u want to use this feature, please install GNU TLS.***"
-	fi
-fi
 
 echo -n "Seeing if NSS libraries exist (for chroot)... "
 echo "
@@ -1274,6 +1209,73 @@ echo "found"
 else
 echo "#define NO_HOSTCODES" >> src/iroffer_config.h
 echo "missing, won't report error codes"
+fi
+
+if $OPT_CURL; then
+	echo -n "Seeing if libcurl libraries exist (for the FETCH-Command)... "
+	echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+	if $cctype config.temp.c $libs -lcurl -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR; then
+		echo "found"
+		echo "#define USE_CURL" >> src/iroffer_config.h
+		CURLLIB="-lcurl"
+		CURLINC="-I/usr/local/include"
+		CURLLDF="-L/usr/local/lib"
+	else
+		echo "not found"
+		echo "***Disabled the FETCH-Command. If u want to use this feature, please install libcurl.***"
+	fi
+fi
+
+if $OPT_SSL; then
+	echo -n "Seeing if OpenSSL libraries exist... "
+	echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
+		echo "found"
+		echo "Configuring for OpenSSL."
+		echo "#define USE_SSL" >> src/iroffer_config.h
+		SSLLIB="-lssl"
+		SSLINC="-I/usr/local/include/"
+		SSLLDF="-L/usr/local/lib"
+	else
+		echo "not found"
+		echo "***Disabled the SSL Features. If u want to use this feature, please install OpenSSL.***"
+	fi
+fi
+
+if $OPT_TLS; then
+	echo -n "Seeing if GNU TLS libraries exist... "
+	echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+	if $cctype config.temp.c $libs -lgnutls-openssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
+		echo "found"
+		echo "#define USE_SSL" >> src/iroffer_config.h
+		SSLLIB="-lgnutls-openssl"
+		SSLINC="-I/usr/local/include/gnutls"
+		SSLLDF="-L/usr/local/lib"
+	else
+		echo "not found"
+		echo "***Disabled the SSL Features. If u want to use this feature, please install GNU TLS.***"
+	fi
 fi
 
 rm -f config.temp*
