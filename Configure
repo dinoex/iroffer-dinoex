@@ -146,7 +146,8 @@ fi
 
 if $OPT_DEBUG; then
 echo "Configuring for debugging."
-DEBUG="-g -DDEBUG"
+echo "#define DEBUG" >> src/iroffer_config.h
+DEBUG="-g"
 DEBUGFLAGS="
 -Waggregate-return
 -Wchar-subscripts
@@ -219,8 +220,9 @@ fi
 
 if $OPT_GEOIP; then
 echo "Configuring for GeoIP."
+echo "#define USE_GEOIP" >> src/iroffer_config.h
 GEOLIB="-lGeoIP"
-GEOINC="-DUSE_GEOIP -I/usr/local/include"
+GEOINC="-I/usr/local/include"
 GEOLDF="-L/usr/local/lib"
 fi
 
@@ -239,34 +241,35 @@ fi
 
 if $OPT_UPNP; then
 echo "Configuring for UPNP with lminiupnpc."
+echo "#define USE_UPNP" >> src/iroffer_config.h
 UPNPLIB="-lminiupnpc"
-UPNPINC="-DUSE_UPNP -I/usr/local/include"
+UPNPINC="-I/usr/local/include"
 UPNPLDF="-L/usr/local/lib"
 fi
 
 if $OPT_NOHTTP; then
 echo "Configuring without HTTP Server."
-NOFLAGS="${NOFLAGS} -DWITHOUT_HTTP"
+echo "#define WITHOUT_HTTP" >> src/iroffer_config.h
 fi
 
 if $OPT_NOADMIN; then
 echo "Configuring without HTTP Admin."
-NOFLAGS="${NOFLAGS} -DWITHOUT_HTTP_ADMIN"
+echo "#define WITHOUT_HTTP_ADMIN" >> src/iroffer_config.h
 fi
 
 if $OPT_NOTELNET; then
 echo "Configuring without Telent Server."
-NOFLAGS="${NOFLAGS} -DWITHOUT_TELNET"
+echo "#define WITHOUT_TELNET" >> src/iroffer_config.h
 fi
 
 if $OPT_NOBLOWFISH; then
 echo "Configuring without blowfish encryption."
-NOFLAGS="${NOFLAGS} -DWITHOUT_BLOWFISH"
+echo "#define WITHOUT_BLOWFISH" >> src/iroffer_config.h
 fi
 
 if $OPT_NOMEMSAVE; then
 echo "Configuring without memory protection."
-NOFLAGS="${NOFLAGS} -DWITHOUT_MEMSAVE"
+echo "#define WITHOUT_MEMSAVE" >> src/iroffer_config.h
 fi
 
 echo -n "Checking for make... "
@@ -890,15 +893,13 @@ int main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs -lcurl -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR; then
 		echo "found"
+		echo "#define USE_CURL" >> src/iroffer_config.h
 		CURLLIB="-lcurl"
-		CURLINC="-DUSE_CURL -I/usr/local/include"
+		CURLINC="-I/usr/local/include"
 		CURLLDF="-L/usr/local/lib"
 	else
 		echo "not found"
 		echo "***Disable the FETCH-Command. If u want to use this feature, please install libcurl.***"
-		CURLLIB=""
-		CURLINC=""
-		CURLLDF=""
 	fi
 fi
 
@@ -915,15 +916,13 @@ int main (int argc, char **argv) {exit(0);}
 	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
 		echo "found"
 		echo "Configuring for OpenSSL."
+		echo "#define USE_SSL" >> src/iroffer_config.h
 		SSLLIB="-lssl"
-		SSLINC="-DUSE_SSL -I/usr/local/include/"
+		SSLINC="-I/usr/local/include/"
 		SSLLDF="-L/usr/local/lib"
 	else
 		echo "not found"
 		echo "***Disable the SSL Features. If u want to use this feature, please install OpenSSL.***"
-		SSLLIB=""
-		SSLINC=""
-		SSLLDF=""
 	fi
 fi
 
@@ -939,15 +938,13 @@ int main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs -lgnutls-openssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
 		echo "found"
+		echo "#define USE_SSL" >> src/iroffer_config.h
 		SSLLIB="-lgnutls-openssl"
-		SSLINC="-DUSE_SSL -I/usr/local/include/gnutls"
+		SSLINC="-I/usr/local/include/gnutls"
 		SSLLDF="-L/usr/local/lib"
 	else
 		echo "not found"
 		echo "***Disable the SSL Features. If u want to use this feature, please install GNU TLS.***"
-		SSLLIB=""
-		SSLINC=""
-		SSLLDF=""
 	fi
 fi
 
@@ -1298,7 +1295,7 @@ echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB
 echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $NOFLAGS
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2
 echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then

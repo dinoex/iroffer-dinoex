@@ -31,10 +31,11 @@ $Id$
 
 */
 
-#ifdef USE_UPNP
-
 /* include the headers */
 #include "iroffer_config.h"
+
+#ifdef USE_UPNP
+
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"
 

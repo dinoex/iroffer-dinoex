@@ -55,6 +55,8 @@ have time to provide unpaid support for everyone who uses this code.
                                              -- Paul Kocher
 */
 
+#include "iroffer_config.h"
+
 #ifndef WITHOUT_BLOWFISH
 
 #include "blowfish.h"
