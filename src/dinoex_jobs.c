@@ -59,19 +59,22 @@ static unsigned long bytes_to_long( const char **str )
   unsigned long result;
   char ch;
 
-  ch = (*(*str)++);
+  ch = *(*str);
   result = ch << 24;
   if (ch == 0) return result;
 
-  ch = (*(*str)++);
+  ++(*str);
+  ch = *(*str);
   result |= ch << 16;
   if (ch == 0) return result;
 
-  ch = (*(*str)++);
+  ++(*str);
+  ch = *(*str);
   result |= ch << 8;
   if (ch == 0) return result;
 
-  ch = (*(*str)++);
+  ++(*str);
+  ch = *(*str);
   result |= ch;
   return result;
 }
@@ -303,6 +306,8 @@ void vwriteserver_channel(int delay, const char *format, va_list ap)
   char *msg;
   channel_announce_t *item;
   int len;
+
+  updatecontext();
 
   msg = mycalloc(maxtextlength+1);
 
