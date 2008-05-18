@@ -877,7 +877,6 @@
 898 "unlimitedhost found: %s (%s on %s)"
 899 "** XDCC INFO denied, disabled by configuration"
 900 " ignored: "
-904 " Denied (locked pack): "
 905 " Denied (queue/dup): "
 906 "abgewiesen, Du hast diese Datei bereits in der Warteschlange."
 907 " Denied (user/queue): "

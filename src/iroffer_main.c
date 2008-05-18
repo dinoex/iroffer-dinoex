@@ -3245,7 +3245,7 @@ void sendxdccinfo(const char* nick,
 
   if (hide_pack(xd) != 0)
     {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (locked pack): ");
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (pack locked): ");
       notice(nick,"** Invalid Pack Number, Try Again");
       goto done;
     }
