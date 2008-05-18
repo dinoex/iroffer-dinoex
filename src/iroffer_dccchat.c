@@ -363,9 +363,9 @@ void parsedccchat(dccchat_t *chat,
           writedccchat(chat,0,"For Help type \"help\"\n");
           
           count = irlist_size(&gdata.msglog);
-          writedccchat(chat, 0, "** You have %i message%s in the message log%s\n",
+          writedccchat(chat, 0, "** You have %i %s in the message log%s\n",
                        count,
-                       count != 1 ? "s" : "",
+                       count != 1 ? "messages" : "message",
                        count ? ", use MSGREAD to read them" : "");
           writedccchat(chat,0," \n");
         }

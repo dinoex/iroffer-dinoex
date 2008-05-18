@@ -832,12 +832,12 @@ static void u_xdl_head(const userinput * const u) {
          }
        
        snprintf(tempstr, maxtextlength - 1,
-                "\2**\2 %i pack%s \2**\2  %i of %i slot%s open",
+                "\2**\2 %i %s \2**\2  %i of %i %s open",
                 irlist_size(&gdata.xdccs),
-                irlist_size(&gdata.xdccs) != 1 ? "s" : "",
+                irlist_size(&gdata.xdccs) != 1 ? "packs" : "pack",
                 a - irlist_size(&gdata.trans),
                 a,
-                a != 1 ? "s" : "");
+                a != 1 ? "slots" : "slot");
        len = strlen(tempstr);
        
        if (gdata.slotsmax <= irlist_size(&gdata.trans))
@@ -1141,7 +1141,7 @@ static void u_dcl(const userinput * const u)
   
   if (irlist_size(&gdata.trans))
     {
-      u_respond(u,"Current Transfer%s",irlist_size(&gdata.trans)!=1?"s":"");
+      u_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "Transfers" : "Transfer");
       u_respond(u, "   ID  User        Pack File                               Status");
     }
   
@@ -1191,7 +1191,7 @@ static void u_dcl(const userinput * const u)
   if (irlist_size(&gdata.uploads))
 #endif
     {
-      u_respond(u,"Current Upload%s",irlist_size(&gdata.uploads)!=1?"s":"");
+      u_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "Uploads" : "Upload" );
       u_respond(u,"   ID  User        File                               Status");
     }
   
@@ -1275,7 +1275,7 @@ static void u_dcld(const userinput * const u)
    
    if (irlist_size(&gdata.trans))
      {
-       u_respond(u,"Current Transfer%s",irlist_size(&gdata.trans)!=1?"s":"");
+       u_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "Transfers" : "Transfer");
        u_respond(u, " ID  User        Pack File                               Status");
        u_respond(u,"  ^-    Speed    Current/    End   Start/Remain    Min/  Max  Resumed");
        u_respond(u," --------------------------------------------------------------------");
@@ -1370,7 +1370,7 @@ static void u_dcld(const userinput * const u)
   if (irlist_size(&gdata.uploads))
 #endif
     {
-      u_respond(u,"Current Upload%s",irlist_size(&gdata.uploads)!=1?"s":"");
+      u_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "Uploads" : "Upload");
       u_respond(u," ID  User        File                               Status");
       u_respond(u,"  ^-    Speed    Current/    End   Start/Remain");
       u_respond(u," --------------------------------------------------------------");
@@ -1971,7 +1971,7 @@ static void u_mesg(const userinput * const u)
       gnetwork = backup;
     }
   
-  u_respond(u,"Sent message to %i user%s",irlist_size(&gdata.trans),irlist_size(&gdata.trans)!=1?"s":"");
+  u_respond(u, "Sent message to %i %s", irlist_size(&gdata.trans), irlist_size(&gdata.trans)!=1 ? "users" : "user");
   
 }
 
@@ -1998,7 +1998,7 @@ static void u_mesq(const userinput * const u)
       gnetwork = backup;
     }
   
-  u_respond(u,"Sent message to %i user%s",count,count!=1?"s":"");
+  u_respond(u, "Sent message to %i %s", count, count!=1 ? "users" : "user");
   
 }
 
@@ -2846,8 +2846,8 @@ static void u_botinfo(const userinput * const u) {
              (gdata.statefile?gdata.statefile:"(none)"),
              (gdata.xdcclistfile?gdata.xdcclistfile:"(none)"));
    
-   u_respond(u, "config file%s: %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-             gdata.configfile[1]?"s":"",
+   u_respond(u, "config %s: %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+             gdata.configfile[1]?"files":"file",
              gdata.configfile[0],
              gdata.configfile[1]?", ":"",gdata.configfile[1]?gdata.configfile[1]:"",
              gdata.configfile[2]?", ":"",gdata.configfile[2]?gdata.configfile[2]:"",
@@ -3072,7 +3072,7 @@ static void u_nosave(const userinput * const u) {
    
    if (u->arg1) num = atoi(u->arg1);
    gdata.noautosave=gdata.curtime + 60*num - 1;
-   u_respond(u,"** XDCC AutoSave has been disabled for the next %i minute%s",num,num!=1?"s":"");
+   u_respond(u, "** XDCC AutoSave has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -3086,7 +3086,7 @@ static void u_nosend(const userinput * const u) {
    mydelete(gdata.nosendmsg);
    if (u->arg2e) gdata.nosendmsg=mystrdup(u->arg2e);
    gdata.nonewcons=gdata.curtime + 60*num - 1;
-   u_respond(u,"** XDCC Send has been disabled for the next %i minute%s",num,num!=1?"s":"");
+   u_respond(u, "** XDCC Send has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -3098,7 +3098,7 @@ static void u_nolist(const userinput * const u) {
    
    if (u->arg1) num = atoi(u->arg1);
    gdata.nolisting=gdata.curtime + 60*num - 1;
-   u_respond(u,"** XDCC List and PLIST have been disabled for the next %i minute%s",num,num!=1?"s":"");
+   u_respond(u, "** XDCC List and PLIST have been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -3124,9 +3124,9 @@ static void u_msgread(const userinput * const u)
   mydelete(tempstr);
   
   count = irlist_size(&gdata.msglog);
-  u_respond(u, "msglog: %i message%s in log%s%s",
+  u_respond(u, "msglog: %i %s in log%s%s",
             count,
-            count != 1 ? "s" : "",
+            count != 1 ? "messages" : "message",
             count ? ", use MSGDEL to remove " : "",
             count > 1 ? "them" : (count == 1 ? "it" : ""));
   return;
@@ -3796,7 +3796,7 @@ static void u_chanl(const userinput * const u)
           u_respond(u,"%s",tempstr);
         }
       
-      u_respond(u,"%s: %i user%s",ch->name,j,j!=1?"s":"");
+      u_respond(u,"%s: %i %s", ch->name, j, j!=1 ? "users" : "user");
       
       ch = irlist_get_next(ch);
     }

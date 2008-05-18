@@ -147,10 +147,10 @@ int queue_xdcc_remove(irlist_t *list, int network, const char *nick)
     backup = gnetwork;
     gnetwork = &(gdata.networks[pq->net]);
     notice(nick,
-           "Removed you from the queue for \"%s\", you waited %li minute%s.",
+           "Removed you from the queue for \"%s\", you waited %li %s.",
            pq->xpack->desc,
            (long)(gdata.curtime-pq->queuedtime)/60,
-           ((gdata.curtime-pq->queuedtime)/60) != 1 ? "s" : "");
+           ((gdata.curtime-pq->queuedtime)/60) != 1 ? "minutes" : "minute");
     gnetwork = backup;
     mydelete(pq->nick);
     mydelete(pq->hostname);

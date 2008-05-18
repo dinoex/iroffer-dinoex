@@ -2923,8 +2923,8 @@ static void privmsgparse(const char* type, char* line) {
         k = noticeresults(nick, atfindmatch);
         if (k) {
           ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
-                  "@FIND %s (%s on %s) - %i pack%s found.",
-                  msg2e, hostmask, gnetwork->name, k, k != 1 ? "s" : "");
+                  "@FIND %s (%s on %s) - %i %s found.",
+                  msg2e, hostmask, gnetwork->name, k, k != 1 ? "packs" : "pack");
         }
         mydelete(atfindmatch);
       }
@@ -3140,9 +3140,9 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
      {
        char *tempstr;
        tempstr = addtoqueue(nick, hostname, pack);
-       notice(nick, "** You can only have %d transfer%s at a time, %s",
+       notice(nick, "** You can only have %d %s at a time, %s",
               gdata.maxtransfersperperson,
-              gdata.maxtransfersperperson!=1?"s":"",
+              gdata.maxtransfersperperson!=1 ? "transfers" : "transfer",
               tempstr);
        mydelete(tempstr);
      }

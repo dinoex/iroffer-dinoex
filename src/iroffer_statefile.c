@@ -1719,40 +1719,40 @@ void read_statefile(void)
   if ((gdata.debug > 0) || irlist_size(&gdata.ignorelist))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d Ignore%s]",
+              COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.ignorelist),
-              (irlist_size(&gdata.ignorelist) == 1) ? "" : "s");
+              (irlist_size(&gdata.ignorelist) == 1) ? "Ignore" : "Ignores");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.msglog))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d Message%s]",
+              COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.msglog),
-              (irlist_size(&gdata.msglog) == 1) ? "" : "s");
+              (irlist_size(&gdata.msglog) == 1) ? "Message" : "Messages");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.xdccs))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d Pack%s]",
+              COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.xdccs),
-              (irlist_size(&gdata.xdccs) == 1) ? "" : "s");
+              (irlist_size(&gdata.xdccs) == 1) ? "Pack" : "Packs");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.mainqueue))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d Queue%s]",
+              COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.mainqueue),
-              (irlist_size(&gdata.mainqueue) == 1) ? "" : "s");
+              (irlist_size(&gdata.mainqueue) == 1) ? "Queue" : "Queues");
     }
   if ((gdata.debug > 0) || irlist_size(&gdata.idlequeue))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d Queue%s]",
+              COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.idlequeue),
-              (irlist_size(&gdata.idlequeue) == 1) ? "" : "s");
+              (irlist_size(&gdata.idlequeue) == 1) ? "Queue" : "Queues");
     }
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,

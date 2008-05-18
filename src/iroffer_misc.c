@@ -1835,9 +1835,9 @@ void sendxdlqueue (void)
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_YELLOW,"Not Sending XDCC LIST to: %s (nolist set)",tempstr);
       
       notice(tempstr,
-             "The Owner Has Requested That No Lists Be Sent In The Next %li Minute%s",
+             "The Owner Has Requested That No Lists Be Sent In The Next %li %s",
              1+(gdata.nolisting-gdata.curtime)/60,
-             ((1+(gdata.nolisting-gdata.curtime)/60) != 1 ? "s" : ""));
+             ((1+(gdata.nolisting-gdata.curtime)/60) != 1 ? "Minutes" : "Minute"));
     }
   else
     {
