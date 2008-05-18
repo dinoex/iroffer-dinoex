@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.8:
 ---------------
 
+237) Italienische Texte
+  Aktiviert werde diese durch "./Lang it" nach dem "Configure"
+  Zurück zum Englischen gehts es mit "./Lang it"
+
 bugfix: channel -fish key
   Bot konnte crashen, wenn Zeile mit bestimmter Länge ausgegeben wurden.
 

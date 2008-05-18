@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+237) italian translation
+  activate with "./Lang it" after "Configure"
+  to switch back to englisch call "./Lang en"
+
 bugfix: channel -fish key (reported by Vision)
   bot could crash when using fish whiel printing lines with a certain length.
 
@@ -802,7 +806,7 @@ With Version mod 2.11:
 
 141) german messages for users
   activate with "./Lang de" after "Configure"
-  to switch bach to englisch call "./Lang en"
+  to switch back to englisch call "./Lang en"
 
 140) SORT (inspired by dondieschotte)
   new admin commands:
