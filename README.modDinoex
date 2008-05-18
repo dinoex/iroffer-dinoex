@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+bugfix: new_trigger (reported by StoVoKor)
+  bot can crash when trigger is run with no packages on bot.
+
 bugfix: xdccxmlfile (reported by dns777)
   Fix packsize for very small files.
 

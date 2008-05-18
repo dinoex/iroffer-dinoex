@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.8:
 ---------------
 
+bugfix: new_trigger
+  Bot crashte, wenn "!new" auf einem Bot ohne Pakete rennt.
+
 bugfix: xdccxmlfile
   Ausgabe "packsize" von sehr kleien Dateien war fehlerhaft.
 

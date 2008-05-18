@@ -714,6 +714,9 @@ static void add_newest_xdcc(irlist_t *list)
     }
     old = xd;
   }
+  if (old == NULL)
+    return;
+
   best = irlist_add(list, sizeof(void *));
   *best = old;
 }

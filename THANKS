@@ -111,6 +111,7 @@ StoVoKor
 	option "hadminlevel"
 	show current md5/crc32 pack
 	admin command "NOMD5"
+	reporting new_trigger bug
 
 conanmichi
 	reporting group descriptions problems
