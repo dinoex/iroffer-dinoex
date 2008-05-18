@@ -132,4 +132,5 @@ Not going to happen anytime soon:
   1172  check nodownloadhost on nickchange
   1183  support filenamees with ...
   1184  send msg to server before welcome
+  1185  configure the source port for outgoing connections
 
