@@ -12,33 +12,35 @@ copy_if_differ() {
 LANG="C"
 awk -f ./admin.awk src/iroffer_admin.c > help-admin-en.neu
 copy_if_differ help-admin-en.txt help-admin-en.neu
-lang="de"
-if test ! "${lang}.sed" -nt de.txt
-then
-	echo -n "parsing ... "
-	grep -v "^#" "${lang}.txt" |
-	while read nr text
-	do
-		if ! grep -q "^${nr} " en.txt
-		then
-			continue
-		fi
-		en=`grep "^${nr} " "en.txt"`
-		en="${en#* }"
-		text=`grep "^${nr} " "${lang}.txt"`
-		text="${text#* }"
-		if test "${en}" = "${text}"
-		then
-			continue
-		fi
-		echo "s°${en}°${text}°"
-	done |
-	sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
-	echo "done"
-fi
-sed -f "${lang}.sed" src/iroffer_admin.c |
-awk -f ./admin.awk > "help-admin-${lang}.neu"
-copy_if_differ "help-admin-${lang}.txt" "help-admin-${lang}.neu"
+for lang in de it
+do
+	if test ! "${lang}.sed" -nt de.txt
+	then
+		echo -n "parsing ... "
+		grep -v "^#" "${lang}.txt" |
+		while read nr text
+		do
+			if ! grep -q "^${nr} " en.txt
+			then
+				continue
+			fi
+			en=`grep "^${nr} " "en.txt"`
+			en="${en#* }"
+			text=`grep "^${nr} " "${lang}.txt"`
+			text="${text#* }"
+			if test "${en}" = "${text}"
+			then
+				continue
+			fi
+			echo "s°${en}°${text}°"
+		done |
+		sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
+		echo "done"
+	fi
+	sed -f "${lang}.sed" src/iroffer_admin.c |
+	awk -f ./admin.awk > "help-admin-${lang}.neu"
+	copy_if_differ "help-admin-${lang}.txt" "help-admin-${lang}.neu"
+done
 #
 echo "New in en.txt:"
 nr="0"
