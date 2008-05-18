@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+bugfix: xdccxmlfile (reported by dns777)
+  Fix packsize for very small files.
+
 bugfix: FETCHCANCEL (reported by Radicand, Lamune)
   Bot printed "curlhandle not found" again and again.
 

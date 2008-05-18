@@ -1076,11 +1076,11 @@ static void xdcc_save_xml(void)
     write_string(fd, tempstr);
     mydelete(tempstr);
     write_string(fd, "]]></packname>\n");
-    write_string(fd, "  <packsize>");
+    write_string(fd, "  <packsize><![CDATA[");
     tempstr = sizestr(0, xd->st_size);
     write_string(fd, tempstr);
     mydelete(tempstr);
-    write_string(fd, "</packsize>\n");
+    write_string(fd, "]]></packsize>\n");
     write_string(fd, "  <packgets>");
     write_asc_int(fd, xd->gets);
     write_string(fd, "</packgets>\n");
