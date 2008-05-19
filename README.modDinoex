@@ -395,7 +395,7 @@ bufix: ignore (reported by Misha-SU)
   Example: mime_type torrent application/x-bittorrent
 
 204) send_listfile
-  Packnumber of xdcclistfile, eanbles XDCC SEND LIST.
+  Packnumber of xdcclistfile, enables XDCC SEND LIST.
 
 203) XDCC HELP
   show help for users
@@ -436,7 +436,7 @@ bugfix: XDCC SEND
   If defined, iroffer will log notices and/or messages to the given logfile.
 
 194) upnp_router (inspired by TheDeath)
-  avtivate UPnP support
+  activate UPnP support
 
   this needs libminiupnpc, activate with ./Configure -u
 
@@ -512,7 +512,7 @@ bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG (bugfix: AUTOADD Misha-SU)
   Use "::1" or "127.0.0.1" to limit access to localhost only.
 
 181) telnet_port (inspired by anibi)
-  Port for the buildin Telnet server.
+  Port for the build-in Telnet server.
 
    References TODO:
 Long Term Features:
@@ -594,10 +594,10 @@ removed: convertxdccfile
   For example: robots.txt favicon.ico
 
 168) http_admin (inspired by TheDeath, StoVoKor)
-  Defines admin login for the buildin webserver.
+  Defines admin login for the build-in webserver.
 
 167) http_port (inspired by TheDeath, StoVoKor)
-  Port for the buildin webserver.
+  Port for the build-in webserver.
   (xddclistfile and weblist)
 
 166) DCC SEND
