@@ -1857,7 +1857,7 @@
 1921 "show list of packs"
 1922 "</tr>\n"
 1923 "File list"
-1924 "<p>%s<span class=\"cmd\">/msg %s xdcc send nummer</span></p>\n"
+1924 "<p>%s<span class=\"cmd\">/msg %s xdcc send numero</span></p>\n"
 1925 "Download in IRC with: "
 1926 "back"
 1927 "/?"
