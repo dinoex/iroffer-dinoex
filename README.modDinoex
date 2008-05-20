@@ -1238,7 +1238,7 @@ With Version mod 1.30:
 ----------------------
 
 80) restrictsend_warning (inspired by Terra_Knight)
-  If set, try to warn the user when he leaves the channel.
+  If set, it will try to warn the user when he leaves the channel.
 
 81) restrictsend_timeout (inspired by Terra_Knight)
   Timeout in seconds to cancel transfer after user left channel.
