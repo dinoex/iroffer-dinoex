@@ -24,7 +24,7 @@ extend debug and log information.
 bugfix: fix small memory leaks
 
 236) fish_only (inspired by Vision)
-  If set, irnore not encryted triggers in channles with a fish key.
+  If set, ignore not encryted triggers in channles with a fish key.
 
 bugfix: autoadd_group_match (reported by dondieschotte, disi)
   autoadd_group_match works now without auto_default_group.
