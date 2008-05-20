@@ -102,7 +102,7 @@ bugfix: restrictsend (reported by dsd)
 
 bugfix: channel -pformat full -pgroup (reported by DrX)
   force spereate announces in each channel.
-  join other annoucnes in channel.
+  join other announces in channel.
 
 225) IRC 470 (inspired by Road)
   stop autorejoin when bot is tranfered in a different channel
@@ -269,7 +269,7 @@ bugfix: channel -headline
   Syntax changed, text has to be escaped with ".
 
 212) announce_seperator (inspired by dondieschotte)
-  printed between pack number and name on annoucne
+  printed between pack number and name on announce
 
 bugfix: Transfer Complete
   versions affected: 3.0 - 3.2
@@ -405,11 +405,11 @@ bufix: ignore (reported by Misha-SU)
 
 201) nogeoipcountry (inspired by Misha-SU)
   disallow downloads only for users in the given countries.
-  this sets default acces to allow and disables geoipcountry.
+  this sets default access to allow and disables geoipcountry.
 
 200) getip_network
-  Get my own IP for the current Network from the a diffrent network.
-  You need this when the given network does not returns your IP.
+  Get my own IP for the current Network from a different network.
+  You need this when the given network does not return your IP.
 
 bugfix: XDCC LIST GROUP
   under load the bot did forget the given group.
@@ -489,7 +489,7 @@ Not going to happen anytime soon:
 185) remove_dead_users
   if the bot can't notify a nick:
   if set not 0, further queued messages are dropped.
-  if set to 2, all this nicks queed packs are removed.
+  if set to 2, all this nicks queued packs are removed.
   Default: 0, no action.
 
 Short Term Features:
@@ -1238,7 +1238,7 @@ With Version mod 1.30:
 ----------------------
 
 80) restrictsend_warning (inspired by Terra_Knight)
-  If set, try to warn user when he leaves channel.
+  If set, try to warn the user when he leaves the channel.
 
 81) restrictsend_timeout (inspired by Terra_Knight)
   Timeout in seconds to cancel transfer after user left channel.
@@ -1724,7 +1724,7 @@ With Version mod 1.11:
 ----------------------
 
 24) groupsincaps (inspired by [GFE]Lunix)
-   If set, all groups names changed will be folded to  uppercase.
+   If set, all groups names changed will be folded to uppercase.
 
 bugfix: send <pack>  (inspired by TheDeath)
    versions affected: 1.4 to 1.10
