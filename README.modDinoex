@@ -3,18 +3,18 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
-237) italian translation
+237) Italian translation
   activate with "./Lang it" after "Configure"
-  to switch back to englisch call "./Lang en"
+  to switch back to English call "./Lang en"
 
 bugfix: channel -fish key (reported by Vision)
-  bot could crash when using fish whiel printing lines with a certain length.
+  bot could crash when using fish while printing lines with a certain length.
 
 bugfix: new_trigger (reported by StoVoKor)
   bot did crash when trigger is run with no packages on bot.
 
 bugfix: xdccxmlfile (reported by dns777)
-  Fix packsize for very small files.
+  Fix pack size for very small files.
 
 bugfix: FETCHCANCEL (reported by Radicand, Lamune)
   Bot printed "curlhandle not found" again and again.
@@ -24,7 +24,7 @@ extend debug and log information.
 bugfix: fix small memory leaks
 
 236) fish_only (inspired by Vision)
-  If set, ignores not encryted triggers in channels with a fish key.
+  If set, ignores not encrypted triggers in channels with a fish key.
 
 bugfix: autoadd_group_match (reported by dondieschotte, disi)
   autoadd_group_match works now without auto_default_group.
@@ -39,7 +39,7 @@ With Version 3.7:
   Do not reconnect when connections is dropped for given seconds.
 
 bugfix: reconnect
-  If connection drops, do not immediatly reconnect.
+  If connection drops, do not reconnect immediately.
 
 233) SORT
   new admin commands:
@@ -47,7 +47,7 @@ bugfix: reconnect
   SORT -ADDED                       Sort all Packs backwards by time added
 
 232) show_date_added (inspired by dondieschotte, Gotham)
-  Show date the pack was added whith XDCC LIST.
+  Show date the pack was added with XDCC LIST.
 
 bugfix: -no-memsave (reported by dondieschotte)
   Fix crash on startup
@@ -73,7 +73,7 @@ bugfix: PSEND (reported by dondieschotte)
 
 229) new_trigger (inspired by TheBotKiller, Vision)
   iroffer will respond to "!new" requests sent to a channel.
-  It will respond with lastest <n> packs added.
+  It will respond with latest <n> packs added.
   default: 0 = no response at all
 
 228) direct_config_access, CONFIG
@@ -101,11 +101,11 @@ bugfix: restrictsend (reported by dsd)
   restrictsend was not checked, restrictlist was used.
 
 bugfix: channel -pformat full -pgroup (reported by DrX)
-  force spereate announces in each channel.
+  force separate announces in each channel.
   join other announces in channel.
 
 225) IRC 470 (inspired by Road)
-  stop autorejoin when bot is tranfered in a different channel
+  stops auto rejoin when bot is transfered to a different channel
 
 With Version 3.6:
 -----------------
@@ -150,7 +150,7 @@ bugfix: atfind
 220) NOSEND (inspired by Lamune)
   new admin command:
   NOSEND <x> <msg>                Disables XDCC SEND for next <x> minutes
-                                  The response to user will have the <msg> inlcuded.
+                                  The response to user will have the <msg> included.
 
 bugfix: http_admin
   versions affected: 3.0 - 3.5
@@ -185,7 +185,7 @@ extend debug and log information.
   packinfo extended with md5 and crc
 
 bugfix: XDCC LIST
-  Fix loggin in "queued" state
+  Fix logging in "queued" state
 
 With Version 3.5:
 -----------------
@@ -198,7 +198,7 @@ bugfix: XDCC LIST
   Change messages to avoid triggering commands on the downloader.
 
 216) http_port
-  Add javascript to copy to clipboard
+  Add Javascript to copy to clipboard
 
 215) xdccxmlfile (inspired by Thunder)
   sysinfo extended with stats, limits and transfers.
@@ -216,14 +216,14 @@ bugfix: fix large memory leak
 
 bugfix: connectionmethod ssl (reported by Misha-SU)
   versions affected: 3.0 - 3.4
-  Bot will crash when rehash and connectionmethod chnaged to ssl when connected
+  Bot will crash when rehash and connectionmethod changed to ssl when connected
 
 With Version 3.4:
 -----------------
 
 bugfix: punishslowusers (reported by Misha-SU)
   versions affected: 3.3
-  Bot will crash if punishslowusers ist executed.
+  Bot will crash if punishslowusers is executed.
 
 bugfix: XDCC LIST GROUP (reported by dondieschotte)
   versions affected: 3.0 - 3.3
@@ -246,21 +246,21 @@ Configure -no-telnet
 
 bugfix: http_port (reported by TheTheath)
   versions affected: 3.0 - 3.2
-  leak of filehanlde in header/footer
+  leak of file handle in header/footer
 
 bugfix: IQUEUE
   insert in idle queue, even if main queue is empty
 
 bugfix: DCC RESUME
-  Allow RESUME even when portnumber is changed by broken NAT routers.
+  Allow RESUME even when port number is changed by broken NAT routers.
 
 bugfix: DCC RESUME
   versions affected: 2.10 - 3.2
-  handle clients that send the filenams in DCC SEND esacped.
+  handle clients that send the filenames in DCC SEND (esacped.?)
 
 bugfix: connectionmethod ssl (reported by xtr)
   versions affected: 3.0 - 3.2
-  Bot will crash when rehash and connectionmethod chnaged to ssl.
+  Bot will crash when rehash and connectionmethod changed to ssl.
 
 213) autoadd_group_match (inspired by dondieschotte)
   Define groups for files added in autoadd_dir based on filename.
@@ -277,13 +277,13 @@ bugfix: Transfer Complete
 
 bugfix: user_nick
   versions affected: 3.0 - 3.2
-  show user_nick in all mesaages before connect
+  show user_nick in all messages before connect
 
 extend debug and log information.
 
 bugfix: DCL
   versions affected: 3.0 - 3.2
-  fix crash when odd nummber of downloads active
+  fix crash when odd number of downloads active
 
 211) ACCEPTU (inspired by SpiegelEiXXL)
   new admin commands:
@@ -335,7 +335,7 @@ bug_fix: usenatip (reported by Cork)
 
 bug_fix: getipfromserver
   versions affected: 3.0 - 3.1
-  usenatip coud be ignored when server welcome had no IP
+  usenatip could be ignored when server welcome had no IP
 
 bug_fix: need_level
   versions affected: 2.13 - 3.1
@@ -415,10 +415,10 @@ bugfix: XDCC LIST GROUP
   under load the bot did forget the given group.
 
 bugfix: MULTINET
-  no duplicate notifys when max badnwidth is reached.
+  no duplicate notify when max bandwidth is reached.
 
 199) http_search (inspired by chibi)
-  Enables search form in html page.
+  Enables search form in HTML page.
 
 bugfix: XDCC SEND
   Handle '%' in pack description.
@@ -456,7 +456,7 @@ bugfix: REHASH (reported by Cork)
   weblist_info maxspeed "Max speed"
   weblist_info cap "Max bandwidth"
   weblist_info record "Record bandwidth"
-  weblist_info send "Rekord download"
+  weblist_info send "Record download"
   weblist_info daily "Traffic today"
   weblist_info weekly "Traffic this week"
   weblist_info monthly "Traffic this month"
@@ -629,7 +629,7 @@ bugfix: set TOS on BSD
 164) autoadd_sort (inspired by chibi, unlogisch)
   If defined, all added packs will be inserted in the giving order.
   The existing packs must already be sorted in the same way.
-  You can define mutiple fields to sort.
+  You can define multiple fields to sort.
 
 163) RENUMBER (inspired by Skyw4lker, Protected)
   new admin command:
@@ -662,7 +662,7 @@ bugfix: NEWDIR
   RMIQ <position>                 Removes entry at <position> from idle queue
   IQUEUE <nick> <n>               Queues pack <n> for <nick> for idle queue
   IQUEUE <nick> <n> <net>         Queues pack <n> for <nick> in net <net> for idle queue
-  REIQUEUE <x> <y>                Moves idle queue entry from postion <x> to <y>
+  REIQUEUE <x> <y>                Moves idle queue entry from position <x> to <y>
 
 bugfix: fix small memory leaks
 
@@ -729,11 +729,11 @@ bugfix: Configure and make with gcc-4.2
   MOVEGROUPDIR <g> <dir>          move any file in group <g> to dir <dir>
 
 bugfix: SERVQC (reported by chibi)
-  this will stop all qued announces too
+  this will stop all queued announces too
 
 148) MD5 (inspired by dondieschotte)
   new admin command:
-  MD5                             Show state of curren MD5 computing
+  MD5                             Show state of current MD5 computing
   MD5 <n>                         Calculate MD5 and CRC sums of pack <n>
 
 With Version mod 2.13:
@@ -804,9 +804,9 @@ bugfix: MSG, MSGNET, PSEND (reported by Cork)
 With Version mod 2.11:
 ----------------------
 
-141) german messages for users
+141) German messages for users
   activate with "./Lang de" after "Configure"
-  to switch back to englisch call "./Lang en"
+  to switch back to English call "./Lang en"
 
 140) SORT (inspired by dondieschotte)
   new admin commands:
@@ -832,10 +832,10 @@ bugfix: FILEREMOVE
   when removing only one pack the file was not removed
 
 139) filedir (inspired by Tak0r, Kakashi)
-  filedir can now have multiple entrys
+  filedir can now have multiple entries
 
 bugfix: xdccremovefile
-  bot could crash when deleteing a file without group
+  bot could crash when deleting a file without group
 
 138) esacpe_quotes
   Allow Admin handle files with spaces
@@ -845,7 +845,7 @@ bugfix: NEWDIR
   newdir did not change packs
 
 MULTINET: channel_join_raw
-  now seperate for each network
+  now separate for each network
 
 notice admin when sending a message to channels not joined.
   (based on patch by dondieschotte)
@@ -891,7 +891,7 @@ With Version mod 2.9:
 
 bugfix: IDENTIFY (reported by Thunder)
   versions affected: 2.4 - 2.8
-  admin commad IDENTIFY did not send password
+  admin command IDENTIFY did not send password
 
 speedup reading config
 
@@ -962,7 +962,7 @@ With Version mod 2.6:
 ---------------------
 
 124) HELP
-  rewite and extend help
+  rewrite and extend help
 
 123) MOVEFILE
 
@@ -979,7 +979,7 @@ With Version mod 2.6:
   new admin command:
   FILEREMOVE n [m]                 remove pack <n> or <n> to <m> and remove its file from disk
 
-bugfix: hidelockepacks (inspired by Noxx)
+bugfix: hidelockedpacks (inspired by Noxx)
   don't show locked packs in xdcclistfile
 
 bugfix: MULTINET
@@ -1051,7 +1051,7 @@ With Version mod 2.2:
   SORT                              Sort all Packs by Filename
 
 bugfix: RENUMBER
-  keep groupdescripton on renumber.
+  keep group description on renumber.
 
 bugfix: autoadd_dir
   versions affected: 2.1
@@ -1120,7 +1120,7 @@ bugfix: restrictprivlist (reported by Cork)
   in the response to !list is a channel, iroffer reported the
   "trigger: xdcc list" even if it is disabled.
 
-bugfix:	auto_crc_check (reported by Kurosaki)
+bugfix: auto_crc_check (reported by Kurosaki)
   auto_crc_check did not unlock the pack after file was repaired
   better logging of lock/unlock by auto_crc_check
 
@@ -1174,14 +1174,14 @@ make MULTINET default
   or the bot is not joined to the channel.
 
 99) extend REHASH (inspired by TheDeath)
-  dont crash on duplicate channels
+  don't crash on duplicate channels
 
 97) lost files message (reported by Yasuo|Iwakura)
   lost files will now be reported with pack nr.
 
 bugfix: -plist (reported by Yasuo|Iwakura)
 versions affected: 1.24 - 1.32
-  iroffer can chash when sending plist into to many channels at the same time
+  iroffer can crash when sending plist into to many channels at the same time
 
 With Version mod 1.32:
 ----------------------
@@ -1273,7 +1273,7 @@ With Version mod 1.30:
   When adding a new file, search for matching directories and aad the
   new file to the same group.
 
-87) autoadd_dir mutiple (inspired by Terra_Knight, Tak0r)
+87) multiple autoadd_dir (inspired by Terra_Knight, Tak0r)
   Multiple Directory for files that will be added without further interaction.
 
 88) send_statefile (inspired by Anime20o5)
@@ -1366,7 +1366,7 @@ With Version mod 1.27:
    new admin command:
    CRC <n>     Test and Report CRC32
 
-bugfix: crashes with mutitinet chats (reported by TheDeath)
+bugfix: crashes with mutinet chats (reported by TheDeath)
 versions affected: 1.26 Multinet
 
 With Version mod 1.26:
@@ -1376,9 +1376,9 @@ With Version mod 1.26:
    support multiple irc networks with common queue and limits.
    activate with ./Configure -m
 
-  Neue Admin Kommandos:
-  MSGNET <ne> <nick> <message>   Send text <message> to user <nick>
-  RAWNET <ne> <command>          Send <command> to server (RAW IRC)
+  New Admin Commands:
+  MSGNET <net> <nick> <message>  Send text <message> to user <nick>
+  RAWNET <net> <command>         Send <command> to server (RAW IRC)
   SERVERS <net>                  Shows the server list
   JUMP server <net>              Switches to a random server or server <server>
   IDENTIFY <net>                 Send stored password again to nickserv
@@ -1527,7 +1527,7 @@ With Version mod 1.20:
 
 47) hidelockedpacks
 
-   dont show locked packs on XDCC INFO and XDCC LIST for users
+   don't show locked packs on XDCC INFO and XDCC LIST for users
 
 bugfix: getipfromserver
    versions affected: 1.3 - 1.19
@@ -1597,7 +1597,7 @@ Short Term Features:
 
 42) ignoreduplicateip (inspired by Chobits)
 
-   detect faked hostmasks and abort multiple transfers to the same host
+   detect fake hostmasks and abort multiple transfers to the same host
 
 43) LOCKGROUP, UNLOCKGROUP
 
@@ -1616,7 +1616,7 @@ bugfix: addnew (inspired by StoVoKor)
 
 45) CLEARRECORDS (from PMG)
 
-   clear transferlimits too
+   clear transfer limits too
 
 With Version mod 1.17:
 ----------------------
@@ -1675,7 +1675,7 @@ bugfix: enforce queue limit.
 34) need_voice redesign using usermodes
 
 bugfix: xdcclistfile (inspired by StoVoKor)
-   credtline and totals was not generated by default
+   creditline and totals was not generated by default
 
 With Version mod 1.14:
 ----------------------
@@ -1830,7 +1830,7 @@ With Version mod 1.5:
 
    References TODO:
 Long Term Features:
-172	12/09/03	Open	restrict list/send to only voiced/opped users
+172     12/09/03        Open    restrict list/send to only voiced/opped users
 
 With Version mod 1.4:
 ---------------------
@@ -1846,7 +1846,7 @@ With Version mod 1.4:
 
    References TODO:
 Long Term Features:
-188	12/09/03	Open	password protect packs
+188     12/09/03        Open    password protect packs
 
 6) noduplicatefiles (inspired by Ddrulez)
 
@@ -1881,7 +1881,7 @@ With Version mod 1.2:
 ---------------------
 
 3) save queue
-   Save download queue on exit or crash.  and read it back on start.
+   Save download queue on exit or crash.  And read it back on start.
    I though about saving running transfers too, but decided against it.
 
    References TODO:
