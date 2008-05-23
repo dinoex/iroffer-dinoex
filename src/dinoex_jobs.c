@@ -76,6 +76,8 @@ static unsigned long bytes_to_long( const char **str )
   ++(*str);
   ch = *(*str);
   result |= ch;
+  if (ch != 0)
+    ++(*str);
   return result;
 }
 
