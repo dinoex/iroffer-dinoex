@@ -3003,7 +3003,7 @@ void a_bann_hostmask(const userinput * const u, const char *arg)
     hostmask = to_hostmask(tr->nick, tr->hostname);
     if (fnmatch(arg, hostmask, FNM_CASEFOLD) == 0) {
       if (tr->tr_status != TRANSFER_STATUS_DONE) {
-         t_closeconn(tr, "Transfer cancelled by admin", 0);
+         t_closeconn(tr, "Transfer canceled by admin", 0);
       }
     }
     mydelete(hostmask);
@@ -3050,7 +3050,7 @@ void a_bannnick(const userinput * const u)
     if (strcasecmp(tr->nick, nick) != 0)
       continue;
 
-    t_closeconn(tr, "Transfer cancelled by admin", 0);
+    t_closeconn(tr, "Transfer canceled by admin", 0);
   }
 
   gnetwork = backup;
@@ -3537,7 +3537,7 @@ void a_queue(const userinput * const u)
     return;
   }
 
-  a_respond(u, "Queueing %s for Pack %i", u->arg1, num);
+  a_respond(u, "Queuing %s for Pack %i", u->arg1, num);
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
@@ -3589,7 +3589,7 @@ void a_iqueue(const userinput * const u)
       return;
   }
 
-  a_respond(u, "Queueing %s for Pack %i", u->arg1, num);
+  a_respond(u, "Queuing %s for Pack %i", u->arg1, num);
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);

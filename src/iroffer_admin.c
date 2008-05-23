@@ -141,8 +141,8 @@ static const userinput_parse_t userinput_parse[] = {
 {2,2,method_allow_all,u_qsend,         "QSEND","[id]","Start an extra transfer from queue"},
 {2,5,method_allow_all,a_slotsmax,      "SLOTSMAX","[slots]","temporary change slotsmax to <slots>"},
 {2,5,method_allow_all,a_queuesize,     "QUEUESIZE","[slots]","temporary change queuesize to <slots>"},
-{2,5,method_allow_all,a_requeue,       "REQUEUE","x y","Moves main queue entry from postion <x> to <y>"},
-{2,5,method_allow_all,a_reiqueue,      "REIQUEUE","x y","Moves idle queue entry from postion <x> to <y>"},
+{2,5,method_allow_all,a_requeue,       "REQUEUE","x y","Moves main queue entry from position <x> to <y>"},
+{2,5,method_allow_all,a_reiqueue,      "REIQUEUE","x y","Moves idle queue entry from position <x> to <y>"},
 
 {3,0,method_allow_all_xdl,u_info,      "INFO","n","Show info for pack <n>"},
 {3,4,method_allow_all,a_remove,        "REMOVE","n [m]","Removes pack <n> or <n> to <m>"},

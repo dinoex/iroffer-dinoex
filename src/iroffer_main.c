@@ -169,7 +169,7 @@ static int parsecmdline(int argc, char *argv[])
   
   if (optind >= argc)
     {
-      fprintf(stderr,"%s: no configuration file specifed\n",
+      fprintf(stderr,"%s: no configuration file specified\n",
               argv[0]);
       return PCL_BAD_OPTION;
     }
@@ -2790,7 +2790,7 @@ static void privmsgparse(const char* type, char* line) {
                    if (tr->tr_status != TRANSFER_STATUS_DONE)
                      {
                        k += 1;
-                       t_closeconn(tr,"Transfer cancelled by user",0);
+                       t_closeconn(tr,"Transfer canceled by user",0);
                      }
                  }
              }

@@ -331,7 +331,7 @@ void t_check_duplicateip(transfer *const newtr)
     if (!strcmp(tr->hostname, "man"))
       continue;
 
-    t_closeconn(tr, "You are being punished for pararell downloads", 0);
+    t_closeconn(tr, "You are being punished for parallel downloads", 0);
     bhostmask = to_hostmask( "*", tr->hostname);
     ignore = get_ignore(bhostmask);
     ignore->flags |= IGN_IGNORING;

@@ -1217,7 +1217,7 @@ static void iroffer_signal_handler(int signo)
                 break;
                 
               case BUS_ADRERR:
-                code = "non-existant physical address";
+                code = "non-existent physical address";
                 break;
                 
               case BUS_OBJERR:
@@ -1265,7 +1265,7 @@ static void iroffer_signal_handler(int signo)
                 break;
                 
               case ILL_COPROC:
-                code = "coprocessor error";
+                code = "co-processor error";
                 break;
                 
               case ILL_BADSTK:
@@ -2577,7 +2577,7 @@ void createpassword(void) {
              "\n");
    
 #else
-   printf("iroffer was compiled without encrypted password support.  You do not need to ecrypt your password.\n");
+   printf("iroffer was compiled without encrypted password support.  You do not need to encrypt your password.\n");
 #endif
    }
 
