@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.8:
 ---------------
 
+bugfix: autoadd_group_match
+  Wenn die Gruppe nicht existierte, wurde keine Beschreibung angelegt.
+
 237) Italienische Texte
   Aktiviert werde diese durch "./Lang it" nach dem "Configure"
   Zurück zum Englischen gehts es mit "./Lang it"

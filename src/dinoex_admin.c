@@ -1651,9 +1651,7 @@ xdcc *a_add2(const userinput * const u)
             n, xd->file);
 
   if (group != NULL) {
-    xd->group = mystrdup(group);
-    a_respond(u, "GROUP: [Pack %i] New: %s",
-              n, xd->group);
+    a_set_group(u, xd, n, group);
   }
 
   set_support_groups();

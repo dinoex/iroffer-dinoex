@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+bugfix: autoadd_group_match (reported by dns777)
+  if the  group does not exist, it was created without groupdesc.
+
 237) Italian translation
   activate with "./Lang it" after "Configure"
   to switch back to English call "./Lang en"

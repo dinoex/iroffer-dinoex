@@ -388,6 +388,7 @@ fred|krue
 
 dns777
 	reporting "xdccxmlfile" packsize bug
+	reporting "autoadd_group_match" bug
 
 [V]4Mp|r
 	italian translation
