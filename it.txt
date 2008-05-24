@@ -1438,7 +1438,7 @@
 1483 "growing meminfo da %d to %d"
 1484 "Impossibile Assegnare La Memoria!!"
 1485 "Pointer 0x%8.8lX non trovato in meminfo database mentre si tentava di liberare!!"
-1486 "Perfavore riporta questo errore a Dinoex dinoex@freebsd.org"
+1486 "Perfavore riporta questo errore a Dinoex dinoex@dinoex.net"
 1487 " : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\""
 1488 "Termine Programma! (il core file dovrebbe essere generato)"
 1489 "l'adminpass non è criptata!"

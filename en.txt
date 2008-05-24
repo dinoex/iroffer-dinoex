@@ -1438,7 +1438,7 @@
 1483 "growing meminfo from %d to %d"
 1484 "Couldn't Allocate Memory!!"
 1485 "Pointer 0x%8.8lX not found in meminfo database while trying to free!!"
-1486 "Please report this error to Dinoex dinoex@freebsd.org"
+1486 "Please report this error to Dinoex dinoex@dinoex.net"
 1487 " : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\""
 1488 "Aborting Program! (core file should be generated)"
 1489 "adminpass is not encrypted!"
