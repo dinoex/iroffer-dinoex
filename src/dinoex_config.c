@@ -68,7 +68,9 @@ static config_bool_typ config_parse_bool[] = {
 {"direct_file_access",     &gdata.direct_file_access },
 {"disablexdccinfo",        &gdata.disablexdccinfo },
 {"extend_status_line",     &gdata.extend_status_line },
+#ifndef WITHOUT_BLOWFISH
 {"fish_only",              &gdata.fish_only },
+#endif /* WITHOUT_BLOWFISH */
 {"getipfromserver",        &gdata.getipfromserver },
 {"groupsincaps",           &gdata.groupsincaps },
 {"hide_list_info",         &gdata.hide_list_info },
@@ -122,7 +124,7 @@ static config_int_typ config_parse_int[] = {
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1 },
 #ifndef WITHOUT_HTTP
 {"http_port",               &gdata.http_port,               0, 65535, 1 },
-#endif
+#endif /* WITHOUT_HTTP */
 {"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1 },
 {"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1 },
 {"max_find",                &gdata.max_find,                0, 65000, 1 },
@@ -151,7 +153,7 @@ static config_int_typ config_parse_int[] = {
 {"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1 },
 #ifndef WITHOUT_TELNET
 {"telnet_port",             &gdata.telnet_port,             0, 65535, 1 },
-#endif
+#endif /* WITHOUT_TELNET */
 {"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1 },
 {NULL, NULL, 0, 0, 0 }};
 
@@ -167,17 +169,17 @@ static config_string_typ config_parse_string[] = {
 {"enable_nick",             &gdata.enable_nick,             0 },
 #ifdef USE_GEOIP
 {"geoipdatabase",           &gdata.geoipdatabase,           0 },
-#endif
+#endif /* USE_GEOIP */
 {"group_seperator",         &gdata.group_seperator,         5 },
 {"hadminpass",              &gdata.hadminpass,              4 },
 {"headline",                &gdata.headline,                0 },
 #ifndef WITHOUT_HTTP_ADMIN
 {"http_admin",              &gdata.http_admin,              0 },
-#endif
+#endif /* WITHOUT_HTTP */
 {"http_date",               &gdata.http_date,               0 },
 #ifndef WITHOUT_HTTP
 {"http_dir",                &gdata.http_dir,                1 },
-#endif
+#endif /* WITHOUT_HTTP */
 {"local_vhost",             &gdata.local_vhost,             0 },
 {"logfile",                 &gdata.logfile,                 1 },
 {"logfile_messages",        &gdata.logfile_messages,        1 },
@@ -186,7 +188,9 @@ static config_string_typ config_parse_string[] = {
 {"nickserv_pass",           &gdata.nickserv_pass,           0 },
 {"owner_nick",              &gdata.owner_nick,              0 },
 {"pidfile",                 &gdata.pidfile,                 1 },
+#ifndef WITHOUT_BLOWFISH
 {"privmsg_fish",            &gdata.privmsg_fish,            0 },
+#endif /* WITHOUT_BLOWFISH */
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
 {"send_statefile",          &gdata.send_statefile,          0 },
@@ -212,18 +216,18 @@ static config_list_typ config_parse_list[] = {
 #ifdef USE_GEOIP
 {"geoipcountry",            &gdata.geoipcountry,            0 },
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
-#endif
+#endif /* USE_GEOIP */
 {"hadminhost",              &gdata.hadminhost,              3 },
 #ifndef WITHOUT_HTTP
 {"http_vhost",              &gdata.http_vhost,              0 },
-#endif
+#endif /* WITHOUT_HTTP */
 {"nodownloadhost",          &gdata.nodownloadhost,          2 },
 #ifdef USE_GEOIP
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 },
-#endif
+#endif /* USE_GEOIP */
 #ifndef WITHOUT_TELNET
 {"telnet_vhost",            &gdata.telnet_vhost,            0 },
-#endif
+#endif /* WITHOUT_TELNET */
 {"unlimitedhost",           &gdata.unlimitedhost,           2 },
 {"uploadhost",              &gdata.uploadhost,              2 },
 {"weblist_info",            &gdata.weblist_info,            0 },
