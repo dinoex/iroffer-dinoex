@@ -161,7 +161,9 @@ extend debug and log information.
 222) old_statefile
   Kein Speicheren von unnötigen Daten im statefile im default.
   Diese Option schreibt ein zu alten Versionen passendes statefile.
-  
+
+WARNUNG: Erforderlich für die PHP Webliste iroffer-state.php Version 2.10 and kleiner.
+
 221) XDCC SEARCH, FIND
   Die Zeichen *,?,# sind Sonderfunktionen.
 
@@ -180,7 +182,7 @@ bugfix: http_admin
 Configure -no-admin
   Baue Bot ohne HTTP Admin
 
-Configure 
+Configure
   Jetzt lange Optionen
 
 bugfix: QUIT
@@ -451,7 +453,7 @@ bugfix: XDCC SEND
   Unterstützung für Dateien >4GB
 
 197) xdccxmlfile
-  Exportiert die Packliste als einfache XML Datei. 
+  Exportiert die Packliste als einfache XML Datei.
 
 196) trashcan_dir
   Dateien werden nicht gelöscht, sondern in dieses Verzeichnis verschoben.
@@ -486,7 +488,7 @@ bugfix: REHASH
   weblist_info daily "Traffic heute"
   weblist_info weekly "Traffic diese Woche"
   weblist_info monthly "Traffic diesem Monat"
-  
+
 190) window resize
   Änderung der Fenstergröße führt nicht mehr zum Löschen des Fensterinhaltes.
 
@@ -598,7 +600,7 @@ entfernt: convertxdccfile
   Zum Beispiel für: robots.txt favicon.ico
 
 168) http_admin
-  Erlaube Verwaltung über den eingebauten Webserver. 
+  Erlaube Verwaltung über den eingebauten Webserver.
 
 167) http_port
   Port für den eingebauten Webserver.
@@ -661,7 +663,7 @@ bugfix: NEWDIR
 
   Option: maxidlequeuedperperson
   Maximale Anzahl gleichzeitiger Warteschlangeneinträge in der Idle Queue
-   
+
   Neues Admin Kommandos:
   RMIQ <position>                  Löschen von <position> in der 2. Warteschlange
   IQUEUE <nick> <n>                Paket <n> in die 2. Warteschlange für <nick> einfügen
@@ -767,7 +769,7 @@ bugfix: SORT
 Ab Version mod 2.12:
 --------------------
 
-bugfix: DCC upload 
+bugfix: DCC upload
   Bot kann crashen wenn kein 'uploaddir' definiert ist.
   versions affected: Alle
 
@@ -1202,7 +1204,7 @@ Ab Version mod 1.30:
   Zeit in Sekunden nach der ein Tranfer abgebrochen wird,
   wenn der USer nicht mehr im Channel ist.
 
-82) MOVEGROUP 
+82) MOVEGROUP
   Neues Admin Kommando:
   MOVEGROUP <n> <m> <gruppe>          Ändert die Gruppenzugehörigkeit von Pack <n> bis <m> auf <gruppe>
 
@@ -1282,7 +1284,7 @@ Ab Version mod 1.28:
 
   autoadd_time:
   Zeit in Sekunden in der der Bot prüft ob neue Dateien im 'autoadd_dir' sind.
-  Default: 0 = nicht prüfen 
+  Default: 0 = nicht prüfen
 
   autoadd_dir:
   Verzeichnis das der Bot nach neuen Dateien durchsucht.
@@ -1333,7 +1335,7 @@ Ab Version mod 1.26:
 66) network (MULTINET)
   Unterstützung um den Bot in mehreren IRC-Netzen zu betreiben.
   Grenzen und Warteschlange sind allen Netzen gemeinsam.
-   
+
   Zum Aktivieren muß der Bot mit "./Configure -m" gebaut werden.
 
   Neue Admin Kommandos:
@@ -1422,7 +1424,7 @@ With Version mod 1.22:
 
 URLs updated.
 
-54) atfind 
+54) atfind
 
    if more than one word given, treat ' ' as '*'
 
@@ -1718,7 +1720,7 @@ bugfix: regroup
 
 23) restrictprivlistfull
 
-If set, "xdcc list all" will be rejected. 
+If set, "xdcc list all" will be rejected.
 
 Ab Version mod 1.9:
 -------------------

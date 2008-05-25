@@ -164,6 +164,8 @@ extend debug and log information.
   Write smaller irofer statefile by default.
   Set this option to write a statefile that is compatible to old versions.
 
+WARNING: You need this option for the PHP weblist iroffer-state.php version 2.10 and less.
+
 221) XDCC SEARCH, FIND
   Allow *,?,# as jokers
 
@@ -505,7 +507,7 @@ bugfix: MAXSPEED (reported by Lamarr)
    References TODO:
 Not going to happen anytime soon:
    108 long ago Deferred wildcards in add pack
- 
+
 186) DCC CHAT
   Block remote host after a number of failed passwords.
 
@@ -593,7 +595,7 @@ bugfix: CANNOUNCE (reported by Radicand)
 173) BACKGROUND
   new admin command:
   BACKGROUND                      Switch to background on the fly
- 
+
    References TODO:
 Short Term Features:
    205 2/12/04 Open switch to background on the fly
@@ -889,7 +891,7 @@ With Version mod 2.9:
 
 136) autoaddann_short (inspired by dsd)
   When configured, each add will be announced on all channels with pack
-  Number and Filename. 
+  Number and Filename.
 
 135) SANNOUNCE (inspired by dsd)
 
@@ -934,7 +936,7 @@ bugfix: need_level
   need_level was never in effect
 
 128) NOCHANNEL
-  
+
   new admin command:
   NOCHANNEL x <channel>            leave the channel <channel> for <x> minutes
   NOCHANNEL x                      leave all channels for <x> minutes
@@ -1154,7 +1156,7 @@ bugfix: GEOIP (reported by TheDeath)
    fix crash when GEOIP can't find its data
 
 108) EXIT, LOGOUT (inspired by TheDeath)
- 
+
    new admin commands:
    EXIT                              Close this DCC chat (alias to QUIT)
    LOGOUT                            Close this DCC chat (alias to QUIT)
@@ -1349,8 +1351,8 @@ Short Term Features
 76) autoadd_dir (inspired by Terra_Knight, Tak0r)
 
   autoadd_time:
-  Time in seconds when the bot checks for new files in autoadd_dir. 
-  Default: 0 = disabled. 
+  Time in seconds when the bot checks for new files in autoadd_dir.
+  Default: 0 = disabled.
 
   autoadd_dir:
   Directory for files that will be added without further interaction.
@@ -1496,7 +1498,7 @@ With Version mod 1.22:
 
 URLs updated.
 
-54) atfind 
+54) atfind
 
    if more than one word given, treat ' ' as '*'
 
@@ -1783,7 +1785,7 @@ bugfix: regroup (inspired by Takatoo, TheDeath)
 
 23) restrictprivlistfull
 
-If set, "xdcc list all" will be rejected. 
+If set, "xdcc list all" will be rejected.
 
 With Version mod 1.9:
 ---------------------
