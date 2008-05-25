@@ -186,6 +186,7 @@ static config_string_typ config_parse_string[] = {
 {"nickserv_pass",           &gdata.nickserv_pass,           0 },
 {"owner_nick",              &gdata.owner_nick,              0 },
 {"pidfile",                 &gdata.pidfile,                 1 },
+{"privmsg_fish",            &gdata.privmsg_fish,            0 },
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
 {"send_statefile",          &gdata.send_statefile,          0 },

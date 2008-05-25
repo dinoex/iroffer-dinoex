@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.8:
 ---------------
 
+238) privmsg_fish
+  Wenn gesetzt, werden alle Nachrichten mit diesem Schlüssel dekodiert.
+
 bugfix: autoadd_group_match
   Wenn die Gruppe nicht existierte, wurde keine Beschreibung angelegt.
 

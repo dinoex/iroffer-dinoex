@@ -1428,6 +1428,7 @@ void dumpgdata(void)
   gdata_print_string(http_date);
   gdata_print_string(announce_seperator);
   gdata_print_string(nosendmsg);
+  gdata_print_string(privmsg_fish);
 
   gdata_print_int(need_voice);
   gdata_print_int(need_level);

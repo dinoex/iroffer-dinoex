@@ -251,6 +251,7 @@ dondieschotte
 	option "reconnect_delay"
 	search for date added
 	reporting "autoadd_group_match" bug
+	option "privmsg_fish"
 
 dsd
 	admin command "autoadd"
@@ -373,6 +374,7 @@ Vision
 	suggesting blowfished trigger
 	option "fish_only"
 	reporting "fish" bug
+	option "privmsg_fish"
 
 TheBotKiller
 	suggesting "!new" trigger

@@ -241,7 +241,7 @@ static const char *find_fish_key(const char *channel)
 
     return ch->fish;
   }
-  return NULL;
+  return gdata.privmsg_fish;
 }
 
 char *test_fish_message(char *line, char *channel, char *str, char *data)
