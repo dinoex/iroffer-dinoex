@@ -2227,3 +2227,4 @@
 2296 "Code"
 2297 "Slot"
 2298 "Slot"
+2299 "privmsg_fish"
