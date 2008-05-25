@@ -28,7 +28,7 @@ void shutdown_dinoex(void);
 void rehash_dinoex(void);
 void update_hour_dinoex(int hour, int minute);
 void check_new_connection(transfer *const tr);
-char *grep_to_fnmatch(char *grep);
+char *grep_to_fnmatch(const char *grep);
 int fnmatch_xdcc(const char *match, xdcc *xd);
 int noticeresults(const char *nick, const char *match);
 int run_new_trigger(const char *nick);
@@ -46,9 +46,9 @@ int parse_xdcc_list(const char *nick, char*msg3);
 xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text);
 
 int packnumtonum(const char *a);
-int check_trigger(char *line, char *part4);
+int check_trigger(const char *line, const char *part4);
 
-void lost_nick(char *nick);
+void lost_nick(const char *nick);
 
 int is_unsave_directory(const char *dir);
 

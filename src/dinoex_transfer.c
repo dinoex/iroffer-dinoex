@@ -141,7 +141,7 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
   tr->tr_status = TRANSFER_STATUS_CONNECTING;
 }
 
-static void t_find_debug(char *nick, char *filename, char *remoteport)
+static void t_find_debug(const char *nick, const char *filename, const char *remoteport)
 {
   transfer *tr;
 
@@ -167,7 +167,7 @@ static void t_find_debug(char *nick, char *filename, char *remoteport)
   }
 }
 
-int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport, char *token)
+int t_find_transfer(const char *nick, const char *filename, const char *remoteip, const char *remoteport, const char *token)
 {
   transfer *tr;
   int myid;
@@ -194,7 +194,7 @@ int t_find_transfer(char *nick, char *filename, char *remoteip, char *remoteport
   return 1;
 }
 
-int t_find_resume(char *nick, char *filename, char *localport, char *bytes, char *token)
+int t_find_resume(const char *nick, const char *filename, const char *localport, const char *bytes, char *token)
 {
   char *sendnamestr;
   transfer *guess;

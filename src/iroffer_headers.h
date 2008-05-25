@@ -674,7 +674,7 @@ writeserver (writeserver_type_e type, const char *format, ... );
 void vwriteserver(writeserver_type_e type, const char *format, va_list ap);
 
 void sendserver(void);
-char* getsendname(char * const full);
+char* getsendname(const char * const full);
 const char* getfilename(const char * const full);
 void pingserver(void);
 void xdccsavetext(void);

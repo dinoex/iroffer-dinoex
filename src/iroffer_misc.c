@@ -938,7 +938,7 @@ void sendserver(void)
 }
 
 /* 'Sanitize' the filename in full, putting the sanitized copy into copy. */
-char* getsendname(char * const full)
+char* getsendname(const char * const full)
 {
   char *copy;
   int i, lastslash;

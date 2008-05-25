@@ -22,7 +22,7 @@
 #define ADMIN_LEVEL_PUBLIC	0
 
 #ifndef WITHOUT_BLOWFISH
-char *test_fish_message(char *line, char *channel, char *str, char *data);
+char *test_fish_message(const char *line, const char *channel, const char *str, const char *data);
 #endif /* WITHOUT_BLOWFISH */
 
 void

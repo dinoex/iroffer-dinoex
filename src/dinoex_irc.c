@@ -145,7 +145,7 @@ void update_server_welcome(char *line)
   }
 }
 
-static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, char *vhost)
+static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, const char *vhost)
 {
   SIGNEDSOCK int addrlen;
   int e;
@@ -240,7 +240,7 @@ static void my_get_upnp_data(const struct sockaddr *sa, socklen_t salen)
 }
 #endif /* USE_UPNP */
 
-int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, char *vhost)
+int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, const char *vhost)
 {
   int rc;
   int tempc;

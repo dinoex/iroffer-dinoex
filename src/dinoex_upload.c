@@ -235,7 +235,8 @@ int file_uploading(const char *file)
 #endif /* USE_CURL */
 }
 
-void upload_start(char *nick, char *hostname, char *hostmask, char *filename, char *remoteip, char *remoteport, char *bytes, char *token)
+void upload_start(const char *nick, const char *hostname, const char *hostmask,
+                  const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token)
 {
   upload *ul;
   char *tempstr;

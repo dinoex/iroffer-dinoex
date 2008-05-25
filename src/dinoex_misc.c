@@ -583,7 +583,7 @@ void update_hour_dinoex(int hour, int minute)
     dinoex_lasthour = hour;
 }
 
-char *grep_to_fnmatch(char *grep)
+char *grep_to_fnmatch(const char *grep)
 {
   char *raw;
   char *match;
@@ -1032,7 +1032,7 @@ int packnumtonum(const char *a)
   return atoi(a);
 }
 
-int check_trigger(char *line, char *part4)
+int check_trigger(const char *line, const char *part4)
 {
   autoqueue_t *aq;
   autotrigger_t *at;
@@ -1062,7 +1062,7 @@ int check_trigger(char *line, char *part4)
   return 0;
 }
 
-void lost_nick(char *nick)
+void lost_nick(const char *nick)
 {
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "Nickname %s on %s left",
