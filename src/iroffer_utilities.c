@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_jobs.h"
 #include "dinoex_http.h"
 #include "dinoex_badip.h"
 
@@ -593,7 +594,7 @@ void vprivmsg_slow(const char *nick, const char *format, va_list ap)
       return;
     }
   
-  writeserver(WRITESERVER_SLOW, "PRIVMSG %s :%s", nick, tempstr);
+  writeserver_privmsg(WRITESERVER_SLOW, nick, tempstr, len);
 }
 
 void privmsg_fast(const char *nick, const char *format, ...)
@@ -619,7 +620,7 @@ void vprivmsg_fast(const char *nick, const char *format, va_list ap)
       return;
     }
   
-  writeserver(WRITESERVER_FAST, "PRIVMSG %s :%s", nick, tempstr);
+  writeserver_privmsg(WRITESERVER_FAST, nick, tempstr, len);
 }
 
 void privmsg(const char *nick, const char *format, ...)
@@ -645,7 +646,7 @@ void vprivmsg(const char *nick, const char *format, va_list ap)
       return;
     }
   
-  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :%s", nick, tempstr);
+  writeserver_privmsg(WRITESERVER_NORMAL, nick, tempstr, len);
 }
 
 void notice_slow(const char *nick, const char *format, ...)
@@ -671,7 +672,7 @@ void vnotice_slow(const char *nick, const char *format, va_list ap)
       return;
     }
   
-  writeserver(WRITESERVER_SLOW, "NOTICE %s :%s", nick, tempstr);
+  writeserver_notice(WRITESERVER_SLOW, nick, tempstr, len);
 }
 
 void notice_fast(const char *nick, const char *format, ...)
@@ -697,7 +698,7 @@ void vnotice_fast(const char *nick, const char *format, va_list ap)
       return;
     }
   
-  writeserver(WRITESERVER_FAST, "NOTICE %s :%s", nick, tempstr);
+  writeserver_notice(WRITESERVER_FAST, nick, tempstr, len);
 }
 
 void notice(const char *nick, const char *format, ...)
@@ -723,7 +724,7 @@ void vnotice(const char *nick, const char *format, va_list ap)
       return;
     }
   
-  writeserver(WRITESERVER_NORMAL, "NOTICE %s :%s", nick, tempstr);
+  writeserver_notice(WRITESERVER_NORMAL, nick, tempstr, len);
 }
 
 char* getfline(char* str, int slen, int descr, int ret)
@@ -1485,6 +1486,7 @@ void dumpgdata(void)
   gdata_print_int(show_date_added);
   gdata_print_int(reconnect_delay);
   gdata_print_int(fish_only);
+  gdata_print_int(privmsg_encrypt);
   gdata_print_long(nomd5_start);
   
   gdata_irlist_iter_start(downloadhost, char);

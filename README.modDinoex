@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+242) privmsg_encrypt (inspired by Vision)
+  If set, all notice and privmsg will be encrypted.
+
 241) dos_text_files (inspired by Infamous)
   Write xdcclistfile as DOS text format, with CRLF als line break.
   Default: no, on CYGWIN default: yes

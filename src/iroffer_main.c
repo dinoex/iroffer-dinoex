@@ -3058,7 +3058,7 @@ void autoqueuef(const char* line, int pack, const char *message)
    if ( !gdata.ignore )
      {
        char *tempstr = NULL;
-       const char *format = " :** Sending You %s by DCC";
+       const char *format = "** Sending You %s by DCC";
        
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
        
@@ -3208,8 +3208,8 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
              }
            else
              {
-               writeserver(WRITESERVER_FAST, "NOTICE %s%s Which Is %sB. (Resume Supported)",
-                           nick, msg, sizestrstr);
+               notice_fast(nick, "%s, which is %sB. (resume supported)",
+                           msg, sizestrstr);
              }
            mydelete(sizestrstr);
          }

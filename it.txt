@@ -2233,3 +2233,4 @@
 2302 "dos_text_files"
 2303 "privmsg_encrypt"
 2304 "NOTICE %s :+OK %s"
+2305 "<FISH<: %s"

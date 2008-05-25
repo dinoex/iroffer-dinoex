@@ -92,6 +92,9 @@ static config_bool_typ config_parse_bool[] = {
 {"nomd5sum",               &gdata.nomd5sum },
 {"old_statefile",          &gdata.old_statefile },
 {"passive_dcc",            &gdata.passive_dcc },
+#ifndef WITHOUT_BLOWFISH
+{"privmsg_encrypt",        &gdata.privmsg_encrypt },
+#endif /* WITHOUT_BLOWFISH */
 {"quietmode",              &gdata.quietmode },
 {"removelostfiles",        &gdata.removelostfiles },
 {"respondtochannellist",   &gdata.respondtochannellist },

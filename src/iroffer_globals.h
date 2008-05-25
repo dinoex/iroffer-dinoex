@@ -187,6 +187,7 @@ int new_trigger;
 int show_date_added;
 int reconnect_delay;
 int fish_only;
+int privmsg_encrypt;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

@@ -854,7 +854,7 @@ void identify_needed(int force)
   }
   /* wait 1 sec before idetify again */
   gnetwork->next_identify = gdata.curtime + 1;
-  privmsg("nickserv", "IDENTIFY %s", pwd);
+  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "IDENTIFY send to nickserv on %s.", gnetwork->name);
 }

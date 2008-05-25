@@ -298,6 +298,9 @@ void vprivmsg_chan(int delay, const char *name, const char *fish, const char *fo
   if (fish) {
     char *tempcrypt;
 
+    if (gdata.debug > 0) {
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
+    }
     tempcrypt = encrypt_fish(tempstr, len, fish);
     if (tempcrypt) {
       writeserver_channel(delay, "PRIVMSG %s :+OK %s", name, tempcrypt);
@@ -364,6 +367,50 @@ void vwriteserver_channel(int delay, const char *format, va_list ap)
   }
 
   return;
+}
+
+void writeserver_privmsg(int delay, const char *nick, const char *message, int len)
+{
+#ifndef WITHOUT_BLOWFISH
+  updatecontext();
+
+  if (gdata.privmsg_fish && gdata.privmsg_encrypt) {
+    char *tempcrypt;
+
+    if (gdata.debug > 0) {
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
+    }
+    tempcrypt = encrypt_fish(message, len, gdata.privmsg_fish);
+    if (tempcrypt) {
+      writeserver(delay, "PRIVMSG %s :+OK %s", nick, tempcrypt);
+      mydelete(tempcrypt);
+      return;
+    }
+  }
+#endif /* WITHOUT_BLOWFISH */
+  writeserver(delay, "PRIVMSG %s :%s", nick, message);
+}
+
+void writeserver_notice(int delay, const char *nick, const char *message, int len)
+{
+#ifndef WITHOUT_BLOWFISH
+  updatecontext();
+
+  if (gdata.privmsg_fish && gdata.privmsg_encrypt) {
+    char *tempcrypt;
+
+    if (gdata.debug > 0) {
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
+    }
+    tempcrypt = encrypt_fish(message, len, gdata.privmsg_fish);
+    if (tempcrypt) {
+      writeserver(delay, "NOTICE %s :+OK %s", nick, tempcrypt);
+      mydelete(tempcrypt);
+      return;
+    }
+  }
+#endif /* WITHOUT_BLOWFISH */
+  writeserver(delay, "NOTICE %s :%s", nick, message);
 }
 
 void cleanannounce(void)
