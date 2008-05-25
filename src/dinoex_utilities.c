@@ -31,7 +31,7 @@ char *mystrdup2(const char *str, const char *src_function, const char *src_file,
   return copy;
 }
 
-#endif
+#endif /* WITHOUT_MEMSAVE */
 
 int verifyshell(irlist_t *list, const char *file)
 {
@@ -122,7 +122,7 @@ int verifypass2(const char *masterpass, const char *testpass)
 {
 #ifndef NO_CRYPT
   char *pwout;
-#endif
+#endif /* NO_CRYPT */
 
   updatecontext();
 
@@ -137,12 +137,12 @@ int verifypass2(const char *masterpass, const char *testpass)
 
   pwout = crypt(testpass, masterpass);
   if (strcmp(pwout, masterpass)) return 0;
-#else
+#else /* NO_CRYPT */
   if (!masterpass || !testpass)
     return 0;
 
   if (strcmp(testpass, masterpass)) return 0;
-#endif
+#endif /* NO_CRYPT */
 
   /* allow */
   return 1;
@@ -169,7 +169,7 @@ void checkadminpass2(const char *masterpass)
   }
 
   if (err) outerror(OUTERROR_TYPE_CRASH, "adminpass is not encrypted!");
-#endif
+#endif /* NO_CRYPT */
 }
 
 char *clean_quotes(char *str)

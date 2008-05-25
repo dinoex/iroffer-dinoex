@@ -190,6 +190,6 @@ void telnet_perform(void)
   }
 }
 
-#endif
+#endif /* WITHOUT_TELNET */
 
 /* End of File */

@@ -77,7 +77,7 @@ static const char *http_header_admin =
 "\r\n";
 
 static const char *htpp_auth_key = "Basic ";
-#endif
+#endif /* WITHOUT_HTTP_ADMIN */
 
 typedef struct {
   const char *m_ext;
@@ -178,7 +178,7 @@ b64decode_string(const char *coded)
   *(dest++) = 0;
   return result;
 }
-#endif
+#endif /* WITHOUT_HTTP_ADMIN */
 
 static const char *html_mime(const char *file)
 {
@@ -1534,7 +1534,7 @@ static void h_admin(http * const h, int level, const char *body)
             "HTTP not found: '%s'", h->url);
   h_error(h, http_header_notfound);
 }
-#endif
+#endif /* WITHOUT_HTTP_ADMIN */
 
 static char *h_bad_request(http * const h)
 {
@@ -1651,7 +1651,7 @@ static int h_admin_auth(http * const h, char *body)
   mydelete(tempstr);
   return 1;
 }
-#endif
+#endif /* WITHOUT_HTTP_ADMIN */
 
 
 static void h_parse(http * const h, char *body)
@@ -1681,7 +1681,7 @@ static void h_parse(http * const h, char *body)
     }
     return;
   }
-#endif
+#endif /* WITHOUT_HTTP_ADMIN */
 
   if (gdata.http_dir) {
     tempstr = mycalloc(maxtextlength);
@@ -1899,6 +1899,6 @@ void h_perform(int changesec)
   }
 }
 
-#endif
+#endif /* WITHOUT_HTTP */
 
 /* End of File */

@@ -219,7 +219,7 @@ static void my_get_upnp_data(const struct sockaddr *sa, socklen_t salen)
     outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", "upnp_router");
     return;
   }
-#else
+#else /* NO_GETADDRINFO */
   const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
   unsigned long to_ip;
   char hbuf[maxtextlengthshort], sbuf[maxtextlengthshort];
@@ -231,7 +231,7 @@ static void my_get_upnp_data(const struct sockaddr *sa, socklen_t salen)
            (to_ip >>  8) & 0xFF,
            (to_ip      ) & 0xFF);
   snprintf(sbuf, sizeof(sbuf), "%d", ntohs(remoteaddr->sin_port));
-#endif
+#endif /* NO_GETADDRINFO */
   if (sa->sa_family != AF_INET)
     return;
 
@@ -340,9 +340,9 @@ void child_resolver(void)
   struct addrinfo hints;
   struct addrinfo *results;
   struct addrinfo *res;
-#else
+#else /* NO_GETADDRINFO */
   struct hostent *remotehost;
-#endif
+#endif /* NO_GETADDRINFO */
   struct sockaddr_in *remoteaddr;
   res_addrinfo_t rbuffer;
   ssize_t bytes;
@@ -351,7 +351,7 @@ void child_resolver(void)
   int status;
   int found;
   char portname[16];
-#endif
+#endif /* NO_GETADDRINFO */
 
   for (i=3; i<((int)FD_SETSIZE); i++) {
     /* include [0], but not [1] */
@@ -372,20 +372,20 @@ void child_resolver(void)
   status = getaddrinfo(gnetwork->serv_resolv.to_ip, portname,
                        &hints, &results);
   if ((status) || results == NULL) {
-#else
+#else /* NO_GETADDRINFO */
   remotehost = gethostbyname(gnetwork->serv_resolv.to_ip);
   if (remotehost == NULL) {
-#endif
+#endif /* NO_GETADDRINFO */
 #ifdef NO_HOSTCODES
     exit(10);
-#else
+#else /* NO_HOSTCODES */
     switch (h_errno) {
     case HOST_NOT_FOUND:
       exit(20);
     case NO_ADDRESS:
 #if NO_ADDRESS != NO_DATA
     case NO_DATA:
-#endif
+#endif /* NO_ADDRESS != NO_DATA */
       exit(21);
     case NO_RECOVERY:
       exit(22);
@@ -394,7 +394,7 @@ void child_resolver(void)
     default:
       exit(12);
     }
-#endif
+#endif /* NO_HOSTCODES */
   }
 
   remoteaddr = (struct sockaddr_in *)(&(rbuffer.ai_addr));
@@ -420,7 +420,7 @@ void child_resolver(void)
   rbuffer.ai_addrlen = res->ai_addrlen;
   rbuffer.ai_addr = *(res->ai_addr);
   memcpy(remoteaddr, res->ai_addr, res->ai_addrlen);
-#else
+#else /* NO_GETADDRINFO */
   rbuffer.ai_family = AF_INET;
   rbuffer.ai_socktype = SOCK_STREAM;
   rbuffer.ai_protocol = 0;
@@ -428,13 +428,13 @@ void child_resolver(void)
   rbuffer.ai_addr.sa_family = remotehost->h_addrtype;
   remoteaddr->sin_port = htons(gnetwork->serv_resolv.to_port);
   memcpy(&(remoteaddr->sin_addr), remotehost->h_addr_list[0], sizeof(struct in_addr));
-#endif
+#endif /* NO_GETADDRINFO */
   bytes = write(gnetwork->serv_resolv.sp_fd[1],
                 &rbuffer,
                 sizeof(res_addrinfo_t));
 #if !defined(NO_GETADDRINFO)
   freeaddrinfo(results);
-#endif
+#endif /* NO_GETADDRINFO */
   if (bytes != sizeof(res_addrinfo_t)) {
      exit(11);
   }
@@ -452,7 +452,7 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
     return snprintf(buffer, len, "(unknown)" );
   }
   return snprintf(buffer, len, "host=%s port=%s", hbuf, sbuf);
-#else
+#else /* NO_GETADDRINFO */
   const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
   unsigned long to_ip = ntohl(remoteaddr->sin_addr.s_addr);
   return snprintf(buffer, len, "%lu.%lu.%lu.%lu:%d",
@@ -461,14 +461,14 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
                   (to_ip >>  8) & 0xFF,
                   (to_ip      ) & 0xFF,
                   ntohs(remoteaddr->sin_port));
-#endif
+#endif /* NO_GETADDRINFO */
 }
 
 int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen)
 {
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
-#endif
+#endif /* NO_GETADDRINFO */
   long ip;
 
 #if !defined(NO_GETADDRINFO)
@@ -487,14 +487,14 @@ int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t 
     return snprintf(buffer, len, "(unknown)" );
   }
   return snprintf(buffer, len, "%s %s", hbuf, sbuf);
-#else
+#else /* NO_GETADDRINFO */
   if (gnetwork->usenatip)
     ip = gnetwork->ourip;
   else
     ip = ntohl(sa->sin.sin_addr.s_addr);
   return snprintf(buffer, len, "%lu %d",
                   ip, ntohs(sa->sin.sin_port));
-#endif
+#endif /* NO_GETADDRINFO */
 }
 
 const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, int net)

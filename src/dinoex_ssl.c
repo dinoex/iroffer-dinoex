@@ -59,7 +59,7 @@ static void outerror_ssl(void)
     return;
 
   outerror(OUTERROR_TYPE_WARN_LOUD, "SSL Error %ld:%s", err, ERR_error_string(err, NULL));
-#endif
+#endif /* _OS_CYGWIN */
 }
 #endif /* USE_SSL */
 

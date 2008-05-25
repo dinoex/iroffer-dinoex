@@ -299,10 +299,10 @@ static void mainloop (void) {
       highests = l_select_fdset(highests);
 #ifndef WITHOUT_TELNET
       highests = telnet_select_fdset(highests);
-#endif
+#endif /* WITHOUT_TELNET */
 #ifndef WITHOUT_HTTP
       highests = h_select_fdset(highests);
-#endif
+#endif /* WITHOUT_HTTP */
       
       if (gdata.md5build.file_fd != FD_UNUSED)
         {
@@ -1036,10 +1036,10 @@ static void mainloop (void) {
 
 #ifndef WITHOUT_TELNET
       telnet_perform();
-#endif
+#endif /* WITHOUT_TELNET */
 #ifndef WITHOUT_HTTP
       h_perform(changesec);
-#endif
+#endif /* WITHOUT_HTTP */
       
       /*----- time for a delayed shutdown? ----- */
       if (changesec && gdata.delayedshutdown)
@@ -1621,9 +1621,9 @@ static void mainloop (void) {
           ssize_t howmuch;
 #if defined(_OS_CYGWIN)
           int reads_per_loop = 32;
-#else
+#else /* _OS_CYGWIN */
           int reads_per_loop = 64;
-#endif
+#endif /* _OS_CYGWIN */
           
           assert(gdata.md5build.xpack);
           

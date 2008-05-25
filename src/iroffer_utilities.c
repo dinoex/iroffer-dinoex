@@ -51,9 +51,9 @@ const char* strstrnocase (const char *str1, const char *match1)
 #ifndef WITHOUT_MEMSAVE
 char* getpart2(const char *line, int howmany,
                const char *src_function, const char *src_file, int src_line)
-#else
+#else /* WITHOUT_MEMSAVE */
 char* getpart(const char *line, int howmany)
-#endif
+#endif /* WITHOUT_MEMSAVE */
 {
   char *part;
   int li;
@@ -95,9 +95,9 @@ char* getpart(const char *line, int howmany)
 
 #ifndef WITHOUT_MEMSAVE
   part = mymalloc2(plen+1, 0, src_function, src_file, src_line);
-#else
+#else /* WITHOUT_MEMSAVE */
   part = mymalloc(plen+1);
-#endif
+#endif /* WITHOUT_MEMSAVE */
   
   memcpy(part, line+li, plen);
   part[plen] = '\0';
@@ -1003,7 +1003,7 @@ void mydelete2(void *t) {
    return;
    }
 
-#endif
+#endif /* WITHOUT_MEMSAVE */
 
 char* removenonprintable(char *str1) {
    unsigned int i;
@@ -2392,9 +2392,9 @@ char* convert_to_unix_slash(char *ss)
 #ifndef WITHOUT_MEMSAVE
 void* irlist_add2(irlist_t *list, unsigned int size,
                   const char *src_function, const char *src_file, int src_line)
-#else
+#else /* WITHOUT_MEMSAVE */
 void* irlist_add(irlist_t *list, unsigned int size)
-#endif
+#endif /* WITHOUT_MEMSAVE */
 {
   irlist_item_t *iitem;
   
@@ -2403,9 +2403,9 @@ void* irlist_add(irlist_t *list, unsigned int size)
 #ifndef WITHOUT_MEMSAVE
   iitem = mymalloc2(sizeof(irlist_item_t) + size, 1,
                     src_function, src_file, src_line);
-#else
+#else /* WITHOUT_MEMSAVE */
   iitem = mycalloc(sizeof(irlist_item_t) + size);
-#endif
+#endif /* WITHOUT_MEMSAVE */
   
   irlist_insert_tail(list, IRLIST_INT_TO_EXT(iitem));
   

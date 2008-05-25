@@ -444,10 +444,10 @@ void config_dinoex(void)
 #endif /* USE_UPNP */
 #ifndef WITHOUT_TELNET
   telnet_setup_listen();
-#endif
+#endif /* WITHOUT_TELNET */
 #ifndef WITHOUT_HTTP
   h_setup_listen();
-#endif
+#endif /* WITHOUT_HTTP */
   global_defaults();
 }
 
@@ -455,10 +455,10 @@ void shutdown_dinoex(void)
 {
 #ifndef WITHOUT_TELNET
   telnet_close_listen();
-#endif
+#endif /* WITHOUT_TELNET */
 #ifndef WITHOUT_HTTP
   h_close_listen();
-#endif
+#endif /* WITHOUT_HTTP */
   geoip_shutdown();
 #ifdef USE_CURL
   curl_shutdown();
@@ -469,10 +469,10 @@ void rehash_dinoex(void)
 {
 #ifndef WITHOUT_TELNET
   telnet_reash_listen();
-#endif
+#endif /* WITHOUT_TELNET */
 #ifndef WITHOUT_HTTP
   h_reash_listen();
-#endif
+#endif /* WITHOUT_HTTP */
   global_defaults();
   geoip_shutdown();
 }
@@ -794,8 +794,8 @@ int disk_full(const char *path)
 #else
 #ifndef NO_STATFS
   struct statfs stf;
-#endif
-#endif
+#endif /* NO_STATFS */
+#endif /* NO_STATVFS */
   off_t freebytes;
 
   freebytes = 0L;
@@ -807,7 +807,7 @@ int disk_full(const char *path)
   } else {
     freebytes = (off_t)stf.f_bavail * (off_t)stf.f_frsize;
   }
-#else
+#else /* NO_STATVFS */
 #ifndef NO_STATFS
   if (statfs(dpath, &stf) < 0) {
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -816,8 +816,8 @@ int disk_full(const char *path)
   } else {
     freebytes = (off_t)stf.f_bavail * (off_t)stf.f_bsize;
   }
-#endif
-#endif
+#endif /* NO_STATFS */
+#endif /* NO_STATVFS */
 
   if (gdata.debug > 0)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -1453,7 +1453,7 @@ static void debug_memory(void)
   gdata.meminfo = NULL;
   return;
 }
-#endif
+#endif /* DEBUG */
 
 void
 #ifdef __GNUC__
@@ -1469,7 +1469,7 @@ exit_iroffer(void)
 
 #ifdef DEBUG
   debug_memory();
-#endif
+#endif /* DEBUG */
   exit(0);
 }
 

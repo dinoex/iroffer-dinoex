@@ -905,7 +905,7 @@ void cancel_md5_hash(xdcc *xd, const char *msg)
   assert(xd->file_fd_count == 0);
 #ifdef HAVE_MMAP
   assert(!irlist_size(&xd->mmaps));
-#endif
+#endif /* HAVE_MMAP */
 }
 
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)

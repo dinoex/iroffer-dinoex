@@ -73,7 +73,7 @@ void a_respond(const userinput * const u, const char *format, ...)
 
 #if defined(_OS_CYGWIN)
         tempstr[llen++] = '\r';
-#endif
+#endif /* _OS_CYGWIN */
         tempstr[llen++] = '\n';
         tempstr[llen] = '\0';
 
