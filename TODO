@@ -82,6 +82,7 @@ Long Term Features:
   1171  slow channel join
   1173  delayed channel join
   1176  pre_desc, post_desc
+  1190  show CONFIG value
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
