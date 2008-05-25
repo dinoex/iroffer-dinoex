@@ -2234,3 +2234,4 @@
 2303 "privmsg_encrypt"
 2304 "NOTICE %s :+OK %s"
 2305 "<FISH<: %s"
+2306 "Prova Specificando variabile"

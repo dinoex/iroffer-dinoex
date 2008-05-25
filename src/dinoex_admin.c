@@ -3369,6 +3369,12 @@ void a_config(const userinput * const u)
       return;
     }
   }
+
+  if (!u->arg1e || !strlen(u->arg1e)) {
+    a_respond(u, "Try Specifying a Key");
+    return;
+  }
+
   current_config = "ADMIN";
   current_line = 0;
   getconfig_set(u->arg1e, 0);

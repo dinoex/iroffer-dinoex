@@ -83,6 +83,7 @@ TheDeath
 	option "upnp_router"
 	reporting CRC bug
 	reporting leak of filehandles
+	reporting CONFIG bug
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -399,4 +400,7 @@ dns777
 
 Infamous
 	option "dos_text_files"
+
+OmegaPhil
+	reporting CONFIG bug
 
