@@ -36,7 +36,7 @@
 /* local functions */
 static void mainloop(void);
 static void parseline(char *line);
-static void privmsgparse(const char* type, char* line);
+static void privmsgparse(int type, char* line);
 static int  parsecmdline(int argc, char *argv[]);
 
 /* main */
@@ -1831,7 +1831,7 @@ static void parseline(char *line) {
      {
        /* nickserv */
        identify_check(line);
-       privmsgparse("NOTICE",line);
+       privmsgparse(0, line);
      }
  
  /* :server 001  xxxx :welcome.... */
@@ -2372,15 +2372,21 @@ static void parseline(char *line) {
        line2 = test_fish_message(line, part3, part4, part5);
        if (line2)
          {
-           /* use decrypted line */
-           line = line2;
+           /* matched lines are skipped */
+           if (check_trigger(line2, part4) == 0)
+             privmsgparse(1, line2);
+           mydelete(line2);
          }
+       else
+         {
 #endif /* WITHOUT_BLOWFISH */
-       /* matched lines are skipped */
-       if (check_trigger(line, part4) == 0)
-         privmsgparse("PRIVMSG", line);
+           if (!gdata.fish_only)
+             {
+               if (check_trigger(line, part4) == 0)
+                 privmsgparse(1, line);
+             }
 #ifndef WITHOUT_BLOWFISH
-       mydelete(line2);
+         }
 #endif /* WITHOUT_BLOWFISH */
      }
    
@@ -2391,7 +2397,10 @@ static void parseline(char *line) {
    }
 
 
-static void privmsgparse(const char* type, char* line) {
+static const char *type_list[2] = { "NOTICE", "PRIVMSG" };
+
+static void privmsgparse(int type, char* line)
+{
    char *nick, *hostname, *hostmask, *wildhost;
    char *msg1, *msg2, *msg3, *msg4, *msg5, *msg6, *dest;
    int i,j,k;
@@ -2400,14 +2409,10 @@ static void privmsgparse(const char* type, char* line) {
    transfer *tr;
    xdcc *xd;
    int line_len;
-   int notnotice = 0;
    
    updatecontext();
 
    floodchk();
-   
-   if ( strcmp(type,"NOTICE") )
-     notnotice ++;
    
    line_len = sstrlen(line);
    
@@ -2531,7 +2536,7 @@ static void privmsgparse(const char* type, char* line) {
    
    /*----- PING ----- */
    else if ( !gdata.ignore && (!strcmp(msg1,"\1PING")
-          || !strcmp(msg1,"\1PING\1") ) && notnotice ) {
+          || !strcmp(msg1, "\1PING\1") ) && (type == 0) ) {
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
       if (msg2 && (msg2[strlen(msg2)-1] == '\1'))
         {
@@ -2946,19 +2951,19 @@ static void privmsgparse(const char* type, char* line) {
    else {
       if (dest && gnetwork->caps_nick && !strcmp(dest,gnetwork->caps_nick))
         {
-          if ((gdata.lognotices && !strcmp(type,"NOTICE")) ||
-              (gdata.logmessages && !strcmp(type,"PRIVMSG")))
+          if ((gdata.lognotices && (type == 0)) ||
+              (gdata.logmessages && (type != 0)))
             {
               msglog_t *ml;
               char *begin;
               
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_GREEN,
                       "%s from %s on %s logged, use MSGREAD to display it.",
-                      type, nick, gnetwork->name);
+                      type_list[type], nick, gnetwork->name);
               
               ml = irlist_add(&gdata.msglog, sizeof(msglog_t));
               
-              begin = line + 5 + strlen(hostmask) + strlen(type) + strlen(dest);
+              begin = line + 5 + strlen(hostmask) + strlen(type_list[type]) + strlen(dest);
               
               ml->when = gdata.curtime;
               ml->hostmask = mystrdup(hostmask);
@@ -2966,11 +2971,11 @@ static void privmsgparse(const char* type, char* line) {
               
               write_statefile();
             }
-          else if (gdata.logfile_notices && !strcmp(type,"NOTICE"))
+          else if (gdata.logfile_notices && (type == 0))
             {
               logfile_add(gdata.logfile_notices, line);
             }
-          else if (gdata.logfile_messages && !strcmp(type,"PRIVMSG"))
+          else if (gdata.logfile_messages && (type != 0))
             {
               logfile_add(gdata.logfile_messages, line);
             }
@@ -2978,7 +2983,7 @@ static void privmsgparse(const char* type, char* line) {
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_GREEN,
                       "%s on %s: %s",
-                      type, gnetwork->name, line);
+                      type_list[type], gnetwork->name, line);
             }
          }
       }

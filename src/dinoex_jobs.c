@@ -183,24 +183,49 @@ static char *decrypt_fish( const char *str, int len, const char *key)
   return msg;
 }
 
-char *test_fish_message(char *line, char *channel, char *str, char *data)
+static char *privmsg_decrypt(const char *line, const char *channel, const char *key, const char *data)
 {
-  channel_t *ch;
   char *newstr;
   char *newline;
   char *end;
   size_t len;
 
-  if (!str)
+  updatecontext();
+
+  newstr = decrypt_fish(data, strlen(data), key);
+  if (newstr == NULL)
     return NULL;
 
-  if (!data)
+  newline = mystrdup(line);
+  len = strlen(newline);
+  end = strchr(newline, ' ');
+  if (end == NULL) {
+    mydelete(newline);
+    mydelete(newstr);
     return NULL;
-
-  if (!gdata.fish_only) {
-    if (strcmp(str, ":+OK") != 0)
-      return NULL;
   }
+
+  end = strchr(++end, ' ');
+  if (end == NULL) {
+    mydelete(newline);
+    mydelete(newstr);
+    return NULL;
+  }
+
+  *end = 0;
+  len -= strlen(newline) - 1;
+  *(end++) = ' ';
+  snprintf(end, len, "%s :%s", channel, newstr);
+  mydelete(newstr);
+  if (gdata.debug > 0) {
+    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
+  }
+  return newline;
+}
+
+static const char *find_fish_key(const char *channel)
+{
+  channel_t *ch;
 
   updatecontext();
 
@@ -214,38 +239,31 @@ char *test_fish_message(char *line, char *channel, char *str, char *data)
     if (strcasecmp(ch->name, channel) != 0)
       continue;
 
-    newstr= NULL;
-    if (gdata.fish_only) {
-      if (strcmp(str, ":+OK") != 0)
-        newstr = mystrdup( ":+OK" );
-    }
-    if (newstr == NULL) {
-      newstr = decrypt_fish(data, strlen(data), ch->fish);
-      if (newstr == NULL)
-        return NULL;
-    }
-
-    newline = mystrdup(line);
-    len = strlen(newline);
-    end = strchr(newline, ' ');
-    if (end == NULL)
-      return NULL;
-
-    end = strchr(++end, ' ');
-    if (end == NULL)
-      return NULL;
-
-    *end = 0;
-    len -= strlen(newline) - 1;
-    *(end++) = ' ';
-    snprintf(end, len, "%s :%s", channel, newstr);
-    mydelete(newstr);
-    if (gdata.debug > 0) {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
-    }
-    return newline;
+    return ch->fish;
   }
   return NULL;
+}
+
+char *test_fish_message(char *line, char *channel, char *str, char *data)
+{
+  const char *key;
+
+  updatecontext();
+
+  if (!str)
+    return NULL;
+
+  if (!data)
+    return NULL;
+
+  if (strcmp(str, ":+OK") != 0)
+    return NULL;
+
+  key = find_fish_key(channel);
+  if (key == NULL)
+    return NULL;
+
+  return privmsg_decrypt(line, channel, key, data);
 }
 
 #endif /* WITHOUT_BLOWFISH */
