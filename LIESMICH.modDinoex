@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.8:
 ---------------
 
+240) log_exclude_text
+  Nachrichten mit diesem Inhalt werden nicht in den Logfiles
+  geschrieben oder im Bot gespeichert.
+  Jokerzeichen sind erlaubt:
+   * = 0 oder mehr Zeichen,  ? = 1 Zeichen,  [0-9] = jede Ziffer
+
+239) log_exclude_host
+  Nachrichten von diesen Hostmasks werden nicht in die Logfiles
+  geschrieben oder im Bot gespeichert.
+
 238) privmsg_fish
   Wenn gesetzt, werden alle Nachrichten mit diesem Schlüssel dekodiert.
 

@@ -2228,3 +2228,5 @@
 2297 "Slot"
 2298 "Slot"
 2299 "privmsg_fish"
+2300 "log_exclude_host"
+2301 "log_exclude_text"

@@ -170,6 +170,7 @@ Yasuo|Iwakura
 	QUL and DCL output
 	autosendpack with 2 parameters
 	admin command "ADDMATCH"
+	option "log_exclude_text"
 
 Road
 	user command XDCC OWNER

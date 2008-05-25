@@ -221,6 +221,8 @@ static config_list_typ config_parse_list[] = {
 #ifndef WITHOUT_HTTP
 {"http_vhost",              &gdata.http_vhost,              0 },
 #endif /* WITHOUT_HTTP */
+{"log_exclude_host",        &gdata.log_exclude_host,        2 },
+{"log_exclude_text",        &gdata.log_exclude_text,        5 },
 {"nodownloadhost",          &gdata.nodownloadhost,          2 },
 #ifdef USE_GEOIP
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 },

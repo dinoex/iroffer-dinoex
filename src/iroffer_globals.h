@@ -107,6 +107,8 @@ irlist_t telnet_vhost;
 irlist_t weblist_info;
 irlist_t mime_type;
 irlist_t autoadd_group_match;
+irlist_t log_exclude_host;
+irlist_t log_exclude_text;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;

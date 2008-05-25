@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+240) log_exclude_text (inspired by Yasuo|Iwakura)
+  Exclude given list of patterns from filling up your logfiles
+  or polluting your saved messages.
+  Wild cards are:
+   * = 0 or more characters,  ? = 1 character,  [0-9] = any digit
+
+239) log_exclude_host
+  Exclude given list of hostmasks from filling up your logfiles
+  or polluting your saved messages.
+
 238) privmsg_fish (inspired by Vision, dondieschotte)
   If set, decode encrypted messages with this global fish key.
 

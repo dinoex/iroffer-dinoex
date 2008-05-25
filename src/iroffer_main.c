@@ -2951,11 +2951,20 @@ static void privmsgparse(int type, char* line)
    else {
       if (dest && gnetwork->caps_nick && !strcmp(dest,gnetwork->caps_nick))
         {
-          if ((gdata.lognotices && (type == 0)) ||
+          char *begin;
+          int exclude = 0;
+          
+          begin = line + 5 + strlen(hostmask) + strlen(type_list[type]) + strlen(dest);
+          if (verifyshell(&gdata.log_exclude_host, hostmask))
+            exclude ++;
+          if (verifyshell(&gdata.log_exclude_text, begin))
+            exclude ++;
+          
+          if (((gdata.lognotices && (type == 0)) ||
               (gdata.logmessages && (type != 0)))
+              && (exclude == 0))
             {
               msglog_t *ml;
-              char *begin;
               
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_GREEN,
                       "%s from %s on %s logged, use MSGREAD to display it.",
@@ -2963,19 +2972,17 @@ static void privmsgparse(int type, char* line)
               
               ml = irlist_add(&gdata.msglog, sizeof(msglog_t));
               
-              begin = line + 5 + strlen(hostmask) + strlen(type_list[type]) + strlen(dest);
-              
               ml->when = gdata.curtime;
               ml->hostmask = mystrdup(hostmask);
               ml->message = mystrdup(begin);
               
               write_statefile();
             }
-          else if (gdata.logfile_notices && (type == 0))
+          else if (gdata.logfile_notices && (type == 0) && (exclude == 0))
             {
               logfile_add(gdata.logfile_notices, line);
             }
-          else if (gdata.logfile_messages && (type != 0))
+          else if (gdata.logfile_messages && (type != 0) && (exclude == 0))
             {
               logfile_add(gdata.logfile_messages, line);
             }
