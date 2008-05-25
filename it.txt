@@ -2230,3 +2230,4 @@
 2299 "privmsg_fish"
 2300 "log_exclude_host"
 2301 "log_exclude_text"
+2302 "dos_text_files"

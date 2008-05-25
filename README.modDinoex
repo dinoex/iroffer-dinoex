@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+241) dos_text_files (inspired by Infamous)
+  Write xdcclistfile as DOS text format, with CRLF als line break.
+  Default: no, on CYGWIN default: yes
+
 240) log_exclude_text (inspired by Yasuo|Iwakura)
   Exclude given list of patterns from filling up your logfiles
   or polluting your saved messages.

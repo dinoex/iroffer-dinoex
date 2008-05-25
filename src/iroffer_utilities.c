@@ -1278,6 +1278,7 @@ void dumpgdata(void)
   gdata_print_int(nomd5sum);
   gdata_print_int(getipfromserver);
   gdata_print_int(noduplicatefiles);
+  gdata_print_int(dos_text_files);
 
   gdata_irlist_iter_start(adddir_exclude, char);
   gdata_iter_as_print_string;

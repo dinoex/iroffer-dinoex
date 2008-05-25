@@ -1983,6 +1983,11 @@ void reinit_config_vars(void)
   gdata.nomd5sum = 0;
   gdata.getipfromserver = 0;
   gdata.noduplicatefiles = 0;
+#if defined(_OS_CYGWIN)
+  gdata.dos_text_files = 1;
+#else /* _OS_CYGWIN */
+  gdata.dos_text_files = 0;
+#endif /* _OS_CYGWIN */
   irlist_delete_all(&gdata.adddir_exclude);
   irlist_delete_all(&gdata.geoipcountry);
   irlist_delete_all(&gdata.nogeoipcountry);

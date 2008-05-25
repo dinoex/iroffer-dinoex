@@ -487,9 +487,8 @@ static void u_respond(const userinput * const u, const char *format, ...)
             removenonprintablectrl(tempstr);
           }
         
-#if defined(_OS_CYGWIN)
-        tempstr[llen++] = '\r';
-#endif
+	if (gdata.dos_text_files)
+          tempstr[llen++] = '\r';
         tempstr[llen++] = '\n';
         tempstr[llen] = '\0';
         

@@ -67,6 +67,7 @@ static config_bool_typ config_parse_bool[] = {
 {"direct_config_access",   &gdata.direct_config_access },
 {"direct_file_access",     &gdata.direct_file_access },
 {"disablexdccinfo",        &gdata.disablexdccinfo },
+{"dos_text_files",         &gdata.dos_text_files },
 {"extend_status_line",     &gdata.extend_status_line },
 #ifndef WITHOUT_BLOWFISH
 {"fish_only",              &gdata.fish_only },
