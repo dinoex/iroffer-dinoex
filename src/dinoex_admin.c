@@ -2222,6 +2222,7 @@ void a_lockgroup(const userinput * const u)
       continue;
 
     a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2);
+    mydelete(xd->lock);
     xd->lock = mystrdup(u->arg2);
   }
   write_files();
