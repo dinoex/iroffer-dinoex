@@ -164,7 +164,7 @@ bugfix: DCC RESUME (reported by Misha-SU)
 extend debug and log information.
 
 222) old_statefile
-  Write smaller irofer statefile by default.
+  Writes smaller irofer statefile by default.
   Set this option to write a statefile that is compatible with old versions.
 
 WARNING: You need this option for the PHP weblist iroffer-state.php version 2.10 and less.
