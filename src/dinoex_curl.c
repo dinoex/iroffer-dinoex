@@ -253,7 +253,11 @@ static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
   }
 
   if (ft->resumesize > 0L) {
+#if LIBCURL_VERSION_NUM <= 0x70a08
+    ces = curl_easy_setopt(ch, CURLOPT_RESUME_FROM, ft->resumesize);
+#else
     ces = curl_easy_setopt(ch, CURLOPT_RESUME_FROM_LARGE, ft->resumesize);
+#endif
     if (ces != 0) {
       a_respond(u, "curl_easy_setopt RESUME_FROM failed with %d", ces);
       return 1;
