@@ -404,3 +404,7 @@ Infamous
 OmegaPhil
 	reporting CONFIG bug
 
+Bohnenstange
+	reporting curl 7.10.x bug
+	reporting "-pformat all" bug
+

@@ -2,6 +2,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 
 Ab Version 3.8:
 ---------------
+ 
+bugfix: FETCH
+  Resume mit curl < 7.11.0 jetzt möglich.
+
+bugfix: CONFIG
+  Bot crashte wenn admin CONFIG ohne Parameter eingibt.
 
 242) privmsg_encrypt
   Wenn gesetzt, werden alle NOTICE and PRIVMSG verschlüsselt.

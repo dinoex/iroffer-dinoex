@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+bugfix: FETCH (reported by Bohnenstange)
+  Support resume for curl < 7.11.0
+ 
 bugfix: CONFIG (reported by OmegaPhil, TheDeath)
   Bot did crash when this command had no argument.
 
