@@ -170,7 +170,7 @@ extend debug and log information.
   Writes smaller irofer statefile by default.
   Set this option to write a statefile that is compatible with old versions.
 
-WARNING: You need this option for the PHP weblist iroffer-state.php version 2.10 and less.
+WARNING: You need this option for the PHP weblist iroffer-state.php version 2.10 and below.
 
 221) XDCC SEARCH, FIND
   Allow *,?,# as jokers
