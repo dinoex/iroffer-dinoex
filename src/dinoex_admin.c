@@ -2297,6 +2297,7 @@ void a_groupdesc(const userinput * const u)
     return;
 
   if (u->arg2e && strlen(u->arg2e)) {
+    clean_quotes(u->arg2e);
     a_respond(u, "New GROUPDESC: %s", u->arg2e);
   } else {
     a_respond(u, "Removed GROUPDESC");
