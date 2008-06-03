@@ -84,6 +84,7 @@ TheDeath
 	reporting CRC bug
 	reporting leak of filehandles
 	reporting CONFIG bug
+	reporting xdcclistfile over HTTP bug
 
 [GFE]Lunix
 	alias xdcc list group <group>

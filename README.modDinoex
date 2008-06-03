@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+bugfix: http_port (reported by TheDeath)
+  Bot could crash on shutdown, when xdcclistfile was requested over HTTP.
+
 bugfix: GROUPDESC (reported by RyoOhki)
   Allow quoted arguments
 

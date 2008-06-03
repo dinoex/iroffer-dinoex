@@ -653,6 +653,12 @@ static void h_readfile(http * const h, const char *file)
   updatecontext();
 
   h->bytessent = 0;
+  if (file == NULL) {
+    h->filedescriptor = FD_UNUSED;
+    h_error(h, http_header_notfound);
+    return;
+  }
+
   h->file = mystrdup(file);
   h->filedescriptor = open(h->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (h->filedescriptor < 0) {
