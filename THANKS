@@ -255,6 +255,7 @@ dondieschotte
 	search for date added
 	reporting "autoadd_group_match" bug
 	option "privmsg_fish"
+	option "fish_exclude_nick"
 
 dsd
 	admin command "autoadd"

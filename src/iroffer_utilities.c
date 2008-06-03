@@ -1504,6 +1504,9 @@ void dumpgdata(void)
   gdata_irlist_iter_start(log_exclude_text, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
+  gdata_irlist_iter_start(fish_exclude_nick, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
   
   gdata_print_string(adminpass);
   gdata_print_string(hadminpass);

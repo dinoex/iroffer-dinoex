@@ -2000,6 +2000,7 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.weblist_info);
   irlist_delete_all(&gdata.log_exclude_host);
   irlist_delete_all(&gdata.log_exclude_text);
+  irlist_delete_all(&gdata.fish_exclude_nick);
   for (mime = irlist_get_head(&gdata.mime_type);
        mime;
        mime = irlist_delete(&gdata.mime_type, mime)) {

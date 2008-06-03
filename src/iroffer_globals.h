@@ -110,6 +110,7 @@ irlist_t mime_type;
 irlist_t autoadd_group_match;
 irlist_t log_exclude_host;
 irlist_t log_exclude_text;
+irlist_t fish_exclude_nick;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;

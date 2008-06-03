@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.8:
 -----------------
 
+243) fish_exclude_nick (inspired by dondieschotte)
+  Messages to this nicks won't be encryted.
+
 bugfix: http_port (reported by TheDeath)
   Bot could crash on shutdown, when xdcclistfile was requested over HTTP.
 

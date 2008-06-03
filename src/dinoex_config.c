@@ -217,6 +217,9 @@ static config_list_typ config_parse_list[] = {
 {"autoignore_exclude",      &gdata.autoignore_exclude,      2 },
 {"downloadhost",            &gdata.downloadhost,            2 },
 {"filedir",                 &gdata.filedir,                 1 },
+#ifndef WITHOUT_BLOWFISH
+{"fish_exclude_nick",       &gdata.fish_exclude_nick,       2 },
+#endif /* WITHOUT_BLOWFISH */
 #ifdef USE_GEOIP
 {"geoipcountry",            &gdata.geoipcountry,            0 },
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 },

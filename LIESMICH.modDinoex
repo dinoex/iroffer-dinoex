@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.8:
 ---------------
  
+243) fish_exclude_nick
+  Nachrichten an diese Nicks werden nicht verschlüsselt.
+
 bugfix: http_port
   Bot kann beim shutdown crashen, wenn das xdcclistfile per HTTP angefordert wird.
 
