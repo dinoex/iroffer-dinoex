@@ -300,6 +300,8 @@ void t_check_duplicateip(transfer *const newtr)
   if (gdata.maxtransfersperperson == 0)
     return;
 
+  updatecontext();
+
   if (newtr->con.family != AF_INET)
     return;
 

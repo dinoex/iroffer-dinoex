@@ -387,7 +387,9 @@ void notifyqueued(void)
 
 void check_new_connection(transfer *const tr)
 {
+  updatecontext();
   geoip_new_connection(tr);
+  updatecontext();
   t_check_duplicateip(tr);
 }
 

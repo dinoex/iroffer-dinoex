@@ -93,6 +93,8 @@ void t_setup_send(transfer * const t)
    int tempc;
 #endif
    
+   updatecontext();
+   
    t->tr_status = TRANSFER_STATUS_SENDING;
    if (gdata.debug > 0) {
       ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", t->con.clientsocket);
