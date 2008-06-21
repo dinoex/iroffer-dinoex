@@ -61,6 +61,8 @@ Page last modified: 09/01/04
 [Iroffer mod Dinoex]
 
 Short Term Features:
+  1202  Reduce message length when using fish.
+  1203  need_voice per network
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -83,6 +85,8 @@ Long Term Features:
   1173  delayed channel join
   1176  pre_desc, post_desc
   1190  show CONFIG value
+  1193  disable all privmsg
+  1206  remove file after last person finishes downloading
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -130,4 +134,6 @@ Not going to happen anytime soon:
   1183  support filenamees with ...
   1184  send msg to server before welcome
   1185  configure the source port for outgoing connections
+  1196  run custom voice scripts
+  1198  !voiceme trigger
 
