@@ -2,7 +2,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 
 Ab Version 3.9:
 ---------------
- 
+
+247) ruby_script
+  Rufe diese Ruby Skript auf, wenn der Bot eine Zeile vom IRC-Server
+  bekommt.
+
 246) need_voice, need_level
   Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
 

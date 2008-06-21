@@ -31,6 +31,7 @@
 #include "dinoex_telnet.h"
 #include "dinoex_badip.h"
 #include "dinoex_jobs.h"
+#include "dinoex_ruby.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -1808,6 +1809,9 @@ static void parseline(char *line) {
    
    updatecontext();
    
+#ifdef USE_RUBY
+   do_myruby(line);
+#endif /* USE_RUBY */
    /* we only support lines upto maxtextlength, truncate line */
    line[maxtextlength-1] = '\0';
    

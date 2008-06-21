@@ -198,6 +198,9 @@ static config_string_typ config_parse_string[] = {
 #endif /* WITHOUT_BLOWFISH */
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
+#ifdef USE_RUBY
+{"ruby_script",             &gdata.ruby_script,             5 },
+#endif /* USE_RUBY */
 {"send_statefile",          &gdata.send_statefile,          0 },
 {"trashcan_dir",            &gdata.trashcan_dir,            1 },
 {"uploaddir",               &gdata.uploaddir,               1 },

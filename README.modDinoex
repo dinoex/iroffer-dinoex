@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+247) ruby_script
+  Run a ruby script on each line the bot gets from the irc server.
+
 246) need_voice, need_level
   you can set need_voice and need_level for each network differently.
 

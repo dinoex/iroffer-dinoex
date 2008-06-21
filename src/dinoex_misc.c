@@ -28,6 +28,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_telnet.h"
 #include "dinoex_queue.h"
+#include "dinoex_ruby.h"
 #include "dinoex_misc.h"
 
 #ifdef USE_UPNP
@@ -532,6 +533,9 @@ void config_dinoex(void)
 #ifndef WITHOUT_HTTP
   h_setup_listen();
 #endif /* WITHOUT_HTTP */
+#ifdef USE_RUBY
+  startup_myruby();
+#endif /* USE_RUBY */
   global_defaults();
 }
 
@@ -547,6 +551,9 @@ void shutdown_dinoex(void)
 #ifdef USE_CURL
   curl_shutdown();
 #endif /* USE_CURL */
+#ifdef USE_RUBY
+  shutdown_myruby();
+#endif /* USE_RUBY */
 }
 
 void rehash_dinoex(void)
@@ -559,6 +566,9 @@ void rehash_dinoex(void)
 #endif /* WITHOUT_HTTP */
   global_defaults();
   geoip_shutdown();
+#ifdef USE_RUBY
+  rehash_myruby();
+#endif /* USE_RUBY */
 }
 
 static int init_xdcc_file(xdcc *xd, char *file)

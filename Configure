@@ -27,7 +27,8 @@ echo "   -warn        Compile with extra warning flags"
 echo "   -geoip       Compile GeoIP lib"
 echo "   -curl        Compile Curl lib (for the FETCH-Command)"
 echo "   -tls         Compile with GNU TLS lib"
-echo "   -upnp        Compile with UPNP suport with miniupnpc"
+echo "   -upnp        Compile with UPNP support with miniupnpc"
+echo "   -ruby        Compile with RUBY scripting support"
 echo "   -no-blowfish Compile without blowfish encryption"
 echo "   -no-openssl  Compile without OpenSSL lib"
 echo "   -no-http     Compile without HTTP server"
@@ -46,6 +47,7 @@ OPT_CURL=false
 OPT_SSL=true
 OPT_TLS=false
 OPT_UPNP=false
+OPT_RUBY=false
 OPT_NOADMIN=false
 OPT_NOBLOWFISH=false
 OPT_NOHTTP=false
@@ -67,6 +69,7 @@ do
   -s*) OPT_SSL=false ;;
   -t*) OPT_TLS=true; OPT_SSL=false ;;
   -u*) OPT_UPNP=true ;;
+  -r*) OPT_RUBY=true;;
   -no-a*) OPT_NOADMIN=true ;;
   -no-b*) OPT_NOBLOWFISH=true ;;
   -no-h*) OPT_NOHTTP=true ;;
@@ -1296,11 +1299,35 @@ int main (int argc, char **argv) {exit(0);}
 	fi
 fi
 
-rm -f config.temp*
-
 if $OPT_WARN; then
 WERROR2=$WERROR
 fi
+
+if $OPT_RUBY; then
+	libruby=`ruby18 -r rbconfig -e "print Config::CONFIG[ 'LIBRUBY' ].sub(/[.]so.*/,'').sub(/^lib/,'-l')"`
+	incruby=`ruby18 -r rbconfig -e "print '-I' + Config::CONFIG[ 'archdir' ]"`
+	echo -n "Seeing if libruby libraries exist (for the RUBY-Scripts)... "
+	echo "
+#include \"ruby.h\"
+int main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
+" > config.temp.c
+	if $cctype config.temp.c $libs "${libruby}" "${incruby}" -L/usr/local/lib -DUSE_RUBY -o config.temp $WARNS; then
+		echo "found"
+		echo "Configuring for Ruby."
+		echo "#define USE_RUBY" >> src/iroffer_config.h
+		RUBYLIB="${libruby}"
+		RUBYINC="${incruby}"
+		RUBYLDF="-L/usr/local/lib"
+		WERROR2=""
+		shift
+	else
+		echo "not found"
+		echo "***Disable the RUBY-extension. If u want to use this feature, please install libruby.***"
+		shift
+	fi
+fi
+
+rm -f config.temp*
 
 echo "Creating src/iroffer_config.h... Done"
 
@@ -1313,10 +1340,10 @@ echo
 echo VERSION=$VERSION
 echo CC=$cctype
 echo CONFIG_EXE=$exe
-echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB
-echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF
+echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB $RUBYLIB
+echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF $RUBYLDF
 echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2
-echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC
+echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
  echo CONFIG_TARGETS=
