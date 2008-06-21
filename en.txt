@@ -2234,3 +2234,5 @@
 2304 "NOTICE %s :+OK %s"
 2305 "<FISH<: %s"
 2306 "Try Specifying a Key"
+2307 "fish_exclude_nick"
+2308 "verbose_crc32"

@@ -2235,3 +2235,5 @@
 2304 "NOTICE %s :+OK %s"
 2305 "<FISH<: %s"
 2306 "Prova Specificando variabile"
+2307 "fish_exclude_nick"
+2308 "verbose_crc32"
