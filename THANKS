@@ -202,6 +202,8 @@ anibi
 
 Tass
 	option "include_subdirs"
+	option "need_voice" for each network
+	option "need_level" for each network
 
 Kurosaki
 	reporting crc unlock problem

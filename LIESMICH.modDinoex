@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
  
+246) need_voice, need_level
+  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+
 245) MD5/CRC
   Zeige die Nummer des Packs bei den Nachrichten über den MS5/CRC Status an.
 

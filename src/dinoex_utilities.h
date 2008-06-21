@@ -21,8 +21,6 @@ char *mystrdup2(const char *str, const char *src_function, const char *src_file,
 #endif
 int verifyshell(irlist_t *list, const char *file);
 const char *save_nick(const char * nick);
-int check_level(char prefix);
-int number_of_pack(xdcc *pack);
 int verifypass2(const char *masterpass, const char *testpass);
 void checkadminpass2(const char *masterpass);
 char *clean_quotes(char *str);

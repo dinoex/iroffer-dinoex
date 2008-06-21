@@ -1964,6 +1964,8 @@ void reinit_config_vars(void)
     gdata.networks[si].connectionmethod.how = how_direct;
     gdata.networks[si].usenatip = 0;
     gdata.networks[si].getip_net = -1;
+    gdata.networks[si].need_voice = -1;
+    gdata.networks[si].need_level = -1;
   } /* networks */
   mydelete(gdata.logfile);
   gdata.logrotate = 0;

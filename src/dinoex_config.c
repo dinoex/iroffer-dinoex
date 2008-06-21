@@ -355,24 +355,16 @@ static int config_find_int(const char *key)
   return -1;
 }
 
-
-int set_config_int(const char *key, const char *text)
+static int check_range(const char *key, const char *text, int *val, int min, int max)
 {
-  int i;
   int rawval;
   char *endptr;
-
-  updatecontext();
-
-  i = config_find_int(key);
-  if (i < 0)
-    return 1;
 
   if (*text == 0) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has no args.",
              current_config, current_line, key);
-    return 0;
+    return 1;
   }
 
   rawval = (int)strtol(text, &endptr, 0);
@@ -380,15 +372,32 @@ int set_config_int(const char *key, const char *text)
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has invalid args: '%s'",
              current_config, current_line, key, text);
-    return 0;
+    return 1;
   }
 
-  if ((rawval < config_parse_int[i].min) || (rawval > config_parse_int[i].max)) {
+  if ((rawval < min) || (rawval > max)) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld '%s': %d is out-of-range",
              current_config, current_line, key, rawval);
   }
-  rawval = between(config_parse_int[i].min, rawval, config_parse_int[i].max);
+  *val = between(min, rawval, max);
+  return 0;
+}
+
+int set_config_int(const char *key, const char *text)
+{
+  int i;
+  int rawval;
+
+  updatecontext();
+
+  i = config_find_int(key);
+  if (i < 0)
+    return 1;
+
+  if (check_range(key, text, &rawval, config_parse_int[i].min, config_parse_int[i].max))
+    return 0;
+
   rawval *= config_parse_int[i].mult;
   *(config_parse_int[i].ivar) = rawval;
   return 0;
@@ -676,6 +685,17 @@ static void c_autoadd_group_match(char *var)
   ag->a_pattern = split;
 }
 
+static void c_need_level(char *var)
+{
+  const char *key = "need_level";
+  int rawval;
+
+  if (check_range(key, var, &rawval, 0, 3) == 0) {
+    gdata.networks[gdata.networks_online].need_level = rawval;
+  }
+  mydelete(var);
+}
+
 static void c_network(char *var)
 {
   gdata.bracket = 0;
@@ -765,6 +785,7 @@ static config_func_typ config_parse_func[] = {
 {"getip_network",          c_getip_network },
 {"local_vhost",            c_local_vhost },
 {"mime_type",              c_mime_type },
+{"need_level",             c_need_level },
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },
 {"uploadminspace",         c_uploadminspace },

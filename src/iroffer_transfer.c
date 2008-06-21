@@ -22,6 +22,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
+#include "dinoex_misc.h"
 
 #ifdef USE_UPNP
 #include "upnp.h"

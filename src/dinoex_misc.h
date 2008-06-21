@@ -15,6 +15,10 @@
 
 int hide_pack(const xdcc *xd);
 int check_lock(const char* lockstr, const char* pwd);
+int number_of_pack(xdcc *pack);
+int get_level(void);
+int get_voice(void);
+int check_level(char prefix);
 
 void set_support_groups(void);
 void send_help(const char *nick);

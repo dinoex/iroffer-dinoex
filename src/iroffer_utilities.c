@@ -23,6 +23,7 @@
 #include "dinoex_jobs.h"
 #include "dinoex_http.h"
 #include "dinoex_badip.h"
+#include "dinoex_misc.h"
 
 
 const char* strstrnocase (const char *str1, const char *match1)
@@ -1594,6 +1595,7 @@ void dumpgdata(void)
       gdata_print_int(networks[ss].usenatip);
       gdata_print_int(networks[ss].getip_net);
       gdata_print_string(networks[ss].natip);
+      gdata_print_int(networks[ss].need_level);
   
       gdata_irlist_iter_start(networks[ss].proxyinfo, char);
       gdata_iter_as_print_string;

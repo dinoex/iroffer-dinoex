@@ -54,6 +54,88 @@ int check_lock(const char* lockstr, const char* pwd)
   return strcmp(lockstr, pwd);
 }
 
+int number_of_pack(xdcc *pack)
+{
+  xdcc *xd;
+  int n;
+
+  updatecontext();
+
+  n = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd) {
+    n++;
+    if (xd == pack)
+      return n;
+
+    xd = irlist_get_next(xd);
+  }
+
+  return 0;
+}
+
+int get_level(void)
+{
+  if (gnetwork->need_level >= 0)
+    return gnetwork->need_level;
+
+  return gdata.need_level;
+}
+
+int get_voice(void)
+{
+  if (gnetwork->need_voice >= 0)
+    return gnetwork->need_voice;
+
+  return gdata.need_voice;
+}
+
+
+int check_level(char prefix)
+{
+  int ii;
+  int need_level;
+  int level;
+
+  need_level = get_level();
+  if (need_level == 0) {
+    if (get_voice() == 0)
+      return 1;
+    /* any prefix is counted as voice */
+    if ( prefix != 0 )
+      return 1;
+    /* no good prefix found try next chan */
+    return 0;
+  }
+
+  level = 0;
+  for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_symbol); ii++) {
+    if (prefix == gnetwork->prefixes[ii].p_symbol) {
+      /* found a nick mode */
+      switch (gnetwork->prefixes[ii].p_mode) {
+      case 'q':
+      case 'a':
+      case 'o':
+        level = 3;
+        break;
+      case 'h':
+        level = 2;
+        break;
+      case 'v':
+        level = 1;
+        break;
+      default:
+        level = 0;
+      }
+    }
+  }
+
+  if (level >= need_level)
+    return 1;
+
+  return 0;
+}
+
 void set_support_groups(void)
 {
   xdcc *xd;
@@ -895,7 +977,7 @@ static void restrictprivlistmsg(const char *nick)
 static int access_need_level(const char *nick, const char *text)
 {
   if (!isinmemberlist(nick)) {
-    if ((gdata.need_voice != 0) || (gdata.need_level != 0))
+    if ((get_voice() != 0) || (get_level() != 0))
       notice(nick, "** XDCC %s denied, you must have voice or more on a known channel to request a pack", text);
     else
       notice(nick, "** XDCC %s denied, you must be on a known channel to request a pack", text);

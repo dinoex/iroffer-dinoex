@@ -150,6 +150,8 @@ typedef struct {
   int r_needtojump;
   int usenatip;
   int getip_net;
+  int need_voice;
+  int need_level;
   how_e r_connectionmethod;
 
   long next_identify;
