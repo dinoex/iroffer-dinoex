@@ -111,6 +111,7 @@ static config_bool_typ config_parse_bool[] = {
 #ifdef USE_UPNP
 {"upnp_router",            &gdata.upnp_router },
 #endif /* USE_UPNP */
+{"verbose_crc32",          &gdata.verbose_crc32},
 {"xdcclist_by_privmsg",    &gdata.xdcclist_by_privmsg},
 {"xdcclist_grouponly",     &gdata.xdcclist_grouponly },
 {"xdcclistfileraw",        &gdata.xdcclistfileraw },

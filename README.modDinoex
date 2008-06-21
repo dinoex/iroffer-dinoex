@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+244) verbose_crc32 (inspired by fred|krue)
+  By default, after adding iroffer will only report bad checksums.
+  If set, it will print out the computed checksum in every case.
+
 extend debug and log information.
 
 With Version 3.8:

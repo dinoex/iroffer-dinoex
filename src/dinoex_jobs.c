@@ -618,14 +618,14 @@ const char *validate_crc32(xdcc *xd, int quiet)
   char *w;
 
   if (xd->has_crc32 == 0) {
-    if (quiet)
+    if (quiet && (gdata.verbose_crc32 == 0))
       return NULL;
     else
       return "no CRC32 calculated";
   }
 
   if (verifyshell(&gdata.autocrc_exclude, xd->file)) {
-    if (quiet)
+    if (quiet && (gdata.verbose_crc32 == 0))
       return NULL;
     else
       return "skipped CRC32";
@@ -646,7 +646,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
 
   caps(line);
   if (strstr(line, newcrc) != NULL) {
-    if (quiet)
+    if (quiet && (gdata.verbose_crc32 == 0))
       x = NULL;
     else
       x = "CRC32 verified OK";

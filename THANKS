@@ -392,6 +392,7 @@ disi
 
 fred|krue
 	fixed spelling in sample.config
+	option "verbose_crc32"
 
 dns777
 	reporting "xdccxmlfile" packsize bug
