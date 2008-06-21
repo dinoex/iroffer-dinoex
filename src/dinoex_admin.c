@@ -2482,7 +2482,7 @@ void a_crc(const userinput * const u)
       a_respond(u, "Validating CRC for Pack #%i:", num);
       crcmsg = validate_crc32(xd, 0);
       if (crcmsg != NULL)
-        a_respond(u, "File '%s' %s.", xd->file, crcmsg);
+        a_respond(u, "[CRC32 Pack %d]: File '%s' %s.", num, xd->file, crcmsg);
     }
     return;
   }
@@ -2493,7 +2493,7 @@ void a_crc(const userinput * const u)
     num ++;
     crcmsg = validate_crc32(xd, 1);
     if (crcmsg != NULL)
-      a_respond(u, "Pack %d, File '%s' %s.", num, xd->file, crcmsg);
+      a_respond(u, "[CRC32 Pack %d]: File '%s' %s.", num, xd->file, crcmsg);
   }
 }
 

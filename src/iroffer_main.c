@@ -1633,12 +1633,14 @@ static void mainloop (void) {
               
               if (gdata.debug > 4)
                 {
-                  ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"[MD5]: read %ld", (long)howmuch);
+                  ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW, "[MD5 Pack %d]: read %ld",
+                          number_of_pack(gdata.md5build.xpack), (long)howmuch);
                 }
               
               if ((howmuch < 0) && (errno != EAGAIN))
                 {
-                  outerror(OUTERROR_TYPE_WARN,"[MD5]: Can't read data from file '%s': %s",
+                  outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %d]: Can't read data from file '%s': %s",
+                           number_of_pack(gdata.md5build.xpack),
                            gdata.md5build.xpack->file, strerror(errno));
                   
                   FD_CLR(gdata.md5build.file_fd, &gdata.readset);
@@ -1660,10 +1662,13 @@ static void mainloop (void) {
                   gdata.md5build.xpack->has_md5sum = 1;
                   
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                          "[MD5]: is " MD5_PRINT_FMT, MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
+                          "[MD5 Pack %d]: is " MD5_PRINT_FMT,
+                          number_of_pack(gdata.md5build.xpack),
+                          MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
                   if (!gdata.nocrc32)
                     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                            "[CRC32]: is %.8lX", gdata.md5build.xpack->crc32);
+                            "[CRC32 Pack %d]: is %.8lX",
+                            number_of_pack(gdata.md5build.xpack), gdata.md5build.xpack->crc32);
                   
                   FD_CLR(gdata.md5build.file_fd, &gdata.readset);
                   close(gdata.md5build.file_fd);
@@ -1674,7 +1679,9 @@ static void mainloop (void) {
                       if (crcmsg != NULL)
                         {
                            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                                   "File '%s' %s.", gdata.md5build.xpack->file, crcmsg);
+                                   "[CRC32 Pack %d]: File '%s' %s.",
+                                   number_of_pack(gdata.md5build.xpack),
+                                   gdata.md5build.xpack->file, crcmsg);
                         }
                     }
                   gdata.md5build.xpack = NULL;
@@ -2819,7 +2826,7 @@ static void privmsgparse(int type, char* line)
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                  "XDCC OWNER (%s on %s) ",
                  hostmask, gnetwork->name);
-           notice(nick, "Owner for this bots is: %s",
+           notice(nick, "Owner for this bot is: %s",
                   gdata.owner_nick ? gdata.owner_nick : "(unknown)");
          }
          else if ( msg2 && !strcmp(msg2, "HELP")) {

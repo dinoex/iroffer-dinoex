@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+245) MD5/CRC (inspired by Drake)
+  Display Pack number with each MD5/CRC message on Konsole.
+
 244) verbose_crc32 (inspired by fred|krue)
   By default, after adding iroffer will only report bad checksums.
   If set, it will print out the computed checksum in every case.

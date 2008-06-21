@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
  
+245) MD5/CRC
+  Zeige die Nummer des Packs bei den Nachrichten über den MS5/CRC Status an.
+
 244) verbose_crc32
   Standardmässig meldet iroffer beim Hinzufügen von Paketen nur Fehler
   beim Vergleichen der Checksumme. Wenn diese Option gesetzt isst, so
