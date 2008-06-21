@@ -122,13 +122,13 @@ case "$ostype" in
    echo "OK, $ver"
   else
    echo "***ERROR***: $ver < 1.5.6"
-   exit # fatal error
+   exit 72 # fatal error
    waserror=yes
   fi
   ;;
  *)
   echo "***ERROR***: This OS is not supported"
-  exit
+  exit 72
   ;;
 esac
 
@@ -1227,6 +1227,15 @@ int main (int argc, char **argv) {exit(0);}
 		CURLLIB="-lcurl"
 		CURLINC="-I/usr/local/include"
 		CURLLDF="-L/usr/local/lib"
+		curltls=`ldd config.temp | grep tls`
+                if test "${curltls}" = ""; then
+			curlssl=`ldd config.temp | grep ssl`
+			if test "${curlssl}" != ""; then
+				echo "Notice: Your libcurl is linked with OpenSSL."
+			fi
+		else
+			echo "Notice: Your libcurl is linked with GNU TLS."
+		fi
 	else
 		echo "not found"
 		echo "***Disabled the FETCH-Command. If u want to use this feature, please install libcurl.***"
@@ -1254,7 +1263,12 @@ int main (int argc, char **argv) {exit(0);}
 		echo "not found"
 		echo "***Disabled the SSL Features. If u want to use this feature, please install OpenSSL.***"
 	fi
+	if test "${curltls}" != ""; then
+		echo "*** Your libcurl is linked with GNU TLS, Please configure GNU TLS."
+		exit 69
+	fi
 fi
+
 
 if $OPT_TLS; then
 	echo -n "Seeing if GNU TLS libraries exist... "
@@ -1275,6 +1289,10 @@ int main (int argc, char **argv) {exit(0);}
 	else
 		echo "not found"
 		echo "***Disabled the SSL Features. If u want to use this feature, please install GNU TLS.***"
+	fi
+	if test "${curlssl}" != ""; then
+		echo "*** Your libcurl is linked with OpenSSL, Please configure OpenSSL."
+		exit 69
 	fi
 fi
 
