@@ -2244,4 +2244,4 @@
 2323 "embedded"
 2324 "ruby_exec failed with %d: %s"
 2325 "iroffer_input"
-2326 "iroffer_output"
+2326 "iroffer_privmsg"

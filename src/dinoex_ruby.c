@@ -77,7 +77,7 @@ static VALUE cf_iroffer_input(void)
   return rb_str_new(cLine, strlen(cLine));
 }
 
-static VALUE cf_iroffer_output(VALUE module, VALUE rname, VALUE rmsg)
+static VALUE cf_iroffer_privmsg(VALUE module, VALUE rname, VALUE rmsg)
 {
   VALUE vname;
   VALUE vmsg;
@@ -174,7 +174,7 @@ void startup_myruby(void)
 
   //define that callback below
   rb_define_global_function("iroffer_input", cf_iroffer_input, 0);
-  rb_define_global_function("iroffer_output", cf_iroffer_output, 2);
+  rb_define_global_function("iroffer_privmsg", cf_iroffer_privmsg, 2);
   Init_IrofferConfig();
   load_script(gdata.ruby_script);
 }
