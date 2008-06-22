@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+bugfix: BOTINFO
+  Erhalte die Zeit im Channel beim REAHSH.
+
 247) ruby_script
   Rufe diese Ruby Skript auf, wenn der Bot eine Zeile vom IRC-Server
   bekommt.

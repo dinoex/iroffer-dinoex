@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+bugfix: BOTINFO (reported by Lamune)
+  Keep "joined for" time during REHASH.
+
 247) ruby_script
   Run a ruby script on each line the bot gets from the irc server.
 

@@ -367,6 +367,7 @@ Lamune
 	admin command "NOSEND x msg"
 	reporting FETCH with spaces problem
 	reporting "FETCHCANCEL" bug
+	reporting "BOTINFO" joined for bug
 
 DevelDoll
 	report transferlimits to user

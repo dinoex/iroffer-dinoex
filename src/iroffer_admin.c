@@ -2493,6 +2493,7 @@ static void u_rehash(const userinput * const u) {
          {
            rch->flags |= ch->flags & CHAN_ONCHAN;
            rch->members = ch->members;
+           rch->lastjoin = ch->lastjoin;
            free_channel_data(ch);
            *ch = *rch;
            if (gdata.debug > 2)
