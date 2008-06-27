@@ -618,7 +618,7 @@ static void mainloop (void) {
             {
 	    SIGNEDSOCK int addrlen; 
           
-	    ioutput(CALLTYPE_NORMAL ,OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            ioutput(CALLTYPE_NORMAL ,OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Server Connection to %s Established, Logging In",  gnetwork->name);
             gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
             gnetwork->connecttime = gdata.curtime;
@@ -2838,8 +2838,8 @@ static void privmsgparse(int type, char* line)
          }
          else if ( msg2 && !strcmp(msg2,"SEARCH") && msg3) {
            char *match;
-	   /* if restrictlist is enabled, visibility rules apply */
-	   char *grouplist = gdata.restrictlist ? get_grouplist_access(nick) : NULL;
+           /* if restrictlist is enabled, visibility rules apply */
+           char *grouplist = gdata.restrictlist ? get_grouplist_access(nick) : NULL;
          
          notice_slow(nick,"Searching for \"%s\"...",msg3);
            match = grep_to_fnmatch(msg3);
@@ -2868,7 +2868,7 @@ static void privmsgparse(int type, char* line)
              xd = irlist_get_next(xd);
            }
          
-	 mydelete(grouplist);
+         mydelete(grouplist);
          mydelete(match);
          if (!k)
            {
@@ -3447,7 +3447,7 @@ void sendaqueue(int type, int pos, char *lastnick)
       
       if (!pq)
         {
-	  if (lastnick != NULL)
+          if (lastnick != NULL)
             {
               /* try again */
               sendaqueue(type, pos, NULL);

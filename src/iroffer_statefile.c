@@ -336,7 +336,7 @@ void write_statefile(void)
                    STATEFILE_TAG_IGNORE_BUCKET, ignore->bucket);
 
             /* lastcontact */
-	    next = prepare_statefile_time(next,
+            next = prepare_statefile_time(next,
                    STATEFILE_TAG_IGNORE_LASTCONTACT, ignore->lastcontact);
 
             /* hostmask */
@@ -378,7 +378,7 @@ void write_statefile(void)
         next = start_statefile_hdr(data, STATEFILE_TAG_MSGLOG, length);
 
         /* when */
-	next = prepare_statefile_time(next,
+        next = prepare_statefile_time(next,
                STATEFILE_TAG_MSGLOG_WHEN, msglog->when);
 
         /* hostmask */
@@ -504,7 +504,7 @@ void write_statefile(void)
         if (has_note)
           {
             /* note */
-	    next = prepare_statefile_string(next,
+            next = prepare_statefile_string(next,
                    STATEFILE_TAG_XDCCS_NOTE,
                    xd->note ? xd->note : "");
           }

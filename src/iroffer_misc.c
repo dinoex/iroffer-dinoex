@@ -4,7 +4,7 @@
  * 
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is    
-	 * available in the LICENSE file.
+ * available in the LICENSE file.
  * 
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
@@ -52,7 +52,7 @@ void getconfig (void) {
        gdata.bracket = 0;
        while (getfline(templine,maxtextlength,filedescriptor,1))
          {
-	   current_line ++;
+           current_line ++;
            if ((templine[0] != '#') && templine[0])
              {
                getconfig_set(templine,0);
@@ -1575,7 +1575,7 @@ void shutdowniroffer(void) {
        tempstr2 = getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
        for (ss=0; ss<gdata.networks_online; ss++)
          {
-	   gnetwork = &(gdata.networks[ss]);
+           gnetwork = &(gdata.networks[ss]);
        writeserver(WRITESERVER_NORMAL,
                    "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
                    gdata.hideos ? "" : " - ",
@@ -2777,7 +2777,7 @@ void user_changed_nick(const char *oldnick, const char *newnick)
         {
           if (strcmp(pq->hostname,"man"))
             {
-	      userinqueue++;
+              userinqueue++;
               if ( userinqueue > gdata.maxqueueditemsperperson )
                 {
                   notice(pq->nick,"** Removed From Queue: To many requests");
@@ -2786,7 +2786,7 @@ void user_changed_nick(const char *oldnick, const char *newnick)
                           pq->nick, gdata.networks[ pq->net ].name);
                   mydelete(pq->nick);
                   mydelete(pq->hostname);
-	          old = pq;
+                  old = pq;
                   pq = irlist_get_next(pq);
                   irlist_delete(&gdata.mainqueue, old);
                   continue;

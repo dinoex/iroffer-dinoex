@@ -487,7 +487,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
             removenonprintablectrl(tempstr);
           }
         
-	if (gdata.dos_text_files)
+        if (gdata.dos_text_files)
           tempstr[llen++] = '\r';
         tempstr[llen++] = '\n';
         tempstr[llen] = '\0';
@@ -2458,7 +2458,7 @@ static void u_rehash(const userinput * const u) {
    backup = gnetwork;
    for (ss=0; ss<gdata.networks_online; ss++)
      {
-	gnetwork = &(gdata.networks[ss]);
+        gnetwork = &(gdata.networks[ss]);
    
    /* part deleted channels, add common channels */
    ch = irlist_get_head(&(gnetwork->channels));
@@ -3371,7 +3371,7 @@ static void u_jump(const userinput * const u)
       else
         {
           backup = gnetwork;
-	  gnetwork = &(gdata.networks[net]);
+          gnetwork = &(gdata.networks[net]);
           gnetwork->serverconnectbackoff = 0;
           switchserver(num-1);
           gnetwork = backup;
