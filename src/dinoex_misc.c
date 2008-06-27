@@ -728,9 +728,11 @@ int noticeresults(const char *nick, const char *match, const char *grouplist)
       i++;
       if (hide_pack(xd))
         continue;
+
       /* check group visibility rules */
       if (!verify_pack_in_grouplist(xd, grouplist))
         continue;
+
       if (fnmatch_xdcc(match, xd)) {
         if (!k) {
           if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
@@ -796,23 +798,27 @@ static void add_newest_xdcc(irlist_t *list, const char *grouplist)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    /* check pack and group visibility rules */
-    if ((hide_pack(xd) == 0) && verify_pack_in_grouplist(xd, grouplist)) {
-      for (best = irlist_get_head(list);
-           best;
-           best = irlist_get_next(best)) {
-        if (*best == xd)
-          break;
-      }
-      if (best != NULL)
-        continue;
+    if (hide_pack(xd) != 0)
+      continue;
 
-      if (old != NULL) {
-        if (old->xtime > xd->xtime)
-          continue;
-      }
-      old = xd;
+    /* check group visibility rules */
+    if (!verify_pack_in_grouplist(xd, grouplist))
+      continue;
+
+    for (best = irlist_get_head(list);
+         best;
+         best = irlist_get_next(best)) {
+      if (*best == xd)
+        break;
     }
+    if (best != NULL)
+      continue;
+
+    if (old != NULL) {
+      if (old->xtime > xd->xtime)
+        continue;
+    }
+    old = xd;
   }
   if (old == NULL)
     return;
@@ -1115,7 +1121,7 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
   if (gdata.restrictlist) {
     grouplist = get_grouplist_access(nick);
     if (!verify_pack_in_grouplist(xd, grouplist)) {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (group access restricted): ");
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (group access restricted): ");
       notice(nick, "** XDCC %s denied, you must be on the correct channel to request this pack", text);
       mydelete(grouplist);
       return NULL;
@@ -1392,24 +1398,33 @@ char *get_grouplist_access(const char *nick)
   channel_t *ch;
   member_t *member;
 
+  tempstr[0] = 0;
   for (ch = irlist_get_head(&(gnetwork->channels));
        ch;
        ch = irlist_get_next(ch)) {
     for (member = irlist_get_head(&ch->members);
          member;
 	 member = irlist_get_next(member)) {
-      if (!strcasecmp(caps(member->nick), nick)) {
-        if (check_level( member->prefixes[0] ) != 0) {
-	  if (ch->rgroup) {
-	    snprintf(tempstr + len, maxtextlength - 1 - len, " %s", ch->rgroup);
-            len = strlen(tempstr);
-	  } else {
-	    mydelete(tempstr);
-	    return NULL;
-	  }
-	}
+      if (strcasecmp(caps(member->nick), nick) != 0)
+        continue;
+
+      if (check_level( member->prefixes[0] ) == 0)
+        continue;
+
+      if (!ch->rgroup) {
+        /* no restrictions in this channel */
+        mydelete(tempstr);
+        return NULL;
       }
+
+      len += snprintf(tempstr + len, maxtextlength - 1 - len, " %s", ch->rgroup);
     }
+  }
+
+  if (len == 0) {
+    /* no channel found */
+    mydelete(tempstr);
+    return NULL;
   }
 
   return tempstr;
@@ -1425,11 +1440,12 @@ const char *get_listmsg_channel(char *dest)
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;
          ch = irlist_get_next(ch)) {
-      if (strcasecmp(ch->name, dest) == 0) {
-        if (ch->listmsg)
-          rtclmsg = ch->listmsg;
-        break;
-      }
+      if (strcasecmp(ch->name, dest) != 0)
+        continue;
+
+      if (ch->listmsg)
+        rtclmsg = ch->listmsg;
+      break;
     }
   }
   return rtclmsg;
