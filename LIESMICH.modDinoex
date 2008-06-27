@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+248) xdccxmlfile
+  Erlaube den Download des xdccxmlfile per HTTP.
+
 bugfix: BOTINFO
   Erhalte die Zeit im Channel beim REAHSH.
 

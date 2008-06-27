@@ -94,6 +94,7 @@ static const http_magic_const_t http_magic[] = {
   { "jpeg", "image/jpeg" },
   { "gif", "image/gif" },
   { "css", "text/css" },
+  { "xml", "application/xml" },
   { "js", "application/x-javascript" },
   { NULL, "application/octet-stream" }
 };
@@ -1676,6 +1677,12 @@ static void h_parse(http * const h, char *body)
   if (strcmp(h->url, "/") == 0) {
     /* send standtus */
     h_readfile(h, gdata.xdcclistfile);
+    return;
+  }
+
+  if (gdata.xdccxmlfile && (strcasecmp(h->url, "/xml") == 0)) {
+    /* send XML pack list */
+    h_readfile(h, gdata.xdccxmlfile);
     return;
   }
 

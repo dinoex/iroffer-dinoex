@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+248) xdccxmlfile (by dns777)
+  Deliver this file over HTTP.
+
 bugfix: BOTINFO (reported by Lamune)
   Keep "joined for" time during REHASH.
 

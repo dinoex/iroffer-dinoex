@@ -2244,3 +2244,6 @@
 2324 "ruby_exec failed with %d: %s"
 2325 "iroffer_input"
 2326 "iroffer_privmsg"
+2327 "xml"
+2328 "application/xml"
+2329 "/xml"

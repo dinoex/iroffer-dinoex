@@ -400,6 +400,7 @@ fred|krue
 dns777
 	reporting "xdccxmlfile" packsize bug
 	reporting "autoadd_group_match" bug
+	patch xdccxmlfile over http
 
 [V]4Mp|r
 	italian translation
