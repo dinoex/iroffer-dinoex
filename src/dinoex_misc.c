@@ -714,7 +714,7 @@ int fnmatch_xdcc(const char *match, xdcc *xd)
 }
 
 /* iroffer-lamm: @find and long !list */
-int noticeresults(const char *nick, const char *match)
+int noticeresults(const char *nick, const char *match, const char *grouplist)
 {
   int i, j, k, len;
   char *tempstr = mycalloc(maxtextlength);
@@ -727,6 +727,9 @@ int noticeresults(const char *nick, const char *match)
     for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd)) {
       i++;
       if (hide_pack(xd))
+        continue;
+      /* check group visibility rules */
+      if (!verify_pack_in_grouplist(xd, grouplist))
         continue;
       if (fnmatch_xdcc(match, xd)) {
         if (!k) {
@@ -783,7 +786,7 @@ int noticeresults(const char *nick, const char *match)
   return k;
 }
 
-static void add_newest_xdcc(irlist_t *list)
+static void add_newest_xdcc(irlist_t *list, const char *grouplist)
 {
   xdcc **best;
   xdcc *xd;
@@ -793,20 +796,23 @@ static void add_newest_xdcc(irlist_t *list)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    for (best = irlist_get_head(list);
-         best;
-         best = irlist_get_next(best)) {
-      if (*best == xd)
-        break;
-    }
-    if (best != NULL)
-      continue;
-
-    if (old != NULL) {
-      if (old->xtime > xd->xtime)
+    /* check pack and group visibility rules */
+    if ((hide_pack(xd) == 0) && verify_pack_in_grouplist(xd, grouplist)) {
+      for (best = irlist_get_head(list);
+           best;
+           best = irlist_get_next(best)) {
+        if (*best == xd)
+          break;
+      }
+      if (best != NULL)
         continue;
+
+      if (old != NULL) {
+        if (old->xtime > xd->xtime)
+          continue;
+      }
+      old = xd;
     }
-    old = xd;
   }
   if (old == NULL)
     return;
@@ -815,7 +821,7 @@ static void add_newest_xdcc(irlist_t *list)
   *best = old;
 }
 
-int run_new_trigger(const char *nick)
+int run_new_trigger(const char *nick, const char *grouplist)
 {
   struct tm *localt = NULL;
   irlist_t list;
@@ -831,7 +837,7 @@ int run_new_trigger(const char *nick)
 
   memset(&list, 0, sizeof(irlist_t));
   for (i=0; i<gdata.new_trigger; i++)
-    add_newest_xdcc(&list);
+    add_newest_xdcc(&list, grouplist);
 
   i = 0;
   for (best = irlist_get_head(&list);
@@ -1325,6 +1331,66 @@ char *user_getdatestr(char* str, time_t Tp, int len)
   return str;
 }
 
+/* check if given pack should be visible, given a list of allowed groups */
+int verify_pack_in_grouplist(const xdcc *xd, const char *grouplist)
+{
+  if (!xd)
+    return 0;
+  /* null grouplist means no restrictions */
+  if (!grouplist)
+    return 1;
+  /* packs with no group set are always visible */
+  if (!(xd->group))
+    return 1;
+
+  /* case insensitive token search */
+  const char *glptr = grouplist;
+  const char *res = grouplist;
+  while (*res) {
+    res = strchr(glptr, ' ');
+    /* portable equivalent of strchrnul */
+    if (!res)
+      res = glptr + strlen(glptr);
+    if ((res > glptr) && ((res - glptr) == strlen(xd->group))) {
+      if (strncasecmp(glptr, xd->group, res - glptr) == 0)
+        return 1;
+    }
+    glptr = res + 1;
+  }
+  return 0;
+}
+
+/* returns list of allowed groups for nick on current network, or NULL for unrestricted access. calling function must take care of freeing result */
+char *get_grouplist_access(const char *nick)
+{
+  char *tempstr = mycalloc(maxtextlength);
+  int len = 0;
+  channel_t *ch;
+  member_t *member;
+
+  for (ch = irlist_get_head(&(gnetwork->channels));
+       ch;
+       ch = irlist_get_next(ch)) {
+    for (member = irlist_get_head(&ch->members);
+         member;
+	 member = irlist_get_next(member)) {
+      if (!strcasecmp(caps(member->nick), nick)) {
+        if (check_level( member->prefixes[0] ) != 0) {
+	  if (ch->rgroup) {
+	    snprintf(tempstr + len, maxtextlength - 1 - len, " %s", ch->rgroup);
+            len = strlen(tempstr);
+	  } else {
+	    mydelete(tempstr);
+	    return NULL;
+	  }
+	}
+      }
+    }
+  }
+
+  return tempstr;
+}
+
 void free_channel_data(channel_t *ch)
 {
   mydelete(ch->name);
@@ -1333,6 +1399,8 @@ void free_channel_data(channel_t *ch)
   mydelete(ch->headline);
   mydelete(ch->pgroup);
   mydelete(ch->joinmsg);
+  mydelete(ch->listmsg);
+  mydelete(ch->rgroup);
 }
 
 #ifdef DEBUG

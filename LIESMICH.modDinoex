@@ -3,8 +3,22 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+bugfix: new_trigger (contributed by dns777)
+  Don't show hidden packs.
+
+251) CTCP LIST
+  Erlaube CTCP LIST.
+
+250) #channel -rgroup (contributed by dns777)
+  Users in diesen Channel können nur Packs aus den hier 
+  angegebenen Gruppen oder der Hauptgruppe anfordern.
+
+249) #channel -listmsg (contributed by dns777)
+  Extra Text der beim "list" im Channel and den User gesendet wird.
+
 248) xdccxmlfile
   Erlaube den Download des xdccxmlfile per HTTP.
+
 
 bugfix: BOTINFO
   Erhalte die Zeit im Channel beim REAHSH.

@@ -2879,7 +2879,7 @@ void a_fetchcancel(const userinput * const u)
 }
 #endif /* USE_CURL */
 
-static void a_announce_channels(const char *msg, const char *match)
+static void a_announce_channels(const char *msg, const char *match, const xdcc *xd)
 {
   channel_t *ch;
 
@@ -2893,6 +2893,9 @@ static void a_announce_channels(const char *msg, const char *match)
         continue;
     } else {
       if (ch->noannounce != 0)
+        continue;
+      /* if announce is related to a pack, apply per-channel visibility rules */
+      if (xd && !verify_pack_in_grouplist(xd, ch->rgroup))
         continue;
     }
     privmsg_chan(ch, "%s", msg);
@@ -2912,7 +2915,7 @@ void a_amsg(const userinput * const u)
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
-    a_announce_channels(u->arg1e, NULL);
+    a_announce_channels(u->arg1e, NULL, NULL);
   }
   gnetwork = backup;
   a_respond(u, "Announced [%s]", u->arg1e);
@@ -3647,7 +3650,7 @@ static void a_announce_msg(const userinput * const u, int num, const char *msg)
     gnetwork = &(gdata.networks[ss]);
     snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
              tempstr2, get_user_nick(), num);
-    a_announce_channels(tempstr, NULL);
+    a_announce_channels(tempstr, NULL, xd);
     gnetwork = backup;
     a_respond(u, "Announced [%s]%s", msg, tempstr3);
   }
@@ -3758,7 +3761,7 @@ void a_sannounce(const userinput * const u)
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
-      a_announce_channels(tempstr, NULL);
+      a_announce_channels(tempstr, NULL, xd);
       gnetwork = backup;
       a_respond(u, "Announced [%i]%s", num1, tempstr3);
     }

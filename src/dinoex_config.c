@@ -927,6 +927,12 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
   if (!strcmp(tptr, "-headline")) {
     return parse_channel_string(&(cptr->headline), var, i);
   }
+  if (!strcmp(tptr, "-listmsg")) {
+    return parse_channel_string(&(cptr->listmsg), var, i);
+  }
+  if (!strcmp(tptr, "-rgroup")) {
+    return parse_channel_string(&(cptr->rgroup), var, i);
+  }
 
   if (!strcmp(tptr, "-noannounce")) {
     cptr->noannounce = 1;

@@ -401,6 +401,8 @@ typedef struct
   char *headline;
   char *pgroup;
   char *joinmsg;
+  char *listmsg;
+  char *rgroup;
   short flags;
   short plisttime;
   short plistoffset;

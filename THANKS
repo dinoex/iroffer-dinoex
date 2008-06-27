@@ -401,6 +401,10 @@ dns777
 	reporting "xdccxmlfile" packsize bug
 	reporting "autoadd_group_match" bug
 	patch xdccxmlfile over http
+	patch #channel -rgroup
+	patch #channel -listmsg
+	patch CTCP LIST
+	bugfix new_trigger
 
 [V]4Mp|r
 	italian translation

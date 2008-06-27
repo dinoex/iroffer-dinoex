@@ -3,7 +3,19 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
-248) xdccxmlfile (by dns777)
+bugfix: new_trigger (contributed by dns777)
+  Don't show hidden packs.
+
+251) CTCP LIST (contributed by dns777)
+  Support CTCP LIST.
+
+250) #channel -rgroup (contributed by dns777)
+  Users in this channel can only access packs in groups listed after this.
+
+249) #channel -listmsg (contributed by dns777)
+  The text after listmsg is used as a channel specific respondtochannellistmsg.
+
+248) xdccxmlfile (contributed by dns777)
   Deliver this file over HTTP.
 
 bugfix: BOTINFO (reported by Lamune)

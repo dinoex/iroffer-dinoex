@@ -2838,6 +2838,8 @@ static void privmsgparse(int type, char* line)
          }
          else if ( msg2 && !strcmp(msg2,"SEARCH") && msg3) {
            char *match;
+	   /* if restrictlist is enabled, visibility rules apply */
+	   char *grouplist = gdata.restrictlist ? get_grouplist_access(nick) : NULL;
          
          notice_slow(nick,"Searching for \"%s\"...",msg3);
            match = grep_to_fnmatch(msg3);
@@ -2847,7 +2849,7 @@ static void privmsgparse(int type, char* line)
          xd = irlist_get_head(&gdata.xdccs);
          while(xd)
            {
-             if (hide_pack(xd) == 0)
+             if ((hide_pack(xd) == 0) && verify_pack_in_grouplist(xd, grouplist))
                {
                  if (fnmatch_xdcc(match, xd))
                    {
@@ -2866,6 +2868,7 @@ static void privmsgparse(int type, char* line)
              xd = irlist_get_next(xd);
            }
          
+	 mydelete(grouplist);
          mydelete(match);
          if (!k)
            {
@@ -2886,14 +2889,29 @@ static void privmsgparse(int type, char* line)
    }
    
    /*----- !LIST ----- */
-   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.respondtochannellist && msg1 && !strcasecmp(caps(msg1),"!LIST") &&
-             ( !msg2 || !strcmp(caps(msg2),gnetwork->caps_nick) ))
+   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.respondtochannellist && msg1 && (!strcasecmp(caps(msg1),"!LIST") || !strcmp(msg1,"\1!LIST") || !strcmp(msg1,"\1!LIST\1")) &&
+             ( !msg2 || !strcmp(caps(msg2),gnetwork->caps_nick) || ((msg2[strlen(msg2)-1]=='\1') && !strncmp(caps(msg2),gnetwork->caps_nick,strlen(msg2)-1)) ))
      {
       char *tempstr2 = mycalloc(maxtextlength);
       
       /* generate !list styled message */
       
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+
+      /* search for custom listmsg */
+      channel_t *ch;
+      char *rtclmsg = gdata.respondtochannellistmsg;
+      if (dest && (*dest=='#')) {
+        for (ch = irlist_get_head(&(gnetwork->channels));
+            ch;
+            ch = irlist_get_next(ch)) {
+          if (strcasecmp(ch->name, dest) == 0) {
+	    if (ch->listmsg)
+              rtclmsg = ch->listmsg;
+            break;
+          }
+        }
+      }
       
       if (gdata.restrictprivlist)
         strcpy(tempstr2, "");
@@ -2910,8 +2928,8 @@ static void privmsgparse(int type, char* line)
              "Record:\2(\2%1.1fKB/s\2)\2 "
              "%s%s%s\2=\2iroffer\2=\2",
              irlist_size(&gdata.xdccs),
-             (gdata.respondtochannellistmsg ? gdata.respondtochannellistmsg : ""),
-             (gdata.respondtochannellistmsg ? " " : ""),
+             (rtclmsg ? rtclmsg : ""),
+             (rtclmsg ? " " : ""),
              tempstr2,
              irlist_size(&gdata.trans),gdata.slotsmax,
              irlist_size(&gdata.mainqueue),gdata.queuesize,
@@ -2935,8 +2953,21 @@ static void privmsgparse(int type, char* line)
         if ((msg2e[i] == '*') || (msg2e[i] == '#') || (msg2e[i] == '?'))
           k++;
       if ((int)(strlen(msg2e) - k) >= gdata.atfind) {
+        /* apply per-channel visibility rules */
+        char *grouplist = NULL;
+        channel_t *ch;
+        if (dest && (*dest=='#')) {
+          for (ch = irlist_get_head(&(gnetwork->channels));
+              ch;
+              ch = irlist_get_next(ch)) {
+            if (strcasecmp(ch->name, dest) == 0) {
+              grouplist = ch->rgroup;
+              break;
+            }
+          }
+        }
         char *atfindmatch = grep_to_fnmatch(msg2e);
-        k = noticeresults(nick, atfindmatch);
+        k = noticeresults(nick, atfindmatch, grouplist);
         if (k) {
           ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
                   "@FIND %s (%s on %s) - %i %s found.",
@@ -2950,7 +2981,22 @@ static void privmsgparse(int type, char* line)
    else if ( !gdata.ignore && gnetwork->caps_nick && gdata.new_trigger && !strcasecmp(caps(msg1),"!new") )
      {
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-      k = run_new_trigger(nick);
+
+      /* apply per-channel visibility rules */
+      char *grouplist = NULL;
+      channel_t *ch;
+      if (dest && (*dest=='#')) {
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          if (strcasecmp(ch->name, dest) == 0) {
+            grouplist = ch->rgroup;
+            break;
+          }
+        }
+      }
+
+      k = run_new_trigger(nick, grouplist);
       if (k)
         {
            ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
@@ -3118,6 +3164,18 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       notice(nick,"** XDCC SEND denied, this pack is locked");
       goto done;
     }
+
+  /* apply group visibility rules */
+  if (!man && gdata.restrictsend) {
+    char *grouplist = get_grouplist_access(nick);
+    if (!verify_pack_in_grouplist(xd, grouplist)) {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (group access restricted): ");
+      notice(nick, "** XDCC SEND denied, you must be on the correct channel to request this pack");
+      mydelete(grouplist);
+      goto done;
+    }
+    mydelete(grouplist);
+  }
   
   tr = irlist_get_head(&gdata.trans);
   while(tr)
@@ -3272,6 +3330,18 @@ void sendxdccinfo(const char* nick,
       notice(nick,"** Invalid Pack Number, Try Again");
       goto done;
     }
+
+  /* apply group visibility rules */
+  if (gdata.restrictlist) {
+    char *grouplist = get_grouplist_access(nick);
+    if (!verify_pack_in_grouplist(xd, grouplist)) {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (group access restricted): ");
+      notice(nick, "** XDCC INFO denied, you must be on the correct channel to request this pack");
+      mydelete(grouplist);
+      goto done;
+    }
+    mydelete(grouplist);
+  }
   
   ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," requested: ");
 

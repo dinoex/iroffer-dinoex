@@ -34,8 +34,8 @@ void update_hour_dinoex(int hour, int minute);
 void check_new_connection(transfer *const tr);
 char *grep_to_fnmatch(const char *grep);
 int fnmatch_xdcc(const char *match, xdcc *xd);
-int noticeresults(const char *nick, const char *match);
-int run_new_trigger(const char *nick);
+int noticeresults(const char *nick, const char *match, const char *grouplist);
+int run_new_trigger(const char *nick, const char *grouplist);
 
 char* getpart_eol(const char *line, int howmany);
 
@@ -65,6 +65,9 @@ int verify_uploadhost(const char *hostmask);
 void clean_uploadhost(void);
 
 char *user_getdatestr(char* str, time_t Tp, int len);
+
+int verify_pack_in_grouplist(const xdcc *xd, const char *grouplist);
+char *get_grouplist_access(const char *nick);
 
 void free_channel_data(channel_t *ch);
 

@@ -254,6 +254,8 @@ void getconfig_set (const char *line, int rehash)
       cptr->headline = NULL;
       cptr->pgroup = NULL;
       cptr->joinmsg = NULL;
+      cptr->listmsg = NULL;
+      cptr->rgroup = NULL;
       cptr->noannounce = 0;
       cptr->delay = 0;
       cptr->plistoffset = 0;
