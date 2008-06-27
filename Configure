@@ -54,6 +54,7 @@ OPT_NOHTTP=false
 OPT_NOTELNET=false
 OPT_NOMEMSAVE=false
 cctype="gcc"
+ruby="ruby"
 
 while test "${1}" != ""
 do
@@ -89,11 +90,11 @@ platform=`uname -m`
 short_ostype=`uname | cut -d "_" -f 1`
 libs=""
 
-rm -f config.error.* config.temp*
-
 case "$ostype" in
- Linux | FreeBSD | OpenBSD | NetBSD | IRIX | IRIX64 | \
- OSF1 | Rhapsody | Darwin | AIX )
+ FreeBSD | OpenBSD | NetBSD )
+  ruby="ruby18"
+  ;;
+ Linux | IRIX | IRIX64 | OSF1 | Rhapsody | Darwin | AIX )
   # nothing fancy
   ;;
  SunOS )
@@ -1304,8 +1305,8 @@ WERROR2=$WERROR
 fi
 
 if $OPT_RUBY; then
-	libruby=`ruby18 -r rbconfig -e "print Config::CONFIG[ 'LIBRUBY' ].sub(/[.]so.*/,'').sub(/^lib/,'-l')"`
-	incruby=`ruby18 -r rbconfig -e "print '-I' + Config::CONFIG[ 'archdir' ]"`
+	libruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBY' ].sub(/[.]so.*/,'').sub(/^lib/,'-l')"`
+	incruby=`${ruby} -r rbconfig -e "print '-I' + Config::CONFIG[ 'archdir' ]"`
 	echo -n "Seeing if libruby libraries exist (for the RUBY-Scripts)... "
 	echo "
 #include \"ruby.h\"
@@ -1319,11 +1320,9 @@ int main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 		RUBYINC="${incruby}"
 		RUBYLDF="-L/usr/local/lib"
 		WERROR2=""
-		shift
 	else
 		echo "not found"
 		echo "***Disable the RUBY-extension. If u want to use this feature, please install libruby.***"
-		shift
 	fi
 fi
 
