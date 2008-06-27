@@ -1,19 +1,19 @@
 /*
  * by Dirk Meyer (dinoex)
  * Copyright (C) 2004-2008 Dirk Meyer
- * 
+ *
  * By using this file, you agree to the terms and conditions set
- * forth in the GNU General Public License.  More information is    
+ * forth in the GNU General Public License.  More information is
  * available in the README file.
- * 
+ *
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.dinoex.net/
- * 
+ *
  * $Id$
- * 
+ *
  * See also:
  * http://www.ruby-doc.org/docs/ProgrammingRuby/html/ext_ruby.html
- * 
+ *
  */
 
 /* include the headers */
@@ -72,7 +72,7 @@ static void Init_IrofferConfig() {
   rb_gc_register_address(&cIrofferConfig);
 }
 
-static VALUE cf_iroffer_input(void) 
+static VALUE cf_iroffer_input(void)
 {
   return rb_str_new(cLine, strlen(cLine));
 }
@@ -126,7 +126,7 @@ static void load_script(const char *name)
   if (!name)
     return;
 
-  if (stat(name,&st) < 0) {
+  if (stat(name, &st) < 0) {
     myruby_loaded = -1;
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "access ruby_script '%s' failed: %s",
