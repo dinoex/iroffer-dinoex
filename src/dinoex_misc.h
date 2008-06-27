@@ -68,6 +68,8 @@ char *user_getdatestr(char* str, time_t Tp, int len);
 
 int verify_pack_in_grouplist(const xdcc *xd, const char *grouplist);
 char *get_grouplist_access(const char *nick);
+const char *get_listmsg_channel(char *dest);
+const char *get_grouplist_channel(char *dest);
 
 void free_channel_data(channel_t *ch);
 

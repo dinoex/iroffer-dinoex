@@ -2889,7 +2889,8 @@ static void privmsgparse(int type, char* line)
    }
    
    /*----- !LIST ----- */
-   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.respondtochannellist && msg1 && (!strcasecmp(caps(msg1),"!LIST") || !strcmp(msg1,"\1!LIST") || !strcmp(msg1,"\1!LIST\1")) &&
+   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.respondtochannellist && msg1 &&
+             (!strcasecmp(caps(msg1),"!LIST") || !strcmp(msg1,"\1!LIST") || !strcmp(msg1,"\1!LIST\1")) &&
              ( !msg2 || !strcmp(caps(msg2),gnetwork->caps_nick) || ((msg2[strlen(msg2)-1]=='\1') && !strncmp(caps(msg2),gnetwork->caps_nick,strlen(msg2)-1)) ))
      {
       char *tempstr2 = mycalloc(maxtextlength);
@@ -2899,19 +2900,7 @@ static void privmsgparse(int type, char* line)
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
 
       /* search for custom listmsg */
-      channel_t *ch;
-      char *rtclmsg = gdata.respondtochannellistmsg;
-      if (dest && (*dest=='#')) {
-        for (ch = irlist_get_head(&(gnetwork->channels));
-            ch;
-            ch = irlist_get_next(ch)) {
-          if (strcasecmp(ch->name, dest) == 0) {
-	    if (ch->listmsg)
-              rtclmsg = ch->listmsg;
-            break;
-          }
-        }
-      }
+      const char *rtclmsg = get_listmsg_channel(dest);
       
       if (gdata.restrictprivlist)
         strcpy(tempstr2, "");
@@ -2954,18 +2943,7 @@ static void privmsgparse(int type, char* line)
           k++;
       if ((int)(strlen(msg2e) - k) >= gdata.atfind) {
         /* apply per-channel visibility rules */
-        char *grouplist = NULL;
-        channel_t *ch;
-        if (dest && (*dest=='#')) {
-          for (ch = irlist_get_head(&(gnetwork->channels));
-              ch;
-              ch = irlist_get_next(ch)) {
-            if (strcasecmp(ch->name, dest) == 0) {
-              grouplist = ch->rgroup;
-              break;
-            }
-          }
-        }
+        const char *grouplist = get_grouplist_channel(dest);
         char *atfindmatch = grep_to_fnmatch(msg2e);
         k = noticeresults(nick, atfindmatch, grouplist);
         if (k) {
@@ -2983,19 +2961,7 @@ static void privmsgparse(int type, char* line)
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
 
       /* apply per-channel visibility rules */
-      char *grouplist = NULL;
-      channel_t *ch;
-      if (dest && (*dest=='#')) {
-        for (ch = irlist_get_head(&(gnetwork->channels));
-             ch;
-             ch = irlist_get_next(ch)) {
-          if (strcasecmp(ch->name, dest) == 0) {
-            grouplist = ch->rgroup;
-            break;
-          }
-        }
-      }
-
+      const char *grouplist = get_grouplist_channel(dest);
       k = run_new_trigger(nick, grouplist);
       if (k)
         {
@@ -3164,18 +3130,6 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       notice(nick,"** XDCC SEND denied, this pack is locked");
       goto done;
     }
-
-  /* apply group visibility rules */
-  if (!man && gdata.restrictsend) {
-    char *grouplist = get_grouplist_access(nick);
-    if (!verify_pack_in_grouplist(xd, grouplist)) {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (group access restricted): ");
-      notice(nick, "** XDCC SEND denied, you must be on the correct channel to request this pack");
-      mydelete(grouplist);
-      goto done;
-    }
-    mydelete(grouplist);
-  }
   
   tr = irlist_get_head(&gdata.trans);
   while(tr)
@@ -3330,18 +3284,6 @@ void sendxdccinfo(const char* nick,
       notice(nick,"** Invalid Pack Number, Try Again");
       goto done;
     }
-
-  /* apply group visibility rules */
-  if (gdata.restrictlist) {
-    char *grouplist = get_grouplist_access(nick);
-    if (!verify_pack_in_grouplist(xd, grouplist)) {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (group access restricted): ");
-      notice(nick, "** XDCC INFO denied, you must be on the correct channel to request this pack");
-      mydelete(grouplist);
-      goto done;
-    }
-    mydelete(grouplist);
-  }
   
   ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," requested: ");
 

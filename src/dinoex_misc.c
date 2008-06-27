@@ -1063,9 +1063,14 @@ static int check_manual_send(const char* hostname, int *man)
 
 xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text)
 {
+  char *grouplist;
+  xdcc *xd;
+  int isman;
+
   updatecontext();
 
-  if (check_manual_send(hostname, man) == 0) {
+  isman = check_manual_send(hostname, man);
+  if (isman == 0) {
     if (!verifyshell(&gdata.downloadhost, hostmask)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (host denied): ");
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
@@ -1098,7 +1103,26 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
     notice(nick, "** Invalid Pack Number, Try Again");
     return NULL;
   }
-  return irlist_get_nth(&gdata.xdccs, pack-1);
+
+  xd = irlist_get_nth(&gdata.xdccs, pack-1);
+  if (xd == NULL)
+    return NULL;
+
+  if (isman != 0)
+    return xd;
+
+  /* apply group visibility rules */
+  if (gdata.restrictlist) {
+    grouplist = get_grouplist_access(nick);
+    if (!verify_pack_in_grouplist(xd, grouplist)) {
+      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (group access restricted): ");
+      notice(nick, "** XDCC %s denied, you must be on the correct channel to request this pack", text);
+      mydelete(grouplist);
+      return NULL;
+    }
+    mydelete(grouplist);
+  }
+  return xd;
 }
 
 int packnumtonum(const char *a)
@@ -1351,7 +1375,7 @@ int verify_pack_in_grouplist(const xdcc *xd, const char *grouplist)
     /* portable equivalent of strchrnul */
     if (!res)
       res = glptr + strlen(glptr);
-    if ((res > glptr) && ((res - glptr) == strlen(xd->group))) {
+    if ((res > glptr) && ((unsigned)(res - glptr) == strlen(xd->group))) {
       if (strncasecmp(glptr, xd->group, res - glptr) == 0)
         return 1;
     }
@@ -1389,6 +1413,43 @@ char *get_grouplist_access(const char *nick)
   }
 
   return tempstr;
+}
+
+/* search for custom listmsg */
+const char *get_listmsg_channel(char *dest)
+{
+  channel_t *ch;
+  char *rtclmsg = gdata.respondtochannellistmsg;
+
+  if (dest && (*dest=='#')) {
+    for (ch = irlist_get_head(&(gnetwork->channels));
+         ch;
+         ch = irlist_get_next(ch)) {
+      if (strcasecmp(ch->name, dest) == 0) {
+        if (ch->listmsg)
+          rtclmsg = ch->listmsg;
+        break;
+      }
+    }
+  }
+  return rtclmsg;
+}
+
+/* apply per-channel visibility rules */
+const char *get_grouplist_channel(char *dest)
+{
+  channel_t *ch;
+
+  if (dest && (*dest=='#')) {
+    for (ch = irlist_get_head(&(gnetwork->channels));
+         ch;
+         ch = irlist_get_next(ch)) {
+      if (strcasecmp(ch->name, dest) == 0) {
+        return ch->rgroup;
+      }
+    }
+  }
+  return NULL;
 }
 
 void free_channel_data(channel_t *ch)
