@@ -1641,9 +1641,14 @@ xdcc *a_add2(const userinput * const u)
 
   n = irlist_size(&gdata.xdccs);
   if (gdata.autoadd_sort != NULL) {
+    /* silently set the group for sorting */
+    if (group != NULL) {
+      xd->group = mystrdup(group);
+    }
     irlist_remove(&gdata.xdccs, xd);
     a_sort_insert(xd, gdata.autoadd_sort);
     n = number_of_pack(xd);
+    mydelete(xd->group);
   }
 
   a_respond(u, "ADD PACK: [Pack %i] [File %s] Use CHDESC to change description",

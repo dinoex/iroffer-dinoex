@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+bugfix: autoadd_sort
+  Das sortieren nach Gruppe funktioniert jetzt.
+
 bugfix: new_trigger (contributed by dns777)
   Don't show hidden packs.
 

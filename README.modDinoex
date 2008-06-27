@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+bugfix: autoadd_sort (reported by unlogisch)
+  Fix sorting by group.
+
 bugfix: new_trigger (contributed by dns777)
   Don't show hidden packs.
 
