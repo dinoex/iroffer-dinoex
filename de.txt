@@ -670,7 +670,7 @@
 681 "unknown type %d"
 682 "All %"
 683 "uMB of the %s transfer limit used. Stopping transfers."
-684 "Leider wuder das %s Übertragunsgvolumen von %"
+684 "Leider wurde das %s Übertragunsgvolumen von %"
 685 "uMB erreicht.  Versuche es nach %s."
 686 "No longer over any transfer limits. Transfers are now allowed."
 687 "PING %s\n"
