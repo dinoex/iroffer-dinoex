@@ -3701,7 +3701,7 @@ static void u_clearrecords(const userinput * const u)
     }
   
   u_respond(u,"Cleared transfer record, bandwidth record, total sent, total uptime, and transfer limits");
-  write_statefile();
+  write_files();
 }
 
 static void u_rmul(const userinput * const u) {

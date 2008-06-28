@@ -3384,7 +3384,7 @@ void a_cleargets(const userinput * const u)
   }
 
   a_respond(u, "Cleared download counter for each pack");
-  write_statefile();
+  write_files();
 }
 
 void a_config(const userinput * const u)
