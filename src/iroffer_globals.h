@@ -269,6 +269,7 @@ unsigned int max_fds_from_rlimit;
 int logfd;
 
 time_t last_logrotate;
+time_t last_update;
 
 unsigned char *sendbuff;
 

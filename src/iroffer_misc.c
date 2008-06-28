@@ -2190,6 +2190,7 @@ void initvars(void)
   gdata.console_input_line = mycalloc(INPUT_BUFFER_LENGTH);
   
   gdata.last_logrotate = gdata.curtime;
+  gdata.last_update = gdata.curtime;
   
   return;
 }

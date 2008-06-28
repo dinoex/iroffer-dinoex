@@ -1325,6 +1325,7 @@ static void xdcc_save_xml(void)
 
 void write_files(void)
 {
+  gdata.last_update = gdata.curtime;
   write_statefile();
   xdccsavetext();
   xdcc_save_xml();

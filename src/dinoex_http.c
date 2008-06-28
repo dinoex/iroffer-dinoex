@@ -638,13 +638,21 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
     h->totalsize = 0;
 }
 
+static void h_start_sending(http * const h)
+{
+  h->status = HTTP_STATUS_SENDING;
+  if (gdata.debug > 1)
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "HTTP '%s' response %ld bytes", h->url, (long)(h->totalsize));
+}
+
 static void h_error(http * const h, const char *header)
 {
   updatecontext();
 
   h->totalsize = 0;
   h_write_header(h, header);
-  h->status = HTTP_STATUS_SENDING;
+  h_start_sending(h);
 }
 
 static void h_readfile(http * const h, const char *file)
@@ -685,7 +693,7 @@ static void h_readfile(http * const h, const char *file)
   h->filepos = 0;
   h->totalsize = st.st_size;
   h_write_status(h, h->file, &st.st_mtime);
-  h->status = HTTP_STATUS_SENDING;
+  h_start_sending(h);
 }
 
 static void h_readbuffer(http * const h)
@@ -694,11 +702,8 @@ static void h_readbuffer(http * const h)
 
   h->bytessent = 0;
   h->totalsize = strlen(h->buffer_out);
-  h_write_status(h, "html", NULL);
-  h->status = HTTP_STATUS_SENDING;
-  if (gdata.debug > 1)
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "HTTP response %ld bytes", (long)(h->totalsize));
+  h_write_status(h, "html", (h->search) ? NULL : &gdata.last_update);
+  h_start_sending(h);
 }
 
 static void

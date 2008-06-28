@@ -1820,7 +1820,7 @@
 1890 "js"
 1891 "application/x-javascript"
 1892 "application/octet-stream"
-1893 "HTTP risposta %ld bytes"
+1893 "HTTP '%s' risposta %ld bytes"
 1894 "Impossibile effettuare lo stat del file '%s': %s"
 1895 "File troppo grande '%s'"
 1897 "no group"

@@ -1250,6 +1250,7 @@ void dumpgdata(void)
   gdata_print_string(logfile);
   gdata_print_number_cast("%d",logrotate,int);
   gdata_print_number_cast("%d",last_logrotate,int);
+  gdata_print_number_cast("%d",last_update,int);
   gdata_print_string(headline);
   gdata_print_string(creditline);
   gdata_print_string(pidfile);

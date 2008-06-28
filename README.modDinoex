@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+bugfix: http_port
+  Enable caching of html pack list.
+
 252) HOP
    new admin command:
    HOP <channel> <net>        leave and rejoin a channel to get status in a network
