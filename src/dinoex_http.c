@@ -53,6 +53,17 @@ static const char *http_header_status =
 "Content-Length: %" LLPRINTFMT "u\r\n"
 "\r\n";
 
+static const char *http_header_attachment =
+"HTTP/1.1 %d OK\r\n"
+"Date: %s\r\n"
+"Last-Modified: %s\r\n"
+"Server: iroffer-dinoex/" VERSIONLONG "\r\n"
+"Content-Type: %s\r\n"
+"Connection: close\r\n"
+"Content-Length: %" LLPRINTFMT "u\r\n"
+"Content-Disposition: attachment; filename=\"%s\"\r\n"
+"\r\n";
+
 static const char *http_header_notfound =
 "HTTP/1.1 404 Not Found\r\n"
 "Date: %s\r\n"
@@ -646,7 +657,10 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
       }
     }
   }
-  len = snprintf(tempstr, maxtextlength-1, http_header_status, http_status, date, last ? last : date, html_mime(mime), h->totalsize);
+  if (h->attachment)
+    len = snprintf(tempstr, maxtextlength-1, http_header_attachment, http_status, date, last ? last : date, html_mime(mime), h->totalsize, h->attachment);
+  else
+    len = snprintf(tempstr, maxtextlength-1, http_header_status, http_status, date, last ? last : date, html_mime(mime), h->totalsize);
   mydelete(last);
   mydelete(date);
   write(h->con.clientsocket, tempstr, len);
@@ -1557,6 +1571,17 @@ static void h_admin(http * const h, int level, const char *body)
     h_readfile(h, "help-admin-en.txt");
     return;
   }
+  if (strncasecmp(h->url, "/ddl/", 5) == 0) {
+    int pack = atoi(h->url + 5);
+    xdcc *xd;
+
+    xd = irlist_get_nth(&gdata.xdccs, pack-1);
+    if (xd != NULL) {
+      h->attachment = get_basename(xd->file);
+      h_readfile(h, xd->file);
+      return;
+    }
+  }
 
   if (gdata.debug > 1)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
@@ -1706,6 +1731,18 @@ static void h_parse(http * const h, char *body)
     /* send XML pack list */
     h_readfile(h, gdata.xdccxmlfile);
     return;
+  }
+
+  if (strncasecmp(h->url, "/ddl/", 5) == 0) {
+    int pack = atoi(h->url + 5);
+    xdcc *xd;
+ 
+    xd = irlist_get_nth(&gdata.xdccs, pack-1);
+    if (xd != NULL) {
+      h->attachment = get_basename(xd->file);
+      h_readfile(h, xd->file);
+      return;
+    }
   }
 
 #ifndef WITHOUT_HTTP_ADMIN

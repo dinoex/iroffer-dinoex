@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+255) http_admin 
+  Allow http_admin to download packs via HTTP.
+
 254) http_allow
   Defines ip masks, which are allowed to access the server.
   wild cards are:

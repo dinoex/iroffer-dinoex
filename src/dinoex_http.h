@@ -38,6 +38,7 @@ typedef struct
   char *buffer_out;
   char *end;
   const char *nick;
+  const char *attachment;
   char *url;
   char *authorization;
   char *group;
