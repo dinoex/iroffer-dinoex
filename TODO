@@ -135,4 +135,7 @@ Not going to happen anytime soon:
   1185  configure the source port for outgoing connections
   1196  run custom voice scripts
   1198  !voiceme trigger
+  1210  bonjour/zeroconf, apipa
+  1210  dcc2
+  1210  https
 
