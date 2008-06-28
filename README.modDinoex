@@ -17,7 +17,7 @@ With Version 3.9:
   Defines ip masks, that should not access the server.
   wild cards are:
    * = 0 or more characters,  ? = 1 character,  # = any positive integer
-  Multiple ipm asks can be specified
+  Multiple ip masks can be specified
   Default: none.
 
 bugfix: http_port
