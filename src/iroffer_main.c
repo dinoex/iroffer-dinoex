@@ -3118,7 +3118,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   userpackok = 1;
   unlimitedhost = 0;
 
-  xd = get_download_pack(nick, hostname, hostmask, pack, &man, "SEND");
+  xd = get_download_pack(nick, hostname, hostmask, pack, &man, "SEND", gdata.restrictsend);
   if (xd == NULL)
     {
       goto done;
@@ -3182,7 +3182,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        mydelete(tempstr);
      }
    else if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) ||
-            (gdata.restrictlist && (has_joined_channels(0) == 0)) ||
+            (gdata.restrictsend && (has_joined_channels(0) == 0)) ||
             (!man &&
              (((xd->st_size < gdata.smallfilebypass) && (gdata.slotsmax >= MAXTRANS)) ||
               ((xd->st_size >= gdata.smallfilebypass) && (gdata.slotsmax-irlist_size(&gdata.trans) <= 0)))))
@@ -3272,7 +3272,7 @@ void sendxdccinfo(const char* nick,
       goto done;
     }
 
-  xd = get_download_pack(nick, hostname, hostmask, pack, NULL, "INFO");
+  xd = get_download_pack(nick, hostname, hostmask, pack, NULL, "INFO", gdata.restrictlist);
   if (xd == NULL)
     {
       goto done;
@@ -3398,7 +3398,7 @@ void sendaqueue(int type, int pos, char *lastnick)
   if (!gdata.balanced_queue)
      lastnick = NULL;
 
-  if (gdata.restrictlist && (has_joined_channels(0) == 0))
+  if (gdata.restrictsend && (has_joined_channels(0) == 0))
      return;
   
   if (irlist_size(&gdata.mainqueue))

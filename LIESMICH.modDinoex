@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+bugfix: restrictsend
+  versions affected: 1.2 - 3.8
+  restrictsend wurde nicht geprüft, stattdessen wurde restrictlist benutzt.
+
 bugfix: autoadd_sort
   Das sortieren nach Gruppe funktioniert jetzt.
 

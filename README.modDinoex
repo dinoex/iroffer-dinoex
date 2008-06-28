@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+bugfix: restrichsend, restrictlist
+  versions affected: 1.2 - 3.8
+  restrictsend was not checked, restrictlist was used.
+
 bugfix: autoadd_sort (reported by unlogisch)
   Fix sorting by group.
 

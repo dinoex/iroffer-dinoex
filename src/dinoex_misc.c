@@ -1067,7 +1067,7 @@ static int check_manual_send(const char* hostname, int *man)
   return *man;
 }
 
-xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text)
+xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text, int restr)
 {
   char *grouplist;
   xdcc *xd;
@@ -1087,7 +1087,7 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
       return NULL;
     }
-    if (gdata.restrictsend && access_need_level(nick, text)) {
+    if (restr && access_need_level(nick, text)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (restricted): ");
       return NULL;
     }
@@ -1118,7 +1118,7 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
     return xd;
 
   /* apply group visibility rules */
-  if (gdata.restrictlist) {
+  if (restr) {
     grouplist = get_grouplist_access(nick);
     if (!verify_pack_in_grouplist(xd, grouplist)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (group access restricted): ");
@@ -1398,7 +1398,6 @@ char *get_grouplist_access(const char *nick)
   channel_t *ch;
   member_t *member;
 
-  tempstr[0] = 0;
   for (ch = irlist_get_head(&(gnetwork->channels));
        ch;
        ch = irlist_get_next(ch)) {

@@ -47,7 +47,7 @@ void identify_needed(int force);
 void identify_check(const char *line);
 
 int parse_xdcc_list(const char *nick, char*msg3);
-xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text);
+xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text, int restr);
 
 int packnumtonum(const char *a);
 int check_trigger(const char *line, const char *part4);
