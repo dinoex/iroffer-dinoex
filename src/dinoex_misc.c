@@ -1419,13 +1419,6 @@ char *get_grouplist_access(const char *nick)
       len += snprintf(tempstr + len, maxtextlength - 1 - len, " %s", ch->rgroup);
     }
   }
-
-  if (len == 0) {
-    /* no channel found */
-    mydelete(tempstr);
-    return NULL;
-  }
-
   return tempstr;
 }
 
