@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+bugfix: fish
+  Einige Werte wurden nicht richtig dekodiert.
+
 255) http_admin
   Erlaube dem http_admin den Download der Packs via HTTP.
 

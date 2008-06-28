@@ -384,6 +384,7 @@ Vision
 	reporting "fish" bug
 	option "privmsg_fish"
 	option "privmsg_encrypt"
+	reporting "fish" decoding bug
 
 TheBotKiller
 	suggesting "!new" trigger
