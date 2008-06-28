@@ -230,6 +230,8 @@ static config_list_typ config_parse_list[] = {
 #endif /* USE_GEOIP */
 {"hadminhost",              &gdata.hadminhost,              3 },
 #ifndef WITHOUT_HTTP
+{"http_allow",              &gdata.http_allow,              2 },
+{"http_deny",               &gdata.http_deny,               2 },
 {"http_vhost",              &gdata.http_vhost,              0 },
 #endif /* WITHOUT_HTTP */
 {"log_exclude_host",        &gdata.log_exclude_host,        2 },

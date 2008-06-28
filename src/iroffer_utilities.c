@@ -1499,6 +1499,12 @@ void dumpgdata(void)
   gdata_irlist_iter_start(nodownloadhost, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
+  gdata_irlist_iter_start(http_allow, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
+  gdata_irlist_iter_start(http_deny, char);
+  gdata_iter_as_print_string;
+  gdata_irlist_iter_end;
   gdata_irlist_iter_start(unlimitedhost, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;

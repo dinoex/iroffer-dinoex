@@ -63,6 +63,8 @@ int maxtransfersperperson, maxqueueditemsperperson;
 int maxidlequeuedperperson;
 irlist_t downloadhost;
 irlist_t nodownloadhost;
+irlist_t http_allow;
+irlist_t http_deny;
 char *adminpass;
 char *hadminpass;
 irlist_t adminhost;

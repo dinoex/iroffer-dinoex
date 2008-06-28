@@ -2253,3 +2253,7 @@
 2333 "** XDCC %s denied, you must be on the correct channel to request this pack"
 2334 "-listmsg"
 2335 "-rgroup"
+2336 "http_allow"
+2337 "http_deny"
+2338 "HTTP connection not allowed"
+2339 "HTTP connection denied"

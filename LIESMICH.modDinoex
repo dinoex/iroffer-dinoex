@@ -3,6 +3,20 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+254) http_allow
+  Hiermit kann eingeschränkt werden, wer per HTTP auf den Bot zugreifen
+  darf. Es können mehrere Masken angegeben werden.
+  Jokerzeichen sind:
+   * = 0 oder mehr Zeichen,  ? = 1 Zeichen,  # = jede positive Zahl
+  Default: alle.
+
+253) http_deny
+  Hier kann man angeben, wer per HTTP auf den Bot nicht zugreifen darf.
+  Es können mehrere Masken angegeben werden.
+  Jokerzeichen sind:
+   * = 0 oder mehr Zeichen,  ? = 1 Zeichen,  # = jede positive Zahl
+  Default: keiner.
+
 bugfix: http_port
   Erlaube das Cachen der HTML packliste.
 

@@ -543,6 +543,7 @@ static void h_accept(int i)
   char *msg;
   http *h;
   int clientsocket;
+  char buffer[maxtextlengthshort];
 
   updatecontext();
 
@@ -569,9 +570,11 @@ static void h_accept(int i)
   if (http_family[i] != AF_INET) {
     h->con.family = remoteaddr.sin6.sin6_family;
     h->con.remoteport = ntohs(remoteaddr.sin6.sin6_port);
+    inet_ntop(h->con.family, &(remoteaddr.sin6.sin6_addr), buffer, maxtextlengthshort - 1);
   } else {
     h->con.family = remoteaddr.sin.sin_family;
     h->con.remoteport = ntohs(remoteaddr.sin.sin_port);
+    inet_ntop(h->con.family, &(remoteaddr.sin.sin_addr), buffer, maxtextlengthshort - 1);
   }
   h->con.connecttime = gdata.curtime;
   h->con.lastcontact = gdata.curtime;
@@ -584,8 +587,22 @@ static void h_accept(int i)
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "HTTP connection received from %s",  h->con.remoteaddr);
 
-  if (is_in_badip(&(h->con.remote)))
+  if (is_in_badip(&(h->con.remote))) {
     h_closeconn(h, "HTTP connection ignored", 0);
+    return;
+  }
+
+  if (irlist_size(&gdata.http_allow) > 0) {
+    if (!verifyshell(&gdata.http_allow, buffer)) {
+      h_closeconn(h, "HTTP connection not allowed", 0);
+      return;
+    }
+  }
+
+  if (verifyshell(&gdata.http_deny, buffer)) {
+    h_closeconn(h, "HTTP connection denied", 0);
+    return;
+  }
 }
 
 static void h_write_header(http * const h, const char *header)

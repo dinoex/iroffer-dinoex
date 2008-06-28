@@ -1939,6 +1939,8 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.autoignore_exclude);
   irlist_delete_all(&gdata.downloadhost);
   irlist_delete_all(&gdata.nodownloadhost);
+  irlist_delete_all(&gdata.http_allow);
+  irlist_delete_all(&gdata.http_deny);
   irlist_delete_all(&gdata.unlimitedhost);
   mydelete(gdata.pidfile);
   mydelete(gdata.config_nick);
