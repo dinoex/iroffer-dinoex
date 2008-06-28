@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+252) HOP
+   new admin command:
+   HOP <channel> <net>        leave and rejoin a channel to get status in a network
+
 bugfix: restrichsend, restrictlist
   versions affected: 1.2 - 3.8
   restrictsend was not checked, restrictlist was used.

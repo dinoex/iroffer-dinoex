@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+252) HOP 
+  Neues Admin Kommando:
+  HOP <channel> <netz>        Channel <channel> auf <netz> verlassen und neu betreten
+
 bugfix: restrictsend
   versions affected: 1.2 - 3.8
   restrictsend wurde nicht geprüft, stattdessen wurde restrictlist benutzt.

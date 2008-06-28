@@ -1667,7 +1667,7 @@
 1731 "x [channel]"
 1732 "Verlasse den Channel <channel> für <x> Minuten"
 1733 "Ignoring Unknown Queue Tag 0x%X (len=%d)"
-1734 "[channel]"
+1734 "[channel] [net]"
 1735 "hadminhost"
 1737 "hadminpass"
 1738 "Config structure failed %s <-> %s"

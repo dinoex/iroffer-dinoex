@@ -3196,29 +3196,45 @@ void a_rawnet(const userinput * const u)
   gnetwork = backup;
 }
 
-void a_hop(const userinput * const u)
+static void a_hop_net(const userinput * const u, const char *name)
 {
   channel_t *ch;
+
+  /* part & join channels */
+  for (ch = irlist_get_head(&(gnetwork->channels));
+       ch;
+       ch = irlist_get_next(ch)) {
+    if ((!name) || (!strcasecmp(name, ch->name))) {
+      writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
+      clearmemberlist(ch);
+      ch->flags &= ~CHAN_ONCHAN;
+      ch->flags &= ~CHAN_KICKED;
+      joinchannel(ch);
+    }
+  }
+}
+
+void a_hop(const userinput * const u)
+{
   gnetwork_t *backup;
+  int net;
   int ss;
 
   updatecontext();
 
+  net = get_network_msg(u, u->arg2);
+  if (net < 0) 
+    return;
+
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
-    gnetwork = &(gdata.networks[ss]);
-    /* part & join channels */
-    for (ch = irlist_get_head(&(gnetwork->channels));
-         ch;
-         ch = irlist_get_next(ch)) {
-      if ((!u->arg1) || (!strcasecmp(u->arg1, ch->name))) {
-        writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
-        clearmemberlist(ch);
-        ch->flags &= ~CHAN_ONCHAN;
-        ch->flags &= ~CHAN_KICKED;
-        joinchannel(ch);
-      }
+  if (net < 0) {
+    for (ss=0; ss<gdata.networks_online; ss++) {
+      gnetwork = &(gdata.networks[ss]);
+      a_hop_net(u, u->arg1);
     }
+  } else {
+    gnetwork = &(gdata.networks[net]);
+    a_hop_net(u, u->arg1);
   }
   gnetwork = backup;
 }
