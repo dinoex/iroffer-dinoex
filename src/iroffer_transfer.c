@@ -566,13 +566,21 @@ void t_readjunk (transfer * const t)
           
           if (byte == 0)
             {
-              if (t->xpack->st_size > 0xFFFFFFFF)
+              if (t->xpack->st_size > 0x0FFFFFFFFLL)
                 {
                   while (t->curack < t->lastack)
-                    t->curack += 0x100000000ULL;
+                    t->curack += 0x100000000LL;
                 }
               t->lastack = t->curack;
             }
+        }
+      
+      if ((gdata.debug > 2) && (t->tr_status == TRANSFER_STATUS_WAITING))
+        {
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_BLUE,
+          "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes",
+          t->id, t->nick, gdata.networks[ t->net ].name,
+          t->lastack );
         }
       
       t->bytesgot += i;
