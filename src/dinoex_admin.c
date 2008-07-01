@@ -3223,7 +3223,7 @@ void a_hop(const userinput * const u)
   updatecontext();
 
   net = get_network_msg(u, u->arg2);
-  if (net < 0) 
+  if (net < 0)
     return;
 
   backup = gnetwork;
