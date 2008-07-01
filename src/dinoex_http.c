@@ -1736,7 +1736,7 @@ static void h_parse(http * const h, char *body)
   if (strncasecmp(h->url, "/ddl/", 5) == 0) {
     int pack = atoi(h->url + 5);
     xdcc *xd;
- 
+
     xd = irlist_get_nth(&gdata.xdccs, pack-1);
     if (xd != NULL) {
       h->attachment = get_basename(xd->file);
