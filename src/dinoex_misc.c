@@ -28,6 +28,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_telnet.h"
 #include "dinoex_queue.h"
+#include "dinoex_jobs.h"
 #include "dinoex_ruby.h"
 #include "dinoex_misc.h"
 
@@ -488,6 +489,9 @@ static void init_xdcc(xdcc *xd)
 
 void startup_dinoex(void)
 {
+#ifndef WITHOUT_BLOWFISH
+  init_fish64decode();
+#endif /* WITHOUT_BLOWFISH */
   gdata.support_groups = 0;
   config_startup();
   init_xdcc(&xdcc_statefile);

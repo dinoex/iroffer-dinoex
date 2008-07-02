@@ -32,39 +32,19 @@ extern const ir_uint32 crctable[256];
 
 #include "blowfish.h"
 
-static const unsigned char BASE64[] = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const unsigned char FISH64[] = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-static unsigned char base64decode[ 256 ] = {
-/* 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F */
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-   2, 3, 4, 5, 6, 7, 8, 9,10,11, 0, 0, 0, 0, 0, 0,
-   0,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,
-  53,54,55,56,57,58,59,60,61,62,63, 0, 0, 0, 0, 0,
-   0,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,
-  27,28,29,30,31,32,33,34,35,36,37, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
+static unsigned char fish64decode[ 256 ];
 
-#if 0
-static void create_b64( void )
+void init_fish64decode( void )
 {
   int i;
 
-  memset(base64decode, 0, sizeof(base64decode));
+  memset(fish64decode, 0, sizeof(fish64decode));
   for ( i = 0; i < 64; i++) {
-    base64decode[ BASE64[ i ] ] = i;
+    fish64decode[ FISH64[ i ] ] = i;
   }
 }
-#endif
 
 static unsigned long bytes_to_long( const char **str )
 {
@@ -121,11 +101,11 @@ static char *encrypt_fish( const char *str, int len, const char *key)
     right = bytes_to_long(&str);
     Blowfish_Encrypt(&ctx, &left, &right);
     for (i = 0; i < 6; i++) {
-      *(dest++) = BASE64[right & 0x3f];
+      *(dest++) = FISH64[right & 0x3f];
       right = (right >> 6);
     }
     for (i = 0; i < 6; i++) {
-      *(dest++) = BASE64[left & 0x3f];
+      *(dest++) = FISH64[left & 0x3f];
       left = (left >> 6);
     }
   }
@@ -143,7 +123,7 @@ static unsigned long base64_to_long( const char **str )
   result = 0L;
   for (i = 0; i < 6; i++) {
     ch = (unsigned char)(*(*str)++);
-    result |= base64decode[ ch ] << (i * 6);
+    result |= fish64decode[ ch ] << (i * 6);
   }
   return result;
 }

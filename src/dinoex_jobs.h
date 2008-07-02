@@ -22,6 +22,7 @@
 #define ADMIN_LEVEL_PUBLIC	0
 
 #ifndef WITHOUT_BLOWFISH
+void init_fish64decode( void );
 char *test_fish_message(const char *line, const char *channel, const char *str, const char *data);
 #endif /* WITHOUT_BLOWFISH */
 
