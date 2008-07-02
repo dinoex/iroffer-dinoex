@@ -1566,6 +1566,7 @@ static void h_admin(http * const h, int level, const char *body)
     h_readfile(h, "help-admin-en.txt");
     return;
   }
+
   if (strncasecmp(h->url, "/ddl/", 5) == 0) {
     int pack = atoi(h->url + 5);
     xdcc *xd;
@@ -1726,18 +1727,6 @@ static void h_parse(http * const h, char *body)
     /* send XML pack list */
     h_readfile(h, gdata.xdccxmlfile);
     return;
-  }
-
-  if (strncasecmp(h->url, "/ddl/", 5) == 0) {
-    int pack = atoi(h->url + 5);
-    xdcc *xd;
-
-    xd = irlist_get_nth(&gdata.xdccs, pack-1);
-    if (xd != NULL) {
-      h->attachment = get_basename(xd->file);
-      h_readfile(h, xd->file);
-      return;
-    }
   }
 
 #ifndef WITHOUT_HTTP_ADMIN
