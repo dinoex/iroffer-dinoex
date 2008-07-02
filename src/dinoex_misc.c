@@ -489,6 +489,11 @@ static void init_xdcc(xdcc *xd)
 
 void startup_dinoex(void)
 {
+#ifndef WITHOUT_HTTP
+#ifndef WITHOUT_HTTP_ADMIN
+  init_base64decode();
+#endif /* #ifndef WITHOUT_HTTP_ADMIN */
+#endif /* #ifndef WITHOUT_HTTP */
 #ifndef WITHOUT_BLOWFISH
   init_fish64decode();
 #endif /* WITHOUT_BLOWFISH */

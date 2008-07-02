@@ -55,6 +55,12 @@ typedef struct {
   const char *m_mime;
 } http_magic_t;
 
+#ifndef WITHOUT_HTTP
+#ifndef WITHOUT_HTTP_ADMIN
+void init_base64decode( void );
+#endif /* #ifndef WITHOUT_HTTP_ADMIN */
+#endif /* #ifndef WITHOUT_HTTP */
+
 void h_close_listen(void);
 int h_setup_listen(void);
 void h_reash_listen(void);
