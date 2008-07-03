@@ -813,6 +813,7 @@ void t_setresume(transfer * const t, const char *amt) {
    updatecontext();
 
    t->startresume = (off_t)atoull(amt);
+   t->lastack = t->startresume;
    }
 
 void t_remind(transfer * const t) {

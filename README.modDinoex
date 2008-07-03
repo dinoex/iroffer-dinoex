@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+bugfix: DCC RESUME (reported by fred|krue)
+  Detects complete Download when resumed > 4GB.
+
 bugfix: DCLD (reported by fred|krue)
   Display resumesize for > 4GB correctly.
 
