@@ -1335,7 +1335,7 @@ static void u_dcld(const userinput * const u)
           snprintf(tempstr2, maxtextlengthshort - 1,
                    "%1.1fK", tr->xpack->minspeed);
           snprintf(tempstr3, maxtextlengthshort - 1,
-                   "%6liK", (long)(tr->startresume)/1024);
+                   "%6liK", (long)(tr->startresume/1024));
           snprintf(tempstr4, maxtextlengthshort - 1,
                    "%1.1fK", tr->maxspeed);
           

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+bugfix: DCLD
+  Zeige resumesize für Dateien > 4GB richtig an.
+
 bugfix: fish
   Einige Werte wurden nicht richtig dekodiert.
 
