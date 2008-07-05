@@ -3,11 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+256) no_duplicate_filenames (inspired by AnimeNeko)
+  When configured, add, adddir and addnew refuses to add a files with a
+  name that already have been added.
+
 bugfix: DCC RESUME (reported by fred|krue)
   Detects complete Download when resumed > 4GB.
 
 bugfix: DCLD (reported by fred|krue)
-  Display resumesize for > 4GB correctly.
+  Display resume size for > 4GB correctly.
 
 bugfix: fish (reported by Vision)
   Some values where not decoded cleanly.

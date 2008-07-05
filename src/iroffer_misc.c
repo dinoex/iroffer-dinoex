@@ -1994,6 +1994,7 @@ void reinit_config_vars(void)
 #else /* _OS_CYGWIN */
   gdata.dos_text_files = 0;
 #endif /* _OS_CYGWIN */
+  gdata.no_duplicate_filenames = 0;
   irlist_delete_all(&gdata.adddir_exclude);
   irlist_delete_all(&gdata.geoipcountry);
   irlist_delete_all(&gdata.nogeoipcountry);

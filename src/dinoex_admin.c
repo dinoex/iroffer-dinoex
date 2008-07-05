@@ -1518,6 +1518,7 @@ xdcc *a_add2(const userinput * const u)
   char *file;
   char *a1;
   char *a2;
+  const char *new;
   int n;
 
   updatecontext();
@@ -1539,6 +1540,19 @@ xdcc *a_add2(const userinput * const u)
          xd = irlist_get_next(xd)) {
       if ((xd->st_dev == st.st_dev) &&
           (xd->st_ino == st.st_ino)) {
+        a_respond(u, "File '%s' is already added.", u->arg1e);
+        mydelete(file);
+        return NULL;
+      }
+    }
+  }
+
+  if (gdata.no_duplicate_filenames) {
+    new = get_basename(file);
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      if (strcasecmp(get_basename(xd->file), new) == 0) {
         a_respond(u, "File '%s' is already added.", u->arg1e);
         mydelete(file);
         return NULL;

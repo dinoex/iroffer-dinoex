@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+256) no_duplicate_filenames
+  Verhindert das eine Datei mit dem gleichen Namen versehentlich
+  mehrfach als Pack eingetragen wird.
+
 bugfix: DCC RESUME
   Erkenne vollständigen Download bei Resume > 4 GB.
 

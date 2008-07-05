@@ -89,6 +89,7 @@ static config_bool_typ config_parse_bool[] = {
 {"noautorejoin",           &gdata.noautorejoin },
 {"nocrc32",                &gdata.nocrc32 },
 {"noduplicatefiles",       &gdata.noduplicatefiles },
+{"no_duplicate_filenames", &gdata.no_duplicate_filenames },
 {"nomd5sum",               &gdata.nomd5sum },
 {"old_statefile",          &gdata.old_statefile },
 {"passive_dcc",            &gdata.passive_dcc },

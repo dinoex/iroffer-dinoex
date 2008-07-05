@@ -2260,3 +2260,7 @@
 2339 "HTTP connection denied"
 2340 "Content-Disposition: attachment; filename=\"%s\"\r\n"
 2341 "/ddl/"
+2342 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+2343 "XDCC [%02i:%s on %s]: Acknowleged %"
+2344 "u Bytes"
+2345 "no_duplicate_filenames"

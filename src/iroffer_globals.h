@@ -91,6 +91,7 @@ int nomd5sum;
 int getipfromserver;
 int noduplicatefiles;
 int dos_text_files;
+int no_duplicate_filenames;
 irlist_t adddir_exclude;
 irlist_t autoqueue;
 irlist_t autotrigger;
