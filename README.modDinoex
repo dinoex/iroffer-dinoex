@@ -4,7 +4,7 @@ With Version 3.9:
 -----------------
 
 258) #channel -waitjoin <time> (inspired by Lamune)
-  Wait given seconds after connect before join this chan.
+  Wait given seconds after connect before joining this chan.
 
 257) show_list_all (inspired by TheBotKiller)
   Print line with "/msg nick xdcc list all".
