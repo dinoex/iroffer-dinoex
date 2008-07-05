@@ -2280,8 +2280,8 @@ static void parseline(char *line) {
                      {
                        outerror(OUTERROR_TYPE_WARN_LOUD,
                                "Kicked on %s, Rejoining: %s", gnetwork->name, line);
-                       joinchannel(ch);
                        ch->flags &= ~CHAN_ONCHAN;
+                       joinchannel(ch);
                      }
                  }
                else

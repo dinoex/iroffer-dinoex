@@ -256,6 +256,7 @@ void getconfig_set (const char *line, int rehash)
       cptr->joinmsg = NULL;
       cptr->listmsg = NULL;
       cptr->rgroup = NULL;
+      cptr->waitjoin = 0;
       cptr->noannounce = 0;
       cptr->delay = 0;
       cptr->plistoffset = 0;
@@ -1443,6 +1444,9 @@ void joinchannel(channel_t *c)
   if (c->flags & CHAN_KICKED) return;
 
   if (c->nextjoin > gdata.curtime)
+    return;
+
+  if ((gnetwork->connecttime + c->waitjoin) > gdata.curtime)
     return;
 
   if (c->key)

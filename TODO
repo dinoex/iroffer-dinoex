@@ -80,8 +80,6 @@ Long Term Features:
   1145  mnake autoadd reentrant
   1149  move after upload to dir
   1170  telnet with more terminal codes
-  1171  slow channel join
-  1173  delayed channel join
   1176  pre_desc, post_desc
   1190  show CONFIG value
   1193  disable all privmsg

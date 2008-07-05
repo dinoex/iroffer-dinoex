@@ -369,6 +369,7 @@ Lamune
 	reporting FETCH with spaces problem
 	reporting "FETCHCANCEL" bug
 	reporting "BOTINFO" joined for bug
+	suggesting "#channel -waitjoin" option
 
 DevelDoll
 	report transferlimits to user

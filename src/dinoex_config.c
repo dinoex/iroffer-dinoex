@@ -86,10 +86,10 @@ static config_bool_typ config_parse_bool[] = {
 {"lognotices",             &gdata.lognotices },
 {"logstats",               &gdata.logstats },
 {"need_voice",             &gdata.need_voice },
+{"no_duplicate_filenames", &gdata.no_duplicate_filenames },
 {"noautorejoin",           &gdata.noautorejoin },
 {"nocrc32",                &gdata.nocrc32 },
 {"noduplicatefiles",       &gdata.noduplicatefiles },
-{"no_duplicate_filenames", &gdata.no_duplicate_filenames },
 {"nomd5sum",               &gdata.nomd5sum },
 {"old_statefile",          &gdata.old_statefile },
 {"passive_dcc",            &gdata.passive_dcc },
@@ -912,6 +912,9 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
   }
   if (!strcmp(tptr, "-delay")) {
     return parse_channel_int(&(cptr->delay), var, i);
+  }
+  if (!strcmp(tptr, "-waitjoin")) {
+    return parse_channel_int(&(cptr->waitjoin), var, i);
   }
 
   if (!strcmp(tptr, "-key")) {

@@ -1720,6 +1720,7 @@ void dumpgdata(void)
       gdata_iter_print_string(rgroup);
       gdata_iter_print_int(delay);
       gdata_iter_print_int(noannounce);
+      gdata_iter_print_int(waitjoin);
       gdata_iter_print_long(nextann);
       gdata_iter_print_long(nextjoin);
       gdata_iter_print_long(lastjoin);

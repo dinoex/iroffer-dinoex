@@ -2266,3 +2266,4 @@
 2346 "\2**\2 Zum Anzeigen alle Pakete schreibe \"/MSG %s XDCC LIST ALL\" \2**\2"
 2347 "\2**\2 Liste der Pakete anzeigen:     \"/MSG %s XDCC LIST ALL\" \2**\2"
 2348 "show_list_all"
+2349 "-waitjoin"
