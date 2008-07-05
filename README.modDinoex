@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+257) show_list_all (inspired by TheBotKiller)
+  Print line with "/msg nick xdcc list all".
+
 256) no_duplicate_filenames (inspired by AnimeNeko)
   When configured, add, adddir and addnew refuses to add a files with a
   name that already have been added.

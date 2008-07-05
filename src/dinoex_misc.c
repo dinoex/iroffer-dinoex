@@ -166,8 +166,11 @@ void send_help(const char *nick)
   mynick = get_user_nick();
   if (!gdata.restrictprivlist) {
     notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST\" \2**\2", mynick);
-    if (gdata.support_groups)
+    if (gdata.support_groups) {
       notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST group\" \2**\2", mynick);
+      if ((gdata.show_list_all != 0) && (gdata.restrictprivlistfull == 0))
+        notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST ALL\" \2**\2", mynick);
+    }
   }
   notice_slow(nick, "\2**\2 Stop listing:      \"/MSG %s XDCC STOP\" \2**\2", mynick);
   if (gdata.send_listfile)

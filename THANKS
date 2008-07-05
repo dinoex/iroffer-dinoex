@@ -388,6 +388,7 @@ Vision
 
 TheBotKiller
 	suggesting "!new" trigger
+	suggesting "show_list_all" option
 
 Gotham
 	option "show_date_added"

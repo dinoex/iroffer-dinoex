@@ -921,8 +921,14 @@ static void u_xdl_head(const userinput * const u) {
            xd = irlist_get_next(xd);
          }
        if (i > 0)
-          u_respond(u, "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
-                    mynick);
+         {
+            u_respond(u, "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
+                      mynick);
+            
+            if (!gdata.restrictprivlistfull)
+              u_respond(u, "\2**\2 To list all packs, type \"/MSG %s XDCC LIST ALL\" \2**\2",
+                        mynick);
+         }
      }
    
    if (m1)

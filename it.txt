@@ -2264,3 +2264,6 @@
 2343 "XDCC [%02i:%s on %s]: Acknowleged %"
 2344 "u Bytes"
 2345 "no_duplicate_filenames"
+2346 "\2**\2 Per richiedere la lista di all packs, digita \"/MSG %s XDCC LIST ALL\" \2**\2"
+2347 "\2**\2 Per Richiedere La Lista:    \"/MSG %s XDCC LIST ALL\" \2**\2"
+2348 "show_list_all"

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+257) show_list_all
+  Zeigt die Zeile "/msg nick xdcc list all" beim announce an.
+
 256) no_duplicate_filenames
   Verhindert das eine Datei mit dem gleichen Namen versehentlich
   mehrfach als Pack eingetragen wird.
