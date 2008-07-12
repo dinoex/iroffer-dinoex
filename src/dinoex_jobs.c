@@ -49,7 +49,7 @@ void init_fish64decode( void )
 static unsigned long bytes_to_long( const char **str )
 {
   unsigned long result;
-  char ch;
+  unsigned char ch;
 
   ch = *(*str);
   result = ch << 24;

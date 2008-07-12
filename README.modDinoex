@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+bugfix: fish (reported by Vision)
+  Encode colors and non ascii chars correctly.
+
 bugfix: fix small memory leaks
 
 258) #channel -waitjoin <time> (inspired by Lamune)

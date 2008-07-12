@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+bugfix: fish
+  Kodierung von Farben und Umlauten korrigiert.
+
 bugfix: Speicherlecks behoben
 
 258) #channel -waitjoin <time>
