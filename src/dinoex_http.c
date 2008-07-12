@@ -1571,11 +1571,13 @@ static void h_admin(http * const h, int level, const char *body)
     int pack = atoi(h->url + 5);
     xdcc *xd;
 
-    xd = irlist_get_nth(&gdata.xdccs, pack-1);
-    if (xd != NULL) {
-      h->attachment = get_basename(xd->file);
-      h_readfile(h, xd->file);
-      return;
+    if (pack > 0) {
+      xd = irlist_get_nth(&gdata.xdccs, pack-1);
+      if (xd != NULL) {
+        h->attachment = get_basename(xd->file);
+        h_readfile(h, xd->file);
+        return;
+      }
     }
   }
 
