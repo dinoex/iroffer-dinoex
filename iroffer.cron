@@ -23,7 +23,7 @@ cd $iroffer_dir
 freespace=`df -k . | tail -1 | awk {'print $4'}`
 if [ $freespace -lt 10 ]; then
 echo "Filesystem Full!"
-exit
+exit 75
 fi
 
 # see if stale pid file
