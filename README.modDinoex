@@ -4,6 +4,9 @@ With Version 3.9:
 -----------------
 
 bugfix: fish (reported by Vision)
+  Limit @find to buffer length.
+
+bugfix: fish (reported by Vision)
   Encode colors and non ascii chars correctly.
 
 bugfix: fix small memory leaks

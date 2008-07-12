@@ -725,6 +725,26 @@ int fnmatch_xdcc(const char *match, xdcc *xd)
   return 0;
 }
 
+static size_t get_channel_limit(const char *dest)
+{
+  channel_t *ch;
+  size_t max = 400;
+
+  if (dest && (*dest=='#')) {
+    for (ch = irlist_get_head(&(gnetwork->channels));
+         ch;
+         ch = irlist_get_next(ch)) {
+      if (strcasecmp(ch->name, dest) != 0)
+        continue;
+
+      if (ch->fish)
+        max /= 3;
+      break;
+    }
+  }
+  return max;
+}
+
 /* iroffer-lamm: @find and long !list */
 int noticeresults(const char *nick, const char *pattern, const char *dest)
 {
@@ -785,7 +805,7 @@ int noticeresults(const char *nick, const char *pattern, const char *dest)
       }
       sizestrstr = sizestr(0, xd->st_size);
       snprintf(tempstr + len, maxtextlength - 1 - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
-      if (strlen(tempstr) > 400) {
+      if (strlen(tempstr) > get_channel_limit(dest)) {
         snprintf(tempstr + len, maxtextlength - 1 - len, " [...]");
         notice_slow(nick, "%s", tempstr);
         snprintf(tempstr, maxtextlength - 2, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
