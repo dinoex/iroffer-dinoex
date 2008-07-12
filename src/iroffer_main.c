@@ -2849,7 +2849,7 @@ static void privmsgparse(int type, char* line)
          xd = irlist_get_head(&gdata.xdccs);
          while(xd)
            {
-             if ((hide_pack(xd) == 0) && verify_pack_in_grouplist(xd, grouplist))
+             if ((hide_pack(xd) == 0) && verify_group_in_grouplist(xd->group, grouplist))
                {
                  if (fnmatch_xdcc(match, xd))
                    {

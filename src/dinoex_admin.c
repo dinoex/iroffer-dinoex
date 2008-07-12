@@ -2898,7 +2898,7 @@ void a_fetchcancel(const userinput * const u)
 }
 #endif /* USE_CURL */
 
-static void a_announce_channels(const char *msg, const char *match, const xdcc *xd)
+static void a_announce_channels(const char *msg, const char *match, const char *group)
 {
   channel_t *ch;
 
@@ -2914,8 +2914,10 @@ static void a_announce_channels(const char *msg, const char *match, const xdcc *
       if (ch->noannounce != 0)
         continue;
       /* if announce is related to a pack, apply per-channel visibility rules */
-      if (xd && !verify_pack_in_grouplist(xd, ch->rgroup))
-        continue;
+      if (group) {
+        if (!verify_group_in_grouplist(group, ch->rgroup))
+          continue;
+      }
     }
     privmsg_chan(ch, "%s", msg);
   }

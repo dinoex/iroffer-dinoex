@@ -246,4 +246,31 @@ char *hostmask_to_fnmatch(const char *str)
   return base;
 }
 
+/* check if given group can be found in a list of allowed groups */
+int verify_group_in_grouplist(const char *group, const char *grouplist)
+{
+  /* null grouplist means no restrictions */
+  if (!grouplist)
+    return 1;
+  /* packs with no group set are always visible */
+  if (!group)
+    return 1;
+
+  /* case insensitive token search */
+  const char *glptr = grouplist;
+  const char *res = grouplist;
+  while (*res) {
+    res = strchr(glptr, ' ');
+    /* portable equivalent of strchrnul */
+    if (!res)
+      res = glptr + strlen(glptr);
+    if ((res > glptr) && ((unsigned)(res - glptr) == strlen(group))) {
+      if (strncasecmp(glptr, group, res - glptr) == 0)
+        return 1;
+    }
+    glptr = res + 1;
+  }
+  return 0;
+}
+
 /* End of File */

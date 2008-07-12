@@ -742,7 +742,7 @@ int noticeresults(const char *nick, const char *match, const char *grouplist)
         continue;
 
       /* check group visibility rules */
-      if (!verify_pack_in_grouplist(xd, grouplist))
+      if (!verify_group_in_grouplist(xd->group, grouplist))
         continue;
 
       if (fnmatch_xdcc(match, xd)) {
@@ -814,7 +814,7 @@ static void add_newest_xdcc(irlist_t *list, const char *grouplist)
       continue;
 
     /* check group visibility rules */
-    if (!verify_pack_in_grouplist(xd, grouplist))
+    if (!verify_group_in_grouplist(xd->group, grouplist))
       continue;
 
     for (best = irlist_get_head(list);
@@ -1132,7 +1132,7 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
   /* apply group visibility rules */
   if (restr) {
     grouplist = get_grouplist_access(nick);
-    if (!verify_pack_in_grouplist(xd, grouplist)) {
+    if (!verify_group_in_grouplist(xd->group, grouplist)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (group access restricted): ");
       notice(nick, "** XDCC %s denied, you must be on the correct channel to request this pack", text);
       mydelete(grouplist);
@@ -1371,35 +1371,6 @@ char *user_getdatestr(char* str, time_t Tp, int len)
   if ((llen == 0) || (llen == len))
     str[0] = '\0';
   return str;
-}
-
-/* check if given pack should be visible, given a list of allowed groups */
-int verify_pack_in_grouplist(const xdcc *xd, const char *grouplist)
-{
-  if (!xd)
-    return 0;
-  /* null grouplist means no restrictions */
-  if (!grouplist)
-    return 1;
-  /* packs with no group set are always visible */
-  if (!(xd->group))
-    return 1;
-
-  /* case insensitive token search */
-  const char *glptr = grouplist;
-  const char *res = grouplist;
-  while (*res) {
-    res = strchr(glptr, ' ');
-    /* portable equivalent of strchrnul */
-    if (!res)
-      res = glptr + strlen(glptr);
-    if ((res > glptr) && ((unsigned)(res - glptr) == strlen(xd->group))) {
-      if (strncasecmp(glptr, xd->group, res - glptr) == 0)
-        return 1;
-    }
-    glptr = res + 1;
-  }
-  return 0;
 }
 
 /* returns list of allowed groups for nick on current network, or NULL for unrestricted access. calling function must take care of freeing result */
