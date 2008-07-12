@@ -3802,6 +3802,7 @@ void a_sannounce(const userinput * const u)
     }
     gnetwork = backup;
     mydelete(tempstr);
+    mydelete(tempstr3);
   }
 }
 
