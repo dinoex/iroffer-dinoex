@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
+bugfix: Speicherlecks behoben
+
 258) #channel -waitjoin <time>
   Warte die angegebene Sekunden nach dem Connect ab, bevor
   dieser Channel betreten wird.
