@@ -3687,7 +3687,7 @@ static void a_announce_msg(const userinput * const u, int num, const char *msg)
     gnetwork = &(gdata.networks[ss]);
     snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
              tempstr2, get_user_nick(), num);
-    a_announce_channels(tempstr, NULL, xd);
+    a_announce_channels(tempstr, NULL, xd->group);
     gnetwork = backup;
     a_respond(u, "Announced [%s]%s", msg, tempstr3);
   }
@@ -3798,7 +3798,7 @@ void a_sannounce(const userinput * const u)
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
-      a_announce_channels(tempstr, NULL, xd);
+      a_announce_channels(tempstr, NULL, xd->group);
       gnetwork = backup;
       a_respond(u, "Announced [%i]%s", num1, tempstr3);
     }
