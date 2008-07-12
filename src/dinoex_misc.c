@@ -726,13 +726,18 @@ int fnmatch_xdcc(const char *match, xdcc *xd)
 }
 
 /* iroffer-lamm: @find and long !list */
-int noticeresults(const char *nick, const char *match, const char *grouplist)
+int noticeresults(const char *nick, const char *pattern, const char *dest)
 {
   int i, j, k, len;
+  const char *grouplist;
   char *tempstr = mycalloc(maxtextlength);
+  char *match;
   char *sizestrstr;
   xdcc *xd;
 
+  /* apply per-channel visibility rules */
+  grouplist = get_grouplist_channel(dest);
+  match = grep_to_fnmatch(pattern);
   len = k = 0;
 
     i = 0;
@@ -793,6 +798,8 @@ int noticeresults(const char *nick, const char *match, const char *grouplist)
         break;
       }
     }
+
+  mydelete(match);
 
   if (k)
     notice_slow(nick, "%s", tempstr);
@@ -1406,7 +1413,7 @@ char *get_grouplist_access(const char *nick)
 }
 
 /* search for custom listmsg */
-const char *get_listmsg_channel(char *dest)
+const char *get_listmsg_channel(const char *dest)
 {
   channel_t *ch;
   char *rtclmsg = gdata.respondtochannellistmsg;
@@ -1427,7 +1434,7 @@ const char *get_listmsg_channel(char *dest)
 }
 
 /* apply per-channel visibility rules */
-const char *get_grouplist_channel(char *dest)
+const char *get_grouplist_channel(const char *dest)
 {
   channel_t *ch;
 

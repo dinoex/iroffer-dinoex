@@ -2942,16 +2942,12 @@ static void privmsgparse(int type, char* line)
         if ((msg2e[i] == '*') || (msg2e[i] == '#') || (msg2e[i] == '?'))
           k++;
       if ((int)(strlen(msg2e) - k) >= gdata.atfind) {
-        /* apply per-channel visibility rules */
-        const char *grouplist = get_grouplist_channel(dest);
-        char *atfindmatch = grep_to_fnmatch(msg2e);
-        k = noticeresults(nick, atfindmatch, grouplist);
+        k = noticeresults(nick, msg2e, dest);
         if (k) {
           ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
                   "@FIND %s (%s on %s) - %i %s found.",
                   msg2e, hostmask, gnetwork->name, k, k != 1 ? "packs" : "pack");
         }
-        mydelete(atfindmatch);
       }
       mydelete(msg2e);
      }
