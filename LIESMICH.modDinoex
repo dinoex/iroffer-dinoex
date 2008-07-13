@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.9:
 ---------------
 
-bugfix: fish (reported by Vision)
+bugfix: fish_only
+  Erlaube CTCP, DCC and CHAT in dieser Betriebsart.
+
+bugfix: fish
   Begrenze @find auf eine Zeile.
 
 bugfix: fish

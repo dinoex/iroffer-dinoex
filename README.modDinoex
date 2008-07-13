@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.9:
 -----------------
 
+bugfix: fish_only (reported by Vision)
+  Allow CTCP, DCC and CHAT in this mode.
+
 bugfix: fish (reported by Vision)
   Limit @find to buffer length.
 

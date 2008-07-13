@@ -37,7 +37,7 @@
 /* local functions */
 static void mainloop(void);
 static void parseline(char *line);
-static void privmsgparse(int type, char* line);
+static void privmsgparse(int type, int decoded, char* line);
 static int  parsecmdline(int argc, char *argv[]);
 
 /* main */
@@ -1842,7 +1842,7 @@ static void parseline(char *line) {
      {
        /* nickserv */
        identify_check(line);
-       privmsgparse(0, line);
+       privmsgparse(0, 0, line);
      }
  
  /* :server 001  xxxx :welcome.... */
@@ -2385,18 +2385,22 @@ static void parseline(char *line) {
          {
            /* matched lines are skipped */
            if (check_trigger(line2, part4) == 0)
-             privmsgparse(1, line2);
+             privmsgparse(1, 1, line2);
            mydelete(line2);
          }
        else
          {
-#endif /* WITHOUT_BLOWFISH */
            if (!gdata.fish_only)
              {
+#endif /* WITHOUT_BLOWFISH */
                if (check_trigger(line, part4) == 0)
-                 privmsgparse(1, line);
-             }
+                 privmsgparse(1, 0, line);
 #ifndef WITHOUT_BLOWFISH
+             }
+           else
+             {
+               privmsgparse(1, 0, line);
+             }
          }
 #endif /* WITHOUT_BLOWFISH */
      }
@@ -2410,7 +2414,7 @@ static void parseline(char *line) {
 
 static const char *type_list[2] = { "NOTICE", "PRIVMSG" };
 
-static void privmsgparse(int type, char* line)
+static void privmsgparse(int type, int decoded, char* line)
 {
    char *nick, *hostname, *hostmask, *wildhost;
    char *msg1, *msg2, *msg3, *msg4, *msg5, *msg6, *dest;
@@ -2473,6 +2477,10 @@ static void privmsgparse(int type, char* line)
    
    if (isthisforme(dest, msg1))
      {
+       if (decoded != 0)
+         {
+           goto noignore;
+         }
        
        if (verifyshell(&gdata.autoignore_exclude, hostmask))
          {
@@ -2735,6 +2743,10 @@ static void privmsgparse(int type, char* line)
                        nick, gnetwork->name);
             }
         }
+   }
+   
+   else if ((type != 0) && (decoded == 0) && gdata.fish_only) {
+     goto privmsgparse_cleanup;
    }
    
    /*----- ADMIN ----- */

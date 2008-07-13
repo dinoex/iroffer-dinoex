@@ -388,6 +388,7 @@ Vision
 	reporting "fish" decoding bug
 	reporting "fish" encoding bug
 	reporting "fish" @find bug
+	reporting "fish_only" CHAT bug
 
 TheBotKiller
 	suggesting "!new" trigger
