@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: upnp_router
+  Update für libminiupnpc 1.1
+
 Ab Version 3.9:
 ---------------
 
