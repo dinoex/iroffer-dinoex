@@ -368,12 +368,35 @@ void strpathcpy(char *d, const char *s)
     w[0] = 0;
 }
 
+static int group_is_restricted(const userinput * const u, const char *group)
+{
+  if (u->method != method_dcc)
+    return 0;
+
+  if (u->chat->groups == NULL)
+    return 0;
+
+  if (!group)
+    return 0;
+
+  if (verify_group_in_grouplist(group, u->chat->groups))
+    return 0;
+
+  return 1;
+}
+
 int invalid_group(const userinput * const u, const char *arg)
 {
   if (!arg || !strlen(arg)) {
     a_respond(u, "Try Specifying a Group");
     return 1;
   }
+
+  if (group_is_restricted(u, arg)) {
+    a_respond(u, "You don't have access to this group");
+    return 1;
+  }
+
   return 0;
 }
 
@@ -495,6 +518,32 @@ int disabled_config(const userinput * const u)
   return 0;
 }
 
+int group_hidden(const userinput * const u, xdcc *xd)
+{
+  if (u->method != method_dcc)
+    return 0;
+
+  if (u->chat->groups == NULL)
+    return 0;
+
+  if (!xd)
+    return 1;
+
+  if (verify_group_in_grouplist(xd->group, u->chat->groups))
+    return 0;
+
+  return 1;
+}
+
+int group_restricted(const userinput * const u, xdcc *xd)
+{
+  if (group_hidden(u, xd) == 0)
+    return 0;
+
+  a_respond(u, "You don't have access to this group");
+  return 1;
+}
+
 int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask)
 {
   gnetwork_t *backup;
@@ -584,6 +633,9 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
   char *tmpgroup;
 
   updatecontext();
+
+  if (group_hidden(u, xd));
+    return;
 
   write_removed_xdcc(xd);
   a_cancel_transfers(xd, "Pack removed");
@@ -769,6 +821,9 @@ void a_xdtrigger(const userinput * const u)
     if (xd->trigger == NULL)
       continue;
 
+    if (group_hidden(u, xd));
+      continue;
+
     u_xdl_pack(u, tempstr, i, l, s, xd);
     a_respond(u, " \2^-\2%*sTrigger: %s", s, "", xd->trigger);
   }
@@ -803,6 +858,9 @@ void a_find(const userinput * const u)
        xd;
        xd = irlist_get_next(xd)) {
     i++;
+    if (group_hidden(u, xd));
+      continue;
+
     if (fnmatch_xdcc(match, xd)) {
       k++;
       u_xdl_pack(u, tempstr, i, l, s, xd);
@@ -1082,6 +1140,9 @@ void a_remove(const userinput * const u)
 
   if (num2 == 0) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    if (group_restricted(u, xd));
+      return;
+
     a_remove_pack(u, xd, num1);
     return;
   }
@@ -1093,6 +1154,9 @@ void a_remove(const userinput * const u)
 
   for (; num2 >= num1; num2--) {
     xd = irlist_get_nth(&gdata.xdccs, num2-1);
+    if (group_restricted(u, xd));
+      return;
+
     a_remove_pack(u, xd, num2);
   }
 }
@@ -2077,6 +2141,9 @@ void a_chtime(const userinput * const u)
   }
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
+
   newstr = mycalloc(maxtextlengthshort);
   user_getdatestr(newstr, val, maxtextlengthshort);
   oldstr = mycalloc(maxtextlengthshort);
@@ -2107,6 +2174,9 @@ void a_chlimit(const userinput * const u)
   }
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
+
   val = atoi(u->arg2);
 
   a_respond(u, "CHLIMIT: [Pack %i] Old: %d New: %d",
@@ -2133,6 +2203,8 @@ void a_chlimitinfo(const userinput * const u)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
 
   if (!u->arg2 || !strlen(u->arg2)) {
     a_respond(u, "DLIMIT: [Pack %i] descr removed", num);
@@ -2158,6 +2230,8 @@ void a_chtrigger(const userinput * const u)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
 
   if (!u->arg2 || !strlen(u->arg2)) {
     a_respond(u, "TRIGGER: [Pack %i] removed", num);
@@ -2188,6 +2262,8 @@ void a_lock(const userinput * const u)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
 
   a_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2);
   mydelete(xd->lock);
@@ -2208,6 +2284,9 @@ void a_unlock(const userinput * const u)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
+
   a_respond(u, "UNLOCK: [Pack %i]", num);
 
   mydelete(xd->lock);
@@ -2342,6 +2421,8 @@ void a_group(const userinput * const u)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
 
   new = u->arg2;
   if (!u->arg2 || !strlen(u->arg2)) {
@@ -2383,6 +2464,9 @@ void a_movegroup(const userinput * const u)
 
   for (num = num1; num <= num2; num ++) {
     xd = irlist_get_nth(&gdata.xdccs, num-1);
+    if (group_restricted(u, xd))
+      return;
+
     a_set_group(u, xd, num, u->arg3);
   }
 
@@ -2465,6 +2549,9 @@ void a_md5(const userinput * const u)
 
   for (num = von; num <= bis; num++) {
     xd = irlist_get_nth(&gdata.xdccs, num-1);
+    if (group_restricted(u, xd))
+      return;
+
     a_respond(u, "Rebuilding MD5 and CRC for Pack #%i:", num);
     if (gdata.md5build.xpack) {
       xd->has_md5sum  = 0;
@@ -2498,6 +2585,9 @@ void a_crc(const userinput * const u)
 
     for (num = von; num <= bis; num++) {
       xd = irlist_get_nth(&gdata.xdccs, num-1);
+      if (group_restricted(u, xd))
+        return;
+
       a_respond(u, "Validating CRC for Pack #%i:", num);
       crcmsg = validate_crc32(xd, 0);
       if (crcmsg != NULL)
@@ -2509,6 +2599,9 @@ void a_crc(const userinput * const u)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
+    if (group_hidden(u, xd))
+      continue;
+
     num ++;
     crcmsg = validate_crc32(xd, 1);
     if (crcmsg != NULL)
@@ -2710,6 +2803,9 @@ void a_movefile(const userinput * const u)
 
   clean_quotes(u->arg2e);
   xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
+
   a_movefile_sub(u, xd, u->arg2e);
 }
 
@@ -2819,6 +2915,9 @@ void a_fileremove(const userinput * const u)
 
   for (; num2 >= num1; num2--) {
     xd = irlist_get_nth(&gdata.xdccs, num2-1);
+    if (group_restricted(u, xd))
+      return;
+
     filename = mystrdup(xd->file);
     a_remove_pack(u, xd, num2);
     a_filedel_disk(u, filename);
@@ -3665,8 +3764,11 @@ static void a_announce_msg(const userinput * const u, int num, const char *msg)
   char *datestr;
   int ss;
 
-  a_respond(u, "Pack Info for Pack #%i:", num);
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
+  if (group_restricted(u, xd))
+    return;
+
+  a_respond(u, "Pack Info for Pack #%i:", num);
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
   tempstr3 = mycalloc(maxtextlength);
@@ -3789,6 +3891,8 @@ void a_sannounce(const userinput * const u)
   for (; num1 <= num2; num1++) {
     a_respond(u, "Pack Info for Pack #%i:", num1);
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    if (group_restricted(u, xd))
+      return;
 
     tempstr = mycalloc(maxtextlength);
     tempstr3 = mycalloc(maxtextlength);

@@ -76,6 +76,13 @@ typedef struct {
 } crc32build_t;
 
 typedef struct {
+  char *g_host;
+  char *g_pass;
+  char *g_groups;
+  int g_level;
+} group_admin_t;
+
+typedef struct {
   char *to_ip;
   unsigned short to_port;
   int sp_fd[2];

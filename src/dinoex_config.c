@@ -645,6 +645,53 @@ static void c_getip_network(char *var)
   mydelete(var);
 }
 
+static void c_group_admin(char *var)
+{
+  group_admin_t *ga;
+  char *data;
+  int stufe = 0;
+  int drop = 0;
+
+  ga = irlist_add(&(gdata.group_admin), sizeof(group_admin_t));
+  for (data = strtok(var, " ");
+       data && (drop == 0);
+       data = strtok(NULL, " ")) {
+    if (strlen(data) == 0)
+      continue;
+
+    switch (++stufe) {
+    case 1:
+      ga->g_level = atoi(data);
+      break;
+    case 2:
+      ga->g_host = mystrdup(data);
+      break;
+    case 3:
+      ga->g_pass = mystrdup(data);
+      break;
+    case 4:
+      ga->g_groups = mystrdup(data);
+      break;
+    default:
+      drop ++;
+      break;
+    }
+  }
+  if (!ga->g_groups)
+    drop ++;
+
+  if (drop) {
+    outerror(OUTERROR_TYPE_WARN,
+             "%s:%ld ignored '%s' because it has unknown args: '%s'",
+             current_config, current_line, "group_admin", var);
+    mydelete(ga->g_host);
+    mydelete(ga->g_pass);
+    mydelete(ga->g_groups);
+    ga = irlist_delete(&gdata.group_admin, ga);
+  }
+  mydelete(var);
+}
+
 static void c_local_vhost(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].local_vhost);
@@ -790,6 +837,7 @@ static config_func_typ config_parse_func[] = {
 {"autosendpack",           c_autosendpack },
 {"disk_quota",             c_disk_quota },
 {"getip_network",          c_getip_network },
+{"group_admin",            c_group_admin },
 {"local_vhost",            c_local_vhost },
 {"mime_type",              c_mime_type },
 {"need_level",             c_need_level },

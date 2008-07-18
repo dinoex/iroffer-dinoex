@@ -43,6 +43,8 @@ int invalid_maxspeed(const userinput * const u, const char *arg);
 int invalid_pack(const userinput * const u, int num);
 int get_network_msg(const userinput * const u, const char *arg);
 int disabled_config(const userinput * const u);
+int group_hidden(const userinput * const u, xdcc *xd);
+int group_restricted(const userinput * const u, xdcc *xd);
 
 int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask);
 int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick);

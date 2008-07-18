@@ -70,6 +70,9 @@ char *get_grouplist_access(const char *nick);
 const char *get_listmsg_channel(const char *dest);
 const char *get_grouplist_channel(const char *dest);
 
+int verifyhost_group(const char *hostmask);
+group_admin_t *verifypass_group(const char *hostmask, const char *passwd);
+
 void free_channel_data(channel_t *ch);
 
 void

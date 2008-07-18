@@ -1520,6 +1520,13 @@ void dumpgdata(void)
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
   
+  gdata_irlist_iter_start(group_admin, group_admin_t);
+  gdata_iter_print_int(g_level);
+  gdata_iter_print_string(g_host);
+  gdata_iter_print_string(g_pass);
+  gdata_iter_print_string(g_groups);
+  gdata_irlist_iter_end;
+
   gdata_print_string(adminpass);
   gdata_print_string(hadminpass);
   

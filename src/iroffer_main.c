@@ -2633,14 +2633,21 @@ static void privmsgparse(int type, int decoded, char* line)
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                       "DCC CHAT attempt authorized from %s on %s",
                       hostmask, gnetwork->name);
-              setupdccchat(nick, line);
+              setupdccchat(nick, hostmask, line);
             }
           else if ( verifyshell(&gdata.hadminhost, hostmask) )
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                       "DCC CHAT attempt authorized from %s on %s",
                       hostmask, gnetwork->name);
-              setupdccchat(nick, line);
+              setupdccchat(nick, hostmask, line);
+            }
+          else if ( verifyhost_group( hostmask) )
+            {
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                      "DCC CHAT attempt authorized from %s on %s",
+                      hostmask, gnetwork->name);
+              setupdccchat(nick, hostmask, line);
             }
           else
            {

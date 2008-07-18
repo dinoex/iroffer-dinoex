@@ -167,6 +167,7 @@ void setupdccchataccept(dccchat_t *chat)
 }
 
 int setupdccchat(const char *nick,
+                 const char *hostmask,
                  const char *line)
 {
   char *ip, *port;
@@ -302,6 +303,7 @@ int setupdccchat(const char *nick,
   gdata.num_dccchats++;
   chat->status = DCCCHAT_CONNECTING;
   chat->nick = mystrdup(nick);
+  chat->hostmask = mystrdup(hostmask);
   chat->con.localport  = 0;
   chat->con.connecttime = gdata.curtime;
   chat->con.lastcontact = gdata.curtime;
@@ -336,6 +338,7 @@ void setupdccchatconnected(dccchat_t *chat)
 void parsedccchat(dccchat_t *chat,
                   char* line)
 {
+  group_admin_t *ga;
   char *linec;
   userinput ui;
   int count;
@@ -376,6 +379,19 @@ void parsedccchat(dccchat_t *chat,
           
           chat->status = DCCCHAT_CONNECTED;
           chat->level = gdata.hadminlevel;
+          
+          writedccchat(chat,0," \n");
+          writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
+          writedccchat(chat,0,"For Help type \"help\"\n");
+        }
+      else if ((ga = verifypass_group(chat->hostmask, line)))
+        {
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                  "DCC CHAT Correct password");
+          
+          chat->status = DCCCHAT_CONNECTED;
+          chat->level = ga->g_level;
+          chat->groups = mystrdup(ga->g_groups);
           
           writedccchat(chat,0," \n");
           writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
@@ -505,6 +521,8 @@ void shutdowndccchat(dccchat_t *chat, int flush)
        */
       shutdown(chat->con.clientsocket, SHUT_RDWR);
       close(chat->con.clientsocket);
+      mydelete(chat->groups);
+      mydelete(chat->hostmask);
       mydelete(chat->nick);
       mydelete(chat->con.localaddr);
       mydelete(chat->con.remoteaddr);

@@ -1470,6 +1470,41 @@ const char *get_grouplist_channel(const char *dest)
   return NULL;
 }
 
+int verifyhost_group(const char *hostmask)
+{
+  group_admin_t *ga;
+
+  updatecontext();
+
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_get_next(ga)) {
+
+    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) == 0)
+      return 1;
+  }
+  return 0;
+}
+
+group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
+{
+  group_admin_t *ga;
+
+  if (!hostmask)
+    return NULL;
+
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_get_next(ga)) {
+    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) != 0)
+      continue;
+    if ( !verifypass2(ga->g_pass, passwd) )
+      continue;
+    return ga;
+  }
+  return NULL;
+}
+
 void free_channel_data(channel_t *ch)
 {
   mydelete(ch->name);

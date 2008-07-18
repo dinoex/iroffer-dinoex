@@ -1910,6 +1910,7 @@ void reinit_config_vars(void)
   autoqueue_t *aq;
   tupload_t *tu;
   qupload_t *qu;
+  group_admin_t *ga;
   http_magic_t *mime;
   autoadd_group_t *ag;
   int si;
@@ -1939,6 +1940,14 @@ void reinit_config_vars(void)
        mydelete(qu->q_host);
        mydelete(qu->q_nick);
        mydelete(qu->q_pack);
+    }
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_delete(&gdata.group_admin, ga))
+    {
+       mydelete(ga->g_host);
+       mydelete(ga->g_pass);
+       mydelete(ga->g_groups);
     }
   irlist_delete_all(&gdata.autoignore_exclude);
   irlist_delete_all(&gdata.downloadhost);

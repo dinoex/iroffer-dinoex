@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+259) group_admin
+  Die Gruppen Befehle können nur von jemanden ausgeführt werden, dessen
+  hostmaske auf die Vorgabe passt, und der das nötige Kennwort kennt.
+  Seine Rechte sind außerdem über den Level eingeschränkt.
+  group_admin <level> <hostmask> <encrypted_password> <grouplist>
+
 bugfix: upnp_router
   Update für libminiupnpc 1.1
 

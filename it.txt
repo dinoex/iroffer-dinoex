@@ -2268,3 +2268,5 @@
 2347 "\2**\2 Per Richiedere La Lista:    \"/MSG %s XDCC LIST ALL\" \2**\2"
 2348 "show_list_all"
 2349 "-waitjoin"
+2350 "You don't have access to this group"
+2351 "group_admin"

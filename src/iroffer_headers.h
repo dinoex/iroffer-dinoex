@@ -314,6 +314,8 @@ typedef struct
   int level;
   ir_boutput_t boutput;
   char *nick;
+  char *hostmask;
+  char *groups;
   ir_connection_t con;
   char dcc_input_line[INPUT_BUFFER_LENGTH];
 } dccchat_t;
@@ -715,6 +717,7 @@ int setupdccchatout(const char *nick);
 void setup_chat_banner(dccchat_t *chat);
 void setupdccchataccept(dccchat_t *chat);
 int setupdccchat(const char *nick,
+                 const char *hostmask,
                  const char *line);
 void setupdccchatconnected(dccchat_t *chat);
 void parsedccchat(dccchat_t *chat,
