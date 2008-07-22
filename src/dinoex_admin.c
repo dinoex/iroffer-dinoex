@@ -634,7 +634,7 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
 
   updatecontext();
 
-  if (group_hidden(u, xd));
+  if (group_hidden(u, xd))
     return;
 
   write_removed_xdcc(xd);
@@ -821,7 +821,7 @@ void a_xdtrigger(const userinput * const u)
     if (xd->trigger == NULL)
       continue;
 
-    if (group_hidden(u, xd));
+    if (group_hidden(u, xd))
       continue;
 
     u_xdl_pack(u, tempstr, i, l, s, xd);
@@ -858,7 +858,7 @@ void a_find(const userinput * const u)
        xd;
        xd = irlist_get_next(xd)) {
     i++;
-    if (group_hidden(u, xd));
+    if (group_hidden(u, xd))
       continue;
 
     if (fnmatch_xdcc(match, xd)) {
@@ -1128,6 +1128,7 @@ void a_remove(const userinput * const u)
 
   updatecontext();
 
+a_respond(u, "test a_remove");
   if (u->arg1) num1 = atoi(u->arg1);
   if (invalid_pack(u, num1) != 0)
     return;
@@ -1140,9 +1141,10 @@ void a_remove(const userinput * const u)
 
   if (num2 == 0) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
-    if (group_restricted(u, xd));
+    if (group_restricted(u, xd))
       return;
 
+a_respond(u, "test a_remove_pack");
     a_remove_pack(u, xd, num1);
     return;
   }
@@ -1154,7 +1156,7 @@ void a_remove(const userinput * const u)
 
   for (; num2 >= num1; num2--) {
     xd = irlist_get_nth(&gdata.xdccs, num2-1);
-    if (group_restricted(u, xd));
+    if (group_restricted(u, xd))
       return;
 
     a_remove_pack(u, xd, num2);
