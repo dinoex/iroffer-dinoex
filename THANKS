@@ -265,6 +265,7 @@ dsd
         admin command "sannounce"
 	option "autoaddann_short"
 	reporting "restrictsend" bug
+	admin command "LOCK n m pwd"
 
 fiberOptiC
 	option "autocrc_exclude"

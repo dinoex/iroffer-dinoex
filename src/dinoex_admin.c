@@ -1128,7 +1128,6 @@ void a_remove(const userinput * const u)
 
   updatecontext();
 
-a_respond(u, "test a_remove");
   if (u->arg1) num1 = atoi(u->arg1);
   if (invalid_pack(u, num1) != 0)
     return;
@@ -1144,7 +1143,6 @@ a_respond(u, "test a_remove");
     if (group_restricted(u, xd))
       return;
 
-a_respond(u, "test a_remove_pack");
     a_remove_pack(u, xd, num1);
     return;
   }
@@ -2251,48 +2249,80 @@ void a_chtrigger(const userinput * const u)
 
 void a_lock(const userinput * const u)
 {
-  int num = 0;
   xdcc *xd;
+  char *pass;
+  int num1 = 0;
+  int num2 = 0;
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
+  if (u->arg1) num1 = atoi(u->arg1);
+  if (invalid_pack(u, num1) != 0)
     return;
 
-  if (invalid_pwd(u, u->arg2) != 0)
+  pass = u->arg2;
+  num2 = num1;
+  if (u->arg3) {
+    if (u->arg2) num2 = atoi(u->arg2);
+    if (invalid_pack(u, num2) != 0)
+      return;
+
+    if (num2 == 0)
+      num2 = num1;
+
+    if ( num2 < num1 ) {
+      a_respond(u, "Pack numbers are not in order");
+      return;
+    }
+
+    pass = u->arg3;
+  }
+
+  if (invalid_pwd(u, pass) != 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-  if (group_restricted(u, xd))
-    return;
+  for (; num1 <= num2; num1++) {
+    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    if (group_restricted(u, xd))
+      return;
 
-  a_respond(u, "LOCK: [Pack %i] Password: %s", num, u->arg2);
-  mydelete(xd->lock);
-  xd->lock = mystrdup(u->arg2);
+    a_respond(u, "LOCK: [Pack %i] Password: %s", num1, pass);
+    mydelete(xd->lock);
+    xd->lock = mystrdup(pass);
+  }
 
   write_files();
 }
 
 void a_unlock(const userinput * const u)
 {
-  int num = 0;
   xdcc *xd;
+  int num1 = 0;
+  int num2 = 0;
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
+  if (u->arg1) num1 = atoi(u->arg1);
+  if (invalid_pack(u, num1) != 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-  if (group_restricted(u, xd))
-    return;
+  num2 = num1;
+  if (u->arg2) {
+    num2 = atoi(u->arg2);
+    if (invalid_pack(u, num2) != 0)
+      return;
+  }
 
-  a_respond(u, "UNLOCK: [Pack %i]", num);
+  for (; num1 <= num2; num1++) {
+    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    if (group_restricted(u, xd))
+      return;
 
-  mydelete(xd->lock);
-  xd->lock = NULL;
+    a_respond(u, "UNLOCK: [Pack %i]", num1);
+
+    mydelete(xd->lock);
+    xd->lock = NULL;
+  }
 
   write_files();
 }
