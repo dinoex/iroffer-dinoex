@@ -95,6 +95,12 @@
 #include <strings.h>
 #endif
 
+#if defined(_OS_SunOS)
+#ifndef FNM_CASEFOLD
+#define	FNM_CASEFOLD 	FNM_IGNORECASE /* compatibility for SunOS 5.5 */
+#endif
+#endif
+
 #ifdef USE_SSL
 #include <openssl/ssl.h>
 #endif
