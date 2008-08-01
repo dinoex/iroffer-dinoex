@@ -3,11 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: CANNOUNCE (reported by spielefreak)
+  send oly to given channel.
+
 260) LOCK, UNLOCK (inspired by dsd)
 
-   new admin commands:
-   LOCK <n> <m> <password>    Lock the pack <n> to <m> with <password>
-   UNLOCK <n> <m>             Unlock the pack <n> to <m>
+  new admin commands:
+  LOCK <n> <m> <password>    Lock the pack <n> to <m> with <password>
+  UNLOCK <n> <m>             Unlock the pack <n> to <m>
 
 259) group_admin (inspired by Thunder)
   Remote commands can only be issued by a nick with a matching hostmask

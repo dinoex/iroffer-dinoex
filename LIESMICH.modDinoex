@@ -3,11 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: CANNOUNCE
+  Sende nur in den angegebenen Channel.
+
 260) LOCK, UNLOCK
 
-   new admin commands:
-   LOCK <n> <m> <passwort>    Sichert Pack <n> bis <m> mit Passwort <passwort>
-   UNLOCK <n> <m>             Entfernt das Passwort für Pack <n> bis <m>
+  new admin commands:
+  LOCK <n> <m> <passwort>    Sichert Pack <n> bis <m> mit Passwort <passwort>
+  UNLOCK <n> <m>             Entfernt das Passwort für Pack <n> bis <m>
 
 259) group_admin
   Die Gruppen Befehle können nur von jemanden ausgeführt werden, dessen

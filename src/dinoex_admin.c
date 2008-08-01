@@ -3786,7 +3786,7 @@ void a_iqueue(const userinput * const u)
   }
 }
 
-static void a_announce_msg(const userinput * const u, int num, const char *msg)
+static void a_announce_msg(const userinput * const u, const char *match, int num, const char *msg)
 {
   gnetwork_t *backup;
   xdcc *xd;
@@ -3821,7 +3821,7 @@ static void a_announce_msg(const userinput * const u, int num, const char *msg)
     gnetwork = &(gdata.networks[ss]);
     snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
              tempstr2, get_user_nick(), num);
-    a_announce_channels(tempstr, NULL, xd->group);
+    a_announce_channels(tempstr, match, xd->group);
     gnetwork = backup;
     a_respond(u, "Announced [%s]%s", msg, tempstr3);
   }
@@ -3855,7 +3855,7 @@ static void a_announce_sub(const userinput * const u, const char *arg1, const ch
     return;
 
   for (; num1 <= num2; num1++) {
-    a_announce_msg(u, num1, msg);
+    a_announce_msg(u, NULL, num1, msg);
   }
 }
 
@@ -3887,7 +3887,7 @@ void a_cannounce(const userinput * const u)
   if (invalid_announce(u, u->arg3e) != 0)
     return;
 
-  a_announce_msg(u, num, u->arg3e);
+  a_announce_msg(u, u->arg1, num, u->arg3e);
 }
 
 void a_sannounce(const userinput * const u)
