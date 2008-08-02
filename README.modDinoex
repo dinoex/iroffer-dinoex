@@ -7,7 +7,7 @@ With Version 3.10:
   extened by uptime
 
 bugfix: CANNOUNCE (reported by spielefreak)
-  send oly to given channel.
+  send only to given channel.
 
 260) LOCK, UNLOCK (inspired by dsd)
 
