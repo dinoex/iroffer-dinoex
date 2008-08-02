@@ -1732,7 +1732,7 @@ static void u_info(const userinput * const u)
      return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
-  if (group_restricted(u, xd));
+  if (group_restricted(u, xd))
     return;
   
   u_respond(u, "Pack Info for Pack #%i:", num);
@@ -2058,7 +2058,7 @@ static void u_chfile(const userinput * const u) {
       return;
    
    xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd));
+   if (group_restricted(u, xd))
      return;
    
    a_cancel_transfers(xd, "Pack file changed");
@@ -2160,7 +2160,7 @@ static void u_chdesc(const userinput * const u) {
       return;
 
    xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd));
+   if (group_restricted(u, xd))
      return;
    
    new = u->arg2e;
@@ -2192,7 +2192,7 @@ static void u_chnote(const userinput * const u) {
       return;
 
    xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd));
+   if (group_restricted(u, xd))
      return;
    
    u_respond(u, "CHNOTE: [Pack %i] Old: %s New: %s",
@@ -2229,7 +2229,7 @@ static void u_chmins(const userinput * const u) {
       }
 
    xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd));
+   if (group_restricted(u, xd))
      return;
    
    u_respond(u, "CHMINS: [Pack %i] Old: %1.1f New: %1.1f",
@@ -2256,7 +2256,7 @@ static void u_chmaxs(const userinput * const u) {
      return;
 
    xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd));
+   if (group_restricted(u, xd))
      return;
    
    u_respond(u, "CHMAXS: [Pack %i] Old: %1.1f New: %1.1f",
@@ -2291,7 +2291,7 @@ static void u_chgets(const userinput * const u)
     }
   
   xd = irlist_get_nth(&gdata.xdccs, num-1);
-  if (group_restricted(u, xd));
+  if (group_restricted(u, xd))
     return;
   
   u_respond(u, "CHGETS: [Pack %i] Old: %d New: %d",
