@@ -1293,6 +1293,12 @@ static void xdcc_save_xml(void)
   write_string(fd, "    <version>");
   write_string(fd, "iroffer-dinoex " VERSIONLONG );
   write_string(fd, "</version>\n");
+  write_string(fd, "    <uptime>");
+  tempstr = mycalloc(maxtextlengthshort);
+  tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
+  write_string(fd, tempstr);
+  mydelete(tempstr);
+  write_string(fd, "</uptime>\n");
   write_string(fd, "    <totaluptime>");
   tempstr = mycalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);

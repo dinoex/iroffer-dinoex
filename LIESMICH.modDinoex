@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+261) xdccxmlfile
+  erweitert um uptime
+
 bugfix: CANNOUNCE
   Sende nur in den angegebenen Channel.
 

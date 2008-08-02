@@ -2269,3 +2269,5 @@
 2349 "-waitjoin"
 2350 "You don't have access to this group"
 2351 "group_admin"
+2352 "    <uptime>"
+2353 "</uptime>\n"
