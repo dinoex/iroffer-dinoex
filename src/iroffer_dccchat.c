@@ -380,9 +380,9 @@ void parsedccchat(dccchat_t *chat,
           chat->status = DCCCHAT_CONNECTED;
           chat->level = gdata.hadminlevel;
           
-          writedccchat(chat,0," \n");
-          writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
-          writedccchat(chat,0,"For Help type \"help\"\n");
+          writedccchat(chat, 0, " \n");
+          writedccchat(chat, 0, "Entering DCC Chat Admin Interface\n");
+          writedccchat(chat, 0, "For Help type \"help\"\n");
         }
       else if ((ga = verifypass_group(chat->hostmask, line)))
         {
@@ -393,9 +393,9 @@ void parsedccchat(dccchat_t *chat,
           chat->level = ga->g_level;
           chat->groups = mystrdup(ga->g_groups);
           
-          writedccchat(chat,0," \n");
-          writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
-          writedccchat(chat,0,"For Help type \"help\"\n");
+          writedccchat(chat, 0, " \n");
+          writedccchat(chat, 0, "Entering DCC Chat Admin Interface\n");
+          writedccchat(chat, 0, "For Help type \"help\"\n");
         }
       else
         {

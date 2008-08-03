@@ -133,7 +133,7 @@
 #else
 #define mydelete(x) { free(x); x = NULL; }
 #define mymalloc(x) malloc(x)
-#define mycalloc(x) calloc(1,x)
+#define mycalloc(x) calloc(1, x)
 #endif
 
 #define  maxtextlengthshort 60

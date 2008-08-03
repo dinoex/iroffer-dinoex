@@ -141,7 +141,7 @@ void t_setup_send(transfer * const t)
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," %i",tempc);
 
    getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc, &tempi);
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_YELLOW," %i\n", tempc);
+   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END, OUT_S, COLOR_YELLOW, " %i\n", tempc);
 #endif
    
 #if !defined(CANT_SET_TOS)
@@ -487,7 +487,7 @@ void t_transfersome (transfer * const t)
       
       if (gdata.debug > 4)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_BLUE,"File %ld Write %ld",(long)howmuch,(long)howmuch2);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_BLUE, "File %ld Write %ld", (long)howmuch, (long)howmuch2);
         }
       
       /* if over 50% send one to be fair */
@@ -666,7 +666,7 @@ void t_flushed (transfer * const t)
     {
       if (t->xpack->has_md5sum)
         {
-          notice(t->nick,"** Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec, md5sum: " MD5_PRINT_FMT ")",
+          notice(t->nick, "** Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec, md5sum: " MD5_PRINT_FMT ")",
                  (t->xpack->st_size-t->startresume)/1024,
                  tempstr,
                  ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0),
@@ -674,7 +674,7 @@ void t_flushed (transfer * const t)
         }
       else
         {
-          notice(t->nick,"** Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec)",
+          notice(t->nick, "** Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec)",
                  (t->xpack->st_size-t->startresume)/1024,
                  tempstr,
                  ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0));
@@ -705,7 +705,7 @@ void t_flushed (transfer * const t)
   
   if ((t->xpack->dlimit_max != 0) && (t->xpack->gets >= t->xpack->dlimit_used))
     {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"Reached Pack Download Limit %d for %s",
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "Reached Pack Download Limit %d for %s",
               t->xpack->dlimit_max, t->xpack->desc);
        
       /* remove queued users */

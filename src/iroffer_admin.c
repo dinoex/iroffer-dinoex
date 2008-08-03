@@ -1325,13 +1325,13 @@ static void u_dcld(const userinput * const u)
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
           u_respond(u, "%3i  %-9s   %-4d %-32s   %s %2.0f%%",
-                    tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y,
+                    tr->id, tr->nick, number_of_pack(tr->xpack), getfilename(tr->xpack->file), y,
                     ((float)tr->bytessent)*100.0/((float)tr->xpack->st_size));
         }
       else
         {
           u_respond(u, "%3i  %-9s   %-4d %-32s   %s",
-                    tr->id,tr->nick,number_of_pack(tr->xpack),getfilename(tr->xpack->file),y);
+                    tr->id, tr->nick, number_of_pack(tr->xpack), getfilename(tr->xpack->file), y);
         }
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING || tr->tr_status == TRANSFER_STATUS_WAITING)
@@ -1485,7 +1485,7 @@ static void u_qul(const userinput * const u)
       tr = irlist_get_head(&gdata.trans);
       while(tr)
         {
-          unsigned long left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
+          unsigned long left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
           if (left > lastrtime && left < rtime)
             {
               rtime = left;
@@ -1506,7 +1506,7 @@ static void u_qul(const userinput * const u)
       tr = irlist_get_head(&gdata.trans);
       while(tr)
         {
-          unsigned long left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
+          unsigned long left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
           if (left > lastrtime && left < rtime)
             {
               rtime = left;
@@ -2422,7 +2422,7 @@ static void u_rehash(const userinput * const u) {
    
    /* other variables */
    char *templine = mycalloc(maxtextlength);
-   int h,i,filedescriptor;
+   int h, i, filedescriptor;
    int ss;
    gnetwork_t *backup;
    channel_t *ch, *rch;
@@ -3493,7 +3493,7 @@ static void u_trinfo(const userinput * const u)
   
   u_respond(u,"File: %s",getfilename(tr->xpack->file));
   
-  u_respond(u,"Start %" LLPRINTFMT "uK, Current %" LLPRINTFMT "uK, End %" LLPRINTFMT "uK (%2.0f%% File, %2.0f%% Xfer)",
+  u_respond(u, "Start %" LLPRINTFMT "uK, Current %" LLPRINTFMT "uK, End %" LLPRINTFMT "uK (%2.0f%% File, %2.0f%% Xfer)",
             (tr->startresume/1024),
             (tr->bytessent/1024),
             (tr->xpack->st_size/1024),
@@ -3504,9 +3504,9 @@ static void u_trinfo(const userinput * const u)
   tempstr3 = mycalloc(maxtextlengthshort);
   
   snprintf(tempstr2,maxtextlengthshort-1,"%1.1fK/s",tr->xpack->minspeed);
-  snprintf(tempstr3,maxtextlengthshort-1,"%1.1fK/s",tr->maxspeed);
+  snprintf(tempstr3, maxtextlengthshort-1, "%1.1fK/s", tr->maxspeed);
   
-  u_respond(u,"Min %s, Current %1.1fK/s, Max %s, In Transit %" LLPRINTFMT "uK",
+  u_respond(u, "Min %s, Current %1.1fK/s, Max %s, In Transit %" LLPRINTFMT "uK",
             (tr->nomin || (tr->xpack->minspeed == 0.0)) ? "no" : tempstr2 ,
             tr->lastspeed,
             (tr->nomax || (tr->maxspeed == 0.0)) ? "no" : tempstr3 ,
@@ -3731,7 +3731,7 @@ static void u_rmul(const userinput * const u) {
    updatecontext();
    
    if (!gdata.uploaddir) {
-      u_respond(u,"No uploaddir defined.");
+      u_respond(u, "No uploaddir defined.");
       return;
       }
 
@@ -3817,7 +3817,7 @@ static void u_chanl(const userinput * const u)
           u_respond(u,"%s",tempstr);
         }
       
-      u_respond(u,"%s: %i %s", ch->name, j, j!=1 ? "users" : "user");
+      u_respond(u, "%s: %i %s", ch->name, j, j!=1 ? "users" : "user");
       
       ch = irlist_get_next(ch);
     }

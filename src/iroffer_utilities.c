@@ -967,7 +967,7 @@ void mydelete2(void *t) {
    
    if (i == (MEMINFOHASHSIZE * gdata.meminfo_depth)) {
       outerror(OUTERROR_TYPE_WARN_LOUD,"Pointer 0x%8.8lX not found in meminfo database while trying to free!!",(long)t);
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Please report this error to Dinoex dinoex@dinoex.net");
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Please report this error to Dinoex dinoex@dinoex.net");
       for(i=0; i<(12*12); i+=12) {
          outerror(OUTERROR_TYPE_WARN_LOUD," : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\"",
                ut[i+0], ut[i+1], ut[i+2], ut[i+3], ut[i+4], ut[i+5], ut[i+6], ut[i+7], ut[i+8], ut[i+9], ut[i+10], ut[i+11],
@@ -1250,7 +1250,7 @@ void dumpgdata(void)
   gdata_print_string(logfile);
   gdata_print_number_cast("%d",logrotate,int);
   gdata_print_number_cast("%d",last_logrotate,int);
-  gdata_print_number_cast("%d",last_update,int);
+  gdata_print_number_cast("%d", last_update, int);
   gdata_print_string(headline);
   gdata_print_string(creditline);
   gdata_print_string(pidfile);
@@ -1591,7 +1591,7 @@ void dumpgdata(void)
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)
     {
-      ioutput(gdata_common,"GDATA * connectionmethod: how=%d host=%s port=%d passwd=%s vhost=%s",
+      ioutput(gdata_common, "GDATA * connectionmethod: how=%d host=%s port=%d passwd=%s vhost=%s",
               (int)gdata.networks[ss].connectionmethod.how,
               gdata_string(gdata.networks[ss].connectionmethod.host),
               (int)gdata.networks[ss].connectionmethod.port,
@@ -1642,7 +1642,7 @@ void dumpgdata(void)
       gdata_print_string(networks[ss].curserveractualname);
       gdata_print_int(networks[ss].nocon);
       gdata_print_int(networks[ss].servertime);
-      gdata_print_number_cast("%d",networks[ss].serverstatus,int);
+      gdata_print_number_cast("%d", networks[ss].serverstatus, int);
       gdata_print_long(networks[ss].connecttime);
       gdata_print_long(networks[ss].lastservercontact);
       gdata_print_long(networks[ss].lastnotify);
@@ -1670,8 +1670,8 @@ void dumpgdata(void)
       
       for (ii=0; ii<MAX_PREFIX && gdata.networks[ss].prefixes[ii].p_mode; ii++)
         {
-          gdata_print_number_array_item("%c",networks[ss].prefixes,p_mode);
-          gdata_print_number_array_item("%c",networks[ss].prefixes,p_symbol);
+          gdata_print_number_array_item("%c", networks[ss].prefixes, p_mode);
+          gdata_print_number_array_item("%c", networks[ss].prefixes, p_symbol);
         }
       
       for (ii=0; ii<MAX_CHANMODES && gdata.networks[ss].chanmodes[ii]; ii++)
@@ -1716,7 +1716,7 @@ void dumpgdata(void)
   ioutput(gdata_common,"  : name=%s key=%s",
           iter->name,
           gdata_string(iter->key));
-      ioutput(gdata_common,"  : flags=%d plisttime=%d plistoffset=%d",
+      ioutput(gdata_common, "  : flags=%d plisttime=%d plistoffset=%d",
           iter->flags,
           iter->plisttime,
           iter->plistoffset);
@@ -1832,7 +1832,7 @@ void dumpgdata(void)
   gdata_iter_print_string(desc);
   gdata_iter_print_string(note);
   gdata_iter_print_string(trigger);
-  gdata_iter_print_number_cast("%d",xtime,int);
+  gdata_iter_print_number_cast("%d", xtime, int);
   ioutput(gdata_common,
           "  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "u",
           iter,
@@ -1884,7 +1884,7 @@ void dumpgdata(void)
           "  : xpack=%p queuedtime=%ld",
           iter->xpack,
           (long)iter->queuedtime);
-  ioutput(gdata_common,"  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
+  ioutput(gdata_common, "  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
   ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   gdata_irlist_iter_end;
   
@@ -1895,7 +1895,7 @@ void dumpgdata(void)
           "  : xpack=%p queuedtime=%ld",
           iter->xpack,
           (long)iter->queuedtime);
-  ioutput(gdata_common,"  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
+  ioutput(gdata_common, "  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
   ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   gdata_irlist_iter_end;
   
@@ -1966,7 +1966,7 @@ void dumpgdata(void)
           iter->con.localport,
           iter->con.remoteport,
           iter->con.remoteaddr);
-  ioutput(gdata_common,"  : net=%d", iter->net + 1 );
+  ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   ioutput(gdata_common, "  : token=%d", iter->token);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
@@ -2117,8 +2117,8 @@ void removefrommemberlist(channel_t *c, const char *nick)
     {
       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
               "removing %s from %s",nick,c->name);
-      ioutput(CALLTYPE_NORMAL,OUT_L,COLOR_NO_COLOR,
-              "removing %s from %s",nick,c->name);
+      ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+              "removing %s from %s", nick, c->name);
     }
   
   /* is in list for this channel? */

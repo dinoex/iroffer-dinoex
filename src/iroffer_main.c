@@ -170,7 +170,7 @@ static int parsecmdline(int argc, char *argv[])
   
   if (optind >= argc)
     {
-      fprintf(stderr,"%s: no configuration file specified\n",
+      fprintf(stderr, "%s: no configuration file specified\n",
               argv[0]);
       return PCL_BAD_OPTION;
     }
@@ -210,7 +210,7 @@ static void select_dump(const char *desc, int highests)
 static void mainloop (void) {
    /* data is persistant across calls */
    static struct timeval timestruct;
-   static int changequartersec,changesec,changemin,changehour;
+   static int changequartersec, changesec, changemin, changehour;
    static time_t lasttime, lastmin, lasthour, last4sec, last5sec, last20sec;
    static time_t lastautoadd;
    static long last3min, last2min, lastignoredec, lastperiodicmsg;
@@ -618,7 +618,7 @@ static void mainloop (void) {
             {
 	    SIGNEDSOCK int addrlen; 
           
-            ioutput(CALLTYPE_NORMAL ,OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Server Connection to %s Established, Logging In",  gnetwork->name);
             gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
             gnetwork->connecttime = gdata.curtime;
@@ -755,7 +755,7 @@ static void mainloop (void) {
                   outerror(OUTERROR_TYPE_WARN,
                            "Couldn't determine upload connection status on %s: %s",
                            gnetwork->name, strerror(errno));
-                  l_closeconn(ul,"Upload Connection Failed status:",errno2);
+                  l_closeconn(ul, "Upload Connection Failed status:", errno2);
                 }
               else if (connect_error)
                 {
@@ -1223,7 +1223,7 @@ static void mainloop (void) {
             if (gdata.periodicmsg_nick && gdata.periodicmsg_msg
             && (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) ) {
                gnetwork = &(gdata.networks[ss]);
-               privmsg(gdata.periodicmsg_nick,"%s",gdata.periodicmsg_msg);
+               privmsg(gdata.periodicmsg_nick, "%s", gdata.periodicmsg_msg);
             }
          }
          
@@ -1575,7 +1575,7 @@ static void mainloop (void) {
          for (ss=0; ss<gdata.networks_online; ss++) {
            gnetwork = &(gdata.networks[ss]);
            /* try to regain nick */
-           if (!gnetwork->user_nick || strcmp(get_config_nick(),gnetwork->user_nick))
+           if (!gnetwork->user_nick || strcmp(get_config_nick(), gnetwork->user_nick))
              {
                writeserver(WRITESERVER_NORMAL, "NICK %s", get_config_nick());
              }
@@ -1634,7 +1634,7 @@ static void mainloop (void) {
               
               if (gdata.debug > 4)
                 {
-                  ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW, "[MD5 Pack %d]: read %ld",
+                  ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "[MD5 Pack %d]: read %ld",
                           number_of_pack(gdata.md5build.xpack), (long)howmuch);
                 }
               
@@ -1744,7 +1744,7 @@ static void mainloop (void) {
             {
               if (gdata.debug > 0)
                 {
-                  ioutput(CALLTYPE_NORMAL, OUT_S,COLOR_YELLOW,
+                  ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW,
                           "Reconnecting to server (%d seconds) on %s",
                           timeout, gnetwork->name);
                 }
@@ -1838,7 +1838,7 @@ static void parseline(char *line) {
      }
    
  /* NOTICE nick */
-   if (part3 && gnetwork->caps_nick && !strcmp(caps(part2),"NOTICE") && !strcmp(caps(part3),gnetwork->caps_nick))
+   if (part3 && gnetwork->caps_nick && !strcmp(caps(part2), "NOTICE") && !strcmp(caps(part3), gnetwork->caps_nick))
      {
        /* nickserv */
        identify_check(line);
@@ -1849,12 +1849,12 @@ static void parseline(char *line) {
    if ( !strcmp(part2,"001") )
      {
        ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Server welcome: %s",line);
-       mylog(CALLTYPE_NORMAL,"Server welcome: %s",line);
+       mylog(CALLTYPE_NORMAL, "Server welcome: %s", line);
        update_server_welcome(line);
        
        /* update server name */
        mydelete(gnetwork->curserveractualname);
-       gnetwork->curserveractualname = getpart(line+1,1);
+       gnetwork->curserveractualname = getpart(line+1, 1);
        
        /* update nick */
        mydelete(gnetwork->user_nick);
@@ -1950,7 +1950,7 @@ static void parseline(char *line) {
      }
   
  /* :server 401 botnick usernick :No such nick/channel */
-   if ( !strcmp(part2,"401") && part3 && !strcmp(part3,"*") && part4 )
+   if ( !strcmp(part2, "401") && part3 && !strcmp(part3, "*") && part4 )
      {
        lost_nick(part4);
      }
@@ -2043,7 +2043,7 @@ static void parseline(char *line) {
       }
 
  /* JOIN */
-   if (!strcmp(part2,"JOIN") && part3a && gnetwork->caps_nick) {
+   if (!strcmp(part2, "JOIN") && part3a && gnetwork->caps_nick) {
       char* nick;
       int j,found;
       nick = mycalloc(strlen(line)+1);
@@ -2055,7 +2055,7 @@ static void parseline(char *line) {
          j++;
          }
       nick[j-1]='\0';
-      if (!strcmp(caps(nick),gnetwork->caps_nick))
+      if (!strcmp(caps(nick), gnetwork->caps_nick))
         {
           /* we joined */
           /* clear now, we have succesfully logged in */
@@ -2095,7 +2095,7 @@ static void parseline(char *line) {
                 {
                   if (!gdata.exiting &&
                       irlist_size(&gdata.mainqueue) &&
-                      (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
+                      (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax)))
                     {
                       sendaqueue(0, 0, NULL);
                     }
@@ -2132,7 +2132,7 @@ static void parseline(char *line) {
       }
 
  /* PART */
-   if (!strcmp(part2,"PART") && part3a && gnetwork->caps_nick)
+   if (!strcmp(part2, "PART") && part3a && gnetwork->caps_nick)
      {
        char* nick;
        int j;
@@ -2145,7 +2145,7 @@ static void parseline(char *line) {
 	 }
        nick[j-1]='\0';
        
-       if (!strcmp(caps(nick),gnetwork->caps_nick))
+       if (!strcmp(caps(nick), gnetwork->caps_nick))
 	 {
 	   /* we left? */
 	   ;
@@ -2181,7 +2181,7 @@ static void parseline(char *line) {
      }
    
  /* QUIT */
-   if (!strcmp(part2,"QUIT") && gnetwork->caps_nick)
+   if (!strcmp(part2, "QUIT") && gnetwork->caps_nick)
      {
        char* nick;
        int j;
@@ -2194,7 +2194,7 @@ static void parseline(char *line) {
 	 }
        nick[j-1]='\0';
        
-       if (!strcmp(caps(nick),gnetwork->caps_nick))
+       if (!strcmp(caps(nick), gnetwork->caps_nick))
 	 {
 	   /* we quit? */
            gnetwork->serverstatus = SERVERSTATUS_EXIT;
@@ -2215,7 +2215,7 @@ static void parseline(char *line) {
      }
    
  /* NICK */
-   if (!strcmp(part2,"NICK") && part3a)
+   if (!strcmp(part2, "NICK") && part3a)
      {
        char *oldnick, *newnick;
        int j;
@@ -2230,7 +2230,7 @@ static void parseline(char *line) {
 
        newnick = part3a;
        
-       if (gnetwork->caps_nick && !strcmp(caps(oldnick),gnetwork->caps_nick))
+       if (gnetwork->caps_nick && !strcmp(caps(oldnick), gnetwork->caps_nick))
 	 {
            /* nickserv */
            identify_needed(0);
@@ -2258,14 +2258,14 @@ static void parseline(char *line) {
      }
    
  /* KICK */
-   if (!strcmp(part2,"KICK") && part3a && part4 && gnetwork->caps_nick)
+   if (!strcmp(part2, "KICK") && part3a && part4 && gnetwork->caps_nick)
      {
        ch = irlist_get_head(&(gnetwork->channels));
        while(ch)
          {
            if (!strcmp(caps(part3a),ch->name))
              {
-               if(!strcmp(caps(part4),gnetwork->caps_nick))
+               if(!strcmp(caps(part4), gnetwork->caps_nick))
                  {
                    /* we were kicked */
                    if ( gdata.noautorejoin )
@@ -2579,7 +2579,7 @@ static void privmsgparse(int type, int decoded, char* line)
    else if ( !gdata.ignore && (!strcmp(msg1,"\1VERSION")
           || !strcmp(msg1,"\1VERSION\1") )) {
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-      notice(nick,"\1VERSION iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
+      notice(nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -2616,7 +2616,7 @@ static void privmsgparse(int type, int decoded, char* line)
      }
    
    /*----- DCC SEND/CHAT/RESUME ----- */
-   else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"\1DCC") && msg2) {
+   else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick, dest) && !strcmp(caps(msg1), "\1DCC") && msg2) {
       if (!strcmp(caps(msg2),"RESUME") && msg3 && msg4 && msg5)
         {
           gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
@@ -2695,7 +2695,7 @@ static void privmsgparse(int type, int decoded, char* line)
           if ( verify_uploadhost( hostmask) )
             {
               notice(nick,"DCC Send Denied, I don't accept transfers from %s", hostmask);
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                       "DCC Send Denied from %s on %s",
                       hostmask, gnetwork->name);
             }
@@ -2757,7 +2757,7 @@ static void privmsgparse(int type, int decoded, char* line)
    }
    
    /*----- ADMIN ----- */
-   else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"ADMIN") ) {
+   else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick, dest) && !strcmp(caps(msg1), "ADMIN") ) {
 /*      msg2 = getpart(line,5); */
       if (admin_message(nick, hostmask, msg2, line, line_len) != 0 )
          {
@@ -2770,7 +2770,7 @@ static void privmsgparse(int type, int decoded, char* line)
       }
    
    /*----- XDCC ----- */
-   else if ( !gdata.ignore && gnetwork->caps_nick && (!strcmp(gnetwork->caps_nick,dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC") )) {
+   else if ( !gdata.ignore && gnetwork->caps_nick && (!strcmp(gnetwork->caps_nick, dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1), "XDCC") || !strcmp(msg1, "\1XDCC") || !strcmp(caps(msg1), "CDCC") || !strcmp(msg1, "\1CDCC") )) {
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
       
       caps(msg2);
@@ -2791,7 +2791,7 @@ static void privmsgparse(int type, int decoded, char* line)
                  hostmask, gnetwork->name);
          
          }
-      else if (gnetwork->caps_nick && !strcmp(gnetwork->caps_nick,dest))
+      else if (gnetwork->caps_nick && !strcmp(gnetwork->caps_nick, dest))
 	{
          
          if ( msg2 && msg3 && (!strcmp(msg2,"SEND") || !strcmp(msg2,"GET"))) {
@@ -2820,12 +2820,12 @@ static void privmsgparse(int type, int decoded, char* line)
            /* stop transfers */
            for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
              {
-               if ((tr->net == gnetwork->net) && (!strcasecmp(tr->nick,nick)))
+               if ((tr->net == gnetwork->net) && (!strcasecmp(tr->nick, nick)))
                  {
                    if (tr->tr_status != TRANSFER_STATUS_DONE)
                      {
                        k += 1;
-                       t_closeconn(tr,"Transfer canceled by user",0);
+                       t_closeconn(tr, "Transfer canceled by user", 0);
                      }
                  }
              }
@@ -2845,7 +2845,7 @@ static void privmsgparse(int type, int decoded, char* line)
                    "XDCC REMOVE (%s on %s) ",
                    hostmask, gnetwork->name);
          }
-         else if ( msg2 && !strcmp(msg2,"OWNER")) {
+         else if ( msg2 && !strcmp(msg2, "OWNER")) {
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                  "XDCC OWNER (%s on %s) ",
                  hostmask, gnetwork->name);
@@ -2855,7 +2855,7 @@ static void privmsgparse(int type, int decoded, char* line)
          else if ( msg2 && !strcmp(msg2, "HELP")) {
            send_help(nick);
          }
-         else if ( msg2 && !strcmp(msg2,"SEARCH") && msg3) {
+         else if ( msg2 && !strcmp(msg2, "SEARCH") && msg3) {
            char *match;
            /* if restrictlist is enabled, visibility rules apply */
            char *grouplist = gdata.restrictlist ? get_grouplist_access(nick) : NULL;
@@ -2872,7 +2872,7 @@ static void privmsgparse(int type, int decoded, char* line)
                {
                  if (fnmatch_xdcc(match, xd))
                    {
-                      notice_slow(nick," - Pack #%i matches, \"%s\"",
+                      notice_slow(nick, " - Pack #%i matches, \"%s\"",
                                   i, xd->desc);
                       k++;
                       /* limit matches */
@@ -2909,8 +2909,8 @@ static void privmsgparse(int type, int decoded, char* line)
    
    /*----- !LIST ----- */
    else if ( !gdata.ignore && gnetwork->caps_nick && gdata.respondtochannellist && msg1 &&
-             (!strcasecmp(caps(msg1),"!LIST") || !strcmp(msg1,"\1!LIST") || !strcmp(msg1,"\1!LIST\1")) &&
-             ( !msg2 || !strcmp(caps(msg2),gnetwork->caps_nick) || ((msg2[strlen(msg2)-1]=='\1') && !strncmp(caps(msg2),gnetwork->caps_nick,strlen(msg2)-1)) ))
+             (!strcasecmp(caps(msg1), "!LIST") || !strcmp(msg1, "\1!LIST") || !strcmp(msg1, "\1!LIST\1")) &&
+             ( !msg2 || !strcmp(caps(msg2), gnetwork->caps_nick) || ((msg2[strlen(msg2)-1]=='\1') && !strncmp(caps(msg2), gnetwork->caps_nick, strlen(msg2)-1)) ))
      {
       char *tempstr2 = mycalloc(maxtextlength);
       
@@ -2951,10 +2951,10 @@ static void privmsgparse(int type, int decoded, char* line)
      }
    
    /* iroffer-lamm: @find */
-   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1),"@FIND") )
+   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1), "@FIND") )
      {
       char *msg2e;
-      msg2e = getpart_eol(line,5);
+      msg2e = getpart_eol(line, 5);
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
       for (i = k = 0; i < (int)(strlen(msg2e)); i++)
         if (msg2e[i] == ' ') msg2e[i] = '*';
@@ -2971,7 +2971,7 @@ static void privmsgparse(int type, int decoded, char* line)
       mydelete(msg2e);
      }
    
-   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.new_trigger && !strcasecmp(caps(msg1),"!new") )
+   else if ( !gdata.ignore && gnetwork->caps_nick && gdata.new_trigger && !strcasecmp(caps(msg1), "!new") )
      {
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
 
@@ -2987,7 +2987,7 @@ static void privmsgparse(int type, int decoded, char* line)
      }
 
    else {
-      if (dest && gnetwork->caps_nick && !strcmp(dest,gnetwork->caps_nick))
+      if (dest && gnetwork->caps_nick && !strcmp(dest, gnetwork->caps_nick))
         {
           char *begin;
           int exclude = 0;
@@ -3004,7 +3004,7 @@ static void privmsgparse(int type, int decoded, char* line)
             {
               msglog_t *ml;
               
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D,COLOR_GREEN,
+              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_GREEN,
                       "%s from %s on %s logged, use MSGREAD to display it.",
                       type_list[type], nick, gnetwork->name);
               
@@ -3087,7 +3087,7 @@ void autoqueuef(const char* line, int pack, const char *message)
    nick = mycalloc(maxtextlengthshort);
    hostname = mycalloc(maxtextlength);
       
-   hostmask = caps(getpart(line,1));
+   hostmask = caps(getpart(line, 1));
    for (i=1; i<=sstrlen(hostmask); i++)
       hostmask[i-1] = hostmask[i];
 
@@ -3141,8 +3141,8 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   
   if (!man && (check_lock(xd->lock, pwd) != 0))
     {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (pack locked): ");
-      notice(nick,"** XDCC SEND denied, this pack is locked");
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (pack locked): ");
+      notice(nick, "** XDCC SEND denied, this pack is locked");
       goto done;
     }
   
@@ -3180,8 +3180,8 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
      }
    else if (!man && (xd->dlimit_max != 0) && (xd->gets >= xd->dlimit_used))
      {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," (Over Pack Transfer Limit): ");
-      notice(nick,"** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (Over Pack Transfer Limit): ");
+      notice(nick, "** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
       if (xd->dlimit_desc != NULL)
         notice(nick, "%s", xd->dlimit_desc);
      }
@@ -3282,8 +3282,8 @@ void sendxdccinfo(const char* nick,
   
   if (gdata.disablexdccinfo)
     {
-      notice(nick,"** XDCC INFO denied, disabled by configuration");
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," ignored: ");
+      notice(nick, "** XDCC INFO denied, disabled by configuration");
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " ignored: ");
       goto done;
     }
 
@@ -3295,7 +3295,7 @@ void sendxdccinfo(const char* nick,
 
   if (hide_pack(xd) != 0)
     {
-      ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (pack locked): ");
+      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (pack locked): ");
       notice(nick,"** Invalid Pack Number, Try Again");
       goto done;
     }
@@ -3334,7 +3334,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
    
    tempx = irlist_get_nth(&gdata.xdccs, pack-1);
    
-   if (!strcmp(hostname,"man"))
+   if (!strcmp(hostname, "man"))
       {
         man = 1;
       }

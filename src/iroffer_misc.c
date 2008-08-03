@@ -1,4 +1,4 @@
-/*      
+/*
  * iroffer by David Johnson (PMG) 
  * Copyright (C) 1998-2005 David Johnson 
  * 
@@ -97,7 +97,7 @@ void getconfig_set (const char *line, int rehash)
 {
   char *type;
   char *var;
-  char *a,*b;
+  char *a, *b;
   int i,j;
   
   updatecontext();
@@ -110,7 +110,7 @@ void getconfig_set (const char *line, int rehash)
   for (i=0; line[i] == ' '; i++)
     continue;
   
-  for (j=0; ; j++,i++)
+  for (j=0; ; j++, i++)
     {
       if (line[i] == ' ')
         {
@@ -392,7 +392,7 @@ void getconfig_set (const char *line, int rehash)
            gdata.networks[gdata.networks_online].connectionmethod.how = how_ssl;
 #else
            gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
-           outerror(OUTERROR_TYPE_WARN_LOUD,"connectionmethod ssl not compiled, defaulting to direct");
+           outerror(OUTERROR_TYPE_WARN_LOUD, "connectionmethod ssl not compiled, defaulting to direct");
 #endif /* USE_SSL */
          }
        else if (thow && targ1 && targ2 && targ3 && !strcmp(thow,"bnc"))
@@ -483,7 +483,7 @@ static int connectirc (server_t *tserver) {
        break;
        
      case how_ssl:
-       snprintf(tempstr,maxtextlength-1," (ssl)");
+       snprintf(tempstr, maxtextlength-1, " (ssl)");
        gnetwork->serv_resolv.to_ip = gnetwork->curserver.hostname;
        gnetwork->serv_resolv.to_port = gnetwork->curserver.port;
        break;
@@ -543,9 +543,9 @@ static int connectirc (server_t *tserver) {
      }
    else
      {
-       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Attempting Connection to %s:%u%s",
+       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Attempting Connection to %s:%u%s",
                gnetwork->curserver.hostname,
-               gnetwork->curserver.port,tempstr);
+               gnetwork->curserver.port, tempstr);
      }
    
    mydelete(tempstr);
@@ -626,7 +626,7 @@ void initirc(void)
               (pi[i] == '$') &&
               (pi[i+1] == 's'))
             {
-              for (k=0,i++; gnetwork->curserver.hostname[k]; k++,j++)
+              for (k=0, i++; gnetwork->curserver.hostname[k]; k++, j++)
                 {
                   tempstr[j] = gnetwork->curserver.hostname[k];
                 }
@@ -846,7 +846,7 @@ void sendserver(void)
   
   sendannounce();
   gnetwork->serverbucket += EXCESS_BUCKET_ADD;
-  gnetwork->serverbucket = min2(gnetwork->serverbucket,EXCESS_BUCKET_MAX);
+  gnetwork->serverbucket = min2(gnetwork->serverbucket, EXCESS_BUCKET_MAX);
   
   clean = ((irlist_size(&(gnetwork->serverq_fast)) == 0) &&
            (irlist_size(&(gnetwork->serverq_normal)) == 0) &&
@@ -1049,9 +1049,9 @@ void xdccsavetext(void)
   backup = gnetwork;
   gnetwork = &(gdata.networks[0]);
   if (gdata.xdcclist_grouponly)
-    u_fillwith_msg(uxdl,NULL,"A A A A A xdl");
+    u_fillwith_msg(uxdl, NULL, "A A A A A xdl");
   else
-    u_fillwith_msg(uxdl,NULL,"A A A A A xdlfull");
+    u_fillwith_msg(uxdl, NULL, "A A A A A xdlfull");
   uxdl->method = method_fd; 
   uxdl->fd = fd;
   uxdl->net = 0;
@@ -1104,7 +1104,7 @@ void gobackground(void) {
    /* parent forks */
    s = fork();
    if (s < 0)
-      outerror(OUTERROR_TYPE_CRASH,"Unable to Fork: %s", strerror(errno));
+      outerror(OUTERROR_TYPE_CRASH, "Unable to Fork: %s", strerror(errno));
    else if (s > 0) {
       /* parent exits */
       exit(69);
@@ -1121,12 +1121,12 @@ void gobackground(void) {
    
    s = setsid();
    if (s < 0)
-      outerror(OUTERROR_TYPE_CRASH,"Couldn't setsid: %s", strerror(errno));
+      outerror(OUTERROR_TYPE_CRASH, "Couldn't setsid: %s", strerror(errno));
    
    /* parent forks */
    s = fork();
    if (s < 0)
-      outerror(OUTERROR_TYPE_CRASH,"Unable to Fork: %s", strerror(errno));
+      outerror(OUTERROR_TYPE_CRASH, "Unable to Fork: %s", strerror(errno));
    else if (s > 0)
       /* parent exits */
       exit(69);
@@ -1854,19 +1854,19 @@ void sendxdlqueue (void)
         {
            if (strcasecmp(group, "ALL") == 0)
              {
-                u_fillwith_msg(&ui,tempstr, "A A A A A xdlfull");
+                u_fillwith_msg(&ui, tempstr, "A A A A A xdlfull");
              }
            else
              {
                 cmd = mycalloc(maxtextlength);
                 snprintf(cmd, maxtextlength-1, "A A A A A xdlgroup %s", group);
-                u_fillwith_msg(&ui,tempstr, cmd);
+                u_fillwith_msg(&ui, tempstr, cmd);
              }
            mydelete(group);
         }
       else
         {
-          u_fillwith_msg(&ui,tempstr,"A A A A A xdl");
+          u_fillwith_msg(&ui, tempstr, "A A A A A xdl");
         }
       if (gdata.xdcclist_by_privmsg)
         ui.method = method_xdl_user_privmsg;
@@ -1895,10 +1895,10 @@ int isthisforme (const char *dest, char *msg1) {
       || !strcmp(msg1,"\1VERSION") || !strcmp(msg1,"\1VERSION\1")
       || !strcmp(msg1,"\1UPTIME") || !strcmp(msg1,"\1UPTIME\1") 
       || !strcmp(msg1,"\1STATUS") || !strcmp(msg1,"\1STATUS\1")
-      || (!strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"\1DCC"))
-      || (!strcmp(gnetwork->caps_nick,dest) && !strcmp(caps(msg1),"ADMIN"))
-      || (!strcmp(gnetwork->caps_nick,dest) && (!strcmp(caps(msg1),"XDCC") || !strcmp(msg1,"\1XDCC") || !strcmp(caps(msg1),"CDCC") || !strcmp(msg1,"\1CDCC")))
-      || !strcmp(dest,gnetwork->caps_nick)
+      || (!strcmp(gnetwork->caps_nick, dest) && !strcmp(caps(msg1), "\1DCC"))
+      || (!strcmp(gnetwork->caps_nick, dest) && !strcmp(caps(msg1), "ADMIN"))
+      || (!strcmp(gnetwork->caps_nick, dest) && (!strcmp(caps(msg1), "XDCC") || !strcmp(msg1, "\1XDCC") || !strcmp(caps(msg1), "CDCC") || !strcmp(msg1, "\1CDCC")))
+      || !strcmp(dest, gnetwork->caps_nick)
       ) return 1;
    
    return 0;
@@ -2429,7 +2429,7 @@ void startupiroffer(void) {
    
    getconfig();
    
-   mylog(CALLTYPE_NORMAL,"iroffer-dinoex started " VERSIONLONG);
+   mylog(CALLTYPE_NORMAL, "iroffer-dinoex started " VERSIONLONG);
 
    getos();
    
@@ -2562,7 +2562,7 @@ void createpassword(void) {
       printf("Please Enter Your Password: "); fflush(stdout);
       
       if ( (len = read(0,pw1,maxtextlengthshort-1)) < 0 )
-         { fprintf(stderr,"Couldn't Read Your Password, Try Again\n"); exit(66); }
+         { fprintf(stderr, "Couldn't Read Your Password, Try Again\n"); exit(66); }
       if (pw1[len-1] == '\n') { pw1[len-1] = '\0'; len--;}
       
       if ( len < 5 )
@@ -2575,11 +2575,11 @@ void createpassword(void) {
    fflush(stdout);
 
    if ( (len = read(0,pw2,maxtextlengthshort-1)) < 0 )
-      { fprintf(stderr,"Couldn't Read Your Password, Try Again\n"); exit(66); }
+      { fprintf(stderr, "Couldn't Read Your Password, Try Again\n"); exit(66); }
    if (pw2[len-1] == '\n') { pw2[len-1] = '\0'; len--;}
    
    if ( strcmp(pw1,pw2) )
-      { fprintf(stderr,"The Password Didn't Match, Try Again\n"); exit(65); }
+      { fprintf(stderr, "The Password Didn't Match, Try Again\n"); exit(65); }
    
    
    srand((unsigned int)( (getpid()*5000) + (time(NULL)%5000) ));
@@ -2793,12 +2793,12 @@ void user_changed_nick(const char *oldnick, const char *newnick)
     {
       if (!strcasecmp(pq->nick, newnick))
         {
-          if (strcmp(pq->hostname,"man"))
+          if (strcmp(pq->hostname, "man"))
             {
               userinqueue++;
               if ( userinqueue > gdata.maxqueueditemsperperson )
                 {
-                  notice(pq->nick,"** Removed From Queue: To many requests");
+                  notice(pq->nick, "** Removed From Queue: To many requests");
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                           "Removed From Queue: To many requests for %s on %s.",
                           pq->nick, gdata.networks[ pq->net ].name);
