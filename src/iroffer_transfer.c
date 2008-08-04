@@ -566,11 +566,17 @@ void t_readjunk (transfer * const t)
           int byte;
 
           if (t->mirc_dcc64)
-             byte = 7-((t->bytesgot+j)%8);
+            {
+              byte = 7-((t->bytesgot+j)%8);
+              t->curack &= ~(0xFFULL << (byte*8));
+              t->curack |= (ir_uint64)(gdata.sendbuff[j]) << (byte*8);
+            }
           else
-             byte = 3-((t->bytesgot+j)%4);
-          t->curack &= ~(0xFFUL << (byte*8));
-          t->curack |= gdata.sendbuff[j] << (byte*8);
+            {
+              byte = 3-((t->bytesgot+j)%4);
+              t->curack &= ~(0xFFUL << (byte*8));
+              t->curack |= gdata.sendbuff[j] << (byte*8);
+            }
           
           if (byte == 0)
             {
