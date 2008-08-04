@@ -6,7 +6,7 @@ Ab Version 3.10:
 262) mirc_dcc64
   Alle Übertragungen größer 4GB werden als Mirc DCC 64bit gestartet.
   HINWEIS: Damit funktioniert nur noch Mirc Version 6.33.
-  HINWEIS: xchat, irsiii funktionieren nur im Standard DCC.
+  HINWEIS: xchat, irssii funktionieren nur im Standard DCC.
   Default: Standard DCC
 
 bugfix: XDCC LIST
