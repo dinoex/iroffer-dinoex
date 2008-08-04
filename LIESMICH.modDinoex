@@ -3,15 +3,18 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: XDCC LIST (inspired by Yumi)
+  Zeige stat MB auch GB/TB an.
+
 261) xdccxmlfile
-  erweitert um uptime
+  Erweitert um uptime
 
 bugfix: CANNOUNCE
   Sende nur in den angegebenen Channel.
 
 260) LOCK, UNLOCK
 
-  new admin commands:
+  Neue Admin Kommandos:
   LOCK <n> <m> <passwort>    Sichert Pack <n> bis <m> mit Passwort <passwort>
   UNLOCK <n> <m>             Entfernt das Passwort für Pack <n> bis <m>
 

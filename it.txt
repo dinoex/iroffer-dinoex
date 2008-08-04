@@ -277,7 +277,7 @@
 277 "\2**\2 Per richiedere dettagli, digita \"/MSG %s XDCC INFO x\" \2**\2"
 278 "\2**\2 Per richiedere la lista di un gruppo, digita \"/MSG %s XDCC LIST group\" \2**\2"
 279 "\2**\2 Per la lista digita: \"/MSG %s XDCC LIST\" \2**\2"
-280 "Totale Offerto: %1.1f MB  Totale Trasferito: %1.2f %cB"
+280 "Totale Offerto: %sB  Totale Trasferito: %sB"
 281 "group: %s%s%s"
 282 "Mi dispiace, non è stato trovato nulla, prova con XDCC LIST"
 283 "%s %s"

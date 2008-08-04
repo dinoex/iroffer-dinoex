@@ -277,7 +277,7 @@
 277 "\2**\2 To request details, type \"/MSG %s XDCC INFO x\" \2**\2"
 278 "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2"
 279 "\2**\2 For a listing type: \"/MSG %s XDCC LIST\" \2**\2"
-280 "Total Offered: %1.1f MB  Total Transferred: %1.2f %cB"
+280 "Total Offered: %sB  Total Transferred: %sB"
 281 "group: %s%s%s"
 282 "Sorry, nothing was found, try a XDCC LIST"
 283 "%s %s"

@@ -949,7 +949,9 @@ static void u_xdl_head(const userinput * const u) {
 
 static void u_xdl_foot(const userinput * const u) {
    xdcc *xd;
-   float toffered;
+   char *sizestrstr;
+   char *totalstr;
+   ir_uint64 toffered;
 
    if (gdata.creditline)
      {
@@ -962,16 +964,16 @@ static void u_xdl_foot(const userinput * const u) {
        xd = irlist_get_head(&gdata.xdccs);
        while(xd)
          {
-           toffered += (float)xd->st_size;
+           toffered += xd->st_size;
            xd = irlist_get_next(xd);
          }
    
-       u_respond(u,
-                 "Total Offered: %1.1f MB  Total Transferred: %1.2f %cB",
-                 toffered/1024.0/1024.0,
-                 (gdata.totalsent/1024/1024) > 1024 ? ( (gdata.totalsent/1024/1024/1024) > 1024 ? ((float)gdata.totalsent)/1024/1024/1024/1024 : ((float)gdata.totalsent)/1024/1024/1024 ) : ((float)gdata.totalsent)/1024/1024 ,
-                 (gdata.totalsent/1024/1024) > 1024 ? ( (gdata.totalsent/1024/1024/1024) > 1024 ? 'T' : 'G' ) : 'M'
-         );
+       sizestrstr = sizestr(0, toffered);
+       totalstr = sizestr(0, gdata.totalsent);
+       u_respond(u, "Total Offered: %sB  Total Transferred: %sB",
+                 sizestrstr, totalstr);
+       mydelete(totalstr);
+       mydelete(sizestrstr);
      }
 }
 
