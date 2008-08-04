@@ -4,10 +4,10 @@ With Version 3.10:
 ------------------
 
 262) mirc_dcc64 (inspired by T4K)
-  All transfers greater 4GB will use Mirc style 64 bit acks.
+  All transfers greater 4GB will use Mirc style 64bit DCC.
   NOTE: This works only with Mirc version 6.33.
-  NOTE: xchat, irssii will work only in normal dcc mode.
-  Default: normal dcc
+  NOTE: xchat, irssii will work only in 32bit DCC mode.
+  Default: 32bit DCC
 
 bugfix: XDCC LIST (inspired by Yumi)
   switch automatically from MB to GB/TB
