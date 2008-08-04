@@ -445,3 +445,6 @@ spielefreak
 Yumi
 	reporting "XDCC LIST" size bug
 
+TK4
+	option "mirc_dcc64"
+

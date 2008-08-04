@@ -3,7 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
-bugfix: XDCC LIST (inspired by Yumi)
+262) mirc_dcc64
+  Alle Übertragungen größer 4GB werden als Mirc DCC 64bit gestartet.
+  HINWEIS: Damit funktioniert nur noch Mirc Version 6.33.
+  HINWEIS: xchat, irsiii funktionieren nur im Standard DCC.
+  Default: Standard DCC
+
+bugfix: XDCC LIST
   Zeige stat MB auch GB/TB an.
 
 261) xdccxmlfile
