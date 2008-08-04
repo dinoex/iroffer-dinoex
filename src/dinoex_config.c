@@ -85,6 +85,7 @@ static config_bool_typ config_parse_bool[] = {
 {"logmessages",            &gdata.logmessages },
 {"lognotices",             &gdata.lognotices },
 {"logstats",               &gdata.logstats },
+{"mirc_dcc64",             &gdata.mirc_dcc64 },
 {"need_voice",             &gdata.need_voice },
 {"no_duplicate_filenames", &gdata.no_duplicate_filenames },
 {"noautorejoin",           &gdata.noautorejoin },

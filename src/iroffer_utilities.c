@@ -1493,6 +1493,7 @@ void dumpgdata(void)
   gdata_print_int(fish_only);
   gdata_print_int(privmsg_encrypt);
   gdata_print_int(verbose_crc32);
+  gdata_print_int(mirc_dcc64);
   gdata_print_long(nomd5_start);
   
   gdata_irlist_iter_start(downloadhost, char);

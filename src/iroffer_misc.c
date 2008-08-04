@@ -2094,6 +2094,7 @@ void reinit_config_vars(void)
   gdata.fish_only = 0;
   gdata.privmsg_encrypt = 0;
   gdata.verbose_crc32 = 0;
+  gdata.mirc_dcc64 = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

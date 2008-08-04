@@ -190,6 +190,13 @@ void l_transfersome (upload * const l) {
       
       }
    
+   if (l->mirc_dcc64)
+      {
+         g = htonl((unsigned long)((l->bytesgot >> 32) & 0xFFFFFFFFL));
+         /* don't block if max window is reached */
+         if (is_fd_writeable(l->con.clientsocket))
+            write(l->con.clientsocket, (unsigned char*)&g, 8);
+      }
    g = htonl((unsigned long)(l->bytesgot & 0xFFFFFFFF));
    /* don't block if max window is reached */
    if (is_fd_writeable(l->con.clientsocket))

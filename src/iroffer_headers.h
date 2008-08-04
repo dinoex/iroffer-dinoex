@@ -275,6 +275,7 @@ typedef struct
   char overlimit;
   char unlimited;
   transfer_status_e tr_status;
+  int mirc_dcc64;
 } transfer;
 
 typedef enum
@@ -304,6 +305,7 @@ typedef struct
   int resumed;
   int net;
   int token;
+  int mirc_dcc64;
 } upload;
 
 typedef struct

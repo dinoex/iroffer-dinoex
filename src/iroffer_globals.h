@@ -196,6 +196,7 @@ int reconnect_delay;
 int fish_only;
 int privmsg_encrypt;
 int verbose_crc32;
+int mirc_dcc64;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

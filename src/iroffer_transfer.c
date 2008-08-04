@@ -112,6 +112,9 @@ void t_setup_send(transfer * const t)
          return;
        }
        t->xpack->file_fd_location = 0;
+       if (gdata.mirc_dcc64)
+         if (t->xpack->st_size > 0xFFFFFFFFUL)
+           t->mirc_dcc64 = 1;
      }
    
    t->bytessent = t->startresume;
@@ -560,16 +563,24 @@ void t_readjunk (transfer * const t)
       
       for (j=0; j<i; j++)
         {
-          int byte = 3-((t->bytesgot+j)%4);
+          int byte;
+
+          if (t->mirc_dcc64)
+             byte = 7-((t->bytesgot+j)%8);
+          else
+             byte = 3-((t->bytesgot+j)%4);
           t->curack &= ~(0xFFUL << (byte*8));
           t->curack |= gdata.sendbuff[j] << (byte*8);
           
           if (byte == 0)
             {
-              if (t->xpack->st_size > 0x0FFFFFFFFLL)
+              if (t->mirc_dcc64 == 0)
                 {
-                  while (t->curack < t->lastack)
-                    t->curack += 0x100000000LL;
+                  if (t->xpack->st_size > 0x0FFFFFFFFLL)
+                    {
+                      while (t->curack < t->lastack)
+                        t->curack += 0x100000000LL;
+                    }
                 }
               t->lastack = t->curack;
             }
