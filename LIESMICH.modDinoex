@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: Speicherlecks behoben
+
 262) mirc_dcc64
   Alle Übertragungen größer 4GB werden als Mirc 64bit DCC gestartet.
   HINWEIS: Damit funktioniert nur noch Mirc Version 6.33.

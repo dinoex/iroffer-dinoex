@@ -2233,10 +2233,9 @@ void a_chtrigger(const userinput * const u)
   if (group_restricted(u, xd))
     return;
 
+  mydelete(xd->trigger);
   if (!u->arg2 || !strlen(u->arg2)) {
     a_respond(u, "TRIGGER: [Pack %i] removed", num);
-    mydelete(xd->trigger);
-    xd->trigger = NULL;
     autotrigger_rebuild();
   } else {
     a_respond(u, "TRIGGER: [Pack %i] set: %s", num, u->arg2e);

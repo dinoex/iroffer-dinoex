@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: fix small memory leaks
+
 262) mirc_dcc64 (inspired by T4K)
   All transfers greater 4GB will use Mirc style 64bit DCC.
   NOTE: This works only with Mirc version 6.33.
