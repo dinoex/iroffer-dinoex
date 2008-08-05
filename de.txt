@@ -1132,7 +1132,6 @@
 1173 "Not Sending XDCC LIST to: %s (nolist set)"
 1174 "The Owner Has Requested That No Lists Be Sent In The Next %li %s"
 1175 "Sending XDCC LIST to: %s"
-1176 "isthisforme() got NULL value"
 1177 "\x1b[1;33m"
 1178 "Welcome to iroffer mod by Dinoex - http://iroffer.dinoex.net/\n"
 1179 "Version "

@@ -3,8 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: IGNORE (reported by Lamune)
+  Count auto ignore for triggers, "!list", "@find" and "!new".
+
 bugfix: UNIGNORE
-  find hostmask case insentitive
+  Find hostmask case insentitive
 
 bugfix: fix small memory leaks
 
@@ -15,13 +18,13 @@ bugfix: fix small memory leaks
   Default: 32bit DCC
 
 bugfix: XDCC LIST (inspired by Yumi)
-  switch automatically from MB to GB/TB
+  Switch automatically from MB to GB/TB
 
 261) xdccxmlfile (inspired by chibi)
-  extened by uptime
+  Extened by uptime
 
 bugfix: CANNOUNCE (reported by spielefreak)
-  send only to given channel.
+  Send only to given channel.
 
 260) LOCK, UNLOCK (inspired by dsd)
 

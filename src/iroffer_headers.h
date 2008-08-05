@@ -701,7 +701,6 @@ void switchserver(int which);
 char* getstatusline(char *str, int len);
 char* getstatuslinenums(char *str, int len);
 void sendxdlqueue(void);
-int isthisforme (const char *dest, char *msg1);
 void reinit_config_vars(void);
 void initprefixes(void);
 void initchanmodes(void);

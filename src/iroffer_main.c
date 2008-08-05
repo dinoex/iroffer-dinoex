@@ -2383,24 +2383,14 @@ static void parseline(char *line) {
        line2 = test_fish_message(line, part3, part4, part5);
        if (line2)
          {
-           /* matched lines are skipped */
-           if (check_trigger(line2, part4) == 0)
-             privmsgparse(1, 1, line2);
+           privmsgparse(1, 1, line2);
            mydelete(line2);
          }
        else
          {
-           if (!gdata.fish_only)
-             {
 #endif /* WITHOUT_BLOWFISH */
-               if (check_trigger(line, part4) == 0)
-                 privmsgparse(1, 0, line);
+           privmsgparse(1, 0, line);
 #ifndef WITHOUT_BLOWFISH
-             }
-           else
-             {
-               privmsgparse(1, 0, line);
-             }
          }
 #endif /* WITHOUT_BLOWFISH */
      }
@@ -2416,7 +2406,7 @@ static const char *type_list[2] = { "NOTICE", "PRIVMSG" };
 
 static void privmsgparse(int type, int decoded, char* line)
 {
-   char *nick, *hostname, *hostmask, *wildhost;
+   char *nick, *hostname, *hostmask;
    char *msg1, *msg2, *msg3, *msg4, *msg5, *msg6, *dest;
    int i,j,k;
    igninfo *ignore = NULL;
@@ -2434,7 +2424,6 @@ static void privmsgparse(int type, int decoded, char* line)
    hostmask = caps(getpart(line,1));
    for (i=1; i<=sstrlen(hostmask); i++)
       hostmask[i-1] = hostmask[i];
-   wildhost = NULL;
    
    dest = caps(getpart(line,3));
    msg1 = getpart(line,4);
@@ -2473,65 +2462,14 @@ static void privmsgparse(int type, int decoded, char* line)
       }
    hostname[j]='\0';
    
-   wildhost = to_hostmask("*", hostname);
-   
-   if (isthisforme(dest, msg1))
-     {
-       if (decoded != 0)
-         {
-           goto noignore;
-         }
-       
-       if (verifyshell(&gdata.autoignore_exclude, hostmask))
-         {
-           /* host matches autoignore_exclude */
-           goto noignore;
-         }
-
-       /* add/increment ignore list */
-       ignore = get_ignore(hostmask);
-       
-               j=1;
-               ignore->bucket++;
-               ignore->lastcontact = gdata.curtime;
-               
-               if (!(ignore->flags & IGN_IGNORING) &&
-                    (ignore->bucket >= IGN_ON))
-                 {
-                   int left;
-                   left = gdata.autoignore_threshold*(ignore->bucket+1);
-                   
-                   ignore->flags |= IGN_IGNORING;
-                   
-                   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
-                           "Auto-ignore activated for %s (%s) lasting %i%c%i%c",
-                           nick, wildhost,
-                           left < 3600 ? left/60 : left/60/60 ,
-                           left < 3600 ? 'm' : 'h',
-                           left < 3600 ? left%60 : (left/60)%60 ,
-                           left < 3600 ? 's' : 'm');
-                   
-                   notice(nick,
-                          "Auto-ignore activated for %s (%s) lasting %i%c%i%c. Further messages will increase duration.",
-                          nick, wildhost,
-                          left < 3600 ? left/60 : left/60/60 ,
-                          left < 3600 ? 'm' : 'h',
-                          left < 3600 ? left%60 : (left/60)%60 ,
-                          left < 3600 ? 's' : 'm');
-                   
-                   write_statefile();
-                 }
-               
-               if (ignore->flags & IGN_IGNORING)
-                 {
-                   goto privmsgparse_cleanup;
-                 }
-      }
- noignore:
-   
    /*----- CLIENTINFO ----- */
    if ( !gdata.ignore && (!strcmp(msg1,"\1CLIENTINFO")
           || !strcmp(msg1,"\1CLIENTINFO\1") )) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
       if (!msg2) {
          notice(nick,"\1CLIENTINFO DCC PING VERSION XDCC UPTIME "
@@ -2556,6 +2494,11 @@ static void privmsgparse(int type, int decoded, char* line)
    /*----- PING ----- */
    else if ( !gdata.ignore && (!strcmp(msg1,"\1PING")
           || !strcmp(msg1, "\1PING\1") ) && (type == 0) ) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
       if (msg2 && (msg2[strlen(msg2)-1] == '\1'))
         {
@@ -2578,6 +2521,11 @@ static void privmsgparse(int type, int decoded, char* line)
    /*----- VERSION ----- */
    else if ( !gdata.ignore && (!strcmp(msg1,"\1VERSION")
           || !strcmp(msg1,"\1VERSION\1") )) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
       notice(nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
              gdata.hideos ? "" : " - ",
@@ -2591,6 +2539,11 @@ static void privmsgparse(int type, int decoded, char* line)
    else if ( !gdata.ignore && (!strcmp(msg1,"\1UPTIME")
           || !strcmp(msg1,"\1UPTIME\1") ))
      {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
        char *tempstr2 = mycalloc(maxtextlength);
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
        tempstr2 = getuptime(tempstr2, 0, gdata.startuptime, maxtextlength);
@@ -2605,6 +2558,11 @@ static void privmsgparse(int type, int decoded, char* line)
    else if ( !gdata.ignore && (!strcmp(msg1,"\1STATUS")
           || !strcmp(msg1,"\1STATUS\1") ))
      {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
        char *tempstr2 = mycalloc(maxtextlength);
        gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
        tempstr2 = getstatuslinenums(tempstr2,maxtextlength);
@@ -2617,6 +2575,11 @@ static void privmsgparse(int type, int decoded, char* line)
    
    /*----- DCC SEND/CHAT/RESUME ----- */
    else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick, dest) && !strcmp(caps(msg1), "\1DCC") && msg2) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
       if (!strcmp(caps(msg2),"RESUME") && msg3 && msg4 && msg5)
         {
           gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
@@ -2755,6 +2718,10 @@ static void privmsgparse(int type, int decoded, char* line)
    else if ((type != 0) && (decoded == 0) && gdata.fish_only) {
      goto privmsgparse_cleanup;
    }
+   else if (check_trigger(line, type, nick, hostmask, msg1)) {
+     /* matched lines are skipped */
+     goto privmsgparse_cleanup;
+   }
    
    /*----- ADMIN ----- */
    else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick, dest) && !strcmp(caps(msg1), "ADMIN") ) {
@@ -2771,6 +2738,11 @@ static void privmsgparse(int type, int decoded, char* line)
    
    /*----- XDCC ----- */
    else if ( !gdata.ignore && gnetwork->caps_nick && (!strcmp(gnetwork->caps_nick, dest) || gdata.respondtochannelxdcc) && (!strcmp(caps(msg1), "XDCC") || !strcmp(msg1, "\1XDCC") || !strcmp(caps(msg1), "CDCC") || !strcmp(msg1, "\1CDCC") )) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
       
       caps(msg2);
@@ -2912,6 +2884,11 @@ static void privmsgparse(int type, int decoded, char* line)
              (!strcasecmp(caps(msg1), "!LIST") || !strcmp(msg1, "\1!LIST") || !strcmp(msg1, "\1!LIST\1")) &&
              ( !msg2 || !strcmp(caps(msg2), gnetwork->caps_nick) || ((msg2[strlen(msg2)-1]=='\1') && !strncmp(caps(msg2), gnetwork->caps_nick, strlen(msg2)-1)) ))
      {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
       char *tempstr2 = mycalloc(maxtextlength);
       
       /* generate !list styled message */
@@ -2953,6 +2930,11 @@ static void privmsgparse(int type, int decoded, char* line)
    /* iroffer-lamm: @find */
    else if ( !gdata.ignore && gnetwork->caps_nick && gdata.atfind && msg2 && !strcasecmp(caps(msg1), "@FIND") )
      {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
       char *msg2e;
       msg2e = getpart_eol(line, 5);
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
@@ -2973,6 +2955,11 @@ static void privmsgparse(int type, int decoded, char* line)
    
    else if ( !gdata.ignore && gnetwork->caps_nick && gdata.new_trigger && !strcasecmp(caps(msg1), "!new") )
      {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        {
+          goto privmsgparse_cleanup;
+        }
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
 
       /* apply per-channel visibility rules */
@@ -2989,6 +2976,11 @@ static void privmsgparse(int type, int decoded, char* line)
    else {
       if (dest && gnetwork->caps_nick && !strcmp(dest, gnetwork->caps_nick))
         {
+          /* add/increment ignore list */
+          if (check_ignore(nick, hostmask))
+            {
+              goto privmsgparse_cleanup;
+            }
           char *begin;
           int exclude = 0;
           
@@ -3042,7 +3034,6 @@ static void privmsgparse(int type, int decoded, char* line)
    mydelete(nick);
    mydelete(hostname);
    mydelete(hostmask);
-   mydelete(wildhost);
    mydelete(msg1);
    mydelete(msg2);
    mydelete(msg3);

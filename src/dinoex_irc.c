@@ -642,6 +642,47 @@ igninfo *get_ignore(const char *hostmask)
   return ignore;
 }
 
+int check_ignore(const char *nick, const char *hostmask)
+{
+  igninfo *ignore;
+  int left;
+
+  if (verifyshell(&gdata.autoignore_exclude, hostmask))
+    return 0; /* host matches autoignore_exclude */
+
+  ignore = get_ignore(hostmask);
+  ignore->bucket++;
+  ignore->lastcontact = gdata.curtime;
+
+  if (ignore->flags & IGN_IGNORING)
+    return 1;
+
+  if (ignore->bucket < IGN_ON)
+    return 0;
+
+  left = gdata.autoignore_threshold * (ignore->bucket + 1);
+  ignore->flags |= IGN_IGNORING;
+
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          "Auto-ignore activated for %s (%s) lasting %i%c%i%c",
+          nick, hostmask,
+          left < 3600 ? left/60 : left/60/60 ,
+          left < 3600 ? 'm' : 'h',
+          left < 3600 ? left%60 : (left/60)%60 ,
+          left < 3600 ? 's' : 'm');
+
+  notice(nick,
+         "Auto-ignore activated for %s (%s) lasting %i%c%i%c. Further messages will increase duration.",
+         nick, hostmask,
+         left < 3600 ? left/60 : left/60/60 ,
+         left < 3600 ? 'm' : 'h',
+         left < 3600 ? left%60 : (left/60)%60 ,
+         left < 3600 ? 's' : 'm');
+
+  write_statefile();
+  return 1;
+}
+
 int irc_select(int highests)
 {
   int ss;

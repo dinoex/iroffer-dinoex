@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: IGNORE (reported by Lamune)
+  Prüfe die Liste auch bei Trigger, "!list", "@find" and "!new"
+
 bugfix: UNIGNORE
   Finde hostmask egal ob Groß- oder Kleinschreibung.
 

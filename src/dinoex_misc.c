@@ -1201,18 +1201,25 @@ int packnumtonum(const char *a)
   return atoi(a);
 }
 
-int check_trigger(const char *line, const char *part4)
+int check_trigger(const char *line, int type, const char *nick, const char *hostmask, const char *msg)
 {
   autoqueue_t *aq;
   autotrigger_t *at;
 
-  if (!part4)
+  if (type == 0)
+    return 0;
+
+  if (!msg)
     return 0;
 
   for (aq = irlist_get_head(&gdata.autoqueue);
        aq;
        aq = irlist_get_next(aq)) {
-    if (!strcasecmp(part4+1, aq->word)) {
+    if (!strcasecmp(msg, aq->word)) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        return 0;
+
       autoqueuef(line, aq->pack, aq->message);
       /* only first match is activated */
       return 1;
@@ -1221,7 +1228,11 @@ int check_trigger(const char *line, const char *part4)
   for (at = irlist_get_head(&gdata.autotrigger);
        at;
        at = irlist_get_next(at)) {
-    if (!strcasecmp(part4+1, at->word)) {
+    if (!strcasecmp(msg, at->word)) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        return 0;
+
       autoqueuef(line, number_of_pack(at->pack), NULL);
       /* only first match is activated */
       return 1;

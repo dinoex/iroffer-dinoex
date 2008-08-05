@@ -372,6 +372,7 @@ Lamune
 	reporting "FETCHCANCEL" bug
 	reporting "BOTINFO" joined for bug
 	suggesting "#channel -waitjoin" option
+	reporting trigger ignore bug
 
 DevelDoll
 	report transferlimits to user

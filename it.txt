@@ -1132,7 +1132,6 @@
 1173 "XDCC LIST non inviata a: %s (nolist set)"
 1174 "L'amministratore ha richiesto che nessuna lista debba essere inviata nei prossimi %li %s"
 1175 "Invio XDCC LIST a: %s"
-1176 "isthisforme() got NULL value"
 1177 "\x1b[1;33m"
 1178 "Benvenuto in iroffer-dinoex modded ITA by [V]4Mp|r3` - http://iroffer.dinoex.net/\n"
 1179 "Versione "
