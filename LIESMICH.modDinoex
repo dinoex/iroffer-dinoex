@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
-bugfix: IGNORE (reported by Lamune)
+bugfix: IGNORE
+  Wenn der Wert zu groß ist, wird das Maximum benutzt.
+
+bugfix: IGNORE
   Prüfe die Liste auch bei Trigger, "!list", "@find" and "!new"
 
 bugfix: UNIGNORE

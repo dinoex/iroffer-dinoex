@@ -3031,6 +3031,8 @@ static void u_ignore(const userinput * const u)
   ignore->flags |= IGN_IGNORING;
   ignore->flags |= IGN_MANUAL;
   ignore->bucket = (num*60)/gdata.autoignore_threshold;
+  if (ignore->bucket < 0)
+    ignore->bucket = 0x7FFFFFF;
   
   u_respond(u, "Ignore activated for %s which will last %i min",
             u->arg2,num);

@@ -449,3 +449,6 @@ Yumi
 T4K
 	option "mirc_dcc64"
 
+Solidus_Snake
+	reporting "IGNORE" overflow
+

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: IGNORE (reported by Solidus_Snake)
+  If value overflows set it to maximum.
+
 bugfix: IGNORE (reported by Lamune)
   Count auto ignore for triggers, "!list", "@find" and "!new".
 
