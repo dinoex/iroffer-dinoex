@@ -3054,7 +3054,7 @@ static void u_unignore(const userinput * const u)
   ignore = irlist_get_head(&gdata.ignorelist);
   while(ignore)
     {
-      if (strcmp(ignore->hostmask,u->arg1) == 0)
+      if (strcasecmp(ignore->hostmask, u->arg1) == 0)
         {
           mydelete(ignore->hostmask);
           irlist_delete(&gdata.ignorelist, ignore);

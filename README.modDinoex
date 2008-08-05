@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: UNIGNORE
+  find hostmask case insentitive
+
 bugfix: fix small memory leaks
 
 262) mirc_dcc64 (inspired by T4K)
