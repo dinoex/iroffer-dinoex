@@ -65,6 +65,8 @@ irlist_t downloadhost;
 irlist_t nodownloadhost;
 irlist_t http_allow;
 irlist_t http_deny;
+irlist_t xdcc_allow;
+irlist_t xdcc_deny;
 char *adminpass;
 char *hadminpass;
 irlist_t adminhost;

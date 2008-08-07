@@ -372,7 +372,8 @@ Lamune
 	reporting "FETCHCANCEL" bug
 	reporting "BOTINFO" joined for bug
 	suggesting "#channel -waitjoin" option
-	reporting trigger ignore bug
+	reporting trigger ignore bugA
+	option "xdcc_deny" 
 
 DevelDoll
 	report transferlimits to user

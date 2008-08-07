@@ -1528,6 +1528,18 @@ void dumpgdata(void)
   my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
   ioutput(gdata_common, "  : remoteip=%s", ip6);
   gdata_irlist_iter_end;
+  gdata_irlist_iter_start(xdcc_allow, ir_cidr_t);
+  gdata_iter_print_int(family);
+  gdata_iter_print_int(netmask);
+  my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
+  ioutput(gdata_common, "  : remoteip=%s", ip6);
+  gdata_irlist_iter_end;
+  gdata_irlist_iter_start(xdcc_deny, ir_cidr_t);
+  gdata_iter_print_int(family);
+  gdata_iter_print_int(netmask);
+  my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
+  ioutput(gdata_common, "  : remoteip=%s", ip6);
+  gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(group_admin, group_admin_t);
   gdata_iter_print_int(g_level);

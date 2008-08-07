@@ -2271,3 +2271,7 @@
 2352 "    <uptime>"
 2353 "</uptime>\n"
 2354 "mirc_dcc64"
+2355 "xdcc_allow"
+2356 "xdcc_deny"
+2357 "Sorry, downloads to your IP not allowed, ask owner."
+2358 "Sorry, downloads to your IP denied, ask owner."

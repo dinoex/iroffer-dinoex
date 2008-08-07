@@ -249,6 +249,8 @@ static config_list_typ config_parse_list[] = {
 {"unlimitedhost",           &gdata.unlimitedhost,           2 },
 {"uploadhost",              &gdata.uploadhost,              2 },
 {"weblist_info",            &gdata.weblist_info,            0 },
+{"xdcc_allow",              &gdata.xdcc_allow,              6 },
+{"xdcc_deny",               &gdata.xdcc_deny,               6 },
 {NULL, NULL, 0 }};
 
 const char *current_config;

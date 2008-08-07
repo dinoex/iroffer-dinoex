@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_transfer.h"
 #include "dinoex_irc.h"
+#include "dinoex_misc.h"
 
 void t_setup_dcc(transfer *tr, const char *nick)
 {
@@ -82,6 +83,27 @@ void t_setup_dcc(transfer *tr, const char *nick)
   mydelete(sendnamestr);
 }
 
+int t_check_ip_access(transfer *const tr)
+{
+  const char *msg;
+  if (irlist_size(&gdata.xdcc_allow) > 0) {
+    if (!verify_cidr(&gdata.xdcc_allow, &(tr->con.remote))) {
+      msg = "Sorry, downloads to your IP not allowed, ask owner.";
+      t_closeconn(tr, msg, 0);
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "%s", msg);
+      return 1;
+    }
+  }
+
+  if (verify_cidr(&gdata.xdcc_deny, &(tr->con.remote))) {
+    msg = "Sorry, downloads to your IP denied, ask owner.";
+    t_closeconn(tr, msg, 0);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "%s", msg);
+    return 1;
+  }
+  return 0;
+}
+
 static void t_passive(transfer * const tr, unsigned short remoteport)
 {
   char *msg;
@@ -110,6 +132,9 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
     if (retval < 0)
       outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", tr->con.remoteaddr);
   }
+
+  if (t_check_ip_access(tr))
+    return;
 
   if (bind_irc_vhost(tr->con.family, tr->con.clientsocket) != 0) {
     t_closeconn(tr, "Couldn't Bind Virtual Host, Sorry", errno);

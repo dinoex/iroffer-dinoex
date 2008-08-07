@@ -22,6 +22,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
+#include "dinoex_transfer.h"
 #include "dinoex_misc.h"
 
 #ifdef USE_UPNP
@@ -166,8 +167,11 @@ void t_setup_send(transfer * const t)
    
    if ((getpeername(t->con.clientsocket, &(t->con.remote.sa), &(addrlen))) < 0)
       outerror(OUTERROR_TYPE_WARN, "Couldn't get Remote IP: %s", strerror(errno));
-
-   else {
+   
+   if (t_check_ip_access(t))
+      return;
+   
+   if (t->con.family == AF_INET) {
       t->remoteip = ntohl(t->con.remote.sin.sin_addr.s_addr);
       }
    

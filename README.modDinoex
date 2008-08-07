@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+264) xdcc_allow
+  Defines ip masks, which are allowed to download from the server.
+  Multiple ip masks can be specified
+  Default: all.
+ 
+263) xdcc_deny (inspired by Lamune)
+  Defines ip masks, that should not download from the server.
+  Multiple ip masks can be specified
+  Default: none.
+
 bugfix: http_deny, http_allow
   Changed to CIDR Syntax.
 
