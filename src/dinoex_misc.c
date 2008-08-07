@@ -1516,6 +1516,66 @@ group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
   return NULL;
 }
 
+static int verify_bits(int bits, const unsigned char *data1, const unsigned char *data2)
+{
+  unsigned char ch1;
+  unsigned char ch2;
+  unsigned char mask;
+
+  if (bits <= 0)
+    return 1; /* 0 bits matches all */
+
+  while (bits >= 8) {
+    if (*data1 != *data2)
+      return 0; /* not found */
+
+    /* next byte */
+    ++data1;
+    ++data2;
+    bits -= 8;
+  }
+
+  mask = 0xFF << (8 - bits);
+  ch1 = *data1 & mask;
+  ch2 = *data2 & mask;
+  if (ch1 != ch2)
+    return 0; /* not found */
+
+  return 1; /* bits matched */
+}
+
+int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
+{
+  ir_cidr_t *cidr;
+  const unsigned char *data1;
+  const unsigned char *data2;
+  int bits;
+
+  updatecontext();
+
+  if (remote->sa.sa_family == AF_INET) {
+    data1 = (const unsigned char *)&(remote->sin.sin_addr);
+  } else {
+    data1 = remote->sin6.sin6_addr.__u6_addr.__u6_addr8;
+  }
+
+  for (cidr = irlist_get_head(list);
+       cidr;
+       cidr = irlist_get_next(cidr)) {
+    if (cidr->family != remote->sa.sa_family)
+      continue;
+    if (cidr->family == AF_INET) {
+      data2 = (const unsigned char *)&(cidr->remote.sin.sin_addr);
+    } else {
+      data2 = cidr->remote.sin6.sin6_addr.__u6_addr.__u6_addr8;
+    }
+    bits = cidr->netmask;
+    if (verify_bits(cidr->netmask, data1, data2))
+      return 1; /* bits matched */
+  }
+  return 0;
+}
+
 void free_channel_data(channel_t *ch)
 {
   mydelete(ch->name);

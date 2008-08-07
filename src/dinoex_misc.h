@@ -73,6 +73,8 @@ const char *get_grouplist_channel(const char *dest);
 int verifyhost_group(const char *hostmask);
 group_admin_t *verifypass_group(const char *hostmask, const char *passwd);
 
+int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote);
+
 void free_channel_data(channel_t *ch);
 
 void

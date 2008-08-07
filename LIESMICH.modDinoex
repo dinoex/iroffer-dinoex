@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: http_deny, http_allow
+  Ge‰ndert in CIDR Syntax.
+
 bugfix: IGNORE
   Wenn der Wert zu groﬂ ist, wird das Maximum benutzt.
 

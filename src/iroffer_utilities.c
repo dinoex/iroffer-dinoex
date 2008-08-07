@@ -23,6 +23,7 @@
 #include "dinoex_jobs.h"
 #include "dinoex_http.h"
 #include "dinoex_badip.h"
+#include "dinoex_irc.h"
 #include "dinoex_misc.h"
 
 
@@ -1502,12 +1503,6 @@ void dumpgdata(void)
   gdata_irlist_iter_start(nodownloadhost, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
-  gdata_irlist_iter_start(http_allow, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(http_deny, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
   gdata_irlist_iter_start(unlimitedhost, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
@@ -1521,6 +1516,19 @@ void dumpgdata(void)
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
   
+  gdata_irlist_iter_start(http_allow, ir_cidr_t);
+  gdata_iter_print_int(family);
+  gdata_iter_print_int(netmask);
+  my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
+  ioutput(gdata_common, "  : remoteip=%s", ip6);
+  gdata_irlist_iter_end;
+  gdata_irlist_iter_start(http_deny, ir_cidr_t);
+  gdata_iter_print_int(family);
+  gdata_iter_print_int(netmask);
+  my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
+  ioutput(gdata_common, "  : remoteip=%s", ip6);
+  gdata_irlist_iter_end;
+
   gdata_irlist_iter_start(group_admin, group_admin_t);
   gdata_iter_print_int(g_level);
   gdata_iter_print_string(g_host);

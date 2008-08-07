@@ -233,8 +233,8 @@ static config_list_typ config_parse_list[] = {
 #endif /* USE_GEOIP */
 {"hadminhost",              &gdata.hadminhost,              3 },
 #ifndef WITHOUT_HTTP
-{"http_allow",              &gdata.http_allow,              2 },
-{"http_deny",               &gdata.http_deny,               2 },
+{"http_allow",              &gdata.http_allow,              6 },
+{"http_deny",               &gdata.http_deny,               6 },
 {"http_vhost",              &gdata.http_vhost,              0 },
 #endif /* WITHOUT_HTTP */
 {"log_exclude_host",        &gdata.log_exclude_host,        2 },
@@ -532,12 +532,32 @@ static int config_find_list(const char *key)
   return -1;
 }
 
+static int get_netmask(char *text, int init)
+{
+  char *work;
+  int new;
+
+  work = strchr(text, '/');
+  if (work != NULL) {
+    *(work++) = 0;
+    new = atoi(work);
+    if (new < 0 )
+      return -1;
+    if (new > init )
+      return -1;
+    return new;
+  }
+  return init;
+}
+
 int set_config_list(const char *key, char *text)
 {
   int i;
   int j;
+  int e;
   char *pi;
   char *old;
+  ir_cidr_t *cidr;
 
   updatecontext();
 
@@ -553,6 +573,26 @@ int set_config_list(const char *key, char *text)
     return 0;
   }
   switch (config_parse_list[i].flags) {
+  case 6:
+    cidr = irlist_add(config_parse_list[i].list, sizeof(ir_cidr_t));
+    if (strchr(text, ':') == NULL) {
+      cidr->family = AF_INET;
+      cidr->netmask = get_netmask(text, 32);
+      e = inet_pton(cidr->family, text, &(cidr->remote.sin.sin_addr));
+    } else {
+      cidr->family = AF_INET6;
+      cidr->netmask = get_netmask(text, 128);
+      e = inet_pton(cidr->family, text, &(cidr->remote.sin6.sin6_addr));
+    }
+    cidr->remote.sa.sa_family = cidr->family;
+    if (e != 1) {
+       outerror(OUTERROR_TYPE_WARN,
+                "%s:%ld ignored '%s' because it has invalid args: '%s'",
+                current_config, current_line, key, text);
+       irlist_delete(config_parse_list[i].list, cidr);
+    }
+    mydelete(text);
+    return 0;
   case 5:
      clean_quotes(text);
      break;

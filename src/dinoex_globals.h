@@ -83,6 +83,12 @@ typedef struct {
 } group_admin_t;
 
 typedef struct {
+  int family;
+  int netmask;
+  ir_sockaddr_union_t remote;
+} ir_cidr_t;
+
+typedef struct {
   char *to_ip;
   unsigned short to_port;
   int sp_fd[2];

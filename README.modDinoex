@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: http_deny, http_allow
+  Changed to CIDR Syntax.
+
 bugfix: IGNORE (reported by Solidus_Snake)
   If value overflows set it to maximum.
 
