@@ -28,9 +28,9 @@ bugfix: UNIGNORE
 bugfix: fix small memory leaks
 
 262) mirc_dcc64 (inspired by T4K)
-  All transfers greater 4GB will use Mirc style 64bit DCC.
-  NOTE: This works only with Mirc version 6.33.
-  NOTE: xchat, irssii will work only in 32bit DCC mode.
+  All transfers greater 4GB will use mIRC style 64bit DCC.
+  NOTE: This works only with mIRC version 6.33.
+  NOTE: XChat, Irssi will work only in 32bit DCC mode.
   Default: 32bit DCC
 
 bugfix: XDCC LIST (inspired by Yumi)

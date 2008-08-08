@@ -28,9 +28,9 @@ bugfix: UNIGNORE
 bugfix: Speicherlecks behoben
 
 262) mirc_dcc64
-  Alle Übertragungen größer 4GB werden als Mirc 64bit DCC gestartet.
-  HINWEIS: Damit funktioniert nur noch Mirc Version 6.33.
-  HINWEIS: xchat, irssii funktionieren nur mit 32bit DCC.
+  Alle Übertragungen größer 4GB werden als mIRC 64bit DCC gestartet.
+  HINWEIS: Damit funktioniert nur noch mIRC Version 6.33.
+  HINWEIS: XChat, Irssi funktionieren nur mit 32bit DCC.
   Default: 32bit DCC
 
 bugfix: XDCC LIST
