@@ -1556,7 +1556,7 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
   if (remote->sa.sa_family == AF_INET) {
     data1 = (const unsigned char *)&(remote->sin.sin_addr);
   } else {
-    data1 = remote->sin6.sin6_addr.__u6_addr.__u6_addr8;
+    data1 = (const unsigned char *)&(remote->sin6.sin6_addr);
   }
 
   for (cidr = irlist_get_head(list);
@@ -1567,7 +1567,7 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
     if (cidr->family == AF_INET) {
       data2 = (const unsigned char *)&(cidr->remote.sin.sin_addr);
     } else {
-      data2 = cidr->remote.sin6.sin6_addr.__u6_addr.__u6_addr8;
+      data2 = (const unsigned char *)&(cidr->remote.sin6.sin6_addr);
     }
     bits = cidr->netmask;
     if (verify_bits(cidr->netmask, data1, data2))
