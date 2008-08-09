@@ -639,6 +639,23 @@ else
  echo "missing, will emulate"
 fi
 
+echo -n "Checking for strcasestr()... "
+echo "
+#define GEX 
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int main (int argc, char **argv) {(void)strcasestr(\"blah\",\"blah\"); exit(0);}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
+ echo "found"
+else
+ echo "#define NO_STRCASESTR" >> src/iroffer_config.h
+ echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
+ echo "missing, will emulate"
+fi
+
 echo -n "Checking for strsignal()... "
 echo "
 #define GEX 
@@ -883,10 +900,6 @@ if [ "$ostype" = CYGWIN ]; then
 echo "#define NO_SETUID" >> src/iroffer_config.h
 echo "#define NO_CHROOT" >> src/iroffer_config.h
 echo "deactivate chroot()-ing"
-echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
-fi
-if [ "$ostype" = SunOS ]; then
-echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
 fi
 
 
