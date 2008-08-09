@@ -885,6 +885,9 @@ echo "#define NO_CHROOT" >> src/iroffer_config.h
 echo "deactivate chroot()-ing"
 echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
 fi
+if [ "$ostype" = SunOS ]; then
+echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
+fi
 
 
 echo -n "Seeing if NSS libraries exist (for chroot)... "
