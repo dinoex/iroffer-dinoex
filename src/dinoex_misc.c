@@ -1425,7 +1425,7 @@ char *get_grouplist_access(const char *nick)
     for (member = irlist_get_head(&ch->members);
          member;
 	 member = irlist_get_next(member)) {
-      if (strcasecmp(caps(member->nick), nick) != 0)
+      if (strcasecmp(member->nick, nick) != 0)
         continue;
 
       if (check_level( member->prefixes[0] ) == 0)
