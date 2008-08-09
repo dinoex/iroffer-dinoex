@@ -98,7 +98,7 @@ case "$ostype" in
   # nothing fancy
   ;;
  SunOS )
-  libs="$libs -lsocket -lnsl -lbresolv"
+  libs="$libs -lsocket -lnsl -lresolv"
   ;;
  BSD/OS )
   ostype=BSD_OS
