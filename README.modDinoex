@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: SunOS (reported by Tass)
+  Fix build on SunOS.
+
 264) xdcc_allow
   Defines ip masks, which are allowed to download from the server.
   Multiple ip masks can be specified
