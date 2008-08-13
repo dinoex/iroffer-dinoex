@@ -263,6 +263,7 @@ void u_fillwith_console (userinput * const u, char *line)
   u->chat = NULL;
   u->net = 0;
   u->level = ADMIN_LEVEL_CONSOLE;
+  u->hostmask = NULL;
   
   u->cmd = caps(getpart(line,1));
   u->arg1 = getpart(line,2);
@@ -315,8 +316,9 @@ void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
   u->method = method_dcc;
   u->snick = NULL;
   u->chat = chat;
-  u->level = chat->level;
   u->net = chat->net;
+  u->level = chat->level;
+  u->hostmask = mystrdup(chat->hostmask);
   
   u->cmd = caps(getpart(line,1));
   u->arg1 = getpart(line,2);
