@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: BSD (submitted by HymnToLife)
+  Install in group "wheel".
+
 bugfix: SunOS (reported by Tass)
   Fix build on SunOS.
 

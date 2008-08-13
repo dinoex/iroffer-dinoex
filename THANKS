@@ -454,3 +454,6 @@ T4K
 Solidus_Snake
 	reporting "IGNORE" overflow
 
+HymnToLife
+	install on BSD
+

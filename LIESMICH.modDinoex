@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: BSD 
+  Instaliere in Gruppe "wheel".
+
 bugfix: SunOS
   Bot baut wieder auf SunOS.
 

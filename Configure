@@ -54,7 +54,6 @@ OPT_NOHTTP=false
 OPT_NOTELNET=false
 OPT_NOMEMSAVE=false
 cctype="gcc"
-ruby="ruby"
 
 while test "${1}" != ""
 do
@@ -88,11 +87,14 @@ uname
 ostype=`uname`
 platform=`uname -m`
 short_ostype=`uname | cut -d "_" -f 1`
+ruby="ruby"
+installgroup="root"
 libs=""
 
 case "$ostype" in
  FreeBSD | OpenBSD | NetBSD )
   ruby="ruby18"
+  installgroup="wheel"
   ;;
  Linux | IRIX | IRIX64 | OSF1 | Rhapsody | Darwin | AIX )
   # nothing fancy
@@ -1365,6 +1367,7 @@ if [ -z "$NSSLIBS" ]; then
 else
  echo CONFIG_TARGETS=iroffer_chroot$exe
 fi
+echo INSTALL_GROUP=$installgroup
 echo
 cat Makefile.config 
 ) > Makefile
