@@ -28,7 +28,7 @@
 #include "upnp.h"
 #endif /* USE_UPNP */
 
-int setupdccchatout(const char *nick)
+int setupdccchatout(const char *nick, const char *hostmask)
 {
   char *msg;
   int rc;
@@ -85,6 +85,7 @@ int setupdccchatout(const char *nick)
   chat->con.clientsocket = FD_UNUSED;
   chat->nick = mystrdup(nick);
   chat->net = gnetwork->net;
+  chat->hostmask = mystrdup(hostmask);
   
   msg = setup_dcc_local(&(chat->con.local));
   privmsg_fast(nick, "\1DCC CHAT CHAT %s\1", msg);

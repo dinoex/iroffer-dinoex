@@ -380,6 +380,7 @@ void u_fillwith_msg (userinput * const u, const char* n, const char *line)
   t4 = getpart(line,4);
   t5 = getpart(line,5);
   
+  u->hostmask = getpart(line+1, 1);
   u->cmd = caps(getpart(line,6));
   u->arg1 = getpart(line,7);
   u->arg2 = getpart(line,8);
@@ -435,6 +436,7 @@ void u_fillwith_clean (userinput * const u)
   u->chat = NULL;
   u->net = 0;
   u->level = ADMIN_LEVEL_PUBLIC;
+  mydelete(u->hostmask);
   mydelete(u->cmd);
   mydelete(u->arg1e);
   mydelete(u->arg2e);
@@ -2310,7 +2312,7 @@ static void u_chatme(const userinput * const u) {
    
    u_respond(u,"Sending You A DCC Chat Request");
    
-   if (setupdccchatout(u->snick))
+   if (setupdccchatout(u->snick, u->hostmask))
       u_respond(u,"[Failed to listen, try again]");
    
    

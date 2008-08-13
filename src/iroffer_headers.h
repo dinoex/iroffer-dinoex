@@ -373,6 +373,7 @@ typedef enum
 typedef struct
 {
   userinput_method_e method;
+  char *hostmask;
   char *snick, *cmd;
   char *arg1, *arg2, *arg3;
   char *arg1e, *arg2e, *arg3e;
@@ -720,7 +721,7 @@ void write_statefile(void);
 void read_statefile(void);
 
 /* dccchat.c */
-int setupdccchatout(const char *nick);
+int setupdccchatout(const char *nick, const char *hostmask);
 void setup_chat_banner(dccchat_t *chat);
 void setupdccchataccept(dccchat_t *chat);
 int setupdccchat(const char *nick,

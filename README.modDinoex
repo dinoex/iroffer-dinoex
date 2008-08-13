@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: group_admin
+  Allow group admins to issue CHATME
+
 bugfix: BSD (submitted by HymnToLife)
   Install in group "wheel".
 

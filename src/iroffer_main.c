@@ -2421,9 +2421,7 @@ static void privmsgparse(int type, int decoded, char* line)
    
    line_len = sstrlen(line);
    
-   hostmask = caps(getpart(line,1));
-   for (i=1; i<=sstrlen(hostmask); i++)
-      hostmask[i-1] = hostmask[i];
+   hostmask = caps(getpart(line + 1, 1));
    
    dest = caps(getpart(line,3));
    msg1 = getpart(line,4);
