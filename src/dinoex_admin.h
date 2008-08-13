@@ -50,7 +50,7 @@ int queue_host_remove(const userinput * const u, irlist_t *list, const char *hos
 int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick);
 
 void a_cancel_transfers(xdcc *xd, const char *msg);
-void a_remove_pack(const userinput * const u, xdcc *xd, int num);
+int a_remove_pack(const userinput * const u, xdcc *xd, int num);
 void a_remove_delayed(const userinput * const u);
 void a_add_delayed(const userinput * const u);
 void a_xdlock(const userinput * const u);

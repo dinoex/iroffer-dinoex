@@ -419,6 +419,7 @@ dns777
 	patch #channel -listmsg
 	patch CTCP LIST
 	bugfix new_trigger
+	reporting "REMOVEDIR" group_admin bug
 
 [V]4Mp|r
 	italian translation

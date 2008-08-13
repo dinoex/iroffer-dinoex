@@ -4,6 +4,9 @@ Ab Version 3.10:
 ----------------
 
 bugfix: group_admin
+  Bot frierte ein, wenn REMOVEDIR nicht alle Packs entfernen darf.
+
+bugfix: group_admin
   Erlaube Gruppen Admins den Befehl "CHATME" zu nutzen.
 
 bugfix: BSD 

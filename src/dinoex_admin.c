@@ -627,7 +627,7 @@ void a_cancel_transfers(xdcc *xd, const char *msg)
   }
 }
 
-void a_remove_pack(const userinput * const u, xdcc *xd, int num)
+int a_remove_pack(const userinput * const u, xdcc *xd, int num)
 {
   char *tmpdesc;
   char *tmpgroup;
@@ -635,7 +635,7 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
   updatecontext();
 
   if (group_hidden(u, xd))
-    return;
+    return 1; /* failed */
 
   write_removed_xdcc(xd);
   a_cancel_transfers(xd, "Pack removed");
@@ -670,6 +670,7 @@ void a_remove_pack(const userinput * const u, xdcc *xd, int num)
   set_support_groups();
   autotrigger_rebuild();
   write_files();
+  return 0;
 }
 
 void a_remove_delayed(const userinput * const u)
@@ -689,13 +690,14 @@ void a_remove_delayed(const userinput * const u)
     if ((xd->st_dev == st->st_dev) &&
         (xd->st_ino == st->st_ino)) {
       gnetwork = &(gdata.networks[u->net]);
-      a_remove_pack(u, xd, n);
-      /* start over, the list has changed */
-      n = 0;
-      xd = irlist_get_head(&gdata.xdccs);
-    } else {
-      xd = irlist_get_next(xd);
+      if (a_remove_pack(u, xd, n) == 0) {
+        /* start over, the list has changed */
+        n = 0;
+        xd = irlist_get_head(&gdata.xdccs);
+        continue;
+      }
     }
+    xd = irlist_get_next(xd);
   }
   gnetwork = backup;
 }
@@ -1177,11 +1179,12 @@ void a_removegroup(const userinput * const u)
     n++;
     if (xd->group != NULL) {
       if (strcasecmp(xd->group, u->arg1) == 0) {
-        a_remove_pack(u, xd, n);
-        /* start over, the list has changed */
-        n = 0;
-        xd = irlist_get_head(&gdata.xdccs);
-        continue;
+        if (a_remove_pack(u, xd, n) == 0) {
+          /* start over, the list has changed */
+          n = 0;
+          xd = irlist_get_head(&gdata.xdccs);
+          continue;
+        }
       }
     }
     xd = irlist_get_next(xd);
@@ -1694,8 +1697,8 @@ xdcc *a_add2(const userinput * const u)
         break;
 
       filename = mystrdup(xd->file);
-      a_remove_pack(u, xd, number_of_pack(xd));
-      a_filedel_disk(u, filename);
+      if (a_remove_pack(u, xd, number_of_pack(xd)) == 0)
+        a_filedel_disk(u, filename);
       mydelete(filename);
     }
   }
@@ -2950,8 +2953,8 @@ void a_fileremove(const userinput * const u)
       return;
 
     filename = mystrdup(xd->file);
-    a_remove_pack(u, xd, num2);
-    a_filedel_disk(u, filename);
+    if (a_remove_pack(u, xd, num2) == 0)
+      a_filedel_disk(u, filename);
     mydelete(filename);
   }
 }
