@@ -2236,14 +2236,20 @@ void a_chtrigger(const userinput * const u)
   if (group_restricted(u, xd))
     return;
 
-  mydelete(xd->trigger);
   if (!u->arg2 || !strlen(u->arg2)) {
+    mydelete(xd->trigger);
     a_respond(u, "TRIGGER: [Pack %i] removed", num);
     autotrigger_rebuild();
   } else {
+    if (xd->trigger) {
+      mydelete(xd->trigger);
+      xd->trigger = mystrdup(u->arg2e);
+      autotrigger_rebuild();
+    } else {
+      xd->trigger = mystrdup(u->arg2e);
+      autotrigger_add(xd);
+    }
     a_respond(u, "TRIGGER: [Pack %i] set: %s", num, u->arg2e);
-    xd->trigger = mystrdup(u->arg2e);
-    autotrigger_add(xd);
   }
 
   write_files();

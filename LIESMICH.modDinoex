@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: CHTRIGGER
+  Wenn der Trigger geänder wird, wird der alte entfernt.
+
 bugfix: group_admin
   Bot frierte ein, wenn REMOVEDIR nicht alle Packs entfernen darf.
 
