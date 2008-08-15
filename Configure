@@ -1249,14 +1249,14 @@ int main (int argc, char **argv) {exit(0);}
 		CURLLIB="-lcurl"
 		CURLINC="-I/usr/local/include"
 		CURLLDF="-L/usr/local/lib"
-		curltls=`ldd config.temp | grep gnutls`
-                if test "${curltls}" = ""; then
-			curlssl=`ldd config.temp | grep ssl`
-			if test "${curlssl}" != ""; then
-				echo "Notice: Your libcurl is linked with OpenSSL."
-			fi
+		curlssl=`ldd config.temp | grep libssl`
+		if test "${curlssl}" != ""; then
+			echo "Notice: Your libcurl is linked with OpenSSL."
 		else
-			echo "Notice: Your libcurl is linked with GNU TLS."
+			curltls=`ldd config.temp | grep libgnutls`
+			if test "${curltls}" != ""; then
+				echo "Notice: Your libcurl is linked with GNU TLS."
+			fi
 		fi
 	else
 		echo "not found"
