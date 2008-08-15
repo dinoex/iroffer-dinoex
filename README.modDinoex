@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: FETCH, SSL
+  Improve detection of SSL in curl on Debian.
+
 bugfix: CHTRIGGER (reported by spielefreak)
   When changing trigger, the old one must be deleted.
 

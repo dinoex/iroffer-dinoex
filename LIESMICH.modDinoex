@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: FETCH, SSL
+  Verbesserte Erkennung der SSL Funktionen unter Debian.
+
 bugfix: CHTRIGGER
   Wenn der Trigger geänder wird, wird der alte entfernt.
 
