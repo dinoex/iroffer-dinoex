@@ -1249,7 +1249,7 @@ int main (int argc, char **argv) {exit(0);}
 		CURLLIB="-lcurl"
 		CURLINC="-I/usr/local/include"
 		CURLLDF="-L/usr/local/lib"
-		curltls=`ldd config.temp | grep tls`
+		curltls=`ldd config.temp | grep gnutls`
                 if test "${curltls}" = ""; then
 			curlssl=`ldd config.temp | grep ssl`
 			if test "${curlssl}" != ""; then
