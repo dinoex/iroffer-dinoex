@@ -713,6 +713,7 @@ static void c_group_admin(char *var)
       ga->g_pass = mystrdup(data);
       break;
     case 4:
+      clean_quotes(data);
       ga->g_groups = mystrdup(data);
       break;
     default:
