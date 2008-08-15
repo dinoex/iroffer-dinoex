@@ -20,6 +20,8 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 
+#include <ctype.h>
+
 #ifndef WITHOUT_MEMSAVE
 
 char *mystrdup2(const char *str, const char *src_function, const char *src_file, int src_line)
@@ -248,29 +250,44 @@ char *hostmask_to_fnmatch(const char *str)
 
 /* check if given group can be found in a list of allowed groups */
 int verify_group_in_grouplist(const char *group, const char *grouplist)
-{
+{ 
+  const char *tlptr; /* character to compare */
+  const char *sptr; /* character to find */
+
   /* null grouplist means no restrictions */
   if (!grouplist)
     return 1;
+
   /* packs with no group set are always visible */
   if (!group)
     return 1;
-
+  
   /* case insensitive token search */
-  const char *glptr = grouplist;
-  const char *res = grouplist;
-  while (*res) {
-    res = strchr(glptr, ' ');
-    /* portable equivalent of strchrnul */
-    if (!res)
-      res = glptr + strlen(glptr);
-    if ((res > glptr) && ((unsigned)(res - glptr) == strlen(group))) {
-      if (strncasecmp(glptr, group, res - glptr) == 0)
-        return 1;
+  /* delimiters: space or coma */
+  sptr = group;
+  for (tlptr = grouplist; *tlptr; tlptr++) {
+    if ((*tlptr == ' ') || (*tlptr == ',')) {
+      sptr = group; /* end of token, reset search */
+      continue;
     }
-    glptr = res + 1;
+    if (sptr == NULL)
+      continue; /* skip comparison until next token of tokenlist  */
+
+    if (toupper(*tlptr) != toupper(*sptr)) {
+      sptr = NULL; /* strings differ */
+      continue;
+    }
+
+    sptr++;
+    if (*sptr != 0)
+      continue;
+
+    if ((*(tlptr+1) == ' ') || (*(tlptr+1) == ',') || (*(tlptr+1) == '\0'))
+      return 1; /* token found */
+
+    sptr = NULL; /* string length mismatch */
   }
-  return 0;
-}
+  return 0; /* token not found */
+} 
 
 /* End of File */
