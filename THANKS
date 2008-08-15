@@ -145,7 +145,7 @@ Thunder
 	suggesting "xdccxmlfile" with crc/md5
 	reporting RLUL bug
 	suggesting "fileremove_max_packs"
-	option "group_admin"
+	suggesting option "group_admin"
 
 Alita-Chan
 	reporting XDCC LIST problem with total line
@@ -420,6 +420,7 @@ dns777
 	patch CTCP LIST
 	bugfix new_trigger
 	reporting "REMOVEDIR" group_admin bug
+	contributing better verify_group_in_grouplist
 
 [V]4Mp|r
 	italian translation
