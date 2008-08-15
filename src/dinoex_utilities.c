@@ -250,7 +250,7 @@ char *hostmask_to_fnmatch(const char *str)
 
 /* check if given group can be found in a list of allowed groups */
 int verify_group_in_grouplist(const char *group, const char *grouplist)
-{ 
+{
   const char *tlptr; /* character to compare */
   const char *sptr; /* character to find */
 
@@ -261,7 +261,7 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
   /* packs with no group set are always visible */
   if (!group)
     return 1;
-  
+
   /* case insensitive token search */
   /* delimiters: space or coma */
   sptr = group;
@@ -288,6 +288,6 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
     sptr = NULL; /* string length mismatch */
   }
   return 0; /* token not found */
-} 
+}
 
 /* End of File */
