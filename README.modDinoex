@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: GET (reported by spielefreak)
+  Queue could stall when case sensitive nick was used.
+
 bugfix: FETCH, SSL
   Improve detection of SSL in curl on Debian.
 

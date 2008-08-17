@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: GET
+  Queue kann anhalten, wenn der Nick nicht korrekt geschrieben war.
+
 bugfix: FETCH, SSL
   Verbesserte Erkennung der SSL Funktionen unter Debian.
 

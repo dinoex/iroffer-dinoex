@@ -1390,7 +1390,7 @@ int close_qupload(int net, const char *nick)
     if (qu->q_state != 2)
       continue;
 
-    if (strcmp(qu->q_nick, nick) != 0)
+    if (strcasecmp(qu->q_nick, nick) != 0)
       continue;
 
     mydelete(qu->q_host);
