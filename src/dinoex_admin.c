@@ -2536,6 +2536,7 @@ void a_regroup(const userinput * const u)
     return;
 
   a_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2);
+  reorder_groupdesc(u->arg2);
   if (strcasecmp(u->arg1, "main") == 0)
     add_default_groupdesc(u->arg2);
   write_files();
