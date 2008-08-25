@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: ADDGROUP
+  Einstellung autoadd_sort wurde bei ADDGROUP ignoriert.
+
 bugfix: GET
   Queue kann anhalten, wenn der Nick nicht korrekt geschrieben war.
 

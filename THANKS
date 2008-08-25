@@ -460,4 +460,5 @@ Solidus_Snake
 
 HymnToLife
 	install on BSD
+	reporting "ADDGROUP" bug
 

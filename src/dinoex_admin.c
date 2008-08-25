@@ -751,8 +751,6 @@ static int a_set_group(const userinput * const u, xdcc *xd, int num, const char 
 void a_add_delayed(const userinput * const u)
 {
   userinput u2;
-  xdcc *xd;
-  int num;
 
   updatecontext();
 
@@ -760,16 +758,7 @@ void a_add_delayed(const userinput * const u)
 
   u2 = *u;
   u2.arg1e = u->arg1;
-  xd = a_add2(&u2);
-
-  if (u->arg3 == NULL)
-    return;
-
-  if (xd == NULL)
-    return;
-
-  num = number_of_pack(xd);
-  a_set_group(u, xd, num, u->arg3);
+  a_add2(&u2, u->arg3);
 }
 
 void a_xdlock(const userinput * const u)
@@ -1109,8 +1098,7 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
     u2->arg1 = tempstr;
     tempstr = NULL;
 
-    if (u->snick != NULL)
-        {
+    if (u->snick != NULL) {
       u2->snick = mystrdup(u->snick);
     }
 
@@ -1575,13 +1563,12 @@ static xdcc *a_oldest_xdcc(void)
   return old;
 }
 
-xdcc *a_add2(const userinput * const u)
+xdcc *a_add2(const userinput * const u, const char *group)
 {
   int xfiledescriptor;
   struct stat st;
   xdcc *xd;
   autoadd_group_t *ag;
-  char *group;
   char *file;
   char *a1;
   char *a2;
@@ -1641,8 +1628,7 @@ xdcc *a_add2(const userinput * const u)
     }
   }
 
-  group = NULL;
-  if (gdata.auto_default_group) {
+  if ((gdata.auto_default_group) && (group == NULL)) {
     a1 = mycalloc(strlen(u->arg1e) + 1);
     strtextcpy(a1, u->arg1e);
     for (xd = irlist_get_head(&gdata.xdccs);
@@ -1753,7 +1739,7 @@ xdcc *a_add2(const userinput * const u)
 
 void a_add(const userinput * const u)
 {
-  a_add2(u);
+  a_add2(u, NULL);
 }
 
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup, const char *match)
@@ -3959,7 +3945,7 @@ void a_addann(const userinput * const u)
 
   updatecontext();
 
-  xd = a_add2(u);
+  xd = a_add2(u, NULL);
   if (xd == NULL)
     return;
 

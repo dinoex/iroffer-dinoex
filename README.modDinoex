@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: ADDGROUP (reported by HymnToLife)
+  Option autoadd_sort was ignored for ADDGROUP.
+
 bugfix: GET (reported by spielefreak)
   Queue could stall when case sensitive nick was used.
 
