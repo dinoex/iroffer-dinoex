@@ -2092,10 +2092,9 @@ void a_newgroup(const userinput * const u)
   d = a_open_dir(&thedir);
   if (!d) {
     a_respond(u, "Can't Access Directory: %s", strerror(errno));
-    return;
+  } else {
+    a_newgroup_sub(u, thedir, d, u->arg1);
   }
-
-  a_newgroup_sub(u, thedir, d, u->arg1);
   mydelete(thedir);
   return;
 }
