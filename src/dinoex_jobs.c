@@ -1482,6 +1482,9 @@ void a_rehash_needtojump(const userinput *u)
         clearmemberlist(ch);
         free_channel_data(ch);
       }
+      mydelete(gnetwork->user_nick);
+      mydelete(gnetwork->caps_nick);
+      mydelete(gnetwork->name);
     }
     gnetwork = backup;
   }
