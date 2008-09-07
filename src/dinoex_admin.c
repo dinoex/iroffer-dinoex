@@ -424,6 +424,7 @@ int invalid_file(const userinput * const u, const char *arg)
     a_respond(u, "Try Specifying a Filename");
     return 1;
   }
+  clean_quotes(arg);
   return 0;
 }
 
@@ -1580,7 +1581,6 @@ xdcc *a_add2(const userinput * const u, const char *group)
   if (invalid_file(u, u->arg1e) != 0)
     return NULL;
 
-  clean_quotes(u->arg1e);
   file = mystrdup(u->arg1e);
   convert_to_unix_slash(file);
 
@@ -2757,7 +2757,6 @@ void a_filemove(const userinput * const u)
     return;
   }
 
-  clean_quotes(u->arg1);
   file1 = mystrdup(u->arg1);
   convert_to_unix_slash(file1);
 
@@ -2905,7 +2904,6 @@ void a_filedel(const userinput * const u)
   if (invalid_file(u, u->arg1e) != 0)
     return;
 
-  clean_quotes(u->arg1e);
   a_filedel_disk(u, u->arg1e);
 }
 
