@@ -528,8 +528,6 @@ void shutdowndccchat(dccchat_t *chat, int flush)
       mydelete(chat->con.localaddr);
       mydelete(chat->con.remoteaddr);
       ir_boutput_delete(&chat->boutput);
-      memset(chat, 0, sizeof(dccchat_t));
-      chat->con.clientsocket = FD_UNUSED;
 
       if (chat->status == DCCCHAT_LISTENING)
         ir_listen_port_connected(chat->con.localport);
@@ -539,6 +537,8 @@ void shutdowndccchat(dccchat_t *chat, int flush)
         upnp_rem_redir(chat->con.localport);
 #endif /* USE_UPNP */
 
+      memset(chat, 0, sizeof(dccchat_t));
+      chat->con.clientsocket = FD_UNUSED;
       chat->status = DCCCHAT_UNUSED;
       
       gdata.num_dccchats--;

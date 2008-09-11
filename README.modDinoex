@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+bugfix: CLOSEC (reported by plsdontkillme)
+  Close listen port and UPNP data when closing.
+
 bugfix: REGROUP (reported by HymnToLife)
   After REGROUP you could have 2 descriptions for one group.
 

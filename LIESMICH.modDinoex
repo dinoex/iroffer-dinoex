@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: CLOSEC
+  Gebe Port und UPNP Daten frei.
+
 bugfix: REGROUP
   Nach REGROUP konnte es 2 Beschreibungen für eine Gruppe geben.
  
