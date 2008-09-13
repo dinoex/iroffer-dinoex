@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
-bugfix: CLOSEC (reported by plsdontkillme)
+bugfix: CLOSEC (reported by Lamune)
   Close listen port and UPNP data when closing.
 
 bugfix: REGROUP (reported by HymnToLife)

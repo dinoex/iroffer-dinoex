@@ -375,6 +375,7 @@ Lamune
 	suggesting "#channel -waitjoin" option
 	reporting trigger ignore bugA
 	option "xdcc_deny" 
+	reporting "CLOSEC" bug
 
 DevelDoll
 	report transferlimits to user
@@ -462,7 +463,4 @@ HymnToLife
 	install on BSD
 	reporting "ADDGROUP" bug
 	reporting "REGROUP" bug
-
-plsdontkillme
-	reporting "CLOSEC" bug
 
