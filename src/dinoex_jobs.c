@@ -659,6 +659,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
       if (quiet == 2) {
         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %d, File %s",
                 number_of_pack(xd), line);
+        mydelete(xd->lock);
         xd->lock = mystrdup(badcrc);
       }
     }
