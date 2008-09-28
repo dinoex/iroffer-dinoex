@@ -173,7 +173,7 @@ static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, const char *v
 
 int bind_irc_vhost(int family, int clientsocket)
 {
-  char *vhost;
+  const char *vhost;
   ir_sockaddr_union_t localaddr;
   SIGNEDSOCK int addrlen;
   int e;
