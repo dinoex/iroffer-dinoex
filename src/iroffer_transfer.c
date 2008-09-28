@@ -591,26 +591,20 @@ void t_readjunk (transfer * const t)
                     {
                       t->firstack = t->curack;
                       show ++;
-                      if (t->firstack < t->startresume)
-                        t->mirc_dcc64 = 1;
+                      if (t->firstack <= t->startresume)
+                        {
+                          if (t->xpack->st_size > 0xFFFFFFFFUL)
+                            {
+                              t->mirc_dcc64 = 1;
+                              t->curack = t->firstack << 32;
+                              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                                      "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes, forcing 64bit",
+                                      t->id, t->nick, gdata.networks[ t->net ].name,
+                                      t->firstack );
+                            }
+                        }
                       if (t->firstack == 0)
                         t->firstack = 64;
-                    }
-                  else if (t->secondack == 0)
-                    {
-                      t->secondack = t->curack;
-                      show ++;
-                      if ((t->secondack < t->startresume) || ((t->secondack - t->firstack) > (t->bytessent - t->startresume)))
-                        t->mirc_dcc64 = 1;
-                      if (t->secondack == 0)
-                        t->secondack = 64;
-                    }
-                  if (t->mirc_dcc64 != 0)
-                    {
-                       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                               "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes, forcing 64bit",
-                               t->id, t->nick, gdata.networks[ t->net ].name,
-                               t->lastack );
                     }
                 }
               if (t->mirc_dcc64 == 0)
