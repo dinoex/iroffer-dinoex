@@ -589,7 +589,13 @@ void t_readjunk (transfer * const t)
                   if (t->xpack->st_size > 0x0FFFFFFFFLL)
                     {
                       while (t->curack < t->lastack)
+{
+outerror(OUTERROR_TYPE_WARN,
+          "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
+          t->id, t->nick, gdata.networks[ t->net ].name,
+          t->lastack, t->curack);
                         t->curack += 0x100000000LL;
+}
                     }
                 }
               t->lastack = t->curack;
