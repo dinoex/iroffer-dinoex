@@ -607,7 +607,7 @@ void t_readjunk (transfer * const t)
                                    t->id, t->nick, gdata.networks[ t->net ].name,
                                    t->curack );
                         }
-                      if (t->secondack < t->firstack)
+                      if ((t->secondack - t->startresume) < (t->firstack - t->startresume))
                         {
                           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                                   "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes, forcing 64bit",
