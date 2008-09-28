@@ -85,8 +85,6 @@ done
 echo -n "Determining OS... "
 uname
 ostype=`uname`
-platform=`uname -m`
-short_ostype=`uname | cut -d "_" -f 1`
 ruby="ruby"
 installgroup="root"
 libs=""
@@ -110,6 +108,7 @@ case "$ostype" in
   ;;
  CYGWIN* )
   VERSIONLONG="${VERSIONLONG} (Win32)"
+  short_ostype=`uname | cut -d "_" -f 1`
   ostype=$short_ostype
   exe=.exe
   
