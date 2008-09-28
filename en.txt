@@ -2275,3 +2275,5 @@
 2356 "xdcc_deny"
 2357 "Sorry, downloads to your IP not allowed, ask owner."
 2358 "Sorry, downloads to your IP denied, ask owner."
+2359 "u Bytes, forcing 64bit"
+2360 "u Bytes after %"

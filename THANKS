@@ -464,3 +464,6 @@ HymnToLife
 	reporting "ADDGROUP" bug
 	reporting "REGROUP" bug
 
+Globulus
+	debugging "mirc_dcc64"
+

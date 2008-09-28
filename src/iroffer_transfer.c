@@ -589,25 +589,48 @@ void t_readjunk (transfer * const t)
                   if (t->firstack == 0)
                     {
                       t->firstack = t->curack;
+                      if (gdata.debug > 2)
+                        {
+                           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_BLUE,
+                                   "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes",
+                                   t->id, t->nick, gdata.networks[ t->net ].name,
+                                   t->curack );
+                        }
                     }
                   else if (t->secondack == 0)
                     {
                       t->secondack = t->curack;
-outerror(OUTERROR_TYPE_WARN,
-          "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes and %" LLPRINTFMT "u Bytes",
-          t->id, t->nick, gdata.networks[ t->net ].name,
-          t->firstack, t->secondack);
+                      if (gdata.debug > 2)
+                        {
+                           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_BLUE,
+                                   "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes",
+                                   t->id, t->nick, gdata.networks[ t->net ].name,
+                                   t->curack );
+                        }
+                      if (t->secondack < t->firstack)
+                        {
+                          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                                  "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes, forcing 64bit",
+                                  t->id, t->nick, gdata.networks[ t->net ].name,
+                                  t->lastack );
+                          t->mirc_dcc64 = 1;
+                        }
+                      if (t->secondack == 0)
+                        t->secondack = 64;
                     }
+                }
+              if (t->mirc_dcc64 == 0)
+                {
                   if (t->xpack->st_size > 0x0FFFFFFFFLL)
                     {
                       while (t->curack < t->lastack)
-{
-outerror(OUTERROR_TYPE_WARN,
-          "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
-          t->id, t->nick, gdata.networks[ t->net ].name,
-          t->lastack, t->curack);
-                        t->curack += 0x100000000LL;
-}
+                        {
+                          outerror(OUTERROR_TYPE_WARN,
+                                   "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
+                                   t->id, t->nick, gdata.networks[ t->net ].name,
+	                           t->curack, t->lastack);
+                          t->curack += 0x100000000LL;
+                        }
                     }
                 }
               t->lastack = t->curack;
@@ -617,9 +640,9 @@ outerror(OUTERROR_TYPE_WARN,
       if ((gdata.debug > 2) && (t->tr_status == TRANSFER_STATUS_WAITING))
         {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_BLUE,
-          "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes",
-          t->id, t->nick, gdata.networks[ t->net ].name,
-          t->lastack );
+                  "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes",
+                  t->id, t->nick, gdata.networks[ t->net ].name,
+                  t->lastack );
         }
       
       t->bytesgot += i;
