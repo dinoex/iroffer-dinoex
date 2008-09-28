@@ -32,7 +32,7 @@ void strpathcpy(char *d, const char *s);
 int invalid_group(const userinput * const u, const char *arg);
 int invalid_dir(const userinput * const u, const char *arg);
 int is_upload_file(const userinput * const u, const char *arg);
-int invalid_file(const userinput * const u, const char *arg);
+int invalid_file(const userinput * const u, char *arg);
 int invalid_pwd(const userinput * const u, const char *arg);
 int invalid_nick(const userinput * const u, const char *arg);
 int invalid_message(const userinput * const u, const char *arg);

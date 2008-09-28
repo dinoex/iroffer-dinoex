@@ -418,7 +418,7 @@ int is_upload_file(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_file(const userinput * const u, const char *arg)
+int invalid_file(const userinput * const u, char *arg)
 {
   if (!arg || !strlen(arg)) {
     a_respond(u, "Try Specifying a Filename");
