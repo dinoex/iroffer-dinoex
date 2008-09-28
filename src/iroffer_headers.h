@@ -252,6 +252,8 @@ typedef struct
   off_t bytesgot;
   off_t lastack;
   off_t curack;
+  off_t firstack;
+  off_t secondack;
   off_t startresume;
   off_t lastspeedamt;
 #ifdef HAVE_MMAP
