@@ -538,6 +538,7 @@ void t_readjunk (transfer * const t)
 {
   int i,j;
   int show = 0;
+  off_t halfack;
   
   updatecontext();
   
@@ -589,6 +590,7 @@ void t_readjunk (transfer * const t)
                 {
                   if (t->firstack == 0)
                     {
+                      t->halfack = t->curack;
                       t->firstack = t->curack;
                       show ++;
                       if (t->firstack <= t->startresume)
@@ -611,12 +613,15 @@ void t_readjunk (transfer * const t)
                 {
                   if (t->xpack->st_size > 0x0FFFFFFFFLL)
                     {
+                      halfack = t->halfack;
+                      t->halfack = t->curack;
                       while (t->curack < t->lastack)
                         {
-                          outerror(OUTERROR_TYPE_WARN,
-                                   "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
-                                   t->id, t->nick, gdata.networks[ t->net ].name,
-	                           t->curack, t->lastack);
+                          if (t->curack < halfack)
+                            outerror(OUTERROR_TYPE_WARN,
+                                     "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
+                                     t->id, t->nick, gdata.networks[ t->net ].name,
+	                             t->curack, t->lastack);
                           t->curack += 0x100000000LL;
                         }
                     }
