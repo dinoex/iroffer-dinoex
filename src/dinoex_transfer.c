@@ -374,6 +374,49 @@ void t_check_duplicateip(transfer *const newtr)
   write_statefile();
 }
 
+int verify_acknowlede(transfer *tr)
+{
+  int show = 0;
+  off_t halfack;
+
+  if (tr->mirc_dcc64 != 0)
+    return show;
+
+  if (tr->firstack == 0) {
+    tr->halfack = tr->curack;
+    tr->firstack = tr->curack;
+    show ++;
+    if (tr->firstack <= tr->startresume) {
+      if (tr->xpack->st_size > 0xFFFFFFFFUL) {
+         tr->mirc_dcc64 = 1;
+         tr->curack = tr->firstack << 32;
+         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                 "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes, forcing 64bit",
+                 tr->id, tr->nick, gdata.networks[ tr->net ].name,
+                 tr->firstack );
+      }
+    }
+    if (tr->firstack == 0)
+      tr->firstack = 64;
+  }
+
+  if (tr->mirc_dcc64 == 0) {
+    if (tr->xpack->st_size > 0x0FFFFFFFFLL) {
+      halfack = tr->halfack;
+      tr->halfack = tr->curack;
+      while (tr->curack < tr->lastack) {
+        if (tr->curack < halfack)
+          outerror(OUTERROR_TYPE_WARN,
+                   "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
+                   tr->id, tr->nick, gdata.networks[ tr->net ].name,
+                   tr->curack, tr->lastack);
+         tr->curack += 0x100000000LL;
+       }
+     }
+  }
+  return show;
+}
+
 int t_select_fdset(int highests, int changequartersec)
 {
   transfer *tr;

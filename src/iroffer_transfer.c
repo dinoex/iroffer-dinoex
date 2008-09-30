@@ -537,8 +537,7 @@ void t_transfersome (transfer * const t)
 void t_readjunk (transfer * const t)
 {
   int i,j;
-  int show = 0;
-  off_t halfack;
+  int show;
   
   updatecontext();
   
@@ -586,46 +585,7 @@ void t_readjunk (transfer * const t)
           
           if (byte == 0)
             {
-              if (t->mirc_dcc64 == 0)
-                {
-                  if (t->firstack == 0)
-                    {
-                      t->halfack = t->curack;
-                      t->firstack = t->curack;
-                      show ++;
-                      if (t->firstack <= t->startresume)
-                        {
-                          if (t->xpack->st_size > 0xFFFFFFFFUL)
-                            {
-                              t->mirc_dcc64 = 1;
-                              t->curack = t->firstack << 32;
-                              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                                      "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes, forcing 64bit",
-                                      t->id, t->nick, gdata.networks[ t->net ].name,
-                                      t->firstack );
-                            }
-                        }
-                      if (t->firstack == 0)
-                        t->firstack = 64;
-                    }
-                }
-              if (t->mirc_dcc64 == 0)
-                {
-                  if (t->xpack->st_size > 0x0FFFFFFFFLL)
-                    {
-                      halfack = t->halfack;
-                      t->halfack = t->curack;
-                      while (t->curack < t->lastack)
-                        {
-                          if (t->curack < halfack)
-                            outerror(OUTERROR_TYPE_WARN,
-                                     "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
-                                     t->id, t->nick, gdata.networks[ t->net ].name,
-	                             t->curack, t->lastack);
-                          t->curack += 0x100000000LL;
-                        }
-                    }
-                }
+              show = verify_acknowlede(t);
               t->lastack = t->curack;
             
               if (t->tr_status == TRANSFER_STATUS_WAITING)
