@@ -59,7 +59,7 @@ void init_upnp (void)
 	tostdout_write();
 	memset(&urls, 0, sizeof(struct UPNPUrls));
 	memset(&data, 0, sizeof(struct IGDdatas));
-	devlist = upnpDiscover(2000, NULL, NULL);
+	devlist = upnpDiscover(2000, NULL, NULL, 0);
 	if (devlist)
 	{
 		dev = devlist;
