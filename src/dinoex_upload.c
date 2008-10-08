@@ -163,7 +163,7 @@ void l_setup_accept(upload * const l)
 
   FD_CLR(l->con.listensocket, &gdata.readset);
   close(l->con.listensocket);
-  l->con.clientsocket = FD_UNUSED;
+  l->con.listensocket = FD_UNUSED;
 
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND connection received");
