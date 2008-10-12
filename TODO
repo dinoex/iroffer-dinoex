@@ -84,6 +84,16 @@ Long Term Features:
   1190  show CONFIG value
   1193  disable all privmsg
   1206  remove file after last person finishes downloading
+  1215  anti flood for xdcc search
+  1216  ADDGROUP with file
+  1234  better response to find
+  1240  bandwith trigger
+  1243  move upload files into filesdir/subdir
+  1246  keep statistik when file is removed and added
+  1247  don't entforce minspeed if slots are free
+  1248  max logfiles size, rotate if reached
+  1253  do not warn if xdccllistfile changes
+  1262  @find should report the newest files first
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -134,4 +144,13 @@ Not going to happen anytime soon:
   1210  bonjour/zeroconf, apipa
   1210  dcc2
   1210  https
+  1211  report more os info
+  1213  support SCTP
+  1220  group bots and block users from paralell DL
+  1220  limit DL for reistered users NickServ STATUS
+  1225  bann bad clients by CTCP VERSION
+  1250  slotsmax and overallmaxspeed setable by time
+  1259  support SNMP
+  1260  !find trigger
+  1261  SORTGROUP
 
