@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+bugfix: xdccxmlfile
+  packinfo erweitert um added
+
 bugfix: upnp_router
   Update für libminiupnpc 1.2
 

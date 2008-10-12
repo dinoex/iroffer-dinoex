@@ -1185,6 +1185,9 @@ static void xdcc_save_xml(void)
     write_string(fd, "  <packgets>");
     write_asc_int(fd, xd->gets);
     write_string(fd, "</packgets>\n");
+    write_string(fd, "  <added>");
+    write_asc_int(fd, xd->xtime ? xd->xtime : xd->mtime);
+    write_string(fd, "</added>\n");
     if (xd->group != NULL) {
       groups ++;
       write_string(fd, "  <groupname><![CDATA[");
