@@ -3,6 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.10:
 ------------------
 
+265) no_minspeed_on_free (inspired by TheDeath)
+  Don't enforce minspeed when bot still has free slots.
+
+  References TODO:
+Short Term Features:
+   199 12/12/03 Open dont enforce minspeed if there are free slots
+ 
 bugfix: xdccxmlfile (reported by chibi)
   packinfo extended with added
 

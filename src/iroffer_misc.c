@@ -2073,6 +2073,7 @@ void reinit_config_vars(void)
   gdata.privmsg_encrypt = 0;
   gdata.verbose_crc32 = 0;
   gdata.mirc_dcc64 = 0;
+  gdata.no_minspeed_on_free = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

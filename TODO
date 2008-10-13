@@ -17,7 +17,6 @@ Short Term Features:
    189 12/09/03 Open configurable to disable all stats
    193 12/09/03 Open different lowbdwth for day and night speeds
    194 12/09/03 Open send note to user on get of file
-   199 12/12/03 Open dont enforce minspeed if there are free slots
    201 1/19/04 Open configurable to set how aggressive auto-ignore is  
    204 2/2/04 Open configurable to cover both maxqueueditemsperperson and maxtransfersperperson
    207 4/02/04 Open md5sum uploads
@@ -90,7 +89,6 @@ Long Term Features:
   1240  bandwith trigger
   1243  move upload files into filesdir/subdir
   1246  keep statistik when file is removed and added
-  1247  don't entforce minspeed if slots are free
   1248  max logfiles size, rotate if reached
   1253  do not warn if xdccllistfile changes
   1262  @find should report the newest files first

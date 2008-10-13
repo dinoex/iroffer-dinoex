@@ -3,8 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.10:
 ----------------
 
+265) no_minspeed_on_free (inspired by TheDeath)
+  Ignoriere minspeed solang noch Solts frei sind.
+
 bugfix: xdccxmlfile
-  packinfo erweitert um added
+  Packinfo erweitert um added
 
 bugfix: upnp_router
   Update für libminiupnpc 1.2

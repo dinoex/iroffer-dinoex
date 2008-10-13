@@ -85,6 +85,7 @@ TheDeath
 	reporting leak of filehandles
 	reporting CONFIG bug
 	reporting xdcclistfile over HTTP bug
+	option "no_minspeed_on_free"
 
 [GFE]Lunix
 	alias xdcc list group <group>

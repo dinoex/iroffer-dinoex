@@ -199,6 +199,7 @@ int fish_only;
 int privmsg_encrypt;
 int verbose_crc32;
 int mirc_dcc64;
+int no_minspeed_on_free;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

@@ -865,6 +865,11 @@ void t_checkminspeed(transfer * const t) {
    if (t->nomin || (t->xpack->minspeed) == 0.0)      return; /* no minspeed for this transfer */
    if ( t->lastspeed+0.11 > t->xpack->minspeed )     return; /* over minspeed */
    
+   if (gdata.no_minspeed_on_free)
+     {
+        if (irlist_size(&gdata.trans) < gdata.slotsmax) return; /* free slots */
+     }
+   
    tempstr2 = mycalloc(maxtextlength);
    snprintf(tempstr2,maxtextlength-1,
         "Under Min Speed Requirement, %2.1fK/sec is less than %2.1fK/sec",
