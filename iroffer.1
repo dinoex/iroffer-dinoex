@@ -1,0 +1,83 @@
+.\" $ID$
+.TH IROFFER 1 "October 2008" "All Posix OS" "User Manuals"
+.SH NAME
+iroffer \-\- DCC file server bot
+.SH SYNOPSIS
+.TP
+.B iroffer -v
+.TP
+.B iroffer -c
+.TP
+.B iroffer [-b] [-d] [-k] [-n] [-s] [-u user] [-t dir] configfile [configfile ...]
+.SH DESCRIPTION
+.B iroffer
+is a file server which uses the DCC feature of IRC to send requested
+files to other users. The name of a configuration file must be given
+on the command line for normal operation.
+.SH OPTIONS
+.TP
+.B \-v
+Display version information and exit.
+.TP
+.B \-c
+Generate an encrypted password and exit.
+.TP
+.B \-b
+Run in the background.
+.TP
+.B \-d
+Increase debug level.
+.TP
+.B \-k
+Attempt to adjust ulimit to allow core files.
+.TP
+.B \-n
+No colors in foreground mode.
+.TP
+.B \-s
+No screen manipulation in foreground mode.
+.TP
+.B \-u user
+Run as user (you have to start as root).
+.TP
+.B \-t dir
+Chroot to dir (you have to start as root).
+.SH "IMPLEMENTATION NOTES"
+.TP
+.B multiple IRC networks
+Supports connecting to multiple IRC networks at the same time.
+.TP
+.B SSL encrpytion
+Supports connecting via SSL to IRC-servers if OpenSSL or GnuTLS is compiled in.
+.TP
+.B IPv6
+Supports connecting and transfers via IPv6
+.TP
+.B DCC
+Supports transfers of files greater 4 GB.
+.SH RETURN VALUES
+The iroffer program exits 0 on successful termination, and >0 if an error occurs.
+.SH "FILES"
+.TP
+.B mybot.pid
+the pid of the currently running iroffer
+.TP
+.B mybot.state
+the main database for the iroffer
+.TP
+.B mybot.txt
+generated list of packs in plain text
+.TP
+.B mybot.xml
+generated list of packs in XML
+.TP
+.B mybot.log
+logfile wit all notes error and while running
+.SH "SEE ALSO"
+.TP
+.B /usr/share/doc/iroffer
+Please look for more detailed information in this directory.
+.SH "HISTORY"
+The original iroffer version was written by by David Johnson.
+.TP
+iroffer-dinoex is developed by Dirk Meyer.
