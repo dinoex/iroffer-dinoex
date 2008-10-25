@@ -47,14 +47,32 @@ Chroot to dir (you have to start as root).
 .B multiple IRC networks
 Supports connecting to multiple IRC networks at the same time.
 .TP
-.B SSL encrpytion
-Supports connecting via SSL to IRC-servers if OpenSSL or GnuTLS is compiled in.
-.TP
 .B IPv6
 Supports connecting and transfers via IPv6
 .TP
 .B DCC
 Supports transfers of files greater 4 GB.
+.TP
+.B HTTP
+Supports internal HTTP server for status and pack list.
+.TP
+.B Telnet
+Supports internal Telnet server for background administration.
+.TP
+.B SSL encrpytion
+Optional support to connect via SSL to IRC-servers if OpenSSL or GnuTLS is availible.
+.TP
+.B GeoIP
+Optional support to limit transfers to countrys with libGeoIP.
+.TP
+.B Curl
+Optional support to fetch files via FTP/HTTP if libcurl is compiled in.
+.TP
+.B UPnP
+Optional Universal Plug and Play support to connect via NAT Routers, this requires lib miniupnpc present.
+.TP
+.B Ruby
+Optional support for scripting plugins in Ruby.
 .SH RETURN VALUES
 The iroffer program exits 0 on successful termination, and >0 if an error occurs.
 .SH "FILES"
