@@ -410,9 +410,9 @@ int verify_acknowlede(transfer *tr)
                    "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
                    tr->id, tr->nick, gdata.networks[ tr->net ].name,
                    tr->curack, tr->lastack);
-         tr->curack += 0x100000000LL;
-       }
-     }
+        tr->curack += 0x100000000LL;
+      }
+    }
   }
   return show;
 }
