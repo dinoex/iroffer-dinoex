@@ -3,9 +3,8 @@ Section: net
 Priority: extra
 Maintainer: Dirk Meyer <dinoex@dinoex.net>
 Standards-Version: 3.7.2
-Build-Depends: debhelper (>= 4.0)
+
 Package: iroffer-dinoex
-Version: 3.10
 Architecture: any
 Depends: ${shlibs:Depends}
 Replaces: iroffer
