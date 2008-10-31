@@ -53,6 +53,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/<packagename>
+	-mkdir -p $(CURDIR)/debian/iroffer/usr/bin
 	$(MAKE) install INSDIR=$(CURDIR)/debian/iroffer/usr/bin
 
 
@@ -68,7 +69,7 @@ binary-arch: build install
 	dh_installexamples
 	dh_installmenu
 	dh_installman
-	dh_installchangelogs WHATSNEW
+	dh_installchangelogs
 	dh_link
 	dh_strip
 	dh_compress

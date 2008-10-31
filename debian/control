@@ -4,10 +4,11 @@ Priority: extra
 Maintainer: Dirk Meyer <dinoex@dinoex.net>
 Standards-Version: 3.7.2
 Build-Depends: debhelper (>= 4.0)
-
 Package: iroffer-dinoex
+Version: 3.10
 Architecture: any
 Depends: ${shlibs:Depends}
+Replaces: iroffer
 Description: IRC file distribution bot
  iroffer is a fileserver for IRC (commonly referred to as a DCC bot).
  It uses the DCC feature of IRC to send files to other users. iroffer

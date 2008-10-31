@@ -1,1 +1,6 @@
+iroffer-dinoex (3.10-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Dirk Meyer <dinoex@dinoex.net>  Thu, 10 Jul 2008 13:48:37 +0200
 
