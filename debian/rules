@@ -53,7 +53,6 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/<packagename>
-	-mkdir -p $(CURDIR)/debian/iroffer-dinoex/usr/bin
 	$(MAKE) install INSDIR=$(CURDIR)/debian/iroffer-dinoex/usr/bin
 
 
