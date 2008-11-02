@@ -126,69 +126,6 @@ char* nocaps(char *text) {
    return text;
    }
 
-
-char* sizestr(int spaces, off_t num)
-{
-#define SIZESTR_SIZE 5
-  char *str = mycalloc(SIZESTR_SIZE);
-  
-  if (num >= 1024*1024*1024*1000LL)
-    {
-      /* >1000GB */
-      snprintf(str, SIZESTR_SIZE,
-               "%2.1fT",
-               (((float)num)/(1024.0*1024.0*1024.0*1024.0)));
-    }
-  else if (num >= 1024*1024*1024*10LL)
-    {
-      /* >10GB */
-      snprintf(str, SIZESTR_SIZE,
-               "%3.0fG",
-               (((float)num)/(1024.0*1024.0*1024.0)));
-    }
-  else if (num >= 1024*1024*1000)
-    {
-      /* >1000MB */
-      snprintf(str, SIZESTR_SIZE,
-               "%2.1fG",
-               (((float)num)/(1024.0*1024.0*1024.0)));
-    }
-  else if (num >= 1024*1024*10)
-    {
-      /* >10MB */
-      snprintf(str, SIZESTR_SIZE,
-               spaces ? "%3.0fM" : "%.0fM",
-               (((float)num)/(1024.0*1024.0)));
-    }
-  else if (num >= 1024*1000)
-    {
-      /* >1000KB */
-      snprintf(str, SIZESTR_SIZE,
-               "%2.1fM",
-               (((float)num)/(1024.0*1024.0)));
-    }
-  else if (num >= 1024)
-    {
-      /* >1KB */
-      snprintf(str, SIZESTR_SIZE,
-               spaces ? "%3.0fK" : "%.0fK",
-               (((float)num)/1024.0));
-    }
-  else if (num >= 1)
-    {
-      /* <1KB */
-      snprintf(str, SIZESTR_SIZE,
-               spaces ? " <1K" : "<1K");
-    }
-  else
-    {
-      snprintf(str,SIZESTR_SIZE,
-               spaces ? "   0" : "0");
-    }
-  
-  return str;
-}
-
 void getos (void) {
 
    struct utsname u1;

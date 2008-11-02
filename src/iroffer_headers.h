@@ -509,7 +509,6 @@ char* getpart(const char *line, int howmany);
 #endif
 char* caps(char *text);
 char* nocaps(char *text);
-char* sizestr(int spaces, off_t num);
 void getos(void);
 void floodchk(void);
 

@@ -32,5 +32,6 @@ int strcmp_null(const char *s1, const char *s2);
 int is_file_writeable(const char *f);
 char *hostmask_to_fnmatch(const char *str);
 int verify_group_in_grouplist(const char *group, const char *grouplist);
+char* sizestr(int spaces, off_t num);
 
 /* End of File */

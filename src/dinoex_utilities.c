@@ -290,4 +290,70 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
   return 0; /* token not found */
 }
 
+char* sizestr(int spaces, off_t num)
+{
+#define SIZESTR_SIZE 5
+  char *str = mycalloc(SIZESTR_SIZE);
+  float val;
+ 
+  if (num <= 0) {
+    snprintf(str, SIZESTR_SIZE, spaces ? "%4s" : "%s", "0");
+    return str;
+  }
+  if (num < 1024) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%4s" : "%s", "<1K");
+    return str;
+  }
+  /* KB */
+  val = (((float)num) / 1024.0);
+  if (val < 1000.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fK" : "%.0fK", val);
+    return str;
+  }
+  /* MB */
+  val /= 1024.0;
+  if (val < 10.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fM" : "%.1fM", val);
+    return str;
+  }
+  if (val < 1000.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fM" : "%.0fM", val);
+    return str;
+  }
+  /* GB */
+  val /= 1024.0;
+  if (val < 10.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fG" : "%.1fG", val);
+    return str;
+  }
+  if (val < 1000.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fG" : "%.0fG", val);
+    return str;
+  }
+  /* TB */
+  val /= 1024.0;
+  if (val < 10.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fT" : "%.1fT", val);
+    return str;
+  }
+  if (val < 1000.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fT" : "%.0fT", val);
+    return str;
+  }
+  /* EB */
+  val /= 1024.0;
+  if (val < 10.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fE" : "%.1fE", val);
+    return str;
+  }
+  if (val < 1000.0) {
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fE" : "%.0fE", val);
+    return str;
+  }
+  mydelete(str);
+  str = mycalloc(SIZESTR_SIZE + SIZESTR_SIZE);
+  snprintf(str, SIZESTR_SIZE + SIZESTR_SIZE , "%.0fE", val);
+  return str;
+}
+
 /* End of File */
