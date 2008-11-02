@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: XDCC LIST (reported by Kamina)
+  show correct volume if greater 10 TB
+
 With Version 3.10:
 ------------------
 
