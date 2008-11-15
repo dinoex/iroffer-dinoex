@@ -295,7 +295,7 @@ char* sizestr(int spaces, off_t num)
 #define SIZESTR_SIZE 5
   char *str = mycalloc(SIZESTR_SIZE);
   float val;
- 
+
   if (num <= 0) {
     snprintf(str, SIZESTR_SIZE, spaces ? "%4s" : "%s", "0");
     return str;
