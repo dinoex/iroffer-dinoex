@@ -8,7 +8,7 @@ iroffer \-\- DCC file server bot
 .TP
 .B iroffer -c
 .TP
-.B iroffer [-b] [-d] [-k] [-n] [-s] [-u user] [-t dir] configfile [configfile ...]
+.B iroffer [-b] [-d] [-k] [-n] [-s] [-u user] [-t dir] [-i file] configfile [configfile ...]
 .SH DESCRIPTION
 .B iroffer
 is a file server which uses the DCC feature of IRC to send requested
@@ -42,6 +42,9 @@ Run as user (you have to start as root).
 .TP
 .B \-t dir
 Chroot to dir (you have to start as root).
+.TP
+.B \-i file
+Import and old style mybot.xdcc file.
 .SH "IMPLEMENTATION NOTES"
 .TP
 .B multiple IRC networks

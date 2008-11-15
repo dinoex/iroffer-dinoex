@@ -76,6 +76,7 @@ usage(void)
 #if !defined(NO_CHROOT)
 "        -t dir    Chroot to dir (you have to start as root).\n"
 #endif
+"        -i file   Import and old style mybot.xdcc file.\n"
 "\n", ir_basename);
   exit(64);
 }
@@ -100,6 +101,10 @@ void command_options(int argc, const char *const *argv)
         exit(0);
       case 'd': /* increase debug */
         gdata.debug++;
+        break;
+      case 'i': /* import xdccfile */
+        GET_NEXT_DATA(cptr);
+        gdata.import = cptr;
         break;
       case 'k': /* adjust core */
         gdata.adjustcore = 1;

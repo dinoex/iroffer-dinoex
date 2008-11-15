@@ -56,6 +56,7 @@ void autoadd_all(void);
 void run_delayed_jobs(void);
 int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len);
 void write_removed_xdcc(xdcc *xd);
+void import_xdccfile(void);
 void autotrigger_add(xdcc *xd);
 void autotrigger_rebuild(void);
 void start_md5_hash(xdcc *xd, int packnum);

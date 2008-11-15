@@ -918,6 +918,276 @@ void write_removed_xdcc(xdcc *xd)
   close(fd);
 }
 
+static void u_fillwith_console2(userinput * const u)
+{
+  u->method = method_console;
+  u->snick = NULL;
+  u->chat = NULL;
+  u->net = 0;
+  u->level = ADMIN_LEVEL_CONSOLE;
+  u->hostmask = NULL;
+  u->cmd = NULL;
+  u->arg1 = NULL;
+  u->arg2 = NULL;
+  u->arg3 = NULL;
+  u->arg1e = NULL;
+  u->arg2e = NULL;
+  u->arg3e = NULL;
+}
+
+static void import_pack(const char *xx_file, const char *xx_desc, const char *xx_note,
+                        int xx_gets, float xx_mins, float xx_maxs,
+                        const char *xx_data, const char *xx_trno)
+{
+  char *file;
+  const char *new;
+  struct stat st;
+  userinput u2;
+  xdcc *xd;
+  int xfiledescriptor;
+  int rc;
+
+  updatecontext();
+
+  u_fillwith_console2(&u2);
+  file = mystrdup(xx_file);
+  convert_to_unix_slash(file);
+
+  xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (a_access_fstat(&u2, xfiledescriptor, &file, &st))
+    return;
+
+  if (gdata.noduplicatefiles) {
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      if ((xd->st_dev == st.st_dev) &&
+          (xd->st_ino == st.st_ino)) {
+        a_respond(&u2, "File '%s' is already added.", xx_file);
+        mydelete(file);
+        xd->gets += xx_gets;
+        return;
+      }
+    }
+  }
+
+  if (gdata.no_duplicate_filenames) {
+    new = get_basename(file);
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      if (strcasecmp(get_basename(xd->file), new) == 0) {
+        a_respond(&u2, "File '%s' is already added.", xx_file);
+        mydelete(file);
+        xd->gets += xx_gets;
+        return;
+      }
+    }
+  }
+
+  if (gdata.disk_quota) {
+    off_t usedbytes = st.st_size;
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      usedbytes += xd->st_size;
+    }
+    if (usedbytes >= gdata.disk_quota) {
+      a_respond(&u2, "File '%s' not added, you reached your quoata", xx_file);
+      mydelete(file);
+      xd->gets += xx_gets;
+      return;
+    }
+  }
+
+  xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
+  xd->file = file;
+
+  if (xx_desc != NULL)
+    xd->desc = mystrdup(xx_desc);
+
+  if (xx_note != NULL)
+    xd->desc = mystrdup(xx_note);
+
+  xd->gets = xx_gets;
+  xd->minspeed = gdata.transferminspeed;
+  if (xx_mins > 0)
+    xd->minspeed = xx_mins;
+
+  xd->maxspeed = gdata.transfermaxspeed;
+  if (xx_maxs > 0)
+    xd->maxspeed = xx_maxs;
+
+  xd->group = NULL;
+  xd->group_desc = NULL;
+
+  if (xx_data != NULL) {
+    xd->group = mystrdup(xx_data);
+    rc = add_default_groupdesc(xx_data);
+    set_support_groups();
+    if (rc == 1) {
+      reorder_new_groupdesc(xx_data, xx_trno);
+    }
+  }
+
+  xd->st_size  = st.st_size;
+  xd->st_dev   = st.st_dev;
+  xd->st_ino   = st.st_ino;
+  xd->mtime    = st.st_mtime;
+}
+
+void import_xdccfile(void)
+{
+  char *templine;
+  char *word;
+  char *data;
+  char *xx_file = NULL;
+  char *xx_desc = NULL;
+  char *xx_note = NULL;
+  char *xx_data = NULL;
+  char *xx_trno = NULL;
+  float val;
+  int filedescriptor;
+  int part;
+  int err;
+  int xx_gets = 0;
+  float xx_mins = 0.0;
+  float xx_maxs = 0.0;
+
+  updatecontext();
+
+  if (gdata.import == NULL)
+    return;
+
+  filedescriptor = open(gdata.import, O_RDONLY | ADDED_OPEN_FLAGS );
+  if (filedescriptor < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access XDCC File '%s': %s", gdata.import, strerror(errno));
+    return;
+  }
+
+  templine = mycalloc(maxtextlength);
+  if (getfline(templine, maxtextlength, filedescriptor, 1) == NULL) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Empty XDCC File");
+    mydelete(templine);
+    return;
+  }
+
+  part = 0;
+  for (word = strtok(templine, " ");
+       word;
+       word = strtok(NULL, " ")) {
+    part ++;
+    switch (part) {
+    case 6:
+      val = atof(word);
+      if (val > gdata.record)
+         gdata.record = val;
+      break;
+    case 7:
+      val = atof(word);
+      if (val > gdata.sentrecord)
+         gdata.sentrecord = val;
+      break;
+    case 8:
+      gdata.totalsent += atoull(word);
+      break;
+    case 9:
+      gdata.totaluptime += atol(word);
+      break;
+    default:
+      break;
+    }
+  }
+  err = 0;
+  while (getfline(templine, maxtextlength, filedescriptor, 1) != NULL) {
+    if (templine[0] == 0) {
+      if (xx_file != NULL) {
+        import_pack(xx_file, xx_desc, xx_note, xx_gets, xx_mins, xx_maxs, xx_data, xx_trno);
+        mydelete(xx_file);
+        mydelete(xx_desc);
+        mydelete(xx_note);
+        mydelete(xx_data);
+        mydelete(xx_trno);
+        xx_gets = 0;
+        xx_mins = 0.0;
+        xx_maxs = 0.0;
+      }
+      continue;
+    }
+    word = strtok(templine, " ");
+    if (word == NULL) {
+      err ++;
+      break;
+    }
+    data = strtok(NULL, "\n");
+    if (strcmp(word, "xx_file") == 0) {
+      if (data == NULL) {
+        err ++;
+        break;
+      }
+      xx_file = mystrdup(data);
+      continue;
+    }
+    if (strcmp(word, "xx_desc") == 0) {
+      if (data != NULL)
+        xx_desc = mystrdup(data);
+      continue;
+    }
+    if (strcmp(word, "xx_note") == 0) {
+      if (data != NULL)
+        xx_note = mystrdup(data);
+      continue;
+    }
+    if (strcmp(word, "xx_size") == 0) {
+      continue;
+    }
+    if (strcmp(word, "xx_gets") == 0) {
+      if (data != NULL)
+        xx_gets = atoi(data);
+      continue;
+    }
+    if (strcmp(word, "xx_mins") == 0) {
+      if (data != NULL)
+        xx_mins = atof(data);
+      continue;
+    }
+    if (strcmp(word, "xx_maxs") == 0) {
+      if (data != NULL)
+        xx_maxs = atof(data);
+      continue;
+    }
+    if (strcmp(word, "xx_data") == 0) {
+      if (data != NULL)
+        xx_data = mystrdup(data);
+      continue;
+    }
+    if (strcmp(word, "xx_trig") == 0) {
+      continue;
+    }
+    if (strcmp(word, "xx_trno") == 0) {
+      if (data != NULL)
+        xx_trno = mystrdup(data);
+      continue;
+    }
+    err ++;
+    break;
+  }
+  if (err > 0) {
+    outerror(OUTERROR_TYPE_CRASH, "Error in XDCC File: %s", templine);
+    mydelete(templine);
+    return;
+  }
+  if (xx_file != NULL) {
+    import_pack(xx_file, xx_desc, xx_note, xx_gets, xx_mins, xx_maxs, xx_data, xx_trno);
+    mydelete(xx_file);
+    mydelete(xx_desc);
+    mydelete(xx_note);
+    mydelete(xx_data);
+    mydelete(xx_trno);
+  }
+  mydelete(templine);
+}
+
 void autotrigger_add(xdcc *xd)
 {
   autotrigger_t *at;
