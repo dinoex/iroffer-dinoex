@@ -26,6 +26,7 @@
 #include "dinoex_queue.h"
 #include "dinoex_jobs.h"
 #include "dinoex_http.h"
+#include "dinoex_main.h"
 #include "dinoex_misc.h"
 
 

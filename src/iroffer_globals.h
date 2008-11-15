@@ -299,10 +299,10 @@ int meminfo_count;
 int meminfo_depth;
 
 #if !defined(NO_CHROOT)
-char *chrootdir;
+const char *chrootdir;
 #endif
 #if !defined(NO_SETUID)
-char *runasuser;
+const char *runasuser;
 #endif
 
 irlist_t listen_ports;

@@ -24,6 +24,7 @@
 #include "dinoex_curl.h"
 #include "dinoex_jobs.h"
 #include "dinoex_irc.h"
+#include "dinoex_main.h"
 #include "dinoex_misc.h"
 
 /* local functions */

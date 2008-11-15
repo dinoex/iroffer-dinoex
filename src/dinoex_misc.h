@@ -13,6 +13,9 @@
  *
  */
 
+extern xdcc xdcc_statefile;
+extern xdcc xdcc_listfile;
+
 int hide_pack(const xdcc *xd);
 int check_lock(const char* lockstr, const char* pwd);
 int number_of_pack(xdcc *pack);
@@ -76,11 +79,5 @@ group_admin_t *verifypass_group(const char *hostmask, const char *passwd);
 int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote);
 
 void free_channel_data(channel_t *ch);
-
-void
-#ifdef __GNUC__
-__attribute__ ((noreturn))
-#endif
-exit_iroffer(void);
 
 /* End of File */

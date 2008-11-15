@@ -32,74 +32,24 @@
 #include "dinoex_badip.h"
 #include "dinoex_jobs.h"
 #include "dinoex_ruby.h"
+#include "dinoex_main.h"
 #include "dinoex_misc.h"
 
 /* local functions */
 static void mainloop(void);
 static void parseline(char *line);
 static void privmsgparse(int type, int decoded, char* line);
-static int  parsecmdline(int argc, char *argv[]);
 
 /* main */
-int main(int argc, char *argv[]) {
-   int i;
-   int first_config_arg;
+int main(int argc, const char *const *argv) {
    
    initvars();
    
-   switch( parsecmdline( argc, argv ) ) {
-   case PCL_OK: break;
-   case PCL_BAD_OPTION:
-     printf("\n"
-            "iroffer-dinoex " VERSIONLONG ", see http://iroffer.dinoex.net/\n"
-            "\n"
-            "Usage: %s [-vc] [-bdkn"
-#if !defined(_OS_CYGWIN)
-            "s"
-#endif
-            "]"
-#if !defined(NO_SETUID)
-            " [-u user]"
-#endif
-#if !defined(NO_CHROOT)
-            " [-t dir]"
-#endif
-            " configfile [ configfile ... ]\n"
-            "        -v        Print version and exit.\n"
-            "        -c        Generate encrypted password and exit.\n"
-            "        -d        Increase debug level\n"
-            "        -b        Go to background mode\n"
-            "        -k        Attempt to adjust ulimit to allow core files\n"
-            "        -n        No colors in foreground mode\n"
-#if !defined(_OS_CYGWIN)
-            "        -s        No screen manipulation in foreground mode\n"
-#endif
-#if !defined(NO_SETUID)
-            "        -u user   Run as user (you have to start as root).\n"
-#endif
-#if !defined(NO_CHROOT)
-            "        -t dir    Chroot to dir (you have to start as root).\n"
-#endif
-            "\n",
-            argv[0]);
-      exit(64);
-   case PCL_SHOW_VERSION:
-      printf("iroffer-dinoex " VERSIONLONG ", see http://iroffer.dinoex.net/\n");
-      exit(0);
-   case PCL_GEN_PASSWORD:
-      createpassword();
-      exit(0);
-   default: break;
-   }
+   command_options(argc, argv);
 
 #if defined(_OS_CYGWIN)
    gdata.noscreen = 1;
 #endif
-   
-   first_config_arg = optind;
-
-   for (i=0; i<MAXCONFIG && i<(argc-first_config_arg); i++)
-      gdata.configfile[i] = argv[i+first_config_arg];
    
    startupiroffer();
    
@@ -110,74 +60,6 @@ int main(int argc, char *argv[]) {
    
    return(0);
    }
-
-static int parsecmdline(int argc, char *argv[])
-{
-  int retval;
-#if defined(_OS_CYGWIN)
-  const char *options = "bndkct:u:v";
-#else
-  const char *options = "bndkcst:u:v";
-#endif
-
-#if 0
-  opterr = 0; /* No printed error from getopt() */
-#endif
-  
-  while( (retval = getopt( argc, argv, options )) != -1 )
-    {
-      switch(retval)
-        {
-        case 'c':
-          return PCL_GEN_PASSWORD;
-        case 'v':
-          return PCL_SHOW_VERSION;
-        case 'b':
-          gdata.background = 1;
-          break;
-        case 'd':
-          gdata.debug++;
-          break;
-        case 'n':
-          gdata.nocolor = 1;
-          break;
-        case 'k':
-          gdata.adjustcore = 1;
-          break;
-        case 's':
-          gdata.noscreen = 1;
-          break;
-        case 't':
-#if !defined(NO_CHROOT)
-          gdata.chrootdir = optarg;
-          break;
-#else
-          return PCL_BAD_OPTION;
-#endif
-       case 'u':
-#if !defined(NO_SETUID)
-         gdata.runasuser = optarg;
-         break;
-#else
-         return PCL_BAD_OPTION;
-#endif
-        case ':':
-        case '?':
-	default:
-          return PCL_BAD_OPTION;
-        }
-    }
-  
-  if (optind >= argc)
-    {
-      fprintf(stderr, "%s: no configuration file specified\n",
-              argv[0]);
-      return PCL_BAD_OPTION;
-    }
-  
-  return PCL_OK;
-}
-
 
 static void select_dump(const char *desc, int highests)
 {

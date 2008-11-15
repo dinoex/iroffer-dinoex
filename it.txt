@@ -620,8 +620,6 @@
 631 "        -s           Nessun manipolazione di schermo in modalità foreground\n"
 632 "        -u utente    Avvia l'iroffer come utente (devi avviarlo però come root).\n"
 633 "        -t cartella  Chroot alla cartella (devi avviarlo però come root).\n"
-634 "bndkct:u:v"
-635 "bndkcst:u:v"
 636 "%s: nessun file di configurazione specificato\n"
 637 "select %s: [read"
 638 " %d"

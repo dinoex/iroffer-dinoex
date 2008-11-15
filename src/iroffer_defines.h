@@ -82,12 +82,6 @@
 /*       Max Server Send Queue Lines */
 #define  MAXSENDQ  10000
 
-/*       Defines for the routine using getopt() */
-#define  PCL_OK		0
-#define  PCL_BAD_OPTION	1
-#define  PCL_GEN_PASSWORD	2
-#define  PCL_SHOW_VERSION	3
-
 /*       threshhold for ignore, number of requests in bucket */
 #define  IGN_ON    8
 

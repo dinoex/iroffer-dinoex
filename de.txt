@@ -620,8 +620,6 @@
 631 "        -s        No screen manipulation in foreground mode\n"
 632 "        -u user   Run as user (you have to start as root).\n"
 633 "        -t dir    Chroot to dir (you have to start as root).\n"
-634 "bndkct:u:v"
-635 "bndkcst:u:v"
 636 "%s: no configuration file specified\n"
 637 "select %s: [read"
 638 " %d"

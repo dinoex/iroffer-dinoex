@@ -162,7 +162,6 @@ DEBUGFLAGS="
 -Wimplicit-int
 -Winline
 -Wmissing-braces
--Wmissing-noreturn
 -Wmain
 -Wnested-externs
 -Wnonnull
@@ -195,6 +194,7 @@ WARNS="-Wbad-function-cast
 -Wimplicit
 -Wmissing-declarations
 -Wmissing-prototypes
+-Wmissing-noreturn
 -Wpointer-arith
 -Wreturn-type
 -Wshadow
