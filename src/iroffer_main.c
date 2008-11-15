@@ -46,7 +46,7 @@ int main(int argc, const char *const *argv) {
    initvars();
    
    command_options(argc, argv);
-
+   
 #if defined(_OS_CYGWIN)
    gdata.noscreen = 1;
 #endif
