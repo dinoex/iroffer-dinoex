@@ -132,7 +132,7 @@ void command_options(int argc, const char *const *argv)
     }
     if (fc >= MAXCONFIG)
       usage();
-    gdata.configfile[ fc ] = mystrdup(cptr);
+    gdata.configfile[ fc++ ] = mystrdup(cptr);
   }
   if (fc == 0) {
     fprintf(stderr, "%s: no configuration file specified\n", argv[0]);
