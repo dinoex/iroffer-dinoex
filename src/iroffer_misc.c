@@ -2726,7 +2726,8 @@ int look_for_file_changes(xdcc *xpack)
   if ((xpack->mtime   != st.st_mtime) ||
       (xpack->st_size != st.st_size))
     {
-      if (!gdata.xdcclistfile || strcmp(xpack->file, gdata.xdcclistfile))
+      if ((!gdata.xdcclistfile || strcmp(xpack->file, gdata.xdcclistfile)) &&
+          (!gdata.send_listfile || (gdata.send_listfile != number_of_pack(xpack))))
         {
           outerror(OUTERROR_TYPE_WARN,
                    "File '%s' has changed", xpack->file);

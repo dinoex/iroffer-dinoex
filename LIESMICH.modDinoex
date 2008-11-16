@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+bugfix: send_xdccfile
+  Unterdrücke die Warnung wenn das send_xdccfile sich ändert.
+
 266) -i mybot.xdcc
   Importiere alte "mybot.xdcc" Datei beim Start.
 
