@@ -958,7 +958,7 @@ static float gets_per_pack(int agets, int packs)
   return result;
 }
 
-static int h_html_filter_main(http * const h, xdcc *xd, const char *group)
+static int html_filter_main(xdcc *xd, const char *group)
 {
   if (strcmp(group, ".") == 0) {
     if (xd->group != NULL)
@@ -1070,7 +1070,7 @@ static void h_html_main(http * const h)
       if (hide_pack(xd))
         continue;
 
-      if (h_html_filter_main(h, xd, hg->hg_group))
+      if (html_filter_main(xd, hg->hg_group))
         continue;
 
       hg->hg_packs ++;
@@ -1544,7 +1544,7 @@ static void h_webliste(http * const h, const char *body)
 }
 
 #ifndef WITHOUT_HTTP_ADMIN
-static void h_admin(http * const h, int level, const char *body)
+static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
 {
   size_t guess;
 

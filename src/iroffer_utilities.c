@@ -1012,6 +1012,7 @@ char* removenonprintablefile(char *str) {
          case 0x60:
          case 0x7C:
             str[i] = '_';
+            break;
          }
       if (last == '.' && str[i] == '.') str[i] = '_';
       
@@ -3100,6 +3101,7 @@ const char *transferlimit_type_to_string(transferlimit_type_e type)
         return "weekly";
       case TRANSFERLIMIT_MONTHLY:
         return "monthly";
+      case NUMBER_TRANSFERLIMITS:
       default:
         return "unknown";
     }

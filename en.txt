@@ -2302,3 +2302,5 @@
 2387 "Error in XDCC File: %s"
 2388 "        -i file   Import and old style mybot.xdcc file.\n"
 2389 "Hopping channel %s on %s"
+2390 "-Wstrict-prototypes"
+2391 "-Wredundant-decls"

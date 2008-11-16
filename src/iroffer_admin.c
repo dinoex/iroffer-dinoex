@@ -1127,7 +1127,7 @@ static void u_xdl(const userinput * const u) {
    mydelete(tempstr);
 }
 
-static void u_xds(const userinput * const u)
+static void u_xds(const userinput * const UNUSED(u))
 {
   updatecontext();
   write_files();
@@ -1860,7 +1860,7 @@ static void u_removedir(const userinput * const u)
   return;
 }
 
-static void u_redraw(const userinput * const u) {
+static void u_redraw(const userinput * const UNUSED(u)) {
    updatecontext();
    
    initscreen(0, 1);
@@ -3272,14 +3272,8 @@ static void u_memstat(const userinput * const u)
        * we need to copy the entire table so we dont walk it
        * while it while it can be modified
        */
-    again:
       meminfo_depth = gdata.meminfo_depth;
       meminfo = mycalloc(sizeof(meminfo_t) * MEMINFOHASHSIZE * meminfo_depth);
-      if (meminfo_depth != gdata.meminfo_depth)
-        {
-          meminfo2 = meminfo;
-          goto again;
-        }
       memcpy(meminfo, gdata.meminfo,
              sizeof(meminfo_t) * MEMINFOHASHSIZE * meminfo_depth);
       
@@ -3801,7 +3795,7 @@ static void u_rmul(const userinput * const u) {
    
    }
 
-static void u_crash(const userinput * const u) {
+static void u_crash(const userinput * const UNUSED(u)) {
    
    updatecontext();
    

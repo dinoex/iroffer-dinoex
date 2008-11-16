@@ -780,6 +780,7 @@ static void mainloop (void) {
                     }
                   break;
                   
+                case DCCCHAT_LISTENING:
                 case DCCCHAT_CONNECTING:
                 case DCCCHAT_UNUSED:
                 default:

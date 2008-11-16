@@ -858,7 +858,7 @@ void sendserver(void)
       return;
     }
   
-  if (clean && gdata.exiting && !gnetwork->recentsent)
+  if (gdata.exiting && !gnetwork->recentsent)
     {
       close_server();
       gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
@@ -1149,7 +1149,7 @@ void gobackground(void) {
    }
 
 #if !defined(NO_SIGINFO)
-static void iroffer_signal_handler(int signo, siginfo_t *sinfo, void *unused)
+static void iroffer_signal_handler(int signo, siginfo_t *sinfo, void * UNUSED(unused))
 #else
 static void iroffer_signal_handler(int signo)
 #endif

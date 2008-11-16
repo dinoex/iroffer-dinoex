@@ -30,6 +30,8 @@
 #include "dinoex_misc.h"
 #include "dinoex_ruby.h"
 
+#pragma GCC diagnostic ignored "-Wstrict-prototypes"
+#pragma GCC diagnostic ignored "-Wredundant-decls"
 #include "ruby.h"
 
 int myruby_status;
@@ -38,7 +40,7 @@ int myruby_loaded;
 char *cLine;
 VALUE cIrofferConfig;
 
-static void ci_free(void *p)
+static void ci_free(void * UNUSED(p))
 {
 }
 
@@ -48,12 +50,12 @@ static char *rb_obj_as_cstring_protect(VALUE objval)
   VALUE rval;
   int state = 0;
 
-  rval = rb_protect( (VALUE (*)(VALUE))rb_obj_as_string, objval, state);
+  rval = rb_protect( (VALUE (*)(VALUE))rb_obj_as_string, objval, &state);
   str = STR2CSTR(rval);
   return str;
 }
 
-static VALUE cic_buffer(VALUE self)
+static VALUE cic_buffer(VALUE UNUSED(self))
 {
   return rb_str_new(cLine, strlen(cLine));
 }
@@ -65,7 +67,7 @@ static VALUE cic_new(VALUE class)
   return tdata;
 }
 
-static void Init_IrofferConfig() {
+static void Init_IrofferConfig(void) {
   cIrofferConfig = rb_define_class("IrofferConfig", rb_cObject);
   rb_define_singleton_method(cIrofferConfig, "new", cic_new, 0);
   rb_define_method(cIrofferConfig, "buffer", cic_buffer, 0);
@@ -77,7 +79,7 @@ static VALUE cf_iroffer_input(void)
   return rb_str_new(cLine, strlen(cLine));
 }
 
-static VALUE cf_iroffer_privmsg(VALUE module, VALUE rname, VALUE rmsg)
+static VALUE cf_iroffer_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
 {
   VALUE vname;
   VALUE vmsg;
