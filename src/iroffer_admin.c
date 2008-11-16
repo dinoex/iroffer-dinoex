@@ -539,6 +539,7 @@ static void u_respond(const userinput * const u, const char *format, ...)
       vnotice_slow(u->snick, format, args);
       break;
     case method_allow_all:
+    case method_allow_all_xdl:
     default:
       break;
     }
@@ -1178,6 +1179,15 @@ static void u_dcl(const userinput * const u)
           y = "Closing";
           break;
             
+        case TRANSFER_STATUS_RESUME:
+          y = "Resume";
+          break;
+          
+        case TRANSFER_STATUS_CONNECTING:
+          y = "Connecting";
+          break;
+          
+        case TRANSFER_STATUS_UNUSED:
         default:
           y = "Unknown!";
           break;
@@ -1237,6 +1247,7 @@ static void u_dcl(const userinput * const u)
           y = "Listening";
           break;
           
+        case UPLOAD_STATUS_UNUSED:
         default:
           y = "Unknown!";
           break;
@@ -1322,6 +1333,7 @@ static void u_dcld(const userinput * const u)
           y = "Connecting";
           break;
           
+        case TRANSFER_STATUS_UNUSED:
         default:
           y = "Unknown!";
           break;
@@ -1410,6 +1422,15 @@ static void u_dcld(const userinput * const u)
           y = "Done";
           break;
           
+        case UPLOAD_STATUS_RESUME:
+          y = "Resume";
+          break;
+          
+        case UPLOAD_STATUS_LISTENING:
+          y = "Listening";
+          break;
+          
+        case UPLOAD_STATUS_UNUSED:
         default:
           y = "Unknown!";
           break;
@@ -3492,6 +3513,15 @@ static void u_trinfo(const userinput * const u)
       y = "Closing";
       break;
       
+    case TRANSFER_STATUS_RESUME:
+      y = "Resume";
+      break;
+      
+    case TRANSFER_STATUS_CONNECTING:
+      y = "Connecting";
+      break;
+      
+    case TRANSFER_STATUS_UNUSED:
     default:
       y = "Unknown!";
       break;
