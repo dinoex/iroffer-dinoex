@@ -195,7 +195,7 @@ static int stoplist_queue(const char *nick, irlist_t *list)
   char *inick;
   int stopped = 0;
 
-  for (item = irlist_get_head(&(gnetwork->serverq_slow)); item; ) {
+  for (item = irlist_get_head(list); item; ) {
     inick = NULL;
     copy = mystrdup(item);
     inick = strchr(copy, ' ');
@@ -208,7 +208,7 @@ static int stoplist_queue(const char *nick, irlist_t *list)
           if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
             stopped ++;
             mydelete(copy);
-            item = irlist_delete(&(gnetwork->serverq_slow), item);
+            item = irlist_delete(list, item);
             continue;
           }
         }
@@ -273,7 +273,7 @@ void stoplist(const char *nick)
   }
 
   stopped += stoplist_queue(nick, &(gnetwork->serverq_slow));
-  stopped += stoplist_queue(nick, &(gnetwork->serverq_channel));
+  stopped += stoplist_queue(nick, &(gnetwork->serverq_normal));
   stopped += stoplist_announce(nick);
 
   ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (stopped %d)", stopped);

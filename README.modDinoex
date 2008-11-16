@@ -3,8 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: XDCC STOP
+  Revome user from both message queues.
+
 bugfix: send_xdccfile
-  Ommit warning if send_xdccfile was changed.
+  Omit warning if send_xdccfile was changed.
 
 266) -i mybot.xdcc
   Import old iroffer-style mybot.xdcc file on start.
