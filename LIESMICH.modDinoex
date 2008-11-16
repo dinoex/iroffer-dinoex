@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+Debugging und Logging verbessert.
+
 bugfix: XDCC STOP
   Lösche den User von beiden Wartenschlangen.
 
@@ -383,7 +385,7 @@ bugfix: DCC RESUME
   CHTIME <n>                       Löscht das Datum für das Paket <n>.
   CHTIME <n> <datum>               Setzt das Datum für das Paket <n>.
 
-extend debug and log information.
+Debugging und Logging verbessert.
 
 222) old_statefile
   Kein Speicheren von unnötigen Daten im statefile im default.

@@ -3344,6 +3344,7 @@ static void a_hop_net(const userinput * const u, const char *name)
        ch;
        ch = irlist_get_next(ch)) {
     if ((!name) || (!strcasecmp(name, ch->name))) {
+      a_respond(u, "Hopping channel %s on %s", ch->name, gnetwork->name);
       writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
       clearmemberlist(ch);
       ch->flags &= ~CHAN_ONCHAN;

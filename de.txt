@@ -2301,3 +2301,4 @@
 2386 "xx_trno"
 2387 "Error in XDCC File: %s"
 2388 "        -i file   Import and old style mybot.xdcc file.\n"
+2389 "Hopping channel %s on %s"
