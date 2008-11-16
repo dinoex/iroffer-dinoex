@@ -2584,13 +2584,13 @@ static void u_rehash(const userinput * const u) {
        ((gdata.pidfile) && (gdata.r_pidfile) && strcmp(gdata.pidfile,gdata.r_pidfile)))
      {
        u_respond(u,"pidfile changed, switching");
-       if (gdata.pidfile)
-         {
-           unlink(gdata.pidfile);
-         }
        if (gdata.r_pidfile)
          {
-           writepidfile(gdata.r_pidfile);
+           unlink(gdata.r_pidfile);
+         }
+       if (gdata.pidfile)
+         {
+           writepidfile(gdata.pidfile);
          }
      }
    a_rehash_cleanup(u);
