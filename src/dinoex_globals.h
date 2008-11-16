@@ -91,6 +91,7 @@ typedef struct {
 typedef struct {
   char *to_ip;
   unsigned short to_port;
+  unsigned short dummy;
   int sp_fd[2];
   pid_t child_pid;
   int next;

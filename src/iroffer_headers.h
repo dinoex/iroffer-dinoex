@@ -193,6 +193,7 @@ typedef struct
 {
   char *hostmask;
   short flags;
+  short dummy;
   long bucket;
   time_t lastcontact;
 } igninfo;
@@ -201,6 +202,7 @@ typedef struct
 {
   char hostmask[maxtextlength];
   short flags;
+  short dummy;
   long bucket;
   time_t lastcontact;
 } igninfo_file;
@@ -276,6 +278,7 @@ typedef struct
   char close_to_timeout;
   char overlimit;
   char unlimited;
+  short dummy;
   transfer_status_e tr_status;
   int mirc_dcc64;
 } transfer;
@@ -441,6 +444,7 @@ typedef struct
   how_e how;
   char *host;
   unsigned short port;
+  short dummy;
   char *password;
   char *vhost;
 } connectionmethod_t;
@@ -455,6 +459,7 @@ typedef struct {
 typedef struct
 {
   ir_uint16 port;
+  ir_uint16 dummy;
   time_t listen_time;
 } ir_listen_port_item_t;
 
@@ -469,6 +474,7 @@ typedef struct
 {
   char *hostname;
   ir_uint16 port;
+  ir_uint16 dummy;
   char *password;
 } server_t;
 

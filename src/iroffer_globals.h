@@ -59,6 +59,8 @@ int overallmaxspeed, overallmaxspeeddayspeed;
 unsigned int maxb;
 int overallmaxspeeddaytimestart, overallmaxspeeddaytimeend;
 char overallmaxspeeddaydays;
+char cdummy;
+short sdummy;
 int maxtransfersperperson, maxqueueditemsperperson;
 int maxidlequeuedperperson;
 irlist_t downloadhost;
