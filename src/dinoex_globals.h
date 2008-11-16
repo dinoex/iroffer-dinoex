@@ -17,6 +17,15 @@
 #include <openssl/ssl.h>
 #endif /* USE_SSL */
 
+#ifdef UNUSED
+#elif defined(__GNUC__)
+# define UNUSED(x) UNUSED_ ## x __attribute__((unused))
+#elif defined(__LCLINT__)
+# define UNUSED(x) /*@unused@*/ x
+#else
+# define UNUSED(x) x
+#endif
+
 typedef struct {
   char *u_host;
   long u_time;
