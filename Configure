@@ -165,6 +165,7 @@ DEBUGFLAGS="
 -Wmain
 -Wnested-externs
 -Wnonnull
+-Wmissing-format-attribute
 -Wparentheses
 -Wpacked
 -Wredundant-decls
@@ -178,6 +179,7 @@ DEBUGFLAGS="
 -Wunused
 -Wunused-function
 -Wunused-label
+-Wunused-parameter
 -Wunused-value
 -Wunused-variable 
 "
@@ -209,13 +211,11 @@ TODOWARN="
 -Wformat=2
 -Wfloat-equal
 -Wlarger-than-20000
--Wmissing-format-attribute
 -Wpadded
 -Wswitch-default
 -Wswitch-enum
 -Wundef
 -Wunreachable-code
--Wunused-parameter
 "
 
 if $OPT_PROF; then
