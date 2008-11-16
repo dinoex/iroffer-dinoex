@@ -272,7 +272,11 @@ privmsg_chan(const channel_t *ch, const char *format, ...)
   va_end(args);
 }
 
-void vprivmsg_chan(int delay, const char *name, const char *fish, const char *format, va_list ap)
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vprivmsg_chan(int delay, const char *name, const char *fish, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   int len;
@@ -316,7 +320,11 @@ writeserver_channel (int delay, const char *format, ... )
   va_end(args);
 }
 
-void vwriteserver_channel(int delay, const char *format, va_list ap)
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vwriteserver_channel(int delay, const char *format, va_list ap)
 {
   char *msg;
   channel_announce_t *item;

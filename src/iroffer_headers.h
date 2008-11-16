@@ -501,7 +501,11 @@ __attribute__ ((format(printf, 1, 2)))
 #endif
 tostdout(const char *format, ...);
 
-void vtostdout(const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 1, 0)))
+#endif
+vtostdout(const char *format, va_list ap);
 void tostdout_write(void);
 void tostdout_disable_buffering(void);
 
@@ -542,7 +546,11 @@ __attribute__ ((format(printf, 4, 5)))
 #endif
 ioutput(calltype_e type, int dest, unsigned int color_flags, const char *format, ...);
 
-void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 4, 0)))
+#endif
+vioutput(calltype_e type, int dest, unsigned int color_flags, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__
@@ -550,7 +558,11 @@ __attribute__ ((format(printf, 2, 3)))
 #endif
 privmsg_fast(const char *nick, const char *format, ...);
 
-void vprivmsg_fast(const char *nick, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vprivmsg_fast(const char *nick, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__
@@ -558,7 +570,11 @@ __attribute__ ((format(printf, 2, 3)))
 #endif
 privmsg_slow(const char *nick, const char *format, ...);
 
-void vprivmsg_slow(const char *nick, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vprivmsg_slow(const char *nick, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__
@@ -566,7 +582,11 @@ __attribute__ ((format(printf, 2, 3)))
 #endif
 privmsg(const char *nick, const char *format, ...);
 
-void vprivmsg(const char *nick, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vprivmsg(const char *nick, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__
@@ -574,7 +594,11 @@ __attribute__ ((format(printf, 2, 3)))
 #endif
 notice_fast(const char *nick, const char *format, ...);
 
-void vnotice_fast(const char *nick, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vnotice_fast(const char *nick, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__
@@ -582,7 +606,11 @@ __attribute__ ((format(printf, 2, 3)))
 #endif
 notice_slow(const char *nick, const char *format, ...);
 
-void vnotice_slow(const char *nick, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vnotice_slow(const char *nick, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__
@@ -590,7 +618,11 @@ __attribute__ ((format(printf, 2, 3)))
 #endif
 notice(const char *nick, const char *format, ...);
 
-void vnotice(const char *nick, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vnotice(const char *nick, const char *format, va_list ap);
 int sstrlen (const char *p);
 char dayofweektomask(const char a);
 int isprintable(char a);
@@ -692,7 +724,11 @@ void
 __attribute__ ((format(printf, 2, 3)))
 #endif
 writeserver (writeserver_type_e type, const char *format, ... );
-void vwriteserver(writeserver_type_e type, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vwriteserver(writeserver_type_e type, const char *format, va_list ap);
 
 void sendserver(void);
 char* getsendname(const char * const full);
@@ -744,7 +780,11 @@ __attribute__ ((format(printf, 3, 4)))
 #endif
 writedccchat(dccchat_t *chat, int add_return, const char *format, ...);
 
-void vwritedccchat(dccchat_t *chat, int add_return, const char *format, va_list ap);
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 3, 0)))
+#endif
+vwritedccchat(dccchat_t *chat, int add_return, const char *format, va_list ap);
 void flushdccchat(dccchat_t *chat);
 void writestatus(dccchat_t *chat);
 void shutdowndccchat(dccchat_t *chat, int flush);
