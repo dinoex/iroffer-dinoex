@@ -1635,7 +1635,7 @@ void read_statefile(void)
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Nr (%d)", num);
                         break;
                       }
-                    pq->xpack = irlist_get_nth(&gdata.xdccs, num-1);
+                    pq->xpack = get_xdcc_pack(num);
                     break;
                     
                   case STATEFILE_TAG_QUEUE_NICK:

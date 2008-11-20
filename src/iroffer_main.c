@@ -3204,7 +3204,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
    
    updatecontext();
    
-   tempx = irlist_get_nth(&gdata.xdccs, pack-1);
+   tempx = get_xdcc_pack(pack);
    
    if (!strcmp(hostname, "man"))
       {

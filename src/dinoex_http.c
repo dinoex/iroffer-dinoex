@@ -1569,7 +1569,7 @@ static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
     xdcc *xd;
 
     if (pack > 0) {
-      xd = irlist_get_nth(&gdata.xdccs, pack-1);
+      xd = get_xdcc_pack(pack);
       if (xd != NULL) {
         h->attachment = get_basename(xd->file);
         h_readfile(h, xd->file);

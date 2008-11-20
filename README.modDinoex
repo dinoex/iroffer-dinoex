@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: XDCC SEND LIST (reported by xShatteRx)
+  Fix crash on to many XDCC SEND LIST.
+
 bugfix: REHASH pidfile
   versions affected: 3.0 - 3.10
   On REHASH remove old pidfile, create a new one if needed.

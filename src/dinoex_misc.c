@@ -66,7 +66,7 @@ int number_of_pack(xdcc *pack)
 
   updatecontext();
 
-  if (pack == xdcc_listfile)
+  if (pack == &xdcc_listfile)
     return -1;
 
   n = 0;

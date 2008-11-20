@@ -469,5 +469,8 @@ Globulus
 	debugging "mirc_dcc64"
 
 Kamina
-	report 10TB bug
+	reporting 10TB bug
+
+xShatteRx
+	reporting XDCC SEND LIST bug
 
