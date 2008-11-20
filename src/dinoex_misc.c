@@ -66,6 +66,9 @@ int number_of_pack(xdcc *pack)
 
   updatecontext();
 
+  if (pack == xdcc_listfile)
+    return -1;
+
   n = 0;
   xd = irlist_get_head(&gdata.xdccs);
   while(xd) {
@@ -1107,6 +1110,14 @@ static int check_manual_send(const char* hostname, int *man)
   return *man;
 }
 
+xdcc *get_xdcc_pack(int pack)
+{
+  if (pack == -1)
+    return &xdcc_listfile;
+
+  return irlist_get_nth(&gdata.xdccs, pack - 1);
+}
+
 xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text, int restr)
 {
   char *grouplist;
@@ -1150,7 +1161,7 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
     return NULL;
   }
 
-  xd = irlist_get_nth(&gdata.xdccs, pack-1);
+  xd = get_xdcc_pack(pack);
   if (xd == NULL)
     return NULL;
 
