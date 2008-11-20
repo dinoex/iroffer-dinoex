@@ -15,7 +15,7 @@ Debugging und Logging verbessert.
 bugfix: XDCC STOP
   Lösche den User von beiden Wartenschlangen.
 
-bugfix: send_xdccfile
+bugfix: send_listfile
   Unterdrücke die Warnung wenn das send_xdccfile sich ändert.
 
 266) -i mybot.xdcc

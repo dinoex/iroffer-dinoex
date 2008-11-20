@@ -15,7 +15,7 @@ extend debug and log information.
 bugfix: XDCC STOP
   Revome user from both message queues.
 
-bugfix: send_xdccfile
+bugfix: send_listfile
   Omit warning if send_xdccfile was changed.
 
 266) -i mybot.xdcc
