@@ -356,4 +356,83 @@ char* sizestr(int spaces, off_t num)
   return str;
 }
 
+static void removenonprintablectrl2(unsigned char *str, unsigned char fill)
+{
+  if (str == NULL)
+    return;
+
+  for (; *str != 0; str++) {
+    if (*str < 0x20)
+      *str = fill;
+  }
+}
+
+char *removenonprintable(char *str)
+{
+  removenonprintablectrl2((unsigned char *)str, '.');
+  return str;
+}
+
+char *removenonprintablectrl(char *str)
+{
+  removenonprintablectrl2((unsigned char *)str, '_');
+  return str;
+}
+
+char *removenonprintablefile(char *str)
+{
+  unsigned char *copy;
+  char last = '.';
+
+  if (!str)
+    return NULL;
+
+  for (copy = (unsigned char*)str;
+       *copy != 0;
+       copy++) {
+    if (*copy == 0x03) { /* color */
+      if (!isdigit(copy[1])) continue;
+      copy++;
+      if (isdigit(copy[1])) copy++;
+      if (copy[1] != ',') continue;
+      copy++;
+      if (isdigit(copy[1])) copy++;
+      if (isdigit(copy[1])) copy++;
+      continue;
+    }
+    if (*copy < 0x20) {
+      *copy = '_';
+      continue;
+    }
+    switch (*copy) {
+    case 0x2E: /* . */
+      if (last == '.' && *copy == '.')
+        *copy = '_';
+      break;
+    case 0x20:
+      if (gdata.spaces_in_filenames)
+        break;
+    case 0x21:
+    case 0x22:
+    case 0x23:
+    case 0x24:
+    case 0x25:
+    case 0x26:
+    case 0x27:
+    case 0x2F:
+    case 0x3A:
+    case 0x3D:
+    case 0x3F:
+    case 0x40:
+    case 0x5C:
+    case 0x60:
+    case 0x7C:
+      *copy = '_';
+      break;
+    }
+    last = *copy;
+  }
+  return str;
+}
+
 /* End of File */

@@ -753,14 +753,14 @@ char dayofweektomask(const char a) {
 
 
 int isprintable(char a) {
-   if ( a >= 0x20 && a <= 0x7E )
+   if ( (unsigned char)a >= 0x20 )
       return 1;
    else
       return 0; 
    }
 
 char onlyprintable(char a) {
-   if ( a >= 0x20 && a <= 0x7E )
+   if ( (unsigned char)a >= 0x20 )
       return a;
    else
       return '.'; 
@@ -944,84 +944,6 @@ void mydelete2(void *t) {
    }
 
 #endif /* WITHOUT_MEMSAVE */
-
-char* removenonprintable(char *str1) {
-   unsigned int i;
-   unsigned char *str = (unsigned char*)str1;
-   
-   if (!str) return NULL;
-   
-   for (i=0; i<strlen((char *)str); i++) {
-      if (!((str[i] >= 0x20 && str[i] <= 0x7E) ||
-            (str[i] >= 0xA1) ||
-            str[i] == 0x01 ||  /* ctcp */
-            str[i] == 0x02 ||  /* bold */
-            str[i] == 0x03 ||  /* color */
-            str[i] == 0x09 ||  /* tab */
-            str[i] == 0x0A ||  /* return */
-            str[i] == 0x0D ||  /* return */
-            str[i] == 0x0F ||  /* end formatting */
-            str[i] == 0x16 ||  /* inverse */
-            str[i] == 0x1F ))   /* underline */
-      str[i] = '.';
-      
-      }
-   return (char *)str;
-   }
-
-char* removenonprintablectrl(char *str1) {
-   unsigned int i;
-   unsigned char *str = (unsigned char*)str1;
-   if (!str) return NULL;
-   
-   for (i=0; i<strlen((char *)str); i++) {
-      if (!((str[i] >= 0x20 && str[i] <= 0x7E) ||
-            (str[i] >= 0xA1)))
-      str[i] = ' ';
-      
-      }
-   return (char *)str;
-   }
-
-char* removenonprintablefile(char *str) {
-   unsigned int i;
-   char last='.';
-   
-   if (!str) return NULL;
-   
-   for (i=0; i<strlen(str); i++) {
-      if (str[i] >= 0x7E) str[i] = '_';
-      if (str[i] <  0x20) str[i] = '_';
-      switch (str[i]) {
-         case 0x20:
-            if (gdata.spaces_in_filenames)
-               break;
-         case 0x21:
-         case 0x22:
-         case 0x23:
-         case 0x24:
-         case 0x25:
-         case 0x26:
-         case 0x27:
-         case 0x2F:
-         case 0x3A:
-         case 0x3D:
-         case 0x3F:
-         case 0x40:
-         case 0x5C:
-         case 0x60:
-         case 0x7C:
-            str[i] = '_';
-            break;
-         }
-      if (last == '.' && str[i] == '.') str[i] = '_';
-      
-      last = str[i];
-      }
-      
-   return str;
-   }
-
 
 void updatecontext_f(const char *file, const char *func, int line)
 {
