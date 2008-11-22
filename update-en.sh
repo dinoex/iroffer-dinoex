@@ -10,6 +10,7 @@ copy_if_differ() {
 }
 
 LANG="C"
+sh ./Lang en
 awk -f ./admin.awk src/iroffer_admin.c > help-admin-en.neu
 copy_if_differ help-admin-en.txt help-admin-en.neu
 for lang in de it
@@ -17,25 +18,20 @@ do
 	if test ! "${lang}.sed" -nt de.txt
 	then
 		echo -n "parsing ... "
-		grep -v "^#" "${lang}.txt" |
-		while read nr text
-		do
-			if ! grep -q "^${nr} " en.txt
-			then
-				continue
-			fi
-			en=`grep "^${nr} " "en.txt"`
-			en="${en#* }"
-			text=`grep "^${nr} " "${lang}.txt"`
-			text="${text#* }"
-			if test "${en}" = "${text}"
-			then
-				continue
-			fi
-			echo "s°${en}°${text}°"
-		done |
+		sed -e 's| |°|' en.txt > en.tmp
+		sed -e 's| |°|' "${lang}.txt" > "${lang}.tmp"
+		join -t '°' en.tmp "${lang}.tmp" |
+		sed -e 's|^[0-9]*°|s°|' -e 's|" "|"°"|' -e 's|"$|"°|' |
+		awk -F '°' '
+{ 
+        if ( $2 == $3 )
+                next
+        print
+}
+' |
+		${utf8} |
 		sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
-		echo "done"
+		rm -f en.tmp "${lang}.tmp"
 	fi
 	sed -f "${lang}.sed" src/iroffer_admin.c |
 	awk -f ./admin.awk > "help-admin-${lang}.neu"

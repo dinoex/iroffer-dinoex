@@ -23,25 +23,20 @@ u*)
 	;;
 esac
 echo -n "parsing ... "
-grep -v "^#" "${lang}.txt" |
-while read nr text
-do
-	if ! grep -q "^${nr} " en.txt
-	then
-		continue
-	fi
-	en=`grep "^${nr} " "en.txt"`
-	en="${en#* }"
-	text=`grep "^${nr} " "${lang}.txt"`
-	text="${text#* }"
-	if test "${en}" = "${text}"
-	then
-		continue
-	fi
-	echo "s°${en}°${text}°"
-done |
+sed -e 's| |°|' en.txt > en.tmp
+sed -e 's| |°|' "${lang}.txt" > "${lang}.tmp"
+join -t '°' en.tmp "${lang}.tmp" |
+sed -e 's|^[0-9]*°|s°|' -e 's|" "|"°"|' -e 's|"$|"°|' |
+awk -F '°' '
+{ 
+	if ( $2 == $3 )
+		next
+	print
+}
+' |
 ${utf8} |
 sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
+rm -f en.tmp "${lang}.tmp"
 echo "done"
 for c in src/iroffer*.c src/dinoex*.c
 do
