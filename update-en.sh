@@ -18,11 +18,11 @@ do
 	if test ! "${lang}.sed" -nt de.txt
 	then
 		echo -n "parsing ... "
-		sed -e 's| |°|' en.txt > en.tmp
-		sed -e 's| |°|' "${lang}.txt" > "${lang}.tmp"
-		join -t '°' en.tmp "${lang}.tmp" |
-		sed -e 's|^[0-9]*°|s°|' -e 's|" "|"°"|' -e 's|"$|"°|' |
-		awk -F '°' '
+		sed -e 's| |	|' en.txt > en.tmp
+		sed -e 's| |	|' "${lang}.txt" > "${lang}.tmp"
+		join -t '	' en.tmp "${lang}.tmp" |
+		sed -e 's|^[0-9]*|s|' -e 's|" "|"`"|' -e 's|"$|"	|' |
+		awk -F '	' '
 { 
         if ( $2 == $3 )
                 next
