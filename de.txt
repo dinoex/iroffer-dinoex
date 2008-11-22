@@ -1902,7 +1902,7 @@
 1981 "Volumen ausblenden"
 1982 "(weniger)"
 1983 "Volumen anzeigen"
-1985 "(mehr)" 
+1985 "(mehr)"
 1986 "<th class=\"right\">%.1f</th>\n"
 1988 "<td class=\"right\">%.1f</td>\n"
 1990 "traffic="
