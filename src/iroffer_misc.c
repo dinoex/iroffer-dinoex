@@ -1474,6 +1474,7 @@ void joinchannel(channel_t *c)
 
 void shutdowniroffer(void) {
    char *tempstr2;
+   char *msg;
    upload *ul;
    transfer *tr;
    dccchat_t *chat;
@@ -1578,18 +1579,26 @@ void shutdowniroffer(void) {
    /* quit */
    if (has_closed_servers() == 0)
      {
+       msg = mycalloc(maxtextlength);
        tempstr2 = mycalloc(maxtextlengthshort);
-       tempstr2 = getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
+       getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
+       snprintf(msg, maxtextlength,
+                "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
+                gdata.hideos ? "" : " - ",
+                gdata.hideos ? "" : gdata.osstring,
+                tempstr2);
+       mydelete(tempstr2);
        for (ss=0; ss<gdata.networks_online; ss++)
          {
            gnetwork = &(gdata.networks[ss]);
-       writeserver(WRITESERVER_NORMAL,
-                   "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
-                   gdata.hideos ? "" : " - ",
-                   gdata.hideos ? "" : gdata.osstring,
-                   tempstr2);
+           if (gdata.debug > 0)
+              {
+                ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, msg);
+              }
+           writeserver_ssl(msg, strlen(msg));
+           writeserver_ssl("\n", 1);
          }
-       mydelete(tempstr2);
+       mydelete(msg);
      }
    
    gdata.exiting = 1;
