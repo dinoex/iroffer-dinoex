@@ -1,6 +1,8 @@
 #!/bin/sh
 lang="${1-de}"
 lang="${lang%.txt}"
+charset="${2}"
+utf8="cat"
 if test "${lang}" = "en"
 then
 	for c in src/iroffer*.c src/dinoex*.c
@@ -14,6 +16,12 @@ then
 	done
 	exit 0
 fi
+case "${charset}" in
+u*)
+	echo "utf-8 enabled ..."
+	utf8="iconv -f latin1 -t utf-8"
+	;;
+esac
 echo -n "parsing ... "
 grep -v "^#" "${lang}.txt" |
 while read nr text
@@ -32,6 +40,7 @@ do
 	fi
 	echo "s°${en}°${text}°"
 done |
+${utf8} |
 sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
 echo "done"
 for c in src/iroffer*.c src/dinoex*.c
