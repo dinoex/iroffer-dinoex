@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+267) support setlocale()
+
 bugfix: XDCC SEND LIST
   Fix crash on to many XDCC SEND LIST.
 

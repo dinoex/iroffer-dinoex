@@ -30,6 +30,8 @@
 #include "dinoex_misc.h"
 
 
+#include <locale.h>
+
 void getconfig (void) {
    char *templine = mycalloc(maxtextlength);
    int h, filedescriptor;
@@ -2190,6 +2192,11 @@ void initvars(void)
   gdata.last_logrotate = gdata.curtime;
   gdata.last_update = gdata.curtime;
   
+  if (!setlocale(LC_CTYPE, "")) {
+    fprintf(stderr, "Can't set the specified locale! "
+            "Check LANG, LC_CTYPE, LC_ALL.\n");
+    return;
+  }
   return;
 }
    
