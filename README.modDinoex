@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: xdccxmlfile (reported by dns777)
+  Fix output of filenames in utf-8
+
 267) support setlocale()
 
 bugfix: XDCC SEND LIST (reported by xShatteRx)

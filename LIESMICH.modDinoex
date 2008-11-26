@@ -3,10 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+bugfix: xdccxmlfile
+  Ausgabe von Dateinamen in UTF-8 möglich.
+
 267) support setlocale()
 
 bugfix: XDCC SEND LIST
-  Fix crash on to many XDCC SEND LIST.
+  Bot stürtzt ab wenn zu viele XDCC SEND LIST mit Nummer -1
 
 bugfix: REHASH pidfile
   versions affected: 3.0 - 3.10

@@ -423,6 +423,7 @@ dns777
 	bugfix new_trigger
 	reporting "REMOVEDIR" group_admin bug
 	contributing better verify_group_in_grouplist
+	reporting xdccxmlfile bug with utf-8 names
 
 [V]4Mp|r
 	italian translation
