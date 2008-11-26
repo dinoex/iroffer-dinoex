@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: /etc/auth.conf (reported by Kaonashi)
+  Configure detects md5 and blf.
+
 bugfix: xdccxmlfile (reported by dns777)
   Fix output of filenames in utf-8
 
