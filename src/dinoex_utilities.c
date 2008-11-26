@@ -356,26 +356,44 @@ char* sizestr(int spaces, off_t num)
   return str;
 }
 
-static void removenonprintablectrl2(unsigned char *str, unsigned char fill)
-{
-  if (str == NULL)
-    return;
-
-  for (; *str != 0; str++) {
-    if (*str < 0x20)
-      *str = fill;
-  }
-}
-
 char *removenonprintable(char *str)
 {
-  removenonprintablectrl2((unsigned char *)str, '.');
+  unsigned char *copy;
+
+  if (str != NULL) {
+    for (copy=(unsigned char *)str; *copy != 0; copy++) {
+      if (*copy >= 0x20)
+        continue;
+      switch (*copy) {
+      case 0x01: /* ctcp */
+      case 0x02: /* bold */
+      case 0x03: /* color */
+      case 0x09: /* tab */
+      case 0x0A: /* lf */
+      case 0x0D: /* cr */
+      case 0x0F: /* end formatting */
+      case 0x16: /* inverse */
+      case 0x1F: /* underline */
+        break;
+      default:
+        *copy = '.';
+        break;
+      }
+    }
+  }
   return str;
 }
 
 char *removenonprintablectrl(char *str)
 {
-  removenonprintablectrl2((unsigned char *)str, '_');
+  unsigned char *copy;
+
+  if (str != NULL) {
+    for (copy=(unsigned char *)str; *copy != 0; copy++) {
+      if (*copy < 0x20)
+        *copy = '_';
+    }
+  }
   return str;
 }
 
