@@ -866,12 +866,23 @@ echo "
 int main (int argc, char **argv)
   {
     char *pwout;
-    crypt_set_format(\"des\");
     pwout = crypt(\"testtest\",\"LH\");
     if (pwout && !strcmp(\"LHD/pLKwfn0.k\", pwout))
       {
+        fprintf(stderr, \"result: <plain>\n\");
         exit(0);
       }
+    if (pwout && !strcmp(\"\$1\$LH\$l9z.KKYlyrg6tmiWYw85h0\", pwout))
+      {
+        fprintf(stderr, \"result: <md5>\n\");
+        exit(0);
+      }
+    if (pwout && !strcmp(\"\$2a\$04\$L.....................6oC9YEWGQG17v9bdZ7bATu6dyyWPzMy\", pwout))
+      {
+        fprintf(stderr, \"result: <blf>\n\");
+        exit(0);
+      }
+    fprintf(stderr, \"result: %s\n\", pwout);
     exit(1);
   }
 " > config.temp.c
