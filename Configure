@@ -866,6 +866,7 @@ echo "
 int main (int argc, char **argv)
   {
     char *pwout;
+    crypt_set_format(\"des\");
     pwout = crypt(\"testtest\",\"LH\");
     if (pwout && !strcmp(\"LHD/pLKwfn0.k\", pwout))
       {
