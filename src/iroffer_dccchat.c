@@ -22,6 +22,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
+#include "dinoex_jobs.h"
 #include "dinoex_misc.h"
 
 #ifdef USE_UPNP
@@ -339,10 +340,10 @@ void setupdccchatconnected(dccchat_t *chat)
 void parsedccchat(dccchat_t *chat,
                   char* line)
 {
-  group_admin_t *ga;
   char *linec;
   userinput ui;
   int count;
+  int found;
   
   updatecontext();
   
@@ -354,49 +355,27 @@ void parsedccchat(dccchat_t *chat,
   switch (chat->status)
     {
     case DCCCHAT_AUTHENTICATING:
-      if (verifypass2(gdata.adminpass, line))
+      found = dcc_host_password(chat, line);
+      if (found == 1)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                   "DCC CHAT Correct password");
           
           chat->status = DCCCHAT_CONNECTED;
-          chat->level = gdata.adminlevel;
           
           writedccchat(chat,0," \n");
           writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
           writedccchat(chat,0,"For Help type \"help\"\n");
           
+          if (chat->level >= ADMIN_LEVEL_FULL)
+            {
           count = irlist_size(&gdata.msglog);
           writedccchat(chat, 0, "** You have %i %s in the message log%s\n",
                        count,
                        count != 1 ? "messages" : "message",
                        count ? ", use MSGREAD to read them" : "");
           writedccchat(chat,0," \n");
-        }
-      else if (verifypass2(gdata.hadminpass, line))
-        {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                  "DCC CHAT Correct password");
-          
-          chat->status = DCCCHAT_CONNECTED;
-          chat->level = gdata.hadminlevel;
-          
-          writedccchat(chat, 0, " \n");
-          writedccchat(chat, 0, "Entering DCC Chat Admin Interface\n");
-          writedccchat(chat, 0, "For Help type \"help\"\n");
-        }
-      else if ((ga = verifypass_group(chat->hostmask, line)))
-        {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                  "DCC CHAT Correct password");
-          
-          chat->status = DCCCHAT_CONNECTED;
-          chat->level = ga->g_level;
-          chat->groups = mystrdup(ga->g_groups);
-          
-          writedccchat(chat, 0, " \n");
-          writedccchat(chat, 0, "Entering DCC Chat Admin Interface\n");
-          writedccchat(chat, 0, "For Help type \"help\"\n");
+            }
         }
       else
         {

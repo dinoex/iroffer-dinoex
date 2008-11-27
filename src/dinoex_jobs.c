@@ -847,6 +847,34 @@ int admin_message(const char *nick, const char *hostmask, const char *passwd, ch
   return err;
 }
 
+int dcc_host_password(dccchat_t *chat, char *passwd)
+{
+  group_admin_t *ga;
+
+  updatecontext();
+
+  if ( verifyshell(&gdata.adminhost, chat->hostmask) ) {
+    if ( verifypass2(gdata.adminpass, passwd) ) {
+      chat->level = gdata.adminlevel;
+      return 1;
+    }
+    return -1;
+  }
+  if ( verifyshell(&gdata.hadminhost, chat->hostmask) ) {
+    if ( verifypass2(gdata.hadminpass, passwd) ) {
+      chat->level = gdata.hadminlevel;
+      return 1;
+    }
+    return -1;
+  }
+  if ((ga = verifypass_group(chat->hostmask, passwd))) {
+    chat->level = ga->g_level;
+    chat->groups = mystrdup(ga->g_groups);
+    return 1;
+  }
+  return 0;
+}
+
 static const char *find_groupdesc(const char *group)
 {
   xdcc *xd;

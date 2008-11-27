@@ -261,6 +261,7 @@ dondieschotte
 	reporting "autoadd_group_match" bug
 	option "privmsg_fish"
 	option "fish_exclude_nick"
+	reporting duplicate passwords problem
 
 dsd
 	admin command "autoadd"

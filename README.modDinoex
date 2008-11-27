@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: DCC CHAT (reported by dondieschotte)
+  Restrict adminpassword to adminhost
+
 bugfix: /etc/auth.conf (reported by Kaonashi)
   Configure detects md5 and blf.
 

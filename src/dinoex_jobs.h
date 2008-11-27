@@ -65,6 +65,7 @@ void autoadd_scan(const char *dir, const char *group);
 void autoadd_all(void);
 void run_delayed_jobs(void);
 int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len);
+int dcc_host_password(dccchat_t *chat, char *line);
 void write_removed_xdcc(xdcc *xd);
 void import_xdccfile(void);
 void autotrigger_add(xdcc *xd);
