@@ -150,7 +150,8 @@ static void telnet_accept(int i)
   gdata.num_dccchats++;
   chat->status = DCCCHAT_AUTHENTICATING;
   chat->net = 0;
-  chat->nick = mystrdup(".telnet");
+  chat->nick = mystrdup("telnet");
+  chat->hostmask = to_hostmask(chat->nick, "telnet");
   chat->con.localport = gdata.telnet_port;
   chat->con.connecttime = gdata.curtime;
   chat->con.lastcontact = gdata.curtime;

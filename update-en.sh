@@ -10,12 +10,13 @@ copy_if_differ() {
 }
 
 LANG="C"
+utf8="cat"
 sh ./Lang en
 awk -f ./admin.awk src/iroffer_admin.c > help-admin-en.neu
 copy_if_differ help-admin-en.txt help-admin-en.neu
 for lang in de it
 do
-	if test ! "${lang}.sed" -nt de.txt
+	if test ! "${lang}.sed" -nt "${lang}.txt"
 	then
 		echo -n "parsing ... "
 		sed -e 's| |	|' en.txt > en.tmp

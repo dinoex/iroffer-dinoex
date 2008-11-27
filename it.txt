@@ -1928,7 +1928,7 @@
 2009 "Esce da un canale fino al rehash"
 2010 "telnet_port"
 2011 "Telnet SERVER in attesa di connessione on %s"
-2012 ".telnet"
+2012 "telnet"
 2013 "Connessione Telnet ricevuta da %s"
 2014 "http_vhost"
 2015 "telnet_vhost"

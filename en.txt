@@ -1927,7 +1927,7 @@
 2009 "part channel till rehash"
 2010 "telnet_port"
 2011 "Telnet SERVER waiting for connection on %s"
-2012 ".telnet"
+2012 "telnet"
 2013 "Telnet connection received from %s"
 2014 "http_vhost"
 2015 "telnet_vhost"
