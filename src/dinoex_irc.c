@@ -147,18 +147,15 @@ void update_server_welcome(char *line)
 
 static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, const char *vhost)
 {
-  SIGNEDSOCK int addrlen;
   int e;
 
   if (vhost == NULL)
     return 0;
 
   if (family == AF_INET) {
-    addrlen = sizeof(struct sockaddr_in);
     listenaddr->sin.sin_family = AF_INET;
     e = inet_pton(family, vhost, &(listenaddr->sin.sin_addr));
   } else {
-    addrlen = sizeof(struct sockaddr_in6);
     listenaddr->sin6.sin6_family = AF_INET6;
     e = inet_pton(family, vhost, &(listenaddr->sin6.sin6_addr));
   }
@@ -469,7 +466,7 @@ int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t 
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 #endif /* NO_GETADDRINFO */
-  long ip;
+  unsigned long ip;
 
 #if !defined(NO_GETADDRINFO)
   if (sa->sa.sa_family == AF_INET) {
@@ -513,7 +510,6 @@ const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, in
 
 int connectirc2(res_addrinfo_t *remote)
 {
-  struct sockaddr_in *remoteaddr;
   int retval;
   int family;
 
@@ -521,7 +517,6 @@ int connectirc2(res_addrinfo_t *remote)
     gnetwork->serv_resolv.next = 0;
 
   family = remote->ai_addr.sa_family;
-  remoteaddr = (struct sockaddr_in *)(&(remote->ai_addr));
   gnetwork->ircserver = socket(family, remote->ai_socktype, remote->ai_protocol);
   if (gnetwork->ircserver < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Socket Error");
@@ -602,7 +597,6 @@ int has_closed_servers(void)
 int has_joined_channels(int all)
 {
   int j;
-  int n;
   int ss;
   channel_t *ch;
 
@@ -614,7 +608,6 @@ int has_joined_channels(int all)
           return 0;
       } else {
         j++;
-        n++;
       }
     }
   }

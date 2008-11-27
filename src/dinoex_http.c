@@ -1304,7 +1304,7 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
     }
     if (strcmp(key, "cap") == 0) {
       tempstr = mycalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort - 1, "%i.0KB/s", gdata.maxb / 4);
+      snprintf(tempstr, maxtextlengthshort - 1, "%u.0KB/s", gdata.maxb / 4);
       break;
     }
     if (strcmp(key, "record") == 0) {
@@ -1706,7 +1706,6 @@ static int h_admin_auth(http * const h, char *body)
 static void h_parse(http * const h, char *body)
 {
   char *tempstr;
-  size_t len;
 
   updatecontext();
 
@@ -1740,7 +1739,7 @@ static void h_parse(http * const h, char *body)
 
   if (gdata.http_dir) {
     tempstr = mycalloc(maxtextlength);
-    len = snprintf(tempstr, maxtextlength-1, "%s%s", gdata.http_dir, h->url);
+    snprintf(tempstr, maxtextlength-1, "%s%s", gdata.http_dir, h->url);
     h_readfile(h, tempstr);
     mydelete(tempstr);
     return;

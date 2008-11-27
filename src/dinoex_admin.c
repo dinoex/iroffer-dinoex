@@ -2102,7 +2102,6 @@ void a_newgroup(const userinput * const u)
 void a_chtime(const userinput * const u)
 {
   const char *format;
-  char *cptr;
   char *oldstr;
   char *newstr;
   int num = 0;
@@ -2123,7 +2122,7 @@ void a_chtime(const userinput * const u)
     if (val < 5000) {
       format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
       bzero((char *)&tmval, sizeof(tmval));
-      cptr = strptime(u->arg2e, format, &tmval);
+      strptime(u->arg2e, format, &tmval);
       val = mktime(&tmval);
     }
   }
@@ -2841,7 +2840,6 @@ void a_movegroupdir(const userinput * const u)
   char *thedir;
   char *tempstr;
   const char *g;
-  int num;
   int foundit;
 
   updatecontext();
@@ -2864,13 +2862,11 @@ void a_movegroupdir(const userinput * const u)
     return;
   }
 
-  num = 0;
   foundit = 0;
   tempstr = mycalloc(maxtextlength);
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    num ++;
     if (xd->group != NULL)
       g = xd->group;
     else

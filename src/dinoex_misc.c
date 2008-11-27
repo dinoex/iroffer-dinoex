@@ -795,7 +795,7 @@ int noticeresults(const char *nick, const char *pattern, const char *dest)
             len = strlen(tempstr);
           }
           if (gdata.maxb) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%i.0KB/s", gdata.maxb / 4);
+            snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%u.0KB/s", gdata.maxb / 4);
             len = strlen(tempstr);
           }
           snprintf(tempstr + len, maxtextlength - 1 - len, " - /MSG %s XDCC SEND x -",
@@ -1561,7 +1561,6 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
   ir_cidr_t *cidr;
   const unsigned char *data1;
   const unsigned char *data2;
-  int bits;
 
   updatecontext();
 
@@ -1581,7 +1580,6 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
     } else {
       data2 = (const unsigned char *)&(cidr->remote.sin6.sin6_addr);
     }
-    bits = cidr->netmask;
     if (verify_bits(cidr->netmask, data1, data2))
       return 1; /* bits matched */
   }

@@ -1928,11 +1928,10 @@ static void parseline(char *line) {
  /* JOIN */
    if (!strcmp(part2, "JOIN") && part3a && gnetwork->caps_nick) {
       char* nick;
-      int j,found;
+      int j;
       nick = mycalloc(strlen(line)+1);
       j=1;
       gnetwork->nocon = 0;
-      found = 0;
       while(line[j] != '!' && j<sstrlen(line)) {
          nick[j-1] = line[j];
          j++;
@@ -2995,7 +2994,6 @@ void autoqueuef(const char* line, int pack, const char *message)
 void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd)
 {
   int usertrans, userpackok, man;
-  int unlimitedhost;
   xdcc *xd;
   transfer *tr;
   
@@ -3003,7 +3001,6 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
   
   usertrans = 0;
   userpackok = 1;
-  unlimitedhost = 0;
 
   xd = get_download_pack(nick, hostname, hostmask, pack, &man, "SEND", gdata.restrictsend);
   if (xd == NULL)

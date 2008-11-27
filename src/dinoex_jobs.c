@@ -878,12 +878,10 @@ int dcc_host_password(dccchat_t *chat, char *passwd)
 static const char *find_groupdesc(const char *group)
 {
   xdcc *xd;
-  int k;
 
   if (group == NULL)
     return "";
 
-  k = 0;
   xd = irlist_get_head(&gdata.xdccs);
   while(xd)
     {
@@ -1414,7 +1412,7 @@ static size_t write_asc_int(int fd, int val)
   return len;
 }
 
-static size_t write_asc_hex(int fd, long val)
+static size_t write_asc_hex(int fd, unsigned long val)
 {
   char *tempstr;
   size_t len;
@@ -1562,7 +1560,7 @@ static void xdcc_save_xml(void)
   write_string(fd, "</banduse>\n");
   write_string(fd, "    <bandmax>");
   tempstr = mycalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort - 1, "%i.0KB/s", gdata.maxb / 4);
+  snprintf(tempstr, maxtextlengthshort - 1, "%u.0KB/s", gdata.maxb / 4);
   write_string(fd, tempstr);
   mydelete(tempstr);
   write_string(fd, "</bandmax>\n");

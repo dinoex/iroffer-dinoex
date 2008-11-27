@@ -286,6 +286,7 @@ void check_idle_queue(void)
   if (irlist_size(&gdata.mainqueue) >= gdata.queuesize)
     return;
 
+  pq = NULL;
   for (pass = 0; pass < 2; pass++) {
     for (pq = irlist_get_head(&gdata.idlequeue);
          pq;

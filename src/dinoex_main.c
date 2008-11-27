@@ -157,7 +157,6 @@ static void free_state(void)
   userinput *u;
   igninfo *i;
   msglog_t *ml;
-  gnetwork_t *backup;
   xlistqueue_t *user;
   http *h;
   http_magic_t *mime;
@@ -179,7 +178,6 @@ static void free_state(void)
      mydelete(xd->trigger);
   }
 
-  backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
     mydelete(gnetwork->curserveractualname);
@@ -207,6 +205,7 @@ static void free_state(void)
        free_channel_data(ch);
     }
   }
+  gnetwork = NULL;
 
   for (tr = irlist_get_head(&gdata.trans);
        tr;

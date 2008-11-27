@@ -29,7 +29,7 @@
 
 #define GEOIP_FLAGS GEOIP_MEMORY_CACHE
 
-GeoIP *gi = NULL;
+static GeoIP *gi = NULL;
 
 static char *check_geoip(transfer *const t)
 {
