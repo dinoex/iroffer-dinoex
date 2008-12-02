@@ -391,7 +391,7 @@ char *removenonprintablectrl(char *str)
   if (str != NULL) {
     for (copy=(unsigned char *)str; *copy != 0; copy++) {
       if (*copy < 0x20)
-        *copy = '_';
+        *copy = ' ';
     }
   }
   return str;
