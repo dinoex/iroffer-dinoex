@@ -362,8 +362,6 @@ char *removenonprintable(char *str)
 
   if (str != NULL) {
     for (copy=(unsigned char *)str; *copy != 0; copy++) {
-      if (*copy >= 0x20)
-        continue;
       switch (*copy) {
       case 0x01: /* ctcp */
       case 0x02: /* bold */
@@ -374,8 +372,6 @@ char *removenonprintable(char *str)
       case 0x0F: /* end formatting */
       case 0x16: /* inverse */
       case 0x1F: /* underline */
-        break;
-      default:
         *copy = '.';
         break;
       }
