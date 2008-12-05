@@ -894,7 +894,7 @@ static void u_xdl_head(const userinput * const u) {
        if (gdata.maxb)
          {
            snprintf(tempstr + len, maxtextlength - 1 - len,
-                    " Cap: %i.0KB/s,",
+                    " Cap: %u.0KB/s,",
                     gdata.maxb / 4);
            len = strlen(tempstr);
          }
