@@ -33,6 +33,8 @@ int is_file_writeable(const char *f);
 char *hostmask_to_fnmatch(const char *str);
 int verify_group_in_grouplist(const char *group, const char *grouplist);
 char* sizestr(int spaces, off_t num);
+int isprintable(char a);
+char onlyprintable(char a);
 char *removenonprintable(char *str);
 char *removenonprintablectrl(char *str);
 char *removenonprintablefile(char *str);

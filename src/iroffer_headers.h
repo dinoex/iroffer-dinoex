@@ -625,8 +625,6 @@ __attribute__ ((format(printf, 2, 0)))
 vnotice(const char *nick, const char *format, va_list ap);
 int sstrlen (const char *p);
 char dayofweektomask(const char a);
-int isprintable(char a);
-char onlyprintable(char a);
 void joinchannel(channel_t *c);
 void updatecontext_f(const char *file, const char *func, int line);
 void dumpcontext(void);

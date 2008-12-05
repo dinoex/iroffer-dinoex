@@ -752,20 +752,6 @@ char dayofweektomask(const char a) {
    }
 
 
-int isprintable(char a) {
-   if ( (unsigned char)a >= 0x20 )
-      return 1;
-   else
-      return 0; 
-   }
-
-char onlyprintable(char a) {
-   if ( (unsigned char)a >= 0x20 )
-      return a;
-   else
-      return '.'; 
-   }
-
 #ifndef WITHOUT_MEMSAVE
 
 static unsigned long mycalloc_hash(void *ptr)

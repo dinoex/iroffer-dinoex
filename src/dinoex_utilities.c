@@ -356,6 +356,24 @@ char* sizestr(int spaces, off_t num)
   return str;
 }
 
+int isprintable(char a)
+{
+  if ( (unsigned char)a < 0x20 )
+     return 0;
+  if ( (unsigned char)a == 0x7F )
+     return 0;
+  return 1;
+}
+
+char onlyprintable(char a)
+{
+  if ( (unsigned char)a < 0x20 )
+     return '.';
+  if ( (unsigned char)a == 0x7F )
+     return '.';
+  return a;
+}
+
 char *removenonprintable(char *str)
 {
   unsigned char *copy;
