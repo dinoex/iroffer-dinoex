@@ -66,7 +66,7 @@ do
   -p*) OPT_PROF=true ;;
   -g*) OPT_GEOIP=true ;;
   -c*) OPT_CURL=true ;;
-  -s*) OPT_SSL=false ;;
+  -s*) echo "WARNING: Please use -no-openssl"; echo ""; OPT_SSL=false ;; # old
   -t*) OPT_TLS=true; OPT_SSL=false ;;
   -u*) OPT_UPNP=true ;;
   -r*) OPT_RUBY=true;;
