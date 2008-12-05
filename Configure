@@ -76,7 +76,7 @@ do
   -no-t*) OPT_NOTELNET=true ;;
   -no-o*) OPT_SSL=false ;;
   -no-m*) OPT_NOMEMSAVE=true ;;
-  -m) ;; # multinet
+  -m) echo "WARNING: Multinet is now default, remove -m"; echo "" ;; # multinet
   *)  usage ;;
   esac
   shift
