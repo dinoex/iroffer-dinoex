@@ -2502,6 +2502,7 @@ void a_regroup(const userinput * const u)
   xdcc *xd;
   const char *g;
   int k;
+  int not_main;
 
   updatecontext();
 
@@ -2511,9 +2512,12 @@ void a_regroup(const userinput * const u)
   if (invalid_group(u, u->arg2) != 0)
      return;
 
-  if (gdata.groupsincaps)
+  if (gdata.groupsincaps) {
     caps(u->arg1);
+    caps(u->arg2);
+  }
 
+  not_main = strcasecmp(u->arg2, "main");
   k = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
@@ -2526,7 +2530,8 @@ void a_regroup(const userinput * const u)
       k++;
       if (xd->group != NULL)
         mydelete(xd->group);
-      xd->group = mystrdup(u->arg2);
+      if (not_main)
+        xd->group = mystrdup(u->arg2);
     }
   }
 
@@ -2535,8 +2540,10 @@ void a_regroup(const userinput * const u)
 
   a_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2);
   reorder_groupdesc(u->arg2);
-  if (strcasecmp(u->arg1, "main") == 0)
-    add_default_groupdesc(u->arg2);
+  if (not_main) {
+    if (strcasecmp(u->arg1, "main") == 0)
+      add_default_groupdesc(u->arg2);
+  }
   write_files();
 }
 
