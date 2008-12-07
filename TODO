@@ -60,7 +60,6 @@ Page last modified: 09/01/04
 [Iroffer mod Dinoex]
 
 Short Term Features:
-  1202  Reduce message length when using fish.
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -82,6 +81,7 @@ Long Term Features:
   1176  pre_desc, post_desc
   1190  show CONFIG value
   1193  disable all privmsg
+  1202  Reduce message length when using fish.
   1206  remove file after last person finishes downloading
   1215  anti flood for xdcc search
   1216  ADDGROUP with file
@@ -92,6 +92,7 @@ Long Term Features:
   1248  max logfiles size, rotate if reached
   1253  do not warn if xdccllistfile changes
   1262  @find should report the newest files first
+  1271  @find not found message
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

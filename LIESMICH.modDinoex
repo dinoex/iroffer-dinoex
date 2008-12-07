@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+268) charset
+ Hier muss der Zeichensatz für die Dateinamen angegeben werden.
+ Den Zeichnensatz auch in "header.html" anpassen.
+
 bugfix: DCC CHAT
   Beschränke das Passwort des Admins auf den adminhost.
 

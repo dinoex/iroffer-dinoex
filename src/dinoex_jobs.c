@@ -1457,7 +1457,12 @@ static void xdcc_save_xml(void)
     return;
   }
 
-  write_string(fd, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+  write_string(fd, "<?xml version=\"1.0\" encoding=\"");
+  if (gdata.charset != NULL)
+    write_string(fd, gdata.charset);
+  else
+    write_string(fd, "UTF-8");
+  write_string(fd, "\"?>\n");
   write_string(fd, "<packlist>\n\n");
 
   groups = 0;

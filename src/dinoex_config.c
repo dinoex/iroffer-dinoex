@@ -174,6 +174,7 @@ static config_string_typ config_parse_string[] = {
 {"autoadd_group",           &gdata.autoadd_group,           0 },
 {"autoadd_sort",            &gdata.autoadd_sort,            0 },
 {"autoaddann",              &gdata.autoaddann,              0 },
+{"charset",                 &gdata.charset,                 0 },
 {"creditline",              &gdata.creditline,              0 },
 {"enable_nick",             &gdata.enable_nick,             0 },
 #ifdef USE_GEOIP

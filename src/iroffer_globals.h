@@ -143,6 +143,7 @@ char *announce_seperator;
 char *nosendmsg;
 char *privmsg_fish;
 char *ruby_script;
+char *charset;
 long nomd5_start;
 int need_voice;
 int need_level;
