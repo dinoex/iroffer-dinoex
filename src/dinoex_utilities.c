@@ -380,18 +380,26 @@ char *removenonprintable(char *str)
 
   if (str != NULL) {
     for (copy=(unsigned char *)str; *copy != 0; copy++) {
+      if (*copy == 0x7F) {
+        *copy = '.';
+        continue;
+      }
+      if (*copy >= 0x20)
+        continue;
+
       switch (*copy) {
       case 0x01: /* ctcp */
       case 0x02: /* bold */
       case 0x03: /* color */
-      case 0x08: /* backspace */
       case 0x09: /* tab */
       case 0x0A: /* lf */
       case 0x0D: /* cr */
       case 0x0F: /* end formatting */
       case 0x16: /* inverse */
       case 0x1F: /* underline */
-      case 0x7F: /* delete */
+        /* good */
+        break;
+      default:
         *copy = '.';
         break;
       }
