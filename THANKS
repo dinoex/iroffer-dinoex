@@ -369,7 +369,8 @@ Wetter
 
 eagle_bot
 	option "channel -joinmsg"
-	reporting "AUTOGROUP" bug
+	reporting "AUTOGROUP" space bug
+	reporting "REGROUP" space bug
 
 Lamune
 	admin command "NOSEND x msg"

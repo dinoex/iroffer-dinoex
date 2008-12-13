@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+bugfix: REGROUP
+  Erlaube das Umbennenen von Gruppen mit Leerzeichen.
+
 bugfix: AUTOGROUP
   Erzeuge keine Gruppen mit Leerzeichen.
 

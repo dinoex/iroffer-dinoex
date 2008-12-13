@@ -385,12 +385,13 @@ static int group_is_restricted(const userinput * const u, const char *group)
   return 1;
 }
 
-int invalid_group(const userinput * const u, const char *arg)
+int invalid_group(const userinput * const u, char *arg)
 {
   if (!arg || !strlen(arg)) {
     a_respond(u, "Try Specifying a Group");
     return 1;
   }
+  clean_quotes(arg);
 
   if (group_is_restricted(u, arg)) {
     a_respond(u, "You don't have access to this group");

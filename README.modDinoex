@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: REGROUP (reported by eagle_bot)
+  Allow to rename groups with spaces by quating.
+
 bugfix: AUTOGROUP (reported by eagle_bot)
   Don't create groups with spaces.
 
