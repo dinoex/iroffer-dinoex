@@ -60,6 +60,7 @@ Page last modified: 09/01/04
 [Iroffer mod Dinoex]
 
 Short Term Features:
+  1278  fix queue timing on restart and at end of transfer
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -93,6 +94,11 @@ Long Term Features:
   1253  do not warn if xdccllistfile changes
   1262  @find should report the newest files first
   1271  @find not found message
+  1275  autoaddann
+  1279  single passive send
+  1280  edit color messages
+  1282  macros in config
+  1286  show one level dir in description
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -153,4 +159,5 @@ Not going to happen anytime soon:
   1260  !find trigger
   1261  SORTGROUP
   1267  high priority send for people with high speeds
+  1276  get all missing packs from some other bot
 
