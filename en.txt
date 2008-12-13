@@ -2309,3 +2309,4 @@
 2395 "<?xml version=\"1.0\" encoding=\""
 2396 "UTF-8"
 2397 "\"?>\n"
+2398 "channel [net] [key]"

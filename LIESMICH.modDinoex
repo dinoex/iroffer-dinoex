@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+269) JOIN
+
+  Neues Admin Kommando:
+  JOIN <channel> <net> <key> Betrete den Channel <channel> mit Kennwort <key> bis zum REHASH
+
 bugfix: REGROUP
   Das umbenennen in die Gruppe "MAIN" ist möglich.
 

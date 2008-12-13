@@ -219,7 +219,7 @@ static const userinput_parse_t userinput_parse[] = {
 {6,2,method_allow_all,u_servers,       "SERVERS","[net]","Shows the server list"},
 {6,2,method_allow_all,a_hop,           "HOP","[channel] [net]","leave and rejoin a channel to get status"},
 {6,2,method_allow_all,a_nochannel,     "NOCHANNEL","x [channel]","leave channel for <x> minutes"},
-{6,2,method_allow_all,a_join,          "JOIN","channel [net]","join channel till rehash"},
+{6,2,method_allow_all,a_join,          "JOIN","channel [net] [key]","join channel till rehash"},
 {6,2,method_allow_all,a_part,          "PART","channel [net]","part channel till rehash"},
 {6,2,method_allow_all,u_jump,          "JUMP","server [net]","Switches to a random server or server <server>"},
 {6,5,method_allow_all,a_servqc,        "SERVQC",NULL,"Clears the server send queue"},
