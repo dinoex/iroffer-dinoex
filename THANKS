@@ -86,6 +86,7 @@ TheDeath
 	reporting CONFIG bug
 	reporting xdcclistfile over HTTP bug
 	option "no_minspeed_on_free"
+	option "no_status_log"
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -476,6 +477,7 @@ Kamina
 
 xShatteRx
 	reporting XDCC SEND LIST bug
+	option "no_status_chat"
 
 Kaonashi
 	Configure bug with /etc/auth.conf

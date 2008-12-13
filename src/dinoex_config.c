@@ -89,6 +89,8 @@ static config_bool_typ config_parse_bool[] = {
 {"need_voice",             &gdata.need_voice },
 {"no_duplicate_filenames", &gdata.no_duplicate_filenames },
 {"no_minspeed_on_free",    &gdata.no_minspeed_on_free },
+{"no_status_chat",         &gdata.no_status_chat },
+{"no_status_log",          &gdata.no_status_log },
 {"noautorejoin",           &gdata.noautorejoin },
 {"nocrc32",                &gdata.nocrc32 },
 {"noduplicatefiles",       &gdata.noduplicatefiles },

@@ -1343,6 +1343,8 @@ void dumpgdata(void)
   gdata_print_int(verbose_crc32);
   gdata_print_int(mirc_dcc64);
   gdata_print_int(no_minspeed_on_free);
+  gdata_print_int(no_status_chat);
+  gdata_print_int(no_status_log);
   gdata_print_long(nomd5_start);
   
   gdata_irlist_iter_start(downloadhost, char);
