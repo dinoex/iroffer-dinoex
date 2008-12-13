@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+272) ANNOUNCE
+  Neue Admin Kommandos:
+  ANNOUNCE n                      ANNOUNCE <msg> für Paket <n> in allen Channels
+  MANNOUNCE <n> <m>               ANNOUNCE <msg> für Paket <n> bis <m> in allen Channels
+  CANNOUNCE <channnel> <n>        ANNOUNCE <msg> für Paket <n> in Channel <channnel>
+
 271) no_status_chat
   Wenn aktivert, meldet der Bot keine Status-Zeile im Chat.
 
@@ -1540,7 +1546,7 @@ Ab Version mod 1.28:
 75) direct_file_access
   Erlaube dem Admin direkten Zugriff auf die Dateien.
 
-  Neues Admin Kommando:
+  Neue Admin Kommandos:
   FILEMOVE <filename> <neu>            Umbenennen einer Datei
   FILEDEL <filename>                   Löschen der Datei auf der Festplatte
   SHOWDIR <dir>                        Das Verzeichnis auf der Festplatte anzeigen

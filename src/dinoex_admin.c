@@ -1460,16 +1460,12 @@ static void a_make_announce_short(const userinput * const u, int n)
 /* iroffer-lamm: autoaddann */
 static void a_make_announce_long(const userinput * const u, int n)
 {
-  const char *msg;
   char *tempstr;
   userinput *ui;
 
-  msg = gdata.autoaddann;
-  if (msg == NULL)
-    msg = "added";
   tempstr = mycalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i %s", n, msg);
+  snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i", n);
   u_fillwith_msg(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = u->net;
@@ -3812,6 +3808,11 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
     snprintf(tempstr3, maxtextlength - 1, "%s%s",
              gdata.announce_seperator, xd->desc);
   }
+  if (msg == NULL) {
+    msg = gdata.autoaddann;
+    if (msg == NULL)
+      msg = "added";
+  }
   snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s", msg, tempstr3);
 
   backup = gnetwork;
@@ -3849,9 +3850,6 @@ static void a_announce_sub(const userinput * const u, const char *arg1, const ch
     return;
   }
 
-  if (invalid_announce(u, msg) != 0)
-    return;
-
   for (; num1 <= num2; num1++) {
     a_announce_msg(u, NULL, num1, msg);
   }
@@ -3880,9 +3878,6 @@ void a_cannounce(const userinput * const u)
 
   if (u->arg2) num = atoi (u->arg2);
   if (invalid_pack(u, num) != 0)
-    return;
-
-  if (invalid_announce(u, u->arg3e) != 0)
     return;
 
   a_announce_msg(u, u->arg1, num, u->arg3e);
