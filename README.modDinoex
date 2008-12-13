@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: AUTOGROUP (reported by eagle_bot)
+  Don't create groups with spaces.
+
 273) REHASH
   Read the dns resolver config on REHASH.
 

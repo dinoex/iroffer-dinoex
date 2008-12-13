@@ -3667,6 +3667,7 @@ void a_autogroup(const userinput * const u)
     if (gdata.groupsincaps)
       caps(new);
 
+    removenonprintablefile(new);
     a_set_group(u, xd, num, new);
     mydelete(tempstr);
   }
