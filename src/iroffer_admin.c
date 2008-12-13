@@ -1839,9 +1839,6 @@ static void u_removedir(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
-  clean_quotes(u->arg1e);
-  convert_to_unix_slash(u->arg1e);
-   
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
     {
       u->arg1e[strlen(u->arg1e)-1] = '\0';
@@ -2077,8 +2074,6 @@ static void u_chfile(const userinput * const u) {
       return;
 
    /* verify file is ok first */
-   clean_quotes(u->arg2e);
-   convert_to_unix_slash(u->arg2e);
    file = mystrdup(u->arg2e);
    
    xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
@@ -2123,9 +2118,6 @@ static void u_adddir(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
-  clean_quotes(u->arg1e);
-  convert_to_unix_slash(u->arg1e);
-   
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
     {
       u->arg1e[strlen(u->arg1e)-1] = '\0';
@@ -2155,9 +2147,6 @@ static void u_addnew(const userinput * const u)
   if (invalid_dir(u, u->arg1e) != 0)
      return;
 
-  clean_quotes(u->arg1e);
-  convert_to_unix_slash(u->arg1e);
-   
   if (u->arg1e[strlen(u->arg1e)-1] == '/')
     {
       u->arg1e[strlen(u->arg1e)-1] = '\0';
@@ -3770,9 +3759,6 @@ static void u_rmul(const userinput * const u) {
 
    if (invalid_file(u, u->arg1e) != 0)
       return;
-
-   clean_quotes(u->arg1e);
-   convert_to_unix_slash(u->arg1e);
    
    if (strstr(u->arg1e,"/")) {
       u_respond(u,"Filename contains invalid characters");

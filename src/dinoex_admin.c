@@ -400,12 +400,14 @@ int invalid_group(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_dir(const userinput * const u, const char *arg)
+int invalid_dir(const userinput * const u, char *arg)
 {
   if (!arg || !strlen(arg)) {
     a_respond(u, "Try Specifying a Directory");
     return 1;
   }
+  clean_quotes(arg);
+  convert_to_unix_slash(arg);
   return 0;
 }
 
@@ -425,6 +427,7 @@ int invalid_file(const userinput * const u, char *arg)
     return 1;
   }
   clean_quotes(arg);
+  convert_to_unix_slash(arg);
   return 0;
 }
 
@@ -1519,16 +1522,12 @@ int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, 
   return 0;
 }
 
-static void a_filedel_disk(const userinput * const u, const char *name)
+static void a_filedel_disk(const userinput * const u, char *file)
 {
   int xfiledescriptor;
   struct stat st;
-  char *file;
 
   updatecontext();
-
-  file = mystrdup(name);
-  convert_to_unix_slash(file);
 
   xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (a_access_file(u, xfiledescriptor, &file, &st))
@@ -1539,7 +1538,6 @@ static void a_filedel_disk(const userinput * const u, const char *name)
   } else {
     a_respond(u, "File %s was deleted.", file);
   }
-  mydelete(file);
 }
 
 static xdcc *a_oldest_xdcc(void)
@@ -1578,7 +1576,6 @@ xdcc *a_add2(const userinput * const u, const char *group)
     return NULL;
 
   file = mystrdup(u->arg1e);
-  convert_to_unix_slash(file);
 
   xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (a_access_fstat(u, xfiledescriptor, &file, &st))
@@ -1944,8 +1941,6 @@ void a_addgroup(const userinput * const u)
   if (invalid_dir(u, u->arg2e) != 0)
      return;
 
-  clean_quotes(u->arg2e);
-  convert_to_unix_slash(u->arg2e);
   if (gdata.groupsincaps)
     caps(u->arg1);
 
@@ -1970,9 +1965,6 @@ void a_addmatch(const userinput * const u)
 
   if (invalid_dir(u, u->arg1e) != 0)
     return;
-
-  clean_quotes(u->arg1e);
-  convert_to_unix_slash(u->arg1e);
 
   thedir = mystrdup(u->arg1e);
   end = strrchr(thedir, '/' );
@@ -2079,8 +2071,6 @@ void a_newgroup(const userinput * const u)
   if (invalid_dir(u, u->arg2e) != 0)
     return;
 
-  clean_quotes(u->arg2e);
-  convert_to_unix_slash(u->arg2e);
   if (gdata.groupsincaps)
     caps(u->arg1);
 
@@ -2683,8 +2673,6 @@ static int a_newdir_check(const userinput * const u, const char *dir1, const cha
 void a_newdir(const userinput * const u)
 {
   xdcc *xd;
-  char *dir1;
-  char *dir2;
   int found;
 
   updatecontext();
@@ -2697,22 +2685,15 @@ void a_newdir(const userinput * const u)
     return;
   }
 
-  clean_quotes(u->arg1);
-  dir1 = mystrdup(u->arg1);
-  convert_to_unix_slash(dir1);
-
   clean_quotes(u->arg2e);
-  dir2 = mystrdup(u->arg2e);
-  convert_to_unix_slash(dir2);
+  convert_to_unix_slash(u->arg2e);
 
   found = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    found += a_newdir_check(u, dir1, dir2, xd);
+    found += a_newdir_check(u, u->arg1, u->arg2e, xd);
   }
-  mydelete(dir1);
-  mydelete(dir2);
   a_respond(u, "NEWDIR: %d Packs found", found);
 
   if (found > 0)
@@ -2760,7 +2741,6 @@ void a_filemove(const userinput * const u)
   }
 
   file1 = mystrdup(u->arg1);
-  convert_to_unix_slash(file1);
 
   xfiledescriptor = a_open_file(&file1, O_RDONLY | ADDED_OPEN_FLAGS);
   if (a_access_file(u, xfiledescriptor, &file1, &st))
@@ -2853,8 +2833,6 @@ void a_movegroupdir(const userinput * const u)
   if (invalid_dir(u, u->arg2e) != 0)
     return;
 
-  clean_quotes(u->arg2e);
-  convert_to_unix_slash(u->arg2e);
   if (gdata.groupsincaps)
     caps(u->arg1);
 
@@ -2959,9 +2937,6 @@ void a_showdir(const userinput * const u)
 
   if (invalid_dir(u, u->arg1e) != 0)
     return;
-
-  clean_quotes(u->arg1e);
-  convert_to_unix_slash(u->arg1e);
 
   if (u->arg1e[strlen(u->arg1e)-1] == '/') {
     u->arg1e[strlen(u->arg1e)-1] = '\0';
