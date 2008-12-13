@@ -36,6 +36,8 @@
 #include "upnp.h"
 #endif /* USE_UPNP */
 
+#include <resolv.h>
+
 xdcc xdcc_statefile;
 xdcc xdcc_listfile;
 
@@ -513,6 +515,7 @@ void startup_dinoex(void)
   curl_startup();
 #endif /* USE_CURL */
   ssl_startup();
+  res_init();
 }
 
 static void global_defaults(void)
@@ -585,6 +588,7 @@ void rehash_dinoex(void)
 #ifdef USE_RUBY
   rehash_myruby();
 #endif /* USE_RUBY */
+  res_init();
 }
 
 static int init_xdcc_file(xdcc *xd, char *file)

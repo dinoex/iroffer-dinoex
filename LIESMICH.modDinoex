@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+273) REHASH
+  Lese die DNS Konfiguration bei REHASH.
+
 272) ANNOUNCE
   Neue Admin Kommandos:
   ANNOUNCE n                      ANNOUNCE <msg> für Paket <n> in allen Channels

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+273) REHASH
+  Read the dns resolver config on REHASH.
+
 272) MANNOUNCE (inspired by Gentatsu)
   new admin commands:
   ANNOUNCE n                      ANNOUNCE <msg> for pack n in all joined channels
