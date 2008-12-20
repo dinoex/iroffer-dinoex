@@ -69,9 +69,9 @@ int verifypass2(const char *masterpass, const char *testpass)
     return 0;
 
 #ifndef NO_CRYPT
-  if ((strlen(masterpass) < 13) ||
-      (strlen(testpass) < 5) ||
-      (strlen(testpass) > 59))
+  if ((strlen(masterpass) < 13U) ||
+      (strlen(testpass) < 5U) ||
+      (strlen(testpass) > 59U))
     return 0;
 
   pwout = crypt(testpass, masterpass);
@@ -95,7 +95,7 @@ void checkadminpass2(const char *masterpass)
 
   updatecontext();
 
-  if (!masterpass || strlen(masterpass) < 13) err++;
+  if (!masterpass || strlen(masterpass) < 13U) err++;
 
   for (i=0; !err && i<strlen(masterpass); i++) {
     if (!((masterpass[i] >= 'a' && masterpass[i] <= 'z') ||

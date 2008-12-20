@@ -309,10 +309,10 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
           (ul->totalsize / 1024));
   mydelete(tempstr);
   if (gdata.mirc_dcc64)
-    if (ul->totalsize > 0xFFFFFFFFL)
+    if (ul->totalsize > 0xFFFFFFFFUL)
       ul->mirc_dcc64 = 1;
 
-  if (ul->con.remoteport > 0) {
+  if (ul->con.remoteport > 0U) {
     l_establishcon(ul);
   } else {
     /* Passive DCC */

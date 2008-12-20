@@ -651,13 +651,13 @@ void t_flushed (transfer * const t)
       timetookms = 1;
     }
   
-  if (timetookms > (60*60*1000))
+  if (timetookms > (60*60*1000U))
     {
       snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
                " %" LLPRINTFMT "u hr", timetookms/60/60/1000);
     }
   
-  if ((timetookms%(60*60*1000)) > (60*1000))
+  if ((timetookms%(60*60*1000U)) > (60*1000U))
     {
       snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
                " %" LLPRINTFMT "u min", (timetookms%(60*60*1000))/60/1000);

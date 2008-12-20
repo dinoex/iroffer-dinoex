@@ -413,7 +413,7 @@ int notifyqueued_nick(const char *nick)
                 irlist_size(&gdata.mainqueue),
                 rtime/60/60,
                 (rtime/60)%60,
-                (rtime >= 359999) ? "more" : "less",
+                (rtime >= 359999U) ? "more" : "less",
                 ntime);
   }
 
@@ -450,7 +450,7 @@ int notifyqueued_nick(const char *nick)
                 irlist_size(&gdata.idlequeue),
                 rtime/60/60,
                 (rtime/60)%60,
-                (rtime >= 359999) ? "more" : "less",
+                (rtime >= 359999U) ? "more" : "less",
                 ntime);
     break;
   }

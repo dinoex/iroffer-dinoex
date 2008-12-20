@@ -315,7 +315,7 @@ void strtextcpy(char *d, const char *s)
     *w = 0;
 
   l = strlen(d);
-  if ( l < 8 )
+  if ( l < 8U )
     return;
 
   w = d + l - 1;
@@ -2106,7 +2106,7 @@ void a_chtime(const userinput * const u)
     val = 0;
   } else {
     val = atoi(u->arg2e);
-    if (val < 5000) {
+    if (val < 5000U) {
       format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
       bzero((char *)&tmval, sizeof(tmval));
       strptime(u->arg2e, format, &tmval);

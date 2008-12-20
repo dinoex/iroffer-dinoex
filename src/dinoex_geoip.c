@@ -49,7 +49,7 @@ static char *check_geoip(transfer *const t)
     return code;
   }
 
-  snprintf(hostname, sizeof(hostname), "%ld.%ld.%ld.%ld",
+  snprintf(hostname, sizeof(hostname), "%lu.%lu.%lu.%lu",
             t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF );
   result = GeoIP_country_code_by_addr(gi, hostname);
   if (result == NULL) {

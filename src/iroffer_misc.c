@@ -74,7 +74,7 @@ void getconfig (void) {
 
    gdata.networks_online ++;
 
-   if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2 ) )
+   if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2U ) )
       outerror(OUTERROR_TYPE_CRASH,"Config File Missing Upload Information");
       
    if ( !irlist_size(&gdata.downloadhost) )
@@ -2605,7 +2605,7 @@ void createpassword(void) {
    
    pwout = crypt(pw1,salt);
    
-   if (pwout && strlen(pwout) >= 13)
+   if (pwout && strlen(pwout) >= 13U)
       printf("\n"
              "To use \"%s\" as your password use the following in your config file:\n"
              "adminpass %s\n"

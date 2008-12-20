@@ -28,15 +28,7 @@
 #include "dinoex_misc.h"
 
 /* local functions */
-static void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
-#endif
-u_respond(const userinput * const u, const char *format, ...);
-
 static void u_help(const userinput * const u);
-static void u_xdl_head(const userinput * const u);
-static void u_xdl_foot(const userinput * const u);
 static void u_xdl_full(const userinput * const u);
 static void u_xdl_group(const userinput * const u);
 static void u_xdl(const userinput * const u);
@@ -449,7 +441,11 @@ void u_fillwith_clean (userinput * const u)
   mydelete(u->arg3e);
 }
 
-static void u_respond(const userinput * const u, const char *format, ...)
+static void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+u_respond(const userinput * const u, const char *format, ...)
 {
   va_list args;
   channel_t *ch;
@@ -1069,7 +1065,6 @@ static void u_xdl(const userinput * const u) {
    char *tempstr;
    char *inlist;
    int i;
-   int m;
    int l;
    int s;
    xdcc *xd;
@@ -1080,7 +1075,6 @@ static void u_xdl(const userinput * const u) {
    u_xdl_head(u);
 
    if (u->method==method_xdl_channel_sum) return;
-   if (u->method==method_xdl_channel_min) m = 1; else m = 0;
 
    tempstr  = mycalloc(maxtextlength);
    
@@ -1520,7 +1514,7 @@ static void u_qul(const userinput * const u)
             }
           tr = irlist_get_next(tr);
         }
-      if (rtime < 359999)
+      if (rtime < 359999U)
         {
           lastrtime=rtime;
         }
@@ -1543,7 +1537,7 @@ static void u_qul(const userinput * const u)
         }
       lastrtime=rtime;
       
-      if (rtime < 359999)
+      if (rtime < 359999U)
         {
           u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
                     i,
@@ -1588,7 +1582,7 @@ static void u_qul(const userinput * const u)
         }
       lastrtime=rtime;
       
-      if (rtime < 359999)
+      if (rtime < 359999U)
         {
           u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
                     i,
@@ -3036,7 +3030,7 @@ static void u_ignore(const userinput * const u)
       return;
     }
   
-  if (!u->arg2 || strlen(u->arg2) < 4)
+  if (!u->arg2 || strlen(u->arg2) < 4U)
     {
       u_respond(u,"Try specifying a hostmask longer than 4 characters");
       return;
@@ -3100,7 +3094,7 @@ static void u_bannhost(const userinput * const u)
    u_ignore(u);
 
    if (!u->arg1) return;
-   if (!u->arg2 || strlen(u->arg2) < 4) return;
+   if (!u->arg2 || strlen(u->arg2) < 4U) return;
 
    a_bann_hostmask(u, u->arg2);
 }

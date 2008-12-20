@@ -733,9 +733,7 @@ static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
-h_respond(http * const h, const char *format, ...);
-
-static void h_respond(http * const h, const char *format, ...)
+h_respond(http * const h, const char *format, ...)
 {
   va_list args;
   ssize_t len;

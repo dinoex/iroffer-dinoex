@@ -94,7 +94,7 @@ MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len)
 	len -= t;
 
 	/* Process data in 64-byte chunks */
-	while (len >= 64) {
+	while (len >= 64U) {
 		memcpy(ctx->in, buf, 64);
 		byteSwap(ctx->in, 16);
 		MD5Transform(ctx->buf, ctx->in);

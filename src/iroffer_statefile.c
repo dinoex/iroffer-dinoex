@@ -887,9 +887,9 @@ void read_statefile(void)
                 {
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
                           COLOR_NO_COLOR, "  [Total Transferred %1.2f %cB]",
-                          (gdata.totalsent/1024/1024) > 1024 ? ( (gdata.totalsent/1024/1024/1024) > 1024 ? ((float)gdata.totalsent)/1024/1024/1024/1024
+                          (gdata.totalsent/1024/1024) > 1024U ? ( (gdata.totalsent/1024/1024/1024) > 1024U ? ((float)gdata.totalsent)/1024/1024/1024/1024
                                                                  : ((float)gdata.totalsent)/1024/1024/1024 ) : ((float)gdata.totalsent)/1024/1024 ,
-                          (gdata.totalsent/1024/1024) > 1024 ? ( (gdata.totalsent/1024/1024/1024) > 1024 ? 'T' : 'G' ) : 'M');
+                          (gdata.totalsent/1024/1024) > 1024U ? ( (gdata.totalsent/1024/1024/1024) > 1024U ? 'T' : 'G' ) : 'M');
                 }
             }
           else

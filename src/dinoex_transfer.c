@@ -387,7 +387,7 @@ int verify_acknowlede(transfer *tr)
     tr->firstack = tr->curack;
     show ++;
     if (tr->firstack <= tr->startresume) {
-      if (tr->xpack->st_size > 0xFFFFFFFFUL) {
+      if (tr->xpack->st_size > 0xFFFFFFFFLL) {
          tr->mirc_dcc64 = 1;
          tr->curack = tr->firstack << 32;
          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,

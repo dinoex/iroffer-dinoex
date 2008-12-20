@@ -2571,7 +2571,7 @@ static void privmsgparse(int type, int decoded, char* line)
                           ((ul->totalsize - ul->resumesize) / 1024),
                           (ul->totalsize / 1024));
                   mydelete(tempstr);
-                  if (ul->con.remoteport > 0)
+                  if (ul->con.remoteport > 0U)
                     {
                       l_establishcon(ul);
                     }
