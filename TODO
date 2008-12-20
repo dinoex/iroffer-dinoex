@@ -4,6 +4,7 @@ Known Problems (All Versions):
    161 7/2/00 Open specifying a user_nick too long causes confusion
    158 10/11/99 Open some servers dont allow multiple recipiants
    170 12/09/03 Open queue remaining times dont take into consideration maxtransfersperperson
+  1289 12/15/09 high cpu usage under windows 2003 web edition
 
 Short Term Features:
    165 02/03/01 Open specify more than one type of plist for a single channel with different times
@@ -161,4 +162,4 @@ Not going to happen anytime soon:
   1267  high priority send for people with high speeds
   1276  get all missing packs from some other bot
   1287  different speed limits by status
-
+  1290  build-in ftp server
