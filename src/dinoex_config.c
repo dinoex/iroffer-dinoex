@@ -771,7 +771,6 @@ static void c_autoadd_group_match(char *var)
   char *split;
   autoadd_group_t *ag;
 
-
   split = strchr(var, ' ');
   if (split == NULL) {
     outerror(OUTERROR_TYPE_WARN,
