@@ -14,9 +14,9 @@ bugfix: AUTOGROUP
 
 272) ANNOUNCE
   Neue Admin Kommandos:
-  ANNOUNCE n                      ANNOUNCE <msg> für Paket <n> in allen Channels
-  MANNOUNCE <n> <m>               ANNOUNCE <msg> für Paket <n> bis <m> in allen Channels
-  CANNOUNCE <channnel> <n>        ANNOUNCE <msg> für Paket <n> in Channel <channnel>
+  ANNOUNCE n                      ANNOUNCE <autoaddann> für Paket <n> in allen Channels
+  MANNOUNCE <n> <m>               ANNOUNCE <autoaddann> für Paket <n> bis <m> in allen Channels
+  CANNOUNCE <channnel> <n>        ANNOUNCE <autoaddann> für Paket <n> in Channel <channnel>
 
 271) no_status_chat
   Wenn aktivert, meldet der Bot keine Status-Zeile im Chat.

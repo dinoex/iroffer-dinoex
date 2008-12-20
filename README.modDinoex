@@ -14,9 +14,9 @@ bugfix: AUTOGROUP (reported by eagle_bot)
 
 272) MANNOUNCE (inspired by Gentatsu)
   new admin commands:
-  ANNOUNCE n                      ANNOUNCE <msg> for pack n in all joined channels
-  MANNOUNCE <n> <m>               ANNOUNCE <msg> for pack <n> to <m> in all joined channels
-  CANNOUNCE <channnel> <n>        ANNOUNCE <msg> for pack n in <channel>
+  ANNOUNCE n                      ANNOUNCE <autoaddann> for pack n in all joined channels
+  MANNOUNCE <n> <m>               ANNOUNCE <autoaddann> for pack <n> to <m> in all joined channels
+  CANNOUNCE <channnel> <n>        ANNOUNCE <autoaddann> for pack n in <channel>
 
 271) no_status_chat (inspired by xShatteRx)
   If defined, iroffer will suppress status line in chat.
