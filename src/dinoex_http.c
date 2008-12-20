@@ -389,7 +389,7 @@ static ssize_t pattern_decode(char *buffer, ssize_t max, const char *src)
   return len;
 }
 
-static char *html_str_split(char *buffer, char delimiter)
+static char *html_str_split(char *buffer, int delimiter)
 {
   char *data;
 
@@ -1424,12 +1424,11 @@ static int h_html_index(http * const h)
        info = irlist_get_next(info)) {
 
     buffer = mystrdup(info);
-    text = strchr(buffer, ' ');
+    text = html_str_split(buffer, ' ');
     if (text == NULL) {
       mydelete(buffer);
       continue;
     }
-    *(text++) = 0;
     clean_quotes(text);
     h_html_weblist_info(h, buffer, text);
     mydelete(buffer);
@@ -1675,13 +1674,9 @@ static int h_admin_auth(http * const h, char *body)
     return 1;
 
   auth += strlen(htpp_auth_key);
-  end = strchr(auth, ' ');
-  if (end != NULL)
-    *(end++) = 0;
+  end = html_str_split(auth, ' ');
   tempstr = b64decode_string(auth);
-  passwd = strchr(tempstr, ':');
-  if (passwd != NULL)
-    *(passwd++) = 0;
+  passwd = html_str_split(tempstr, ':');
 
   if (strcasecmp(tempstr, gdata.http_admin) == 0) {
     if (verifypass2(gdata.hadminpass, passwd) ) {
