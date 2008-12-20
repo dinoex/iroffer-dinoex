@@ -1658,6 +1658,7 @@ static void html_str_prefix(char **str, int len)
 static int h_admin_auth(http * const h, char *body)
 {
   const char *auth;
+  char *buffer;
   char *tempstr;
   char *passwd;
   char *end;
@@ -1674,8 +1675,10 @@ static int h_admin_auth(http * const h, char *body)
     return 1;
 
   auth += strlen(htpp_auth_key);
-  end = html_str_split(auth, ' ');
-  tempstr = b64decode_string(auth);
+  buffer = mystrdup(auth);
+  end = html_str_split(buffer, ' ');
+  tempstr = b64decode_string(buffer);
+  mydelete(buffer);
   passwd = html_str_split(tempstr, ':');
 
   if (strcasecmp(tempstr, gdata.http_admin) == 0) {
