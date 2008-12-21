@@ -3414,6 +3414,7 @@ void sendaqueue(int type, int pos, char *lastnick)
       t_setup_dcc(tr, tr->nick);
       
       gnetwork = backup;
+      check_idle_queue();
       return;
     }
 }
