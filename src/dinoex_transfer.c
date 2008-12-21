@@ -237,7 +237,7 @@ int t_find_resume(const char *nick, const char *filename, const char *localport,
 
     if (guess == NULL)
       guess = tr;
-    if (strstrnocase(tr->xpack->file, filename))
+    if (strcasestr(tr->xpack->file, filename))
       break;
     if (tr->con.localport == atoi(localport))
       break;

@@ -27,30 +27,6 @@
 #include "dinoex_misc.h"
 
 
-const char* strstrnocase (const char *str1, const char *match1)
-{
-  char *str, *match;
-  const char *retval;
-  
-  str   = mystrdup(str1);
-  match = mystrdup(match1);
-  
-  caps(str);
-  caps(match);
-  
-  retval = strstr(str, match);
-  
-  if (retval)
-    {
-      retval = str1 + (retval - str);
-    }
-  
-  mydelete(str);
-  mydelete(match);
-  
-  return retval;
-}
-
 #ifndef WITHOUT_MEMSAVE
 char* getpart2(const char *line, int howmany,
                const char *src_function, const char *src_file, int src_line)

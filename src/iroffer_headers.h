@@ -510,7 +510,6 @@ void tostdout_write(void);
 void tostdout_disable_buffering(void);
 
 /* utilities.c */
-const char* strstrnocase (const char *str1, const char *match1);
 #ifndef WITHOUT_MEMSAVE
 #define getpart(x,y) getpart2(x,y,__FUNCTION__,__FILE__,__LINE__)
 char* getpart2(const char *line, int howmany, const char *src_function, const char *src_file, int src_line);
