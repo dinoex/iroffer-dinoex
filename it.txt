@@ -1588,7 +1588,6 @@
 1656 "Notifica dello Stato Di Coda a %s in %s"
 1657 "remove %d"
 1658 "Resettando download limit del pack %d, usato %d"
-1659 "%ld.%ld.%ld.%ld"
 1660 "GeoIP [%02i:%s on %s]: Info %ld.%ld.%ld.%ld -> %s)"
 1662 "Mi dispiace, nessun download per la tua nazione = \"%s\", rivolgiti all'amministratore."
 1663 "IP proveniente da un'altra nazione (%s) rilevato"
