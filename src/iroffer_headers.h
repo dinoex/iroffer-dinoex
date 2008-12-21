@@ -516,8 +516,6 @@ char* getpart2(const char *line, int howmany, const char *src_function, const ch
 #else
 char* getpart(const char *line, int howmany);
 #endif
-char* caps(char *text);
-char* nocaps(char *text);
 void getos(void);
 void floodchk(void);
 

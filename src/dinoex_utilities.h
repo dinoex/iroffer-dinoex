@@ -32,11 +32,13 @@ int strcmp_null(const char *s1, const char *s2);
 int is_file_writeable(const char *f);
 char *hostmask_to_fnmatch(const char *str);
 int verify_group_in_grouplist(const char *group, const char *grouplist);
-char* sizestr(int spaces, off_t num);
+char *sizestr(int spaces, off_t num);
 int isprintable(char a);
 char onlyprintable(char a);
 char *removenonprintable(char *str);
 char *removenonprintablectrl(char *str);
 char *removenonprintablefile(char *str);
+char *caps(char *str);
+char *nocaps(char *str);
 
 /* End of File */

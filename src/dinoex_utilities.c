@@ -290,7 +290,7 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
   return 0; /* token not found */
 }
 
-char* sizestr(int spaces, off_t num)
+char *sizestr(int spaces, off_t num)
 {
 #define SIZESTR_SIZE 5
   char *str = mycalloc(SIZESTR_SIZE);
@@ -478,6 +478,38 @@ char *removenonprintablefile(char *str)
       break;
     }
     last = *copy;
+  }
+  return str;
+}
+
+char *caps(char *str)
+{
+  unsigned char *copy;
+
+  if (!str)
+    return NULL;
+
+  for (copy = (unsigned char*)str;
+       *copy != 0;
+       copy++) {
+    if ( islower( *copy ) )
+      *copy = toupper( *copy );
+  }
+  return str;
+}
+
+char *nocaps(char *str)
+{
+  unsigned char *copy;
+
+  if (!str)
+    return NULL;
+
+  for (copy = (unsigned char*)str;
+       *copy != 0;
+       copy++) {
+    if ( isupper( *copy ) )
+      *copy = tolower( *copy );
   }
   return str;
 }

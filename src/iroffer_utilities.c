@@ -84,24 +84,6 @@ char* getpart(const char *line, int howmany)
   return part;
 }
 
-char* caps(char *text) {
-   int i;
-   if (text)
-      for (i=0; i<sstrlen(text); i++)
-          if ( text[i] >= 'a' && text[i] <= 'z' )
-             text[i] = text[i]-32;
-   return text;
-   }
-
-char* nocaps(char *text) {
-   int i;
-   if (text)
-      for (i=0; i<sstrlen(text); i++)
-          if ( text[i] >= 'A' && text[i] <= 'Z' )
-             text[i] = text[i]+32;
-   return text;
-   }
-
 void getos (void) {
 
    struct utsname u1;
