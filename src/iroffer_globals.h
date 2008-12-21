@@ -273,6 +273,7 @@ int needsshutdown;
 int needsswitch;
 int needsreap;
 int delayedshutdown;
+int startingup;
 int cursendptr;
 int next_tr_id;
 

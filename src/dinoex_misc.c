@@ -516,6 +516,7 @@ void startup_dinoex(void)
 #endif /* USE_CURL */
   ssl_startup();
   res_init();
+  gdata.startingup = 1;
 }
 
 static void global_defaults(void)

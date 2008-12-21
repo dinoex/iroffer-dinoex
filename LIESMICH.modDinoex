@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+bugfix: XDCC SEND
+  Lasse neue XDCC SEND direkt zum Ende des trasnfers nicht die Warteschlange überspringen.
+
+bugfix: XDCC SEND
+  Setzte neue XDCC SEND beim Start des Bots in die 2. Warteschlange.
+
 bugfix: REGROUP
   Erlaube das Umbennenen von Gruppen mit Leerzeichen.
 
@@ -552,7 +558,7 @@ bugfix: http_port
   Leck an Filehandles behoben.
 
 bugfix: IQUEUE
-  Immer in 2. Warteschlenge einfügen, auch wenn 1. leer ist.
+  Immer in 2. Warteschlange einfügen, auch wenn 1. leer ist.
 
 bugfix: DCC RESUME
   Erkenne RESUME auch wenn ein NAT Router die Portnummer ändert.

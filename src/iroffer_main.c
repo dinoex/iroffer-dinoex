@@ -907,6 +907,7 @@ static void mainloop (void) {
                   irlist_size(&gdata.mainqueue) &&
                   (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
                 {
+                  check_idle_queue();
                   sendaqueue(0, 0, trnick);
                 }
               mydelete(trnick);
@@ -1357,6 +1358,7 @@ static void mainloop (void) {
              irlist_size(&gdata.mainqueue) &&
              (irlist_size(&gdata.trans) < MAXTRANS))
            {
+             check_idle_queue();
              sendaqueue(1, 0, NULL);
            }
          write_files();
@@ -1971,9 +1973,13 @@ static void parseline(char *line) {
             }
 
           /* we have joined all channels => restart transfers if needed */
-          if (has_joined_channels(0) > 0)
+          if (gdata.startingup && (has_joined_channels(0) > 0))
             {
-              for (i=0; i<100; i++)
+              for (i=0; i<gdata.queuesize; i++)
+                {
+                  check_idle_queue();
+                }
+              for (i=0; i<gdata.slotsmax; i++)
                 {
                   if (!gdata.exiting &&
                       irlist_size(&gdata.mainqueue) &&
@@ -1982,6 +1988,7 @@ static void parseline(char *line) {
                       sendaqueue(0, 0, NULL);
                     }
                 }
+              gdata.startingup = 0; /* let others in */
             }
         }
       else
@@ -3065,7 +3072,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
               tempstr);
        mydelete(tempstr);
      }
-   else if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) ||
+   else if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) || (gdata.startingup) ||
             (gdata.restrictsend && (has_joined_channels(0) == 0)) ||
             (!man &&
              (((xd->st_size < gdata.smallfilebypass) && (gdata.slotsmax >= MAXTRANS)) ||
@@ -3198,6 +3205,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
    int inq,alreadytrans;
    int inq2;
    int man;
+   int mainslot;
    
    updatecontext();
    
@@ -3236,11 +3244,14 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
       return tempstr;
       }
    
-   if (!man && (irlist_size(&gdata.mainqueue) >= gdata.queuesize)) {
+   mainslot = (!man && (irlist_size(&gdata.mainqueue) >= gdata.queuesize));
+   if (gdata.startingup || mainslot) {
       idle = addtoidlequeue(tempstr, nick, hostname, tempx, pack, inq2);
       if (idle != NULL)
         return tempstr;
+      }
 
+   if (mainslot) {
          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," Denied (slot/queue): ");
          snprintf(tempstr, maxtextlength,
                   "Main queue of size %d is Full, Try Again Later",

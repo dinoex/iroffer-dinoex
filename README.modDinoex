@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: XDCC SEND (reported by xShatteRx)
+  Do not let users skip queue by sending a new XDCC SEND right when the transfer closes.
+
+bugfix: XDCC SEND
+  Put new XDCC SEND while starting up in Idle queue.
+
 bugfix: REGROUP (reported by eagle_bot)
   Allow to rename groups with spaces by quating.
 
