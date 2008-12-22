@@ -693,8 +693,9 @@ static void mainloop (void) {
            chat = irlist_get_next(chat))
         {
           gnetwork = &(gdata.networks[chat->net]);
-          if ((chat->status == DCCCHAT_CONNECTING) &&
-              FD_ISSET(chat->con.clientsocket, &gdata.writeset))
+          if (chat->status == DCCCHAT_CONNECTING)
+            {
+          if (FD_ISSET(chat->con.clientsocket, &gdata.writeset))
             {
               int callval_i;
               int connect_error;
@@ -729,13 +730,21 @@ static void mainloop (void) {
                   setupdccchatconnected(chat);
                 }
             }
-          if ((chat->status == DCCCHAT_LISTENING) &&
-              FD_ISSET(chat->con.listensocket, &gdata.readset))
-            {
-              setupdccchataccept(chat);
+              continue;
             }
-          if ((chat->status != DCCCHAT_UNUSED) &&
-              FD_ISSET(chat->con.clientsocket, &gdata.readset))
+          if (chat->status == DCCCHAT_LISTENING)
+            {
+              if (FD_ISSET(chat->con.listensocket, &gdata.readset))
+                {
+                  setupdccchataccept(chat);
+                }
+              continue;
+            }
+          if (chat->status == DCCCHAT_UNUSED)
+            {
+              continue;
+            }
+          if (FD_ISSET(chat->con.clientsocket, &gdata.readset))
             {
               char tempbuffa[INPUT_BUFFER_LENGTH];
               switch (chat->status)
@@ -784,7 +793,7 @@ static void mainloop (void) {
                 case DCCCHAT_CONNECTING:
                 case DCCCHAT_UNUSED:
                 default:
-                  outerror(OUTERROR_TYPE_CRASH,
+                  outerror(OUTERROR_TYPE_WARN_LOUD,
                            "Unexpected dccchat state %d", chat->status);
                   break;
                 }

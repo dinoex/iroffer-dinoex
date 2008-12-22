@@ -325,6 +325,7 @@ Radicand
 	reporting tcp send window bug
 	admin command "GET"
 	reporting "FETCHCANCEL" bug
+	reporting "DCC CHAT" crash
 
 unlogisch
 	option "autoadd_sort"
