@@ -399,12 +399,10 @@ void parsedccchat(dccchat_t *chat,
       break;
       
     case DCCCHAT_UNUSED:
-      break;
-      
     case DCCCHAT_LISTENING:
     case DCCCHAT_CONNECTING:
     default:
-      outerror(OUTERROR_TYPE_CRASH,
+      outerror(OUTERROR_TYPE_WARN_LOUD,
                "Unexpected dccchat state %d", chat->status);
       break;
     }
