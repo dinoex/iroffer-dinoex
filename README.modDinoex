@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+bugfix: fix small memory leaks
+
 bugfix: XDCC SEND (reported by xShatteRx)
   Do not let users skip queue by sending a new XDCC SEND right when the transfer closes.
 

@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+bugfix: Speicherlecks behoben
+
 bugfix: XDCC SEND
   Lasse neue XDCC SEND direkt zum Ende des trasnfers nicht die Warteschlange überspringen.
 
