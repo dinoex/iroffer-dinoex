@@ -824,6 +824,7 @@ static int msg_host_password(const char *nick, const char *hostmask, const char 
        return 1;
     }
   }
+  mydelete(cmd);
   return 0;
 }
 
