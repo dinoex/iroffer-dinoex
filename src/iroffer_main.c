@@ -692,10 +692,12 @@ static void mainloop (void) {
            chat;
            chat = irlist_get_next(chat))
         {
+          char tempbuffa[INPUT_BUFFER_LENGTH];
           gnetwork = &(gdata.networks[chat->net]);
-          if (chat->status == DCCCHAT_CONNECTING)
-            {
-          if (FD_ISSET(chat->con.clientsocket, &gdata.writeset))
+          switch (chat->status)
+          {
+          case DCCCHAT_CONNECTING:
+            if (FD_ISSET(chat->con.clientsocket, &gdata.writeset))
             {
               int callval_i;
               int connect_error;
@@ -730,27 +732,17 @@ static void mainloop (void) {
                   setupdccchatconnected(chat);
                 }
             }
-              continue;
-            }
-          if (chat->status == DCCCHAT_LISTENING)
-            {
-              if (FD_ISSET(chat->con.listensocket, &gdata.readset))
-                {
-                  setupdccchataccept(chat);
-                }
-              continue;
-            }
-          if (chat->status == DCCCHAT_UNUSED)
-            {
-              continue;
-            }
-          if (FD_ISSET(chat->con.clientsocket, &gdata.readset))
-            {
-              char tempbuffa[INPUT_BUFFER_LENGTH];
-              switch (chat->status)
-                {
-                case DCCCHAT_AUTHENTICATING:
-                case DCCCHAT_CONNECTED:
+            break;
+          case DCCCHAT_LISTENING:
+            if (FD_ISSET(chat->con.listensocket, &gdata.readset))
+              {
+                setupdccchataccept(chat);
+              }
+            break;
+          case DCCCHAT_AUTHENTICATING:
+          case DCCCHAT_CONNECTED:
+            if (FD_ISSET(chat->con.clientsocket, &gdata.readset))
+              {
                   memset(tempbuffa, 0, INPUT_BUFFER_LENGTH);
                   length = read(chat->con.clientsocket, &tempbuffa, INPUT_BUFFER_LENGTH);
                   
@@ -789,15 +781,12 @@ static void mainloop (void) {
                     }
                   break;
                   
-                case DCCCHAT_LISTENING:
-                case DCCCHAT_CONNECTING:
-                case DCCCHAT_UNUSED:
-                default:
-                  outerror(OUTERROR_TYPE_WARN_LOUD,
-                           "Unexpected dccchat state %d", chat->status);
-                  break;
-                }
-            }
+              }
+            break;
+          case DCCCHAT_UNUSED:
+          default:
+            break;
+          }
         }
       gnetwork = NULL;
       
