@@ -709,7 +709,7 @@ static statefile_hdr_t* read_statefile_item(ir_uint32 **buffer, ir_uint32 *buffe
   
   all = (statefile_hdr_t*)*buffer;
   
-  all->tag = ntohl((long)(all->tag));
+  all->tag = ntohl((unsigned long)(all->tag));
   all->length = ntohl(all->length);
   
   if (*buffer_len < all->length)
@@ -978,7 +978,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl((long)(ihdr->tag));
+                ihdr->tag = ntohl((unsigned long)(ihdr->tag));
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -1070,7 +1070,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl((long)(ihdr->tag));
+                ihdr->tag = ntohl((unsigned long)(ihdr->tag));
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -1150,7 +1150,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl((long)(ihdr->tag));
+                ihdr->tag = ntohl((unsigned long)(ihdr->tag));
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -1617,7 +1617,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl((long)(ihdr->tag));
+                ihdr->tag = ntohl((unsigned long)(ihdr->tag));
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {

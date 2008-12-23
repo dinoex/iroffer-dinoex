@@ -17,7 +17,7 @@
 
 static void create_statefile_hdr(statefile_hdr_t *hdr, statefile_tag_t tag, size_t len)
 {
-  hdr->tag = htonl((long)tag);
+  hdr->tag = htonl((unsigned long)tag);
   hdr->length = htonl(len);
 }
 
@@ -26,7 +26,7 @@ static unsigned char *start_statefile_hdr(unsigned char *next, statefile_tag_t t
   statefile_hdr_t *hdr;
 
   hdr = (statefile_hdr_t *)next;
-  hdr->tag = htonl((long)tag);
+  hdr->tag = htonl((unsigned long)tag);
   hdr->length = htonl(len);
   next = (unsigned char*)(&hdr[1]);
   return next;
