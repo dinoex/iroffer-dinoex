@@ -531,7 +531,7 @@ void write_statefile(void)
           {
             /* md5sum */
             md5sum_info = (statefile_item_md5sum_info_t*)next;
-            md5sum_info->hdr.tag = htonl(STATEFILE_TAG_XDCCS_MD5SUM_INFO);
+            md5sum_info->hdr.tag = htonl((long)STATEFILE_TAG_XDCCS_MD5SUM_INFO);
             md5sum_info->hdr.length = htonl(sizeof(*md5sum_info));
             md5sum_info->st_size.upper = htonl(((ir_uint64)xd->st_size) >> 32);
             md5sum_info->st_size.lower = htonl(xd->st_size & 0xFFFFFFFF);
@@ -709,7 +709,7 @@ static statefile_hdr_t* read_statefile_item(ir_uint32 **buffer, ir_uint32 *buffe
   
   all = (statefile_hdr_t*)*buffer;
   
-  all->tag = ntohl(all->tag);
+  all->tag = ntohl((long)(all->tag));
   all->length = ntohl(all->length);
   
   if (*buffer_len < all->length)
@@ -978,7 +978,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl(ihdr->tag);
+                ihdr->tag = ntohl((long)(ihdr->tag));
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -1070,7 +1070,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl(ihdr->tag);
+                ihdr->tag = ntohl((long)(ihdr->tag));
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -1150,7 +1150,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl(ihdr->tag);
+                ihdr->tag = ntohl((long)(ihdr->tag));
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -1617,7 +1617,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl(ihdr->tag);
+                ihdr->tag = ntohl((long)(ihdr->tag));
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
