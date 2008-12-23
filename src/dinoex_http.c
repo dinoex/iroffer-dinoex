@@ -1659,7 +1659,6 @@ static int h_admin_auth(http * const h, char *body)
   char *buffer;
   char *tempstr;
   char *passwd;
-  char *end;
 
   updatecontext();
 
@@ -1674,7 +1673,7 @@ static int h_admin_auth(http * const h, char *body)
 
   auth += strlen(htpp_auth_key);
   buffer = mystrdup(auth);
-  end = html_str_split(buffer, ' ');
+  html_str_split(buffer, ' ');
   tempstr = b64decode_string(buffer);
   mydelete(buffer);
   passwd = html_str_split(tempstr, ':');
