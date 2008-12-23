@@ -23,6 +23,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "crc32.h"
+
 #define BUFFERSIZE 16384   /* (16k) buffer size for reading from the file */
 
 const ir_uint32 crctable[256] = {

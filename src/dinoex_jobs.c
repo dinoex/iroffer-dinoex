@@ -23,10 +23,9 @@
 #include "dinoex_irc.h"
 #include "dinoex_misc.h"
 #include "dinoex_jobs.h"
+#include "crc32.h"
 
 #include <ctype.h>
-
-extern const ir_uint32 crctable[256];
 
 #ifndef WITHOUT_BLOWFISH
 
