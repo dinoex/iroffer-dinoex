@@ -60,6 +60,7 @@ do
   case "${1}" in
   -h*) usage ;;
   CC=*) cctype="${1#CC=}" ;;
+  WARN=*) warntype="${1#WARN=}" ;;
   -e*) OPT_ERRORS=true ;;
   -d*) OPT_DEBUG=true ;;
   -w*) OPT_WARN=true ;;
@@ -205,7 +206,9 @@ WARNS="-Wbad-function-cast
 -Wwrite-strings"
 fi
 
-TODOWARN="
+if $warntype; then
+echo "Configuring for pedantic warnings."
+WARNS2="
 -Wconversion
 -Wformat-nonliteral
 -Wformat=2
@@ -217,6 +220,7 @@ TODOWARN="
 -Wundef
 -Wunreachable-code
 "
+fi
 
 if $OPT_PROF; then
 echo "Configuring for profiling."
@@ -1550,8 +1554,7 @@ echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB $RUBYLIB
 echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF $RUBYLDF
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2
-echo "#CONFIG_CFLAGS+="$TODOWARN
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $WARNS2
 echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
 echo CONFIG_CHROOT=$NSSLIBS
 if [ -z "$NSSLIBS" ]; then
