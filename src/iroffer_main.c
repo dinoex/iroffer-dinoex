@@ -41,7 +41,11 @@ static void parseline(char *line);
 static void privmsgparse(int type, int decoded, char* line);
 
 /* main */
-int main(int argc, const char *const *argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main(int argc, const char *const *argv) {
    
    initvars();
    

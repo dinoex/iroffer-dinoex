@@ -337,7 +337,11 @@ fi
 echo -n "Seeing if $cctype works... "
 echo "
 #include <stdlib.h>
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp config.temp.c ; then
  echo "yes"
@@ -349,7 +353,11 @@ fi
 echo -n "Seeing if $cctype accepts '-Wall'... "
 echo "
 #include <stdlib.h>
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -Wall -o config.temp config.temp.c ; then
  echo "yes"
@@ -361,7 +369,11 @@ fi
 echo -n "Seeing if $cctype accepts '-Werror'... "
 echo "
 #include <stdlib.h>
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -Werror -o config.temp config.temp.c ; then
  echo "yes"
@@ -376,7 +388,11 @@ echo "
 #define GEX 
 #include <stdlib.h>
 #include <stdio.h>
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
  printf(\"%d\", (int)sizeof( C_IR_INT16 ));
  exit(0);
  }
@@ -400,7 +416,11 @@ echo "
 #define GEX 
 #include <stdlib.h>
 #include <stdio.h>
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
  printf(\"%d\", (int)sizeof( C_IR_INT32 ));
  exit(0);
  }
@@ -431,7 +451,11 @@ echo "
 #define GEX 
 #include <stdlib.h>
 #include <stdio.h>
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
  printf(\"%d\", (int)sizeof( C_IR_INT64 ));
  exit(0);
  }
@@ -469,7 +493,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -DSIGNEDSOCK=signed config.temp.c $libs -o config.temp; then
  echo "looks good"
@@ -511,7 +539,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
  printf(\"%s\", (100 == ntohl(100)) ? \"big\" : \"little\");
  exit(0);
  }
@@ -535,7 +567,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
  int fd;
  int array[ ((int)sizeof(off_t)) - 7 ];
  fd=open(\"foo\", O_RDWR | O_CREAT | ADDED_OPEN_FLAGS);
@@ -558,7 +594,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
  int a; struct sockaddr_in b; SIGNEDSOCK int c;
  getsockname(a,(struct sockaddr *)&b,&c);
  exit(0);
@@ -584,7 +624,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv)
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv)
   {
     long long a = 1000000000;
     a = a*10;
@@ -615,7 +659,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {char *s; snprintf(s,10,\"blah\"); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {char *s; snprintf(s,10,\"blah\"); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
  echo "found"
@@ -631,7 +679,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {(void)strcasecmp(\"blah\",\"blah\"); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {(void)strcasecmp(\"blah\",\"blah\"); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
  echo "found"
@@ -647,7 +699,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {(void)strcasestr(\"blah\",\"blah\"); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {(void)strcasestr(\"blah\",\"blah\"); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
  echo "found"
@@ -664,7 +720,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {strsignal(1); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {strsignal(1); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
  echo "found"
@@ -680,7 +740,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -c -DHAS_SYS_MMAN_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
  echo "#define HAS_SYS_MMAN_H" >> src/iroffer_config.h
@@ -696,7 +760,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -c -DHAS_SYS_SENDFILE_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
  echo "#define HAS_SYS_SENDFILE_H" >> src/iroffer_config.h
@@ -712,7 +780,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -c -DHAS_SYS_VFS_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
  echo "#define HAS_SYS_VFS_H" >> src/iroffer_config.h
@@ -728,7 +800,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -c -DHAS_SYS_STATFS_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
  echo "#define HAS_SYS_STATFS_H" >> src/iroffer_config.h
@@ -744,7 +820,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -c -DHAS_SYS_PARAM_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
  echo "#define HAS_SYS_PARAM_H" >> src/iroffer_config.h
@@ -760,7 +840,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -c -DHAS_SYS_MOUNT_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
  echo "#define HAS_SYS_MOUNT_H" >> src/iroffer_config.h
@@ -776,7 +860,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -c -DHAS_SYS_STATVFS_H -o config.temp.o config.temp.c $WARNS $WERROR ; then
  echo "#define HAS_SYS_STATVFS_H" >> src/iroffer_config.h
@@ -792,7 +880,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {struct statvfs stf; statvfs(\"\",&stf); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {struct statvfs stf; statvfs(\"\",&stf); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
  echo "found"
@@ -808,7 +900,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {struct statfs stf; statfs(\"\",&stf); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {struct statfs stf; statfs(\"\",&stf); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR ; then
  echo "found"
@@ -824,7 +920,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {crypt(\"aaaaaaaa\",\"aa\"); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {crypt(\"aaaaaaaa\",\"aa\"); exit(0);}
 " > config.temp.c
 if $cctype -c -o config.temp.o config.temp.c $WARNS $WERROR ; then
  echo "not needed"
@@ -863,7 +963,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv)
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv)
   {
     char *pwout;
     pwout = crypt(\"testtest\",\"LH\");
@@ -901,7 +1005,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {chroot(\".\"); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {chroot(\".\"); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
 echo "found"
@@ -923,7 +1031,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -lnss_files -lnss_dns -o config.temp $WARNS $WERROR; then
 NSSLIBS="-lnss_files -lnss_dns"
@@ -940,7 +1052,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {setuid(0); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {setuid(0); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
 echo "found"
@@ -956,7 +1072,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {getgrouplist (NULL, 0, NULL, NULL); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {getgrouplist (NULL, 0, NULL, NULL); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
 echo "found"
@@ -973,7 +1093,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv)
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv)
 {
   int     out_fd = 0;
   int     in_fd = 0;
@@ -1000,7 +1124,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv)
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv)
 {
   int     in_fd = 0;
   int     out_fd = 0;
@@ -1029,7 +1157,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv)
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv)
 {
   mmap(NULL,0,PROT_READ,MAP_SHARED,0,0);
   munmap(NULL,0);
@@ -1051,7 +1183,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv)
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv)
 {
   struct rlimit rlim;
   getrlimit(RLIMIT_NOFILE, &rlim);
@@ -1067,7 +1203,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv)
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv)
 {
   struct rlimit rlim;
   getrlimit(RLIMIT_OFILE, &rlim);
@@ -1090,7 +1230,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {siginfo_t si; struct sigaction sa; sa.sa_sigaction = NULL; si.si_code = 0; exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {siginfo_t si; struct sigaction sa; sa.sa_sigaction = NULL; si.si_code = 0; exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR; then
 echo "found"
@@ -1106,7 +1250,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
   siginfo_t si;
   si.si_code = BUS_ADRALN;
   si.si_code = BUS_ADRERR;
@@ -1146,7 +1294,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
   int status = 0;
   if (WIFEXITED(status) ||
       WIFSIGNALED(status) ||
@@ -1173,7 +1325,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
   int fd = 0;
   int tempc = 0x8; /* IPTOS_THROUGHPUT */
   setsockopt(fd, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
@@ -1194,7 +1350,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
   struct addrinfo hints, *res0;
   int error;
 
@@ -1219,7 +1379,11 @@ echo "
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
   int i;
   switch (h_errno)
     {
@@ -1252,7 +1416,11 @@ if $OPT_CURL; then
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs -lcurl -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR; then
 		echo "found"
@@ -1283,7 +1451,11 @@ if $OPT_SSL; then
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
 		echo "found"
@@ -1311,7 +1483,11 @@ if $OPT_TLS; then
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
-int main (int argc, char **argv) {exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs -lgnutls-openssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS; then
 		echo "found"
@@ -1339,7 +1515,11 @@ if $OPT_RUBY; then
 	echo -n "Seeing if libruby libraries exist (for the RUBY-Scripts)... "
 	echo "
 #include \"ruby.h\"
-int main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs "${libruby}" "${incruby}" -L/usr/local/lib -DUSE_RUBY -o config.temp $WARNS; then
 		echo "found"
