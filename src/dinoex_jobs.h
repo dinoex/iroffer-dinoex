@@ -41,15 +41,15 @@ void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
-writeserver_channel (int delay, const char *format, ... );
+writeserver_channel(int delay, const char *format, ... );
 
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 0)))
 #endif
 vwriteserver_channel(int delay, const char *format, va_list ap);
-void writeserver_privmsg(int delay, const char *nick, const char *message, int len);
-void writeserver_notice(int delay, const char *nick, const char *message, int len);
+void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char *message, int len);
+void writeserver_notice(writeserver_type_e delay, const char *nick, const char *message, int len);
 void cleanannounce(void);
 void sendannounce(void);
 

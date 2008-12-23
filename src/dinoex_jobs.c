@@ -311,7 +311,7 @@ void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
-writeserver_channel (int delay, const char *format, ... )
+writeserver_channel(int delay, const char *format, ... )
 {
   va_list args;
   va_start(args, format);
@@ -383,7 +383,7 @@ static const char *check_fish_exclude(const char *nick)
 
 #endif /* WITHOUT_BLOWFISH */
 
-void writeserver_privmsg(int delay, const char *nick, const char *message, int len)
+void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char *message, int len)
 {
 #ifndef WITHOUT_BLOWFISH
   const char *fish;
@@ -408,7 +408,7 @@ void writeserver_privmsg(int delay, const char *nick, const char *message, int l
   writeserver(delay, "PRIVMSG %s :%s", nick, message);
 }
 
-void writeserver_notice(int delay, const char *nick, const char *message, int len)
+void writeserver_notice(writeserver_type_e delay, const char *nick, const char *message, int len)
 {
 #ifndef WITHOUT_BLOWFISH
   const char *fish;
