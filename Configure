@@ -38,6 +38,7 @@ echo "   -no-memsave  Compile without memory protection"
 exit 64
 }
 
+OPT_WARN2=false
 OPT_ERRORS=false
 OPT_DEBUG=false
 OPT_WARN=false
@@ -60,7 +61,7 @@ do
   case "${1}" in
   -h*) usage ;;
   CC=*) cctype="${1#CC=}" ;;
-  WARN=*) warntype="${1#WARN=}" ;;
+  WARN=*) OPT_WARN2="${1#WARN=}" ;;
   -e*) OPT_ERRORS=true ;;
   -d*) OPT_DEBUG=true ;;
   -w*) OPT_WARN=true ;;
@@ -206,7 +207,7 @@ WARNS="-Wbad-function-cast
 -Wwrite-strings"
 fi
 
-if $warntype; then
+if $OPT_WARN2; then
 echo "Configuring for pedantic warnings."
 WARNS2="
 -Wconversion
