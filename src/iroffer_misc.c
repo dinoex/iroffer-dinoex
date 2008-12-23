@@ -1859,8 +1859,8 @@ void sendxdlqueue (void)
       
       notice(tempstr,
              "The Owner Has Requested That No Lists Be Sent In The Next %li %s",
-             1+(gdata.nolisting-gdata.curtime)/60,
-             ((1+(gdata.nolisting-gdata.curtime)/60) != 1 ? "Minutes" : "Minute"));
+             1L+(gdata.nolisting-gdata.curtime)/60,
+             ((1L+(gdata.nolisting-gdata.curtime)/60) != 1L ? "Minutes" : "Minute"));
     }
   else
     {
