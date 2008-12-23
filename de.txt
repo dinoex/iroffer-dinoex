@@ -1303,7 +1303,7 @@
 1358 "Unable to access file"
 1359 "mmap() [%p] offset=0x%.8"
 1360 "X size=0x%.8"
-1361 "Transfer Method unknown! %d"
+1361 "Transfer Method unknown!"
 1362 "File %ld Write %ld"
 1363 "Read %d: "
 1364 "%2.2X "

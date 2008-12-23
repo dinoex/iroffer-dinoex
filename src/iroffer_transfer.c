@@ -470,7 +470,7 @@ void t_transfersome (transfer * const t)
 #endif
           
         default:
-          t_closeconn(t,"Transfer Method unknown! %d", (int)(gdata.transfermethod));
+          t_closeconn(t,"Transfer Method unknown!", 0);
           return;
         }
       
