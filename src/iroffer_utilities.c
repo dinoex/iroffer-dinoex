@@ -1629,7 +1629,7 @@ void dumpgdata(void)
   gdata_print_int(slotsmax);
   gdata_print_int(queuesize);
   gdata_print_int(idlequeuesize);
-  gdata_print_int(noautosave);
+  gdata_print_number_cast("%d", noautosave, int);
   gdata_print_number_cast("%d", nonewcons, int);
   gdata_print_number_cast("%d", nolisting, int);
   gdata_print_int(needsrehash);

@@ -265,7 +265,7 @@ int queuesize;
 int idlequeuesize;
 
 
-int noautosave;
+time_t noautosave;
 time_t nonewcons;
 time_t nolisting;
 int needsrehash;
