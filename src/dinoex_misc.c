@@ -963,7 +963,7 @@ int disk_full(const char *path)
   }
 #else /* NO_STATVFS */
 #ifndef NO_STATFS
-  if (statfs(dpath, &stf) < 0) {
+  if (statfs(path, &stf) < 0) {
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "Unable to determine device sizes: %s",
             strerror(errno));
