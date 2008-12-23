@@ -1303,7 +1303,7 @@ void dumpgdata(void)
   gdata_print_int(no_minspeed_on_free);
   gdata_print_int(no_status_chat);
   gdata_print_int(no_status_log);
-  gdata_print_number_cast("%d", nomd5_start, int);
+  gdata_print_number_cast("%ld", nomd5_start, long);
   
   gdata_irlist_iter_start(downloadhost, char);
   gdata_iter_as_print_string;
@@ -1629,9 +1629,9 @@ void dumpgdata(void)
   gdata_print_int(slotsmax);
   gdata_print_int(queuesize);
   gdata_print_int(idlequeuesize);
-  gdata_print_number_cast("%d", noautosave, int);
-  gdata_print_number_cast("%d", nonewcons, int);
-  gdata_print_number_cast("%d", nolisting, int);
+  gdata_print_number_cast("%ld", noautosave, long);
+  gdata_print_number_cast("%ld", nonewcons, long);
+  gdata_print_number_cast("%ld", nolisting, long);
   gdata_print_int(needsrehash);
   gdata_print_int(needsshutdown);
   gdata_print_int(needsswitch);
