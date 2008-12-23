@@ -482,6 +482,7 @@ xShatteRx
 	reporting XDCC SEND LIST bug
 	option "no_status_chat"
 	reporting XDCC SEND skip queue bug
+	reporting NOSEND bug
 
 Kaonashi
 	Configure bug with /etc/auth.conf

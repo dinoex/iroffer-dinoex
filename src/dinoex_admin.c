@@ -3486,7 +3486,7 @@ void a_nomd5(const userinput * const u)
   updatecontext();
 
   if (u->arg1) num = atoi(u->arg1);
-  gdata.nomd5_start = gdata.curtime + (60 * num) - 1;
+  num = max_minutes_waits(&gdata.nomd5_start, num);
   a_respond(u, "** MD5 and CRC checksums have been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
 }
 

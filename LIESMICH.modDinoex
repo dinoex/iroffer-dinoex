@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.11:
 ----------------
 
+bugfix: NOSEND, NOLIST, NOSAVE, NOMD5
+  Im Falle eines Überlaufes werden die Minuten begrentzt.
+
 bugfix: DCC CHAT
   versions affected: 3.0 - 3.10
   Bot crashte bei Eingabe auf der Konsole wenn gleichzeitig ein DCC Chat aufgebaut wurde.

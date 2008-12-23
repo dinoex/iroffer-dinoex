@@ -144,7 +144,7 @@ char *nosendmsg;
 char *privmsg_fish;
 char *ruby_script;
 char *charset;
-long nomd5_start;
+time_t nomd5_start;
 int need_voice;
 int need_level;
 int hide_list_info;
@@ -266,8 +266,8 @@ int idlequeuesize;
 
 
 int noautosave;
-long nonewcons;
-long nolisting;
+time_t nonewcons;
+time_t nolisting;
 int needsrehash;
 int needsshutdown;
 int needsswitch;

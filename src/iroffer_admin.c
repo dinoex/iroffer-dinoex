@@ -3105,7 +3105,7 @@ static void u_nosave(const userinput * const u) {
    updatecontext();
    
    if (u->arg1) num = atoi(u->arg1);
-   gdata.noautosave=gdata.curtime + 60*num - 1;
+   num = max_minutes_waits(&gdata.noautosave, num);
    u_respond(u, "** XDCC AutoSave has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
    
    }
@@ -3119,7 +3119,7 @@ static void u_nosend(const userinput * const u) {
    if (u->arg1) num = atoi(u->arg1);
    mydelete(gdata.nosendmsg);
    if (u->arg2e) gdata.nosendmsg=mystrdup(u->arg2e);
-   gdata.nonewcons=gdata.curtime + 60*num - 1;
+   num = max_minutes_waits(&gdata.nonewcons, num);
    u_respond(u, "** XDCC Send has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
    
    }
@@ -3131,7 +3131,7 @@ static void u_nolist(const userinput * const u) {
    updatecontext();
    
    if (u->arg1) num = atoi(u->arg1);
-   gdata.nolisting=gdata.curtime + 60*num - 1;
+   num = max_minutes_waits(&gdata.nolisting, num);
    u_respond(u, "** XDCC List and PLIST have been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
    
    }

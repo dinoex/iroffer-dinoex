@@ -514,4 +514,16 @@ char *nocaps(char *str)
   return str;
 }
 
+int max_minutes_waits(time_t *endtime, int min)
+{
+  *endtime = gdata.curtime;
+  *endtime += (60 * min);
+  if (*endtime < gdata.curtime) {
+    *endtime = 0x7FFFFFFF;
+    min = (*endtime - gdata.curtime)/60;
+  }
+  (*endtime)--;
+  return min;
+}
+
 /* End of File */

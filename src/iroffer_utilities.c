@@ -1303,7 +1303,7 @@ void dumpgdata(void)
   gdata_print_int(no_minspeed_on_free);
   gdata_print_int(no_status_chat);
   gdata_print_int(no_status_log);
-  gdata_print_long(nomd5_start);
+  gdata_print_number_cast("%d", nomd5_start, int);
   
   gdata_irlist_iter_start(downloadhost, char);
   gdata_iter_as_print_string;
@@ -1630,8 +1630,8 @@ void dumpgdata(void)
   gdata_print_int(queuesize);
   gdata_print_int(idlequeuesize);
   gdata_print_int(noautosave);
-  gdata_print_long(nonewcons);
-  gdata_print_long(nolisting);
+  gdata_print_number_cast("%d", nonewcons, int);
+  gdata_print_number_cast("%d", nolisting, int);
   gdata_print_int(needsrehash);
   gdata_print_int(needsshutdown);
   gdata_print_int(needsswitch);

@@ -40,5 +40,6 @@ char *removenonprintablectrl(char *str);
 char *removenonprintablefile(char *str);
 char *caps(char *str);
 char *nocaps(char *str);
+int max_minutes_waits(time_t *endtime, int min);
 
 /* End of File */
