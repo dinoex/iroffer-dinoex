@@ -57,8 +57,6 @@ int main(int argc, const char *const *argv) {
      {
        mainloop();
      }
-   
-   return(0);
    }
 
 static void select_dump(const char *desc, int highests)
