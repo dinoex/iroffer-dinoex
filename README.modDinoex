@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.11:
 ------------------
 
+extend debug and log information.
+
 bugfix: NOSEND, NOLIST, NOSAVE, NOMD5 (reported by xShatteRx)
   In case of overflow the minutes are now limited.
 
