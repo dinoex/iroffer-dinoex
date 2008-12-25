@@ -2311,3 +2311,4 @@
 2398 "channel [net] [key]"
 2399 "no_status_chat"
 2400 "no_status_log"
+2401 "curl_easy_setopt SSL_VERIFYHOST failed with %d"
