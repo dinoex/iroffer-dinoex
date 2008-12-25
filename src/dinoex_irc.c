@@ -519,7 +519,7 @@ int connectirc2(res_addrinfo_t *remote)
   family = remote->ai_addr.sa_family;
   gnetwork->ircserver = socket(family, remote->ai_socktype, remote->ai_protocol);
   if (gnetwork->ircserver < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Socket Error");
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Socket Error: %s", strerror(errno));
     return 1;
   }
 
