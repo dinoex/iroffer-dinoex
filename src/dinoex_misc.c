@@ -515,7 +515,9 @@ void startup_dinoex(void)
   curl_startup();
 #endif /* USE_CURL */
   ssl_startup();
+#if !defined(_OS_CYGWIN)
   res_init();
+#endif /* _OS_CYGWIN */
   gdata.startingup = 1;
 }
 
@@ -589,7 +591,9 @@ void rehash_dinoex(void)
 #ifdef USE_RUBY
   rehash_myruby();
 #endif /* USE_RUBY */
+#if !defined(_OS_CYGWIN)
   res_init();
+#endif /* _OS_CYGWIN */
 }
 
 static int init_xdcc_file(xdcc *xd, char *file)
