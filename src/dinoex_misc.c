@@ -36,7 +36,9 @@
 #include "upnp.h"
 #endif /* USE_UPNP */
 
+#if !defined(_OS_CYGWIN)
 #include <resolv.h>
+#endif /* _OS_CYGWIN */
 
 xdcc xdcc_statefile;
 xdcc xdcc_listfile;
