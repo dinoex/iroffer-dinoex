@@ -163,7 +163,51 @@ void set_support_groups(void)
   }
 }
 
-void send_help(const char *nick)
+void send_cancel(const char *nick, const char *hostmask)
+{
+  transfer *tr;
+  int k = 0;
+
+  /* stop transfers */
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
+    if ((tr->net == gnetwork->net) && (!strcasecmp(tr->nick, nick))) {
+      if (tr->tr_status != TRANSFER_STATUS_DONE) {
+        k += 1;
+        t_closeconn(tr, "Transfer canceled by user", 0);
+      }
+    }
+  }
+  if (!k) notice(nick, "You don't have a transfer running");
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC CANCEL (%s on %s)",
+          hostmask, gnetwork->name);
+}
+
+void send_remove(const char *nick, const char *hostmask)
+{
+  int k = 0;
+
+  k += queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick);
+  k += queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick);
+  if (!k) notice(nick, "You Don't Appear To Be In A Queue");
+
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC REMOVE (%s on %s) ",
+          hostmask, gnetwork->name);
+}
+
+void send_owner(const char *nick, const char *hostmask)
+{
+   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+           "XDCC OWNER (%s on %s) ",
+           hostmask, gnetwork->name);
+   notice(nick, "Owner for this bot is: %s",
+          gdata.owner_nick ? gdata.owner_nick : "(unknown)");
+}
+
+void send_help(const char *nick, const char *hostmask)
 {
   const char *mynick;
 
@@ -171,7 +215,7 @@ void send_help(const char *nick)
 
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC HELP from (%s on %s)",
-          nick, gnetwork->name);
+          hostmask, gnetwork->name);
 
   mynick = get_user_nick();
   if (!gdata.restrictprivlist) {
