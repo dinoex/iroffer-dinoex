@@ -310,7 +310,7 @@ int set_config_bool(const char *key, const char *text)
   if (i < 0)
     return 1;
 
-  if (*text == 0) {
+  if (text == NULL) {
     *(config_parse_bool[i].ivar) = 1;
     return 0;
   }
@@ -658,26 +658,142 @@ void set_default_network_name(void)
   return;
 }
 
+static void c_autoadd_group_match(char *var)
+{
+  char *split;
+  autoadd_group_t *ag;
+
+  split = strchr(var, ' ');
+  if (split == NULL) {
+    outerror(OUTERROR_TYPE_WARN,
+             "%s:%ld ignored '%s' because it has invalid args: '%s'",
+             current_config, current_line, "autoadd_group_match", var);
+    mydelete(var);
+    return;
+  }
+
+  *(split++) = 0;
+  ag = irlist_add(&(gdata.autoadd_group_match), sizeof(autoadd_group_t));
+  ag->a_group = var;
+  ag->a_pattern = split;
+}
 
 static void c_autosendpack(char *var)
 {
-  char *a;
-  char *b;
-  char *c;
+  char *part[3] = { NULL , NULL , NULL };
 
-  a = getpart(var, 1); b = getpart(var, 2); c = getpart(var, 3);
-  if (a && b) {
+  get_argv(part, var, 3);
+  if (part[0] && part[1]) {
     autoqueue_t *aq;
     aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
-    aq->pack = between(0, atoi(a), 100000);
-    aq->word = b;
-    aq->message = c;
+    aq->pack = between(0, atoi(part[0]), 100000);
+    aq->word = part[1];
+    aq->message = part[2];
   } else {
-    mydelete(b);
-    mydelete(c);
+    mydelete(part[1]);
+    mydelete(part[2]);
   }
-  mydelete(a);
+  mydelete(part[0]);
   mydelete(var);
+}
+
+static int c_channel_rehash;
+
+static void c_channel(char *var)
+{
+  char *part[2] = { NULL, NULL };
+  channel_t *cptr;
+
+  updatecontext();
+
+  get_argv(part, var, 2);
+  mydelete(var);
+  if (part[0] == NULL)
+    return;
+
+  if (!c_channel_rehash) {
+    cptr = irlist_add(&gdata.networks[gdata.networks_online].channels, sizeof(channel_t));
+  } else {
+    cptr = irlist_add(&gdata.networks[gdata.networks_online].r_channels, sizeof(channel_t));
+  }
+
+  cptr->name = part[0];
+  caps(cptr->name);
+  if (parse_channel_options(cptr, part[1]) < 0) {
+     outerror(OUTERROR_TYPE_WARN,
+              " !!! Bad syntax for channel %s on %s in config file !!!",
+              part[0], gdata.networks[gdata.networks_online].name);
+  }
+
+  if (cptr->plisttime && (cptr->plistoffset >= cptr->plisttime)) {
+     outerror(OUTERROR_TYPE_WARN, "plistoffset must be less than plist time, ignoring offset");
+     cptr->plistoffset = 0;
+  }
+  mydelete(part[1]);
+}
+
+static void c_channel_join_raw(char *var)
+{
+   char *new;
+
+   new = irlist_add(&gdata.networks[gdata.networks_online].channel_join_raw, strlen(var) + 1);
+   strcpy(new, var);
+   mydelete(var);
+}
+
+static void c_connectionmethod(char *var)
+{
+  char *part[5] = { NULL , NULL , NULL, NULL , NULL };
+  int m;
+
+  mydelete(gdata.networks[gdata.networks_online].connectionmethod.host);
+  mydelete(gdata.networks[gdata.networks_online].connectionmethod.password);
+  mydelete(gdata.networks[gdata.networks_online].connectionmethod.vhost);
+  bzero((char *) &gdata.networks[gdata.networks_online].connectionmethod, sizeof(connectionmethod_t));
+
+  m = get_argv(part, var, 5);
+  mydelete(var);
+  if (part[0] == NULL) {
+    if (!strcmp(part[0], "direct")) {
+      gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
+    } else if (!strcmp(part[0], "ssl")) {
+#ifdef USE_SSL
+      gdata.networks[gdata.networks_online].connectionmethod.how = how_ssl;
+#else
+      gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
+      outerror(OUTERROR_TYPE_WARN_LOUD, "connectionmethod ssl not compiled, defaulting to direct");
+#endif /* USE_SSL */
+    } else if ((m >= 4) && !strcmp(part[0], "bnc")) {
+      gdata.networks[gdata.networks_online].connectionmethod.how = how_bnc;
+      gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
+      part[1] = NULL;
+      gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
+      gdata.networks[gdata.networks_online].connectionmethod.password = part[3];
+      part[3] = NULL;
+      if (part[4]) {
+        gdata.networks[gdata.networks_online].connectionmethod.vhost = part[4];
+        part[4] = NULL;
+      }
+    } else if ((m == 2) && !strcmp(part[0], "wingate")) {
+      gdata.networks[gdata.networks_online].connectionmethod.how = how_wingate;
+      gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
+      part[1] = NULL;
+      gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
+    } else if ((m == 2) && !strcmp(part[0], "custom")) {
+      gdata.networks[gdata.networks_online].connectionmethod.how = how_custom;
+      gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
+      part[1] = NULL;
+      gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
+    } else {
+      gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid connectionmethod in config file, defaulting to direct");
+    }
+  }
+  mydelete(part[0]);
+  mydelete(part[1]);
+  mydelete(part[2]);
+  mydelete(part[3]);
+  mydelete(part[4]);
 }
 
 static void c_disk_quota(char *var)
@@ -740,6 +856,14 @@ static void c_group_admin(char *var)
   mydelete(var);
 }
 
+static void c_logrotate(char *var)
+{
+  if (!strcmp(var, "daily"))   gdata.logrotate =    24*60*60;
+  if (!strcmp(var, "weekly"))  gdata.logrotate =  7*24*60*60;
+  if (!strcmp(var, "monthly")) gdata.logrotate = 30*24*60*60;
+  mydelete(var);
+}
+
 static void c_local_vhost(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].local_vhost);
@@ -764,26 +888,6 @@ static void c_mime_type(char *var)
   mime = irlist_add(&(gdata.mime_type), sizeof(http_magic_t));
   mime->m_ext = var;
   mime->m_mime = split;
-}
-
-static void c_autoadd_group_match(char *var)
-{
-  char *split;
-  autoadd_group_t *ag;
-
-  split = strchr(var, ' ');
-  if (split == NULL) {
-    outerror(OUTERROR_TYPE_WARN,
-             "%s:%ld ignored '%s' because it has invalid args: '%s'",
-             current_config, current_line, "autoadd_group_match", var);
-    mydelete(var);
-    return;
-  }
-
-  *(split++) = 0;
-  ag = irlist_add(&(gdata.autoadd_group_match), sizeof(autoadd_group_t));
-  ag->a_group = var;
-  ag->a_pattern = split;
 }
 
 static void c_need_level(char *var)
@@ -828,6 +932,176 @@ static void c_nickserv_pass(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].nickserv_pass);
   gdata.networks[gdata.networks_online].nickserv_pass = var;
+}
+
+static void c_overallmaxspeeddaydays(char *var)
+{
+  char *src;
+  int i;
+
+  gdata.overallmaxspeeddaydays = 0;
+  src = var;
+  for (i=0; (*src) && (i<8); i++)
+    gdata.overallmaxspeeddaydays |= dayofweektomask(*(src++));
+  mydelete(var);
+}
+
+static void c_overallmaxspeeddaytime(char *var)
+{
+  char *part[2] = { NULL, NULL };
+  int a = 0;
+  int b = 0;
+
+  if (get_argv(part, var, 2) == 2) {
+    a = atoi(part[0]);
+    b = atoi(part[1]);
+    gdata.overallmaxspeeddaytimestart = between(0, a, 23);
+    gdata.overallmaxspeeddaytimeend   = between(0, b, 23);
+  }
+  mydelete(part[0]);
+  mydelete(part[1]);
+  mydelete(var);
+}
+
+static void c_periodicmsg(char *var)
+{
+  char *part[4] = { NULL, NULL, NULL, NULL };
+  int tnum;
+  int m;
+
+  mydelete(gdata.periodicmsg_nick);
+  mydelete(gdata.periodicmsg_msg);
+  m = get_argv(part, var, 3);
+  mydelete(var);
+  if (m != 3) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Syntax Error In periodicmsg, Ignoring");
+    mydelete(part[0]);
+    mydelete(part[1]);
+    mydelete(part[2]);
+    return;
+  }
+  gdata.periodicmsg_nick = part[0];
+  tnum = atoi(part[1]);
+  mydelete(part[1]);
+  gdata.periodicmsg_msg = part[2];
+  gdata.periodicmsg_time = max2(1, tnum);
+}
+
+static void c_proxyinfo(char *var)
+{
+   char *new;
+
+   new = irlist_add(&gdata.networks[gdata.networks_online].proxyinfo, strlen(var) + 1);
+   strcpy(new, var);
+   mydelete(var);
+}
+
+static void c_server(char *var)
+{
+  server_t *ss;
+  char *part[3] = { NULL, NULL, NULL };
+
+  set_default_network_name();
+  get_argv(part, var, 3);
+  mydelete(var);
+  if (part[0] == NULL) {
+    outerror(OUTERROR_TYPE_WARN, "ignoring invalid server line");
+    mydelete(part[0]);
+    mydelete(part[1]);
+    mydelete(part[2]);
+    return;
+  }
+  ss = irlist_add(&gdata.networks[gdata.networks_online].servers, sizeof(server_t));
+  ss->hostname = part[0];
+  ss->port = 6667;
+  ss->password = part[2];
+  if (part[1]) {
+    ss->port = atoi(part[1]);
+    mydelete(part[1]);
+  }
+}
+
+static void c_server_connected_raw(char *var)
+{
+   char *new;
+
+   new = irlist_add(&gdata.networks[gdata.networks_online].server_connected_raw, strlen(var) + 1);
+   strcpy(new, var);
+   mydelete(var);
+}
+
+static void c_server_join_raw(char *var)
+{
+   char *new;
+
+   new = irlist_add(&gdata.networks[gdata.networks_online].server_join_raw, strlen(var) + 1);
+   strcpy(new, var);
+   mydelete(var);
+}
+
+static void c_slotsmax(char *var)
+{
+  int new;
+
+  new = atoi(var);
+  mydelete(var);
+  gdata.slotsmax = between(1, new, MAXTRANS);
+  if (gdata.slotsmax != new) {
+    outerror(OUTERROR_TYPE_WARN, "unable to have slotsmax of %d, using %d instead", new, gdata.slotsmax);
+  }
+}
+
+static void c_statefile(char *var)
+{
+  int i;
+
+  mydelete(gdata.statefile);
+  gdata.statefile = var;
+  convert_to_unix_slash(gdata.statefile);
+  i = open(gdata.statefile, O_RDWR | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS );
+  if (i >= 0)
+    close(i);
+}
+
+static void c_transferlimits(char *var)
+{
+  char *part[NUMBER_TRANSFERLIMITS];
+  int m;
+  int i;
+  int new;
+
+  bzero((char *)part, sizeof(part));
+  m = get_argv(part, var, NUMBER_TRANSFERLIMITS);
+  mydelete(var);
+  for (i=0; i<m; i++) {
+    if (part[i]) {
+      new = atoi(part[i]);
+      gdata.transferlimits[i].limit = max2(0, new);
+      gdata.transferlimits[i].limit *= 1024 * 1024;
+      mydelete(part[i]);
+    }
+  }
+}
+
+static void c_transfermaxspeed(char *var)
+{
+  float new;
+
+  new = atof(var);
+  gdata.transfermaxspeed = max2(0, new);
+  mydelete(var);
+}
+
+static void c_transferminspeed(char *var)
+{
+  gdata.transferminspeed = atof(var);
+  mydelete(var);
+}
+
+static void c_uploadmaxsize(char *var)
+{
+  gdata.uploadmaxsize = atoull(var)*1024*1024;
+  mydelete(var);
 }
 
 static void c_uploadminspace(char *var)
@@ -882,14 +1156,31 @@ static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
 {"autoadd_group_match",    c_autoadd_group_match },
 {"autosendpack",           c_autosendpack },
+{"channel",                c_channel },
+{"channel_join_raw",       c_channel_join_raw },
+{"connectionmethod",       c_connectionmethod },
 {"disk_quota",             c_disk_quota },
 {"getip_network",          c_getip_network },
 {"group_admin",            c_group_admin },
 {"local_vhost",            c_local_vhost },
+{"logrotate",              c_logrotate },
 {"mime_type",              c_mime_type },
 {"need_level",             c_need_level },
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },
+{"overallmaxspeeddaydays", c_overallmaxspeeddaydays },
+{"overallmaxspeeddaytime", c_overallmaxspeeddaytime },
+{"periodicmsg",            c_periodicmsg },
+{"proxyinfo",              c_proxyinfo },
+{"server",                 c_server },
+{"server_connected_raw",   c_server_connected_raw },
+{"server_join_raw",        c_server_join_raw },
+{"slotsmax",               c_slotsmax },
+{"statefile",              c_statefile },
+{"transferlimits",         c_transferlimits },
+{"transfermaxspeed",       c_transfermaxspeed },
+{"transferminspeed",       c_transferminspeed },
+{"uploadmaxsize",          c_uploadmaxsize },
 {"uploadminspace",         c_uploadminspace },
 {"usenatip",               c_usenatip },
 {"user_modes",             c_user_modes },
@@ -952,11 +1243,11 @@ int set_config_func(const char *key, char *text)
   return 0;
 }
 
-static int parse_channel_int(short *iptr, char *var, int i)
+static int parse_channel_int(short *iptr, char **part, int i)
 {
   char *tptr2;
 
-  tptr2 = getpart(var, ++i);
+  tptr2 = part[++i];
   if (!tptr2)
     return -1;
   *iptr = atoi(tptr2);
@@ -964,14 +1255,13 @@ static int parse_channel_int(short *iptr, char *var, int i)
   return 1;
 }
 
-static int parse_channel_string(char **cptr, char *var, int i)
+static int parse_channel_string(char **cptr, char **part, int i)
 {
   char *tptr2;
 
-  tptr2 = getpart(var, ++i);
+  tptr2 = part[++i];
   if (!tptr2)
     return -1;
-  clean_quotes(tptr2);
   *cptr = tptr2;
   return 1;
 }
@@ -994,46 +1284,46 @@ static int parse_channel_format(short *iptr, char *tptr2)
   return -1;
 }
 
-static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
+static int parse_channel_option(channel_t *cptr, char *tptr, char **part, int i)
 {
   char *tptr2;
   int j;
 
   if (!strcmp(tptr, "-plist")) {
-    return parse_channel_int(&(cptr->plisttime), var, i);
+    return parse_channel_int(&(cptr->plisttime), part, i);
   }
   if (!strcmp(tptr, "-plistoffset")) {
-    return parse_channel_int(&(cptr->plistoffset), var, i);
+    return parse_channel_int(&(cptr->plistoffset), part, i);
   }
   if (!strcmp(tptr, "-delay")) {
-    return parse_channel_int(&(cptr->delay), var, i);
+    return parse_channel_int(&(cptr->delay), part, i);
   }
   if (!strcmp(tptr, "-waitjoin")) {
-    return parse_channel_int(&(cptr->waitjoin), var, i);
+    return parse_channel_int(&(cptr->waitjoin), part, i);
   }
 
   if (!strcmp(tptr, "-key")) {
-    return parse_channel_string(&(cptr->key), var, i);
+    return parse_channel_string(&(cptr->key), part, i);
   }
 #ifndef WITHOUT_BLOWFISH
   if (!strcmp(tptr, "-fish")) {
-    return parse_channel_string(&(cptr->fish), var, i);
+    return parse_channel_string(&(cptr->fish), part, i);
   }
 #endif /* WITHOUT_BLOWFISH */
   if (!strcmp(tptr, "-pgroup")) {
-    return parse_channel_string(&(cptr->pgroup), var, i);
+    return parse_channel_string(&(cptr->pgroup), part, i);
   }
   if (!strcmp(tptr, "-joinmsg")) {
-    return parse_channel_string(&(cptr->joinmsg), var, i);
+    return parse_channel_string(&(cptr->joinmsg), part, i);
   }
   if (!strcmp(tptr, "-headline")) {
-    return parse_channel_string(&(cptr->headline), var, i);
+    return parse_channel_string(&(cptr->headline), part, i);
   }
   if (!strcmp(tptr, "-listmsg")) {
-    return parse_channel_string(&(cptr->listmsg), var, i);
+    return parse_channel_string(&(cptr->listmsg), part, i);
   }
   if (!strcmp(tptr, "-rgroup")) {
-    return parse_channel_string(&(cptr->rgroup), var, i);
+    return parse_channel_string(&(cptr->rgroup), part, i);
   }
 
   if (!strcmp(tptr, "-noannounce")) {
@@ -1042,7 +1332,7 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
   }
 
   if (!strcmp(tptr, "-pformat")) {
-    tptr2 = getpart(var, ++i);
+    tptr2 = part[++i];
     j = parse_channel_format(&(cptr->flags), tptr2);
     mydelete(tptr2);
     return j;
@@ -1051,14 +1341,22 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char * var, int i)
   return -1;
 }
 
-int parse_channel_options(channel_t *cptr, char * var)
+#define MAX_CHANNEL_OPTIONS 20
+
+int parse_channel_options(channel_t *cptr, char *var)
 {
+  char *part[MAX_CHANNEL_OPTIONS];
   char *tptr;
   int i;
   int j;
+  int m;
 
-  for (i=2; i<20 && (tptr = getpart(var, i)); i++) {
-    j = parse_channel_option(cptr, tptr, var, i);
+  m = get_argv(part, var, MAX_CHANNEL_OPTIONS);
+  for (i=0; i<m; i++) {
+    tptr = part[i];
+    if (tptr == NULL)
+      break;
+    j = parse_channel_option(cptr, tptr, part, i);
     mydelete(tptr);
     if (j < 0 )
       return -1;
@@ -1067,6 +1365,47 @@ int parse_channel_options(channel_t *cptr, char * var)
   return 0;
 }
 
+static int parse_config_line(char **part, int rehash)
+{
+  c_channel_rehash = rehash;
+
+  if (gdata.bracket == 0) {
+    /* globals */
+    if (set_config_bool(part[0], part[1]) == 0)
+      return 2;
+
+    if (set_config_int(part[0], part[1]) == 0)
+      return 2;
+
+    if (set_config_string(part[0], part[1]) == 0)
+      return 1;
+
+    if (set_config_list(part[0], part[1]) == 0)
+      return 1;
+  }
+  if (set_config_func(part[0], part[1]) == 0)
+    return 1;
+
+  outerror(OUTERROR_TYPE_WARN_LOUD, "Ignored invalid line in config file: %s", part[0]);
+  return 2;
+}
+
+void getconfig_set(const char *line, int rehash)
+{
+  char *part[2] = { NULL, NULL };
+  int m;
+
+  updatecontext();
+
+  get_argv(part, line, 2);
+  m = parse_config_line(part, rehash);
+  if (m > 0) {
+    mydelete(part[0]);
+    if (m > 1)
+      mydelete(part[1]);
+    return;
+  }
+}
 
 void config_startup(void)
 {
