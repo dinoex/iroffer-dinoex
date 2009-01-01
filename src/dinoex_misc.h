@@ -24,7 +24,10 @@ int get_voice(void);
 int check_level(char prefix);
 
 void set_support_groups(void);
-void send_help(const char *nick);
+void send_cancel(const char *nick, const char *hostmask);
+void send_remove(const char *nick, const char *hostmask);
+void send_owner(const char *nick, const char *hostmask);
+void send_help(const char *nick, const char *hostmask);
 
 void stoplist(const char *nick);
 int notifyqueued_nick(const char *nick);
