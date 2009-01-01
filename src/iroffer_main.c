@@ -2301,7 +2301,6 @@ static void privmsgparse(int type, int decoded, char* line)
    int i,j,k;
    igninfo *ignore = NULL;
    upload *ul;
-   transfer *tr;
    xdcc *xd;
    int line_len;
    
