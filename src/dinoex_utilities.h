@@ -42,4 +42,12 @@ char *caps(char *str);
 char *nocaps(char *str);
 int max_minutes_waits(time_t *endtime, int min);
 
+#ifndef WITHOUT_MEMSAVE
+#define get_argv(x,y,z) get_argv2(x,y,z,__FUNCTION__,__FILE__,__LINE__)
+int get_argv2(char **result, const char *line, int howmany,
+             const char *src_function, const char *src_file, int src_line);
+#else /* WITHOUT_MEMSAVE */
+int get_argv(char **result, const char *line, int howmany);
+#endif /* WITHOUT_MEMSAVE */
+
 /* End of File */
