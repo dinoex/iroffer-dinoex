@@ -1679,15 +1679,15 @@ static void u_removedir(const userinput * const u)
   
   updatecontext();
 
-  if (invalid_dir(u, u->arg1e) != 0)
+  if (invalid_dir(u, u->arg1) != 0)
      return;
 
-  if (u->arg1e[strlen(u->arg1e)-1] == '/')
+  if (u->arg1[strlen(u->arg1)-1] == '/')
     {
-      u->arg1e[strlen(u->arg1e)-1] = '\0';
+      u->arg1[strlen(u->arg1)-1] = '\0';
     }
   
-  thedir = mystrdup(u->arg1e);
+  thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d)
     {
@@ -1913,11 +1913,11 @@ static void u_chfile(const userinput * const u) {
    if (invalid_pack(u, num) != 0)
       return;
 
-   if (invalid_file(u, u->arg2e) != 0)
+   if (invalid_file(u, u->arg2) != 0)
       return;
 
    /* verify file is ok first */
-   file = mystrdup(u->arg2e);
+   file = mystrdup(u->arg2);
    
    xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
    if (a_access_fstat(u, xfiledescriptor, &file, &st))
@@ -1958,15 +1958,15 @@ static void u_adddir(const userinput * const u)
   
   updatecontext();
 
-  if (invalid_dir(u, u->arg1e) != 0)
+  if (invalid_dir(u, u->arg1) != 0)
      return;
 
-  if (u->arg1e[strlen(u->arg1e)-1] == '/')
+  if (u->arg1[strlen(u->arg1)-1] == '/')
     {
-      u->arg1e[strlen(u->arg1e)-1] = '\0';
+      u->arg1[strlen(u->arg1)-1] = '\0';
     }
   
-  thedir = mystrdup(u->arg1e);
+  thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d)
     {
@@ -1987,15 +1987,15 @@ static void u_addnew(const userinput * const u)
   
   updatecontext();
 
-  if (invalid_dir(u, u->arg1e) != 0)
+  if (invalid_dir(u, u->arg1) != 0)
      return;
 
-  if (u->arg1e[strlen(u->arg1e)-1] == '/')
+  if (u->arg1[strlen(u->arg1)-1] == '/')
     {
-      u->arg1e[strlen(u->arg1e)-1] = '\0';
+      u->arg1[strlen(u->arg1)-1] = '\0';
     }
   
-  thedir = mystrdup(u->arg1e);
+  thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d)
     {
@@ -2030,6 +2030,7 @@ static void u_chdesc(const userinput * const u) {
         u_respond(u, "Try Specifying a Description");
         return;
         }
+      clean_quotes(u->arg2e);
       }
    
    u_respond(u, "CHDESC: [Pack %i] Old: %s New: %s",
@@ -2057,7 +2058,7 @@ static void u_chnote(const userinput * const u) {
    
    u_respond(u, "CHNOTE: [Pack %i] Old: %s New: %s",
              num,xd->note,
-             u->arg2e ? u->arg2e : "");
+             u->arg2 ? u->arg2e : "");
    
    mydelete(xd->note);
    
@@ -2067,6 +2068,7 @@ static void u_chnote(const userinput * const u) {
      }
    else
      {
+       clean_quotes(u->arg2e);
        xd->note = mystrdup(u->arg2e);
      }
    
@@ -2967,7 +2969,11 @@ static void u_nosend(const userinput * const u) {
    
    if (u->arg1) num = atoi(u->arg1);
    mydelete(gdata.nosendmsg);
-   if (u->arg2e) gdata.nosendmsg=mystrdup(u->arg2e);
+   if (u->arg2e)
+      {
+         clean_quotes(u->arg2e);
+         gdata.nosendmsg=mystrdup(u->arg2e);
+      }
    num = max_minutes_waits(&gdata.nonewcons, num);
    u_respond(u, "** XDCC Send has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
    
@@ -3600,16 +3606,16 @@ static void u_rmul(const userinput * const u) {
       return;
       }
 
-   if (invalid_file(u, u->arg1e) != 0)
+   if (invalid_file(u, u->arg1) != 0)
       return;
    
-   if (strstr(u->arg1e,"/")) {
+   if (strstr(u->arg1, "/")) {
       u_respond(u,"Filename contains invalid characters");
       return;
       }
    
-   tempstr = mymalloc(strlen(gdata.uploaddir) + 1 + strlen(u->arg1e) + 1);
-   sprintf(tempstr,"%s/%s",gdata.uploaddir,u->arg1e);
+   tempstr = mymalloc(strlen(gdata.uploaddir) + 1 + strlen(u->arg1) + 1);
+   sprintf(tempstr, "%s/%s", gdata.uploaddir, u->arg1);
    
    if (is_file_writeable(tempstr)) {
       if (save_unlink(tempstr) < 0)

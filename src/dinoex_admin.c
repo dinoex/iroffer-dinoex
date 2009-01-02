@@ -500,6 +500,7 @@ int invalid_announce(const userinput * const u, const char *arg)
     a_respond(u, "Try Specifying a Message (e.g. NEW)");
     return 1;
   }
+  clean_quotes(u->arg1e);
   return 0;
 }
 
@@ -509,6 +510,7 @@ int invalid_command(const userinput * const u, const char *arg)
     a_respond(u, "Try Specifying a Command");
     return 1;
   }
+  clean_quotes(u->arg1e);
   return 0;
 }
 
@@ -880,6 +882,7 @@ void a_find(const userinput * const u)
   }
 
   tempstr = mycalloc(maxtextlength);
+  clean_quotes(u->arg1e);
   match = grep_to_fnmatch(u->arg1e);
   l = a_xdl_left();
   s = a_xdl_space();
@@ -925,6 +928,7 @@ void a_listul(const userinput * const u)
     return;
   }
 
+  clean_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
 
   if (is_unsave_directory(u->arg1e)) {
@@ -1607,10 +1611,10 @@ xdcc *a_add2(const userinput * const u, const char *group)
 
   updatecontext();
 
-  if (invalid_file(u, u->arg1e) != 0)
+  if (invalid_file(u, u->arg1) != 0)
     return NULL;
 
-  file = mystrdup(u->arg1e);
+  file = mystrdup(u->arg1);
 
   xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (a_access_fstat(u, xfiledescriptor, &file, &st))
@@ -1622,7 +1626,7 @@ xdcc *a_add2(const userinput * const u, const char *group)
          xd = irlist_get_next(xd)) {
       if ((xd->st_dev == st.st_dev) &&
           (xd->st_ino == st.st_ino)) {
-        a_respond(u, "File '%s' is already added.", u->arg1e);
+        a_respond(u, "File '%s' is already added.", u->arg1);
         mydelete(file);
         return NULL;
       }
@@ -1635,7 +1639,7 @@ xdcc *a_add2(const userinput * const u, const char *group)
          xd;
          xd = irlist_get_next(xd)) {
       if (strcasecmp(get_basename(xd->file), new) == 0) {
-        a_respond(u, "File '%s' is already added.", u->arg1e);
+        a_respond(u, "File '%s' is already added.", u->arg1);
         mydelete(file);
         return NULL;
       }
@@ -1650,15 +1654,15 @@ xdcc *a_add2(const userinput * const u, const char *group)
       usedbytes += xd->st_size;
     }
     if (usedbytes >= gdata.disk_quota) {
-      a_respond(u, "File '%s' not added, you reached your quoata", u->arg1e);
+      a_respond(u, "File '%s' not added, you reached your quoata", u->arg1);
       mydelete(file);
       return NULL;
     }
   }
 
   if ((gdata.auto_default_group) && (group == NULL)) {
-    a1 = mycalloc(strlen(u->arg1e) + 1);
-    strtextcpy(a1, u->arg1e);
+    a1 = mycalloc(strlen(u->arg1) + 1);
+    strtextcpy(a1, u->arg1);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
@@ -1674,8 +1678,8 @@ xdcc *a_add2(const userinput * const u, const char *group)
     mydelete(a1);
   }
   if ((gdata.auto_path_group) && (group == NULL)) {
-    a1 = mycalloc(strlen(u->arg1e) + 1);
-    strpathcpy(a1, u->arg1e);
+    a1 = mycalloc(strlen(u->arg1) + 1);
+    strpathcpy(a1, u->arg1);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
@@ -1694,7 +1698,7 @@ xdcc *a_add2(const userinput * const u, const char *group)
     for (ag = irlist_get_head(&gdata.autoadd_group_match);
          ag;
          ag = irlist_get_next(ag)) {
-       if (fnmatch(ag->a_pattern, u->arg1e, FNM_CASEFOLD) != 0)
+       if (fnmatch(ag->a_pattern, u->arg1, FNM_CASEFOLD) != 0)
          continue;
 
        group = ag->a_group;
@@ -1722,7 +1726,7 @@ xdcc *a_add2(const userinput * const u, const char *group)
 
   xd->file = file;
 
-  xd->desc = mystrdup(getfilename(u->arg1e));
+  xd->desc = mystrdup(getfilename(u->arg1));
 
   xd->minspeed = gdata.transferminspeed;
   xd->maxspeed = gdata.transfermaxspeed;
@@ -1973,13 +1977,13 @@ void a_addgroup(const userinput * const u)
   if (invalid_group(u, u->arg1) != 0)
      return;
 
-  if (invalid_dir(u, u->arg2e) != 0)
+  if (invalid_dir(u, u->arg2) != 0)
      return;
 
   if (gdata.groupsincaps)
     caps(u->arg1);
 
-  thedir = mystrdup(u->arg2e);
+  thedir = mystrdup(u->arg2);
   d = a_open_dir(&thedir);
   if (!d) {
     a_respond(u, "Can't Access Directory: %s", strerror(errno));
@@ -1998,10 +2002,10 @@ void a_addmatch(const userinput * const u)
 
   updatecontext();
 
-  if (invalid_dir(u, u->arg1e) != 0)
+  if (invalid_dir(u, u->arg1) != 0)
     return;
 
-  thedir = mystrdup(u->arg1e);
+  thedir = mystrdup(u->arg1);
   end = strrchr(thedir, '/' );
   if (end == NULL) {
     a_respond(u, "Try Specifying a Directory");
@@ -2103,13 +2107,13 @@ void a_newgroup(const userinput * const u)
   if (invalid_group(u, u->arg1) != 0)
     return;
 
-  if (invalid_dir(u, u->arg2e) != 0)
+  if (invalid_dir(u, u->arg2) != 0)
     return;
 
   if (gdata.groupsincaps)
     caps(u->arg1);
 
-  thedir = mystrdup(u->arg2e);
+  thedir = mystrdup(u->arg2);
   d = a_open_dir(&thedir);
   if (!d) {
     a_respond(u, "Can't Access Directory: %s", strerror(errno));
@@ -2143,6 +2147,7 @@ void a_chtime(const userinput * const u)
     if (val < 5000U) {
       format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
       bzero((char *)&tmval, sizeof(tmval));
+      clean_quotes(u->arg2e);
       strptime(u->arg2e, format, &tmval);
       val = mktime(&tmval);
     }
@@ -2219,6 +2224,7 @@ void a_chlimitinfo(const userinput * const u)
     mydelete(xd->dlimit_desc);
     xd->dlimit_desc = NULL;
   } else {
+    clean_quotes(u->arg2e);
     a_respond(u, "DLIMIT: [Pack %i] descr: %s", num, u->arg2e);
     xd->dlimit_desc = mystrdup(u->arg2e);
   }
@@ -2246,6 +2252,7 @@ void a_chtrigger(const userinput * const u)
     a_respond(u, "TRIGGER: [Pack %i] removed", num);
     autotrigger_rebuild();
   } else {
+    clean_quotes(u->arg2e);
     if (xd->trigger) {
       mydelete(xd->trigger);
       xd->trigger = mystrdup(u->arg2e);
@@ -2440,6 +2447,7 @@ void a_groupdesc(const userinput * const u)
     return;
 
   if (u->arg2e && strlen(u->arg2e)) {
+    clean_quotes(u->arg2e);
     a_respond(u, "New GROUPDESC: %s", u->arg2e);
   } else {
     a_respond(u, "Removed GROUPDESC");
@@ -2714,18 +2722,18 @@ void a_newdir(const userinput * const u)
   if (invalid_dir(u, u->arg1) != 0)
     return;
 
-  if (!u->arg2e || !strlen(u->arg2e)) {
+  if (!u->arg2 || !strlen(u->arg2)) {
     a_respond(u, "Try Specifying a new Directory");
     return;
   }
 
-  convert_to_unix_slash(u->arg2e);
+  convert_to_unix_slash(u->arg2);
 
   found = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    found += a_newdir_check(u, u->arg1, u->arg2e, xd);
+    found += a_newdir_check(u, u->arg1, u->arg2, xd);
   }
   a_respond(u, "NEWDIR: %d Packs found", found);
 
@@ -2768,7 +2776,7 @@ void a_filemove(const userinput * const u)
   if (invalid_file(u, u->arg1) != 0)
     return;
 
-  if (!u->arg2e || !strlen(u->arg2e)) {
+  if (!u->arg2 || !strlen(u->arg2)) {
     a_respond(u, "Try Specifying a new Filename");
     return;
   }
@@ -2779,7 +2787,7 @@ void a_filemove(const userinput * const u)
   if (a_access_file(u, xfiledescriptor, &file1, &st))
     return;
 
-  file2 = mystrdup(u->arg2e);
+  file2 = mystrdup(u->arg2);
   convert_to_unix_slash(file2);
 
   a_target_file(&file2, file1);
@@ -2835,7 +2843,7 @@ void a_movefile(const userinput * const u)
   if (invalid_pack(u, num) != 0)
     return;
 
-  if (!u->arg2e || !strlen(u->arg2e)) {
+  if (!u->arg2 || !strlen(u->arg2)) {
     a_respond(u, "Try Specifying a new Filename");
     return;
   }
@@ -2844,7 +2852,7 @@ void a_movefile(const userinput * const u)
   if (group_restricted(u, xd))
     return;
 
-  a_movefile_sub(u, xd, u->arg2e);
+  a_movefile_sub(u, xd, u->arg2);
 }
 
 void a_movegroupdir(const userinput * const u)
@@ -2861,13 +2869,13 @@ void a_movegroupdir(const userinput * const u)
   if (invalid_group(u, u->arg1) != 0)
     return;
 
-  if (invalid_dir(u, u->arg2e) != 0)
+  if (invalid_dir(u, u->arg2) != 0)
     return;
 
   if (gdata.groupsincaps)
     caps(u->arg1);
 
-  thedir = mystrdup(u->arg2e);
+  thedir = mystrdup(u->arg2);
   d = a_open_dir(&thedir);
   if (!d) {
     a_respond(u, "Can't Access Directory: %s", strerror(errno));
@@ -2885,10 +2893,10 @@ void a_movegroupdir(const userinput * const u)
       g = "main";
     if (strcasecmp(g, u->arg1) == 0) {
       foundit++;
-      if (u->arg2e[strlen(u->arg2e)-1] == '/')
-        snprintf(tempstr, maxtextlength - 2, "%s%s", u->arg2e, get_basename(xd->file));
+      if (u->arg2[strlen(u->arg2)-1] == '/')
+        snprintf(tempstr, maxtextlength - 2, "%s%s", u->arg2, get_basename(xd->file));
       else
-        snprintf(tempstr, maxtextlength - 2, "%s/%s", u->arg2e, get_basename(xd->file));
+        snprintf(tempstr, maxtextlength - 2, "%s/%s", u->arg2, get_basename(xd->file));
       if (strcmp(tempstr, xd->file) != 0) {
         if (a_movefile_sub(u, xd, tempstr))
           break;
@@ -2909,10 +2917,10 @@ void a_filedel(const userinput * const u)
   if (disabled_config(u) != 0)
     return;
 
-  if (invalid_file(u, u->arg1e) != 0)
+  if (invalid_file(u, u->arg1) != 0)
     return;
 
-  a_filedel_disk(u, u->arg1e);
+  a_filedel_disk(u, u->arg1);
 }
 
 void a_fileremove(const userinput * const u)
@@ -2966,14 +2974,14 @@ void a_showdir(const userinput * const u)
   if (disabled_config(u) != 0)
     return;
 
-  if (invalid_dir(u, u->arg1e) != 0)
+  if (invalid_dir(u, u->arg1) != 0)
     return;
 
-  if (u->arg1e[strlen(u->arg1e)-1] == '/') {
-    u->arg1e[strlen(u->arg1e)-1] = '\0';
+  if (u->arg1[strlen(u->arg1)-1] == '/') {
+    u->arg1[strlen(u->arg1)-1] = '\0';
   }
 
-  thedir = mystrdup(u->arg1e);
+  thedir = mystrdup(u->arg1);
   u_listdir(u, thedir);
   mydelete(thedir);
   return;
@@ -3007,7 +3015,7 @@ void a_fetch(const userinput * const u)
     a_respond(u, "Try Specifying a URL");
     return;
   }
-
+  clean_quotes(u->arg2e);
   start_fetch_url(u);
 }
 
@@ -3837,7 +3845,7 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
   mydelete(tempstr);
 }
 
-static void a_announce_sub(const userinput * const u, const char *arg1, const char *arg2, const char *msg)
+static void a_announce_sub(const userinput * const u, const char *arg1, const char *arg2, char *msg)
 {
   int num1 = 0;
   int num2 = 0;
@@ -3856,6 +3864,9 @@ static void a_announce_sub(const userinput * const u, const char *arg1, const ch
     a_respond(u, "Pack numbers are not in order");
     return;
   }
+
+  if (msg != NULL)
+    clean_quotes(msg);
 
   for (; num1 <= num2; num1++) {
     a_announce_msg(u, NULL, num1, msg);
