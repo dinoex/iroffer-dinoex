@@ -756,7 +756,22 @@ static void c_connectionmethod(char *var)
 
   m = get_argv(part, var, 5);
   mydelete(var);
-  if (part[0] == NULL) {
+  if (part[1]) {
+    gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
+    part[1] = NULL;
+  }
+  if (part[2]) {
+    gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
+  }
+  if (part[2]) {
+    gdata.networks[gdata.networks_online].connectionmethod.password = part[3];
+    part[2] = NULL;
+  }
+  if (part[4]) {
+    gdata.networks[gdata.networks_online].connectionmethod.vhost = part[4];
+    part[4] = NULL;
+  }
+  if (part[0] != NULL) {
     if (!strcmp(part[0], "direct")) {
       gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
     } else if (!strcmp(part[0], "ssl")) {
@@ -770,25 +785,10 @@ static void c_connectionmethod(char *var)
 #endif /* USE_SSL */
     } else if ((m >= 4) && !strcmp(part[0], "bnc")) {
       gdata.networks[gdata.networks_online].connectionmethod.how = how_bnc;
-      gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
-      part[1] = NULL;
-      gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
-      gdata.networks[gdata.networks_online].connectionmethod.password = part[3];
-      part[3] = NULL;
-      if (part[4]) {
-        gdata.networks[gdata.networks_online].connectionmethod.vhost = part[4];
-        part[4] = NULL;
-      }
     } else if ((m == 2) && !strcmp(part[0], "wingate")) {
       gdata.networks[gdata.networks_online].connectionmethod.how = how_wingate;
-      gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
-      part[1] = NULL;
-      gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
     } else if ((m == 2) && !strcmp(part[0], "custom")) {
       gdata.networks[gdata.networks_online].connectionmethod.how = how_custom;
-      gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
-      part[1] = NULL;
-      gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
     } else {
       gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
       outerror(OUTERROR_TYPE_WARN_LOUD,
