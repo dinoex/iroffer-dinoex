@@ -721,12 +721,15 @@ static void c_channel(char *var)
   caps(cptr->name);
   if (parse_channel_options(cptr, part[1]) < 0) {
      outerror(OUTERROR_TYPE_WARN,
-              " !!! Bad syntax for channel %s on %s in config file !!!",
-              part[0], gdata.networks[gdata.networks_online].name);
+             "%s:%ld ignored channel '%s' on %s because it has invalid args: '%s'",
+             current_config, current_line, part[0],
+             gdata.networks[gdata.networks_online].name, part[1]);
   }
 
   if (cptr->plisttime && (cptr->plistoffset >= cptr->plisttime)) {
-     outerror(OUTERROR_TYPE_WARN, "plistoffset must be less than plist time, ignoring offset");
+     outerror(OUTERROR_TYPE_WARN,
+             "%s:%ld channel '%s' on %s: plistoffset must be less than plist time, ignoring offset",
+             current_config, current_line, part[0], gdata.networks[gdata.networks_online].name);
      cptr->plistoffset = 0;
   }
   mydelete(part[1]);
@@ -761,7 +764,9 @@ static void c_connectionmethod(char *var)
       gdata.networks[gdata.networks_online].connectionmethod.how = how_ssl;
 #else
       gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
-      outerror(OUTERROR_TYPE_WARN_LOUD, "connectionmethod ssl not compiled, defaulting to direct");
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+               "%s:%ld connectionmethod ssl not compiled, defaulting to direct",
+               current_config, current_line);
 #endif /* USE_SSL */
     } else if ((m >= 4) && !strcmp(part[0], "bnc")) {
       gdata.networks[gdata.networks_online].connectionmethod.how = how_bnc;
@@ -786,7 +791,9 @@ static void c_connectionmethod(char *var)
       gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
     } else {
       gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid connectionmethod in config file, defaulting to direct");
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+               "%s:%ld Invalid connectionmethod %s in config file, defaulting to direct",
+               current_config, current_line, part[0]);
     }
   }
   mydelete(part[0]);
@@ -972,14 +979,17 @@ static void c_periodicmsg(char *var)
   mydelete(gdata.periodicmsg_nick);
   mydelete(gdata.periodicmsg_msg);
   m = get_argv(part, var, 3);
-  mydelete(var);
   if (m != 3) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Syntax Error In periodicmsg, Ignoring");
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "%s:%ld ignored '%s' because it has invalid args: '%s'",
+             current_config, current_line, "periodicmsg", var);
+    mydelete(var);
     mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
     return;
   }
+  mydelete(var);
   gdata.periodicmsg_nick = part[0];
   tnum = atoi(part[1]);
   mydelete(part[1]);
@@ -1003,14 +1013,18 @@ static void c_server(char *var)
 
   set_default_network_name();
   get_argv(part, var, 3);
-  mydelete(var);
   if (part[0] == NULL) {
-    outerror(OUTERROR_TYPE_WARN, "ignoring invalid server line");
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "%s:%ld ignored '%s' because it has invalid args: '%s'",
+             current_config, current_line, "server", var);
+    mydelete(var);
+    mydelete(part[0]);
     mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
     return;
   }
+  mydelete(var);
   ss = irlist_add(&gdata.networks[gdata.networks_online].servers, sizeof(server_t));
   ss->hostname = part[0];
   ss->port = 6667;
@@ -1047,7 +1061,9 @@ static void c_slotsmax(char *var)
   mydelete(var);
   gdata.slotsmax = between(1, new, MAXTRANS);
   if (gdata.slotsmax != new) {
-    outerror(OUTERROR_TYPE_WARN, "unable to have slotsmax of %d, using %d instead", new, gdata.slotsmax);
+    outerror(OUTERROR_TYPE_WARN,
+             "%s:%ld unable to have slotsmax of %d, using %d instead",
+             current_config, current_line, new, gdata.slotsmax);
   }
 }
 
@@ -1386,7 +1402,9 @@ static int parse_config_line(char **part, int rehash)
   if (set_config_func(part[0], part[1]) == 0)
     return 1;
 
-  outerror(OUTERROR_TYPE_WARN_LOUD, "Ignored invalid line in config file: %s", part[0]);
+  outerror(OUTERROR_TYPE_WARN_LOUD,
+          "%s:%ld ignored invalid line in config file: %s",
+           current_config, current_line, part[0]);
   return 2;
 }
 
