@@ -948,8 +948,31 @@ static void c_overallmaxspeeddaydays(char *var)
 
   gdata.overallmaxspeeddaydays = 0;
   src = var;
-  for (i=0; (*src) && (i<8); i++)
-    gdata.overallmaxspeeddaydays |= dayofweektomask(*(src++));
+  for (i=0; (*src) && (i<8); i++) {
+    switch (*(src++)) {
+    case 'U':
+      gdata.overallmaxspeeddaydays |= 0x01;
+      break;
+    case 'M':
+      gdata.overallmaxspeeddaydays |= 0x02;
+      break;
+    case 'T':
+      gdata.overallmaxspeeddaydays |= 0x04;
+      break;
+    case 'W':
+      gdata.overallmaxspeeddaydays |= 0x08;
+      break;
+    case 'R':
+      gdata.overallmaxspeeddaydays |= 0x10;
+      break;
+    case 'F':
+      gdata.overallmaxspeeddaydays |= 0x20;
+      break;
+    case 'S':
+      gdata.overallmaxspeeddaydays |= 0x40;
+      break;
+    }
+  }
   mydelete(var);
 }
 
@@ -1087,7 +1110,7 @@ static void c_transferlimits(char *var)
   int new;
 
   bzero((char *)part, sizeof(part));
-  m = get_argv(part, var, NUMBER_TRANSFERLIMITS);
+  m = get_argv(part, var, (int)NUMBER_TRANSFERLIMITS);
   mydelete(var);
   for (i=0; i<m; i++) {
     if (part[i]) {

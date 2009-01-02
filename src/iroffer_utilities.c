@@ -688,27 +688,6 @@ int sstrlen (const char *p) {
    return ((int)(strlen(p)));
    }
 
-char dayofweektomask(const char a) {
-   switch (a) {
-      case 'U':
-         return 0x01;
-      case 'M':
-         return 0x02;
-      case 'T':
-         return 0x04;
-      case 'W':
-         return 0x08;
-      case 'R':
-         return 0x10;
-      case 'F':
-         return 0x20;
-      case 'S':
-         return 0x40;
-      default:
-         return 0x00;
-      }
-   }
-
 
 #ifndef WITHOUT_MEMSAVE
 
