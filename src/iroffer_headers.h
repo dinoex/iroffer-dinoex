@@ -240,8 +240,8 @@ typedef struct {
   char *localaddr;
   time_t lastcontact;
   time_t connecttime;
-  unsigned short localport;
-  unsigned short remoteport;
+  ir_uint16 localport;
+  ir_uint16 remoteport;
   ir_sockaddr_union_t remote;
   ir_sockaddr_union_t local;
 } ir_connection_t;
@@ -443,8 +443,8 @@ typedef struct
 {
   how_e how;
   char *host;
-  unsigned short port;
-  short dummy;
+  ir_uint16 port;
+  ir_uint16 dummy;
   char *password;
   char *vhost;
 } connectionmethod_t;
@@ -621,7 +621,6 @@ __attribute__ ((format(printf, 2, 0)))
 #endif
 vnotice(const char *nick, const char *format, va_list ap);
 int sstrlen (const char *p);
-char dayofweektomask(const char a);
 void joinchannel(channel_t *c);
 void updatecontext_f(const char *file, const char *func, int line);
 void dumpcontext(void);
