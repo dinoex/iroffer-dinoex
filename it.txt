@@ -2306,3 +2306,5 @@
 2400 "no_status_log"
 2401 "curl_easy_setopt SSL_VERIFYHOST failed with %d"
 2402 "%s:%ld ignorato canale '%s' at %s perchè contiene argomenti non validi: '%s'"
+2403 "  : lastmodified=%ld"
+2404 "no_auto_rehash"

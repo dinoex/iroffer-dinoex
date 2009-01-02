@@ -465,7 +465,8 @@ void a_fillwith_msg2(userinput * const u, const char *nick, const char *line)
   updatecontext();
 
   u->level = ADMIN_LEVEL_PUBLIC;
-  u->net = gnetwork->net;
+  if (gnetwork)
+    u->net = gnetwork->net;
   u->chat = NULL;
   u->method = method_msg;
   u->snick = (nick != NULL) ? mystrdup(nick) : NULL;

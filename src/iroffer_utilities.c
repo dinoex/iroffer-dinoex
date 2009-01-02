@@ -963,6 +963,9 @@ void dumpgdata(void)
   for (ii=0; ii<MAXCONFIG; ii++)
     {
       gdata_print_string_array(configfile);
+      ioutput(gdata_common,
+          "  : lastmodified=%ld",
+          (long)gdata.configtime[ii]);
     }
   gdata_print_string(osstring);
   gdata_print_int(hideos);
@@ -1225,6 +1228,7 @@ void dumpgdata(void)
   gdata_print_int(no_minspeed_on_free);
   gdata_print_int(no_status_chat);
   gdata_print_int(no_status_log);
+  gdata_print_int(no_auto_rehash);
   gdata_print_number_cast("%ld", nomd5_start, long);
   
   gdata_irlist_iter_start(downloadhost, char);

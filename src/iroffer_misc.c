@@ -33,6 +33,7 @@
 #include <locale.h>
 
 void getconfig (void) {
+   struct stat st;
    char *templine = mycalloc(maxtextlength);
    int h, filedescriptor;
    
@@ -49,6 +50,14 @@ void getconfig (void) {
          {
            outerror(OUTERROR_TYPE_CRASH,"Cant Access Config File '%s': %s",gdata.configfile[h],strerror(errno));
          }
+       
+       if (fstat(filedescriptor, &st) < 0)
+         {
+           outerror(OUTERROR_TYPE_CRASH,
+                    "Unable to stat file '%s': %s",
+                    gdata.configfile[h], strerror(errno));
+         }
+       gdata.configtime[h] = st.st_mtime;
        
        current_config = gdata.configfile[h];
        current_line = 0;
@@ -1736,6 +1745,7 @@ void reinit_config_vars(void)
   gdata.no_minspeed_on_free = 0;
   gdata.no_status_chat = 0;
   gdata.no_status_log = 0;
+  gdata.no_auto_rehash = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

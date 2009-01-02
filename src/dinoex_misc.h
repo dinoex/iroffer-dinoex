@@ -82,4 +82,6 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote);
 
 void free_channel_data(channel_t *ch);
 
+void auto_rehash(void);
+
 /* End of File */
