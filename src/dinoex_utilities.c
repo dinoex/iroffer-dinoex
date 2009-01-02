@@ -556,12 +556,12 @@ int get_argv(char **result, const char *line, int howmany)
     if (*src == '"') {
       if ((start == src) && (inquotes == 0)) {
         inquotes ++;
-        start ++;
         continue;
       }
       if (inquotes == 0)
         continue;
       inquotes --;
+      start ++;
     } else {
       if (*src) {
         if (*src != ' ')
@@ -590,7 +590,7 @@ int get_argv(char **result, const char *line, int howmany)
     if (part >= howmany)
       return part;
     if (*src == 0)
-      return  part;
+      return part;
     start = src + 1;
   }
 }
