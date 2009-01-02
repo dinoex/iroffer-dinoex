@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+274) group_admin
+  Erlaube group_admin deb Bot über "/msg ADMIN" zu steuern.
+
 Debugging und Logging verbessert.
 
 bugfix: CONTROL-C 
