@@ -4,7 +4,7 @@ Ab Version 3.12:
 ----------------
 
 bugfix: DUMP
-  Do no longer dump on chat or console.
+  Schreibe den DUMP nicht mehr in Chat oder Konsole.
 
 276) no_auto_rehash
   Wenn aktivert, wird der Bot bei einer Änderung an einer Konfiguraions-

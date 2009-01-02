@@ -4,6 +4,7 @@ With Version 3.12:
 ------------------
 
 bugfix: DUMP
+  Do no longer dump on chat or console.
   Schreibe den DUMP nicht mer in Chat oder Konsole.
 
 276) no_auto_rehash (inspired by TheDeath)
