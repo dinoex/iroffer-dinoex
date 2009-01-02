@@ -581,6 +581,7 @@ int get_argv(char **result, const char *line, int howmany)
     if (plen < 1)
       continue;
 
+    /* found end */
 #ifndef WITHOUT_MEMSAVE
     dest = mymalloc2(plen + 1, 0, src_function, src_file, src_line);
 #else /* WITHOUT_MEMSAVE */
@@ -598,10 +599,10 @@ int get_argv(char **result, const char *line, int howmany)
 }
 
 #ifndef WITHOUT_MEMSAVE
-char* getpart2(const char *line, int howmany,
+char *getpart2(const char *line, int howmany,
                const char *src_function, const char *src_file, int src_line)
 #else /* WITHOUT_MEMSAVE */
-char* getpart(const char *line, int howmany)
+char *getpart(const char *line, int howmany)
 #endif /* WITHOUT_MEMSAVE */
 {
   const char *start;
@@ -655,44 +656,99 @@ char* getpart(const char *line, int howmany)
       continue;
     }
 
-#ifndef WITHOUT_MEMSAVE
-    dest = mymalloc2(plen + 1, 0, src_function, src_file, src_line);
-#else /* WITHOUT_MEMSAVE */
-    dest = mymalloc(plen + 1);
-#endif /* WITHOUT_MEMSAVE */
-    memcpy(dest, start, plen);
-    dest[plen] = '\0';
-    return dest;
+    /* found end */
+    break;
   }
+#ifndef WITHOUT_MEMSAVE
+  dest = mymalloc2(plen + 1, 0, src_function, src_file, src_line);
+#else /* WITHOUT_MEMSAVE */
+  dest = mymalloc(plen + 1);
+#endif /* WITHOUT_MEMSAVE */
+  memcpy(dest, start, plen);
+  dest[plen] = '\0';
+  return dest;
 }
 
-char* getpart_eol(const char *line, int howmany)
+char *getpart_eol(const char *line, int howmany)
 {
-  char *part;
-  int li;
+  const char *start;
+  const char *src;
+  char *dest;
   size_t plen;
-  int hi;
+  int inquotes;
+  int part;
 
-  li=0;
+  if (line == NULL)
+    return NULL;
 
-  for (hi = 1; hi < howmany; hi++) {
-    while (line[li] != ' ') {
-      if (line[li] == '\0')
-        return NULL;
-      li++;
+  if (howmany <= 0)
+    return NULL;
+
+  inquotes = 0;
+  part = 0;
+
+  start = line;
+  for (src = start; ; src++) {
+    if ((*src == ' ') && (inquotes != 0))
+      continue;
+    if (*src == '"') {
+      if ((start == src) && (inquotes == 0)) {
+        inquotes ++;
+        continue;
+      }
+      if (inquotes == 0)
+        continue;
+      inquotes --;
+      if (part + 1 == howmany)
+        continue;
+      start ++;
+    } else {
+      if (*src) {
+        if (*src != ' ')
+          continue;
+        if (src == start) {
+          /* skip leading spaces */
+          start ++;
+          continue;
+        }
+        if (part + 1 == howmany)
+          continue;
+      }
     }
-    li++;
+    plen = src - start;
+    if (plen < 1)
+      continue;
+
+   if (++part < howmany) {
+      if (*src == 0)
+        return NULL;
+      start = src + 1;
+      continue;
+    }
+
+    /* found end */
+    break;
   }
+  dest = mystrdup(start);
+  clean_quotes(dest);
+  return dest;
+}
 
-  if (line[li] == '\0')
-      return NULL;
+int convert_spaces_to_match(char *str)
+{
+  int k;
 
-  plen = strlen(line+li);
-  part = mycalloc(plen+1);
-  memcpy(part, line+li, plen);
-  part[plen] = '\0';
-
-  return part;
+  for (k = 0; *str; str++) {
+    if (*str == ' ') *str = '*';
+    if (*str == '*')
+      continue;
+    if (*str == '#')
+      continue;
+    if (*str == '?')
+      continue;
+    k++;
+  }
+  return k;
 }
 
 /* End of File */

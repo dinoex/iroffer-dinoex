@@ -2680,11 +2680,14 @@ static void privmsgparse(int type, int decoded, char* line)
          }
          else if ( msg2 && !strcmp(msg2, "SEARCH") && msg3) {
            char *match;
+           char *msg3e;
            /* if restrictlist is enabled, visibility rules apply */
            char *grouplist = gdata.restrictlist ? get_grouplist_access(nick) : NULL;
          
-         notice_slow(nick,"Searching for \"%s\"...",msg3);
-           match = grep_to_fnmatch(msg3);
+           msg3e = getpart_eol(line, 6);
+           notice_slow(nick, "Searching for \"%s\"...", msg3e);
+           convert_spaces_to_match(msg3e);
+           match = grep_to_fnmatch(msg3e);
          
          i = 1;
          k = 0;
@@ -2718,8 +2721,9 @@ static void privmsgparse(int type, int decoded, char* line)
            }
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                    "XDCC SEARCH %s (%s on %s)",
-                   msg3, hostmask, gnetwork->name);
+                   msg3e, hostmask, gnetwork->name);
          
+           mydelete(msg3e);
          }
          else if ( msg2 )  {
            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -2792,10 +2796,7 @@ static void privmsgparse(int type, int decoded, char* line)
         }
       msg2e = getpart_eol(line, 5);
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-      for (i = k = 0; i < (int)(strlen(msg2e)); i++)
-        if (msg2e[i] == ' ') msg2e[i] = '*';
-        if ((msg2e[i] == '*') || (msg2e[i] == '#') || (msg2e[i] == '?'))
-          k++;
+      k = convert_spaces_to_match(msg2e);
       if ((int)(strlen(msg2e) - k) >= gdata.atfind) {
         k = noticeresults(nick, msg2e, dest);
         if (k) {

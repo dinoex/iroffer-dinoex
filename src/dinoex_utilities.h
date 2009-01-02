@@ -56,5 +56,6 @@ char *getpart2(const char *line, int howmany, const char *src_function, const ch
 char *getpart(const char *line, int howmany);
 #endif
 char *getpart_eol(const char *line, int howmany);
+int convert_spaces_to_match(char *str);
 
 /* End of File */
