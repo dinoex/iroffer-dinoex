@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+bugfix: CONTROL-C 
+  versions affected: 2.15 - 3.11
+  Bot hatte sich aufgehangen, wenn er mit zweimal CONTROL-C angehalten wurde.
+
 Ab Version 3.11:
 ----------------
 

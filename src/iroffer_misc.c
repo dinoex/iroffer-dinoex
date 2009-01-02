@@ -815,7 +815,7 @@ static void iroffer_signal_handler(int signo)
           mylog(CALLTYPE_NORMAL,"iroffer exited (signal forced!)\n\n");
           printf("iroffer exited (signal forced!)\n");
           
-          exit_iroffer();
+          exit_iroffer(1);
         }
       else
         {
@@ -1155,7 +1155,7 @@ void shutdowniroffer(void) {
       
       mylog(CALLTYPE_NORMAL,"iroffer exited (shutdown)\n\n");
 
-      exit_iroffer();
+      exit_iroffer(0);
       }
    
    

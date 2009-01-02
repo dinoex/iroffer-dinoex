@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+bugfix: CONTROL-C
+  versions affected: 2.15 - 3.11
+  Fix hang when forced shutdown by double CONTROL-C.
+
 With Version 3.11:
 ------------------
 

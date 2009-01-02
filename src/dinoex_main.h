@@ -19,6 +19,6 @@ void
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
-exit_iroffer(void);
+exit_iroffer(int gotsignal);
 
 /* End of File */

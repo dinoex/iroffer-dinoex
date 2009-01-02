@@ -1614,7 +1614,7 @@ static void mainloop (void) {
          
          mylog(CALLTYPE_NORMAL,"iroffer exited\n\n");
          
-         exit_iroffer();
+         exit_iroffer(0);
          }
       
       updatecontext();
