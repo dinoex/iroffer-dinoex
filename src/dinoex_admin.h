@@ -20,7 +20,6 @@ __attribute__ ((format(printf, 2, 3)))
 a_respond(const userinput * const u, const char *format, ...);
 
 void a_parse_inputline(userinput * const u, const char *line);
-void a_fillwith_msg2(userinput * const u, const char *nick, const char *hostmask, const char *line);
 
 int hide_locked(const userinput * const u, const xdcc *xd);
 int get_network(const char *arg1);

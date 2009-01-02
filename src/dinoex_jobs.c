@@ -460,18 +460,26 @@ void sendannounce(void)
   irlist_delete(&(gnetwork->serverq_channel), item);
 }
 
+void a_fillwith_msg2(userinput * const u, const char *nick, const char *line)
+{
+  updatecontext();
+
+  u->chat = NULL;
+  u->method = method_msg;
+  u->snick = (nick != NULL) ? mystrdup(nick) : NULL;
+
+  a_parse_inputline(u, line);
+}
+
 static void admin_line(int fd, const char *line) {
   userinput *uxdl;
-  char *full;
 
   if (line == NULL)
     return;
 
   uxdl = mycalloc(sizeof(userinput));
-  full = mycalloc(maxtextlength);
 
-  snprintf(full, maxtextlength -1, "A A A A A %s", line);
-  u_fillwith_msg(uxdl, NULL, full);
+  a_fillwith_msg2(uxdl, NULL, line);
   uxdl->method = method_fd;
   uxdl->fd = fd;
   uxdl->net = 0;
@@ -479,7 +487,6 @@ static void admin_line(int fd, const char *line) {
   u_parseit(uxdl);
 
   mydelete(uxdl);
-  mydelete(full);
 }
 
 static void admin_run(const char *cmd) {
@@ -718,12 +725,12 @@ void autoadd_scan(const char *dir, const char *group)
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
   line = mycalloc(maxtextlength);
   if (group != NULL)
-    snprintf(line, maxtextlength -1, "A A A A A ADDGROUP %s %s", group, dir);
+    snprintf(line, maxtextlength -1, "ADDGROUP %s %s", group, dir);
   else
-    snprintf(line, maxtextlength -1, "A A A A A ADDNEW %s", dir);
+    snprintf(line, maxtextlength -1, "ADDNEW %s", dir);
 
   uxdl = mycalloc(sizeof(userinput));
-  u_fillwith_msg(uxdl, NULL, line);
+  a_fillwith_msg2(uxdl, NULL, line);
   uxdl->method = method_out_all;
   uxdl->net = 0;
   uxdl->level = ADMIN_LEVEL_AUTO;
@@ -782,35 +789,41 @@ void run_delayed_jobs(void)
   }
 }
 
-static void admin_msg_line(const char *nick, char *line, int line_len, int level)
+static void admin_msg_line(const char *nick, char *line, int level)
 {
+  char *part5[6] = { NULL, NULL, NULL, NULL, NULL, NULL };
   userinput ui;
 
-  if (line[line_len-1] == '\n') {
-    line[line_len-1] = '\0';
-    line_len--;
-  }
-  u_fillwith_msg(&ui, nick, line);
+  updatecontext();
+  get_argv(part5, line, 6);
+  mydelete(part5[1]);
+  mydelete(part5[2]);
+  mydelete(part5[3]);
+  mydelete(part5[4]);
+  a_fillwith_msg2(&ui, nick, part5[5]);
+  ui.hostmask = mystrdup(part5[0] + 1);
+  mydelete(part5[0]);
+  mydelete(part5[5]);
   ui.net = gnetwork->net;
   ui.level = level;
   u_parseit(&ui);
 }
 
-static int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len)
+static int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line)
 {
   group_admin_t *ga;
   char *cmd;
 
   if ( verifyshell(&gdata.adminhost, hostmask) ) {
     if ( verifypass2(gdata.adminpass, passwd) ) {
-      admin_msg_line(nick, line, line_len, gdata.adminlevel);
+      admin_msg_line(nick, line, gdata.adminlevel);
       return 1;
     }
     return -1;
   }
   if ( verifyshell(&gdata.hadminhost, hostmask) ) {
     if ( verifypass2(gdata.hadminpass, passwd) ) {
-      admin_msg_line(nick, line, line_len, gdata.hadminlevel);
+      admin_msg_line(nick, line, gdata.hadminlevel);
       return 1;
     }
     return -1;
@@ -818,7 +831,7 @@ static int msg_host_password(const char *nick, const char *hostmask, const char 
   cmd = getpart(line, 6);
   if (strcasecmp(cmd, "CHATME") == 0) {
     if ((ga = verifypass_group(hostmask, passwd))) {
-       admin_msg_line(nick, line, line_len, ga->g_level);
+       admin_msg_line(nick, line, ga->g_level);
        mydelete(cmd);
        return 1;
     }
@@ -827,11 +840,11 @@ static int msg_host_password(const char *nick, const char *hostmask, const char 
   return 0;
 }
 
-int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len)
+int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line)
 {
   int err = 0;
 
-  err = msg_host_password(nick, hostmask, passwd, line, line_len);
+  err = msg_host_password(nick, hostmask, passwd, line);
   if (err == 0) {
     notice(nick, "ADMIN: %s is not allowed to issue admin commands", hostmask);
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
@@ -1297,17 +1310,17 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
   if (ch) {
     if (ch->pgroup) {
       line = mycalloc(maxtextlength);
-      snprintf(line, maxtextlength -1, "A A A A A xdlgroup %s", ch->pgroup);
-      u_fillwith_msg(manplist, name, line);
+      snprintf(line, maxtextlength -1, "XDLGROUP %s", ch->pgroup);
+      a_fillwith_msg2(manplist, name, line);
       mydelete(line);
       manplist->method = method;
       return;
     }
   }
   if ((gdata.xdcclist_grouponly) || (method != method_xdl_channel)) {
-    u_fillwith_msg(manplist, name, "A A A A A xdl");
+    a_fillwith_msg2(manplist, name, "XDL");
   } else {
-    u_fillwith_msg(manplist, name, "A A A A A xdlfull");
+    a_fillwith_msg2(manplist, name, "XDLFULL");
   }
   manplist->method = method;
 }

@@ -53,6 +53,7 @@ void writeserver_notice(writeserver_type_e delay, const char *nick, const char *
 void cleanannounce(void);
 void sendannounce(void);
 
+void a_fillwith_msg2(userinput * const u, const char *nick, const char *line);
 void admin_jobs(void);
 int check_for_file_remove(int n);
 void look_for_file_remove(void);
@@ -64,7 +65,7 @@ void crc32_final(xdcc *xd);
 void autoadd_scan(const char *dir, const char *group);
 void autoadd_all(void);
 void run_delayed_jobs(void);
-int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line, int line_len);
+int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line);
 int dcc_host_password(dccchat_t *chat, char *line);
 void write_removed_xdcc(xdcc *xd);
 void import_xdccfile(void);

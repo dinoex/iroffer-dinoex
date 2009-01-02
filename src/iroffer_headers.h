@@ -814,7 +814,6 @@ void l_closeconn(upload * const l, const char *msg, int errno1);
 /* admin.c */
 void u_fillwith_console(userinput * const u, char *line);
 void u_fillwith_dcc(userinput * const u, dccchat_t *chat, char *line);
-void u_fillwith_msg(userinput * const u, const char *n, const char *line);
 void u_fillwith_clean(userinput * const u);
 
 void u_parseit(userinput * const u);

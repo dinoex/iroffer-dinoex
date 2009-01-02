@@ -123,18 +123,6 @@ void a_parse_inputline(userinput * const u, const char *line)
   mydelete(part4[1]);
 }
 
-void a_fillwith_msg2(userinput * const u, const char *nick, const char *hostmask, const char *line)
-{
-  updatecontext();
- 
-  u->chat = NULL;
-  u->method = method_msg;
-  u->snick = mystrdup(nick);
-  u->hostmask = mystrdup(hostmask);
-
-  a_parse_inputline(u, line);
-}
-
 int get_network(const char *arg1)
 {
   int net;
@@ -1492,8 +1480,8 @@ static void a_make_announce_short(const userinput * const u, int n)
 
   tempstr = mycalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength - 2, "A A A A A sannounce %i", n);
-  u_fillwith_msg(ui, NULL, tempstr);
+  snprintf(tempstr, maxtextlength - 2, "SANNOUNCE %i", n);
+  a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = u->net;
   ui->level = u->level;
@@ -1510,8 +1498,8 @@ static void a_make_announce_long(const userinput * const u, int n)
 
   tempstr = mycalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength - 2, "A A A A A announce %i", n);
-  u_fillwith_msg(ui, NULL, tempstr);
+  snprintf(tempstr, maxtextlength - 2, "ANNOUNCE %i", n);
+  a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = u->net;
   ui->level = u->level;

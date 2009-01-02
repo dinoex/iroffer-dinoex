@@ -271,35 +271,6 @@ void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
   a_parse_inputline(u, line);
 }
 
-void u_fillwith_msg (userinput * const u, const char* n, const char *line)
-{
-  char *part5[6] = { NULL, NULL, NULL, NULL, NULL, NULL };
-  
-  updatecontext();
-  
-  u->method = method_msg;
-  if (n)
-    {
-      u->snick = mystrdup(n);
-    }
-  else
-    {
-      u->snick = NULL;
-    }
-  u->chat = NULL;
-  
-  get_argv(part5, line, 6);
-  
-  u->hostmask = mystrdup(part5[0] + 1);
-  mydelete(part5[0]);
-  mydelete(part5[1]);
-  mydelete(part5[2]);
-  mydelete(part5[3]);
-  mydelete(part5[4]);
-  a_parse_inputline(u, part5[5]);
-  mydelete(part5[5]);
-}
-
 void u_fillwith_clean (userinput * const u)
 {
   

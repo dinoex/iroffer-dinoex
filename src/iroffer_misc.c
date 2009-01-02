@@ -698,9 +698,9 @@ void xdccsavetext(void)
   backup = gnetwork;
   gnetwork = &(gdata.networks[0]);
   if (gdata.xdcclist_grouponly)
-    u_fillwith_msg(uxdl, NULL, "A A A A A xdl");
+    a_fillwith_msg2(uxdl, NULL, "XDL");
   else
-    u_fillwith_msg(uxdl, NULL, "A A A A A xdlfull");
+    a_fillwith_msg2(uxdl, NULL, "XDLFULL");
   uxdl->method = method_fd; 
   uxdl->fd = fd;
   uxdl->net = 0;
@@ -1517,19 +1517,19 @@ void sendxdlqueue (void)
         {
            if (strcasecmp(group, "ALL") == 0)
              {
-                u_fillwith_msg(&ui, tempstr, "A A A A A xdlfull");
+                a_fillwith_msg2(&ui, tempstr, "XDLFULL");
              }
            else
              {
                 cmd = mycalloc(maxtextlength);
-                snprintf(cmd, maxtextlength-1, "A A A A A xdlgroup %s", group);
-                u_fillwith_msg(&ui, tempstr, cmd);
+                snprintf(cmd, maxtextlength-1, "XDLGROUP %s", group);
+                a_fillwith_msg2(&ui, tempstr, cmd);
              }
            mydelete(group);
         }
       else
         {
-          u_fillwith_msg(&ui, tempstr, "A A A A A xdl");
+          a_fillwith_msg2(&ui, tempstr, "XDL");
         }
       if (gdata.xdcclist_by_privmsg)
         ui.method = method_xdl_user_privmsg;
