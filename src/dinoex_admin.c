@@ -420,7 +420,6 @@ int invalid_group(const userinput * const u, char *arg)
     a_respond(u, "Try Specifying a Group");
     return 1;
   }
-  clean_quotes(arg);
 
   if (group_is_restricted(u, arg)) {
     a_respond(u, "You don't have access to this group");
@@ -436,7 +435,6 @@ int invalid_dir(const userinput * const u, char *arg)
     a_respond(u, "Try Specifying a Directory");
     return 1;
   }
-  clean_quotes(arg);
   convert_to_unix_slash(arg);
   return 0;
 }
@@ -456,7 +454,6 @@ int invalid_file(const userinput * const u, char *arg)
     a_respond(u, "Try Specifying a Filename");
     return 1;
   }
-  clean_quotes(arg);
   convert_to_unix_slash(arg);
   return 0;
 }
@@ -919,7 +916,6 @@ void a_listul(const userinput * const u)
     return;
   }
 
-  clean_quotes(u->arg1e);
   convert_to_unix_slash(u->arg1e);
 
   if (is_unsave_directory(u->arg1e)) {
@@ -2435,7 +2431,6 @@ void a_groupdesc(const userinput * const u)
     return;
 
   if (u->arg2e && strlen(u->arg2e)) {
-    clean_quotes(u->arg2e);
     a_respond(u, "New GROUPDESC: %s", u->arg2e);
   } else {
     a_respond(u, "Removed GROUPDESC");
@@ -2715,7 +2710,6 @@ void a_newdir(const userinput * const u)
     return;
   }
 
-  clean_quotes(u->arg2e);
   convert_to_unix_slash(u->arg2e);
 
   found = 0;
@@ -2776,7 +2770,6 @@ void a_filemove(const userinput * const u)
   if (a_access_file(u, xfiledescriptor, &file1, &st))
     return;
 
-  clean_quotes(u->arg2e);
   file2 = mystrdup(u->arg2e);
   convert_to_unix_slash(file2);
 
@@ -2838,7 +2831,6 @@ void a_movefile(const userinput * const u)
     return;
   }
 
-  clean_quotes(u->arg2e);
   xd = irlist_get_nth(&gdata.xdccs, num-1);
   if (group_restricted(u, xd))
     return;
