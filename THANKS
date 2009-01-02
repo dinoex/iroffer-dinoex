@@ -87,6 +87,7 @@ TheDeath
 	reporting xdcclistfile over HTTP bug
 	option "no_minspeed_on_free"
 	option "no_status_log"
+        user command "XDCC SEARCH" with mutiple patterns
 
 [GFE]Lunix
 	alias xdcc list group <group>
