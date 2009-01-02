@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+274) group_admin
+  Allow group_admin to issue "/msg ADMIN".
+
 extend debug and log information.
 
 bugfix: CONTROL-C

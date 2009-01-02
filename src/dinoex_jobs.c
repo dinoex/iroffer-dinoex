@@ -829,15 +829,10 @@ static int msg_host_password(const char *nick, const char *hostmask, const char 
     }
     return -1;
   }
-  cmd = getpart(line, 6);
-  if (strcasecmp(cmd, "CHATME") == 0) {
-    if ((ga = verifypass_group(hostmask, passwd))) {
-       admin_msg_line(nick, line, ga->g_level);
-       mydelete(cmd);
-       return 1;
-    }
+  if ((ga = verifypass_group(hostmask, passwd))) {
+    admin_msg_line(nick, line, ga->g_level);
+    return 1;
   }
-  mydelete(cmd);
   return 0;
 }
 
