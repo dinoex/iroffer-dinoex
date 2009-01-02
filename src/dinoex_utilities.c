@@ -595,4 +595,73 @@ int get_argv(char **result, const char *line, int howmany)
   }
 }
 
+#ifndef WITHOUT_MEMSAVE
+char* getpart2(const char *line, int howmany,
+               const char *src_function, const char *src_file, int src_line)
+#else /* WITHOUT_MEMSAVE */
+char* getpart(const char *line, int howmany)
+#endif /* WITHOUT_MEMSAVE */
+{
+  const char *start;
+  const char *src;
+  char *dest;
+  size_t plen;
+  int inquotes;
+  int part;
+
+  if (line == NULL)
+    return NULL;
+
+  if (howmany <= 0)
+    return NULL;
+
+  inquotes = 0;
+  part = 0;
+
+  start = line;
+  for (src = start; ; src++) {
+    if ((*src == ' ') && (inquotes != 0))
+      continue;
+    if (*src == '"') {
+      if ((start == src) && (inquotes == 0)) {
+        inquotes ++;
+        continue;
+      }
+      if (inquotes == 0)
+        continue;
+      inquotes --;
+      start ++;
+    } else {
+      if (*src) {
+        if (*src != ' ')
+          continue;
+        if (src == start) {
+          /* skip leading spaces */
+          start ++;
+          continue;
+        }
+      }
+    }
+    plen = src - start;
+    if (plen < 1)
+      continue;
+
+    if (++part < howmany) {
+      if (*src == 0)
+        return NULL;
+      start = src + 1;
+      continue;
+    }
+
+#ifndef WITHOUT_MEMSAVE
+    dest = mymalloc2(plen + 1, 0, src_function, src_file, src_line);
+#else /* WITHOUT_MEMSAVE */
+    dest = mymalloc(plen + 1);
+#endif /* WITHOUT_MEMSAVE */
+    memcpy(dest, start, plen);
+    dest[plen] = '\0';
+    return dest;
+  }
+}
+
 /* End of File */

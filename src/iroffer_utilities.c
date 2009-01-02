@@ -27,63 +27,6 @@
 #include "dinoex_misc.h"
 
 
-#ifndef WITHOUT_MEMSAVE
-char* getpart2(const char *line, int howmany,
-               const char *src_function, const char *src_file, int src_line)
-#else /* WITHOUT_MEMSAVE */
-char* getpart(const char *line, int howmany)
-#endif /* WITHOUT_MEMSAVE */
-{
-  char *part;
-  int li;
-  int plen;
-  int hi;
-  int pi;
-  int inquotes;
-  
-  li=0;
-  inquotes=0;
-  
-  for (hi = 1; hi < howmany; hi++)
-    {
-      while (line[li] != ' ' || inquotes != 0)
-        {
-          if (line[li] == '\0')
-            return NULL;
-          if (line[li]== '"')
-            inquotes ^= 1;
-          li++;
-        }
-      li++;
-    }
-
-  if (line[li] == '\0')
-    return NULL;
-
-  plen=0;
-  pi = li;
-  while (line[pi] != ' ' || inquotes != 0)
-    {
-      if (line[pi] == '\0')
-        break;
-      if (line[pi]== '"')
-        inquotes ^= 1;
-      pi++;
-      plen++;
-    }
-
-#ifndef WITHOUT_MEMSAVE
-  part = mymalloc2(plen+1, 0, src_function, src_file, src_line);
-#else /* WITHOUT_MEMSAVE */
-  part = mymalloc(plen+1);
-#endif /* WITHOUT_MEMSAVE */
-  
-  memcpy(part, line+li, plen);
-  part[plen] = '\0';
-  
-  return part;
-}
-
 void getos (void) {
 
    struct utsname u1;
