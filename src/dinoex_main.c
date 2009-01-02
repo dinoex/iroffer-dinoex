@@ -364,16 +364,18 @@ void
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
-exit_iroffer(void)
+exit_iroffer(int gotsignal)
 {
-  shutdown_dinoex();
+  if (gotsignal == 0)
+    shutdown_dinoex();
   tostdout_disable_buffering();
   uninitscreen();
   if (gdata.pidfile)
     unlink(gdata.pidfile);
 
 #ifdef DEBUG
-  debug_memory();
+  if (gotsignal == 0)
+    debug_memory();
 #endif /* DEBUG */
   exit(0);
 }
