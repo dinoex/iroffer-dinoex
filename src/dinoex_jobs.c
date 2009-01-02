@@ -808,7 +808,7 @@ static void admin_msg_line(const char *nick, char *line, int level)
   mydelete(part5[0]);
   mydelete(part5[5]);
   u->level = level;
-  u_parseit(&ui);
+  u_parseit(u);
 }
 
 static int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line)
