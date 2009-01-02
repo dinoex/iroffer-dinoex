@@ -813,7 +813,6 @@ static void admin_msg_line(const char *nick, char *line, int level)
 static int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line)
 {
   group_admin_t *ga;
-  char *cmd;
 
   if ( verifyshell(&gdata.adminhost, hostmask) ) {
     if ( verifypass2(gdata.adminpass, passwd) ) {
