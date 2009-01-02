@@ -1491,6 +1491,7 @@ static void mainloop (void) {
           update_hour_dinoex(lasthour, lastmin);
           check_idle_queue();
           clean_uploadhost();
+          auto_rehash();
         }
 
       updatecontext();

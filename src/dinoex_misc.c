@@ -1624,4 +1624,41 @@ void free_channel_data(channel_t *ch)
   mydelete(ch->rgroup);
 }
 
+void auto_rehash(void)
+{
+  struct stat st;
+  int filedescriptor;
+  int h;
+
+  updatecontext();
+
+  if (gdata.no_auto_rehash)
+    return;
+
+  for (h=0; h<MAXCONFIG && gdata.configfile[h]; h++) {
+    filedescriptor = open(gdata.configfile[h], O_RDONLY | ADDED_OPEN_FLAGS);
+    if (filedescriptor < 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+              "Cant Access Config File '%s': %s",
+              gdata.configfile[h], strerror(errno));
+      continue;
+    }
+    if (fstat(filedescriptor, &st) < 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+              "Unable to stat file '%s': %s",
+              gdata.configfile[h], strerror(errno));
+      close(filedescriptor);
+      continue;
+    }
+    close(filedescriptor);
+    if (gdata.configtime[h] == st.st_mtime)
+      continue;
+
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "File '%s' has changed",
+             gdata.configfile[h]);
+    gdata.needsrehash = 1;
+  }
+}
+
 /* End of File */

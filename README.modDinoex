@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+276) no_auto_rehash (inspired by TheDeath)
+  If defined, iroffer will not automaticlly REHASH when a configfile was
+  was changed. Default: Do a REAHSH.
+
 275) XDCC SEARCH (inspired by TheDeath)
   Parse all arguments for search.
 

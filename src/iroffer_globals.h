@@ -27,6 +27,7 @@ typedef struct
 {
 /* config */
 char* configfile[MAXCONFIG];
+time_t configtime[MAXCONFIG];
 char* osstring;
 int hideos;
 int lognotices;
@@ -205,6 +206,7 @@ int mirc_dcc64;
 int no_minspeed_on_free;
 int no_status_chat;
 int no_status_log;
+int no_auto_rehash;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;
