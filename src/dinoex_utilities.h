@@ -51,9 +51,10 @@ int get_argv(char **result, const char *line, int howmany);
 #endif /* WITHOUT_MEMSAVE */
 #ifndef WITHOUT_MEMSAVE
 #define getpart(x,y) getpart2(x,y,__FUNCTION__,__FILE__,__LINE__)
-char* getpart2(const char *line, int howmany, const char *src_function, const char *src_file, int src_line);
+char *getpart2(const char *line, int howmany, const char *src_function, const char *src_file, int src_line);
 #else
-char* getpart(const char *line, int howmany);
+char *getpart(const char *line, int howmany);
 #endif
+char *getpart_eol(const char *line, int howmany);
 
 /* End of File */
