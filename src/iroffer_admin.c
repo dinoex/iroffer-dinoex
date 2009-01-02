@@ -1812,6 +1812,7 @@ static void u_psend(const userinput * const u)
         }
     }
   
+  bzero((char *)&manplist, sizeof(userinput));
   manplist.method = method;
   manplist.net = gnetwork->net;
   manplist.level = ADMIN_LEVEL_PUBLIC;

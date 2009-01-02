@@ -795,19 +795,19 @@ void run_delayed_jobs(void)
 static void admin_msg_line(const char *nick, char *line, int level)
 {
   char *part5[6] = { NULL, NULL, NULL, NULL, NULL, NULL };
-  userinput ui;
-
+  userinput *u;
   updatecontext();
   get_argv(part5, line, 6);
   mydelete(part5[1]);
   mydelete(part5[2]);
   mydelete(part5[3]);
   mydelete(part5[4]);
-  a_fillwith_msg2(&ui, nick, part5[5]);
-  ui.hostmask = mystrdup(part5[0] + 1);
+  u = mycalloc(sizeof(userinput));
+  a_fillwith_msg2(u, nick, part5[5]);
+  u->hostmask = mystrdup(part5[0] + 1);
   mydelete(part5[0]);
   mydelete(part5[5]);
-  ui.level = level;
+  u->level = level;
   u_parseit(&ui);
 }
 
@@ -992,6 +992,7 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
 
   updatecontext();
 
+  bzero((char *)&u2, sizeof(userinput));
   u_fillwith_console2(&u2);
   file = mystrdup(xx_file);
   convert_to_unix_slash(file);
