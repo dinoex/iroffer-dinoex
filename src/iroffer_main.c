@@ -1309,8 +1309,6 @@ static void mainloop (void) {
                     pubplist = mycalloc(sizeof(userinput));
                     a_fillwith_msg2(pubplist, tchans, "XDL");
                     pubplist->method = method_xdl_channel_sum;
-                    pubplist->net = gnetwork->net;
-                    pubplist->level = ADMIN_LEVEL_PUBLIC;
                     u_parseit(pubplist);
                     mydelete(pubplist);
                   }
@@ -1321,8 +1319,6 @@ static void mainloop (void) {
                pubplist = mycalloc(sizeof(userinput));
                a_fillwith_plist(pubplist, tchanf, NULL);
                pubplist->method = method_xdl_channel;
-               pubplist->net = gnetwork->net;
-               pubplist->level = ADMIN_LEVEL_PUBLIC;
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanf);
@@ -1332,8 +1328,6 @@ static void mainloop (void) {
                pubplist = mycalloc(sizeof(userinput));
                a_fillwith_msg2(pubplist, tchanm, "XDL");
                pubplist->method = method_xdl_channel_min;
-               pubplist->net = gnetwork->net;
-               pubplist->level = ADMIN_LEVEL_PUBLIC;
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanm);
@@ -3159,8 +3153,6 @@ void sendxdccinfo(const char* nick,
   snprintf(tempstr, sizeof(tempstr), "INFO %d", pack);
   a_fillwith_msg2(pubinfo, nick, tempstr);
   pubinfo->method = method_xdl_user_notice;
-  pubinfo->net = gnetwork->net;
-  pubinfo->level = ADMIN_LEVEL_PUBLIC;
   u_parseit(pubinfo);
   mydelete(pubinfo);
 

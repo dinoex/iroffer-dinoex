@@ -464,6 +464,8 @@ void a_fillwith_msg2(userinput * const u, const char *nick, const char *line)
 {
   updatecontext();
 
+  u->level = ADMIN_LEVEL_PUBLIC;
+  u->net = gnetwork->net;
   u->chat = NULL;
   u->method = method_msg;
   u->snick = (nick != NULL) ? mystrdup(nick) : NULL;
@@ -804,7 +806,6 @@ static void admin_msg_line(const char *nick, char *line, int level)
   ui.hostmask = mystrdup(part5[0] + 1);
   mydelete(part5[0]);
   mydelete(part5[5]);
-  ui.net = gnetwork->net;
   ui.level = level;
   u_parseit(&ui);
 }
