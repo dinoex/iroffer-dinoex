@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+275) XDCC SEARCH (inspired by TheDeath)
+  Parse all arguments for search.
+
 274) group_admin
   Allow group_admin to issue "/msg ADMIN".
 
