@@ -1520,6 +1520,7 @@ void sendxdlqueue (void)
     {
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_YELLOW,"Sending XDCC LIST to: %s",tempstr);
       
+      bzero((char *)&ui, sizeof(userinput));
       cmd = NULL;
       if (group)
         {
