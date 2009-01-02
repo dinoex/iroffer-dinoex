@@ -704,7 +704,6 @@ void xdccsavetext(void)
   uxdl->method = method_fd; 
   uxdl->fd = fd;
   uxdl->net = 0;
-  uxdl->level = ADMIN_LEVEL_PUBLIC;
   
   u_parseit(uxdl);
   
@@ -1535,8 +1534,6 @@ void sendxdlqueue (void)
         ui.method = method_xdl_user_privmsg;
       else
         ui.method = method_xdl_user_notice;
-      ui.net = gnetwork->net;
-      ui.level = ADMIN_LEVEL_PUBLIC;
       u_parseit(&ui);
       mydelete(cmd);
     }
