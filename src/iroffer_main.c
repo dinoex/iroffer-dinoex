@@ -1319,10 +1319,10 @@ static void mainloop (void) {
             if (tchanf) {
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Plist sent to %s (full)",tchanf);
                pubplist = mycalloc(sizeof(userinput));
+               a_fillwith_plist(pubplist, tchanf, NULL);
                pubplist->method = method_xdl_channel;
                pubplist->net = gnetwork->net;
                pubplist->level = ADMIN_LEVEL_PUBLIC;
-               a_fillwith_plist(pubplist, tchanf, NULL);
                u_parseit(pubplist);
                mydelete(pubplist);
                mydelete(tchanf);
