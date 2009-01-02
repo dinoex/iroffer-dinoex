@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+bugfix: DUMP
+  Schreibe den DUMP nicht mer in Chat oder Konsole.
+
 276) no_auto_rehash (inspired by TheDeath)
   If defined, iroffer will not automaticlly REHASH when a configfile was
   was changed. Default: Do a REAHSH.

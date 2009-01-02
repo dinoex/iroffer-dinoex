@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+bugfix: DUMP
+  Do no longer dump on chat or console.
+
 276) no_auto_rehash
   Wenn aktivert, wird der Bot bei einer Änderung an einer Konfiguraions-
   datei automatsich einen REHASH durchführen.
