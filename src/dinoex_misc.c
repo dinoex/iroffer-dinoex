@@ -962,35 +962,6 @@ int run_new_trigger(const char *nick, const char *grouplist)
   return i;
 }
 
-char* getpart_eol(const char *line, int howmany)
-{
-  char *part;
-  int li;
-  size_t plen;
-  int hi;
-
-  li=0;
-
-  for (hi = 1; hi < howmany; hi++) {
-    while (line[li] != ' ') {
-      if (line[li] == '\0')
-        return NULL;
-      li++;
-    }
-    li++;
-  }
-
-  if (line[li] == '\0')
-      return NULL;
-
-  plen = strlen(line+li);
-  part = mycalloc(plen+1);
-  memcpy(part, line+li, plen);
-  part[plen] = '\0';
-
-  return part;
-}
-
 int disk_full(const char *path)
 {
 #ifndef NO_STATVFS

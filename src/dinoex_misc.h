@@ -43,8 +43,6 @@ int fnmatch_xdcc(const char *match, xdcc *xd);
 int noticeresults(const char *nick, const char *pattern, const char *dest);
 int run_new_trigger(const char *nick, const char *grouplist);
 
-char* getpart_eol(const char *line, int howmany);
-
 int disk_full(const char *path);
 
 char *get_user_modes(void);
