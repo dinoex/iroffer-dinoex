@@ -864,7 +864,7 @@ void dumpcontext(void)
 }
 
 
-#define gdata_common CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR
+#define gdata_common CALLTYPE_NORMAL,OUT_L,COLOR_NO_COLOR
 #define gdata_string(x) ((x) ? (x) : "<undef>")
 
 #define gdata_print_number(format,name) \
