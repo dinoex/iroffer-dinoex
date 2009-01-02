@@ -246,11 +246,6 @@ void u_fillwith_console (userinput * const u, char *line)
   
   updatecontext();
   
-  if (line[0] && (line[strlen(line)-1] == '\n'))
-    {
-      line[strlen(line)-1] = '\0';
-    }
-  
   u->method = method_console;
   u->snick = NULL;
   u->chat = NULL;
@@ -258,53 +253,13 @@ void u_fillwith_console (userinput * const u, char *line)
   u->level = ADMIN_LEVEL_CONSOLE;
   u->hostmask = NULL;
   
-  u->cmd = caps(getpart(line,1));
-  u->arg1 = getpart(line,2);
-  u->arg2 = getpart(line,3);
-  u->arg3 = getpart(line,4);
-  
-  if (u->arg1)
-    {
-      u->arg1e = mymalloc(strlen(line) - strlen(u->cmd) - 1 + 1);
-      strcpy(u->arg1e, line + strlen(u->cmd) + 1);
-    }
-  else
-    {
-      u->arg1e = NULL;
-    }
-  
-  if (u->arg2)
-    {
-      u->arg2e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
-      strcpy(u->arg2e, line + strlen(u->cmd) + strlen(u->arg1) + 2);
-    }
-  else
-    {
-      u->arg2e = NULL;
-    }
-  
-  if (u->arg3)
-    {
-      u->arg3e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - strlen(u->arg2) - 3 + 1);
-      strcpy(u->arg3e, line + strlen(u->cmd) + strlen(u->arg1) + strlen(u->arg2) + 3);
-    }
-  else
-    {
-      u->arg3e = NULL;
-    }
-  
-  return;
+  a_parse_inputline(u, line);
 }
 
 void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
 {
   
   updatecontext();
-  
-  if (line[strlen(line)-1] == '\n')
-    {
-      line[strlen(line)-1] = '\0';
-    }
   
   u->method = method_dcc;
   u->snick = NULL;
@@ -313,113 +268,36 @@ void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
   u->level = chat->level;
   u->hostmask = mystrdup(chat->hostmask);
   
-  u->cmd = caps(getpart(line,1));
-  u->arg1 = getpart(line,2);
-  u->arg2 = getpart(line,3);
-  u->arg3 = getpart(line,4);
-  
-  if (u->arg1)
-    {
-      u->arg1e = mymalloc(strlen(line) - strlen(u->cmd) - 1 + 1);
-      strcpy(u->arg1e, line + strlen(u->cmd) + 1);
-    }
-  else
-    {
-      u->arg1e = NULL;
-    }
-  
-  if (u->arg2)
-    {
-      u->arg2e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
-      strcpy(u->arg2e, line + strlen(u->cmd) + strlen(u->arg1) + 2);
-    }
-  else
-    {
-      u->arg2e = NULL;
-    }
-  
-  if (u->arg3)
-    {
-      u->arg3e = mymalloc(strlen(line) - strlen(u->cmd) - strlen(u->arg1) - strlen(u->arg2) - 3 + 1);
-      strcpy(u->arg3e, line + strlen(u->cmd) + strlen(u->arg1) + strlen(u->arg2) + 3);
-    }
-  else
-    {
-      u->arg3e = NULL;
-    }
-  
-  return;
+  a_parse_inputline(u, line);
 }
 
 void u_fillwith_msg (userinput * const u, const char* n, const char *line)
 {
-  char *t1,*t2,*t3,*t4,*t5;
-  int len;
+  char *part5[6] = { NULL, NULL, NULL, NULL, NULL, NULL };
   
   updatecontext();
   
   u->method = method_msg;
   if (n)
     {
-      u->snick = mymalloc(strlen(n)+1);
-      strcpy(u->snick, n);
+      u->snick = mystrdup(n);
     }
   else
     {
       u->snick = NULL;
     }
   u->chat = NULL;
-  t1 = getpart(line,1);
-  t2 = getpart(line,2);
-  t3 = getpart(line,3);
-  t4 = getpart(line,4);
-  t5 = getpart(line,5);
   
-  u->hostmask = getpart(line+1, 1);
-  u->cmd = caps(getpart(line,6));
-  u->arg1 = getpart(line,7);
-  u->arg2 = getpart(line,8);
-  u->arg3 = getpart(line,9);
+  get_argv(part5, line, 6);
   
-  len = strlen(t1) + strlen(t2) + strlen(t3) + strlen(t4) + strlen(t5) + 5;
-  
-  if (u->arg1)
-    {
-      u->arg1e = mymalloc(strlen(line) - len - strlen(u->cmd) - 1 + 1);
-      strcpy(u->arg1e, line + len + strlen(u->cmd) + 1);
-    }
-  else
-    {
-      u->arg1e = NULL;
-    }
-  
-  if (u->arg2)
-    {
-      u->arg2e = mymalloc(strlen(line) - len - strlen(u->cmd) - strlen(u->arg1) - 2 + 1);
-      strcpy(u->arg2e, line + len + strlen(u->cmd) + strlen(u->arg1) + 2);
-    }
-  else
-    {
-      u->arg2e = NULL;
-    }
-  
-  if (u->arg3)
-    {
-      u->arg3e = mymalloc(strlen(line) - len - strlen(u->cmd) - strlen(u->arg1) - strlen(u->arg2) - 3 + 1);
-      strcpy(u->arg3e, line + len + strlen(u->cmd) + strlen(u->arg1) + strlen(u->arg2) + 3);
-    }
-  else
-    {
-      u->arg3e = NULL;
-    }
-  
-  mydelete(t1);
-  mydelete(t2);
-  mydelete(t3);
-  mydelete(t4);
-  mydelete(t5);
-  
-  return;
+  u->hostmask = mystrdup(part5[0] + 1);
+  mydelete(part5[0]);
+  mydelete(part5[1]);
+  mydelete(part5[2]);
+  mydelete(part5[3]);
+  mydelete(part5[4]);
+  a_parse_inputline(u, part5[5]);
+  mydelete(part5[5]);
 }
 
 void u_fillwith_clean (userinput * const u)
@@ -435,10 +313,10 @@ void u_fillwith_clean (userinput * const u)
   mydelete(u->cmd);
   mydelete(u->arg1e);
   mydelete(u->arg2e);
+  mydelete(u->arg3e);
   mydelete(u->arg1);
   mydelete(u->arg2);
   mydelete(u->arg3);
-  mydelete(u->arg3e);
 }
 
 static void
