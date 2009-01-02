@@ -540,18 +540,20 @@ int get_argv(char **result, const char *line, int howmany)
       if (inquotes == 0)
         continue;
       inquotes --;
+      if (part + 1 == howmany)
+        continue;
       start ++;
     } else {
       if (*src) {
         if (*src != ' ')
-          continue;
-        if (part + 1 == howmany)
           continue;
         if (src == start) {
           /* skip leading spaces */
           start ++;
           continue;
         }
+        if (part + 1 == howmany)
+          continue;
       }
     }
     plen = src - start;

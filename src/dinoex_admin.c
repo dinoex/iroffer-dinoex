@@ -121,6 +121,15 @@ void a_parse_inputline(userinput * const u, const char *line)
   get_argv(part4, part3[1], 2);
   u->arg3 = part4[0];
   mydelete(part4[1]);
+
+outerror(OUTERROR_TYPE_WARN_LOUD, "DEBUG a_parse_inputline line:  <%s>", line);
+outerror(OUTERROR_TYPE_WARN_LOUD, "DEBUG a_parse_inputline cmd:   <%s>", u->cmd);
+outerror(OUTERROR_TYPE_WARN_LOUD, "DEBUG a_parse_inputline arg1e: <%s>", u->arg1e);
+outerror(OUTERROR_TYPE_WARN_LOUD, "DEBUG a_parse_inputline arg1:  <%s>", u->arg1);
+outerror(OUTERROR_TYPE_WARN_LOUD, "DEBUG a_parse_inputline arg2e: <%s>", u->arg2e);
+outerror(OUTERROR_TYPE_WARN_LOUD, "DEBUG a_parse_inputline arg2:  <%s>", u->arg2);
+outerror(OUTERROR_TYPE_WARN_LOUD, "DEBUG a_parse_inputline arg3e: <%s>", u->arg3e);
+outerror(OUTERROR_TYPE_WARN_LOUD, "DEBUG a_parse_inputline arg3:  <%s>", u->arg3);
 }
 
 int get_network(const char *arg1)
