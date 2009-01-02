@@ -172,7 +172,7 @@ static int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
 {"admin_job_file",          &gdata.admin_job_file,          0 },
 {"adminpass",               &gdata.adminpass,               4 },
-{"announce_seperator",      &gdata.announce_seperator,      5 },
+{"announce_seperator",      &gdata.announce_seperator,      0 },
 {"autoadd_group",           &gdata.autoadd_group,           0 },
 {"autoadd_sort",            &gdata.autoadd_sort,            0 },
 {"autoaddann",              &gdata.autoaddann,              0 },
@@ -182,7 +182,7 @@ static config_string_typ config_parse_string[] = {
 #ifdef USE_GEOIP
 {"geoipdatabase",           &gdata.geoipdatabase,           0 },
 #endif /* USE_GEOIP */
-{"group_seperator",         &gdata.group_seperator,         5 },
+{"group_seperator",         &gdata.group_seperator,         0 },
 {"hadminpass",              &gdata.hadminpass,              4 },
 {"headline",                &gdata.headline,                0 },
 #ifndef WITHOUT_HTTP_ADMIN
@@ -206,7 +206,7 @@ static config_string_typ config_parse_string[] = {
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
 #ifdef USE_RUBY
-{"ruby_script",             &gdata.ruby_script,             5 },
+{"ruby_script",             &gdata.ruby_script,             0 },
 #endif /* USE_RUBY */
 {"send_statefile",          &gdata.send_statefile,          0 },
 {"trashcan_dir",            &gdata.trashcan_dir,            1 },
@@ -237,12 +237,12 @@ static config_list_typ config_parse_list[] = {
 #endif /* USE_GEOIP */
 {"hadminhost",              &gdata.hadminhost,              3 },
 #ifndef WITHOUT_HTTP
-{"http_allow",              &gdata.http_allow,              6 },
-{"http_deny",               &gdata.http_deny,               6 },
+{"http_allow",              &gdata.http_allow,              5 },
+{"http_deny",               &gdata.http_deny,               5 },
 {"http_vhost",              &gdata.http_vhost,              0 },
 #endif /* WITHOUT_HTTP */
 {"log_exclude_host",        &gdata.log_exclude_host,        2 },
-{"log_exclude_text",        &gdata.log_exclude_text,        5 },
+{"log_exclude_text",        &gdata.log_exclude_text,        0 },
 {"nodownloadhost",          &gdata.nodownloadhost,          2 },
 #ifdef USE_GEOIP
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 },
@@ -253,8 +253,8 @@ static config_list_typ config_parse_list[] = {
 {"unlimitedhost",           &gdata.unlimitedhost,           2 },
 {"uploadhost",              &gdata.uploadhost,              2 },
 {"weblist_info",            &gdata.weblist_info,            0 },
-{"xdcc_allow",              &gdata.xdcc_allow,              6 },
-{"xdcc_deny",               &gdata.xdcc_deny,               6 },
+{"xdcc_allow",              &gdata.xdcc_allow,              5 },
+{"xdcc_deny",               &gdata.xdcc_deny,               5 },
 {NULL, NULL, 0 }};
 
 const char *current_config;
@@ -476,9 +476,6 @@ int set_config_string(const char *key, char *text)
     return 0;
   }
   switch (config_parse_string[i].flags) {
-  case 5:
-     clean_quotes(text);
-     break;
   case 4:
      if (strchr(text, ' ') != NULL) {
        outerror(OUTERROR_TYPE_WARN,
@@ -599,9 +596,6 @@ int set_config_list(const char *key, char *text)
     }
     mydelete(text);
     return 0;
-  case 5:
-     clean_quotes(text);
-     break;
   case 3:
      for (j=strlen(text)-1; j>=0; j--) {
        if (text[j] == '@') {
@@ -840,7 +834,6 @@ static void c_group_admin(char *var)
       ga->g_pass = mystrdup(data);
       break;
     case 4:
-      clean_quotes(data);
       ga->g_groups = mystrdup(data);
       break;
     default:

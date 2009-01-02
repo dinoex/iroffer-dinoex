@@ -2465,7 +2465,6 @@ static void privmsgparse(int type, int decoded, char* line)
         {
           gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
           
-          clean_quotes(msg3);
           if (msg5[strlen(msg5)-1] == '\1') msg5[strlen(msg5)-1] = '\0';
           
           t_find_resume(nick, msg3, msg4, msg5, msg6);
@@ -2520,7 +2519,6 @@ static void privmsgparse(int type, int decoded, char* line)
             }
           if (!down)
             {
-             clean_quotes(msg3);
              removenonprintablefile(msg3);
              upload_start(nick, hostname, hostmask, msg3, msg4, msg5, msg6, msg7);
             }

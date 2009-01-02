@@ -111,27 +111,6 @@ void checkadminpass2(const char *masterpass)
 #endif /* NO_CRYPT */
 }
 
-char *clean_quotes(char *str)
-{
-  char *src;
-  char *dest;
-  int len;
-
-  if (str[0] != '"')
-    return str;
-
-  src = str + 1;
-  len = strlen(src) - 1;
-  if (src[len] == '"')
-    src[len] = 0;
-
-  for (dest = str; *src; ) {
-    *(dest++) = *(src++);
-  }
-  *(dest++) = 0;
-  return str;
-}
-
 char *to_hostmask(const char *nick, const char *hostname)
 {
   char *hostmask;
