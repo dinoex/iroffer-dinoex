@@ -1307,7 +1307,7 @@ static void mainloop (void) {
                   {
                     ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Plist sent to %s (summary)",tchans);
                     pubplist = mycalloc(sizeof(userinput));
-                    u_fillwith_msg(pubplist,tchans,"A A A A A xdl");
+                    a_fillwith_msg2(pubplist, tchans, "XDL");
                     pubplist->method = method_xdl_channel_sum;
                     pubplist->net = gnetwork->net;
                     pubplist->level = ADMIN_LEVEL_PUBLIC;
@@ -1330,7 +1330,7 @@ static void mainloop (void) {
             if (tchanm) {
                ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Plist sent to %s (minimal)",tchanm);
                pubplist = mycalloc(sizeof(userinput));
-               u_fillwith_msg(pubplist,tchanm,"A A A A A xdl");
+               a_fillwith_msg2(pubplist, tchanm, "XDL");
                pubplist->method = method_xdl_channel_min;
                pubplist->net = gnetwork->net;
                pubplist->level = ADMIN_LEVEL_PUBLIC;
@@ -1642,7 +1642,7 @@ static void mainloop (void) {
       if (gdata.needsrehash) {
          gdata.needsrehash = 0;
          urehash = mycalloc(sizeof(userinput));
-         u_fillwith_msg(urehash,NULL,"A A A A A rehash");
+         a_fillwith_msg2(urehash, NULL, "REHASH");
          urehash->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
          urehash->net = 0;
          urehash->level = ADMIN_LEVEL_FULL;
@@ -2613,7 +2613,7 @@ static void privmsgparse(int type, int decoded, char* line)
    /*----- ADMIN ----- */
    else if ( !gdata.ignore && gnetwork->caps_nick && !strcmp(gnetwork->caps_nick, dest) && !strcmp(caps(msg1), "ADMIN") ) {
 /*      msg2 = getpart(line,5); */
-      if (admin_message(nick, hostmask, msg2, line, line_len) != 0 )
+      if (admin_message(nick, hostmask, msg2, line) != 0 )
          {
             /* admin commands shouldn't count against ignore */
             if (ignore)
@@ -3156,8 +3156,8 @@ void sendxdccinfo(const char* nick,
   ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S|OUT_L|OUT_D,COLOR_YELLOW," requested: ");
 
   pubinfo = mycalloc(sizeof(userinput));
-  snprintf(tempstr, sizeof(tempstr), "A A A A A INFO %d", pack);
-  u_fillwith_msg(pubinfo, nick, tempstr);
+  snprintf(tempstr, sizeof(tempstr), "INFO %d", pack);
+  a_fillwith_msg2(pubinfo, nick, tempstr);
   pubinfo->method = method_xdl_user_notice;
   pubinfo->net = gnetwork->net;
   pubinfo->level = ADMIN_LEVEL_PUBLIC;
