@@ -102,5 +102,5 @@ echo "Obsolete in de.txt:"
 diff de.txt.1 en.txt.1
 echo "Obsolete in it.txt:"
 diff it.txt.1 en.txt.1
-#rm -f de.txt.1 en.txt.1 it.txt.1
+rm -f de.txt.1 en.txt.1 it.txt.1
 # eof
