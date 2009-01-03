@@ -2655,7 +2655,7 @@ int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa)
       if (gdata.tcprangestart)
         {
           port = gdata.tcprangestart + retry;
-          if (port > gdata.tcprangelimit)
+          if ((int)port > gdata.tcprangelimit)
             {
               /* give up */
               retry = max;
