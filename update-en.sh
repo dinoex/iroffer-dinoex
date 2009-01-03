@@ -92,7 +92,15 @@ sort -n de.txt en.txt -u >de.txt.neu
 if diff -q de.txt de.txt.neu
 then
 	rm -f de.txt.neu
-	exit 0
+else
+	diff -u de.txt de.txt.neu
 fi
-diff -u de.txt de.txt.neu
+cut -d " " -f1 en.txt >en.txt.1
+cut -d " " -f1 de.txt >de.txt.1
+cut -d " " -f1 it.txt >it.txt.1
+echo "Obsolete in de.txt:"
+diff de.txt.1 en.txt.1
+echo "Obsolete in it.txt:"
+diff it.txt.1 en.txt.1
+#rm -f de.txt.1 en.txt.1 it.txt.1
 # eof

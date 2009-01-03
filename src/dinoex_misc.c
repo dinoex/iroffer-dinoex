@@ -835,7 +835,7 @@ int noticeresults(const char *nick, const char *pattern, const char *dest)
             j = irlist_size(&gdata.trans);
           else
             j = gdata.slotsmax;
-          snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - %s:[%i/%i]", j != 1 ? "Slots" : "Slot", j - irlist_size(&gdata.trans), j);
+          snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - %s:[%i/%i]", j != 1 ? "slots" : "slot", j - irlist_size(&gdata.trans), j);
           len = strlen(tempstr);
           if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
             snprintf(tempstr + len, maxtextlength - 1 - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);

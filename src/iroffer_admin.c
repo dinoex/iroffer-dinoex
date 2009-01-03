@@ -991,13 +991,13 @@ static void u_dcl(const userinput * const u)
   if (!irlist_size(&gdata.trans) && !irlist_size(&gdata.uploads))
 #endif /* USE_CURL */
     {
-      u_respond(u,"No Active Transfers");
+      u_respond(u, "No active transfers");
       return;
     }
   
   if (irlist_size(&gdata.trans))
     {
-      u_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "Transfers" : "Transfer");
+      u_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "transfers" : "transfer");
       u_respond(u, "   ID  User        Pack File                               Status");
     }
   
@@ -1056,7 +1056,7 @@ static void u_dcl(const userinput * const u)
   if (irlist_size(&gdata.uploads))
 #endif /* USE_CURL */
     {
-      u_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "Uploads" : "Upload" );
+      u_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "uploads" : "upload" );
       u_respond(u,"   ID  User        File                               Status");
     }
   
@@ -1131,7 +1131,7 @@ static void u_dcld(const userinput * const u)
   if (!irlist_size(&gdata.trans) && !irlist_size(&gdata.uploads))
 #endif /* USE_CURL */
     {
-      u_respond(u,"No Active Transfers");
+      u_respond(u, "No active transfers");
       return;
     }
   
@@ -1141,7 +1141,7 @@ static void u_dcld(const userinput * const u)
    
    if (irlist_size(&gdata.trans))
      {
-       u_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "Transfers" : "Transfer");
+       u_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "transfers" : "transfer");
        u_respond(u, " ID  User        Pack File                               Status");
        u_respond(u,"  ^-    Speed    Current/    End   Start/Remain    Min/  Max  Resumed");
        u_respond(u," --------------------------------------------------------------------");
@@ -1237,7 +1237,7 @@ static void u_dcld(const userinput * const u)
   if (irlist_size(&gdata.uploads))
 #endif /* USE_CURL */
     {
-      u_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "Uploads" : "Upload");
+      u_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "uploads" : "upload");
       u_respond(u," ID  User        File                               Status");
       u_respond(u,"  ^-    Speed    Current/    End   Start/Remain");
       u_respond(u," --------------------------------------------------------------");
