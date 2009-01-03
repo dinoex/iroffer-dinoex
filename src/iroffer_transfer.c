@@ -114,7 +114,7 @@ void t_setup_send(transfer * const t)
        }
        t->xpack->file_fd_location = 0;
        if (gdata.mirc_dcc64)
-         if (t->xpack->st_size > 0xFFFFFFFFUL)
+         if (t->xpack->st_size > 0xFFFFFFFFL)
            t->mirc_dcc64 = 1;
      }
    
@@ -646,7 +646,7 @@ void t_flushed (transfer * const t)
   tempstr = mycalloc(maxtextlength);
   
   timetookms = gdata.curtimems - t->connecttimems;
-  if (timetookms < 1)
+  if (timetookms < 1U)
     {
       timetookms = 1;
     }

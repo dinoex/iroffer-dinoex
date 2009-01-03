@@ -358,18 +358,18 @@ char *sizestr(int spaces, off_t num)
 
 int isprintable(char a)
 {
-  if ( (unsigned char)a < 0x20 )
+  if ( (unsigned char)a < 0x20U )
      return 0;
-  if ( (unsigned char)a == 0x7F )
+  if ( (unsigned char)a == 0x7FU )
      return 0;
   return 1;
 }
 
 char onlyprintable(char a)
 {
-  if ( (unsigned char)a < 0x20 )
+  if ( (unsigned char)a < 0x20U )
      return '.';
-  if ( (unsigned char)a == 0x7F )
+  if ( (unsigned char)a == 0x7FU )
      return '.';
   return a;
 }
@@ -380,23 +380,23 @@ char *removenonprintable(char *str)
 
   if (str != NULL) {
     for (copy=(unsigned char *)str; *copy != 0; copy++) {
-      if (*copy == 0x7F) {
+      if (*copy == 0x7FU) {
         *copy = '.';
         continue;
       }
-      if (*copy >= 0x20)
+      if (*copy >= 0x20U)
         continue;
 
       switch (*copy) {
-      case 0x01: /* ctcp */
-      case 0x02: /* bold */
-      case 0x03: /* color */
-      case 0x09: /* tab */
-      case 0x0A: /* lf */
-      case 0x0D: /* cr */
-      case 0x0F: /* end formatting */
-      case 0x16: /* inverse */
-      case 0x1F: /* underline */
+      case 0x01U: /* ctcp */
+      case 0x02U: /* bold */
+      case 0x03U: /* color */
+      case 0x09U: /* tab */
+      case 0x0AU: /* lf */
+      case 0x0DU: /* cr */
+      case 0x0FU: /* end formatting */
+      case 0x16U: /* inverse */
+      case 0x1FU: /* underline */
         /* good */
         break;
       default:
@@ -414,11 +414,11 @@ char *removenonprintablectrl(char *str)
 
   if (str != NULL) {
     for (copy=(unsigned char *)str; *copy != 0; copy++) {
-      if (*copy == 0x7F) {
+      if (*copy == 0x7FU) {
         *copy = ' ';
         continue;
       }
-      if (*copy < 0x20)
+      if (*copy < 0x20U)
         *copy = ' ';
     }
   }
@@ -436,7 +436,7 @@ char *removenonprintablefile(char *str)
   for (copy = (unsigned char*)str;
        *copy != 0;
        copy++) {
-    if (*copy == 0x03) { /* color */
+    if (*copy == 0x03U) { /* color */
       if (!isdigit(copy[1])) continue;
       copy++;
       if (isdigit(copy[1])) copy++;
@@ -446,34 +446,34 @@ char *removenonprintablefile(char *str)
       if (isdigit(copy[1])) copy++;
       continue;
     }
-    if (*copy < 0x20) {
+    if (*copy < 0x20U) {
       *copy = '_';
       continue;
     }
     switch (*copy) {
-    case 0x2E: /* . */
+    case 0x2EU: /* . */
       if (last == '.' && *copy == '.')
         *copy = '_';
       break;
-    case 0x20:
+    case 0x20U:
       if (gdata.spaces_in_filenames)
         break;
-    case 0x21:
-    case 0x22:
-    case 0x23:
-    case 0x24:
-    case 0x25:
-    case 0x26:
-    case 0x27:
-    case 0x2F:
-    case 0x3A:
-    case 0x3D:
-    case 0x3F:
-    case 0x40:
-    case 0x5C:
-    case 0x60:
-    case 0x7C:
-    case 0x7F:
+    case 0x21U:
+    case 0x22U:
+    case 0x23U:
+    case 0x24U:
+    case 0x25U:
+    case 0x26U:
+    case 0x27U:
+    case 0x2FU:
+    case 0x3AU:
+    case 0x3DU:
+    case 0x3FU:
+    case 0x40U:
+    case 0x5CU:
+    case 0x60U:
+    case 0x7CU:
+    case 0x7FU:
       *copy = '_';
       break;
     }

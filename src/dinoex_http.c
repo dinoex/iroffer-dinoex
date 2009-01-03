@@ -176,7 +176,7 @@ b64decode_string(const char *coded)
   len = strlen(coded);
   result = mycalloc(len);
   dest = result;
-  while (len >= 4) {
+  while (len >= 4U) {
     b64decode_quartet((unsigned char *)dest, (const unsigned char *)coded);
     dest += 3;
     coded += 4;
