@@ -1722,7 +1722,7 @@ void read_statefile(void)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
               COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.ignorelist),
-              (irlist_size(&gdata.ignorelist) == 1) ? "Ignore" : "Ignores");
+              (irlist_size(&gdata.ignorelist) == 1) ? "ignore" : "ignores");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.msglog))
@@ -1730,7 +1730,7 @@ void read_statefile(void)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
               COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.msglog),
-              (irlist_size(&gdata.msglog) == 1) ? "Message" : "Messages");
+              (irlist_size(&gdata.msglog) == 1) ? "message" : "messages");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.xdccs))
@@ -1738,7 +1738,7 @@ void read_statefile(void)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
               COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.xdccs),
-              (irlist_size(&gdata.xdccs) == 1) ? "Pack" : "Packs");
+              (irlist_size(&gdata.xdccs) == 1) ? "pack" : "packs");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.mainqueue))
@@ -1746,14 +1746,14 @@ void read_statefile(void)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
               COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.mainqueue),
-              (irlist_size(&gdata.mainqueue) == 1) ? "Queue" : "Queues");
+              (irlist_size(&gdata.mainqueue) == 1) ? "queue" : "queues");
     }
   if ((gdata.debug > 0) || irlist_size(&gdata.idlequeue))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
               COLOR_NO_COLOR, "  [Found %d %s]",
               irlist_size(&gdata.idlequeue),
-              (irlist_size(&gdata.idlequeue) == 1) ? "Queue" : "Queues");
+              (irlist_size(&gdata.idlequeue) == 1) ? "queue" : "queues");
     }
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
