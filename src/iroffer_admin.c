@@ -2500,7 +2500,7 @@ static void u_rehash(const userinput * const u) {
           u_respond(u, "**WARNING** missing vital information, fix and re-rehash ASAP");
      }
    
-   if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2 ) )
+   if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2U ) )
       u_respond(u,"**WARNING** incomplete upload information, fix and re-rehash ASAP");
       
    if ( !irlist_size(&gdata.downloadhost) )

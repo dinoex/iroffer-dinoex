@@ -309,7 +309,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
           (ul->totalsize / 1024));
   mydelete(tempstr);
   if (gdata.mirc_dcc64)
-    if (ul->totalsize > 0xFFFFFFFFUL)
+    if (ul->totalsize > 0xFFFFFFFFL)
       ul->mirc_dcc64 = 1;
 
   if (ul->con.remoteport > 0U) {
