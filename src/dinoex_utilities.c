@@ -578,7 +578,7 @@ int get_argv(char **result, const char *line, int howmany)
       }
     }
     plen = src - start;
-    if (plen < 1)
+    if (plen == 0)
       continue;
 
     /* found end */
@@ -646,7 +646,7 @@ char *getpart(const char *line, int howmany)
       }
     }
     plen = src - start;
-    if (plen < 1)
+    if (plen == 0)
       continue;
 
     if (++part < howmany) {
@@ -716,7 +716,7 @@ char *getpart_eol(const char *line, int howmany)
       }
     }
     plen = src - start;
-    if (plen < 1)
+    if (plen == 0)
       continue;
 
    if (++part < howmany) {
