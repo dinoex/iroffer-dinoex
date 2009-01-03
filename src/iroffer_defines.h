@@ -157,7 +157,7 @@
 #define OUT_D    4
 
 /* Buffer Output options */
-#define IR_BOUTPUT_SEGMENT_SIZE    (1024)
+#define IR_BOUTPUT_SEGMENT_SIZE    (1024U)
 #define IR_BOUTPUT_MAX_SEGMENTS    (64)
 
 /* color options */
