@@ -281,7 +281,7 @@
 282 "Leider nichts gefunden, versuche mal XDCC LIST"
 283 "%s %s"
 284 "group: %s"
-285 "Keine Tranfers aktiv"
+285 "Keine Transfers aktiv"
 286 "Current %s"
 287 "   ID  User        Pack File                               Status"
 288 "Listening"
