@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+bugfix: XDCC upload (reported by Bambus)
+  versions affected: 3.2 - 3.11
+  Bot changed '&' and others chars in filename to to '_'.
+
 bugfix: DUMP
   Do no longer dump on chat or console.
   Schreibe den DUMP nicht mer in Chat oder Konsole.

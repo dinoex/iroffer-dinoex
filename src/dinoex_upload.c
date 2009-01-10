@@ -294,7 +294,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   }
   ul = irlist_add(&gdata.uploads, sizeof(upload));
   l_initvalues(ul);
-  ul->file = mystrdup(filename);
+  ul->file = mystrdup(getfilename(filename));
   ul->con.family = (strchr(remoteip, ':')) ? AF_INET6 : AF_INET;
   ul->con.remoteaddr = mystrdup(remoteip);
   ul->con.remoteport = atoi(remoteport);
