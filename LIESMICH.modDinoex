@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+bugfix: XDCC upload (reported by Bambus)
+  versions affected: 3.2 - 3.11
+  Beim Upload wurde im Namen '&' und andere zeichen durch '_' ersetzt.
+
 bugfix: DUMP
   Schreibe den DUMP nicht mehr in Chat oder Konsole.
 

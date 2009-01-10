@@ -428,7 +428,7 @@ char *removenonprintablectrl(char *str)
 char *removenonprintablefile(char *str)
 {
   unsigned char *copy;
-  char last = '.';
+  char last = '/';
 
   if (!str)
     return NULL;
@@ -451,28 +451,24 @@ char *removenonprintablefile(char *str)
       continue;
     }
     switch (*copy) {
-    case 0x2EU: /* . */
-      if (last == '.' && *copy == '.')
+    case '.':
+      /* don't start any name with '.' */
+      if (last == '/')
         *copy = '_';
       break;
-    case 0x20U:
+    case ' ':
       if (gdata.spaces_in_filenames)
         break;
-    case 0x21U:
-    case 0x22U:
-    case 0x23U:
-    case 0x24U:
-    case 0x25U:
-    case 0x26U:
-    case 0x27U:
-    case 0x2FU:
-    case 0x3AU:
-    case 0x3DU:
-    case 0x3FU:
-    case 0x40U:
-    case 0x5CU:
-    case 0x60U:
-    case 0x7CU:
+    case '|':
+    case ':':
+    case '?':
+    case '*':
+    case '<':
+    case '/':
+    case '\\':
+    case '"':
+    case '\'':
+    case '`':
     case 0x7FU:
       *copy = '_';
       break;
