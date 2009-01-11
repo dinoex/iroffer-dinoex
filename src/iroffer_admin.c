@@ -2287,8 +2287,6 @@ static void u_rehash(const userinput * const u) {
    char *templine = mycalloc(maxtextlength);
    int i;
    int ss;
-   gnetwork_t *backup;
-   channel_t *ch, *rch;
    xdcc *xd;
    
    updatecontext();
@@ -2317,101 +2315,7 @@ static void u_rehash(const userinput * const u) {
    u_respond(u,"Reconfiguring...");
    rehash_dinoex();
    a_rehash_needtojump(u);
-   
-   backup = gnetwork;
-   for (ss=0; ss<gdata.networks_online; ss++)
-     {
-        gnetwork = &(gdata.networks[ss]);
-   
-   /* part deleted channels, add common channels */
-   ch = irlist_get_head(&(gnetwork->channels));
-   while(ch)
-     {
-       rch = irlist_get_head(&(gnetwork->r_channels));
-       while(rch)
-         {
-           if (!strcmp(ch->name,rch->name))
-             {
-               break;
-             }
-           rch = irlist_get_next(rch);
-         }
-       
-       if (!rch)
-         {
-           if (!gnetwork->r_needtojump && (ch->flags & CHAN_ONCHAN))
-             {
-               writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
-             }
-           if (gdata.debug > 2)
-             {
-               ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
-                       "1 = %s parted\n",ch->name);
-             }
-           clearmemberlist(ch);
-           free_channel_data(ch);
-           ch = irlist_delete(&(gnetwork->channels), ch);
-         }
-       else
-         {
-           rch->flags |= ch->flags & CHAN_ONCHAN;
-           rch->members = ch->members;
-           rch->lastjoin = ch->lastjoin;
-           free_channel_data(ch);
-           *ch = *rch;
-           if (gdata.debug > 2)
-             {
-               ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
-                       "2  = %s common\n", ch->name);
-             }
-           irlist_delete(&(gnetwork->r_channels), rch);
-           ch = irlist_get_next(ch);
-         }
-      }
-   
-   /* join/add new channels */
-   
-   rch = irlist_get_head(&(gnetwork->r_channels));
-   while(rch)
-     {
-       ch = irlist_get_head(&(gnetwork->channels));
-       while(ch)
-         {
-           if (!strcmp(ch->name,rch->name))
-             {
-               break;
-             }
-           ch = irlist_get_next(ch);
-         }
-       
-       if (!ch)
-         {
-           ch = irlist_add(&(gnetwork->channels), sizeof(channel_t));
-           *ch = *rch;
-           ch->flags &= ~CHAN_ONCHAN;
-           if (!gnetwork->r_needtojump)
-             {
-               joinchannel(ch);
-             }
-           if (gdata.debug > 2)
-             {
-               ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
-                       "3 = %s new\n",ch->name);
-             }
-           rch = irlist_delete(&(gnetwork->r_channels), rch);
-         }
-       else
-         {
-           outerror(OUTERROR_TYPE_WARN_LOUD, "could not add channel %s twice!", rch->name);
-           clearmemberlist(rch);
-           free_channel_data(rch);
-           rch = irlist_delete(&(gnetwork->r_channels), rch);
-         }
-     }
-       
-     } /* networks */
-   gnetwork = backup;
-   
+   a_rehash_channels();
    a_rehash_jump();
    
    if (((!gdata.pidfile) && (gdata.r_pidfile)) ||
