@@ -84,6 +84,7 @@ usage(void)
 void command_options(int argc, const char *const *argv)
 {
   const char *cptr;
+  char *newptr;
   char ch;
   int fc = 0;
 
@@ -137,7 +138,9 @@ void command_options(int argc, const char *const *argv)
     }
     if (fc >= MAXCONFIG)
       usage();
-    gdata.configfile[ fc++ ] = mystrdup(cptr);
+    newptr = mystrdup(cptr);
+    convert_to_unix_slash(newptr);
+    gdata.configfile[ fc++ ] = newptr;
   }
   if (fc == 0) {
     fprintf(stderr, "%s: no configuration file specified\n", argv[0]);

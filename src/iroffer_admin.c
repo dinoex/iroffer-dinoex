@@ -2285,7 +2285,7 @@ static void u_rehash(const userinput * const u) {
    
    /* other variables */
    char *templine = mycalloc(maxtextlength);
-   int h, i, filedescriptor;
+   int i;
    int ss;
    gnetwork_t *backup;
    channel_t *ch, *rch;
@@ -2310,28 +2310,7 @@ static void u_rehash(const userinput * const u) {
    set_loginname();
    
    /* go */
-   for (h=0; h<MAXCONFIG && gdata.configfile[h]; h++) {
-      u_respond(u,"Reloading %s ...",gdata.configfile[h]);
-      
-      filedescriptor=open(gdata.configfile[h], O_RDONLY | ADDED_OPEN_FLAGS);
-      if (filedescriptor < 0) {
-         u_respond(u,"Cant Access File, Aborting rehash: %s",strerror(errno));
-         u_respond(u,"**WARNING** missing vital information, fix and re-rehash ASAP");
-         mydelete(templine);
-         return;
-         }
-   
-      while (getfline(templine,maxtextlength,filedescriptor,1))
-        {
-          if ((templine[0] != '#') && templine[0])
-            {
-              getconfig_set(templine,1);
-            }
-        }
-      
-      close(filedescriptor);
-     }
-   gdata.networks_online ++;
+   a_read_config_files(u);
    
    /* see what needs to be redone */
    

@@ -33,46 +33,10 @@
 #include <locale.h>
 
 void getconfig (void) {
-   struct stat st;
-   char *templine = mycalloc(maxtextlength);
-   int h, filedescriptor;
    
    updatecontext();
-
-   for (h=0; h<MAXCONFIG && gdata.configfile[h]; h++)
-     {
-       convert_to_unix_slash(gdata.configfile[h]);
-       
-       printf("** Loading %s ... \n",gdata.configfile[h]);
-       
-       filedescriptor=open(gdata.configfile[h], O_RDONLY | ADDED_OPEN_FLAGS);
-       if (filedescriptor < 0)
-         {
-           outerror(OUTERROR_TYPE_CRASH,"Cant Access Config File '%s': %s",gdata.configfile[h],strerror(errno));
-         }
-       
-       if (fstat(filedescriptor, &st) < 0)
-         {
-           outerror(OUTERROR_TYPE_CRASH,
-                    "Unable to stat file '%s': %s",
-                    gdata.configfile[h], strerror(errno));
-         }
-       gdata.configtime[h] = st.st_mtime;
-       
-       current_config = gdata.configfile[h];
-       current_line = 0;
-       gdata.bracket = 0;
-       while (getfline(templine,maxtextlength,filedescriptor,1))
-         {
-           current_line ++;
-           if ((templine[0] != '#') && templine[0])
-             {
-               getconfig_set(templine,0);
-             }
-         }
-       
-       close(filedescriptor);
-     }
+   
+   a_read_config_files(NULL);
    
    printf("** Checking for completeness of config file ...\n");
    
@@ -80,8 +44,6 @@ void getconfig (void) {
         || gdata.config_nick == NULL || gdata.user_realname == NULL
         || gdata.slotsmax == 0)
       outerror(OUTERROR_TYPE_CRASH,"Config File Missing Necessary Information");
-
-   gdata.networks_online ++;
 
    if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2U ) )
       outerror(OUTERROR_TYPE_CRASH,"Config File Missing Upload Information");
@@ -100,7 +62,6 @@ void getconfig (void) {
       gototop();
       }
    
-   mydelete(templine);
    }
 
 

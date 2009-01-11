@@ -84,5 +84,6 @@ void a_rehash_prepare(void);
 void a_rehash_needtojump(const userinput *u);
 void a_rehash_jump(void);
 void a_rehash_cleanup(const userinput *u);
+void a_read_config_files(const userinput *u);
 
 /* End of File */
