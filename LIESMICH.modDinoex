@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+277) ruby_script
+  Reload wenn sich das ruby_script geändert wird.
+
 bugfix: XDCC upload (reported by Bambus)
   versions affected: 3.2 - 3.11
   Beim Upload wurde im Namen '&' und andere zeichen durch '_' ersetzt.
