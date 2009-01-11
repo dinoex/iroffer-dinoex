@@ -534,6 +534,8 @@ int get_argv(char **result, const char *line, int howmany)
   char *dest;
   size_t plen;
   int inquotes;
+  int moreargs;
+  int morequote;
   int part;
 
   if (line == NULL)
@@ -543,6 +545,8 @@ int get_argv(char **result, const char *line, int howmany)
     return 0;
 
   inquotes = 0;
+  moreargs = 0;
+  morequote = 0;
   part = 0;
 
   start = line;
@@ -557,8 +561,10 @@ int get_argv(char **result, const char *line, int howmany)
       if (inquotes == 0)
         continue;
       inquotes --;
-      if (part + 1 == howmany)
+      if (part + 1 == howmany) {
+        morequote ++;
         continue;
+      }
       start ++;
     } else {
       if (*src) {
@@ -569,8 +575,10 @@ int get_argv(char **result, const char *line, int howmany)
           start ++;
           continue;
         }
-        if (part + 1 == howmany)
+        if (part + 1 == howmany) {
+          moreargs ++;
           continue;
+        }
       }
     }
     plen = src - start;
@@ -585,6 +593,8 @@ int get_argv(char **result, const char *line, int howmany)
 #endif /* WITHOUT_MEMSAVE */
     memcpy(dest, start, plen);
     dest[plen] = '\0';
+    if ((morequote > 0) && (moreargs == 0))
+      clean_quotes(dest);
     result[part++] = dest;
     if (part >= howmany)
       return part;
@@ -672,6 +682,8 @@ char *getpart_eol(const char *line, int howmany)
   char *dest;
   size_t plen;
   int inquotes;
+  int moreargs;
+  int morequote;
   int part;
 
   if (line == NULL)
@@ -681,6 +693,8 @@ char *getpart_eol(const char *line, int howmany)
     return NULL;
 
   inquotes = 0;
+  moreargs = 0;
+  morequote = 0;
   part = 0;
 
   start = line;
@@ -695,8 +709,10 @@ char *getpart_eol(const char *line, int howmany)
       if (inquotes == 0)
         continue;
       inquotes --;
-      if (part + 1 == howmany)
+      if (part + 1 == howmany) {
+        morequote ++;
         continue;
+      }
       start ++;
     } else {
       if (*src) {
@@ -707,8 +723,10 @@ char *getpart_eol(const char *line, int howmany)
           start ++;
           continue;
         }
-        if (part + 1 == howmany)
+        if (part + 1 == howmany) {
+          moreargs ++;
           continue;
+        }
       }
     }
     plen = src - start;
@@ -726,7 +744,8 @@ char *getpart_eol(const char *line, int howmany)
     break;
   }
   dest = mystrdup(start);
-  clean_quotes(dest);
+  if ((morequote > 0) && (moreargs == 0))
+    clean_quotes(dest);
   return dest;
 }
 
