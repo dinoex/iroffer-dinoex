@@ -1481,6 +1481,7 @@ static void mainloop (void) {
             }
          
          admin_jobs();
+	 rehash_myruby(1);
          }
       
       updatecontext();

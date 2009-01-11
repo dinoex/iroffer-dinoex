@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2008 Dirk Meyer
+ * Copyright (C) 2004-2009 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -36,6 +36,7 @@
 
 int myruby_status;
 int myruby_loaded;
+time_t myruby_time;
 
 char *cLine;
 VALUE cIrofferConfig;
@@ -135,10 +136,33 @@ static void load_script(const char *name)
              name, strerror(errno));
     return;
   }
+  myruby_time = st.st_mtime;
   ruby_init_loadpath();
   ruby_script("embedded");
   rb_load_file(name);
   myruby_loaded = 1;
+}
+
+static void check_script(const char *name)
+{
+  struct stat st;
+
+  updatecontext();
+
+  if (!name)
+    return;
+
+  if (stat(name, &st) < 0) {
+    myruby_loaded = -1;
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "access ruby_script '%s' failed: %s",
+             name, strerror(errno));
+    return;
+  }
+  if (myruby_time == st.st_mtime)
+    return;
+
+  load_script(name);
 }
 
 void do_myruby(char *line)
@@ -147,7 +171,7 @@ void do_myruby(char *line)
     return;
 
   cLine = line;
-#ifndef DEBUG_RUBY
+#ifndef DEBUG_RUBY_ONCE
   myruby_status = ruby_exec();
   if (myruby_status == 0)
     return;
@@ -160,8 +184,12 @@ void do_myruby(char *line)
 #endif
 }
 
-void rehash_myruby(void)
+void rehash_myruby(int check)
 {
+  if (check) {
+    check_script(gdata.ruby_script);
+    return;
+  }
   load_script(gdata.ruby_script);
 }
 

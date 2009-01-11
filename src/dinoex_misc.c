@@ -635,7 +635,7 @@ void rehash_dinoex(void)
   global_defaults();
   geoip_shutdown();
 #ifdef USE_RUBY
-  rehash_myruby();
+  rehash_myruby(0);
 #endif /* USE_RUBY */
 #if !defined(_OS_CYGWIN)
   res_init();

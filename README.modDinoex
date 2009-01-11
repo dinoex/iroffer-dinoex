@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+277) ruby_script
+  Reload if script has been changed.
+
 bugfix: XDCC upload (reported by Bambus)
   versions affected: 3.2 - 3.11
   Bot changed '&' and others chars in filename to to '_'.
