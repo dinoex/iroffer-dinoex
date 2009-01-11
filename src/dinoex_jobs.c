@@ -1915,7 +1915,7 @@ void a_read_config_files(const userinput *u)
     while (getfline(templine, maxtextlength, filedescriptor, 1)) {
       current_line ++;
       if ((templine[0] != '#') && templine[0]) {
-        getconfig_set(templine, 0);
+        getconfig_set(templine, (u == NULL) ? 0 :  1);
       }
     }
     close(filedescriptor);
