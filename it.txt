@@ -386,7 +386,7 @@
 397 "Disconnesso per il CLOSEC\n"
 398 "Caught SIGUSR2, Rehashing..."
 399 "Reload di %s ..."
-400 "Impossibile Accedere al File, rehash arrestato: %s"
+400 "Impossibile Accedere al File '%s', rehash arrestato: %s"
 401 "**ATTENZIONE** informazioni vitali mancanti, correggi e fai un re-rehash ASAP"
 402 "Riconfigurazione..."
 403 "vhost modificato, in riconnessione.."

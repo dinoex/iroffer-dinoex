@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_admin.h"
 #include "dinoex_irc.h"
+#include "dinoex_config.h"
 #include "dinoex_misc.h"
 #include "dinoex_jobs.h"
 #include "crc32.h"
@@ -1871,6 +1872,56 @@ void a_rehash_cleanup(const userinput *u)
     mydelete(r_config_nick);
   }
   mydelete(r_local_vhost);
+}
+
+void a_read_config_files(const userinput *u)
+{
+  struct stat st;
+  char *templine;
+  int filedescriptor;
+  int h;
+
+  updatecontext();
+
+  templine = mycalloc(maxtextlength);
+  for (h=0; h<MAXCONFIG && gdata.configfile[h]; h++) {
+    if (u == NULL)
+      printf("** Loading %s ... \n", gdata.configfile[h]);
+    else
+      a_respond(u, "Reloading %s ...", gdata.configfile[h]);
+
+    filedescriptor=open(gdata.configfile[h], O_RDONLY | ADDED_OPEN_FLAGS);
+    if (filedescriptor < 0) {
+      if (u == NULL) {
+          outerror(OUTERROR_TYPE_CRASH, "Cant Access Config File '%s': %s",
+                   gdata.configfile[h], strerror(errno));
+      } else {
+          a_respond(u, "Cant Access File '%s', Aborting rehash: %s",
+                    gdata.configfile[h], strerror(errno));
+          a_respond(u, "**WARNING** missing vital information, fix and re-rehash ASAP");
+      }
+      continue;
+    }
+
+    if (fstat(filedescriptor, &st) < 0) {
+      outerror(OUTERROR_TYPE_CRASH,
+               "Unable to stat file '%s': %s",
+               gdata.configfile[h], strerror(errno));
+    }
+    gdata.configtime[h] = st.st_mtime;
+    current_config = gdata.configfile[h];
+    current_line = 0;
+    gdata.bracket = 0;
+    while (getfline(templine, maxtextlength, filedescriptor, 1)) {
+      current_line ++;
+      if ((templine[0] != '#') && templine[0]) {
+        getconfig_set(templine, 0);
+      }
+    }
+    close(filedescriptor);
+  }
+  gdata.networks_online ++;
+  mydelete(templine);
 }
 
 /* End of File */
