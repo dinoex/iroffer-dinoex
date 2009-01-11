@@ -700,7 +700,6 @@ const char *transferlimit_type_to_string(transferlimit_type_e type);
 
 /* misc.c */
 void getconfig (void);
-void getconfig_set (const char *line, int rehash);
 void initirc(void);
 void initirc2(void);
 

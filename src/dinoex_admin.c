@@ -3549,7 +3549,7 @@ void a_config(const userinput * const u)
 
   current_config = "ADMIN";
   current_line = 0;
-  getconfig_set(u->arg1e, 0);
+  getconfig_set(u->arg1e);
 }
 
 void a_identify(const userinput * const u)
