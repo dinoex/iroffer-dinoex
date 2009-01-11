@@ -692,12 +692,11 @@ static void c_autosendpack(char *var)
   mydelete(var);
 }
 
-static int c_channel_rehash;
-
 static void c_channel(char *var)
 {
   char *part[2] = { NULL, NULL };
   channel_t *cptr;
+  channel_t *rch;
 
   updatecontext();
 
@@ -706,12 +705,18 @@ static void c_channel(char *var)
   if (part[0] == NULL)
     return;
 
-  if (!c_channel_rehash) {
-    cptr = irlist_add(&gdata.networks[gdata.networks_online].channels, sizeof(channel_t));
-  } else {
-    cptr = irlist_add(&gdata.networks[gdata.networks_online].r_channels, sizeof(channel_t));
+  for (rch = irlist_get_head(&gdata.networks[gdata.networks_online].channels);
+       rch;
+       rch = irlist_get_next(rch)) {
+    if (strcmp(rch->name, part[0]) == 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD, "could not add channel %s twice!", part[0]);
+      mydelete(part[0]);
+      mydelete(part[1]);
+      return;
+    }
   }
 
+  cptr = irlist_add(&gdata.networks[gdata.networks_online].channels, sizeof(channel_t));
   cptr->name = part[0];
   caps(cptr->name);
   if (parse_channel_options(cptr, part[1]) < 0) {
@@ -1398,10 +1403,8 @@ int parse_channel_options(channel_t *cptr, char *var)
   return 0;
 }
 
-static int parse_config_line(char **part, int rehash)
+static int parse_config_line(char **part)
 {
-  c_channel_rehash = rehash;
-
   if (gdata.bracket == 0) {
     /* globals */
     if (set_config_bool(part[0], part[1]) == 0)
@@ -1425,7 +1428,7 @@ static int parse_config_line(char **part, int rehash)
   return 2;
 }
 
-void getconfig_set(const char *line, int rehash)
+void getconfig_set(const char *line)
 {
   char *part[2] = { NULL, NULL };
   int m;
@@ -1433,7 +1436,7 @@ void getconfig_set(const char *line, int rehash)
   updatecontext();
 
   get_argv(part, line, 2);
-  m = parse_config_line(part, rehash);
+  m = parse_config_line(part);
   if (m > 0) {
     mydelete(part[0]);
     if (m > 1)

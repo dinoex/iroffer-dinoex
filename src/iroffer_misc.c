@@ -1582,7 +1582,7 @@ void reinit_config_vars(void)
     mydelete(gdata.networks[si].user_modes);
     mydelete(gdata.networks[si].local_vhost);
     mydelete(gdata.networks[si].natip);
-    irlist_delete_all(&gdata.networks[si].r_channels);
+    irlist_delete_all(&gdata.networks[si].channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);
     irlist_delete_all(&gdata.networks[si].channel_join_raw);

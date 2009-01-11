@@ -1730,6 +1730,14 @@ int close_qupload(int net, const char *nick)
 static char *r_local_vhost;
 static char *r_config_nick;
 
+static void irlist_move(irlist_t *dest, irlist_t *src)
+{
+  *dest = *src;
+  src->size = 0;
+  src->head = NULL;
+  src->tail = NULL;
+}
+
 void a_rehash_prepare(void)
 {
   int ss;
@@ -1756,6 +1764,7 @@ void a_rehash_prepare(void)
     gdata.networks[ss].r_local_vhost = NULL;
     if (gdata.networks[ss].local_vhost)
       gdata.networks[ss].r_local_vhost = mystrdup(gdata.networks[ss].local_vhost);
+    irlist_move(&(gdata.networks[ss].r_channels), &(gdata.networks[ss].channels));
   }
 }
 
@@ -1812,6 +1821,85 @@ void a_rehash_needtojump(const userinput *u)
     }
     gnetwork = backup;
   }
+}
+
+void a_rehash_channels(void)
+{
+  gnetwork_t *backup;
+  channel_t *rch;
+  channel_t *ch;
+  int ss;
+
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+
+    /* part deleted channels, add common channels */
+    rch = irlist_get_head(&(gnetwork->r_channels));
+    while(rch) {
+      ch = irlist_get_head(&(gnetwork->channels));
+      while(ch) {
+        if (strcmp(rch->name, ch->name) == 0) {
+          break;
+        }
+        ch = irlist_get_next(ch);
+      }
+
+      if (!ch) {
+        if (!gnetwork->r_needtojump && (rch->flags & CHAN_ONCHAN)) {
+          writeserver(WRITESERVER_NORMAL, "PART %s", rch->name);
+        }
+        if (gdata.debug > 2) {
+           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+                   "1 = %s parted", rch->name);
+        }
+        clearmemberlist(rch);
+        free_channel_data(rch);
+        rch = irlist_delete(&(gnetwork->r_channels), rch);
+      } else {
+        irlist_move(&(ch->members), &(rch->members));
+        ch->flags |= rch->flags & CHAN_ONCHAN;
+        ch->lastjoin = rch->lastjoin;
+        ch->nextann = rch->nextann;
+        if (gdata.debug > 2) {
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+                  "2  = %s common", ch->name);
+        }
+        rch = irlist_get_next(rch);
+      }
+    }
+
+    /* join/add new channels */
+    ch = irlist_get_head(&(gnetwork->channels));
+    while(ch) {
+      rch = irlist_get_head(&(gnetwork->r_channels));
+      while(rch) {
+        if (strcmp(rch->name, ch->name) == 0) {
+          break;
+        }
+        rch = irlist_get_next(rch);
+      }
+
+      if (!rch) {
+        ch->flags &= ~CHAN_ONCHAN;
+        if (!gnetwork->r_needtojump) {
+          joinchannel(ch);
+        }
+        if (gdata.debug > 2) {
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+                  "3 = %s new", ch->name);
+        }
+      }
+      ch = irlist_get_next(ch);
+    }
+
+    for (rch = irlist_get_head(&(gnetwork->r_channels));
+         rch;
+         rch = irlist_delete(&(gnetwork->r_channels), rch)) {
+       free_channel_data(rch);
+    }
+  } /* networks */
+  gnetwork = backup;
 }
 
 void a_rehash_jump(void)
@@ -1915,7 +2003,7 @@ void a_read_config_files(const userinput *u)
     while (getfline(templine, maxtextlength, filedescriptor, 1)) {
       current_line ++;
       if ((templine[0] != '#') && templine[0]) {
-        getconfig_set(templine, (u == NULL) ? 0 :  1);
+        getconfig_set(templine);
       }
     }
     close(filedescriptor);
