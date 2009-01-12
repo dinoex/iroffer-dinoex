@@ -1481,7 +1481,9 @@ static void mainloop (void) {
             }
          
          admin_jobs();
+#ifdef USE_RUBY
 	 rehash_myruby(1);
+#endif /* USE_RUBY */
          }
       
       updatecontext();
