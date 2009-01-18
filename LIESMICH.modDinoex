@@ -8,6 +8,7 @@ Ab Version 3.12:
   Fehlerbehandlung bei Problemen im Skript.
   Skript ist jetzt Event orientiert,
   Bitte alle alten Skripte neu schreiben.
+  Autovoice ist jetzt möglich.
 
 bugfix: XDCC upload (reported by Bambus)
   versions affected: 3.2 - 3.11
