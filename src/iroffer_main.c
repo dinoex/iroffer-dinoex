@@ -1693,7 +1693,7 @@ static void parseline(char *line) {
    updatecontext();
    
 #ifdef USE_RUBY
-   do_myruby(line);
+   do_myruby_server(line);
 #endif /* USE_RUBY */
    /* we only support lines upto maxtextlength, truncate line */
    line[maxtextlength-1] = '\0';
@@ -1726,6 +1726,9 @@ static void parseline(char *line) {
        /* nickserv */
        identify_check(line);
        privmsgparse(0, 0, line);
+#ifdef USE_RUBY
+       do_myruby_notice(line);
+#endif /* USE_RUBY */
      }
  
  /* :server 001  xxxx :welcome.... */
@@ -2271,12 +2274,18 @@ static void parseline(char *line) {
        if (line2)
          {
            privmsgparse(1, 1, line2);
+#ifdef USE_RUBY
+           do_myruby_privmsg(line2);
+#endif /* USE_RUBY */
            mydelete(line2);
          }
        else
          {
 #endif /* WITHOUT_BLOWFISH */
            privmsgparse(1, 0, line);
+#ifdef USE_RUBY
+           do_myruby_privmsg(line);
+#endif /* USE_RUBY */
 #ifndef WITHOUT_BLOWFISH
          }
 #endif /* WITHOUT_BLOWFISH */

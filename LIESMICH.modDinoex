@@ -5,6 +5,9 @@ Ab Version 3.12:
 
 277) ruby_script
   Reload wenn sich das ruby_script geändert wird.
+  Fehlerbehandlung bei Problemen im Skript.
+  Skript ist jetzt Event orientiert,
+  Bitte alle alten Skripte neu schreiben.
 
 bugfix: XDCC upload (reported by Bambus)
   versions affected: 3.2 - 3.11
