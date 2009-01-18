@@ -118,7 +118,6 @@ Not going to happen anytime soon:
   1046  write passwort in config
   1047  edit config via web/admin
   1048  cancel for MSGREAD
-  1051  autovoice/op/hop
   1052  auto-topic
   1054  Donwnloadkeys
   1060  limited directfile_acess
@@ -146,8 +145,6 @@ Not going to happen anytime soon:
   1183  support filenamees with ...
   1184  send msg to server before welcome
   1185  configure the source port for outgoing connections
-  1196  run custom voice scripts
-  1198  !voiceme trigger
   1210  bonjour/zeroconf, apipa
   1210  dcc2
   1210  https
