@@ -1,16 +1,35 @@
 #!/usr/local/bin/ruby -w
 
-# iroffer_input returns an irc line
-x = iroffer_input
-wort = x.split( " ", 4 )
-case wort[1]
-when 'PRIVMSG', 'NOTICE'
-  if /iroffer-dinoex/.match( wort[3] )
-    nick = wort[0].delete( ':' ).sub( /!.*/, '' )
-    msg = "Thanks for saying #{wort[2]}"
-    # send message to nick
-    r = iroffer_privmsg( nick, msg )
+def write_log( msg )
+  f = File.open( "ruby-dump.txt", "a+" )
+  f.write Time.now.to_s
+  f.write "\n"
+  f.write msg
+  f.write "\n"
+  f.flush
+  f.close
+end
+
+class IrofferEvent
+  def on_server
+    write_log( "SERVER on " + network + " " + inputline )
   end
+  def on_notice
+    write_log( "NOTICE from " + hostmask + " on " + network + " " + message )
+  end
+  def on_privmsg
+    write_log( "PRIVMSG from " + hostmask + " on " + network + " " + message )
+    if /iroffer-dinoex/.match( message )
+      msg = "Thanks for using iroffer."
+      privmsg( nick, msg )
+      warning( nick + " uses iroffer in " + channel + " on " + network )
+      mode( channel, "+v " + nick )
+    end
+  end
+end
+
+if not defined? $run
+  $run = IrofferEvent.new
 end
 
 # eof

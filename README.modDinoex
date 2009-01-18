@@ -5,6 +5,9 @@ With Version 3.12:
 
 277) ruby_script
   Reload if script has been changed.
+  Error handling to report programm errors.
+  Script uses the new event interface.
+  You need to rewrite your old scripts.
 
 bugfix: XDCC upload (reported by Bambus)
   versions affected: 3.2 - 3.11
