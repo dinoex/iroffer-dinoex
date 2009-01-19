@@ -737,7 +737,7 @@ void a_remove_delayed(const userinput * const u)
 
 static int a_set_group(const userinput * const u, xdcc *xd, int num, const char *group)
 {
-  const char *new;
+  const char *newgroup;
   char *tmpdesc;
   char *tmpgroup;
   int rc;
@@ -745,13 +745,13 @@ static int a_set_group(const userinput * const u, xdcc *xd, int num, const char 
   updatecontext();
 
   if (num == 0) num = number_of_pack(xd);
-  new = "MAIN";
+  newgroup = "MAIN";
   if (group && strlen(group))
-    new = group;
+    newgroup = group;
 
   if (xd->group != NULL) {
     a_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
-              num, xd->group, new);
+              num, xd->group, newgroup);
     /* keep group info for later work */
     tmpgroup = xd->group;
     xd->group = NULL;
@@ -766,10 +766,10 @@ static int a_set_group(const userinput * const u, xdcc *xd, int num, const char 
       mydelete(tmpgroup);
   } else {
     a_respond(u, "GROUP: [Pack %i] New: %s",
-              num, new);
+              num, newgroup);
   }
 
-  if (group != new)
+  if (group != newgroup)
     return 0;
 
   xd->group = mystrdup(group);
@@ -1597,7 +1597,7 @@ xdcc *a_add2(const userinput * const u, const char *group)
   char *file;
   char *a1;
   char *a2;
-  const char *new;
+  const char *newfile;
   int n;
 
   updatecontext();
@@ -1625,11 +1625,11 @@ xdcc *a_add2(const userinput * const u, const char *group)
   }
 
   if (gdata.no_duplicate_filenames) {
-    new = get_basename(file);
+    newfile = get_basename(file);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
-      if (strcasecmp(get_basename(xd->file), new) == 0) {
+      if (strcasecmp(get_basename(xd->file), newfile) == 0) {
         a_respond(u, "File '%s' is already added.", u->arg1);
         mydelete(file);
         return NULL;
@@ -1765,7 +1765,7 @@ void a_add(const userinput * const u)
   a_add2(u, NULL);
 }
 
-void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new, const char *setgroup, const char *match)
+void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onlynew, const char *setgroup, const char *match)
 {
   userinput *u2;
   struct dirent *f;
@@ -1822,7 +1822,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
         if (gdata.include_subdirs == 0) {
           a_respond(u, "  Ignoring directory: %s", tempstr);
         } else {
-          a_adddir_sub(u, tempstr, NULL, new, setgroup, match);
+          a_adddir_sub(u, tempstr, NULL, onlynew, setgroup, match);
         }
         mydelete(tempstr);
         continue;
@@ -1844,7 +1844,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int new
         }
 
         foundit = 0;
-        if (new != 0) {
+        if (onlynew != 0) {
           for (xd = irlist_get_head(&gdata.xdccs);
                xd;
                xd = irlist_get_next(xd)) {
@@ -2454,7 +2454,7 @@ void a_groupdesc(const userinput * const u)
 void a_group(const userinput * const u)
 {
   xdcc *xd;
-  const char *new;
+  const char *newgroup;
   int num = 0;
 
   updatecontext();
@@ -2467,19 +2467,19 @@ void a_group(const userinput * const u)
   if (group_restricted(u, xd))
     return;
 
-  new = u->arg2;
+  newgroup = u->arg2;
   if (!u->arg2 || !strlen(u->arg2)) {
     if (xd->group == NULL) {
       a_respond(u, "Try Specifying a Group");
       return;
     }
-    new = NULL;
+    newgroup = NULL;
   } else {
     if (gdata.groupsincaps)
       caps(u->arg2);
   }
 
-  a_set_group(u, xd, num, new);
+  a_set_group(u, xd, num, newgroup);
   write_files();
 }
 
@@ -2735,7 +2735,7 @@ void a_newdir(const userinput * const u)
 static void a_target_file(char **file2, const char *file1)
 {
   char *end;
-  char *new;
+  char *newfile;
 
   if (strchr(*file2, '/') != NULL)
     return;
@@ -2743,13 +2743,13 @@ static void a_target_file(char **file2, const char *file1)
   if (strrchr(file1, '/') == NULL)
     return;
 
-  new = mymalloc(strlen(file1)+1+strlen(*file2)+1);
-  strcpy(new, file1);
-  end = strrchr(new, '/');
+  newfile = mymalloc(strlen(file1)+1+strlen(*file2)+1);
+  strcpy(newfile, file1);
+  end = strrchr(newfile, '/');
   if (end != NULL)
     strcpy(++end, *file2);
   mydelete(*file2);
-  *file2 = new;
+  *file2 = newfile;
 }
 
 void a_filemove(const userinput * const u)
@@ -3637,7 +3637,7 @@ void a_autoadd(const userinput * const u)
 void a_autogroup(const userinput * const u)
 {
   char *tempstr;
-  char *new;
+  char *newgroup;
   xdcc *xd;
   int num;
 
@@ -3650,30 +3650,30 @@ void a_autogroup(const userinput * const u)
       continue;
 
     tempstr = mystrdup(xd->file);
-    new = strrchr(tempstr, '/');
-    if (new == NULL) {
+    newgroup = strrchr(tempstr, '/');
+    if (newgroup == NULL) {
       mydelete(tempstr);
       continue;
     }
 
-    *new = 0;
-    new = strrchr(tempstr, '/');
-    if (new == NULL) {
+    *newgroup = 0;
+    newgroup = strrchr(tempstr, '/');
+    if (newgroup == NULL) {
       mydelete(tempstr);
       continue;
     }
 
-    new ++;
-    if (strlen(new) == 0) {
+    newgroup ++;
+    if (strlen(newgroup) == 0) {
       mydelete(tempstr);
       continue;
     }
 
     if (gdata.groupsincaps)
-      caps(new);
+      caps(newgroup);
 
-    removenonprintablefile(new);
-    a_set_group(u, xd, num, new);
+    removenonprintablefile(newgroup);
+    a_set_group(u, xd, num, newgroup);
     mydelete(tempstr);
   }
   write_files();

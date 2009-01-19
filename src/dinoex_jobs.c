@@ -525,7 +525,7 @@ void admin_jobs(void) {
   char *line;
   char *l;
   char *r;
-  char *new;
+  char *newjob;
 
   job = gdata.admin_job_file;
   if (job == NULL)
@@ -543,8 +543,8 @@ void admin_jobs(void) {
     l = line + strlen(line) - 1;
     while (( *l == '\r' ) || ( *l == '\n' ))
       *(l--) = 0;
-    new = irlist_add(&gdata.jobs_delayed, strlen(line) + 1);
-    strcpy(new, line);
+    newjob = irlist_add(&gdata.jobs_delayed, strlen(line) + 1);
+    strcpy(newjob, line);
   }
   mydelete(line)
   fclose(fin);
@@ -599,7 +599,7 @@ void look_for_file_remove(void)
 void reset_download_limits(void)
 {
   int num;
-  int new;
+  int newlimit;
   xdcc *xd;
 
   num = 0;
@@ -610,11 +610,11 @@ void reset_download_limits(void)
     if (xd->dlimit_max == 0)
       continue;
 
-    new = xd->gets + xd->dlimit_max;
+    newlimit = xd->gets + xd->dlimit_max;
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "Resetting download limit of pack %d, used %d",
-            num, new - xd->dlimit_used);
-    xd->dlimit_used = new;
+            num, newlimit - xd->dlimit_used);
+    xd->dlimit_used = newlimit;
   }
 }
 
@@ -984,7 +984,7 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
                         const char *xx_data, const char *xx_trno)
 {
   char *file;
-  const char *new;
+  const char *newfile;
   struct stat st;
   userinput u2;
   xdcc *xd;
@@ -1017,11 +1017,11 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
   }
 
   if (gdata.no_duplicate_filenames) {
-    new = get_basename(file);
+    newfile = get_basename(file);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
-      if (strcasecmp(get_basename(xd->file), new) == 0) {
+      if (strcasecmp(get_basename(xd->file), newfile) == 0) {
         a_respond(&u2, "File '%s' is already added.", xx_file);
         mydelete(file);
         xd->gets += xx_gets;

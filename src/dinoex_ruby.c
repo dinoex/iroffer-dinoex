@@ -140,9 +140,9 @@ static VALUE cie_null(VALUE UNUSED(self))
   return Qnil;
 }
 
-static VALUE cie_new(VALUE class)
+static VALUE cie_new(VALUE rclass)
 {
-  VALUE tdata = Data_Wrap_Struct(class, 0, ci_free, &gdata);
+  VALUE tdata = Data_Wrap_Struct(rclass, 0, ci_free, &gdata);
   rb_obj_call_init(tdata, 0, 0);
   oIrofferEvent = tdata;
   return tdata;

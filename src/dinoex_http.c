@@ -897,14 +897,14 @@ static int html_link_option(char *str, size_t size, const char *option, const ch
   return len;
 }
 
-static char *html_link_build(const char *class, const char *caption, const char *text,
+static char *html_link_build(const char *css, const char *caption, const char *text,
 				const char *group, int traffic, const char *order)
 {
   char *tempstr;
   size_t len;
 
   tempstr = mycalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength - 1, "<a%s title=\"%s\" href=\"/?", class, caption);
+  len = snprintf(tempstr, maxtextlength - 1, "<a%s title=\"%s\" href=\"/?", css, caption);
   html_link_start = 0;
   if (group)
     len += html_link_option(tempstr + len, maxtextlength -1 - len, "group", group);
@@ -1645,11 +1645,11 @@ static char *h_read_http(http * const h)
 #ifndef WITHOUT_HTTP_ADMIN
 static void html_str_prefix(char **str, int len)
 {
-  char *new;
+  char *newstr;
 
-  new = mystrdup(*str + len);
+  newstr = mystrdup(*str + len);
   mydelete(*str);
-  *str = new;
+  *str = newstr;
 }
 
 static int h_admin_auth(http * const h, char *body)

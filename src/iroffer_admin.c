@@ -2012,7 +2012,7 @@ static void u_addnew(const userinput * const u)
 static void u_chdesc(const userinput * const u) {
    int num = 0;
    xdcc *xd;
-   const char *new;
+   const char *newdesc;
    
    updatecontext();
    
@@ -2024,10 +2024,10 @@ static void u_chdesc(const userinput * const u) {
    if (group_restricted(u, xd))
      return;
    
-   new = u->arg2e;
+   newdesc = u->arg2e;
    if (!u->arg2e || !strlen(u->arg2e)) {
-      new = getfilename(xd->file);
-      if (strcmp(new, xd->desc) == 0) {
+      newdesc = getfilename(xd->file);
+      if (strcmp(newdesc, xd->desc) == 0) {
         u_respond(u, "Try Specifying a Description");
         return;
         }
@@ -2035,10 +2035,10 @@ static void u_chdesc(const userinput * const u) {
       }
    
    u_respond(u, "CHDESC: [Pack %i] Old: %s New: %s",
-      num, xd->desc, new);
+      num, xd->desc, newdesc);
    
    mydelete(xd->desc);
-   xd->desc = mystrdup(new);
+   xd->desc = mystrdup(newdesc);
    
    write_files();
    }
