@@ -539,17 +539,17 @@ static int config_find_list(const char *key)
 static int get_netmask(char *text, int init)
 {
   char *work;
-  int new;
+  int newmask;
 
   work = strchr(text, '/');
   if (work != NULL) {
     *(work++) = 0;
-    new = atoi(work);
-    if (new < 0 )
+    newmask = atoi(work);
+    if (newmask < 0 )
       return -1;
-    if (new > init )
+    if (newmask > init )
       return -1;
-    return new;
+    return newmask;
   }
   return init;
 }
@@ -737,10 +737,10 @@ static void c_channel(char *var)
 
 static void c_channel_join_raw(char *var)
 {
-   char *new;
+   char *str;
 
-   new = irlist_add(&gdata.networks[gdata.networks_online].channel_join_raw, strlen(var) + 1);
-   strcpy(new, var);
+   str = irlist_add(&gdata.networks[gdata.networks_online].channel_join_raw, strlen(var) + 1);
+   strcpy(str, var);
    mydelete(var);
 }
 
@@ -1021,10 +1021,10 @@ static void c_periodicmsg(char *var)
 
 static void c_proxyinfo(char *var)
 {
-   char *new;
+   char *str;
 
-   new = irlist_add(&gdata.networks[gdata.networks_online].proxyinfo, strlen(var) + 1);
-   strcpy(new, var);
+   str = irlist_add(&gdata.networks[gdata.networks_online].proxyinfo, strlen(var) + 1);
+   strcpy(str, var);
    mydelete(var);
 }
 
@@ -1059,33 +1059,33 @@ static void c_server(char *var)
 
 static void c_server_connected_raw(char *var)
 {
-   char *new;
+   char *str;
 
-   new = irlist_add(&gdata.networks[gdata.networks_online].server_connected_raw, strlen(var) + 1);
-   strcpy(new, var);
+   str = irlist_add(&gdata.networks[gdata.networks_online].server_connected_raw, strlen(var) + 1);
+   strcpy(str, var);
    mydelete(var);
 }
 
 static void c_server_join_raw(char *var)
 {
-   char *new;
+   char *str;
 
-   new = irlist_add(&gdata.networks[gdata.networks_online].server_join_raw, strlen(var) + 1);
-   strcpy(new, var);
+   str = irlist_add(&gdata.networks[gdata.networks_online].server_join_raw, strlen(var) + 1);
+   strcpy(str, var);
    mydelete(var);
 }
 
 static void c_slotsmax(char *var)
 {
-  int new;
+  int ival;
 
-  new = atoi(var);
+  ival = atoi(var);
   mydelete(var);
-  gdata.slotsmax = between(1, new, MAXTRANS);
-  if (gdata.slotsmax != new) {
+  gdata.slotsmax = between(1, ival, MAXTRANS);
+  if (gdata.slotsmax != ival) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld unable to have slotsmax of %d, using %d instead",
-             current_config, current_line, new, gdata.slotsmax);
+             current_config, current_line, ival, gdata.slotsmax);
   }
 }
 
@@ -1106,15 +1106,15 @@ static void c_transferlimits(char *var)
   char *part[NUMBER_TRANSFERLIMITS];
   int m;
   int i;
-  int new;
+  int ival;
 
   bzero((char *)part, sizeof(part));
   m = get_argv(part, var, (int)NUMBER_TRANSFERLIMITS);
   mydelete(var);
   for (i=0; i<m; i++) {
     if (part[i]) {
-      new = atoi(part[i]);
-      gdata.transferlimits[i].limit = max2(0, new);
+      ival = atoi(part[i]);
+      gdata.transferlimits[i].limit = max2(0, ival);
       gdata.transferlimits[i].limit *= 1024 * 1024;
       mydelete(part[i]);
     }
@@ -1123,10 +1123,10 @@ static void c_transferlimits(char *var)
 
 static void c_transfermaxspeed(char *var)
 {
-  float new;
+  float fval;
 
-  new = atof(var);
-  gdata.transfermaxspeed = max2(0, new);
+  fval = atof(var);
+  gdata.transfermaxspeed = max2(0, fval);
   mydelete(var);
 }
 
