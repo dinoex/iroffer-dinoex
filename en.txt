@@ -2311,3 +2311,4 @@
 2416 "on_privmsg"
 2417 "inputline"
 2418 "nick"
+2419 "objIrofferEvent"
