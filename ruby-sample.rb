@@ -28,8 +28,4 @@ class IrofferEvent
   end
 end
 
-if not defined? $run
-  $run = IrofferEvent.new
-end
-
 # eof

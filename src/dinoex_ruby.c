@@ -144,7 +144,6 @@ static VALUE cie_new(VALUE rclass)
 {
   VALUE tdata = Data_Wrap_Struct(rclass, 0, ci_free, &gdata);
   rb_obj_call_init(tdata, 0, 0);
-  oIrofferEvent = tdata;
   return tdata;
 }
 
@@ -346,12 +345,15 @@ static void load_script(const char *name)
   myruby_loaded = 1;
 
   myruby_status = ruby_exec();
-  if (myruby_status == 0)
+  if (myruby_status != 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "ruby_exec failed with %d: %s",
+             myruby_status, strerror(errno));
     return;
+  }
 
-  outerror(OUTERROR_TYPE_WARN_LOUD,
-           "ruby_exec failed with %d: %s",
-           myruby_status, strerror(errno));
+  oIrofferEvent = rb_class_new_instance(0, NULL, cIrofferEvent);
+  rb_define_variable("objIrofferEvent", &oIrofferEvent);
 }
 
 static void check_script(const char *name)
