@@ -475,7 +475,8 @@ void a_fillwith_msg2(userinput * const u, const char *nick, const char *line)
   a_parse_inputline(u, line);
 }
 
-static void admin_line(int fd, const char *line) {
+static void admin_line(int fd, const char *line)
+{
   userinput *uxdl;
 
   if (line == NULL)
@@ -493,7 +494,8 @@ static void admin_line(int fd, const char *line) {
   mydelete(uxdl);
 }
 
-static void admin_run(const char *cmd) {
+static void admin_run(const char *cmd)
+{
   int fd;
   const char *job;
   char *done;
@@ -519,7 +521,8 @@ static void admin_run(const char *cmd) {
   mydelete(done)
 }
 
-void admin_jobs(void) {
+void admin_jobs(void)
+{
   FILE *fin;
   const char *job;
   char *line;
