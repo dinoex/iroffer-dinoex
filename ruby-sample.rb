@@ -15,10 +15,10 @@ class IrofferEvent
     write_log( "SERVER on " + network + " " + inputline )
   end
   def on_notice
-    write_log( "NOTICE from " + hostmask + " on " + network + " " + message )
+    write_log( "NOTICE from " + hostmask + " in " + channel + " on " + network + " " + message )
   end
   def on_privmsg
-    write_log( "PRIVMSG from " + hostmask + " on " + network + " " + message )
+    write_log( "PRIVMSG from " + hostmask + " in " + channel + " on " + network + " " + message )
     if /iroffer-dinoex/.match( message )
       msg = "Thanks for using iroffer."
       privmsg( nick, msg )
