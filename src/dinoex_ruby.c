@@ -304,15 +304,43 @@ static VALUE cie_mode(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
   return Qfalse;
 }
 
+static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
+{
+  char *msg;
+  userinput *uxdl;
+
+  if (NIL_P(rmsg))
+    return Qnil;
+
+  msg = rb_obj_as_string_protected(rmsg);
+  if (!msg)
+    return Qnil;
+
+  uxdl = mycalloc(sizeof(userinput));
+
+  a_fillwith_msg2(uxdl, NULL, msg);
+  uxdl->method = method_console;
+  uxdl->net = 0;
+  uxdl->level = ADMIN_LEVEL_CONSOLE;
+  u_parseit(uxdl);
+
+  mydelete(uxdl);
+  return Qtrue;
+}
+
 static void Init_IrofferEvent(void) {
   cIrofferEvent = rb_define_class("IrofferEvent", rb_cObject);
   rb_define_singleton_method(cIrofferEvent, "new", cie_new, 0);
+  /** action */
   rb_define_method(cIrofferEvent, "privmsg", cie_privmsg, 2);
   rb_define_method(cIrofferEvent, "warning", cie_warning, 1);
   rb_define_method(cIrofferEvent, "mode", cie_mode, 2);
+  rb_define_method(cIrofferEvent, "command", cie_command, 1);
+  /* hooks */
   rb_define_method(cIrofferEvent, "on_server", cie_null, 0);
   rb_define_method(cIrofferEvent, "on_notice", cie_null, 0);
   rb_define_method(cIrofferEvent, "on_privmsg", cie_null, 0);
+  /* accessors */
   rb_define_method(cIrofferEvent, "network", cie_network, 0);
   rb_define_method(cIrofferEvent, "inputline", cie_inputline, 0);
   rb_define_method(cIrofferEvent, "hostmask", cie_hostmask, 0);

@@ -25,6 +25,9 @@ class IrofferEvent
       warning( nick + " uses iroffer in " + channel + " on " + network )
       mode( channel, "+v " + nick )
     end
+    if /autoadd/.match( message )
+      command( "autoadd" )
+    end
   end
 end
 
