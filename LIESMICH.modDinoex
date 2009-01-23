@@ -9,6 +9,7 @@ Ab Version 3.12:
   Skript ist jetzt Event orientiert,
   Bitte alle alten Skripte neu schreiben.
   Autovoice ist jetzt möglich.
+  Admin Kommandos sind jetzt möglich.
 
 bugfix: XDCC upload (reported by Bambus)
   versions affected: 3.2 - 3.11
