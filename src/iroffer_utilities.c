@@ -1229,6 +1229,7 @@ void dumpgdata(void)
   gdata_print_int(no_status_chat);
   gdata_print_int(no_status_log);
   gdata_print_int(no_auto_rehash);
+  gdata_print_int(send_batch);
   gdata_print_number_cast("%ld", nomd5_start, long);
   
   gdata_irlist_iter_start(downloadhost, char);

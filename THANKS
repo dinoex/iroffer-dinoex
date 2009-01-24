@@ -89,6 +89,7 @@ TheDeath
 	option "no_status_log"
         user command "XDCC SEARCH" with mutiple patterns
 	option "no_auto_rehash"
+	suggesting XDCC BATCH
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -341,6 +342,7 @@ Misha-SU
 	reporting punishslowusers bug
 	reporting "connectionmethod ssl" bug
 	reporting "DCC RESUME" bug
+	suggesting "XDCC SEND LIST"
 
 Lamarr
 	reporting "MAXSPEED" bug
@@ -496,4 +498,13 @@ Gentatsu
 Bambus
 	reporting SSL certificate bug
 	reporting XDDC SEND filename bug
+
+Otaku
+	suggesting XDCC BATCH
+
+Alita-chan
+	suggesting XDCC BATCH
+
+satmd
+	suggesting XDCC BATCH
 

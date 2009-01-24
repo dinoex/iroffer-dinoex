@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+288) send_batch, XDCC BATCH (suggested by: Otaku, Alita-chan, TheDeath, satmd)
+  Permit XDCC BATCH. The packs are Quueed up in the bot is possible.
+  default: disabled
+
+  new user commands:
+  XDCC BATCH <group>                 try to send or queue all packs of a group
+  XDCC BATCH <group> <password>      try to send or queue all packs of a group locked with password
+  XDCC BATCH <from>-<to>             try to send or queue the given range of packs
+  XDCC BATCH <from>-<to> <password>  try to send or queue the given range of packs locked with password
+
 277) ruby_script
   Reload if script has been changed.
   Error handling to report programm errors.

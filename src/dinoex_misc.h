@@ -80,6 +80,8 @@ group_admin_t *verifypass_group(const char *hostmask, const char *passwd);
 
 int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote);
 
+void send_batch(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd);
+
 void free_channel_data(channel_t *ch);
 
 void auto_rehash(void);
