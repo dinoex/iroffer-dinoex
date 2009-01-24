@@ -2691,6 +2691,9 @@ static void privmsgparse(int type, int decoded, char* line)
          else if ( msg2 && !strcmp(msg2, "HELP")) {
            send_help(nick, hostmask);
          }
+         else if ( gdata.send_batch && msg2 && msg3 && !strcmp(msg2, "BATCH")) {
+           send_batch(nick, hostname, hostmask, msg3, msg4);
+         }
          else if ( msg2 && !strcmp(msg2, "SEARCH") && msg3) {
            char *match;
            char *msg3e;
@@ -2981,17 +2984,19 @@ void autoqueuef(const char* line, int pack, const char *message)
 
    }
 
-void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd)
+int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd)
 {
   int usertrans, userpackok, man;
   xdcc *xd;
   transfer *tr;
+  int rc;
   
   updatecontext();
   
   usertrans = 0;
   userpackok = 1;
 
+  rc = 1;
   xd = get_download_pack(nick, hostname, hostmask, pack, &man, "SEND", gdata.restrictsend);
   if (xd == NULL)
     {
@@ -3054,6 +3059,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
               gdata.maxtransfersperperson!=1 ? "transfers" : "transfer",
               tempstr);
        mydelete(tempstr);
+       rc = 0;
      }
    else if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) || (gdata.startingup) ||
             (gdata.restrictsend && (has_joined_channels(0) == 0)) ||
@@ -3066,6 +3072,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
        notice(nick, "** All Slots Full, %s",
               tempstr);
        mydelete(tempstr);
+       rc = 0;
      }
    else
      {
@@ -3117,7 +3124,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
                  nick, hostname, gnetwork->name);
        
        t_setup_dcc(tr, nick);
-       return;
+       return 0;
      }
    
  done:
@@ -3126,6 +3133,7 @@ void sendxdccfile(const char* nick, const char* hostname, const char* hostmask, 
       ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "%s (%s on %s)",
               nick, hostname, gnetwork->name);
+   return rc;
 }
    
 void sendxdccinfo(const char* nick,

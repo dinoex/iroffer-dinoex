@@ -111,6 +111,7 @@ static config_bool_typ config_parse_bool[] = {
 {"restrictprivlistmain",   &gdata.restrictprivlistmain },
 {"restrictsend",           &gdata.restrictsend },
 {"restrictsend_warning",   &gdata.restrictsend_warning },
+{"send_batch",             &gdata.send_batch },
 {"show_date_added",        &gdata.show_date_added },
 {"show_list_all",          &gdata.show_list_all },
 {"spaces_in_filenames",    &gdata.spaces_in_filenames },

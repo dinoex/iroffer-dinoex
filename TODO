@@ -64,7 +64,6 @@ Short Term Features:
 
 Long Term Features:
   1008  use text or xml for statefile
-  1012  Leach a full group or range
   1013  notify adminnick when autoadd
   1015  http admin
   1018  warning in chat when bot was kicked
@@ -76,7 +75,7 @@ Long Term Features:
   1114  service script for linux
   1135  Compress output per nick.
   1136  Save size even when nomd5
-  1145  mnake autoadd reentrant
+  1145  make autoadd reentrant
   1149  move after upload to dir
   1170  telnet with more terminal codes
   1176  pre_desc, post_desc
@@ -139,7 +138,6 @@ Not going to happen anytime soon:
   1150  extend addnew to uploaddir
   1153  show last user on xdl (admin only)
   1157  config modify per admin chat
-  1161  send list over dcc
   1162  group within a group
   1172  check nodownloadhost on nickchange
   1183  support filenamees with ...

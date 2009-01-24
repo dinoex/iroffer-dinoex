@@ -1708,6 +1708,7 @@ void reinit_config_vars(void)
   gdata.no_status_chat = 0;
   gdata.no_status_log = 0;
   gdata.no_auto_rehash = 0;
+  gdata.send_batch = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);

@@ -214,7 +214,7 @@ void send_help(const char *nick, const char *hostmask)
   updatecontext();
 
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC HELP from (%s on %s)",
+          "XDCC HELP (%s on %s)",
           hostmask, gnetwork->name);
 
   mynick = get_user_nick();
@@ -229,6 +229,8 @@ void send_help(const char *nick, const char *hostmask)
   notice_slow(nick, "\2**\2 Stop listing:      \"/MSG %s XDCC STOP\" \2**\2", mynick);
   if (gdata.send_listfile)
     notice_slow(nick, "\2**\2 Download listing:  \"/MSG %s XDCC SEND LIST\" \2**\2", mynick);
+  if (gdata.send_batch)
+    notice_slow(nick, "\2**\2 Download batch:    \"/MSG %s XDCC BATCH group\" \2**\2", mynick);
   notice_slow(nick, "\2**\2 Search listing:    \"/MSG %s XDCC SEARCH pattern\" \2**\2", mynick);
   if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
     notice_slow(nick, "\2**\2 Request details:   \"/MSG %s XDCC INFO pack\" \2**\2", mynick);
@@ -1610,6 +1612,77 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
       return 1; /* bits matched */
   }
   return 0;
+}
+
+
+static int send_batch_group(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
+{
+  xdcc *xd;
+  int num;
+  int found;
+
+  found = 0;
+  num = 0;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    num ++;
+    if (xd->group == NULL)
+      continue;
+    if (strcasecmp(what, xd->group) != 0)
+      continue;
+
+    found ++;
+    if (sendxdccfile(nick, hostname, hostmask, num, NULL, pwd))
+      return found;
+  }
+  return found;
+}
+
+static int send_batch_search(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
+{
+  char *end;
+  int num;
+  int found;
+  int first;
+  int last;
+
+  found = send_batch_group(nick, hostname, hostmask, what, pwd);
+  if (found != 0)
+    return found;
+
+  /* range */
+  if (*what == '#') what ++;
+  end = strchr(what, '-');
+  if (end == NULL)
+    return found;
+  first = atoi(what);
+  last = atoi(++end);
+  for (num = first; num <= last; num ++) {
+    found ++;
+    if (sendxdccfile(nick, hostname, hostmask, num, NULL, pwd))
+      return found;
+  }
+  return found;
+}
+
+
+void send_batch(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
+{
+  int found;
+
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC BATCH %s (%s on %s)",
+          what, hostname, gnetwork->name);
+
+  found = send_batch_search(nick, hostname, hostmask, what, pwd);
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC BATCH %s, %d packs (%s on %s)",
+          what, found, hostname, gnetwork->name);
+  if (found != 0)
+    return;
+
+  notice(nick, "** Invalid Pack Number, Try Again");
 }
 
 void free_channel_data(channel_t *ch)

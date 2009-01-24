@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+288) send_batch, XDCC BATCH 
+  Erlaube XDCC BATCH. Die Pakete werden in die Warteschlangen eingefügt.
+  default: nicht erlaubt
+ 
+  Neue User Kommandos:
+  XDCC BATCH <gruppe>                Sende alle Pakete einer Gruppe
+  XDCC BATCH <gruppe> <passwort>     Sende alle Pakete einer Gruppe mit Passwort
+  XDCC BATCH <von>-<bis>             Sende die Pakete von Nummer <von> bis Nummer <bis>
+  XDCC BATCH <von>-<bis> <passwort>  Sende die Pakete von Nummer <von> bis Nummer <bis> mit Passwort
+
 277) ruby_script
   Reload wenn sich das ruby_script geändert wird.
   Fehlerbehandlung bei Problemen im Skript.
