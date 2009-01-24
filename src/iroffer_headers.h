@@ -424,6 +424,7 @@ typedef struct
   short plistoffset;
   short delay;
   short noannounce;
+  short notrigger;
   short waitjoin;
   long nextann;
   long nextjoin;

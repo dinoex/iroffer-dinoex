@@ -1369,6 +1369,10 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char **part, int i)
     cptr->noannounce = 1;
     return 0;
   }
+  if (!strcmp(tptr, "-notrigger")) {
+    cptr->notrigger = 1;
+    return 0;
+  }
 
   if (!strcmp(tptr, "-pformat")) {
     tptr2 = part[++i];
