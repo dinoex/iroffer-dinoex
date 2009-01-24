@@ -426,6 +426,7 @@ typedef struct
   short noannounce;
   short notrigger;
   short waitjoin;
+  short dummy;
   long nextann;
   long nextjoin;
   long lastjoin;
