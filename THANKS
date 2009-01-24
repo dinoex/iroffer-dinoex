@@ -73,7 +73,7 @@ TheDeath
 	admin command "LOGOUT"
 	reporting crash whith geoip
 	option "geoipdatabase"
-        option "channel -noannounce"
+	option "channel -noannounce"
 	admin command "sort name/group/desc"
 	admin command "sort -name/-group/-desc"
 	admin command "XDTRIGGER"
@@ -87,7 +87,7 @@ TheDeath
 	reporting xdcclistfile over HTTP bug
 	option "no_minspeed_on_free"
 	option "no_status_log"
-        user command "XDCC SEARCH" with mutiple patterns
+	user command "XDCC SEARCH" with mutiple patterns
 	option "no_auto_rehash"
 	suggesting XDCC BATCH
 
@@ -269,7 +269,7 @@ dondieschotte
 
 dsd
 	admin command "autoadd"
-        admin command "sannounce"
+	admin command "sannounce"
 	option "autoaddann_short"
 	reporting "restrictsend" bug
 	admin command "LOCK n m pwd"
