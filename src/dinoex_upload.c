@@ -95,7 +95,7 @@ int l_setup_listen(upload * const l)
 
   msg = setup_dcc_local(&(l->con.local));
   tempstr = getsendname(l->file);
-  privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "u %d\1",
+  privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %d\1",
                tempstr, msg, l->totalsize, l->token);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND sent to %s on %s, waiting for connection on %s",
@@ -304,7 +304,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   ul->net = gnetwork->net;
   tempstr = getsendname(ul->file);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "uKB)",
+          "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "dKB)",
           nick, gnetwork->name, tempstr,
           (ul->totalsize / 1024));
   mydelete(tempstr);

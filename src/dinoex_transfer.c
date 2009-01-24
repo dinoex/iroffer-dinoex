@@ -260,7 +260,7 @@ int t_find_resume(const char *nick, const char *filename, const char *localport,
   if (len >= tr->xpack->st_size) {
     notice(nick, "You can't resume the transfer at a point greater than the size of the file");
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC [%02i:%s on %s]: Resume attempted beyond end of file ( %" LLPRINTFMT "u >= %" LLPRINTFMT "d )",
+            "XDCC [%02i:%s on %s]: Resume attempted beyond end of file ( %" LLPRINTFMT "d >= %" LLPRINTFMT "d )",
             tr->id, tr->nick, gnetwork->name, len,
             tr->xpack->st_size);
     return 1;
@@ -391,7 +391,7 @@ int verify_acknowlede(transfer *tr)
          tr->mirc_dcc64 = 1;
          tr->curack = tr->firstack << 32;
          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                 "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes, forcing 64bit",
+                 "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "d Bytes, forcing 64bit",
                  tr->id, tr->nick, gdata.networks[ tr->net ].name,
                  tr->firstack );
       }
@@ -407,7 +407,7 @@ int verify_acknowlede(transfer *tr)
       while (tr->curack < tr->lastack) {
         if (tr->curack < halfack)
           outerror(OUTERROR_TYPE_WARN,
-                   "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "u Bytes after %" LLPRINTFMT "u Bytes",
+                   "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "d Bytes after %" LLPRINTFMT "d Bytes",
                    tr->id, tr->nick, gdata.networks[ tr->net ].name,
                    tr->curack, tr->lastack);
         tr->curack += 0x100000000LL;
