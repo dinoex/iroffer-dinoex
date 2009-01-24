@@ -1628,7 +1628,7 @@ void dumpgdata(void)
                 iter2->ref_count,
                 iter2->mmap_ptr,
                 iter2->mmap_offset,
-                iter2->mmap_size);
+                (ir_int64)(iter2->mmap_size));
       }
   }
 #endif
