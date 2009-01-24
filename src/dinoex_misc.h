@@ -55,6 +55,8 @@ xdcc *get_xdcc_pack(int pack);
 xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text, int restr);
 
 int packnumtonum(const char *a);
+int ignore_trigger_dest(const char *dest);
+int ignore_trigger_line(const char *line);
 int check_trigger(const char *line, int type, const char *nick, const char *hostmask, const char *msg);
 
 void lost_nick(const char *nick);

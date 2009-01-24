@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
-288) send_batch, XDCC BATCH (suggested by: Otaku, Alita-chan, TheDeath, satmd)
+279) channel -notrigger (inspired by AnimeNeko)
+  Do not respond to any triggers on this channel.
+
+278) send_batch, XDCC BATCH (inspired by: Otaku, Alita-chan, TheDeath, satmd)
   Permit XDCC BATCH. The packs are Quueed up in the bot is possible.
   default: disabled
 

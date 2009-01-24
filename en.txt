@@ -2317,3 +2317,4 @@
 2422 "\2**\2 Download batch:    \"/MSG %s XDCC BATCH group\" \2**\2"
 2423 "XDCC BATCH %s (%s on %s)"
 2424 "XDCC BATCH %s, %d packs (%s on %s)"
+2425 "-notrigger"

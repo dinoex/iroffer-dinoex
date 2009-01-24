@@ -2356,6 +2356,11 @@ static void privmsgparse(int type, int decoded, char* line)
       }
    hostname[j]='\0';
    
+   if (ignore_trigger_dest(dest))
+     {
+       goto privmsgparse_cleanup;
+     }
+   
    /*----- CLIENTINFO ----- */
    if ( !gdata.ignore && (!strcmp(msg1,"\1CLIENTINFO")
           || !strcmp(msg1,"\1CLIENTINFO\1") )) {

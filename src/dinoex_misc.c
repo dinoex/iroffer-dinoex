@@ -1241,6 +1241,30 @@ int packnumtonum(const char *a)
   return atoi(a);
 }
 
+int ignore_trigger_dest(const char *dest)
+{
+  channel_t *ch;
+
+  if (!dest)
+    return 1;
+
+  if (*dest != '#')
+    return 0;
+
+  for (ch = irlist_get_head(&(gnetwork->channels));
+       ch;
+       ch = irlist_get_next(ch)) {
+    if (strcasecmp(ch->name, dest) != 0)
+      continue;
+
+    if (ch->notrigger)
+      return 1;
+
+    return 0;
+  }
+  return 0;
+}
+
 int check_trigger(const char *line, int type, const char *nick, const char *hostmask, const char *msg)
 {
   autoqueue_t *aq;
@@ -1665,7 +1689,6 @@ static int send_batch_search(const char* nick, const char* hostname, const char*
   }
   return found;
 }
-
 
 void send_batch(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
 {

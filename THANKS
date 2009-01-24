@@ -456,6 +456,7 @@ Drake
 
 AnimeNeko
 	suggesting "no_duplicate_filenames" option
+	suggesting channel -notrigger
 
 spielefreak
 	reporting "CANNOUNCE" bug

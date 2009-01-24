@@ -3443,6 +3443,7 @@ void a_join(const userinput * const u)
   caps(u->arg1);
   ch->name = mystrdup(u->arg1);
   ch->noannounce = 1;
+  ch->notrigger = 1;
   ch->nextjoin = gdata.curtime;
   if (u->arg3)
     ch->key = mystrdup(u->arg3);
