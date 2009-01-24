@@ -263,7 +263,7 @@ typedef struct
 #endif
   long tx_bucket;
   time_t restrictsend_bad;
-  unsigned long long connecttimems;
+  ir_uint64 connecttimems;
   unsigned long remoteip;
   float lastspeed;
   float maxspeed;

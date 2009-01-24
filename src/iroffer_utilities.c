@@ -1079,10 +1079,10 @@ void dumpgdata(void)
           "  : clientsocket=%d filedescriptor=%d",
           iter->con.clientsocket, iter->filedescriptor);
   ioutput(gdata_common,
-          "  : bytesgot=%" LLPRINTFMT "u bytessent=%" LLPRINTFMT "u",
+          "  : bytesgot=%" LLPRINTFMT "d bytessent=%" LLPRINTFMT "d",
           iter->bytesgot, iter->bytessent);
   ioutput(gdata_common,
-          "  : filepos=%" LLPRINTFMT "u totalsize=%" LLPRINTFMT "u",
+          "  : filepos=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d",
           iter->filepos, iter->totalsize);
   ioutput(gdata_common,
           "  : lastcontact=%ld connecttime=%ld",
@@ -1326,9 +1326,9 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
   
   gdata_print_string(uploaddir);
-  gdata_print_number("%" LLPRINTFMT "u", uploadmaxsize);
-  gdata_print_number("%" LLPRINTFMT "u", uploadminspace);
-  gdata_print_number("%" LLPRINTFMT "u", disk_quota);
+  gdata_print_number("%" LLPRINTFMT "d", uploadmaxsize);
+  gdata_print_number("%" LLPRINTFMT "d", uploadminspace);
+  gdata_print_number("%" LLPRINTFMT "d", disk_quota);
   gdata_print_string(config_nick);
   gdata_print_string(user_realname);
   gdata_print_string(user_modes);
@@ -1534,7 +1534,7 @@ void dumpgdata(void)
   
   gdata_print_float(record);
   gdata_print_float(sentrecord);
-  gdata_print_number("%" LLPRINTFMT "u", totalsent);
+  gdata_print_number("%" LLPRINTFMT "d", totalsent);
   gdata_print_long(totaluptime);
   gdata_print_int(debug);
   gdata_print_int(exiting);
@@ -1567,21 +1567,21 @@ void dumpgdata(void)
   gdata_print_int(delayedshutdown);
   gdata_print_int(cursendptr);
   gdata_print_int(next_tr_id);
-  gdata_print_number("%" LLPRINTFMT "u", max_file_size);
-  
+  gdata_print_number("%" LLPRINTFMT "d", max_file_size);
+
   gdata_print_uint(max_fds_from_rlimit);
-  
+
   gdata_print_int(logfd);
-  
+
   /* sendbuff context_log context_cur_ptr */
-  
+
   gdata_irlist_iter_start(ignorelist, igninfo);
   ioutput(gdata_common,
-          "  : hostmask=%s flags=%d bucket=%ld lastcontact=%ld",
-          iter->hostmask,
-          iter->flags,
-          iter->bucket,
-          (long)iter->lastcontact);
+		  "  : hostmask=%s flags=%d bucket=%ld lastcontact=%ld",
+		  iter->hostmask,
+		  iter->flags,
+		  iter->bucket,
+		  (long)iter->lastcontact);
   gdata_irlist_iter_end;
   
   gdata_irlist_iter_start(xdccs, xdcc);
@@ -1591,7 +1591,7 @@ void dumpgdata(void)
   gdata_iter_print_string(trigger);
   gdata_iter_print_number_cast("%d", xtime, int);
   ioutput(gdata_common,
-          "  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "u",
+          "  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "d",
           iter,
           iter->gets,
           iter->minspeed,
@@ -1599,7 +1599,7 @@ void dumpgdata(void)
           iter->st_size);
   /* st_dev st_ino */
   ioutput(gdata_common,
-          "  : fd=%d fd_count=%d fd_loc=%" LLPRINTFMT "u",
+          "  : fd=%d fd_count=%d fd_loc=%" LLPRINTFMT "d",
           iter->file_fd,
           iter->file_fd_count,
           iter->file_fd_location);
@@ -1628,7 +1628,7 @@ void dumpgdata(void)
                 iter2->ref_count,
                 iter2->mmap_ptr,
                 iter2->mmap_offset,
-                (unsigned long long)iter2->mmap_size);
+                iter2->mmap_size);
       }
   }
 #endif
@@ -1664,7 +1664,7 @@ void dumpgdata(void)
           iter->id);
   ioutput(gdata_common, "  : net=%d", iter->net + 1 );
   ioutput(gdata_common,
-          "  : sent=%" LLPRINTFMT "u got=%" LLPRINTFMT "u lastack=%" LLPRINTFMT "u curack=%" LLPRINTFMT "u resume=%" LLPRINTFMT "u speedamt=%" LLPRINTFMT "u tx_bucket=%li",
+          "  : sent=%" LLPRINTFMT "d got=%" LLPRINTFMT "d lastack=%" LLPRINTFMT "d curack=%" LLPRINTFMT "d resume=%" LLPRINTFMT "d speedamt=%" LLPRINTFMT "d tx_bucket=%li",
           iter->bytessent,
           iter->bytesgot,
           iter->lastack,
@@ -1708,7 +1708,7 @@ void dumpgdata(void)
           iter->filedescriptor,
           iter->ul_status);
   ioutput(gdata_common,
-          "  : got=%" LLPRINTFMT "u totalsize=%" LLPRINTFMT "u resume=%" LLPRINTFMT "u speedamt=%" LLPRINTFMT "u",
+          "  : got=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d resume=%" LLPRINTFMT "d speedamt=%" LLPRINTFMT "d",
           iter->bytesgot,
           iter->totalsize,
           iter->resumesize,

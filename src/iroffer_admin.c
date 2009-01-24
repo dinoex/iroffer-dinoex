@@ -1638,7 +1638,7 @@ static void u_info(const userinput * const u)
   if (u->level > 0) 
     {
   u_respond(u, " Device/Inode   %" LLPRINTFMT "u/%" LLPRINTFMT "u",
-            (unsigned long long)xd->st_dev, (unsigned long long)xd->st_ino);
+            (ir_uint64)xd->st_dev, (ir_uint64)xd->st_ino);
     }
   
   u_respond(u, " Gets           %d", xd->gets);

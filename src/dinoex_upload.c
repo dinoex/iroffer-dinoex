@@ -128,8 +128,8 @@ int l_setup_passive(upload * const l, char *token)
   if (retval == 2)
     {
       tempstr = getsendname(l->file);
-      privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "u %d\1",
-                   tempstr, l->con.remoteport, (unsigned long long)s.st_size, l->token);
+      privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "d %d\1",
+                   tempstr, l->con.remoteport, s.st_size, l->token);
       mydelete(tempstr);
       l->con.connecttime = gdata.curtime;
       l->con.lastcontact = gdata.curtime;

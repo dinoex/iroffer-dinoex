@@ -237,8 +237,8 @@ void l_transfersome (upload * const l) {
                " %li sec", timetook%60);
       
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
-              "DCC Upload: Transfer Completed (%" LLPRINTFMT "u KB,%s, %0.1f KB/sec)",
-              (long long)((mysize)/1024),
+              "DCC Upload: Transfer Completed (%" LLPRINTFMT "d KB,%s, %0.1f KB/sec)",
+              mysize/1024,
               tempstr,
               ((float)mysize)/1024.0/((float)timetook));
       

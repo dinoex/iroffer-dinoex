@@ -759,7 +759,7 @@ void read_statefile(void)
       return;
     }
   
-  if ((fstat(fd, &st) < 0) || (st.st_size < ((sizeof(ir_uint32) * 2) + sizeof(MD5Digest))))
+  if ((fstat(fd, &st) < 0) || (st.st_size < ((off_t)(sizeof(ir_uint32) * 2) + (off_t)(sizeof(MD5Digest)))))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
               COLOR_NO_COLOR, "State File: Too small, Skipping");
