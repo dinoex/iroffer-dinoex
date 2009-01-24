@@ -1332,7 +1332,7 @@ char* getstatusline(char *str, int len)
                irlist_size(&gdata.idlequeue),
                gdata.idlequeuesize,
                srvq,
-               (unsigned long long)(xdccsent/1024),
+               xdccsent/1024,
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
                ((float)xdccrecv)/XDCC_SENT_SIZE/1024.0,
                ((float)xdccsum)/XDCC_SENT_SIZE/1024.0);
@@ -1347,7 +1347,7 @@ char* getstatusline(char *str, int len)
                gdata.queuesize,
                gdata.record,
                srvq,
-               (unsigned long long)(xdccsent/1024),
+               xdccsent/1024,
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
                gdata.sentrecord);
     }
@@ -1407,7 +1407,7 @@ char* getstatuslinenums(char *str, int len)
                0, 0,
                gdata.record,
                srvq,
-               (unsigned long long)(xdccsent/1024),
+               xdccsent/1024,
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
                gdata.sentrecord);
    if ((i < 0) || (i >= len))
@@ -1817,7 +1817,7 @@ void initvars(void)
 #endif
   
   gdata.startuptime = gdata.curtime = time(NULL);
-  gdata.curtimems = ((unsigned long long)gdata.curtime) * 1000;
+  gdata.curtimems = ((ir_uint64)gdata.curtime) * 1000;
   
   gdata.sendbuff = mycalloc(BUFFERSIZE);
   gdata.console_input_line = mycalloc(INPUT_BUFFER_LENGTH);

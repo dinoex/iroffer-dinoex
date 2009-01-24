@@ -28,7 +28,7 @@ char *mystrdup2(const char *str, const char *src_function, const char *src_file,
 {
   char *copy;
 
-  copy = mymalloc2(strlen(str)+1, 0, src_function, src_file, src_line);
+  copy = (char *)mymalloc2(strlen(str)+1, 0, src_function, src_file, src_line);
   strcpy(copy, str);
   return copy;
 }
@@ -41,11 +41,11 @@ int verifyshell(irlist_t *list, const char *file)
 
   updatecontext();
 
-  pattern = irlist_get_head(list);
+  pattern = (char *)irlist_get_head(list);
   while (pattern) {
     if (fnmatch(pattern, file, FNM_CASEFOLD) == 0)
       return 1;
-    pattern = irlist_get_next(pattern);
+    pattern = (char *)irlist_get_next(pattern);
   }
   return 0;
 }
@@ -138,7 +138,7 @@ char *to_hostmask(const char *nick, const char *hostname)
   int len;
 
   len = strlen(hostname) + strlen(nick) + 4;
-  hostmask = mymalloc(len + 1);
+  hostmask = (char *)mymalloc(len + 1);
   snprintf(hostmask, len, "%s!*@%s", nick, hostname);
   return hostmask;
 }
@@ -223,7 +223,7 @@ char *hostmask_to_fnmatch(const char *str)
     if ( (*src == '[') || (*src == ']') )
       maxlen ++;
   }
-  base = mycalloc(maxlen + 1);
+  base = (char *)mycalloc(maxlen + 1);
   for (src=str, dest=base; *src; src++) {
     if (*src == '#') {
       *(dest++) = '[';
@@ -293,7 +293,7 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
 char *sizestr(int spaces, off_t num)
 {
 #define SIZESTR_SIZE 5
-  char *str = mycalloc(SIZESTR_SIZE);
+  char *str = (char *)mycalloc(SIZESTR_SIZE);
   float val;
 
   if (num <= 0) {
@@ -351,7 +351,7 @@ char *sizestr(int spaces, off_t num)
     return str;
   }
   mydelete(str);
-  str = mycalloc(SIZESTR_SIZE + SIZESTR_SIZE);
+  str = (char *)mycalloc(SIZESTR_SIZE + SIZESTR_SIZE);
   snprintf(str, SIZESTR_SIZE + SIZESTR_SIZE , "%.0fE", val);
   return str;
 }
@@ -587,7 +587,7 @@ int get_argv(char **result, const char *line, int howmany)
 
     /* found end */
 #ifndef WITHOUT_MEMSAVE
-    dest = mymalloc2(plen + 1, 0, src_function, src_file, src_line);
+    dest = (char *)mymalloc2(plen + 1, 0, src_function, src_file, src_line);
 #else /* WITHOUT_MEMSAVE */
     dest = mymalloc(plen + 1);
 #endif /* WITHOUT_MEMSAVE */
@@ -666,7 +666,7 @@ char *getpart(const char *line, int howmany)
     break;
   }
 #ifndef WITHOUT_MEMSAVE
-  dest = mymalloc2(plen + 1, 0, src_function, src_file, src_line);
+  dest = (char *)mymalloc2(plen + 1, 0, src_function, src_file, src_line);
 #else /* WITHOUT_MEMSAVE */
   dest = mymalloc(plen + 1);
 #endif /* WITHOUT_MEMSAVE */

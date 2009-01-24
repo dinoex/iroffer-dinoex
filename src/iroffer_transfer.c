@@ -361,7 +361,7 @@ void t_transfersome (transfer * const t)
               goto done;
             }
           if (!t->mmap_info ||
-              (t->bytessent >= (t->mmap_info->mmap_offset + t->mmap_info->mmap_size)))
+              ((ir_uint64)(t->bytessent) >= (t->mmap_info->mmap_offset + t->mmap_info->mmap_size)))
             {
               int callval_i;
               mmap_info_t *mm;
@@ -402,7 +402,7 @@ void t_transfersome (transfer * const t)
                   mm->ref_count++;
                   mm->mmap_offset = t->bytessent & ~(IR_MMAP_SIZE-1);
                   mm->mmap_size = IR_MMAP_SIZE;
-                  if ((mm->mmap_offset + mm->mmap_size) > t->xpack->st_size)
+                  if ((mm->mmap_offset + mm->mmap_size) > (ir_uint64)(t->xpack->st_size))
                     {
                       mm->mmap_size = t->xpack->st_size - mm->mmap_offset;
                     }
@@ -435,7 +435,7 @@ void t_transfersome (transfer * const t)
                               "mmap() [%p] offset=0x%.8" LLPRINTFMT "X size=0x%.8" LLPRINTFMT "X",
                               mm->mmap_ptr,
                               mm->mmap_offset,
-                              (unsigned long long)mm->mmap_size);
+                              mm->mmap_size);
                     }
                 }
             }
@@ -485,7 +485,7 @@ void t_transfersome (transfer * const t)
         gdata.xdccsent[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
       t->tx_bucket -= howmuch2;
       j += howmuch2;
-      gdata.totalsent += (unsigned long long)howmuch2;
+      gdata.totalsent += howmuch2;
       
       for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
         {
@@ -633,7 +633,7 @@ void t_istimeout (transfer * const t)
 
 void t_flushed (transfer * const t)
 {
-  unsigned long long timetookms;
+  ir_uint64 timetookms;
   char *tempstr;
   
   updatecontext();

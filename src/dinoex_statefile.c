@@ -96,7 +96,7 @@ static int write_statefile_int(ir_boutput_t *bout, statefile_tag_t tag, ir_int32
   return write_statefile_item(bout, &a_int);
 }
 
-static int write_statefile_ullint(ir_boutput_t *bout, statefile_tag_t tag, unsigned long long val)
+static int write_statefile_ullint(ir_boutput_t *bout, statefile_tag_t tag, ir_uint64 val)
 {
   statefile_item_generic_ullint_t a_ullint;
 

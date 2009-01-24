@@ -66,14 +66,14 @@ void t_setup_dcc(transfer *tr, const char *nick)
   dccdata = setup_dcc_local(&tr->con.local);
   if (gdata.passive_dcc) {
     bzero((char *) &(tr->con.local), sizeof(tr->con.local));
-    privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "u %d\1",
+    privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %d\1",
                  sendnamestr, dccdata,
-                 (unsigned long long)tr->xpack->st_size,
+                 tr->xpack->st_size,
                  tr->id);
   } else {
-    privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "u\1",
+    privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "d\1",
                  sendnamestr, dccdata,
-                 (unsigned long long)tr->xpack->st_size);
+                 tr->xpack->st_size);
 
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "listen on port %d for %s (%s on %s)",
@@ -260,7 +260,7 @@ int t_find_resume(const char *nick, const char *filename, const char *localport,
   if (len >= tr->xpack->st_size) {
     notice(nick, "You can't resume the transfer at a point greater than the size of the file");
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC [%02i:%s on %s]: Resume attempted beyond end of file ( %" LLPRINTFMT "u >= %" LLPRINTFMT "u )",
+            "XDCC [%02i:%s on %s]: Resume attempted beyond end of file ( %" LLPRINTFMT "u >= %" LLPRINTFMT "d )",
             tr->id, tr->nick, gnetwork->name, len,
             tr->xpack->st_size);
     return 1;
@@ -275,8 +275,8 @@ int t_find_resume(const char *nick, const char *filename, const char *localport,
   }
   mydelete(sendnamestr);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "uK", tr->id,
-          tr->nick, gnetwork->name, (long long)(tr->startresume / 1024));
+          "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "dK", tr->id,
+          tr->nick, gnetwork->name, tr->startresume/1024);
   return 0;
 }
 

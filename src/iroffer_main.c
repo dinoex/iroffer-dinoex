@@ -99,7 +99,7 @@ static void mainloop (void) {
    static time_t lastautoadd;
    static long last3min, last2min, lastignoredec, lastperiodicmsg;
    static int first_loop = 1;
-   static unsigned long long last250ms;
+   static ir_uint64 last250ms;
 
    userinput *pubplist;
    userinput *urehash;
@@ -124,7 +124,7 @@ static void mainloop (void) {
        FD_ZERO(&gdata.writeset);
        changehour=changemin=changesec=changequartersec=0;
        lasttime=gdata.curtime;
-       last250ms = ((unsigned long long)lasttime) * 1000;
+       last250ms = ((ir_uint64)lasttime) * 1000;
        lastmin=(lasttime/60)-1;
        lasthour=(lasttime/60/60)-1;
        last4sec = last5sec = last20sec = last2min = last3min = lasttime;
@@ -330,7 +330,7 @@ static void mainloop (void) {
           outerror(OUTERROR_TYPE_CRASH,"gettimeofday() failed! %s\n",strerror(errno));
         }
       
-      gdata.curtimems = (((unsigned long long)timestruct.tv_sec) * 1000) + (((unsigned long long)timestruct.tv_usec) / 1000);
+      gdata.curtimems = (((ir_uint64)timestruct.tv_sec) * 1000) + (((ir_uint64)timestruct.tv_usec) / 1000);
       gdata.curtime = timestruct.tv_sec;
       
       /* adjust for drift and cpu usage */

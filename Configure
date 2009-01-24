@@ -464,14 +464,14 @@ main (int argc, char **argv) {
  exit(0);
  }
 " > config.temp.c
-if $cctype -DC_IR_INT64="long long" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
- echo "long long"
- echo "typedef long long ir_int64;" >> src/iroffer_config.h
- echo "typedef unsigned long long ir_uint64;" >> src/iroffer_config.h
-elif $cctype -DC_IR_INT64="long" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
+if $cctype -DC_IR_INT64="long" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
  echo "long"
  echo "typedef long ir_int64;" >> src/iroffer_config.h
  echo "typedef unsigned long ir_uint64;" >> src/iroffer_config.h
+elif $cctype -DC_IR_INT64="long long" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
+ echo "long long"
+ echo "typedef long long ir_int64;" >> src/iroffer_config.h
+ echo "typedef unsigned long long ir_uint64;" >> src/iroffer_config.h
 elif $cctype -DC_IR_INT64="int" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
  echo "int"
  echo "typedef int ir_int64;" >> src/iroffer_config.h
@@ -621,7 +621,7 @@ else
 fi
 
 
-echo -n "Seeing how to display long long using printf... "
+echo -n "Seeing how to display 64bit using printf... "
 echo "
 #define GEX 
 #include \"src/iroffer_config.h\"
@@ -634,18 +634,18 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv)
   {
-    long long a = 1000000000;
+    ir_int64 a = 1000000000;
     a = a*10;
     printf(\"%\" LLPRINTFMT \"i\",a);
     exit(0);
   }
 " > config.temp.c
-if $cctype -DLLPRINTFMT=\"ll\" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
- echo "ll"
- echo "#define LLPRINTFMT \"ll\"" >> src/iroffer_config.h
-elif $cctype -DLLPRINTFMT=\"L\" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
+if $cctype -DLLPRINTFMT=\"L\" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "L"
  echo "#define LLPRINTFMT \"L\"" >> src/iroffer_config.h
+elif $cctype -DLLPRINTFMT=\"ll\" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
+ echo "ll"
+ echo "#define LLPRINTFMT \"ll\"" >> src/iroffer_config.h
 elif $cctype -DLLPRINTFMT=\"l\" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "l"
  echo "#define LLPRINTFMT \"l\"" >> src/iroffer_config.h
