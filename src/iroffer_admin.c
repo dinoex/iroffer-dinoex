@@ -1208,7 +1208,7 @@ static void u_dcld(const userinput * const u)
                    "%1.1fK", tr->maxspeed);
           
           u_respond(u,
-                    "  ^- %5.1fK/s    %6" LLPRINTFMT "uK/%6" LLPRINTFMT "uK  %2i%c%02i%c/%2i%c%02i%c  %5s/%5s  %7s",
+                    "  ^- %5.1fK/s    %6" LLPRINTFMT "dK/%6" LLPRINTFMT "dK  %2i%c%02i%c/%2i%c%02i%c  %5s/%5s  %7s",
                     tr->lastspeed,
                     (tr->bytessent/1024),
                     (tr->xpack->st_size/1024),
@@ -1297,7 +1297,7 @@ static void u_dcld(const userinput * const u)
           started = min2(359999, gdata.curtime-ul->con.connecttime);
           
           u_respond(u,
-                    "  ^- %5.1fK/s    %6" LLPRINTFMT "uK/%6" LLPRINTFMT "uK  %2i%c%02i%c/%2i%c%02i%c",
+                    "  ^- %5.1fK/s    %6" LLPRINTFMT "dK/%6" LLPRINTFMT "dK  %2i%c%02i%c/%2i%c%02i%c",
                     ul->lastspeed,
                     (ul->bytesgot/1024),
                     (ul->totalsize/1024),
@@ -1628,7 +1628,7 @@ static void u_info(const userinput * const u)
     }
   
   sizestrstr = sizestr(1, xd->st_size);
-  u_respond(u, " Filesize       %" LLPRINTFMT "u [%sB]",
+  u_respond(u, " Filesize       %" LLPRINTFMT "d [%sB]",
             xd->st_size, sizestrstr);
   mydelete(sizestrstr);
   
@@ -2629,7 +2629,7 @@ static void u_botinfo(const userinput * const u) {
    
    if (irlist_size(&gdata.uploadhost)) {
       snprintf(tempstr,maxtextlength - 1,
-               "%" LLPRINTFMT "uMB",
+               "%" LLPRINTFMT "dMB",
                (gdata.uploadmaxsize/1024/1024));
       u_respond(u, "upload allowed, dir: %s, max size: %s",
                 gdata.uploaddir,
@@ -3039,7 +3039,7 @@ static void u_memstat(const userinput * const u)
             {
               u_respond(u," %4i | 0x%8.8" LLPRINTFMT "X .. 0x%8.8" LLPRINTFMT "X | %p | %10d",
                         pack_count,
-                        mm->mmap_offset,
+                        (ir_uint64)(mm->mmap_offset),
                         mm->mmap_offset + mm->mmap_size - 1,
                         mm->mmap_ptr,
                         mm->ref_count);
@@ -3248,7 +3248,7 @@ static void u_trinfo(const userinput * const u)
   
   u_respond(u,"File: %s",getfilename(tr->xpack->file));
   
-  u_respond(u, "Start %" LLPRINTFMT "uK, Current %" LLPRINTFMT "uK, End %" LLPRINTFMT "uK (%2.0f%% File, %2.0f%% Xfer)",
+  u_respond(u, "Start %" LLPRINTFMT "dK, Current %" LLPRINTFMT "dK, End %" LLPRINTFMT "dK (%2.0f%% File, %2.0f%% Xfer)",
             (tr->startresume/1024),
             (tr->bytessent/1024),
             (tr->xpack->st_size/1024),
@@ -3261,7 +3261,7 @@ static void u_trinfo(const userinput * const u)
   snprintf(tempstr2,maxtextlengthshort-1,"%1.1fK/s",tr->xpack->minspeed);
   snprintf(tempstr3, maxtextlengthshort-1, "%1.1fK/s", tr->maxspeed);
   
-  u_respond(u, "Min %s, Current %1.1fK/s, Max %s, In Transit %" LLPRINTFMT "uK",
+  u_respond(u, "Min %s, Current %1.1fK/s, Max %s, In Transit %" LLPRINTFMT "dK",
             (tr->nomin || (tr->xpack->minspeed == 0.0)) ? "no" : tempstr2 ,
             tr->lastspeed,
             (tr->nomax || (tr->maxspeed == 0.0)) ? "no" : tempstr3 ,
@@ -3300,9 +3300,9 @@ static void u_trinfo(const userinput * const u)
     {
       u_respond(u,"MMAP: [%p] 0x%.8" LLPRINTFMT "X .. 0x%.8" LLPRINTFMT "X .. 0x%.8" LLPRINTFMT "X",
                 tr->mmap_info->mmap_ptr,
-                tr->mmap_info->mmap_offset,
-                tr->bytessent,
-                tr->mmap_info->mmap_offset + tr->mmap_info->mmap_size - 1);
+                (ir_uint64)(tr->mmap_info->mmap_offset),
+                (ir_uint64)(tr->bytessent),
+                (ir_uint64)(tr->mmap_info->mmap_offset + tr->mmap_info->mmap_size - 1));
     }
 #endif
   

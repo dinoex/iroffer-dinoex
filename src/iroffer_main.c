@@ -2583,7 +2583,7 @@ static void privmsgparse(int type, int decoded, char* line)
                   ul->resumed = 1;
                   tempstr = getsendname(ul->file);
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                          "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "u of %" LLPRINTFMT "uKB left)",
+                          "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "d of %" LLPRINTFMT "dKB left)",
                           nick, gnetwork->name, tempstr,
                           ((ul->totalsize - ul->resumesize) / 1024),
                           (ul->totalsize / 1024));
