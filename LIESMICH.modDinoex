@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+bugfix: trashcan_dir
+  Entferne Dateien nicht, wenn das verschieben fehlschlägt.
+
 bugfix: FILEDEL
   Bot stürzte bei relativen Pfaden ab.
 

@@ -1361,7 +1361,7 @@ int save_unlink(const char *path)
                   "Cant move file '%s' to '%s': %s",
                   path, dest, strerror(errno));
          mydelete(dest);
-         return unlink(path);
+         return -1;
       }
     }
     rc = rename(path, dest);
@@ -1369,10 +1369,11 @@ int save_unlink(const char *path)
       outerror(OUTERROR_TYPE_WARN_LOUD,
                "Cant move file '%s' to '%s': %s",
                path, dest, strerror(errno));
+      mydelete(dest);
+      return -1;
     }
     mydelete(dest);
-    if (rc == 0)
-      return 0;
+    return 0;
   }
   return unlink(path);
 }
