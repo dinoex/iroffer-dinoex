@@ -7,6 +7,7 @@ bugfix: trashcan_dir
   Don't remove files if moving fails.
 
 bugfix: FILEDEL (reported by Lamune)
+  versions affected: 3.0 - 3.11
   Bod did crash when using relative pathnames.
 
 279) channel -notrigger (inspired by AnimeNeko)

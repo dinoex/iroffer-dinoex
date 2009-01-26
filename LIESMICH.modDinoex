@@ -7,6 +7,7 @@ bugfix: trashcan_dir
   Entferne Dateien nicht, wenn das verschieben fehlschlägt.
 
 bugfix: FILEDEL
+  versions affected: 3.0 - 3.11
   Bot stürzte bei relativen Pfaden ab.
 
 279) channel -notrigger (inspired by AnimeNeko)
