@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+bugfix: FILEDEL (reported by Lamune)
+  Bod did crash when using relative pathnames.
+
 279) channel -notrigger (inspired by AnimeNeko)
   Do not respond to any triggers on this channel.
 

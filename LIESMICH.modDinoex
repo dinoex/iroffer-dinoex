@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+bugfix: FILEDEL
+  Bot stürzte bei relativen Pfaden ab.
+
 279) channel -notrigger (inspired by AnimeNeko)
   Antworte auf keine Trigger in diesem Channel.
 
