@@ -386,6 +386,7 @@ Lamune
 	reporting trigger ignore bugA
 	option "xdcc_deny" 
 	reporting "CLOSEC" bug
+	reporting "FILEDEL" bug
 
 DevelDoll
 	report transferlimits to user
