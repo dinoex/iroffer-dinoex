@@ -1552,21 +1552,21 @@ int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, 
   return 0;
 }
 
-static void a_filedel_disk(const userinput * const u, char *file)
+static void a_filedel_disk(const userinput * const u, char **file)
 {
   int xfiledescriptor;
   struct stat st;
 
   updatecontext();
 
-  xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
-  if (a_access_file(u, xfiledescriptor, &file, &st))
+  xfiledescriptor = a_open_file(file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (a_access_file(u, xfiledescriptor, file, &st))
     return;
 
-  if (save_unlink(file) < 0) {
-    a_respond(u, "File %s could not be deleted: %s", file, strerror(errno));
+  if (save_unlink(*file) < 0) {
+    a_respond(u, "File %s could not be deleted: %s", *file, strerror(errno));
   } else {
-    a_respond(u, "File %s was deleted.", file);
+    a_respond(u, "File %s was deleted.", *file);
   }
 }
 
@@ -1707,7 +1707,7 @@ xdcc *a_add2(const userinput * const u, const char *group)
 
       filename = mystrdup(xd->file);
       if (a_remove_pack(u, xd, number_of_pack(xd)) == 0)
-        a_filedel_disk(u, filename);
+        a_filedel_disk(u, &filename);
       mydelete(filename);
     }
   }
@@ -2903,6 +2903,8 @@ void a_movegroupdir(const userinput * const u)
 
 void a_filedel(const userinput * const u)
 {
+  char *filename;
+
   updatecontext();
 
   if (disabled_config(u) != 0)
@@ -2911,7 +2913,9 @@ void a_filedel(const userinput * const u)
   if (invalid_file(u, u->arg1) != 0)
     return;
 
-  a_filedel_disk(u, u->arg1);
+  filename = mystrdup(u->arg1);
+  a_filedel_disk(u, &filename);
+  mydelete(filename);
 }
 
 void a_fileremove(const userinput * const u)
@@ -2951,7 +2955,7 @@ void a_fileremove(const userinput * const u)
 
     filename = mystrdup(xd->file);
     if (a_remove_pack(u, xd, num2) == 0)
-      a_filedel_disk(u, filename);
+      a_filedel_disk(u, &filename);
     mydelete(filename);
   }
 }
