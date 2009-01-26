@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+bugfix: trashcan_dir
+  Don't remove files if moving fails.
+
 bugfix: FILEDEL (reported by Lamune)
   Bod did crash when using relative pathnames.
 
