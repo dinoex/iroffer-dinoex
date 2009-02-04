@@ -477,6 +477,7 @@ HymnToLife
 	install on BSD
 	reporting "ADDGROUP" bug
 	reporting "REGROUP" bug
+	reporting "FETCHCANCEL" bug
 
 Globulus
 	debugging "mirc_dcc64"

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.12:
 ------------------
 
+bugfix: FETCHCANCEL (reported by HymnToLife)
+  Allow to kill transfer if id > 1, make id static.
+
 bugfix: trashcan_dir
   Don't remove files if moving fails.
 

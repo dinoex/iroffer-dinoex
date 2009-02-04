@@ -3021,11 +3021,9 @@ void a_fetchcancel(const userinput * const u)
   updatecontext();
 
   if (u->arg1) num = atoi(u->arg1);
-  if (num < 1 || num > irlist_size(&gdata.xdccs)) {
+  if (fetch_cancel(num)) {
     a_respond(u, "Try Specifying a Valid Download Number");
-    return;
   }
-  fetch_cancel(num);
 }
 #endif /* USE_CURL */
 

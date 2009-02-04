@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.12:
 ----------------
 
+bugfix: FETCHCANCEL
+  Erlaube Übertragungen mit Id größer 1 abzubrechen.
+  Die Id ist jetzt für die Dauer der Übertragung fest.
+
 bugfix: trashcan_dir
   Entferne Dateien nicht, wenn das verschieben fehlschlägt.
 
