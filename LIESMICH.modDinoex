@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+bugfix: weblist_info
+  Zeige " im Namen nicht an.
+
 Ab Version 3.12:
 ----------------
 
