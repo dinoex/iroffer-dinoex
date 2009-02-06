@@ -1427,6 +1427,7 @@ static int h_html_index(http * const h)
       mydelete(buffer);
       continue;
     }
+    clean_quotes(text);
     h_html_weblist_info(h, buffer, text);
     mydelete(buffer);
   }
