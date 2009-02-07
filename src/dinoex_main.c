@@ -47,7 +47,7 @@ __attribute__ ((noreturn))
 usage(void)
 {
   printf("\n"
-"iroffer-dinoex " VERSIONLONG ", see http://iroffer.dinoex.net/\n"
+"iroffer-dinoex " VERSIONLONG ", see " "http://iroffer.dinoex.net/" "\n"
 "\n"
 "Usage: %s [-vc] [-bdkn"
 #if !defined(_OS_CYGWIN)
@@ -129,7 +129,7 @@ void command_options(int argc, const char *const *argv)
         break;
 #endif
       case 'v': /* show version */
-        printf("iroffer-dinoex " VERSIONLONG ", see http://iroffer.dinoex.net/\n");
+        printf("iroffer-dinoex " VERSIONLONG ", see " "http://iroffer.dinoex.net/" "\n");
         exit(0);
       default:
         usage();

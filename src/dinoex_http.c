@@ -1433,7 +1433,7 @@ static int h_html_index(http * const h)
   }
 
   h_respond(h, "</tbody>\n</table>\n<br>\n");
-  h_respond(h, "<a class=\"credits\" href=\"http://iroffer.dinoex.net/\">%s</a>\n", "Sourcecode" );
+  h_respond(h, "<a class=\"credits\" href=\"" "http://iroffer.dinoex.net/" "\">%s</a>\n", "Sourcecode" );
   return 0;
 }
 
