@@ -2426,7 +2426,7 @@ static void privmsgparse(int type, int decoded, char* line)
           goto privmsgparse_cleanup;
         }
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-      notice(nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s\1",
+      notice(nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s\1",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,

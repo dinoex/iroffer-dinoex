@@ -550,7 +550,7 @@ static void u_help(const userinput * const u)
             }
         }
     }
-  u_respond(u, "For additional help, see the documentation at http://iroffer.dinoex.net/");
+  u_respond(u, "For additional help, see the documentation at " "http://iroffer.dinoex.net/");
   
 }
 
@@ -2426,7 +2426,7 @@ static void u_botinfo(const userinput * const u) {
    
    u_respond(u,"BotInfo:");
    
-   u_respond(u, "iroffer-dinoex " VERSIONLONG ", http://iroffer.dinoex.net/%s%s",
+   u_respond(u, "iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
 
