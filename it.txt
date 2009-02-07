@@ -342,7 +342,7 @@
 344 " md5sum           "
 345 " crc32            %.8lX"
 346 "%s/%s"
-347 "Impossibile Accedere Alla Cartella: %s"
+347 "Impossibile accedere alla directory: %s"
 348 "Eliminate tutte le %d righe dello storico console"
 349 "Inviando %s pack %i"
 350 "man"
