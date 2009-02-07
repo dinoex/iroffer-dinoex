@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+bugfix: ADDDIR (reprted by [M]-V)
+  versions affected: 3.12
+  Fixed dirnames and filenames with spaces.
+
 improoved italian translation.
 
 bugfix: weblist_info
