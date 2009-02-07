@@ -1750,7 +1750,7 @@
 1832 "Inserisce nella coda inattiva il pack <n> per <nick>"
 1833 "REIQUEUE"
 1834 "Muove la voce della coda inattiva dalla posizione <x> a <y>"
-1835 "Current Idle Queue:"
+1835 "Coda inattiva attuale:"
 1836 "In ascolto alla porta %d per %s (%s in %s)"
 1837 "Stat: %i/%i Sls, %i/%i Q, %i/%i I, %i SrQ (Bdw: %"
 1838 "tcprangelimit"
