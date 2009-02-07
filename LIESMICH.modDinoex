@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+bugfix: ADDDIR
+  versions affected: 3.12
+  Feherbehebung bei Verzeichnissen und Dateien mit Leerzeichen.
+
 Erweiterte italienische Übersezung.
 
 bugfix: weblist_info

@@ -96,31 +96,21 @@ void a_respond(const userinput * const u, const char *format, ...)
 
 void a_parse_inputline(userinput * const u, const char *line)
 {
-  char *part1[2] = { NULL, NULL };
-  char *part2[2] = { NULL, NULL };
-  char *part3[2] = { NULL, NULL };
-  char *part4[2] = { NULL, NULL };
+  char *part[4] = { NULL, NULL, NULL, NULL };
 
   updatecontext();
 
   if (line == NULL)
     return;
 
-  get_argv(part1, line, 2);
-  u->cmd = caps(part1[0]);
-  u->arg1e = part1[1];
-
-  get_argv(part2, part1[1], 2);
-  u->arg1 = part2[0];
-  u->arg2e = part2[1];
-
-  get_argv(part3, part2[1], 2);
-  u->arg2 = part3[0];
-  u->arg3e = part3[1];
-
-  get_argv(part4, part3[1], 2);
-  u->arg3 = part4[0];
-  mydelete(part4[1]);
+  get_argv(part, line, 4);
+  u->cmd = caps(part[0]);
+  u->arg1 = part[1];
+  u->arg2 = part[2];
+  u->arg3 = part[3];
+  u->arg1e = getpart_eol(line, 2);
+  u->arg2e = getpart_eol(line, 3);
+  u->arg3e = getpart_eol(line, 4);
 }
 
 int get_network(const char *arg1)
