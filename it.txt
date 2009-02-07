@@ -107,7 +107,7 @@
 108 "UNLOCK"
 109 "Sblocca il pack <n> in <m>"
 110 "LOCKGROUP"
-111 "gruppo password" 
+111 "gruppo password"
 112 "Blocca tutti i pack del <gruppo> con <password>"
 113 "UNLOCKGROUP"
 114 "Sblocca tutti i pack nel <gruppo>"
