@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+improoved italian translation.
+
 bugfix: weblist_info
   Strip " from names in weblist.
 
