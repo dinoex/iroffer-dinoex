@@ -37,8 +37,7 @@ int l_setup_file(upload * const l, struct stat *stp)
   }
 
   /* local file already exists? */
-  fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(l->file) + 2);
-  sprintf(fullfile, "%s/%s", gdata.uploaddir, l->file);
+  fullfile = mystrjoin(gdata.uploaddir, l->file, '/');
 
   l->filedescriptor = open(fullfile,
                            O_WRONLY | O_CREAT | O_EXCL | ADDED_OPEN_FLAGS,

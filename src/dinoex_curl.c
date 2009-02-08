@@ -300,8 +300,7 @@ void start_fetch_url(const userinput *const u)
   while (*url == ' ') url ++;
 
   resumesize = 0;
-  fullfile = mymalloc(strlen(gdata.uploaddir) + strlen(name) + 2);
-  sprintf(fullfile, "%s/%s", gdata.uploaddir, name);
+  fullfile = mystrjoin(gdata.uploaddir, name, '/');
   writefd = fopen(fullfile, "w+");
   if ((writefd == NULL) && (errno == EEXIST)) {
     retval = stat(fullfile, &s);

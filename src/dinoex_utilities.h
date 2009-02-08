@@ -16,8 +16,14 @@
 #ifndef WITHOUT_MEMSAVE
 #define mystrdup(x) mystrdup2(x,__FUNCTION__,__FILE__,__LINE__)
 char *mystrdup2(const char *str, const char *src_function, const char *src_file, int src_line);
+#define mystrsuffix(x,y) mystrsuffix2(x,y,__FUNCTION__,__FILE__,__LINE__)
+char *mystrsuffix2(const char *str, const char *suffix, const char *src_function, const char *src_file, int src_line);
+#define mystrjoin(x,y,z) mystrjoin2(x,y,z,__FUNCTION__,__FILE__,__LINE__)
+char *mystrjoin2(const char *str1, const char *str2, char delimiter, const char *src_function, const char *src_file, int src_line);
 #else
 #define mystrdup(x) strdup(x)
+char *mystrsuffix(const char *str, const char *suffix);
+char *mystrjoin(const char *str1, const char *str2, char delimiter);
 #endif
 int verifyshell(irlist_t *list, const char *file);
 const char *save_nick(const char * nick);

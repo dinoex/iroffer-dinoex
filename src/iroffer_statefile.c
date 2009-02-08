@@ -208,11 +208,8 @@ void write_statefile(void)
       return;
     }
   
-  statefile_tmp = mymalloc(strlen(gdata.statefile)+5);
-  statefile_bkup = mymalloc(strlen(gdata.statefile)+2);
-  
-  sprintf(statefile_tmp,  "%s.tmp", gdata.statefile);
-  sprintf(statefile_bkup, "%s~",    gdata.statefile);
+  statefile_tmp = mystrsuffix(gdata.statefile, ".tmp");
+  statefile_bkup = mystrsuffix(gdata.statefile, "~");
   
   if (gdata.debug > 0)
     {

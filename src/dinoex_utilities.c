@@ -35,6 +35,53 @@ char *mystrdup2(const char *str, const char *src_function, const char *src_file,
 
 #endif /* WITHOUT_MEMSAVE */
 
+#ifndef WITHOUT_MEMSAVE
+char *mystrsuffix2(const char *str, const char *suffix, const char *src_function, const char *src_file, int src_line)
+#else
+char *mystrsuffix(const char *str, const char *suffix)
+#endif /* WITHOUT_MEMSAVE */
+{
+  char *copy;
+  size_t max;
+
+  max = strlen(str) + strlen(suffix) + 1;
+#ifndef WITHOUT_MEMSAVE
+  copy = (char *)mymalloc2(max, 0, src_function, src_file, src_line);
+#else /* WITHOUT_MEMSAVE */
+  copy = mymalloc(max);
+#endif /* WITHOUT_MEMSAVE */
+  snprintf(copy, max, "%s%s", str, suffix);
+  return copy;
+}
+
+#ifndef WITHOUT_MEMSAVE
+char *mystrjoin2(const char *str1, const char *str2, char delimiter, const char *src_function, const char *src_file, int src_line)
+#else
+char *mystrjoin(const char *str1, const char *str2, char delimiter)
+#endif /* WITHOUT_MEMSAVE */
+{
+  char *copy;
+  size_t len1;
+  size_t max;
+  size_t len;
+
+  len1 = strlen(str1);
+  max = len1 + strlen(str2) + 1;
+  if ((delimiter != 0 ) && (str1[len1] != delimiter))
+    max ++;
+#ifndef WITHOUT_MEMSAVE
+  copy = (char *)mymalloc2(max, 0, src_function, src_file, src_line);
+#else /* WITHOUT_MEMSAVE */
+  copy = mymalloc(max);
+#endif /* WITHOUT_MEMSAVE */
+  if ((delimiter != 0 ) && (str1[len1] != delimiter)) {
+    len = snprintf(copy, max, "%s%s", str1, str2);
+  } else {
+    len = snprintf(copy, max, "%s%c%s", str1, delimiter, str2);
+  }
+  return copy;
+}
+
 int verifyshell(irlist_t *list, const char *file)
 {
   char *pattern;
