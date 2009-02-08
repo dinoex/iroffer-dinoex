@@ -1675,7 +1675,7 @@ xdcc *a_add2(const userinput * const u, const char *group)
     for (ag = irlist_get_head(&gdata.autoadd_group_match);
          ag;
          ag = irlist_get_next(ag)) {
-       if (fnmatch(ag->a_pattern, u->arg1, FNM_CASEFOLD) != 0)
+       if (fnmatch(ag->a_pattern, file, FNM_CASEFOLD) != 0)
          continue;
 
        group = ag->a_group;
