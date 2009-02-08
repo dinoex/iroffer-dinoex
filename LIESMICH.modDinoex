@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+281) PRINT
+
+  Neues Admin Kommando:
+  PRINT <key>                        Zeige den Wert einen Varaiblen der Konfiguration.
+
+280) ruby_script
+  Breche die Bearbeitung ab, wenn das event mit 'true' bendet wird.
+
 bugfix: atfind
   versions affected: 3.12
   @find antwortete nur wenn in der Suche 3 Sonderzeichen waren.

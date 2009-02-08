@@ -3545,6 +3545,30 @@ void a_config(const userinput * const u)
   getconfig_set(u->arg1e);
 }
 
+void a_print(const userinput * const u)
+{
+  char *val;
+
+  if (u->method != method_console) {
+    if (!gdata.direct_config_access) {
+      a_respond(u, "Disabled in Config");
+      return;
+    }
+  }
+
+  if (!u->arg1 || !strlen(u->arg1)) {
+    a_respond(u, "Try Specifying a Key");
+    return;
+  }
+
+  val = print_config_key(u->arg1);
+  if (val != NULL) {
+    a_respond(u, "CONFIG %s is set to \"%s\"", u->arg1, val);
+    mydelete(val);
+    return;
+  }
+}
+
 void a_identify(const userinput * const u)
 {
   gnetwork_t *backup;
