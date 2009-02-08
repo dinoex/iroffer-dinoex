@@ -2810,7 +2810,6 @@ static void privmsgparse(int type, int decoded, char* line)
      {
       char *msg2e;
       
-outerror(OUTERROR_TYPE_WARN,"@find start %s",msg2);
       /* add/increment ignore list */
       if (check_ignore(nick, hostmask))
         {
