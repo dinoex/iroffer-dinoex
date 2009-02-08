@@ -48,7 +48,7 @@ bugfix: FILEDEL (reported by Lamune)
   Do not respond to any triggers on this channel.
 
 278) send_batch, XDCC BATCH (inspired by: Otaku, Alita-chan, TheDeath, satmd)
-  Permit XDCC BATCH. The packs are Quueed up in the bot is possible.
+  Permit XDCC BATCH. The packs are Queued up in the bot is possible.
   default: disabled
 
   new user commands:
