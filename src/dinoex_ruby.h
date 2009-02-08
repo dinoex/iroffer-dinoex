@@ -14,9 +14,9 @@
  */
 
 #ifdef USE_RUBY
-void do_myruby_server(char *line);
-void do_myruby_notice(char *line);
-void do_myruby_privmsg(char *line);
+int do_myruby_server(char *line);
+int do_myruby_notice(char *line);
+int do_myruby_privmsg(char *line);
 void startup_myruby(void);
 void rehash_myruby(int check);
 void shutdown_myruby(void);
