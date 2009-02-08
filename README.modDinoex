@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+bugfix: atfind (reported by freijie)
+  versions affected: 3.12
+  @find responded only if more than 3 special chars are in the pattern.
+
 bugfix: ADDDIR (reprted by [M]-V)
   versions affected: 3.12
   Fixed dirnames and filenames with spaces.

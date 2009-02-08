@@ -2810,6 +2810,7 @@ static void privmsgparse(int type, int decoded, char* line)
      {
       char *msg2e;
       
+outerror(OUTERROR_TYPE_WARN,"@find start %s",msg2);
       /* add/increment ignore list */
       if (check_ignore(nick, hostmask))
         {
@@ -2818,7 +2819,7 @@ static void privmsgparse(int type, int decoded, char* line)
       msg2e = getpart_eol(line, 5);
       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
       k = convert_spaces_to_match(msg2e);
-      if ((int)(strlen(msg2e) - k) >= gdata.atfind) {
+      if (k >= gdata.atfind) {
         k = noticeresults(nick, msg2e, dest);
         if (k) {
           ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
