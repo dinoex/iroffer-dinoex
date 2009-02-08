@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+281) PRINT
+
+  new admin command:
+  PRINT <key>                        Print config variable <key>
+
+280) ruby_script
+  Skip processing if event returns true.
+
 bugfix: atfind (reported by freijie)
   versions affected: 3.12
   @find responded only if more than 3 special chars are in the pattern.

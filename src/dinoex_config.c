@@ -330,6 +330,21 @@ int set_config_bool(const char *key, const char *text)
   return 0;
 }
 
+char *print_config_bool(const char *key)
+{
+  int i;
+  const char *val;
+
+  updatecontext();
+
+  i = config_find_bool(key);
+  if (i < 0)
+    return NULL;
+
+  val = (*(config_parse_bool[i].ivar) != 0) ? "yes" : "no";
+  return mystrdup(val);
+}
+
 
 static void config_sorted_int(void)
 {
@@ -419,6 +434,22 @@ int set_config_int(const char *key, const char *text)
   return 0;
 }
 
+char *print_config_int(const char *key)
+{
+  int i;
+  char *val;
+
+  updatecontext();
+
+  i = config_find_int(key);
+  if (i < 0)
+    return NULL;
+
+  val = mycalloc(maxtextlengthshort);
+  snprintf(val, maxtextlengthshort - 1, "%d", *(config_parse_int[i].ivar));
+  return val;
+}
+
 
 static void config_sorted_string(void)
 {
@@ -494,6 +525,21 @@ int set_config_string(const char *key, char *text)
   mydelete(*(config_parse_string[i].svar));
   *(config_parse_string[i].svar) = text;
   return 0;
+}
+
+char *print_config_string(const char *key)
+{
+  int i;
+  const char *val;
+
+  updatecontext();
+
+  i = config_find_string(key);
+  if (i < 0)
+    return NULL;
+
+  val = *(config_parse_string[i].svar);
+  return mystrdup(val);
 }
 
 
@@ -1448,6 +1494,25 @@ void getconfig_set(const char *line)
       mydelete(part[1]);
     return;
   }
+}
+
+char *print_config_key(const char *key)
+{
+  char *val;
+
+  val = print_config_bool(key);
+  if (val != NULL)
+    return val;
+
+  val = print_config_int(key);
+  if (val != NULL)
+    return val;
+
+  val = print_config_string(key);
+  if (val != NULL)
+    return val;
+
+  return NULL;
 }
 
 void config_startup(void)

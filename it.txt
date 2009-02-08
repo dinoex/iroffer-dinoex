@@ -2321,3 +2321,7 @@
 2426 "dMB"
 2427 "d"
 2428 "\">%s</a>\n"
+2429 "PRINT"
+2430 "key"
+2431 "Print config variable <key>"
+2432 "CONFIG %s is set to \"%s\""
