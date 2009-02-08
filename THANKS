@@ -434,6 +434,7 @@ dns777
 	reporting "REMOVEDIR" group_admin bug
 	contributing better verify_group_in_grouplist
 	reporting xdccxmlfile bug with utf-8 names
+	reporting autoadd_group_match bug and fix
 
 [V]4Mp|r
 	italian translation
