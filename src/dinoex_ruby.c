@@ -28,6 +28,7 @@
 #include "dinoex_jobs.h"
 #include "dinoex_irc.h"
 #include "dinoex_misc.h"
+#include "dinoex_config.h"
 #include "dinoex_ruby.h"
 
 #pragma GCC diagnostic ignored "-Wstrict-prototypes"
@@ -219,6 +220,29 @@ static VALUE cie_message(void)
   return copy;
 }
 
+static VALUE cie_config(VALUE UNUSED(module), VALUE rkey)
+{
+  char *key;
+  char *val;
+  VALUE copy;
+
+  if (NIL_P(rkey))
+    return Qnil;
+
+  key = rb_obj_as_string_protected(rkey);
+  if (!key)
+    return Qnil;
+
+  val = print_config_key(key);
+  if (val != NULL) {
+    copy = rb_str_new(val, strlen(val));
+    mydelete(val);
+    return copy;
+  }
+
+  return Qnil;
+}
+
 static VALUE cie_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
 {
   char *name;
@@ -347,6 +371,7 @@ static void Init_IrofferEvent(void) {
   rb_define_method(cIrofferEvent, "nick", cie_nick, 0);
   rb_define_method(cIrofferEvent, "channel", cie_channel, 0);
   rb_define_method(cIrofferEvent, "message", cie_message, 0);
+  rb_define_method(cIrofferEvent, "config", cie_config, 1);
   rb_gc_register_address(&cIrofferEvent);
 }
 
