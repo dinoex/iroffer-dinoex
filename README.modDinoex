@@ -10,6 +10,7 @@ With Version 3.13:
 
 280) ruby_script
   Skip processing if event returns true.
+  Read access to config valiables.
 
 bugfix: atfind (reported by freijie)
   versions affected: 3.12

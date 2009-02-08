@@ -10,6 +10,7 @@ Ab Version 3.13:
 
 280) ruby_script
   Breche die Bearbeitung ab, wenn das event mit 'true' bendet wird.
+  Lesen von Varaiblen der Konfiguration.
 
 bugfix: atfind
   versions affected: 3.12
