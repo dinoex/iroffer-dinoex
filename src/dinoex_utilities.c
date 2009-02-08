@@ -63,7 +63,6 @@ char *mystrjoin(const char *str1, const char *str2, char delimiter)
   char *copy;
   size_t len1;
   size_t max;
-  size_t len;
 
   len1 = strlen(str1);
   max = len1 + strlen(str2) + 1;
@@ -75,9 +74,9 @@ char *mystrjoin(const char *str1, const char *str2, char delimiter)
   copy = mymalloc(max);
 #endif /* WITHOUT_MEMSAVE */
   if ((delimiter != 0 ) && (str1[len1] != delimiter)) {
-    len = snprintf(copy, max, "%s%s", str1, str2);
+    snprintf(copy, max, "%s%s", str1, str2);
   } else {
-    len = snprintf(copy, max, "%s%c%s", str1, delimiter, str2);
+    snprintf(copy, max, "%s%c%s", str1, delimiter, str2);
   }
   return copy;
 }
