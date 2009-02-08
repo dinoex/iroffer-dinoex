@@ -406,47 +406,48 @@ static void check_script(const char *name)
   load_script(name);
 }
 
-static VALUE
+static int
 do_on_event(VALUE userobject, const char *event)
 {
   ID method;
+  VALUE skip;
 
   if (NIL_P(userobject))
-    return Qnil;
+    return 0;
 
   method = rb_intern(event);
   if (! rb_respond_to(userobject, method))
-    return Qnil;
+    return 0;
 
-  rb_funcall_protected(userobject, method, 0, NULL);
-  return Qtrue;
+  skip = rb_funcall_protected(userobject, method, 0, NULL);
+  return (skip != Qtrue) ? 0 : 1;
 }
 
-void do_myruby_server(char *line)
+int do_myruby_server(char *line)
 {
   if (myruby_loaded == 0)
-    return;
+    return 0;
 
   cLine = line;
-  do_on_event(oIrofferEvent, "on_server");
+  return do_on_event(oIrofferEvent, "on_server");
 }
 
-void do_myruby_notice(char *line)
+int do_myruby_notice(char *line)
 {
   if (myruby_loaded == 0)
-    return;
+    return 0;
 
   cLine = line;
-  do_on_event(oIrofferEvent, "on_notice");
+  return do_on_event(oIrofferEvent, "on_notice");
 }
 
-void do_myruby_privmsg(char *line)
+int do_myruby_privmsg(char *line)
 {
   if (myruby_loaded == 0)
-    return;
+    return 0;
 
   cLine = line;
-  do_on_event(oIrofferEvent, "on_privmsg");
+  return do_on_event(oIrofferEvent, "on_privmsg");
 }
 
 void rehash_myruby(int check)
