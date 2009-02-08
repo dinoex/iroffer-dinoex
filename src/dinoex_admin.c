@@ -1610,8 +1610,8 @@ xdcc *a_add2(const userinput * const u, const char *group)
     }
   }
 
+  newfile = get_basename(file);
   if (gdata.no_duplicate_filenames) {
-    newfile = get_basename(file);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
@@ -1638,8 +1638,8 @@ xdcc *a_add2(const userinput * const u, const char *group)
   }
 
   if ((gdata.auto_default_group) && (group == NULL)) {
-    a1 = mycalloc(strlen(u->arg1) + 1);
-    strtextcpy(a1, u->arg1);
+    a1 = mycalloc(strlen(newfile) + 1);
+    strtextcpy(a1, newfile);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
@@ -1655,8 +1655,8 @@ xdcc *a_add2(const userinput * const u, const char *group)
     mydelete(a1);
   }
   if ((gdata.auto_path_group) && (group == NULL)) {
-    a1 = mycalloc(strlen(u->arg1) + 1);
-    strpathcpy(a1, u->arg1);
+    a1 = mycalloc(strlen(file) + 1);
+    strpathcpy(a1, file);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
@@ -1703,7 +1703,7 @@ xdcc *a_add2(const userinput * const u, const char *group)
 
   xd->file = file;
 
-  xd->desc = mystrdup(getfilename(u->arg1));
+  xd->desc = mystrdup(newfile);
 
   xd->minspeed = gdata.transferminspeed;
   xd->maxspeed = gdata.transfermaxspeed;
