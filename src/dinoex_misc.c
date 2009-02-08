@@ -837,39 +837,39 @@ int noticeresults(const char *nick, const char *pattern, const char *dest)
             j = irlist_size(&gdata.trans);
           else
             j = gdata.slotsmax;
-          snprintf(tempstr, maxtextlength - 1, "XDCC SERVER - %s:[%i/%i]", j != 1 ? "slots" : "slot", j - irlist_size(&gdata.trans), j);
+          snprintf(tempstr, maxtextlength, "XDCC SERVER - %s:[%i/%i]", j != 1 ? "slots" : "slot", j - irlist_size(&gdata.trans), j);
           len = strlen(tempstr);
           if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
+            snprintf(tempstr + len, maxtextlength - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
             len = strlen(tempstr);
           }
           if (gdata.transferminspeed > 0) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
+            snprintf(tempstr + len, maxtextlength - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
             len = strlen(tempstr);
           }
           if (gdata.transfermaxspeed > 0) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
+            snprintf(tempstr + len, maxtextlength - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
             len = strlen(tempstr);
           }
           if (gdata.maxb) {
-            snprintf(tempstr + len, maxtextlength - 1 - len, ", Cap:%u.0KB/s", gdata.maxb / 4);
+            snprintf(tempstr + len, maxtextlength - len, ", Cap:%u.0KB/s", gdata.maxb / 4);
             len = strlen(tempstr);
           }
-          snprintf(tempstr + len, maxtextlength - 1 - len, " - /MSG %s XDCC SEND x -",
+          snprintf(tempstr + len, maxtextlength - len, " - /MSG %s XDCC SEND x -",
                    get_user_nick());
           len = strlen(tempstr);
           if (!strcmp(match, "*"))
-            snprintf(tempstr + len, maxtextlength - 1 - len, " Packs:");
+            snprintf(tempstr + len, maxtextlength - len, " Packs:");
           else
-            snprintf(tempstr + len, maxtextlength - 1 - len, " Found:");
+            snprintf(tempstr + len, maxtextlength - len, " Found:");
         len = strlen(tempstr);
       }
       sizestrstr = sizestr(0, xd->st_size);
-      snprintf(tempstr + len, maxtextlength - 1 - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
+      snprintf(tempstr + len, maxtextlength - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
       if (strlen(tempstr) > get_channel_limit(dest)) {
-        snprintf(tempstr + len, maxtextlength - 1 - len, " [...]");
+        snprintf(tempstr + len, maxtextlength - len, " [...]");
         notice_slow(nick, "%s", tempstr);
-        snprintf(tempstr, maxtextlength - 2, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
+        snprintf(tempstr, maxtextlength, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
       }
       len = strlen(tempstr);
       mydelete(sizestrstr);
@@ -1392,8 +1392,8 @@ char *get_current_bandwidth(void)
   for (i=0, xdccsent=0; i<XDCC_SENT_SIZE; i++) {
     xdccsent += (ir_uint64)gdata.xdccsent[i];
   }
-  tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength - 1, "%1.1fKB/s",
+  tempstr = mycalloc(maxtextlengthshort);
+  snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s",
            ((float)xdccsent) / XDCC_SENT_SIZE / 1024.0);
   return tempstr;
 }
@@ -1501,7 +1501,7 @@ char *get_grouplist_access(const char *nick)
         return NULL;
       }
 
-      len += snprintf(tempstr + len, maxtextlength - 1 - len, " %s", ch->rgroup);
+      len += snprintf(tempstr + len, maxtextlength - len, " %s", ch->rgroup);
     }
   }
   return tempstr;

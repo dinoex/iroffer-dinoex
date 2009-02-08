@@ -619,7 +619,7 @@ static void h_write_header(http * const h, const char *header)
   tempstr = mycalloc(maxtextlength);
   date = mycalloc(maxtextlengthshort);
   strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
-  len = snprintf(tempstr, maxtextlength-1, header, date);
+  len = snprintf(tempstr, maxtextlength, header, date);
   mydelete(date);
   write(h->con.clientsocket, tempstr, len);
   mydelete(tempstr);
@@ -650,9 +650,9 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
     }
   }
   if (h->attachment)
-    len = snprintf(tempstr, maxtextlength-1, http_header_attachment, http_status, date, last ? last : date, html_mime(mime), h->totalsize, h->attachment);
+    len = snprintf(tempstr, maxtextlength, http_header_attachment, http_status, date, last ? last : date, html_mime(mime), h->totalsize, h->attachment);
   else
-    len = snprintf(tempstr, maxtextlength-1, http_header_status, http_status, date, last ? last : date, html_mime(mime), h->totalsize);
+    len = snprintf(tempstr, maxtextlength, http_header_status, http_status, date, last ? last : date, html_mime(mime), h->totalsize);
   mydelete(last);
   mydelete(date);
   write(h->con.clientsocket, tempstr, len);
@@ -891,7 +891,7 @@ static int html_link_option(char *str, size_t size, const char *option, const ch
     len = snprintf(str, size, "&amp;");
   }
   tempstr = mycalloc(maxtextlength);
-  html_encode(tempstr, maxtextlength - 1, val);
+  html_encode(tempstr, maxtextlength, val);
   len += snprintf(str + len, size - len, "%s=%s", option, tempstr);
   mydelete(tempstr);
   return len;
@@ -904,15 +904,15 @@ static char *html_link_build(const char *css, const char *caption, const char *t
   size_t len;
 
   tempstr = mycalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength - 1, "<a%s title=\"%s\" href=\"/?", css, caption);
+  len = snprintf(tempstr, maxtextlength, "<a%s title=\"%s\" href=\"/?", css, caption);
   html_link_start = 0;
   if (group)
-    len += html_link_option(tempstr + len, maxtextlength -1 - len, "group", group);
+    len += html_link_option(tempstr + len, maxtextlength - len, "group", group);
   if (traffic)
-    len += html_link_option(tempstr + len, maxtextlength -1 - len, "traffic", "1");
+    len += html_link_option(tempstr + len, maxtextlength - len, "traffic", "1");
   if (order)
-    len += html_link_option(tempstr + len, maxtextlength -1 - len, "order", order);
-  len += snprintf(tempstr + len, maxtextlength -1 - len, "\">%s</a>", text);
+    len += html_link_option(tempstr + len, maxtextlength - len, "order", order);
+  len += snprintf(tempstr + len, maxtextlength - len, "\">%s</a>", text);
   return tempstr;
 }
 
@@ -1035,7 +1035,7 @@ static void h_html_main(http * const h)
       if (nogroup == 0) {
         nogroup ++;
         groups ++;
-        snprintf(tempstr, maxtextlength-1,
+        snprintf(tempstr, maxtextlength,
                  "%s %s", ".", "no group");
         hg = irlist_add(&grplist, sizeof(html_group_t));
         hg->hg_group = ".";
@@ -1047,7 +1047,7 @@ static void h_html_main(http * const h)
       continue;
     groups ++;
 
-    snprintf(tempstr, maxtextlength-1,
+    snprintf(tempstr, maxtextlength,
              "%s %s", xd->group, xd->group_desc);
     hg = irlist_add(&grplist, sizeof(html_group_t));
     hg->hg_group = xd->group;
@@ -1238,12 +1238,12 @@ static void h_html_file(http * const h)
     h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
     mydelete(tempstr);
     tlabel = mycalloc(maxtextlength);
-    len = snprintf(tlabel, maxtextlength-1, "%s\n/msg %s xdcc send %d",
+    len = snprintf(tlabel, maxtextlength, "%s\n/msg %s xdcc send %d",
                    "Download with:", h->nick, num);
     if (xd->has_md5sum)
-      len += snprintf(tlabel + len, maxtextlength - 1 - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
+      len += snprintf(tlabel + len, maxtextlength - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
     if (xd->has_crc32)
-      len += snprintf(tlabel + len, maxtextlength - 1 - len, "\ncrc32: %.8lX", xd->crc32);
+      len += snprintf(tlabel + len, maxtextlength - len, "\ncrc32: %.8lX", xd->crc32);
     tempstr = mycalloc(maxtextlength);
     len = 0;
     if (gdata.show_date_added) {
@@ -1252,17 +1252,17 @@ static void h_html_file(http * const h)
        tempstr[len++] = ' ';
        tempstr[len] = 0;
     }
-    len += html_encode(tempstr + len, maxtextlength - 1 - len, xd->desc);
+    len += html_encode(tempstr + len, maxtextlength - len, xd->desc);
     if (xd->lock)
-      len += snprintf(tempstr + len, maxtextlength - 1 - len, " (%s)", "locked");
+      len += snprintf(tempstr + len, maxtextlength - len, " (%s)", "locked");
     if (xd->note != NULL) {
       if (xd->note[0]) {
-        len += snprintf(tempstr + len, maxtextlength - 1 - len, "<br>");
-        len += html_encode(tempstr + len, maxtextlength - 1 - len, xd->note);
+        len += snprintf(tempstr + len, maxtextlength - len, "<br>");
+        len += html_encode(tempstr + len, maxtextlength - len, xd->note);
       }
     }
     javalink = mycalloc(maxtextlength);
-    len = snprintf(javalink, maxtextlength - 1,
+    len = snprintf(javalink, maxtextlength,
                    "<a href=\"javascript:ToClipboard('/msg %s xdcc send %d');\">%s</a>",
                    h->nick, num, tempstr);
     mydelete(tempstr);
@@ -1292,27 +1292,27 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
     }
     if (strcmp(key, "minspeed") == 0) {
       tempstr = mycalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.transferminspeed);
+      snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transferminspeed);
       break;
     }
     if (strcmp(key, "maxspeed") == 0) {
       tempstr = mycalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.transfermaxspeed);
+      snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transfermaxspeed);
       break;
     }
     if (strcmp(key, "cap") == 0) {
       tempstr = mycalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort - 1, "%u.0KB/s", gdata.maxb / 4);
+      snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
       break;
     }
     if (strcmp(key, "record") == 0) {
       tempstr = mycalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.record);
+      snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.record);
       break;
     }
     if (strcmp(key, "send") == 0) {
       tempstr = mycalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.sentrecord);
+      snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.sentrecord);
       break;
     }
     if (strcmp(key, "daily") == 0) {
@@ -1383,13 +1383,13 @@ static int h_html_index(http * const h)
 
   tlabel = mycalloc(maxtextlength);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
-  len  = snprintf(tlabel,       maxtextlength - 1,       "%6s %s\n", tempstr, "Traffic today");
+  len  = snprintf(tlabel,       maxtextlength,       "%6s %s\n", tempstr, "Traffic today");
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
-  len += snprintf(tlabel + len, maxtextlength - 1 - len, "%6s %s\n", tempstr, "Traffic this week");
+  len += snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this week");
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
-  len += snprintf(tlabel + len, maxtextlength - 1 - len, "%6s %s\n", tempstr, "Traffic this month");
+  len += snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this month");
   mydelete(tempstr);
   h_respond(h, "<td title=\"%s\">%s</td>\n", tlabel, "iroffer-dinoex " VERSIONLONG);
   mydelete(tlabel);
@@ -1734,7 +1734,7 @@ static void h_parse(http * const h, char *body)
 
   if (gdata.http_dir) {
     tempstr = mycalloc(maxtextlength);
-    snprintf(tempstr, maxtextlength-1, "%s%s", gdata.http_dir, h->url);
+    snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url);
     h_readfile(h, tempstr);
     mydelete(tempstr);
     return;

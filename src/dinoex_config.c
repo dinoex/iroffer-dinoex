@@ -446,7 +446,7 @@ char *print_config_int(const char *key)
     return NULL;
 
   val = mycalloc(maxtextlengthshort);
-  snprintf(val, maxtextlengthshort - 1, "%d", *(config_parse_int[i].ivar));
+  snprintf(val, maxtextlengthshort, "%d", *(config_parse_int[i].ivar));
   return val;
 }
 

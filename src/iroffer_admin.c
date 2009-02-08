@@ -568,7 +568,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
        datestr[1] = 0;
        user_getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
      }
-   snprintf(tempstr, maxtextlength - 1,
+   snprintf(tempstr, maxtextlength,
            "\2#%-*i\2 %*ix [%s]%s %s",
             l,
             i,
@@ -581,7 +581,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
    
    if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed)
      {
-        snprintf(tempstr + len, maxtextlength - 1 - len,
+        snprintf(tempstr + len, maxtextlength - len,
                  " [%1.1fK Min]",
                  xd->minspeed);
         len = strlen(tempstr);
@@ -589,7 +589,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
    
    if (xd->maxspeed > 0 && xd->maxspeed != gdata.transfermaxspeed)
      {
-        snprintf(tempstr + len, maxtextlength - 1 - len,
+        snprintf(tempstr + len, maxtextlength - len,
                  " [%1.1fK Max]",
                  xd->maxspeed);
         len = strlen(tempstr);
@@ -597,7 +597,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
    
    if (xd->dlimit_max != 0)
      {
-        snprintf(tempstr + len, maxtextlength - 1 - len,
+        snprintf(tempstr + len, maxtextlength - len,
                  " [%d of %d DL left]",
                  xd->dlimit_used - xd->gets, xd->dlimit_max);
         len = strlen(tempstr);
@@ -682,7 +682,7 @@ static void u_xdl_head(const userinput * const u) {
            a = gdata.slotsmax;
          }
        
-       snprintf(tempstr, maxtextlength - 1,
+       snprintf(tempstr, maxtextlength,
                 "\2**\2 %i %s \2**\2  %i of %i %s open",
                 irlist_size(&gdata.xdccs),
                 irlist_size(&gdata.xdccs) != 1 ? "packs" : "pack",
@@ -693,7 +693,7 @@ static void u_xdl_head(const userinput * const u) {
        
        if (gdata.slotsmax <= irlist_size(&gdata.trans))
          {
-           snprintf(tempstr + len, maxtextlength - 1 - len,
+           snprintf(tempstr + len, maxtextlength - len,
                     ", Queue: %i/%i",
                     irlist_size(&gdata.mainqueue),
                     gdata.queuesize);
@@ -702,7 +702,7 @@ static void u_xdl_head(const userinput * const u) {
        
        if (gdata.transferminspeed > 0)
          {
-           snprintf(tempstr + len, maxtextlength - 1 - len,
+           snprintf(tempstr + len, maxtextlength - len,
                     ", Min: %1.1fKB/s",
                     gdata.transferminspeed);
            len = strlen(tempstr);
@@ -710,7 +710,7 @@ static void u_xdl_head(const userinput * const u) {
        
        if (gdata.transfermaxspeed > 0)
          {
-           snprintf(tempstr + len, maxtextlength - 1 - len,
+           snprintf(tempstr + len, maxtextlength - len,
                     ", Max: %1.1fKB/s",
                     gdata.transfermaxspeed);
            len = strlen(tempstr);
@@ -718,7 +718,7 @@ static void u_xdl_head(const userinput * const u) {
        
        if (gdata.record > 0.5)
          {
-           snprintf(tempstr + len, maxtextlength - 1 - len,
+           snprintf(tempstr + len, maxtextlength - len,
                     ", Record: %1.1fKB/s",
                     gdata.record);
            len = strlen(tempstr);
@@ -732,14 +732,14 @@ static void u_xdl_head(const userinput * const u) {
            xdccsent += (ir_uint64)gdata.xdccsent[i];
          }
        
-       snprintf(tempstr, maxtextlength - 1,
+       snprintf(tempstr, maxtextlength,
                 "\2**\2 Bandwidth Usage \2**\2 Current: %1.1fKB/s,",
                 ((float)xdccsent) / XDCC_SENT_SIZE / 1024.0);
        len = strlen(tempstr);
        
        if (gdata.maxb)
          {
-           snprintf(tempstr + len, maxtextlength - 1 - len,
+           snprintf(tempstr + len, maxtextlength - len,
                     " Cap: %u.0KB/s,",
                     gdata.maxb / 4);
            len = strlen(tempstr);
@@ -747,7 +747,7 @@ static void u_xdl_head(const userinput * const u) {
        
        if (gdata.sentrecord > 0.5)
          {
-           snprintf(tempstr + len, maxtextlength - 1 - len,
+           snprintf(tempstr + len, maxtextlength - len,
                     " Record: %1.1fKB/s",
                     gdata.sentrecord);
            len = strlen(tempstr);
@@ -950,7 +950,7 @@ static void u_xdl(const userinput * const u) {
        /* groupe entry and entry is visible */
        if ((xd->group != NULL) && (xd->group_desc != NULL))
           {
-            snprintf(tempstr, maxtextlength-1,
+            snprintf(tempstr, maxtextlength,
                      "%s%s%s", xd->group, gdata.group_seperator, xd->group_desc);
             inlist = irlist_add(&grplist, strlen(tempstr) + 1);
             strcpy(inlist, tempstr);
@@ -1201,11 +1201,11 @@ static void u_dcld(const userinput * const u)
         {
           left = min2(359999,(tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed,0.001)*1024)));
           started = min2(359999, gdata.curtime-tr->con.connecttime);
-          snprintf(tempstr2, maxtextlengthshort - 1,
+          snprintf(tempstr2, maxtextlengthshort,
                    "%1.1fK", tr->xpack->minspeed);
-          snprintf(tempstr3, maxtextlengthshort - 1,
+          snprintf(tempstr3, maxtextlengthshort,
                    "%6liK", (long)(tr->startresume/1024));
-          snprintf(tempstr4, maxtextlengthshort - 1,
+          snprintf(tempstr4, maxtextlengthshort,
                    "%1.1fK", tr->maxspeed);
           
           u_respond(u,
@@ -2523,7 +2523,7 @@ static void u_botinfo(const userinput * const u) {
        ch = irlist_get_head(&gdata.networks[ss].channels);
        while(ch)
          {
-           snprintf(tempstr, maxtextlength - 1,
+           snprintf(tempstr, maxtextlength,
                     "channel %10s: joined: %3s",
                     ch->name,
                     ch->flags & CHAN_ONCHAN ? "for " : "no");
@@ -2537,7 +2537,7 @@ static void u_botinfo(const userinput * const u) {
            
            if (ch->key)
              {
-               snprintf(tempstr + len, maxtextlength - 1 - len,
+               snprintf(tempstr + len, maxtextlength - len,
                         ", key: %s",
                         ch->key);
                len = strlen(tempstr);
@@ -2545,14 +2545,14 @@ static void u_botinfo(const userinput * const u) {
            
            if (ch->fish)
              {
-               len += snprintf(tempstr + len, maxtextlength - 1 - len,
+               len += snprintf(tempstr + len, maxtextlength - len,
                                ", fish: %s",
                                ch->fish);
              }
            
            if (ch->plisttime)
              {
-               snprintf(tempstr + len, maxtextlength - 1 - len,
+               snprintf(tempstr + len, maxtextlength - len,
                         ", plist every %2i min (%s)",
                         ch->plisttime,
                         ch->flags & CHAN_MINIMAL ? "minimal" : (ch->flags & CHAN_SUMMARY ? "summary" : "full"));
@@ -2629,7 +2629,7 @@ static void u_botinfo(const userinput * const u) {
              );
    
    if (irlist_size(&gdata.uploadhost)) {
-      snprintf(tempstr,maxtextlength - 1,
+      snprintf(tempstr, maxtextlength,
                "%" LLPRINTFMT "dMB",
                (gdata.uploadmaxsize/1024/1024));
       u_respond(u, "upload allowed, dir: %s, max size: %s",
@@ -3259,8 +3259,8 @@ static void u_trinfo(const userinput * const u)
   tempstr2 = mycalloc(maxtextlengthshort);
   tempstr3 = mycalloc(maxtextlengthshort);
   
-  snprintf(tempstr2,maxtextlengthshort-1,"%1.1fK/s",tr->xpack->minspeed);
-  snprintf(tempstr3, maxtextlengthshort-1, "%1.1fK/s", tr->maxspeed);
+  snprintf(tempstr2, maxtextlengthshort, "%1.1fK/s", tr->xpack->minspeed);
+  snprintf(tempstr3, maxtextlengthshort, "%1.1fK/s", tr->maxspeed);
   
   u_respond(u, "Min %s, Current %1.1fK/s, Max %s, In Transit %" LLPRINTFMT "dK",
             (tr->nomin || (tr->xpack->minspeed == 0.0)) ? "no" : tempstr2 ,
@@ -3550,10 +3550,10 @@ static void u_chanl(const userinput * const u)
         {
           if (!(j%USERS_PER_CHAN_LINE))
             {
-              snprintf(tempstr,maxtextlength-1,"%s: ",ch->name);
+              snprintf(tempstr, maxtextlength, "%s: ", ch->name);
             }
           snprintf(tempstr + strlen(tempstr),
-                   maxtextlength - 1 - strlen(tempstr),
+                   maxtextlength - strlen(tempstr),
                    "%s%s ", member->prefixes, member->nick);
           if (!((j+1)%USERS_PER_CHAN_LINE))
             {

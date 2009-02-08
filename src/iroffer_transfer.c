@@ -653,17 +653,17 @@ void t_flushed (transfer * const t)
   
   if (timetookms > (60*60*1000U))
     {
-      snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
+      snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr),
                " %" LLPRINTFMT "u hr", timetookms/60/60/1000);
     }
   
   if ((timetookms%(60*60*1000U)) > (60*1000U))
     {
-      snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
+      snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr),
                " %" LLPRINTFMT "u min", (timetookms%(60*60*1000))/60/1000);
     }
   
-  snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
+  snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr),
            " %" LLPRINTFMT "u.%03" LLPRINTFMT "u sec", (timetookms%(60*1000))/1000, (timetookms%1000));
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -871,7 +871,7 @@ void t_checkminspeed(transfer * const t) {
      }
    
    tempstr2 = mycalloc(maxtextlength);
-   snprintf(tempstr2,maxtextlength-1,
+   snprintf(tempstr2, maxtextlength,
         "Under Min Speed Requirement, %2.1fK/sec is less than %2.1fK/sec",
          t->lastspeed,t->xpack->minspeed);
    t_closeconn(t,tempstr2,0);

@@ -223,17 +223,17 @@ void l_transfersome (upload * const l) {
       
       if (timetook > (60*60))
         {
-          snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
+          snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr),
                    " %li hr", timetook/60/60);
         }
       
       if ((timetook%(60*60)) > 60)
         {
-          snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
+          snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr),
                    " %li min", (timetook%(60*60))/60);
         }
       
-      snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr)-1,
+      snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr),
                " %li sec", timetook%60);
       
       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,

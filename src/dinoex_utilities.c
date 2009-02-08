@@ -138,7 +138,7 @@ char *to_hostmask(const char *nick, const char *hostname)
   int len;
 
   len = strlen(hostname) + strlen(nick) + 4;
-  hostmask = (char *)mymalloc(len + 1);
+  hostmask = (char *)mymalloc(len);
   snprintf(hostmask, len, "%s!*@%s", nick, hostname);
   return hostmask;
 }

@@ -148,7 +148,7 @@ void outerror (outerror_type_e type, const char *format, ...) {
    
   if ((len < 0) || (len >= maxtextlength))
     {
-      snprintf(tempstr, maxtextlength-1, "OUTERROR-INT: Output too large, ignoring!");
+      snprintf(tempstr, maxtextlength, "OUTERROR-INT: Output too large, ignoring!");
     }
 
    if ( type == OUTERROR_TYPE_CRASH ) {
@@ -334,7 +334,7 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
    
    if (len < 0)
      {
-       snprintf(tempstr, maxtextlength-1, "IOUTPUT-INT: Output too large, ignoring!");
+       snprintf(tempstr, maxtextlength, "IOUTPUT-INT: Output too large, ignoring!");
      }
    if (len >= maxtextlength)
      {

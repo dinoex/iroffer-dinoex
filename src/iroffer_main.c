@@ -2780,7 +2780,7 @@ static void privmsgparse(int type, int decoded, char* line)
       if (gdata.restrictprivlist)
         strcpy(tempstr2, "");
       else
-        snprintf(tempstr2, maxtextlength - 2,
+        snprintf(tempstr2, maxtextlength,
                  "Trigger:\2(\2/MSG %s XDCC LIST\2)\2 ",
                  save_nick(gnetwork->user_nick));
       notice_slow(nick,
