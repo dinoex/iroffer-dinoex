@@ -645,11 +645,8 @@ void xdccsavetext(void)
       return;
     }
   
-  xdcclistfile_tmp = mycalloc(strlen(gdata.xdcclistfile)+5);
-  xdcclistfile_bkup = mycalloc(strlen(gdata.xdcclistfile)+2);
-  
-  sprintf(xdcclistfile_tmp,  "%s.tmp", gdata.xdcclistfile);
-  sprintf(xdcclistfile_bkup, "%s~",    gdata.xdcclistfile);
+  xdcclistfile_tmp = mystrsuffix(gdata.xdcclistfile, ".tmp");
+  xdcclistfile_bkup = mystrsuffix(gdata.xdcclistfile, "~");
   
   fd = open(xdcclistfile_tmp,
             O_WRONLY | O_CREAT | O_TRUNC | ADDED_OPEN_FLAGS,

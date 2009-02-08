@@ -1455,10 +1455,8 @@ static void xdcc_save_xml(void)
   if (!gdata.xdccxmlfile)
     return;
 
-  filename_tmp = mycalloc(strlen(gdata.xdccxmlfile)+5);
-  sprintf(filename_tmp, "%s.tmp", gdata.xdccxmlfile);
-  filename_bak = mycalloc(strlen(gdata.xdccxmlfile)+2);
-  sprintf(filename_bak, "%s~", gdata.xdccxmlfile);
+  filename_tmp = mystrsuffix(gdata.xdccxmlfile, ".tmp");
+  filename_bak = mystrsuffix(gdata.xdccxmlfile, "~");
 
   fd = open(filename_tmp,
             O_WRONLY | O_CREAT | O_TRUNC | ADDED_OPEN_FLAGS,

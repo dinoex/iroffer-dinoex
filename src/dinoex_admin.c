@@ -1447,11 +1447,7 @@ int a_open_file(char **file, int mode)
   for (adir = irlist_get_head(&gdata.filedir);
        adir;
        adir = irlist_get_next(adir)) {
-    path = mymalloc(strlen(adir) + 1 + strlen(*file) + 1);
-    if (adir[strlen(adir)-1] == '/')
-      sprintf(path, "%s%s", adir, *file);
-    else
-      sprintf(path, "%s/%s", adir, *file);
+    path = mystrjoin(adir, *file, '/');
     xfiledescriptor = open(path, mode);
     if ((xfiledescriptor >= 0) || (errno != ENOENT)) {
       mydelete(*file);
@@ -1932,11 +1928,7 @@ DIR *a_open_dir(char **dir)
   for (adir = irlist_get_head(&gdata.filedir);
        adir;
        adir = irlist_get_next(adir)) {
-    path = mymalloc(strlen(adir) + 1 + strlen(*dir) + 1);
-    if (adir[strlen(adir)-1] == '/')
-      sprintf(path, "%s%s", adir, *dir);
-    else
-      sprintf(path, "%s/%s", adir, *dir);
+    path = mystrjoin(adir, *dir, '/');
     d = opendir(path);
     if ((d != NULL) || (errno != ENOENT)) {
       mydelete(*dir);

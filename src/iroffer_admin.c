@@ -3499,8 +3499,7 @@ static void u_rmul(const userinput * const u) {
       return;
       }
    
-   tempstr = mymalloc(strlen(gdata.uploaddir) + 1 + strlen(u->arg1) + 1);
-   sprintf(tempstr, "%s/%s", gdata.uploaddir, u->arg1);
+   tempstr = mystrjoin(gdata.uploaddir, u->arg1, '/');
    
    if (is_file_writeable(tempstr)) {
       if (save_unlink(tempstr) < 0)
