@@ -2,7 +2,7 @@
 Copyright (c) 2005-2007, Thomas BERNARD
 All rights reserved.
 
-Copyright (c) 2007, Dirk Meyer
+Copyright (c) 2007-2009 Dirk Meyer
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -116,7 +116,7 @@ void upnp_rem_redir (int port)
 	if (port == 0)
 		return;
 
-	sprintf(port_str, "%d", port);
+	snprintf(port_str, 16, "%d", port);
 	ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP remove redirect (%s)", port_str);
 	if(urls.controlURL == NULL)
 	{
