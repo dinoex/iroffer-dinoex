@@ -332,7 +332,7 @@ vwriteserver_channel(int delay, const char *format, va_list ap)
 
   updatecontext();
 
-  msg = mycalloc(maxtextlength+1);
+  msg = mycalloc(maxtextlength);
 
   len = vsnprintf(msg, maxtextlength, format, ap);
 
@@ -568,7 +568,7 @@ int check_for_file_remove(int n)
 
   pubplist = mycalloc(sizeof(userinput));
   tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength-1, "remove %d", n);
+  snprintf(tempstr, maxtextlength, "remove %d", n);
   u_fillwith_console(pubplist, tempstr);
   u_parseit(pubplist);
   mydelete(pubplist);
@@ -732,9 +732,9 @@ void autoadd_scan(const char *dir, const char *group)
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
   line = mycalloc(maxtextlength);
   if (group != NULL)
-    snprintf(line, maxtextlength -1, "ADDGROUP %s %s", group, dir);
+    snprintf(line, maxtextlength, "ADDGROUP %s %s", group, dir);
   else
-    snprintf(line, maxtextlength -1, "ADDNEW %s", dir);
+    snprintf(line, maxtextlength, "ADDNEW %s", dir);
 
   uxdl = mycalloc(sizeof(userinput));
   a_fillwith_msg2(uxdl, NULL, line);
@@ -932,33 +932,33 @@ void write_removed_xdcc(xdcc *xd)
   }
 
   line = mycalloc(maxtextlength);
-  len = snprintf(line, maxtextlength -1, "\n");
+  len = snprintf(line, maxtextlength, "\n");
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_file %s\n", xd->file);
+  len = snprintf(line, maxtextlength, "xx_file %s\n", xd->file);
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_desc %s\n", xd->desc);
+  len = snprintf(line, maxtextlength, "xx_desc %s\n", xd->desc);
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_note %s\n", xd->note ? xd->note : "");
+  len = snprintf(line, maxtextlength, "xx_note %s\n", xd->note ? xd->note : "");
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_size %" LLPRINTFMT "d\n", xd->st_size);
+  len = snprintf(line, maxtextlength, "xx_size %" LLPRINTFMT "d\n", xd->st_size);
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_gets %d\n", xd->gets);
-  write(fd, line, len);
-  if (gdata.transferminspeed == xd->minspeed)
-    len = snprintf(line, maxtextlength -1, "xx_mins \n");
-  else
-    len = snprintf(line, maxtextlength -1, "xx_mins %f\n", xd->minspeed);
+  len = snprintf(line, maxtextlength, "xx_gets %d\n", xd->gets);
   write(fd, line, len);
   if (gdata.transferminspeed == xd->minspeed)
-    len = snprintf(line, maxtextlength -1, "xx_maxs \n");
+    len = snprintf(line, maxtextlength, "xx_mins \n");
   else
-    len = snprintf(line, maxtextlength -1, "xx_maxs %f\n", xd->maxspeed);
+    len = snprintf(line, maxtextlength, "xx_mins %f\n", xd->minspeed);
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_data %s\n", xd->group ? xd->group : "");
+  if (gdata.transferminspeed == xd->minspeed)
+    len = snprintf(line, maxtextlength, "xx_maxs \n");
+  else
+    len = snprintf(line, maxtextlength, "xx_maxs %f\n", xd->maxspeed);
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_trig \n");
+  len = snprintf(line, maxtextlength, "xx_data %s\n", xd->group ? xd->group : "");
   write(fd, line, len);
-  len = snprintf(line, maxtextlength -1, "xx_trno %s\n", find_groupdesc(xd->group));
+  len = snprintf(line, maxtextlength, "xx_trig \n");
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength, "xx_trno %s\n", find_groupdesc(xd->group));
   write(fd, line, len);
   mydelete(line)
 
@@ -1311,7 +1311,7 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
   if (ch) {
     if (ch->pgroup) {
       line = mycalloc(maxtextlength);
-      snprintf(line, maxtextlength -1, "XDLGROUP %s", ch->pgroup);
+      snprintf(line, maxtextlength, "XDLGROUP %s", ch->pgroup);
       a_fillwith_msg2(manplist, name, line);
       mydelete(line);
       manplist->method = method;
@@ -1352,10 +1352,10 @@ int save_unlink(const char *path)
     file = getfilename(path);
     len = strlen(gdata.trashcan_dir) + strlen(file) + 15;
     dest = mycalloc(len);
-    snprintf(dest, len - 1, "%s/%s", gdata.trashcan_dir, file);
+    snprintf(dest, len, "%s/%s", gdata.trashcan_dir, file);
     num = 0;
     while (file_not_exits(dest)) {
-      snprintf(dest, len - 1, "%s/%s.%03d", gdata.trashcan_dir, file, ++num);
+      snprintf(dest, len, "%s/%s.%03d", gdata.trashcan_dir, file, ++num);
       if (num >= 200) {
          outerror(OUTERROR_TYPE_WARN_LOUD,
                   "Cant move file '%s' to '%s': %s",
@@ -1420,7 +1420,7 @@ static size_t write_asc_int(int fd, int val)
   char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlengthshort + 1);
+  tempstr = mycalloc(maxtextlengthshort);
   len = snprintf(tempstr, maxtextlengthshort, "%d", val);
   len = write(fd, tempstr, len);
   mydelete(tempstr);
@@ -1432,7 +1432,7 @@ static size_t write_asc_hex(int fd, unsigned long val)
   char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlengthshort + 1);
+  tempstr = mycalloc(maxtextlengthshort);
   len = snprintf(tempstr, maxtextlengthshort, "%.8lX", val);
   len = write(fd, tempstr, len);
   mydelete(tempstr);
@@ -1522,7 +1522,7 @@ static void xdcc_save_xml(void)
       size_t len;
 
       write_string(fd, "  <md5sum>");
-      tempstr = mycalloc(maxtextlengthshort + 1);
+      tempstr = mycalloc(maxtextlengthshort);
       len = snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
       write(fd, tempstr, len);
       mydelete(tempstr);
@@ -1580,7 +1580,7 @@ static void xdcc_save_xml(void)
   write_string(fd, "</banduse>\n");
   write_string(fd, "    <bandmax>");
   tempstr = mycalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort - 1, "%u.0KB/s", gdata.maxb / 4);
+  snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
   write_string(fd, tempstr);
   mydelete(tempstr);
   write_string(fd, "</bandmax>\n");
@@ -1620,13 +1620,13 @@ static void xdcc_save_xml(void)
   write_string(fd, "  <limits>\n");
   write_string(fd, "    <minspeed>");
   tempstr = mycalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.transferminspeed);
+  snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transferminspeed);
   write_string(fd, tempstr);
   mydelete(tempstr);
   write_string(fd, "</minspeed>\n");
   write_string(fd, "    <maxspeed>");
   tempstr = mycalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort - 1, "%1.1fKB/s", gdata.transfermaxspeed);
+  snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transfermaxspeed);
   write_string(fd, tempstr);
   mydelete(tempstr);
   write_string(fd, "</maxspeed>\n");

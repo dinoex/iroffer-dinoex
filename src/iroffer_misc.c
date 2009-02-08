@@ -96,13 +96,13 @@ static int connectirc (server_t *tserver) {
    switch (gnetwork->connectionmethod.how)
      {
      case how_direct:
-       snprintf(tempstr,maxtextlength-1," (direct)");
+       snprintf(tempstr, maxtextlength, " (direct)");
        gnetwork->serv_resolv.to_ip = gnetwork->curserver.hostname;
        gnetwork->serv_resolv.to_port = gnetwork->curserver.port;
        break;
        
      case how_ssl:
-       snprintf(tempstr, maxtextlength-1, " (ssl)");
+       snprintf(tempstr, maxtextlength, " (ssl)");
        gnetwork->serv_resolv.to_ip = gnetwork->curserver.hostname;
        gnetwork->serv_resolv.to_port = gnetwork->curserver.port;
        break;
@@ -110,7 +110,7 @@ static int connectirc (server_t *tserver) {
      case how_bnc:
        if (gnetwork->connectionmethod.vhost)
          {
-           snprintf(tempstr, maxtextlength-1,
+           snprintf(tempstr, maxtextlength,
                     " (bnc at %s:%i with %s)",
                     gnetwork->connectionmethod.host,
                     gnetwork->connectionmethod.port,
@@ -118,7 +118,7 @@ static int connectirc (server_t *tserver) {
          }
        else
          {
-           snprintf(tempstr, maxtextlength-1,
+           snprintf(tempstr, maxtextlength,
                     " (bnc at %s:%i)",
                     gnetwork->connectionmethod.host,
                     gnetwork->connectionmethod.port);
@@ -128,7 +128,7 @@ static int connectirc (server_t *tserver) {
        break;
        
      case how_wingate:
-       snprintf(tempstr, maxtextlength-1,
+       snprintf(tempstr, maxtextlength,
                 " (wingate at %s:%i)",
                 gnetwork->connectionmethod.host,
                 gnetwork->connectionmethod.port);
@@ -137,7 +137,7 @@ static int connectirc (server_t *tserver) {
        break;
        
      case how_custom:
-       snprintf(tempstr, maxtextlength-1,
+       snprintf(tempstr, maxtextlength,
                 " (custom at %s:%i)",
                 gnetwork->connectionmethod.host,
                 gnetwork->connectionmethod.port);
@@ -232,8 +232,7 @@ void initirc(void)
       int found_p = 0;
       char portstr[maxtextlengthshort];
       
-      snprintf(portstr, maxtextlengthshort-1, "%u", gnetwork->curserver.port);
-      portstr[maxtextlengthshort-1] = '\0';
+      snprintf(portstr, maxtextlengthshort, "%u", gnetwork->curserver.port);
       
       len = strlen(pi) + strlen(gnetwork->curserver.hostname) + strlen(portstr);
       
@@ -701,7 +700,7 @@ void writepidfile (const char *filename) {
    filedescriptor=open(filename, O_WRONLY | O_TRUNC | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS);
    if (filedescriptor < 0) outerror(OUTERROR_TYPE_CRASH,"Cant Create PID File '%s': %s",filename,strerror(errno));
    
-   snprintf(tempstr2,maxtextlengthshort-1,"%i\n",(int)getpid());
+   snprintf(tempstr2, maxtextlengthshort, "%i\n", (int)getpid());
    write(filedescriptor,tempstr2,strlen(tempstr2));
    
    close(filedescriptor);
@@ -1492,7 +1491,7 @@ void sendxdlqueue (void)
            else
              {
                 cmd = mycalloc(maxtextlength);
-                snprintf(cmd, maxtextlength-1, "XDLGROUP %s", group);
+                snprintf(cmd, maxtextlength, "XDLGROUP %s", group);
                 a_fillwith_msg2(&ui, tempstr, cmd);
              }
            mydelete(group);

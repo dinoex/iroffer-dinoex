@@ -918,7 +918,7 @@ void a_listul(const userinput * const u)
   }
 
   len = strlen(gdata.uploaddir) + strlen(u->arg1e) + 2;
-  tempstr = mycalloc(len + 1);
+  tempstr = mycalloc(len);
   snprintf(tempstr, len, "%s/%s", gdata.uploaddir, u->arg1e);
   u_listdir(u, tempstr);
   mydelete(tempstr);
@@ -1470,7 +1470,7 @@ static void a_make_announce_short(const userinput * const u, int n)
 
   tempstr = mycalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength - 2, "SANNOUNCE %i", n);
+  snprintf(tempstr, maxtextlength, "SANNOUNCE %i", n);
   a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = u->net;
@@ -1488,7 +1488,7 @@ static void a_make_announce_long(const userinput * const u, int n)
 
   tempstr = mycalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength - 2, "ANNOUNCE %i", n);
+  snprintf(tempstr, maxtextlength, "ANNOUNCE %i", n);
   a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = u->net;

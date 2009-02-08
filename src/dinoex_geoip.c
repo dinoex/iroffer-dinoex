@@ -87,7 +87,7 @@ void geoip_new_connection(transfer *const tr)
     if (!verifyshell(&gdata.geoipcountry, country)) {
       if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
          msg = mycalloc(maxtextlength);
-         snprintf(msg, maxtextlength - 1, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
+         snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
          t_closeconn(tr, msg, 0);
          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                  "IP from other country (%s) detected", country);
@@ -100,7 +100,7 @@ void geoip_new_connection(transfer *const tr)
     if (verifyshell(&gdata.nogeoipcountry, country)) {
       if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
          msg = mycalloc(maxtextlength);
-         snprintf(msg, maxtextlength - 1, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
+         snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
          t_closeconn(tr, msg, 0);
          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                  "IP from other country (%s) detected", country);
