@@ -20,6 +20,7 @@ int t_find_resume(const char *nick, const char *filename, const char *localport,
 void t_connected(transfer *tr);
 void t_check_duplicateip(transfer *const newtr);
 int verify_acknowlede(transfer *tr);
+const char *t_print_state(transfer *const tr);
 int t_select_fdset(int highests, int changequartersec);
 
 /* End of File */

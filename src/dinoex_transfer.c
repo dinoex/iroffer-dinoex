@@ -417,6 +417,27 @@ int verify_acknowlede(transfer *tr)
   return show;
 }
 
+const char *t_print_state(transfer *const tr)
+{
+  switch (tr->tr_status) {
+  case TRANSFER_STATUS_LISTENING:
+    return "Listening";
+  case TRANSFER_STATUS_SENDING:
+    return "Sending";
+  case TRANSFER_STATUS_WAITING:
+    return "Finishing";
+  case TRANSFER_STATUS_DONE:
+    return "Closing";
+  case TRANSFER_STATUS_RESUME:
+    return "Resume";
+  case TRANSFER_STATUS_CONNECTING:
+    return "Connecting";
+  case TRANSFER_STATUS_UNUSED:
+  default:
+    return "Unknown!";
+  }
+}
+
 int t_select_fdset(int highests, int changequartersec)
 {
   transfer *tr;

@@ -17,6 +17,7 @@ int l_setup_file(upload * const l, struct stat *stp);
 int l_setup_listen(upload * const l);
 int l_setup_passive(upload * const l, char *token);
 void l_setup_accept(upload * const l);
+const char *l_print_state(upload * const l);
 int l_select_fdset(int highests);
 
 int file_uploading(const char *file);
