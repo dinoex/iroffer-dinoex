@@ -899,7 +899,7 @@ static void a_qul2(const userinput * const u, irlist_t *list)
   int i;
 
   updatecontext();
-  
+
   a_respond(u, "    #  User        Pack File                              Waiting     Left");
   i = 0;
   pq = irlist_get_head(list);
@@ -936,7 +936,7 @@ void a_qul(const userinput * const u)
   updatecontext();
 
   if (!irlist_size(&gdata.mainqueue) && !irlist_size(&gdata.idlequeue)) {
-    a_respond(u,"No Users Queued");
+    a_respond(u, "No Users Queued");
     return;
   }
 
