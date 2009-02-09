@@ -26,7 +26,7 @@ bugfix: ADDDIR (reprted by [M]-V)
   versions affected: 3.12
   Fixed dirnames and filenames with spaces.
 
-improoved italian translation.
+improved italian translation.
 
 bugfix: weblist_info
   Strip " from names in weblist.
@@ -42,7 +42,7 @@ bugfix: trashcan_dir
 
 bugfix: FILEDEL (reported by Lamune)
   versions affected: 3.0 - 3.11
-  Bod did crash when using relative pathnames.
+  Bot did crash when using relative pathnames.
 
 279) channel -notrigger (inspired by AnimeNeko)
   Do not respond to any triggers on this channel.
@@ -75,7 +75,7 @@ bugfix: DUMP
 
 276) no_auto_rehash (inspired by TheDeath)
   If defined, iroffer will not automaticlly REHASH when a configfile was
-  was changed. Default: Do a REAHSH.
+  was changed. Default: Do a REHASH.
 
 275) XDCC SEARCH (inspired by TheDeath)
   Parse all arguments for search.
