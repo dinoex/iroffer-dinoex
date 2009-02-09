@@ -892,6 +892,62 @@ void a_find(const userinput * const u)
   mydelete(tempstr);
 }
 
+static void a_qul2(const userinput * const u, irlist_t *list)
+{
+  ir_pqueue *pq;
+  unsigned long rtime;
+  int i;
+
+  updatecontext();
+  
+  a_respond(u, "    #  User        Pack File                              Waiting     Left");
+  i = 0;
+  pq = irlist_get_head(list);
+  for (pq = irlist_get_head(list);
+       pq;
+       pq = irlist_get_next(pq)) {
+    i++;
+    rtime = get_next_transfer_time();
+    add_new_transfer_time(pq->xpack);
+    if (rtime < 359999U) {
+       a_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
+                 i,
+                 pq->nick,
+                 number_of_pack(pq->xpack),
+                 getfilename(pq->xpack->file),
+                 (long)((gdata.curtime-pq->queuedtime)/60/60),
+                 (long)(((gdata.curtime-pq->queuedtime)/60)%60),
+                 (long)(rtime/60/60),
+                 (long)(rtime/60)%60);
+     } else {
+       a_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
+                 i,
+                 pq->nick,
+                 number_of_pack(pq->xpack),
+                 getfilename(pq->xpack->file),
+                 (long)((gdata.curtime-pq->queuedtime)/60/60),
+                 (long)(((gdata.curtime-pq->queuedtime)/60)%60));
+     }
+  }
+}
+
+void a_qul(const userinput * const u)
+{
+  updatecontext();
+
+  if (!irlist_size(&gdata.mainqueue) && !irlist_size(&gdata.idlequeue)) {
+    a_respond(u,"No Users Queued");
+    return;
+  }
+
+  guess_end_transfers();
+  a_respond(u, "Current Main Queue:");
+  a_qul2(u, &gdata.mainqueue);
+  a_respond(u, "Current Idle Queue:");
+  a_qul2(u, &gdata.idlequeue);
+  guess_end_cleanup();
+}
+
 void a_listul(const userinput * const u)
 {
   char *tempstr;

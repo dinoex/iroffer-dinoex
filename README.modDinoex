@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+282) QUL
+  Better computation of estimated download time.
+
 bugfix: auto_path_group
   Works now for relative pathnames.
 

@@ -37,7 +37,6 @@ static void u_xdl(const userinput * const u);
 static void u_xds(const userinput * const u);
 static void u_dcl(const userinput * const u);
 static void u_dcld(const userinput * const u);
-static void u_qul(const userinput * const u);
 static void u_close(const userinput * const u);
 static void u_closeu(const userinput * const u);
 static void u_nomin(const userinput * const u);
@@ -114,7 +113,7 @@ static const userinput_parse_t userinput_parse[] = {
 {1,1,method_allow_all,u_dcld,          "DCLD",NULL,"Lists current transfers with details"},
 {1,1,method_allow_all,u_trinfo,        "TRINFO","id","Lists information about transfer <id>"},
 {1,1,method_allow_all,a_getl,          "GETL",NULL,"Lists current upload queue"},
-{1,1,method_allow_all,u_qul,           "QUL",NULL,"Lists current queue"},
+{1,1,method_allow_all,a_qul,           "QUL",NULL,"Lists current queue"},
 {1,1,method_allow_all,u_ignl,          "IGNL",NULL,"Show ignored list"},
 {1,5,method_allow_all,a_listul,        "LISTUL","[dir]","Shows contents of upload directory"},
 {1,5,method_allow_all,u_chanl,         "CHANL","[net]","Shows channel list with member list"},
@@ -1210,135 +1209,6 @@ static void u_dcld(const userinput * const u)
 #endif /* USE_CURL */
   
   u_respond(u, " --------------------------------------------------------------------");
-}
-
-static void u_qul(const userinput * const u)
-{
-  int i;
-  unsigned long rtime, lastrtime; 
-  ir_pqueue *pq;
-  transfer *tr;
-  
-  updatecontext();
-  
-  if (!irlist_size(&gdata.mainqueue) && !irlist_size(&gdata.idlequeue))
-    {
-      u_respond(u,"No Users Queued");
-      return;
-    }
-  
-  u_respond(u, "Current Main Queue:");
-  u_respond(u, "    #  User        Pack File                              Waiting     Left");
-  
-  lastrtime=0;
-  
-  /* if we are sending more than allowed, we need to skip the difference */
-  for (i=0; i<irlist_size(&gdata.trans)-gdata.slotsmax; i++)
-    {
-      rtime=-1;
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
-        {
-          unsigned long left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
-          if (left > lastrtime && left < rtime)
-            {
-              rtime = left;
-            }
-          tr = irlist_get_next(tr);
-        }
-      if (rtime < 359999U)
-        {
-          lastrtime=rtime;
-        }
-    }
-  
-  i=1;
-  pq = irlist_get_head(&gdata.mainqueue);
-  while(pq)
-    {
-      rtime=-1;
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
-        {
-          unsigned long left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
-          if (left > lastrtime && left < rtime)
-            {
-              rtime = left;
-            }
-          tr = irlist_get_next(tr);
-        }
-      lastrtime=rtime;
-      
-      if (rtime < 359999U)
-        {
-          u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
-                    i,
-                    pq->nick,
-                    number_of_pack(pq->xpack),
-                    getfilename(pq->xpack->file),
-                    (long)((gdata.curtime-pq->queuedtime)/60/60),
-                    (long)(((gdata.curtime-pq->queuedtime)/60)%60),
-                    (long)(rtime/60/60),
-                    (long)(rtime/60)%60);
-        }
-      else
-        {
-          u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
-                    i,
-                    pq->nick,
-                    number_of_pack(pq->xpack),
-                    getfilename(pq->xpack->file),
-                    (long)((gdata.curtime-pq->queuedtime)/60/60),
-                    (long)(((gdata.curtime-pq->queuedtime)/60)%60));
-        }
-      pq = irlist_get_next(pq);
-      i++;
-    }
-
-  u_respond(u, "Current Idle Queue:");
-  u_respond(u, "    #  User        Pack File                              Waiting     Left");
-  i=1;
-  pq = irlist_get_head(&gdata.idlequeue);
-  while(pq)
-    {
-      rtime=-1;
-      tr = irlist_get_head(&gdata.trans);
-      while(tr)
-        {
-          unsigned long left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
-          if (left > lastrtime && left < rtime)
-            {
-              rtime = left;
-            }
-          tr = irlist_get_next(tr);
-        }
-      lastrtime=rtime;
-      
-      if (rtime < 359999U)
-        {
-          u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
-                    i,
-                    pq->nick,
-                    number_of_pack(pq->xpack),
-                    getfilename(pq->xpack->file),
-                    (long)((gdata.curtime-pq->queuedtime)/60/60),
-                    (long)(((gdata.curtime-pq->queuedtime)/60)%60),
-                    (long)(rtime/60/60),
-                    (long)(rtime/60)%60);
-        }
-      else
-        {
-          u_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
-                    i,
-                    pq->nick,
-                    number_of_pack(pq->xpack),
-                    getfilename(pq->xpack->file),
-                    (long)((gdata.curtime-pq->queuedtime)/60/60),
-                    (long)(((gdata.curtime-pq->queuedtime)/60)%60));
-        }
-      pq = irlist_get_next(pq);
-      i++;
-    }
 }
 
 static void u_close(const userinput * const u)
