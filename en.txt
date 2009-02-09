@@ -393,7 +393,7 @@
 404 "network dropped, reconnecting"
 405 "PART %s"
 406 "1 = %s parted"
-407 "2  = %s common"
+407 "2 = %s common"
 408 "3 = %s new"
 409 "could not add channel %s twice!"
 410 "pidfile changed, switching"
