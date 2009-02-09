@@ -568,7 +568,7 @@ int check_for_file_remove(int n)
 
   pubplist = mycalloc(sizeof(userinput));
   tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength, "remove %d", n);
+  snprintf(tempstr, maxtextlength, "REMOVE %d", n);
   u_fillwith_console(pubplist, tempstr);
   u_parseit(pubplist);
   mydelete(pubplist);

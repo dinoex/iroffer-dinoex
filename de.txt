@@ -1579,7 +1579,7 @@
 1654 "XDCC STOP from (%s on %s)"
 1655 " (stopped %d)"
 1656 "Notifying Queued status to %s on %s"
-1657 "remove %d"
+1657 "REMOVE %d"
 1658 "Resetting download limit of pack %d, used %d"
 1660 "GeoIP [%02i:%s on %s]: Info %ld.%ld.%ld.%ld -> %s)"
 1662 "Leider sind Downloads zu deinem Land = \"%s\" gesperrt. Frage den Besitzer des Bots."
