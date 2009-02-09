@@ -30,6 +30,10 @@ void send_owner(const char *nick, const char *hostmask);
 void send_help(const char *nick, const char *hostmask);
 
 void stoplist(const char *nick);
+unsigned long get_next_transfer_time(void);
+void add_new_transfer_time(xdcc *xd);
+void guess_end_transfers(void);
+void guess_end_cleanup(void);
 int notifyqueued_nick(const char *nick);
 void notifyqueued(void);
 void startup_dinoex(void);

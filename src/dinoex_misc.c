@@ -333,10 +333,36 @@ void stoplist(const char *nick)
   notice(nick, "LIST stopped (%d lines deleted)", stopped);
 }
 
-static float guess_maxspeed(xdcc *xd)
+typedef struct {
+  transfer *tr;
+  int left;
+} remaining_transfer_time;
+
+static irlist_t end_trans;
+remaining_transfer_time *end_remain;
+unsigned long end_lastrtime;
+
+unsigned long get_next_transfer_time(void)
 {
-  int nolimit = 1;
+  unsigned long old;
+
+  if (end_remain == NULL)
+    return end_lastrtime;
+
+  end_remain = irlist_get_next(end_remain);
+  if (end_remain == NULL)
+    return end_lastrtime;
+
+  old = end_lastrtime;
+  end_lastrtime = end_remain->left;
+  return old;
+}
+
+void add_new_transfer_time(xdcc *xd)
+{
   float speed = 0.0;
+  int nolimit = 1;
+  int left;
 
   if (gdata.overallmaxspeed > 0) {
     speed = gdata.overallmaxspeed;
@@ -354,45 +380,24 @@ static float guess_maxspeed(xdcc *xd)
     speed = xd->maxspeed;
   if (speed <= 0.0)
     speed = 1000.0;
-  return speed;
+
+  left = min2(359999, (xd->st_size)/((int)(max2(speed, 0.001)*1024)));
+  end_lastrtime += left;
 }
 
-typedef struct {
-  transfer *tr;
-  int left;
-} remaining_transfer_time;
-
-static remaining_transfer_time *next_remaining_transfer(remaining_transfer_time *rm)
+void guess_end_transfers(void)
 {
-  if (rm == NULL)
-    return rm;
-  return irlist_get_next(rm);
-}
-
-int notifyqueued_nick(const char *nick)
-{
-  ir_pqueue *pq;
   transfer *tr;
-  irlist_t list;
   irlist_t list2;
   remaining_transfer_time *remain;
   remaining_transfer_time *rm;
-  unsigned long rtime;
-  unsigned long lastrtime;
-  float speed;
   int left;
   int i;
-  int found = 0;
-  struct tm *localt;
-  char ntime[ 16 ];
 
   updatecontext();
 
-  localt = localtime(&gdata.curtime);
-  strftime( ntime, sizeof(ntime) - 1, "%H:%M", localt);
-
   /* make sortd list of all transfers */
-  memset(&list, 0, sizeof(irlist_t));
+  memset(&end_trans, 0, sizeof(irlist_t));
   memset(&list2, 0, sizeof(irlist_t));
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
     left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
@@ -401,45 +406,50 @@ int notifyqueued_nick(const char *nick)
     remain->left = left;
     irlist_remove(&list2, remain);
 
-    rm = irlist_get_head(&list);
+    rm = irlist_get_head(&end_trans);
     while(rm) {
       if (remain->left < rm->left)
         break;
       rm = irlist_get_next(rm);
     }
     if (rm != NULL) {
-      irlist_insert_before(&list, remain, rm);
+      irlist_insert_before(&end_trans, remain, rm);
     } else {
-      irlist_insert_tail(&list, remain);
+      irlist_insert_tail(&end_trans, remain);
     }
   }
 
-  lastrtime = 0;
-  remain = irlist_get_head(&list);
-  if (remain != NULL)
-    lastrtime = remain->left;
+  end_lastrtime = 0;
+  end_remain = irlist_get_head(&end_trans);
+  if (end_remain != NULL)
+    end_lastrtime = end_remain->left;
 
   /* if we are sending more than allowed, we need to skip the difference */
   for (i=0; i<irlist_size(&gdata.trans) - gdata.slotsmax; i++) {
-    remain = next_remaining_transfer(remain);
-    if (remain == NULL)
-      break;
-    lastrtime = remain->left;
+    get_next_transfer_time();
   }
+}
+
+void guess_end_cleanup(void)
+{
+  irlist_delete_all(&end_trans);
+}
+
+static int notifyqueued_queue(irlist_t *list, const char *nick, const char *ntime, int idle)
+{
+  ir_pqueue *pq;
+  unsigned long rtime;
+  int i = 0;
+  int found = 0;
 
   updatecontext();
   i = 0;
-  for (pq = irlist_get_head(&gdata.mainqueue);
+  for (pq = irlist_get_head(list);
        pq;
        pq = irlist_get_next(pq)) {
     i ++;
-    rtime = lastrtime;
-    remain = next_remaining_transfer(remain);
-    if (remain != NULL)
-      lastrtime = remain->left;
-    speed = guess_maxspeed(pq->xpack);
-    left = min2(359999, (pq->xpack->st_size)/((int)(max2(speed, 0.001)*1024)));
-    lastrtime += left;
+    rtime = get_next_transfer_time();
+    add_new_transfer_time(pq->xpack);
 
     if (pq->net != gnetwork->net)
       continue;
@@ -458,52 +468,32 @@ int notifyqueued_nick(const char *nick)
                 (long)((gdata.curtime-pq->queuedtime)/60)%60,
                 pq->xpack->desc,
                 i,
-                irlist_size(&gdata.mainqueue),
+                irlist_size(list),
                 rtime/60/60,
                 (rtime/60)%60,
                 (rtime >= 359999U) ? "more" : "less",
                 ntime);
+    if (idle)
+      break;
   }
+  return found;
+}
 
-  i = 0;
-  for (pq = irlist_get_head(&gdata.idlequeue);
-       pq;
-       pq = irlist_get_next(pq)) {
-    i ++;
-    rtime = lastrtime;
-    remain = next_remaining_transfer(remain);
-    if (remain != NULL)
-      lastrtime = remain->left;
-    speed = guess_maxspeed(pq->xpack);
-    left = min2(359999, (pq->xpack->st_size)/((int)(max2(speed, 0.001)*1024)));
-    lastrtime += left;
+int notifyqueued_nick(const char *nick)
+{
+  struct tm *localt;
+  char ntime[ 16 ];
+  int found = 0;
 
-    if (pq->net != gnetwork->net)
-      continue;
+  updatecontext();
 
-    if (nick != NULL) {
-      if (strcasecmp(pq->nick, nick) != 0)
-        continue;
-    }
+  localt = localtime(&gdata.curtime);
+  strftime(ntime, sizeof(ntime) - 1, "%H:%M", localt);
 
-    found ++;
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
-            "Notifying Queued status to %s on %s",
-            pq->nick, gnetwork->name);
-    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining. (at %s)",
-                (long)(gdata.curtime-pq->queuedtime)/60/60,
-                (long)((gdata.curtime-pq->queuedtime)/60)%60,
-                pq->xpack->desc,
-                i,
-                irlist_size(&gdata.idlequeue),
-                rtime/60/60,
-                (rtime/60)%60,
-                (rtime >= 359999U) ? "more" : "less",
-                ntime);
-    break;
-  }
-
-  irlist_delete_all(&list);
+  guess_end_transfers();
+  found += notifyqueued_queue(&gdata.mainqueue, nick, ntime, 0);
+  found += notifyqueued_queue(&gdata.idlequeue, nick, ntime, 1);
+  guess_end_cleanup();
   return found;
 }
 

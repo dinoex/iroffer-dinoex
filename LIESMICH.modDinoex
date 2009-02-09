@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+282) QUL
+  Berechne die Wartezeit genauer.
+
 bugfix: auto_path_group
   Funktioniert jetzt mit relativen Pfaden.
 
