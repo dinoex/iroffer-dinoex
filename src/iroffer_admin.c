@@ -25,6 +25,8 @@
 #include "dinoex_jobs.h"
 #include "dinoex_irc.h"
 #include "dinoex_main.h"
+#include "dinoex_transfer.h"
+#include "dinoex_upload.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -1005,37 +1007,7 @@ static void u_dcl(const userinput * const u)
   tr = irlist_get_head(&gdata.trans);
   while(tr)
     {
-      switch (tr->tr_status)
-        {
-        case TRANSFER_STATUS_LISTENING:
-          y = "Listening";
-          break;
-          
-        case TRANSFER_STATUS_SENDING:
-          y = "Sending";
-          break;
-          
-        case TRANSFER_STATUS_WAITING:
-          y = "Finishing";
-          break;
-          
-        case TRANSFER_STATUS_DONE:
-          y = "Closing";
-          break;
-            
-        case TRANSFER_STATUS_RESUME:
-          y = "Resume";
-          break;
-          
-        case TRANSFER_STATUS_CONNECTING:
-          y = "Connecting";
-          break;
-          
-        case TRANSFER_STATUS_UNUSED:
-        default:
-          y = "Unknown!";
-          break;
-        }
+      y = t_print_state(tr);
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
@@ -1065,37 +1037,7 @@ static void u_dcl(const userinput * const u)
   ul = irlist_get_head(&gdata.uploads);
   while (ul)
     {
-      switch (ul->ul_status)
-        {
-        case UPLOAD_STATUS_CONNECTING:
-          y = "Connecting";
-          break;
-          
-        case UPLOAD_STATUS_GETTING:
-          y = "Getting";
-          break;
-          
-        case UPLOAD_STATUS_WAITING:
-          y = "Finishing";
-          break;
-          
-        case UPLOAD_STATUS_DONE:
-          y = "Done";
-          break;
-          
-        case UPLOAD_STATUS_RESUME:
-          y = "Resume";
-          break;
-          
-        case UPLOAD_STATUS_LISTENING:
-          y = "Listening";
-          break;
-          
-        case UPLOAD_STATUS_UNUSED:
-        default:
-          y = "Unknown!";
-          break;
-        }
+      y = l_print_state(ul);
       
       if (ul->ul_status == UPLOAD_STATUS_GETTING)
         {
@@ -1151,37 +1093,7 @@ static void u_dcld(const userinput * const u)
   tr = irlist_get_head(&gdata.trans);
   while(tr)
     {
-      switch (tr->tr_status)
-        {
-        case TRANSFER_STATUS_LISTENING:
-          y = "Listening";
-          break;
-          
-        case TRANSFER_STATUS_SENDING:
-          y = "Sending";
-          break;
-          
-        case TRANSFER_STATUS_WAITING:
-          y = "Finishing";
-          break;
-          
-        case TRANSFER_STATUS_DONE:
-          y = "Closing";
-          break;
-          
-        case TRANSFER_STATUS_RESUME:
-          y = "Resume";
-          break;
-          
-        case TRANSFER_STATUS_CONNECTING:
-          y = "Connecting";
-          break;
-          
-        case TRANSFER_STATUS_UNUSED:
-        default:
-          y = "Unknown!";
-          break;
-        }
+      y = t_print_state(tr);
       
       u_respond(u, "network: %d: %s", tr->net, gdata.networks[tr->net].name);
       
@@ -1248,38 +1160,8 @@ static void u_dcld(const userinput * const u)
   ul = irlist_get_head(&gdata.uploads);
   while(ul)
     {
-      switch (ul->ul_status)
-        {
-        case UPLOAD_STATUS_CONNECTING:
-          y = "Connecting";
-          break;
-          
-        case UPLOAD_STATUS_GETTING:
-          y = "Getting";
-          break;
-          
-        case UPLOAD_STATUS_WAITING:
-          y = "Finishing";
-          break;
-          
-        case UPLOAD_STATUS_DONE:
-          y = "Done";
-          break;
-          
-        case UPLOAD_STATUS_RESUME:
-          y = "Resume";
-          break;
-          
-        case UPLOAD_STATUS_LISTENING:
-          y = "Listening";
-          break;
-          
-        case UPLOAD_STATUS_UNUSED:
-        default:
-          y = "Unknown!";
-          break;
-        }
-         
+      y = l_print_state(ul);
+      
       if (ul->ul_status == UPLOAD_STATUS_GETTING)
         {
           u_respond(u," %2i  %-9s   %-32s   %s %2.0f%%",
@@ -3212,37 +3094,7 @@ static void u_trinfo(const userinput * const u)
   
   tr = does_tr_id_exist(num);
   
-  switch (tr->tr_status)
-    {
-    case TRANSFER_STATUS_LISTENING:
-      y = "Listening";
-      break;
-      
-    case TRANSFER_STATUS_SENDING:
-      y = "Sending";
-      break;
-      
-    case TRANSFER_STATUS_WAITING:
-      y = "Finishing";
-      break;
-      
-    case TRANSFER_STATUS_DONE:
-      y = "Closing";
-      break;
-      
-    case TRANSFER_STATUS_RESUME:
-      y = "Resume";
-      break;
-      
-    case TRANSFER_STATUS_CONNECTING:
-      y = "Connecting";
-      break;
-      
-    case TRANSFER_STATUS_UNUSED:
-    default:
-      y = "Unknown!";
-      break;
-    }
+  y = t_print_state(tr);
   
   u_respond(u,"User %s, Hostname %s, Status %s",
             tr->nick,tr->hostname,y);

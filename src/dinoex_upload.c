@@ -183,6 +183,27 @@ void l_setup_accept(upload * const l)
   l->ul_status = UPLOAD_STATUS_GETTING;
 }
 
+const char *l_print_state(upload * const l)
+{
+  switch (l->ul_status) {
+  case UPLOAD_STATUS_CONNECTING:
+    return "Connecting";
+  case UPLOAD_STATUS_GETTING:
+    return "Getting";
+  case UPLOAD_STATUS_WAITING:
+    return "Finishing";
+  case UPLOAD_STATUS_DONE:
+    return "Done";
+  case UPLOAD_STATUS_RESUME:
+    return "Resume";
+  case UPLOAD_STATUS_LISTENING:
+    return "Listening";
+  case UPLOAD_STATUS_UNUSED:
+  default:
+    return "Unknown!";
+  }
+}
+
 int l_select_fdset(int highests)
 {
   upload *ul;
