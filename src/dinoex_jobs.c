@@ -1865,7 +1865,7 @@ void a_rehash_channels(void)
         ch->nextann = rch->nextann;
         if (gdata.debug > 2) {
           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
-                  "2  = %s common", ch->name);
+                  "2 = %s common", ch->name);
         }
         rch = irlist_get_next(rch);
       }

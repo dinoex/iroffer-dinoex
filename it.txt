@@ -393,7 +393,7 @@
 404 "Network modificato, in riconnessione.."
 405 "PART %s"
 406 "1 = %s parted"
-407 "2  = %s common"
+407 "2 = %s common"
 408 "3 = %s new"
 409 "Impossibile aggiungere il canale %s due volte!"
 410 "Pidfile modificato, in spostamento.."
