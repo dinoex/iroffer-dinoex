@@ -484,7 +484,6 @@ typedef struct
 
 /* iroffer.c */
 int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd);
-void sendxdccinfo(const char* nick, const char* hostname, const char* hostmask, int pack);
 void sendaqueue(int type, int pos, char *lastnick);
 
 /* display.c */
@@ -503,11 +502,6 @@ __attribute__ ((format(printf, 1, 2)))
 #endif
 tostdout(const char *format, ...);
 
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 1, 0)))
-#endif
-vtostdout(const char *format, va_list ap);
 void tostdout_write(void);
 void tostdout_disable_buffering(void);
 
@@ -553,12 +547,6 @@ privmsg_fast(const char *nick, const char *format, ...);
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 2, 0)))
-#endif
-vprivmsg_fast(const char *nick, const char *format, va_list ap);
-
-void
-#ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
 privmsg_slow(const char *nick, const char *format, ...);
@@ -586,12 +574,6 @@ void
 __attribute__ ((format(printf, 2, 3)))
 #endif
 notice_fast(const char *nick, const char *format, ...);
-
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 2, 0)))
-#endif
-vnotice_fast(const char *nick, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__
@@ -702,7 +684,6 @@ const char *transferlimit_type_to_string(transferlimit_type_e type);
 /* misc.c */
 void getconfig (void);
 void initirc(void);
-void initirc2(void);
 
 void
 #ifdef __GNUC__

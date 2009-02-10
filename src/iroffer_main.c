@@ -39,6 +39,10 @@
 static void mainloop(void);
 static void parseline(char *line);
 static void privmsgparse(int type, int decoded, char* line);
+static void sendxdccinfo(const char* nick,
+                  const char* hostname,
+                  const char* hostmask,
+                  int pack);
 
 /* main */
 int
@@ -3142,7 +3146,7 @@ int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, i
    return rc;
 }
    
-void sendxdccinfo(const char* nick,
+static void sendxdccinfo(const char* nick,
                   const char* hostname,
                   const char* hostmask,
                   int pack)

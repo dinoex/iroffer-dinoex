@@ -437,15 +437,11 @@ void vprivmsg_slow(const char *nick, const char *format, va_list ap)
   writeserver_privmsg(WRITESERVER_SLOW, nick, tempstr, len);
 }
 
-void privmsg_fast(const char *nick, const char *format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  vprivmsg_fast(nick, format, args);
-  va_end(args);
-}
-
-void vprivmsg_fast(const char *nick, const char *format, va_list ap)
+static void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vprivmsg_fast(const char *nick, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   int len;
@@ -463,11 +459,11 @@ void vprivmsg_fast(const char *nick, const char *format, va_list ap)
   writeserver_privmsg(WRITESERVER_FAST, nick, tempstr, len);
 }
 
-void privmsg(const char *nick, const char *format, ...)
+void privmsg_fast(const char *nick, const char *format, ...)
 {
   va_list args;
   va_start(args, format);
-  vprivmsg(nick, format, args);
+  vprivmsg_fast(nick, format, args);
   va_end(args);
 }
 
@@ -487,6 +483,14 @@ void vprivmsg(const char *nick, const char *format, va_list ap)
     }
   
   writeserver_privmsg(WRITESERVER_NORMAL, nick, tempstr, len);
+}
+
+void privmsg(const char *nick, const char *format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  vprivmsg(nick, format, args);
+  va_end(args);
 }
 
 void notice_slow(const char *nick, const char *format, ...)
@@ -515,15 +519,11 @@ void vnotice_slow(const char *nick, const char *format, va_list ap)
   writeserver_notice(WRITESERVER_SLOW, nick, tempstr, len);
 }
 
-void notice_fast(const char *nick, const char *format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  vnotice_fast(nick, format, args);
-  va_end(args);
-}
-
-void vnotice_fast(const char *nick, const char *format, va_list ap)
+static void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+vnotice_fast(const char *nick, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   int len;
@@ -539,6 +539,14 @@ void vnotice_fast(const char *nick, const char *format, va_list ap)
     }
   
   writeserver_notice(WRITESERVER_FAST, nick, tempstr, len);
+}
+
+void notice_fast(const char *nick, const char *format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  vnotice_fast(nick, format, args);
+  va_end(args);
 }
 
 void notice(const char *nick, const char *format, ...)

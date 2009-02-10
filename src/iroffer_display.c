@@ -254,15 +254,11 @@ void tostdout_write(void)
   return;
 }
 
-void tostdout(const char *format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  vtostdout(format, args);
-  va_end(args);
-}
-
-void vtostdout(const char *format, va_list ap)
+static void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 1, 0)))
+#endif
+vtostdout(const char *format, va_list ap)
 {
   int len;
   char tempstr[maxtextlength+1];
@@ -286,6 +282,14 @@ void vtostdout(const char *format, va_list ap)
     }
   
   return;
+}
+
+void tostdout(const char *format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  vtostdout(format, args);
+  va_end(args);
 }
 
 
