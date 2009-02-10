@@ -768,6 +768,390 @@ static int a_set_group(const userinput * const u, xdcc *xd, int num, const char 
   return rc;
 }
 
+static int a_access_file(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
+{
+  if (xfiledescriptor < 0) {
+    a_respond(u, "Cant Access File: %s: %s", *file, strerror(errno));
+    mydelete(*file);
+    return 1;
+  }
+
+  if (fstat(xfiledescriptor, st) < 0) {
+    a_respond(u, "Cant Access File Details: %s: %s", *file, strerror(errno));
+    close(xfiledescriptor);
+    mydelete(*file);
+    return 1;
+  }
+  close(xfiledescriptor);
+
+  if (!S_ISREG(st->st_mode)) {
+    a_respond(u, "%s is not a file", *file);
+    mydelete(*file);
+    return 1;
+  }
+  return 0;
+}
+
+static int a_sort_null(const char *str1, const char *str2)
+{
+  if ((str1 == NULL) && (str2 == NULL))
+    return 0;
+
+  if (str1 == NULL)
+    return -1;
+
+  if (str2 == NULL)
+    return 1;
+
+  return strcasecmp(str1, str2);
+}
+
+static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
+{
+  xdcc *xd3 = xd1;
+  xdcc *xd4 = xd2;
+  int rc = 0;
+
+  while (k != NULL) {
+    switch ( *k ) {
+    case '-':
+      xd3 = xd2;
+      xd4 = xd1;
+      k ++;
+      continue;
+    case '+':
+      xd3 = xd1;
+      xd4 = xd2;
+      k ++;
+      break;
+    case 'D':
+    case 'd':
+      rc = strcasecmp(xd3->desc, xd4->desc);
+      if (rc != 0)
+        return rc;
+      break;
+    case 'P':
+    case 'p':
+      rc = strcasecmp(xd3->file, xd4->file);
+      if (rc != 0)
+        return rc;
+      break;
+    case 'G':
+    case 'g':
+      rc = a_sort_null(xd3->group, xd4->group);
+      if (rc != 0)
+        return rc;
+      break;
+    case 'B':
+    case 'b':
+    case 'S':
+    case 's':
+      if (xd3->st_size < xd4->st_size) return -1;
+      if (xd3->st_size > xd4->st_size) return 1;
+      break;
+    case 'T':
+    case 't':
+      if (xd3->mtime < xd4->mtime) return -1;
+      if (xd3->mtime > xd4->mtime) return 1;
+      break;
+    case 'A':
+    case 'a':
+      if (xd3->xtime < xd4->xtime) return -1;
+      if (xd3->xtime > xd4->xtime) return 1;
+      break;
+    case 'N':
+    case 'n':
+    case 'F':
+    case 'f':
+      rc = strcasecmp(get_basename(xd3->file), get_basename(xd4->file));
+      if (rc != 0)
+        return rc;
+      break;
+    }
+    k = strchr(k, ' ');
+    if (k == NULL)
+      break;
+    xd3 = xd1;
+    xd4 = xd2;
+    k ++;
+  }
+  return rc;
+}
+
+static void a_sort_insert(xdcc *xdo, const char *k)
+{
+  xdcc *xdn;
+  char *tmpdesc;
+  int n;
+
+  n = 0;
+  for (xdn = irlist_get_head(&gdata.xdccs);
+       xdn;
+       xdn = irlist_get_next(xdn)) {
+    n++;
+    if (a_sort_cmp(k, xdo, xdn) < 0)
+      break;
+  }
+  if (xdn != NULL) {
+    irlist_insert_before(&gdata.xdccs, xdo, xdn);
+  } else {
+    if (n == 0)
+      irlist_insert_head(&gdata.xdccs, xdo);
+    else
+      irlist_insert_tail(&gdata.xdccs, xdo);
+  }
+
+  if (xdo->group != NULL) {
+    if (xdo->group_desc != NULL) {
+      tmpdesc = xdo->group_desc;
+      xdo->group_desc = NULL;
+      reorder_new_groupdesc(xdo->group, tmpdesc);
+      mydelete(tmpdesc);
+    } else {
+      reorder_groupdesc(xdo->group);
+    }
+  }
+}
+
+static void a_make_announce_short(const userinput * const u, int n)
+{
+  char *tempstr;
+  userinput *ui;
+
+  tempstr = mycalloc (maxtextlength);
+  ui = mycalloc(sizeof(userinput));
+  snprintf(tempstr, maxtextlength, "SANNOUNCE %i", n);
+  a_fillwith_msg2(ui, NULL, tempstr);
+  ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
+  ui->net = u->net;
+  ui->level = u->level;
+  u_parseit(ui);
+  mydelete(ui);
+  mydelete(tempstr);
+}
+
+/* iroffer-lamm: autoaddann */
+static void a_make_announce_long(const userinput * const u, int n)
+{
+  char *tempstr;
+  userinput *ui;
+
+  tempstr = mycalloc (maxtextlength);
+  ui = mycalloc(sizeof(userinput));
+  snprintf(tempstr, maxtextlength, "ANNOUNCE %i", n);
+  a_fillwith_msg2(ui, NULL, tempstr);
+  ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
+  ui->net = u->net;
+  ui->level = u->level;
+  u_parseit(ui);
+  mydelete(ui);
+  mydelete(tempstr);
+}
+
+static void a_filedel_disk(const userinput * const u, char **file)
+{
+  int xfiledescriptor;
+  struct stat st;
+
+  updatecontext();
+
+  xfiledescriptor = a_open_file(file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (a_access_file(u, xfiledescriptor, file, &st))
+    return;
+
+  if (save_unlink(*file) < 0) {
+    a_respond(u, "File %s could not be deleted: %s", *file, strerror(errno));
+  } else {
+    a_respond(u, "File %s was deleted.", *file);
+  }
+}
+
+static xdcc *a_oldest_xdcc(void)
+{
+  xdcc *xd;
+  xdcc *old;
+
+  old = NULL;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (old != NULL) {
+      if (old->xtime <= xd->xtime)
+        continue;
+    }
+    old = xd;
+  }
+  return old;
+}
+
+static xdcc *a_add2(const userinput * const u, const char *group)
+{
+  int xfiledescriptor;
+  struct stat st;
+  xdcc *xd;
+  autoadd_group_t *ag;
+  char *file;
+  char *a1;
+  char *a2;
+  const char *newfile;
+  int n;
+
+  updatecontext();
+
+  if (invalid_file(u, u->arg1) != 0)
+    return NULL;
+
+  file = mystrdup(u->arg1);
+
+  xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (a_access_fstat(u, xfiledescriptor, &file, &st))
+    return NULL;
+
+  if (gdata.noduplicatefiles) {
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      if ((xd->st_dev == st.st_dev) &&
+          (xd->st_ino == st.st_ino)) {
+        a_respond(u, "File '%s' is already added.", u->arg1);
+        mydelete(file);
+        return NULL;
+      }
+    }
+  }
+
+  newfile = get_basename(file);
+  if (gdata.no_duplicate_filenames) {
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      if (strcasecmp(get_basename(xd->file), newfile) == 0) {
+        a_respond(u, "File '%s' is already added.", u->arg1);
+        mydelete(file);
+        return NULL;
+      }
+    }
+  }
+
+  if (gdata.disk_quota) {
+    off_t usedbytes = st.st_size;
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      usedbytes += xd->st_size;
+    }
+    if (usedbytes >= gdata.disk_quota) {
+      a_respond(u, "File '%s' not added, you reached your quoata", u->arg1);
+      mydelete(file);
+      return NULL;
+    }
+  }
+
+  if ((gdata.auto_default_group) && (group == NULL)) {
+    a1 = file_without_numbers(newfile);
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      a2 = file_without_numbers(xd->file);
+      if (!strcmp(a1, a2)) {
+        group = xd->group;
+        mydelete(a2);
+        break;
+      }
+      mydelete(a2);
+    }
+    mydelete(a1);
+  }
+  if ((gdata.auto_path_group) && (group == NULL)) {
+    a1 = file_to_dir(file);
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      a2 = file_to_dir(xd->file);
+      if (!strcmp(a1, a2)) {
+        group = xd->group;
+        mydelete(a2);
+        break;
+      }
+      mydelete(a2);
+    }
+    mydelete(a1);
+  }
+  if (group == NULL) {
+    for (ag = irlist_get_head(&gdata.autoadd_group_match);
+         ag;
+         ag = irlist_get_next(ag)) {
+       if (fnmatch(ag->a_pattern, file, FNM_CASEFOLD) != 0)
+         continue;
+
+       group = ag->a_group;
+       break;
+    }
+  }
+
+  if (gdata.fileremove_max_packs) {
+    char *filename;
+
+    while (gdata.fileremove_max_packs <= irlist_size(&gdata.xdccs)) {
+      xd = a_oldest_xdcc();
+      if (xd == NULL)
+        break;
+
+      filename = mystrdup(xd->file);
+      if (a_remove_pack(u, xd, number_of_pack(xd)) == 0)
+        a_filedel_disk(u, &filename);
+      mydelete(filename);
+    }
+  }
+
+  xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
+  xd->xtime = gdata.curtime;
+
+  xd->file = file;
+
+  xd->desc = mystrdup(newfile);
+
+  xd->minspeed = gdata.transferminspeed;
+  xd->maxspeed = gdata.transfermaxspeed;
+
+  xd->st_size  = st.st_size;
+  xd->st_dev   = st.st_dev;
+  xd->st_ino   = st.st_ino;
+  xd->mtime    = st.st_mtime;
+
+  xd->file_fd = FD_UNUSED;
+
+  n = irlist_size(&gdata.xdccs);
+  if (gdata.autoadd_sort != NULL) {
+    /* silently set the group for sorting */
+    if (group != NULL) {
+      xd->group = mystrdup(group);
+    }
+    irlist_remove(&gdata.xdccs, xd);
+    a_sort_insert(xd, gdata.autoadd_sort);
+    n = number_of_pack(xd);
+    mydelete(xd->group);
+  }
+
+  a_respond(u, "ADD PACK: [Pack %i] [File %s] Use CHDESC to change description",
+            n, xd->file);
+
+  if (group != NULL) {
+    a_set_group(u, xd, n, group);
+  }
+
+  set_support_groups();
+  write_files();
+
+  if (gdata.autoaddann_short)
+    a_make_announce_short(u, n);
+
+  if (gdata.autoaddann)
+    a_make_announce_long(u, n);
+
+  return xd;
+}
+
 void a_add_delayed(const userinput * const u)
 {
   userinput u2;
@@ -1326,128 +1710,6 @@ void a_renumber3(const userinput * const u)
 
   write_files();
 }
-
-static int a_sort_null(const char *str1, const char *str2)
-{
-  if ((str1 == NULL) && (str2 == NULL))
-    return 0;
-
-  if (str1 == NULL)
-    return -1;
-
-  if (str2 == NULL)
-    return 1;
-
-  return strcasecmp(str1, str2);
-}
-
-static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
-{
-  xdcc *xd3 = xd1;
-  xdcc *xd4 = xd2;
-  int rc = 0;
-
-  while (k != NULL) {
-    switch ( *k ) {
-    case '-':
-      xd3 = xd2;
-      xd4 = xd1;
-      k ++;
-      continue;
-    case '+':
-      xd3 = xd1;
-      xd4 = xd2;
-      k ++;
-      break;
-    case 'D':
-    case 'd':
-      rc = strcasecmp(xd3->desc, xd4->desc);
-      if (rc != 0)
-        return rc;
-      break;
-    case 'P':
-    case 'p':
-      rc = strcasecmp(xd3->file, xd4->file);
-      if (rc != 0)
-        return rc;
-      break;
-    case 'G':
-    case 'g':
-      rc = a_sort_null(xd3->group, xd4->group);
-      if (rc != 0)
-        return rc;
-      break;
-    case 'B':
-    case 'b':
-    case 'S':
-    case 's':
-      if (xd3->st_size < xd4->st_size) return -1;
-      if (xd3->st_size > xd4->st_size) return 1;
-      break;
-    case 'T':
-    case 't':
-      if (xd3->mtime < xd4->mtime) return -1;
-      if (xd3->mtime > xd4->mtime) return 1;
-      break;
-    case 'A':
-    case 'a':
-      if (xd3->xtime < xd4->xtime) return -1;
-      if (xd3->xtime > xd4->xtime) return 1;
-      break;
-    case 'N':
-    case 'n':
-    case 'F':
-    case 'f':
-      rc = strcasecmp(get_basename(xd3->file), get_basename(xd4->file));
-      if (rc != 0)
-        return rc;
-      break;
-    }
-    k = strchr(k, ' ');
-    if (k == NULL)
-      break;
-    xd3 = xd1;
-    xd4 = xd2;
-    k ++;
-  }
-  return rc;
-}
-
-static void a_sort_insert(xdcc *xdo, const char *k)
-{
-  xdcc *xdn;
-  char *tmpdesc;
-  int n;
-
-  n = 0;
-  for (xdn = irlist_get_head(&gdata.xdccs);
-       xdn;
-       xdn = irlist_get_next(xdn)) {
-    n++;
-    if (a_sort_cmp(k, xdo, xdn) < 0)
-      break;
-  }
-  if (xdn != NULL) {
-    irlist_insert_before(&gdata.xdccs, xdo, xdn);
-  } else {
-    if (n == 0)
-      irlist_insert_head(&gdata.xdccs, xdo);
-    else
-      irlist_insert_tail(&gdata.xdccs, xdo);
-  }
-
-  if (xdo->group != NULL) {
-    if (xdo->group_desc != NULL) {
-      tmpdesc = xdo->group_desc;
-      xdo->group_desc = NULL;
-      reorder_new_groupdesc(xdo->group, tmpdesc);
-      mydelete(tmpdesc);
-    } else {
-      reorder_groupdesc(xdo->group);
-    }
-  }
-}
-
 void a_sort(const userinput * const u)
 {
   irlist_t old_list;
@@ -1512,65 +1774,6 @@ int a_open_file(char **file, int mode)
   return -1;
 }
 
-static void a_make_announce_short(const userinput * const u, int n)
-{
-  char *tempstr;
-  userinput *ui;
-
-  tempstr = mycalloc (maxtextlength);
-  ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength, "SANNOUNCE %i", n);
-  a_fillwith_msg2(ui, NULL, tempstr);
-  ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
-  ui->net = u->net;
-  ui->level = u->level;
-  u_parseit(ui);
-  mydelete(ui);
-  mydelete(tempstr);
-}
-
-/* iroffer-lamm: autoaddann */
-static void a_make_announce_long(const userinput * const u, int n)
-{
-  char *tempstr;
-  userinput *ui;
-
-  tempstr = mycalloc (maxtextlength);
-  ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength, "ANNOUNCE %i", n);
-  a_fillwith_msg2(ui, NULL, tempstr);
-  ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
-  ui->net = u->net;
-  ui->level = u->level;
-  u_parseit(ui);
-  mydelete(ui);
-  mydelete(tempstr);
-}
-
-static int a_access_file(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
-{
-  if (xfiledescriptor < 0) {
-    a_respond(u, "Cant Access File: %s: %s", *file, strerror(errno));
-    mydelete(*file);
-    return 1;
-  }
-
-  if (fstat(xfiledescriptor, st) < 0) {
-    a_respond(u, "Cant Access File Details: %s: %s", *file, strerror(errno));
-    close(xfiledescriptor);
-    mydelete(*file);
-    return 1;
-  }
-  close(xfiledescriptor);
-
-  if (!S_ISREG(st->st_mode)) {
-    a_respond(u, "%s is not a file", *file);
-    mydelete(*file);
-    return 1;
-  }
-  return 0;
-}
-
 int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
 {
   if (a_access_file(u, xfiledescriptor, file, st))
@@ -1589,210 +1792,6 @@ int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, 
   }
 
   return 0;
-}
-
-static void a_filedel_disk(const userinput * const u, char **file)
-{
-  int xfiledescriptor;
-  struct stat st;
-
-  updatecontext();
-
-  xfiledescriptor = a_open_file(file, O_RDONLY | ADDED_OPEN_FLAGS);
-  if (a_access_file(u, xfiledescriptor, file, &st))
-    return;
-
-  if (save_unlink(*file) < 0) {
-    a_respond(u, "File %s could not be deleted: %s", *file, strerror(errno));
-  } else {
-    a_respond(u, "File %s was deleted.", *file);
-  }
-}
-
-static xdcc *a_oldest_xdcc(void)
-{
-  xdcc *xd;
-  xdcc *old;
-
-  old = NULL;
-  for (xd = irlist_get_head(&gdata.xdccs);
-       xd;
-       xd = irlist_get_next(xd)) {
-    if (old != NULL) {
-      if (old->xtime <= xd->xtime)
-        continue;
-    }
-    old = xd;
-  }
-  return old;
-}
-
-xdcc *a_add2(const userinput * const u, const char *group)
-{
-  int xfiledescriptor;
-  struct stat st;
-  xdcc *xd;
-  autoadd_group_t *ag;
-  char *file;
-  char *a1;
-  char *a2;
-  const char *newfile;
-  int n;
-
-  updatecontext();
-
-  if (invalid_file(u, u->arg1) != 0)
-    return NULL;
-
-  file = mystrdup(u->arg1);
-
-  xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
-  if (a_access_fstat(u, xfiledescriptor, &file, &st))
-    return NULL;
-
-  if (gdata.noduplicatefiles) {
-    for (xd = irlist_get_head(&gdata.xdccs);
-         xd;
-         xd = irlist_get_next(xd)) {
-      if ((xd->st_dev == st.st_dev) &&
-          (xd->st_ino == st.st_ino)) {
-        a_respond(u, "File '%s' is already added.", u->arg1);
-        mydelete(file);
-        return NULL;
-      }
-    }
-  }
-
-  newfile = get_basename(file);
-  if (gdata.no_duplicate_filenames) {
-    for (xd = irlist_get_head(&gdata.xdccs);
-         xd;
-         xd = irlist_get_next(xd)) {
-      if (strcasecmp(get_basename(xd->file), newfile) == 0) {
-        a_respond(u, "File '%s' is already added.", u->arg1);
-        mydelete(file);
-        return NULL;
-      }
-    }
-  }
-
-  if (gdata.disk_quota) {
-    off_t usedbytes = st.st_size;
-    for (xd = irlist_get_head(&gdata.xdccs);
-         xd;
-         xd = irlist_get_next(xd)) {
-      usedbytes += xd->st_size;
-    }
-    if (usedbytes >= gdata.disk_quota) {
-      a_respond(u, "File '%s' not added, you reached your quoata", u->arg1);
-      mydelete(file);
-      return NULL;
-    }
-  }
-
-  if ((gdata.auto_default_group) && (group == NULL)) {
-    a1 = file_without_numbers(newfile);
-    for (xd = irlist_get_head(&gdata.xdccs);
-         xd;
-         xd = irlist_get_next(xd)) {
-      a2 = file_without_numbers(xd->file);
-      if (!strcmp(a1, a2)) {
-        group = xd->group;
-        mydelete(a2);
-        break;
-      }
-      mydelete(a2);
-    }
-    mydelete(a1);
-  }
-  if ((gdata.auto_path_group) && (group == NULL)) {
-    a1 = file_to_dir(file);
-    for (xd = irlist_get_head(&gdata.xdccs);
-         xd;
-         xd = irlist_get_next(xd)) {
-      a2 = file_to_dir(xd->file);
-      if (!strcmp(a1, a2)) {
-        group = xd->group;
-        mydelete(a2);
-        break;
-      }
-      mydelete(a2);
-    }
-    mydelete(a1);
-  }
-  if (group == NULL) {
-    for (ag = irlist_get_head(&gdata.autoadd_group_match);
-         ag;
-         ag = irlist_get_next(ag)) {
-       if (fnmatch(ag->a_pattern, file, FNM_CASEFOLD) != 0)
-         continue;
-
-       group = ag->a_group;
-       break;
-    }
-  }
-
-  if (gdata.fileremove_max_packs) {
-    char *filename;
-
-    while (gdata.fileremove_max_packs <= irlist_size(&gdata.xdccs)) {
-      xd = a_oldest_xdcc();
-      if (xd == NULL)
-        break;
-
-      filename = mystrdup(xd->file);
-      if (a_remove_pack(u, xd, number_of_pack(xd)) == 0)
-        a_filedel_disk(u, &filename);
-      mydelete(filename);
-    }
-  }
-
-  xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
-  xd->xtime = gdata.curtime;
-
-  xd->file = file;
-
-  xd->desc = mystrdup(newfile);
-
-  xd->minspeed = gdata.transferminspeed;
-  xd->maxspeed = gdata.transfermaxspeed;
-
-  xd->st_size  = st.st_size;
-  xd->st_dev   = st.st_dev;
-  xd->st_ino   = st.st_ino;
-  xd->mtime    = st.st_mtime;
-
-  xd->file_fd = FD_UNUSED;
-
-  n = irlist_size(&gdata.xdccs);
-  if (gdata.autoadd_sort != NULL) {
-    /* silently set the group for sorting */
-    if (group != NULL) {
-      xd->group = mystrdup(group);
-    }
-    irlist_remove(&gdata.xdccs, xd);
-    a_sort_insert(xd, gdata.autoadd_sort);
-    n = number_of_pack(xd);
-    mydelete(xd->group);
-  }
-
-  a_respond(u, "ADD PACK: [Pack %i] [File %s] Use CHDESC to change description",
-            n, xd->file);
-
-  if (group != NULL) {
-    a_set_group(u, xd, n, group);
-  }
-
-  set_support_groups();
-  write_files();
-
-  if (gdata.autoaddann_short)
-    a_make_announce_short(u, n);
-
-  if (gdata.autoaddann)
-    a_make_announce_long(u, n);
-
-  return xd;
 }
 
 void a_add(const userinput * const u)
