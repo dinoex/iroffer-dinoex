@@ -16,8 +16,6 @@
 char *print_config_key(const char *key);
 void config_startup(void);
 
-int parse_channel_options(channel_t *cptr, char * var);
-
 void getconfig_set(const char *line);
 
 extern const char *current_config;

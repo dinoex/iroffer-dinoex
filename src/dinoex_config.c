@@ -699,6 +699,133 @@ static void set_default_network_name(void)
   return;
 }
 
+static int parse_channel_int(short *iptr, char **part, int i)
+{
+  char *tptr2;
+
+  tptr2 = part[++i];
+  if (!tptr2)
+    return -1;
+  *iptr = atoi(tptr2);
+  mydelete(tptr2);
+  return 1;
+}
+
+static int parse_channel_string(char **cptr, char **part, int i)
+{
+  char *tptr2;
+
+  tptr2 = part[++i];
+  if (!tptr2)
+    return -1;
+  *cptr = tptr2;
+  return 1;
+}
+
+static int parse_channel_format(short *iptr, char *tptr2)
+{
+  if (!tptr2)
+    return -1;
+
+  if (!strcmp(tptr2, "full"))
+    return 1;
+  if (!strcmp(tptr2, "minimal")) {
+    *iptr |= CHAN_MINIMAL;
+    return 1;
+  }
+  if (!strcmp(tptr2, "summary")) {
+    *iptr |= CHAN_SUMMARY;
+    return 1;
+  }
+  return -1;
+}
+
+static int parse_channel_option(channel_t *cptr, char *tptr, char **part, int i)
+{
+  char *tptr2;
+  int j;
+
+  if (!strcmp(tptr, "-plist")) {
+    return parse_channel_int(&(cptr->plisttime), part, i);
+  }
+  if (!strcmp(tptr, "-plistoffset")) {
+    return parse_channel_int(&(cptr->plistoffset), part, i);
+  }
+  if (!strcmp(tptr, "-delay")) {
+    return parse_channel_int(&(cptr->delay), part, i);
+  }
+  if (!strcmp(tptr, "-waitjoin")) {
+    return parse_channel_int(&(cptr->waitjoin), part, i);
+  }
+
+  if (!strcmp(tptr, "-key")) {
+    return parse_channel_string(&(cptr->key), part, i);
+  }
+#ifndef WITHOUT_BLOWFISH
+  if (!strcmp(tptr, "-fish")) {
+    return parse_channel_string(&(cptr->fish), part, i);
+  }
+#endif /* WITHOUT_BLOWFISH */
+  if (!strcmp(tptr, "-pgroup")) {
+    return parse_channel_string(&(cptr->pgroup), part, i);
+  }
+  if (!strcmp(tptr, "-joinmsg")) {
+    return parse_channel_string(&(cptr->joinmsg), part, i);
+  }
+  if (!strcmp(tptr, "-headline")) {
+    return parse_channel_string(&(cptr->headline), part, i);
+  }
+  if (!strcmp(tptr, "-listmsg")) {
+    return parse_channel_string(&(cptr->listmsg), part, i);
+  }
+  if (!strcmp(tptr, "-rgroup")) {
+    return parse_channel_string(&(cptr->rgroup), part, i);
+  }
+
+  if (!strcmp(tptr, "-noannounce")) {
+    cptr->noannounce = 1;
+    return 0;
+  }
+  if (!strcmp(tptr, "-notrigger")) {
+    cptr->notrigger = 1;
+    return 0;
+  }
+
+  if (!strcmp(tptr, "-pformat")) {
+    tptr2 = part[++i];
+    j = parse_channel_format(&(cptr->flags), tptr2);
+    mydelete(tptr2);
+    return j;
+  }
+
+  return -1;
+}
+
+#define MAX_CHANNEL_OPTIONS 20
+
+static int parse_channel_options(channel_t *cptr, char *var)
+{
+  char *part[MAX_CHANNEL_OPTIONS];
+  char *tptr;
+  int i;
+  int j;
+  int m;
+
+  m = get_argv(part, var, MAX_CHANNEL_OPTIONS);
+  for (i=0; i<m; i++) {
+    tptr = part[i];
+    if (tptr == NULL)
+      break;
+    j = parse_channel_option(cptr, tptr, part, i);
+    mydelete(tptr);
+    if (j < 0 )
+      return -1;
+    i += j;
+  }
+  return 0;
+}
+
+
 static void c_autoadd_group_match(char *var)
 {
   char *split;
@@ -1324,132 +1451,6 @@ static int set_config_func(const char *key, char *text)
     return 1;
 
   (*config_parse_func[i].func)(text);
-  return 0;
-}
-
-static int parse_channel_int(short *iptr, char **part, int i)
-{
-  char *tptr2;
-
-  tptr2 = part[++i];
-  if (!tptr2)
-    return -1;
-  *iptr = atoi(tptr2);
-  mydelete(tptr2);
-  return 1;
-}
-
-static int parse_channel_string(char **cptr, char **part, int i)
-{
-  char *tptr2;
-
-  tptr2 = part[++i];
-  if (!tptr2)
-    return -1;
-  *cptr = tptr2;
-  return 1;
-}
-
-static int parse_channel_format(short *iptr, char *tptr2)
-{
-  if (!tptr2)
-    return -1;
-
-  if (!strcmp(tptr2, "full"))
-    return 1;
-  if (!strcmp(tptr2, "minimal")) {
-    *iptr |= CHAN_MINIMAL;
-    return 1;
-  }
-  if (!strcmp(tptr2, "summary")) {
-    *iptr |= CHAN_SUMMARY;
-    return 1;
-  }
-  return -1;
-}
-
-static int parse_channel_option(channel_t *cptr, char *tptr, char **part, int i)
-{
-  char *tptr2;
-  int j;
-
-  if (!strcmp(tptr, "-plist")) {
-    return parse_channel_int(&(cptr->plisttime), part, i);
-  }
-  if (!strcmp(tptr, "-plistoffset")) {
-    return parse_channel_int(&(cptr->plistoffset), part, i);
-  }
-  if (!strcmp(tptr, "-delay")) {
-    return parse_channel_int(&(cptr->delay), part, i);
-  }
-  if (!strcmp(tptr, "-waitjoin")) {
-    return parse_channel_int(&(cptr->waitjoin), part, i);
-  }
-
-  if (!strcmp(tptr, "-key")) {
-    return parse_channel_string(&(cptr->key), part, i);
-  }
-#ifndef WITHOUT_BLOWFISH
-  if (!strcmp(tptr, "-fish")) {
-    return parse_channel_string(&(cptr->fish), part, i);
-  }
-#endif /* WITHOUT_BLOWFISH */
-  if (!strcmp(tptr, "-pgroup")) {
-    return parse_channel_string(&(cptr->pgroup), part, i);
-  }
-  if (!strcmp(tptr, "-joinmsg")) {
-    return parse_channel_string(&(cptr->joinmsg), part, i);
-  }
-  if (!strcmp(tptr, "-headline")) {
-    return parse_channel_string(&(cptr->headline), part, i);
-  }
-  if (!strcmp(tptr, "-listmsg")) {
-    return parse_channel_string(&(cptr->listmsg), part, i);
-  }
-  if (!strcmp(tptr, "-rgroup")) {
-    return parse_channel_string(&(cptr->rgroup), part, i);
-  }
-
-  if (!strcmp(tptr, "-noannounce")) {
-    cptr->noannounce = 1;
-    return 0;
-  }
-  if (!strcmp(tptr, "-notrigger")) {
-    cptr->notrigger = 1;
-    return 0;
-  }
-
-  if (!strcmp(tptr, "-pformat")) {
-    tptr2 = part[++i];
-    j = parse_channel_format(&(cptr->flags), tptr2);
-    mydelete(tptr2);
-    return j;
-  }
-
-  return -1;
-}
-
-#define MAX_CHANNEL_OPTIONS 20
-
-int parse_channel_options(channel_t *cptr, char *var)
-{
-  char *part[MAX_CHANNEL_OPTIONS];
-  char *tptr;
-  int i;
-  int j;
-  int m;
-
-  m = get_argv(part, var, MAX_CHANNEL_OPTIONS);
-  for (i=0; i<m; i++) {
-    tptr = part[i];
-    if (tptr == NULL)
-      break;
-    j = parse_channel_option(cptr, tptr, part, i);
-    mydelete(tptr);
-    if (j < 0 )
-      return -1;
-    i += j;
-  }
   return 0;
 }
 

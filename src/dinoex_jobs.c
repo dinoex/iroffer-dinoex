@@ -260,67 +260,7 @@ char *test_fish_message(const char *line, const char *channel, const char *str, 
 
 #endif /* WITHOUT_BLOWFISH */
 
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
-#endif
-privmsg_chan(const channel_t *ch, const char *format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  vprivmsg_chan(ch->delay, ch->name, ch->fish, format, args);
-  va_end(args);
-}
-
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 4, 0)))
-#endif
-vprivmsg_chan(int delay, const char *name, const char *fish, const char *format, va_list ap)
-{
-  char tempstr[maxtextlength];
-  int len;
-
-  if (!name) return;
-
-  len = vsnprintf(tempstr, maxtextlength, format, ap);
-
-  if ((len < 0) || (len >= maxtextlength)) {
-    outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
-    return;
-  }
-
-#ifndef WITHOUT_BLOWFISH
-  if (fish) {
-    char *tempcrypt;
-
-    if (gdata.debug > 0) {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
-    }
-    tempcrypt = encrypt_fish(tempstr, len, fish);
-    if (tempcrypt) {
-      writeserver_channel(delay, "PRIVMSG %s :+OK %s", name, tempcrypt);
-      mydelete(tempcrypt);
-      return;
-    }
-  }
-#endif /* WITHOUT_BLOWFISH */
-  writeserver_channel(delay, "PRIVMSG %s :%s", name, tempstr);
-}
-
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
-#endif
-writeserver_channel(int delay, const char *format, ... )
-{
-  va_list args;
-  va_start(args, format);
-  vwriteserver_channel(delay, format, args);
-  va_end(args);
-}
-
-void
+static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 0)))
 #endif
@@ -367,6 +307,66 @@ vwriteserver_channel(int delay, const char *format, va_list ap)
   }
 
   return;
+}
+
+static void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+writeserver_channel(int delay, const char *format, ... )
+{
+  va_list args;
+  va_start(args, format);
+  vwriteserver_channel(delay, format, args);
+  va_end(args);
+}
+
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 4, 0)))
+#endif
+vprivmsg_chan(int delay, const char *name, const char *fish, const char *format, va_list ap)
+{
+  char tempstr[maxtextlength];
+  int len;
+
+  if (!name) return;
+
+  len = vsnprintf(tempstr, maxtextlength, format, ap);
+
+  if ((len < 0) || (len >= maxtextlength)) {
+    outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
+    return;
+  }
+
+#ifndef WITHOUT_BLOWFISH
+  if (fish) {
+    char *tempcrypt;
+
+    if (gdata.debug > 0) {
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
+    }
+    tempcrypt = encrypt_fish(tempstr, len, fish);
+    if (tempcrypt) {
+      writeserver_channel(delay, "PRIVMSG %s :+OK %s", name, tempcrypt);
+      mydelete(tempcrypt);
+      return;
+    }
+  }
+#endif /* WITHOUT_BLOWFISH */
+  writeserver_channel(delay, "PRIVMSG %s :%s", name, tempstr);
+}
+
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 3)))
+#endif
+privmsg_chan(const channel_t *ch, const char *format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  vprivmsg_chan(ch->delay, ch->name, ch->fish, format, args);
+  va_end(args);
 }
 
 #ifndef WITHOUT_BLOWFISH

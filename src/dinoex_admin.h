@@ -62,7 +62,6 @@ void a_renumber3(const userinput * const u);
 void a_sort(const userinput * const u);
 int a_open_file(char **file, int mode);
 int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, struct stat *st);
-xdcc *a_add2(const userinput * const u, const char *group);
 void a_add(const userinput * const u);
 void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onlynew, const char *setgroup, const char *match);
 DIR *a_open_dir(char **dir);
