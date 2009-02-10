@@ -540,22 +540,6 @@ char *caps(char *str)
   return str;
 }
 
-char *nocaps(char *str)
-{
-  unsigned char *copy;
-
-  if (!str)
-    return NULL;
-
-  for (copy = (unsigned char*)str;
-       *copy != 0;
-       copy++) {
-    if ( isupper( *copy ) )
-      *copy = tolower( *copy );
-  }
-  return str;
-}
-
 int max_minutes_waits(time_t *endtime, int min)
 {
   *endtime = gdata.curtime;
