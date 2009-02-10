@@ -32,6 +32,8 @@
 
 #include <locale.h>
 
+static void initirc2(void);
+
 void getconfig (void) {
    
    updatecontext();
@@ -283,7 +285,7 @@ void initirc(void)
    initirc2();
 }
    
-void initirc2(void)
+static void initirc2(void)
 {
    channel_t *ch;
    char *tptr;
