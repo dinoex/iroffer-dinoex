@@ -308,17 +308,16 @@ int add_default_groupdesc(const char *group)
   return k;
 }
 
-void strtextcpy(char *d, const char *s)
+static char *file_without_numbers(const char *s)
 {
   const char *x;
+  char *d;
   char *w;
   char ch;
   size_t l;
 
-  if (d == NULL)
-    return;
   if (s == NULL)
-    return;
+    return NULL;
 
   /* ignore path */
   x = strrchr(s, '/');
@@ -327,7 +326,7 @@ void strtextcpy(char *d, const char *s)
   else
     x = s;
 
-  strcpy(d, x);
+  d = mystrdup(x);
   /* ignore extension */
   w = strrchr(d, '.');
   if (w != NULL)
@@ -335,7 +334,7 @@ void strtextcpy(char *d, const char *s)
 
   l = strlen(d);
   if ( l < 8U )
-    return;
+    return d;
 
   w = d + l - 1;
   ch = *w;
@@ -368,23 +367,21 @@ void strtextcpy(char *d, const char *s)
     if (isalpha(ch))
        w++;
   }
+  return d;
 }
 
-void strpathcpy(char *d, const char *s)
+static char *file_to_dir(const char *s)
 {
+  char *d;
   char *w;
 
-  if (d == NULL)
-    return;
-  if (s == NULL)
-    return;
-
-  strcpy(d, s);
-
+  d = mystrdup(s);
   /* ignore file */
   w = strrchr(d, '/');
   if (w != NULL)
     w[0] = 0;
+
+  return d;
 }
 
 static int group_is_restricted(const userinput * const u, const char *group)
@@ -1694,13 +1691,11 @@ xdcc *a_add2(const userinput * const u, const char *group)
   }
 
   if ((gdata.auto_default_group) && (group == NULL)) {
-    a1 = mycalloc(strlen(newfile) + 1);
-    strtextcpy(a1, newfile);
+    a1 = file_without_numbers(newfile);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
-      a2 = mycalloc(strlen(xd->file) + 1);
-      strtextcpy(a2, xd->file);
+      a2 = file_without_numbers(xd->file);
       if (!strcmp(a1, a2)) {
         group = xd->group;
         mydelete(a2);
@@ -1711,13 +1706,11 @@ xdcc *a_add2(const userinput * const u, const char *group)
     mydelete(a1);
   }
   if ((gdata.auto_path_group) && (group == NULL)) {
-    a1 = mycalloc(strlen(file) + 1);
-    strpathcpy(a1, file);
+    a1 = file_to_dir(file);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
-      a2 = mycalloc(strlen(xd->file) + 1);
-      strpathcpy(a2, xd->file);
+      a2 = file_to_dir(xd->file);
       if (!strcmp(a1, a2)) {
         group = xd->group;
         mydelete(a2);
