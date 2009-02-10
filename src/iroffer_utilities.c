@@ -2785,11 +2785,6 @@ int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len)
   return buffer_len;
 }
 
-static int ir_boutput_need_flush(ir_boutput_t *bout)
-{
-  return irlist_size(&bout->segments);
-}
-
 int ir_boutput_attempt_flush(ir_boutput_t *bout)
 {
   ir_boutput_segment_t *segment;
