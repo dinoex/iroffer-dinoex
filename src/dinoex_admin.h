@@ -28,8 +28,6 @@ int a_xdl_left(void);
 int reorder_new_groupdesc(const char *group, const char *desc);
 int reorder_groupdesc(const char *group);
 int add_default_groupdesc(const char *group);
-void strtextcpy(char *d, const char *s);
-void strpathcpy(char *d, const char *s);
 
 int invalid_group(const userinput * const u, char *arg);
 int invalid_dir(const userinput * const u, char *arg);
