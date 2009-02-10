@@ -273,7 +273,7 @@ void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
   a_parse_inputline(u, line);
 }
 
-void u_fillwith_clean (userinput * const u)
+static void u_fillwith_clean (userinput * const u)
 {
   
   updatecontext();

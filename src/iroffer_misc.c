@@ -1774,7 +1774,7 @@ void initprefixes(void)
   gnetwork->prefixes[1].p_symbol = '+';
 }
 
-void initchanmodes(void)
+static void initchanmodes(void)
 {
   memset(&(gnetwork->chanmodes), 0, sizeof(gnetwork->chanmodes));
   gnetwork->chanmodes[0] = 'b';

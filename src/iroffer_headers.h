@@ -691,7 +691,6 @@ void ir_listen_port_connected(ir_uint16 port);
 int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa);
 
 int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len);
-int ir_boutput_need_flush(ir_boutput_t *bout);
 int ir_boutput_attempt_flush(ir_boutput_t *bout);
 void ir_boutput_init(ir_boutput_t *bout, int fd, int flags);
 void ir_boutput_set_flags(ir_boutput_t *bout, int flags);
@@ -733,7 +732,6 @@ char* getstatuslinenums(char *str, int len);
 void sendxdlqueue(void);
 void reinit_config_vars(void);
 void initprefixes(void);
-void initchanmodes(void);
 void initvars(void);
 void startupiroffer(void);
 void isrotatelog(void);
@@ -809,7 +807,6 @@ void l_closeconn(upload * const l, const char *msg, int errno1);
 /* admin.c */
 void u_fillwith_console(userinput * const u, char *line);
 void u_fillwith_dcc(userinput * const u, dccchat_t *chat, char *line);
-void u_fillwith_clean(userinput * const u);
 
 void u_parseit(userinput * const u);
 
@@ -817,7 +814,6 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
 void u_listdir(const userinput * const u, const char *dir);
 
 /* main.c */
-void get_nick_hostname(char *nick, char *hostname, const char* line);
 void autoqueuef(const char* line, int pack, const char *message);
 char* addtoqueue(const char* nick, const char* hostname, int pack);
 
