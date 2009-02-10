@@ -86,7 +86,7 @@ int number_of_pack(xdcc *pack)
   return 0;
 }
 
-int get_level(void)
+static int get_level(void)
 {
   if (gnetwork->need_level >= 0)
     return gnetwork->need_level;
@@ -94,7 +94,7 @@ int get_level(void)
   return gdata.need_level;
 }
 
-int get_voice(void)
+static int get_voice(void)
 {
   if (gnetwork->need_voice >= 0)
     return gnetwork->need_voice;

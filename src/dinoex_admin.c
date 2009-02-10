@@ -223,7 +223,7 @@ int reorder_new_groupdesc(const char *group, const char *desc)
   return k;
 }
 
-int reorder_groupdesc(const char *group)
+static int reorder_groupdesc(const char *group)
 {
   xdcc *xd;
   xdcc *firstxd;
@@ -401,7 +401,7 @@ static int group_is_restricted(const userinput * const u, const char *group)
   return 1;
 }
 
-int invalid_group(const userinput * const u, char *arg)
+static int invalid_group(const userinput * const u, char *arg)
 {
   if (!arg || !strlen(arg)) {
     a_respond(u, "Try Specifying a Group");
@@ -426,7 +426,7 @@ int invalid_dir(const userinput * const u, char *arg)
   return 0;
 }
 
-int is_upload_file(const userinput * const u, const char *arg)
+static int is_upload_file(const userinput * const u, const char *arg)
 {
   if (file_uploading(arg)) {
     a_respond(u, "Upload still running");
@@ -445,7 +445,7 @@ int invalid_file(const userinput * const u, char *arg)
   return 0;
 }
 
-int invalid_pwd(const userinput * const u, const char *arg)
+static int invalid_pwd(const userinput * const u, const char *arg)
 {
   if (!arg || !strlen(arg)) {
     a_respond(u, "Try Specifying a Password");
@@ -472,7 +472,7 @@ int invalid_message(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_announce(const userinput * const u, const char *arg)
+static int invalid_announce(const userinput * const u, const char *arg)
 {
   if (!arg || !strlen(arg)) {
     a_respond(u, "Try Specifying a Message (e.g. NEW)");
@@ -529,7 +529,7 @@ int get_network_msg(const userinput * const u, const char *arg)
   return net;
 }
 
-int disabled_config(const userinput * const u)
+static int disabled_config(const userinput * const u)
 {
   if (gdata.direct_file_access == 0) {
     a_respond(u, "Disabled in Config");
@@ -538,7 +538,7 @@ int disabled_config(const userinput * const u)
   return 0;
 }
 
-int group_hidden(const userinput * const u, xdcc *xd)
+static int group_hidden(const userinput * const u, xdcc *xd)
 {
   if (u->method != method_dcc)
     return 0;
@@ -564,7 +564,7 @@ int group_restricted(const userinput * const u, xdcc *xd)
   return 1;
 }
 
-int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask)
+static int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
@@ -597,7 +597,7 @@ int queue_host_remove(const userinput * const u, irlist_t *list, const char *hos
   return changed;
 }
 
-int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick)
+static int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
@@ -647,7 +647,7 @@ void a_cancel_transfers(xdcc *xd, const char *msg)
   }
 }
 
-int a_remove_pack(const userinput * const u, xdcc *xd, int num)
+static int a_remove_pack(const userinput * const u, xdcc *xd, int num)
 {
   char *tmpdesc;
   char *tmpgroup;
@@ -1256,7 +1256,7 @@ void a_removegroup(const userinput * const u)
   }
 }
 
-void a_renumber1(const userinput * const u, int oldp, int newp)
+static void a_renumber1(const userinput * const u, int oldp, int newp)
 {
   xdcc *xdo;
   xdcc *xdn;
@@ -3116,7 +3116,7 @@ channel_t *is_not_joined_channel(const userinput * const u, const char *name)
   return NULL;
 }
 
-void a_msg_nick_or_chan(const userinput * const u, const char *name, const char *msg)
+static void a_msg_nick_or_chan(const userinput * const u, const char *name, const char *msg)
 {
   channel_t *ch;
 

@@ -554,7 +554,7 @@ void admin_jobs(void)
   unlink(job);
 }
 
-int check_for_file_remove(int n)
+static int check_for_file_remove(int n)
 {
   xdcc *xd;
   userinput *pubplist;
@@ -691,7 +691,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
 }
 
 
-void crc32_init(void)
+static void crc32_init(void)
 {
   gdata.crc32build.crc = ~0;
   gdata.crc32build.crc_total = ~0;
@@ -717,7 +717,7 @@ void crc32_final(xdcc *xd)
   xd->has_crc32 = 1;
 }
 
-void autoadd_scan(const char *dir, const char *group)
+static void autoadd_scan(const char *dir, const char *group)
 {
   userinput *uxdl;
   char *line;

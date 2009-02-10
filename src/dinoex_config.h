@@ -13,23 +13,12 @@
  *
  */
 
-int set_config_bool(const char *key, const char *text);
-char *print_config_bool(const char *key);
-int set_config_int(const char *key, const char *text);
-char *print_config_int(const char *key);
-int set_config_string(const char *key, char *text);
-char *print_config_string(const char *key);
-int set_config_list(const char *key, char *text);
-
-void set_default_network_name(void);
-
-int set_config_func(const char *key, char *text);
+char *print_config_key(const char *key);
+void config_startup(void);
 
 int parse_channel_options(channel_t *cptr, char * var);
 
 void getconfig_set(const char *line);
-char *print_config_key(const char *key);
-void config_startup(void);
 
 extern const char *current_config;
 extern long current_line;

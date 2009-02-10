@@ -19,8 +19,6 @@ extern xdcc xdcc_listfile;
 int hide_pack(const xdcc *xd);
 int check_lock(const char* lockstr, const char* pwd);
 int number_of_pack(xdcc *pack);
-int get_level(void);
-int get_voice(void);
 int check_level(char prefix);
 
 void set_support_groups(void);
@@ -60,7 +58,6 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
 
 int packnumtonum(const char *a);
 int ignore_trigger_dest(const char *dest);
-int ignore_trigger_line(const char *line);
 int check_trigger(const char *line, int type, const char *nick, const char *hostmask, const char *msg);
 
 void lost_nick(const char *nick);
