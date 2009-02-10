@@ -302,7 +302,7 @@ static int config_find_bool(const char *key)
   return -1;
 }
 
-int set_config_bool(const char *key, const char *text)
+static int set_config_bool(const char *key, const char *text)
 {
   int i;
 
@@ -330,7 +330,7 @@ int set_config_bool(const char *key, const char *text)
   return 0;
 }
 
-char *print_config_bool(const char *key)
+static char *print_config_bool(const char *key)
 {
   int i;
   const char *val;
@@ -415,7 +415,7 @@ static int check_range(const char *key, const char *text, int *val, int min, int
   return 0;
 }
 
-int set_config_int(const char *key, const char *text)
+static int set_config_int(const char *key, const char *text)
 {
   int i;
   int rawval;
@@ -434,7 +434,7 @@ int set_config_int(const char *key, const char *text)
   return 0;
 }
 
-char *print_config_int(const char *key)
+static char *print_config_int(const char *key)
 {
   int i;
   char *val;
@@ -491,7 +491,7 @@ static int config_find_string(const char *key)
   return -1;
 }
 
-int set_config_string(const char *key, char *text)
+static int set_config_string(const char *key, char *text)
 {
   int i;
 
@@ -527,7 +527,7 @@ int set_config_string(const char *key, char *text)
   return 0;
 }
 
-char *print_config_string(const char *key)
+static char *print_config_string(const char *key)
 {
   int i;
   const char *val;
@@ -601,7 +601,7 @@ static int get_netmask(char *text, int init)
   return init;
 }
 
-int set_config_list(const char *key, char *text)
+static int set_config_list(const char *key, char *text)
 {
   int i;
   int j;
@@ -682,8 +682,7 @@ int set_config_list(const char *key, char *text)
   return 0;
 }
 
-
-void set_default_network_name(void)
+static void set_default_network_name(void)
 {
   char *var;
 
@@ -1314,7 +1313,7 @@ static int config_find_func(const char *key)
   return -1;
 }
 
-int set_config_func(const char *key, char *text)
+static int set_config_func(const char *key, char *text)
 {
   int i;
 

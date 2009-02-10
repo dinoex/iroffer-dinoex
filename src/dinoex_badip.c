@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2007 Dirk Meyer
+ * Copyright (C) 2004-2009 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -21,7 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_badip.h"
 
-int is_in_badip4(long remoteip)
+static int is_in_badip4(long remoteip)
 {
   badip4 *b;
 
@@ -38,7 +38,7 @@ int is_in_badip4(long remoteip)
   return 0;
 }
 
-int is_in_badip6(struct in6_addr *remoteip)
+static int is_in_badip6(struct in6_addr *remoteip)
 {
   badip6 *b;
 
@@ -64,7 +64,7 @@ int is_in_badip(ir_sockaddr_union_t *sa)
   }
 }
 
-void count_badip4(long remoteip)
+static void count_badip4(long remoteip)
 {
   badip4 *b;
 
@@ -85,7 +85,7 @@ void count_badip4(long remoteip)
   b->count = 1;
 }
 
-void count_badip6(struct in6_addr *remoteip)
+static void count_badip6(struct in6_addr *remoteip)
 {
   badip6 *b;
 
@@ -115,7 +115,7 @@ void count_badip(ir_sockaddr_union_t *sa)
   }
 }
 
-void expire_badip4(void)
+static void expire_badip4(void)
 {
   badip4 *b;
 
@@ -129,7 +129,7 @@ void expire_badip4(void)
   }
 }
 
-void expire_badip6(void)
+static void expire_badip6(void)
 {
   badip6 *b;
 

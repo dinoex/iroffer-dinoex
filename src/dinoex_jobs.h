@@ -55,14 +55,11 @@ void sendannounce(void);
 
 void a_fillwith_msg2(userinput * const u, const char *nick, const char *line);
 void admin_jobs(void);
-int check_for_file_remove(int n);
 void look_for_file_remove(void);
 void reset_download_limits(void);
 const char *validate_crc32(xdcc *xd, int quiet);
-void crc32_init(void);
 void crc32_update(char *buf, unsigned long len);
 void crc32_final(xdcc *xd);
-void autoadd_scan(const char *dir, const char *group);
 void autoadd_all(void);
 void run_delayed_jobs(void);
 int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line);

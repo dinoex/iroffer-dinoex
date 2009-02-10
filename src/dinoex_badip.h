@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2007 Dirk Meyer
+ * Copyright (C) 2004-2009 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -29,14 +29,8 @@ typedef struct
   long count;
 } badip6;
 
-int is_in_badip4(long remoteip);
-int is_in_badip6(struct in6_addr *remoteip);
 int is_in_badip(ir_sockaddr_union_t *sa);
-void count_badip4(long remoteip);
-void count_badip6(struct in6_addr *remoteip);
 void count_badip(ir_sockaddr_union_t *sa);
-void expire_badip4(void);
-void expire_badip6(void);
 void expire_badip(void);
 
 /* End of File */

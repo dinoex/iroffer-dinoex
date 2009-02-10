@@ -26,31 +26,20 @@ int get_network(const char *arg1);
 int a_xdl_space(void);
 int a_xdl_left(void);
 int reorder_new_groupdesc(const char *group, const char *desc);
-int reorder_groupdesc(const char *group);
 int add_default_groupdesc(const char *group);
 
-int invalid_group(const userinput * const u, char *arg);
 int invalid_dir(const userinput * const u, char *arg);
-int is_upload_file(const userinput * const u, const char *arg);
 int invalid_file(const userinput * const u, char *arg);
-int invalid_pwd(const userinput * const u, const char *arg);
 int invalid_nick(const userinput * const u, const char *arg);
 int invalid_message(const userinput * const u, const char *arg);
-int invalid_announce(const userinput * const u, const char *arg);
 int invalid_command(const userinput * const u, const char *arg);
 int invalid_channel(const userinput * const u, const char *arg);
 int invalid_maxspeed(const userinput * const u, const char *arg);
 int invalid_pack(const userinput * const u, int num);
 int get_network_msg(const userinput * const u, const char *arg);
-int disabled_config(const userinput * const u);
-int group_hidden(const userinput * const u, xdcc *xd);
 int group_restricted(const userinput * const u, xdcc *xd);
 
-int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask);
-int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick);
-
 void a_cancel_transfers(xdcc *xd, const char *msg);
-int a_remove_pack(const userinput * const u, xdcc *xd, int num);
 void a_remove_delayed(const userinput * const u);
 void a_add_delayed(const userinput * const u);
 void a_xdlock(const userinput * const u);
@@ -69,7 +58,6 @@ void a_reiqueue(const userinput * const u);
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d);
 void a_remove(const userinput * const u);
 void a_removegroup(const userinput * const u);
-void a_renumber1(const userinput * const u, int oldp, int newp);
 void a_renumber3(const userinput * const u);
 void a_sort(const userinput * const u);
 int a_open_file(char **file, int mode);
@@ -110,7 +98,6 @@ void a_fetchcancel(const userinput * const u);
 
 void a_amsg(const userinput * const u);
 channel_t *is_not_joined_channel(const userinput * const u, const char *name);
-void a_msg_nick_or_chan(const userinput * const u, const char *name, const char *msg);
 void a_msg(const userinput * const u);
 void a_msgnet(const userinput * const u);
 void a_acceptu(const userinput * const u);

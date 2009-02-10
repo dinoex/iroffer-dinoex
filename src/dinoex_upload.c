@@ -78,7 +78,7 @@ int l_setup_file(upload * const l, struct stat *stp)
   return 0;
 }
 
-int l_setup_listen(upload * const l)
+static int l_setup_listen(upload * const l)
 {
   char *tempstr;
   char *msg;
