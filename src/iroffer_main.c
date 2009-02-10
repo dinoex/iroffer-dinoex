@@ -2923,7 +2923,7 @@ static void privmsgparse(int type, int decoded, char* line)
    return;
    }
 
-void get_nick_hostname(char *nick, char *hostname, const char* line)
+static void get_nick_hostname(char *nick, char *hostname, const char* line)
 {
    int i,j;
 
