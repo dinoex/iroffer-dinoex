@@ -613,19 +613,6 @@ char* getsendname(const char * const full)
   return copy;
 }
 
-const char* getfilename(const char * const full) {
-   int i,lastslash;
-   
-   updatecontext();
-
-   lastslash = -1;
-   for (i=0; i<sstrlen(full); i++)
-      if (full[i] == '/' || full[i] == '\\')
-         lastslash=i;
-   
-   return full+lastslash+1;
-   }
-
 void pingserver(void) {
    updatecontext();
 

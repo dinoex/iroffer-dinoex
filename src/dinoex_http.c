@@ -1568,7 +1568,7 @@ static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
     if (pack > 0) {
       xd = get_xdcc_pack(pack);
       if (xd != NULL) {
-        h->attachment = get_basename(xd->file);
+        h->attachment = getfilename(xd->file);
         h_readfile(h, xd->file);
         return;
       }

@@ -189,7 +189,7 @@ char *to_hostmask(const char *nick, const char *hostname)
   return hostmask;
 }
 
-const char *get_basename(const char *pathname)
+const char *getfilename(const char *pathname)
 {
   const char *work;
 

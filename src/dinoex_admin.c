@@ -863,7 +863,7 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
     case 'n':
     case 'F':
     case 'f':
-      rc = strcasecmp(get_basename(xd3->file), get_basename(xd4->file));
+      rc = strcasecmp(getfilename(xd3->file), getfilename(xd4->file));
       if (rc != 0)
         return rc;
       break;
@@ -1020,12 +1020,12 @@ static xdcc *a_add2(const userinput * const u, const char *group)
     }
   }
 
-  newfile = get_basename(file);
+  newfile = getfilename(file);
   if (gdata.no_duplicate_filenames) {
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
-      if (strcasecmp(get_basename(xd->file), newfile) == 0) {
+      if (strcasecmp(getfilename(xd->file), newfile) == 0) {
         a_respond(u, "File '%s' is already added.", u->arg1);
         mydelete(file);
         return NULL;
@@ -2892,9 +2892,9 @@ void a_movegroupdir(const userinput * const u)
     if (strcasecmp(g, u->arg1) == 0) {
       foundit++;
       if (u->arg2[strlen(u->arg2)-1] == '/')
-        snprintf(tempstr, maxtextlength - 2, "%s%s", u->arg2, get_basename(xd->file));
+        snprintf(tempstr, maxtextlength - 2, "%s%s", u->arg2, getfilename(xd->file));
       else
-        snprintf(tempstr, maxtextlength - 2, "%s/%s", u->arg2, get_basename(xd->file));
+        snprintf(tempstr, maxtextlength - 2, "%s/%s", u->arg2, getfilename(xd->file));
       if (strcmp(tempstr, xd->file) != 0) {
         if (a_movefile_sub(u, xd, tempstr))
           break;

@@ -649,7 +649,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
   line = mycalloc(strlen(xd->file)+1);
 
   /* ignore path */
-  x = get_basename(xd->file);
+  x = getfilename(xd->file);
 
   strcpy(line, x);
   /* ignore extension */
@@ -1020,11 +1020,11 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
   }
 
   if (gdata.no_duplicate_filenames) {
-    newfile = get_basename(file);
+    newfile = getfilename(file);
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
-      if (strcasecmp(get_basename(xd->file), newfile) == 0) {
+      if (strcasecmp(getfilename(xd->file), newfile) == 0) {
         a_respond(&u2, "File '%s' is already added.", xx_file);
         mydelete(file);
         xd->gets += xx_gets;
