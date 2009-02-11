@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+bugfix: xdcclist_grouponly
+  Falls beim REHASH geändert, wird das xdcclistfile neu erzeugt.
+
 282) QUL
   Berechne die Wartezeit genauer.
 

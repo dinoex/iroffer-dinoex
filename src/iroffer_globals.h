@@ -224,6 +224,7 @@ float r_transferminspeed, r_transfermaxspeed;
 gnetwork_t networks[MAX_NETWORKS];
 int networks_online;
 int r_networks_online;
+int r_xdcclist_grouponly;
 
 irlist_t msglog;
 
