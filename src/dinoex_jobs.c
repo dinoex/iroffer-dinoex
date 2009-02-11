@@ -1745,6 +1745,7 @@ void a_rehash_prepare(void)
   int ss;
 
   gdata.r_networks_online = gdata.networks_online;
+  gdata.r_xdcclist_grouponly = gdata.xdcclist_grouponly;
 
   gdata.r_pidfile = NULL;
   if (gdata.pidfile)
@@ -1962,6 +1963,8 @@ void a_rehash_cleanup(const userinput *u)
     mydelete(r_config_nick);
   }
   mydelete(r_local_vhost);
+  if (gdata.xdcclist_grouponly != gdata.r_xdcclist_grouponly)
+    write_files();
 }
 
 void a_read_config_files(const userinput *u)
