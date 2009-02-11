@@ -14,9 +14,12 @@
  */
 
 char *print_config_key(const char *key);
-void config_startup(void);
 
 void getconfig_set(const char *line);
+
+void config_dump(void);
+
+void config_startup(void);
 
 extern const char *current_config;
 extern long current_line;

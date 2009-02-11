@@ -345,6 +345,18 @@ static char *print_config_bool(const char *key)
   return mystrdup(val);
 }
 
+static void dump_config_bool(void)
+{
+  long i;
+
+  for (i = 0L; config_parse_bool[i].name != NULL; i ++) {
+    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+            "GDATA * " "%s: %d",
+            config_parse_bool[i].name,
+            *(config_parse_bool[i].ivar));
+  }
+}
+
 
 static void config_sorted_int(void)
 {
@@ -450,6 +462,18 @@ static char *print_config_int(const char *key)
   return val;
 }
 
+static void dump_config_int(void)
+{
+  long i;
+
+  for (i = 0L; config_parse_int[i].name != NULL; i ++) {
+    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+            "GDATA * " "%s: %d",
+            config_parse_int[i].name,
+            *(config_parse_int[i].ivar));
+  }
+}
+
 
 static void config_sorted_string(void)
 {
@@ -542,6 +566,18 @@ static char *print_config_string(const char *key)
   return mystrdup(val);
 }
 
+static void dump_config_string(void)
+{
+  long i;
+
+  for (i = 0L; config_parse_string[i].name != NULL; i ++) {
+    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+            "GDATA * " "%s: %s",
+            config_parse_string[i].name,
+            *(config_parse_string[i].svar) ? *(config_parse_string[i].svar) : "<undef>" );
+  }
+}
+
 
 static void config_sorted_list(void)
 {
@@ -624,7 +660,7 @@ static int set_config_list(const char *key, char *text)
     return 0;
   }
   switch (config_parse_list[i].flags) {
-  case 6:
+  case 5:
     cidr = irlist_add(config_parse_list[i].list, sizeof(ir_cidr_t));
     if (strchr(text, ':') == NULL) {
       cidr->family = AF_INET;
@@ -681,6 +717,43 @@ static int set_config_list(const char *key, char *text)
   mydelete(text);
   return 0;
 }
+
+static void dump_config_list(void)
+{
+  ir_cidr_t *cidr;
+  char *string;
+  long i;
+  char ip6[maxtextlengthshort];
+
+  for (i = 0L; config_parse_list[i].name != NULL; i ++) {
+    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+            "GDATA * " "%s:",
+            config_parse_list[i].name);
+    switch (config_parse_list[i].flags) {
+    case 5:
+      for (cidr = irlist_get_head(config_parse_list[i].list);
+           cidr;
+           cidr = irlist_get_next(cidr)) {
+        ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+                "  " ": %s %d", "family", cidr->family);
+        ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+                "  " ": %s %d", "netmask", cidr->netmask);
+        my_getnameinfo(ip6, maxtextlengthshort -1, &(cidr->remote.sa), 0);
+        ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+                "  " ": %s %s", "remoteip", ip6);
+      }
+      break;
+    default:
+      for (string = irlist_get_head(config_parse_list[i].list);
+           string;
+           string = irlist_get_next(string)) {
+        ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+                "  " ": %s", string);
+      }
+    }
+  }
+}
+
 
 static void set_default_network_name(void)
 {
@@ -1513,6 +1586,14 @@ char *print_config_key(const char *key)
     return val;
 
   return NULL;
+}
+
+void config_dump(void)
+{
+  dump_config_bool();
+  dump_config_int();
+  dump_config_string();
+  dump_config_list();
 }
 
 void config_startup(void)
