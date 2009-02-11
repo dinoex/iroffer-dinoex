@@ -24,6 +24,7 @@
 #include "dinoex_http.h"
 #include "dinoex_badip.h"
 #include "dinoex_irc.h"
+#include "dinoex_config.h"
 #include "dinoex_misc.h"
 
 
@@ -887,7 +888,6 @@ void dumpcontext(void)
 #define gdata_print_int(name)   gdata_print_number("%d", name)
 #define gdata_print_uint(name)  gdata_print_number("%u", name)
 #define gdata_print_long(name)  gdata_print_number("%ld", name)
-#define gdata_print_ulong(name) gdata_print_number("%lu", name)
 #define gdata_print_float(name) gdata_print_number("%.5f", name)
 
 
@@ -906,17 +906,8 @@ void dumpcontext(void)
 #define gdata_print_string_array_item(name,item) \
     { if (gdata. name [ii] . item) { ioutput(gdata_common, "GDATA * " #name "[%d]: " #item "=%s", ii, gdata_string(gdata. name [ii] . item)); } }
 
-#define gdata_print_number_array_itemptr(format,name,item) \
-    { if (gdata. name [ii] -> item) { ioutput(gdata_common, "GDATA * " #name "[%d]: " #item "=" format, ii, gdata. name [ii] -> item); } }
-
-#define gdata_print_string_array_itemptr(name,item) \
-    { if (gdata. name [ii] -> item) { ioutput(gdata_common, "GDATA * " #name "[%d]: " #item "=%s", ii, gdata_string(gdata. name [ii] -> item)); } }
-
 #define gdata_print_int_array(name)   gdata_print_number_array("%d", name)
-#define gdata_print_uint_array(name)  gdata_print_number_array("%u", name)
-#define gdata_print_long_array(name)  gdata_print_number_array("%ld", name)
 #define gdata_print_ulong_array(name) gdata_print_number_array("%lu", name)
-#define gdata_print_float_array(name) gdata_print_number_array("%.5f", name)
 
 
 #define gdata_irlist_iter_start(name, type) \
@@ -953,8 +944,6 @@ void dumpcontext(void)
 #define gdata_iter_print_int(name)   gdata_iter_print_number("%d", name)
 #define gdata_iter_print_uint(name)  gdata_iter_print_number("%u", name)
 #define gdata_iter_print_long(name)  gdata_iter_print_number("%ld", name)
-#define gdata_iter_print_ulong(name) gdata_iter_print_number("%lu", name)
-#define gdata_iter_print_float(name) gdata_iter_print_number("%.5f", name)
 
 
 
@@ -966,6 +955,8 @@ void dumpgdata(void)
   
   ioutput(gdata_common,"GDATA DUMP BEGIN");
   
+  config_dump();
+  
   gdata_print_int(transfermethod);
   
   for (ii=0; ii<MAXCONFIG; ii++)
@@ -976,29 +967,14 @@ void dumpgdata(void)
           (long)gdata.configtime[ii]);
     }
   gdata_print_string(osstring);
-  gdata_print_int(hideos);
-  gdata_print_int(lognotices);
-  gdata_print_int(logmessages);
-  gdata_print_int(timestampconsole);
   gdata_print_long(startuptime);
-  gdata_print_int(lowbdwth);
   gdata_print_int(background);
-  gdata_print_string(local_vhost);
-  gdata_print_int(logstats);
-  gdata_print_string(logfile);
   gdata_print_number_cast("%d",logrotate,int);
   gdata_print_number_cast("%d",last_logrotate,int);
   gdata_print_number_cast("%d", last_update, int);
-  gdata_print_string(headline);
-  gdata_print_string(creditline);
-  gdata_print_string(pidfile);
 
-  gdata_print_int(tcprangestart);
-  gdata_print_int(tcprangelimit);
   gdata_print_float(transferminspeed);
   gdata_print_float(transfermaxspeed);
-  gdata_print_int(overallmaxspeed);
-  gdata_print_int(overallmaxspeeddayspeed);
   gdata_print_int(maxb);
   gdata_print_int(overallmaxspeeddaytimestart);
   gdata_print_int(overallmaxspeeddaytimeend);
@@ -1012,21 +988,6 @@ void dumpgdata(void)
     }
   gdata_print_int(transferlimits_over);
   
-  gdata_print_int(maxtransfersperperson);
-  gdata_print_int(maxqueueditemsperperson);
-  gdata_print_int(maxidlequeuedperperson);
-  gdata_print_int(punishslowusers);
-  gdata_print_int(nomd5sum);
-  gdata_print_int(getipfromserver);
-  gdata_print_int(noduplicatefiles);
-  gdata_print_int(dos_text_files);
-  gdata_print_int(no_duplicate_filenames);
-  gdata_print_int(show_list_all);
-
-  gdata_irlist_iter_start(adddir_exclude, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
   gdata_irlist_iter_start(autoqueue, autoqueue_t);
   gdata_iter_print_uint(pack);
   gdata_iter_print_string(word);
@@ -1036,22 +997,6 @@ void dumpgdata(void)
   gdata_irlist_iter_start(autotrigger, autotrigger_t);
   ioutput(gdata_common, "GDATA * " "pack" ": " "%d", number_of_pack(iter->pack));
   gdata_iter_print_string(word);
-  gdata_irlist_iter_end;
-
-  gdata_irlist_iter_start(geoipcountry, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
-  gdata_irlist_iter_start(nogeoipcountry, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
-  gdata_irlist_iter_start(geoipexcludenick, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
-  gdata_irlist_iter_start(autoadd_dirs, char);
-  gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(packs_delayed, userinput);
@@ -1067,18 +1012,6 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(jobs_delayed, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
-  gdata_irlist_iter_start(autocrc_exclude, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
-  gdata_irlist_iter_start(http_vhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
-  gdata_irlist_iter_start(telnet_vhost, char);
   gdata_iter_as_print_string;
   gdata_irlist_iter_end;
 
@@ -1137,10 +1070,6 @@ void dumpgdata(void)
   gdata_iter_print_long(count);
   gdata_irlist_iter_end;
 
-  gdata_irlist_iter_start(weblist_info, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-
   gdata_irlist_iter_start(mime_type, http_magic_t);
   gdata_iter_print_string(m_ext);
   gdata_iter_print_string(m_mime);
@@ -1151,139 +1080,11 @@ void dumpgdata(void)
   gdata_iter_print_string(a_pattern);
   gdata_irlist_iter_end;
 
-  gdata_print_string(enable_nick);
-  gdata_print_string(owner_nick);
-  gdata_print_string(admin_job_file);
-  gdata_print_string(autoaddann);
-  gdata_print_string(autoadd_group);
-  gdata_print_string(send_statefile);
-  gdata_print_string(geoipdatabase);
-  gdata_print_string(respondtochannellistmsg);
-  gdata_print_string(xdccremovefile);
-  gdata_print_string(autoadd_sort);
-  gdata_print_string(http_admin);
-  gdata_print_string(http_dir);
-  gdata_print_string(group_seperator);
   gdata_print_string(usenatip);
-  gdata_print_string(logfile_notices);
-  gdata_print_string(logfile_messages);
-  gdata_print_string(trashcan_dir);
-  gdata_print_string(xdccxmlfile);
-  gdata_print_string(http_date);
-  gdata_print_string(announce_seperator);
   gdata_print_string(nosendmsg);
-  gdata_print_string(privmsg_fish);
-  gdata_print_string(ruby_script);
-  gdata_print_string(charset);
 
-  gdata_print_int(need_voice);
-  gdata_print_int(need_level);
-  gdata_print_int(hide_list_info);
-  gdata_print_int(xdcclist_grouponly);
-  gdata_print_int(auto_default_group);
-  gdata_print_int(auto_path_group);
-  gdata_print_int(start_of_month);
-  gdata_print_int(restrictprivlistmain);
-  gdata_print_int(restrictprivlistfull);
-  gdata_print_int(groupsincaps);
-  gdata_print_int(ignoreuploadbandwidth);
-  gdata_print_int(holdqueue);
-  gdata_print_int(removelostfiles);
-  gdata_print_int(ignoreduplicateip);
-  gdata_print_int(hidelockedpacks);
-  gdata_print_int(disablexdccinfo);
-  gdata_print_int(atfind);
-  gdata_print_int(waitafterjoin);
-  gdata_print_int(noautorejoin);
-  gdata_print_int(auto_crc_check);
-  gdata_print_int(nocrc32);
-  gdata_print_int(direct_file_access);
-  gdata_print_int(autoaddann_short);
-  gdata_print_int(spaces_in_filenames);
-  gdata_print_int(autoadd_time);
-  gdata_print_int(restrictsend_warning);
-  gdata_print_int(restrictsend_timeout);
-  gdata_print_int(send_statefile_minute);
-  gdata_print_int(extend_status_line);
-  gdata_print_int(max_uploads);
-  gdata_print_int(max_upspeed);
-  gdata_print_int(max_find);
-  gdata_print_int(include_subdirs);
-  gdata_print_int(restrictsend_delay);
-  gdata_print_int(adminlevel);
-  gdata_print_int(hadminlevel);
-  gdata_print_int(monitor_files);
-  gdata_print_int(xdcclist_by_privmsg);
-  gdata_print_int(autoadd_delay);
-  gdata_print_int(balanced_queue);
-  gdata_print_int(http_port);
-  gdata_print_int(passive_dcc);
-  gdata_print_int(telnet_port);
-  gdata_print_int(remove_dead_users);
-  gdata_print_int(upnp_router);
-  gdata_print_int(http_search);
-  gdata_print_int(send_listfile);
-  gdata_print_int(old_statefile);
-  gdata_print_int(fileremove_max_packs);
-  gdata_print_int(direct_config_access);
-  gdata_print_int(new_trigger);
-  gdata_print_int(show_date_added);
-  gdata_print_int(reconnect_delay);
-  gdata_print_int(fish_only);
-  gdata_print_int(privmsg_encrypt);
-  gdata_print_int(verbose_crc32);
-  gdata_print_int(mirc_dcc64);
-  gdata_print_int(no_minspeed_on_free);
-  gdata_print_int(no_status_chat);
-  gdata_print_int(no_status_log);
-  gdata_print_int(no_auto_rehash);
-  gdata_print_int(send_batch);
   gdata_print_number_cast("%ld", nomd5_start, long);
   
-  gdata_irlist_iter_start(downloadhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(nodownloadhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(unlimitedhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(log_exclude_host, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(log_exclude_text, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(fish_exclude_nick, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  
-  gdata_irlist_iter_start(http_allow, ir_cidr_t);
-  gdata_iter_print_int(family);
-  gdata_iter_print_int(netmask);
-  my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
-  ioutput(gdata_common, "  : remoteip=%s", ip6);
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(http_deny, ir_cidr_t);
-  gdata_iter_print_int(family);
-  gdata_iter_print_int(netmask);
-  my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
-  ioutput(gdata_common, "  : remoteip=%s", ip6);
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(xdcc_allow, ir_cidr_t);
-  gdata_iter_print_int(family);
-  gdata_iter_print_int(netmask);
-  my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
-  ioutput(gdata_common, "  : remoteip=%s", ip6);
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(xdcc_deny, ir_cidr_t);
-  gdata_iter_print_int(family);
-  gdata_iter_print_int(netmask);
-  my_getnameinfo(ip6, maxtextlengthshort -1, &(iter->remote.sa), 0);
-  ioutput(gdata_common, "  : remoteip=%s", ip6);
-  gdata_irlist_iter_end;
-
   gdata_irlist_iter_start(group_admin, group_admin_t);
   gdata_iter_print_int(g_level);
   gdata_iter_print_string(g_host);
@@ -1291,36 +1092,11 @@ void dumpgdata(void)
   gdata_iter_print_string(g_groups);
   gdata_irlist_iter_end;
 
-  gdata_print_string(adminpass);
-  gdata_print_string(hadminpass);
-  
-  gdata_irlist_iter_start(adminhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  gdata_irlist_iter_start(hadminhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  
-  /* filedir */
-  gdata_irlist_iter_start(filedir, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
-  
   gdata_print_string(statefile);
-  gdata_print_string(xdcclistfile);
-  gdata_print_int(xdcclistfileraw);
   gdata_print_string(periodicmsg_nick);
   gdata_print_string(periodicmsg_msg);
   gdata_print_int(periodicmsg_time);
-  gdata_irlist_iter_start(autoignore_exclude, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
   
-  gdata_print_int(autoignore_threshold);
-  
-  gdata_irlist_iter_start(uploadhost, char);
-  gdata_iter_as_print_string;
-  gdata_irlist_iter_end;
   gdata_irlist_iter_start(tuploadhost, tupload_t);
   gdata_iter_print_string(u_host);
   gdata_iter_print_long(u_time);
@@ -1333,24 +1109,9 @@ void dumpgdata(void)
   gdata_iter_print_long(q_time);
   gdata_irlist_iter_end;
   
-  gdata_print_string(uploaddir);
   gdata_print_number("%" LLPRINTFMT "d", uploadmaxsize);
   gdata_print_number("%" LLPRINTFMT "d", uploadminspace);
   gdata_print_number("%" LLPRINTFMT "d", disk_quota);
-  gdata_print_string(config_nick);
-  gdata_print_string(user_realname);
-  gdata_print_string(user_modes);
-  gdata_print_int(quietmode);
-  gdata_print_string(loginname);
-  gdata_print_int(restrictlist);
-  gdata_print_int(restrictsend);
-  gdata_print_int(restrictprivlist);
-  gdata_print_string(restrictprivlistmsg);
-  gdata_print_string(nickserv_pass);
-  gdata_print_int(notifytime);
-  gdata_print_int(respondtochannelxdcc);
-  gdata_print_int(respondtochannellist);
-  gdata_print_int(smallfilebypass);
 
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)
@@ -1544,7 +1305,6 @@ void dumpgdata(void)
   gdata_print_float(sentrecord);
   gdata_print_number("%" LLPRINTFMT "d", totalsent);
   gdata_print_long(totaluptime);
-  gdata_print_int(debug);
   gdata_print_int(exiting);
   gdata_print_int(crashing);
   
@@ -1563,8 +1323,6 @@ void dumpgdata(void)
   
   gdata_print_int(ignore);
   gdata_print_int(slotsmax);
-  gdata_print_int(queuesize);
-  gdata_print_int(idlequeuesize);
   gdata_print_number_cast("%ld", noautosave, long);
   gdata_print_number_cast("%ld", nonewcons, long);
   gdata_print_number_cast("%ld", nolisting, long);
