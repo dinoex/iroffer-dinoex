@@ -1431,7 +1431,7 @@ void a_queuesize(const userinput * const u)
   a_respond(u, "QUEUESIZE now %d", gdata.queuesize);
 }
 
-void a_requeue(const userinput * const u)
+static void a_requeue2(const userinput * const u, irlist_t *list)
 {
   int oldp = 0, newp = 0;
   ir_pqueue *pqo;
@@ -1443,9 +1443,9 @@ void a_requeue(const userinput * const u)
   if (u->arg2) newp = atoi(u->arg2);
 
   if ((oldp < 1) ||
-      (oldp > irlist_size(&gdata.mainqueue)) ||
+      (oldp > irlist_size(list)) ||
       (newp < 1) ||
-      (newp > irlist_size(&gdata.mainqueue)) ||
+      (newp > irlist_size(list)) ||
       (newp == oldp)) {
     a_respond(u, "Invalid Queue Entry");
     return;
@@ -1454,49 +1454,25 @@ void a_requeue(const userinput * const u)
   a_respond(u, "** Moved Queue %i to %i", oldp, newp);
 
   /* get queue we are renumbering */
-  pqo = irlist_get_nth(&gdata.mainqueue, oldp-1);
-  irlist_remove(&gdata.mainqueue, pqo);
+  pqo = irlist_get_nth(list, oldp-1);
+  irlist_remove(list, pqo);
 
   if (newp == 1) {
-    irlist_insert_head(&gdata.mainqueue, pqo);
+    irlist_insert_head(list, pqo);
   } else {
-    pqn = irlist_get_nth(&gdata.mainqueue, newp-2);
-    irlist_insert_after(&gdata.mainqueue, pqo, pqn);
+    pqn = irlist_get_nth(list, newp-2);
+    irlist_insert_after(list, pqo, pqn);
   }
+}
+
+void a_requeue(const userinput * const u)
+{
+  a_requeue2(u, &gdata.mainqueue);
 }
 
 void a_reiqueue(const userinput * const u)
 {
-  int oldp = 0, newp = 0;
-  ir_pqueue *pqo;
-  ir_pqueue *pqn;
-
-  updatecontext();
-
-  if (u->arg1) oldp = atoi(u->arg1);
-  if (u->arg2) newp = atoi(u->arg2);
-
-  if ((oldp < 1) ||
-      (oldp > irlist_size(&gdata.idlequeue)) ||
-      (newp < 1) ||
-      (newp > irlist_size(&gdata.idlequeue)) ||
-      (newp == oldp)) {
-    a_respond(u, "Invalid Queue Entry");
-    return;
-  }
-
-  a_respond(u, "** Moved Queue %i to %i", oldp, newp);
-
-  /* get queue we are renumbering */
-  pqo = irlist_get_nth(&gdata.idlequeue, oldp-1);
-  irlist_remove(&gdata.idlequeue, pqo);
-
-  if (newp == 1) {
-    irlist_insert_head(&gdata.idlequeue, pqo);
-  } else {
-    pqn = irlist_get_nth(&gdata.idlequeue, newp-2);
-    irlist_insert_after(&gdata.idlequeue, pqo, pqn);
-  }
+  a_requeue2(u, &gdata.idlequeue);
 }
 
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
