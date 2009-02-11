@@ -759,7 +759,7 @@ int fnmatch_xdcc(const char *match, xdcc *xd)
   const char *file;
   char datestr[maxtextlengthshort];
 
-  file = get_basename(xd->file);
+  file = getfilename(xd->file);
   if (fnmatch(match, file, FNM_CASEFOLD) == 0)
     return 1;
   if (fnmatch(match, xd->desc, FNM_CASEFOLD) == 0)
