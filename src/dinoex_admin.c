@@ -3298,7 +3298,7 @@ void a_get(const userinput * const u)
     a_respond(u, "GET %s deactivated", u->arg2);
 }
 
-void a_rmiq(const userinput * const u)
+static void a_rmq2(const userinput * const u, irlist_t *list)
 {
   int num = 0;
   ir_pqueue *pq;
@@ -3312,7 +3312,7 @@ void a_rmiq(const userinput * const u)
     return;
   }
 
-  pq = irlist_get_nth(&gdata.idlequeue, num-1);
+  pq = irlist_get_nth(list, num-1);
   if (!pq) {
      a_respond(u, "Invalid ID number, Try \"QUL\" for a list");
     return;
@@ -3323,8 +3323,18 @@ void a_rmiq(const userinput * const u)
   notice(pq->nick, "** Removed From Queue: Owner Requested Remove");
   mydelete(pq->nick);
   mydelete(pq->hostname);
-  irlist_delete(&gdata.idlequeue, pq);
+  irlist_delete(list, pq);
   gnetwork = backup;
+}
+
+void a_rmq(const userinput * const u)
+{
+  a_rmq2(u, &gdata.mainqueue);
+}
+
+void a_rmiq(const userinput * const u)
+{
+  a_rmq2(u, &gdata.idlequeue);
 }
 
 void a_rawnet(const userinput * const u)

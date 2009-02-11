@@ -41,7 +41,6 @@ static void u_close(const userinput * const u);
 static void u_closeu(const userinput * const u);
 static void u_nomin(const userinput * const u);
 static void u_nomax(const userinput * const u);
-static void u_rmq(const userinput * const u);
 static void u_raw(const userinput * const u);
 static void u_redraw(const userinput * const u);
 static void u_delhist(const userinput * const u);
@@ -122,7 +121,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,2,method_allow_all,u_closeu,        "CLOSEU","id","Cancels upload <id>"},
 {2,2,method_allow_all,a_acceptu,       "ACCEPTU","min [hostmask]","Accepting uploads from <hostmask> for <x> minutes"},
 {2,2,method_allow_all,a_get,           "GET","net nick n [password]","Request pack <n> from bot <nick>"},
-{2,2,method_allow_all,u_rmq,           "RMQ","position","Removes entry at <position> from main queue"},
+{2,2,method_allow_all,a_rmq,           "RMQ","position","Removes entry at <position> from main queue"},
 {2,2,method_allow_all,a_rmiq,          "RMIQ","position","Removes entry at <position> from idle queue"},
 {2,5,method_allow_all,u_nomin,         "NOMIN","id","Disables minspeed for transfer <id>"},
 {2,5,method_allow_all,u_nomax,         "NOMAX","id","Disables maxspeed for transfer <id>"},
@@ -1286,43 +1285,6 @@ static void u_nomax(const userinput * const u)
     {
       tr = does_tr_id_exist(num);
       tr->nomax = 1;
-    }
-}
-
-static void u_rmq(const userinput * const u)
-{
-  int num = 0;
-  ir_pqueue *pq;
-  gnetwork_t *backup;
-  
-  updatecontext();
-  
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (num < 1)
-    {
-      u_respond(u,"Invalid ID number, Try \"QUL\" for a list");
-      return;
-    }
-  
-  pq = irlist_get_nth(&gdata.mainqueue, num-1);
-  
-  if (!pq)
-    {
-      u_respond(u,"Invalid ID number, Try \"QUL\" for a list");
-    }
-  else
-    {
-      backup = gnetwork;
-      gnetwork = &(gdata.networks[pq->net]);
-      notice(pq->nick,"** Removed From Queue: Owner Requested Remove");
-      mydelete(pq->nick);
-      mydelete(pq->hostname);
-      irlist_delete(&gdata.mainqueue, pq);
-      gnetwork = backup;
     }
 }
 
