@@ -73,10 +73,10 @@ char *mystrjoin(const char *str1, const char *str2, char delimiter)
 #else /* WITHOUT_MEMSAVE */
   copy = mymalloc(max);
 #endif /* WITHOUT_MEMSAVE */
-  if ((delimiter != 0 ) && (str1[len1] != delimiter)) {
-    snprintf(copy, max, "%s%s", str1, str2);
-  } else {
+  if ((delimiter != 0 ) && (str1[len1 - 1] != delimiter)) {
     snprintf(copy, max, "%s%c%s", str1, delimiter, str2);
+  } else {
+    snprintf(copy, max, "%s%s", str1, str2);
   }
   return copy;
 }
