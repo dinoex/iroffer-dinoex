@@ -1686,6 +1686,7 @@ void a_renumber3(const userinput * const u)
 
   write_files();
 }
+
 void a_sort(const userinput * const u)
 {
   irlist_t old_list;
@@ -3909,13 +3910,11 @@ static void a_announce_sub(const userinput * const u, const char *arg1, const ch
 
 void a_announce(const userinput * const u)
 {
-  updatecontext();
   a_announce_sub(u, u->arg1, u->arg1, u->arg2e);
 }
 
 void a_mannounce(const userinput * const u)
 {
-  updatecontext();
   a_announce_sub(u, u->arg1, u->arg2, u->arg3e);
 }
 
