@@ -504,9 +504,7 @@ static void admin_run(const char *cmd)
   if (job == NULL)
     return;
 
-  done = mycalloc(strlen(job)+6);
-  strcpy(done, job);
-  strcat(done, ".done");
+  done = mystrsuffix(job, ".done");
   fd = open(done,
             O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
             CREAT_PERMISSIONS);
@@ -546,8 +544,7 @@ void admin_jobs(void)
     l = line + strlen(line) - 1;
     while (( *l == '\r' ) || ( *l == '\n' ))
       *(l--) = 0;
-    newjob = irlist_add(&gdata.jobs_delayed, strlen(line) + 1);
-    strcpy(newjob, line);
+    irlist_add_string(&gdata.jobs_delayed, line);
   }
   mydelete(line)
   fclose(fin);

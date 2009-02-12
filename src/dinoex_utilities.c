@@ -81,6 +81,14 @@ char *mystrjoin(const char *str1, const char *str2, char delimiter)
   return copy;
 }
 
+void irlist_add_string(irlist_t *list, const char *str)
+{
+  char *copy;
+
+  copy = irlist_add(list, strlen(str) + 1);
+  strcpy(copy, str);
+}
+
 int verifyshell(irlist_t *list, const char *file)
 {
   char *pattern;

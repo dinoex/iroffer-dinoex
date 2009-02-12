@@ -952,8 +952,7 @@ static void u_xdl(const userinput * const u) {
           {
             snprintf(tempstr, maxtextlength,
                      "%s%s%s", xd->group, gdata.group_seperator, xd->group_desc);
-            inlist = irlist_add(&grplist, strlen(tempstr) + 1);
-            strcpy(inlist, tempstr);
+            irlist_add_string(&grplist, tempstr);
           }
        xd = irlist_get_next(xd);
      }
@@ -3025,8 +3024,7 @@ void u_listdir(const userinput * const u, const char *dir)
     {
       if (strcmp(f->d_name,".") && strcmp(f->d_name,".."))
         {
-          thefile = irlist_add(&dirlist, strlen(f->d_name) + 1);
-          strcpy(thefile, f->d_name);
+          irlist_add_string(&dirlist, f->d_name);
         }
     }
   
