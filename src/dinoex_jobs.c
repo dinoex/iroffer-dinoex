@@ -526,7 +526,6 @@ void admin_jobs(void)
   char *line;
   char *l;
   char *r;
-  char *newjob;
 
   job = gdata.admin_job_file;
   if (job == NULL)
