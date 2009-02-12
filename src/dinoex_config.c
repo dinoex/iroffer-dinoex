@@ -398,17 +398,30 @@ static int config_find_int(const char *key)
   return -1;
 }
 
-static int check_range(const char *key, const char *text, int *val, int min, int max)
+static int report_no_arg(const char *key, const char *text)
 {
-  int rawval;
-  char *endptr;
-
+  if (text == NULL) {
+    outerror(OUTERROR_TYPE_WARN,
+             "%s:%ld ignored '%s' because it has no args.",
+             current_config, current_line, key);
+    return 1;
+  }
   if (*text == 0) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has no args.",
              current_config, current_line, key);
     return 1;
   }
+  return 0;
+}
+
+static int check_range(const char *key, const char *text, int *val, int min, int max)
+{
+  int rawval;
+  char *endptr;
+
+  if (report_no_arg(key, text))
+    return 1;
 
   rawval = (int)strtol(text, &endptr, 0);
   if (endptr[0] != 0) {
@@ -525,20 +538,15 @@ static int set_config_string(const char *key, char *text)
   if (i < 0)
     return 1;
 
-  if (*text == 0) {
-    outerror(OUTERROR_TYPE_WARN,
-             "%s:%ld ignored '%s' because it has no args.",
-             current_config, current_line, key);
-    mydelete(text);
+  if (report_no_arg(key, text))
     return 0;
-  }
+
   switch (config_parse_string[i].flags) {
   case 4:
      if (strchr(text, ' ') != NULL) {
        outerror(OUTERROR_TYPE_WARN,
                 "%s:%ld ignored %s '%s' because it contains spaces",
                 current_config, current_line, key, text);
-       mydelete(text);
        return 0;
      }
      checkadminpass2(text);
@@ -547,7 +555,7 @@ static int set_config_string(const char *key, char *text)
      break;
   }
   mydelete(*(config_parse_string[i].svar));
-  *(config_parse_string[i].svar) = text;
+  *(config_parse_string[i].svar) = mystrdup(text);
   return 0;
 }
 
@@ -642,8 +650,7 @@ static int set_config_list(const char *key, char *text)
   int i;
   int j;
   int e;
-  char *pi;
-  char *old;
+  char *mask;
   ir_cidr_t *cidr;
 
   updatecontext();
@@ -652,13 +659,9 @@ static int set_config_list(const char *key, char *text)
   if (i < 0)
     return 1;
 
-  if (*text == 0) {
-    outerror(OUTERROR_TYPE_WARN,
-             "%s:%ld ignored '%s' because it has no args.",
-             current_config, current_line, key);
-    mydelete(text);
+  if (report_no_arg(key, text))
     return 0;
-  }
+
   switch (config_parse_list[i].flags) {
   case 5:
     cidr = irlist_add(config_parse_list[i].list, sizeof(ir_cidr_t));
@@ -678,7 +681,6 @@ static int set_config_list(const char *key, char *text)
                 current_config, current_line, key, text);
        irlist_delete(config_parse_list[i].list, cidr);
     }
-    mydelete(text);
     return 0;
   case 3:
      for (j=strlen(text)-1; j>=0; j--) {
@@ -692,7 +694,6 @@ static int set_config_list(const char *key, char *text)
        outerror(OUTERROR_TYPE_WARN,
                 "%s:%ld ignored %s '%s' because it's way too vague",
                 current_config, current_line, config_parse_list[i].name, text);
-       mydelete(text);
        return 0;
      }
      /* FALLTHROUGH */
@@ -701,20 +702,17 @@ static int set_config_list(const char *key, char *text)
        outerror(OUTERROR_TYPE_WARN,
                 "%s:%ld ignored %s '%s' because it contains spaces",
                 current_config, current_line, key, text);
-       mydelete(text);
        return 0;
      }
-     old = text;
-     text = hostmask_to_fnmatch(old);
-     mydelete(old);
-     break;
+     mask = hostmask_to_fnmatch(text);
+     irlist_add_string(config_parse_list[i].list, mask);
+     mydelete(mask);
+     return 0;
   case 1:
      convert_to_unix_slash(text);
      break;
   }
-  pi = irlist_add(config_parse_list[i].list, strlen(text) + 1);
-  strcpy(pi, text);
-  mydelete(text);
+  irlist_add_string(config_parse_list[i].list, text);
   return 0;
 }
 
@@ -760,7 +758,7 @@ static void set_default_network_name(void)
   char *var;
 
   if (gdata.networks[gdata.networks_online].name != NULL) {
-    if (strlen(gdata.networks[gdata.networks_online].name) != 0) {
+    if (gdata.networks[gdata.networks_online].name[0] != 0) {
       return;
     }
     mydelete(gdata.networks[gdata.networks_online].name);
@@ -768,7 +766,7 @@ static void set_default_network_name(void)
 
   var = mymalloc(10);
   snprintf(var, 10, "%d", gdata.networks_online + 1);
-  gdata.networks[gdata.networks_online].name = var;
+  gdata.networks[gdata.networks_online].name = mystrdup(var);
   return;
 }
 
@@ -909,13 +907,12 @@ static void c_autoadd_group_match(char *var)
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has invalid args: '%s'",
              current_config, current_line, "autoadd_group_match", var);
-    mydelete(var);
     return;
   }
 
   *(split++) = 0;
   ag = irlist_add(&(gdata.autoadd_group_match), sizeof(autoadd_group_t));
-  ag->a_group = var;
+  ag->a_group = mystrdup(var);
   ag->a_pattern = split;
 }
 
@@ -935,7 +932,6 @@ static void c_autosendpack(char *var)
     mydelete(part[2]);
   }
   mydelete(part[0]);
-  mydelete(var);
 }
 
 static void c_channel(char *var)
@@ -947,7 +943,6 @@ static void c_channel(char *var)
   updatecontext();
 
   get_argv(part, var, 2);
-  mydelete(var);
   if (part[0] == NULL)
     return;
 
@@ -983,11 +978,7 @@ static void c_channel(char *var)
 
 static void c_channel_join_raw(char *var)
 {
-   char *str;
-
-   str = irlist_add(&gdata.networks[gdata.networks_online].channel_join_raw, strlen(var) + 1);
-   strcpy(str, var);
-   mydelete(var);
+   irlist_add_string(&gdata.networks[gdata.networks_online].channel_join_raw, var);
 }
 
 static void c_connectionmethod(char *var)
@@ -1001,7 +992,6 @@ static void c_connectionmethod(char *var)
   bzero((char *) &gdata.networks[gdata.networks_online].connectionmethod, sizeof(connectionmethod_t));
 
   m = get_argv(part, var, 5);
-  mydelete(var);
   if (part[1]) {
     gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
     part[1] = NULL;
@@ -1052,13 +1042,11 @@ static void c_connectionmethod(char *var)
 static void c_disk_quota(char *var)
 {
   gdata.disk_quota = atoull(var)*1024*1024;
-  mydelete(var);
 }
 
 static void c_getip_network(char *var)
 {
   gdata.networks[gdata.networks_online].getip_net = get_network(var);
-  mydelete(var);
 }
 
 static void c_group_admin(char *var)
@@ -1072,7 +1060,7 @@ static void c_group_admin(char *var)
   for (data = strtok(var, " ");
        data && (drop == 0);
        data = strtok(NULL, " ")) {
-    if (strlen(data) == 0)
+    if (data[0] == 0)
       continue;
 
     switch (++stufe) {
@@ -1105,7 +1093,6 @@ static void c_group_admin(char *var)
     mydelete(ga->g_groups);
     ga = irlist_delete(&gdata.group_admin, ga);
   }
-  mydelete(var);
 }
 
 static void c_logrotate(char *var)
@@ -1113,13 +1100,12 @@ static void c_logrotate(char *var)
   if (!strcmp(var, "daily"))   gdata.logrotate =    24*60*60;
   if (!strcmp(var, "weekly"))  gdata.logrotate =  7*24*60*60;
   if (!strcmp(var, "monthly")) gdata.logrotate = 30*24*60*60;
-  mydelete(var);
 }
 
 static void c_local_vhost(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].local_vhost);
-  gdata.networks[gdata.networks_online].local_vhost = var;
+  gdata.networks[gdata.networks_online].local_vhost = mystrdup(var);
 }
 
 static void c_mime_type(char *var)
@@ -1132,13 +1118,12 @@ static void c_mime_type(char *var)
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has invalid args: '%s'",
              current_config, current_line, "mime_type", var);
-    mydelete(var);
     return;
   }
 
   *(split++) = 0;
   mime = irlist_add(&(gdata.mime_type), sizeof(http_magic_t));
-  mime->m_ext = var;
+  mime->m_ext = mystrdup(var);
   mime->m_mime = split;
 }
 
@@ -1150,7 +1135,6 @@ static void c_need_level(char *var)
   if (check_range(key, var, &rawval, 0, 3) == 0) {
     gdata.networks[gdata.networks_online].need_level = rawval;
   }
-  mydelete(var);
 }
 
 static void c_network(char *var)
@@ -1167,23 +1151,21 @@ static void c_network(char *var)
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored network '%s' because we have to many.",
              current_config, current_line, var);
-    mydelete(var);
     return;
   }
   gdata.networks[gdata.networks_online].net = gdata.networks_online;
   mydelete(gdata.networks[gdata.networks_online].name);
-  if (strlen(var) != 0) {
-    gdata.networks[gdata.networks_online].name = var;
+  if (var[0] != 0) {
+    gdata.networks[gdata.networks_online].name = mystrdup(var);
   } else {
     set_default_network_name();
-    mydelete(var);
   }
 }
 
 static void c_nickserv_pass(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].nickserv_pass);
-  gdata.networks[gdata.networks_online].nickserv_pass = var;
+  gdata.networks[gdata.networks_online].nickserv_pass = mystrdup(var);
 }
 
 static void c_overallmaxspeeddaydays(char *var)
@@ -1218,7 +1200,6 @@ static void c_overallmaxspeeddaydays(char *var)
       break;
     }
   }
-  mydelete(var);
 }
 
 static void c_overallmaxspeeddaytime(char *var)
@@ -1235,7 +1216,6 @@ static void c_overallmaxspeeddaytime(char *var)
   }
   mydelete(part[0]);
   mydelete(part[1]);
-  mydelete(var);
 }
 
 static void c_periodicmsg(char *var)
@@ -1251,13 +1231,11 @@ static void c_periodicmsg(char *var)
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "%s:%ld ignored '%s' because it has invalid args: '%s'",
              current_config, current_line, "periodicmsg", var);
-    mydelete(var);
     mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
     return;
   }
-  mydelete(var);
   gdata.periodicmsg_nick = part[0];
   tnum = atoi(part[1]);
   mydelete(part[1]);
@@ -1267,11 +1245,7 @@ static void c_periodicmsg(char *var)
 
 static void c_proxyinfo(char *var)
 {
-   char *str;
-
-   str = irlist_add(&gdata.networks[gdata.networks_online].proxyinfo, strlen(var) + 1);
-   strcpy(str, var);
-   mydelete(var);
+   irlist_add_string(&gdata.networks[gdata.networks_online].proxyinfo, var);
 }
 
 static void c_server(char *var)
@@ -1285,14 +1259,12 @@ static void c_server(char *var)
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "%s:%ld ignored '%s' because it has invalid args: '%s'",
              current_config, current_line, "server", var);
-    mydelete(var);
     mydelete(part[0]);
     mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
     return;
   }
-  mydelete(var);
   ss = irlist_add(&gdata.networks[gdata.networks_online].servers, sizeof(server_t));
   ss->hostname = part[0];
   ss->port = 6667;
@@ -1305,20 +1277,12 @@ static void c_server(char *var)
 
 static void c_server_connected_raw(char *var)
 {
-   char *str;
-
-   str = irlist_add(&gdata.networks[gdata.networks_online].server_connected_raw, strlen(var) + 1);
-   strcpy(str, var);
-   mydelete(var);
+   irlist_add_string(&gdata.networks[gdata.networks_online].server_connected_raw, var);
 }
 
 static void c_server_join_raw(char *var)
 {
-   char *str;
-
-   str = irlist_add(&gdata.networks[gdata.networks_online].server_join_raw, strlen(var) + 1);
-   strcpy(str, var);
-   mydelete(var);
+   irlist_add_string(&gdata.networks[gdata.networks_online].server_join_raw, var);
 }
 
 static void c_slotsmax(char *var)
@@ -1326,7 +1290,6 @@ static void c_slotsmax(char *var)
   int ival;
 
   ival = atoi(var);
-  mydelete(var);
   gdata.slotsmax = between(1, ival, MAXTRANS);
   if (gdata.slotsmax != ival) {
     outerror(OUTERROR_TYPE_WARN,
@@ -1340,7 +1303,7 @@ static void c_statefile(char *var)
   int i;
 
   mydelete(gdata.statefile);
-  gdata.statefile = var;
+  gdata.statefile = mystrdup(var);
   convert_to_unix_slash(gdata.statefile);
   i = open(gdata.statefile, O_RDWR | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS );
   if (i >= 0)
@@ -1356,7 +1319,6 @@ static void c_transferlimits(char *var)
 
   bzero((char *)part, sizeof(part));
   m = get_argv(part, var, (int)NUMBER_TRANSFERLIMITS);
-  mydelete(var);
   for (i=0; i<m; i++) {
     if (part[i]) {
       ival = atoi(part[i]);
@@ -1373,25 +1335,21 @@ static void c_transfermaxspeed(char *var)
 
   fval = atof(var);
   gdata.transfermaxspeed = max2(0, fval);
-  mydelete(var);
 }
 
 static void c_transferminspeed(char *var)
 {
   gdata.transferminspeed = atof(var);
-  mydelete(var);
 }
 
 static void c_uploadmaxsize(char *var)
 {
   gdata.uploadmaxsize = atoull(var)*1024*1024;
-  mydelete(var);
 }
 
 static void c_uploadminspace(char *var)
 {
   gdata.uploadminspace = atoull(var)*1024*1024;
-  mydelete(var);
 }
 
 static void c_usenatip(char *var)
@@ -1400,13 +1358,13 @@ static void c_usenatip(char *var)
 
   if (gdata.bracket == 0) {
     mydelete(gdata.usenatip);
-    gdata.usenatip = var;
+    gdata.usenatip = mystrdup(var);
     return;
   }
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[gdata.networks_online]);
-  gnetwork->natip = var;
+  gnetwork->natip = mystrdup(var);
   gnetwork->usenatip = 1;
   update_natip(var);
   gnetwork = backup;
@@ -1415,25 +1373,23 @@ static void c_usenatip(char *var)
 static void c_user_modes(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].user_modes);
-  gdata.networks[gdata.networks_online].user_modes = var;
+  gdata.networks[gdata.networks_online].user_modes = mystrdup(var);
 }
 
 static void c_user_nick(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].config_nick);
-  gdata.networks[gdata.networks_online].config_nick = var;
+  gdata.networks[gdata.networks_online].config_nick = mystrdup(var);
 }
 
-static void c_bracket_open(char *var)
+static void c_bracket_open(char * UNUSED(var))
 {
   gdata.bracket ++;
-  mydelete(var);
 }
 
-static void c_bracket_close(char *var)
+static void c_bracket_close(char *UNUSED(var))
 {
   gdata.bracket --;
-  mydelete(var);
 }
 
 static int config_func_anzahl = 0;
@@ -1527,46 +1483,40 @@ static int set_config_func(const char *key, char *text)
   return 0;
 }
 
-static int parse_config_line(char **part)
+static void parse_config_line(char **part)
 {
   if (gdata.bracket == 0) {
     /* globals */
     if (set_config_bool(part[0], part[1]) == 0)
-      return 2;
+      return;
 
     if (set_config_int(part[0], part[1]) == 0)
-      return 2;
+      return;
 
     if (set_config_string(part[0], part[1]) == 0)
-      return 1;
+      return;
 
     if (set_config_list(part[0], part[1]) == 0)
-      return 1;
+      return;
   }
   if (set_config_func(part[0], part[1]) == 0)
-    return 1;
+    return;
 
   outerror(OUTERROR_TYPE_WARN_LOUD,
           "%s:%ld ignored invalid line in config file: %s",
            current_config, current_line, part[0]);
-  return 2;
 }
 
 void getconfig_set(const char *line)
 {
   char *part[2] = { NULL, NULL };
-  int m;
 
   updatecontext();
 
   get_argv(part, line, 2);
-  m = parse_config_line(part);
-  if (m > 0) {
-    mydelete(part[0]);
-    if (m > 1)
-      mydelete(part[1]);
-    return;
-  }
+  parse_config_line(part);
+  mydelete(part[0]);
+  mydelete(part[1]);
 }
 
 char *print_config_key(const char *key)
