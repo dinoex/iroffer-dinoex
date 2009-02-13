@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+bugfix: CONFIG (reported by SellKony)
+  Bot did crash when argument was omitted.
+
 bugfix: xdcclist_grouponly (reported by Aashiqmunda)
   If changed on REHASH, recreate xdcclistfile.
 
