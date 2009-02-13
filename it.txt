@@ -967,7 +967,7 @@
 1006 "%s:%ld '%s': %d è fuori parametri"
 1007 "server"
 1009 "network"
-1010 "%s:%1d network ignorato '%s' perchè ne abbiamo troppi."
+1010 "%s:%ld network ignorato '%s' perchè ne abbiamo troppi."
 1011 "%d"
 1012 "proxyinfo"
 1013 "channel_join_raw"
