@@ -449,6 +449,7 @@ static config_string_typ config_parse_string[] = {
 {"send_statefile",          &gdata.send_statefile,          0 },
 {"trashcan_dir",            &gdata.trashcan_dir,            1 },
 {"uploaddir",               &gdata.uploaddir,               1 },
+{"usenatip",                &gdata.usenatip,                0 },
 {"user_modes",              &gdata.user_modes,              0 },
 {"user_nick",               &gdata.config_nick,             0 },
 {"user_realname",           &gdata.user_realname,           0 },
@@ -1370,12 +1371,6 @@ static void c_uploadminspace(char *var)
 static void c_usenatip(char *var)
 {
   gnetwork_t *backup;
-
-  if (gdata.bracket == 0) {
-    mydelete(gdata.usenatip);
-    gdata.usenatip = mystrdup(var);
-    return;
-  }
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[gdata.networks_online]);
