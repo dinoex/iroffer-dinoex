@@ -35,6 +35,7 @@ echo "   -no-http     Compile without HTTP server"
 echo "   -no-admin    Compile without HTTP Admin"
 echo "   -no-telnet   Compile without Telnet server"
 echo "   -no-memsave  Compile without memory protection"
+echo "   -no-libs     Compile an static binary"
 exit 64
 }
 
@@ -54,6 +55,7 @@ OPT_NOBLOWFISH=false
 OPT_NOHTTP=false
 OPT_NOTELNET=false
 OPT_NOMEMSAVE=false
+OPT_STATIC=false
 cctype="gcc"
 
 while test "${1}" != ""
@@ -78,6 +80,7 @@ do
   -no-t*) OPT_NOTELNET=true ;;
   -no-o*) OPT_SSL=false ;;
   -no-m*) OPT_NOMEMSAVE=true ;;
+  -no-l*) OPT_STATIC=true ;;
   -m) echo "WARNING: Multinet is now default, remove -m"; echo "" ;; # multinet
   *)  usage ;;
   esac
@@ -1043,6 +1046,7 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -lnss_files -lnss_dns -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
 NSSLIBS="-lnss_files -lnss_dns"
+TARGETS="iroffer_chroot$exe"
 echo "found"
 else
 NSSLIBS=""
@@ -1426,10 +1430,10 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lcurl -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lcurl -lz -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_CURL" >> src/iroffer_config.h
-		CURLLIB="-lcurl"
+		CURLLIB="-lcurl -lz"
 		CURLINC="-I/usr/local/include"
 		CURLLDF="-L/usr/local/lib"
 		curlssl=`ldd config.temp | grep libssl`
@@ -1461,11 +1465,11 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lssl -lcrypto -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "Configuring for OpenSSL."
 		echo "#define USE_SSL" >> src/iroffer_config.h
-		SSLLIB="-lssl"
+		SSLLIB="-lssl -lcrypto"
 		SSLINC="-I/usr/local/include/"
 		SSLLDF="-L/usr/local/lib"
 	else
@@ -1514,7 +1518,8 @@ WERROR2=$WERROR
 fi
 
 if $OPT_RUBY; then
-	libruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBY' ].sub(/[.]so.*/,'').sub(/^lib/,'-l')"`
+	libruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBYARG_SHARED' ]"`
+	libsruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBYARG_STATIC' ]"`
 	incruby=`${ruby} -r rbconfig -e "print '-I' + Config::CONFIG[ 'archdir' ]"`
 	echo -n "Seeing if libruby libraries exist (for the RUBY-Scripts)... "
 	echo "
@@ -1525,11 +1530,12 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs "${libruby}" "${incruby}" -L/usr/local/lib -DUSE_RUBY -o config.temp $WARNS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs ${libruby} "${incruby}" -DUSE_RUBY -o config.temp $WARNS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "Configuring for Ruby."
 		echo "#define USE_RUBY" >> src/iroffer_config.h
 		RUBYLIB="${libruby}"
+		RUBYSLIB="${libsruby}"
 		RUBYINC="${incruby}"
 		RUBYLDF="-L/usr/local/lib"
 		WERROR2=""
@@ -1537,6 +1543,9 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 		echo "not found"
 		echo "***Disable the RUBY-extension. If u want to use this feature, please install libruby.***"
 	fi
+fi
+if $OPT_STATIC; then
+TARGETS="$TTARGETS iroffer_static$exe"
 fi
 
 rm -f config.temp*
@@ -1552,16 +1561,14 @@ echo
 echo VERSION=$VERSION
 echo CC=$cctype
 echo CONFIG_EXE=$exe
-echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB $RUBYLIB $LIBS
+echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB $LIBS
 echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF $RUBYLDF $LDFLAGS
 echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $WARNS2
 echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
 echo CONFIG_CHROOT=$NSSLIBS
-if [ -z "$NSSLIBS" ]; then
- echo CONFIG_TARGETS=
-else
- echo CONFIG_TARGETS=iroffer_chroot$exe
-fi
+echo CONFIG_SHARED=$RUBYLIB
+echo CONFIG_STATIC=$RUBYSLIB -lm -static
+echo CONFIG_TARGETS=$TARGETS
 echo INSTALL_GROUP=$installgroup
 echo
 cat Makefile.config 
