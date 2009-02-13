@@ -400,9 +400,15 @@ static void dump_config_int(void)
 }
 
 
+/*  flags for strings
+ 0 -> literal string
+ 1 -> pathname
+ 4 -> adminpass
+ */
+
 static int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
-{"admin_job_file",          &gdata.admin_job_file,          0 },
+{"admin_job_file",          &gdata.admin_job_file,          1 },
 {"adminpass",               &gdata.adminpass,               4 },
 {"announce_seperator",      &gdata.announce_seperator,      0 },
 {"autoadd_group",           &gdata.autoadd_group,           0 },
@@ -438,7 +444,7 @@ static config_string_typ config_parse_string[] = {
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
 #ifdef USE_RUBY
-{"ruby_script",             &gdata.ruby_script,             0 },
+{"ruby_script",             &gdata.ruby_script,             1 },
 #endif /* USE_RUBY */
 {"send_statefile",          &gdata.send_statefile,          0 },
 {"trashcan_dir",            &gdata.trashcan_dir,            1 },
@@ -549,6 +555,14 @@ static void dump_config_string(void)
   }
 }
 
+
+/*  flags for lists
+ 0 -> literal string
+ 1 -> pathname
+ 2 -> hostmask
+ 3 -> admin hostmask
+ 5 -> netmask
+ */
 
 static int config_list_anzahl = 0;
 static config_list_typ config_parse_list[] = {
