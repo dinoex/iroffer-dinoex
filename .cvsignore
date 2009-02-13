@@ -13,6 +13,8 @@ help-admin-en.txt
 help-admin-it.txt
 i.sh
 iroffer
+iroffer_chroot
+iroffer_static
 it.sed
 l.sh
 m.sh
