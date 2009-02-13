@@ -426,6 +426,7 @@ int invalid_dir(const userinput * const u, char *arg)
   return 0;
 }
 
+#ifdef USE_CURL
 static int is_upload_file(const userinput * const u, const char *arg)
 {
   if (file_uploading(arg)) {
@@ -434,6 +435,7 @@ static int is_upload_file(const userinput * const u, const char *arg)
   }
   return 0;
 }
+#endif /* USE_CURL */
 
 int invalid_file(const userinput * const u, char *arg)
 {
