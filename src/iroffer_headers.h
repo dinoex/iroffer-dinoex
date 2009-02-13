@@ -650,8 +650,6 @@ void irlist_delete_all(irlist_t *list);
 /* temporarily remove and re-insert items */
 void* irlist_remove(irlist_t *list, void *item);
 void irlist_insert_head(irlist_t *list, void *item);
-void irlist_insert_tail(irlist_t *list, void *item);
-void irlist_insert_before(irlist_t *list, void *item, void *before_this);
 void irlist_insert_after(irlist_t *list, void *item, void *after_this);
 
 /* get functions */

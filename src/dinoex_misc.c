@@ -391,6 +391,7 @@ void guess_end_transfers(void)
   irlist_t list2;
   remaining_transfer_time *remain;
   remaining_transfer_time *rm;
+  remaining_transfer_time *rmlast;
   int left;
   int i;
 
@@ -406,16 +407,18 @@ void guess_end_transfers(void)
     remain->left = left;
     irlist_remove(&list2, remain);
 
+    rmlast = NULL;
     rm = irlist_get_head(&end_trans);
     while(rm) {
       if (remain->left < rm->left)
         break;
+      rmlast = rm;
       rm = irlist_get_next(rm);
     }
-    if (rm != NULL) {
-      irlist_insert_before(&end_trans, remain, rm);
+    if (rmlast != NULL) {
+      irlist_insert_after(&end_trans, remain, rmlast);
     } else {
-      irlist_insert_tail(&end_trans, remain);
+      irlist_insert_head(&end_trans, remain);
     }
   }
 
