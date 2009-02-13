@@ -28,6 +28,8 @@
 #include "dinoex_misc.h"
 
 
+static void irlist_insert_tail(irlist_t *list, void *item);
+
 void getos (void) {
 
    struct utsname u1;
@@ -2040,36 +2042,6 @@ void irlist_insert_tail(irlist_t *list, void *item)
   return;
 }
 
-void irlist_insert_before(irlist_t *list, void *item, void *before_this)
-{
-  irlist_item_t *iitem = IRLIST_EXT_TO_INT(item);
-  irlist_item_t *ibefore = IRLIST_EXT_TO_INT(before_this);
-  
-  updatecontext();
-  
-  assert(list->size > 0);
-  assert(!iitem->next);
-  assert(!iitem->prev);
-  
-  if (ibefore->prev)
-    {
-      iitem->prev = ibefore->prev;
-      iitem->prev->next = iitem;
-    }
-  else
-    {
-      assert(list->head == ibefore);
-      list->head = iitem;
-    }
-  
-  ibefore->prev = iitem;
-  iitem->next = ibefore;
-  
-  list->size++;
-  
-  return;
-}
-
 void irlist_insert_after(irlist_t *list, void *item, void *after_this)
 {
   irlist_item_t *iitem = IRLIST_EXT_TO_INT(item);
@@ -2287,6 +2259,7 @@ void irlist_sort(irlist_t *list,
 {
   irlist_t newlist = {0, 0, 0};
   void *cur, *try;
+  void *last;
   
   while ((cur = irlist_get_head(list)))
     {
@@ -2299,19 +2272,24 @@ void irlist_sort(irlist_t *list,
           continue;
         }
       
+      last = NULL;
       while (try)
         {
           if (cmpfunc(cur, try) < 0)
             {
-              irlist_insert_before(&newlist, cur, try);
               break;
             }
+          last = try;
           try = irlist_get_next(try);
         }
       
-      if (!try)
+      if (!last)
         {
-          irlist_insert_tail(&newlist, cur);
+          irlist_insert_head(&newlist, cur);
+        }
+      else
+        {
+          irlist_insert_after(&newlist, cur, last);
         }
     }
   

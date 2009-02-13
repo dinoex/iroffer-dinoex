@@ -881,24 +881,24 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
 static void a_sort_insert(xdcc *xdo, const char *k)
 {
   xdcc *xdn;
+  xdcc *xdl;
   char *tmpdesc;
   int n;
 
   n = 0;
+  xdl = NULL;
   for (xdn = irlist_get_head(&gdata.xdccs);
        xdn;
        xdn = irlist_get_next(xdn)) {
     n++;
     if (a_sort_cmp(k, xdo, xdn) < 0)
       break;
+    xdl = xdn;
   }
-  if (xdn != NULL) {
-    irlist_insert_before(&gdata.xdccs, xdo, xdn);
+  if (xdl != NULL) {
+    irlist_insert_after(&gdata.xdccs, xdo, xdl);
   } else {
-    if (n == 0)
-      irlist_insert_head(&gdata.xdccs, xdo);
-    else
-      irlist_insert_tail(&gdata.xdccs, xdo);
+    irlist_insert_head(&gdata.xdccs, xdo);
   }
 
   if (xdo->group != NULL) {
