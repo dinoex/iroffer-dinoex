@@ -1178,7 +1178,7 @@
 1231 "meno"
 1232 "%s Limite di banda: %2.1f of %2.1fKB/sec usati. Tu utilizzi: %2.1fKB/sec."
 1233 "Limite di banda per il pack: %2.1f of %2.1fKB/sec usati."
-1234 "Pack %d: File '%s' can no longer be accessed: %s"
+1234 "Pack %d: Il file '%s' non è più disponibile: %s"
 1235 "Il file '%s' è grande 0 bytes"
 1236 "Il file '%s' è troppo grande"
 1237 "Il file '%s' è cambiato"
