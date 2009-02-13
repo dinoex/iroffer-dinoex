@@ -93,6 +93,7 @@ ostype=`uname`
 ruby="ruby"
 installgroup="root"
 libs=""
+rstatic=""
 
 case "$ostype" in
  FreeBSD | OpenBSD | NetBSD )
@@ -101,6 +102,7 @@ case "$ostype" in
   ;;
  Linux | IRIX | IRIX64 | OSF1 | Rhapsody | Darwin | AIX )
   # nothing fancy
+  rstatic="-lpthread -ldl -lz"
   ;;
  SunOS )
   libs="$libs -lsocket -lnsl -lresolv"
@@ -1535,7 +1537,7 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 		echo "Configuring for Ruby."
 		echo "#define USE_RUBY" >> src/iroffer_config.h
 		RUBYLIB="${libruby}"
-		RUBYSLIB="${libsruby}"
+		RUBYSLIB="${libsruby} -lm $rstatic"
 		RUBYINC="${incruby}"
 		RUBYLDF="-L/usr/local/lib"
 		WERROR2=""
@@ -1567,7 +1569,7 @@ echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $WARNS2
 echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
 echo CONFIG_CHROOT=$NSSLIBS
 echo CONFIG_SHARED=$RUBYLIB
-echo CONFIG_STATIC=$RUBYSLIB -lm -static
+echo CONFIG_STATIC=$RUBYSLIB -static
 echo CONFIG_TARGETS=$TARGETS
 echo INSTALL_GROUP=$installgroup
 echo
