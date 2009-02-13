@@ -1547,7 +1547,7 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 	fi
 fi
 if $OPT_STATIC; then
-TARGETS="$TTARGETS iroffer_static$exe"
+TARGETS="$TARGETS iroffer_static$exe"
 fi
 
 rm -f config.temp*
