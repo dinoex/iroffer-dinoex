@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+Configure -no-libs
+  Build a static binary.
+
 bugfix: CONFIG (reported by SellKony)
   Bot did crash when argument was omitted.
 
