@@ -57,6 +57,10 @@ typedef struct {
 } config_func_typ;
 
 
+const char *current_config;
+long current_line;
+
+
 static int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
 {"auto_crc_check",         &gdata.auto_crc_check },
@@ -124,143 +128,6 @@ static config_bool_typ config_parse_bool[] = {
 {"xdcclist_grouponly",     &gdata.xdcclist_grouponly },
 {"xdcclistfileraw",        &gdata.xdcclistfileraw },
 {NULL, NULL }};
-
-static int config_int_anzahl = 0;
-static config_int_typ config_parse_int[] = {
-{"adminlevel",              &gdata.adminlevel,              1, 5, 1 },
-{"atfind",                  &gdata.atfind,                  0, 10, 1 },
-{"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1 },
-{"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1 },
-{"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1 },
-{"debug",                   &gdata.debug,                   0, 65000, 1 },
-{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1 },
-{"hadminlevel",             &gdata.hadminlevel,             1, 5, 1 },
-#ifndef WITHOUT_HTTP
-{"http_port",               &gdata.http_port,               0, 65535, 1 },
-#endif /* WITHOUT_HTTP */
-{"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1 },
-{"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1 },
-{"max_find",                &gdata.max_find,                0, 65000, 1 },
-{"max_uploads",             &gdata.max_uploads,             0, 65000, 1 },
-{"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4 },
-{"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1 },
-{"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1 },
-{"maxtransfersperperson",   &gdata.maxtransfersperperson,   1, 1000000, 1 },
-{"monitor_files",           &gdata.monitor_files,           1, 65000, 1 },
-{"need_level",              &gdata.need_level,              0, 3, 1 },
-{"new_trigger",             &gdata.new_trigger,             0, 1000000, 1 },
-{"notifytime",              &gdata.notifytime,              0, 1000000, 1 },
-{"overallmaxspeed",         &gdata.overallmaxspeed,         0, 1000000, 4 },
-{"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, 0, 1000000, 4 },
-{"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1 },
-{"queuesize",               &gdata.queuesize,               0, 1000000, 1 },
-{"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1 },
-{"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1 },
-{"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1 },
-{"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1 },
-{"send_listfile",           &gdata.send_listfile,           -1, 1000000, 1 },
-{"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1 },
-{"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024 },
-{"start_of_month",          &gdata.start_of_month,          1, 31, 1 },
-{"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1 },
-{"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1 },
-#ifndef WITHOUT_TELNET
-{"telnet_port",             &gdata.telnet_port,             0, 65535, 1 },
-#endif /* WITHOUT_TELNET */
-{"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1 },
-{NULL, NULL, 0, 0, 0 }};
-
-static int config_string_anzahl = 0;
-static config_string_typ config_parse_string[] = {
-{"admin_job_file",          &gdata.admin_job_file,          0 },
-{"adminpass",               &gdata.adminpass,               4 },
-{"announce_seperator",      &gdata.announce_seperator,      0 },
-{"autoadd_group",           &gdata.autoadd_group,           0 },
-{"autoadd_sort",            &gdata.autoadd_sort,            0 },
-{"autoaddann",              &gdata.autoaddann,              0 },
-{"charset",                 &gdata.charset,                 0 },
-{"creditline",              &gdata.creditline,              0 },
-{"enable_nick",             &gdata.enable_nick,             0 },
-#ifdef USE_GEOIP
-{"geoipdatabase",           &gdata.geoipdatabase,           0 },
-#endif /* USE_GEOIP */
-{"group_seperator",         &gdata.group_seperator,         0 },
-{"hadminpass",              &gdata.hadminpass,              4 },
-{"headline",                &gdata.headline,                0 },
-#ifndef WITHOUT_HTTP_ADMIN
-{"http_admin",              &gdata.http_admin,              0 },
-#endif /* WITHOUT_HTTP */
-{"http_date",               &gdata.http_date,               0 },
-#ifndef WITHOUT_HTTP
-{"http_dir",                &gdata.http_dir,                1 },
-#endif /* WITHOUT_HTTP */
-{"local_vhost",             &gdata.local_vhost,             0 },
-{"logfile",                 &gdata.logfile,                 1 },
-{"logfile_messages",        &gdata.logfile_messages,        1 },
-{"logfile_notices",         &gdata.logfile_notices,         1 },
-{"loginname",               &gdata.loginname,               0 },
-{"nickserv_pass",           &gdata.nickserv_pass,           0 },
-{"owner_nick",              &gdata.owner_nick,              0 },
-{"pidfile",                 &gdata.pidfile,                 1 },
-#ifndef WITHOUT_BLOWFISH
-{"privmsg_fish",            &gdata.privmsg_fish,            0 },
-#endif /* WITHOUT_BLOWFISH */
-{"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
-{"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
-#ifdef USE_RUBY
-{"ruby_script",             &gdata.ruby_script,             0 },
-#endif /* USE_RUBY */
-{"send_statefile",          &gdata.send_statefile,          0 },
-{"trashcan_dir",            &gdata.trashcan_dir,            1 },
-{"uploaddir",               &gdata.uploaddir,               1 },
-{"user_modes",              &gdata.user_modes,              0 },
-{"user_nick",               &gdata.config_nick,             0 },
-{"user_realname",           &gdata.user_realname,           0 },
-{"xdcclistfile",            &gdata.xdcclistfile,            1 },
-{"xdccremovefile",          &gdata.xdccremovefile,          1 },
-{"xdccxmlfile",             &gdata.xdccxmlfile,             1 },
-{NULL, NULL, 0 }};
-
-static int config_list_anzahl = 0;
-static config_list_typ config_parse_list[] = {
-{"adddir_exclude",          &gdata.adddir_exclude,          0 },
-{"adminhost",               &gdata.adminhost,               3 },
-{"autoadd_dir",             &gdata.autoadd_dirs,            0 },
-{"autocrc_exclude",         &gdata.autocrc_exclude,         0 },
-{"autoignore_exclude",      &gdata.autoignore_exclude,      2 },
-{"downloadhost",            &gdata.downloadhost,            2 },
-{"filedir",                 &gdata.filedir,                 1 },
-#ifndef WITHOUT_BLOWFISH
-{"fish_exclude_nick",       &gdata.fish_exclude_nick,       2 },
-#endif /* WITHOUT_BLOWFISH */
-#ifdef USE_GEOIP
-{"geoipcountry",            &gdata.geoipcountry,            0 },
-{"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
-#endif /* USE_GEOIP */
-{"hadminhost",              &gdata.hadminhost,              3 },
-#ifndef WITHOUT_HTTP
-{"http_allow",              &gdata.http_allow,              5 },
-{"http_deny",               &gdata.http_deny,               5 },
-{"http_vhost",              &gdata.http_vhost,              0 },
-#endif /* WITHOUT_HTTP */
-{"log_exclude_host",        &gdata.log_exclude_host,        2 },
-{"log_exclude_text",        &gdata.log_exclude_text,        0 },
-{"nodownloadhost",          &gdata.nodownloadhost,          2 },
-#ifdef USE_GEOIP
-{"nogeoipcountry",          &gdata.nogeoipcountry,          0 },
-#endif /* USE_GEOIP */
-#ifndef WITHOUT_TELNET
-{"telnet_vhost",            &gdata.telnet_vhost,            0 },
-#endif /* WITHOUT_TELNET */
-{"unlimitedhost",           &gdata.unlimitedhost,           2 },
-{"uploadhost",              &gdata.uploadhost,              2 },
-{"weblist_info",            &gdata.weblist_info,            0 },
-{"xdcc_allow",              &gdata.xdcc_allow,              5 },
-{"xdcc_deny",               &gdata.xdcc_deny,               5 },
-{NULL, NULL, 0 }};
-
-const char *current_config;
-long current_line;
 
 static void config_sorted_bool(void)
 {
@@ -357,6 +224,51 @@ static void dump_config_bool(void)
   }
 }
 
+
+static int config_int_anzahl = 0;
+static config_int_typ config_parse_int[] = {
+{"adminlevel",              &gdata.adminlevel,              1, 5, 1 },
+{"atfind",                  &gdata.atfind,                  0, 10, 1 },
+{"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1 },
+{"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1 },
+{"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1 },
+{"debug",                   &gdata.debug,                   0, 65000, 1 },
+{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1 },
+{"hadminlevel",             &gdata.hadminlevel,             1, 5, 1 },
+#ifndef WITHOUT_HTTP
+{"http_port",               &gdata.http_port,               0, 65535, 1 },
+#endif /* WITHOUT_HTTP */
+{"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1 },
+{"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1 },
+{"max_find",                &gdata.max_find,                0, 65000, 1 },
+{"max_uploads",             &gdata.max_uploads,             0, 65000, 1 },
+{"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4 },
+{"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1 },
+{"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1 },
+{"maxtransfersperperson",   &gdata.maxtransfersperperson,   1, 1000000, 1 },
+{"monitor_files",           &gdata.monitor_files,           1, 65000, 1 },
+{"need_level",              &gdata.need_level,              0, 3, 1 },
+{"new_trigger",             &gdata.new_trigger,             0, 1000000, 1 },
+{"notifytime",              &gdata.notifytime,              0, 1000000, 1 },
+{"overallmaxspeed",         &gdata.overallmaxspeed,         0, 1000000, 4 },
+{"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, 0, 1000000, 4 },
+{"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1 },
+{"queuesize",               &gdata.queuesize,               0, 1000000, 1 },
+{"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1 },
+{"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1 },
+{"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1 },
+{"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1 },
+{"send_listfile",           &gdata.send_listfile,           -1, 1000000, 1 },
+{"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1 },
+{"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024 },
+{"start_of_month",          &gdata.start_of_month,          1, 31, 1 },
+{"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1 },
+{"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1 },
+#ifndef WITHOUT_TELNET
+{"telnet_port",             &gdata.telnet_port,             0, 65535, 1 },
+#endif /* WITHOUT_TELNET */
+{"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1 },
+{NULL, NULL, 0, 0, 0 }};
 
 static void config_sorted_int(void)
 {
@@ -488,6 +400,57 @@ static void dump_config_int(void)
 }
 
 
+static int config_string_anzahl = 0;
+static config_string_typ config_parse_string[] = {
+{"admin_job_file",          &gdata.admin_job_file,          0 },
+{"adminpass",               &gdata.adminpass,               4 },
+{"announce_seperator",      &gdata.announce_seperator,      0 },
+{"autoadd_group",           &gdata.autoadd_group,           0 },
+{"autoadd_sort",            &gdata.autoadd_sort,            0 },
+{"autoaddann",              &gdata.autoaddann,              0 },
+{"charset",                 &gdata.charset,                 0 },
+{"creditline",              &gdata.creditline,              0 },
+{"enable_nick",             &gdata.enable_nick,             0 },
+#ifdef USE_GEOIP
+{"geoipdatabase",           &gdata.geoipdatabase,           0 },
+#endif /* USE_GEOIP */
+{"group_seperator",         &gdata.group_seperator,         0 },
+{"hadminpass",              &gdata.hadminpass,              4 },
+{"headline",                &gdata.headline,                0 },
+#ifndef WITHOUT_HTTP_ADMIN
+{"http_admin",              &gdata.http_admin,              0 },
+#endif /* WITHOUT_HTTP */
+{"http_date",               &gdata.http_date,               0 },
+#ifndef WITHOUT_HTTP
+{"http_dir",                &gdata.http_dir,                1 },
+#endif /* WITHOUT_HTTP */
+{"local_vhost",             &gdata.local_vhost,             0 },
+{"logfile",                 &gdata.logfile,                 1 },
+{"logfile_messages",        &gdata.logfile_messages,        1 },
+{"logfile_notices",         &gdata.logfile_notices,         1 },
+{"loginname",               &gdata.loginname,               0 },
+{"nickserv_pass",           &gdata.nickserv_pass,           0 },
+{"owner_nick",              &gdata.owner_nick,              0 },
+{"pidfile",                 &gdata.pidfile,                 1 },
+#ifndef WITHOUT_BLOWFISH
+{"privmsg_fish",            &gdata.privmsg_fish,            0 },
+#endif /* WITHOUT_BLOWFISH */
+{"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
+{"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
+#ifdef USE_RUBY
+{"ruby_script",             &gdata.ruby_script,             0 },
+#endif /* USE_RUBY */
+{"send_statefile",          &gdata.send_statefile,          0 },
+{"trashcan_dir",            &gdata.trashcan_dir,            1 },
+{"uploaddir",               &gdata.uploaddir,               1 },
+{"user_modes",              &gdata.user_modes,              0 },
+{"user_nick",               &gdata.config_nick,             0 },
+{"user_realname",           &gdata.user_realname,           0 },
+{"xdcclistfile",            &gdata.xdcclistfile,            1 },
+{"xdccremovefile",          &gdata.xdccremovefile,          1 },
+{"xdccxmlfile",             &gdata.xdccxmlfile,             1 },
+{NULL, NULL, 0 }};
+
 static void config_sorted_string(void)
 {
   long i;
@@ -586,6 +549,44 @@ static void dump_config_string(void)
   }
 }
 
+
+static int config_list_anzahl = 0;
+static config_list_typ config_parse_list[] = {
+{"adddir_exclude",          &gdata.adddir_exclude,          0 },
+{"adminhost",               &gdata.adminhost,               3 },
+{"autoadd_dir",             &gdata.autoadd_dirs,            0 },
+{"autocrc_exclude",         &gdata.autocrc_exclude,         0 },
+{"autoignore_exclude",      &gdata.autoignore_exclude,      2 },
+{"downloadhost",            &gdata.downloadhost,            2 },
+{"filedir",                 &gdata.filedir,                 1 },
+#ifndef WITHOUT_BLOWFISH
+{"fish_exclude_nick",       &gdata.fish_exclude_nick,       2 },
+#endif /* WITHOUT_BLOWFISH */
+#ifdef USE_GEOIP
+{"geoipcountry",            &gdata.geoipcountry,            0 },
+{"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
+#endif /* USE_GEOIP */
+{"hadminhost",              &gdata.hadminhost,              3 },
+#ifndef WITHOUT_HTTP
+{"http_allow",              &gdata.http_allow,              5 },
+{"http_deny",               &gdata.http_deny,               5 },
+{"http_vhost",              &gdata.http_vhost,              0 },
+#endif /* WITHOUT_HTTP */
+{"log_exclude_host",        &gdata.log_exclude_host,        2 },
+{"log_exclude_text",        &gdata.log_exclude_text,        0 },
+{"nodownloadhost",          &gdata.nodownloadhost,          2 },
+#ifdef USE_GEOIP
+{"nogeoipcountry",          &gdata.nogeoipcountry,          0 },
+#endif /* USE_GEOIP */
+#ifndef WITHOUT_TELNET
+{"telnet_vhost",            &gdata.telnet_vhost,            0 },
+#endif /* WITHOUT_TELNET */
+{"unlimitedhost",           &gdata.unlimitedhost,           2 },
+{"uploadhost",              &gdata.uploadhost,              2 },
+{"weblist_info",            &gdata.weblist_info,            0 },
+{"xdcc_allow",              &gdata.xdcc_allow,              5 },
+{"xdcc_deny",               &gdata.xdcc_deny,               5 },
+{NULL, NULL, 0 }};
 
 static void config_sorted_list(void)
 {
