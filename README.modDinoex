@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+283) htdocs
+  Basic support to execute ruby sripts (.rb) over HTTP.
+
 Configure -no-libs
   Build a static binary.
 

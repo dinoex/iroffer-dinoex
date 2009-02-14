@@ -22,6 +22,9 @@
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
 #include "dinoex_misc.h"
+#ifdef USE_RUBY
+#include "dinoex_ruby.h"
+#endif /* USE_RUBY */
 #include "dinoex_http.h"
 
 #include <ctype.h>
@@ -193,7 +196,7 @@ static const char *html_mime(const char *file)
   http_magic_t *mime;
   int i;
 
-  ext = strchr(file, '.');
+  ext = strrchr(file, '.');
   if (ext == NULL)
     ext = file;
   else
@@ -678,6 +681,37 @@ static void h_error(http * const h, const char *header)
   h_start_sending(h);
 }
 
+#ifdef USE_RUBY
+static int h_runruby(http * const h)
+{
+  const char *params;
+  char *suffix;
+  char *tmp;
+  int rc;
+
+  suffix = strrchr(h->file, '.' );
+  if (suffix == NULL)
+    return 0;
+
+  if (strcasecmp(suffix, ".rb") != 0)
+    return 0;
+
+  params = strchr(h->url, '?');
+  if (params == NULL)
+    params = h->url;
+  else
+    params ++;
+  setenv("REQUEST_METHOD", "GET", 1);
+  setenv("QUERY_STRING", params, 1);
+
+  tmp = mystrsuffix(h->file, ".html");
+  rc = http_ruby_script(h->file, tmp);
+  mydelete(h->file);
+  h->file = tmp;
+  return rc;
+}
+#endif /* USE_RUBY */
+
 static void h_readfile(http * const h, const char *file)
 {
   struct stat st;
@@ -692,6 +726,13 @@ static void h_readfile(http * const h, const char *file)
   }
 
   h->file = mystrdup(file);
+#ifdef USE_RUBY
+  if (h_runruby(h)) {
+    h->filedescriptor = FD_UNUSED;
+    h_error(h, http_header_notfound);
+  }
+#endif /* USE_RUBY */
+
   h->filedescriptor = open(h->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (h->filedescriptor < 0) {
     if (gdata.debug > 1)
@@ -1701,6 +1742,7 @@ static int h_admin_auth(http * const h, char *body)
 static void h_parse(http * const h, char *body)
 {
   char *tempstr;
+  char *tmp;
 
   updatecontext();
 
@@ -1735,6 +1777,9 @@ static void h_parse(http * const h, char *body)
   if (gdata.http_dir) {
     tempstr = mycalloc(maxtextlength);
     snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url);
+    tmp = strchr(tempstr, '?' );
+    if (tmp != NULL)
+      *tmp = 0;
     h_readfile(h, tempstr);
     mydelete(tempstr);
     return;
