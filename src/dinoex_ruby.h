@@ -17,9 +17,12 @@
 int do_myruby_server(char *line);
 int do_myruby_notice(char *line);
 int do_myruby_privmsg(char *line);
-void startup_myruby(void);
 void rehash_myruby(int check);
+void startup_myruby(void);
 void shutdown_myruby(void);
+#ifndef WITHOUT_HTTP
+int http_ruby_script(const char *name, const char *output);
+#endif /* WITHOUT_HTTP */
 #endif /* USE_RUBY */
 
 /* End of File */

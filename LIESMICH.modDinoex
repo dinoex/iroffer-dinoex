@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+283) htdocs 
+  Erlaube das Ausführen von ruby skripten (.rb) über HTTP.
+
 Configure -no-libs
   Baue eine statische version des Bots.
 

@@ -506,6 +506,44 @@ void shutdown_myruby(void)
   ruby_finalize();
 }
 
+#ifndef WITHOUT_HTTP
+int http_ruby_script(const char *name, const char *output)
+{
+  struct stat st;
+  char *tempstr;
+  int rc;
+
+  updatecontext();
+
+  if (!name)
+    return 1;
+
+  if (stat(name, &st) < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "access ruby_script '%s' failed: %s",
+             name, strerror(errno));
+    return 1;
+  }
+  ruby_init_loadpath();
+  ruby_script("embedded");
+  tempstr = mycalloc(maxtextlength);
+  snprintf(tempstr, maxtextlength, "$stdout = File.new(\"%s\", \"w+\")", output);
+  rb_eval_string_protect(tempstr, &rc);
+  mydelete(tempstr);
+  rb_load_file(name);
+  rc = ruby_exec();
+  if (rc != 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "ruby_exec failed with %d: %s",
+             rc, strerror(errno));
+    iroffer_ruby_errro(rc);
+    return 1;
+  }
+  rb_eval_string_protect("$stdout.close", &rc);
+  return 0;
+}
+#endif /* WITHOUT_HTTP */
+
 #endif /* USE_RUBY */
 
 /* EOF */
