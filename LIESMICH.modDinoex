@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+bugfix: ignore 
+  Auch Uploads sind jetzt mit ignore geschützt.
+
 283) htdocs 
   Erlaube das Ausführen von ruby skripten (.rb) über HTTP.
 

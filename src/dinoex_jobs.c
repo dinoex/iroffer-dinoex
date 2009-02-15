@@ -811,12 +811,22 @@ static void admin_msg_line(const char *nick, char *line, int level)
   u_parseit(u);
 }
 
+static void reset_ignore(const char *hostmask)
+{
+  igninfo *ignore;
+
+  /* admin commands shouldn't count against ignore */
+  ignore = get_ignore(hostmask);
+  ignore->bucket = 0;
+}
+
 static int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line)
 {
   group_admin_t *ga;
 
   if ( verifyshell(&gdata.adminhost, hostmask) ) {
     if ( verifypass2(gdata.adminpass, passwd) ) {
+      reset_ignore(hostmask);
       admin_msg_line(nick, line, gdata.adminlevel);
       return 1;
     }
@@ -824,12 +834,14 @@ static int msg_host_password(const char *nick, const char *hostmask, const char 
   }
   if ( verifyshell(&gdata.hadminhost, hostmask) ) {
     if ( verifypass2(gdata.hadminpass, passwd) ) {
+      reset_ignore(hostmask);
       admin_msg_line(nick, line, gdata.hadminlevel);
       return 1;
     }
     return -1;
   }
   if ((ga = verifypass_group(hostmask, passwd))) {
+    reset_ignore(hostmask);
     admin_msg_line(nick, line, ga->g_level);
     return 1;
   }
