@@ -640,6 +640,9 @@ int check_ignore(const char *nick, const char *hostmask)
   igninfo *ignore;
   int left;
 
+  if (*nick == '#') /* don't count channel */
+    return 0;
+
   if (verifyshell(&gdata.autoignore_exclude, hostmask))
     return 0; /* host matches autoignore_exclude */
 

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+bugfix: ignore 
+  Upload are now protected with ignore.
+
 283) htdocs
   Basic support to execute ruby sripts (.rb) over HTTP.
 
