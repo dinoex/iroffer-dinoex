@@ -1172,7 +1172,7 @@
 1224 "adminpass %s\n"
 1225 "La funzione crypt() pare non stia funzionando correttamente\n"
 1226 "Iroffer è stato compilato senza il supporto di criptaggio password. Non hai bisogno di criptare la password.\n"
-1228 "NOTIFICA: %d utenti acodati su %s"
+1228 "NOTIFICA: %d utenti accodati su %s"
 1229 "In coda %lih%lim per \"%s\", in posizione %i di %i. %lih%lim o %s rimanenti. (a %s)"
 1230 "più"
 1231 "meno"
