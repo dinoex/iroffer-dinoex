@@ -903,6 +903,10 @@ static int parse_channel_options(channel_t *cptr, char *var)
     tptr = part[i];
     if (tptr == NULL)
       break;
+    if (*tptr == 0) {
+      mydelete(tptr);
+      break;
+    }
     j = parse_channel_option(cptr, tptr, part, i);
     mydelete(tptr);
     if (j < 0 )
