@@ -2336,29 +2336,9 @@ static void privmsgparse(int type, int decoded, char* line)
    
    nick = mycalloc(line_len+1);
    hostname = mycalloc(line_len+1);
-   
-   
-   i=1; j=0;
-   while(line[i] != '!' && i<line_len) {
-      nick[i-1] = line[i];
-      i++;
-      }
-   nick[i-1]='\0';
-   
-   
    /* see if it came from a user or server, ignore if from server */
-   if (i == line_len)
+   if (get_nick_hostname(nick, hostname, line))
      goto privmsgparse_cleanup;
-   
-   while(line[i] != '@' && i<line_len) { i++; }
-   i++;
-   
-   while(line[i] != ' ' && i<line_len) {
-      hostname[j] = line[i];
-      i++;
-      j++;
-      }
-   hostname[j]='\0';
    
    if (ignore_trigger_dest(dest))
      {
@@ -2366,6 +2346,7 @@ static void privmsgparse(int type, int decoded, char* line)
      }
    
    /* add/increment ignore list */
+   if (*dest != '#') /* don't count channel */
    if (check_ignore(nick, hostmask))
      {
        goto privmsgparse_cleanup;
@@ -2869,40 +2850,20 @@ static void privmsgparse(int type, int decoded, char* line)
    return;
    }
 
-static void get_nick_hostname(char *nick, char *hostname, const char* line)
-{
-   int i,j;
-
-   i=1; j=0;
-   while(line[i] != '!' && i<sstrlen(line) && i<maxtextlengthshort-1) {
-      nick[i-1] = line[i];
-      i++;
-      }
-   nick[i-1]='\0';
-
-   while(line[i] != '@' && i<sstrlen(line)) { i++; }
-   i++;
-
-   while(line[i] != ' ' && i<sstrlen(line) && j<maxtextlength-1) {
-      hostname[j] = line[i];
-      i++;
-      j++;
-      }
-   hostname[j]='\0';
-}
-
 void autoqueuef(const char* line, int pack, const char *message)
 {
    char *nick, *hostname, *hostmask;
    int i;
+   int line_len;
    
    updatecontext();
 
    floodchk();
    
-   nick = mycalloc(maxtextlengthshort);
-   hostname = mycalloc(maxtextlength);
-      
+   line_len = sstrlen(line);
+   nick = mycalloc(line_len+1);
+   hostname = mycalloc(line_len+1);
+   
    hostmask = caps(getpart(line, 1));
    for (i=1; i<=sstrlen(hostmask); i++)
       hostmask[i-1] = hostmask[i];

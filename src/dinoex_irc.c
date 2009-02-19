@@ -19,6 +19,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_misc.h"
 #include "dinoex_irc.h"
 
 #ifdef USE_UPNP
@@ -701,6 +702,71 @@ int irc_select(int highests)
     }
   }
   return highests;
+}
+
+void identify_needed(int force)
+{
+  char *pwd;
+
+  pwd = get_nickserv_pass();
+  if (pwd == NULL)
+    return;
+
+  if (force == 0) {
+    if ((gnetwork->next_identify > 0) && (gnetwork->next_identify >= gdata.curtime))
+      return;
+  }
+  /* wait 1 sec before idetify again */
+  gnetwork->next_identify = gdata.curtime + 1;
+  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd);
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          "IDENTIFY send to nickserv on %s.", gnetwork->name);
+}
+
+void identify_check(const char *line)
+{
+  char *pwd;
+
+  pwd = get_nickserv_pass();
+  if (pwd == NULL)
+    return;
+
+  if (strstr(line, "Nickname is registered to someone else") != NULL) {
+      identify_needed(0);
+  }
+  if (strstr(line, "This nickname has been registered") != NULL) {
+      identify_needed(0);
+  }
+  if (strstr(line, "This nickname is registered and protected") != NULL) {
+      identify_needed(0);
+  }
+  if (strcasestr(line, "please choose a different nick") != NULL) {
+      identify_needed(0);
+  }
+}
+
+int get_nick_hostname(char *nick, char *hostname, const char* line)
+{
+  if (+*line && *line == ':')
+     line++;
+   for (; *line && *line != '!'; line++)
+     *(nick++) = *line;
+   *nick = 0;
+   *hostname = 0;
+
+   if (*line == 0)
+     return 1;
+
+   for (; *line && *line != '@'; line++)
+     ;
+
+   if (*line == 0)
+     return 1;
+
+   for (line++; *line && *line != ' '; line++)
+     *(hostname++) = *line;
+   *hostname = 0;
+   return 0;
 }
 
 /* End of File */

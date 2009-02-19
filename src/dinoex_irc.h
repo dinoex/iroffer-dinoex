@@ -36,4 +36,8 @@ int check_ignore(const char *nick, const char *hostmask);
 
 int irc_select(int highests);
 
+void identify_needed(int force);
+void identify_check(const char *line);
+int get_nick_hostname(char *nick, char *hostname, const char* line);
+
 /* End of File */
