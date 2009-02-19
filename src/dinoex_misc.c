@@ -1010,47 +1010,6 @@ char *get_nickserv_pass(void)
   return (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
 }
 
-void identify_needed(int force)
-{
-  char *pwd;
-
-  pwd = get_nickserv_pass();
-  if (pwd == NULL)
-    return;
-
-  if (force == 0) {
-    if ((gnetwork->next_identify > 0) && (gnetwork->next_identify >= gdata.curtime))
-      return;
-  }
-  /* wait 1 sec before idetify again */
-  gnetwork->next_identify = gdata.curtime + 1;
-  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-          "IDENTIFY send to nickserv on %s.", gnetwork->name);
-}
-
-void identify_check(const char *line)
-{
-  char *pwd;
-
-  pwd = get_nickserv_pass();
-  if (pwd == NULL)
-    return;
-
-  if (strstr(line, "Nickname is registered to someone else") != NULL) {
-      identify_needed(0);
-  }
-  if (strstr(line, "This nickname has been registered") != NULL) {
-      identify_needed(0);
-  }
-  if (strstr(line, "This nickname is registered and protected") != NULL) {
-      identify_needed(0);
-  }
-  if (strcasestr(line, "please choose a different nick") != NULL) {
-      identify_needed(0);
-  }
-}
-
 static void restrictprivlistmsg(const char *nick)
 {
   if (gdata.restrictprivlistmsg) {
