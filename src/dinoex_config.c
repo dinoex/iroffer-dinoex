@@ -1276,7 +1276,6 @@ static void c_server(char *var)
              "%s:%ld ignored '%s' because it has invalid args: '%s'",
              current_config, current_line, "server", var);
     mydelete(part[0]);
-    mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
     return;
