@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+bugfix: channel (reported by Vision)
+  versions affected: 3.12
+  Do not print error when last argument ends with '"'.
+
 bugfix: ignore 
   Upload are now protected with ignore.
 

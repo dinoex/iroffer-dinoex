@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+bugfix: channel
+  versions affected: 3.12
+  Keine Warnung mehr wenn der letze Parameter auf '"' endet.
+
 bugfix: ignore 
   Auch Uploads sind jetzt mit ignore geschützt.
 
