@@ -560,6 +560,13 @@ int max_minutes_waits(time_t *endtime, int min)
   return min;
 }
 
+static void clean_missing_parts(char **result, int part, int howmany)
+{
+  int i;
+  for (i = part; i < howmany; i++)
+    result[i++] = NULL;
+}
+
 #ifndef WITHOUT_MEMSAVE
 int get_argv2(char **result, const char *line, int howmany,
              const char *src_function, const char *src_file, int src_line)
@@ -576,11 +583,13 @@ int get_argv(char **result, const char *line, int howmany)
   int morequote;
   int part;
 
-  if (line == NULL)
-    return 0;
-
   if (howmany <= 0)
     return 0;
+
+  if (line == NULL) {
+    clean_missing_parts(result, 0, howmany);
+    return 0;
+  }
 
   inquotes = 0;
   moreargs = 0;
@@ -623,6 +632,9 @@ int get_argv(char **result, const char *line, int howmany)
     if (plen == 0)
       continue;
 
+    if (*src == '"')
+      src ++;
+
     /* found end */
 #ifndef WITHOUT_MEMSAVE
     dest = (char *)mymalloc2(plen + 1, 0, src_function, src_file, src_line);
@@ -636,8 +648,10 @@ int get_argv(char **result, const char *line, int howmany)
     result[part++] = dest;
     if (part >= howmany)
       return part;
-    if (*src == 0)
+    if (*src == 0) {
+      clean_missing_parts(result, part, howmany);
       return part;
+    }
     start = src + 1;
   }
 }
