@@ -747,7 +747,7 @@ void identify_check(const char *line)
 
 int get_nick_hostname(char *nick, char *hostname, const char* line)
 {
-  if (+*line && *line == ':')
+  if (line && *line == ':')
      line++;
    for (; *line && *line != '!'; line++)
      *(nick++) = *line;
