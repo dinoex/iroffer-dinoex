@@ -564,7 +564,7 @@ static void clean_missing_parts(char **result, int part, int howmany)
 {
   int i;
   for (i = part; i < howmany; i++)
-    result[i++] = NULL;
+    result[i] = NULL;
 }
 
 #ifndef WITHOUT_MEMSAVE
