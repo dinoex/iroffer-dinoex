@@ -96,7 +96,7 @@ void a_respond(const userinput * const u, const char *format, ...)
 
 void a_parse_inputline(userinput * const u, const char *line)
 {
-  char *part[4] = { NULL, NULL, NULL, NULL };
+  char *part[4];
 
   updatecontext();
 

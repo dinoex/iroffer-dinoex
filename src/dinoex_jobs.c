@@ -794,8 +794,9 @@ void run_delayed_jobs(void)
 
 static void admin_msg_line(const char *nick, char *line, int level)
 {
-  char *part5[6] = { NULL, NULL, NULL, NULL, NULL, NULL };
+  char *part5[6];
   userinput *u;
+
   updatecontext();
   get_argv(part5, line, 6);
   mydelete(part5[1]);

@@ -903,10 +903,6 @@ static int parse_channel_options(channel_t *cptr, char *var)
     tptr = part[i];
     if (tptr == NULL)
       break;
-    if (*tptr == 0) {
-      mydelete(tptr);
-      break;
-    }
     j = parse_channel_option(cptr, tptr, part, i);
     mydelete(tptr);
     if (j < 0 )
@@ -938,7 +934,7 @@ static void c_autoadd_group_match(char *var)
 
 static void c_autosendpack(char *var)
 {
-  char *part[3] = { NULL , NULL , NULL };
+  char *part[3];
 
   get_argv(part, var, 3);
   if (part[0] && part[1]) {
@@ -956,7 +952,7 @@ static void c_autosendpack(char *var)
 
 static void c_channel(char *var)
 {
-  char *part[2] = { NULL, NULL };
+  char *part[2];
   channel_t *cptr;
   channel_t *rch;
 
@@ -1003,7 +999,7 @@ static void c_channel_join_raw(char *var)
 
 static void c_connectionmethod(char *var)
 {
-  char *part[5] = { NULL , NULL , NULL, NULL , NULL };
+  char *part[5];
   int m;
 
   mydelete(gdata.networks[gdata.networks_online].connectionmethod.host);
@@ -1224,7 +1220,7 @@ static void c_overallmaxspeeddaydays(char *var)
 
 static void c_overallmaxspeeddaytime(char *var)
 {
-  char *part[2] = { NULL, NULL };
+  char *part[2];
   int a = 0;
   int b = 0;
 
@@ -1240,7 +1236,7 @@ static void c_overallmaxspeeddaytime(char *var)
 
 static void c_periodicmsg(char *var)
 {
-  char *part[4] = { NULL, NULL, NULL, NULL };
+  char *part[4];
   int tnum;
   int m;
 
@@ -1271,7 +1267,7 @@ static void c_proxyinfo(char *var)
 static void c_server(char *var)
 {
   server_t *ss;
-  char *part[3] = { NULL, NULL, NULL };
+  char *part[3];
 
   set_default_network_name();
   get_argv(part, var, 3);
@@ -1523,7 +1519,7 @@ static void parse_config_line(char **part)
 
 void getconfig_set(const char *line)
 {
-  char *part[2] = { NULL, NULL };
+  char *part[2];
 
   updatecontext();
 
