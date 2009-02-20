@@ -406,6 +406,7 @@ Vision
 	reporting "fish" encoding bug
 	reporting "fish" @find bug
 	reporting "fish_only" CHAT bug
+	reporting "channel joinmsg" bug
 
 TheBotKiller
 	suggesting "!new" trigger
