@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+284) atfind
+  Neuer Trigger "!FIND", gleiche funktion wie "@FIND".
+
 bugfix: channel
   versions affected: 3.12
   Keine Warnung mehr wenn der letze Parameter auf '"' endet.
