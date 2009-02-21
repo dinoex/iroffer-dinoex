@@ -125,7 +125,7 @@ static void sendxdccinfo(const char* nick,
   }
   ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "%s (%s on %s)",
-          nick, hostname, gnetwork->name);
+          nick, hostmask, gnetwork->name);
 }
 
 static void send_clientinfo(const char *nick, char *msg2)
@@ -368,12 +368,12 @@ static void send_batch(const char* nick, const char* hostname, const char* hostm
 
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC BATCH %s (%s on %s)",
-          what, hostname, gnetwork->name);
+          what, hostmask, gnetwork->name);
 
   found = send_batch_search(nick, hostname, hostmask, what, pwd);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC BATCH %s, %d packs (%s on %s)",
-          what, found, hostname, gnetwork->name);
+          what, found, hostmask, gnetwork->name);
   if (found != 0)
     return;
 
@@ -466,7 +466,21 @@ static int parse_xdcc_list(const char *nick, char*msg3)
   return 3; /* queued */
 }
 
-static void send_cancel(const char *nick, const char *hostmask)
+static void log_xdcc_request(const char *msg, privmsginput *pi)
+{
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC %s (%s %s on %s)",
+          msg, pi->nick, pi->hostmask, gnetwork->name);
+}
+
+static void log_xdcc_request2(const char *msg, const char *arg, privmsginput *pi)
+{
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC %s %s (%s %s on %s)",
+          msg, pi->nick, arg, pi->hostmask, gnetwork->name);
+}
+
+static void send_cancel(const char *nick)
 {
   transfer *tr;
   int k = 0;
@@ -483,42 +497,28 @@ static void send_cancel(const char *nick, const char *hostmask)
     }
   }
   if (!k) notice(nick, "You don't have a transfer running");
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC CANCEL (%s on %s)",
-          hostmask, gnetwork->name);
 }
 
-static void send_remove(const char *nick, const char *hostmask)
+static void send_remove(const char *nick)
 {
   int k = 0;
 
   k += queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick);
   k += queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick);
   if (!k) notice(nick, "You Don't Appear To Be In A Queue");
-
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC REMOVE (%s on %s) ",
-          hostmask, gnetwork->name);
 }
 
-static void send_owner(const char *nick, const char *hostmask)
+static void send_owner(const char *nick)
 {
-   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-           "XDCC OWNER (%s on %s) ",
-           hostmask, gnetwork->name);
    notice(nick, "Owner for this bot is: %s",
           gdata.owner_nick ? gdata.owner_nick : "(unknown)");
 }
 
-static void send_help(const char *nick, const char *hostmask)
+static void send_help(const char *nick)
 {
   const char *mynick;
 
   updatecontext();
-
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC HELP (%s on %s)",
-          hostmask, gnetwork->name);
 
   mynick = get_user_nick();
   if (!gdata.restrictprivlist) {
@@ -580,9 +580,7 @@ static void command_xdcc(privmsginput *pi)
     return;
   }
   if (strcmp(pi->msg2, "QUEUE") == 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC QUEUE (%s on %s)",
-            pi->hostmask, gnetwork->name);
+    log_xdcc_request("QUEUE", pi);
     notifyqueued_nick(pi->nick);
     return;
   }
@@ -593,22 +591,26 @@ static void command_xdcc(privmsginput *pi)
   }
 
   if (strcmp(pi->msg2, "CANCEL") == 0) {
-    send_cancel(pi->nick, pi->hostmask);
+    log_xdcc_request("CANCEL", pi);
+    send_cancel(pi->nick);
     return;
   }
 
   if (strcmp(pi->msg2, "REMOVE") == 0) {
-    send_remove(pi->nick, pi->hostmask);
+    log_xdcc_request("REMOVE", pi);
+    send_remove(pi->nick);
     return;
   }
 
   if (strcmp(pi->msg2, "OWNER") == 0) {
-    send_owner(pi->nick, pi->hostmask);
+    log_xdcc_request("OWNER", pi);
+    send_owner(pi->nick);
     return;
   }
 
   if (strcmp(pi->msg2, "HELP") == 0) {
-    send_help(pi->nick, pi->hostmask);
+    log_xdcc_request("HELP", pi);
+    send_help(pi->nick);
     return;
   }
 
@@ -631,6 +633,7 @@ static void command_xdcc(privmsginput *pi)
     /* if restrictlist is enabled, visibility rules apply */
     grouplist = gdata.restrictlist ? get_grouplist_access(pi->nick) : NULL;
     msg3e = getpart_eol(pi->line, 6);
+    log_xdcc_request2("SEARCH", msg3e, pi);
     notice_slow(pi->nick, "Searching for \"%s\"...", msg3e);
     convert_spaces_to_match(msg3e);
     match = grep_to_fnmatch(msg3e);
@@ -660,16 +663,11 @@ static void command_xdcc(privmsginput *pi)
     if (!k) {
        notice_slow(pi->nick, "Sorry, nothing was found, try a XDCC LIST");
     }
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-             "XDCC SEARCH %s (%s on %s)",
-             msg3e, pi->hostmask, gnetwork->name);
     mydelete(msg3e);
     return;
   }
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC unsupported (%s on %s) ",
-          pi->hostmask, gnetwork->name);
-          notice(pi->nick, "Sorry, this command is unsupported" );
+  log_xdcc_request2("unsupported", pi->msg2, pi);
+  notice(pi->nick, "Sorry, this command is unsupported" );
 }
 
 static int not_for_me(const char *dest)
