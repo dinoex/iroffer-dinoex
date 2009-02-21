@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+Debugging und Logging verbessert.
+
 284) atfind
   Neuer Trigger "!FIND", gleiche funktion wie "@FIND".
 

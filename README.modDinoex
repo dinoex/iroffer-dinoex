@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+extend debug and log information.
+
 284) atfind (suggested by Vision)
   New trigger "!FIND", same as "@FIND".
 
