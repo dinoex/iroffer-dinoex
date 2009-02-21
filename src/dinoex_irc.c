@@ -745,28 +745,4 @@ void identify_check(const char *line)
   }
 }
 
-int get_nick_hostname(char *nick, char *hostname, const char* line)
-{
-  if (line && *line == ':')
-     line++;
-   for (; *line && *line != '!'; line++)
-     *(nick++) = *line;
-   *nick = 0;
-   *hostname = 0;
-
-   if (*line == 0)
-     return 1;
-
-   for (; *line && *line != '@'; line++)
-     ;
-
-   if (*line == 0)
-     return 1;
-
-   for (line++; *line && *line != ' '; line++)
-     *(hostname++) = *line;
-   *hostname = 0;
-   return 0;
-}
-
 /* End of File */

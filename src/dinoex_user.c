@@ -528,6 +528,114 @@ static int botonly_parse(int type, privmsginput *pi)
   return 1;
 }
 
+static int get_nick_hostname(char *nick, char *hostname, const char* line)
+{
+  if (line && *line == ':')
+    line++;
+  for (; *line && *line != '!'; line++)
+    *(nick++) = *line;
+  *nick = 0;
+  *hostname = 0;
+
+  if (*line == 0)
+    return 1;
+
+  for (; *line && *line != '@'; line++)
+    ;
+
+  if (*line == 0)
+    return 1;
+
+  for (line++; *line && *line != ' '; line++)
+    *(hostname++) = *line;
+  *hostname = 0;
+  return 0;
+}
+
+static void autoqueuef(const char* line, int pack, const char *message)
+{
+  char *nick, *hostname, *hostmask;
+  int i;
+  int line_len;
+
+  updatecontext();
+
+  floodchk();
+
+  line_len = sstrlen(line);
+  nick = mycalloc(line_len+1);
+  hostname = mycalloc(line_len+1);
+
+  hostmask = caps(getpart(line, 1));
+  for (i=1; i<=sstrlen(hostmask); i++)
+     hostmask[i-1] = hostmask[i];
+
+  get_nick_hostname(nick, hostname, line);
+
+  if ( !gdata.ignore ) {
+    char *tempstr = NULL;
+    const char *format = "** Sending You %s by DCC";
+
+    gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+
+    ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "AutoSend ");
+
+    if (message) {
+      tempstr = mycalloc(strlen(message) + strlen(format) - 1);
+      snprintf(tempstr, strlen(message) + strlen(format) - 1,
+               format, message);
+    }
+
+    sendxdccfile(nick, hostname, hostmask, pack, tempstr, NULL);
+    mydelete(tempstr);
+  }
+
+  mydelete(hostmask);
+  mydelete(nick);
+  mydelete(hostname);
+}
+
+static int check_trigger(const char *line, int type, const char *nick, const char *hostmask, const char *msg)
+{
+  autoqueue_t *aq;
+  autotrigger_t *at;
+
+  if (type == 0)
+    return 0;
+
+  if (!msg)
+    return 0;
+
+  for (aq = irlist_get_head(&gdata.autoqueue);
+       aq;
+       aq = irlist_get_next(aq)) {
+    if (!strcasecmp(msg, aq->word)) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        return 0;
+
+      autoqueuef(line, aq->pack, aq->message);
+      /* only first match is activated */
+      return 1;
+    }
+  }
+  for (at = irlist_get_head(&gdata.autotrigger);
+       at;
+       at = irlist_get_next(at)) {
+    if (!strcasecmp(msg, at->word)) {
+      /* add/increment ignore list */
+      if (check_ignore(nick, hostmask))
+        return 0;
+
+      autoqueuef(line, number_of_pack(at->pack), NULL);
+      /* only first match is activated */
+      return 1;
+    }
+  }
+  /* nothing found */
+  return 0;
+}
+
 static void add_msg_statefile(const  char *begin, int type, privmsginput *pi)
 {
   msglog_t *ml;

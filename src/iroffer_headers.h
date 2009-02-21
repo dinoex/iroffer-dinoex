@@ -792,7 +792,6 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
 void u_listdir(const userinput * const u, const char *dir);
 
 /* main.c */
-void autoqueuef(const char* line, int pack, const char *message);
 char* addtoqueue(const char* nick, const char* hostname, int pack);
 
 #endif
