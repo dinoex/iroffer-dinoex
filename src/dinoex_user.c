@@ -79,7 +79,7 @@ static int test_ctcp(const char *msg1, const char *key)
   return 0;
 }
 
-static const char *sendxdccinfo2(const char* nick, const char* hostname, const char* hostmask, int pack)
+static const char *sendxdccinfo2(const char* nick, const char* hostmask, int pack)
 {
   userinput *pubinfo;
   xdcc *xd;
@@ -92,7 +92,7 @@ static const char *sendxdccinfo2(const char* nick, const char* hostname, const c
     return " ignored: ";
   }
 
-  xd = get_download_pack(nick, hostname, hostmask, pack, NULL, "INFO", gdata.restrictlist);
+  xd = get_download_pack(nick, hostmask, pack, 0, "INFO", gdata.restrictlist);
   if (xd == NULL)
     return NULL;
 
@@ -110,16 +110,13 @@ static const char *sendxdccinfo2(const char* nick, const char* hostname, const c
   return " requested: ";
 }
 
-static void sendxdccinfo(const char* nick,
-                  const char* hostname,
-                  const char* hostmask,
-                  int pack)
+static void sendxdccinfo(const char* nick, const char* hostmask, int pack)
 {
   const char *msg;
 
   updatecontext();
 
-  msg = sendxdccinfo2(nick, hostname, hostmask, pack);
+  msg = sendxdccinfo2(nick, hostmask, pack);
   if (msg) {
     ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "%s", msg);
   }
@@ -576,7 +573,7 @@ static void command_xdcc(privmsginput *pi)
     ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "XDCC INFO %s",
             pi->msg3);
-    sendxdccinfo(pi->nick, pi->hostname, pi->hostmask, packnumtonum(pi->msg3));
+    sendxdccinfo(pi->nick, pi->hostmask, packnumtonum(pi->msg3));
     return;
   }
   if (strcmp(pi->msg2, "QUEUE") == 0) {

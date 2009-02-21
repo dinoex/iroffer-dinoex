@@ -774,29 +774,14 @@ int access_need_level(const char *nick, const char *text)
   return 0;
 }
 
-static int check_manual_send(const char* hostname, int *man)
-{
-  if (man == NULL)
-    return 0;
-
-  if (!strcmp(hostname, "man")) {
-    *man = 1;
-  } else {
-    *man = 0;
-  }
-  return *man;
-}
-
-xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text, int restr)
+xdcc *get_download_pack(const char* nick, const char* hostmask, int pack, int man, const char* text, int restr)
 {
   char *grouplist;
   xdcc *xd;
-  int isman;
 
   updatecontext();
 
-  isman = check_manual_send(hostname, man);
-  if (isman == 0) {
+  if (man == 0) {
     if (!verifyshell(&gdata.downloadhost, hostmask)) {
       ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (host denied): ");
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
@@ -834,7 +819,7 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
   if (xd == NULL)
     return NULL;
 
-  if (isman != 0)
+  if (man != 0)
     return xd;
 
   /* apply group visibility rules */
