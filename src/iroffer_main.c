@@ -2298,53 +2298,6 @@ static void parseline(char *line) {
    mydelete(part5);
    }
 
-void autoqueuef(const char* line, int pack, const char *message)
-{
-   char *nick, *hostname, *hostmask;
-   int i;
-   int line_len;
-   
-   updatecontext();
-
-   floodchk();
-   
-   line_len = sstrlen(line);
-   nick = mycalloc(line_len+1);
-   hostname = mycalloc(line_len+1);
-   
-   hostmask = caps(getpart(line, 1));
-   for (i=1; i<=sstrlen(hostmask); i++)
-      hostmask[i-1] = hostmask[i];
-
-   get_nick_hostname(nick, hostname, line);
-
-   if ( !gdata.ignore )
-     {
-       char *tempstr = NULL;
-       const char *format = "** Sending You %s by DCC";
-       
-       gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-       
-       ioutput(CALLTYPE_MULTI_FIRST,OUT_S|OUT_L|OUT_D,COLOR_YELLOW,"AutoSend ");
-       
-       if (message)
-         {
-           tempstr = mycalloc(strlen(message) + strlen(format) - 1);
-           snprintf(tempstr, strlen(message) + strlen(format) - 1,
-                    format, message);
-         }
-       
-       sendxdccfile(nick, hostname, hostmask, pack, tempstr, NULL);
-       
-       mydelete(tempstr);
-     }
-   
-   mydelete(hostmask);
-   mydelete(nick);
-   mydelete(hostname);
-
-   }
-
 int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd)
 {
   int usertrans, userpackok, man;
