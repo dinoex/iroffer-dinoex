@@ -2309,13 +2309,17 @@ int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, i
   
   usertrans = 0;
   userpackok = 1;
-
+  
+  if (!strcmp(hostname,"man"))
+    {
+      man = 1;
+    }
+  else
+    {
+      man = 0;
+    }
+  
   rc = 1;
-  if (!strcmp(hostname, "man")) {
-    man = 1;
-  } else {
-    man = 0;
-  }
   xd = get_download_pack(nick, hostmask, pack, man, "SEND", gdata.restrictsend);
   if (xd == NULL)
     {
