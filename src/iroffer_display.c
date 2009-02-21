@@ -297,7 +297,7 @@ void parseconsole(void)
 {
   static char console_escape_seq[maxtextlengthshort] = {};
   
-  char tempbuffa[INPUT_BUFFER_LENGTH];
+  unsigned char tempbuffa[INPUT_BUFFER_LENGTH];
   int length;
   int linelength;
   userinput ui;
