@@ -801,47 +801,22 @@ static int get_nick_hostname(char *nick, char *hostname, const char* line)
   return 0;
 }
 
-static void autoqueuef(const char* line, int pack, const char *message)
+static void autoqueuef(int pack, const char *message, privmsginput *pi)
 {
-  char *nick, *hostname, *hostmask;
-  int i;
-  int line_len;
+  const char *format = "** Sending You %s by DCC";
+  char *tempstr = NULL;
 
   updatecontext();
 
-  floodchk();
-
-  line_len = sstrlen(line);
-  nick = mycalloc(line_len+1);
-  hostname = mycalloc(line_len+1);
-
-  hostmask = caps(getpart(line, 1));
-  for (i=1; i<=sstrlen(hostmask); i++)
-     hostmask[i-1] = hostmask[i];
-
-  get_nick_hostname(nick, hostname, line);
-
-  if ( !gdata.ignore ) {
-    char *tempstr = NULL;
-    const char *format = "** Sending You %s by DCC";
-
-    gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-
-    ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "AutoSend ");
-
-    if (message) {
-      tempstr = mycalloc(strlen(message) + strlen(format) - 1);
-      snprintf(tempstr, strlen(message) + strlen(format) - 1,
-               format, message);
-    }
-
-    sendxdccfile(nick, hostname, hostmask, pack, tempstr, NULL);
-    mydelete(tempstr);
+  ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "AutoSend ");
+  gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+  if (message) {
+    tempstr = mycalloc(strlen(message) + strlen(format) - 1);
+    snprintf(tempstr, strlen(message) + strlen(format) - 1,
+             format, message);
   }
-
-  mydelete(hostmask);
-  mydelete(nick);
-  mydelete(hostname);
+  sendxdccfile(pi->nick, pi->hostname, pi->hostmask, pack, tempstr, NULL);
+  mydelete(tempstr);
 }
 
 static size_t get_channel_limit(const char *dest)
@@ -1022,7 +997,7 @@ static int run_new_trigger(const char *nick, const char *grouplist)
   return i;
 }
 
-static int check_trigger(const char *line, int type, const char *nick, const char *hostmask, const char *msg)
+static int check_trigger(int type, privmsginput *pi)
 {
   autoqueue_t *aq;
   autotrigger_t *at;
@@ -1030,18 +1005,18 @@ static int check_trigger(const char *line, int type, const char *nick, const cha
   if (type == 0)
     return 0;
 
-  if (!msg)
+  if (pi->msg1 == NULL)
     return 0;
 
   for (aq = irlist_get_head(&gdata.autoqueue);
        aq;
        aq = irlist_get_next(aq)) {
-    if (!strcasecmp(msg, aq->word)) {
+    if (!strcasecmp(pi->msg1, aq->word)) {
       /* add/increment ignore list */
-      if (check_ignore(nick, hostmask))
+      if (check_ignore(pi->nick, pi->hostmask))
         return 0;
 
-      autoqueuef(line, aq->pack, aq->message);
+      autoqueuef(aq->pack, aq->message, pi);
       /* only first match is activated */
       return 1;
     }
@@ -1049,12 +1024,12 @@ static int check_trigger(const char *line, int type, const char *nick, const cha
   for (at = irlist_get_head(&gdata.autotrigger);
        at;
        at = irlist_get_next(at)) {
-    if (!strcasecmp(msg, at->word)) {
+    if (!strcasecmp(pi->msg1, at->word)) {
       /* add/increment ignore list */
-      if (check_ignore(nick, hostmask))
+      if (check_ignore(pi->nick, pi->hostmask))
         return 0;
 
-      autoqueuef(line, number_of_pack(at->pack), NULL);
+      autoqueuef(number_of_pack(at->pack), NULL, pi);
       /* only first match is activated */
       return 1;
     }
@@ -1263,7 +1238,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
     }
   }
 
-  if (check_trigger(pi->line, type, pi->nick, pi->hostmask, pi->msg1)) {
+  if (check_trigger(type, pi)) {
     /* matched lines are skipped */
     return;
   }
