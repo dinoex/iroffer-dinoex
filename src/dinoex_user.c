@@ -777,30 +777,6 @@ static int botonly_parse(int type, privmsginput *pi)
   return 1;
 }
 
-static int get_nick_hostname(char *nick, char *hostname, const char* line)
-{
-  if (line && *line == ':')
-    line++;
-  for (; *line && *line != '!'; line++)
-    *(nick++) = *line;
-  *nick = 0;
-  *hostname = 0;
-
-  if (*line == 0)
-    return 1;
-
-  for (; *line && *line != '@'; line++)
-    ;
-
-  if (*line == 0)
-    return 1;
-
-  for (line++; *line && *line != ' '; line++)
-    *(hostname++) = *line;
-  *hostname = 0;
-  return 0;
-}
-
 static void autoqueuef(int pack, const char *message, privmsginput *pi)
 {
   const char *format = "** Sending You %s by DCC";
@@ -1277,6 +1253,30 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_GREEN,
           "%s on %s: %s",
           type_list[type], gnetwork->name, pi->line);
+}
+
+static int get_nick_hostname(char *nick, char *hostname, const char* line)
+{
+  if (line && *line == ':')
+    line++;
+  for (; *line && *line != '!'; line++)
+    *(nick++) = *line;
+  *nick = 0;
+  *hostname = 0;
+
+  if (*line == 0)
+    return 1;
+
+  for (; *line && *line != '@'; line++)
+    ;
+
+  if (*line == 0)
+    return 1;
+
+  for (line++; *line && *line != ' '; line++)
+    *(hostname++) = *line;
+  *hostname = 0;
+  return 0;
 }
 
 #define MAX_PRIVMSG_PARTS 9
