@@ -821,6 +821,25 @@ static void reset_ignore(const char *hostmask)
   ignore->bucket = 0;
 }
 
+static group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
+{
+  group_admin_t *ga;
+
+  if (!hostmask)
+    return NULL;
+
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_get_next(ga)) {
+    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) != 0)
+      continue;
+    if ( !verifypass2(ga->g_pass, passwd) )
+      continue;
+    return ga;
+  }
+  return NULL;
+}
+
 static int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line)
 {
   group_admin_t *ga;

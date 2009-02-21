@@ -22,11 +22,6 @@ int number_of_pack(xdcc *pack);
 int check_level(char prefix);
 
 void set_support_groups(void);
-void send_cancel(const char *nick, const char *hostmask);
-void send_remove(const char *nick, const char *hostmask);
-void send_owner(const char *nick, const char *hostmask);
-void send_help(const char *nick, const char *hostmask);
-
 void stoplist(const char *nick);
 unsigned long get_next_transfer_time(void);
 void add_new_transfer_time(xdcc *xd);
@@ -42,20 +37,15 @@ void update_hour_dinoex(int hour, int minute);
 void check_new_connection(transfer *const tr);
 char *grep_to_fnmatch(const char *grep);
 int fnmatch_xdcc(const char *match, xdcc *xd);
-int noticeresults(const char *nick, const char *pattern, const char *dest);
-int run_new_trigger(const char *nick, const char *grouplist);
 
 int disk_full(const char *path);
 
 char *get_user_modes(void);
 char *get_nickserv_pass(void);
 
-int parse_xdcc_list(const char *nick, char*msg3);
 xdcc *get_xdcc_pack(int pack);
+int access_need_level(const char *nick, const char *text);
 xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text, int restr);
-
-int packnumtonum(const char *a);
-int ignore_trigger_dest(const char *dest);
 
 void lost_nick(const char *nick);
 
@@ -72,15 +62,9 @@ void clean_uploadhost(void);
 char *user_getdatestr(char* str, time_t Tp, int len);
 
 char *get_grouplist_access(const char *nick);
-const char *get_listmsg_channel(const char *dest);
 const char *get_grouplist_channel(const char *dest);
 
-int verifyhost_group(const char *hostmask);
-group_admin_t *verifypass_group(const char *hostmask, const char *passwd);
-
 int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote);
-
-void send_batch(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd);
 
 void free_channel_data(channel_t *ch);
 

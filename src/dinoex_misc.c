@@ -102,7 +102,6 @@ static int get_voice(void)
   return gdata.need_voice;
 }
 
-
 int check_level(char prefix)
 {
   int ii;
@@ -161,83 +160,6 @@ void set_support_groups(void)
       return;
     }
   }
-}
-
-void send_cancel(const char *nick, const char *hostmask)
-{
-  transfer *tr;
-  int k = 0;
-
-  /* stop transfers */
-  for (tr = irlist_get_head(&gdata.trans);
-       tr;
-       tr = irlist_get_next(tr)) {
-    if ((tr->net == gnetwork->net) && (!strcasecmp(tr->nick, nick))) {
-      if (tr->tr_status != TRANSFER_STATUS_DONE) {
-        k += 1;
-        t_closeconn(tr, "Transfer canceled by user", 0);
-      }
-    }
-  }
-  if (!k) notice(nick, "You don't have a transfer running");
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC CANCEL (%s on %s)",
-          hostmask, gnetwork->name);
-}
-
-void send_remove(const char *nick, const char *hostmask)
-{
-  int k = 0;
-
-  k += queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick);
-  k += queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick);
-  if (!k) notice(nick, "You Don't Appear To Be In A Queue");
-
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC REMOVE (%s on %s) ",
-          hostmask, gnetwork->name);
-}
-
-void send_owner(const char *nick, const char *hostmask)
-{
-   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-           "XDCC OWNER (%s on %s) ",
-           hostmask, gnetwork->name);
-   notice(nick, "Owner for this bot is: %s",
-          gdata.owner_nick ? gdata.owner_nick : "(unknown)");
-}
-
-void send_help(const char *nick, const char *hostmask)
-{
-  const char *mynick;
-
-  updatecontext();
-
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC HELP (%s on %s)",
-          hostmask, gnetwork->name);
-
-  mynick = get_user_nick();
-  if (!gdata.restrictprivlist) {
-    notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST\" \2**\2", mynick);
-    if (gdata.support_groups) {
-      notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST group\" \2**\2", mynick);
-      if ((gdata.show_list_all != 0) && (gdata.restrictprivlistfull == 0))
-        notice_slow(nick, "\2**\2 Request listing:   \"/MSG %s XDCC LIST ALL\" \2**\2", mynick);
-    }
-  }
-  notice_slow(nick, "\2**\2 Stop listing:      \"/MSG %s XDCC STOP\" \2**\2", mynick);
-  if (gdata.send_listfile)
-    notice_slow(nick, "\2**\2 Download listing:  \"/MSG %s XDCC SEND LIST\" \2**\2", mynick);
-  if (gdata.send_batch)
-    notice_slow(nick, "\2**\2 Download batch:    \"/MSG %s XDCC BATCH group\" \2**\2", mynick);
-  notice_slow(nick, "\2**\2 Search listing:    \"/MSG %s XDCC SEARCH pattern\" \2**\2", mynick);
-  if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
-    notice_slow(nick, "\2**\2 Request details:   \"/MSG %s XDCC INFO pack\" \2**\2", mynick);
-  notice_slow(nick, "\2**\2 Request download:  \"/MSG %s XDCC SEND pack\" \2**\2", mynick);
-  notice_slow(nick, "\2**\2 Show time to wait: \"/MSG %s XDCC QUEUE\" \2**\2", mynick);
-  notice_slow(nick, "\2**\2 Remove from queue: \"/MSG %s XDCC REMOVE\" \2**\2", mynick);
-  notice_slow(nick, "\2**\2 Cancel download:   \"/MSG %s XDCC CANCEL\" \2**\2", mynick);
 }
 
 static int stoplist_queue(const char *nick, irlist_t *list)
@@ -779,184 +701,6 @@ int fnmatch_xdcc(const char *match, xdcc *xd)
   return 0;
 }
 
-static size_t get_channel_limit(const char *dest)
-{
-  channel_t *ch;
-  size_t max = 400;
-
-  if (dest && (*dest=='#')) {
-    for (ch = irlist_get_head(&(gnetwork->channels));
-         ch;
-         ch = irlist_get_next(ch)) {
-      if (strcasecmp(ch->name, dest) != 0)
-        continue;
-
-      if (ch->fish)
-        max /= 3;
-      break;
-    }
-  }
-  return max;
-}
-
-/* iroffer-lamm: @find and long !list */
-int noticeresults(const char *nick, const char *pattern, const char *dest)
-{
-  int i, j, k, len;
-  const char *grouplist;
-  char *tempstr = mycalloc(maxtextlength);
-  char *match;
-  char *sizestrstr;
-  xdcc *xd;
-
-  /* apply per-channel visibility rules */
-  grouplist = get_grouplist_channel(dest);
-  match = grep_to_fnmatch(pattern);
-  len = k = 0;
-
-    i = 0;
-    for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd)) {
-      i++;
-      if (hide_pack(xd))
-        continue;
-
-      /* check group visibility rules */
-      if (!verify_group_in_grouplist(xd->group, grouplist))
-        continue;
-
-      if (fnmatch_xdcc(match, xd)) {
-        if (!k) {
-          if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
-            j = irlist_size(&gdata.trans);
-          else
-            j = gdata.slotsmax;
-          snprintf(tempstr, maxtextlength, "XDCC SERVER - %s:[%i/%i]", j != 1 ? "slots" : "slot", j - irlist_size(&gdata.trans), j);
-          len = strlen(tempstr);
-          if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
-            snprintf(tempstr + len, maxtextlength - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
-            len = strlen(tempstr);
-          }
-          if (gdata.transferminspeed > 0) {
-            snprintf(tempstr + len, maxtextlength - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
-            len = strlen(tempstr);
-          }
-          if (gdata.transfermaxspeed > 0) {
-            snprintf(tempstr + len, maxtextlength - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
-            len = strlen(tempstr);
-          }
-          if (gdata.maxb) {
-            snprintf(tempstr + len, maxtextlength - len, ", Cap:%u.0KB/s", gdata.maxb / 4);
-            len = strlen(tempstr);
-          }
-          snprintf(tempstr + len, maxtextlength - len, " - /MSG %s XDCC SEND x -",
-                   get_user_nick());
-          len = strlen(tempstr);
-          if (!strcmp(match, "*"))
-            snprintf(tempstr + len, maxtextlength - len, " Packs:");
-          else
-            snprintf(tempstr + len, maxtextlength - len, " Found:");
-        len = strlen(tempstr);
-      }
-      sizestrstr = sizestr(0, xd->st_size);
-      snprintf(tempstr + len, maxtextlength - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
-      if (strlen(tempstr) > get_channel_limit(dest)) {
-        snprintf(tempstr + len, maxtextlength - len, " [...]");
-        notice_slow(nick, "%s", tempstr);
-        snprintf(tempstr, maxtextlength, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
-      }
-      len = strlen(tempstr);
-      mydelete(sizestrstr);
-      k++;
-      /* limit matches */
-      if ((gdata.max_find != 0) && (k >= gdata.max_find))
-        break;
-      }
-    }
-
-  mydelete(match);
-
-  if (k)
-    notice_slow(nick, "%s", tempstr);
-  mydelete(tempstr);
-  return k;
-}
-
-static void add_newest_xdcc(irlist_t *list, const char *grouplist)
-{
-  xdcc **best;
-  xdcc *xd;
-  xdcc *old;
-
-  old = NULL;
-  for (xd = irlist_get_head(&gdata.xdccs);
-       xd;
-       xd = irlist_get_next(xd)) {
-    if (hide_pack(xd) != 0)
-      continue;
-
-    /* check group visibility rules */
-    if (!verify_group_in_grouplist(xd->group, grouplist))
-      continue;
-
-    for (best = irlist_get_head(list);
-         best;
-         best = irlist_get_next(best)) {
-      if (*best == xd)
-        break;
-    }
-    if (best != NULL)
-      continue;
-
-    if (old != NULL) {
-      if (old->xtime > xd->xtime)
-        continue;
-    }
-    old = xd;
-  }
-  if (old == NULL)
-    return;
-
-  best = irlist_add(list, sizeof(void *));
-  *best = old;
-}
-
-int run_new_trigger(const char *nick, const char *grouplist)
-{
-  struct tm *localt = NULL;
-  irlist_t list;
-  xdcc **best;
-  xdcc *xd;
-  const char *format;
-  char *tempstr;
-  time_t now;
-  ssize_t llen;
-  int i;
-
-  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
-
-  memset(&list, 0, sizeof(irlist_t));
-  for (i=0; i<gdata.new_trigger; i++)
-    add_newest_xdcc(&list, grouplist);
-
-  i = 0;
-  for (best = irlist_get_head(&list);
-       best;
-       best = irlist_delete(&list, best)) {
-    xd = *best;
-    now = xd->xtime;
-    localt = localtime(&now);
-    tempstr = mycalloc(maxtextlengthshort);
-    llen = strftime(tempstr, maxtextlengthshort - 1, format, localt);
-    if (llen == 0)
-      tempstr[0] = '\0';
-    notice_slow(nick, "Added: %s \2%i\2%s%s",
-                tempstr, number_of_pack(xd), gdata.announce_seperator, xd->desc);
-    mydelete(tempstr);
-    i++;
-  }
-  return i;
-}
-
 int disk_full(const char *path)
 {
 #ifndef NO_STATVFS
@@ -1010,16 +754,15 @@ char *get_nickserv_pass(void)
   return (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
 }
 
-static void restrictprivlistmsg(const char *nick)
+xdcc *get_xdcc_pack(int pack)
 {
-  if (gdata.restrictprivlistmsg) {
-    notice(nick, "** XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
-  } else {
-    notice(nick, "** XDCC LIST Denied. Wait for the public list in the channel.");
-  }
+  if (pack == -1)
+    return &xdcc_listfile;
+
+  return irlist_get_nth(&gdata.xdccs, pack - 1);
 }
 
-static int access_need_level(const char *nick, const char *text)
+int access_need_level(const char *nick, const char *text)
 {
   if (!isinmemberlist(nick)) {
     if ((get_voice() != 0) || (get_level() != 0))
@@ -1029,52 +772,6 @@ static int access_need_level(const char *nick, const char *text)
     return 1;
   }
   return 0;
-}
-
-int parse_xdcc_list(const char *nick, char*msg3)
-{
-  xlistqueue_t *user;
-
-  if (gdata.restrictprivlist) {
-    restrictprivlistmsg(nick);
-    return 2; /* deny */
-  }
-  if (gdata.restrictlist && access_need_level(nick, "LIST")) {
-    return 2; /* deny */
-  }
-  for (user = irlist_get_head(&(gnetwork->xlistqueue));
-       user;
-       user = irlist_get_next(user)) {
-    if (!strcmp(user->nick, nick))
-      return 1; /* ignore */
-  }
-  if (irlist_size(&(gnetwork->xlistqueue)) >= MAXXLQUE) {
-    notice(nick, "** XDCC LIST Denied. I'm rather busy at the moment, try again later");
-    return 1; /* ignore */
-  }
-  if (!msg3) {
-    if (gdata.restrictprivlistmain) {
-      restrictprivlistmsg(nick);
-      return 2; /* deny */
-    }
-    user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
-    user->nick = mystrdup(nick);
-    return 3; /* queued */
-  }
-  if (strcmp(caps(msg3), "ALL") == 0) {
-    if (gdata.restrictprivlistfull) {
-      restrictprivlistmsg(nick);
-      return 2; /* deny */
-    }
-    user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
-    user->nick = mystrdup(nick);
-    user->msg = mystrdup(msg3);
-    return 3; /* queued */
-  }
-  user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
-  user->nick = mystrdup(nick);
-  user->msg = mystrdup(msg3);
-  return 3; /* queued */
 }
 
 static int check_manual_send(const char* hostname, int *man)
@@ -1088,14 +785,6 @@ static int check_manual_send(const char* hostname, int *man)
     *man = 0;
   }
   return *man;
-}
-
-xdcc *get_xdcc_pack(int pack)
-{
-  if (pack == -1)
-    return &xdcc_listfile;
-
-  return irlist_get_nth(&gdata.xdccs, pack - 1);
 }
 
 xdcc *get_download_pack(const char* nick, const char* hostname, const char* hostmask, int pack, int *man, const char* text, int restr)
@@ -1160,61 +849,6 @@ xdcc *get_download_pack(const char* nick, const char* hostname, const char* host
     mydelete(grouplist);
   }
   return xd;
-}
-
-int packnumtonum(const char *a)
-{
-  autoqueue_t *aq;
-  autotrigger_t *at;
-
-  if (!a) return 0;
-
-  if (a[0] == '#') {
-    a++;
-    return atoi(a);
-  }
-  if (gdata.send_listfile) {
-    if (strcasecmp(a, "LIST") == 0)
-      return gdata.send_listfile;
-  }
-
-  for (aq = irlist_get_head(&gdata.autoqueue);
-       aq;
-       aq = irlist_get_next(aq)) {
-    if (!strcasecmp(a, aq->word))
-      return aq->pack;
-  }
-  for (at = irlist_get_head(&gdata.autotrigger);
-       at;
-       at = irlist_get_next(at)) {
-    if (!strcasecmp(a, at->word))
-      return number_of_pack(at->pack);
-  }
-  return atoi(a);
-}
-
-int ignore_trigger_dest(const char *dest)
-{
-  channel_t *ch;
-
-  if (!dest)
-    return 1;
-
-  if (*dest != '#')
-    return 0;
-
-  for (ch = irlist_get_head(&(gnetwork->channels));
-       ch;
-       ch = irlist_get_next(ch)) {
-    if (strcasecmp(ch->name, dest) != 0)
-      continue;
-
-    if (ch->notrigger)
-      return 1;
-
-    return 0;
-  }
-  return 0;
 }
 
 void lost_nick(const char *nick)
@@ -1418,27 +1052,6 @@ char *get_grouplist_access(const char *nick)
   return tempstr;
 }
 
-/* search for custom listmsg */
-const char *get_listmsg_channel(const char *dest)
-{
-  channel_t *ch;
-  char *rtclmsg = gdata.respondtochannellistmsg;
-
-  if (dest && (*dest=='#')) {
-    for (ch = irlist_get_head(&(gnetwork->channels));
-         ch;
-         ch = irlist_get_next(ch)) {
-      if (strcasecmp(ch->name, dest) != 0)
-        continue;
-
-      if (ch->listmsg)
-        rtclmsg = ch->listmsg;
-      break;
-    }
-  }
-  return rtclmsg;
-}
-
 /* apply per-channel visibility rules */
 const char *get_grouplist_channel(const char *dest)
 {
@@ -1452,41 +1065,6 @@ const char *get_grouplist_channel(const char *dest)
         return ch->rgroup;
       }
     }
-  }
-  return NULL;
-}
-
-int verifyhost_group(const char *hostmask)
-{
-  group_admin_t *ga;
-
-  updatecontext();
-
-  for (ga = irlist_get_head(&gdata.group_admin);
-       ga;
-       ga = irlist_get_next(ga)) {
-
-    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) == 0)
-      return 1;
-  }
-  return 0;
-}
-
-group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
-{
-  group_admin_t *ga;
-
-  if (!hostmask)
-    return NULL;
-
-  for (ga = irlist_get_head(&gdata.group_admin);
-       ga;
-       ga = irlist_get_next(ga)) {
-    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) != 0)
-      continue;
-    if ( !verifypass2(ga->g_pass, passwd) )
-      continue;
-    return ga;
   }
   return NULL;
 }
@@ -1547,76 +1125,6 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
       return 1; /* bits matched */
   }
   return 0;
-}
-
-
-static int send_batch_group(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
-{
-  xdcc *xd;
-  int num;
-  int found;
-
-  found = 0;
-  num = 0;
-  for (xd = irlist_get_head(&gdata.xdccs);
-       xd;
-       xd = irlist_get_next(xd)) {
-    num ++;
-    if (xd->group == NULL)
-      continue;
-    if (strcasecmp(what, xd->group) != 0)
-      continue;
-
-    found ++;
-    if (sendxdccfile(nick, hostname, hostmask, num, NULL, pwd))
-      return found;
-  }
-  return found;
-}
-
-static int send_batch_search(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
-{
-  char *end;
-  int num;
-  int found;
-  int first;
-  int last;
-
-  found = send_batch_group(nick, hostname, hostmask, what, pwd);
-  if (found != 0)
-    return found;
-
-  /* range */
-  if (*what == '#') what ++;
-  end = strchr(what, '-');
-  if (end == NULL)
-    return found;
-  first = atoi(what);
-  last = atoi(++end);
-  for (num = first; num <= last; num ++) {
-    found ++;
-    if (sendxdccfile(nick, hostname, hostmask, num, NULL, pwd))
-      return found;
-  }
-  return found;
-}
-
-void send_batch(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
-{
-  int found;
-
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC BATCH %s (%s on %s)",
-          what, hostname, gnetwork->name);
-
-  found = send_batch_search(nick, hostname, hostmask, what, pwd);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC BATCH %s, %d packs (%s on %s)",
-          what, found, hostname, gnetwork->name);
-  if (found != 0)
-    return;
-
-  notice(nick, "** Invalid Pack Number, Try Again");
 }
 
 void free_channel_data(channel_t *ch)
