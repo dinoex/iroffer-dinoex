@@ -452,10 +452,6 @@ static int parse_xdcc_list(const char *nick, char*msg3)
       restrictprivlistmsg(nick);
       return 2; /* deny */
     }
-    user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
-    user->nick = mystrdup(nick);
-    user->msg = mystrdup(msg3);
-    return 3; /* queued */
   }
   user = irlist_add(&(gnetwork->xlistqueue), sizeof(xlistqueue_t));
   user->nick = mystrdup(nick);
