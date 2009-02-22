@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+285) MAKEDIR (suggested by Blade121, Ryu)
+
+  new admin command:
+  MAKEDIR <dir>                      Create a new directory on disk.
+
 extend debug and log information.
 
 284) atfind (suggested by Vision)

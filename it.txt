@@ -2330,3 +2330,7 @@
 2449 "XDCC %s (%s %s on %s)"
 2450 "XDCC %s %s (%s %s on %s)"
 2451 "non supportato"
+2452 "MAKEDIR"
+2453 "create a new directory on disk"
+2454 "Dir %s could not be created: %s"
+2455 "Dir %s was created."

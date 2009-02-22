@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.13:
 ----------------
 
+285) MAKEDIR
+
+  Neues Admin Kommando:
+  MAKEDIR <dir>                      Das Verzeichnis auf der Festplatte anlegen.
+
 Debugging und Logging verbessert.
 
 284) atfind

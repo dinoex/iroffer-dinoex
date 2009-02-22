@@ -30,6 +30,21 @@
 
 #include <ctype.h>
 
+static void strip_trailing_path(char *str)
+{
+  size_t len;
+
+  if (str == NULL)
+    return;
+ 
+  len = strlen(str);
+  if (len == 0)
+    return;
+
+  if (str[len-1] == '/')
+    str[len-1] = '\0';
+}
+
 void a_respond(const userinput * const u, const char *format, ...)
 {
   va_list args;
@@ -1334,7 +1349,6 @@ void a_qul(const userinput * const u)
 void a_listul(const userinput * const u)
 {
   char *tempstr;
-  size_t len;
 
   updatecontext();
 
@@ -1348,17 +1362,15 @@ void a_listul(const userinput * const u)
     return;
   }
 
-  clean_quotes(u->arg1e);
-  convert_to_unix_slash(u->arg1e);
+  clean_quotes(u->arg1);
+  convert_to_unix_slash(u->arg1);
 
-  if (is_unsave_directory(u->arg1e)) {
+  if (is_unsave_directory(u->arg1)) {
     a_respond(u, "Try Specifying a Directory");
     return;
   }
 
-  len = strlen(gdata.uploaddir) + strlen(u->arg1e) + 2;
-  tempstr = mycalloc(len);
-  snprintf(tempstr, len, "%s/%s", gdata.uploaddir, u->arg1e);
+  tempstr = mystrjoin(gdata.uploaddir, u->arg1, '/');
   u_listdir(u, tempstr);
   mydelete(tempstr);
 }
@@ -1938,8 +1950,7 @@ DIR *a_open_dir(char **dir)
   char *path;
   int n;
 
-  if ((*dir)[strlen(*dir)-1] == '/')
-    (*dir)[strlen(*dir)-1] = 0;
+  strip_trailing_path(*dir);
 
   d = opendir(*dir);
   if ((d != NULL) || (errno != ENOENT))
@@ -2876,6 +2887,7 @@ void a_movegroupdir(const userinput * const u)
     caps(u->arg1);
 
   thedir = mystrdup(u->arg2);
+  strip_trailing_path(thedir);
   d = a_open_dir(&thedir);
   if (!d) {
     a_respond(u, "Can't Access Directory: %s", strerror(errno));
@@ -2893,10 +2905,7 @@ void a_movegroupdir(const userinput * const u)
       g = "main";
     if (strcasecmp(g, u->arg1) == 0) {
       foundit++;
-      if (u->arg2[strlen(u->arg2)-1] == '/')
-        snprintf(tempstr, maxtextlength - 2, "%s%s", u->arg2, getfilename(xd->file));
-      else
-        snprintf(tempstr, maxtextlength - 2, "%s/%s", u->arg2, getfilename(xd->file));
+      snprintf(tempstr, maxtextlength - 2, "%s/%s", thedir, getfilename(xd->file));
       if (strcmp(tempstr, xd->file) != 0) {
         if (a_movefile_sub(u, xd, tempstr))
           break;
@@ -2981,15 +2990,41 @@ void a_showdir(const userinput * const u)
   if (invalid_dir(u, u->arg1) != 0)
     return;
 
-  if (u->arg1[strlen(u->arg1)-1] == '/') {
-    u->arg1[strlen(u->arg1)-1] = '\0';
-  }
-
+  strip_trailing_path(u->arg1);
   thedir = mystrdup(u->arg1);
   u_listdir(u, thedir);
   mydelete(thedir);
   return;
 }
+
+void a_makedir(const userinput * const u)
+{
+  char *thedir;
+
+  updatecontext();
+
+  if (disabled_config(u) != 0)
+    return;
+
+  if (!gdata.uploaddir) {
+    a_respond(u, "No uploaddir defined.");
+    return;
+  }
+
+  if (invalid_dir(u, u->arg1) != 0)
+    return;
+
+  strip_trailing_path(u->arg1);
+  thedir = mystrjoin(gdata.uploaddir, u->arg1, '/');
+  if (mkdir(thedir, 0755) < 0) {
+    a_respond(u, "Dir %s could not be created: %s", u->arg1, strerror(errno));
+  } else {
+    a_respond(u, "Dir %s was created.", u->arg1);
+  }
+  mydelete(thedir);
+  return;
+}
+
 
 #ifdef USE_CURL
 void a_fetch(const userinput * const u)
