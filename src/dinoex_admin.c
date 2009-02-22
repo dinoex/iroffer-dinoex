@@ -1178,7 +1178,7 @@ void a_add_delayed(const userinput * const u)
   a_respond(u, "  Adding %s:", u->arg1);
 
   u2 = *u;
-  u2.arg1e = u->arg1;
+  u2.arg1 = u->arg1;
   a_add2(&u2, u->arg3);
 }
 
