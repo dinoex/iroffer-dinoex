@@ -559,16 +559,14 @@ static void command_xdcc(privmsginput *pi)
   if (((strcmp(pi->msg2, "SEND") == 0) ||
        (strcmp(pi->msg2, "GET") == 0)) && pi->msg3) {
     ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC SEND %s",
-            pi->msg3);
+            "XDCC SEND %s", pi->msg3);
     sendxdccfile(pi->nick, pi->hostname, pi->hostmask, packnumtonum(pi->msg3), NULL, pi->msg4);
     return;
   }
 
   if ((strcmp(pi->msg2, "INFO") == 0) && pi->msg3) {
     ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC INFO %s",
-            pi->msg3);
+            "XDCC INFO %s", pi->msg3);
     sendxdccinfo(pi->nick, pi->hostmask, packnumtonum(pi->msg3));
     return;
   }
