@@ -2330,3 +2330,7 @@
 2449 "XDCC %s (%s %s on %s)"
 2450 "XDCC %s %s (%s %s on %s)"
 2451 "unsupported"
+2452 "MAKEDIR"
+2453 "Das Verzeichnis auf der Festplatte anlegen"
+2454 "Dir %s konnte nicht angelegt werden: %s"
+2455 "Dir %s wurde angelegt."

@@ -184,6 +184,7 @@ static const userinput_parse_t userinput_parse[] = {
 {4,5,method_allow_all,a_filedel,       "FILEDEL","filename","remove file from disk"},
 {4,5,method_allow_all,a_fileremove,    "FILEREMOVE","n [m]","remove pack <n> or <n> to <m> and remove its file from disk"},
 {4,5,method_allow_all,a_showdir,       "SHOWDIR","dir","list directory on disk"},
+{4,5,method_allow_all,a_makedir,       "MAKEDIR","dir","create a new directory on disk"},
 #ifdef USE_CURL
 {4,3,method_allow_all,a_fetch,         "FETCH","file url","download url and save file in upload dir"},
 {4,3,method_allow_all,a_fetchcancel,   "FETCHCANCEL","id","stop download of fetch with <id>"},
