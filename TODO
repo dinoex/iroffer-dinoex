@@ -62,6 +62,7 @@ Page last modified: 09/01/04
 
 Short Term Features:
   1316  Seperate logging for http
+  1325  hide XDCC STOP
 
 Long Term Features:
   1008  use text or xml for statefile
