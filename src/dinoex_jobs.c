@@ -1455,6 +1455,18 @@ static size_t write_asc_int(int fd, int val)
   return len;
 }
 
+static size_t write_asc_int64(int fd, ir_int64 val)
+{
+  char *tempstr;
+  size_t len;
+
+  tempstr = mycalloc(maxtextlengthshort);
+  len = snprintf(tempstr, maxtextlengthshort, "%" LLPRINTFMT "d", val);
+  len = write(fd, tempstr, len);
+  mydelete(tempstr);
+  return len;
+}
+
 static size_t write_asc_hex(int fd, unsigned long val)
 {
   char *tempstr;
@@ -1532,6 +1544,9 @@ static void xdcc_save_xml(void)
     write_string(fd, tempstr);
     mydelete(tempstr);
     write_string(fd, "]]></packsize>\n");
+    write_string(fd, "  <packbytes>");
+    write_asc_int64(fd, xd->st_size);
+    write_string(fd, "</packbytes>\n");
     write_string(fd, "  <packgets>");
     write_asc_int(fd, xd->gets);
     write_string(fd, "</packgets>\n");
