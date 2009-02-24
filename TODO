@@ -61,6 +61,7 @@ Page last modified: 09/01/04
 [Iroffer mod Dinoex]
 
 Short Term Features:
+  1316  Seperate logging for http
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -100,6 +101,8 @@ Long Term Features:
   1286  show one level dir in description
   1293  count transfers als queued
   1294  build-in weblist defaulting to html
+  1314  create color description with ruby_script
+  1315  Web-Configurator
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
