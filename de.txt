@@ -2334,3 +2334,5 @@
 2453 "Das Verzeichnis auf der Festplatte anlegen"
 2454 "Dir %s konnte nicht angelegt werden: %s"
 2455 "Dir %s wurde angelegt."
+2456 "  <packbytes>"
+2457 "</packbytes>\n"

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.13:
 ------------------
 
+bugfix: xdccxmlfile (reported by freijie)
+  packinfo extended with packbytes
+
 285) MAKEDIR (suggested by Blade121, Ryu)
 
   new admin command:
