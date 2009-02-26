@@ -1082,7 +1082,6 @@ void dumpgdata(void)
   gdata_iter_print_string(a_pattern);
   gdata_irlist_iter_end;
 
-  gdata_print_string(usenatip);
   gdata_print_string(nosendmsg);
 
   gdata_print_number_cast("%ld", nomd5_start, long);
