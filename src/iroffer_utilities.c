@@ -886,7 +886,7 @@ void dumpcontext(void)
 #define gdata_print_string(name) \
     dump_config_string2(#name, gdata. name);
 
-#define gdata_print_int(name)   \
+#define gdata_print_int(name) \
     dump_config_int2(#name, gdata. name);
 
 #define gdata_print_uint(name)  gdata_print_number("%u", name)
