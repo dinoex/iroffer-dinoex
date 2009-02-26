@@ -129,6 +129,29 @@ static config_bool_typ config_parse_bool[] = {
 {"xdcclistfileraw",        &gdata.xdcclistfileraw },
 {NULL, NULL }};
 
+
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 1, 2)))
+#endif
+dump_line(const char *format, ...)
+{
+   va_list args;
+   va_start(args, format);
+   vioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR, format, args);
+   va_end(args);
+}
+
+void dump_config_int2(const char *name, int val)
+{
+  dump_line("GDATA * " "%s: %d", name, val);
+}
+
+void dump_config_string2(const char *name, const char *val)
+{
+  dump_line("GDATA * " "%s: %s", name, val ? val : "<undef>" );
+}
+
 static void config_sorted_bool(void)
 {
   long i;
@@ -217,10 +240,7 @@ static void dump_config_bool(void)
   long i;
 
   for (i = 0L; config_parse_bool[i].name != NULL; i ++) {
-    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
-            "GDATA * " "%s: %d",
-            config_parse_bool[i].name,
-            *(config_parse_bool[i].ivar));
+    dump_config_int2(config_parse_bool[i].name, *(config_parse_bool[i].ivar));
   }
 }
 
@@ -392,10 +412,7 @@ static void dump_config_int(void)
   long i;
 
   for (i = 0L; config_parse_int[i].name != NULL; i ++) {
-    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
-            "GDATA * " "%s: %d",
-            config_parse_int[i].name,
-            *(config_parse_int[i].ivar));
+    dump_config_int2(config_parse_bool[i].name, *(config_parse_bool[i].ivar));
   }
 }
 
@@ -549,10 +566,7 @@ static void dump_config_string(void)
   long i;
 
   for (i = 0L; config_parse_string[i].name != NULL; i ++) {
-    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
-            "GDATA * " "%s: %s",
-            config_parse_string[i].name,
-            *(config_parse_string[i].svar) ? *(config_parse_string[i].svar) : "<undef>" );
+    dump_config_string2(config_parse_string[i].name, *(config_parse_string[i].svar));
   }
 }
 
@@ -740,29 +754,24 @@ static void dump_config_list(void)
   char ip6[maxtextlengthshort];
 
   for (i = 0L; config_parse_list[i].name != NULL; i ++) {
-    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
-            "GDATA * " "%s:",
+    dump_line("GDATA * " "%s:",
             config_parse_list[i].name);
     switch (config_parse_list[i].flags) {
     case 5:
       for (cidr = irlist_get_head(config_parse_list[i].list);
            cidr;
            cidr = irlist_get_next(cidr)) {
-        ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
-                "  " ": %s %d", "family", cidr->family);
-        ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
-                "  " ": %s %d", "netmask", cidr->netmask);
+        dump_line("  " ": %s %d", "family", cidr->family);
+        dump_line("  " ": %s %d", "netmask", cidr->netmask);
         my_getnameinfo(ip6, maxtextlengthshort -1, &(cidr->remote.sa), 0);
-        ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
-                "  " ": %s %s", "remoteip", ip6);
+        dump_line("  " ": %s %s", "remoteip", ip6);
       }
       break;
     default:
       for (string = irlist_get_head(config_parse_list[i].list);
            string;
            string = irlist_get_next(string)) {
-        ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
-                "  " ": %s", string);
+        dump_line("  " ": %s", string);
       }
     }
   }
