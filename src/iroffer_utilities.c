@@ -965,9 +965,7 @@ void dumpgdata(void)
   for (ii=0; ii<MAXCONFIG; ii++)
     {
       gdata_print_string_array(configfile);
-      dump_line(
-          "  : lastmodified=%ld",
-          (long)gdata.configtime[ii]);
+      dump_line("  : lastmodified=%ld", (long)gdata.configtime[ii]);
     }
   gdata_print_string(osstring);
   gdata_print_long(startuptime);
@@ -1019,22 +1017,17 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(https, http);
-  dump_line(
-          "  : clientsocket=%d filedescriptor=%d",
-          iter->con.clientsocket, iter->filedescriptor);
-  dump_line(
-          "  : bytesgot=%" LLPRINTFMT "d bytessent=%" LLPRINTFMT "d",
-          iter->bytesgot, iter->bytessent);
-  dump_line(
-          "  : filepos=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d",
-          iter->filepos, iter->totalsize);
-  dump_line(
-          "  : lastcontact=%ld connecttime=%ld",
-          (long)iter->con.lastcontact,
-          (long)iter->con.connecttime);
-  dump_line(
-          "  : remote%s",
-          iter->con.remoteaddr);
+  dump_line("  : clientsocket=%d filedescriptor=%d",
+            iter->con.clientsocket, iter->filedescriptor);
+  dump_line("  : bytesgot=%" LLPRINTFMT "d bytessent=%" LLPRINTFMT "d",
+            iter->bytesgot, iter->bytessent);
+  dump_line("  : filepos=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d",
+            iter->filepos, iter->totalsize);
+  dump_line("  : lastcontact=%ld connecttime=%ld",
+            (long)iter->con.lastcontact,
+            (long)iter->con.connecttime);
+  dump_line( "  : remote%s",
+            iter->con.remoteaddr);
   gdata_iter_print_uint(status);
   gdata_iter_print_uint(support_groups);
   gdata_iter_print_string(file);
@@ -1047,29 +1040,25 @@ void dumpgdata(void)
   gdata_iter_print_string(pattern);
   gdata_iter_print_string(modified);
   gdata_iter_print_int(traffic);
-  dump_line(
-          "  : left=%ld",
-          (long)iter->left);
+  dump_line("  : left=%ld",
+            (long)iter->left);
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(http_bad_ip4, badip4);
-  dump_line(
-          "  : remoteip=0x%.8lX",
-          iter->remoteip);
-  dump_line(
-          "  : lastcontact=%ld connecttime=%ld",
-          (long)iter->lastcontact,
-          (long)iter->connecttime);
+  dump_line("  : remoteip=0x%.8lX",
+            iter->remoteip);
+  dump_line("  : lastcontact=%ld connecttime=%ld",
+            (long)iter->lastcontact,
+            (long)iter->connecttime);
   gdata_iter_print_long(count);
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(http_bad_ip6, badip6);
   inet_ntop(AF_INET6, &(iter->remoteip), ip6, maxtextlengthshort);
   dump_line("  : remoteip=%s", ip6);
-  dump_line(
-          "  : lastcontact=%ld connecttime=%ld",
-          (long)iter->lastcontact,
-          (long)iter->connecttime);
+  dump_line("  : lastcontact=%ld connecttime=%ld",
+            (long)iter->lastcontact,
+            (long)iter->connecttime);
   gdata_iter_print_long(count);
   gdata_irlist_iter_end;
 
@@ -1291,11 +1280,10 @@ void dumpgdata(void)
           "  : lastcontact=%ld connecttime=%ld",
           (long)iter->con.lastcontact,
           (long)iter->con.connecttime);
-  dump_line(
-          "  : localport=%d local%s remote%s",
-          iter->con.localport,
-          iter->con.localaddr,
-          iter->con.remoteaddr);
+  dump_line("  : localport=%d local%s remote%s",
+            iter->con.localport,
+            iter->con.localaddr,
+            iter->con.remoteaddr);
   gdata_iter_print_string(nick);
   gdata_irlist_iter_end;
   gdata_print_int(num_dccchats);
