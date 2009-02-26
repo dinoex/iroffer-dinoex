@@ -36,7 +36,7 @@ static void strip_trailing_path(char *str)
 
   if (str == NULL)
     return;
- 
+
   len = strlen(str);
   if (len == 0)
     return;
