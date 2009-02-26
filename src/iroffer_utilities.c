@@ -875,56 +875,57 @@ void dumpcontext(void)
 }
 
 
-#define gdata_common CALLTYPE_NORMAL,OUT_L,COLOR_NO_COLOR
 #define gdata_string(x) ((x) ? (x) : "<undef>")
 
 #define gdata_print_number(format,name) \
-    ioutput(gdata_common, "GDATA * " #name ": " format, gdata. name);
+    dump_line("GDATA * " #name ": " format, gdata. name);
 
 #define gdata_print_number_cast(format,name,type) \
-    ioutput(gdata_common, "GDATA * " #name ": " format, (type) gdata. name);
+    dump_line("GDATA * " #name ": " format, (type) gdata. name);
 
 #define gdata_print_string(name) \
-    ioutput(gdata_common, "GDATA * " #name ": %s", gdata_string(gdata. name));
+    dump_config_string2(#name, gdata. name);
 
-#define gdata_print_int(name)   gdata_print_number("%d", name)
+#define gdata_print_int(name)   \
+    dump_config_int2(#name, gdata. name);
+
 #define gdata_print_uint(name)  gdata_print_number("%u", name)
 #define gdata_print_long(name)  gdata_print_number("%ld", name)
 #define gdata_print_float(name) gdata_print_number("%.5f", name)
 
 
 #define gdata_print_number_array(format,name) \
-    { if (gdata. name [ii]) { ioutput(gdata_common, "GDATA * " #name "[%d]: " format, ii, gdata. name [ii]); } }
+    { if (gdata. name [ii]) { dump_line("GDATA * " #name "[%d]: " format, ii, gdata. name [ii]); } }
 
 #define gdata_print_string_array(name) \
-    { if (gdata. name [ii]) { ioutput(gdata_common, "GDATA * " #name "[%d]: %s", ii, gdata_string(gdata. name [ii])); } }
+    { if (gdata. name [ii]) { dump_line("GDATA * " #name "[%d]: %s", ii, gdata_string(gdata. name [ii])); } }
 
 #define gdata_print_number_array_item(format,name,item) \
-    { if (gdata. name [ii] . item) { ioutput(gdata_common, "GDATA * " #name "[%d]: " #item "=" format, ii, gdata. name [ii] . item); } }
+    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=" format, ii, gdata. name [ii] . item); } }
 
 #define gdata_print_number_array_item_cast(format,name,item,type) \
-    { if (gdata. name [ii] . item) { ioutput(gdata_common, "GDATA * " #name "[%d]: " #item "=" format, ii, (type) gdata. name [ii] . item); } }
+    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=" format, ii, (type) gdata. name [ii] . item); } }
 
 #define gdata_print_string_array_item(name,item) \
-    { if (gdata. name [ii] . item) { ioutput(gdata_common, "GDATA * " #name "[%d]: " #item "=%s", ii, gdata_string(gdata. name [ii] . item)); } }
+    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=%s", ii, gdata_string(gdata. name [ii] . item)); } }
 
 #define gdata_print_int_array(name)   gdata_print_number_array("%d", name)
 #define gdata_print_ulong_array(name) gdata_print_number_array("%lu", name)
 
 
 #define gdata_irlist_iter_start(name, type) \
-    { type *iter; ioutput(gdata_common, "GDATA * " #name ":"); for(iter=irlist_get_head(&gdata. name); iter; iter=irlist_get_next(iter)) { 
+    { type *iter; dump_line("GDATA * " #name ":"); for(iter=irlist_get_head(&gdata. name); iter; iter=irlist_get_next(iter)) { 
 
 #define gdata_irlist_iter_end } }
 
 #define gdata_iter_as_print_number(format) \
-    ioutput(gdata_common, "  : " format, iter);
+    dump_line("  : " format, iter);
 
 #define gdata_iter_as_print_number_cast(format,type) \
-    ioutput(gdata_common, "  : " format, (type) iter);
+    dump_line("  : " format, (type) iter);
 
 #define gdata_iter_as_print_string \
-    ioutput(gdata_common, "  : %s", gdata_string(iter));
+    dump_line("  : %s", gdata_string(iter));
 
 
 #define gdata_iter_as_print_int(name)   gdata_iter_as_print_number("%d", name)
@@ -935,13 +936,13 @@ void dumpcontext(void)
 
 
 #define gdata_iter_print_number(format,name) \
-    ioutput(gdata_common, "  " #name ": " format, iter-> name);
+    dump_line("  " #name ": " format, iter-> name);
 
 #define gdata_iter_print_number_cast(format,name,type) \
-    ioutput(gdata_common, "  " #name ": " format, (type) iter-> name);
+    dump_line("  " #name ": " format, (type) iter-> name);
 
 #define gdata_iter_print_string(name) \
-    ioutput(gdata_common, "  " #name ": %s", gdata_string(iter-> name));
+    dump_line("  " #name ": %s", gdata_string(iter-> name));
 
 #define gdata_iter_print_int(name)   gdata_iter_print_number("%d", name)
 #define gdata_iter_print_uint(name)  gdata_iter_print_number("%u", name)
@@ -955,7 +956,7 @@ void dumpgdata(void)
   int ss;
   char ip6[maxtextlengthshort];
   
-  ioutput(gdata_common,"GDATA DUMP BEGIN");
+  dump_line("GDATA DUMP BEGIN");
   
   config_dump();
   
@@ -964,7 +965,7 @@ void dumpgdata(void)
   for (ii=0; ii<MAXCONFIG; ii++)
     {
       gdata_print_string_array(configfile);
-      ioutput(gdata_common,
+      dump_line(
           "  : lastmodified=%ld",
           (long)gdata.configtime[ii]);
     }
@@ -997,7 +998,7 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(autotrigger, autotrigger_t);
-  ioutput(gdata_common, "GDATA * " "pack" ": " "%d", number_of_pack(iter->pack));
+  dump_line("GDATA * " "pack" ": " "%d", number_of_pack(iter->pack));
   gdata_iter_print_string(word);
   gdata_irlist_iter_end;
 
@@ -1018,20 +1019,20 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(https, http);
-  ioutput(gdata_common,
+  dump_line(
           "  : clientsocket=%d filedescriptor=%d",
           iter->con.clientsocket, iter->filedescriptor);
-  ioutput(gdata_common,
+  dump_line(
           "  : bytesgot=%" LLPRINTFMT "d bytessent=%" LLPRINTFMT "d",
           iter->bytesgot, iter->bytessent);
-  ioutput(gdata_common,
+  dump_line(
           "  : filepos=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d",
           iter->filepos, iter->totalsize);
-  ioutput(gdata_common,
+  dump_line(
           "  : lastcontact=%ld connecttime=%ld",
           (long)iter->con.lastcontact,
           (long)iter->con.connecttime);
-  ioutput(gdata_common,
+  dump_line(
           "  : remote%s",
           iter->con.remoteaddr);
   gdata_iter_print_uint(status);
@@ -1046,16 +1047,16 @@ void dumpgdata(void)
   gdata_iter_print_string(pattern);
   gdata_iter_print_string(modified);
   gdata_iter_print_int(traffic);
-  ioutput(gdata_common,
+  dump_line(
           "  : left=%ld",
           (long)iter->left);
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(http_bad_ip4, badip4);
-  ioutput(gdata_common,
+  dump_line(
           "  : remoteip=0x%.8lX",
           iter->remoteip);
-  ioutput(gdata_common,
+  dump_line(
           "  : lastcontact=%ld connecttime=%ld",
           (long)iter->lastcontact,
           (long)iter->connecttime);
@@ -1064,8 +1065,8 @@ void dumpgdata(void)
 
   gdata_irlist_iter_start(http_bad_ip6, badip6);
   inet_ntop(AF_INET6, &(iter->remoteip), ip6, maxtextlengthshort);
-  ioutput(gdata_common, "  : remoteip=%s", ip6);
-  ioutput(gdata_common,
+  dump_line("  : remoteip=%s", ip6);
+  dump_line(
           "  : lastcontact=%ld connecttime=%ld",
           (long)iter->lastcontact,
           (long)iter->connecttime);
@@ -1117,7 +1118,7 @@ void dumpgdata(void)
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)
     {
-      ioutput(gdata_common, "GDATA * connectionmethod: how=%d host=%s port=%d passwd=%s vhost=%s",
+      dump_line("GDATA * connectionmethod: how=%d host=%s port=%d passwd=%s vhost=%s",
               (int)gdata.networks[ss].connectionmethod.how,
               gdata_string(gdata.networks[ss].connectionmethod.host),
               (int)gdata.networks[ss].connectionmethod.port,
@@ -1239,10 +1240,10 @@ void dumpgdata(void)
     {
       
       gdata_irlist_iter_start(networks[ss].channels, channel_t);
-  ioutput(gdata_common,"  : name=%s key=%s",
+      dump_line("  : name=%s key=%s",
           iter->name,
           gdata_string(iter->key));
-      ioutput(gdata_common, "  : flags=%d plisttime=%d plistoffset=%d",
+      dump_line("  : flags=%d plisttime=%d plistoffset=%d",
           iter->flags,
           iter->plisttime,
           iter->plistoffset);
@@ -1273,7 +1274,8 @@ void dumpgdata(void)
     }
   
   gdata_irlist_iter_start(msglog, msglog_t);
-  ioutput(gdata_common,"  : when=%ld hostmask=%s message=%s",
+  dump_line(
+          "  : when=%ld hostmask=%s message=%s",
           (long)iter->when,
           gdata_string(iter->hostmask),
           gdata_string(iter->message));
@@ -1281,15 +1283,15 @@ void dumpgdata(void)
   
 
   gdata_irlist_iter_start(dccchats, dccchat_t);
-  ioutput(gdata_common,
+  dump_line(
           "  : status=%d fd=%d",
           iter->status,
           iter->con.clientsocket);
-  ioutput(gdata_common,
+  dump_line(
           "  : lastcontact=%ld connecttime=%ld",
           (long)iter->con.lastcontact,
           (long)iter->con.connecttime);
-  ioutput(gdata_common,
+  dump_line(
           "  : localport=%d local%s remote%s",
           iter->con.localport,
           iter->con.localaddr,
@@ -1343,12 +1345,11 @@ void dumpgdata(void)
   /* sendbuff context_log context_cur_ptr */
 
   gdata_irlist_iter_start(ignorelist, igninfo);
-  ioutput(gdata_common,
-		  "  : hostmask=%s flags=%d bucket=%ld lastcontact=%ld",
-		  iter->hostmask,
-		  iter->flags,
-		  iter->bucket,
-		  (long)iter->lastcontact);
+  dump_line("  : hostmask=%s flags=%d bucket=%ld lastcontact=%ld",
+            iter->hostmask,
+            iter->flags,
+            iter->bucket,
+            (long)iter->lastcontact);
   gdata_irlist_iter_end;
   
   gdata_irlist_iter_start(xdccs, xdcc);
@@ -1357,39 +1358,38 @@ void dumpgdata(void)
   gdata_iter_print_string(note);
   gdata_iter_print_string(trigger);
   gdata_iter_print_number_cast("%d", xtime, int);
-  ioutput(gdata_common,
-          "  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "d",
+  dump_line("  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "d",
           iter,
           iter->gets,
           iter->minspeed,
           iter->maxspeed,
           iter->st_size);
   /* st_dev st_ino */
-  ioutput(gdata_common,
+  dump_line(
           "  : fd=%d fd_count=%d fd_loc=%" LLPRINTFMT "d",
           iter->file_fd,
           iter->file_fd_count,
           iter->file_fd_location);
-  ioutput(gdata_common,
+  dump_line(
           "  : has_md5=%d md5sum=" MD5_PRINT_FMT,
           iter->has_md5sum, MD5_PRINT_DATA(iter->md5sum));
-  ioutput(gdata_common, "  : crc32=%.8lX", iter->crc32);
+  dump_line("  : crc32=%.8lX", iter->crc32);
   gdata_iter_print_string(group);
   gdata_iter_print_string(group_desc);
   gdata_iter_print_string(lock);
-  ioutput(gdata_common,
+  dump_line(
           "  : dlimit max=%d used=%d",
           iter->dlimit_max, iter->dlimit_used);
   gdata_iter_print_string(dlimit_desc);
 #ifdef HAVE_MMAP
   {
     mmap_info_t *iter2;
-    ioutput(gdata_common, "  : mmaps:");
+    dump_line("  : mmaps:");
     for(iter2 = irlist_get_head(&iter->mmaps);
         iter2;
         iter2 = irlist_get_next(iter2))
       {
-        ioutput(gdata_common,
+        dump_line(
                 "  : ptr=%p ref_count=%d mmap_ptr=%p mmap_offset=0x%.8" LLPRINTFMT "X mmap_size=0x%.8" LLPRINTFMT "X",
                 iter2,
                 iter2->ref_count,
@@ -1404,33 +1404,33 @@ void dumpgdata(void)
   gdata_irlist_iter_start(mainqueue, ir_pqueue);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
-  ioutput(gdata_common,
+  dump_line(
           "  : xpack=%p queuedtime=%ld",
           iter->xpack,
           (long)iter->queuedtime);
-  ioutput(gdata_common, "  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
-  ioutput(gdata_common, "  : net=%d", iter->net + 1 );
+  dump_line("  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
+  dump_line("  : net=%d", iter->net + 1 );
   gdata_irlist_iter_end;
   
   gdata_irlist_iter_start(idlequeue, ir_pqueue);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
-  ioutput(gdata_common,
+  dump_line(
           "  : xpack=%p queuedtime=%ld",
           iter->xpack,
           (long)iter->queuedtime);
-  ioutput(gdata_common, "  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
-  ioutput(gdata_common, "  : net=%d", iter->net + 1 );
+  dump_line("  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
+  dump_line("  : net=%d", iter->net + 1 );
   gdata_irlist_iter_end;
   
   gdata_irlist_iter_start(trans, transfer);
-  ioutput(gdata_common,
+  dump_line(
           "  : listen=%d client=%d id=%d",
           iter->con.listensocket,
           iter->con.clientsocket,
           iter->id);
-  ioutput(gdata_common, "  : net=%d", iter->net + 1 );
-  ioutput(gdata_common,
+  dump_line("  : net=%d", iter->net + 1 );
+  dump_line(
           "  : sent=%" LLPRINTFMT "d got=%" LLPRINTFMT "d lastack=%" LLPRINTFMT "d curack=%" LLPRINTFMT "d resume=%" LLPRINTFMT "d speedamt=%" LLPRINTFMT "d tx_bucket=%li",
           iter->bytessent,
           iter->bytesgot,
@@ -1439,26 +1439,26 @@ void dumpgdata(void)
           iter->startresume,
           iter->lastspeedamt,
           iter->tx_bucket);
-  ioutput(gdata_common,
+  dump_line(
           "  : lastcontact=%ld connecttime=%ld lastspeed=%.1f pack=%p",
           (long)iter->con.lastcontact,
           (long)iter->con.connecttime,
           iter->lastspeed,
           iter->xpack);
-  ioutput(gdata_common,
+  dump_line(
           "  : listenport=%d local%s remote%s",
           iter->con.localport,
           iter->con.localaddr,
           iter->con.remoteaddr);
-  ioutput(gdata_common, "  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
+  dump_line("  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
 #ifdef HAVE_MMAP
-  ioutput(gdata_common, "  : mmap_info=%p", iter->mmap_info);
+  dump_line("  : mmap_info=%p", iter->mmap_info);
 #endif
   /* severaddress */
   gdata_iter_print_string(nick);
   gdata_iter_print_string(caps_nick);
   gdata_iter_print_string(hostname);
-  ioutput(gdata_common,
+  dump_line(
           "  : nomin=%d nomax=%d reminded=%d overlimit=%d unlimited=%d tr_status=%d",
           iter->nomin,
           iter->nomax,
@@ -1469,29 +1469,29 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
   
   gdata_irlist_iter_start(uploads, upload);
-  ioutput(gdata_common,
+  dump_line(
           "  : client=%d file=%d ul_status=%d",
           iter->con.clientsocket,
           iter->filedescriptor,
           iter->ul_status);
-  ioutput(gdata_common,
+  dump_line(
           "  : got=%" LLPRINTFMT "d totalsize=%" LLPRINTFMT "d resume=%" LLPRINTFMT "d speedamt=%" LLPRINTFMT "d",
           iter->bytesgot,
           iter->totalsize,
           iter->resumesize,
           iter->lastspeedamt);
-  ioutput(gdata_common,
+  dump_line(
           "  : lastcontact=%ld connecttime=%ld lastspeed=%.1f",
           (long)iter->con.lastcontact,
           (long)iter->con.connecttime,
           iter->lastspeed);
-  ioutput(gdata_common,
+  dump_line(
           "  : localport=%d remoteport=%d remote=%s",
           iter->con.localport,
           iter->con.remoteport,
           iter->con.remoteaddr);
-  ioutput(gdata_common, "  : net=%d", iter->net + 1 );
-  ioutput(gdata_common, "  : token=%d", iter->token);
+  dump_line("  : net=%d", iter->net + 1 );
+  dump_line("  : token=%d", iter->token);
   gdata_iter_print_string(nick);
   gdata_iter_print_string(hostname);
   gdata_iter_print_string(file);
@@ -1515,7 +1515,7 @@ void dumpgdata(void)
   gdata_print_string(runasuser);
 #endif
 
-  ioutput(gdata_common,"GDATA DUMP END");
+  dump_line("GDATA DUMP END");
   
 }
 
