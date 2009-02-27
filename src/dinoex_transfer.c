@@ -268,7 +268,6 @@ int t_find_resume(const char *nick, const char *filename, const char *localport,
   t_setresume(tr, bytes);
   sendnamestr = getsendname(filename);
   if ((tr->tr_status == TRANSFER_STATUS_RESUME) && (token != NULL)) {
-    if (token[strlen(token)-1] == '\1') token[strlen(token)-1] = '\0';
     privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", sendnamestr, localport, bytes, token);
   } else {
     privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", sendnamestr, localport, bytes);

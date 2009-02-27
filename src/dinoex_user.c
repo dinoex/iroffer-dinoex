@@ -182,6 +182,7 @@ static void command_dcc(privmsginput *pi)
       return;
 
     strip_trailing_action(pi->msg5);
+    strip_trailing_action(pi->msg6);
     t_find_resume(pi->nick, pi->msg3, pi->msg4, pi->msg5, pi->msg6);
     return;
   }
