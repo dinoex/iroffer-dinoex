@@ -59,7 +59,7 @@ static void strip_trailing_action(char *str)
   if (len == 0)
     return;
 
-  if (str[len] != '\1')
+  if (str[--len] != '\1')
     return;
 
   str[len] = '\0';
@@ -559,6 +559,8 @@ static void command_xdcc(privmsginput *pi)
 
   if (((strcmp(pi->msg2, "SEND") == 0) ||
        (strcmp(pi->msg2, "GET") == 0)) && pi->msg3) {
+    strip_trailing_action(pi->msg3);
+    strip_trailing_action(pi->msg4);
     ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "XDCC SEND %s", pi->msg3);
     sendxdccfile(pi->nick, pi->hostname, pi->hostmask, packnumtonum(pi->msg3), NULL, pi->msg4);
