@@ -66,6 +66,7 @@ void rename_with_backup(const char *file, const char *backup, const char *tmp, c
 void write_files(void);
 void start_qupload(void);
 int close_qupload(int net, const char *nick);
+void lag_message(void);
 
 void a_rehash_prepare(void);
 void a_rehash_needtojump(const userinput *u);

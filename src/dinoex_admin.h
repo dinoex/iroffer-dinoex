@@ -106,6 +106,7 @@ void a_get(const userinput * const u);
 void a_rmq(const userinput * const u);
 void a_rmiq(const userinput * const u);
 void a_rawnet(const userinput * const u);
+void a_lag(const userinput * const u);
 void a_bannnick(const userinput * const u);
 void a_bann_hostmask(const userinput * const u, const char *arg);
 void a_hop(const userinput * const u);

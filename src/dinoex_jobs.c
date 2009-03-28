@@ -1772,6 +1772,19 @@ int close_qupload(int net, const char *nick)
   return 0;
 }
 
+void lag_message(void)
+{
+  userinput *u;
+
+  gnetwork->lag = gdata.curtimems - gnetwork->lastping;
+  gnetwork->lastping = 0;
+    u = mycalloc(sizeof(userinput));
+    u->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
+    u->net = gnetwork->net;
+    a_respond(u, "LAG on %s is %ld ms", gnetwork->name, gnetwork->lag);
+    mydelete(u);
+}
+
 static char *r_local_vhost;
 static char *r_config_nick;
 

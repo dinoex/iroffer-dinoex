@@ -3395,6 +3395,30 @@ void a_rawnet(const userinput * const u)
   gnetwork = backup;
 }
 
+void a_lag(const userinput * const u)
+{
+  gnetwork_t *backup;
+  int net;
+  int ss;
+
+  net = get_network_msg(u, u->arg1);
+  if (net >= 0) {
+    gnetwork->lastping = gdata.curtimems;
+    gnetwork->lag_method = u->method;
+    pingserver();
+    return;
+  }
+
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+    gnetwork->lastping = gdata.curtimems;
+    gnetwork->lag_method = u->method;
+    pingserver();
+  }
+  gnetwork = backup;
+}
+
 static void a_hop_net(const userinput * const u, const char *name)
 {
   channel_t *ch;

@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.14:
 ------------------
 
+286) LAG (inspired by Ryu)
+  new admin command:
+  LAG                                Show lag on all networks.
+  LAG <net>                          Show lag on one network.
+
 bugfix: DCLD (reported by HymnToLife)
   versions affected: 3.13
   reporting nicknames now in original case.
