@@ -1087,6 +1087,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
     return; /* ignore */
   }
 
+  caps(pi.hostmask);
   /*----- XDCC ----- */
   if ((strcmp(pi->msg1, "XDCC") == 0) ||
       (strcmp(pi->msg1, "\1XDCC") == 0) ||
@@ -1298,7 +1299,6 @@ void privmsgparse(int type, int decoded, char* line)
   pi.msg5 = part[7];
   pi.msg6 = part[8];
 
-  caps(pi.hostmask);
   caps(pi.dest);
   if (pi.msg1) {
     caps(++pi.msg1); /* point past the ":" */
