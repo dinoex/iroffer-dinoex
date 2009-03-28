@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.14:
 ----------------
 
+286) LAG
+
+  Neue Admin Kommandos:
+  LAG                                Zeige den Zeitversatz aller Netzwerke
+  LAG <net>                          Zeige den Zeitversatz eines Netzwerks
+
 bugfix: DCLD
   versions affected: 3.13
   Zeige die Nicks in urpsrünglicher Schreibweise.

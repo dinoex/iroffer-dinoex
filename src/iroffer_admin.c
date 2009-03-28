@@ -208,6 +208,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,3,method_allow_all,u_rmul,          "RMUL","filename","Delete a file in the upload dir"},
 {5,5,method_allow_all,u_raw,           "RAW","command","Send <command> to server (RAW IRC)"},
 {5,5,method_allow_all,a_rawnet,        "RAWNET","net command","Send <command> to server (RAW IRC)"},
+{5,5,method_allow_all,a_lag,           "LAG","[net]","Show lag on networks"},
 
 {6,2,method_allow_all,u_servers,       "SERVERS","[net]","Shows the server list"},
 {6,2,method_allow_all,a_hop,           "HOP","[channel] [net]","leave and rejoin a channel to get status"},

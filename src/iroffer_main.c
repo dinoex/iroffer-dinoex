@@ -1929,6 +1929,12 @@ static void parseline(char *line) {
       writeserver(WRITESERVER_NOW, "PO%s", line+2);
       }
 
+   if (gnetwork->lastping != 0) {
+     if (strcmp(part2, "PONG") == 0) {
+       lag_message();
+     }
+   }
+
  /* JOIN */
    if (!strcmp(part2, "JOIN") && part3a && gnetwork->caps_nick) {
       char* nick;

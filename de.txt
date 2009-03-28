@@ -2336,3 +2336,7 @@
 2455 "Dir %s wurde angelegt."
 2456 "  <packbytes>"
 2457 "</packbytes>\n"
+2458 "LAG"
+2459 "Zeige den Zeitversatz der Netzwerke"
+2460 "PONG"
+2461 "LAG on %s ist %ld ms"
