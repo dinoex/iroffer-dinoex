@@ -104,6 +104,7 @@ Long Term Features:
   1294  build-in weblist defaulting to html
   1314  create color description with ruby_script
   1315  Web-Configurator
+  1334  !lag, !packs
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

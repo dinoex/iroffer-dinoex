@@ -1087,7 +1087,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
     return; /* ignore */
   }
 
-  caps(pi.hostmask);
+  caps(pi->hostmask);
   /*----- XDCC ----- */
   if ((strcmp(pi->msg1, "XDCC") == 0) ||
       (strcmp(pi->msg1, "\1XDCC") == 0) ||
