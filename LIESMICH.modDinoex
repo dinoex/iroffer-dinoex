@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.14:
 ----------------
 
+bugfix: DCLD
+  versions affected: 3.13
+  Zeige die Nicks in urpsrünglicher Schreibweise.
+
 Ab Version 3.13:
 ----------------
 

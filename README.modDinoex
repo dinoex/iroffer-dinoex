@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.14:
 ------------------
 
+bugfix: DCLD (reported by HymnToLife)
+  versions affected: 3.13
+  reporting nicknames now in original case.
+
 With Version 3.13:
 ------------------
 
