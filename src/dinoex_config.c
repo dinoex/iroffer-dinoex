@@ -938,7 +938,7 @@ static void c_autoadd_group_match(char *var)
   *(split++) = 0;
   ag = irlist_add(&(gdata.autoadd_group_match), sizeof(autoadd_group_t));
   ag->a_group = mystrdup(var);
-  ag->a_pattern = split;
+  ag->a_pattern = mystrdup(split);
 }
 
 static void c_autosendpack(char *var)

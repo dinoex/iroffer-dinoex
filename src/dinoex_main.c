@@ -282,6 +282,7 @@ static void free_state(void)
        ag;
        ag = irlist_delete(&gdata.autoadd_group_match, ag)) {
      mydelete(ag->a_group);
+     mydelete(ag->a_pattern);
   }
   irlist_delete_all(&gdata.autotrigger);
   irlist_delete_all(&gdata.console_history);
