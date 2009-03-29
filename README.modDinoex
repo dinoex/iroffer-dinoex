@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.14:
 ------------------
 
+bugfix: autoadd_group_match (reported by dns777)
+  versions affected: 3.13
+  The patterns was not stored, so the config was not active.
+
 286) LAG (inspired by Ryu)
   new admin command:
   LAG                                Show lag on all networks.

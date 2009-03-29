@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.14:
 ----------------
 
+bugfix: autoadd_group_match
+  versions affected: 3.13
+  Das Suchmuster wurder nicht gespeichert.
+
 286) LAG
 
   Neue Admin Kommandos:
