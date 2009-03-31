@@ -63,6 +63,9 @@ do
   case "${1}" in
   -h*) usage ;;
   CC=*) cctype="${1#CC=}" ;;
+  CFLAGS=*) CFLAGS="${1#CFLAGS=}" ;;
+  LDFLAGS=*) LDFLAGS="${1#LDFLAGS=}" ;;
+  LIBS=*) LIBS="${1#LIBS=}" ;;
   WARN=*) OPT_WARN2="${1#WARN=}" ;;
   -e*) OPT_ERRORS=true ;;
   -d*) OPT_DEBUG=true ;;
@@ -352,7 +355,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -o config.temp config.temp.c $LDFLAGS $LIBS; then
+if $cctype -o config.temp config.temp.c $CFLAGS $LDFLAGS $LIBS; then
  echo "yes"
 else
  echo " ***ERROR***: $cctype didn't seem to work."
@@ -368,7 +371,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -Wall -o config.temp config.temp.c $LDFLAGS $LIBS; then
+if $cctype -Wall -o config.temp config.temp.c $CFLAGS $LDFLAGS $LIBS; then
  echo "yes"
  WARNS="-Wall $WARNS"
 else
@@ -384,7 +387,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -Werror -o config.temp config.temp.c $LDFLAGS $LIBS; then
+if $cctype -Werror -o config.temp config.temp.c $CFLAGS $LDFLAGS $LIBS; then
  echo "yes"
  WERROR="-Werror"
 else
@@ -406,11 +409,11 @@ main (int argc, char **argv) {
  exit(0);
  }
 " > config.temp.c
-if $cctype -DC_IR_INT16="short" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "2" ]; then
+if $cctype -DC_IR_INT16="short" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "2" ]; then
  echo "short"
  echo "typedef short ir_int16;" >> src/iroffer_config.h
  echo "typedef unsigned short ir_uint16;" >> src/iroffer_config.h
-elif $cctype -DC_IR_INT16="int" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "2" ]; then
+elif $cctype -DC_IR_INT16="int" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "2" ]; then
  echo "int"
  echo "typedef int ir_int16;" >> src/iroffer_config.h
  echo "typedef unsigned int ir_uint16;" >> src/iroffer_config.h
@@ -434,19 +437,19 @@ main (int argc, char **argv) {
  exit(0);
  }
 " > config.temp.c
-if $cctype -DC_IR_INT32="int" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "4" ]; then
+if $cctype -DC_IR_INT32="int" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "4" ]; then
  echo "int"
  echo "typedef int ir_int32;" >> src/iroffer_config.h
  echo "typedef unsigned int ir_uint32;" >> src/iroffer_config.h
-elif $cctype -DC_IR_INT32="long" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "4" ]; then
+elif $cctype -DC_IR_INT32="long" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "4" ]; then
  echo "long"
  echo "typedef long ir_int32;" >> src/iroffer_config.h
  echo "typedef unsigned long ir_uint32;" >> src/iroffer_config.h
-elif $cctype -DC_IR_INT32="long long" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "4" ]; then
+elif $cctype -DC_IR_INT32="long long" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "4" ]; then
  echo "long long"
  echo "typedef long long ir_int32;" >> src/iroffer_config.h
  echo "typedef unsigned long long ir_uint32;" >> src/iroffer_config.h
-elif $cctype -DC_IR_INT32="short" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "4" ]; then
+elif $cctype -DC_IR_INT32="short" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "4" ]; then
  echo "short"
  echo "typedef short ir_int32;" >> src/iroffer_config.h
  echo "typedef unsigned short ir_uint32;" >> src/iroffer_config.h
@@ -469,19 +472,19 @@ main (int argc, char **argv) {
  exit(0);
  }
 " > config.temp.c
-if $cctype -DC_IR_INT64="long" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
+if $cctype -DC_IR_INT64="long" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
  echo "long"
  echo "typedef long ir_int64;" >> src/iroffer_config.h
  echo "typedef unsigned long ir_uint64;" >> src/iroffer_config.h
-elif $cctype -DC_IR_INT64="long long" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
+elif $cctype -DC_IR_INT64="long long" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
  echo "long long"
  echo "typedef long long ir_int64;" >> src/iroffer_config.h
  echo "typedef unsigned long long ir_uint64;" >> src/iroffer_config.h
-elif $cctype -DC_IR_INT64="int" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
+elif $cctype -DC_IR_INT64="int" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
  echo "int"
  echo "typedef int ir_int64;" >> src/iroffer_config.h
  echo "typedef unsigned int ir_uint64;" >> src/iroffer_config.h
-elif $cctype -DC_IR_INT64="short" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
+elif $cctype -DC_IR_INT64="short" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "8" ]; then
  echo "short"
  echo "typedef short ir_int64;" >> src/iroffer_config.h
  echo "typedef unsigned short ir_uint64;" >> src/iroffer_config.h
@@ -508,7 +511,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -DSIGNEDSOCK=signed config.temp.c $libs -o config.temp $LDFLAGS $LIBS; then
+if $cctype -DSIGNEDSOCK=signed config.temp.c $libs -o config.temp $CFLAGS $LDFLAGS $LIBS; then
  echo "looks good"
 else
  echo " ***ERROR***: couldn't build with standard #include's"
@@ -525,7 +528,7 @@ echo "
 #include \"src/iroffer_globals.h\"
 FD_SETSIZE
 " > config.temp.c
-if $cctype -E -o config.temp.p config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -E -o config.temp.p config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  setsize=`tail -2 config.temp.p |grep -v "config.temp"`
  setsize="${setsize%U}"
  echo -n " $setsize"
@@ -557,7 +560,7 @@ main (int argc, char **argv) {
  exit(0);
  }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "big" ]; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "big" ]; then
  echo "big"
  echo "#define IR_ENDIAN_BIG" >> src/iroffer_config.h
 elif [ "`./config.temp`" = "little" ]; then
@@ -588,7 +591,7 @@ main (int argc, char **argv) {
  exit(0);
  }
 " > config.temp.c
-if $cctype -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "yes"
  echo "#define _FILE_OFFSET_BITS 64" >> src/iroffer_config.h
  echo "#define _LARGEFILE_SOURCE" >> src/iroffer_config.h
@@ -613,10 +616,10 @@ main (int argc, char **argv) {
  exit(0);
  }
 " > config.temp.c
-if $cctype -DSIGNEDSOCK=signed config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -DSIGNEDSOCK=signed config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "signed"
  echo "#define SIGNEDSOCK signed" >> src/iroffer_config.h
-elif $cctype -DSIGNEDSOCK=unsigned config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+elif $cctype -DSIGNEDSOCK=unsigned config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "unsigned"
  echo "#define SIGNEDSOCK unsigned" >> src/iroffer_config.h
 else
@@ -645,13 +648,13 @@ main (int argc, char **argv)
     exit(0);
   }
 " > config.temp.c
-if $cctype -DLLPRINTFMT=\"L\" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
+if $cctype -DLLPRINTFMT=\"L\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "L"
  echo "#define LLPRINTFMT \"L\"" >> src/iroffer_config.h
-elif $cctype -DLLPRINTFMT=\"ll\" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
+elif $cctype -DLLPRINTFMT=\"ll\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "ll"
  echo "#define LLPRINTFMT \"ll\"" >> src/iroffer_config.h
-elif $cctype -DLLPRINTFMT=\"l\" config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
+elif $cctype -DLLPRINTFMT=\"l\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "l"
  echo "#define LLPRINTFMT \"l\"" >> src/iroffer_config.h
 else
@@ -674,7 +677,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {char *s; snprintf(s,10,\"blah\"); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "found"
 else
  echo "#define NO_SNPRINTF" >> src/iroffer_config.h
@@ -694,7 +697,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {(void)strcasecmp(\"blah\",\"blah\"); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "found"
 else
  echo "#define NO_STRCASECMP" >> src/iroffer_config.h
@@ -714,7 +717,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {(void)strcasestr(\"blah\",\"blah\"); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "found"
 else
  echo "#define NO_STRCASESTR" >> src/iroffer_config.h
@@ -735,7 +738,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {strsignal(1); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "found"
 else
  echo "#define NO_STRSIGNAL" >> src/iroffer_config.h
@@ -755,7 +758,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -c -DHAS_SYS_MMAN_H -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -c -DHAS_SYS_MMAN_H -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "#define HAS_SYS_MMAN_H" >> src/iroffer_config.h
  echo "found"
 else
@@ -775,7 +778,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -c -DHAS_SYS_SENDFILE_H -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -c -DHAS_SYS_SENDFILE_H -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "#define HAS_SYS_SENDFILE_H" >> src/iroffer_config.h
  echo "found"
 else
@@ -795,7 +798,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -c -DHAS_SYS_VFS_H -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -c -DHAS_SYS_VFS_H -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "#define HAS_SYS_VFS_H" >> src/iroffer_config.h
  echo "found"
 else
@@ -815,7 +818,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -c -DHAS_SYS_STATFS_H -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -c -DHAS_SYS_STATFS_H -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "#define HAS_SYS_STATFS_H" >> src/iroffer_config.h
  echo "found"
 else
@@ -835,7 +838,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -c -DHAS_SYS_PARAM_H -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -c -DHAS_SYS_PARAM_H -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "#define HAS_SYS_PARAM_H" >> src/iroffer_config.h
  echo "found"
 else
@@ -855,7 +858,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -c -DHAS_SYS_MOUNT_H -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -c -DHAS_SYS_MOUNT_H -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "#define HAS_SYS_MOUNT_H" >> src/iroffer_config.h
  echo "found"
 else
@@ -875,7 +878,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype -c -DHAS_SYS_STATVFS_H -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -c -DHAS_SYS_STATVFS_H -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "#define HAS_SYS_STATVFS_H" >> src/iroffer_config.h
  echo "found"
 else
@@ -895,7 +898,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {struct statvfs stf; statvfs(\"\",&stf); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "found"
 else
  echo "#define NO_STATVFS" >> src/iroffer_config.h
@@ -915,7 +918,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {struct statfs stf; statfs(\"\",&stf); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "found"
 else
  echo "#define NO_STATFS" >> src/iroffer_config.h
@@ -935,9 +938,9 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {crypt(\"aaaaaaaa\",\"aa\"); exit(0);}
 " > config.temp.c
-if $cctype -c -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -c -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "not needed"
-elif $cctype -c -DHAS_CRYPT_H -o config.temp.o config.temp.c $WARNS $WERROR $LDFLAGS $LIBS; then
+elif $cctype -c -DHAS_CRYPT_H -o config.temp.o config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "#define HAS_CRYPT_H" >> src/iroffer_config.h
  echo "needed"
 else
@@ -947,15 +950,15 @@ else
 fi
 
 echo -n "Seeing if '-lcrypt' is needed... "
-if $cctype -o config.temp config.temp.o $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype -o config.temp config.temp.o $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "not needed"
-elif $cctype -o config.temp config.temp.o $libs -lcrypt $WARNS $WERROR $LDFLAGS $LIBS; then
+elif $cctype -o config.temp config.temp.o $libs -lcrypt $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  libs="$libs -lcrypt"
  echo "needed"
 else
  echo "Neither!"
  echo -n "Seeing if '-lcrypto' works instead... "
- if $cctype -o config.temp config.temp.o $libs -lcrypto $WARNS $WERROR $LDFLAGS $LIBS; then
+ if $cctype -o config.temp config.temp.o $libs -lcrypto $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
   libs="$libs -lcrypto"
   echo "yes"
  else
@@ -999,7 +1002,7 @@ main (int argc, char **argv)
     exit(1);
   }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS && ./config.temp; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && ./config.temp; then
  echo "yes"
 else
  echo "no, will disable encrypted passwords"
@@ -1020,7 +1023,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {chroot(\".\"); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
 else
 echo "#define NO_CHROOT" >> src/iroffer_config.h
@@ -1046,7 +1049,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -lnss_files -lnss_dns -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -lnss_files -lnss_dns -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 NSSLIBS="-lnss_files -lnss_dns"
 TARGETS="iroffer_chroot$exe"
 echo "found"
@@ -1068,7 +1071,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {setuid(0); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
 else
 echo "#define NO_SETUID" >> src/iroffer_config.h
@@ -1088,7 +1091,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {getgrouplist (NULL, 0, NULL, NULL); exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
 else
 echo "#define NO_GETGROUPLIST" >> src/iroffer_config.h
@@ -1118,7 +1121,7 @@ main (int argc, char **argv)
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "#define HAVE_LINUX_SENDFILE" >> src/iroffer_config.h
 echo "found"
 else
@@ -1152,7 +1155,7 @@ main (int argc, char **argv)
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "#define HAVE_FREEBSD_SENDFILE" >> src/iroffer_config.h
 echo "found"
 else
@@ -1178,7 +1181,7 @@ main (int argc, char **argv)
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "#define HAVE_MMAP" >> src/iroffer_config.h
 echo "found"
 else
@@ -1204,7 +1207,7 @@ main (int argc, char **argv)
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "RLIMIT_NOFILE"
 else
 echo "
@@ -1224,7 +1227,7 @@ main (int argc, char **argv)
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "RLIMIT_OFILE"
 echo "#define USE_OFILE" >> src/iroffer_config.h
 else
@@ -1246,7 +1249,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {siginfo_t si; struct sigaction sa; sa.sa_sigaction = NULL; si.si_code = 0; exit(0);}
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
 else
 echo "#define NO_SIGINFO" >> src/iroffer_config.h
@@ -1290,7 +1293,7 @@ main (int argc, char **argv) {
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
 else
 echo "#define NO_SIGCODES" >> src/iroffer_config.h
@@ -1320,7 +1323,7 @@ main (int argc, char **argv) {
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
 else
 echo "#define NO_WSTATUS_CODES" >> src/iroffer_config.h
@@ -1346,7 +1349,7 @@ main (int argc, char **argv) {
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "yes"
 else
 echo "#define CANT_SET_TOS" >> src/iroffer_config.h
@@ -1375,7 +1378,7 @@ main (int argc, char **argv) {
   exit(0);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
 else
 echo "#define NO_GETADDRINFO" >> src/iroffer_config.h
@@ -1411,7 +1414,7 @@ main (int argc, char **argv) {
   exit(i);
 }
 " > config.temp.c
-if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
 else
 echo "#define NO_HOSTCODES" >> src/iroffer_config.h
@@ -1432,7 +1435,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lcurl -lz -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lcurl -lz -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_CURL" >> src/iroffer_config.h
 		CURLLIB="-lcurl -lz"
@@ -1467,7 +1470,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lssl -lcrypto -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lssl -lcrypto -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "Configuring for OpenSSL."
 		echo "#define USE_SSL" >> src/iroffer_config.h
@@ -1499,7 +1502,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lgnutls-openssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lgnutls-openssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_SSL" >> src/iroffer_config.h
 		SSLLIB="-lgnutls-openssl"
@@ -1532,7 +1535,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs ${libruby} "${incruby}" -DUSE_RUBY -o config.temp $WARNS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs ${libruby} "${incruby}" -DUSE_RUBY -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "Configuring for Ruby."
 		echo "#define USE_RUBY" >> src/iroffer_config.h
@@ -1565,7 +1568,7 @@ echo CC=$cctype
 echo CONFIG_EXE=$exe
 echo CONFIG_LDLIBS=$libs $GEOLIB $CURLLIB $UPNPLIB $SSLLIB $LIBS
 echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF $RUBYLDF $LDFLAGS
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $WARNS2
+echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $WARNS2 $CFLAGS
 echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
 echo CONFIG_CHROOT=$NSSLIBS
 echo CONFIG_SHARED=$RUBYLIB
