@@ -1586,6 +1586,7 @@ if [ -n "$waserror" ]; then
 echo "!!!!!WARNING!!!!!  one or more errors occured, guesses for those values that failed were included."
 echo "You should re-run Configure with the 'errors' arguemnt to see the details."
 echo
+exit 72
 fi
 
 echo "Type \"$maketype\" to compile"
