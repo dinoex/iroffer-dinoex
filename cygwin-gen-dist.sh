@@ -6,7 +6,7 @@ fde="LIESMICH.modDinoex beispiel.config help-admin-de.txt"
 fit="README.modDinoex sample.config help-admin-it.txt"
 #
 set -e
-ver=`grep ^VERSION= Configure  | cut -d '=' -f2`
+ver=`grep ^VERSION= Configure  | cut -d '=' -f2 | tr -d '"'`
 name="iroffer-dinoex-${ver}"
 #
 # Convert into DOS files
@@ -14,7 +14,7 @@ zip -l a.zip ${all} ${fen} ${fde} ${fit}
 unzip -o a.zip
 rm -f a.zip
 #
-./Configure -t -g -u
+./Configure -tls -geoip -upnp -ruby
 # Build translatetd versions
 for lang in de it en
 do
