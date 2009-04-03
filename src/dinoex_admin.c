@@ -3402,7 +3402,7 @@ void a_lag(const userinput * const u)
   int ss;
 
   net = get_network_msg(u, u->arg1);
-  if (net >= 0) {
+  if (u->arg1 == NULL) {
     gnetwork->lastping = gdata.curtimems;
     gnetwork->lag_method = u->method;
     pingserver();
@@ -3451,7 +3451,7 @@ void a_hop(const userinput * const u)
     return;
 
   backup = gnetwork;
-  if (net < 0) {
+  if (u->arg2 == NULL) {
     for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
       a_hop_net(u, u->arg1);
