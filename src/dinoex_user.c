@@ -610,6 +610,7 @@ static void command_xdcc(privmsginput *pi)
 
   if (gdata.send_batch) {
     if ((strcmp(pi->msg2, "BATCH") == 0) && pi->msg3) {
+      strip_trailing_action(pi->msg3);
       strip_trailing_action(pi->msg4);
       send_batch(pi->nick, pi->hostname, pi->hostmask, pi->msg3, pi->msg4);
       return;
