@@ -371,6 +371,7 @@ xtr
 Wetter
 	option "weblist_info running"
 	reporting truncated weblist
+	reporting XDCC BATCH bug
 
 eagle_bot
 	option "channel -joinmsg"

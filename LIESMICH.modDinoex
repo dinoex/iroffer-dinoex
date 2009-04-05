@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.14:
 ----------------
 
+bugfix: XDCC BATCH
+  Erlaube XDCC BATCH mit nur einem Parameter.
+
 bugfix: HOP
   versions affected: 3.9 - 3.13
   HOP ohne Netzwerk hat nicht alle Netzwerke durchsucht.
