@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.14:
 ----------------
 
+bugfix: MULTINET
+  Erlaube bis zu 10 Netzwerke.
+
 bugfix: XDCC BATCH
   Erlaube XDCC BATCH mit nur einem Parameter.
 
