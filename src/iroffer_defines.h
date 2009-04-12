@@ -56,7 +56,7 @@
 
 
 /*       max number of networks */
-#define  MAX_NETWORKS	5
+#define  MAX_NETWORKS	10
 
 /*       max number of vhosts */
 #define  MAX_VHOSTS	2
