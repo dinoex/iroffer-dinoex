@@ -810,6 +810,7 @@ static void admin_msg_line(const char *nick, char *line, int level)
   mydelete(part5[5]);
   u->level = level;
   u_parseit(u);
+  mydelete(u);
 }
 
 static void reset_ignore(const char *hostmask)
