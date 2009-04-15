@@ -2137,6 +2137,7 @@ static void u_botinfo(const userinput * const u) {
    int ii;
    int ss;
    channel_t *ch;
+   gnetwork_t *backup;
 
    updatecontext();
    
@@ -2170,11 +2171,14 @@ static void u_botinfo(const userinput * const u) {
        u_respond(u, "DCC IP: %s NAT=%d", msg, gdata.networks[ss].usenatip);
        mydelete(msg);
        
+       backup = gnetwork;
+       gnetwork = &(gdata.networks[ss]);
        u_respond(u, "configured nick: %s, actual nick: %s, realname: %s, modes: %s",
                  get_config_nick(),
                  get_user_nick(),
                  gdata.user_realname,
                  get_user_modes());
+       gnetwork = backup;
        
        switch (gdata.networks[ss].connectionmethod.how)
          {
