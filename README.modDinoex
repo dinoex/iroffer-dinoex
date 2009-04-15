@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.14:
 ------------------
 
+bugfix: BOTINFO
+  Show the network specific nicks.
+
 bugfix: MULTINET
   Allow up to 10 networks.
 
