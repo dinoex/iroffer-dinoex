@@ -229,6 +229,7 @@ SpiegelEiXXL
 	admin commamd "JOIN"
 	admin commamd "PART"
 	admin command "ACCEPTU"
+	reporting a memory leak
 
 Noxx
 	hidlockepacks for xdcclistfile

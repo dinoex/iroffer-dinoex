@@ -1799,6 +1799,7 @@ void initvars(void)
 #else
   /* 2GB max size */
   gdata.max_file_size = (2*1024*1024*1024UL)-1;
+  outerror( OUTERROR_TYPE_WARN, "limited tio 32bit");
 #endif
   
   gdata.startuptime = gdata.curtime = time(NULL);
