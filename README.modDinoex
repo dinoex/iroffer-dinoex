@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.14:
 ------------------
 
+bugfix: fix small memory leaks
+
 bugfix: BOTINFO
   Show the network specific nicks.
 
