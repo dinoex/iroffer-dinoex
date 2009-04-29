@@ -804,9 +804,11 @@ xdcc *get_download_pack(const char* nick, const char* hostmask, int pack, int ma
   }
 
   if (pack == -1) {
-    if (init_xdcc_file(&xdcc_listfile, gdata.xdcclistfile))
-      return NULL;
-    return &xdcc_listfile;
+    if (gdata.xdcclistfile) {
+      if (init_xdcc_file(&xdcc_listfile, gdata.xdcclistfile))
+        return NULL;
+      return &xdcc_listfile;
+    }
   }
 
   if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1)) {

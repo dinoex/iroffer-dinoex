@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.14:
 ----------------
 
+bugfix: XDCC SEND LIST
+  Bot stützt ab wenn xdcclistfile nicht definiert ist.
+
 bugfix: Speicherlecks behoben
 
 bugfix: BOTINFO
