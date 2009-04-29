@@ -1625,6 +1625,7 @@ void reinit_config_vars(void)
        ag;
        ag = irlist_delete(&gdata.autoadd_group_match, ag)) {
      mydelete(ag->a_group);
+     mydelete(ag->a_pattern);
   }
   mydelete(gdata.enable_nick);
   mydelete(gdata.owner_nick);
