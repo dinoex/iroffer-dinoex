@@ -2340,4 +2340,4 @@
 2459 "Zeige den Zeitversatz der Netzwerke"
 2460 "PONG"
 2461 "LAG on %s ist %ld ms"
-2462 "max_file_size limited to 32bit"
+2462 "max_file_size limited to 2GB"
