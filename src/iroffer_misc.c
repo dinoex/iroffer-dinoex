@@ -1800,7 +1800,7 @@ void initvars(void)
 #else
   /* 2GB max size */
   gdata.max_file_size = (2*1024*1024*1024UL)-1;
-  outerror(OUTERROR_TYPE_WARN, "max_file_size limited to 32bit");
+  outerror(OUTERROR_TYPE_WARN, "max_file_size limited to 2GB");
 #endif
   
   gdata.startuptime = gdata.curtime = time(NULL);
