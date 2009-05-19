@@ -63,6 +63,7 @@ Page last modified: 09/01/04
 Short Term Features:
   1316  Seperate logging for http
   1325  hide XDCC STOP
+  1335  NEWSANNOUNCE
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -104,7 +105,12 @@ Long Term Features:
   1294  build-in weblist defaulting to html
   1314  create color description with ruby_script
   1315  Web-Configurator
-  1334  !lag, !packs
+  1334  trigger !lag, !packs
+  1337  MOVEDIR
+  1338  RESTART
+  1340  better perfomance for sort
+  1343  trigger fro batch downloads
+  1346  trigger !listul, !size
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -164,4 +170,8 @@ Not going to happen anytime soon:
   1287  different speed limits by status
   1290  build-in ftp server
   1308  run iroffer on windows7 in background
+  1338  build in torrent
+  1341  rfc2817 HTTP/TLS
+  1342  incomann channel
+  1344  drop down menues in weblist
 

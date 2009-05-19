@@ -37,42 +37,6 @@ int setupdccchatout(const char *nick, const char *hostmask)
   
   updatecontext();
   
-  while (gdata.num_dccchats >= MAXCHATS)
-    {
-      for (chat = irlist_get_head(&gdata.dccchats);
-           chat;
-           chat = irlist_get_next(chat))
-        {
-          if ((chat->status != DCCCHAT_UNUSED) &&
-              (chat->status != DCCCHAT_CONNECTED))
-            {
-              writedccchat(chat,0,"Another DCC Chat Request Received\n");
-              shutdowndccchat(chat,1);
-              break;
-            }
-        }
-      if (!chat)
-        {
-          for (chat = irlist_get_head(&gdata.dccchats);
-               chat;
-               chat = irlist_get_next(chat))
-            {
-              if (chat->status != DCCCHAT_UNUSED)
-                {
-                  writedccchat(chat,0,"Another DCC Chat Request Received\n");
-                  shutdowndccchat(chat,1);
-                  break;
-                }
-            }
-        }
-      if (!chat)
-        {
-          chat = irlist_get_head(&gdata.dccchats);
-          writedccchat(chat,0,"Another DCC Chat Request Received\n");
-          shutdowndccchat(chat,1);
-        }
-    }
-  
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
   chat->status = DCCCHAT_UNUSED;
   chat->con.family = gnetwork->myip.sa.sa_family;
@@ -179,42 +143,6 @@ int setupdccchat(const char *nick,
   char *msg;
   
   updatecontext();
-  
-  while (gdata.num_dccchats >= MAXCHATS)
-    {
-      for (chat = irlist_get_head(&gdata.dccchats);
-           chat;
-           chat = irlist_get_next(chat))
-        {
-          if ((chat->status != DCCCHAT_UNUSED) &&
-              (chat->status != DCCCHAT_CONNECTED))
-            {
-              writedccchat(chat,0,"Another DCC Chat Request Received\n");
-              shutdowndccchat(chat,1);
-              break;
-            }
-        }
-      if (!chat)
-        {
-          for (chat = irlist_get_head(&gdata.dccchats);
-               chat;
-               chat = irlist_get_next(chat))
-            {
-              if (chat->status != DCCCHAT_UNUSED)
-                {
-                  writedccchat(chat,0,"Another DCC Chat Request Received\n");
-                  shutdowndccchat(chat,1);
-                  break;
-                }
-            }
-        }
-      if (!chat)
-        {
-          chat = irlist_get_head(&gdata.dccchats);
-          writedccchat(chat,0,"Another DCC Chat Request Received\n");
-          shutdowndccchat(chat,1);
-        }
-    }
   
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
   

@@ -557,7 +557,6 @@
 571 "%s: "
 572 "%s%s "
 573 "%s: %i %s"
-574 "Ricevuta un altra DHH CHAT\n"
 575 "Non posso creare un Socket, sto annullando: %s"
 576 "Non posso impegnare il Socket, sto annullando: %s"
 577 "Impossibile stare in ascolto, sto annullando: %s"
