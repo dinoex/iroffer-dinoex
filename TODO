@@ -110,7 +110,6 @@ Long Term Features:
   1315  Web-Configurator
   1334  trigger !lag, !packs
   1337  MOVEDIR
-  1338  RESTART
   1340  better perfomance for sort
   1343  trigger fro batch downloads
   1346  trigger !listul, !size

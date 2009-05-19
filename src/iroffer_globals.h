@@ -341,6 +341,9 @@ enum
   TRANSFERMETHOD_READ_WRITE,
 } transfermethod;
 
+char *const *argv;
+int needrestart;
+int dummy;
 } gdata_t;
 
 
