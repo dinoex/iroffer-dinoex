@@ -944,12 +944,14 @@ static void c_autoadd_group_match(char *var)
 static void c_autosendpack(char *var)
 {
   char *part[3];
+  int rawval;
 
   get_argv(part, var, 3);
   if (part[0] && part[1]) {
     autoqueue_t *aq;
     aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
-    aq->pack = between(0, atoi(part[0]), 100000);
+    rawval = atoi(part[0]);
+    aq->pack = between(0, rawval, 100000);
     aq->word = part[1];
     aq->message = part[2];
   } else {
