@@ -4069,4 +4069,10 @@ void a_addann(const userinput * const u)
   a_make_announce_long(u, number_of_pack(xd));
 }
 
+void a_restart(const userinput * const UNUSED(u))
+{
+  gdata.needrestart = 1;
+  shutdowniroffer();
+}
+
 /* End of File */

@@ -133,4 +133,6 @@ void a_cannounce(const userinput * const u);
 void a_sannounce(const userinput * const u);
 void a_addann(const userinput * const u);
 
+void a_restart(const userinput * const u);
+
 /* End of File */

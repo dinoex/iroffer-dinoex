@@ -81,13 +81,14 @@ usage(void)
   exit(64);
 }
 
-void command_options(int argc, const char *const *argv)
+void command_options(int argc, char *const *argv)
 {
   const char *cptr;
   char *newptr;
   char ch;
   int fc = 0;
 
+  gdata.argv = argv;
   ir_basename = getfilename(argv[0]);
   while (--argc > 0) {
     cptr = *(++argv);
@@ -381,6 +382,9 @@ exit_iroffer(int gotsignal)
   if (gotsignal == 0)
     debug_memory();
 #endif /* DEBUG */
+
+  if (gdata.needrestart)
+    execvp(gdata.argv[0], gdata.argv);
   exit(0);
 }
 

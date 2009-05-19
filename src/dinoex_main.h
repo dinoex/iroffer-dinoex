@@ -13,7 +13,7 @@
  *
  */
 
-void command_options(int argc, const char *const *argv);
+void command_options(int argc, char *const *argv);
 
 void
 #ifdef __GNUC__

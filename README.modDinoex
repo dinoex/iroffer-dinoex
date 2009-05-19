@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.14:
 ------------------
 
+289) RESTART (inspired by Ryu)
+
+  new admin command:
+  RESTART                            Shutdown and restart the bot.
+
 287) chats and uploads (inspired by Ryu)
   Drop hard limits on chats and uploads.
 
@@ -29,7 +34,8 @@ bugfix: autoadd_group_match (reported by dns777)
   The patterns was not stored, so the config was not active.
 
 286) LAG (inspired by Ryu)
-  new admin command:
+
+  new admin commands:
   LAG                                Show lag on all networks.
   LAG <net>                          Show lag on one network.
 

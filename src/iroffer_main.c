@@ -45,7 +45,7 @@ int
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
-main(int argc, const char *const *argv) {
+main(int argc, char *const *argv) {
    
    initvars();
    
