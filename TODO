@@ -64,6 +64,9 @@ Short Term Features:
   1316  Seperate logging for http
   1325  hide XDCC STOP
   1335  NEWSANNOUNCE
+  1352  filter http in log
+  1356  configure timer for status messages in chat
+  1365  aborting GET queue 
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -111,6 +114,12 @@ Long Term Features:
   1340  better perfomance for sort
   1343  trigger fro batch downloads
   1346  trigger !listul, !size
+  1350  automatic fetch new packs from a bot
+  1363  XDCC LIST from pack n
+  1367  GET with CTCP
+  1368  XDCC SNOOZE
+  1389  PART all channels till REHASH
+  1370  inform user after ACCEPTU
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -174,4 +183,5 @@ Not going to happen anytime soon:
   1341  rfc2817 HTTP/TLS
   1342  incomann channel
   1344  drop down menues in weblist
+  1351  http dowloads for users
 
