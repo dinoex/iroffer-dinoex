@@ -283,7 +283,7 @@ int next_tr_id;
 
 off_t max_file_size;
 
-unsigned int max_fds_from_rlimit;
+int max_fds_from_rlimit;
 
 int logfd;
 

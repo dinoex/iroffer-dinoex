@@ -46,13 +46,9 @@
 
 #define  RESERVED_FDS (7)
 
-#define  ACTUAL_MAXSETSIZE min2(((int)gdata.max_fds_from_rlimit),((int)FD_SETSIZE))
+#define  ACTUAL_MAXSETSIZE (gdata.max_fds_from_rlimit)
 
-#define  MAXCHATS  ((ACTUAL_MAXSETSIZE < 256) ? 3 : 8)
-
-#define  MAXUPLDS  ((ACTUAL_MAXSETSIZE < 256) ? 3 : 8)
-
-#define  MAXTRANS  (((ACTUAL_MAXSETSIZE)-RESERVED_FDS-(MAXUPLDS*2)-MAXCHATS)/2)
+#define  MAXTRANS  (((ACTUAL_MAXSETSIZE) - RESERVED_FDS)/2)
 
 
 /*       max number of networks */

@@ -284,13 +284,6 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
             hostmask, gnetwork->name);
     return;
   }
-  if (irlist_size(&gdata.uploads) >= MAXUPLDS) {
-    notice(nick, "DCC Send Denied, I'm already getting too many files");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC Send Denied (too many uploads) from %s on %s",
-            hostmask, gnetwork->name);
-    return;
-  }
   if (irlist_size(&gdata.uploads) >= gdata.max_uploads) {
     notice(nick, "DCC Send Denied, I'm already getting too many files");
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,

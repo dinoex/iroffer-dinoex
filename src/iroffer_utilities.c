@@ -2380,7 +2380,7 @@ int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa)
   ir_uint16 port;
   SIGNEDSOCK int addrlen;
   
-  max = (MAXTRANS+MAXUPLDS+MAXCHATS+irlist_size(&gdata.listen_ports));
+  max = (MAXTRANS+irlist_size(&gdata.listen_ports));
   addrlen = (sa->sa.sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   
   for (retry = 0; retry < max; retry++)

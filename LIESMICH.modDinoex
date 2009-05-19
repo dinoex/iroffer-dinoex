@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.14:
 ----------------
 
+287) Chats und Uploads
+  Keine harten Grenzen für Chats und Uploads.
+
 bugfix: XDCC SEND LIST
   Bot stützt ab wenn xdcclistfile nicht definiert ist.
 

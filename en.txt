@@ -557,7 +557,6 @@
 571 "%s: "
 572 "%s%s "
 573 "%s: %i %s"
-574 "Another DCC Chat Request Received\n"
 575 "Could Not Create Socket, Aborting: %s"
 576 "Couldn't Bind to Socket, Aborting: %s"
 577 "Couldn't Listen, Aborting: %s"

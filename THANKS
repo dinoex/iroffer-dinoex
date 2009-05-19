@@ -540,6 +540,7 @@ Blade121
 Ryu
 	suggesting "MAKEDIR"
 	suggesting "LAG"
+	suggesting higher "max_uploads"
 
 LazyTiger
 	reporting XDCC SEND -1 crash
