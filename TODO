@@ -61,10 +61,8 @@ Page last modified: 09/01/04
 [Iroffer mod Dinoex]
 
 Short Term Features:
-  1316  Seperate logging for http
   1325  hide XDCC STOP
   1335  NEWSANNOUNCE
-  1352  filter http in log
   1356  configure timer for status messages in chat
   1365  aborting GET queue 
 

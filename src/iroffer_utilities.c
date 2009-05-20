@@ -412,6 +412,21 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
          }
       }
    
+   /* httpd */
+   if (dest & OUT_H)
+     {
+        if (gdata.logfile_httpd)
+           {
+             logfile_add(gdata.logfile_httpd, tempstr);
+             return;
+           }
+        /* no log defined, use global log */
+        if (dest & OUT_L)
+           return;
+        
+        mylog(type, "%s", tempstr);
+     }
+   
    }
 
 void privmsg_slow(const char *nick, const char *format, ...)

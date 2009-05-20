@@ -147,10 +147,11 @@
 #define BOUTPUT_NO_LIMIT       2
 #define BOUTPUT_MD5SUM         4
 
-/* type definistions: Screen, Log, DCC CHAT */
+/* type definistions: Screen, Log, DCC CHAT, HTTPD */
 #define OUT_S    1
 #define OUT_L    2
 #define OUT_D    4
+#define OUT_H    8
 
 /* Buffer Output options */
 #define IR_BOUTPUT_SEGMENT_SIZE    (1024U)
