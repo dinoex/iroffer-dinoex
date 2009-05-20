@@ -611,7 +611,7 @@ int
 __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {
- int a; struct sockaddr_in b; SIGNEDSOCK int c;
+ int a=1; struct sockaddr_in b; SIGNEDSOCK int c;
  getsockname(a,(struct sockaddr *)&b,&c);
  exit(0);
  }
