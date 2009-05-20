@@ -137,6 +137,7 @@ char *group_seperator;
 char *usenatip;
 char *logfile_notices;
 char *logfile_messages;
+char *logfile_httpd;
 char *trashcan_dir;
 char *xdccxmlfile;
 char *http_date;

@@ -1,5 +1,11 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+With Version 3.15:
+------------------
+
+288) logfile_httpd (inspired by TheDeath, AnimeNeko)
+  If defined, iroffer will log http request and errors in this logfile.
+
 With Version 3.14:
 ------------------
 

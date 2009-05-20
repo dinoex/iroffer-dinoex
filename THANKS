@@ -90,6 +90,7 @@ TheDeath
 	user command "XDCC SEARCH" with mutiple patterns
 	option "no_auto_rehash"
 	suggesting XDCC BATCH
+	option "logfile_httpd"
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -464,6 +465,7 @@ Drake
 AnimeNeko
 	suggesting "no_duplicate_filenames" option
 	suggesting channel -notrigger
+	option "logfile_httpd"
 
 spielefreak
 	reporting "CANNOUNCE" bug

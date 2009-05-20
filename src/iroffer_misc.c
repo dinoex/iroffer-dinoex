@@ -1708,6 +1708,7 @@ void reinit_config_vars(void)
   mydelete(gdata.local_vhost);
   mydelete(gdata.logfile_notices);
   mydelete(gdata.logfile_messages);
+  mydelete(gdata.logfile_httpd);
   mydelete(gdata.trashcan_dir);
   mydelete(gdata.xdccxmlfile);
   mydelete(gdata.http_date);
