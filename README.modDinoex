@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.15:
 ------------------
 
+bugfix: GET (reported by Scorp)
+  hostmask did not match when nicksname contained "[]".
+
 288) logfile_httpd (inspired by TheDeath, AnimeNeko)
   If defined, iroffer will log http request and errors in this logfile.
 

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.15:
 ----------------
 
+bugfix: GET
+  Die Hostmask funktionierte nicht wenn der der Nick die Zeichen "[]" einthält.
+
 288) logfile_httpd
   Wenn aktiviert, zeichnet Iroffer alle Meldungen zum HTPP Server in dem
   angegebenen Logfile auf.
