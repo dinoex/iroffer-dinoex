@@ -245,6 +245,12 @@ static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     return 1;
   }
 
+  ces = curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 1);
+  if (ces != 0) {
+    a_respond(u, "curl_easy_setopt CURLOPT_FOLLOWLOCATION failed with %d", ces);
+    return 1;
+  }
+
   ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
   if (ces != 0) {
     a_respond(u, "curl_easy_setopt SSL_VERIFYPEER failed with %d", ces);

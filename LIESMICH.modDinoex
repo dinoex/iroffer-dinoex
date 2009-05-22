@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.15:
 ----------------
 
+289) FETCH
+  Erlaube HTML Weiterleitung bei FETCH.
+
 bugfix: GET
   Die Hostmask funktionierte nicht wenn der der Nick die Zeichen "[]" einthält.
 
