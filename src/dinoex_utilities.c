@@ -186,14 +186,28 @@ char *clean_quotes(char *str)
   return str;
 }
 
+static void replace_char(char *str, char ch1, char ch2)
+{
+  char *work;
+
+  for (work=str; *work; work++) {
+    if (*work == ch1)
+      *work = ch2;
+  }
+}
+
 char *to_hostmask(const char *nick, const char *hostname)
 {
+  char *nick2;
   char *hostmask;
   int len;
 
   len = strlen(hostname) + strlen(nick) + 4;
   hostmask = (char *)mymalloc(len);
-  snprintf(hostmask, len, "%s!*@%s", nick, hostname);
+  nick2 = mystrdup(nick);
+  replace_char(nick2, '[', '?');
+  replace_char(nick2, ']', '?');
+  snprintf(hostmask, len, "%s!*@%s", nick2, hostname);
   return hostmask;
 }
 
