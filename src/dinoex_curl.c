@@ -184,6 +184,11 @@ void fetch_perform(void)
   gnetwork = backup;
 }
 
+static void curl_respond(const userinput *const u, const char *text, CURLcode ces)
+{
+  a_respond(u, "curl_easy_setopt %s failed with %d", text, ces);
+}
+
 static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 {
   CURL *ch;
@@ -201,7 +206,7 @@ static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 
   ces = curl_easy_setopt(ch, CURLOPT_ERRORBUFFER, ft->errorbuf);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt ERRORBUFFER failed with %d", ces);
+    curl_respond( u, "ERRORBUFFER", ces);
     return 1;
   }
 
@@ -223,49 +228,49 @@ static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 
   ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt NOPROGRESS failed with %d", ces);
+    curl_respond( u, "NOPROGRESS", ces);
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_NOSIGNAL, 1);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt NOSIGNAL failed with %d", ces);
+    curl_respond( u, "NOSIGNAL", ces);
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_FAILONERROR, 1);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt FAILONERROR failed with %d", ces);
+    curl_respond( u, "FAILONERROR", ces);
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYHOST, 0);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt SSL_VERIFYHOST failed with %d", ces);
+    curl_respond( u, "SSL_VERIFYHOST", ces);
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 1);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt CURLOPT_FOLLOWLOCATION failed with %d", ces);
+    curl_respond( u, "FOLLOWLOCATION", ces);
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt SSL_VERIFYPEER failed with %d", ces);
+    curl_respond( u, "SSL_VERIFYPEER", ces);
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_URL, ft->url);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt URL failed with %d", ces);
+    curl_respond( u, "URL", ces);
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_WRITEDATA, ft->writefd);
   if (ces != 0) {
-    a_respond(u, "curl_easy_setopt WRITEDATA failed with %d", ces);
+    curl_respond( u, "WRITEDATA", ces);
     return 1;
   }
 
@@ -276,7 +281,7 @@ static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     ces = curl_easy_setopt(ch, CURLOPT_RESUME_FROM_LARGE, ft->resumesize);
 #endif
     if (ces != 0) {
-      a_respond(u, "curl_easy_setopt RESUME_FROM failed with %d", ces);
+      curl_respond( u, "RESUME_FROM", ces);
       return 1;
     }
   }
