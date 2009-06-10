@@ -276,7 +276,7 @@ echo "#define WITHOUT_HTTP_ADMIN" >> src/iroffer_config.h
 fi
 
 if $OPT_NOTELNET; then
-echo "Configuring without Telent Server."
+echo "Configuring without Telnet Server."
 echo "#define WITHOUT_TELNET" >> src/iroffer_config.h
 fi
 
