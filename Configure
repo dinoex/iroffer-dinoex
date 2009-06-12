@@ -57,6 +57,7 @@ OPT_NOTELNET=false
 OPT_NOMEMSAVE=false
 OPT_STATIC=false
 cctype="gcc"
+LOCALBASE="/usr/local"
 
 while test "${1}" != ""
 do
@@ -66,6 +67,7 @@ do
   CFLAGS=*) CFLAGS="${1#CFLAGS=}" ;;
   LDFLAGS=*) LDFLAGS="${1#LDFLAGS=}" ;;
   LIBS=*) LIBS="${1#LIBS=}" ;;
+  LOCALBASE=*) LOCALBASE="${1#LOCALBASE=}" ;;
   WARN=*) OPT_WARN2="${1#WARN=}" ;;
   -e*) OPT_ERRORS=true ;;
   -d*) OPT_DEBUG=true ;;
@@ -240,8 +242,8 @@ if $OPT_GEOIP; then
 echo "Configuring for GeoIP."
 echo "#define USE_GEOIP" >> src/iroffer_config.h
 GEOLIB="-lGeoIP"
-GEOINC="-I/usr/local/include"
-GEOLDF="-L/usr/local/lib"
+GEOINC="-I${LOCALBASE}/include"
+GEOLDF="-L${LOCALBASE}/lib"
 fi
 
 if $OPT_CURL; then
@@ -261,8 +263,8 @@ if $OPT_UPNP; then
 echo "Configuring for UPNP with lminiupnpc."
 echo "#define USE_UPNP" >> src/iroffer_config.h
 UPNPLIB="-lminiupnpc"
-UPNPINC="-I/usr/local/include"
-UPNPLDF="-L/usr/local/lib"
+UPNPINC="-I${LOCALBASE}/include"
+UPNPLDF="-L${LOCALBASE}/lib"
 fi
 
 if $OPT_NOHTTP; then
@@ -675,7 +677,7 @@ int
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
-main (int argc, char **argv) {char *s; snprintf(s,10,\"blah\"); exit(0);}
+main (int argc, char **argv) {char *s=0; snprintf(s,10,\"blah\"); exit(0);}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
  echo "found"
@@ -1435,12 +1437,12 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lcurl -lz -I/usr/local/include -L/usr/local/lib -DUSE_CURL -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lcurl -lz "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_CURL -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_CURL" >> src/iroffer_config.h
 		CURLLIB="-lcurl -lz"
-		CURLINC="-I/usr/local/include"
-		CURLLDF="-L/usr/local/lib"
+		CURLINC="-I${LOCALBASE}/include"
+		CURLLDF="-L${LOCALBASE}/lib"
 		curlssl=`ldd config.temp | grep libssl`
 		if test "${curlssl}" != ""; then
 			echo "Notice: Your libcurl is linked with OpenSSL."
@@ -1470,13 +1472,13 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lssl -lcrypto -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lssl -lcrypto "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_SSL -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "Configuring for OpenSSL."
 		echo "#define USE_SSL" >> src/iroffer_config.h
 		SSLLIB="-lssl -lcrypto"
-		SSLINC="-I/usr/local/include/"
-		SSLLDF="-L/usr/local/lib"
+		SSLINC="-I${LOCALBASE}/include"
+		SSLLDF="-L${LOCALBASE}/lib"
 	else
 		echo "not found"
 		echo "***Disabled the SSL Features. If u want to use this feature, please install OpenSSL.***"
@@ -1502,12 +1504,12 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lgnutls-openssl -I/usr/local/include -L/usr/local/lib -DUSE_SSL -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lgnutls-openssl "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_SSL -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_SSL" >> src/iroffer_config.h
 		SSLLIB="-lgnutls-openssl"
-		SSLINC="-I/usr/local/include/gnutls"
-		SSLLDF="-L/usr/local/lib"
+		SSLINC="-I${LOCALBASE}/include/gnutls"
+		SSLLDF="-L${LOCALBASE}/lib"
 	else
 		echo "not found"
 		echo "***Disabled the SSL Features. If u want to use this feature, please install GNU TLS.***"
@@ -1542,7 +1544,7 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 		RUBYLIB="${libruby}"
 		RUBYSLIB="${libsruby} -lm $rstatic"
 		RUBYINC="${incruby}"
-		RUBYLDF="-L/usr/local/lib"
+		RUBYLDF="-L${LOCALBASE}/lib"
 		WERROR2=""
 	else
 		echo "not found"
