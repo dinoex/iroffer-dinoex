@@ -51,6 +51,13 @@ VALUE cIrofferConfig;
 VALUE cIrofferEvent;
 VALUE oIrofferEvent = Qnil;
 
+#if !defined(RFLOAT_VALUE)
+static VALUE rb_errinfo(void)
+{
+  return ruby_errinfo;
+}
+#endif
+
 static void iroffer_ruby_errro(int error)
 {
   VALUE lasterr;
@@ -67,14 +74,14 @@ static void iroffer_ruby_errro(int error)
   message = rb_obj_as_string(lasterr);
   outerror(OUTERROR_TYPE_WARN_LOUD,
            "error ruby_script: class=%s, message=%s",
-           RSTRING(inclass)->ptr, RSTRING(message)->ptr);
+           RSTRING_PTR(inclass), RSTRING_PTR(message));
 
-  if (!NIL_P(ruby_errinfo)) {
-    ary = rb_funcall(ruby_errinfo, rb_intern("backtrace"), 0);
-    for (c=0; c<RARRAY(ary)->len; c++) {
+  if (!NIL_P(rb_errinfo())) {
+    ary = rb_funcall(rb_errinfo(), rb_intern("backtrace"), 0);
+    for (c=0; c<RARRAY_LEN(ary); c++) {
       outerror(OUTERROR_TYPE_WARN_LOUD,
                "backtrace from %s",
-               RSTRING(RARRAY(ary)->ptr[c])->ptr);
+               RSTRING_PTR(RARRAY_PTR(ary)[c]));
     }
   }
 }
@@ -393,18 +400,22 @@ static void load_script(const char *name)
   }
   myruby_time = st.st_mtime;
   ruby_init_loadpath();
-  ruby_script("embedded");
+  ruby_script(name);
+#if !defined(RFLOAT_VALUE)
   rb_load_file(name);
-  myruby_loaded = 1;
-
   myruby_status = ruby_exec();
+#else
+  rb_load(rb_str_new(name, strlen(name)), 0);
+#endif
   if (myruby_status != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "ruby_exec failed with %d: %s",
              myruby_status, strerror(errno));
+    myruby_loaded = 1;
     return;
   }
 
+  myruby_loaded = 1;
   oIrofferEvent = rb_class_new_instance(0, NULL, cIrofferEvent);
   rb_define_variable("objIrofferEvent", &oIrofferEvent);
 }
@@ -525,13 +536,17 @@ int http_ruby_script(const char *name, const char *output)
     return 1;
   }
   ruby_init_loadpath();
-  ruby_script("embedded");
+  ruby_script(name);
   tempstr = mycalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "$stdout = File.new(\"%s\", \"w+\")", output);
   rb_eval_string_protect(tempstr, &rc);
   mydelete(tempstr);
+#if !defined(RFLOAT_VALUE)
   rb_load_file(name);
   rc = ruby_exec();
+#else
+  rb_load(rb_str_new(name, strlen(name)), 0);
+#endif
   if (rc != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "ruby_exec failed with %d: %s",

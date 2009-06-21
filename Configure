@@ -57,6 +57,7 @@ OPT_NOTELNET=false
 OPT_NOMEMSAVE=false
 OPT_STATIC=false
 cctype="gcc"
+ruby="ruby"
 LOCALBASE="/usr/local"
 
 while test "${1}" != ""
@@ -69,6 +70,7 @@ do
   LIBS=*) LIBS="${1#LIBS=}" ;;
   LOCALBASE=*) LOCALBASE="${1#LOCALBASE=}" ;;
   WARN=*) OPT_WARN2="${1#WARN=}" ;;
+  RUBY=*) ruby="${1#RUBY=}" ;;
   -e*) OPT_ERRORS=true ;;
   -d*) OPT_DEBUG=true ;;
   -w*) OPT_WARN=true ;;
@@ -95,14 +97,12 @@ done
 echo -n "Determining OS... "
 uname
 ostype=`uname`
-ruby="ruby"
 installgroup="root"
 libs=""
 rstatic=""
 
 case "$ostype" in
  FreeBSD | OpenBSD | NetBSD )
-  ruby="ruby18"
   installgroup="wheel"
   ;;
  Linux | IRIX | IRIX64 | OSF1 | Rhapsody | Darwin | AIX )
@@ -1527,7 +1527,15 @@ fi
 if $OPT_RUBY; then
 	libruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBYARG_SHARED' ]"`
 	libsruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBYARG_STATIC' ]"`
-	incruby=`${ruby} -r rbconfig -e "print '-I' + Config::CONFIG[ 'archdir' ]"`
+	archdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'archdir' ]"`
+	rubyhdrdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'rubyhdrdir' ]"`
+	sitearch=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'sitearch' ]"`
+	if test $rubyhdrdir = "nil"
+	then
+		incruby="-I${archdir}"
+	else
+		incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}" 
+	fi
 	echo -n "Seeing if libruby libraries exist (for the RUBY-Scripts)... "
 	echo "
 #include \"ruby.h\"
@@ -1537,7 +1545,7 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs ${libruby} "${incruby}" -DUSE_RUBY -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs ${libruby} ${incruby} -DUSE_RUBY -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "Configuring for Ruby."
 		echo "#define USE_RUBY" >> src/iroffer_config.h
