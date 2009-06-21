@@ -2193,7 +2193,6 @@
 2318 "ruby_script"
 2320 "new"
 2322 "access ruby_script '%s' failed: %s"
-2323 "embedded"
 2324 "ruby_exec failed with %d: %s"
 2325 "iroffer_input"
 2326 "iroffer_privmsg"
