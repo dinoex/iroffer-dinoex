@@ -102,7 +102,7 @@ typedef struct
 static const userinput_parse_t userinput_parse[] = {
 {1,1,method_allow_all,u_help,          "HELP",NULL,"Shows help"},
 {1,0,method_allow_all_xdl,u_xdl_full,  "XDLFULL",NULL,"Lists all offered packs"},
-{1,0,method_allow_all_xdl,u_xdl_group, "XDLGROUP","group","Show packs from <group>"},
+{1,0,method_allow_all_xdl,u_xdl_group, "XDLGROUP","[group]","Show packs from <group>"},
 {1,0,method_allow_all_xdl,u_xdl,       "XDL",NULL,"Lists offered groups and packs without group"},
 {1,1,method_allow_all,a_xdlock,        "XDLOCK",NULL,"Show all locked packs"},
 {1,1,method_allow_all,a_xdtrigger,     "XDTRIGGER",NULL,"Show all packs with dynamic triggers"},
@@ -875,33 +875,39 @@ static void u_xdl_group(const userinput * const u) {
    u_xdl_head(u);
 
    msg3 = u->arg1;
-   if (msg3 == NULL)
-     return;
-
    tempstr = mycalloc(maxtextlength);
    i = 1;
    k = 0;
    l = a_xdl_left();
    s = a_xdl_space();
    xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
+   for (xd = irlist_get_head(&gdata.xdccs);
+        xd;
+        xd = irlist_get_next(xd), i++)
      {
-       if (xd->group != NULL)
+       if (msg3 == NULL)
          {
-           if (strcasecmp(xd->group, msg3) == 0 )
-             {
-               if (xd->group_desc != NULL)
-                 {
-                   u_respond(u, "group: %s%s%s", msg3, gdata.group_seperator, xd->group_desc);
-                 }
-
-               if (hide_locked(u, xd) == 0)
-                 u_xdl_pack(u, tempstr, i, l, s, xd);
-               k++;
-             }
+            if (xd->group != NULL)
+               continue;
          }
-       i++;
-       xd = irlist_get_next(xd);
+       else
+         {
+            if (xd->group == NULL)
+               continue;
+
+            if (strcasecmp(xd->group, msg3) != 0 )
+               continue;
+
+            if (xd->group_desc != NULL)
+               {
+                  u_respond(u, "group: %s%s%s", msg3, gdata.group_seperator, xd->group_desc);
+               }
+         }
+         if (hide_locked(u, xd) != 0)
+            continue;
+
+         u_xdl_pack(u, tempstr, i, l, s, xd);
+         k++;
      }
          
    mydelete(tempstr);

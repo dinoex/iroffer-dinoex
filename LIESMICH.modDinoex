@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.15:
 ----------------
 
+290) XDLGROUP
+
+  Neues Admin Kommando:
+  XDLGROUP                           Anzeigen der Pakete ohne Gruppe.
+
 289) FETCH
   Erlaube HTML Weiterleitung bei FETCH.
 
