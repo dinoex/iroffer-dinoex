@@ -66,6 +66,9 @@ Short Term Features:
   1356  configure timer for status messages in chat
   1365  aborting GET queue 
   1376  SSL-Bouncer connecten
+  1378  mute announce for x mins
+  1379  different packlists for different groups
+  1380  restrictsend on a per-network basis
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -118,6 +121,7 @@ Long Term Features:
   1368  XDCC SNOOZE
   1389  PART all channels till REHASH
   1370  inform user after ACCEPTU
+  1381  support for 8 bit nicks
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
