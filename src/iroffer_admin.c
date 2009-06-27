@@ -2099,13 +2099,23 @@ static void u_rehash(const userinput * const u) {
    /* check for completeness */
    u_respond(u,"Checking for completeness of config file ...");
    
+   if ( gdata.config_nick == NULL )
+     u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_nick");
+   
+   if ( gdata.user_realname == NULL )
+     u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_realname");
+   
+   if ( gdata.user_modes == NULL )
+     u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_modes");
+   
+   if ( gdata.slotsmax == 0 )
+     u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "slotsmax");
+   
    for (ss=0; ss<gdata.networks_online; ss++)
      {
-       if ( !irlist_size(&(gdata.networks[ss].servers))
-            || gdata.config_nick == NULL || gdata.user_realname == NULL
-            || get_user_modes() == NULL
-            || gdata.slotsmax == 0)
-          u_respond(u, "**WARNING** missing vital information, fix and re-rehash ASAP");
+       if ( !irlist_size(&gdata.networks[ss].servers) )
+         u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "server");
+
      }
    
    if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2U ) )
