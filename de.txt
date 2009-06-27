@@ -2346,3 +2346,5 @@
 2476 "RESUME_FROM"
 2477 "[gruppe]"
 2478 "geoipexcludegroup"
+2479 "NEWANN"
+2480 "ANNOUNCE für die letzen <n> Pakete in allen Channels"

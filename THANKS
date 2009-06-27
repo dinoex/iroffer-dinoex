@@ -319,6 +319,7 @@ Protected
 	otion "idlequeuesize"
 	admin command "RENUMBER" with 3 args
 	option "balanced_queue"
+	admin command "NEWANN"
 
 Radicand
 	warn if spaces found in parameter

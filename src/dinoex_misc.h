@@ -66,6 +66,8 @@ const char *get_grouplist_channel(const char *dest);
 
 int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote);
 
+void add_newest_xdcc(irlist_t *list, const char *grouplist);
+
 void free_channel_data(channel_t *ch);
 
 void auto_rehash(void);

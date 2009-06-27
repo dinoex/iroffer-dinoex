@@ -3985,6 +3985,68 @@ void a_mannounce(const userinput * const u)
   a_announce_sub(u, u->arg1, u->arg2, u->arg3e);
 }
 
+static int a_new_announce(int max)
+{
+  struct tm *localt = NULL;
+  irlist_t list;
+  xdcc **best;
+  xdcc *xd;
+  const char *format;
+  char *tempstr;
+  char *tempstr3;
+  time_t now;
+  ssize_t llen;
+  int i;
+
+  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
+
+  memset(&list, 0, sizeof(irlist_t));
+  for (i=0; i<max; i++)
+    add_newest_xdcc(&list, NULL);
+
+  i = 0;
+  for (best = irlist_get_head(&list);
+       best;
+       best = irlist_delete(&list, best)) {
+    xd = *best;
+    now = xd->xtime;
+    localt = localtime(&now);
+    tempstr = mycalloc(maxtextlengthshort);
+    llen = strftime(tempstr, maxtextlengthshort - 1, format, localt);
+    if (llen == 0)
+      tempstr[0] = '\0';
+
+    tempstr3 = mycalloc(maxtextlength);
+    snprintf(tempstr3, maxtextlength - 1, "Added: %s \2%i\2%s%s",
+             tempstr, number_of_pack(xd), gdata.announce_seperator, xd->desc);
+    a_announce_channels(tempstr3, NULL, xd->group);
+    mydelete(tempstr3);
+    mydelete(tempstr);
+    i++;
+  }
+  return i;
+}
+
+void a_newann(const userinput * const u)
+{
+  gnetwork_t *backup;
+  int ss;
+  int max = 0;
+
+  updatecontext();
+
+  if (u->arg1) max = atoi (u->arg1);
+  if (max <= 0)
+    return;
+
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+    a_new_announce(max);
+  }
+  gnetwork = backup;
+}
+
 void a_cannounce(const userinput * const u)
 {
   int num = 0;

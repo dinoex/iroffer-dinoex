@@ -1114,6 +1114,45 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
   return 0;
 }
 
+void add_newest_xdcc(irlist_t *list, const char *grouplist)
+{
+  xdcc **best;
+  xdcc *xd;
+  xdcc *old;
+
+  old = NULL;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (hide_pack(xd) != 0)
+      continue;
+
+    /* check group visibility rules */
+    if (!verify_group_in_grouplist(xd->group, grouplist))
+      continue;
+
+    for (best = irlist_get_head(list);
+         best;
+         best = irlist_get_next(best)) {
+      if (*best == xd)
+        break;
+    }
+    if (best != NULL)
+      continue;
+
+    if (old != NULL) {
+      if (old->xtime > xd->xtime)
+        continue;
+    }
+    old = xd;
+  }
+  if (old == NULL)
+    return;
+
+  best = irlist_add(list, sizeof(void *));
+  *best = old;
+}
+
 void free_channel_data(channel_t *ch)
 {
   mydelete(ch->name);
