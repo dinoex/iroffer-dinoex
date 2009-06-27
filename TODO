@@ -65,6 +65,7 @@ Short Term Features:
   1335  NEWSANNOUNCE
   1356  configure timer for status messages in chat
   1365  aborting GET queue 
+  1376  SSL-Bouncer connecten
 
 Long Term Features:
   1008  use text or xml for statefile

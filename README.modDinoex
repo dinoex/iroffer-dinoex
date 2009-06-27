@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.15:
 ------------------
 
-292) NEWANN (suggested by Protected)
+293) vital information (inspired by MasterCJ)
+  Tell admin which variable is missing.
+
+292) NEWANN (inspired by Protected)
 
   new admin command:
   NEWANN <n>                         ANNOUNCE for the last <n> packs in all joined channels
@@ -16,7 +19,7 @@ With Version 3.15:
   new admin command:
   XDLGROUP                           List packs without a group
 
-289) FETCH (suggested by Scorp)
+289) FETCH (inspired by Scorp)
   Support HTML redirects while using FETCH.
 
 bugfix: GET (reported by Scorp)
@@ -81,7 +84,7 @@ bugfix: xdccxmlfile (reported by freijie)
 
 extend debug and log information.
 
-284) atfind (suggested by Vision)
+284) atfind (inspired by Vision)
   New trigger "!FIND", same as "@FIND".
 
 bugfix: channel (reported by Vision)

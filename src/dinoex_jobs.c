@@ -2048,7 +2048,6 @@ void a_read_config_files(const userinput *u)
       } else {
           a_respond(u, "Cant Access File '%s', Aborting rehash: %s",
                     gdata.configfile[h], strerror(errno));
-          a_respond(u, "**WARNING** missing vital information, fix and re-rehash ASAP");
       }
       continue;
     }

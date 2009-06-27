@@ -42,10 +42,20 @@ void getconfig (void) {
    
    printf("** Checking for completeness of config file ...\n");
    
-   if ( !irlist_size(&gdata.networks[0].servers)
-        || gdata.config_nick == NULL || gdata.user_realname == NULL
-        || gdata.slotsmax == 0)
-      outerror(OUTERROR_TYPE_CRASH,"Config File Missing Necessary Information");
+   if ( !irlist_size(&gdata.networks[0].servers) )
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "server");
+
+   if ( gdata.config_nick == NULL )
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "user_nick");
+
+   if ( gdata.user_realname == NULL )
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "user_realname");
+
+   if ( gdata.user_modes == NULL )
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "user_modes");
+
+   if ( gdata.slotsmax == 0 )
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "slotsmax");
 
    if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2U ) )
       outerror(OUTERROR_TYPE_CRASH,"Config File Missing Upload Information");
