@@ -85,8 +85,9 @@ void geoip_new_connection(transfer *const tr)
             country);
 
   if (irlist_size(&gdata.geoipexcludegroup)) {
-    group = (char *)irlist_get_head(&gdata.geoipexcludegroup);
-    while (group) {
+    for (group = (char *)irlist_get_head(&gdata.geoipexcludegroup);
+         group;
+         group = irlist_get_next(group)) {
       if (tr->xpack->group == NULL)
         continue;
       if (strcasecmp(tr->xpack->group, group) == 0)
