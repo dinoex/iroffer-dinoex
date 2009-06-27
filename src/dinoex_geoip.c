@@ -68,6 +68,7 @@ void geoip_new_connection(transfer *const tr)
 {
 #ifdef USE_GEOIP
   const char *country;
+  const char *group;
   char *msg;
 #endif /* USE_GEOIP */
 
@@ -83,6 +84,15 @@ void geoip_new_connection(transfer *const tr)
             (tr->remoteip>>8) & 0xFF, tr->remoteip & 0xFF,
             country);
 
+  if (irlist_size(&gdata.geoipexcludegroup)) {
+    group = (char *)irlist_get_head(&gdata.geoipexcludegroup);
+    while (group) {
+      if (tr->xpack->group == NULL)
+        continue;
+      if (strcasecmp(tr->xpack->group, group) == 0)
+        return;
+    }
+  }
   if (irlist_size(&gdata.geoipcountry)) {
     if (!verifyshell(&gdata.geoipcountry, country)) {
       if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
