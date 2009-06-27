@@ -1607,6 +1607,7 @@ void reinit_config_vars(void)
   irlist_delete_all(&gdata.geoipcountry);
   irlist_delete_all(&gdata.nogeoipcountry);
   irlist_delete_all(&gdata.geoipexcludenick);
+  irlist_delete_all(&gdata.geoipexcludegroup);
   irlist_delete_all(&gdata.autoadd_dirs);
   irlist_delete_all(&gdata.autocrc_exclude);
   irlist_delete_all(&gdata.filedir);

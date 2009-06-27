@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.15:
 ------------------
 
+291) geoipexcludegroup
+  Allow downloads for packs in this group, even if geoip entry differs.
+
 290) XDLGROUP
 
   new admin command:

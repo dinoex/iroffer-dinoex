@@ -595,6 +595,7 @@ static config_list_typ config_parse_list[] = {
 #ifdef USE_GEOIP
 {"geoipcountry",            &gdata.geoipcountry,            0 },
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
+{"geoipexcludegroup",       &gdata.geoipexcludegroup,       0 },
 #endif /* USE_GEOIP */
 {"hadminhost",              &gdata.hadminhost,              3 },
 #ifndef WITHOUT_HTTP

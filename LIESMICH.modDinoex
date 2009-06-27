@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.15:
 ----------------
 
+291) geoipexcludegroup
+  Erlaube den Download für Packs in dieser Gruppe, auch wenn geoip ein
+  falsches Land ausgibt.
+
 290) XDLGROUP
 
   Neues Admin Kommando:
