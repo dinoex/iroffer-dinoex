@@ -82,7 +82,10 @@ static config_bool_typ config_parse_bool[] = {
 {"hidelockedpacks",        &gdata.hidelockedpacks },
 {"hideos",                 &gdata.hideos },
 {"holdqueue",              &gdata.holdqueue },
+#ifndef WITHOUT_HTTP
+{"http_geoip",             &gdata.http_geoip },
 {"http_search",            &gdata.http_search },
+#endif /* WITHOUT_HTTP */
 {"ignoreduplicateip",      &gdata.ignoreduplicateip },
 {"ignoreuploadbandwidth",  &gdata.ignoreuploadbandwidth },
 {"include_subdirs",        &gdata.include_subdirs },

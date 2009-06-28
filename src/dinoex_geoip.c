@@ -31,7 +31,7 @@
 
 static GeoIP *gi = NULL;
 
-static char *check_geoip(transfer *const t)
+static char *check_geoip(unsigned long remoteip)
 {
   static char hostname[20];
   static char code[20];
@@ -50,7 +50,7 @@ static char *check_geoip(transfer *const t)
   }
 
   snprintf(hostname, sizeof(hostname), "%lu.%lu.%lu.%lu",
-            t->remoteip>>24, (t->remoteip>>16) & 0xFF, (t->remoteip>>8) & 0xFF, t->remoteip & 0xFF );
+            remoteip>>24, (remoteip>>16) & 0xFF, (remoteip>>8) & 0xFF, remoteip & 0xFF );
   result = GeoIP_country_code_by_addr(gi, hostname);
   if (result == NULL) {
     code[0] = 0;
@@ -76,7 +76,7 @@ void geoip_new_connection(transfer *const tr)
     return;
 
 #ifdef USE_GEOIP
-  country = check_geoip(tr);
+  country = check_geoip(tr->remoteip);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "GeoIP [%02i:%s on %s]: Info %ld.%ld.%ld.%ld -> %s)",
             tr->id, tr->nick, gdata.networks[ tr->net ].name,
@@ -122,6 +122,28 @@ void geoip_new_connection(transfer *const tr)
   }
 #endif /* USE_GEOIP */
 }
+
+#ifdef USE_GEOIP
+#ifndef WITHOUT_HTTP
+int http_check_geoip(unsigned long remoteip)
+{
+  const char *country;
+
+  country = check_geoip(remoteip);
+  if (irlist_size(&gdata.geoipcountry)) {
+    if (!verifyshell(&gdata.geoipcountry, country)) {
+      return 1;
+    }
+  }
+  if (irlist_size(&gdata.nogeoipcountry)) {
+    if (verifyshell(&gdata.nogeoipcountry, country)) {
+      return 1;
+    }
+  }
+  return 0;
+}
+#endif /* WITHOUT_HTTP */
+#endif /* USE_GEOIP */
 
 void geoip_shutdown(void)
 {

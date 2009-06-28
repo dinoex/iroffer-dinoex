@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.15:
 ----------------
 
+294) http_geoip
+  Aktiviert die Prüfung des Landes mit der GeoIP Datenbank für HTTP.
+  Default: keine Prüfung
+
 293) vital information
   Melde den Admin welche Variable fehlt.
 

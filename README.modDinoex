@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.15:
 ------------------
 
+294) http_geoip (inspired by TheDeath)
+  Enables geoip country check for HTTP requests.
+  Default: disabled.
+
 293) vital information (inspired by MasterCJ)
   Tell admin which variable is missing.
 

@@ -210,6 +210,7 @@ int no_status_chat;
 int no_status_log;
 int no_auto_rehash;
 int send_batch;
+int http_geoip;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

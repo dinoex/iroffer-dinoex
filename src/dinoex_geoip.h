@@ -14,6 +14,11 @@
  */
 
 void geoip_new_connection(transfer *const tr);
+#ifdef USE_GEOIP
+#ifndef WITHOUT_HTTP
+int http_check_geoip(unsigned long remoteip);
+#endif /* WITHOUT_HTTP */
+#endif /* USE_GEOIP */
 void geoip_shutdown(void);
 
 /* End of File */
