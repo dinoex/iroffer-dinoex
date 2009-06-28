@@ -17,7 +17,7 @@ typedef struct
 {
   time_t lastcontact;
   time_t connecttime;
-  long remoteip;
+  unsigned long remoteip;
   long count;
 } badip4;
 

@@ -19,11 +19,19 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_geoip.h"
 #include "dinoex_badip.h"
 
-static int is_in_badip4(long remoteip)
+static int is_in_badip4(unsigned long remoteip)
 {
   badip4 *b;
+
+#ifdef USE_GEOIP
+#ifndef WITHOUT_HTTP
+  if (http_check_geoip(remoteip))
+    return 1;
+#endif /* WITHOUT_HTTP */
+#endif /* USE_GEOIP */
 
   for (b = irlist_get_head(&gdata.http_bad_ip4);
        b;
@@ -64,7 +72,7 @@ int is_in_badip(ir_sockaddr_union_t *sa)
   }
 }
 
-static void count_badip4(long remoteip)
+static void count_badip4(unsigned long remoteip)
 {
   badip4 *b;
 

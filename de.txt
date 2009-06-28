@@ -2348,3 +2348,4 @@
 2478 "geoipexcludegroup"
 2479 "NEWANN"
 2480 "ANNOUNCE für die letzen <n> Pakete in allen Channels"
+2481 "http_geoip"
