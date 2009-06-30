@@ -103,7 +103,7 @@ void upnp_add_redir (const char * addr, const char * port)
 		return;
 	}
 	r = UPNP_AddPortMapping(urls.controlURL, data.servicetype,
-	                        port, port, addr, 0, "TCP");
+	                        port, port, addr, 0, "TCP", 0);
 	if(r==0)
 		ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
 			"AddPortMapping(%s, %s, %s) failed" , port, port, addr);
@@ -128,7 +128,7 @@ void upnp_rem_redir (int port)
 		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
 		return;
 	}
-	UPNP_DeletePortMapping(urls.controlURL, data.servicetype, port_str, "TCP");
+	UPNP_DeletePortMapping(urls.controlURL, data.servicetype, port_str, "TCP", 0);
 }
 
 #endif /* USE_UPNP */
