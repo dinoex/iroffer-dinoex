@@ -362,7 +362,7 @@ static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
 static void Init_IrofferEvent(void) {
   cIrofferEvent = rb_define_class("IrofferEvent", rb_cObject);
   rb_define_singleton_method(cIrofferEvent, "new", cie_new, 0);
-  /** action */
+  /* action */
   rb_define_method(cIrofferEvent, "privmsg", cie_privmsg, 2);
   rb_define_method(cIrofferEvent, "warning", cie_warning, 1);
   rb_define_method(cIrofferEvent, "mode", cie_mode, 2);
