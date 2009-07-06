@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.15:
 ------------------
 
+bugfix: Darwin (inspired by HymnToLife)
+  fix build under Darwin.
+
 bugfix: upnp_router
   Update for libminiupnpc 1.3
 

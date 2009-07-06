@@ -105,7 +105,11 @@ case "$ostype" in
  FreeBSD | OpenBSD | NetBSD )
   installgroup="wheel"
   ;;
- Linux | IRIX | IRIX64 | OSF1 | Rhapsody | Darwin | AIX )
+ Darwin)
+  libs="$libs -lresolv"
+  rstatic="-lpthread -ldl -lz"
+  ;;
+ Linux | IRIX | IRIX64 | OSF1 | Rhapsody | AIX )
   # nothing fancy
   rstatic="-lpthread -ldl -lz"
   ;;
