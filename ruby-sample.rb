@@ -1,7 +1,6 @@
 #!/usr/local/bin/ruby -w
 
 # Write somthing in a logfile with date and time.
-
 def write_log( *args )
   f = File.open( "ruby-dump.txt", "a+" )
   f.write Time.now.to_s
@@ -13,7 +12,6 @@ def write_log( *args )
 end
 
 # Do not change the name of this class.
-
 class IrofferEvent
 
   # for esay use of commands
