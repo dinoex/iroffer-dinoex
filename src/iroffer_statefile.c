@@ -1627,6 +1627,11 @@ void read_statefile(void)
                       }
                     g_int = (statefile_item_generic_int_t*)ihdr;
                     num = ntohl(g_int->g_int);
+                    if (num == -1)
+                      {
+                        pq->xpack = get_xdcc_pack(num);
+                        break;
+                      }
                     if (num < 1 || num > irlist_size(&gdata.xdccs))
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Nr (%d)", num);
@@ -1695,6 +1700,14 @@ void read_statefile(void)
                   }
                 hdr->length -= ceiling(ihdr->length, 4);
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
+              }
+            /* remove bad entry */
+            if (pq->xpack == NULL)
+              {
+                if (gdata.idlequeuesize > 0 )
+                  irlist_delete(&gdata.idlequeue, pq);
+                else
+                  irlist_delete(&gdata.mainqueue, pq);
               }
           }
           break;
