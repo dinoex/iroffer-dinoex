@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.15:
 ----------------
 
+bugfix: XDCC SEND LIST
+  Bot crashte wenn beim Steart noch ein LIST in der Queue ist.
+
 bugfix: Darwin
   Iroffer kann wieder auf Darwin/MacOS 10.x genaut weden.
 

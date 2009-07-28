@@ -33,6 +33,8 @@ void startup_dinoex(void);
 void config_dinoex(void);
 void shutdown_dinoex(void);
 void rehash_dinoex(void);
+
+int init_xdcc_file(xdcc *xd, char *file) ;
 void update_hour_dinoex(int hour, int minute);
 void check_new_connection(transfer *const tr);
 char *grep_to_fnmatch(const char *grep);

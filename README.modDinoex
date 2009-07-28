@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.15:
 ------------------
 
+bugfix: XDCC SEND LIST (reported by Kamina)
+  Bot did crash after restart when LIST had been queued.
+
 bugfix: Darwin (inspired by HymnToLife)
   fix build under Darwin.
 

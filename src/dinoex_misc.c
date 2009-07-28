@@ -559,7 +559,7 @@ void rehash_dinoex(void)
 #endif /* _OS_CYGWIN */
 }
 
-static int init_xdcc_file(xdcc *xd, char *file)
+int init_xdcc_file(xdcc *xd, char *file)
 {
   struct stat st;
   int xfiledescriptor;

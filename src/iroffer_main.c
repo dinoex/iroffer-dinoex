@@ -2407,6 +2407,8 @@ int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, i
      {
        char *sizestrstr;
        
+       if (pack == -1)
+         init_xdcc_file(xd, gdata.xdcclistfile);
        look_for_file_changes(xd);
        
        xd->file_fd_count++;
@@ -2549,6 +2551,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
 void sendaqueue(int type, int pos, char *lastnick)
 {
   int usertrans;
+  int pack;
   ir_pqueue *pq;
   transfer *tr;
   char *hostmask;
@@ -2619,28 +2622,28 @@ void sendaqueue(int type, int pos, char *lastnick)
           return;
         }
       
+      pack = number_of_pack(pq->xpack);
       if (type == 1)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                   "QUEUED SEND (low bandwidth): %s (%s on %s), Pack #%d",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name,
-                  number_of_pack(pq->xpack));
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
         }
       else if (type == 2)
         {
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                   "QUEUED SEND (manual): %s (%s on %s), Pack #%d",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name,
-                  number_of_pack(pq->xpack));
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
         }
       else
         {
           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                   "QUEUED SEND: %s (%s on %s), Pack #%d",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name,
-                  number_of_pack(pq->xpack));
+                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
         }
       
+      if (pack == -1)
+        init_xdcc_file(pq->xpack, gdata.xdcclistfile);
       look_for_file_changes(pq->xpack);
       
       backup = gnetwork;
