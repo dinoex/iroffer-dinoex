@@ -208,6 +208,7 @@ char *to_hostmask(const char *nick, const char *hostname)
   replace_char(nick2, '[', '?');
   replace_char(nick2, ']', '?');
   snprintf(hostmask, len, "%s!*@%s", nick2, hostname);
+  mydelete(nick2);
   return hostmask;
 }
 
