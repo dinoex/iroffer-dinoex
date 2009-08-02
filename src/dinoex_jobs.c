@@ -1818,7 +1818,7 @@ void a_rehash_prepare(void)
     gdata.networks[ss].r_needtojump = 0;
     gdata.networks[ss].r_connectionmethod = gdata.networks[ss].connectionmethod.how;
     gdata.networks[ss].r_config_nick = NULL;
-    gdata.networks[ss].r_ourip = gdata.getipfromserver ? gdata.networks[ss].ourip : 0;
+    gdata.networks[ss].r_ourip = gdata.getipfromserver || gdata.getipfromupnp ? gdata.networks[ss].ourip : 0;
     if (gdata.networks[ss].config_nick)
       gdata.networks[ss].r_config_nick = mystrdup(gdata.networks[ss].config_nick);
     gdata.networks[ss].r_local_vhost = NULL;
@@ -1843,7 +1843,7 @@ void a_rehash_needtojump(const userinput *u)
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
     /* keep dynamic IP */
-    if (gdata.getipfromserver) {
+    if (gdata.getipfromserver || gdata.getipfromupnp) {
       gnetwork->ourip = gnetwork->r_ourip;
       gnetwork->usenatip = 1;
     }

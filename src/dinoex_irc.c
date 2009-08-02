@@ -178,6 +178,16 @@ void update_server_welcome(char *line)
 {
   const char *tptr;
 
+#ifdef USE_UPNP
+  if (gdata.getipfromupnp) {
+    tptr = upnp_get_dccip();
+    if (tptr != NULL) {
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "IP From UPnP = %s", tptr);
+      update_natip(tptr);
+      return;
+    }
+  }
+#endif /* USE_UPNP */
   if (gdata.getipfromserver) {
     tptr = strchr(line, '@');
     if (tptr != NULL) {

@@ -29,8 +29,11 @@ $Id$
 
 */
 
+#ifdef USE_UPNP
 void init_upnp (void);
+char *upnp_get_dccip (void);
 void upnp_add_redir (const char * addr, const char * port);
 void upnp_rem_redir (int port);
+#endif /* USE_UPNP */
 
 /* End of File */

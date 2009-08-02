@@ -509,7 +509,7 @@ static void global_defaults(void)
 void config_dinoex(void)
 {
 #ifdef USE_UPNP
-  if (gdata.upnp_router)
+  if (gdata.upnp_router || gdata.getipfromupnp)
     init_upnp();
 #endif /* USE_UPNP */
 #ifndef WITHOUT_TELNET

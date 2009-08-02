@@ -98,6 +98,7 @@ int noduplicatefiles;
 int dos_text_files;
 int no_duplicate_filenames;
 int show_list_all;
+int getipfromupnp;
 irlist_t adddir_exclude;
 irlist_t autoqueue;
 irlist_t autotrigger;

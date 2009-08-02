@@ -77,6 +77,9 @@ static config_bool_typ config_parse_bool[] = {
 {"fish_only",              &gdata.fish_only },
 #endif /* WITHOUT_BLOWFISH */
 {"getipfromserver",        &gdata.getipfromserver },
+#ifdef USE_UPNP
+{"getipfromupnp",          &gdata.getipfromupnp },
+#endif /* USE_UPNP */
 {"groupsincaps",           &gdata.groupsincaps },
 {"hide_list_info",         &gdata.hide_list_info },
 {"hidelockedpacks",        &gdata.hidelockedpacks },
