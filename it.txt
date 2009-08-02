@@ -2349,3 +2349,5 @@
 2479 "NEWANN"
 2480 "ANNOUNCE for the last <n> packs in all joined channels"
 2481 "http_geoip"
+2482 "getipfromupnp"
+2483 "IP From UPnP = %s"

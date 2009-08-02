@@ -47,6 +47,7 @@ $Id$
 
 static struct UPNPUrls urls;
 static struct IGDdatas data;
+static char externalIPAddress[32];
 
 void init_upnp (void)
 {
@@ -87,6 +88,15 @@ void init_upnp (void)
 	}
 }
 
+char *upnp_get_dccip (void)
+{
+	externalIPAddress[0] = 0;
+	UPNP_GetExternalIPAddress(urls.controlURL, data.servicetype, externalIPAddress);
+	if (externalIPAddress[0] == 0)
+		return NULL;
+	return externalIPAddress;
+}
+
 void upnp_add_redir (const char * addr, const char * port)
 {
 	int r;
@@ -104,7 +114,7 @@ void upnp_add_redir (const char * addr, const char * port)
 	}
 	r = UPNP_AddPortMapping(urls.controlURL, data.servicetype,
 	                        port, port, addr, 0, "TCP", 0);
-	if(r==0)
+	if(r!=UPNPCOMMAND_SUCCESS)
 		ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
 			"AddPortMapping(%s, %s, %s) failed" , port, port, addr);
 }
