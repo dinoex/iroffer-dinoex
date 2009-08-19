@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+bugfix: XDCC upload (reported by TheDeath)
+  Some versions of mIRC triggered on passive upload
+  the error message "File to big."
+
 bugfix: fix small memory leaks
 
 295) getipfromupnp

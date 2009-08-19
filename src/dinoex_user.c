@@ -44,6 +44,7 @@ typedef struct
   char *msg4;
   char *msg5;
   char *msg6;
+  char *msg7;
 } privmsginput;
 
 static const char *type_list[2] = { "NOTICE", "PRIVMSG" };
@@ -217,23 +218,20 @@ static void command_dcc(privmsginput *pi)
   }
 
   if (strcmp(pi->msg2, "SEND") == 0) {
-    char *msg7;
     int down = 0;
 
     if ((pi->msg3 == NULL) || (pi->msg4 == NULL) || (pi->msg5 == NULL) || (pi->msg6 == NULL))
       return;
 
-    msg7 = getpart(pi->line, 10);
     strip_trailing_action(pi->msg6);
-    if (msg7) {
-      strip_trailing_action(msg7);
-      down = t_find_transfer(pi->nick, pi->msg3, pi->msg4, pi->msg5, msg7);
+    if (pi->msg7) {
+      strip_trailing_action(pi->msg7);
+      down = t_find_transfer(pi->nick, pi->msg3, pi->msg4, pi->msg5, pi->msg7);
     }
     if (!down) {
       removenonprintablefile(pi->msg3);
-      upload_start(pi->nick, pi->hostname, pi->hostmask, pi->msg3, pi->msg4, pi->msg5, pi->msg6, msg7);
+      upload_start(pi->nick, pi->hostname, pi->hostmask, pi->msg3, pi->msg4, pi->msg5, pi->msg6, pi->msg7);
     }
-    mydelete(msg7);
     return;
   }
 
@@ -1234,7 +1232,7 @@ static int get_nick_hostname(char *nick, char *hostname, const char* line)
   return 0;
 }
 
-#define MAX_PRIVMSG_PARTS 9
+#define MAX_PRIVMSG_PARTS 10
 
 void privmsgparse(int type, int decoded, char* line)
 {
@@ -1260,6 +1258,7 @@ void privmsgparse(int type, int decoded, char* line)
   pi.msg4 = part[6];
   pi.msg5 = part[7];
   pi.msg6 = part[8];
+  pi.msg7 = part[9];
 
   caps(pi.dest);
   if (pi.msg1) {

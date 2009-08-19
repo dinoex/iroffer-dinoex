@@ -92,6 +92,7 @@ TheDeath
 	suggesting XDCC BATCH
 	option "logfile_httpd"
 	option "http_geoip"
+	reporting XDCC upload "file to big" bug
 
 [GFE]Lunix
 	alias xdcc list group <group>
