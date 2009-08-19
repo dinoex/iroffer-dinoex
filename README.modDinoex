@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+bugfix: fix small memory leaks
+
 295) getipfromupnp
   Get my own IP from the upnp router and use this as value for usenatip.
   Set usenatip to a default value (0.0.0.0) when using this option.
