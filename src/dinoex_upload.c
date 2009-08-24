@@ -178,6 +178,7 @@ void l_setup_accept(upload * const l)
 
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &(l->con.remote.sa), addrlen);
+  mydelete(l->con.remoteaddr);
   l->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
   l->con.remoteport = get_port(&(l->con.remote));
