@@ -1,32 +1,83 @@
-This package was debianized by Dirk Meyer
+This package was debianized by Firas Kraiem <firas@fkraiem.org>
+Sat, 22 Aug 2009 00:57:35 +0200
+
 It was downloaded from: http://iroffer.dinoex.net/
 
-Copyright Holder: David Johnson (PMG) <pmg@iroffer.org>,
-	Ian Jackson, Paul Kocher, Thomas Bernard,cw
-        Dirk Meyer <dinoex@dinoex.net>
+Upstream Author(s):
+	David Johnson <pmg@iroffer.org>,
+	Dirk Meyer <dinoex@dinoex.net>
 
-License:
+Copyright:
+	Copyright (C) 1998-2005 David Johnson <pmg@iroffer.org>
+	Copyright (C) 2004-2009 Dirk Meyer <dinoex@dinoex.net>
+	Copyright (C) 1997 by Paul Kocher
+	Copyright (C) 2000 Bryan Call <bc@fodder.org>
+	Copyright (c) 2005-2007, Thomas BERNARD
 
-Copyright (C) 1998-2004 David Johnson (PMG)
-Copyright (C) 2000-2008 Dirk Meyer
+License:	
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; version 2.
+version 2 as published by the Free Software Foundation;
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation,  Inc.  51 Franklin St, Fifth Floor, Boston, 
-MA  02110-1301  USA 
+On Ubuntu systems, the full text of the GNU GPL, version 2, can
+be found at /usr/share/common-licenses/GPL-2
 
-Packaging for Debian is Copyright 1999 Johnie Ingram, 2002 Decklin
-Foster, and also released under the terms of the GPL (version 2, or
-any later version).
 
-On Debian GNU/Linux systems, the text of the GPL can be found in
-/usr/share/common-licenses/GPL.
+src/iroffer*.[ch], README-iroffer.txt, dynip.sh, iroffer.cron
+are copyrighted by David Johnson (PMG) under GPL2 below.
+
+Configure, Makefile.config, sample.config are written by
+David Johnson (PMG) and where extended by Dirk Meyer.
+These files are under GPL2 below.
+
+src/plumb_md5.[ch] was written by Colin Plumb in 1993 and modified
+by Ian Jackson in 1995, this files are in the public domain.
+
+src/crc32.c is copyrighted by Bryan Call under GPL2 or later.
+
+src/blowfish.[ch] are copyrighted 1997 by Paul Kocher
+and released under LGPL 2.1.
+
+src/upnp.[ch] is writen by Thomas Bernard under BSD license.
+
+All other files are written by Dirk Meyer, and are under GPL2,
+In addition, as a special exception, Dirk Meyer gives
+permission to link the code of portions of this program with the
+OpenSSL library under certain conditions as described in each
+individual source file, and distribute linked combinations
+including the two.
+
+You must obey the GNU General Public License in all respects
+for all of the code used other than OpenSSL.  If you modify
+file(s) with this exception, you may extend this exception to your
+version of the file(s), but you are not obligated to do so.  If you
+do not wish to do so, delete this exception statement from your
+version.  If you delete this exception statement from all source
+files in the program, then also delete it here.
+
+=====================================================================
+
+Due to restrictive license of the GPL you are not allowed to
+distribute binaries that are linked against OpenSSL.
+Please ask David Johnson (PMG) for an execption.
+
+Please make sure if you distribute binaries, that the "libcurl"
+is not linked against OpenSSL too.
+To get a full featured version you have to build it yourself.
+
+Compatible Licenses:
+MaxMind GeoIP Country library is availible under LGPL v2.1 license.
+libminiupnp by Thomas Bernard is availible under BSD license.
+GNU TLS is availible under GPL 2 license.
+
+=====================================================================
+
+Packaging:
+	The Ubuntu packaging is copyright 2009 by Firas Kraiem
+	<firas@fkraiem.org>, released under the GNU GPL, version 2.

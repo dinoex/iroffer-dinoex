@@ -1,13 +1,15 @@
 Source: iroffer-dinoex
 Section: net
 Priority: extra
-Maintainer: Dirk Meyer <dinoex@dinoex.net>
-Standards-Version: 3.7.2
+Maintainer: Firas Kraiem <firas@fkraiem.org>
+Build-Depends: debhelper (>= 7), libgnutls-dev, libcurl4-gnutls-dev, libgeoip-dev
+Standards-Version: 3.8.0
+Homepage: http://iroffer.dinoex.net/
 
 Package: iroffer-dinoex
 Architecture: any
 Depends: ${shlibs:Depends}
-Replaces: iroffer
+Conflicts: iroffer
 Description: IRC file distribution bot
  iroffer is a fileserver for IRC (commonly referred to as a DCC bot).
  It uses the DCC feature of IRC to send files to other users. iroffer
@@ -17,3 +19,6 @@ Description: IRC file distribution bot
  speed and efficiency in mind. iroffer has been known to reach
  6MByte/sec or higher bandwidth usage when multiple transfers are
  occurring at the same time.
+ iroffer-dinoex is a fork of iroffer developed and maintained by
+ Dirk Meyer <dinoex@dinoex.net>. It offers a lot of enhancements
+ and new features.

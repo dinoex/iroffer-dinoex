@@ -1,78 +1,96 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
 # Sample debian/rules that uses debhelper.
-# This file is public domain software, originally written by Joey Hess.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+package = iroffer-dinoex
+
+CC = gcc
+CFLAGS = -g -Wall
+
+ifeq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	  CFLAGS += -O2
+endif
+
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-DEB_CFLAGS = -Wall -g
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-DEB_CFLAGS += -O0
-else
-DEB_CFLAGS += -O2
-endif
-
-export DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-export DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-
 	# Add here commands to configure the package.
-	./Configure
-
+	./Configure -curl -tls -geoip 
 	touch configure-stamp
 
-build: configure-stamp build-stamp
-build-stamp:
+
+build: build-stamp
+
+build-stamp: configure-stamp  
 	dh_testdir
 
 	# Add here commands to compile the package.
 	$(MAKE) CONFIG_CFLAGS="$(DEB_CFLAGS)" CONFIG_LDFLAGS=""
+	#docbook-to-man debian/iroffer-dinoex.sgml > iroffer-dinoex.1
 
-	touch build-stamp
+	touch $@
 
-clean:
+clean: 
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) clean
+	[ ! -f Makefile ] || $(MAKE) clean
 	rm -f convertxdccfile
 	rm -f Makefile
 	rm -f src/iroffer_config.h
 
-	dh_clean
+
+	dh_clean 
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep  
 	dh_installdirs
 
-	# Add here commands to install the package into debian/<packagename>
-	$(MAKE) install INSDIR=$(CURDIR)/debian/iroffer-dinoex/usr/bin
+	# Add here commands to install the package into debian/iroffer-dinoex.
+	$(MAKE) INSDIR=$(CURDIR)/debian/iroffer-dinoex/usr/bin install
 
 
 # Build architecture-independent files here.
-binary-indep: build install
+binary-indep: install
 # We have nothing to do by default.
 
 # Build architecture-dependent files here.
-binary-arch: build install
+binary-arch: install
 	dh_testdir
 	dh_testroot
+	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-	dh_installmenu
+#	dh_install
+#	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_python
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
 	dh_installman
-	dh_installchangelogs
 	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
+#	dh_perl
+#	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
@@ -80,4 +98,4 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary
+.PHONY: build clean binary-indep binary-arch binary install configure
