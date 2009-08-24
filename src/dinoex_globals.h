@@ -13,13 +13,6 @@
  *
  */
 
-#ifdef USE_OPENSSL
-#include <openssl/ssl.h>
-#endif /* USE_OPENSSL */
-#ifdef USE_GNUTLS
-#include <gnutls/openssl.h>
-#endif /* USE_GNUTLS */
-
 #ifdef UNUSED
 #elif defined(__GNUC__)
 # define UNUSED(x) UNUSED_ ## x __attribute__((unused))
