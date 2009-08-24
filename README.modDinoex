@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+bugfix: connectionmethod ssl (contributed by HymnToLife)
+  Build with "GNU TLS" on systems without any "OpenSSL".
+
 bugfix: XDCC upload (reported by TheDeath)
   Some versions of mIRC triggered on passive upload
   the error message "File to big."

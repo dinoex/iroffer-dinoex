@@ -13,9 +13,12 @@
  *
  */
 
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 #include <openssl/ssl.h>
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
+#ifdef USE_GNUTLS
+#include <gnutls/openssl.h>
+#endif /* USE_GNUTLS */
 
 #ifdef UNUSED
 #elif defined(__GNUC__)

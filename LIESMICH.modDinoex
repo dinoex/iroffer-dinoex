@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+bugfix: connectionmethod ssl
+  Baut jetzt "GNU TLS" auf Systemen ohne "OpenSSL".
+
 bugfix: XDCC upload
   Bei einigen Versionen von mIRC kam beim passiven upload
   die Fehlermeldung "Datei zu groﬂ".

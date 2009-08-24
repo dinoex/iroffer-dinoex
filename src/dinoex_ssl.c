@@ -21,9 +21,9 @@
 #include "dinoex_ssl.h"
 #include "dinoex_utilities.h"
 
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 #include <openssl/err.h>
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 
 void ssl_startup(void)
 {
