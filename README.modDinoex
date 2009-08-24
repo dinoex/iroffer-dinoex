@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+bugfix: fix small memory leaks
+
+extend debug and log information.
+
 bugfix: connectionmethod ssl (contributed by HymnToLife)
   Build with "GNU TLS" on systems without any "OpenSSL".
 
