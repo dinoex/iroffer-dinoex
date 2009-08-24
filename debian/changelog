@@ -2,6 +2,12 @@ iroffer-dinoex (3.16-1) unstable; urgency=low
 
   * Update to 3.16
 
+iroffer-dinoex (3.15-3) jaunty; urgency=low
+
+  * Initial Ubuntu package.
+
+ -- Firas Kraiem <firas@fkraiem.org>  Sat, 22 Aug 2009 00:57:35 +0200
+
 iroffer-dinoex (3.15-1) unstable; urgency=low
 
   * Update to 3.15
