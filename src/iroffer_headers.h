@@ -103,9 +103,11 @@
 
 #ifdef USE_OPENSSL
 #include <openssl/ssl.h>
+#define USE_SSL
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
 #include <gnutls/openssl.h>
+#define USE_SSL
 #endif /* USE_GNUTLS */
 
 #include "plumb_md5.h"

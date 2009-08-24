@@ -1476,10 +1476,9 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lssl -lcrypto "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_SSL -DUSE_OPENSSL -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lssl -lcrypto "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_OPENSSL -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "Configuring for OpenSSL."
-		echo "#define USE_SSL" >> src/iroffer_config.h
 		echo "#define USE_OPENSSL" >> src/iroffer_config.h
 		SSLLIB="-lssl -lcrypto"
 		SSLINC="-I${LOCALBASE}/include"
@@ -1509,9 +1508,8 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype config.temp.c $libs -lgnutls-openssl "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_SSL -DUSE_GNUTLS -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
+	if $cctype config.temp.c $libs -lgnutls-openssl "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_GNUTLS -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
-		echo "#define USE_SSL" >> src/iroffer_config.h
 		echo "#define USE_GNUTLS" >> src/iroffer_config.h
 		SSLLIB="-lgnutls-openssl"
 		SSLINC="-I${LOCALBASE}/include"
