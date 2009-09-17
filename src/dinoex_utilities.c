@@ -375,47 +375,47 @@ char *sizestr(int spaces, off_t num)
   }
   /* KB */
   val = (((float)num) / 1024.0);
-  if (val < 1000.0) {
+  if (val < 999.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fK" : "%.0fK", val);
     return str;
   }
   /* MB */
   val /= 1024.0;
-  if (val < 10.0) {
+  if (val < 9.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fM" : "%.1fM", val);
     return str;
   }
-  if (val < 1000.0) {
+  if (val < 999.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fM" : "%.0fM", val);
     return str;
   }
   /* GB */
   val /= 1024.0;
-  if (val < 10.0) {
+  if (val < 9.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fG" : "%.1fG", val);
     return str;
   }
-  if (val < 1000.0) {
+  if (val < 999.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fG" : "%.0fG", val);
     return str;
   }
   /* TB */
   val /= 1024.0;
-  if (val < 10.0) {
+  if (val < 9.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fT" : "%.1fT", val);
     return str;
   }
-  if (val < 1000.0) {
+  if (val < 999.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fT" : "%.0fT", val);
     return str;
   }
   /* EB */
   val /= 1024.0;
-  if (val < 10.0) {
+  if (val < 9.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fE" : "%.1fE", val);
     return str;
   }
-  if (val < 1000.0) {
+  if (val < 999.5) {
     snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fE" : "%.0fE", val);
     return str;
   }
