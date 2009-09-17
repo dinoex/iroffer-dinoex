@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+bugfix: xdcclistfile
+  Größe wurde ogne Einheit angezeit wenn die bytes auf 10.0 aufgerundet wurden.
+
 bugfix: Speicherlecks behoben
 
 Debugging und Logging verbessert.
