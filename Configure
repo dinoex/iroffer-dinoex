@@ -1444,8 +1444,8 @@ main (int argc, char **argv) {exit(0);}
 	if $cctype config.temp.c $libs -lcurl -lz "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_CURL -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_CURL" >> src/iroffer_config.h
-		CURLLIB="-lcurl -lz"
-		CURLINC="-I${LOCALBASE}/include"
+		CURLLIB=`curl-config  --libs`
+		CURLINC=`curl-config  --cflags`
 		CURLLDF="-L${LOCALBASE}/lib"
 		curlssl=`ldd config.temp | grep libssl`
 		if test "${curlssl}" != ""; then
