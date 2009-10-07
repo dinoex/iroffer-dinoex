@@ -87,13 +87,8 @@ void t_setup_send(transfer * const t)
 {
    char *msg;
    SIGNEDSOCK int addrlen;
-   
-#if !defined(_OS_SunOS)
    SIGNEDSOCK int tempi;
-#endif
-#if !defined(_OS_SunOS) || defined(_OS_BSD_ANY) || !defined(CANT_SET_TOS)
    int tempc;
-#endif
    
    updatecontext();
    
@@ -120,7 +115,6 @@ void t_setup_send(transfer * const t)
    
    t->bytessent = t->startresume;
    
-#if !defined(_OS_SunOS)
    tempi = sizeof(int);
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_YELLOW,"SO_SNDBUF ");
    getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, &tempi);
@@ -132,7 +126,6 @@ void t_setup_send(transfer * const t)
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," b %li",(long)tempc);
    getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, &tempi);
    if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_YELLOW," c %li",(long)tempc);
-#endif
    
 #if defined(_OS_BSD_ANY)
    /* #define SO_SNDLOWAT     0x1003     */
