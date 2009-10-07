@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+opensolaris: set buffer size for output
+
 bugfix: xdcclistfile (reported by Procyon)
   Size of a pack was shown without unit when bytes where rouded up to "10.0".
 

@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+opensolaris: Setze Buffer für Netzwerk
+
 bugfix: xdcclistfile
   Größe wurde ogne Einheit angezeit wenn die bytes auf 10.0 aufgerundet wurden.
 
