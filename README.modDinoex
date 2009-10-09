@@ -3,7 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
-bugfix: xdccxmlfile
+296: xdccxmlfile
+  New tag "transferedtotalbytes" (inspired by Chii-sama).
   Tag "added" is changed to "adddate".
 
 opensolaris: set buffer size for output

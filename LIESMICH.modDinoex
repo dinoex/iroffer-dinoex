@@ -3,7 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
-bugfix: xdccxmlfile 
+296: xdccxmlfile
+  Neus Tag "transferedtotalbytes".
   Tag "added" ist umbenannt in "adddate".
 
 opensolaris: Setze Buffer für Netzwerk

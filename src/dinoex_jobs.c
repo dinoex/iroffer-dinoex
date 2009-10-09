@@ -1636,6 +1636,7 @@ static void xdcc_save_xml(void)
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.totalsent);
   write_asc_plain(fd, 4, "transferedtotal", tempstr);
+  write_asc_int64(fd, 4, "transferedtotalbytes", gdata.totalsent);
   mydelete(tempstr);
   write_string(fd, "  </quota>\n");
 
