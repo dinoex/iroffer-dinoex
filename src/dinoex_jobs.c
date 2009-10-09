@@ -1444,37 +1444,61 @@ static size_t write_string(int fd, const char *line)
   return write(fd, line, len);
 }
 
-static size_t write_asc_int(int fd, int val)
+static size_t write_asc_int(int fd, int spaces, const char *tag, int val)
 {
   char *tempstr;
   size_t len;
 
   tempstr = mycalloc(maxtextlengthshort);
-  len = snprintf(tempstr, maxtextlengthshort, "%d", val);
+  len = snprintf(tempstr, maxtextlengthshort, "%*s<%s>%d</%s>\n", spaces, "", tag, val, tag);
   len = write(fd, tempstr, len);
   mydelete(tempstr);
   return len;
 }
 
-static size_t write_asc_int64(int fd, ir_int64 val)
+static size_t write_asc_int64(int fd, int spaces, const char *tag, ir_int64 val)
 {
   char *tempstr;
   size_t len;
 
   tempstr = mycalloc(maxtextlengthshort);
-  len = snprintf(tempstr, maxtextlengthshort, "%" LLPRINTFMT "d", val);
+  len = snprintf(tempstr, maxtextlengthshort, "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag);
   len = write(fd, tempstr, len);
   mydelete(tempstr);
   return len;
 }
 
-static size_t write_asc_hex(int fd, unsigned long val)
+static size_t write_asc_hex(int fd, int spaces, const char *tag, unsigned long val)
 {
   char *tempstr;
   size_t len;
 
   tempstr = mycalloc(maxtextlengthshort);
-  len = snprintf(tempstr, maxtextlengthshort, "%.8lX", val);
+  len = snprintf(tempstr, maxtextlengthshort, "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag);
+  len = write(fd, tempstr, len);
+  mydelete(tempstr);
+  return len;
+}
+
+static size_t write_asc_text(int fd, int spaces, const char *tag, const char *val)
+{
+  char *tempstr;
+  size_t len;
+
+  tempstr = mycalloc(maxtextlength);
+  len = snprintf(tempstr, maxtextlength, "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag);
+  len = write(fd, tempstr, len);
+  mydelete(tempstr);
+  return len;
+}
+
+static size_t write_asc_plain(int fd, int spaces, const char *tag, const char *val)
+{
+  char *tempstr;
+  size_t len;
+
+  tempstr = mycalloc(maxtextlength);
+  len = snprintf(tempstr, maxtextlength, "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag);
   len = write(fd, tempstr, len);
   mydelete(tempstr);
   return len;
@@ -1531,34 +1555,20 @@ static void xdcc_save_xml(void)
 
     toffered += xd->st_size;
     write_string(fd, "<pack>\n");
-    write_string(fd, "  <packnr>");
-    write_asc_int(fd, num);
-    write_string(fd, "</packnr>\n");
-    write_string(fd, "  <packname><![CDATA[");
+    write_asc_int(fd, 2, "packnr", num);
     tempstr = mystrdup(xd->desc);
     removenonprintablectrl(tempstr);
-    write_string(fd, tempstr);
+    write_asc_text(fd, 2, "packname", tempstr);
     mydelete(tempstr);
-    write_string(fd, "]]></packname>\n");
-    write_string(fd, "  <packsize><![CDATA[");
     tempstr = sizestr(0, xd->st_size);
-    write_string(fd, tempstr);
+    write_asc_text(fd, 2, "packsize", tempstr);
     mydelete(tempstr);
-    write_string(fd, "]]></packsize>\n");
-    write_string(fd, "  <packbytes>");
-    write_asc_int64(fd, xd->st_size);
-    write_string(fd, "</packbytes>\n");
-    write_string(fd, "  <packgets>");
-    write_asc_int(fd, xd->gets);
-    write_string(fd, "</packgets>\n");
-    write_string(fd, "  <added>");
-    write_asc_int(fd, xd->xtime ? xd->xtime : xd->mtime);
-    write_string(fd, "</added>\n");
+    write_asc_int64(fd, 2, "packbytes", xd->st_size);
+    write_asc_int(fd, 2, "packgets", xd->gets);
+    write_asc_int(fd, 2, "added", xd->xtime ? xd->xtime : xd->mtime);
     if (xd->group != NULL) {
       groups ++;
-      write_string(fd, "  <groupname><![CDATA[");
-      write_string(fd, xd->group);
-      write_string(fd, "]]></groupname>\n");
+      write_asc_text(fd, 2, "groupname", xd->group);
     }
     if (xd->has_md5sum) {
       size_t len;
@@ -1571,9 +1581,7 @@ static void xdcc_save_xml(void)
       write_string(fd, "</md5sum>\n");
     }
     if (xd->has_crc32) {
-      write_string(fd, "  <crc32>");
-      write_asc_hex(fd, xd->crc32);
-      write_string(fd, "</crc32>\n");
+      write_asc_hex(fd, 2, "crc32", xd->crc32);
     }
     write_string(fd, "</pack>\n\n");
   }
@@ -1590,15 +1598,11 @@ static void xdcc_save_xml(void)
         continue;
 
       write_string(fd, "  <group>\n");
-      write_string(fd, "    <groupname><![CDATA[");
-      write_string(fd, xd->group);
-      write_string(fd, "]]></groupname>\n");
-      write_string(fd, "    <groupdesc><![CDATA[");
+      write_asc_text(fd, 4, "groupname", xd->group);
       tempstr = mystrdup(xd->group_desc);
       removenonprintablectrl(tempstr);
-      write_string(fd, tempstr);
+      write_asc_text(fd, 4, "groupdesc", xd->group_desc);
       mydelete(tempstr);
-      write_string(fd, "]]></groupdesc>\n");
       write_string(fd, "  </group>\n");
     }
     write_string(fd, "</grouplist>\n\n");
@@ -1606,93 +1610,62 @@ static void xdcc_save_xml(void)
 
   write_string(fd, "<sysinfo>\n");
   write_string(fd, "  <slots>\n");
-  write_string(fd, "    <slotsfree>");
-  write_asc_int(fd, gdata.slotsmax - irlist_size(&gdata.trans));
-  write_string(fd, "</slotsfree>\n");
-  write_string(fd, "    <slotsmax>");
-  write_asc_int(fd, gdata.slotsmax);
-  write_string(fd, "</slotsmax>\n");
+  write_asc_int(fd, 4, "slotsfree", gdata.slotsmax - irlist_size(&gdata.trans));
+  write_asc_int(fd, 4, "slotsmax", gdata.slotsmax);
   write_string(fd, "  </slots>\n");
 
   write_string(fd, "  <bandwith>\n");
-  write_string(fd, "    <banduse>");
   tempstr = get_current_bandwidth();
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "banduse", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</banduse>\n");
-  write_string(fd, "    <bandmax>");
   tempstr = mycalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "bandmax", tempstr);
   mydelete(tempstr);
   write_string(fd, "</bandmax>\n");
   write_string(fd, "  </bandwith>\n");
 
   write_string(fd, "  <quota>\n");
-  write_string(fd, "    <packsum>");
-  write_asc_int(fd, num);
-  write_string(fd, "</packsum>\n");
-  write_string(fd, "    <diskspace>");
+  write_asc_int(fd, 4, "packsum", num);
   tempstr = sizestr(0, toffered);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "diskspace", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</diskspace>\n");
-  write_string(fd, "    <transfereddaily>");
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "transfereddaily", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</transfereddaily>\n");
-  write_string(fd, "    <transferedweekly>");
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "transferedweekly", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</transferedweekly>\n");
-  write_string(fd, "    <transferedmonthly>");
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "transferedmonthly", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</transferedmonthly>\n");
-  write_string(fd, "    <transferedtotal>");
   tempstr = sizestr(0, gdata.totalsent);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "transferedtotal", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</transferedtotal>\n");
   write_string(fd, "  </quota>\n");
 
   write_string(fd, "  <limits>\n");
-  write_string(fd, "    <minspeed>");
   tempstr = mycalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transferminspeed);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "minspeed", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</minspeed>\n");
-  write_string(fd, "    <maxspeed>");
   tempstr = mycalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transfermaxspeed);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "maxspeed", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</maxspeed>\n");
   write_string(fd, "  </limits>\n");
 
   write_string(fd, "  <stats>\n");
-  write_string(fd, "    <version>");
-  write_string(fd, "iroffer-dinoex " VERSIONLONG );
-  write_string(fd, "</version>\n");
-  write_string(fd, "    <uptime>");
+  write_asc_plain(fd, 4, "version", "iroffer-dinoex " VERSIONLONG );
   tempstr = mycalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "uptime", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</uptime>\n");
-  write_string(fd, "    <totaluptime>");
   tempstr = mycalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);
-  write_string(fd, tempstr);
+  write_asc_plain(fd, 4, "totaluptime", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</totaluptime>\n");
-  write_string(fd, "    <lastupdate>");
-  write_asc_int(fd, gdata.curtime);
-  write_string(fd, "</lastupdate>\n");
+  write_asc_int(fd, 4, "lastupdate", gdata.curtime);
   write_string(fd, "  </stats>\n");
   write_string(fd, "</sysinfo>\n\n");
 
