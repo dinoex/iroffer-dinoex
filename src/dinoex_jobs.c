@@ -1571,14 +1571,10 @@ static void xdcc_save_xml(void)
       write_asc_text(fd, 2, "groupname", xd->group);
     }
     if (xd->has_md5sum) {
-      size_t len;
-
-      write_string(fd, "  <md5sum>");
       tempstr = mycalloc(maxtextlengthshort);
-      len = snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
-      write(fd, tempstr, len);
+      snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
+      write_asc_text(fd, 2, "md5sum", tempstr);
       mydelete(tempstr);
-      write_string(fd, "</md5sum>\n");
     }
     if (xd->has_crc32) {
       write_asc_hex(fd, 2, "crc32", xd->crc32);
@@ -1622,7 +1618,6 @@ static void xdcc_save_xml(void)
   snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
   write_asc_plain(fd, 4, "bandmax", tempstr);
   mydelete(tempstr);
-  write_string(fd, "</bandmax>\n");
   write_string(fd, "  </bandwith>\n");
 
   write_string(fd, "  <quota>\n");
