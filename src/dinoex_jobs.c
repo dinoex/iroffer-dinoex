@@ -1565,7 +1565,7 @@ static void xdcc_save_xml(void)
     mydelete(tempstr);
     write_asc_int64(fd, 2, "packbytes", xd->st_size);
     write_asc_int(fd, 2, "packgets", xd->gets);
-    write_asc_int(fd, 2, "added", xd->xtime ? xd->xtime : xd->mtime);
+    write_asc_int(fd, 2, "adddate", xd->xtime ? xd->xtime : xd->mtime);
     if (xd->group != NULL) {
       groups ++;
       write_asc_text(fd, 2, "groupname", xd->group);

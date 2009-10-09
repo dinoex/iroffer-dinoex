@@ -2325,3 +2325,4 @@
 2508 "totaluptime"
 2509 "lastupdate"
 2510 "md5sum"
+2511 "adddate"
