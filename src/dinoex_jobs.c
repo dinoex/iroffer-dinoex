@@ -1461,8 +1461,8 @@ static size_t write_asc_int64(int fd, int spaces, const char *tag, ir_int64 val)
   char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlengthshort);
-  len = snprintf(tempstr, maxtextlengthshort, "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag);
+  tempstr = mycalloc(maxtextlength);
+  len = snprintf(tempstr, maxtextlength, "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag);
   len = write(fd, tempstr, len);
   mydelete(tempstr);
   return len;
