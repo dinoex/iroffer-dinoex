@@ -122,6 +122,10 @@ Long Term Features:
   1389  PART all channels till REHASH
   1370  inform user after ACCEPTU
   1381  support for 8 bit nicks
+  1383  support { in network line
+  1384  auto delete of rotated logfiles
+  1385  !NEWDOWNLOAD trigger
+  1391  check md5 hashes against external file
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
