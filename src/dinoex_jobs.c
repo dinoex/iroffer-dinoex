@@ -543,6 +543,9 @@ void admin_jobs(void)
     l = line + strlen(line) - 1;
     while (( *l == '\r' ) || ( *l == '\n' ))
       *(l--) = 0;
+    /* ignore empty lines and comments */
+    if ((l[0] == 0) || (l[0] == '#'))
+      continue;
     irlist_add_string(&gdata.jobs_delayed, line);
   }
   mydelete(line)
