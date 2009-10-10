@@ -219,6 +219,7 @@ Kurosaki
 	reporting crc unlock problem
 	reporting ADDGROUP via /MSG bug
 	admin commamd "MOVEGROUPDIR"
+	suggesting comments in "admin_job_file"
 
 PiRaTe
 	suggesting more info on DCLD
@@ -567,4 +568,7 @@ AlexanderS
 
 Chii-sama
 	suggesting "xdccxmlfile" with totalbytes
+
+Dragon
+	suggesting "no_find_trigger"
 

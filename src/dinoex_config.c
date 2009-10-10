@@ -99,6 +99,7 @@ static config_bool_typ config_parse_bool[] = {
 {"need_voice",             &gdata.need_voice },
 {"no_auto_rehash",         &gdata.no_auto_rehash },
 {"no_duplicate_filenames", &gdata.no_duplicate_filenames },
+{"no_find_trigger",        &gdata.no_find_trigger },
 {"no_minspeed_on_free",    &gdata.no_minspeed_on_free },
 {"no_status_chat",         &gdata.no_status_chat },
 {"no_status_log",          &gdata.no_status_log },
