@@ -69,6 +69,10 @@ Short Term Features:
   1378  mute announce for x mins
   1379  different packlists for different groups
   1380  restrictsend on a per-network basis
+  1394  pack size included in the output of announce
+  1395  use native gnuTLS API
+  1397  Passive DCC CHAT
+  1402  neverannounce, cannounce per net
 
 Long Term Features:
   1008  use text or xml for statefile
@@ -126,6 +130,9 @@ Long Term Features:
   1384  auto delete of rotated logfiles
   1385  !NEWDOWNLOAD trigger
   1391  check md5 hashes against external file
+  1400  add hosts/users to a list that can skip the queue if it is full
+  1405  autocolor packs
+  1406  admin command for Weblist ON | OFF
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -190,4 +197,6 @@ Not going to happen anytime soon:
   1342  incomann channel
   1344  drop down menues in weblist
   1351  http dowloads for users
+  1398  dcc password containing spaces
+
 
