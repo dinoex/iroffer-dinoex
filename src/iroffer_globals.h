@@ -212,6 +212,7 @@ int no_status_log;
 int no_auto_rehash;
 int send_batch;
 int http_geoip;
+int no_find_trigger;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

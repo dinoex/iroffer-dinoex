@@ -888,6 +888,30 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
   return k;
 }
 
+/* iroffer-lamm: @find */
+static void do_atfind(int min, privmsginput *pi)
+{
+  char *msg2e;
+  int k;
+
+  if (check_ignore(pi->nick, pi->hostmask))
+    return;
+
+  msg2e = getpart_eol(pi->line, 5);
+  gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+  k = convert_spaces_to_match(msg2e);
+  if (k >= min) {
+    k = noticeresults(pi->nick, msg2e, pi->dest);
+    if (k) {
+      ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
+              "@FIND %s (%s on %s) - %i %s found.",
+              msg2e, pi->hostmask, gnetwork->name, k, k != 1 ? "packs" : "pack");
+    }
+  }
+  mydelete(msg2e);
+  gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+}
+
 static int run_new_trigger(const char *nick, const char *grouplist)
 {
   struct tm *localt = NULL;
@@ -1121,28 +1145,15 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
 
   /* iroffer-lamm: @find */
   if (gdata.atfind && pi->msg2) {
-    if ((strcmp(pi->msg1, "@FIND") == 0) ||
-        (strcmp(pi->msg1, "!FIND") == 0)) {
-      char *msg2e;
-      int k;
-
-      if (check_ignore(pi->nick, pi->hostmask))
-        return;
-
-      msg2e = getpart_eol(pi->line, 5);
-      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
-      k = convert_spaces_to_match(msg2e);
-      if (k >= gdata.atfind) {
-        k = noticeresults(pi->nick, msg2e, pi->dest);
-        if (k) {
-          ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
-                  "@FIND %s (%s on %s) - %i %s found.",
-                  msg2e, pi->hostmask, gnetwork->name, k, k != 1 ? "packs" : "pack");
-        }
-      }
-      mydelete(msg2e);
-      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+    if (strcmp(pi->msg1, "@FIND") == 0) {
+      do_atfind( gdata.atfind, pi);
       return;
+    }
+    if (!gdata.no_find_trigger) {
+      if (strcmp(pi->msg1, "!FIND") == 0) {
+        do_atfind( gdata.atfind, pi);
+        return;
+      }
     }
   }
 
