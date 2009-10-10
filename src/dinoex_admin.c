@@ -3109,7 +3109,8 @@ void a_amsg(const userinput * const u)
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
-    a_announce_channels(u->arg1e, NULL, NULL);
+    if (gnetwork->noannounce == 0)
+      a_announce_channels(u->arg1e, NULL, NULL);
   }
   gnetwork = backup;
   a_respond(u, "Announced [%s]", u->arg1e);
@@ -3937,7 +3938,8 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
     gnetwork = &(gdata.networks[ss]);
     snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
              tempstr2, get_user_nick(), num);
-    a_announce_channels(tempstr, match, xd->group);
+    if (gnetwork->noannounce == 0)
+      a_announce_channels(tempstr, match, xd->group);
     gnetwork = backup;
     a_respond(u, "Announced [%s]%s", msg, tempstr3);
   }
@@ -4042,7 +4044,8 @@ void a_newann(const userinput * const u)
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
     gnetwork = &(gdata.networks[ss]);
-    a_new_announce(max);
+    if (gnetwork->noannounce == 0)
+      a_new_announce(max);
   }
   gnetwork = backup;
 }
@@ -4107,7 +4110,8 @@ void a_sannounce(const userinput * const u)
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ss++) {
       gnetwork = &(gdata.networks[ss]);
-      a_announce_channels(tempstr, NULL, xd->group);
+      if (gnetwork->noannounce == 0)
+        a_announce_channels(tempstr, NULL, xd->group);
       gnetwork = backup;
       a_respond(u, "Announced [%i]%s", num1, tempstr3);
     }

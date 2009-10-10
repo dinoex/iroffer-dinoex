@@ -72,7 +72,6 @@ Short Term Features:
   1394  pack size included in the output of announce
   1395  use native gnuTLS API
   1397  Passive DCC CHAT
-  1402  neverannounce, cannounce per net
 
 Long Term Features:
   1008  use text or xml for statefile

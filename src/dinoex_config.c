@@ -199,9 +199,27 @@ static int config_find_bool(const char *key)
   return -1;
 }
 
+static int parse_bool_val(const char *key, const char *text)
+{
+  if (text == NULL) {
+    return 1;
+  }
+  if (!strcmp("yes", text)) {
+    return 1;
+  }
+  if (!strcmp("no", text)) {
+    return 0;
+  }
+  outerror(OUTERROR_TYPE_WARN,
+           "%s:%ld ignored '%s' because it has unknown args: '%s'",
+           current_config, current_line, key, text);
+  return -1;
+}
+
 static int set_config_bool(const char *key, const char *text)
 {
   int i;
+  int val;
 
   updatecontext();
 
@@ -209,21 +227,10 @@ static int set_config_bool(const char *key, const char *text)
   if (i < 0)
     return 1;
 
-  if (text == NULL) {
-    *(config_parse_bool[i].ivar) = 1;
-    return 0;
+  val = parse_bool_val(key, text);
+  if (val != -1 ) {
+    *(config_parse_bool[i].ivar) = val;
   }
-  if (!strcmp("yes", text)) {
-    *(config_parse_bool[i].ivar) = 1;
-    return 0;
-  }
-  if (!strcmp("no", text)) {
-    *(config_parse_bool[i].ivar) = 0;
-    return 0;
-  }
-  outerror(OUTERROR_TYPE_WARN,
-           "%s:%ld ignored '%s' because it has unknown args: '%s'",
-           current_config, current_line, key, text);
   return 0;
 }
 
@@ -1204,6 +1211,16 @@ static void c_nickserv_pass(char *var)
   gdata.networks[gdata.networks_online].nickserv_pass = mystrdup(var);
 }
 
+static void c_noannounce(char *var)
+{
+  int val;
+
+  val = parse_bool_val("noannounce", var);
+  if (val != -1 ) {
+    gdata.networks[gdata.networks_online].noannounce = val;
+  }
+}
+
 static void c_overallmaxspeeddaydays(char *var)
 {
   char *src;
@@ -1437,6 +1454,7 @@ static config_func_typ config_parse_func[] = {
 {"need_level",             c_need_level },
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },
+{"noannounce",             c_noannounce },
 {"overallmaxspeeddaydays", c_overallmaxspeeddaydays },
 {"overallmaxspeeddaytime", c_overallmaxspeeddaytime },
 {"periodicmsg",            c_periodicmsg },
