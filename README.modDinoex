@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
-296: xdccxmlfile
+297) admin_job_file
+  Allow comments while parsing the file "admin_job_file".
+
+296) xdccxmlfile
   New tag "transferedtotalbytes" (inspired by Chii-sama).
   Tag "added" is changed to "adddate".
 
