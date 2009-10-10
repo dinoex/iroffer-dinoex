@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+298) no_find_trigger (inspired by Dragon)
+  Iroffer will respond to "!find" too if atfind is defined.
+  This flag will make the bot ignore "!find".
+  default: response to "!find"
+
 297) admin_job_file
   Allow comments while parsing the file "admin_job_file".
 
