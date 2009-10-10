@@ -173,6 +173,7 @@ typedef struct {
   int getip_net;
   int need_voice;
   int need_level;
+  int noannounce;
   how_e r_connectionmethod;
   userinput_method_e lag_method;
 
