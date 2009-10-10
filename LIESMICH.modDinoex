@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+298) no_find_trigger
+  Iroffer reagiert auf "!find" as Trigger wenn atfind angegeben ist.
+  Mit diesem Schalter wird der Bot "!find" nicht beachten.
+
 297) admin_job_file
   Erlaube Kommentarezeilen in Der Datei "admin_job_file".
 
