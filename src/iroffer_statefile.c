@@ -1408,21 +1408,13 @@ void read_statefile(void)
               }
             else
               {
-                int xfd;
-                xfd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
-                if (xfd < 0)
-                  {
-                    outerror(OUTERROR_TYPE_WARN, "Pack %d: Cant Access Offered File '%s': %s",
-                             number_of_pack(xd),
-                             xd->file, strerror(errno));
-                    memset(&st,0,sizeof(st));
-                  }
-                else if (fstat(xfd, &st) < 0)
+                if (stat(xd->file, &st) < 0)
                   {
                     outerror(OUTERROR_TYPE_WARN, "Pack %d: Cant Access Offered File Details '%s': %s",
                              number_of_pack(xd),
                              xd->file, strerror(errno));
                     memset(&st, 0, sizeof(st));
+                    break;
                   }
                 
                 if (!xd->has_md5sum ||
@@ -1450,11 +1442,6 @@ void read_statefile(void)
                     outerror(OUTERROR_TYPE_CRASH, "Pack %d: The file \"%s\" is too large!",
                              number_of_pack(xd),
                              xd->file);
-                  }
-                
-                if (xfd >= 0)
-                  {
-                    close(xfd);
                   }
               }
           }
