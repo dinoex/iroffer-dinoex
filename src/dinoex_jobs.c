@@ -1511,6 +1511,8 @@ static size_t write_asc_plain(int fd, int spaces, const char *tag, const char *v
 
 static void xdcc_save_xml(void)
 {
+  channel_t *ch;
+  gnetwork_t *backup;
   char *filename_tmp;
   char *filename_bak;
   char *tempstr;
@@ -1519,6 +1521,7 @@ static void xdcc_save_xml(void)
   int fd;
   int num;
   int groups;
+  int ss;
 
   updatecontext();
 
@@ -1655,6 +1658,27 @@ static void xdcc_save_xml(void)
   write_asc_plain(fd, 4, "maxspeed", tempstr);
   mydelete(tempstr);
   write_string(fd, "  </limits>\n");
+
+  write_string(fd, "  <networks>\n");
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    write_asc_plain(fd, 4, "networkname", gdata.networks[ss].name);
+    gnetwork = &(gdata.networks[ss]);
+    write_asc_plain(fd, 4, "confignick", get_config_nick());
+    write_asc_plain(fd, 4, "currentnick", get_user_nick());
+    write_asc_plain(fd, 4, "servername", gdata.networks[ss].curserver.hostname);
+    if (gdata.networks[ss].curserveractualname != NULL)
+      write_asc_plain(fd, 4, "currentservername", gdata.networks[ss].curserveractualname);
+    for (ch = irlist_get_head(&(gnetwork->channels));
+         ch;
+         ch = irlist_delete(&(gnetwork->channels), ch)) {
+      if ((ch->flags & CHAN_ONCHAN) == 0)
+        continue;
+      write_asc_plain(fd, 4, "channel", ch->name);
+    }
+  }
+  gnetwork = backup;
+  write_string(fd, "  </networks>\n");
 
   write_string(fd, "  <stats>\n");
   write_asc_plain(fd, 4, "version", "iroffer-dinoex " VERSIONLONG );
