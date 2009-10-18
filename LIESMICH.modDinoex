@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+bugfix: removelostfiles
+  Entferne alle Packs in einem Lauf.
+
 299) noannounce
   Verhindere alle "Anoounces" in dem aktuellen Netzwerk.
 

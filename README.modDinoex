@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+bugfix: removelostfiles
+  Remove all lost files in a single run.
+
 299) noannounce (inspired by Hamikzo)
   Disable all announces for the current network.
 
