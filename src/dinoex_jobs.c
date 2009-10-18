@@ -592,8 +592,10 @@ void look_for_file_remove(void)
     if (last_look_for_file_remove < 0 || last_look_for_file_remove >= p)
       last_look_for_file_remove = 0;
 
-    if (check_for_file_remove(last_look_for_file_remove + 1))
+    if (check_for_file_remove(last_look_for_file_remove + 1)) {
+      last_look_for_file_remove --;
       return;
+    }
   }
   return;
 }
