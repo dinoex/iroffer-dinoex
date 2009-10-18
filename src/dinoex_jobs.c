@@ -531,7 +531,7 @@ void admin_jobs(void)
   if (job == NULL)
     return;
 
-  fin = fopen(job, "ra" );
+  fin = fopen(job, "r" );
   if (fin == NULL)
     return;
 
@@ -544,7 +544,7 @@ void admin_jobs(void)
     while (( *l == '\r' ) || ( *l == '\n' ))
       *(l--) = 0;
     /* ignore empty lines and comments */
-    if ((l[0] == 0) || (l[0] == '#'))
+    if ((line[0] == 0) || (line[0] == '#'))
       continue;
     irlist_add_string(&gdata.jobs_delayed, line);
   }
@@ -2002,7 +2002,9 @@ void a_read_config_files(const userinput *u)
 {
   struct stat st;
   char *templine;
-  int filedescriptor;
+  FILE *fin;
+  char *r;
+  char *l;
   int h;
 
   updatecontext();
@@ -2014,8 +2016,8 @@ void a_read_config_files(const userinput *u)
     else
       a_respond(u, "Reloading %s ...", gdata.configfile[h]);
 
-    filedescriptor=open(gdata.configfile[h], O_RDONLY | ADDED_OPEN_FLAGS);
-    if (filedescriptor < 0) {
+    fin = fopen(gdata.configfile[h], "r");
+    if (fin == NULL) {
       if (u == NULL) {
           outerror(OUTERROR_TYPE_CRASH, "Cant Access Config File '%s': %s",
                    gdata.configfile[h], strerror(errno));
@@ -2026,7 +2028,7 @@ void a_read_config_files(const userinput *u)
       continue;
     }
 
-    if (fstat(filedescriptor, &st) < 0) {
+    if (stat(gdata.configfile[h], &st) < 0) {
       outerror(OUTERROR_TYPE_CRASH,
                "Unable to stat file '%s': %s",
                gdata.configfile[h], strerror(errno));
@@ -2035,13 +2037,19 @@ void a_read_config_files(const userinput *u)
     current_config = gdata.configfile[h];
     current_line = 0;
     gdata.bracket = 0;
-    while (getfline(templine, maxtextlength, filedescriptor, 1)) {
+    while (!feof(fin)) {
+      r = fgets(templine, maxtextlength, fin);
+      if (r == NULL )
+        break;
+      l = templine + strlen(templine) - 1;
+      while (( *l == '\r' ) || ( *l == '\n' ))
+        *(l--) = 0;
       current_line ++;
       if ((templine[0] != '#') && templine[0]) {
         getconfig_set(templine);
       }
     }
-    close(filedescriptor);
+    fclose(fin);
   }
   gdata.networks_online ++;
   mydelete(templine);
