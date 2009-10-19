@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+300) xdccxmlfile (inspired by dns777)
+  New tags for network and nicknames.
+
 bugfix: removelostfiles
   Remove all lost files in a single run.
 
