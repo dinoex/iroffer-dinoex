@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+300) xdccxmlfile
+  Neue Tags für Netzwerk und Nicknamen.
+
 bugfix: removelostfiles
   Entferne alle Packs in einem Lauf.
 
@@ -17,7 +20,7 @@ bugfix: removelostfiles
   Erlaube Kommentarezeilen in Der Datei "admin_job_file".
 
 296) xdccxmlfile
-  Neus Tag "transferedtotalbytes".
+  Neues Tag "transferedtotalbytes".
   Tag "added" ist umbenannt in "adddate".
 
 opensolaris: Setze Buffer für Netzwerk
