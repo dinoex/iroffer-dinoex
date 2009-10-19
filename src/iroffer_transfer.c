@@ -246,7 +246,7 @@ void t_transfersome (transfer * const t)
                              &offset,
                              attempt);
           
-          if (howmuch < 0 && errno == ENOSYS)
+          if (howmuch < 0 && ((errno == ENOSYS) || (errno == EOVERFLOW)))
             {
               /* sendfile doesn't work on this system, fall back */
               outerror(OUTERROR_TYPE_WARN, "linux-sendfile transfer method does not work on this system, falling back to next available method");
