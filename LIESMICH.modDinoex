@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+bugfix: transfermethod "linux-sendfile"
+  Benutze normales Lesen/Screiben wenn sendfile nicht startet.
+
 300) xdccxmlfile
   Neue Tags für Netzwerk und Nicknamen.
 
