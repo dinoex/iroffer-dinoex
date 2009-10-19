@@ -1231,7 +1231,6 @@
 1298 "Ignorato lo sconosciuto XDCC Tag 0x%X (len=%d)"
 1299 "Ignorato l'incompleto XDCC Tag"
 1300 "Pack %d: Impossibile Accedere al File Offerto '%s': %s"
-1301 "Pack %d: Impossibile Accedere ai dettagli del File Offerto '%s': %s"
 1302 "Pack %d: Il file \"%s\" ha dimensioni di 0 bytes!"
 1303 "Pack %d: Il file \"%s\" è troppo grande!"
 1304 "  [Limite di Trasferimento Giornaliero Utilizzato %"

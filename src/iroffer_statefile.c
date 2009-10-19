@@ -1410,7 +1410,7 @@ void read_statefile(void)
               {
                 if (stat(xd->file, &st) < 0)
                   {
-                    outerror(OUTERROR_TYPE_WARN, "Pack %d: Cant Access Offered File Details '%s': %s",
+                    outerror(OUTERROR_TYPE_WARN, "Pack %d: Cant Access Offered File '%s': %s",
                              number_of_pack(xd),
                              xd->file, strerror(errno));
                     memset(&st, 0, sizeof(st));
