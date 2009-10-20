@@ -6,7 +6,7 @@ With Version 3.16:
 bugfix: transfermethod "linux-sendfile" (reported by isengaurd)
   Fall back on plain read/write if sendfile aborts.
 
-300) xdccxmlfile (inspired by dns777)
+300) xdccxmlfile (inspired by PastisD)
   New tags for network and nicknames.
 
 bugfix: removelostfiles
