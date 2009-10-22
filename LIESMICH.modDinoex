@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+301) ruby_script
+  Neue Methode "on_added", wird bei jedem neuen Pack aufgerufen.
+
 bugfix: transfermethod "linux-sendfile"
   Benutze normales Lesen/Screiben wenn sendfile nicht startet.
 

@@ -47,6 +47,8 @@ int myruby_loaded;
 time_t myruby_time;
 
 char *cLine;
+char *cFile;
+int cPack;
 VALUE cIrofferConfig;
 VALUE cIrofferEvent;
 VALUE oIrofferEvent = Qnil;
@@ -163,6 +165,16 @@ static VALUE cie_network(void)
 static VALUE cie_inputline(void)
 {
   return rb_str_new(cLine, strlen(cLine));
+}
+
+static VALUE cie_added_file(void)
+{
+  return rb_str_new(cFile, strlen(cFile));
+}
+
+static VALUE cie_added_pack(void)
+{
+  return INT2NUM(cPack);
 }
 
 static VALUE cie_hostmask(void)
@@ -379,6 +391,8 @@ static void Init_IrofferEvent(void) {
   rb_define_method(cIrofferEvent, "channel", cie_channel, 0);
   rb_define_method(cIrofferEvent, "message", cie_message, 0);
   rb_define_method(cIrofferEvent, "config", cie_config, 1);
+  rb_define_method(cIrofferEvent, "added_file", cie_added_file, 0);
+  rb_define_method(cIrofferEvent, "added_pack", cie_added_pack, 0);
   rb_gc_register_address(&cIrofferEvent);
 }
 
@@ -484,6 +498,16 @@ int do_myruby_privmsg(char *line)
 
   cLine = line;
   return do_on_event(oIrofferEvent, "on_privmsg");
+}
+
+int do_myruby_added(char *filename, int pack)
+{
+  if (myruby_loaded == 0)
+    return 0;
+
+  cFile = filename;
+  cPack = pack;
+  return do_on_event(oIrofferEvent, "on_added");
 }
 
 void rehash_myruby(int check)

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+301) ruby_script
+  New method "on_added", called for each pack added to the bot.
+
 bugfix: transfermethod "linux-sendfile" (reported by isengaurd)
   Fall back on plain read/write if sendfile aborts.
 
