@@ -26,6 +26,7 @@
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
 #include "dinoex_config.h"
+#include "dinoex_ruby.h"
 #include "dinoex_misc.h"
 
 #include <ctype.h>
@@ -1159,6 +1160,10 @@ static xdcc *a_add2(const userinput * const u, const char *group)
 
   set_support_groups();
   write_files();
+#ifdef USE_RUBY
+   if (do_myruby_added(xd->file, n))
+     return;
+#endif /* USE_RUBY */
 
   if (gdata.autoaddann_short)
     a_make_announce_short(u, n);

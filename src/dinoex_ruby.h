@@ -17,6 +17,7 @@
 int do_myruby_server(char *line);
 int do_myruby_notice(char *line);
 int do_myruby_privmsg(char *line);
+int do_myruby_added(char *filename, int pack);
 void rehash_myruby(int check);
 void startup_myruby(void);
 void shutdown_myruby(void);

@@ -56,6 +56,18 @@ class IrofferEvent
       command2( "HOP", channel, network )
     end
   end
+
+  # called on each pack added
+  def on_added
+    write_log( "Added pack nr", added_pack, "with file", added_file )
+
+    # add color to the description
+    text = "\003" # color
+    text << "4" # red
+    text << added_file.slice( /[^\/\\]*$/ )
+    text << "\015" # end color
+    command2( "CHDESC", added_pack.to_s, text )
+  end
 end
 
 # eof
