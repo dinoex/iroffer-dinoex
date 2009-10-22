@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+bugfix: CHDESC
+  Bot crashte wenn kein Argument angegeben wurde.
+  versions affected: 3.12 - 3.15
+
 301) ruby_script
   Neue Methode "on_added", wird bei jedem neuen Pack aufgerufen.
 
