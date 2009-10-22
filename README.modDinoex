@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+bugfix: CHDESC
+  Bot did crash when argument was omitted.
+  versions affected: 3.12 - 3.15
+
 301) ruby_script
   New method "on_added", called for each pack added to the bot.
 
@@ -56,6 +60,7 @@ With Version 3.15:
 ------------------
 
 bugfix: XDCC SEND LIST (reported by Kamina)
+  versions affected: 3.0 - 3.14
   Bot did crash after restart when LIST had been queued.
 
 bugfix: Darwin (inspired by HymnToLife)
@@ -105,6 +110,7 @@ With Version 3.14:
   Drop hard limits on chats and uploads.
 
 bugfix: XDCC SEND LIST (reported by LazyTiger)
+  versions affected: 3.0 - 3.13
   Bot did crash if no xdcclistfile was defined.
 
 bugfix: fix small memory leaks
@@ -166,6 +172,7 @@ Configure -no-libs
   Build a static binary.
 
 bugfix: CONFIG (reported by SellKony)
+  versions affected: 3.7 - 3.13
   Bot did crash when argument was omitted.
 
 bugfix: xdcclist_grouponly (reported by Aashiqmunda)
@@ -328,6 +335,7 @@ bugfix: xdccxmlfile (reported by dns777)
 267) support setlocale()
 
 bugfix: XDCC SEND LIST (reported by xShatteRx)
+  versions affected: 3.0 - 3.10
   Fix crash on to many XDCC SEND LIST.
 
 bugfix: REHASH pidfile
@@ -552,6 +560,7 @@ With Version 3.8:
   Messages to this nicks won't be encryted.
 
 bugfix: http_port (reported by TheDeath)
+  versions affected: 3.0 - 3.7
   Bot could crash on shutdown, when xdcclistfile was requested over HTTP.
 
 bugfix: GROUPDESC (reported by RyoOhki)
@@ -561,6 +570,7 @@ bugfix: FETCH (reported by Bohnenstange)
   Support resume for curl < 7.11.0
  
 bugfix: CONFIG (reported by OmegaPhil, TheDeath)
+  versions affected: 3.7
   Bot did crash when this command had no argument.
 
 242) privmsg_encrypt (inspired by Vision)
@@ -591,9 +601,11 @@ bugfix: autoadd_group_match (reported by dns777)
   to switch back to English call "./Lang en"
 
 bugfix: channel -fish key (reported by Vision)
+  versions affected: 3.5 - 3.7
   bot could crash when using fish while printing lines with a certain length.
 
 bugfix: new_trigger (reported by StoVoKor)
+  versions affected: 3.7
   bot did crash when trigger is run with no packages on bot.
 
 bugfix: xdccxmlfile (reported by dns777)
@@ -633,6 +645,7 @@ bugfix: reconnect
   Show date the pack was added with XDCC LIST.
 
 bugfix: -no-memsave (reported by dondieschotte)
+  versions affected: 3.3 - 3.6
   Fix crash on startup
 
 231) BOTINFO
@@ -945,6 +958,7 @@ With Version 3.1:
   xdccxmlfile list groups info
 
 bugfix: connectionmethod ssl (reported by Radicand)
+  versions affected: 3.0
   bot will crash when reconnect fails with timeout
   before completing SSL handshake.
 

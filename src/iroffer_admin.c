@@ -1756,6 +1756,8 @@ static void u_chdesc(const userinput * const u) {
         u_respond(u, "Try Specifying a Description");
         return;
         }
+      }
+   else {
       clean_quotes(u->arg2e);
       }
    
