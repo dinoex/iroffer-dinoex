@@ -473,7 +473,6 @@
 486 "** XDCC AutoSave è stato disabilitato per i prossimi %i %s"
 487 "** XDCC Send sono stati disabilitati per i prossimi %i %s"
 488 "** XDCC List e PLIST sono stati disabilitati per i prossimi %i %s"
-489 "Numero pack non valido"
 490 "** Pack %i spostato a %i"
 491 "%s: %s"
 492 " ^- %s"
