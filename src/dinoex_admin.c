@@ -551,6 +551,23 @@ int get_pack_nr(const userinput * const u, const char *arg)
   return num;
 }
 
+static int get_pack_nr2(const userinput * const u, const char *arg, int num1)
+{
+  int num2 = num1;
+
+  if (arg) {
+    num2 = get_pack_nr(u, arg);
+    if (num2 <= 0)
+      return num2;
+  }
+
+  if ( num2 < num1 ) {
+    a_respond(u, "Pack numbers are not in order");
+    return -1;
+  }
+  return num2;
+}
+
 int get_network_msg(const userinput * const u, const char *arg)
 {
   int net;
@@ -1592,17 +1609,9 @@ void a_remove(const userinput * const u)
   if (num1 <= 0)
     return;
 
-  num2 = num1;
-  if (u->arg2) {
-    num2 = get_pack_nr(u, u->arg2);
-    if (num2 <= 0)
-      return;
-  }
-
-  if ( num2 < num1 ) {
-    a_respond(u, "Pack numbers are not in order");
+  num2 = get_pack_nr2(u, u->arg2, num1);
+  if (num2 <= 0)
     return;
-  }
 
   for (; num2 >= num1; num2--) {
     xd = irlist_get_nth(&gdata.xdccs, num2-1);
@@ -1673,14 +1682,9 @@ void a_renumber3(const userinput * const u)
     return;
 
   if (u->arg3) {
-    endp = get_pack_nr(u, u->arg2);
-    if (endp < 0)
+    endp = get_pack_nr2(u, u->arg2, oldp);
+    if (endp <= 0)
       return;
-
-    if (endp < oldp) {
-      a_respond(u, "Pack numbers are not in order");
-      return;
-    }
 
     newp = get_pack_nr(u, u->arg3);
   } else {
@@ -2305,14 +2309,9 @@ void a_lock(const userinput * const u)
   pass = u->arg2;
   num2 = num1;
   if (u->arg3) {
-     num2 = get_pack_nr(u, u->arg2);
-     if (num2 <= 0)
-       return;
-
-    if ( num2 < num1 ) {
-      a_respond(u, "Pack numbers are not in order");
+    num2 = get_pack_nr2(u, u->arg2, num1);
+    if (num2 <= 0)
       return;
-    }
 
     pass = u->arg3;
   }
@@ -2345,17 +2344,9 @@ void a_unlock(const userinput * const u)
   if (num1 <= 0)
     return;
 
-  num2 = num1;
-  if (u->arg2) {
-    num2 = get_pack_nr(u, u->arg2);
-    if (num2 <= 0)
-      return;
-  }
-
-  if ( num2 < num1 ) {
-    a_respond(u, "Pack numbers are not in order");
+  num2 = get_pack_nr2(u, u->arg2, num1);
+  if (num2 <= 0)
     return;
-  }
 
   for (; num1 <= num2; num1++) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
@@ -2529,7 +2520,7 @@ void a_movegroup(const userinput * const u)
   if (num1 <= 0)
     return;
 
-  num2 = get_pack_nr(u, u->arg2);
+  num2 = get_pack_nr2(u, u->arg2, num1);
   if (num2 <= 0)
     return;
 
@@ -2621,12 +2612,9 @@ void a_md5(const userinput * const u)
   if (von <= 0)
     return;
 
-  bis = von;
-  if (u->arg2) {
-    bis = get_pack_nr(u, u->arg2);
-    if (bis <= 0)
-      return;
-  }
+  bis = get_pack_nr2(u, u->arg2, von);
+  if (bis <= 0)
+    return;
 
   for (num = von; num <= bis; num++) {
     xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -2657,12 +2645,9 @@ void a_crc(const userinput * const u)
     if (von <= 0)
       return;
 
-    bis = von;
-    if (u->arg2) {
-      bis = get_pack_nr(u, u->arg2);
-      if (bis <= 0)
-        return;
-    }
+    bis = get_pack_nr2(u, u->arg2, von);
+    if (bis <= 0)
+      return;
 
     for (num = von; num <= bis; num++) {
       xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -2962,17 +2947,9 @@ void a_fileremove(const userinput * const u)
   if (num1 <= 0)
     return;
 
-  num2 = num1;
-  if (u->arg2) {
-    num2 = get_pack_nr(u, u->arg2);
-    if (num2 <= 0)
-      return;
-  }
-
-  if ( num2 < num1 ) {
-    a_respond(u, "Pack numbers are not in order");
+  num2 = get_pack_nr2(u, u->arg2, num1);
+  if (num2 <= 0)
     return;
-  }
 
   for (; num2 >= num1; num2--) {
     xd = irlist_get_nth(&gdata.xdccs, num2-1);
@@ -3968,14 +3945,9 @@ static void a_announce_sub(const userinput * const u, const char *arg1, const ch
   if (num1 <= 0)
     return;
 
-  num2 = get_pack_nr(u, arg2);
+  num2 = get_pack_nr2(u, arg2, num1);
   if (num2 <= 0)
     return;
-
-  if ( num2 < num1 ) {
-    a_respond(u, "Pack numbers are not in order");
-    return;
-  }
 
   if (msg != NULL)
     clean_quotes(msg);
@@ -4090,17 +4062,9 @@ void a_sannounce(const userinput * const u)
   if (num1 <= 0)
     return;
 
-  num2 = num1;
-  if (u->arg2) {
-    num2 = get_pack_nr(u, u->arg2);
-    if (num2 <= 0)
-      return;
-  }
-
-  if ( num2 < num1 ) {
-    a_respond(u, "Pack numbers are not in order");
+  num2 = get_pack_nr2(u, u->arg2, num1);
+  if (num2 <= 0)
     return;
-  }
 
   for (; num1 <= num2; num1++) {
     a_respond(u, "Pack Info for Pack #%i:", num1);
