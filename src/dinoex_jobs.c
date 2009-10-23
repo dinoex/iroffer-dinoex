@@ -1671,7 +1671,7 @@ static void xdcc_save_xml(void)
       write_asc_plain(fd, 4, "currentservername", gdata.networks[ss].curserveractualname);
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;
-         ch = irlist_delete(&(gnetwork->channels), ch)) {
+         ch = irlist_get_next(ch)) {
       if ((ch->flags & CHAN_ONCHAN) == 0)
         continue;
       write_asc_plain(fd, 4, "channel", ch->name);
