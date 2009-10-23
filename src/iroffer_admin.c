@@ -1314,7 +1314,7 @@ static void u_raw(const userinput * const u)
 
 static void u_info(const userinput * const u)
 {
-  int num = 0;
+  int num;
   xdcc *xd;
   char *sizestrstr;
   char *sendnamestr;
@@ -1322,10 +1322,10 @@ static void u_info(const userinput * const u)
   
   updatecontext();
   
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
-     return;
-
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
+    return;
+  
   xd = irlist_get_nth(&gdata.xdccs, num-1);
   if (group_restricted(u, xd))
     return;
@@ -1445,7 +1445,7 @@ static void u_delhist(const userinput * const u)
 }
 
 static void u_send(const userinput * const u) {
-   int num = 0;
+   int num;
    gnetwork_t *backup;
    int net;
    
@@ -1458,8 +1458,8 @@ static void u_send(const userinput * const u) {
    if (invalid_nick(u, u->arg1) != 0)
       return;
 
-   if (u->arg2) num = atoi(u->arg2);
-   if (invalid_pack(u, num) != 0)
+   num = get_pack_nr(u, u->arg2);
+   if (num <= 0)
       return;
 
    u_respond(u,"Sending %s pack %i",u->arg1,num);
@@ -1625,7 +1625,7 @@ static void u_status(const userinput * const u) {
    }
 
 static void u_chfile(const userinput * const u) {
-   int num = 0;
+   int num;
    int xfiledescriptor;
    struct stat st;
    char *file;
@@ -1634,8 +1634,8 @@ static void u_chfile(const userinput * const u) {
    
    updatecontext();
    
-   if (u->arg1) num = atoi(u->arg1);
-   if (invalid_pack(u, num) != 0)
+   num = get_pack_nr(u, u->arg1);
+   if (num <= 0)
       return;
 
    if (invalid_file(u, u->arg2) != 0)
@@ -1735,14 +1735,14 @@ static void u_addnew(const userinput * const u)
 }
 
 static void u_chdesc(const userinput * const u) {
-   int num = 0;
+   int num;
    xdcc *xd;
    const char *newdesc;
    
    updatecontext();
    
-   if (u->arg1) num = atoi(u->arg1);
-   if (invalid_pack(u, num) != 0)
+   num = get_pack_nr(u, u->arg1);
+   if (num <= 0)
       return;
 
    xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -1771,13 +1771,13 @@ static void u_chdesc(const userinput * const u) {
    }
 
 static void u_chnote(const userinput * const u) {
-   int num = 0;
+   int num;
    xdcc *xd;
    
    updatecontext();
    
-   if (u->arg1) num = atoi(u->arg1);
-   if (invalid_pack(u, num) != 0)
+   num = get_pack_nr(u, u->arg1);
+   if (num <= 0)
       return;
 
    xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -1804,13 +1804,13 @@ static void u_chnote(const userinput * const u) {
    }
 
 static void u_chmins(const userinput * const u) {
-   int num = 0;
+   int num;
    xdcc *xd;
    
    updatecontext();
    
-   if (u->arg1) num = atoi(u->arg1);
-   if (invalid_pack(u, num) != 0)
+   num = get_pack_nr(u, u->arg1);
+   if (num <= 0)
       return;
 
    if (!u->arg2 || !strlen(u->arg2)) {
@@ -1833,13 +1833,13 @@ static void u_chmins(const userinput * const u) {
    }
 
 static void u_chmaxs(const userinput * const u) {
-   int num = 0;
+   int num;
    xdcc *xd;
    
    updatecontext();
    
-   if (u->arg1) num = atoi(u->arg1);
-   if (invalid_pack(u, num) != 0)
+   num = get_pack_nr(u, u->arg1);
+   if (num <= 0)
       return;
 
    if (invalid_maxspeed(u, u->arg2) != 0)
@@ -1861,17 +1861,13 @@ static void u_chmaxs(const userinput * const u) {
 
 static void u_chgets(const userinput * const u)
 {
-  int num = 0;
+  int num;
   xdcc *xd;
   
   updatecontext();
   
-  if (u->arg1)
-    {
-      num = atoi(u->arg1);
-    }
-  
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
      return;
 
   if (!u->arg2 || !strlen(u->arg2))

@@ -35,7 +35,7 @@ int invalid_message(const userinput * const u, const char *arg);
 int invalid_command(const userinput * const u, const char *arg);
 int invalid_channel(const userinput * const u, const char *arg);
 int invalid_maxspeed(const userinput * const u, const char *arg);
-int invalid_pack(const userinput * const u, int num);
+int get_pack_nr(const userinput * const u, const char *arg);
 int get_network_msg(const userinput * const u, const char *arg);
 int group_restricted(const userinput * const u, xdcc *xd);
 
