@@ -2335,3 +2335,6 @@
 2519 "servername"
 2520 "currentservername"
 2521 "  </networks>\n"
+2522 "added_file"
+2523 "added_pack"
+2524 "on_added"
