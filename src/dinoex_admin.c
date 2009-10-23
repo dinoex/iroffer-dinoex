@@ -1162,7 +1162,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
   write_files();
 #ifdef USE_RUBY
    if (do_myruby_added(xd->file, n))
-     return;
+     return xd;
 #endif /* USE_RUBY */
 
   if (gdata.autoaddann_short)
