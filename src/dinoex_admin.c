@@ -528,13 +528,27 @@ int invalid_maxspeed(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_pack(const userinput * const u, int num)
+static int invalid_pack(const userinput * const u, int num)
 {
   if (num < 1 || num > irlist_size(&gdata.xdccs)) {
     a_respond(u, "Try Specifying a Valid Pack Number");
     return 1;
   }
   return 0;
+}
+
+int get_pack_nr(const userinput * const u, const char *arg)
+{
+  int num;
+
+  if (!arg || (arg[0] == 0))
+    return 0;
+
+  if (arg[0] == '#') arg++;
+  num = atoi(arg);
+  if (invalid_pack(u, num) != 0)
+    return -1;
+  return num;
 }
 
 int get_network_msg(const userinput * const u, const char *arg)
@@ -1568,21 +1582,19 @@ void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
 
 void a_remove(const userinput * const u)
 {
-  int num1 = 0;
-  int num2 = 0;
+  int num1;
+  int num2;
   xdcc *xd;
 
   updatecontext();
 
-  if (u->arg1) num1 = atoi(u->arg1);
-  if (invalid_pack(u, num1) != 0)
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 <= 0)
     return;
 
-  if (u->arg2) num2 = atoi(u->arg2);
-  if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
-    a_respond(u, "Try Specifying a Valid Pack Number");
+  num2 = get_pack_nr(u, u->arg2);
+  if (num2 < 0)
     return;
-  }
 
   if (num2 == 0) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
@@ -1656,36 +1668,36 @@ static void a_renumber1(const userinput * const u, int oldp, int newp)
 
 void a_renumber3(const userinput * const u)
 {
-  int oldp = 0;
-  int endp = 0;
-  int newp = 0;
+  int oldp;
+  int endp;
+  int newp;
 
   updatecontext();
 
-  if (u->arg1) oldp = atoi(u->arg1);
-  if (invalid_pack(u, oldp) != 0)
+  oldp = get_pack_nr(u, u->arg1);
+  if (oldp < 0)
     return;
 
   if (u->arg3) {
-    if (u->arg2) endp = atoi(u->arg2);
-    if (invalid_pack(u, endp) != 0)
+    endp = get_pack_nr(u, u->arg2);
+    if (endp < 0)
       return;
 
     if (endp < oldp) {
-      a_respond(u, "Invalid pack number");
+      a_respond(u, "Pack numbers are not in order");
       return;
     }
 
-    if (u->arg3) newp = atoi(u->arg3);
+    newp = get_pack_nr(u, u->arg3);
   } else {
     endp = oldp;
-    if (u->arg2) newp = atoi(u->arg2);
+    newp = get_pack_nr(u, u->arg2);
   }
-  if (invalid_pack(u, newp) != 0)
+  if (newp <= 0)
     return;
 
   if ((newp >= oldp) && (newp <= endp)) {
-    a_respond(u, "Invalid pack number");
+    a_respond(u, "Pack numbers are not in order");
     return;
   }
 
@@ -2145,15 +2157,15 @@ void a_chtime(const userinput * const u)
   const char *format;
   char *oldstr;
   char *newstr;
-  int num = 0;
+  int num;
   unsigned long val = 0;
   xdcc *xd;
   struct tm tmval;
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
     return;
 
   if (!u->arg2e || !strlen(u->arg2e)) {
@@ -2187,14 +2199,14 @@ void a_chtime(const userinput * const u)
 
 void a_chlimit(const userinput * const u)
 {
-  int num = 0;
-  int val = 0;
+  int num;
+  int val;
   xdcc *xd;
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
     return;
 
   if (!u->arg2 || !strlen(u->arg2)) {
@@ -2222,13 +2234,13 @@ void a_chlimit(const userinput * const u)
 
 void a_chlimitinfo(const userinput * const u)
 {
-  int num = 0;
+  int num;
   xdcc *xd;
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -2250,13 +2262,13 @@ void a_chlimitinfo(const userinput * const u)
 
 void a_chtrigger(const userinput * const u)
 {
-  int num = 0;
+  int num;
   xdcc *xd;
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -2287,24 +2299,21 @@ void a_lock(const userinput * const u)
 {
   xdcc *xd;
   char *pass;
-  int num1 = 0;
-  int num2 = 0;
+  int num1;
+  int num2;
 
   updatecontext();
 
-  if (u->arg1) num1 = atoi(u->arg1);
-  if (invalid_pack(u, num1) != 0)
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 <= 0)
     return;
 
   pass = u->arg2;
   num2 = num1;
   if (u->arg3) {
-    if (u->arg2) num2 = atoi(u->arg2);
-    if (invalid_pack(u, num2) != 0)
-      return;
-
-    if (num2 == 0)
-      num2 = num1;
+     num2 = get_pack_nr(u, u->arg2);
+     if (num2 <= 0)
+       return;
 
     if ( num2 < num1 ) {
       a_respond(u, "Pack numbers are not in order");
@@ -2333,20 +2342,25 @@ void a_lock(const userinput * const u)
 void a_unlock(const userinput * const u)
 {
   xdcc *xd;
-  int num1 = 0;
-  int num2 = 0;
+  int num1;
+  int num2;
 
   updatecontext();
 
-  if (u->arg1) num1 = atoi(u->arg1);
-  if (invalid_pack(u, num1) != 0)
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 <= 0)
     return;
 
   num2 = num1;
   if (u->arg2) {
-    num2 = atoi(u->arg2);
-    if (invalid_pack(u, num2) != 0)
+    num2 = get_pack_nr(u, u->arg2);
+    if (num2 <= 0)
       return;
+  }
+
+  if ( num2 < num1 ) {
+    a_respond(u, "Pack numbers are not in order");
+    return;
   }
 
   for (; num1 <= num2; num1++) {
@@ -2480,12 +2494,12 @@ void a_group(const userinput * const u)
 {
   xdcc *xd;
   const char *newgroup;
-  int num = 0;
+  int num;
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -2512,17 +2526,17 @@ void a_movegroup(const userinput * const u)
 {
   xdcc *xd;
   int num;
-  int num1 = 0;
-  int num2 = 0;
+  int num1;
+  int num2;
 
   updatecontext();
 
-  if (u->arg1) num1 = atoi(u->arg1);
-  if (invalid_pack(u, num1) != 0)
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 <= 0)
     return;
 
-  if (u->arg2) num2 = atoi(u->arg2);
-  if (invalid_pack(u, num2) != 0)
+  num2 = get_pack_nr(u, u->arg2);
+  if (num2 <= 0)
     return;
 
   if (u->arg3 && strlen(u->arg3)) {
@@ -2609,17 +2623,14 @@ void a_md5(const userinput * const u)
   if (!(u->arg1))
     return;
 
-  von = atoi (u->arg1);
-  if (von == 0)
-    return;
-
-  if (invalid_pack(u, von) != 0)
+  von = get_pack_nr(u, u->arg1);
+  if (von <= 0)
     return;
 
   bis = von;
   if (u->arg2) {
-    bis = atoi (u->arg2);
-    if (invalid_pack(u, bis) != 0)
+    bis = get_pack_nr(u, u->arg2);
+    if (bis <= 0)
       return;
   }
 
@@ -2641,21 +2652,21 @@ void a_crc(const userinput * const u)
 {
   const char *crcmsg;
   xdcc *xd;
-  int von = 0;
+  int von;
   int bis;
   int num;
 
   updatecontext();
 
   if (u->arg1) {
-    von = atoi (u->arg1);
-    if (invalid_pack(u, von) != 0)
+    von = get_pack_nr(u, u->arg1);
+    if (von <= 0)
       return;
 
     bis = von;
     if (u->arg2) {
-      bis = atoi (u->arg2);
-      if (invalid_pack(u, bis) != 0)
+      bis = get_pack_nr(u, u->arg2);
+      if (bis <= 0)
         return;
     }
 
@@ -2848,15 +2859,15 @@ static int a_movefile_sub(const userinput * const u, xdcc *xd, const char *newfi
 void a_movefile(const userinput * const u)
 {
   xdcc *xd;
-  int num = 0;
+  int num;
 
   updatecontext();
 
   if (disabled_config(u) != 0)
     return;
 
-  if (u->arg1) num = atoi(u->arg1);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
     return;
 
   if (!u->arg2 || !strlen(u->arg2)) {
@@ -2943,8 +2954,8 @@ void a_filedel(const userinput * const u)
 
 void a_fileremove(const userinput * const u)
 {
-  int num1 = 0;
-  int num2 = 0;
+  int num1;
+  int num2;
   xdcc *xd;
   char *filename;
 
@@ -2953,18 +2964,16 @@ void a_fileremove(const userinput * const u)
   if (disabled_config(u) != 0)
     return;
 
-  if (u->arg1) num1 = atoi(u->arg1);
-  if (invalid_pack(u, num1) != 0)
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 <= 0)
     return;
 
-  if (u->arg2) num2 = atoi(u->arg2);
-  if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
-    a_respond(u, "Try Specifying a Valid Pack Number");
-    return;
+  num2 = num1;
+  if (u->arg2) {
+    num2 = get_pack_nr(u, u->arg2);
+    if (num2 <= 0)
+      return;
   }
-
-  if (num2 == 0)
-    num2 = num1;
 
   if ( num2 < num1 ) {
     a_respond(u, "Pack numbers are not in order");
@@ -3799,7 +3808,7 @@ void a_autogroup(const userinput * const u)
 /* this function imported from iroffer-lamm */
 void a_queue(const userinput * const u)
 {
-  int num = 0;
+  int num;
   int alreadytrans;
   xdcc *xd;
   char *tempstr;
@@ -3817,8 +3826,8 @@ void a_queue(const userinput * const u)
   if (invalid_nick(u, u->arg1) != 0)
     return;
 
-  if (u->arg2) num = atoi(u->arg2);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg2);
+  if (num <= 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -3851,7 +3860,7 @@ void a_queue(const userinput * const u)
 
 void a_iqueue(const userinput * const u)
 {
-  int num = 0;
+  int num;
   int alreadytrans;
   xdcc *xd;
   char *tempstr;
@@ -3869,8 +3878,8 @@ void a_iqueue(const userinput * const u)
   if (invalid_nick(u, u->arg1) != 0)
     return;
 
-  if (u->arg2) num = atoi(u->arg2);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg2);
+  if (num <= 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
@@ -3956,17 +3965,17 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
 
 static void a_announce_sub(const userinput * const u, const char *arg1, const char *arg2, char *msg)
 {
-  int num1 = 0;
-  int num2 = 0;
+  int num1;
+  int num2;
 
   updatecontext();
 
-  if (arg1) num1 = atoi (arg1);
-  if (invalid_pack(u, num1) != 0)
+  num1 = get_pack_nr(u, arg1);
+  if (num1 <= 0)
     return;
 
-  if (arg2) num2 = atoi(arg2);
-  if (invalid_pack(u, num2) != 0)
+  num2 = get_pack_nr(u, arg2);
+  if (num2 <= 0)
     return;
 
   if ( num2 < num1 ) {
@@ -4057,15 +4066,15 @@ void a_newann(const userinput * const u)
 
 void a_cannounce(const userinput * const u)
 {
-  int num = 0;
+  int num;
 
   updatecontext();
 
   if (invalid_channel(u, u->arg1) != 0)
     return;
 
-  if (u->arg2) num = atoi (u->arg2);
-  if (invalid_pack(u, num) != 0)
+  num = get_pack_nr(u, u->arg2);
+  if (num <= 0)
     return;
 
   a_announce_msg(u, u->arg1, num, u->arg3e);
@@ -4073,8 +4082,8 @@ void a_cannounce(const userinput * const u)
 
 void a_sannounce(const userinput * const u)
 {
-  int num1 = 0;
-  int num2 = 0;
+  int num1;
+  int num2;
   xdcc *xd;
   char *tempstr;
   char *tempstr3;
@@ -4083,18 +4092,16 @@ void a_sannounce(const userinput * const u)
 
   updatecontext();
 
-  if (u->arg1) num1 = atoi (u->arg1);
-  if (invalid_pack(u, num1) != 0)
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 <= 0)
     return;
 
-  if (u->arg2) num2 = atoi(u->arg2);
-  if ( num2 < 0 || num2 > irlist_size(&gdata.xdccs) ) {
-    a_respond(u, "Try Specifying a Valid Pack Number");
-    return;
+  num2 = num1;
+  if (u->arg2) {
+    num2 = get_pack_nr(u, u->arg2);
+    if (num2 <= 0)
+      return;
   }
-
-  if (num2 == 0)
-    num2 = num1;
 
   if ( num2 < num1 ) {
     a_respond(u, "Pack numbers are not in order");
