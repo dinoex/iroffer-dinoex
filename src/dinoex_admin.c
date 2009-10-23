@@ -419,7 +419,7 @@ static int group_is_restricted(const userinput * const u, const char *group)
 
 static int invalid_group(const userinput * const u, char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Group");
     return 1;
   }
@@ -434,7 +434,7 @@ static int invalid_group(const userinput * const u, char *arg)
 
 int invalid_dir(const userinput * const u, char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Directory");
     return 1;
   }
@@ -455,7 +455,7 @@ static int is_upload_file(const userinput * const u, const char *arg)
 
 int invalid_file(const userinput * const u, char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Filename");
     return 1;
   }
@@ -465,7 +465,7 @@ int invalid_file(const userinput * const u, char *arg)
 
 static int invalid_pwd(const userinput * const u, const char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Password");
     return 1;
   }
@@ -474,7 +474,7 @@ static int invalid_pwd(const userinput * const u, const char *arg)
 
 int invalid_nick(const userinput * const u, const char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Nick");
     return 1;
   }
@@ -483,7 +483,7 @@ int invalid_nick(const userinput * const u, const char *arg)
 
 int invalid_message(const userinput * const u, const char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Message");
     return 1;
   }
@@ -492,7 +492,7 @@ int invalid_message(const userinput * const u, const char *arg)
 
 static int invalid_announce(const userinput * const u, const char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Message (e.g. NEW)");
     return 1;
   }
@@ -502,7 +502,7 @@ static int invalid_announce(const userinput * const u, const char *arg)
 
 int invalid_command(const userinput * const u, const char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Command");
     return 1;
   }
@@ -512,7 +512,7 @@ int invalid_command(const userinput * const u, const char *arg)
 
 int invalid_channel(const userinput * const u, const char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Channel");
     return 1;
   }
@@ -521,7 +521,7 @@ int invalid_channel(const userinput * const u, const char *arg)
 
 int invalid_maxspeed(const userinput * const u, const char *arg)
 {
-  if (!arg || !strlen(arg)) {
+  if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Maxspeed");
     return 1;
   }
