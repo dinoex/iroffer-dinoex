@@ -1592,17 +1592,11 @@ void a_remove(const userinput * const u)
   if (num1 <= 0)
     return;
 
-  num2 = get_pack_nr(u, u->arg2);
-  if (num2 < 0)
-    return;
-
-  if (num2 == 0) {
-    xd = irlist_get_nth(&gdata.xdccs, num1-1);
-    if (group_restricted(u, xd))
+  num2 = num1;
+  if (u->arg2) {
+    num2 = get_pack_nr(u, u->arg2);
+    if (num2 <= 0)
       return;
-
-    a_remove_pack(u, xd, num1);
-    return;
   }
 
   if ( num2 < num1 ) {
