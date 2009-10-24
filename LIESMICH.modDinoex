@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+bugfix: http_port
+  Verwende ';' anstelle von '&' in der Navigation.
+
 bugfix: CHDESC
   Bot crashte wenn kein Argument angegeben wurde.
   versions affected: 3.12 - 3.15
