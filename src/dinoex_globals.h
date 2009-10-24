@@ -146,10 +146,13 @@ typedef struct {
   int serverbucket;
   int ircserver;
   int serverconnectbackoff;
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
   SSL_CTX *ssl_ctx;
   SSL *ssl;
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
+#ifdef USE_GNUTLS
+  gnutls_session_t session;
+#endif /* USE_GNUTLS */
   prefix_t prefixes[MAX_PREFIX];
   char chanmodes[MAX_CHANMODES];
   char server_input_line[INPUT_BUFFER_LENGTH];

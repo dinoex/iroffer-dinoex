@@ -106,7 +106,7 @@
 #define USE_SSL
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
-#include <gnutls/openssl.h>
+#include <gnutls/gnutls.h>
 #define USE_SSL
 #endif /* USE_GNUTLS */
 

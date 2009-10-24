@@ -1511,7 +1511,7 @@ main (int argc, char **argv) {exit(0);}
 	if $cctype config.temp.c $libs -lgnutls-openssl "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_GNUTLS -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_GNUTLS" >> src/iroffer_config.h
-		SSLLIB="-lgnutls-openssl"
+		SSLLIB="-lgnutls"
 		SSLINC="-I${LOCALBASE}/include"
 		SSLLDF="-L${LOCALBASE}/lib"
 	else
