@@ -929,7 +929,7 @@ static int html_link_option(char *str, size_t size, const char *option, const ch
 
   size_t len = 0;
   if (html_link_start++ > 0) {
-    len = snprintf(str, size, "&amp;");
+    len = snprintf(str, size, ";");
   }
   tempstr = mycalloc(maxtextlength);
   html_encode(tempstr, maxtextlength, val);
@@ -1489,7 +1489,7 @@ static char *get_url_param(const char *url, const char *key)
 
   result = mystrdup(found + strlen(key));
   html_str_split(result, ' ');
-  html_str_split(result, '&');
+  html_str_split(result, ';');
   return result;
 }
 
