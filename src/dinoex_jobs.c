@@ -1659,9 +1659,9 @@ static void xdcc_save_xml(void)
   mydelete(tempstr);
   write_string(fd, "  </limits>\n");
 
-  write_string(fd, "  <networks>\n");
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ss++) {
+    write_string(fd, "  <network>\n");
     write_asc_plain(fd, 4, "networkname", gdata.networks[ss].name);
     gnetwork = &(gdata.networks[ss]);
     write_asc_plain(fd, 4, "confignick", get_config_nick());
@@ -1676,9 +1676,9 @@ static void xdcc_save_xml(void)
         continue;
       write_asc_plain(fd, 4, "channel", ch->name);
     }
+    write_string(fd, "  </network>\n");
   }
   gnetwork = backup;
-  write_string(fd, "  </networks>\n");
 
   write_string(fd, "  <stats>\n");
   write_asc_plain(fd, 4, "version", "iroffer-dinoex " VERSIONLONG );
