@@ -70,9 +70,9 @@ static void outerror_ssl(void)
 #endif /* USE_OPENSSL */
 
 #ifdef USE_GNUTLS
-static void outerror_ssl(int err)
+static void outerror_ssl(long err)
 {
-  outerror(OUTERROR_TYPE_WARN_LOUD, "SSL Error %d:%s", err, gnutls_strerror(err));
+  outerror(OUTERROR_TYPE_WARN_LOUD, "SSL Error %ld:%s", err, gnutls_strerror(err));
 }
 #endif /* USE_GNUTLS */
 

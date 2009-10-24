@@ -2338,3 +2338,4 @@
 2523 "added_pack"
 2524 "on_added"
 2525 ";"
+2526 "DEBUG: |%d| %s"
