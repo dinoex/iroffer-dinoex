@@ -12,6 +12,8 @@ bugfix: CHDESC
 
 301) ruby_script
   New method "on_added", called for each pack added to the bot.
+  New method "info_pack" to request fields of a pack.
+  Implemented: "file", "desc", "note", "group", "trigger", "gets", "size"
 
 bugfix: transfermethod "linux-sendfile" (reported by isengaurd)
   Fall back on plain read/write if sendfile aborts.

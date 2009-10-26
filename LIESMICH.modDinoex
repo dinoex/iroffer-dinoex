@@ -12,6 +12,8 @@ bugfix: CHDESC
 
 301) ruby_script
   Neue Methode "on_added", wird bei jedem neuen Pack aufgerufen.
+  Neue Methode "info_pack" un auf Daten einens Packs zuzugreifen.
+  Verfügbar: "file", "desc", "note", "group", "trigger", "gets", "size"
 
 bugfix: transfermethod "linux-sendfile"
   Benutze normales Lesen/Screiben wenn sendfile nicht startet.

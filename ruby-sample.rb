@@ -61,12 +61,20 @@ class IrofferEvent
   def on_added
     write_log( "Added pack nr", added_pack, "with file", added_file )
 
-    # add color to the description
+    group = info_pack(added_pack, "group" )
+    desc = info_pack(added_pack, "desc" )
+    bytes = info_pack(added_pack, "size" )
+    write_log( "group:",  group, "desc:", desc, "size:", bytes )
+
+    # set an trigger for each new pack.
+    command2( "CHTRIGGER", added_pack.to_s, "#{group}#{added_pack}" )
+
+    # add color as a fancy note
     text = "\003" # color
     text << "4" # red
-    text << added_file.slice( /[^\/\\]*$/ )
+    text << desc
     text << "\015" # end color
-    command2( "CHDESC", added_pack.to_s, text )
+    command2( "CHNOTE", added_pack.to_s, text )
   end
 end
 

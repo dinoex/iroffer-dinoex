@@ -262,6 +262,68 @@ static VALUE cie_config(VALUE UNUSED(module), VALUE rkey)
   return Qnil;
 }
 
+static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
+{
+  xdcc *xd;
+  char *key;
+  char *val;
+  int nr;
+  int ival;
+  off_t oval;
+
+  if (NIL_P(rnr) || NIL_P(rkey))
+    return Qnil;
+
+  nr = FIX2INT(rnr);
+  if (nr <= 0)
+    return Qnil;
+
+  if (nr > irlist_size(&gdata.xdccs))
+    return Qnil;
+
+  xd = get_xdcc_pack(nr);
+  if (xd == NULL)
+    return NULL;
+
+  key = rb_obj_as_string_protected(rkey);
+  if (!key)
+    return Qnil;
+
+  for (;;) {
+    if (strcmp(key, "file") == 0) {
+      val = xd->file;
+      break;
+    }
+    if (strcmp(key, "desc") == 0) {
+      val = xd->desc;
+      break;
+    }
+    if (strcmp(key, "note") == 0) {
+      val = xd->note;
+      break;
+    }
+    if (strcmp(key, "group") == 0) {
+      val = xd->group;
+      break;
+    }
+    if (strcmp(key, "trigger") == 0) {
+      val = xd->trigger;
+      break;
+    }
+    if (strcmp(key, "gets") == 0) {
+      ival = xd->gets;
+      return INT2NUM(ival);
+    }
+    if (strcmp(key, "size") == 0) {
+      oval = xd->st_size;
+      return OFFT2NUM(oval);
+    }
+    /* crc32, md5sum ? */
+    return Qnil;
+  }
+  return rb_str_new(val, strlen(val));
+}
+
 static VALUE cie_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
 {
   char *name;
@@ -393,6 +455,7 @@ static void Init_IrofferEvent(void) {
   rb_define_method(cIrofferEvent, "config", cie_config, 1);
   rb_define_method(cIrofferEvent, "added_file", cie_added_file, 0);
   rb_define_method(cIrofferEvent, "added_pack", cie_added_pack, 0);
+  rb_define_method(cIrofferEvent, "info_pack", cie_info_pack, 2);
   rb_gc_register_address(&cIrofferEvent);
 }
 
