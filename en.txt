@@ -2339,3 +2339,7 @@
 2524 "on_added"
 2525 ";"
 2526 "DEBUG: |%d| %s"
+2527 "desc"
+2528 "note"
+2529 "trigger"
+2530 "info_pack"
