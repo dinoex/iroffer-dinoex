@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.16:
 ----------------
 
+301) xdccxmlfile
+  Neue Tags für Warteschangen "mainqueue" and "idlequeue".
+
 bugfix: http_port
   Verwende ';' anstelle von '&' in der Navigation.
 

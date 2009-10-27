@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.16:
 ------------------
 
+301) xdccxmlfile
+  New tags "mainqueue" and "idlequeue".
+
 bugfix: http_port
   Use ';' instead '&' for navigation.
 
