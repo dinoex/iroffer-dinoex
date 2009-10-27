@@ -1618,6 +1618,20 @@ static void xdcc_save_xml(void)
   write_asc_int(fd, 4, "slotsmax", gdata.slotsmax);
   write_string(fd, "  </slots>\n");
 
+  if (gdata.queuesize > 0) {
+    write_string(fd, "  <mainqueue>\n");
+    write_asc_int(fd, 4, "queueuse", irlist_size(&gdata.mainqueue));
+    write_asc_int(fd, 4, "queuemax", gdata.queuesize);
+    write_string(fd, "  </mainqueue>\n");
+  }
+
+  if (gdata.idlequeuesize > 0) {
+    write_string(fd, "  <idlequeue>\n");
+    write_asc_int(fd, 4, "queueuse", irlist_size(&gdata.idlequeue));
+    write_asc_int(fd, 4, "queuemax", gdata.idlequeuesize);
+    write_string(fd, "  </idlequeue>\n");
+  }
+
   write_string(fd, "  <bandwith>\n");
   tempstr = get_current_bandwidth();
   write_asc_plain(fd, 4, "banduse", tempstr);
