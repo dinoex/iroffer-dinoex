@@ -161,6 +161,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_chlimitinfo,   "CHLIMITINFO","n [msg]","Change over limit info of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtrigger,     "CHTRIGGER","n [msg]","Change trigger for pack <n> to <msg>"},
 {3,5,method_allow_all,u_chgets,        "CHGETS","n x","Set the get counter of pack <n> to <x>"},
+{3,5,method_allow_all,a_chcolor,       "CHCOLOR","n [m] x","Set the pack <n> to <m> to color <x>"},
 {3,2,method_allow_all,a_lock,          "LOCK","n [m] password","Lock the pack <n> to <m> with <password>"},
 {3,2,method_allow_all,a_unlock,        "UNLOCK","n [m]","Unlock the pack <n> to <m>"},
 {3,2,method_allow_all,a_lockgroup,     "LOCKGROUP","group password","Lock all packs in <group> with <password>"},
@@ -562,6 +563,7 @@ static void u_help(const userinput * const u)
 void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, const xdcc *xd) {
    char datestr[maxtextlengthshort];
    char *sizestrstr;
+   char *colordesc;
    int len;
    
    sizestrstr = sizestr(1, xd->st_size);
@@ -572,6 +574,15 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
        datestr[1] = 0;
        user_getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
      }
+   if (xd->color)
+     {
+       colordesc = mycalloc(maxtextlength);
+       snprintf(colordesc, maxtextlength, "\003%d%s\003", xd->color, xd->desc);
+     }
+   else
+     {
+       colordesc = xd->desc;
+     }
    snprintf(tempstr, maxtextlength,
            "\2#%-*i\2 %*ix [%s]%s %s",
             l,
@@ -579,9 +590,11 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
             s, xd->gets,
             sizestrstr,
             datestr,
-            xd->desc);
+            colordesc);
    len = strlen(tempstr);
    mydelete(sizestrstr);
+   if (colordesc != xd->desc)
+     mydelete(colordesc);
    
    if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed)
      {

@@ -163,6 +163,7 @@ typedef struct {
    char *dlimit_desc;
    char *trigger;
    int gets;
+   int color;
    int dlimit_max;
    int dlimit_used;
    float minspeed,

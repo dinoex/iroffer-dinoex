@@ -2293,6 +2293,43 @@ void a_chtrigger(const userinput * const u)
   write_files();
 }
 
+void a_chcolor(const userinput * const u)
+{
+  int num1;
+  int num2;
+  int color = 0;
+  char *last;
+  xdcc *xd;
+
+  updatecontext();
+
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 <= 0)
+    return;
+
+  last = u->arg2;
+  num2 = num1;
+  if (u->arg3) {
+    num2 = get_pack_nr2(u, u->arg2, num1);
+    if (num2 <= 0)
+      return;
+
+    last = u->arg3;
+  }
+
+  if (last) color = atoi(last);
+  for (; num1 <= num2; num1++) {
+    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    if (group_restricted(u, xd))
+      return;
+
+    xd->color = color;
+    a_respond(u, "COLOR: [Pack %i] set: %d", num1, color);
+  }
+
+  write_files();
+}
+
 void a_lock(const userinput * const u)
 {
   xdcc *xd;
