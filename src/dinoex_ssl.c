@@ -162,6 +162,11 @@ int setup_ssl(void)
 #ifdef USE_GNUTLS
   int ret;
 
+  updatecontext();
+
+  if (gnetwork->connectionmethod.how != how_ssl)
+    return 0;
+
   ret = gnutls_init(&(gnetwork->session), GNUTLS_CLIENT);
   if (ret < 0) {
     outerror_ssl(ret);
