@@ -4,7 +4,7 @@
 
 DESCRIPTION="An improved version of iroffer - an IRC XDCC bot."
 HOMEPAGE="http://iroffer.dinoex.net"
-SRC_URI="http://iroffer.dinoex.net/iroffer-dinoex-3.15.tar.gz"
+SRC_URI="http://iroffer.dinoex.net/iroffer-dinoex-3.17.tar.gz"
 KEYWORDS="~x86 ~amd64"
 LICENSE="GPL-2"
 SLOT="0"
