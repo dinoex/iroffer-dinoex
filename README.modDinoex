@@ -3,6 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.18:
 ------------------
 
+302) CHCOLOR
+
+  new admin commands:
+  CHCOLOR <n> <m> <x>                Set the of pack <n> to <m> to color <x>
+  CHCOLOR <n> <x>                    Set the of pack <n> to color <x>
+  CHCOLOR <n>                        Remove the color of pack <n>
+
 With Version 3.17:
 ------------------
 

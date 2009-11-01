@@ -85,6 +85,7 @@ typedef enum
   STATEFILE_TAG_XDCCS_CRC32,
   STATEFILE_TAG_XDCCS_TRIGGER,
   STATEFILE_TAG_XDCCS_XTIME,
+  STATEFILE_TAG_XDCCS_COLOR,
   
   STATEFILE_TAG_TLIMIT_DAILY_USED    = 13 << 8,
   STATEFILE_TAG_TLIMIT_DAILY_ENDS,
@@ -481,6 +482,10 @@ void write_statefile(void)
           {
             length += sizeof(statefile_item_generic_int_t);
           }
+        if (xd->color != 0)
+          {
+            length += sizeof(statefile_item_generic_int_t);
+          }
         
         data = mycalloc(length);
         
@@ -598,6 +603,13 @@ void write_statefile(void)
                    STATEFILE_TAG_XDCCS_XTIME, xd->xtime);
           }
         
+        if (xd->color != 0)
+          {
+            /* xtime */
+            next = prepare_statefile_int(next,
+                   STATEFILE_TAG_XDCCS_COLOR, xd->color);
+          }
+
         write_statefile_item(&bout, data);
         
         mydelete(data);
@@ -1379,6 +1391,19 @@ void read_statefile(void)
                     else
                       {
                         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Time Tag (len = %d)",
+                                 ihdr->length);
+                      }
+                    break;
+
+                  case STATEFILE_TAG_XDCCS_COLOR:
+                    if (ihdr->length > sizeof(statefile_hdr_t))
+                      {
+                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
+                        xd->color = ntohl(g_int->g_int);
+                      }
+                    else
+                      {
+                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Color Tag (len = %d)",
                                  ihdr->length);
                       }
                     break;
