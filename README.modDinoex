@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.17:
 ------------------
 
+bugfix: connectionmethod ssl (reported by Bachstelze)
+  Allow normal connection when build with "GNU TLS".
+
 With Version 3.16:
 ------------------
 
