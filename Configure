@@ -592,7 +592,7 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {
  int fd;
  int array[ ((int)sizeof(off_t)) - 7 ];
- fd=open(\"foo\", O_RDWR | O_CREAT | ADDED_OPEN_FLAGS);
+ fd=open(\"foo\", O_RDWR | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS);
  array[0] = array[0];
  exit(0);
  }
