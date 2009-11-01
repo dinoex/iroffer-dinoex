@@ -321,6 +321,8 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
     /* crc32, md5sum ? */
     return Qnil;
   }
+  if (val == NULL)
+    return Qnil;
   return rb_str_new(val, strlen(val));
 }
 
