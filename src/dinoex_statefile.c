@@ -20,6 +20,8 @@ static void read_statefile_unknown_tag(statefile_hdr_t *hdr, const char *tag)
 {
   outerror(OUTERROR_TYPE_WARN,
            "Ignoring Unknown %s Tag 0x%X (len = %d)", tag, hdr->tag, hdr->length);
+  /* in case of 0 bytes len we loop forever */
+  if ( hdr->length == 0 ) hdr->length ++;
 }
 
 static void read_statefile_bad_tag(statefile_hdr_t *hdr, const char *tag)

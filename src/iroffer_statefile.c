@@ -601,8 +601,6 @@ void read_statefile(void)
                     
                   default:
                     read_statefile_unknown_tag(ihdr, "Msglog" );
-                    /* in case of 0 bytes len we loop forever */
-                    if ( ihdr->length == 0 ) ihdr->length ++;
                   }
                 hdr->length -= ceiling(ihdr->length, 4);
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
@@ -725,8 +723,6 @@ void read_statefile(void)
                     
                   default:
                     read_statefile_unknown_tag(ihdr, "XDCC" );
-                    /* in case of 0 bytes len we loop forever */
-                    if ( ihdr->length == 0 ) ihdr->length ++;
                   }
                 hdr->length -= ceiling(ihdr->length, 4);
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
