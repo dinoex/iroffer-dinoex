@@ -198,20 +198,10 @@ typedef struct
 typedef struct
 {
   char *hostmask;
-  short flags;
-  short dummy;
+  int flags;
   long bucket;
   time_t lastcontact;
 } igninfo;
-
-typedef struct
-{
-  char hostmask[maxtextlength];
-  short flags;
-  short dummy;
-  long bucket;
-  time_t lastcontact;
-} igninfo_file;
 
 typedef enum
 {

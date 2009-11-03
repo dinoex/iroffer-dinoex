@@ -109,7 +109,8 @@ typedef struct
 } statefile_hdr_t;
 
 #define STATEFILE_MAGIC (('I' << 24) | ('R' << 16) | ('F' << 8) | 'R')
-#define STATEFILE_VERSION 1
+#define STATEFILE_OLD_VERSION 1
+#define STATEFILE_VERSION 2
 
 typedef struct
 {
@@ -232,26 +233,8 @@ void write_statefile(void)
   ir_boutput_init(&bout, fd, BOUTPUT_MD5SUM | BOUTPUT_NO_LIMIT);
   
   /*** write ***/
-  
-  {
-    ir_uint32 magic = htonl(STATEFILE_MAGIC);
-    callval = ir_boutput_write(&bout, &magic, sizeof(magic));
-    if (callval != sizeof(magic))
-      {
-        outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write To State File (%d != %d) %s",
-                 callval, (int)sizeof(magic), strerror(errno));
-      }
-  }
-  
-  {
-    ir_uint32 version = htonl(STATEFILE_VERSION);
-    callval = ir_boutput_write(&bout, &version, sizeof(version));
-    if (callval != sizeof(version))
-      {
-        outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write To State File (%d != %d) %s",
-                 callval, (int)sizeof(version), strerror(errno));
-      }
-  }
+  write_statefile_raw(&bout, STATEFILE_MAGIC);
+  write_statefile_raw(&bout, gdata.old_statefile ? STATEFILE_OLD_VERSION : STATEFILE_VERSION);
   
   updatecontext();
   {
@@ -282,353 +265,9 @@ void write_statefile(void)
     
     mydelete(data);
   }
-
-  write_statefile_time(&bout, STATEFILE_TAG_TIMESTAMP, gdata.curtime);
-
-  write_statefile_float(&bout, STATEFILE_TAG_XFR_RECORD, gdata.record);
-
-  write_statefile_float(&bout, STATEFILE_TAG_SENT_RECORD, gdata.sentrecord);
-
-  write_statefile_ullint(&bout, STATEFILE_TAG_TOTAL_SENT, gdata.totalsent );
-
-  write_statefile_int(&bout, STATEFILE_TAG_TOTAL_UPTIME, gdata.totaluptime);
-
-  write_statefile_time(&bout, STATEFILE_TAG_LAST_LOGROTATE, gdata.last_logrotate);
-
-  updatecontext();
-  {
-    unsigned char *data;
-    unsigned char *next;
-    igninfo *ignore;
-
-    ignore = irlist_get_head(&gdata.ignorelist);
-    
-    while (ignore)
-      {
-        if (ignore->flags & IGN_IGNORING)
-          {
-            /*
-             * need room to write:
-             *  flags         uint
-             *  bucket        int
-             *  lastcontact   time_t
-             *  hostmask      string
-             */
-            length = sizeof(statefile_hdr_t) +
-              sizeof(statefile_item_generic_uint_t) + 
-              sizeof(statefile_item_generic_int_t) + 
-              sizeof(statefile_item_generic_time_t) + 
-              sizeof(statefile_hdr_t) + ceiling(strlen(ignore->hostmask) + 1, 4);
-            
-            data = mycalloc(length);
-            
-            /* outter header */
-            next = start_statefile_hdr(data, STATEFILE_TAG_IGNORE, length);
-
-            /* flags */
-            next = prepare_statefile_uint(next,
-                   STATEFILE_TAG_IGNORE_FLAGS, ignore->flags);
-
-            /* bucket */
-            next = prepare_statefile_int(next,
-                   STATEFILE_TAG_IGNORE_BUCKET, ignore->bucket);
-
-            /* lastcontact */
-            next = prepare_statefile_time(next,
-                   STATEFILE_TAG_IGNORE_LASTCONTACT, ignore->lastcontact);
-
-            /* hostmask */
-            next = prepare_statefile_string(next,
-                   STATEFILE_TAG_IGNORE_HOSTMASK, ignore->hostmask);
-
-            write_statefile_item(&bout, data);
-            
-            mydelete(data);
-          }
-        ignore = irlist_get_next(ignore);
-      }
-  }
-  
-  updatecontext();
-  {
-    unsigned char *data;
-    unsigned char *next;
-    msglog_t *msglog;
-
-    msglog = irlist_get_head(&gdata.msglog);
-    
-    while (msglog)
-      {
-        /*
-         * need room to write:
-         *  when          time_t
-         *  hostmask      string
-         *  message       string
-         */
-        length = sizeof(statefile_hdr_t) +
-          sizeof(statefile_item_generic_time_t) + 
-          sizeof(statefile_hdr_t) + ceiling(strlen(msglog->hostmask) + 1, 4) +
-          sizeof(statefile_hdr_t) + ceiling(strlen(msglog->message) + 1, 4);
-        
-        data = mycalloc(length);
-        
-        /* outter header */
-        next = start_statefile_hdr(data, STATEFILE_TAG_MSGLOG, length);
-
-        /* when */
-        next = prepare_statefile_time(next,
-               STATEFILE_TAG_MSGLOG_WHEN, msglog->when);
-
-        /* hostmask */
-        next = prepare_statefile_string(next,
-               STATEFILE_TAG_MSGLOG_HOSTMASK, msglog->hostmask);
-
-        /* message */
-        next = prepare_statefile_string(next,
-               STATEFILE_TAG_MSGLOG_MESSAGE, msglog->message);
-
-        write_statefile_item(&bout, data);
-        
-        mydelete(data);
-        msglog = irlist_get_next(msglog);
-      }
-  }
-  
-  updatecontext();
-  {
-    unsigned char *data;
-    unsigned char *next;
-    xdcc *xd;
-    statefile_item_md5sum_info_t *md5sum_info;
-    int has_desc = 1;
-    int has_note = 1;
-    int has_minspeed;
-    int has_maxspeed;
-    
-    xd = irlist_get_head(&gdata.xdccs);
-    
-    while (xd)
-      {
-        if (!gdata.old_statefile)
-          {
-            has_desc = strcmp(xd->desc, getfilename(xd->file));
-            has_note = (xd->note != NULL) && xd->note[0];
-          }
-        has_minspeed = xd->minspeed && (gdata.transferminspeed != xd->minspeed);
-        has_maxspeed = xd->maxspeed && (gdata.transfermaxspeed != xd->maxspeed);
-        /*
-         * need room to write:
-         *  file          string
-         *  desc          string
-         *  note          string
-         *  gets          int
-         *  minspeed      float
-         *  maxspeed      float
-         */
-        length = sizeof(statefile_hdr_t) +
-          sizeof(statefile_hdr_t) + ceiling(strlen(xd->file) + 1, 4) +
-          sizeof(statefile_item_generic_int_t);
-        
-        if (has_desc)
-          {
-            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->desc) + 1, 4);
-          }
-        if (has_note)
-          {
-            length += sizeof(statefile_hdr_t) + ceiling( xd->note ? strlen(xd->note) + 1 : 2, 4);
-          }
-        if (has_minspeed)
-          {
-            length += sizeof(statefile_item_generic_float_t);
-          }
-        if (has_maxspeed)
-          {
-            length += sizeof(statefile_item_generic_float_t);
-          }
-        if (xd->has_md5sum)
-          {
-            length += ceiling(sizeof(statefile_item_md5sum_info_t), 4);
-          }
-        if (xd->has_crc32)
-          {
-            length += sizeof(statefile_item_generic_int_t);
-          }
-        if (xd->group != NULL)
-          {
-            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->group) + 1, 4);
-          }
-        if (xd->group_desc != NULL)
-          {
-            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->group_desc) + 1, 4);
-          }
-        if (xd->lock != NULL)
-          {
-            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->lock) + 1, 4);
-          }
-        if (xd->dlimit_max != 0)
-          {
-            length += sizeof(statefile_item_generic_int_t);
-            length += sizeof(statefile_item_generic_int_t);
-          }
-        if (xd->dlimit_desc != NULL)
-          {
-            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->dlimit_desc) + 1, 4);
-          }
-        if (xd->trigger != NULL)
-          {
-            length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->trigger) + 1, 4);
-          }
-        if (xd->xtime != 0)
-          {
-            length += sizeof(statefile_item_generic_int_t);
-          }
-        if (xd->color != 0)
-          {
-            length += sizeof(statefile_item_generic_int_t);
-          }
-        
-        data = mycalloc(length);
-        
-        /* outter header */
-        next = start_statefile_hdr(data, STATEFILE_TAG_XDCCS, length);
-
-        /* file */
-        next = prepare_statefile_string(next,
-               STATEFILE_TAG_XDCCS_FILE, xd->file);
-
-        if (has_desc)
-          {
-            /* desc */
-            next = prepare_statefile_string(next,
-                   STATEFILE_TAG_XDCCS_DESC, xd->desc);
-          }
-
-        if (has_note)
-          {
-            /* note */
-            next = prepare_statefile_string(next,
-                   STATEFILE_TAG_XDCCS_NOTE,
-                   xd->note ? xd->note : "");
-          }
-
-        /* gets */
-        next = prepare_statefile_int(next,
-               STATEFILE_TAG_XDCCS_GETS, xd->gets);
-
-        if (has_minspeed)
-          {
-            /* minspeed */
-            next = prepare_statefile_float(next,
-                   STATEFILE_TAG_XDCCS_MINSPEED, xd->minspeed);
-          }
-
-        if (has_maxspeed)
-          {
-            /* maxspeed */
-            next = prepare_statefile_float(next,
-                   STATEFILE_TAG_XDCCS_MAXSPEED, xd->maxspeed);
-          }
-
-        if (xd->has_md5sum)
-          {
-            /* md5sum */
-            md5sum_info = (statefile_item_md5sum_info_t*)next;
-            md5sum_info->hdr.tag = htonl((long)STATEFILE_TAG_XDCCS_MD5SUM_INFO);
-            md5sum_info->hdr.length = htonl(sizeof(*md5sum_info));
-            md5sum_info->st_size.upper = htonl(((ir_uint64)xd->st_size) >> 32);
-            md5sum_info->st_size.lower = htonl(xd->st_size & 0xFFFFFFFF);
-            md5sum_info->st_dev.upper  = htonl(((ir_uint64)xd->st_dev) >> 32);
-            md5sum_info->st_dev.lower  = htonl(xd->st_dev & 0xFFFFFFFF);
-            md5sum_info->st_ino.upper  = htonl(((ir_uint64)xd->st_ino) >> 32);
-            md5sum_info->st_ino.lower  = htonl(xd->st_ino & 0xFFFFFFFF);
-            md5sum_info->mtime         = htonl(xd->mtime);
-            memcpy(md5sum_info->md5sum, xd->md5sum, sizeof(MD5Digest));
-            next = (unsigned char*)(&md5sum_info[1]);
-          }
-         
-        if (xd->has_crc32)
-          {
-            /* crc32 */
-            next = prepare_statefile_int(next,
-                   STATEFILE_TAG_XDCCS_CRC32, xd->crc32);
-          }
-        
-        if (xd->group != NULL)
-          {
-            /* group */
-            next = prepare_statefile_string(next,
-                   STATEFILE_TAG_XDCCS_GROUP, xd->group);
-            gdata.support_groups = 1;
-          }
-        if (xd->group_desc != NULL)
-          {
-            /* group_desc */
-            next = prepare_statefile_string(next,
-                   STATEFILE_TAG_XDCCS_GROUP_DESC, xd->group_desc);
-          }
-        if (xd->lock != NULL)
-          {
-            /* group */
-            next = prepare_statefile_string(next,
-                   STATEFILE_TAG_XDCCS_LOCK, xd->lock);
-          }
-        
-        if (xd->dlimit_max != 0)
-          {
-            /* download limit */
-            next = prepare_statefile_int(next,
-                   STATEFILE_TAG_XDCCS_DLIMIT_MAX, xd->dlimit_max);
-            /* download limit */
-            next = prepare_statefile_int(next,
-                   STATEFILE_TAG_XDCCS_DLIMIT_USED, xd->dlimit_used);
-          }
-        if (xd->dlimit_desc != NULL)
-          {
-            /* group */
-            next = prepare_statefile_string(next,
-                   STATEFILE_TAG_XDCCS_DLIMIT_DESC, xd->dlimit_desc);
-          }
-
-        if (xd->trigger != NULL)
-          {
-            /* trigger */
-            next = prepare_statefile_string(next,
-                   STATEFILE_TAG_XDCCS_TRIGGER, xd->trigger);
-          }
-        
-        if (xd->xtime != 0)
-          {
-            /* xtime */
-            next = prepare_statefile_int(next,
-                   STATEFILE_TAG_XDCCS_XTIME, xd->xtime);
-          }
-        
-        if (xd->color != 0)
-          {
-            /* xtime */
-            next = prepare_statefile_int(next,
-                   STATEFILE_TAG_XDCCS_COLOR, xd->color);
-          }
-
-        write_statefile_item(&bout, data);
-        
-        mydelete(data);
-        xd = irlist_get_next(xd);
-      }
-  }
-
-  write_statefile_ullint(&bout, STATEFILE_TAG_TLIMIT_DAILY_USED, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
-  write_statefile_time(&bout, STATEFILE_TAG_TLIMIT_DAILY_ENDS, gdata.transferlimits[TRANSFERLIMIT_DAILY].ends);
-
-  write_statefile_ullint(&bout, STATEFILE_TAG_TLIMIT_WEEKLY_USED, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
-  write_statefile_time(&bout, STATEFILE_TAG_TLIMIT_WEEKLY_ENDS, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].ends);
-
-  write_statefile_ullint(&bout, STATEFILE_TAG_TLIMIT_MONTHLY_USED, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
-  write_statefile_time(&bout, STATEFILE_TAG_TLIMIT_MONTHLY_ENDS, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends);
-
-  write_statefile_queue(&bout, &gdata.mainqueue);
-  write_statefile_queue(&bout, &gdata.idlequeue);
-
+   
+  write_statefile_dinoex(&bout);
+   
   updatecontext();
   {
     MD5Digest digest = {};
@@ -828,95 +467,26 @@ void read_statefile(void)
       switch (hdr->tag)
         {
         case STATEFILE_TAG_TIMESTAMP:
-          if (hdr->length == sizeof(statefile_item_generic_time_t))
-            {
-              char *tempstr;
-              statefile_item_generic_time_t *g_time = (statefile_item_generic_time_t*)hdr;
-              timestamp = ntohl(g_time->g_time);
-              
-              tempstr = mycalloc(maxtextlength);
-              getdatestr(tempstr, timestamp, maxtextlength);
-              
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                      COLOR_NO_COLOR, "  [Written on %s]", tempstr);
-              mydelete(tempstr);
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Timestamp Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_time(hdr, "Timestamp", &timestamp, "Written on");
           break;
           
         case STATEFILE_TAG_XFR_RECORD:
-          if (hdr->length == sizeof(statefile_item_generic_float_t))
-            {
-              statefile_item_generic_float_t *g_float = (statefile_item_generic_float_t*)hdr;
-              gdata.record = g_float->g_float;
-              
-              if (gdata.debug > 0)
-                {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Record %1.1fKB/s]", gdata.record);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad xfr Record Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_float(hdr, "xfr Record", &(gdata.record), "Record");
           break;
           
         case STATEFILE_TAG_SENT_RECORD:
-          if (hdr->length == sizeof(statefile_item_generic_float_t))
-            {
-              statefile_item_generic_float_t *g_float = (statefile_item_generic_float_t*)hdr;
-              gdata.sentrecord = g_float->g_float;
-              
-              if (gdata.debug > 0)
-                {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Bandwidth Record %1.1fKB/s]", gdata.sentrecord);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad sent Record Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_float(hdr, "sent Record", &(gdata.sentrecord), "Bandwidth Record");
           break;
           
         case STATEFILE_TAG_TOTAL_SENT:
-          if (hdr->length == sizeof(statefile_item_generic_ullint_t))
-            {
-              statefile_item_generic_ullint_t *g_ullint = (statefile_item_generic_ullint_t*)hdr;
-              gdata.totalsent = (((ir_uint64)ntohl(g_ullint->g_ullint.upper)) << 32) | ((ir_uint64)ntohl(g_ullint->g_ullint.lower));
-              
-              if (gdata.debug > 0)
-                {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Total Transferred %1.2f %cB]",
-                          (gdata.totalsent/1024/1024) > 1024U ? ( (gdata.totalsent/1024/1024/1024) > 1024U ? ((float)gdata.totalsent)/1024/1024/1024/1024
-                                                                 : ((float)gdata.totalsent)/1024/1024/1024 ) : ((float)gdata.totalsent)/1024/1024 ,
-                          (gdata.totalsent/1024/1024) > 1024U ? ( (gdata.totalsent/1024/1024/1024) > 1024U ? 'T' : 'G' ) : 'M');
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad sent Record Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_ullint(hdr, "Total Transferred", &(gdata.totalsent), "Total Transferred");
           break;
           
         case STATEFILE_TAG_TOTAL_UPTIME:
-          if (hdr->length == sizeof(statefile_item_generic_int_t))
-            {
-              char *tempstr;
-              statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)hdr;
-              gdata.totaluptime = ntohl(g_int->g_int);
-              
+          read_statefile_long(hdr, "Total Runtime", &(gdata.totaluptime));
               if (gdata.debug > 0)
                 {
+                  char *tempstr;
                   tempstr = mycalloc(maxtextlength);
                   getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlength);
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
@@ -924,36 +494,10 @@ void read_statefile(void)
                           tempstr);
                   mydelete(tempstr);
                 }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad sent Record Tag (len = %d)",
-                       hdr->length);
-            }
           break;
           
         case STATEFILE_TAG_LAST_LOGROTATE:
-          if (hdr->length == sizeof(statefile_item_generic_time_t))
-            {
-              char *tempstr;
-              statefile_item_generic_time_t *g_time = (statefile_item_generic_time_t*)hdr;
-              gdata.last_logrotate = ntohl(g_time->g_time);
-              
-              if (gdata.debug > 0)
-                {
-                  tempstr = mycalloc(maxtextlength);
-                  getdatestr(tempstr, gdata.last_logrotate, maxtextlength);
-                  
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Last Log Rotate %s]", tempstr);
-                  mydelete(tempstr);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Last Log Rotate Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_time(hdr, "Last Log Rotate", &(gdata.last_logrotate), "Last Log Rotate");
           break;
           
         case STATEFILE_TAG_IROFFER_VERSION:
@@ -970,8 +514,7 @@ void read_statefile(void)
             }
           else
             {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Iroffer Version Tag (len = %d)",
-                       hdr->length);
+              read_statefile_bad_tag(hdr, "Iroffer Version");
             }
           break;
           
@@ -992,61 +535,23 @@ void read_statefile(void)
                 switch (ihdr->tag)
                   {
                   case STATEFILE_TAG_IGNORE_FLAGS:
-                    if (ihdr->length == sizeof(statefile_item_generic_uint_t))
-                      {
-                        statefile_item_generic_uint_t *g_uint = (statefile_item_generic_uint_t*)ihdr;
-                        ignore->flags = ntohl(g_uint->g_uint);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Ignore Flags Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_int(ihdr, "Ignore Flags", &(ignore->flags));
                     break;
                     
                   case STATEFILE_TAG_IGNORE_BUCKET:
-                    if (ihdr->length == sizeof(statefile_item_generic_int_t))
-                      {
-                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
-                        ignore->bucket = ntohl(g_int->g_int);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Ignore Bucket Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_long(ihdr, "Ignore Bucket", &(ignore->bucket));
                     break;
                     
                   case STATEFILE_TAG_IGNORE_LASTCONTACT:
-                    if (ihdr->length == sizeof(statefile_item_generic_time_t))
-                      {
-                        statefile_item_generic_time_t *g_time = (statefile_item_generic_time_t*)ihdr;
-                        ignore->lastcontact = ntohl(g_time->g_time);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Ignore Lastcontact Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_time(ihdr, "Ignore Lastcontact", &(ignore->lastcontact), NULL);
                     break;
                     
                   case STATEFILE_TAG_IGNORE_HOSTMASK:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *hostmask = (char*)(&ihdr[1]);
-                        hostmask[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        ignore->hostmask = mystrdup(hostmask);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Ignore Hostmask Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "Ignore Hostmask", &(ignore->hostmask));
                     break;
                     
                   default:
-                    outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown Ignore Tag 0x%X (len=%d)",
-                             ihdr->tag, ihdr->length);
+                    read_statefile_unknown_tag(ihdr, "Ignore" );
                   }
                 hdr->length -= ceiling(ihdr->length, 4);
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
@@ -1054,8 +559,7 @@ void read_statefile(void)
             
             if ((!ignore->lastcontact) || (!ignore->hostmask))
               {
-                outerror(OUTERROR_TYPE_WARN, "Ignoring Incomplete Ignore Tag");
-                
+                read_statefile_incomplete_tag("Ignore" );
                 mydelete(ignore->hostmask);
                 irlist_delete(&gdata.ignorelist, ignore);
               }
@@ -1084,49 +588,21 @@ void read_statefile(void)
                 switch (ihdr->tag)
                   {
                   case STATEFILE_TAG_MSGLOG_WHEN:
-                    if (ihdr->length == sizeof(statefile_item_generic_time_t))
-                      {
-                        statefile_item_generic_time_t *g_time = (statefile_item_generic_time_t*)ihdr;
-                        msglog->when = ntohl(g_time->g_time);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Msglog When Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_time(ihdr, "Msglog When", &(msglog->when), NULL);
                     break;
                     
                   case STATEFILE_TAG_MSGLOG_HOSTMASK:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *hostmask = (char*)(&ihdr[1]);
-                        hostmask[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        msglog->hostmask = mystrdup(hostmask);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Msglog Hostmask Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "Msglog Hostmask", &(msglog->hostmask));
                     break;
                     
                   case STATEFILE_TAG_MSGLOG_MESSAGE:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *message = (char*)(&ihdr[1]);
-                        message[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        msglog->message = mystrdup(message);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Msglog Message Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "Msglog Message", &(msglog->message));
                     break;
                     
                   default:
-                    outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown Msglog Tag 0x%X (len=%d)",
-                             ihdr->tag, ihdr->length);
+                    read_statefile_unknown_tag(ihdr, "Msglog" );
+                    /* in case of 0 bytes len we loop forever */
+                    if ( ihdr->length == 0 ) ihdr->length ++;
                   }
                 hdr->length -= ceiling(ihdr->length, 4);
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
@@ -1134,8 +610,7 @@ void read_statefile(void)
             
             if ((!msglog->when) || (!msglog->hostmask) || (!msglog->message))
               {
-                outerror(OUTERROR_TYPE_WARN, "Ignoring Incomplete Msglog Tag");
-                
+                read_statefile_incomplete_tag("Msglog" );
                 mydelete(msglog->hostmask);
                 mydelete(msglog->message);
                 irlist_delete(&gdata.msglog, msglog);
@@ -1164,93 +639,29 @@ void read_statefile(void)
                 switch (ihdr->tag)
                   {
                   case STATEFILE_TAG_XDCCS_FILE:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *file = (char*)(&ihdr[1]);
-                        file[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->file = mystrdup(file);
-                        xd->desc = mystrdup(getfilename(xd->file));
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC File Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "XDCC File", &(xd->file));
+                    xd->desc = mystrdup(getfilename(xd->file));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_DESC:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *desc = (char*)(&ihdr[1]);
-                        desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        mydelete(xd->desc);
-                        xd->desc = mystrdup(desc);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Desc Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    mydelete(xd->desc);
+                    read_statefile_string(ihdr, "XDCC Desc", &(xd->desc));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_NOTE:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *note = (char*)(&ihdr[1]);
-                        note[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        if (note[0])
-                          xd->note = mystrdup(note);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Note Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "XDCC Note", &(xd->note));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_GETS:
-                    if (ihdr->length == sizeof(statefile_item_generic_int_t))
-                      {
-                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
-                        xd->gets = ntohl(g_int->g_int);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Gets Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_int(ihdr, "XDCC Gets", &(xd->gets));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_MINSPEED:
-                    if (ihdr->length == sizeof(statefile_item_generic_float_t))
-                      {
-                        statefile_item_generic_float_t *g_float = (statefile_item_generic_float_t*)ihdr;
-                        if (g_float->g_float)
-                          {
-                            xd->minspeed = g_float->g_float;
-                          }
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Minspeed Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_float_set(ihdr, "XDCC Minspeed", &(xd->minspeed));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_MAXSPEED:
-                    if (ihdr->length == sizeof(statefile_item_generic_float_t))
-                      {
-                        statefile_item_generic_float_t *g_float = (statefile_item_generic_float_t*)ihdr;
-                        if (g_float->g_float)
-                          {
-                            xd->maxspeed = g_float->g_float;
-                          }
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Maxspeed Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_float_set(ihdr, "XDCC Maxspeed", &(xd->maxspeed));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_MD5SUM_INFO:
@@ -1267,150 +678,53 @@ void read_statefile(void)
                       }
                     else
                       {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC md5sum Tag (len = %d)",
-                                 ihdr->length);
+                        read_statefile_bad_tag(hdr, "XDCC md5sum");
                       }
                     break;
                     
                   case STATEFILE_TAG_XDCCS_CRC32:
-                    if (ihdr->length == sizeof(statefile_item_generic_int_t))
-                      {
-                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
-                        xd->crc32 = ntohl(g_int->g_int);
-                        xd->has_crc32 = 1;
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC CRC32 Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_ulong(ihdr, "XDCC CRC32", &(xd->crc32));
+                    xd->has_crc32 = 1;
                     break;
                     
                   case STATEFILE_TAG_XDCCS_GROUP:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *group = (char*)(&ihdr[1]);
-                        group[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->group = mystrdup(group);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Desc Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "XDCC Group", &(xd->group));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_GROUP_DESC:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *group_desc = (char*)(&ihdr[1]);
-                        group_desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->group_desc = mystrdup(group_desc);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Desc Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "XDCC Group Desc", &(xd->group_desc));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_LOCK:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *data = (char*)(&ihdr[1]);
-                        data[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->lock = mystrdup(data);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Lock Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "XDCC Lock", &(xd->lock));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_DLIMIT_MAX:
-                    if (ihdr->length == sizeof(statefile_item_generic_int_t))
-                      {
-                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
-                        xd->dlimit_max = ntohl(g_int->g_int);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Limit_Max Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_int(ihdr, "XDCC Limit Max", &(xd->dlimit_max));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_DLIMIT_USED:
-                    if (ihdr->length == sizeof(statefile_item_generic_int_t))
-                      {
-                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
-                        xd->dlimit_used = ntohl(g_int->g_int);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Limit_Used Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_int(ihdr, "XDCC Limit Used", &(xd->dlimit_used));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_DLIMIT_DESC:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *desc = (char*)(&ihdr[1]);
-                        desc[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->dlimit_desc = mystrdup(desc);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Limit Desc Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "XDCC Limit Desc", &(xd->dlimit_desc));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_TRIGGER:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        char *data = (char*)(&ihdr[1]);
-                        data[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                        xd->trigger = mystrdup(data);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Trigger Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_string(ihdr, "XDCC Trigger", &(xd->trigger));
                     break;
                     
                   case STATEFILE_TAG_XDCCS_XTIME:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
-                        xd->xtime = ntohl(g_int->g_int);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Time Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_int(ihdr, "XDCC Time", &(xd->xtime));
                     break;
 
                   case STATEFILE_TAG_XDCCS_COLOR:
-                    if (ihdr->length > sizeof(statefile_hdr_t))
-                      {
-                        statefile_item_generic_int_t *g_int = (statefile_item_generic_int_t*)ihdr;
-                        xd->color = ntohl(g_int->g_int);
-                      }
-                    else
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad XDCC Color Tag (len = %d)",
-                                 ihdr->length);
-                      }
+                    read_statefile_int(ihdr, "XDCC Color", &(xd->color));
                     break;
                     
                   default:
-                    outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown XDCC Tag 0x%X (len=%d)",
-                             ihdr->tag, ihdr->length);
+                    read_statefile_unknown_tag(ihdr, "XDCC" );
                     /* in case of 0 bytes len we loop forever */
                     if ( ihdr->length == 0 ) ihdr->length ++;
                   }
@@ -1420,8 +734,7 @@ void read_statefile(void)
             
             if ((!xd->file) || (!xd->desc))
               {
-                outerror(OUTERROR_TYPE_WARN, "Ignoring Incomplete XDCC Tag");
-                
+                read_statefile_incomplete_tag("XDCC" );
                 mydelete(xd->file);
                 mydelete(xd->desc);
                 mydelete(xd->note);
@@ -1474,259 +787,35 @@ void read_statefile(void)
           break;
           
         case STATEFILE_TAG_TLIMIT_DAILY_USED:
-          if (hdr->length == sizeof(statefile_item_generic_ullint_t))
-            {
-              statefile_item_generic_ullint_t *g_ullint = (statefile_item_generic_ullint_t*)hdr;
-              gdata.transferlimits[TRANSFERLIMIT_DAILY].used = (((ir_uint64)ntohl(g_ullint->g_ullint.upper)) << 32) | ((ir_uint64)ntohl(g_ullint->g_ullint.lower));
-              
-              if (gdata.debug > 0)
-                {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Daily Transfer Limit Used %" LLPRINTFMT "uMB]",
-                          gdata.transferlimits[TRANSFERLIMIT_DAILY].used / 1024 / 1024);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Daily Transfer Limit Used Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_ullint(hdr, "Daily Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_DAILY].used), "Daily Transfer Limit Used");
           break;
           
         case STATEFILE_TAG_TLIMIT_DAILY_ENDS:
-          if (hdr->length == sizeof(statefile_item_generic_time_t))
-            {
-              char *tempstr;
-              statefile_item_generic_time_t *g_time = (statefile_item_generic_time_t*)hdr;
-              gdata.transferlimits[TRANSFERLIMIT_DAILY].ends = ntohl(g_time->g_time);
-              
-              if (gdata.debug > 0)
-                {
-                  tempstr = mycalloc(maxtextlength);
-                  getdatestr(tempstr, gdata.transferlimits[TRANSFERLIMIT_DAILY].ends, maxtextlength);
-                  
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Daily Transfer Limit Ends %s]", tempstr);
-                  mydelete(tempstr);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Daily Transfer Limit Ends Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_time(hdr, "Daily Transfer Limit Ends", &(gdata.transferlimits[TRANSFERLIMIT_DAILY].ends), "Daily Transfer Limit Ends");
           break;
           
         case STATEFILE_TAG_TLIMIT_WEEKLY_USED:
-          if (hdr->length == sizeof(statefile_item_generic_ullint_t))
-            {
-              statefile_item_generic_ullint_t *g_ullint = (statefile_item_generic_ullint_t*)hdr;
-              gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used = (((ir_uint64)ntohl(g_ullint->g_ullint.upper)) << 32) | ((ir_uint64)ntohl(g_ullint->g_ullint.lower));
-              
-              if (gdata.debug > 0)
-                {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Weekly Transfer Limit Used %" LLPRINTFMT "uMB]",
-                          gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used / 1024 / 1024);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Weekly Transfer Limit Used Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_ullint(hdr, "Weekly Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used), "Weekly Transfer Limit Used");
           break;
           
         case STATEFILE_TAG_TLIMIT_WEEKLY_ENDS:
-          if (hdr->length == sizeof(statefile_item_generic_time_t))
-            {
-              char *tempstr;
-              statefile_item_generic_time_t *g_time = (statefile_item_generic_time_t*)hdr;
-              gdata.transferlimits[TRANSFERLIMIT_WEEKLY].ends = ntohl(g_time->g_time);
-              
-              if (gdata.debug > 0)
-                {
-                  tempstr = mycalloc(maxtextlength);
-                  getdatestr(tempstr, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].ends, maxtextlength);
-                  
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Weekly Transfer Limit Ends %s]", tempstr);
-                  mydelete(tempstr);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Weekly Transfer Limit Ends Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_time(hdr, "Weekly Transfer Limit Ends", &(gdata.transferlimits[TRANSFERLIMIT_WEEKLY].ends), "Weekly Transfer Limit Ends");
           break;
           
         case STATEFILE_TAG_TLIMIT_MONTHLY_USED:
-          if (hdr->length == sizeof(statefile_item_generic_ullint_t))
-            {
-              statefile_item_generic_ullint_t *g_ullint = (statefile_item_generic_ullint_t*)hdr;
-              gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used = (((ir_uint64)ntohl(g_ullint->g_ullint.upper)) << 32) | ((ir_uint64)ntohl(g_ullint->g_ullint.lower));
-              
-              if (gdata.debug > 0)
-                {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Monthly Transfer Limit Used %" LLPRINTFMT "uMB]",
-                          gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used / 1024 / 1024);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Monthly Transfer Limit Used Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_ullint(hdr, "Monthly Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used), "Monthly Transfer Limit Used");
           break;
           
         case STATEFILE_TAG_TLIMIT_MONTHLY_ENDS:
-          if (hdr->length == sizeof(statefile_item_generic_time_t))
-            {
-              char *tempstr;
-              statefile_item_generic_time_t *g_time = (statefile_item_generic_time_t*)hdr;
-              gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends = ntohl(g_time->g_time);
-              
-              if (gdata.debug > 0)
-                {
-                  tempstr = mycalloc(maxtextlength);
-                  getdatestr(tempstr, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends, maxtextlength);
-                  
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Monthly Transfer Limit Ends %s]", tempstr);
-                  mydelete(tempstr);
-                }
-            }
-          else
-            {
-              outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Monthly Transfer Limit Ends Tag (len = %d)",
-                       hdr->length);
-            }
+          read_statefile_time(hdr, "Monthly Transfer Limit Ends", &(gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends), "Monthly Transfer Limit Ends");
           break;
           
         case STATEFILE_TAG_QUEUE:
-          {
-            ir_pqueue *pq;
-            statefile_hdr_t *ihdr;
-            statefile_item_generic_int_t *g_int;
-            statefile_item_generic_time_t *g_time;
-            char *text;
-            int num;
-            
-            if (gdata.idlequeuesize > 0 )
-              pq = irlist_add(&gdata.idlequeue, sizeof(ir_pqueue));
-            else
-              pq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
-
-            pq->restrictsend_bad = gdata.curtime;
-            
-            hdr->length -= sizeof(*hdr);
-            ihdr = &hdr[1];
-            
-            while (hdr->length >= sizeof(*hdr))
-              {
-                ihdr->tag = ntohl((unsigned long)(ihdr->tag));
-                ihdr->length = ntohl(ihdr->length);
-                switch (ihdr->tag)
-                  {
-                  case STATEFILE_TAG_QUEUE_PACK:
-                    if (ihdr->length != sizeof(statefile_item_generic_int_t))
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Tag (len = %d)",
-                                 ihdr->length);
-                        break;
-                      }
-                    g_int = (statefile_item_generic_int_t*)ihdr;
-                    num = ntohl(g_int->g_int);
-                    if (num == -1)
-                      {
-                        pq->xpack = get_xdcc_pack(num);
-                        break;
-                      }
-                    if (num < 1 || num > irlist_size(&gdata.xdccs))
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Nr (%d)", num);
-                        break;
-                      }
-                    pq->xpack = get_xdcc_pack(num);
-                    break;
-                    
-                  case STATEFILE_TAG_QUEUE_NICK:
-                    if (ihdr->length <= sizeof(statefile_hdr_t))
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Nick Tag (len = %d)",
-                                 ihdr->length);
-                        break;
-                      }
-                    text = (char*)(&ihdr[1]);
-                    text[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                    pq->nick = mystrdup(text);
-                    break;
-                    
-                  case STATEFILE_TAG_QUEUE_HOST:
-                    if (ihdr->length <= sizeof(statefile_hdr_t))
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Host Tag (len = %d)",
-                                 ihdr->length);
-                        break;
-                      }
-                    text = (char*)(&ihdr[1]);
-                    text[ihdr->length-sizeof(statefile_hdr_t)-1] = '\0';
-                    pq->hostname = mystrdup(text);
-                    break;
-                    
-                  case STATEFILE_TAG_QUEUE_TIME:
-                    if (ihdr->length != sizeof(statefile_item_generic_time_t))
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Time Tag (len = %d)",
-                                 ihdr->length);
-                        break;
-                      }
-                    g_time = (statefile_item_generic_time_t*)ihdr;
-                    pq->queuedtime = ntohl(g_time->g_time);
-                    break;
-                    
-                  case STATEFILE_TAG_QUEUE_NET:
-                    if (ihdr->length != sizeof(statefile_item_generic_int_t))
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Net Tag (len = %d)",
-                                 ihdr->length);
-                        break;
-                      }
-                    g_int = (statefile_item_generic_int_t*)ihdr;
-                    num = ntohl(g_int->g_int);
-                    if (num < 0 || num > gdata.networks_online)
-                      {
-                        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Net Nr (%d)", num);
-                        break;
-                      }
-                    pq->net = num;
-                    break;
-                    
-                  default:
-                    outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown Queue Tag 0x%X (len=%d)",
-                             ihdr->tag, ihdr->length);
-                    /* in case of 0 bytes len we loop forever */
-                    if ( ihdr->length == 0 ) ihdr->length ++;
-                  }
-                hdr->length -= ceiling(ihdr->length, 4);
-                ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
-              }
-            /* remove bad entry */
-            if (pq->xpack == NULL)
-              {
-                if (gdata.idlequeuesize > 0 )
-                  irlist_delete(&gdata.idlequeue, pq);
-                else
-                  irlist_delete(&gdata.mainqueue, pq);
-              }
-          }
+          read_statefile_queue(hdr);
           break;
-
+          
         default:
-          outerror(OUTERROR_TYPE_WARN, "Ignoring Unknown Tag 0x%X (len=%d)",
-                 hdr->tag, hdr->length);
+          read_statefile_unknown_tag(hdr, "Main" );
           break;
         }
     }
