@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.18:
 ------------------
 
+bugfix: statefile
+  Set version 2 in the "statefile".
+  Fix error messages while parsing.
+
 302) CHCOLOR
 
   new admin commands:
