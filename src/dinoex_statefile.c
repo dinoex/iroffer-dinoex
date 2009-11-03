@@ -176,17 +176,17 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
   ir_pqueue *pq;
   statefile_hdr_t *ihdr;
   int num;
-            
+
   if (gdata.idlequeuesize > 0 )
     pq = irlist_add(&gdata.idlequeue, sizeof(ir_pqueue));
   else
     pq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
 
   pq->restrictsend_bad = gdata.curtime;
-            
+
   hdr->length -= sizeof(*hdr);
   ihdr = &hdr[1];
-            
+
   while (hdr->length >= sizeof(*hdr)) {
     ihdr->tag = ntohl((unsigned long)(ihdr->tag));
     ihdr->length = ntohl(ihdr->length);
@@ -204,19 +204,19 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
       }
       pq->xpack = get_xdcc_pack(num);
       break;
-                    
+
     case STATEFILE_TAG_QUEUE_NICK:
       read_statefile_string(ihdr, "Queue Nick", &(pq->nick));
       break;
-                    
+
     case STATEFILE_TAG_QUEUE_HOST:
       read_statefile_string(ihdr, "Queue Host", &(pq->hostname));
       break;
-                    
+
     case STATEFILE_TAG_QUEUE_TIME:
       read_statefile_time(ihdr, "Queue Time", &(pq->queuedtime), NULL);
       break;
-                    
+
     case STATEFILE_TAG_QUEUE_NET:
       num = 0;
       read_statefile_int(ihdr, "Queue Net", &(num));
@@ -226,7 +226,7 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
       }
       pq->net = num;
       break;
-                    
+
     default:
       read_statefile_unknown_tag(ihdr, "Queue" );
       /* in case of 0 bytes len we loop forever */
@@ -514,7 +514,7 @@ static void write_statefile_msglog(ir_boutput_t *bout)
     mydelete(data);
   }
 }
-  
+
 
 static void write_statefile_xdccs(ir_boutput_t *bout)
 {
@@ -527,7 +527,7 @@ static void write_statefile_xdccs(ir_boutput_t *bout)
   int has_minspeed;
   int has_maxspeed;
   ir_int32 length;
-    
+
   updatecontext();
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
@@ -561,7 +561,7 @@ static void write_statefile_xdccs(ir_boutput_t *bout)
     length = sizeof(statefile_hdr_t) +
              sizeof(statefile_hdr_t) + ceiling(strlen(xd->file) + 1, 4) +
              sizeof(statefile_item_generic_int_t);
-        
+
     if (has_desc) {
       length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->desc) + 1, 4);
     }
@@ -605,9 +605,9 @@ static void write_statefile_xdccs(ir_boutput_t *bout)
     if (xd->color != 0) {
       length += sizeof(statefile_item_generic_int_t);
     }
-        
+
     data = mycalloc(length);
-        
+
     /* outter header */
     next = start_statefile_hdr(data, STATEFILE_TAG_XDCCS, length);
 
@@ -641,11 +641,11 @@ static void write_statefile_xdccs(ir_boutput_t *bout)
       memcpy(md5sum_info->md5sum, xd->md5sum, sizeof(MD5Digest));
       next = (unsigned char*)(&md5sum_info[1]);
     }
-         
+
     if (xd->has_crc32) {
       next = prepare_statefile_int(next, STATEFILE_TAG_XDCCS_CRC32, xd->crc32);
     }
-        
+
     if (xd->group != NULL) {
       next = prepare_statefile_string(next, STATEFILE_TAG_XDCCS_GROUP, xd->group);
       gdata.support_groups = 1;
@@ -656,7 +656,7 @@ static void write_statefile_xdccs(ir_boutput_t *bout)
     if (xd->lock != NULL) {
       next = prepare_statefile_string(next, STATEFILE_TAG_XDCCS_LOCK, xd->lock);
     }
-        
+
     if (xd->dlimit_max != 0) {
       next = prepare_statefile_int(next, STATEFILE_TAG_XDCCS_DLIMIT_MAX, xd->dlimit_max);
       next = prepare_statefile_int(next, STATEFILE_TAG_XDCCS_DLIMIT_USED, xd->dlimit_used);
@@ -668,11 +668,11 @@ static void write_statefile_xdccs(ir_boutput_t *bout)
     if (xd->trigger != NULL) {
       next = prepare_statefile_string(next, STATEFILE_TAG_XDCCS_TRIGGER, xd->trigger);
     }
-        
+
     if (xd->xtime != 0) {
       next = prepare_statefile_int(next, STATEFILE_TAG_XDCCS_XTIME, xd->xtime);
     }
-        
+
     if (xd->color != 0) {
       next = prepare_statefile_int(next, STATEFILE_TAG_XDCCS_COLOR, xd->color);
     }
