@@ -36,7 +36,6 @@ int get_pack_nr(const userinput * const u, const char *arg);
 int get_network_msg(const userinput * const u, const char *arg);
 int group_restricted(const userinput * const u, xdcc *xd);
 
-void a_cancel_transfers(xdcc *xd, const char *msg);
 void a_remove_delayed(const userinput * const u);
 void a_add_delayed(const userinput * const u);
 void a_xdlock(const userinput * const u);
@@ -81,6 +80,7 @@ void a_movegroup(const userinput * const u);
 void a_regroup(const userinput * const u);
 void a_md5(const userinput * const u);
 void a_crc(const userinput * const u);
+void a_chfile(const userinput * const u);
 void a_newdir(const userinput * const u);
 void a_filemove(const userinput * const u);
 void a_movefile(const userinput * const u);
