@@ -1122,7 +1122,7 @@ static void h_html_main(http * const h)
       hg->hg_rgets = gets_per_pack(hg->hg_agets, hg->hg_packs);
   }
   order_func = html_order_func(h->order);
-  irlist_sort(&grplist, order_func);
+  irlist_sort2(&grplist, order_func);
 
   h_respond(h, "<h1>%s %s</h1>\n", h->nick, "Group list" );
   h_html_search(h);

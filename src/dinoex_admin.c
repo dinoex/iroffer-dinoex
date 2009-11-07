@@ -1922,7 +1922,7 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onl
   if (irlist_size(&dirlist) == 0)
     return;
 
-  irlist_sort(&dirlist, irlist_sort_cmpfunc_string);
+  irlist_sort2(&dirlist, irlist_sort_cmpfunc_string);
 
   a_respond(u, "Adding %d files from dir %s",
             irlist_size(&dirlist), thedir);

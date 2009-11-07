@@ -658,8 +658,6 @@ void* irlist_get_nth(irlist_t *list, int nth); /* zero based n */
 /* other */
 int irlist_sort_cmpfunc_string(const void *a, const void *b);
 int irlist_sort_cmpfunc_off_t(const void *a, const void *b);
-void irlist_sort(irlist_t *list,
-                 int (*cmpfunc)(const void *a, const void *b));
 
 transfer* does_tr_id_exist(int tr_id);
 int get_next_tr_id(void);
