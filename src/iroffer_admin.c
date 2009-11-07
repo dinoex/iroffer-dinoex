@@ -47,7 +47,6 @@ static void u_info(const userinput * const u);
 static void u_psend(const userinput * const u);
 static void u_quit(const userinput * const u);
 static void u_status(const userinput * const u);
-static void u_chfile(const userinput * const u);
 static void u_chdesc(const userinput * const u);
 static void u_chnote(const userinput * const u);
 static void u_chmins(const userinput * const u);
@@ -145,7 +144,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_addmatch,      "ADDMATCH","pattern","Add new files matching this pattern"},
 {3,3,method_allow_all,a_autoadd,       "AUTOADD",NULL,"scan autoadd_dirs for new files now"},
 {3,3,method_allow_all,a_autogroup,     "AUTOGROUP",NULL,"Create a group for each directory with packs"},
-{3,3,method_allow_all,u_chfile,        "CHFILE","n filename","Change file of pack <n> to <filename>"},
+{3,3,method_allow_all,a_chfile,        "CHFILE","n filename","Change file of pack <n> to <filename>"},
 {3,3,method_allow_all,a_newdir,        "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
 {3,3,method_allow_all,u_chdesc,        "CHDESC","n [msg]","Change description of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chnote,        "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
@@ -1509,58 +1508,6 @@ static void u_status(const userinput * const u) {
    u_respond(u,"%s",tempstr);
    
    mydelete(tempstr);
-   }
-
-static void u_chfile(const userinput * const u) {
-   int num;
-   int xfiledescriptor;
-   struct stat st;
-   char *file;
-   char *old;
-   xdcc *xd;
-   
-   updatecontext();
-   
-   num = get_pack_nr(u, u->arg1);
-   if (num <= 0)
-      return;
-
-   if (invalid_file(u, u->arg2) != 0)
-      return;
-
-   /* verify file is ok first */
-   file = mystrdup(u->arg2);
-   
-   xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
-   if (a_access_fstat(u, xfiledescriptor, &file, &st))
-      return;
-   
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd))
-     return;
-   
-   a_cancel_transfers(xd, "Pack file changed");
-   
-   u_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
-             num, xd->file, file);
-   
-   old = xd->file;
-   xd->file     = file;
-   xd->st_size  = st.st_size;
-   xd->st_dev   = st.st_dev;
-   xd->st_ino   = st.st_ino;
-   xd->mtime    = st.st_mtime;
-   /* change default description */
-   if (strcmp(xd->desc, getfilename(old)) == 0)
-     {
-       mydelete(xd->desc);
-       xd->desc = mystrdup(getfilename(xd->file));
-     }
-   mydelete(old);
-   
-   cancel_md5_hash(xd, "CHFILE");
-   
-   write_files();
    }
 
 static void u_adddir(const userinput * const u)

@@ -679,7 +679,7 @@ static int queue_nick_remove(const userinput * const u, irlist_t *list, int netw
   return changed;
 }
 
-void a_cancel_transfers(xdcc *xd, const char *msg)
+static void a_cancel_transfers(xdcc *xd, const char *msg)
 {
   transfer *tr;
 
@@ -2738,6 +2738,59 @@ void a_crc(const userinput * const u)
   }
 }
 
+void a_chfile(const userinput * const u)
+{
+  int num;
+  int xfiledescriptor;
+  struct stat st;
+  char *file;
+  char *old;
+  xdcc *xd;
+
+  updatecontext();
+
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
+    return;
+
+  if (invalid_file(u, u->arg2) != 0)
+    return;
+
+  /* verify file is ok first */
+  file = mystrdup(u->arg2);
+
+  xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (a_access_fstat(u, xfiledescriptor, &file, &st))
+    return;
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
+
+  a_cancel_transfers(xd, "Pack file changed");
+
+  a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
+            num, xd->file, file);
+
+  old = xd->file;
+  xd->file     = file;
+  xd->st_size  = st.st_size;
+  xd->st_dev   = st.st_dev;
+  xd->st_ino   = st.st_ino;
+  xd->mtime    = st.st_mtime;
+
+  /* change default description */
+  if (strcmp(xd->desc, getfilename(old)) == 0) {
+    mydelete(xd->desc);
+    xd->desc = mystrdup(getfilename(xd->file));
+  }
+  mydelete(old);
+
+  cancel_md5_hash(xd, "CHFILE");
+
+  write_files();
+}
+
 static int a_newdir_check(const userinput * const u, const char *dir1, const char *dir2, xdcc *xd)
 {
   struct stat st;
@@ -3233,9 +3286,9 @@ void a_mesg(const userinput * const u)
 {
   transfer *tr;
   gnetwork_t *backup;
- 
+
   updatecontext();
-  
+
   if (invalid_message(u, u->arg1e) != 0)
     return;
 
@@ -3247,7 +3300,7 @@ void a_mesg(const userinput * const u)
     notice(tr->nick, "MESSAGE FROM OWNER: %s", u->arg1e);
   }
   gnetwork = backup;
-  
+
   a_respond(u, "Sent message to %i %s", irlist_size(&gdata.trans), irlist_size(&gdata.trans)!=1 ? "users" : "user");
 }
 
@@ -3256,9 +3309,9 @@ void a_mesq(const userinput * const u)
   int count;
   ir_pqueue *pq;
   gnetwork_t *backup;
-  
+
   updatecontext();
-  
+
   if (invalid_message(u, u->arg1e) != 0)
     return;
 
