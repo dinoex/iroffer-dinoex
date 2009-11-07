@@ -283,7 +283,7 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
 
   xd = get_xdcc_pack(nr);
   if (xd == NULL)
-    return NULL;
+    return Qnil;
 
   key = rb_obj_as_string_protected(rkey);
   if (!key)
