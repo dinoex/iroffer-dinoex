@@ -52,8 +52,6 @@ static void u_chnote(const userinput * const u);
 static void u_chmins(const userinput * const u);
 static void u_chmaxs(const userinput * const u);
 static void u_chgets(const userinput * const u);
-static void u_adddir(const userinput * const u);
-static void u_addnew(const userinput * const u);
 static void u_chatme(const userinput * const u);
 static void u_chatl(const userinput * const u);
 static void u_closec(const userinput * const u);
@@ -138,8 +136,8 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_renumber3,     "RENUMBER","x [y] z","Moves packs <x> to <y> to position <z>"},
 {3,3,method_allow_all,a_sort,          "SORT","[field] [field]","Sort all packs by fields"},
 {3,3,method_allow_all,a_add,           "ADD","filename","Add new pack with <filename>"},
-{3,3,method_allow_all,u_adddir,        "ADDDIR","dir","Add every file in <dir>"},
-{3,3,method_allow_all,u_addnew,        "ADDNEW","dir","Add new files in <dir>"},
+{3,3,method_allow_all,a_adddir,        "ADDDIR","dir","Add every file in <dir>"},
+{3,3,method_allow_all,a_addnew,        "ADDNEW","dir","Add new files in <dir>"},
 {3,3,method_allow_all,a_addgroup,      "ADDGROUP","group dir","Add new files in <dir> to <group>"},
 {3,3,method_allow_all,a_addmatch,      "ADDMATCH","pattern","Add new files matching this pattern"},
 {3,3,method_allow_all,a_autoadd,       "AUTOADD",NULL,"scan autoadd_dirs for new files now"},
@@ -1509,64 +1507,6 @@ static void u_status(const userinput * const u) {
    
    mydelete(tempstr);
    }
-
-static void u_adddir(const userinput * const u)
-{
-  DIR *d;
-  char *thedir;
-  
-  updatecontext();
-
-  if (invalid_dir(u, u->arg1) != 0)
-     return;
-
-  if (u->arg1[strlen(u->arg1)-1] == '/')
-    {
-      u->arg1[strlen(u->arg1)-1] = '\0';
-    }
-  
-  thedir = mystrdup(u->arg1);
-  d = a_open_dir(&thedir);
-  if (!d)
-    {
-      u_respond(u,"Can't Access Directory: %s",strerror(errno));
-      mydelete(thedir);
-      return;
-    }
-  
-  a_adddir_sub(u, thedir, d, 0, NULL, NULL);
-  mydelete(thedir);
-  return;
-}
-
-static void u_addnew(const userinput * const u)
-{
-  DIR *d;
-  char *thedir;
-  
-  updatecontext();
-
-  if (invalid_dir(u, u->arg1) != 0)
-     return;
-
-  if (u->arg1[strlen(u->arg1)-1] == '/')
-    {
-      u->arg1[strlen(u->arg1)-1] = '\0';
-    }
-  
-  thedir = mystrdup(u->arg1);
-  d = a_open_dir(&thedir);
-  if (!d)
-    {
-      u_respond(u,"Can't Access Directory: %s",strerror(errno));
-      mydelete(thedir);
-      return;
-    }
-  
-  a_adddir_sub(u, thedir, d, 1, NULL, NULL);
-  mydelete(thedir);
-  return;
-}
 
 static void u_chdesc(const userinput * const u) {
    int num;
