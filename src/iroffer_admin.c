@@ -45,8 +45,6 @@ static void u_redraw(const userinput * const u);
 static void u_delhist(const userinput * const u);
 static void u_info(const userinput * const u);
 static void u_psend(const userinput * const u);
-static void u_mesg(const userinput * const u);
-static void u_mesq(const userinput * const u);
 static void u_quit(const userinput * const u);
 static void u_status(const userinput * const u);
 static void u_chfile(const userinput * const u);
@@ -192,8 +190,8 @@ static const userinput_parse_t userinput_parse[] = {
 {5,2,method_allow_all,a_msg,           "MSG","nick message","Send <message> to user or channel <nick>"},
 {5,2,method_allow_all,a_amsg,          "AMSG","msg","Announce <msg> in all joined channels"},
 {5,2,method_allow_all,a_msgnet,        "MSGNET","net nick message","Send <message> to user or channel <nick>"},
-{5,2,method_allow_all,u_mesg,          "MESG","message","Sends <message> to all users who are transferring"},
-{5,2,method_allow_all,u_mesq,          "MESQ","message","Sends <message> to all users in a queue"},
+{5,2,method_allow_all,a_mesg,          "MESG","message","Sends <message> to all users who are transferring"},
+{5,2,method_allow_all,a_mesq,          "MESQ","message","Sends <message> to all users in a queue"},
 {5,2,method_allow_all,u_ignore,        "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
 {5,2,method_allow_all,u_unignore,      "UNIGNORE","hostmask","Un-Ignore <hostmask>"},
 {5,2,method_allow_all,u_bannhost,      "BANNHOST","x hostmask","Stop transfers and ignore <hostmask> (nick!user@host) for <x> minutes"},
@@ -1488,57 +1486,6 @@ static void u_psend(const userinput * const u)
   u_respond(u, "Sending PLIST with style %s to %s on network %s",
             u->arg2 ? u->arg2 : "full",
             u->arg1, nname);
-  
-}
-
-static void u_mesg(const userinput * const u)
-{
-  transfer *tr;
-  gnetwork_t *backup;
- 
-  updatecontext();
-  
-  if (invalid_message(u, u->arg1e) != 0)
-    return;
-
-  tr = irlist_get_head(&gdata.trans);
-  while(tr)
-    {
-      backup = gnetwork;
-      gnetwork = &(gdata.networks[tr->net]);
-      notice(tr->nick,"MESSAGE FROM OWNER: %s",u->arg1e);
-      tr = irlist_get_next(tr);
-      gnetwork = backup;
-    }
-  
-  u_respond(u, "Sent message to %i %s", irlist_size(&gdata.trans), irlist_size(&gdata.trans)!=1 ? "users" : "user");
-  
-}
-
-static void u_mesq(const userinput * const u)
-{
-  int count;
-  ir_pqueue *pq;
-  gnetwork_t *backup;
-  
-  updatecontext();
-  
-  if (invalid_message(u, u->arg1e) != 0)
-    return;
-
-  count=0;
-  pq = irlist_get_head(&gdata.mainqueue);
-  while(pq)
-    {
-      backup = gnetwork;
-      gnetwork = &(gdata.networks[pq->net]);
-      notice(pq->nick,"MESSAGE FROM OWNER: %s",u->arg1e);
-      count++;
-      pq = irlist_get_next(pq);
-      gnetwork = backup;
-    }
-  
-  u_respond(u, "Sent message to %i %s", count, count!=1 ? "users" : "user");
   
 }
 

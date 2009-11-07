@@ -30,7 +30,6 @@ int add_default_groupdesc(const char *group);
 
 int invalid_dir(const userinput * const u, char *arg);
 int invalid_file(const userinput * const u, char *arg);
-int invalid_message(const userinput * const u, const char *arg);
 int invalid_channel(const userinput * const u, const char *arg);
 int invalid_maxspeed(const userinput * const u, const char *arg);
 int get_pack_nr(const userinput * const u, const char *arg);
@@ -99,6 +98,8 @@ void a_amsg(const userinput * const u);
 channel_t *is_not_joined_channel(const userinput * const u, const char *name);
 void a_msg(const userinput * const u);
 void a_msgnet(const userinput * const u);
+void a_mesg(const userinput * const u);
+void a_mesq(const userinput * const u);
 void a_acceptu(const userinput * const u);
 void a_getl(const userinput * const u);
 void a_get(const userinput * const u);

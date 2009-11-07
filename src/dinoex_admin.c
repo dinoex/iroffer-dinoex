@@ -481,7 +481,7 @@ static int invalid_nick(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_message(const userinput * const u, const char *arg)
+static int invalid_message(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Message");
@@ -3227,6 +3227,52 @@ void a_msgnet(const userinput * const u)
   gnetwork = &(gdata.networks[net]);
   a_msg_nick_or_chan(u, u->arg2, u->arg3e);
   gnetwork = backup;
+}
+
+void a_mesg(const userinput * const u)
+{
+  transfer *tr;
+  gnetwork_t *backup;
+ 
+  updatecontext();
+  
+  if (invalid_message(u, u->arg1e) != 0)
+    return;
+
+  backup = gnetwork;
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
+    gnetwork = &(gdata.networks[tr->net]);
+    notice(tr->nick, "MESSAGE FROM OWNER: %s", u->arg1e);
+  }
+  gnetwork = backup;
+  
+  a_respond(u, "Sent message to %i %s", irlist_size(&gdata.trans), irlist_size(&gdata.trans)!=1 ? "users" : "user");
+}
+
+void a_mesq(const userinput * const u)
+{
+  int count;
+  ir_pqueue *pq;
+  gnetwork_t *backup;
+  
+  updatecontext();
+  
+  if (invalid_message(u, u->arg1e) != 0)
+    return;
+
+  backup = gnetwork;
+  count=0;
+  for (pq = irlist_get_head(&gdata.mainqueue);
+       pq;
+       pq = irlist_get_next(pq)) {
+    gnetwork = &(gdata.networks[pq->net]);
+    notice(pq->nick, "MESSAGE FROM OWNER: %s", u->arg1e);
+    count++;
+  }
+  gnetwork = backup;
+  a_respond(u, "Sent message to %i %s", count, count!=1 ? "users" : "user");
 }
 
 void a_bann_hostmask(const userinput * const u, const char *arg)
