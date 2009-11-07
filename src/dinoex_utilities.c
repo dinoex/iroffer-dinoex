@@ -836,9 +836,10 @@ int convert_spaces_to_match(char *str)
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
 {
   irlist_t newlist = {0, 0, 0};
-  void *cur, *try;
+  void *cur;
+  void *try;
   void *last;
- 
+
   while ((cur = irlist_get_head(list))) {
     irlist_remove(list, cur);
 
@@ -863,7 +864,7 @@ void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
       irlist_insert_after(&newlist, cur, last);
     }
   }
- 
+
   *list = newlist;
   return;
 }
