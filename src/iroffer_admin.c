@@ -980,7 +980,7 @@ static void u_xdl(const userinput * const u) {
        xd = irlist_get_next(xd);
      }
 
-     irlist_sort(&grplist, irlist_sort_cmpfunc_string);
+     irlist_sort2(&grplist, irlist_sort_cmpfunc_string);
      inlist = irlist_get_head(&grplist);
      while (inlist)
        {
@@ -2783,7 +2783,7 @@ static void u_memstat(const userinput * const u)
         {
           mmap_info_t *mm;
           
-          irlist_sort(&xd->mmaps, irlist_sort_cmpfunc_off_t);
+          irlist_sort2(&xd->mmaps, irlist_sort_cmpfunc_off_t);
           
           for (mm = irlist_get_head(&xd->mmaps); mm; mm = irlist_get_next(mm))
             {
@@ -3066,7 +3066,7 @@ void u_listdir(const userinput * const u, const char *dir)
   
   closedir(d);
   
-  irlist_sort(&dirlist, irlist_sort_cmpfunc_string);
+  irlist_sort2(&dirlist, irlist_sort_cmpfunc_string);
   
   if (!irlist_size(&dirlist))
     {

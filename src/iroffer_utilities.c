@@ -2256,50 +2256,6 @@ int irlist_sort_cmpfunc_off_t(const void *a, const void *b)
   return ai - bi;
 }
 
-void irlist_sort(irlist_t *list,
-                 int (*cmpfunc)(const void *a, const void *b))
-{
-  irlist_t newlist = {0, 0, 0};
-  void *cur, *try;
-  void *last;
-  
-  while ((cur = irlist_get_head(list)))
-    {
-      irlist_remove(list, cur);
-      
-      try = irlist_get_head(&newlist);
-      if (!try)
-        {
-          irlist_insert_head(&newlist, cur);
-          continue;
-        }
-      
-      last = NULL;
-      while (try)
-        {
-          if (cmpfunc(cur, try) < 0)
-            {
-              break;
-            }
-          last = try;
-          try = irlist_get_next(try);
-        }
-      
-      if (!last)
-        {
-          irlist_insert_head(&newlist, cur);
-        }
-      else
-        {
-          irlist_insert_after(&newlist, cur, last);
-        }
-    }
-  
-  
-  *list = newlist;
-  return;
-}
-
 transfer* does_tr_id_exist(int tr_id)
 {
   transfer *tr;

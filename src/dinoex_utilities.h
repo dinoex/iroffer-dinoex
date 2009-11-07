@@ -64,4 +64,6 @@ char *getpart(const char *line, int howmany);
 char *getpart_eol(const char *line, int howmany);
 int convert_spaces_to_match(char *str);
 
+void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b));
+
 /* End of File */
