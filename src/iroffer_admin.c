@@ -44,7 +44,6 @@ static void u_nomax(const userinput * const u);
 static void u_redraw(const userinput * const u);
 static void u_delhist(const userinput * const u);
 static void u_info(const userinput * const u);
-static void u_removedir(const userinput * const u);
 static void u_send(const userinput * const u);
 static void u_psend(const userinput * const u);
 static void u_mesg(const userinput * const u);
@@ -138,7 +137,7 @@ static const userinput_parse_t userinput_parse[] = {
 
 {3,0,method_allow_all_xdl,u_info,      "INFO","n","Show info for pack <n>"},
 {3,4,method_allow_all,a_remove,        "REMOVE","n [m]","Removes pack <n> or <n> to <m>"},
-{3,4,method_allow_all,u_removedir,     "REMOVEDIR","dir","Remove every pack found in <dir>"},
+{3,4,method_allow_all,a_removedir,     "REMOVEDIR","dir","Remove every pack found in <dir>"},
 {3,4,method_allow_all,a_removegroup,   "REMOVEGROUP","group","Remove every pack found in <group>"},
 {3,3,method_allow_all,a_renumber3,     "RENUMBER","x [y] z","Moves packs <x> to <y> to position <z>"},
 {3,3,method_allow_all,a_sort,          "SORT","[field] [field]","Sort all packs by fields"},
@@ -1390,34 +1389,6 @@ static void u_info(const userinput * const u)
       u_respond(u, " is protected by password");
     }
 
-  return;
-}
-
-static void u_removedir(const userinput * const u)
-{
-  DIR *d;
-  char *thedir;
-  
-  updatecontext();
-
-  if (invalid_dir(u, u->arg1) != 0)
-     return;
-
-  if (u->arg1[strlen(u->arg1)-1] == '/')
-    {
-      u->arg1[strlen(u->arg1)-1] = '\0';
-    }
-  
-  thedir = mystrdup(u->arg1);
-  d = a_open_dir(&thedir);
-  if (!d)
-    {
-      u_respond(u,"Can't Access Directory: %s",strerror(errno));
-      return;
-    }
-  
-  a_removedir_sub(u, thedir, d);
-  mydelete(thedir);
   return;
 }
 

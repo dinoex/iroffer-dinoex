@@ -57,6 +57,7 @@ void a_reiqueue(const userinput * const u);
 
 void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d);
 void a_remove(const userinput * const u);
+void a_removedir(const userinput * const u);
 void a_removegroup(const userinput * const u);
 void a_renumber3(const userinput * const u);
 void a_sort(const userinput * const u);
