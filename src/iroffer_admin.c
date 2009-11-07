@@ -41,7 +41,6 @@ static void u_close(const userinput * const u);
 static void u_closeu(const userinput * const u);
 static void u_nomin(const userinput * const u);
 static void u_nomax(const userinput * const u);
-static void u_raw(const userinput * const u);
 static void u_redraw(const userinput * const u);
 static void u_delhist(const userinput * const u);
 static void u_info(const userinput * const u);
@@ -208,7 +207,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,3,method_allow_all,u_msgread,       "MSGREAD",NULL,"Show MSG log"},
 {5,5,method_allow_all,u_msgdel,        "MSGDEL",NULL,"Delete MSG log"},
 {5,3,method_allow_all,u_rmul,          "RMUL","filename","Delete a file in the upload dir"},
-{5,5,method_allow_all,u_raw,           "RAW","command","Send <command> to server (RAW IRC)"},
+{5,5,method_allow_all,a_raw,           "RAW","command","Send <command> to server (RAW IRC)"},
 {5,5,method_allow_all,a_rawnet,        "RAWNET","net command","Send <command> to server (RAW IRC)"},
 {5,5,method_allow_all,a_lag,           "LAG","[net]","Show lag on networks"},
 
@@ -1308,21 +1307,6 @@ static void u_nomax(const userinput * const u)
       tr = does_tr_id_exist(num);
       tr->nomax = 1;
     }
-}
-
-static void u_raw(const userinput * const u)
-{
-  gnetwork_t *backup;
-  
-  updatecontext();
-  
-  if (invalid_command(u, u->arg1e) != 0)
-    return;
-
-  backup = gnetwork;
-  gnetwork = &(gdata.networks[0]);
-  writeserver(WRITESERVER_NOW, "%s", u->arg1e);
-  gnetwork = backup;
 }
 
 static void u_info(const userinput * const u)

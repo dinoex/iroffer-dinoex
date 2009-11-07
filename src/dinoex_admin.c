@@ -3398,6 +3398,21 @@ void a_rmiq(const userinput * const u)
   a_rmq2(u, &gdata.idlequeue);
 }
 
+void a_raw(const userinput * const u)
+{
+  gnetwork_t *backup;
+
+  updatecontext();
+
+  if (invalid_command(u, u->arg1e) != 0)
+    return;
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[0]);
+  writeserver(WRITESERVER_NOW, "%s", u->arg1e);
+  gnetwork = backup;
+}
+
 void a_rawnet(const userinput * const u)
 {
   gnetwork_t *backup;
