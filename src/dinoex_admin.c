@@ -1622,6 +1622,32 @@ void a_remove(const userinput * const u)
   }
 }
 
+void a_removedir(const userinput * const u)
+{
+  DIR *d;
+  char *thedir;
+ 
+  updatecontext();
+
+  if (invalid_dir(u, u->arg1) != 0)
+   return;
+
+  if (u->arg1[strlen(u->arg1)-1] == '/') {
+    u->arg1[strlen(u->arg1)-1] = '\0';
+  }
+ 
+  thedir = mystrdup(u->arg1);
+  d = a_open_dir(&thedir);
+  if (!d) {
+    a_respond(u,"Can't Access Directory: %s",strerror(errno));
+    return;
+  }
+ 
+  a_removedir_sub(u, thedir, d);
+  mydelete(thedir);
+  return;
+}
+
 void a_removegroup(const userinput * const u)
 {
   xdcc *xd;
