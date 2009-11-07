@@ -472,7 +472,7 @@ static int invalid_pwd(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_nick(const userinput * const u, const char *arg)
+static int invalid_nick(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Nick");
@@ -500,7 +500,7 @@ static int invalid_announce(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_command(const userinput * const u, const char *arg)
+static int invalid_command(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Command");
@@ -1525,7 +1525,7 @@ void a_reiqueue(const userinput * const u)
   a_requeue2(u, &gdata.idlequeue);
 }
 
-void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
+static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
 {
   struct dirent *f;
   char *tempstr;
@@ -1626,7 +1626,7 @@ void a_removedir(const userinput * const u)
 {
   DIR *d;
   char *thedir;
- 
+
   updatecontext();
 
   if (invalid_dir(u, u->arg1) != 0)
@@ -1635,14 +1635,14 @@ void a_removedir(const userinput * const u)
   if (u->arg1[strlen(u->arg1)-1] == '/') {
     u->arg1[strlen(u->arg1)-1] = '\0';
   }
- 
+
   thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d) {
-    a_respond(u,"Can't Access Directory: %s",strerror(errno));
+    a_respond(u, "Can't Access Directory: %s", strerror(errno));
     return;
   }
- 
+
   a_removedir_sub(u, thedir, d);
   mydelete(thedir);
   return;
@@ -3852,6 +3852,33 @@ void a_autogroup(const userinput * const u)
     mydelete(tempstr);
   }
   write_files();
+}
+
+void a_send(const userinput * const u)
+{
+  int num;
+  gnetwork_t *backup;
+  int net;
+
+  updatecontext();
+
+  net = get_network_msg(u, u->arg3);
+  if (net < 0)
+    return;
+
+  if (invalid_nick(u, u->arg1) != 0)
+    return;
+
+  num = get_pack_nr(u, u->arg2);
+  if (num <= 0)
+    return;
+
+  a_respond(u, "Sending %s pack %i", u->arg1, num);
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  sendxdccfile(u->arg1, "man", "man", num, NULL, NULL);
+  gnetwork = backup;
 }
 
 /* this function imported from iroffer-lamm */

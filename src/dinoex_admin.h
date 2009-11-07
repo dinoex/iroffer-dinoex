@@ -30,9 +30,7 @@ int add_default_groupdesc(const char *group);
 
 int invalid_dir(const userinput * const u, char *arg);
 int invalid_file(const userinput * const u, char *arg);
-int invalid_nick(const userinput * const u, const char *arg);
 int invalid_message(const userinput * const u, const char *arg);
-int invalid_command(const userinput * const u, const char *arg);
 int invalid_channel(const userinput * const u, const char *arg);
 int invalid_maxspeed(const userinput * const u, const char *arg);
 int get_pack_nr(const userinput * const u, const char *arg);
@@ -55,7 +53,6 @@ void a_queuesize(const userinput * const u);
 void a_requeue(const userinput * const u);
 void a_reiqueue(const userinput * const u);
 
-void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d);
 void a_remove(const userinput * const u);
 void a_removedir(const userinput * const u);
 void a_removegroup(const userinput * const u);
@@ -128,6 +125,7 @@ void a_backgroud(const userinput * const u);
 void a_autoadd(const userinput * const u);
 void a_autogroup(const userinput * const u);
 
+void a_send(const userinput * const u);
 void a_queue(const userinput * const u);
 void a_iqueue(const userinput * const u);
 void a_announce(const userinput * const u);

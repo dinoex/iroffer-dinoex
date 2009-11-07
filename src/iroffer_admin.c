@@ -44,7 +44,6 @@ static void u_nomax(const userinput * const u);
 static void u_redraw(const userinput * const u);
 static void u_delhist(const userinput * const u);
 static void u_info(const userinput * const u);
-static void u_send(const userinput * const u);
 static void u_psend(const userinput * const u);
 static void u_mesg(const userinput * const u);
 static void u_mesq(const userinput * const u);
@@ -125,7 +124,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,5,method_allow_all,u_nomax,         "NOMAX","id","Disables maxspeed for transfer <id>"},
 {2,5,method_allow_all,a_unlimited,     "UNLIMITED","id","Disables bandwidth limits for transfer <id>"},
 {2,5,method_allow_all,a_maxspeed,      "MAXSPEED","id x","Set max bandwidth limit of <x> KB/s for transfer <id>"},
-{2,2,method_allow_all,u_send,          "SEND","nick n [net]","Sends pack <n> to <nick>"},
+{2,2,method_allow_all,a_send,          "SEND","nick n [net]","Sends pack <n> to <nick>"},
 {2,2,method_allow_all,a_queue,         "QUEUE","nick n [net]","Queues pack <n> for <nick> for main queue"},
 {2,2,method_allow_all,a_iqueue,        "IQUEUE","nick n [net]","Queues pack <n> for <nick> for idle queue"},
 {2,2,method_allow_all,u_psend,         "PSEND","channel style [net]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
@@ -1411,33 +1410,6 @@ static void u_delhist(const userinput * const u)
   
   return;
 }
-
-static void u_send(const userinput * const u) {
-   int num;
-   gnetwork_t *backup;
-   int net;
-   
-   updatecontext();
-
-   net = get_network_msg(u, u->arg3);
-   if (net < 0)
-     return;
-
-   if (invalid_nick(u, u->arg1) != 0)
-      return;
-
-   num = get_pack_nr(u, u->arg2);
-   if (num <= 0)
-      return;
-
-   u_respond(u,"Sending %s pack %i",u->arg1,num);
-   
-   backup = gnetwork;
-   gnetwork = &(gdata.networks[net]);
-   sendxdccfile(u->arg1, "man", "man", num, NULL, NULL);
-   gnetwork = backup;
-   
-   }
 
 static void u_psend(const userinput * const u)
 {
