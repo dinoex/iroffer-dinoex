@@ -432,7 +432,7 @@ static int invalid_group(const userinput * const u, char *arg)
   return 0;
 }
 
-int invalid_dir(const userinput * const u, char *arg)
+static int invalid_dir(const userinput * const u, char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Directory");
@@ -1622,6 +1622,41 @@ void a_remove(const userinput * const u)
   }
 }
 
+static DIR *a_open_dir(char **dir)
+{
+  DIR *d;
+  char *adir;
+  char *path;
+  int n;
+
+  strip_trailing_path(*dir);
+
+  d = opendir(*dir);
+  if ((d != NULL) || (errno != ENOENT))
+    return d;
+
+  if (errno != ENOENT)
+    return d;
+
+  n = irlist_size(&gdata.filedir);
+  if (n == 0)
+    return NULL;
+
+  for (adir = irlist_get_head(&gdata.filedir);
+       adir;
+       adir = irlist_get_next(adir)) {
+    path = mystrjoin(adir, *dir, '/');
+    d = opendir(path);
+    if ((d != NULL) || (errno != ENOENT)) {
+      mydelete(*dir);
+      *dir = path;
+      return d;
+    }
+    mydelete(path);
+  }
+  return NULL;
+}
+
 void a_removedir(const userinput * const u)
 {
   DIR *d;
@@ -1831,7 +1866,7 @@ void a_add(const userinput * const u)
   a_add2(u, NULL);
 }
 
-void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onlynew, const char *setgroup, const char *match)
+static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onlynew, const char *setgroup, const char *match)
 {
   userinput *u2;
   struct dirent *f;
@@ -1982,41 +2017,6 @@ void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onl
 
     thefile = irlist_delete(&dirlist, thefile);
   }
-}
-
-DIR *a_open_dir(char **dir)
-{
-  DIR *d;
-  char *adir;
-  char *path;
-  int n;
-
-  strip_trailing_path(*dir);
-
-  d = opendir(*dir);
-  if ((d != NULL) || (errno != ENOENT))
-    return d;
-
-  if (errno != ENOENT)
-    return d;
-
-  n = irlist_size(&gdata.filedir);
-  if (n == 0)
-    return NULL;
-
-  for (adir = irlist_get_head(&gdata.filedir);
-       adir;
-       adir = irlist_get_next(adir)) {
-    path = mystrjoin(adir, *dir, '/');
-    d = opendir(path);
-    if ((d != NULL) || (errno != ENOENT)) {
-      mydelete(*dir);
-      *dir = path;
-      return d;
-    }
-    mydelete(path);
-  }
-  return NULL;
 }
 
 void a_addgroup(const userinput * const u)
@@ -2832,6 +2832,61 @@ static int a_newdir_check(const userinput * const u, const char *dir1, const cha
 
   cancel_md5_hash(xd, "CHFILE");
   return 1;
+}
+
+void a_adddir(const userinput * const u)
+{
+  DIR *d;
+  char *thedir;
+
+  updatecontext();
+
+  if (invalid_dir(u, u->arg1) != 0)
+    return;
+
+  if (u->arg1[strlen(u->arg1)-1] == '/') {
+    u->arg1[strlen(u->arg1)-1] = '\0';
+  }
+
+  thedir = mystrdup(u->arg1);
+  d = a_open_dir(&thedir);
+  if (!d)
+    {
+      a_respond(u, "Can't Access Directory: %s", strerror(errno));
+      mydelete(thedir);
+      return;
+    }
+
+  a_adddir_sub(u, thedir, d, 0, NULL, NULL);
+  mydelete(thedir);
+  return;
+}
+
+void a_addnew(const userinput * const u)
+{
+  DIR *d;
+  char *thedir;
+
+  updatecontext();
+
+  if (invalid_dir(u, u->arg1) != 0)
+    return;
+
+  if (u->arg1[strlen(u->arg1)-1] == '/') {
+    u->arg1[strlen(u->arg1)-1] = '\0';
+  }
+
+  thedir = mystrdup(u->arg1);
+  d = a_open_dir(&thedir);
+  if (!d) {
+    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    mydelete(thedir);
+    return;
+  }
+
+  a_adddir_sub(u, thedir, d, 1, NULL, NULL);
+  mydelete(thedir);
+  return;
 }
 
 void a_newdir(const userinput * const u)
