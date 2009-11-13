@@ -2176,6 +2176,41 @@ void a_newgroup(const userinput * const u)
   return;
 }
 
+void a_chdesc(const userinput * const u)
+{
+  int num;
+  xdcc *xd;
+  const char *newdesc;
+
+  updatecontext();
+
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
+    return;
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
+
+  newdesc = u->arg2e;
+  if (!u->arg2e || !strlen(u->arg2e)) {
+    newdesc = getfilename(xd->file);
+    if (strcmp(newdesc, xd->desc) == 0) {
+      a_respond(u, "Try Specifying a Description");
+      return;
+    }
+  } else {
+    clean_quotes(u->arg2e);
+  }
+
+  a_respond(u, "CHDESC: [Pack %i] Old: %s New: %s",
+            num, xd->desc, newdesc);
+
+  mydelete(xd->desc);
+  xd->desc = mystrdup(newdesc);
+  write_files();
+}
+
 void a_chtime(const userinput * const u)
 {
   const char *format;
