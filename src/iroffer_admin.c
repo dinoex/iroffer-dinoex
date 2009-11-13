@@ -47,7 +47,6 @@ static void u_info(const userinput * const u);
 static void u_psend(const userinput * const u);
 static void u_quit(const userinput * const u);
 static void u_status(const userinput * const u);
-static void u_chdesc(const userinput * const u);
 static void u_chnote(const userinput * const u);
 static void u_chmins(const userinput * const u);
 static void u_chmaxs(const userinput * const u);
@@ -144,7 +143,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_autogroup,     "AUTOGROUP",NULL,"Create a group for each directory with packs"},
 {3,3,method_allow_all,a_chfile,        "CHFILE","n filename","Change file of pack <n> to <filename>"},
 {3,3,method_allow_all,a_newdir,        "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
-{3,3,method_allow_all,u_chdesc,        "CHDESC","n [msg]","Change description of pack <n> to <msg>"},
+{3,3,method_allow_all,a_chdesc,        "CHDESC","n [msg]","Change description of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chnote,        "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtime,        "CHTIME","n [msg]","Change add time of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chmins,        "CHMINS","n x","Change min speed of pack <n> to <x> KB/s"},
@@ -1506,42 +1505,6 @@ static void u_status(const userinput * const u) {
    u_respond(u,"%s",tempstr);
    
    mydelete(tempstr);
-   }
-
-static void u_chdesc(const userinput * const u) {
-   int num;
-   xdcc *xd;
-   const char *newdesc;
-   
-   updatecontext();
-   
-   num = get_pack_nr(u, u->arg1);
-   if (num <= 0)
-      return;
-
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd))
-     return;
-   
-   newdesc = u->arg2e;
-   if (!u->arg2e || !strlen(u->arg2e)) {
-      newdesc = getfilename(xd->file);
-      if (strcmp(newdesc, xd->desc) == 0) {
-        u_respond(u, "Try Specifying a Description");
-        return;
-        }
-      }
-   else {
-      clean_quotes(u->arg2e);
-      }
-   
-   u_respond(u, "CHDESC: [Pack %i] Old: %s New: %s",
-      num, xd->desc, newdesc);
-   
-   mydelete(xd->desc);
-   xd->desc = mystrdup(newdesc);
-   
-   write_files();
    }
 
 static void u_chnote(const userinput * const u) {
