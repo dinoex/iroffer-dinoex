@@ -784,6 +784,7 @@ void u_parseit(userinput * const u);
 
 void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, const xdcc *xd);
 void u_listdir(const userinput * const u, const char *dir);
+void u_ignore(const userinput * const u);
 
 /* main.c */
 char* addtoqueue(const char* nick, const char* hostname, int pack);
