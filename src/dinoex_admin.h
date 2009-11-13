@@ -110,7 +110,6 @@ void a_rawnet(const userinput * const u);
 void a_lag(const userinput * const u);
 void a_bannhost(const userinput * const u);
 void a_bannnick(const userinput * const u);
-void a_bann_hostmask(const userinput * const u, const char *arg);
 void a_hop(const userinput * const u);
 void a_nochannel(const userinput * const u);
 void a_join(const userinput * const u);

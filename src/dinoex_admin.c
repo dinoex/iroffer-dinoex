@@ -3418,7 +3418,7 @@ void a_mesq(const userinput * const u)
   a_respond(u, "Sent message to %i %s", count, count!=1 ? "users" : "user");
 }
 
-void a_bann_hostmask(const userinput * const u, const char *arg)
+static void a_bann_hostmask(const userinput * const u, const char *arg)
 {
   transfer *tr;
   char *hostmask;
