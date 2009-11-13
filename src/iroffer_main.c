@@ -34,6 +34,7 @@
 #include "dinoex_ruby.h"
 #include "dinoex_main.h"
 #include "dinoex_user.h"
+#include "dinoex_chat.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -159,27 +160,7 @@ static void mainloop (void) {
           highests = max2(highests, fileno(stdin));
         }
       
-      for (chat = irlist_get_head(&gdata.dccchats);
-           chat;
-           chat = irlist_get_next(chat))
-        {
-          if (chat->status == DCCCHAT_CONNECTING)
-            {
-              FD_SET(chat->con.clientsocket, &gdata.writeset);
-              highests = max2(highests, chat->con.clientsocket);
-            }
-          else if (chat->status == DCCCHAT_LISTENING)
-            {
-              FD_SET(chat->con.listensocket, &gdata.readset);
-              highests = max2(highests, chat->con.listensocket);
-            }
-          else if (chat->status != DCCCHAT_UNUSED)
-            {
-              FD_SET(chat->con.clientsocket, &gdata.readset);
-              highests = max2(highests, chat->con.clientsocket);
-            }
-        }
-      
+      highests = chat_select_fdset(highests);
       highests = t_select_fdset(highests, changequartersec);
       highests = l_select_fdset(highests);
 #ifndef WITHOUT_TELNET
