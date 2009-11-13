@@ -3444,6 +3444,16 @@ void a_bann_hostmask(const userinput * const u, const char *arg)
   }
 }
 
+void a_bannhost(const userinput * const u)
+{
+  u_ignore(u);
+
+  if (!u->arg1) return;
+  if (!u->arg2 || strlen(u->arg2) < 4U) return;
+
+  a_bann_hostmask(u, u->arg2);
+}
+
 void a_bannnick(const userinput * const u)
 {
   gnetwork_t *backup;
