@@ -314,35 +314,7 @@ u_respond(const userinput * const u, const char *format, ...)
       vioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, format, args);
       break;
     case method_fd:
-      {
-        ssize_t retval;
-        char tempstr[maxtextlength];
-        int llen;
-        
-        llen = vsnprintf(tempstr,maxtextlength-3,format,args);
-        if ((llen < 0) || (llen >= maxtextlength-3))
-          {
-            outerror(OUTERROR_TYPE_WARN,"string too long!");
-            tempstr[0] = '\0';
-            llen = 0;
-          }
-        
-        if (!gdata.xdcclistfileraw)
-          {
-            removenonprintablectrl(tempstr);
-          }
-        
-        if (gdata.dos_text_files)
-          tempstr[llen++] = '\r';
-        tempstr[llen++] = '\n';
-        tempstr[llen] = '\0';
-        
-        retval = write(u->fd, tempstr, strlen(tempstr));
-        if (retval < 0)
-          {
-            outerror(OUTERROR_TYPE_WARN_LOUD,"Write failed: %s", strerror(errno));
-          }
-      }
+      voutput_fd(u->fd, format, args);
       break;
     case method_msg:
       vprivmsg(u->snick, format, args);

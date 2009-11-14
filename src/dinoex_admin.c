@@ -46,6 +46,38 @@ static void strip_trailing_path(char *str)
     str[len-1] = '\0';
 }
 
+void voutput_fd(int fd, const char *format, va_list args)
+{
+  ssize_t retval;
+  char *tempstr;
+  int llen;
+
+  updatecontext();
+  tempstr = mycalloc(maxtextlength);
+
+  llen = vsnprintf(tempstr, maxtextlength - 3, format, args);
+  if ((llen < 0) || (llen >= maxtextlength - 3)) {
+    outerror(OUTERROR_TYPE_WARN, "string too long!");
+    mydelete(tempstr);
+    return;
+  }
+
+  if (!gdata.xdcclistfileraw)
+    removenonprintablectrl(tempstr);
+
+  if (gdata.dos_text_files)
+    tempstr[llen++] = '\r';
+
+  tempstr[llen++] = '\n';
+  tempstr[llen] = '\0';
+
+  retval = write(fd, tempstr, strlen(tempstr));
+  if (retval < 0)
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Write failed: %s", strerror(errno));
+
+  mydelete(tempstr);
+}
+
 void a_respond(const userinput * const u, const char *format, ...)
 {
   va_list args;
@@ -69,35 +101,7 @@ void a_respond(const userinput * const u, const char *format, ...)
       vioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, format, args);
       break;
     case method_fd:
-      {
-        ssize_t retval;
-        char tempstr[maxtextlength];
-        int llen;
-
-        llen = vsnprintf(tempstr, maxtextlength-3, format, args);
-        if ((llen < 0) || (llen >= maxtextlength-3))
-          {
-            outerror(OUTERROR_TYPE_WARN, "string too long!");
-            tempstr[0] = '\0';
-            llen = 0;
-          }
-
-        if (!gdata.xdcclistfileraw)
-          {
-            removenonprintablectrl(tempstr);
-          }
-
-        if (gdata.dos_text_files)
-          tempstr[llen++] = '\r';
-        tempstr[llen++] = '\n';
-        tempstr[llen] = '\0';
-
-        retval = write(u->fd, tempstr, strlen(tempstr));
-        if (retval < 0)
-          {
-            outerror(OUTERROR_TYPE_WARN_LOUD, "Write failed: %s", strerror(errno));
-          }
-      }
+      voutput_fd(u->fd, format, args);
       break;
     case method_msg:
       vprivmsg(u->snick, format, args);
