@@ -1901,7 +1901,8 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
 
     if (verifyshell(&gdata.adddir_exclude, f->d_name))
     {
-      a_respond(u, "  Ignoring adddir_exclude: %s", f->d_name);
+      if (gdata.debug > 0)
+        a_respond(u, "  Ignoring adddir_exclude: %s", f->d_name);
       continue;
     }
 
@@ -1937,13 +1938,6 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       mydelete(tempstr);
       continue;
     }
-#ifdef USE_CURL
-    if (fetch_is_running(f->d_name)) {
-      a_respond(u, "  Ignoring fetch: %s", tempstr);
-      mydelete(tempstr);
-      continue;
-    }
-#endif /* USE_CURL */
     if (file_uploading(f->d_name)) {
       a_respond(u, "  Ignoring upload: %s", tempstr);
       mydelete(tempstr);
@@ -1970,7 +1964,8 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         if ((xd->st_dev == st.st_dev) &&
             (xd->st_ino == st.st_ino)) {
           foundit = 1;
-          a_respond(u, "  Ignoring added file: %s", tempstr);
+          if (gdata.debug > 0)
+            a_respond(u, "  Ignoring added file: %s", tempstr);
           break;
         }
       }
