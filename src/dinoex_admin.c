@@ -1900,16 +1900,15 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     int foundit;
 
     if (verifyshell(&gdata.adddir_exclude, f->d_name))
+    {
+      a_respond(u, "  Ignoring adddir_exclude: %s", tempstr);
       continue;
+    }
 
     if (match != NULL) {
       if (fnmatch(match, f->d_name, FNM_CASEFOLD))
         continue;
     }
-#ifdef USE_CURL
-    if (fetch_is_running(f->d_name))
-      continue;
-#endif /* USE_CURL */
 
     tempstr = mycalloc(len + thedirlen + 2);
     snprintf(tempstr, len + thedirlen + 2,
@@ -1938,6 +1937,12 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       mydelete(tempstr);
       continue;
     }
+#ifdef USE_CURL
+    if (fetch_is_running(f->d_name)) {
+      a_respond(u, "  Ignoring fetch: %s", tempstr);
+      continue;
+    }
+#endif /* USE_CURL */
     if (file_uploading(f->d_name)) {
       a_respond(u, "  Ignoring upload: %s", tempstr);
       mydelete(tempstr);
