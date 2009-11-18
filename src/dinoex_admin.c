@@ -1876,6 +1876,7 @@ void a_add(const userinput * const u)
 static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onlynew, const char *setgroup, const char *match)
 {
   userinput *u2;
+  struct dirent f2;
   struct dirent *f;
   struct stat st;
   struct stat *sta;
@@ -1894,14 +1895,22 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     return;
   }
 
-  while ((f = readdir(d))) {
+  for (;;) {
     xdcc *xd;
-    int len = strlen(f->d_name);
+    int len;
     int foundit;
+
+    if (readdir_r(d, &f2, &f ) != 0) {
+       a_respond(u, "Error reading dir %s: %s", thedir, strerror(errno));
+       break;
+    }
+
+    if (f == NULL)
+      break;
 
     if (verifyshell(&gdata.adddir_exclude, f->d_name))
     {
-      if (gdata.debug > 0)
+      if (gdata.debug >= 0)
         a_respond(u, "  Ignoring adddir_exclude: %s", f->d_name);
       continue;
     }
@@ -1911,9 +1920,9 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         continue;
     }
 
-    tempstr = mycalloc(len + thedirlen + 2);
-    snprintf(tempstr, len + thedirlen + 2,
-             "%s/%s", thedir, f->d_name);
+    len = strlen(f->d_name) + thedirlen + 2;
+    tempstr = mycalloc(len);
+    snprintf(tempstr, len, "%s/%s", thedir, f->d_name);
 
     if (stat(tempstr, &st) < 0) {
       a_respond(u, "cannot access %s, ignoring: %s",
@@ -1987,7 +1996,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     }
 
     if (foundit == 0) {
-      thefile = irlist_add(&dirlist, len + thedirlen + 2);
+      thefile = irlist_add(&dirlist, len);
       strcpy(thefile, tempstr);
     }
     mydelete(tempstr);
