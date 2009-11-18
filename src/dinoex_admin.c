@@ -1934,53 +1934,60 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       mydelete(tempstr);
       continue;
     }
+    if (!S_ISREG(st.st_mode)) {
+      mydelete(tempstr);
+      continue;
+    }
     if (file_uploading(f->d_name)) {
+      a_respond(u, "  Ignoring upload: %s", tempstr);
       mydelete(tempstr);
       continue;
     }
     if (file_uploading(tempstr)) {
+      a_respond(u, "  Ignoring upload: %s", tempstr);
       mydelete(tempstr);
       continue;
     }
-    if (S_ISREG(st.st_mode)) {
-      if (gdata.autoadd_delay) {
-        if ((st.st_mtime + gdata.autoadd_delay) > gdata.curtime) {
-          mydelete(tempstr);
-          continue;
+    if (gdata.autoadd_delay) {
+      if ((st.st_mtime + gdata.autoadd_delay) > gdata.curtime) {
+        a_respond(u, "  Ignoring active file: %s", tempstr);
+        mydelete(tempstr);
+        continue;
+      }
+    }
+
+    foundit = 0;
+    if (onlynew != 0) {
+      for (xd = irlist_get_head(&gdata.xdccs);
+           xd;
+           xd = irlist_get_next(xd)) {
+        if ((xd->st_dev == st.st_dev) &&
+            (xd->st_ino == st.st_ino)) {
+          foundit = 1;
+          a_respond(u, "  Ignoring added file: %s", tempstr);
+          break;
         }
       }
+    }
 
-      foundit = 0;
-      if (onlynew != 0) {
-        for (xd = irlist_get_head(&gdata.xdccs);
-             xd;
-             xd = irlist_get_next(xd)) {
-          if ((xd->st_dev == st.st_dev) &&
-              (xd->st_ino == st.st_ino)) {
-            foundit = 1;
-            break;
-          }
+    if (foundit == 0) {
+      for (u2 = irlist_get_head(&gdata.packs_delayed);
+           u2;
+           u2 = irlist_get_next(u2)) {
+        sta = (struct stat *)(u2->arg2);
+        if ((strcmp(u2->cmd, "ADD") == 0) &&
+            (sta->st_dev == st.st_dev) &&
+            (sta->st_ino == st.st_ino)) {
+          foundit = 1;
+          a_respond(u, "  Ignoring queued file: %s", tempstr);
+          break;
         }
       }
+    }
 
-      if (foundit == 0) {
-        for (u2 = irlist_get_head(&gdata.packs_delayed);
-             u2;
-             u2 = irlist_get_next(u2)) {
-          sta = (struct stat *)(u2->arg2);
-          if ((strcmp(u2->cmd, "ADD") == 0) &&
-              (sta->st_dev == st.st_dev) &&
-              (sta->st_ino == st.st_ino)) {
-            foundit = 1;
-            break;
-          }
-        }
-      }
-
-      if (foundit == 0) {
-        thefile = irlist_add(&dirlist, len + thedirlen + 2);
-        strcpy(thefile, tempstr);
-      }
+    if (foundit == 0) {
+      thefile = irlist_add(&dirlist, len + thedirlen + 2);
+      strcpy(thefile, tempstr);
     }
     mydelete(tempstr);
   }
