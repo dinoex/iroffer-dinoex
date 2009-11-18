@@ -1529,6 +1529,15 @@ void a_reiqueue(const userinput * const u)
   a_requeue2(u, &gdata.idlequeue);
 }
 
+static int is_system_dir(const char *name)
+{
+  if (strcmp(name, ".") == 0)
+    return 1;
+  if (strcmp(name, "..") == 0)
+    return 1;
+  return 0;
+}
+
 static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
 {
   struct dirent *f;
@@ -1552,7 +1561,6 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
     int len = strlen(f->d_name);
 
     tempstr = mycalloc(len + thedirlen + 2);
-
     snprintf(tempstr, len + thedirlen + 2,
              "%s/%s", thedir, f->d_name);
 
@@ -1563,13 +1571,12 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
       continue;
     }
     if (S_ISDIR(st.st_mode)) {
-      if ((strcmp(f->d_name, ".") == 0 ) ||
-          (strcmp(f->d_name, "..") == 0)) {
+      if (is_system_dir(f->d_name)) {
         mydelete(tempstr);
         continue;
       }
       if (gdata.include_subdirs != 0)
-            a_removedir_sub(u, tempstr, NULL);
+        a_removedir_sub(u, tempstr, NULL);
       mydelete(tempstr);
       continue;
     }
@@ -1915,8 +1922,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       continue;
     }
     if (S_ISDIR(st.st_mode)) {
-      if ((strcmp(f->d_name, ".") == 0 ) ||
-          (strcmp(f->d_name, "..") == 0)) {
+      if (is_system_dir(f->d_name)) {
         mydelete(tempstr);
         continue;
       }
@@ -2116,8 +2122,7 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
       continue;
     }
     if (S_ISDIR(st.st_mode)) {
-      if ((strcmp(f->d_name, ".") == 0 ) ||
-          (strcmp(f->d_name, "..") == 0)) {
+      if (is_system_dir(f->d_name)) {
         mydelete(tempstr);
         continue;
       }
