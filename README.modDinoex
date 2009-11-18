@@ -3,9 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.18:
 ------------------
 
+bugfix: include_subdirs (reported by super89)
+  versions affected: 2.0 - 3.17
+  On linux autoadd with include_subdirs could skip files.
+
 extend debug and log information.
 
 bugfix: statefile
+  versions affected: 3.6 - 3.17
   Set version 2 in the "statefile".
   Fix error messages while parsing.
 
@@ -32,8 +37,8 @@ bugfix: http_port
   Use ';' instead '&' for navigation.
 
 bugfix: CHDESC
-  Bot did crash when argument was omitted.
   versions affected: 3.12 - 3.15
+  Bot did crash when argument was omitted.
 
 301) ruby_script
   New method "on_added", called for each pack added to the bot.
