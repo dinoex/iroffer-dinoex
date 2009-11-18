@@ -3,9 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.18:
 ----------------
 
+bugfix: include_subdirs
+  versions affected: 2.0 - 3.17
+  Unter linux konnte "autoadd" mit "include_subdirs" nicht alle Dateien finden.
+
 Debugging und Logging verbessert.
 
 bugfix: statefile
+  versions affected: 3.6 - 3.17
   Setze Version 2 im "statefile".
   Etliche Fehlermeldungen korrigiert.
 
@@ -32,8 +37,8 @@ bugfix: http_port
   Verwende ';' anstelle von '&' in der Navigation.
 
 bugfix: CHDESC
-  Bot crashte wenn kein Argument angegeben wurde.
   versions affected: 3.12 - 3.15
+  Bot crashte wenn kein Argument angegeben wurde.
 
 301) ruby_script
   Neue Methode "on_added", wird bei jedem neuen Pack aufgerufen.
