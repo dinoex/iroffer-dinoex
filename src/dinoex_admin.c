@@ -1911,72 +1911,72 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     if (stat(tempstr, &st) < 0) {
       a_respond(u, "cannot access %s, ignoring: %s",
                 tempstr, strerror(errno));
+      mydelete(tempstr);
+      continue;
+    }
+    if (S_ISDIR(st.st_mode)) {
+      if ((strcmp(f->d_name, ".") == 0 ) ||
+          (strcmp(f->d_name, "..") == 0)) {
         mydelete(tempstr);
         continue;
       }
-      if (S_ISDIR(st.st_mode)) {
-        if ((strcmp(f->d_name, ".") == 0 ) ||
-            (strcmp(f->d_name, "..") == 0)) {
+      if (gdata.include_subdirs == 0) {
+        a_respond(u, "  Ignoring directory: %s", tempstr);
+      } else {
+        a_adddir_sub(u, tempstr, NULL, onlynew, setgroup, match);
+      }
+      mydelete(tempstr);
+      continue;
+    }
+    if (file_uploading(f->d_name)) {
+      mydelete(tempstr);
+      continue;
+    }
+    if (file_uploading(tempstr)) {
+      mydelete(tempstr);
+      continue;
+    }
+    if (S_ISREG(st.st_mode)) {
+      if (gdata.autoadd_delay) {
+        if ((st.st_mtime + gdata.autoadd_delay) > gdata.curtime) {
           mydelete(tempstr);
           continue;
         }
-        if (gdata.include_subdirs == 0) {
-          a_respond(u, "  Ignoring directory: %s", tempstr);
-        } else {
-          a_adddir_sub(u, tempstr, NULL, onlynew, setgroup, match);
-        }
-        mydelete(tempstr);
-        continue;
       }
-      if (file_uploading(f->d_name)) {
-        mydelete(tempstr);
-        continue;
-      }
-      if (file_uploading(tempstr)) {
-        mydelete(tempstr);
-        continue;
-      }
-      if (S_ISREG(st.st_mode)) {
-        if (gdata.autoadd_delay) {
-          if ((st.st_mtime + gdata.autoadd_delay) > gdata.curtime) {
-            mydelete(tempstr);
-            continue;
+
+      foundit = 0;
+      if (onlynew != 0) {
+        for (xd = irlist_get_head(&gdata.xdccs);
+             xd;
+             xd = irlist_get_next(xd)) {
+          if ((xd->st_dev == st.st_dev) &&
+              (xd->st_ino == st.st_ino)) {
+            foundit = 1;
+            break;
           }
         }
+      }
 
-        foundit = 0;
-        if (onlynew != 0) {
-          for (xd = irlist_get_head(&gdata.xdccs);
-               xd;
-               xd = irlist_get_next(xd)) {
-            if ((xd->st_dev == st.st_dev) &&
-                (xd->st_ino == st.st_ino)) {
-              foundit = 1;
-              break;
-            }
+      if (foundit == 0) {
+        for (u2 = irlist_get_head(&gdata.packs_delayed);
+             u2;
+             u2 = irlist_get_next(u2)) {
+          sta = (struct stat *)(u2->arg2);
+          if ((strcmp(u2->cmd, "ADD") == 0) &&
+              (sta->st_dev == st.st_dev) &&
+              (sta->st_ino == st.st_ino)) {
+            foundit = 1;
+            break;
           }
-        }
-
-        if (foundit == 0) {
-          for (u2 = irlist_get_head(&gdata.packs_delayed);
-               u2;
-               u2 = irlist_get_next(u2)) {
-            sta = (struct stat *)(u2->arg2);
-            if ((strcmp(u2->cmd, "ADD") == 0) &&
-                (sta->st_dev == st.st_dev) &&
-                (sta->st_ino == st.st_ino)) {
-              foundit = 1;
-              break;
-            }
-          }
-        }
-
-        if (foundit == 0) {
-          thefile = irlist_add(&dirlist, len + thedirlen + 2);
-          strcpy(thefile, tempstr);
         }
       }
-      mydelete(tempstr);
+
+      if (foundit == 0) {
+        thefile = irlist_add(&dirlist, len + thedirlen + 2);
+        strcpy(thefile, tempstr);
+      }
+    }
+    mydelete(tempstr);
   }
   closedir(d);
 
