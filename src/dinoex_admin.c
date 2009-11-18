@@ -1671,10 +1671,6 @@ void a_removedir(const userinput * const u)
   if (invalid_dir(u, u->arg1) != 0)
    return;
 
-  if (u->arg1[strlen(u->arg1)-1] == '/') {
-    u->arg1[strlen(u->arg1)-1] = '\0';
-  }
-
   thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d) {
@@ -2883,10 +2879,6 @@ void a_adddir(const userinput * const u)
   if (invalid_dir(u, u->arg1) != 0)
     return;
 
-  if (u->arg1[strlen(u->arg1)-1] == '/') {
-    u->arg1[strlen(u->arg1)-1] = '\0';
-  }
-
   thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d)
@@ -2910,10 +2902,6 @@ void a_addnew(const userinput * const u)
 
   if (invalid_dir(u, u->arg1) != 0)
     return;
-
-  if (u->arg1[strlen(u->arg1)-1] == '/') {
-    u->arg1[strlen(u->arg1)-1] = '\0';
-  }
 
   thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
@@ -3092,7 +3080,6 @@ void a_movegroupdir(const userinput * const u)
     caps(u->arg1);
 
   thedir = mystrdup(u->arg2);
-  strip_trailing_path(thedir);
   d = a_open_dir(&thedir);
   if (!d) {
     a_respond(u, "Can't Access Directory: %s", strerror(errno));
