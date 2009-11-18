@@ -1540,14 +1540,13 @@ static int is_system_dir(const char *name)
 
 static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
 {
+  struct dirent f2;
   struct dirent *f;
   char *tempstr;
   userinput *u2;
-  int thedirlen;
 
   updatecontext();
 
-  thedirlen = strlen(thedir);
   if (d == NULL)
     d = opendir(thedir);
 
@@ -1556,14 +1555,18 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
     return;
   }
 
-  while ((f = readdir(d))) {
+  for (;;) {
     struct stat st;
-    int len = strlen(f->d_name);
 
-    tempstr = mycalloc(len + thedirlen + 2);
-    snprintf(tempstr, len + thedirlen + 2,
-             "%s/%s", thedir, f->d_name);
+    if (readdir_r(d, &f2, &f) != 0) {
+       a_respond(u, "Error Reading Directory %s: %s", thedir, strerror(errno));
+       break;
+    }
 
+    if (f == NULL)
+      break;
+
+    tempstr = mystrjoin(thedir, f->d_name, '/');
     if (stat(tempstr, &st) < 0) {
       a_respond(u, "cannot access %s, ignoring: %s",
                 tempstr, strerror(errno));
@@ -1882,11 +1885,9 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
   struct stat *sta;
   char *thefile, *tempstr;
   irlist_t dirlist = {0, 0, 0};
-  int thedirlen;
 
   updatecontext();
 
-  thedirlen = strlen(thedir);
   if (d == NULL)
     d = opendir(thedir);
 
@@ -1897,11 +1898,10 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
 
   for (;;) {
     xdcc *xd;
-    int len;
     int foundit;
 
-    if (readdir_r(d, &f2, &f ) != 0) {
-       a_respond(u, "Error reading dir %s: %s", thedir, strerror(errno));
+    if (readdir_r(d, &f2, &f) != 0) {
+       a_respond(u, "Error Reading Directory %s: %s", thedir, strerror(errno));
        break;
     }
 
@@ -1910,8 +1910,8 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
 
     if (verifyshell(&gdata.adddir_exclude, f->d_name))
     {
-      if (gdata.debug >= 0)
-        a_respond(u, "  Ignoring adddir_exclude: %s", f->d_name);
+      if (gdata.debug > 0)
+        a_respond(u, "  Ignoring adddir_exclude file: %s", f->d_name);
       continue;
     }
 
@@ -1920,9 +1920,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         continue;
     }
 
-    len = strlen(f->d_name) + thedirlen + 2;
-    tempstr = mycalloc(len);
-    snprintf(tempstr, len, "%s/%s", thedir, f->d_name);
+    tempstr = mystrjoin(thedir, f->d_name, '/');
 
     if (stat(tempstr, &st) < 0) {
       a_respond(u, "cannot access %s, ignoring: %s",
@@ -1948,12 +1946,12 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       continue;
     }
     if (file_uploading(f->d_name)) {
-      a_respond(u, "  Ignoring upload: %s", tempstr);
+      a_respond(u, "  Ignoring upload file: %s", tempstr);
       mydelete(tempstr);
       continue;
     }
     if (file_uploading(tempstr)) {
-      a_respond(u, "  Ignoring upload: %s", tempstr);
+      a_respond(u, "  Ignoring upload file: %s", tempstr);
       mydelete(tempstr);
       continue;
     }
@@ -1996,7 +1994,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     }
 
     if (foundit == 0) {
-      thefile = irlist_add(&dirlist, len);
+      thefile = irlist_add(&dirlist, strlen(tempstr) + 1);
       strcpy(thefile, tempstr);
     }
     mydelete(tempstr);
@@ -2105,13 +2103,11 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
   struct dirent *f;
   struct stat st;
   char *tempstr;
-  int thedirlen;
   int num;
   int foundit = 0;
 
   updatecontext();
 
-  thedirlen = strlen(thedir);
   if (d == NULL)
     d = opendir(thedir);
 
@@ -2122,16 +2118,11 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
 
   while ((f = readdir(d))) {
     xdcc *xd;
-    int len = strlen(f->d_name);
 
     if (verifyshell(&gdata.adddir_exclude, f->d_name))
       continue;
 
-    tempstr = mycalloc(len + thedirlen + 2);
-
-    snprintf(tempstr, len + thedirlen + 2,
-             "%s/%s", thedir, f->d_name);
-
+    tempstr = mystrjoin(thedir, f->d_name, '/');
     if (stat(tempstr, &st) < 0) {
       a_respond(u, "cannot access %s, ignoring: %s",
                 tempstr, strerror(errno));
