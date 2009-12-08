@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.18:
 ----------------
 
+bugfix: old_statefile
+  Lese auch alte 32bit Zeitdaten.
+
 bugfix: include_subdirs
   versions affected: 2.0 - 3.17
   Unter linux konnte "autoadd" mit "include_subdirs" nicht alle Dateien finden.

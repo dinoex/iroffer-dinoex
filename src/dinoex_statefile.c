@@ -63,14 +63,20 @@ static void read_statefile_ullint(statefile_hdr_t *hdr, const char *tag, uint64_
 static void read_statefile_time(statefile_hdr_t *hdr, const char *tag, time_t *pval, const char *debug)
 {
   statefile_item_generic_time_t *g_time;
+  statefile_item_generic_int_t *g_int;
 
   if (hdr->length != sizeof(statefile_item_generic_time_t)) {
-    read_statefile_bad_tag(hdr, tag);
-    return;
+    if (hdr->length != sizeof(statefile_item_generic_int_t)) {
+      read_statefile_bad_tag(hdr, tag);
+      return;
+    }
+    /* read old 32 bit timestamps */
+    g_int = (statefile_item_generic_int_t*)hdr;
+    *pval = (time_t) ntohl(g_int->g_int);
+  } else {
+    g_time = (statefile_item_generic_time_t*)hdr;
+    *pval = ntohl(g_time->g_time);
   }
-
-  g_time = (statefile_item_generic_time_t*)hdr;
-  *pval = ntohl(g_time->g_time);
 
   if (debug == NULL)
     return;
