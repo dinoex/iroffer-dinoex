@@ -129,6 +129,11 @@ Long Term Features:
   1400  add hosts/users to a list that can skip the queue if it is full
   1405  autocolor packs
   1406  admin command for Weblist ON | OFF
+  1416  XDCC BATCH group *.avi
+  1417  XDCC BATCH in weblist
+  1418  autodetect packlist and move it to 1.
+  1421  configure autoignore limits.
+  1422  don't log IP-adresses.
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
