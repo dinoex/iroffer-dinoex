@@ -1123,15 +1123,18 @@ void import_xdccfile(void)
   char *templine;
   char *word;
   char *data;
+  char *l;
+  char *r;
   char *xx_file = NULL;
   char *xx_desc = NULL;
   char *xx_note = NULL;
   char *xx_data = NULL;
   char *xx_trno = NULL;
+  FILE *fin;
   float val;
-  int filedescriptor;
   int part;
   int err;
+  int step = 0;
   int xx_gets = 0;
   float xx_mins = 0.0;
   float xx_maxs = 0.0;
@@ -1141,47 +1144,51 @@ void import_xdccfile(void)
   if (gdata.import == NULL)
     return;
 
-  filedescriptor = open(gdata.import, O_RDONLY | ADDED_OPEN_FLAGS );
-  if (filedescriptor < 0) {
+  fin = fopen(gdata.import, "r" );
+  if (fin == NULL) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access XDCC File '%s': %s", gdata.import, strerror(errno));
     return;
   }
 
   templine = mycalloc(maxtextlength);
-  if (getfline(templine, maxtextlength, filedescriptor, 1) == NULL) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Empty XDCC File");
-    mydelete(templine);
-    return;
-  }
-
-  part = 0;
-  for (word = strtok(templine, " ");
-       word;
-       word = strtok(NULL, " ")) {
-    part ++;
-    switch (part) {
-    case 6:
-      val = atof(word);
-      if (val > gdata.record)
-         gdata.record = val;
-      break;
-    case 7:
-      val = atof(word);
-      if (val > gdata.sentrecord)
-         gdata.sentrecord = val;
-      break;
-    case 8:
-      gdata.totalsent += atoull(word);
-      break;
-    case 9:
-      gdata.totaluptime += atol(word);
-      break;
-    default:
-      break;
-    }
-  }
   err = 0;
-  while (getfline(templine, maxtextlength, filedescriptor, 1) != NULL) {
+  while (!feof(fin)) {
+    r = fgets(templine, maxtextlength - 1, fin);
+    if (r == NULL )
+      break;
+    step ++;
+    l = templine + strlen(templine) - 1;
+    while (( *l == '\r' ) || ( *l == '\n' ))
+      *(l--) = 0;
+    if (step == 1) {
+      part = 0;
+      for (word = strtok(templine, " ");
+           word;
+           word = strtok(NULL, " ")) {
+        part ++;
+        switch (part) {
+        case 6:
+          val = atof(word);
+          if (val > gdata.record)
+             gdata.record = val;
+          break;
+        case 7:
+          val = atof(word);
+          if (val > gdata.sentrecord)
+             gdata.sentrecord = val;
+          break;
+        case 8:
+          gdata.totalsent += atoull(word);
+          break;
+        case 9:
+          gdata.totaluptime += atol(word);
+          break;
+        default:
+          break;
+        }
+      }
+      continue;
+    }
     if (templine[0] == 0) {
       if (xx_file != NULL) {
         import_pack(xx_file, xx_desc, xx_note, xx_gets, xx_mins, xx_maxs, xx_data, xx_trno);
@@ -1254,9 +1261,17 @@ void import_xdccfile(void)
     err ++;
     break;
   }
+  fclose(fin);
+
   if (err > 0) {
     outerror(OUTERROR_TYPE_CRASH, "Error in XDCC File: %s", templine);
     mydelete(templine);
+    return;
+  }
+  mydelete(templine)
+
+  if (step == 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Empty XDCC File");
     return;
   }
   if (xx_file != NULL) {
@@ -1267,7 +1282,6 @@ void import_xdccfile(void)
     mydelete(xx_data);
     mydelete(xx_trno);
   }
-  mydelete(templine);
 }
 
 void autotrigger_add(xdcc *xd)

@@ -530,65 +530,6 @@ void vnotice(const char *nick, const char *format, va_list ap)
   writeserver_notice(WRITESERVER_NORMAL, nick, tempstr, len);
 }
 
-char* getfline(char* str, int slen, int descr, int ret)
-{
-  char *tempbuf;
-  int i, j, len;
-  
-  updatecontext();
-  
-  tempbuf = mycalloc(slen);
-  
-  j = 0;
-  str[0] = '\0';
-  
-  while((len = read(descr,tempbuf,slen)) > 0)
-    {
-      for (i=0; i<len; i++)
-        {
-          if (tempbuf[i] == '\n' || tempbuf[i] == 13) /* 13 is ^M */
-            {
-              lseek(descr, (off_t)(1-(len-i)), SEEK_CUR);
-              str[j] = '\0';
-              j = 0;
-              if (str[0] != '\0' )
-                {
-                  mydelete(tempbuf);
-                  return str;
-                }
-              else if ( ret )
-                {
-                  mydelete(tempbuf);
-                  return str;
-                }
-              else
-                {
-                  mydelete(tempbuf);
-                  return NULL;
-                }
-            }
-          else
-            {
-              if (j >= slen)
-                {
-                  outerror(OUTERROR_TYPE_WARN,"Line too long, truncating");
-                  str[j - 1] = '\0';
-                  mydelete(tempbuf);
-                  return str;
-                }
-              else
-                {
-                  str[j] = tempbuf[i];
-                  j++;
-                }
-            }
-        }
-    }
-  mydelete(tempbuf);
-  return NULL;
-}
-
-
 int sstrlen (const char *p) {
    if (!p) return -1;
    return ((int)(strlen(p)));
