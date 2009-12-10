@@ -1335,7 +1335,6 @@
 1479 "NOTICE %s :%s"
 1480 "NOTICE-FAST: Output too large, ignoring!"
 1481 "NOTICE: Output too large, ignoring!"
-1482 "Line too long, truncating"
 1483 "growing meminfo from %d to %d"
 1484 "Couldn't Allocate Memory!!"
 1485 "Pointer 0x%8.8lX not found in meminfo database while trying to free!!"

@@ -1335,7 +1335,6 @@
 1479 "NOTICE %s :%s"
 1480 "NOTICE-FAST: Output troppo grande, ignorato!"
 1481 "NOTICE: Output troppo grande, ignorato!"
-1482 "Riga troppo grande, troncata"
 1483 "growing meminfo da %d to %d"
 1484 "Impossibile Assegnare La Memoria!!"
 1485 "Puntatore 0x%8.8lX non trovato nel database meminfo mentre si tentava di liberare!!"

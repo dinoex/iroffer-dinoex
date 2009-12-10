@@ -280,12 +280,11 @@ void write_statefile(void)
         outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write md5sum To State File (%d != %d) %s",
                  callval, (int)sizeof(digest), strerror(errno));
       }
+    mydelete(bout.md5sum);
   }
   
   /*** end write ***/
   updatecontext();
-  
-  ir_boutput_set_flags(&bout, 0);
   
   callval = ir_boutput_attempt_flush(&bout);
   if (callval < 0)
