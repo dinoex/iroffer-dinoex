@@ -667,7 +667,6 @@ int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa);
 int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len);
 int ir_boutput_attempt_flush(ir_boutput_t *bout);
 void ir_boutput_init(ir_boutput_t *bout, int fd, int flags);
-void ir_boutput_set_flags(ir_boutput_t *bout, int flags);
 void ir_boutput_delete(ir_boutput_t *bout);
 void ir_boutput_get_md5sum(ir_boutput_t *bout, MD5Digest digest);
 

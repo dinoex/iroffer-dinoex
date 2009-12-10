@@ -2422,22 +2422,6 @@ void ir_boutput_init(ir_boutput_t *bout, int fd, int flags)
   return;
 }
 
-void ir_boutput_set_flags(ir_boutput_t *bout, int flags)
-{
-  bout->flags = flags;
-  if ((bout->flags & BOUTPUT_MD5SUM) && (!bout->md5sum))
-    {
-      bout->md5sum = mycalloc(sizeof(struct MD5Context));
-      MD5Init(bout->md5sum);
-    }
-  else if (!(bout->flags & BOUTPUT_MD5SUM) && bout->md5sum)
-    {
-      mydelete(bout->md5sum);
-    }
-  return;
-}
-
-
 void ir_boutput_delete(ir_boutput_t *bout)
 {
   irlist_delete_all(&bout->segments);
