@@ -53,6 +53,8 @@ To get a full featured version you have to build it yourself.
 Compatible Licenses:
 MaxMind GeoIP Country library is availible under LGPL v2.1 license.
 libminiupnp by Thomas Bernard is availible under BSD license.
+libcurl by Daniel Stenberg is availible under MIT/X license.
+libruby by Yukihiro Matsumoto is availible under RUBY license.
 GNU TLS is availible under GPL 2 license.
 
 =====================================================================
