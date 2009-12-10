@@ -2456,8 +2456,7 @@ int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len)
           else
             {
               /* too much data in buffer, attempt flush */
-              if (!(bout->flags & BOUTPUT_NO_FLUSH) &&
-                  (ir_boutput_attempt_flush(bout) > 0))
+              if (ir_boutput_attempt_flush(bout) > 0)
                 {
                   /* flush wrote something so start over fresh */
                   goto begin_again;
@@ -2491,11 +2490,6 @@ int ir_boutput_attempt_flush(ir_boutput_t *bout)
 {
   ir_boutput_segment_t *segment;
   int count = 0;
-  
-  if (bout->flags & BOUTPUT_NO_FLUSH)
-    {
-      return 0;
-    }
   
   while ((segment = irlist_get_head(&bout->segments)))
     {

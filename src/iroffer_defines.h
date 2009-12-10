@@ -143,7 +143,6 @@
 #define CHAN_KICKED     0x40
 
 /* buffer output flags */
-#define BOUTPUT_NO_FLUSH       1
 #define BOUTPUT_NO_LIMIT       2
 #define BOUTPUT_MD5SUM         4
 
