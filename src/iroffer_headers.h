@@ -693,7 +693,6 @@ char* getsendname(const char * const full);
 void pingserver(void);
 void xdccsavetext(void);
 void writepidfile (const char *filename);
-char* getfline(char* str, int slen, int descr, int ret);
 void gobackground(void);
 char* getuptime(char *str, int type, time_t fromwhen, int len);
 void shutdowniroffer(void);
