@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.18:
 ----------------
 
+bugfix: keine Limit für die Ausgabe auf der Konsole.
+
 bugfix: old_statefile
   Lese auch alte 32bit Zeitdaten.
 

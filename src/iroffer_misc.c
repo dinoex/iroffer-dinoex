@@ -2081,7 +2081,7 @@ void startupiroffer(void) {
      }
    else
      {
-       ir_boutput_init(&gdata.stdout_buffer, fileno(stdout), 0);
+       ir_boutput_init(&gdata.stdout_buffer, fileno(stdout), BOUTPUT_NO_LIMIT);
        gdata.stdout_buffer_init = 1;
        gotobot();
        drawbot();

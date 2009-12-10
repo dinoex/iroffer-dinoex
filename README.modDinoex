@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.18:
 ------------------
 
+bugfix: do not limit console output.
+
 bugfix: old_statefile (reported by Loke_AF)
   Import 32bit timestamps from older versions.
 
