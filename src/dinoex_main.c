@@ -149,6 +149,53 @@ void command_options(int argc, char *const *argv)
   }
 }
 
+static void outerror_sysname(const char *configured, const char *sysname)
+{
+  if (strcmp(sysname, configured))
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Configured for %s but running on %s?!?", configured, sysname);
+  printf(", Good\n");
+}
+
+void check_osname(const char *sysname)
+{
+   /* verify we are who we were configured for, and set config */
+#if defined(_OS_Linux)
+   outerror_sysname("Linux", sysname);
+#elif defined(_OS_FreeBSD)
+   outerror_sysname("FreeBSD", sysname);
+#elif defined(_OS_OpenBSD)
+   outerror_sysname("OpenBSD", sysname);
+#elif defined(_OS_NetBSD)
+   outerror_sysname("NetBSD", sysname);
+#elif defined(_OS_BSDI)
+   outerror_sysname("BSD/OS", sysname);
+#elif defined(_OS_BSD_OS)
+   outerror_sysname("BSD/OS", sysname);
+#elif defined(_OS_SunOS)
+   outerror_sysname("SunOS", sysname);
+#elif defined(_OS_HPUX)
+   outerror_sysname("HP-UX", sysname);
+#elif defined(_OS_IRIX)
+   outerror_sysname("IRIX", sysname);
+#elif defined(_OS_IRIX64)
+   outerror_sysname("IRIX64", sysname);
+#elif defined(_OS_OSF1)
+   outerror_sysname("OSF1", sysname);
+#elif defined(_OS_Rhapsody)
+   outerror_sysname("Rhapsody", sysname);
+#elif defined(_OS_Darwin)
+   outerror_sysname("Darwin", sysname);
+#elif defined(_OS_AIX)
+   outerror_sysname("AIX", sysname);
+#elif defined(_OS_CYGWIN)
+   if (strncmp(sysname, "CYGWIN", 6))
+     outerror(OUTERROR_TYPE_WARN_LOUD, "Configured for %s but running on %s?!?", "CYGWIN", sysname);
+   printf(", Good\n");
+#else
+   printf(", I don't know of that!\n");
+#endif
+}
+
 #ifdef DEBUG
 
 static void free_state(void)
