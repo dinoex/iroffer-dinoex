@@ -3,6 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.18:
 ------------------
 
+303) XDCC SEND
+  Resend "DCC SEND" mesaage again, if user doesn't connect.
+
+  References TODO:
+Short Term Features:
+   173 12/09/03 Open resend dcc send message if user doesn't connect
+
 bugfix: do not limit console output.
 
 bugfix: old_statefile (reported by Loke_AF)

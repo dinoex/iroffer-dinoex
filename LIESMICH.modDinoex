@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.18:
 ----------------
 
+303) XDCC SEND
+  Sende "DCC SEND" Nachricht nochmal, wenn der Benutzer nicht verbindet.
+
 bugfix: keine Limit für die Ausgabe auf der Konsole.
 
 bugfix: old_statefile

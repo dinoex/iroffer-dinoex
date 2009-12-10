@@ -2435,7 +2435,7 @@ int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, i
                  "unlimitedhost found: %s (%s on %s)",
                  nick, hostname, gnetwork->name);
        
-       t_setup_dcc(tr, nick);
+       t_setup_dcc(tr);
        return 0;
      }
    
@@ -2664,7 +2664,7 @@ void sendaqueue(int type, int pos, char *lastnick)
           mydelete(sizestrstr);
         }
       
-      t_setup_dcc(tr, tr->nick);
+      t_setup_dcc(tr);
       
       gnetwork = backup;
       check_idle_queue();
