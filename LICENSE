@@ -18,7 +18,7 @@ These files are under GPL2 below.
 src/plumb_md5.[ch] was written by Colin Plumb in 1993 and modified
 by Ian Jackson in 1995, this files are in the public domain.
 
-src/crc32.c is copyrighted by Bryan Call under GPL2 or later.
+src/crc32.c is written by 1986 Gary S. Brown and in the public domain.
 
 src/blowfish.[ch] are copyrighted 1997 by Paul Kocher
 and released under LGPL 2.1.
