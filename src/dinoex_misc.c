@@ -611,7 +611,7 @@ static int send_xdcc_file(xdcc *xd, char *file, const char *nick, const char *ho
   tr->maxspeed = xd->maxspeed;
   tr->net = gnetwork->net;
 
-  t_setup_dcc(tr, nick);
+  t_setup_dcc(tr);
   return 0;
 }
 

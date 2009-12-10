@@ -11,7 +11,6 @@ Short Term Features:
    141 11/12/00 Open send credit line when sending packs
    138 7/16/00 Open compress old logs
    135 4/22/00 Open let (queued) users request dcc list
-   173 12/09/03 Open resend dcc send message if user doesn't connect 
    175 12/09/03 Open sort by name listing
    177 12/09/03 Open dont join channels until nickserv has authenticated iroffer
    181 12/09/03 Open xdcc list display estimated time until queue slot opens up

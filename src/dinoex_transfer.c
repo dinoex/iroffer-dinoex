@@ -23,10 +23,36 @@
 #include "dinoex_irc.h"
 #include "dinoex_misc.h"
 
-void t_setup_dcc(transfer *tr, const char *nick)
+void t_start_dcc_send(transfer *tr)
 {
   char *dccdata;
   char *sendnamestr;
+
+  updatecontext();
+
+  sendnamestr = getsendname(tr->xpack->file);
+  dccdata = setup_dcc_local(&tr->con.local);
+  if (gdata.passive_dcc) {
+    bzero((char *) &(tr->con.local), sizeof(tr->con.local));
+    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %d\1",
+                 sendnamestr, dccdata,
+                 tr->xpack->st_size,
+                 tr->id);
+  } else {
+    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d\1",
+                 sendnamestr, dccdata,
+                 tr->xpack->st_size);
+
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "listen on port %d for %s (%s on %s)",
+            tr->con.localport, tr->nick, tr->hostname, gnetwork->name);
+  }
+  mydelete(dccdata);
+  mydelete(sendnamestr);
+}
+
+void t_setup_dcc(transfer *tr)
+{
   char *vhost;
   int e = 1;
 
@@ -62,25 +88,7 @@ void t_setup_dcc(transfer *tr, const char *nick)
       return;
   }
 
-  sendnamestr = getsendname(tr->xpack->file);
-  dccdata = setup_dcc_local(&tr->con.local);
-  if (gdata.passive_dcc) {
-    bzero((char *) &(tr->con.local), sizeof(tr->con.local));
-    privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %d\1",
-                 sendnamestr, dccdata,
-                 tr->xpack->st_size,
-                 tr->id);
-  } else {
-    privmsg_fast(nick, "\1DCC SEND %s %s %" LLPRINTFMT "d\1",
-                 sendnamestr, dccdata,
-                 tr->xpack->st_size);
-
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "listen on port %d for %s (%s on %s)",
-            tr->con.localport, nick, tr->hostname, gnetwork->name);
-  }
-  mydelete(dccdata);
-  mydelete(sendnamestr);
+  t_start_dcc_send(tr);
 }
 
 int t_check_ip_access(transfer *const tr)
