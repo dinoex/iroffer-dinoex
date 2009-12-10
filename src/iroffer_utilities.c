@@ -25,6 +25,7 @@
 #include "dinoex_badip.h"
 #include "dinoex_irc.h"
 #include "dinoex_config.h"
+#include "dinoex_main.h"
 #include "dinoex_misc.h"
 
 
@@ -48,65 +49,7 @@ void getos (void) {
            u1.sysname, u1.release);
    
    /* verify we are who we were configured for, and set config */
-#if defined(_OS_Linux)
-   if (strcmp(u1.sysname,"Linux"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for Linux but not running Linux?!?");
-   printf(", Good\n");
-   
-#elif defined(_OS_FreeBSD)   || \
-    defined(_OS_OpenBSD)     || \
-    defined(_OS_NetBSD)      || \
-    defined(_OS_BSDI)        || \
-    defined(_OS_BSD_OS)
-   if (strcmp(u1.sysname,"FreeBSD") && strcmp(u1.sysname,"OpenBSD") && strcmp(u1.sysname,"BSD/OS") && strcmp(u1.sysname,"NetBSD"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for *BSD but not running *BSD?!?");
-   printf(", Good\n");
-
-#elif defined(_OS_SunOS)
-   if (strcmp(u1.sysname,"SunOS"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for Solaris but not running Solaris?!?");
-   printf(", Good\n");
-
-#elif defined(_OS_HPUX)
-   if (strcmp(u1.sysname,"HP-UX"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for HP-UX but not running HP-UX?!?");
-   printf(", Good\n");
-   
-#elif defined(_OS_IRIX)
-   if (strcmp(u1.sysname,"IRIX"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for IRIX but not running IRIX?!?");
-   printf(", Good\n");
-
-#elif defined(_OS_IRIX64)
-   if (strcmp(u1.sysname,"IRIX64"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for IRIX64 but not running IRIX64?!?");
-   printf(", Good\n");
-
-#elif defined(_OS_OSF1)
-   if (strcmp(u1.sysname,"OSF1"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for OSF1 but not running OSF1?!?");
-   printf(", Good\n");
-
-#elif defined(_OS_Rhapsody)
-   if (strcmp(u1.sysname,"Rhapsody"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for Rhapsody but not running Rhapsody?!?");
-   printf(", Good\n");
-
-#elif defined(_OS_Darwin)
-   if (strcmp(u1.sysname,"Darwin"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for Darwin but not running Darwin?!?");
-   printf(", Good\n");
-
-#elif defined(_OS_AIX)
-   if (strcmp(u1.sysname,"AIX"))
-      outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for AIX but not running AIX?!?");
-   printf(", Good\n");
-
-#elif defined(_OS_CYGWIN)
-   if (strncmp(u1.sysname,"CYGWIN",6))
-     {
-       outerror(OUTERROR_TYPE_WARN_LOUD,"Configured for CYGWIN but not running CYGWIN?!?");
-     }
+#if defined(_OS_CYGWIN)
    {
      int count,v1=0,v2=0,v3=0;
      count = sscanf(u1.release,"%d.%d.%d",&v1,&v2,&v3);
@@ -120,14 +63,8 @@ void getos (void) {
 	 outerror(OUTERROR_TYPE_CRASH,"CYGWIN too old (1.5.3 or greater required)");
        }
    }
-   printf(", Good\n");
-
-#else
-   printf(", I don't know of that!\n");
-
 #endif
-
-   
+   check_osname(u1.sysname);
    }
 
 void outerror (outerror_type_e type, const char *format, ...) {

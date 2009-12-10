@@ -15,6 +15,8 @@
 
 void command_options(int argc, char *const *argv);
 
+void check_osname(const char *sysname);
+
 void
 #ifdef __GNUC__
 __attribute__ ((noreturn))
