@@ -1114,7 +1114,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
     /* search for custom listmsg */
     rtclmsg = get_listmsg_channel(pi->dest);
     if (gdata.restrictprivlist)
-      strcpy(tempstr2, "");
+      tempstr2[0] = 0;
     else
       snprintf(tempstr2, maxtextlength,
                "Trigger:\2(\2/MSG %s XDCC LIST\2)\2 ",
