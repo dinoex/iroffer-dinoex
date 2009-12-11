@@ -1788,7 +1788,9 @@ void a_sort(const userinput * const u)
   /* clean start */
   gdata.xdccs.size = 0;
   gdata.xdccs.head = NULL;
+#ifdef WITH_LINKED_DOUBLE
   gdata.xdccs.tail = NULL;
+#endif /* WITH_LINKED_DOUBLE */
 
   while (irlist_size(&old_list) > 0) {
     xdo = irlist_get_head(&old_list);
@@ -1866,7 +1868,11 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
   struct stat st;
   struct stat *sta;
   char *thefile, *tempstr;
+#ifdef WITH_LINKED_DOUBLE
   irlist_t dirlist = {0, 0, 0};
+#else /* WITH_LINKED_DOUBLE */
+  irlist_t dirlist = {0, 0};
+#endif /* WITH_LINKED_DOUBLE */
 
   updatecontext();
 
