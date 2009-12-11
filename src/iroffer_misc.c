@@ -353,7 +353,6 @@ writeserver (writeserver_type_e type, const char *format, ... )
 void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
 {
   char *msg;
-  char *item;
   int len;
   
   msg = mycalloc(maxtextlength+1);
@@ -403,8 +402,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
           
           if (irlist_size(&(gnetwork->serverq_fast)) < MAXSENDQ)
             {
-              item = irlist_add(&(gnetwork->serverq_fast), len + 1);
-              strcpy(item, msg);
+              irlist_add_string(&(gnetwork->serverq_fast), msg);
             }
           else
             {
@@ -427,8 +425,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
           
           if (irlist_size(&(gnetwork->serverq_normal)) < MAXSENDQ)
             {
-              item = irlist_add(&(gnetwork->serverq_normal), len + 1);
-              strcpy(item, msg);
+              irlist_add_string(&(gnetwork->serverq_normal), msg);
             }
           else
             {
@@ -451,8 +448,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
           
           if (irlist_size(&(gnetwork->serverq_slow)) < MAXSENDQ)
             {
-              item = irlist_add(&(gnetwork->serverq_slow), len + 1);
-              strcpy(item, msg);
+              irlist_add_string(&(gnetwork->serverq_slow), msg);
             }
           else
             {

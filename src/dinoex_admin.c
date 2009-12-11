@@ -1976,8 +1976,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     }
 
     if (foundit == 0) {
-      thefile = irlist_add(&dirlist, strlen(tempstr) + 1);
-      strcpy(thefile, tempstr);
+      irlist_add_string(&dirlist, tempstr);
     }
     mydelete(tempstr);
   }
