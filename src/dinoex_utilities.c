@@ -359,11 +359,14 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
   return 0; /* token not found */
 }
 
+static const char const size_units[] = { 'K', 'M', 'G', 'T', 'E', 0 };
+
 char *sizestr(int spaces, off_t num)
 {
 #define SIZESTR_SIZE 5
   char *str = (char *)mycalloc(SIZESTR_SIZE);
   float val;
+  int i;
 
   if (num <= 0) {
     snprintf(str, SIZESTR_SIZE, spaces ? "%4s" : "%s", "0");
@@ -374,50 +377,17 @@ char *sizestr(int spaces, off_t num)
     return str;
   }
   /* KB */
-  val = (((float)num) / 1024.0);
-  if (val < 999.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fK" : "%.0fK", val);
-    return str;
-  }
-  /* MB */
-  val /= 1024.0;
-  if (val < 9.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fM" : "%.1fM", val);
-    return str;
-  }
-  if (val < 999.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fM" : "%.0fM", val);
-    return str;
-  }
-  /* GB */
-  val /= 1024.0;
-  if (val < 9.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fG" : "%.1fG", val);
-    return str;
-  }
-  if (val < 999.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fG" : "%.0fG", val);
-    return str;
-  }
-  /* TB */
-  val /= 1024.0;
-  if (val < 9.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fT" : "%.1fT", val);
-    return str;
-  }
-  if (val < 999.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fT" : "%.0fT", val);
-    return str;
-  }
-  /* EB */
-  val /= 1024.0;
-  if (val < 9.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1fE" : "%.1fE", val);
-    return str;
-  }
-  if (val < 999.5) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0fE" : "%.0fE", val);
-    return str;
+  val = (float)num;
+  for (i = 0; size_units[i]; i++) {
+    val /= 1024.0;
+    if ((i > 0) && (val < 9.5)) {
+      snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1f%c" : "%.1f%c", val, size_units[i]);
+      return str;
+    }
+    if (val < 999.5) {
+      snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0f%c" : "%.0f%c", val, size_units[i]);
+      return str;
+    }
   }
   mydelete(str);
   str = (char *)mycalloc(SIZESTR_SIZE + SIZESTR_SIZE);
