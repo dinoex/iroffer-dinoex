@@ -966,32 +966,14 @@ static void a_sort_insert(xdcc *xdo, const char *k)
   }
 }
 
-static void a_make_announce_short(const userinput * const u, int n)
+static void a_make_announce(const userinput * const u, const char *cmd, int n)
 {
   char *tempstr;
   userinput *ui;
 
   tempstr = mycalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength, "SANNOUNCE %i", n);
-  a_fillwith_msg2(ui, NULL, tempstr);
-  ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
-  ui->net = u->net;
-  ui->level = u->level;
-  u_parseit(ui);
-  mydelete(ui);
-  mydelete(tempstr);
-}
-
-/* iroffer-lamm: autoaddann */
-static void a_make_announce_long(const userinput * const u, int n)
-{
-  char *tempstr;
-  userinput *ui;
-
-  tempstr = mycalloc (maxtextlength);
-  ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength, "ANNOUNCE %i", n);
+  snprintf(tempstr, maxtextlength, "%s %i", cmd, n);
   a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = u->net;
@@ -1201,10 +1183,10 @@ static xdcc *a_add2(const userinput * const u, const char *group)
 #endif /* USE_RUBY */
 
   if (gdata.autoaddann_short)
-    a_make_announce_short(u, n);
+    a_make_announce(u, "SANNOUNCE", n);
 
   if (gdata.autoaddann)
-    a_make_announce_long(u, n);
+    a_make_announce(u, "ANNOUNCE", n);
 
   return xd;
 }
@@ -4410,7 +4392,7 @@ void a_addann(const userinput * const u)
   if (xd == NULL)
     return;
 
-  a_make_announce_long(u, number_of_pack(xd));
+  a_make_announce(u, "ANNOUNCE", number_of_pack(xd));
 }
 
 void a_restart(const userinput * const UNUSED(u))
