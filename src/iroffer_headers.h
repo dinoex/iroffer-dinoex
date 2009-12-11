@@ -117,14 +117,18 @@
 typedef struct irlist_item_t2
 {
   struct irlist_item_t2 *next;
+#ifdef WITH_LINKED_DOUBLE
   struct irlist_item_t2 *prev;
+#endif /* WITH_LINKED_DOUBLE */
 } irlist_item_t;
 
 typedef struct
 {
   int size;
   irlist_item_t *head;
+#ifdef WITH_LINKED_DOUBLE
   irlist_item_t *tail;
+#endif /* WITH_LINKED_DOUBLE */
 } irlist_t;
 
 typedef struct

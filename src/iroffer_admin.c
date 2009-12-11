@@ -902,7 +902,11 @@ static void u_xdl(const userinput * const u) {
    int l;
    int s;
    xdcc *xd;
+#ifdef WITH_LINKED_DOUBLE
    irlist_t grplist = {0, 0, 0};
+#else /* WITH_LINKED_DOUBLE */
+   irlist_t grplist = {0, 0};
+#endif /* WITH_LINKED_DOUBLE */
 
    updatecontext();
    
@@ -2718,7 +2722,11 @@ void u_listdir(const userinput * const u, const char *dir)
   DIR *d;
   struct dirent *f;
   char *thefile, *tempstr;
+#ifdef WITH_LINKED_DOUBLE
   irlist_t dirlist = {0, 0, 0};
+#else /* WITH_LINKED_DOUBLE */
+  irlist_t dirlist = {0, 0};
+#endif /* WITH_LINKED_DOUBLE */
   int thedirlen;
 #ifndef NO_STATVFS
   struct statvfs stf;
