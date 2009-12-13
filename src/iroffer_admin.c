@@ -362,9 +362,16 @@ u_respond(const userinput * const u, const char *format, ...)
 void u_parseit(userinput * const u) {
    int i,found = 0;
    gnetwork_t *backup;
+#ifdef DEBUG
+   struct timeval timestruct1;
+   struct timeval timestruct2;
+   long ms1;
+   long ms2;
+#endif /* DEBUG */
    
    updatecontext();
    
+   gettimeofday(&timestruct1, NULL);
    backup = gnetwork;
    if ( gnetwork == NULL )
      gnetwork = &(gdata.networks[0]);
@@ -395,6 +402,13 @@ void u_parseit(userinput * const u) {
    if (found && u->method==method_msg)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (MSG: %s) (network: %s)",
               u->cmd, u->snick, gnetwork->name);
+   
+#ifdef DEBUG
+   gettimeofday(&timestruct2, NULL);
+   ms1 = (((ir_uint64)timestruct1.tv_sec) * 1000) + (((ir_uint64)timestruct1.tv_usec) / 1000);
+   ms2 = (((ir_uint64)timestruct2.tv_sec) * 1000) + (((ir_uint64)timestruct2.tv_usec) / 1000);
+   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, ms2 -ms1);
+#endif /* DEBUG */
    
    u_fillwith_clean(u);
    gnetwork = backup;
