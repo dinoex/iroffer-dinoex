@@ -16,6 +16,62 @@
 /* include the headers */
 
 
+typedef struct
+{
+  int fd;
+  int error;
+  struct MD5Context *md5sum;
+} ir_moutput_t;
+
+static void ir_moutput_init(ir_moutput_t *bout, int fd)
+{
+  bout->fd = fd;
+  bout->error = 0;
+  bout->md5sum = mycalloc(sizeof(struct MD5Context));
+  MD5Init(bout->md5sum);
+}
+
+static void write_statefile_raw(ir_moutput_t *bout, const void *buf, size_t nbytes)
+{
+  ssize_t saved;
+
+  saved = write(bout->fd, buf, nbytes);
+  if (saved != (ssize_t)nbytes) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write To State File (%d != %d) %s",
+             saved, nbytes, strerror(errno));
+    bout->error ++;
+  }
+}
+
+static void write_statefile_md5(ir_moutput_t *bout, const void *buf, size_t nbytes)
+{
+  MD5Update(bout->md5sum, buf, nbytes);
+  write_statefile_raw(bout, buf, nbytes);
+}
+
+static void ir_moutput_get_md5sum(ir_moutput_t *bout, MD5Digest digest)
+{
+  MD5Final(digest, bout->md5sum);
+  mydelete(bout->md5sum);
+}
+
+static void write_statefile_direct(ir_moutput_t *bout, ir_uint32 val)
+{
+  ir_uint32 netval;
+
+  netval = htonl(val);
+  write_statefile_md5(bout, &netval, sizeof(netval));
+}
+
+static void write_statefile_item(ir_moutput_t *bout, void *item)
+{
+  statefile_hdr_t *hdr = (statefile_hdr_t*)item;
+  ir_int32 length;
+
+  length = ntohl(hdr->length);
+  write_statefile_md5(bout, item, length);
+}
+
 static void read_statefile_unknown_tag(statefile_hdr_t *hdr, const char *tag)
 {
   outerror(OUTERROR_TYPE_WARN,
@@ -285,12 +341,12 @@ static unsigned char *prepare_statefile_time(unsigned char *next, statefile_tag_
   return next;
 }
 
-static int write_statefile_time(ir_boutput_t *bout, statefile_tag_t tag, time_t val)
+static void write_statefile_time(ir_moutput_t *bout, statefile_tag_t tag, time_t val)
 {
   statefile_item_generic_time_t a_time;
 
   create_statefile_time(&a_time, tag, val);
-  return write_statefile_item(bout, &a_time);
+  write_statefile_item(bout, &a_time);
 }
 
 static void create_statefile_int(statefile_item_generic_int_t *g_int, statefile_tag_t tag, ir_int32 val)
@@ -309,22 +365,22 @@ static unsigned char *prepare_statefile_int(unsigned char *next, statefile_tag_t
   return next;
 }
 
-static int write_statefile_int(ir_boutput_t *bout, statefile_tag_t tag, ir_int32 val)
+static void write_statefile_int(ir_moutput_t *bout, statefile_tag_t tag, ir_int32 val)
 {
   statefile_item_generic_int_t a_int;
 
   create_statefile_int(&a_int, tag, val);
-  return write_statefile_item(bout, &a_int);
+  write_statefile_item(bout, &a_int);
 }
 
-static int write_statefile_ullint(ir_boutput_t *bout, statefile_tag_t tag, ir_uint64 val)
+static void write_statefile_ullint(ir_moutput_t *bout, statefile_tag_t tag, ir_uint64 val)
 {
   statefile_item_generic_ullint_t a_ullint;
 
   create_statefile_hdr(&(a_ullint.hdr), tag, sizeof(statefile_item_generic_ullint_t));
   a_ullint.g_ullint.upper = htonl(val >> 32);
   a_ullint.g_ullint.lower = htonl(val & 0xFFFFFFFF);
-  return write_statefile_item(bout, &a_ullint);
+  write_statefile_item(bout, &a_ullint);
 }
 
 static void create_statefile_float(statefile_item_generic_float_t *g_float, statefile_tag_t tag, float val)
@@ -343,12 +399,12 @@ static unsigned char *prepare_statefile_float(unsigned char *next, statefile_tag
   return next;
 }
 
-static int write_statefile_float(ir_boutput_t *bout, statefile_tag_t tag, float val)
+static void write_statefile_float(ir_moutput_t *bout, statefile_tag_t tag, float val)
 {
   statefile_item_generic_float_t a_float;
 
   create_statefile_float(&a_float, tag, val);
-  return write_statefile_item(bout, &a_float);
+  write_statefile_item(bout, &a_float);
 }
 
 static unsigned char *prepare_statefile_string(unsigned char *next, statefile_tag_t tag, const char *str)
@@ -365,7 +421,7 @@ static unsigned char *prepare_statefile_string(unsigned char *next, statefile_ta
   return next;
 }
 
-static void write_statefile_queue(ir_boutput_t *bout, irlist_t *list)
+static void write_statefile_queue(ir_moutput_t *bout, irlist_t *list)
 {
   unsigned char *data;
   unsigned char *next;
@@ -419,20 +475,7 @@ static void write_statefile_queue(ir_boutput_t *bout, irlist_t *list)
   }
 }
 
-static void write_statefile_raw(ir_boutput_t *bout, ir_uint32 val)
-{
-  ir_uint32 netval;
-  int callval;
-
-  netval = htonl(val);
-  callval = ir_boutput_write(bout, &netval, sizeof(netval));
-  if (callval != sizeof(netval)) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write To State File (%d != %d) %s",
-             callval, (int)sizeof(netval), strerror(errno));
-  }
-}
-
-static void write_statefile_globals(ir_boutput_t *bout)
+static void write_statefile_globals(ir_moutput_t *bout)
 {
   write_statefile_time(bout, STATEFILE_TAG_TIMESTAMP, gdata.curtime);
   write_statefile_float(bout, STATEFILE_TAG_XFR_RECORD, gdata.record);
@@ -442,7 +485,7 @@ static void write_statefile_globals(ir_boutput_t *bout)
   write_statefile_time(bout, STATEFILE_TAG_LAST_LOGROTATE, gdata.last_logrotate);
 }
 
-static void write_statefile_ignore(ir_boutput_t *bout)
+static void write_statefile_ignore(ir_moutput_t *bout)
 {
   unsigned char *data;
   unsigned char *next;
@@ -485,7 +528,7 @@ static void write_statefile_ignore(ir_boutput_t *bout)
   }
 }
 
-static void write_statefile_msglog(ir_boutput_t *bout)
+static void write_statefile_msglog(ir_moutput_t *bout)
 {
   unsigned char *data;
   unsigned char *next;
@@ -524,7 +567,7 @@ static void write_statefile_msglog(ir_boutput_t *bout)
 }
 
 
-static void write_statefile_xdccs(ir_boutput_t *bout)
+static void write_statefile_xdccs(ir_moutput_t *bout)
 {
   unsigned char *data;
   unsigned char *next;
@@ -690,7 +733,7 @@ static void write_statefile_xdccs(ir_boutput_t *bout)
   }
 }
 
-static void write_statefile_dinoex(ir_boutput_t *bout)
+static void write_statefile_dinoex(ir_moutput_t *bout)
 {
   write_statefile_globals(bout);
   write_statefile_ignore(bout);

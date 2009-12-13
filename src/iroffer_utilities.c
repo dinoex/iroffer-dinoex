@@ -2458,11 +2458,6 @@ int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len)
       all = IR_BOUTPUT_SEGMENT_SIZE - segment->end;
       len = min2(all, buffer_len - cur);
       
-      if (bout->md5sum)
-        {
-          MD5Update(bout->md5sum, buffer_c+cur, len);
-        }
-      
       memcpy(segment->buffer+segment->end, buffer_c+cur, len);
       
       cur += len;
@@ -2523,30 +2518,13 @@ void ir_boutput_init(ir_boutput_t *bout, int fd, int flags)
   memset(bout, 0, sizeof(*bout));
   bout->fd = fd;
   bout->flags = flags;
-  if (bout->flags & BOUTPUT_MD5SUM)
-    {
-      bout->md5sum = mycalloc(sizeof(struct MD5Context));
-      MD5Init(bout->md5sum);
-    }
   return;
 }
 
 void ir_boutput_delete(ir_boutput_t *bout)
 {
   irlist_delete_all(&bout->segments);
-  mydelete(bout->md5sum);
   memset(bout, 0, sizeof(*bout));
-  return;
-}
-
-void ir_boutput_get_md5sum(ir_boutput_t *bout, MD5Digest digest)
-{
-  if (bout->md5sum)
-    {
-      MD5Final(digest, bout->md5sum);
-      bout->flags &= ~BOUTPUT_MD5SUM;
-      mydelete(bout->md5sum);
-    }
   return;
 }
 
