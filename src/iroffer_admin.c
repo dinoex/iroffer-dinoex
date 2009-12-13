@@ -405,8 +405,8 @@ void u_parseit(userinput * const u) {
    
 #ifdef DEBUG
    gettimeofday(&timestruct2, NULL);
-   ms1 = (((ir_uint64)timestruct1.tv_sec) * 1000) + (((ir_uint64)timestruct1.tv_usec) / 1000);
-   ms2 = (((ir_uint64)timestruct2.tv_sec) * 1000) + (((ir_uint64)timestruct2.tv_usec) / 1000);
+   ms1 = timeval_to_ms(&timestruct1);
+   ms2 = timeval_to_ms(&timestruct2);
    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, ms2 -ms1);
 #endif /* DEBUG */
    

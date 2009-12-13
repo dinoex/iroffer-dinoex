@@ -63,6 +63,7 @@ char *getpart(const char *line, int howmany);
 #endif
 char *getpart_eol(const char *line, int howmany);
 int convert_spaces_to_match(char *str);
+ir_uint64 timeval_to_ms(struct timeval *tv);
 
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b));
 

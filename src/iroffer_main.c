@@ -311,7 +311,7 @@ static void mainloop (void) {
           outerror(OUTERROR_TYPE_CRASH,"gettimeofday() failed! %s\n",strerror(errno));
         }
       
-      gdata.curtimems = (((ir_uint64)timestruct.tv_sec) * 1000) + (((ir_uint64)timestruct.tv_usec) / 1000);
+      gdata.curtimems = timeval_to_ms(&timestruct);
       gdata.curtime = timestruct.tv_sec;
       
       /* adjust for drift and cpu usage */
