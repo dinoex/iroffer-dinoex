@@ -407,7 +407,8 @@ void u_parseit(userinput * const u) {
    gettimeofday(&timestruct2, NULL);
    ms1 = timeval_to_ms(&timestruct1);
    ms2 = timeval_to_ms(&timestruct2);
-   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, ms2 -ms1);
+   if (gdata.debug > 0)
+     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, ms2 -ms1);
 #endif /* DEBUG */
    
    u_fillwith_clean(u);
