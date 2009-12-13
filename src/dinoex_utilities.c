@@ -803,6 +803,11 @@ int convert_spaces_to_match(char *str)
   return k;
 }
 
+ir_uint64 timeval_to_ms(struct timeval *tv)
+{
+  return (((ir_uint64)(tv->tv_sec)) * 1000) + (((ir_uint64)(tv->tv_usec)) / 1000);
+}
+
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
 {
 #ifdef WITH_LINKED_DOUBLE
