@@ -2465,6 +2465,7 @@ int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len)
       bout->count_written += len;
     }
   
+  ir_boutput_attempt_flush(bout);
   return buffer_len;
 }
 
