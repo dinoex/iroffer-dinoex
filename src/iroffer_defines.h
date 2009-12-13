@@ -144,7 +144,6 @@
 
 /* buffer output flags */
 #define BOUTPUT_NO_LIMIT       2
-#define BOUTPUT_MD5SUM         4
 
 /* type definistions: Screen, Log, DCC CHAT, HTTPD */
 #define OUT_S    1

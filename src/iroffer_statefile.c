@@ -158,40 +158,6 @@ typedef struct
   MD5Digest md5sum;
 } statefile_item_md5sum_info_t;
 
-
-static int write_statefile_item(ir_boutput_t *bout, void *item)
-{
-  int callval;
-  statefile_hdr_t *hdr = (statefile_hdr_t*)item;
-  ir_int32 length;
-  unsigned char dummy[4] = {};
-
-  length = ntohl(hdr->length);
-  callval = ir_boutput_write(bout, item, length);
-  
-  if (callval != length)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write To State File (%d != %d) %s",
-               callval, length, strerror(errno));
-      return -1;
-    }
-  
-  if (length & 3)
-    {
-      length = 4 - (length & 3);
-      callval = ir_boutput_write(bout, dummy, length);
-      
-      if (callval != length)
-        {
-          outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write To State File (%d != %d) %s",
-                   callval, length, strerror(errno));
-          return -1;
-        }
-    }
-  
-  return 0;
-}
-
 #include "dinoex_statefile.c"
 
 void write_statefile(void)
@@ -201,7 +167,7 @@ void write_statefile(void)
   int callval;
   statefile_hdr_t *hdr;
   ir_int32 length;
-  ir_boutput_t bout;
+  ir_moutput_t bout;
   
   updatecontext();
   
@@ -230,11 +196,11 @@ void write_statefile(void)
       goto error_out;
     }
   
-  ir_boutput_init(&bout, fd, BOUTPUT_MD5SUM | BOUTPUT_NO_LIMIT);
+  ir_moutput_init(&bout, fd);
   
   /*** write ***/
-  write_statefile_raw(&bout, STATEFILE_MAGIC);
-  write_statefile_raw(&bout, gdata.old_statefile ? STATEFILE_OLD_VERSION : STATEFILE_VERSION);
+  write_statefile_direct(&bout, STATEFILE_MAGIC);
+  write_statefile_direct(&bout, gdata.old_statefile ? STATEFILE_OLD_VERSION : STATEFILE_VERSION);
   
   updatecontext();
   {
@@ -272,36 +238,19 @@ void write_statefile(void)
   {
     MD5Digest digest = {};
     
-    ir_boutput_get_md5sum(&bout, digest);
-    
-    callval = ir_boutput_write(&bout, &digest, sizeof(digest));
-    if (callval != sizeof(digest))
-      {
-        outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write md5sum To State File (%d != %d) %s",
-                 callval, (int)sizeof(digest), strerror(errno));
-      }
+    ir_moutput_get_md5sum(&bout, digest);
+    write_statefile_raw(&bout, &digest, sizeof(digest));
   }
   
   /*** end write ***/
   updatecontext();
   
-  callval = ir_boutput_attempt_flush(&bout);
-  if (callval < 0)
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write to State File: %s",
-               strerror(errno));
-    }
-  
-  if (bout.count_dropped || (bout.count_written != bout.count_flushed))
-    {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Write failed to State File: %d/%d/%d",
-               bout.count_written,
-               bout.count_flushed,
-               bout.count_dropped);
-    }
-  
-  ir_boutput_delete(&bout);
   close(fd);
+  /* abort if statefile was not written in full */
+  if (bout.error > 0)
+    {
+      goto error_out;
+    }
   
   /* remove old bkup */
   callval = unlink(statefile_bkup);
