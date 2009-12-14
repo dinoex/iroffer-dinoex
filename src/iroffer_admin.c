@@ -371,7 +371,9 @@ void u_parseit(userinput * const u) {
    
    updatecontext();
    
+#ifdef DEBUG
    gettimeofday(&timestruct1, NULL);
+#endif /* DEBUG */
    backup = gnetwork;
    if ( gnetwork == NULL )
      gnetwork = &(gdata.networks[0]);
