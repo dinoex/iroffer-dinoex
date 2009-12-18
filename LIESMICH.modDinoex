@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.18:
 ----------------
 
+304) Optimierung
+  Benutze freie CRC32 Tabellen.
+  Es wird weniger Speicher benötigt.
+  Beschleunigtes Schreiben der Datei statefile.
+
 303) XDCC SEND
   Sende "DCC SEND" Nachricht nochmal, wenn der Benutzer nicht verbindet.
 
