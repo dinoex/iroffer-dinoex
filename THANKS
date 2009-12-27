@@ -394,6 +394,7 @@ Lamune
 	option "xdcc_deny" 
 	reporting "CLOSEC" bug
 	reporting "FILEDEL" bug
+	option "slow_privmsg" 
 
 DevelDoll
 	report transferlimits to user

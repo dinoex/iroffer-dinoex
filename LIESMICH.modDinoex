@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.18:
 ----------------
 
+305) slow_privmsg
+  Begrenze PRIVMSG auf 1 Zeile alle n Sekunden. Damit verhindert man das
+  der Bot ein Flooding auslöst.
+  Nur per Netzwerk einstellbar.
+
 304) Optimierung
   Benutze freie CRC32 Tabellen.
   Es wird weniger Speicher benötigt.

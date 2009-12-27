@@ -505,6 +505,7 @@ void sendserver(void)
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
       
+      gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
       
       item = irlist_delete(&(gnetwork->serverq_fast), item);
@@ -512,7 +513,6 @@ void sendserver(void)
   
   if (item)
     {
-      gnetwork->recentsent = 0;
       return;
     }
   
@@ -527,6 +527,7 @@ void sendserver(void)
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
       
+      gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
       
       item = irlist_delete(&(gnetwork->serverq_normal), item);
@@ -534,7 +535,11 @@ void sendserver(void)
   
   if (item)
     {
-      gnetwork->recentsent = 0;
+      return;
+    }
+  
+  if (gdata.curtime <= (gnetwork->lastslow + gnetwork->slow_privmsg))
+    {
       return;
     }
   
@@ -549,20 +554,21 @@ void sendserver(void)
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
       
+      gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
+      gnetwork->lastslow = gdata.curtime;
       
       item = irlist_delete(&(gnetwork->serverq_slow), item);
+      if (gnetwork->slow_privmsg)
+        break;
     }
   
   if (item)
     {
-      gnetwork->recentsent = 0;
-    }
-  else
-    {
-      gnetwork->recentsent = 6;
+      return;
     }
   
+  gnetwork->recentsent = 6;
   return;
 }
 
@@ -1583,6 +1589,7 @@ void reinit_config_vars(void)
     gdata.networks[si].getip_net = -1;
     gdata.networks[si].need_voice = -1;
     gdata.networks[si].need_level = -1;
+    gdata.networks[si].slow_privmsg = 1;
   } /* networks */
   mydelete(gdata.logfile);
   gdata.logrotate = 0;

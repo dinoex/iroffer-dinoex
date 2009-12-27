@@ -133,6 +133,7 @@ static void mainloop (void) {
        for (ss=0; ss<gdata.networks_online; ss++)
          {
            gdata.networks[ss].lastnotify = lasttime;
+           gdata.networks[ss].lastslow = lasttime;
            gdata.networks[ss].server_input_line[0] = '\0';
          }
        

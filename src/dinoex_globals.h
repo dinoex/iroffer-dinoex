@@ -137,6 +137,7 @@ typedef struct {
   long lastservercontact;
   long lastnotify;
   long lastping;
+  long lastslow;
   long lag;
   irlist_t serverq_fast;
   irlist_t serverq_normal;
@@ -177,6 +178,7 @@ typedef struct {
   int need_voice;
   int need_level;
   int noannounce;
+  int slow_privmsg;
   how_e r_connectionmethod;
   userinput_method_e lag_method;
 

@@ -1350,6 +1350,16 @@ static void c_slotsmax(char *var)
   }
 }
 
+static void c_slow_privmsg(char *var)
+{
+  const char *key = "need_level";
+  int rawval;
+
+  if (check_range(key, var, &rawval, 0, 120) == 0) {
+    gdata.networks[gdata.networks_online].slow_privmsg = rawval;
+  }
+}
+
 static void c_statefile(char *var)
 {
   int i;
@@ -1463,6 +1473,7 @@ static config_func_typ config_parse_func[] = {
 {"server_connected_raw",   c_server_connected_raw },
 {"server_join_raw",        c_server_join_raw },
 {"slotsmax",               c_slotsmax },
+{"slow_privmsg",           c_slow_privmsg },
 {"statefile",              c_statefile },
 {"transferlimits",         c_transferlimits },
 {"transfermaxspeed",       c_transfermaxspeed },

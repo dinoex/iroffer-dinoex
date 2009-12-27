@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.18:
 ------------------
 
+305) slow_privmsg (inspired by Lamune)
+  Restrict PRIVMSG to n lines per sec in this network to avoid flooding.
+  This setting is only per network.
+  Default: 1
+
 304) performance
   Use free crc32 tables.
   Reduce memory footprint.

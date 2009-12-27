@@ -1055,6 +1055,8 @@ void dumpgdata(void)
       gdata_print_long(networks[ss].connecttime);
       gdata_print_long(networks[ss].lastservercontact);
       gdata_print_long(networks[ss].lastnotify);
+      gdata_print_int(networks[ss].slow_privmsg);
+      gdata_print_long(networks[ss].lastslow);
   
       gdata_irlist_iter_start(networks[ss].serverq_fast, char);
       gdata_iter_as_print_string;
