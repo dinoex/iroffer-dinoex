@@ -91,7 +91,6 @@ Long Term Features:
   1193  disable all privmsg
   1202  Reduce message length when using fish.
   1206  remove file after last person finishes downloading
-  1215  anti flood for xdcc search
   1216  ADDGROUP with file
   1234  better response to find
   1240  bandwith trigger

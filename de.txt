@@ -2331,3 +2331,4 @@
 2608 "%3.0f%c"
 2609 "%.0f%c"
 2610 "COMMAND %s running: %ld ms"
+2611 "slow_privmsg"
