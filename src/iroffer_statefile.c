@@ -630,6 +630,7 @@ void read_statefile(void)
                         xd->st_ino  = (ino_t)((((ir_uint64)ntohl(md5sum_info->st_ino.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_ino.lower)));
                         xd->mtime   = ntohl(md5sum_info->mtime);
                         memcpy(xd->md5sum, md5sum_info->md5sum, sizeof(MD5Digest));
+                        break;
                       }
                     if (ihdr->length == sizeof(statefile_item_md5sum_info32_t))
                       {
