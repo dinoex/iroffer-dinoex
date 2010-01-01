@@ -721,7 +721,7 @@ static void write_statefile_xdccs(ir_moutput_t *bout)
     }
 
     if (xd->xtime != 0) {
-      next = prepare_statefile_int(next, STATEFILE_TAG_XDCCS_XTIME, xd->xtime);
+      next = prepare_statefile_time(next, STATEFILE_TAG_XDCCS_XTIME, xd->xtime);
     }
 
     if (xd->color != 0) {
