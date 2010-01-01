@@ -651,7 +651,7 @@ static void write_statefile_xdccs(ir_moutput_t *bout)
       length += sizeof(statefile_hdr_t) + ceiling(strlen(xd->trigger) + 1, 4);
     }
     if (xd->xtime != 0) {
-      length += sizeof(statefile_item_generic_int_t);
+      length += sizeof(statefile_item_generic_time_t);
     }
     if (xd->color != 0) {
       length += sizeof(statefile_item_generic_int_t);
