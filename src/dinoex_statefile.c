@@ -38,7 +38,7 @@ static void write_statefile_raw(ir_moutput_t *bout, const void *buf, size_t nbyt
   saved = write(bout->fd, buf, nbytes);
   if (saved != (ssize_t)nbytes) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write To State File (%d != %d) %s",
-             saved, nbytes, strerror(errno));
+             (int)saved, (int)nbytes, strerror(errno));
     bout->error ++;
   }
 }
