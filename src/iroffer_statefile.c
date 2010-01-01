@@ -661,7 +661,7 @@ void read_statefile(void)
                     break;
                     
                   case STATEFILE_TAG_XDCCS_XTIME:
-                    read_statefile_int(ihdr, "XDCC Time", &(xd->xtime));
+                    read_statefile_time(ihdr, "XDCC Time", &(xd->xtime), "XDCC Time");
                     break;
 
                   case STATEFILE_TAG_XDCCS_COLOR:
