@@ -672,7 +672,6 @@ int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len);
 int ir_boutput_attempt_flush(ir_boutput_t *bout);
 void ir_boutput_init(ir_boutput_t *bout, int fd, int flags);
 void ir_boutput_delete(ir_boutput_t *bout);
-void ir_boutput_get_md5sum(ir_boutput_t *bout, MD5Digest digest);
 
 const char *transferlimit_type_to_string(transferlimit_type_e type);
 
