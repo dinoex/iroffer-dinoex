@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.18:
 ----------------
 
+bugfix: statefile
+  Benutze 64bit Zeiten wenn verfügbar.
+  Lese 32bit statefile auf 64bit Systemen.
+
 305) slow_privmsg
   Begrenze PRIVMSG auf 1 Zeile alle n Sekunden. Damit verhindert man das
   der Bot ein Flooding auslöst.
