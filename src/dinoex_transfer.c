@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -291,7 +291,7 @@ void t_connected(transfer *tr)
 {
   int callval_i;
   int connect_error;
-  unsigned int connect_error_len = sizeof(connect_error);
+  SIGNEDSOCK int connect_error_len = sizeof(connect_error);
 
   tr->con.connecttime = gdata.curtime;
   FD_CLR(tr->con.clientsocket, &gdata.writeset);
