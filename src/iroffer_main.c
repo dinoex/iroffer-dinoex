@@ -458,7 +458,7 @@ static void mainloop (void) {
         {
           int callval_i;
           int connect_error;
-          unsigned int connect_error_len = sizeof(connect_error);
+          SIGNEDSOCK int connect_error_len = sizeof(connect_error);
           
           callval_i = getsockopt(gnetwork->ircserver,
                                  SOL_SOCKET, SO_ERROR,
@@ -609,7 +609,7 @@ static void mainloop (void) {
             {
               int callval_i;
               int connect_error;
-              unsigned int connect_error_len = sizeof(connect_error);
+              SIGNEDSOCK int connect_error_len = sizeof(connect_error);
               
               callval_i = getsockopt(ul->con.clientsocket,
                                      SOL_SOCKET, SO_ERROR,
@@ -685,7 +685,7 @@ static void mainloop (void) {
             {
               int callval_i;
               int connect_error;
-              unsigned int connect_error_len = sizeof(connect_error);
+              SIGNEDSOCK int connect_error_len = sizeof(connect_error);
               
               callval_i = getsockopt(chat->con.clientsocket,
                                      SOL_SOCKET, SO_ERROR,
