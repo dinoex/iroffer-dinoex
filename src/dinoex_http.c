@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -1494,6 +1494,7 @@ static char *get_url_param(const char *url, const char *key)
   result = mystrdup(found + strlen(key));
   html_str_split(result, ' ');
   html_str_split(result, ';');
+  html_str_split(result, '&');
   return result;
 }
 

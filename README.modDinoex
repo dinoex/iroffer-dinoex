@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+bugfix: http_search (reported by Nouhime)
+  versions affected: 3.16 - 3.18
+  search did not find any pack.
+
 With Version 3.18:
 ------------------
 
