@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+306) NOANNOUNCE (inspired by Lamune and TheDeath)
+
+  new admin command:
+  NOANNOUNCE <x>                     Disables all announces for next <x> minutes
+
 bugfix: http_search (reported by Nouhime)
   versions affected: 3.16 - 3.18
   search did not find any pack.

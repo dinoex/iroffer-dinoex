@@ -2332,3 +2332,6 @@
 2609 "%.0f%c"
 2610 "COMMAND %s running: %ld ms"
 2611 "slow_privmsg"
+2612 "NOANNOUNCE"
+2613 "Disables all announces for next <x> minutes"
+2614 "** ANNOUNCE has been disabled for the next %i %s"

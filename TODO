@@ -1,6 +1,5 @@
 [Iroffer.dinoex.de]
 Feature #16 add support for variables in the announces
-Feature #37 noannounce as admin-command (noannounce x)
 Feature #38 xdcc command to export the crc32/md5 as sumfile
 
 [Iroffer.org]
@@ -70,7 +69,6 @@ Short Term Features:
   1356  configure timer for status messages in chat
   1365  aborting GET queue 
   1376  SSL-Bouncer connecten
-  1378  mute announce for x mins
   1379  different packlists for different groups
   1380  restrictsend on a per-network basis
   1394  pack size included in the output of announce

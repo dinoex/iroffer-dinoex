@@ -968,6 +968,7 @@ void dumpgdata(void)
   gdata_print_string(nosendmsg);
 
   gdata_print_number_cast("%ld", nomd5_start, long);
+  gdata_print_number_cast("%ld", noannounce_start, long);
   
   gdata_irlist_iter_start(group_admin, group_admin_t);
   gdata_iter_print_int(g_level);

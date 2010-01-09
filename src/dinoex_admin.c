@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -4398,6 +4398,17 @@ void a_addann(const userinput * const u)
     return;
 
   a_make_announce(u, "ANNOUNCE", number_of_pack(xd));
+}
+
+void a_noannounce(const userinput * const u)
+{
+  int num = 0;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+  num = max_minutes_waits(&gdata.noannounce_start, num);
+  a_respond(u, "** ANNOUNCE has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
 }
 
 void a_restart(const userinput * const UNUSED(u))
