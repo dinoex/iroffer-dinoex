@@ -82,6 +82,7 @@ static config_bool_typ config_parse_bool[] = {
 #endif /* USE_UPNP */
 {"groupsincaps",           &gdata.groupsincaps },
 {"hide_list_info",         &gdata.hide_list_info },
+{"hide_list_stop",         &gdata.hide_list_stop },
 {"hidelockedpacks",        &gdata.hidelockedpacks },
 {"hideos",                 &gdata.hideos },
 {"holdqueue",              &gdata.holdqueue },

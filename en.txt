@@ -2335,3 +2335,4 @@
 2612 "NOANNOUNCE"
 2613 "Disables all announces for next <x> minutes"
 2614 "** ANNOUNCE has been disabled for the next %i %s"
+2615 "hide_list_stop"
