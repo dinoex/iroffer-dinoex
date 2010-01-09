@@ -166,6 +166,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,2,method_allow_all,a_mannounce,     "MANNOUNCE","n m [msg]","ANNOUNCE <msg> for pack <n> to <m> in all joined channels"},
 {3,2,method_allow_all,a_cannounce,     "CANNOUNCE","channel n [msg]","ANNOUNCE <msg> for pack <n> in <channel>"},
 {3,2,method_allow_all,a_sannounce,     "SANNOUNCE","n [m]","Short ANNOUNCE pack <n> to <m> in all joined channels"},
+{3,2,method_allow_all,a_noannounce,    "NOANNOUNCE","x","Disables all announces for next <x> minutes"},
 {3,3,method_allow_all,a_addann,        "ADDANN","filename","Add and announce new pack"},
 {3,2,method_allow_all,a_md5,           "MD5","[n] [m]","Calculate MD5 and CRC sums of pack <n> to <m>"},
 {3,2,method_allow_all,a_crc,           "CRC","[n] [m]","Check CRC of pack <n> to <m>"},

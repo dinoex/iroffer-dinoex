@@ -149,6 +149,7 @@ char *privmsg_fish;
 char *ruby_script;
 char *charset;
 time_t nomd5_start;
+time_t noannounce_start;
 int need_voice;
 int need_level;
 int hide_list_info;

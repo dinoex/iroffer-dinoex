@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -140,6 +140,7 @@ void a_mannounce(const userinput * const u);
 void a_cannounce(const userinput * const u);
 void a_sannounce(const userinput * const u);
 void a_addann(const userinput * const u);
+void a_noannounce(const userinput * const u);
 
 void a_restart(const userinput * const u);
 

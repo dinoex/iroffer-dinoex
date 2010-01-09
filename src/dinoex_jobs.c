@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -456,7 +456,8 @@ void sendannounce(void)
   if ( --(item->delay) > 0 )
     return;
 
-  writeserver(WRITESERVER_SLOW, "%s", item->msg);
+  if (gdata.noannounce_start <= gdata.curtime)
+    writeserver(WRITESERVER_SLOW, "%s", item->msg);
   mydelete(item->msg);
   irlist_delete(&(gnetwork->serverq_channel), item);
 }

@@ -93,6 +93,7 @@ TheDeath
 	option "logfile_httpd"
 	option "http_geoip"
 	reporting XDCC upload "file to big" bug
+	admin command "NOANNOUNCE"
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -395,6 +396,7 @@ Lamune
 	reporting "CLOSEC" bug
 	reporting "FILEDEL" bug
 	option "slow_privmsg" 
+	admin command "NOANNOUNCE"
 
 DevelDoll
 	report transferlimits to user
