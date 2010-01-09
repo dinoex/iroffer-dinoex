@@ -433,6 +433,7 @@ fred|krue
 	option "verbose_crc32"
 	reporting DCLD bug
 	reporting DCC RESUME bug
+	suggesting "hide_list_stop"
 
 dns777
 	reporting "xdccxmlfile" packsize bug

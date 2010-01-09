@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+307) hide_list_stop (inspired by fred|krue)
+  Don't print line with "/msg nick xdcc stop"
+
 306) NOANNOUNCE (inspired by Lamune and TheDeath)
 
   new admin command:

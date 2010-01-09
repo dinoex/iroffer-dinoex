@@ -1712,6 +1712,7 @@ void reinit_config_vars(void)
   gdata.send_batch = 0;
   gdata.http_geoip = 0;
   gdata.no_find_trigger = 0;
+  gdata.hide_list_stop = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
