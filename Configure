@@ -1534,6 +1534,7 @@ if $OPT_RUBY; then
 	archdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'archdir' ]"`
 	rubyhdrdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'rubyhdrdir' ]"`
 	sitearch=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'sitearch' ]"`
+	rubyversion=`${ruby} -e "print RUBY_VERSION.sub(/\.[0-9]*$/,'').sub(/\./,'')"`
 	if test $rubyhdrdir = "nil"
 	then
 		incruby="-I${archdir}"
@@ -1553,6 +1554,7 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 		echo "found"
 		echo "Configuring for Ruby."
 		echo "#define USE_RUBY" >> src/iroffer_config.h
+		echo "#define USE_RUBYVERSION ${rubyversion}" >> src/iroffer_config.h
 		RUBYLIB="${libruby}"
 		RUBYSLIB="${libsruby} -lm $rstatic"
 		RUBYINC="${incruby}"

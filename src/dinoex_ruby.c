@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -53,7 +53,7 @@ VALUE cIrofferConfig;
 VALUE cIrofferEvent;
 VALUE oIrofferEvent = Qnil;
 
-#if !defined(RFLOAT_VALUE)
+#if USE_RUBYVERSION < 19
 static VALUE rb_errinfo(void)
 {
   return ruby_errinfo;
@@ -480,7 +480,7 @@ static void load_script(const char *name)
   myruby_time = st.st_mtime;
   ruby_init_loadpath();
   ruby_script(name);
-#if !defined(RFLOAT_VALUE)
+#if USE_RUBYVERSION < 19
   rb_load_file(name);
   myruby_status = ruby_exec();
 #else
@@ -630,7 +630,7 @@ int http_ruby_script(const char *name, const char *output)
   snprintf(tempstr, maxtextlength, "$stdout = File.new(\"%s\", \"w+\")", output);
   rb_eval_string_protect(tempstr, &rc);
   mydelete(tempstr);
-#if !defined(RFLOAT_VALUE)
+#if USE_RUBYVERSION < 19
   rb_load_file(name);
   rc = ruby_exec();
 #else
