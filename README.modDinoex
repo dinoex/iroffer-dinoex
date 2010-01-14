@@ -263,7 +263,7 @@ bugfix: auto_path_group
 bugfix: autoadd_group_match (reported by dns777)
   Works now for relative pathnames.
 
-281) PRINT
+281) PRINT (inspired by TheDeath)
 
   new admin command:
   PRINT <key>                        Print config variable <key>

@@ -94,6 +94,7 @@ TheDeath
 	option "http_geoip"
 	reporting XDCC upload "file to big" bug
 	admin command "NOANNOUNCE"
+	admin command "PRINT"
 
 [GFE]Lunix
 	alias xdcc list group <group>
