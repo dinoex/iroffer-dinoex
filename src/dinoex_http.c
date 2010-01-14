@@ -552,6 +552,7 @@ static void h_accept(int i)
   char *msg;
   http *h;
   int clientsocket;
+  int blocked;
 
   updatecontext();
 
@@ -593,10 +594,17 @@ static void h_accept(int i)
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
           "HTTP connection received from %s",  h->con.remoteaddr);
 
-  if (is_in_badip(&(h->con.remote))) {
+  blocked = is_in_badip(&(h->con.remote));
+  if (blocked > 0)
     h_closeconn(h, "HTTP connection ignored", 0);
     return;
   }
+#ifdef USE_GEOIP
+  if (blocked < 1)
+    h_closeconn(h, "HTTP connection country blocked", 0);
+    return;
+  }
+#endif /* USE_GEOIP */
 
   if (irlist_size(&gdata.http_allow) > 0) {
     if (!verify_cidr(&gdata.http_allow, &remoteaddr)) {

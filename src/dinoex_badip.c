@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -29,7 +29,7 @@ static int is_in_badip4(unsigned long remoteip)
 #ifdef USE_GEOIP
 #ifndef WITHOUT_HTTP
   if (http_check_geoip(remoteip))
-    return 1;
+    return -1;
 #endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP */
 
