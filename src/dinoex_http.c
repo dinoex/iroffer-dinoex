@@ -595,12 +595,12 @@ static void h_accept(int i)
           "HTTP connection received from %s",  h->con.remoteaddr);
 
   blocked = is_in_badip(&(h->con.remote));
-  if (blocked > 0)
+  if (blocked > 0) {
     h_closeconn(h, "HTTP connection ignored", 0);
     return;
   }
 #ifdef USE_GEOIP
-  if (blocked < 1)
+  if (blocked < 1) {
     h_closeconn(h, "HTTP connection country blocked", 0);
     return;
   }
