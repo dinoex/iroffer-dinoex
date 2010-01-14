@@ -89,7 +89,6 @@ Long Term Features:
   1149  move after upload to dir
   1170  telnet with more terminal codes
   1176  pre_desc, post_desc
-  1190  show CONFIG value
   1193  disable all privmsg
   1202  Reduce message length when using fish.
   1206  remove file after last person finishes downloading
