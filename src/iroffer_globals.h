@@ -148,6 +148,7 @@ char *nosendmsg;
 char *privmsg_fish;
 char *ruby_script;
 char *charset;
+char *http_admin_dir;
 time_t nomd5_start;
 time_t noannounce_start;
 int need_voice;

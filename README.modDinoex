@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+308) http_admin_dir
+  Defines directory for protected files handled out by the webserver
+  for the admin user.
+  Default: disabled.
+
 307) hide_list_stop (inspired by fred|krue)
   Don't print line with "/msg nick xdcc stop"
 
