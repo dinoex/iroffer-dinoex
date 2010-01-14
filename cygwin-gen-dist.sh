@@ -18,7 +18,7 @@ rm -f a.zip
 # Build translatetd versions
 for lang in de it en
 do
-	./Lang "${lang}"
+	./Lang "${lang}" utf-8
 	make clean
 	make
 	case "${lang}" in
