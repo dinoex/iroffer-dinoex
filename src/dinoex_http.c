@@ -600,7 +600,7 @@ static void h_accept(int i)
     return;
   }
 #ifdef USE_GEOIP
-  if (blocked < 1) {
+  if (blocked < 0) {
     h_closeconn(h, "HTTP connection country blocked", 0);
     return;
   }
@@ -1597,6 +1597,8 @@ static void h_webliste(http * const h, const char *body)
 #ifndef WITHOUT_HTTP_ADMIN
 static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
 {
+  char *tempstr;
+  char *tmp;
   size_t guess;
 
   updatecontext();
@@ -1627,6 +1629,17 @@ static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
         return;
       }
     }
+  }
+
+  if (gdata.http_admin_dir) {
+    tempstr = mycalloc(maxtextlength);
+    snprintf(tempstr, maxtextlength, "%s%s", gdata.http_admin_dir, h->url);
+    tmp = strchr(tempstr, '?' );
+    if (tmp != NULL)
+      *tmp = 0;
+    h_readfile(h, tempstr);
+    mydelete(tempstr);
+    return;
   }
 
   if (gdata.debug > 1)
