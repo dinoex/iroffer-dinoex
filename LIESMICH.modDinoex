@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.19:
 ----------------
 
+bugfix: need_level
+  versions affected: 2.0 - 3.18
+  Melde dem Benutzer welchen Status er benötigt.
+
 308) http_admin_dir
   Ein geschützttes Verrzeichnis mit weiteren Dateien für den Webserver.
   Nur der http_admin Benutzer kann daruaf zugreifen.

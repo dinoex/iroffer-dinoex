@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+bugfix: need_level (reported by fred|krue)
+  versions affected: 2.0 - 3.18
+  report needed status to user.
+
 308) http_admin_dir
   Defines directory for protected files handled out by the webserver
   for the admin user.
