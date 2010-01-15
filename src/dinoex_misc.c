@@ -762,11 +762,35 @@ xdcc *get_xdcc_pack(int pack)
   return irlist_get_nth(&gdata.xdccs, pack - 1);
 }
 
+static const char *access_need_text(void)
+{
+  int need_level;
+
+  need_level = get_level();
+  if (need_level == 0)
+    need_level = get_voice();
+
+  switch (need_level) {
+  case 0:
+    return NULL;
+  case 1:
+    return "voice";
+  case 2:
+    return "halfop";
+  case 3:
+    return "op";
+  }
+  return NULL;
+}
+
 int access_need_level(const char *nick, const char *text)
 {
+  const char *level;
+
   if (!isinmemberlist(nick)) {
-    if ((get_voice() != 0) || (get_level() != 0))
-      notice(nick, "** XDCC %s denied, you must have voice or more on a known channel to request a pack", text);
+    level = access_need_text();
+    if (level != NULL)
+      notice(nick, "** XDCC %s denied, you must have %s on a known channel to request a pack", text, level);
     else
       notice(nick, "** XDCC %s denied, you must be on a known channel to request a pack", text);
     return 1;
@@ -1024,7 +1048,7 @@ char *get_grouplist_access(const char *nick)
       if (strcasecmp(member->nick, nick) != 0)
         continue;
 
-      if (check_level( member->prefixes[0] ) == 0)
+      if (check_level( member->prefixes[0] ) != 0)
         continue;
 
       if (!ch->rgroup) {
