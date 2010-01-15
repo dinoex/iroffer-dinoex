@@ -29,7 +29,7 @@ static int is_in_badip4(unsigned long remoteip)
 #ifdef USE_GEOIP
 #ifndef WITHOUT_HTTP
   if (http_check_geoip(remoteip))
-    return -1;
+    return -1; /* blocked by GeoIP */
 #endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP */
 
@@ -39,11 +39,11 @@ static int is_in_badip4(unsigned long remoteip)
     if (b->remoteip == remoteip) {
       b->lastcontact = gdata.curtime;
       if (b->count > 10)
-        return 1;
+        return 1; /* blacklisted */
       break;
     }
   }
-  return 0;
+  return 0; /* not found */
 }
 
 static int is_in_badip6(struct in6_addr *remoteip)
@@ -56,13 +56,18 @@ static int is_in_badip6(struct in6_addr *remoteip)
     if (memcmp(&(b->remoteip), remoteip, sizeof(struct in6_addr)) == 0) {
       b->lastcontact = gdata.curtime;
       if (b->count > 10)
-        return 1;
+        return 1; /* blacklisted */
       break;
     }
   }
-  return 0;
+  return 0; /* not found */
 }
 
+/* check if ip is allowed
+return: 0 = not blocked
+return: 1 = blacklisted
+return: -1 = blocked by GeoIP
+*/
 int is_in_badip(ir_sockaddr_union_t *sa)
 {
   if (sa->sa.sa_family == AF_INET) {
@@ -114,6 +119,7 @@ static void count_badip6(struct in6_addr *remoteip)
   b->count = 1;
 }
 
+/* update counters for abusive ips */
 void count_badip(ir_sockaddr_union_t *sa)
 {
   if (sa->sa.sa_family == AF_INET) {
@@ -151,6 +157,7 @@ static void expire_badip6(void)
   }
 }
 
+/* reset counters for abusive ips */
 void expire_badip(void)
 {
   expire_badip4();
