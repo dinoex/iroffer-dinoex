@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -81,6 +81,7 @@ usage(void)
   exit(64);
 }
 
+/* parse command line options */
 void command_options(int argc, char *const *argv)
 {
   const char *cptr;
@@ -156,6 +157,7 @@ static void outerror_sysname(const char *configured, const char *sysname)
   printf(", Good\n");
 }
 
+/* report and check operation system name */
 void check_osname(const char *sysname)
 {
    /* verify we are who we were configured for, and set config */
@@ -412,6 +414,7 @@ static void debug_memory(void)
 }
 #endif /* DEBUG */
 
+/* cleanup all stuff before exit or restart */
 void
 #ifdef __GNUC__
 __attribute__ ((noreturn))
