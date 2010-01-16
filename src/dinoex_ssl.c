@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -76,6 +76,7 @@ static void outerror_ssl(long err)
 }
 #endif /* USE_GNUTLS */
 
+/* setup SSL lib */
 void ssl_startup(void)
 {
 #ifdef USE_OPENSSL
@@ -100,6 +101,7 @@ void ssl_startup(void)
 #endif /* USE_GNUTLS */
 }
 
+/* close connection to server, shutdown SSL if active */
 void close_server(void)
 {
 #ifdef USE_OPENSSL
@@ -122,6 +124,7 @@ void close_server(void)
   gnetwork->lastservercontact = gdata.curtime + gdata.reconnect_delay;
 }
 
+/* setup an SSL connection if configured */
 int setup_ssl(void)
 {
 #ifdef USE_OPENSSL
@@ -220,6 +223,7 @@ int setup_ssl(void)
   return 0;
 }
 
+/* read buffer from server, use SSL if active */
 ssize_t readserver_ssl(void *buf, size_t nbytes)
 {
 #ifdef USE_OPENSSL
@@ -233,6 +237,7 @@ ssize_t readserver_ssl(void *buf, size_t nbytes)
   return read(gnetwork->ircserver, buf, nbytes);
 }
 
+/* write out buffer to server, use SSL if active */
 ssize_t writeserver_ssl(const void *buf, size_t nbytes)
 {
 #ifdef USE_OPENSSL

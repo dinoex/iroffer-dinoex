@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -24,6 +24,7 @@
 
 #ifndef WITHOUT_MEMSAVE
 
+/* copy a string */
 char *mystrdup2(const char *str, const char *src_function, const char *src_file, int src_line)
 {
   char *copy;
@@ -35,6 +36,7 @@ char *mystrdup2(const char *str, const char *src_function, const char *src_file,
 
 #endif /* WITHOUT_MEMSAVE */
 
+/* append a suffix to a string */
 #ifndef WITHOUT_MEMSAVE
 char *mystrsuffix2(const char *str, const char *suffix, const char *src_function, const char *src_file, int src_line)
 #else
@@ -54,6 +56,7 @@ char *mystrsuffix(const char *str, const char *suffix)
   return copy;
 }
 
+/* append a suffix to a string and adding a separation character */
 #ifndef WITHOUT_MEMSAVE
 char *mystrjoin2(const char *str1, const char *str2, char delimiter, const char *src_function, const char *src_file, int src_line)
 #else
@@ -81,6 +84,7 @@ char *mystrjoin(const char *str1, const char *str2, char delimiter)
   return copy;
 }
 
+/* add a string to a simple list */
 void irlist_add_string(irlist_t *list, const char *str)
 {
   char *copy;
@@ -89,6 +93,7 @@ void irlist_add_string(irlist_t *list, const char *str)
   strcpy(copy, str);
 }
 
+/* match a given file against a list of patterns */
 int verifyshell(irlist_t *list, const char *file)
 {
   char *pattern;
@@ -104,6 +109,7 @@ int verifyshell(irlist_t *list, const char *file)
   return 0;
 }
 
+/* returns a nickname fail-safe */
 const char *save_nick(const char * nick)
 {
   if (nick)
@@ -111,6 +117,7 @@ const char *save_nick(const char * nick)
   return "??";
 }
 
+/* verify a password against the stored hash */
 int verifypass2(const char *masterpass, const char *testpass)
 {
 #ifndef NO_CRYPT
@@ -141,6 +148,7 @@ int verifypass2(const char *masterpass, const char *testpass)
   return 1;
 }
 
+/* validate config and warn if password is not encrypted */
 void checkadminpass2(const char *masterpass)
 {
 #ifndef NO_CRYPT
@@ -165,6 +173,7 @@ void checkadminpass2(const char *masterpass)
 #endif /* NO_CRYPT */
 }
 
+/* strip quotes from a string */
 char *clean_quotes(char *str)
 {
   char *src;
@@ -196,6 +205,7 @@ static void replace_char(char *str, char ch1, char ch2)
   }
 }
 
+/* build a pattern to match this user and hostname */
 char *to_hostmask(const char *nick, const char *hostname)
 {
   char *nick2;
@@ -212,6 +222,7 @@ char *to_hostmask(const char *nick, const char *hostname)
   return hostmask;
 }
 
+/* returns the filename part of a full pathname */
 const char *getfilename(const char *pathname)
 {
   const char *work;
@@ -223,6 +234,7 @@ const char *getfilename(const char *pathname)
   return ++work;
 }
 
+/* close an TCP connection safely */
 void shutdown_close(int handle)
 {
   /*
@@ -234,6 +246,7 @@ void shutdown_close(int handle)
   close(handle);
 }
 
+/* get the port number from a socket */
 int get_port(ir_sockaddr_union_t *listenaddr)
 {
   if (listenaddr->sa.sa_family == AF_INET)
@@ -242,6 +255,7 @@ int get_port(ir_sockaddr_union_t *listenaddr)
   return ntohs(listenaddr->sin6.sin6_port);
 }
 
+/* strcmp fail-safe */
 int strcmp_null(const char *s1, const char *s2)
 {
   if ((s1 == NULL) && (s2 == NULL))
@@ -256,6 +270,7 @@ int strcmp_null(const char *s1, const char *s2)
   return strcmp(s1, s2);
 }
 
+/* check if a file is writeable */
 int is_file_writeable(const char *f)
 {
    int fd;
@@ -272,6 +287,7 @@ int is_file_writeable(const char *f)
    return 1;
 }
 
+/* convert hostmask to fnmatch pattern */
 char *hostmask_to_fnmatch(const char *str)
 {
   char *base;
@@ -361,6 +377,7 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
 
 static const char const size_units[] = { 'K', 'M', 'G', 'T', 'E', 0 };
 
+/* returns the size in a human readable form */
 char *sizestr(int spaces, off_t num)
 {
 #define SIZESTR_SIZE 5
@@ -395,6 +412,7 @@ char *sizestr(int spaces, off_t num)
   return str;
 }
 
+/* check for non ASCII chars */
 int isprintable(char a)
 {
   if ( (unsigned char)a < 0x20U )
@@ -404,6 +422,7 @@ int isprintable(char a)
   return 1;
 }
 
+/* convert to ASCII char */
 char onlyprintable(char a)
 {
   if ( (unsigned char)a < 0x20U )
@@ -413,6 +432,7 @@ char onlyprintable(char a)
   return a;
 }
 
+/* remove unknown control codes */
 char *removenonprintable(char *str)
 {
   unsigned char *copy;
@@ -447,6 +467,7 @@ char *removenonprintable(char *str)
   return str;
 }
 
+/* remove all control codes */
 char *removenonprintablectrl(char *str)
 {
   unsigned char *copy;
@@ -464,6 +485,7 @@ char *removenonprintablectrl(char *str)
   return str;
 }
 
+/* remove control codes and color */
 char *removenonprintablefile(char *str)
 {
   unsigned char *copy;
@@ -517,6 +539,7 @@ char *removenonprintablefile(char *str)
   return str;
 }
 
+/* convert a string to uppercase */
 char *caps(char *str)
 {
   unsigned char *copy;
@@ -533,6 +556,7 @@ char *caps(char *str)
   return str;
 }
 
+/* calculate minutes left for reaching a timestamp */
 int max_minutes_waits(time_t *endtime, int min)
 {
   *endtime = gdata.curtime;
@@ -552,6 +576,7 @@ static void clean_missing_parts(char **result, int part, int howmany)
     result[i] = NULL;
 }
 
+/* split a line in a number of arguments */
 #ifndef WITHOUT_MEMSAVE
 int get_argv2(char **result, const char *line, int howmany,
              const char *src_function, const char *src_file, int src_line)
@@ -641,6 +666,7 @@ int get_argv(char **result, const char *line, int howmany)
   }
 }
 
+/* extract one argument from a line */
 #ifndef WITHOUT_MEMSAVE
 char *getpart2(const char *line, int howmany,
                const char *src_function, const char *src_file, int src_line)
@@ -712,6 +738,7 @@ char *getpart(const char *line, int howmany)
   return dest;
 }
 
+/* extract everything starting with the given argument */
 char *getpart_eol(const char *line, int howmany)
 {
   const char *start;
@@ -786,6 +813,7 @@ char *getpart_eol(const char *line, int howmany)
   return dest;
 }
 
+/* count length of pattern without wildcards */
 int convert_spaces_to_match(char *str)
 {
   int k;
@@ -803,11 +831,13 @@ int convert_spaces_to_match(char *str)
   return k;
 }
 
+/* convert a timeval into ms */
 ir_uint64 timeval_to_ms(struct timeval *tv)
 {
   return (((ir_uint64)(tv->tv_sec)) * 1000) + (((ir_uint64)(tv->tv_usec)) / 1000);
 }
 
+/* sort a linked list with selection sort */
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
 {
 #ifdef WITH_LINKED_DOUBLE

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -25,11 +25,27 @@
 #ifdef USE_CURL
 #include <curl/curl.h>
 
+typedef struct
+{
+  userinput u;
+  int id;
+  int net;
+  char *name;
+  char *url;
+  char *vhosttext;
+  FILE *writefd;
+  off_t resumesize;
+  char *errorbuf;
+  CURL *curlhandle;
+  long starttime;
+} fetch_curl_t;
+
 static CURLM *cm;
 static irlist_t fetch_trans;
 static int fetch_id;
 int fetch_started;
 
+/* setup the curl lib */
 void curl_startup(void)
 {
   CURLcode cs;
@@ -50,6 +66,7 @@ void curl_startup(void)
   }
 }
 
+/* close the curl lib */
 void curl_shutdown(void)
 {
   if (cm == NULL) {
@@ -59,22 +76,7 @@ void curl_shutdown(void)
   curl_global_cleanup();
 }
 
-
-typedef struct
-{
-  userinput u;
-  int id;
-  int net;
-  char *name;
-  char *url;
-  char *vhosttext;
-  FILE *writefd;
-  off_t resumesize;
-  char *errorbuf;
-  CURL *curlhandle;
-  long starttime;
-} fetch_curl_t;
-
+/* register active connections for select() */
 void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd)
 {
   CURLMcode cms;
@@ -103,6 +105,7 @@ static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
   return irlist_delete(&fetch_trans, ft);
 }
 
+/* cancel a running fetch command */
 int fetch_cancel(int num)
 {
   fetch_curl_t *ft;
@@ -128,6 +131,7 @@ int fetch_cancel(int num)
   return 1;
 }
 
+/* process all running connections */
 void fetch_perform(void)
 {
   CURLMcode cms;
@@ -295,6 +299,7 @@ static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
   return 0;
 }
 
+/* start a transfer */
 void start_fetch_url(const userinput *const u)
 {
   off_t resumesize;
@@ -360,6 +365,7 @@ void start_fetch_url(const userinput *const u)
   fetch_started ++;
 }
 
+/* show running transfers */
 void dinoex_dcl(const userinput *const u)
 {
   fetch_curl_t *ft;
@@ -381,6 +387,7 @@ void dinoex_dcl(const userinput *const u)
   }
 }
 
+/* show running transfers in detail */
 void dinoex_dcld(const userinput *const u)
 {
   fetch_curl_t *ft;
@@ -427,6 +434,7 @@ void dinoex_dcld(const userinput *const u)
   }
 }
 
+/* check if a file is already in transfer */
 int fetch_is_running(const char *file)
 {
   fetch_curl_t *ft;

@@ -538,6 +538,7 @@ do_on_event(VALUE userobject, const char *event)
   return (skip != Qtrue) ? 0 : 1;
 }
 
+/* push a server line to the ruby class */
 int do_myruby_server(char *line)
 {
   if (myruby_loaded == 0)
@@ -547,6 +548,7 @@ int do_myruby_server(char *line)
   return do_on_event(oIrofferEvent, "on_server");
 }
 
+/* push a notice to the ruby class */
 int do_myruby_notice(char *line)
 {
   if (myruby_loaded == 0)
@@ -556,6 +558,7 @@ int do_myruby_notice(char *line)
   return do_on_event(oIrofferEvent, "on_notice");
 }
 
+/* push a privmsg to the ruby class */
 int do_myruby_privmsg(char *line)
 {
   if (myruby_loaded == 0)
@@ -565,6 +568,7 @@ int do_myruby_privmsg(char *line)
   return do_on_event(oIrofferEvent, "on_privmsg");
 }
 
+/* call the ruby class after adding a pack */
 int do_myruby_added(char *filename, int pack)
 {
   if (myruby_loaded == 0)
@@ -575,6 +579,7 @@ int do_myruby_added(char *filename, int pack)
   return do_on_event(oIrofferEvent, "on_added");
 }
 
+/* reload the scrip on rehash */
 void rehash_myruby(int check)
 {
   if (check) {
@@ -584,6 +589,7 @@ void rehash_myruby(int check)
   load_script(gdata.ruby_script);
 }
 
+/* load the interpreter and the script */
 void startup_myruby(void)
 {
   ruby_init();
@@ -600,6 +606,7 @@ void startup_myruby(void)
   load_script(gdata.ruby_script);
 }
 
+/* cleanup interpreter */
 void shutdown_myruby(void)
 {
   myruby_status = ruby_cleanup(myruby_status);
@@ -607,6 +614,7 @@ void shutdown_myruby(void)
 }
 
 #ifndef WITHOUT_HTTP
+/* call a ruby script as CGI via HTTP */
 int http_ruby_script(const char *name, const char *output)
 {
   struct stat st;

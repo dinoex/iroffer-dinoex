@@ -23,6 +23,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_misc.h"
 
+/* send DCC command to start download */
 void t_start_dcc_send(transfer *tr)
 {
   char *dccdata;
@@ -51,6 +52,7 @@ void t_start_dcc_send(transfer *tr)
   mydelete(sendnamestr);
 }
 
+/* start normal or passive DCC download */
 void t_setup_dcc(transfer *tr)
 {
   char *vhost;
@@ -91,6 +93,7 @@ void t_setup_dcc(transfer *tr)
   t_start_dcc_send(tr);
 }
 
+/* check ip for matching blacklist and whitelist */
 int t_check_ip_access(transfer *const tr)
 {
   const char *msg;
@@ -200,6 +203,7 @@ static void t_find_debug(const char *nick, const char *filename, const char *rem
   }
 }
 
+/* search the DDC transfer a user wants to accept */
 int t_find_transfer(const char *nick, const char *filename, const char *remoteip, const char *remoteport, const char *token)
 {
   transfer *tr;
@@ -227,6 +231,7 @@ int t_find_transfer(const char *nick, const char *filename, const char *remoteip
   return 1;
 }
 
+/* search the DDC transfer a user wants to resume */
 int t_find_resume(const char *nick, const char *filename, const char *localport, const char *bytes, char *token)
 {
   char *sendnamestr;
@@ -287,6 +292,7 @@ int t_find_resume(const char *nick, const char *filename, const char *localport,
   return 0;
 }
 
+/* process successful connection */
 void t_connected(transfer *tr)
 {
   int callval_i;
@@ -318,6 +324,7 @@ void t_connected(transfer *tr)
   return;
 }
 
+/* check if a transfer will use more  connections per user than allowed */
 void t_check_duplicateip(transfer *const newtr)
 {
   igninfo *ignore;
@@ -381,6 +388,7 @@ void t_check_duplicateip(transfer *const newtr)
   write_statefile();
 }
 
+/* find out how many bytes the user has received */
 int verify_acknowlede(transfer *tr)
 {
   int show = 0;
@@ -424,6 +432,7 @@ int verify_acknowlede(transfer *tr)
   return show;
 }
 
+/* returns a text for the state of the download */
 const char *t_print_state(transfer *const tr)
 {
   switch (tr->tr_status) {
@@ -445,6 +454,7 @@ const char *t_print_state(transfer *const tr)
   }
 }
 
+/* register active connections for select() */
 int t_select_fdset(int highests, int changequartersec)
 {
   transfer *tr;

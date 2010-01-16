@@ -138,6 +138,7 @@ static config_bool_typ config_parse_bool[] = {
 {NULL, NULL }};
 
 
+/* dump a string to console and logfile */
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 1, 2)))
@@ -150,11 +151,13 @@ dump_line(const char *format, ...)
    va_end(args);
 }
 
+/* dump an integer variable to console and logfile */
 void dump_config_int2(const char *name, int val)
 {
   dump_line("GDATA * " "%s: %d", name, val);
 }
 
+/* dump a string variable to console and logfile */
 void dump_config_string2(const char *name, const char *val)
 {
   dump_line("GDATA * " "%s: %s", name, val ? val : "<undef>" );
@@ -1569,6 +1572,7 @@ static void parse_config_line(char **part)
            current_config, current_line, part[0]);
 }
 
+/* process a line of the config */
 void getconfig_set(const char *line)
 {
   char *part[2];
@@ -1581,6 +1585,7 @@ void getconfig_set(const char *line)
   mydelete(part[1]);
 }
 
+/* pint a global config entry */
 char *print_config_key(const char *key)
 {
   char *val;
@@ -1600,6 +1605,7 @@ char *print_config_key(const char *key)
   return NULL;
 }
 
+/* dump the global config to console and logfile */
 void config_dump(void)
 {
   dump_config_bool();
@@ -1608,6 +1614,7 @@ void config_dump(void)
   dump_config_list();
 }
 
+/* check all tables are sorted for fast access */
 void config_startup(void)
 {
   config_sorted_bool();

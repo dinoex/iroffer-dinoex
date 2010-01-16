@@ -403,6 +403,7 @@ static char *html_str_split(char *buffer, int delimiter)
   return data;
 }
 
+/* close all HTTP interfaces */
 void h_close_listen(void)
 {
   int i;
@@ -442,6 +443,7 @@ static int h_open_listen(int i)
   return 0;
 }
 
+/* setup all HTTP interfaces */
 int h_setup_listen(void)
 {
   int i;
@@ -463,6 +465,7 @@ int h_setup_listen(void)
   return rc;
 }
 
+/* close and setup all HTTP interfaces */
 void h_reash_listen(void)
 {
   h_close_listen();
@@ -471,6 +474,7 @@ void h_reash_listen(void)
   h_setup_listen();
 }
 
+/* register active connections for select() */
 int h_select_fdset(int highests)
 {
   http *h;
@@ -1979,6 +1983,7 @@ static void h_istimeout(http * const h)
     }
 }
 
+/* process all HTTP connections */
 void h_perform(int changesec)
 {
   http *h;

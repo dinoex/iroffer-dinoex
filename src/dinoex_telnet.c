@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2008 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -28,6 +28,7 @@
 static int telnet_listen[MAX_VHOSTS];
 static int telnet_family[MAX_VHOSTS];
 
+/* close all telnet interfaces */
 void telnet_close_listen(void)
 {
   int i;
@@ -67,6 +68,7 @@ static int telnet_open_listen(int i)
   return 0;
 }
 
+/* setup all telnet interfaces */
 int telnet_setup_listen(void)
 {
   int i;
@@ -88,6 +90,7 @@ int telnet_setup_listen(void)
   return rc;
 }
 
+/* close and setup all telnet interfaces */
 void telnet_reash_listen(void)
 {
   telnet_close_listen();
@@ -96,6 +99,7 @@ void telnet_reash_listen(void)
   telnet_setup_listen();
 }
 
+/* register active connections for select() */
 int telnet_select_fdset(int highests)
 {
   int i;
@@ -109,8 +113,7 @@ int telnet_select_fdset(int highests)
   return highests;
 }
 
-/* connections */
-
+/* accept incoming connection */
 static void telnet_accept(int i)
 {
   gnetwork_t *backup;
@@ -178,6 +181,7 @@ static void telnet_accept(int i)
   gnetwork = backup;
 }
 
+/* process all telnet connections */
 void telnet_perform(void)
 {
   int i;

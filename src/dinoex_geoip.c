@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -64,6 +64,7 @@ static char *check_geoip(unsigned long remoteip)
 }
 #endif /* USE_GEOIP */
 
+/* check an IRC download against the GeoIP database */
 void geoip_new_connection(transfer *const tr)
 {
 #ifdef USE_GEOIP
@@ -125,6 +126,7 @@ void geoip_new_connection(transfer *const tr)
 
 #ifdef USE_GEOIP
 #ifndef WITHOUT_HTTP
+/* check a HTTP connection against the GeoIP database */
 int http_check_geoip(unsigned long remoteip)
 {
   const char *country;
@@ -145,6 +147,7 @@ int http_check_geoip(unsigned long remoteip)
 #endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP */
 
+/* close GeoIP */
 void geoip_shutdown(void)
 {
 #ifdef USE_GEOIP
