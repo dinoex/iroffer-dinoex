@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2008 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -22,6 +22,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
 
+/* change a nickname in a queue */
 void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick)
 {
   ir_pqueue *pq;
@@ -36,6 +37,7 @@ void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick)
   }
 }
 
+/* check queue for users that have left and drop them */
 void queue_reverify_restrictsend(irlist_t *list)
 {
   gnetwork_t *backup;
@@ -81,6 +83,7 @@ void queue_reverify_restrictsend(irlist_t *list)
   gnetwork = backup;
 }
 
+/* remove a pack from the queue because the pack has now reached its download limit */
 void queue_pack_limit(irlist_t *list, xdcc *xd)
 {
   gnetwork_t *backup;
@@ -103,6 +106,7 @@ void queue_pack_limit(irlist_t *list, xdcc *xd)
   }
 }
 
+/* remove all packs a user has because of his slowness */
 void queue_punishslowusers(irlist_t *list, int network, const char *nick)
 {
   gnetwork_t *backup;
@@ -128,6 +132,7 @@ void queue_punishslowusers(irlist_t *list, int network, const char *nick)
   }
 }
 
+/* remove all packs a user has because he send us XDCC REMOVE */
 int queue_xdcc_remove(irlist_t *list, int network, const char *nick)
 {
   gnetwork_t *backup;
@@ -160,6 +165,7 @@ int queue_xdcc_remove(irlist_t *list, int network, const char *nick)
   return changed;
 }
 
+/* remove the pack in the queue because admin has removed it */
 void queue_pack_remove(irlist_t *list, xdcc *xd)
 {
   gnetwork_t *backup;
@@ -181,6 +187,7 @@ void queue_pack_remove(irlist_t *list, xdcc *xd)
   }
 }
 
+/* remove all entries from this queue */
 void queue_all_remove(irlist_t *list, const char *message)
 {
   gnetwork_t *backup;
@@ -198,6 +205,7 @@ void queue_all_remove(irlist_t *list, const char *message)
   gnetwork = backup;
 }
 
+/* count number of entries in a queue for one user */
 int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const char *hostname, xdcc *xd)
 {
   ir_pqueue *pq;
@@ -220,6 +228,7 @@ int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const 
   return alreadytrans;
 }
 
+/* add a request to the idle queue */
 char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
 {
   ir_pqueue *tempq;
@@ -261,6 +270,7 @@ char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc
   return tempstr;
 }
 
+/* check idle queue and move one entry into the main queue */
 void check_idle_queue(void)
 {
   ir_pqueue *pq;
