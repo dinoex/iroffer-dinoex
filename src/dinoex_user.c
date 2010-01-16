@@ -1245,6 +1245,7 @@ static int get_nick_hostname(char *nick, char *hostname, const char* line)
 
 #define MAX_PRIVMSG_PARTS 10
 
+/* parse a privmsg from server for user actions */
 void privmsgparse(int type, int decoded, char* line)
 {
   privmsginput pi;

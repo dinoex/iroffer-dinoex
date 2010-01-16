@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -24,6 +24,7 @@
 #include "dinoex_curl.h"
 #include "dinoex_misc.h"
 
+/* open file on disk for upload */
 int l_setup_file(upload * const l, struct stat *stp)
 {
   char *fullfile;
@@ -109,6 +110,7 @@ static int l_setup_listen(upload * const l)
   return 0;
 }
 
+/* open new port for incoming connection */
 int l_setup_passive(upload * const l, char *token)
 {
   char *tempstr;
@@ -146,6 +148,7 @@ int l_setup_passive(upload * const l, char *token)
   return l_setup_listen(l);
 }
 
+/* accept incoming connection */
 void l_setup_accept(upload * const l)
 {
   SIGNEDSOCK int addrlen;
@@ -187,6 +190,7 @@ void l_setup_accept(upload * const l)
   l->ul_status = UPLOAD_STATUS_GETTING;
 }
 
+/* returns a text for the state of the upload */
 const char *l_print_state(upload * const l)
 {
   switch (l->ul_status) {
@@ -208,6 +212,7 @@ const char *l_print_state(upload * const l)
   }
 }
 
+/* register active connections for select() */
 int l_select_fdset(int highests)
 {
   upload *ul;
@@ -234,6 +239,7 @@ int l_select_fdset(int highests)
   return highests;
 }
 
+/* check if a filename is already in a upload */
 int file_uploading(const char *file)
 {
   upload *ul;
@@ -259,6 +265,7 @@ int file_uploading(const char *file)
 #endif /* USE_CURL */
 }
 
+/* check permissions and setup the upload transfer */
 void upload_start(const char *nick, const char *hostname, const char *hostmask,
                   const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token)
 {

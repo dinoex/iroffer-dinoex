@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -26,6 +26,7 @@
 #include "upnp.h"
 #endif /* USE_UPNP */
 
+/* writes IP address and port as text into the buffer */
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen)
 {
 #if !defined(NO_GETADDRINFO)
@@ -115,6 +116,7 @@ static void udpate_getip_net(int net, unsigned long ourip)
   gnetwork = backup;
 }
 
+/* check that the given text is an IP address or hostname and store it as external DCC IP */
 void update_natip(const char *var)
 {
   struct hostent *hp;
@@ -174,6 +176,7 @@ void update_natip(const char *var)
   }
 }
 
+/* check the welcome message from the server for an IP address or hostname to set external DCC IP */
 void update_server_welcome(char *line)
 {
   const char *tptr;
@@ -236,6 +239,7 @@ static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, const char *v
   return 0;
 }
 
+/* limit connection to the configured interface */
 int bind_irc_vhost(int family, int clientsocket)
 {
   const char *vhost;
@@ -305,6 +309,7 @@ static void my_get_upnp_data(const struct sockaddr *sa, socklen_t salen)
 }
 #endif /* USE_UPNP */
 
+/* find a free port and open a new socket for an incoming connection */
 int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, const char *vhost)
 {
   int rc;
@@ -372,6 +377,7 @@ int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket,
   return 0;
 }
 
+/* find a free port and open a new socket for an incoming connection */
 int irc_open_listen(ir_connection_t *con)
 {
   int rc;
@@ -386,6 +392,7 @@ int irc_open_listen(ir_connection_t *con)
   return 0;
 }
 
+/* returns the external IP address and port the bot as DCC argsments */
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
 {
   char *msg;
@@ -399,6 +406,7 @@ char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
   return msg;
 }
 
+/* the DNS resolution as a separate process */
 void child_resolver(void)
 {
 #if !defined(NO_GETADDRINFO)
@@ -505,6 +513,7 @@ void child_resolver(void)
   }
 }
 
+/* returns a text with the external IP address of the bot */
 const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, int net)
 {
   long ip;
@@ -519,6 +528,7 @@ const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, in
   return inet_ntop(sa->sa.sa_family, &(sa->sin6.sin6_addr), buffer, len);
 }
 
+/* complete the connection to the IRC server */
 int connectirc2(res_addrinfo_t *remote)
 {
   int retval;
@@ -573,11 +583,13 @@ int connectirc2(res_addrinfo_t *remote)
   return 0;
 }
 
+/* get the local vhost for the current network */
 char *get_local_vhost(void)
 {
   return (gnetwork->local_vhost) ? gnetwork->local_vhost : gdata.local_vhost;
 }
 
+/* get the configured nick of the bot for the current network */
 char *get_config_nick(void)
 {
   if (gnetwork == NULL)
@@ -586,6 +598,7 @@ char *get_config_nick(void)
   return (gnetwork->config_nick) ? gnetwork->config_nick : gdata.config_nick;
 }
 
+/* get the active nick of the bot for the current network */
 char *get_user_nick(void)
 {
   if (gnetwork == NULL)
@@ -594,6 +607,7 @@ char *get_user_nick(void)
   return (gnetwork->user_nick) ? gnetwork->user_nick : get_config_nick();
 }
 
+/* check if all networks are disconnected */
 int has_closed_servers(void)
 {
   int ss;
@@ -605,6 +619,7 @@ int has_closed_servers(void)
   return 1;
 }
 
+/* check if we have joined one or all channels of the current network */
 int has_joined_channels(int all)
 {
   int j;
@@ -625,6 +640,7 @@ int has_joined_channels(int all)
   return j;
 }
 
+/* update or create an entry in the ignore list */
 igninfo *get_ignore(const char *hostmask)
 {
   igninfo *ignore;
@@ -646,6 +662,7 @@ igninfo *get_ignore(const char *hostmask)
   return ignore;
 }
 
+/* count actions for ignore list */
 int check_ignore(const char *nick, const char *hostmask)
 {
   igninfo *ignore;
@@ -690,6 +707,7 @@ int check_ignore(const char *nick, const char *hostmask)
   return 1;
 }
 
+/* register active connections for select() */
 int irc_select(int highests)
 {
   int ss;
@@ -714,6 +732,7 @@ int irc_select(int highests)
   return highests;
 }
 
+/* try to identify at Nickserv */
 void identify_needed(int force)
 {
   char *pwd;
@@ -733,6 +752,7 @@ void identify_needed(int force)
           "IDENTIFY send to nickserv on %s.", gnetwork->name);
 }
 
+/* check line from server to see if the bots need to identify again */
 void identify_check(const char *line)
 {
   char *pwd;
