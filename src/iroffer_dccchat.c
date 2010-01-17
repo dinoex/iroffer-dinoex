@@ -29,9 +29,10 @@
 #include "upnp.h"
 #endif /* USE_UPNP */
 
-int setupdccchatout(const char *nick, const char *hostmask)
+int setupdccchatout(const char *nick, const char *hostmask, const char *token)
 {
   char *msg;
+  char *token2 = NULL;
   int rc;
   dccchat_t *chat;
   
@@ -53,9 +54,14 @@ int setupdccchatout(const char *nick, const char *hostmask)
   chat->hostmask = mystrdup(hostmask);
   
   msg = setup_dcc_local(&(chat->con.local));
-  privmsg_fast(nick, "\1DCC CHAT CHAT %s\1", msg);
+  if (token != NULL) {
+    privmsg_fast(nick, "\1DCC CHAT CHAT %s %s\1", msg, token);
+  } else {
+    privmsg_fast(nick, "\1DCC CHAT CHAT %s\1", msg);
+  }
   my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa), 0);
   chat->con.localaddr = mystrdup(msg);
+  mydelete(token2);
   mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT sent to %s on %s, waiting for connection on %s",
@@ -144,8 +150,6 @@ int setupdccchat(const char *nick,
   
   updatecontext();
   
-  chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
-  
   ip = getpart(line,7);
   port = getpart(line,8);
   
@@ -155,6 +159,31 @@ int setupdccchat(const char *nick,
       mydelete(port);
       return 1;
     }
+  
+  /* support passive dcc */
+  if (strcmp(port, "0") == 0)
+    {
+      char *token;
+
+      mydelete(ip);
+      mydelete(port);
+      if (gdata.passive_dcc_chat)
+        {
+          token = getpart(line, 9);
+          setupdccchatout(nick, hostmask, token);
+          mydelete(token);
+        }
+      else
+        {
+          notice(nick, "DCC passive Chat denied, use \"/MSG %s ADMIN password CHATME\" instead.", get_user_nick());
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                  "DCC CHAT attempt denied from %s on %s",
+                  hostmask, gnetwork->name);
+        }
+      return 1;
+    }
+  
+  chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
   
   bzero((char *) &(chat->con.remote), sizeof(chat->con.remote));
   

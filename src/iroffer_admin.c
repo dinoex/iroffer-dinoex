@@ -1624,7 +1624,7 @@ static void u_chatme(const userinput * const u) {
    
    u_respond(u,"Sending You A DCC Chat Request");
    
-   if (setupdccchatout(u->snick, u->hostmask))
+   if (setupdccchatout(u->snick, u->hostmask, NULL))
       u_respond(u,"[Failed to listen, try again]");
    
    

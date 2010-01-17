@@ -1713,6 +1713,7 @@ void reinit_config_vars(void)
   gdata.http_geoip = 0;
   gdata.no_find_trigger = 0;
   gdata.hide_list_stop = 0;
+  gdata.passive_dcc_chat = 0;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
