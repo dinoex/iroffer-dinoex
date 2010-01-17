@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.19:
 ----------------
 
+bugfix: mirc_dcc64
+  Der Bit sendete zuviele Bytes im Handshake beim Upload von Dateien auf den Bot.
+
 bugfix: need_level
   versions affected: 2.0 - 3.18
   Melde dem Benutzer welchen Status er benötigt.
