@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+bugfix: autoadd (reported by Loke_AF)
+  Bot can't handle filenames with '\', we skip them.
+
 bugfix: mirc_dcc64
   Bot sent to many bytes in handshake when user uploads a file to the bot.
 

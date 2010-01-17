@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.19:
 ----------------
 
+bugfix: autoadd
+  Bot hat Probleme wenn im Dateinamen ein '\' vorkommt,
+  jetzt werden diese ignoriert.
+
 bugfix: mirc_dcc64
   Der Bit sendete zuviele Bytes im Handshake beim Upload von Dateien auf den Bot.
 
