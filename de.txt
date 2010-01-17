@@ -2342,3 +2342,6 @@
 2619 "halfop"
 2620 "op"
 2621 "  Ignoring bad filename: %s"
+2622 "\1DCC CHAT CHAT %s %s\1"
+2623 "DCC passive Chat blockiert, benutze stattdessen \"/MSG %s ADMIN password CHATME\"."
+2624 "passive_dcc_chat"
