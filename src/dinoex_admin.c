@@ -1860,6 +1860,17 @@ void a_add(const userinput * const u)
   a_add2(u, NULL);
 }
 
+static int check_bad_filename(const char *filename)
+{
+  if (strchr(filename, '/') != NULL)
+    return 1;
+
+ if (strchr(filename, '\\') != NULL)
+    return 1;
+
+ return 0;
+}
+
 static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onlynew, const char *setgroup, const char *match)
 {
   userinput *u2;
@@ -1933,12 +1944,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       mydelete(tempstr);
       continue;
     }
-    if (strchr(f->d_name, '/') != NULL) {
-      a_respond(u, "  Ignoring bad filename: %s", tempstr);
-      mydelete(tempstr);
-      continue;
-    }
-    if (strchr(f->d_name, '\\') != NULL) {
+    if (check_bad_filename(f->d_name)) {
       a_respond(u, "  Ignoring bad filename: %s", tempstr);
       mydelete(tempstr);
       continue;
