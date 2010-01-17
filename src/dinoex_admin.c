@@ -1933,6 +1933,16 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       mydelete(tempstr);
       continue;
     }
+    if (strchr(f->d_name, '/') != NULL) {
+      a_respond(u, "  Ignoring bad filename: %s", tempstr);
+      mydelete(tempstr);
+      continue;
+    }
+    if (strchr(f->d_name, '\\') != NULL) {
+      a_respond(u, "  Ignoring bad filename: %s", tempstr);
+      mydelete(tempstr);
+      continue;
+    }
     if (file_uploading(f->d_name)) {
       a_respond(u, "  Ignoring upload file: %s", tempstr);
       mydelete(tempstr);

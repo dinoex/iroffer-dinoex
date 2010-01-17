@@ -596,6 +596,7 @@ super89
 
 Loke_AF
 	reporting timestamp problem with old statefiles.
+	reporting "AUTOADD" problem with '\'.
 
 Nouhime
 	reporting "http_search" bug.
