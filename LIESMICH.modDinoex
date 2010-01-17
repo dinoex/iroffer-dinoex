@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.19:
 ----------------
 
+309) passive_dcc_chat
+  Erlaube allen Admins auch passiven DCC Chat zu verwenden.
+  Default: Aus. Admins müssen den Chat vom Bot über den Befehl:
+  "/MSG bot ADMIN password CHATME" anfordern.
+
 bugfix: autoadd
   Bot hat Probleme wenn im Dateinamen ein '\' vorkommt,
   jetzt werden diese ignoriert.

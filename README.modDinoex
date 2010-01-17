@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+309) passive_dcc_chat (inspired by TheDeath)
+  Allow all admins to use passive DCC chat on the bot.
+  Default: off.
+  Admins must use "/MSG bot ADMIN password CHATME" instead.
+
 bugfix: autoadd (reported by Loke_AF)
   Bot can't handle filenames with '\', we skip them.
 

@@ -721,7 +721,7 @@ void write_statefile(void);
 void read_statefile(void);
 
 /* dccchat.c */
-int setupdccchatout(const char *nick, const char *hostmask);
+int setupdccchatout(const char *nick, const char *hostmask, const char *token);
 void setup_chat_banner(dccchat_t *chat);
 void setupdccchataccept(dccchat_t *chat);
 int setupdccchat(const char *nick,
