@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+310) XDCC REMOVE
+
+  new user command:
+  XDCC REMOVE <n>                    remove pack <n> from all Queues.
+
 309) passive_dcc_chat (inspired by TheDeath)
   Allow all admins to use passive DCC chat on the bot.
   Default: off.

@@ -869,8 +869,8 @@ void lost_nick(const char *nick)
           nick,
           gnetwork->name);
   stoplist(nick);
-  queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick);
-  queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick);
+  queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick, 0);
+  queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick, 0);
 }
 
 int is_unsave_directory(const char *dir)

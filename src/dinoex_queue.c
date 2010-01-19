@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_irc.h"
+#include "dinoex_misc.h"
 #include "dinoex_queue.h"
 
 /* change a nickname in a queue */
@@ -133,7 +134,7 @@ void queue_punishslowusers(irlist_t *list, int network, const char *nick)
 }
 
 /* remove all packs a user has because he send us XDCC REMOVE */
-int queue_xdcc_remove(irlist_t *list, int network, const char *nick)
+int queue_xdcc_remove(irlist_t *list, int network, const char *nick, int number)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
@@ -147,6 +148,14 @@ int queue_xdcc_remove(irlist_t *list, int network, const char *nick)
     if (strcasecmp(pq->nick, nick) != 0) {
       pq = irlist_get_next(pq);
       continue;
+    }
+
+    if (number > 0) {
+      /* remove only the matching pack */
+      if (number_of_pack(pq->xpack) != number) {
+        pq = irlist_get_next(pq);
+        continue;
+      }
     }
 
     backup = gnetwork;
