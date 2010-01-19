@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.19:
 ----------------
 
+310) XDCC REMOVE
+
+  new user command:
+  Neues User Kommando:
+  XDCC REMOVE <n>                    Entferne das Paket <n> aus allen Warteschlangen.
+
 309) passive_dcc_chat
   Erlaube allen Admins auch passiven DCC Chat zu verwenden.
   Default: Aus. Admins müssen den Chat vom Bot über den Befehl:

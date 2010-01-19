@@ -469,7 +469,7 @@ static void log_xdcc_request2(const char *msg, const char *arg, privmsginput *pi
 {
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC %s %s (%s %s on %s)",
-          msg, pi->nick, arg, pi->hostmask, gnetwork->name);
+          msg, arg, pi->nick, pi->hostmask, gnetwork->name);
 }
 
 static void send_cancel(const char *nick)
@@ -491,12 +491,12 @@ static void send_cancel(const char *nick)
   if (!k) notice(nick, "You don't have a transfer running");
 }
 
-static void send_remove(const char *nick)
+static void send_remove(const char *nick, int number)
 {
   int k = 0;
 
-  k += queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick);
-  k += queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick);
+  k += queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick, number);
+  k += queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick, number);
   if (!k) notice(nick, "You Don't Appear To Be In A Queue");
 }
 
@@ -572,7 +572,7 @@ static void command_xdcc(privmsginput *pi)
     return;
   }
   if (strcmp(pi->msg2, "QUEUE") == 0) {
-    log_xdcc_request("QUEUE", pi);
+    log_xdcc_request(pi->msg2, pi);
     notifyqueued_nick(pi->nick);
     return;
   }
@@ -583,25 +583,31 @@ static void command_xdcc(privmsginput *pi)
   }
 
   if (strcmp(pi->msg2, "CANCEL") == 0) {
-    log_xdcc_request("CANCEL", pi);
+    log_xdcc_request(pi->msg2, pi);
     send_cancel(pi->nick);
     return;
   }
 
   if (strcmp(pi->msg2, "REMOVE") == 0) {
-    log_xdcc_request("REMOVE", pi);
-    send_remove(pi->nick);
+    int number = 0;
+    if (pi->msg3) {
+      number = atoi(pi->msg3);
+      log_xdcc_request2(pi->msg2, pi->msg3, pi);
+    } else {
+      log_xdcc_request(pi->msg2, pi);
+    }
+    send_remove(pi->nick, number);
     return;
   }
 
   if (strcmp(pi->msg2, "OWNER") == 0) {
-    log_xdcc_request("OWNER", pi);
+    log_xdcc_request(pi->msg2, pi);
     send_owner(pi->nick);
     return;
   }
 
   if (strcmp(pi->msg2, "HELP") == 0) {
-    log_xdcc_request("HELP", pi);
+    log_xdcc_request(pi->msg2, pi);
     send_help(pi->nick);
     return;
   }
@@ -627,6 +633,7 @@ static void command_xdcc(privmsginput *pi)
     grouplist = gdata.restrictlist ? get_grouplist_access(pi->nick) : NULL;
     msg3e = getpart_eol(pi->line, 6);
     log_xdcc_request2("SEARCH", msg3e, pi);
+    log_xdcc_request2(pi->msg2, msg3e, pi);
     notice_slow(pi->nick, "Searching for \"%s\"...", msg3e);
     convert_spaces_to_match(msg3e);
     match = grep_to_fnmatch(msg3e);
