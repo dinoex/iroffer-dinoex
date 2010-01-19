@@ -234,7 +234,7 @@ ssize_t readserver_ssl(void *buf, size_t nbytes)
   if (gnetwork->session != NULL)
     return gnutls_record_recv(gnetwork->session, buf, nbytes);
 #endif /* USE_GNUTLS */
-  return read(gnetwork->ircserver, buf, nbytes);
+  return recv(gnetwork->ircserver, buf, nbytes, MSG_DONTWAIT);
 }
 
 /* write out buffer to server, use SSL if active */
@@ -248,7 +248,7 @@ ssize_t writeserver_ssl(const void *buf, size_t nbytes)
   if (gnetwork->session != NULL)
     return gnutls_record_send(gnetwork->session, buf, nbytes);
 #endif /* USE_GNUTLS */
-  return write(gnetwork->ircserver, buf, nbytes);
+  return send(gnetwork->ircserver, buf, nbytes, MSG_NOSIGNAL);
 }
 
 /* End of File */

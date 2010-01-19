@@ -151,7 +151,7 @@ void l_transfersome (upload * const l) {
          if ( time(NULL) > gdata.curtime + 30 )
            return;
          
-         howmuch  = read(l->con.clientsocket, gdata.sendbuff, BUFFERSIZE);
+         howmuch  = recv(l->con.clientsocket, gdata.sendbuff, BUFFERSIZE, MSG_NOSIGNAL);
          if (howmuch < 0)
            {
              if (errno == EAGAIN)
@@ -196,10 +196,10 @@ void l_transfersome (upload * const l) {
        if (l->mirc_dcc64)
          {
            g = htonl((unsigned long)((l->bytesgot >> 32) & 0xFFFFFFFFL));
-           write(l->con.clientsocket, (unsigned char*)&g, 4);
+           send(l->con.clientsocket, (unsigned char*)&g, 4, MSG_NOSIGNAL);
          }
        g = htonl((unsigned long)(l->bytesgot & 0xFFFFFFFF));
-       write(l->con.clientsocket, (unsigned char*)&g, 4);
+       send(l->con.clientsocket, (unsigned char*)&g, 4, MSG_NOSIGNAL);
      }
    
    if (l->bytesgot >= l->totalsize) {

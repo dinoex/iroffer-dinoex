@@ -335,7 +335,7 @@ void t_transfersome (transfer * const t)
           
           t->xpack->file_fd_location += howmuch;
           
-          howmuch2 = write(t->con.clientsocket, dataptr, howmuch);
+          howmuch2 = send(t->con.clientsocket, dataptr, howmuch, MSG_NOSIGNAL);
           
           if (howmuch2 < 0 && errno != EAGAIN)
             {
@@ -450,7 +450,7 @@ void t_transfersome (transfer * const t)
               goto done;
             }
           
-          howmuch2 = write(t->con.clientsocket, dataptr, howmuch);
+          howmuch2 = send(t->con.clientsocket, dataptr, howmuch, MSG_NOSIGNAL);
           
           if (howmuch2 < 0 && errno != EAGAIN)
             {
@@ -534,7 +534,7 @@ void t_readjunk (transfer * const t)
   
   updatecontext();
   
-  i = read(t->con.clientsocket, gdata.sendbuff, BUFFERSIZE);
+  i = recv(t->con.clientsocket, gdata.sendbuff, BUFFERSIZE, MSG_DONTWAIT);
   
   if (gdata.debug > 4)
     {
