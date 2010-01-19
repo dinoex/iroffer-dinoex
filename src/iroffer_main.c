@@ -728,7 +728,7 @@ static void mainloop (void) {
             if (FD_ISSET(chat->con.clientsocket, &gdata.readset))
               {
                   memset(tempbuffa, 0, INPUT_BUFFER_LENGTH);
-                  length = read(chat->con.clientsocket, &tempbuffa, INPUT_BUFFER_LENGTH);
+                  length = recv(chat->con.clientsocket, &tempbuffa, INPUT_BUFFER_LENGTH, MSG_DONTWAIT);
                   
                   if (length < 1)
                     {

@@ -636,7 +636,7 @@ static void h_write_header(http * const h, const char *header)
   strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
   len = snprintf(tempstr, maxtextlength, header, date);
   mydelete(date);
-  write(h->con.clientsocket, tempstr, len);
+  send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
   mydelete(tempstr);
 }
 
@@ -670,7 +670,7 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
     len = snprintf(tempstr, maxtextlength, http_header_status, http_status, date, last ? last : date, html_mime(mime), h->totalsize);
   mydelete(last);
   mydelete(date);
-  write(h->con.clientsocket, tempstr, len);
+  send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
   mydelete(tempstr);
   if (h->head)
     h->totalsize = 0;
@@ -1693,7 +1693,7 @@ static char *h_read_http(http * const h)
       break;
     if (!is_fd_readable(h->con.clientsocket))
       continue;
-    howmuch = read(h->con.clientsocket, gdata.sendbuff + h->bytesgot, howmuch2);
+    howmuch = recv(h->con.clientsocket, gdata.sendbuff + h->bytesgot, howmuch2, MSG_DONTWAIT);
     if (howmuch < 0) {
       h_closeconn(h, "Connection Lost", errno);
       return NULL;
@@ -1945,7 +1945,7 @@ static void h_send(http * const h)
       break;
 
     h->filepos += howmuch;
-    howmuch2 = write(h->con.clientsocket, data, howmuch);
+    howmuch2 = send(h->con.clientsocket, data, howmuch, MSG_NOSIGNAL);
     if (howmuch2 < 0 && errno != EAGAIN) {
       h_closeconn(h, "Connection Lost", errno);
       return;
