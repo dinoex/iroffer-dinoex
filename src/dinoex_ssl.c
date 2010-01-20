@@ -26,6 +26,8 @@
 #endif /* USE_OPENSSL */
 
 #ifdef USE_GNUTLS
+#include <gnutls/x509.h>
+
 int iroffer_protocol_priority[] = {
   GNUTLS_TLS1,
   GNUTLS_SSL3, 0 };
@@ -72,6 +74,9 @@ static void outerror_ssl(void)
 #ifdef USE_GNUTLS
 static void outerror_ssl(long err)
 {
+  if (err == 0)
+    return;
+
   outerror(OUTERROR_TYPE_WARN_LOUD, "SSL Error %ld:%s", err, gnutls_strerror(err));
 }
 #endif /* USE_GNUTLS */
@@ -92,7 +97,7 @@ void ssl_startup(void)
 
 #if defined(DEBUG)
   gnutls_global_set_log_function(tls_log_func);
-  gnutls_global_set_log_level(10);
+  gnutls_global_set_log_level(1);
 #endif /* DEBUG */
 
   ret = gnutls_certificate_allocate_credentials (&iroffer_cred);
@@ -112,6 +117,18 @@ void close_server(void)
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
   if (gnetwork->session != NULL) {
+    if (gnetwork->user_cred) {
+      gnutls_certificate_free_credentials(gnetwork->user_cred);
+      gnetwork->user_cred = 0;
+    }
+    if (gnetwork->nick_cert) {
+      gnutls_x509_crt_deinit(gnetwork->nick_cert);
+      gnetwork->nick_cert = 0;
+    }
+    if (gnetwork->nick_key) {
+      gnutls_x509_privkey_deinit(gnetwork->nick_key);
+      gnetwork->nick_key = 0;
+    }
     gnutls_bye(gnetwork->session, GNUTLS_SHUT_RDWR);
     gnutls_deinit(gnetwork->session);
     gnetwork->session = NULL;
@@ -123,6 +140,187 @@ void close_server(void)
   /* do not reconnect immediatly */
   gnetwork->lastservercontact = gdata.curtime + gdata.reconnect_delay;
 }
+
+static char *keyfile_present(const char *suffix)
+{
+  char *tempstr;
+  int fd;
+
+  tempstr = mystrsuffix(gnetwork->name,  suffix);
+  fd = open(tempstr, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (fd > 0) {
+    close(fd);
+    return tempstr;
+  }
+  mydelete(tempstr);
+  return NULL;
+}
+
+#ifdef USE_OPENSSL
+static int load_ssl_cert(const char *filename)
+{
+  SSL_CTX_use_certificate_file(gnetwork->ssl_ctx, filename, SSL_FILETYPE_PEM);
+  outerror_ssl();
+}
+
+static int load_ssl_key(const char *filename)
+{
+  SSL_CTX_use_PrivateKey_file(gnetwork->ssl_ctx, filename, SSL_FILETYPE_PEM);
+  outerror_ssl();
+}
+
+static void load_network_key(void)
+{
+  char *tempstr;
+
+  tempstr = keyfile_present(".pem");
+  if (tempstr != NULL) {
+    load_ssl_cert(tempstr);
+    load_ssl_key(tempstr);
+    mydelete(tempstr);
+    return;
+  }
+  tempstr = keyfile_present(".crt");
+  if (tempstr != NULL) {
+    load_ssl_cert(tempstr);
+    mydelete(tempstr);
+  }
+  tempstr = keyfile_present(".key");
+  if (tempstr != NULL) {
+    load_ssl_key(tempstr);
+    mydelete(tempstr);
+  }
+}
+#endif /* USE_OPENSSL */
+
+#ifdef USE_GNUTLS
+static void *keyfile_load(gnutls_datum_t *datum, const char *filename)
+{
+  struct stat st;
+  int fd;
+
+  fd = open(filename, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (fd < 0) {
+    return NULL;
+  }
+
+  if (fstat(fd, &st) < 0) {
+    close(fd);
+    return NULL;
+  }
+
+  datum->size = (unsigned int) st.st_size;
+  datum->data = mymalloc(datum->size);
+  read(fd, datum->data, datum->size);
+  close(fd);
+  return datum->data;
+}
+
+static int load_ssl_cert(gnutls_datum_t *datum)
+{
+  int ret;
+
+  gnutls_x509_crt_init(&gnetwork->nick_cert);
+  ret = gnutls_x509_crt_import(gnetwork->nick_cert, datum, GNUTLS_X509_FMT_PEM);
+  if (ret < 0) {
+    outerror_ssl(ret);
+    return 1;
+  }
+  return 0;
+}
+
+static int load_ssl_key(gnutls_datum_t *datum)
+{
+  int ret;
+
+  gnutls_x509_privkey_init(&gnetwork->nick_key);
+  ret = gnutls_x509_privkey_import(gnetwork->nick_key, datum, GNUTLS_X509_FMT_PEM);
+  if (ret < 0) {
+    outerror_ssl(ret);
+    return 1;
+  }
+  return 0;
+}
+
+static int load_network_key(void)
+{
+  char *tempstr;
+  void *buffer;
+  gnutls_datum_t datum;
+
+  tempstr = keyfile_present(".pem");
+  if (tempstr != NULL) {
+    buffer = keyfile_load(&datum, tempstr);
+    mydelete(tempstr);
+    if (buffer == NULL) {
+      return 0;
+    }
+
+    if (load_ssl_cert(&datum)) {
+      mydelete(buffer);
+      return 0;
+    }
+
+    if (load_ssl_key(&datum)) {
+      mydelete(buffer);
+      return 0;
+    }
+    mydelete(buffer);
+    return 1; /* loaded */
+  }
+  tempstr = keyfile_present(".crt");
+  if (tempstr != NULL) {
+    buffer = keyfile_load(&datum, tempstr);
+    mydelete(tempstr);
+    if (buffer == NULL) {
+      return 0;
+    }
+
+    if (load_ssl_cert(&datum)) {
+      mydelete(buffer);
+      return 0;
+    }
+
+    mydelete(buffer);
+    tempstr = keyfile_present(".key");
+    if (tempstr == NULL) {
+      return 0;
+    }
+    buffer = keyfile_load(&datum, tempstr);
+    mydelete(tempstr);
+    if (buffer == NULL) {
+      return 0;
+    }
+    if (load_ssl_key(&datum)) {
+      mydelete(buffer);
+      return 0;
+    }
+    mydelete(buffer);
+    return 1; /* loaded */
+  }
+  return 0;
+}
+
+static int cert_callback(gnutls_session_t session,
+                         const gnutls_datum_t * req_ca_rdn, int nreqs,
+                         const gnutls_pk_algorithm_t * sign_algos,
+                         int sign_algos_length, gnutls_retr_st * st)
+{
+  gnutls_certificate_type_t type;
+
+  type = gnutls_certificate_type_get(session);
+  if (type != GNUTLS_CRT_X509)
+    return -1;
+
+  st->type = type;
+  st->ncerts = 1;
+  st->cert.x509 = &(gnetwork->nick_cert);
+  st->key.x509 = gnetwork->nick_key;
+  st->deinit_all = 0;
+  return 0;
+}
+
+#endif /* USE_GNUTLS */
 
 /* setup an SSL connection if configured */
 int setup_ssl(void)
@@ -136,7 +334,7 @@ int setup_ssl(void)
     return 0;
 
   if (gnetwork->ssl_ctx == NULL) {
-    gnetwork->ssl_ctx = SSL_CTX_new( SSLv23_client_method() );
+    gnetwork->ssl_ctx = SSL_CTX_new( SSLv3_client_method() );
     if (gnetwork->ssl_ctx == NULL) {
       outerror_ssl();
       outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Create SSL context");
@@ -145,6 +343,9 @@ int setup_ssl(void)
     }
   }
   /* SSL_CTX_free() ist not called */
+
+  /* load key per network */
+  load_network_key();
 
   gnetwork->ssl = SSL_new(gnetwork->ssl_ctx);
   rc = SSL_set_fd(gnetwork->ssl, gnetwork->ircserver);
@@ -206,7 +407,20 @@ int setup_ssl(void)
     close_server();
     return 1;
   }
-  ret = gnutls_credentials_set(gnetwork->session, GNUTLS_CRD_CERTIFICATE, iroffer_cred);
+
+  /* load key per network */
+  if (load_network_key()) {
+    ret = gnutls_certificate_allocate_credentials (&(gnetwork->user_cred));
+    if (ret < 0) {
+      outerror_ssl(ret);
+      return 0;
+    }
+    gnutls_certificate_client_set_retrieve_function(gnetwork->user_cred, cert_callback);
+    ret = gnutls_credentials_set(gnetwork->session, GNUTLS_CRD_CERTIFICATE, gnetwork->user_cred);
+  } else {
+    gnetwork->user_cred = 0;
+    ret = gnutls_credentials_set(gnetwork->session, GNUTLS_CRD_CERTIFICATE, iroffer_cred);
+  }
   if (ret < 0) {
     outerror_ssl(ret);
     close_server();
