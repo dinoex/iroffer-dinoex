@@ -2345,3 +2345,6 @@
 2622 "\1DCC CHAT CHAT %s %s\1"
 2623 "DCC passive Chat blockiert, benutze stattdessen \"/MSG %s ADMIN password CHATME\"."
 2624 "passive_dcc_chat"
+2625 ".pem"
+2626 ".crt"
+2627 ".key"

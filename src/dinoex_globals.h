@@ -157,6 +157,9 @@ typedef struct {
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
   gnutls_session_t session;
+  gnutls_certificate_credentials_t user_cred;
+  gnutls_x509_crt_t nick_cert;
+  gnutls_x509_privkey_t nick_key;
 #endif /* USE_GNUTLS */
   prefix_t prefixes[MAX_PREFIX];
   char chanmodes[MAX_CHANMODES];

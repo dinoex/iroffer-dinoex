@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.19:
 ----------------
 
+311) Autentifizierung mit SSL + CertFP
+  Autentifizierung mit einem selbst erzeugten SSL Zertifikat.
+
 310) XDCC REMOVE
 
   new user command:
