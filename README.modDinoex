@@ -6,9 +6,9 @@ With Version 3.19:
 311) Identifying Using SSL + CertFP (inspired by Lamune)
   Supports Identifying via an self signed SSL certificate.
   The bot looks for the file "<networkname>.pem" which
-  must hold cert and key. If this is not found it looks
+  must hold cert and key. If this file is not found it looks
   for "<networkname>.crt" and "<networkname>.key".
-  The found ceritificate is passed to the server on connect.
+  The found certificate is passed to the server on connect.
 
 310) XDCC REMOVE
 
