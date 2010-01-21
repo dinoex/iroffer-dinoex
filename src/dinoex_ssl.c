@@ -157,13 +157,13 @@ static char *keyfile_present(const char *suffix)
 }
 
 #ifdef USE_OPENSSL
-static int load_ssl_cert(const char *filename)
+static void load_ssl_cert(const char *filename)
 {
   SSL_CTX_use_certificate_file(gnetwork->ssl_ctx, filename, SSL_FILETYPE_PEM);
   outerror_ssl();
 }
 
-static int load_ssl_key(const char *filename)
+static void load_ssl_key(const char *filename)
 {
   SSL_CTX_use_PrivateKey_file(gnetwork->ssl_ctx, filename, SSL_FILETYPE_PEM);
   outerror_ssl();
