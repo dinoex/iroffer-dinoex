@@ -3,8 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.19:
 ----------------
 
-311) Autentifizierung mit SSL + CertFP
-  Autentifizierung mit einem selbst erzeugten SSL Zertifikat.
+311) Authentifizierung mit SSL + CertFP
+  Authentifizierung mit einem selbst erzeugten SSL Zertifikat.
+  Der Bot sucht nach der Datei "<networkname>.pem", in der
+  das Zertifikat und der Schlüssel sein müssen. Wenn diese
+  Datei nicht existiert, sucht er nach den Dateien
+   "<networkname>.crt" "<networkname>.key".
+  Das Zertifikat wird beim Verbindem mit dem Server übertragen.
 
 310) XDCC REMOVE
 
