@@ -399,6 +399,7 @@ Lamune
 	reporting "FILEDEL" bug
 	option "slow_privmsg" 
 	admin command "NOANNOUNCE"
+	suggesting  SSL + CertFP
 
 DevelDoll
 	report transferlimits to user
