@@ -106,8 +106,6 @@ Long Term Features:
   1282  macros in config
   1286  show one level dir in description
   1293  count transfers als queued
-  1294  build-in weblist defaulting to html
-  1314  create color description with ruby_script
   1315  Web-Configurator
   1334  trigger !lag, !packs
   1337  MOVEDIR
@@ -126,7 +124,6 @@ Long Term Features:
   1385  !NEWDOWNLOAD trigger
   1391  check md5 hashes against external file
   1400  add hosts/users to a list that can skip the queue if it is full
-  1405  autocolor packs
   1406  admin command for Weblist ON | OFF
   1416  XDCC BATCH group *.avi
   1417  XDCC BATCH in weblist
@@ -135,6 +132,9 @@ Long Term Features:
   1422  don't log IP-adresses.
   1427  Natural sort order
   1431  CHCOLOR for background
+  1433  Turbo DCC
+  1434  transfer info for a upload
+  1336  uploaddir for each uploadhost
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

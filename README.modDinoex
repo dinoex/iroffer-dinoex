@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
-312) http_index
+312) http_index (inspired by Eomyn)
   Defines the page to show when no filename is given in the URL.
   Default: xdcclistfile
   For Weblist set: http_index /?
@@ -93,7 +93,7 @@ bugfix: statefile
   Set version 2 in the "statefile".
   Fix error messages while parsing.
 
-302) CHCOLOR
+302) CHCOLOR (inspred by CreeW)
 
   new admin commands:
   CHCOLOR <n> <m> <x>                Set the of pack <n> to <m> to color <x>
