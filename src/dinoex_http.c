@@ -1784,7 +1784,6 @@ static void h_parse(http * const h, char *body)
     }
     mydelete(h->url);
     h->url = mystrdup(gdata.http_index);
-    
   }
 
   if (strncasecmp(h->url, "/?", 2) == 0) {
