@@ -169,7 +169,32 @@ if $OPT_DEBUG; then
 echo "Configuring for debugging."
 echo "#define DEBUG" >> src/iroffer_config.h
 DEBUG="-g"
-DEBUGFLAGS="
+case "${cctype}" in
+*cparser*)
+	DEBUGFLAGS="
+-Waggregate-return
+-Wchar-subscripts
+-Wcomment
+-Wimplicit-int
+-Wmain
+-Wnested-externs
+-Wnonnull
+-Wparentheses
+-Wpacked
+-Wredundant-decls
+-Wreturn-type
+-O 
+-Wunknown-pragmas
+-Wunused
+-Wunused-function
+-Wunused-label
+-Wunused-parameter
+-Wunused-value
+-Wunused-variable 
+"
+	;;
+*)
+	DEBUGFLAGS="
 -Waggregate-return
 -Wchar-subscripts
 -Wcomment
@@ -178,10 +203,10 @@ DEBUGFLAGS="
 -Wimplicit-int
 -Winline
 -Wmissing-braces
+-Wmissing-format-attribute
 -Wmain
 -Wnested-externs
 -Wnonnull
--Wmissing-format-attribute
 -Wparentheses
 -Wpacked
 -Wredundant-decls
@@ -199,13 +224,31 @@ DEBUGFLAGS="
 -Wunused-value
 -Wunused-variable 
 "
+	;;
+esac
 else
 DEBUG="-O2"
 fi
 
 if $OPT_WARN; then
 echo "Configuring for extra warnings."
-WARNS="-Wbad-function-cast
+case "${cctype}" in
+*cparser*)
+	WARNS="-Wcast-qual
+-Wformat
+-Wimplicit
+-Wmissing-declarations
+-Wmissing-prototypes
+-Wmissing-noreturn
+-Wpointer-arith
+-Wreturn-type
+-Wshadow
+-Wsign-compare
+-Wstrict-prototypes
+-Wwrite-strings"
+	;;
+*)
+	WARNS="-Wbad-function-cast
 -Wcast-qual
 -Wcast-align
 -Wformat
@@ -219,11 +262,26 @@ WARNS="-Wbad-function-cast
 -Wsign-compare
 -Wstrict-prototypes
 -Wwrite-strings"
+	;;
+esac
 fi
 
 if $OPT_WARN2; then
 echo "Configuring for pedantic warnings."
-WARNS2="
+case "${cctype}" in
+*cparser*)
+	WARNS2="
+-Wconversion
+-Wfloat-equal
+-Wpadded
+-Wswitch-default
+-Wswitch-enum
+-Wundef
+-Wunreachable-code
+"
+        ;;
+*)
+	WARNS2="
 -Wconversion
 -Wformat-nonliteral
 -Wformat=2
@@ -235,6 +293,8 @@ WARNS2="
 -Wundef
 -Wunreachable-code
 "
+	;;
+esac
 fi
 
 if $OPT_PROF; then
@@ -403,7 +463,6 @@ fi
 
 echo -n "Seeing how to define a 16 bit integer... "
 echo "
-#define GEX 
 #include <stdlib.h>
 #include <stdio.h>
 int
@@ -431,7 +490,6 @@ fi
 
 echo -n "Seeing how to define a 32 bit integer... "
 echo "
-#define GEX 
 #include <stdlib.h>
 #include <stdio.h>
 int
@@ -466,7 +524,6 @@ fi
 
 echo -n "Seeing how to define a 64 bit integer... "
 echo "
-#define GEX 
 #include <stdlib.h>
 #include <stdio.h>
 int
@@ -506,7 +563,6 @@ fi
 
 echo -n "Seeing if compiling with standard #include's works... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -527,7 +583,6 @@ fi
 
 echo -n "Seeing how large FD_SETSIZE is... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -552,7 +607,6 @@ fi
 
 echo -n "Determining endianness... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -580,7 +634,6 @@ fi
 
 echo -n "Seeing if large file support works... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -607,7 +660,6 @@ fi
 
 echo -n "Determing the signedness of 'addrlen'... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -637,7 +689,6 @@ fi
 
 echo -n "Seeing how to display 64bit using printf... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -672,7 +723,6 @@ fi
 
 echo -n "Checking for snprintf()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -692,7 +742,6 @@ fi
 
 echo -n "Checking for strcasecmp()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -712,7 +761,6 @@ fi
 
 echo -n "Checking for strcasestr()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -733,7 +781,6 @@ fi
 
 echo -n "Checking for strsignal()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -753,7 +800,6 @@ fi
 
 echo -n "Seeing if 'sys/mman.h' exists... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -773,7 +819,6 @@ fi
 
 echo -n "Seeing if 'sys/sendfile.h' exists... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -793,7 +838,6 @@ fi
 
 echo -n "Seeing if 'sys/vfs.h' exists... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -813,7 +857,6 @@ fi
 
 echo -n "Seeing if 'sys/statfs.h' exists... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -833,7 +876,6 @@ fi
 
 echo -n "Seeing if 'sys/param.h' exists... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -853,7 +895,6 @@ fi
 
 echo -n "Seeing if 'sys/mount.h' exists... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -873,7 +914,6 @@ fi
 
 echo -n "Seeing if 'sys/statvfs.h' exists... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -893,7 +933,6 @@ fi
 
 echo -n "Checking for statvfs()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -913,7 +952,6 @@ fi
 
 echo -n "Checking for statfs()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -933,7 +971,6 @@ fi
 
 echo -n "Seeing if 'crypt.h' is needed... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -976,7 +1013,6 @@ fi
 
 echo -n "Seeing if crypt() works as expected... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1018,7 +1054,6 @@ fi
 
 echo -n "Checking for chroot()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1044,7 +1079,6 @@ fi
 
 echo -n "Seeing if NSS libraries exist (for chroot)... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1066,7 +1100,6 @@ fi
 
 echo -n "Checking for setuid()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1086,7 +1119,6 @@ fi
 
 echo -n "Checking for getgrouplist()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1107,7 +1139,6 @@ fi
 if [ "x$ostype" = "xLinux" ]; then
 echo -n "Checking for Linux-style sendfile()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1138,7 +1169,6 @@ fi
 if [ "x$ostype" = "xFreeBSD" ]; then
 echo -n "Checking for FreeBSD-style sendfile()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1171,7 +1201,6 @@ fi
 
 echo -n "Checking for mmap()/munmap()... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1197,7 +1226,6 @@ fi
 
 echo -n "Checking for name of fd limit... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1217,7 +1245,6 @@ if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $L
 echo "RLIMIT_NOFILE"
 else
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1244,7 +1271,6 @@ fi
 
 echo -n "Checking for siginfo_t/sa_sigaction... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1264,7 +1290,6 @@ fi
 
 echo -n "Checking for si_code values... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1308,7 +1333,6 @@ fi
 
 echo -n "Checking for wait status values... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1339,7 +1363,6 @@ fi
 
 echo -n "Seeing if TOS can be set for IP sockets... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1364,7 +1387,6 @@ fi
 
 echo -n "Checking for getaddrinfo ... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1393,7 +1415,6 @@ fi
 
 echo -n "Checking for gethostbyname error values... "
 echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1430,7 +1451,6 @@ fi
 if $OPT_CURL; then
 	echo -n "Seeing if libcurl libraries exist (for the FETCH-Command)... "
 	echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1465,7 +1485,6 @@ fi
 if $OPT_SSL; then
 	echo -n "Seeing if OpenSSL libraries exist... "
 	echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1497,7 +1516,6 @@ fi
 if $OPT_TLS; then
 	echo -n "Seeing if GNU TLS libraries exist... "
 	echo "
-#define GEX 
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"

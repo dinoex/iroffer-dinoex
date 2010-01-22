@@ -17,10 +17,6 @@
 #if !defined _IROFFER_GLOBALS
 #define _IROFFER_GLOBALS
 
-#if !defined GEX
-#define GEX extern
-#endif
-
 #include "dinoex_globals.h"
 
 typedef struct
@@ -356,7 +352,7 @@ int dummy;
 } gdata_t;
 
 
-GEX gdata_t gdata;
+extern gdata_t gdata;
 
 
 #endif

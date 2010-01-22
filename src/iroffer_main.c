@@ -15,7 +15,6 @@
  */
 
 /* include the headers */
-#define GEX 
 #include "iroffer_config.h"
 #include "iroffer_defines.h"
 #include "iroffer_headers.h"

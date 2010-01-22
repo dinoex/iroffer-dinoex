@@ -38,6 +38,9 @@
 #define GET_NEXT_DATA(x)	{ argv++; argc--; x = *argv; \
 				if (x == NULL) usage(); }
 
+gnetwork_t *gnetwork;
+gdata_t gdata;
+
 static const char *ir_basename;
 
 static void
