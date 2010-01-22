@@ -1777,14 +1777,25 @@ static void h_parse(http * const h, char *body)
   updatecontext();
 
   if (strcmp(h->url, "/") == 0) {
-    /* send standtus */
-    h_readfile(h, gdata.xdcclistfile);
-    return;
+    if (gdata.http_index == NULL) {
+      /* send text */
+      h_readfile(h, gdata.xdcclistfile);
+      return;
+    }
+    mydelete(h->url);
+    h->url = mystrdup(gdata.http_index);
+    
   }
 
   if (strncasecmp(h->url, "/?", 2) == 0) {
-    /* send standtus */
+    /* send html */
     h_webliste(h, body);
+    return;
+  }
+
+  if (strcmp(h->url, "/txt") == 0) {
+    /* send text */
+    h_readfile(h, gdata.xdcclistfile);
     return;
   }
 

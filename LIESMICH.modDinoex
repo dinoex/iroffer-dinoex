@@ -3,6 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.19:
 ----------------
 
+312) http_index
+  Definiert die Seite, die angezeigt wird wenn kein Dateiname in der
+  URL angegebn wird.
+  Default: xdcclistfile
+  Webliste mit: http_index /?
+  Statische Seite in htdocs mit: http_index /index.html
+
 311) Authentifizierung mit SSL + CertFP
   Authentifizierung mit einem selbst erzeugten SSL Zertifikat.
   Der Bot sucht nach der Datei "<networkname>.pem", in der
