@@ -197,6 +197,6 @@ typedef struct {
   ir_sockaddr_union_t myip;
 } gnetwork_t;
 
-GEX gnetwork_t *gnetwork;
+extern gnetwork_t *gnetwork;
 
 /* EOF */
