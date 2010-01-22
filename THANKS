@@ -536,6 +536,7 @@ satmd
 
 CreeW
 	italian translation
+	suggesting "CHCOLOR"
 
 [M]-V
 	reporting ADDDIR spaces bug
@@ -602,4 +603,7 @@ Loke_AF
 
 Nouhime
 	reporting "http_search" bug.
+
+Eomyn
+	suggesting "http_index"
 
