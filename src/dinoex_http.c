@@ -1776,15 +1776,15 @@ static void h_parse(http * const h, char *body)
 
   updatecontext();
 
-  if (strncasecmp(h->url, "/?", 2) == 0) {
-    /* send standtus */
-    h_webliste(h, body);
-    return;
-  }
-
   if (strcmp(h->url, "/") == 0) {
     /* send standtus */
     h_readfile(h, gdata.xdcclistfile);
+    return;
+  }
+
+  if (strncasecmp(h->url, "/?", 2) == 0) {
+    /* send standtus */
+    h_webliste(h, body);
     return;
   }
 
