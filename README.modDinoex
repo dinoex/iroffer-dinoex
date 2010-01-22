@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.19:
 ------------------
 
+312) http_index
+  Defines the page to show when no filename is given in the URL.
+  Default: xdcclistfile
+  For Weblist set: http_index /?
+  For your own static page in htdocs set: http_index /index.html
+
 311) Identifying Using SSL + CertFP (inspired by Lamune)
   Supports Identifying via an self signed SSL certificate.
   The bot looks for the file "<networkname>.pem" which

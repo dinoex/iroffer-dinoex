@@ -1736,6 +1736,7 @@ void reinit_config_vars(void)
   mydelete(gdata.ruby_script);
   mydelete(gdata.charset);
   mydelete(gdata.http_admin_dir);
+  mydelete(gdata.http_index);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;

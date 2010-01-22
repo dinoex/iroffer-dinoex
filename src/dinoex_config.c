@@ -468,6 +468,7 @@ static config_string_typ config_parse_string[] = {
 {"http_date",               &gdata.http_date,               0 },
 #ifndef WITHOUT_HTTP
 {"http_dir",                &gdata.http_dir,                1 },
+{"http_index",              &gdata.http_index,              0 },
 #endif /* WITHOUT_HTTP */
 {"local_vhost",             &gdata.local_vhost,             0 },
 {"logfile",                 &gdata.logfile,                 1 },
