@@ -99,7 +99,7 @@ bugfix: statefile
   Neue Admin Kommandos:
   CHCOLOR <n> <m> <x>                Setze für das Pack <n> bis <m> die Farbe <x>
   CHCOLOR <n> <x>                    Setze für das Pack <n> die Farbe <x>
-  CHCOLOR <n>                        Lösche die Frabe für das Pack <n>
+  CHCOLOR <n>                        Lösche die Farbe für das Pack <n>
 
 Ab Version 3.17:
 ----------------
