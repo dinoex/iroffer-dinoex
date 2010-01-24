@@ -1048,7 +1048,7 @@ char *get_grouplist_access(const char *nick)
       if (strcasecmp(member->nick, nick) != 0)
         continue;
 
-      if (check_level( member->prefixes[0] ) != 0)
+      if (check_level( member->prefixes[0] ) == 0)
         continue;
 
       if (!ch->rgroup) {
