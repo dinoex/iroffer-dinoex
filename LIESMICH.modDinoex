@@ -1,5 +1,12 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+Ab Version 3.20:
+----------------
+
+bugfix: restricsend
+  versions affected: 3.20
+  Benutzer werden mit "group access restricted" abgewiesen.
+
 Ab Version 3.19:
 ----------------
 
