@@ -4,7 +4,7 @@ Ab Version 3.20:
 ----------------
 
 bugfix: restricsend
-  versions affected: 3.20
+  versions affected: 3.19
   Benutzer werden mit "group access restricted" abgewiesen.
 
 Ab Version 3.19:
