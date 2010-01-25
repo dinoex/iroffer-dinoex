@@ -4,7 +4,7 @@ With Version 3.20:
 ------------------
 
 bugfix: restricsend
-  versions affected: 3.18
+  versions affected: 3.19
   Users gets "group access restricted" even if they are in the right channel.
 
 With Version 3.19:
