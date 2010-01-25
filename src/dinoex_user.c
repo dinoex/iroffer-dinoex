@@ -349,7 +349,8 @@ static int send_batch_search(const char* nick, const char* hostname, const char*
   if (end == NULL)
     return found;
   first = atoi(what);
-  last = atoi(++end);
+  if (*(++end) == '#') end ++;
+  last = atoi(end);
   for (num = first; num <= last; num ++) {
     found ++;
     if (sendxdccfile(nick, hostname, hostmask, num, NULL, pwd))
@@ -376,6 +377,30 @@ static void send_batch(const char* nick, const char* hostname, const char* hostm
   notice(nick, "** Invalid Pack Number, Try Again");
 }
 
+static int find_pack_crc(const char* crc)
+{
+  xdcc *xd;
+  char crctext[32];
+  int num;
+  int max;
+
+  max = strlen(crc);
+  max = min2(max, 8);
+  num = 0;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    num ++;
+    if (xd->has_crc32 == 0)
+      continue;
+
+    snprintf(crctext, sizeof(crctext), "%.8lX", xd->crc32);
+    if (strncmp(crctext, crc, max) == 0)
+      return num;
+  }
+  return 0;
+}
+
 static int packnumtonum(const char *a)
 {
   autoqueue_t *aq;
@@ -383,6 +408,10 @@ static int packnumtonum(const char *a)
 
   if (!a) return 0;
 
+  if (a[0] == '[') {
+    a++;
+    return find_pack_crc(a);
+  }
   if (a[0] == '#') {
     a++;
     return atoi(a);
