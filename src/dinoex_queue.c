@@ -296,7 +296,7 @@ void check_idle_queue(void)
   if (gdata.holdqueue)
     return;
 
-  if (gdata.restrictlist && (has_joined_channels(0) == 0))
+  if (gdata.restrictsend && (has_joined_channels(0) == 0))
     return;
 
   if (irlist_size(&gdata.idlequeue) == 0)
