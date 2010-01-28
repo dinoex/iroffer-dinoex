@@ -71,6 +71,7 @@ Short Term Features:
   1379  different packlists for different groups
   1380  restrictsend on a per-network basis
   1394  pack size included in the output of announce
+  1438  more announce types for plist
 
 Long Term Features:
   1013  notify adminnick when autoadd
