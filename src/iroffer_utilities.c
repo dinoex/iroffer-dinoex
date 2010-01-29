@@ -1053,6 +1053,7 @@ void dumpgdata(void)
       gdata_print_int(networks[ss].nocon);
       gdata_print_int(networks[ss].servertime);
       gdata_print_number_cast("%d", networks[ss].serverstatus, int);
+      gdata_print_number_cast("%d", networks[ss].botstatus, int);
       gdata_print_long(networks[ss].connecttime);
       gdata_print_long(networks[ss].lastservercontact);
       gdata_print_long(networks[ss].lastnotify);

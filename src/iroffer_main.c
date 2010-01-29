@@ -487,6 +487,13 @@ static void mainloop (void) {
                     "Server Connection to %s Established, Logging In",  gnetwork->name);
             gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
             gnetwork->connecttime = gdata.curtime;
+            gnetwork->botstatus = BOTSTATUS_LOGIN;
+            ch = irlist_get_head(&(gnetwork->channels));
+            if (ch == NULL)
+              {
+                gnetwork->botstatus = BOTSTATUS_JOINED;
+                start_sends();
+              }
             FD_CLR(gnetwork->ircserver, &gdata.writeset);
             if (set_socket_nonblocking(gnetwork->ircserver, 0) < 0 )
 	      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
@@ -1948,6 +1955,8 @@ static void parseline(char *line) {
                     {
                       writeserver(WRITESERVER_NOW, "PRIVMSG %s :%s", ch->name, ch->joinmsg);
                     }
+                  gnetwork->botstatus = BOTSTATUS_JOINED;
+                  start_sends();
                   break;
                 }
               ch = irlist_get_next(ch);
@@ -1959,25 +1968,6 @@ static void parseline(char *line) {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                   "%s is not a known channel on %s!",
                   part3a, gnetwork->name);
-            }
-
-          /* we have joined all channels => restart transfers if needed */
-          if (gdata.startingup && (has_joined_channels(0) > 0))
-            {
-              for (i=0; i<gdata.queuesize; i++)
-                {
-                  check_idle_queue();
-                }
-              for (i=0; i<gdata.slotsmax; i++)
-                {
-                  if (!gdata.exiting &&
-                      irlist_size(&gdata.mainqueue) &&
-                      (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax)))
-                    {
-                      send_from_queue(0, 0, NULL);
-                    }
-                }
-              gdata.startingup = 0; /* let others in */
             }
         }
       else
@@ -2371,8 +2361,7 @@ int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, i
        mydelete(tempstr);
        rc = 0;
      }
-   else if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) || (gdata.startingup) ||
-            (gdata.restrictsend && (has_joined_channels(0) == 0)) ||
+   else if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) || (gnetwork->botstatus != BOTSTATUS_JOINED) ||
             (!man &&
              (((xd->st_size < gdata.smallfilebypass) && (gdata.slotsmax >= MAXTRANS)) ||
               ((xd->st_size >= gdata.smallfilebypass) && (gdata.slotsmax-irlist_size(&gdata.trans) <= 0)))))
@@ -2497,7 +2486,7 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
       }
    
    mainslot = (!man && (irlist_size(&gdata.mainqueue) >= gdata.queuesize));
-   if (gdata.startingup || mainslot) {
+   if (gdata.holdqueue || (gnetwork->botstatus != BOTSTATUS_JOINED) || mainslot) {
       idle = addtoidlequeue(tempstr, nick, hostname, tempx, pack, inq2);
       if (idle != NULL)
         return tempstr;

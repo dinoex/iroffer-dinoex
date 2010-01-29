@@ -315,8 +315,8 @@ void send_from_queue(int type, int pos, char *lastnick)
         if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
           continue;
 
-        if (gdata.restrictsend && (has_joined_channels(0) == 0))
-          return;
+        if (gdata.networks[pq->net].botstatus != BOTSTATUS_JOINED)
+          continue;
 
         /* timeout for restart must be less then Transfer Timeout 180s */
         if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
@@ -425,9 +425,6 @@ void check_idle_queue(void)
   if (gdata.holdqueue)
     return;
 
-  if (gdata.restrictsend && (has_joined_channels(0) == 0))
-    return;
-
   if (irlist_size(&gdata.idlequeue) == 0)
     return;
 
@@ -440,6 +437,9 @@ void check_idle_queue(void)
          pq;
          pq = irlist_get_next(pq)) {
       if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
+        continue;
+
+      if (gdata.networks[pq->net].botstatus != BOTSTATUS_JOINED)
         continue;
 
       /* timeout for restart must be less then Transfer Timeout 180s */
@@ -485,6 +485,30 @@ void check_idle_queue(void)
   if (irlist_size(&gdata.mainqueue) &&
       (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax))) {
     send_from_queue(0, 0, NULL);
+  }
+}
+
+/* fill mainqueue with data from idle queue on start */
+void start_main_queue(void)
+{
+  int i;
+
+  for (i=0; i<gdata.queuesize; i++) {
+    check_idle_queue();
+  }
+}
+
+/* start sendding the queued packs */
+void start_sends(void)
+{
+  int i;
+
+  for (i=0; i<gdata.slotsmax; i++) {
+    if (!gdata.exiting &&
+        irlist_size(&gdata.mainqueue) &&
+        (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax))) {
+      send_from_queue(0, 0, NULL);
+    }
   }
 }
 
