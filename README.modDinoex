@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+bugfix: -plist (reported by Henrik Krohns)
+  Skip plist when announce queue is already full.
+
 bugfix: restrictsend (reported by torque)
   Bot did not start sending packs when restrictsend is off and no channel configured.
 
