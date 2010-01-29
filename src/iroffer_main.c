@@ -2065,9 +2065,12 @@ static void parseline(char *line) {
        if (!strcmp(caps(nick), gnetwork->caps_nick))
 	 {
 	   /* we quit? */
-           gnetwork->serverstatus = SERVERSTATUS_EXIT;
            outerror(OUTERROR_TYPE_WARN_LOUD,
                     "Forced quit on %s: %s", gnetwork->name, line);
+           close_server();
+           clean_send_buffers();
+           /* do not reconnect */
+           gnetwork->serverstatus = SERVERSTATUS_EXIT;
 	 }
        else
 	 {
