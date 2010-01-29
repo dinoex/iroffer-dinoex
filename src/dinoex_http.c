@@ -1060,11 +1060,7 @@ static void h_html_search(http * const h)
 static void h_html_main(http * const h)
 {
   xdcc *xd;
-#ifdef WITH_LINKED_DOUBLE
-  irlist_t grplist = {0, 0, 0};
-#else /* WITH_LINKED_DOUBLE */
   irlist_t grplist = {0, 0};
-#endif /* WITH_LINKED_DOUBLE */
   char *tempstr;
   char *tlink;
   char *savegroup;
