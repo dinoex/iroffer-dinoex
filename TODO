@@ -72,6 +72,7 @@ Short Term Features:
   1380  restrictsend on a per-network basis
   1394  pack size included in the output of announce
   1438  more announce types for plist
+  1441  extra queue for xdcc list output
 
 Long Term Features:
   1013  notify adminnick when autoadd

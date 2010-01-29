@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+bugfix: -plist
+  Ignoriere plist wenn sehr viele Announces noch nicht gesendet sind.
+
 bugfix: restrictsend
   Der Bot sendete keine Pakete mit "restrictsend off" und wenn kein Channel konfiguriert ist.
 

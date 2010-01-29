@@ -1217,6 +1217,7 @@ static void mainloop (void) {
           changemin &&
           irlist_size(&gdata.xdccs) &&
           !gdata.transferlimits_over &&
+          (irlist_size(&(gnetwork->serverq_channel)) < irlist_size(&gdata.xdccs)) &&
           (!gdata.queuesize || irlist_size(&gdata.mainqueue) < gdata.queuesize) &&
           (gdata.nolisting <= gdata.curtime))
         {

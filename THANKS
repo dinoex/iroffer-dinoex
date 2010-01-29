@@ -612,6 +612,7 @@ Eomyn
 
 Henrik Krohns
 	reporting "QUIT" bug.
+	reporting "-plist" bug.
 
 torque
 	reporting "restrictsend" bug.
