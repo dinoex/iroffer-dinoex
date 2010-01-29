@@ -3,7 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
-extend debug and log information.
+bugfix: restrictsend (reported by torque)
+  Bot did not start sending packs when restrictsend is off and no channel configured.
+
+bugfix: QUIT (reported by Henrik Krohns)
+  Print a warning and close the conenction when the server sends QUIT to the bot.
 
 With Version 3.20:
 ------------------
