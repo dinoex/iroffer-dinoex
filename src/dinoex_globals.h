@@ -117,6 +117,11 @@ typedef enum {
   SERVERSTATUS_EXIT,
 } serverstatus_e;
 
+typedef enum {
+  BOTSTATUS_LOGIN,
+  BOTSTATUS_JOINED,
+} botstatus_e;
+
 typedef struct {
   connectionmethod_t connectionmethod;
   irlist_t proxyinfo;
@@ -139,6 +144,7 @@ typedef struct {
 
   serv_resolv_t serv_resolv;
   serverstatus_e serverstatus;
+  botstatus_e botstatus;
 
   long connecttime;
   long lastservercontact;

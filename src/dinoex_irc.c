@@ -619,27 +619,6 @@ int has_closed_servers(void)
   return 1;
 }
 
-/* check if we have joined one or all channels of the current network */
-int has_joined_channels(int all)
-{
-  int j;
-  int ss;
-  channel_t *ch;
-
-  j=0;
-  for (ss=0; ss<gdata.networks_online; ss++) {
-    for (ch = irlist_get_head(&gdata.networks[ss].channels); ch; ch = irlist_get_next(ch)) {
-      if ((ch->flags & CHAN_ONCHAN) == 0) {
-        if (all != 0)
-          return 0;
-      } else {
-        j++;
-      }
-    }
-  }
-  return j;
-}
-
 /* update or create an entry in the ignore list */
 igninfo *get_ignore(const char *hostmask)
 {

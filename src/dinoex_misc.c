@@ -481,7 +481,6 @@ void startup_dinoex(void)
 #if !defined(_OS_CYGWIN)
   res_init();
 #endif /* _OS_CYGWIN */
-  gdata.startingup = 1;
 }
 
 static void global_defaults(void)
@@ -647,11 +646,11 @@ void update_hour_dinoex(int hour, int minute)
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
      return;
 
- /* timeout for restart must be less then Transfer Timeout 180s */
-  if (gdata.curtime - gnetwork->lastservercontact >= 150)
+  if (gnetwork->botstatus != BOTSTATUS_JOINED)
      return;
 
-  if (has_joined_channels(0) < 1)
+ /* timeout for restart must be less then Transfer Timeout 180s */
+  if (gdata.curtime - gnetwork->lastservercontact >= 150)
      return;
 
   xd = &xdcc_statefile;

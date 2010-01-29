@@ -29,7 +29,6 @@ char *get_config_nick(void);
 char *get_user_nick(void);
 
 int has_closed_servers(void);
-int has_joined_channels(int all);
 
 igninfo *get_ignore(const char *hostmask);
 int check_ignore(const char *nick, const char *hostmask);

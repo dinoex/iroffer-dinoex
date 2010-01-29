@@ -343,7 +343,7 @@ static VALUE cie_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
     return Qfalse;
 
-  if (has_joined_channels(0) < 1)
+  if (gnetwork->botstatus != BOTSTATUS_JOINED)
     return Qfalse;
 
   if (name[0] != '#') {
@@ -394,7 +394,7 @@ static VALUE cie_mode(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
     return Qfalse;
 
-  if (has_joined_channels(0) < 1)
+  if (gnetwork->botstatus != BOTSTATUS_JOINED)
     return Qfalse;
 
   if (name[0] != '#')

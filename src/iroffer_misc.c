@@ -2066,6 +2066,7 @@ void startupiroffer(void) {
    if (gdata.statefile)
      {
        read_statefile();
+       start_main_queue();
        import_xdccfile();
        write_statefile();
        autotrigger_rebuild();
