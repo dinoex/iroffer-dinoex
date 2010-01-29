@@ -1862,35 +1862,17 @@ void irlist_insert_head(irlist_t *list, void *item)
   updatecontext();
   
   assert(!iitem->next);
-#ifdef WITH_LINKED_DOUBLE
-  assert(!iitem->prev);
-#endif /* WITH_LINKED_DOUBLE */
   
   if (!list->size)
     {
       assert(!list->head);
-#ifdef WITH_LINKED_DOUBLE
-      assert(!list->tail);
-      
-      list->tail = iitem;
-#endif /* WITH_LINKED_DOUBLE */
     }
   else
     {
       assert(list->head);
-#ifdef WITH_LINKED_DOUBLE
-      assert(list->tail);
-      assert(!list->head->prev);
-      assert(!list->tail->next);
-      
-      list->head->prev = iitem;
-#endif /* WITH_LINKED_DOUBLE */
     }
   
   iitem->next = list->head;
-#ifdef WITH_LINKED_DOUBLE
-  iitem->prev = NULL;
-#endif /* WITH_LINKED_DOUBLE */
   list->head = iitem;
   
   list->size++;
@@ -1898,7 +1880,6 @@ void irlist_insert_head(irlist_t *list, void *item)
   return;
 }
 
-#ifndef WITH_LINKED_DOUBLE
 static void *irlist_loop_tail(const irlist_t *list)
 {
   irlist_item_t *tail;
@@ -1928,53 +1909,32 @@ static void *irlist_loop_match(const irlist_t *list, irlist_item_t *match)
   }
   return NULL;
 }
-#endif /* ! WITH_LINKED_DOUBLE */
 
 void irlist_insert_tail(irlist_t *list, void *item)
 {
   irlist_item_t *iitem = IRLIST_EXT_TO_INT(item);
-#ifndef WITH_LINKED_DOUBLE
   irlist_item_t *tail;
-#endif /* WITH_LINKED_DOUBLE */
   
   updatecontext();
   
   assert(!iitem->next);
-#ifdef WITH_LINKED_DOUBLE
-  assert(!iitem->prev);
-#endif /* WITH_LINKED_DOUBLE */
   
   if (!list->size)
     {
       assert(!list->head);
-#ifdef WITH_LINKED_DOUBLE
-      assert(!list->tail);
-#endif /* WITH_LINKED_DOUBLE */
       
       list->head = iitem;
     }
   else
     {
       assert(list->head);
-#ifdef WITH_LINKED_DOUBLE
-      assert(list->tail);
-      assert(!list->head->prev);
-      assert(!list->tail->next);
-      
-      list->tail->next = iitem;
-#else /* WITH_LINKED_DOUBLE */
       tail = irlist_loop_tail(list);
       assert(tail);
       assert(!tail->next);
       tail->next = iitem;
-#endif /* WITH_LINKED_DOUBLE */
     }
   
   iitem->next = NULL;
-#ifdef WITH_LINKED_DOUBLE
-  iitem->prev = list->tail;
-  list->tail = iitem;
-#endif /* WITH_LINKED_DOUBLE */
   
   list->size++;
   
@@ -1990,27 +1950,13 @@ void irlist_insert_after(irlist_t *list, void *item, void *after_this)
   
   assert(list->size > 0);
   assert(!iitem->next);
-#ifdef WITH_LINKED_DOUBLE
-  assert(!iitem->prev);
-#endif /* WITH_LINKED_DOUBLE */
   
   if (iafter->next)
     {
       iitem->next = iafter->next;
-#ifdef WITH_LINKED_DOUBLE
-      iitem->next->prev = iitem;
-    }
-  else
-    {
-      assert(list->tail == iafter);
-      list->tail = iitem;
-#endif /* WITH_LINKED_DOUBLE */
     }
   
   iafter->next = iitem;
-#ifdef WITH_LINKED_DOUBLE
-  iitem->prev = iafter;
-#endif /* WITH_LINKED_DOUBLE */
   
   list->size++;
   
@@ -2037,44 +1983,15 @@ void* irlist_remove(irlist_t *list, void *item)
 {
   irlist_item_t *iitem = IRLIST_EXT_TO_INT(item);
   irlist_item_t *next;
-#ifndef WITH_LINKED_DOUBLE
   irlist_item_t *tail;
-#endif /* WITH_LINKED_DOUBLE */
   
   updatecontext();
   
   assert(list->size > 0);
   assert(list->head);
-#ifdef WITH_LINKED_DOUBLE
-  assert(list->tail);
-#endif /* WITH_LINKED_DOUBLE */
   
   next = iitem->next;
   
-#ifdef WITH_LINKED_DOUBLE
-  if (list->head == iitem)
-    {
-      assert(!iitem->prev);
-      list->head = iitem->next;
-    }
-  if (list->tail == iitem)
-    {
-      assert(!iitem->next);
-      list->tail = iitem->prev;
-    }
-  
-  if (iitem->next)
-    {
-      assert(iitem->next->prev == iitem);
-      iitem->next->prev = iitem->prev;
-    }
-  
-  if (iitem->prev)
-    {
-      assert(iitem->prev->next == iitem);
-      iitem->prev->next = iitem->next;
-    }
-#else
   if (list->head == iitem)
     {
       list->head = iitem->next;
@@ -2086,12 +2003,8 @@ void* irlist_remove(irlist_t *list, void *item)
       assert(tail->next == iitem);
       tail->next = iitem->next;
     }
-#endif /* WITH_LINKED_DOUBLE */
   
   iitem->next = NULL;
-#ifdef WITH_LINKED_DOUBLE
-  iitem->prev = NULL;
-#endif /* WITH_LINKED_DOUBLE */
   
   list->size--;
   assert(list->size >= 0);
@@ -2117,9 +2030,6 @@ void irlist_delete_all(irlist_t *list)
   
   assert(list->size == 0);
   assert(!list->head);
-#ifdef WITH_LINKED_DOUBLE
-  assert(!list->tail);
-#endif /* WITH_LINKED_DOUBLE */
   
   return;
 }
@@ -2132,41 +2042,17 @@ void* irlist_get_head(const irlist_t *list)
   if (list->head)
     {
       assert(list->size > 0);
-#ifdef WITH_LINKED_DOUBLE
-      assert(list->tail);
-      assert(!list->head->prev);
-#endif /* WITH_LINKED_DOUBLE */
       return IRLIST_INT_TO_EXT(list->head);
     }
   else
     {
       assert(list->size == 0);
-#ifdef WITH_LINKED_DOUBLE
-      assert(!list->tail);
-#endif /* WITH_LINKED_DOUBLE */
       return NULL;
     }
 }
 
 void* irlist_get_tail(const irlist_t *list)
 {
-#ifdef WITH_LINKED_DOUBLE
-  updatecontext();
-  
-  if (list->tail)
-    {
-      assert(list->size > 0);
-      assert(list->head);
-      assert(!list->tail->next);
-      return IRLIST_INT_TO_EXT(list->tail);
-    }
-  else
-    {
-      assert(list->size == 0);
-      assert(!list->head);
-      return NULL;
-    }
-#else /* WITH_LINKED_DOUBLE */
   irlist_item_t *tail;
   
   updatecontext();
@@ -2182,7 +2068,6 @@ void* irlist_get_tail(const irlist_t *list)
       assert(list->size == 0);
       return NULL;
     }
-#endif /* WITH_LINKED_DOUBLE */
 }
 
 
@@ -2192,9 +2077,6 @@ void* irlist_get_next(const void *cur)
   
   if (iitem->next)
     {
-#ifdef WITH_LINKED_DOUBLE
-      assert(iitem->next->prev == iitem);
-#endif /* WITH_LINKED_DOUBLE */
       return IRLIST_INT_TO_EXT(iitem->next);
     }
   else

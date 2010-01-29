@@ -840,11 +840,7 @@ ir_uint64 timeval_to_ms(struct timeval *tv)
 /* sort a linked list with selection sort */
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
 {
-#ifdef WITH_LINKED_DOUBLE
-  irlist_t newlist = {0, 0, 0};
-#else /* WITH_LINKED_DOUBLE */
   irlist_t newlist = {0, 0};
-#endif /* WITH_LINKED_DOUBLE */
   void *cur;
   void *try;
   void *last;
