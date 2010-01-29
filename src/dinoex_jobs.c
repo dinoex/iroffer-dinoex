@@ -445,6 +445,14 @@ void cleanannounce(void)
   }
 }
 
+void clean_send_buffers(void)
+{
+  cleanannounce();
+  irlist_delete_all(&(gnetwork->serverq_slow));
+  irlist_delete_all(&(gnetwork->serverq_normal));
+  irlist_delete_all(&(gnetwork->serverq_fast));
+}
+
 void sendannounce(void)
 {
   channel_announce_t *item;

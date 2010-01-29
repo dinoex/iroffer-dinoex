@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -41,6 +41,7 @@ privmsg_chan(const channel_t *ch, const char *format, ...);
 void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char *message, int len);
 void writeserver_notice(writeserver_type_e delay, const char *nick, const char *message, int len);
 void cleanannounce(void);
+void clean_send_buffers(void);
 void sendannounce(void);
 
 void a_fillwith_msg2(userinput * const u, const char *nick, const char *line);
