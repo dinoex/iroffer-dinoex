@@ -22,6 +22,7 @@ void queue_pack_remove(irlist_t *list, xdcc *xd);
 void queue_all_remove(irlist_t *list, const char *message);
 int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const char *hostname, xdcc *xd);
 char *addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq);
+void send_from_queue(int type, int pos, char *lastnick);
 void check_idle_queue(void);
 
 /* End of File */
