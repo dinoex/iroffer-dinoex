@@ -573,8 +573,11 @@ MasterCJ
 Procyon
 	reporting xdcclistfile size bug
 
+Firas Kraiem
+	Initial Ubuntu package
+
 AlexanderS
-	iroffer-dinoex-3.15.ebuild
+	iroffer-dinoex-3.15.ebuild for Gentoo
 
 Chii-sama
 	suggesting "xdccxmlfile" with totalbytes
