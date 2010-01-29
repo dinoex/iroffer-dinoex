@@ -2066,6 +2066,8 @@ static void parseline(char *line) {
 	 {
 	   /* we quit? */
            gnetwork->serverstatus = SERVERSTATUS_EXIT;
+           outerror(OUTERROR_TYPE_WARN_LOUD,
+                    "Forced quit on %s: %s", gnetwork->name, line);
 	 }
        else
 	 {
