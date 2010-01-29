@@ -889,7 +889,7 @@ static void mainloop (void) {
                   (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
                 {
                   check_idle_queue();
-                  sendaqueue(0, 0, trnick);
+                  send_from_queue(0, 0, trnick);
                 }
               mydelete(trnick);
             }
@@ -1334,7 +1334,7 @@ static void mainloop (void) {
              (irlist_size(&gdata.trans) < MAXTRANS))
            {
              check_idle_queue();
-             sendaqueue(1, 0, NULL);
+             send_from_queue(1, 0, NULL);
            }
          write_files();
          }
@@ -1974,7 +1974,7 @@ static void parseline(char *line) {
                       irlist_size(&gdata.mainqueue) &&
                       (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax)))
                     {
-                      sendaqueue(0, 0, NULL);
+                      send_from_queue(0, 0, NULL);
                     }
                 }
               gdata.startingup = 0; /* let others in */
@@ -2528,148 +2528,5 @@ char* addtoqueue(const char* nick, const char* hostname, int pack)
 
    return tempstr;
    }
-
-void sendaqueue(int type, int pos, char *lastnick)
-{
-  int usertrans;
-  int pack;
-  ir_pqueue *pq;
-  transfer *tr;
-  char *hostmask;
-  gnetwork_t *backup;
-  
-  updatecontext();
-  
-  if (gdata.holdqueue)
-     return;
-  
-  if (!gdata.balanced_queue)
-     lastnick = NULL;
-
-  if (gdata.restrictsend && (has_joined_channels(0) == 0))
-     return;
-  
-  if (irlist_size(&gdata.mainqueue))
-    {
-      
-      /*
-       * first determine what the first queue position is that is eligable
-       * for a transfer find the first person who has not already maxed out
-       * his sends if noone, do nothing and let execution continue to pack
-       * queue check
-       */
-      
-      if (pos > 0) {
-        /* get specific entry */
-        pq = irlist_get_nth(&gdata.mainqueue, pos - 1);
-      } else {
-        for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_get_next(pq)) {
-          if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
-            continue;
-
-          /* timeout for restart must be less then Transfer Timeout 180s */
-          if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
-            continue;
-
-          usertrans=0;
-          for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
-            if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
-              usertrans++;
-            }
-          }
-
-          /* usertrans is the number of transfers a user has in progress */
-          if (usertrans >= gdata.maxtransfersperperson)
-            continue;
-
-          /* skip last trasfering user */
-          if (lastnick != NULL) {
-            if (!strcasecmp(pq->nick, lastnick))
-              continue;
-          }
-
-          /* found the person that will get the send */
-          break;
-        }
-      }
-      
-      if (!pq)
-        {
-          if (lastnick != NULL)
-            {
-              /* try again */
-              sendaqueue(type, pos, NULL);
-            }
-          return;
-        }
-      
-      pack = number_of_pack(pq->xpack);
-      if (type == 1)
-        {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                  "QUEUED SEND (low bandwidth): %s (%s on %s), Pack #%d",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
-        }
-      else if (type == 2)
-        {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                  "QUEUED SEND (manual): %s (%s on %s), Pack #%d",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
-        }
-      else
-        {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                  "QUEUED SEND: %s (%s on %s), Pack #%d",
-                  pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
-        }
-      
-      if (pack == -1)
-        init_xdcc_file(pq->xpack, gdata.xdcclistfile);
-      look_for_file_changes(pq->xpack);
-      
-      backup = gnetwork;
-      gnetwork = &(gdata.networks[pq->net]);
-      
-      pq->xpack->file_fd_count++;
-      tr = irlist_add(&gdata.trans, sizeof(transfer));
-      t_initvalues(tr);
-      tr->id = get_next_tr_id();
-      tr->nick = mystrdup(pq->nick);
-      tr->caps_nick = mystrdup(pq->nick);
-      caps(tr->caps_nick);
-      tr->hostname = mystrdup(pq->hostname);
-      
-      tr->xpack = pq->xpack;
-      tr->maxspeed = pq->xpack->maxspeed;
-      hostmask = to_hostmask(tr->nick, tr->hostname);
-      tr->unlimited = verifyshell(&gdata.unlimitedhost, hostmask);
-      if (tr->unlimited)
-        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-                "unlimitedhost found: %s (%s on %s)",
-                tr->nick, tr->hostname, gdata.networks[ tr->net ].name);
-      tr->nomax = tr->unlimited;
-      tr->net = pq->net;
-      mydelete(hostmask);
-      mydelete(pq->nick);
-      mydelete(pq->hostname);
-      irlist_delete(&gdata.mainqueue, pq);
-      
-      if (!gdata.quietmode)
-        {
-          char *sizestrstr;
-          sizestrstr = sizestr(0, tr->xpack->st_size);
-          notice_fast(tr->nick,
-                 "** Sending You Your Queued Pack Which Is %sB. (Resume Supported)",
-                 sizestrstr);
-          mydelete(sizestrstr);
-        }
-      
-      t_setup_dcc(tr);
-      
-      gnetwork = backup;
-      check_idle_queue();
-      return;
-    }
-}
 
 /* End of File */

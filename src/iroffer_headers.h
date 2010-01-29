@@ -478,7 +478,6 @@ typedef struct
 
 /* iroffer.c */
 int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd);
-void sendaqueue(int type, int pos, char *lastnick);
 
 /* display.c */
 void initscreen(int startup, int clear);
