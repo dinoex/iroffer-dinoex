@@ -3,7 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
-Debugging und Logging verbessert.
+bugfix: restrictsend
+  Der Bot sendete keine Pakete mit "restrictsend off" und wenn kein Channel konfiguriert ist.
+
+bugfix: QUIT
+  Melde eine Warnung und benende die Verbindung, wenn der Server uns "QUIT" sendet.
 
 Ab Version 3.20:
 ----------------
