@@ -457,7 +457,7 @@ static int is_upload_file(const userinput * const u, const char *arg)
 }
 #endif /* USE_CURL */
 
-int invalid_file(const userinput * const u, char *arg)
+static int invalid_file(const userinput * const u, char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Filename");
@@ -1368,19 +1368,29 @@ void a_qul(const userinput * const u)
   guess_end_cleanup();
 }
 
+static char *a_valid_uploaddir(const userinput * const u)
+{
+  char *uploaddir;
+
+  uploaddir = get_uploaddir(u->hostmask);
+  if (uploaddir == NULL)
+    a_respond(u, "No uploaddir defined.");
+  return uploaddir;
+}
+
 void a_listul(const userinput * const u)
 {
   char *tempstr;
+  char *uploaddir;
 
   updatecontext();
 
-  if (!gdata.uploaddir) {
-    a_respond(u, "No uploaddir defined.");
+  uploaddir = a_valid_uploaddir(u);
+  if (uploaddir == NULL)
     return;
-  }
 
   if (u->arg1 == NULL) {
-    u_listdir(u, gdata.uploaddir);
+    u_listdir(u, uploaddir);
     return;
   }
 
@@ -1392,7 +1402,7 @@ void a_listul(const userinput * const u)
     return;
   }
 
-  tempstr = mystrjoin(gdata.uploaddir, u->arg1, '/');
+  tempstr = mystrjoin(uploaddir, u->arg1, '/');
   u_listdir(u, tempstr);
   mydelete(tempstr);
 }
@@ -3191,22 +3201,22 @@ void a_showdir(const userinput * const u)
 void a_makedir(const userinput * const u)
 {
   char *thedir;
+  char *uploaddir;
 
   updatecontext();
 
   if (disabled_config(u) != 0)
     return;
 
-  if (!gdata.uploaddir) {
-    a_respond(u, "No uploaddir defined.");
+  uploaddir = a_valid_uploaddir(u);
+  if (uploaddir == NULL)
     return;
-  }
 
   if (invalid_dir(u, u->arg1) != 0)
     return;
 
   strip_trailing_path(u->arg1);
-  thedir = mystrjoin(gdata.uploaddir, u->arg1, '/');
+  thedir = mystrjoin(uploaddir, u->arg1, '/');
   if (mkdir(thedir, 0755) < 0) {
     a_respond(u, "Dir %s could not be created: %s", u->arg1, strerror(errno));
   } else {
@@ -3216,21 +3226,21 @@ void a_makedir(const userinput * const u)
   return;
 }
 
-
 #ifdef USE_CURL
 void a_fetch(const userinput * const u)
 {
+  char *uploaddir;
+
   updatecontext();
 
   if (disabled_config(u) != 0)
     return;
 
-  if (!gdata.uploaddir) {
-    a_respond(u, "No uploaddir defined.");
+  uploaddir = a_valid_uploaddir(u);
+  if (uploaddir == NULL)
     return;
-  }
 
-  if (disk_full(gdata.uploaddir) != 0) {
+  if (disk_full(uploaddir) != 0) {
     a_respond(u, "Not enough free space on disk.");
     return;
   }
@@ -3246,7 +3256,7 @@ void a_fetch(const userinput * const u)
     return;
   }
   clean_quotes(u->arg2e);
-  start_fetch_url(u);
+  start_fetch_url(u, uploaddir);
 }
 
 void a_fetchcancel(const userinput * const u)
@@ -3621,6 +3631,44 @@ void a_rmq(const userinput * const u)
 void a_rmiq(const userinput * const u)
 {
   a_rmq2(u, &gdata.idlequeue);
+}
+
+void a_rmul(const userinput * const u)
+{
+  char *tempstr;
+  char *uploaddir;
+
+  updatecontext();
+
+  uploaddir = a_valid_uploaddir(u);
+  if (uploaddir == NULL)
+    return;
+
+  if (invalid_file(u, u->arg1) != 0)
+    return;
+
+  if (strstr(u->arg1, "/")) {
+    a_respond(u, "Filename contains invalid characters");
+    return;
+  }
+
+  clean_quotes(u->arg1);
+
+  if (is_unsave_directory(u->arg1)) {
+    a_respond(u, "Try Specifying a Directory");
+    return;
+  }
+
+  tempstr = mystrjoin(uploaddir, u->arg1, '/');
+  if (is_file_writeable(tempstr)) {
+    if (save_unlink(tempstr) < 0)
+      a_respond(u, "Unable to remove the file");
+    else
+      a_respond(u, "Deleted");
+  } else {
+    a_respond(u, "That filename doesn't exist");
+  }
+  mydelete(tempstr);
 }
 
 void a_raw(const userinput * const u)

@@ -299,6 +299,7 @@ typedef struct
   char *nick;
   char *hostname;
   char *file;
+  char *uploaddir;
   ir_connection_t con;
   upload_status_e ul_status;
   int resumed;

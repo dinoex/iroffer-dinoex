@@ -13,6 +13,8 @@
  *
  */
 
+char *get_uploaddir(const char *hostmask);
+
 int l_setup_file(upload * const l, struct stat *stp);
 int l_setup_passive(upload * const l, char *token);
 void l_setup_accept(upload * const l);
@@ -22,5 +24,8 @@ int l_select_fdset(int highests);
 int file_uploading(const char *file);
 void upload_start(const char *nick, const char *hostname, const char *hostmask,
                   const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token);
+
+int verify_uploadhost(const char *hostmask);
+void clean_uploadhost(void);
 
 /* End of File */

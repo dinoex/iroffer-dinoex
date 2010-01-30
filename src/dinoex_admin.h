@@ -33,7 +33,6 @@ int a_xdl_left(void);
 int reorder_new_groupdesc(const char *group, const char *desc);
 int add_default_groupdesc(const char *group);
 
-int invalid_file(const userinput * const u, char *arg);
 int invalid_channel(const userinput * const u, const char *arg);
 int invalid_maxspeed(const userinput * const u, const char *arg);
 int get_pack_nr(const userinput * const u, const char *arg);
@@ -110,6 +109,7 @@ void a_getl(const userinput * const u);
 void a_get(const userinput * const u);
 void a_rmq(const userinput * const u);
 void a_rmiq(const userinput * const u);
+void a_rmul(const userinput * const u);
 void a_raw(const userinput * const u);
 void a_rawnet(const userinput * const u);
 void a_lag(const userinput * const u);

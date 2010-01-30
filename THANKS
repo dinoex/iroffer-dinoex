@@ -274,6 +274,7 @@ dondieschotte
 	option "privmsg_fish"
 	option "fish_exclude_nick"
 	reporting duplicate passwords problem
+	option "group_admin uploadhost"
 
 dsd
 	admin command "autoadd"

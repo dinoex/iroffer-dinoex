@@ -91,6 +91,7 @@ typedef struct {
   char *g_host;
   char *g_pass;
   char *g_groups;
+  char *g_uploaddir;
   int g_level;
 } group_admin_t;
 
