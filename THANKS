@@ -613,6 +613,7 @@ Eomyn
 Henrik Krohns
 	reporting "QUIT" bug.
 	reporting "-plist" bug.
+	reporting "ANNOUNCE" priority
 
 torque
 	reporting "restrictsend" bug.
