@@ -910,7 +910,9 @@ static void mylog_write(int logfd, const char *logfile, const char *msg, ssize_t
 
 void logfile_add(const char *logfile, const char *line)
 {
-  char tempstr[maxtextlength];
+  char tempstr[maxtextlengthshort];
+  char logline[maxtextlength];
+  size_t len;
   int rc;
   int logfd;
 
@@ -924,12 +926,9 @@ void logfile_add(const char *logfile, const char *line)
     return;
   }
 
-  getdatestr(tempstr, 0, maxtextlength);
-  mylog_write(logfd, logfile, "** ", 3);
-  mylog_write(logfd, logfile, tempstr, strlen(tempstr));
-  mylog_write(logfd, logfile, ": ", 2);
-  mylog_write(logfd, logfile, line, strlen(line));
-  mylog_write(logfd, logfile, "\n", 1);
+  getdatestr(tempstr, 0, maxtextlengthshort);
+  len = snprintf(logline, maxtextlength, "** %s: %s\n", tempstr, line);
+  mylog_write(logfd, logfile, logline, len);
   rc = close(logfd);
   if (rc != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
