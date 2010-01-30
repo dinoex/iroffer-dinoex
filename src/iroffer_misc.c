@@ -1545,6 +1545,7 @@ void reinit_config_vars(void)
        mydelete(ga->g_host);
        mydelete(ga->g_pass);
        mydelete(ga->g_groups);
+       mydelete(ga->g_uploaddir);
     }
   irlist_delete_all(&gdata.autoignore_exclude);
   irlist_delete_all(&gdata.downloadhost);

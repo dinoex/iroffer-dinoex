@@ -20,7 +20,7 @@ extern int fetch_started;
 void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd);
 int fetch_cancel(int num);
 void fetch_perform(void);
-void start_fetch_url(const userinput *const u);
+void start_fetch_url(const userinput *const u, const char *uploaddir);
 void dinoex_dcl(const userinput *const u);
 void dinoex_dcld(const userinput *const u);
 int fetch_is_running(const char *file);

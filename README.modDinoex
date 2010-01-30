@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+313) group_admin uploadhost (inspired by dondieschotte)
+  After the grouplist you can define an uploaddir for this admin.
+  The hostmask will be automatically added as uploadhost.
+  Allow LISTUL if uploaddir is defined.
+
+   References TODO:
+Long Term Features:
+   213 7/17/04 Open allow multiple uploaddirs>
+
 bigfix: ANNOUNCE (reported by Henrik Krohns)
   Give announces priority over XDCC LIST.
 

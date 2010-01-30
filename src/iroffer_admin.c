@@ -72,7 +72,6 @@ static void u_jump(const userinput * const u);
 static void u_servers(const userinput * const u);
 static void u_trinfo(const userinput * const u);
 static void u_clearrecords(const userinput * const u);
-static void u_rmul(const userinput * const u);
 static void u_crash(const userinput * const u);
 static void u_chanl(const userinput * const u);
 
@@ -104,7 +103,7 @@ static const userinput_parse_t userinput_parse[] = {
 {1,1,method_allow_all,a_getl,          "GETL",NULL,"Lists current upload queue"},
 {1,1,method_allow_all,a_qul,           "QUL",NULL,"Lists current queue"},
 {1,1,method_allow_all,u_ignl,          "IGNL",NULL,"Show ignored list"},
-{1,5,method_allow_all,a_listul,        "LISTUL","[dir]","Shows contents of upload directory"},
+{1,3,method_allow_all,a_listul,        "LISTUL","[dir]","Shows contents of upload directory"},
 {1,5,method_allow_all,u_chanl,         "CHANL","[net]","Shows channel list with member list"},
 
 {2,2,method_allow_all,u_close,         "CLOSE","id","Cancels transfer <id>"},
@@ -198,7 +197,7 @@ static const userinput_parse_t userinput_parse[] = {
 {5,2,method_allow_all,a_nomd5,         "NOMD5","x","Disables MD5 and CRC calculation for next <x> minutes"},
 {5,3,method_allow_all,u_msgread,       "MSGREAD",NULL,"Show MSG log"},
 {5,5,method_allow_all,u_msgdel,        "MSGDEL",NULL,"Delete MSG log"},
-{5,3,method_allow_all,u_rmul,          "RMUL","filename","Delete a file in the upload dir"},
+{5,3,method_allow_all,a_rmul,          "RMUL","filename","Delete a file in the upload dir"},
 {5,5,method_allow_all,a_raw,           "RAW","command","Send <command> to server (RAW IRC)"},
 {5,5,method_allow_all,a_rawnet,        "RAWNET","net command","Send <command> to server (RAW IRC)"},
 {5,5,method_allow_all,a_lag,           "LAG","[net]","Show lag on networks"},
@@ -2902,39 +2901,6 @@ static void u_clearrecords(const userinput * const u)
   u_respond(u,"Cleared transfer record, bandwidth record, total sent, total uptime, and transfer limits");
   write_files();
 }
-
-static void u_rmul(const userinput * const u) {
-   char *tempstr;
-   
-   updatecontext();
-   
-   if (!gdata.uploaddir) {
-      u_respond(u, "No uploaddir defined.");
-      return;
-      }
-
-   if (invalid_file(u, u->arg1) != 0)
-      return;
-   
-   if (strstr(u->arg1, "/")) {
-      u_respond(u,"Filename contains invalid characters");
-      return;
-      }
-   
-   tempstr = mystrjoin(gdata.uploaddir, u->arg1, '/');
-   
-   if (is_file_writeable(tempstr)) {
-      if (save_unlink(tempstr) < 0)
-         u_respond(u,"Unable to remove the file");
-      else
-         u_respond(u,"Deleted");
-      }
-   else
-      u_respond(u,"That filename doesn't exist");
-   
-   mydelete(tempstr);
-   
-   }
 
 static void u_crash(const userinput * const UNUSED(u)) {
    

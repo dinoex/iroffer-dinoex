@@ -34,7 +34,6 @@ Long Term Features:
    209 4/25/04 Open DCC2 support
    210 5/3/04 Open hostmasks that bypass queue
    211 6/8/04 Open (auto) resend on lost connection instead instead of going to next queued user
-   213 7/17/04 Open allow multiple uploaddirs>
 
 Not going to happen anytime soon:
    115 long ago Deferred fserve
@@ -135,7 +134,6 @@ Long Term Features:
   1431  CHCOLOR for background
   1433  Turbo DCC
   1434  transfer info for a upload
-  1336  uploaddir for each uploadhost
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

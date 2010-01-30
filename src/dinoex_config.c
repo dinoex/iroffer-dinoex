@@ -1128,6 +1128,9 @@ static void c_group_admin(char *var)
     case 4:
       ga->g_groups = mystrdup(data);
       break;
+    case 5:
+      ga->g_uploaddir = mystrdup(data);
+      break;
     default:
       drop ++;
       break;
@@ -1143,6 +1146,7 @@ static void c_group_admin(char *var)
     mydelete(ga->g_host);
     mydelete(ga->g_pass);
     mydelete(ga->g_groups);
+    mydelete(ga->g_uploaddir);
     ga = irlist_delete(&gdata.group_admin, ga);
   }
 }

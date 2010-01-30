@@ -300,7 +300,7 @@ static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 }
 
 /* start a transfer */
-void start_fetch_url(const userinput *const u)
+void start_fetch_url(const userinput *const u, const char *uploaddir)
 {
   off_t resumesize;
   fetch_curl_t *ft;
@@ -316,7 +316,7 @@ void start_fetch_url(const userinput *const u)
   while (*url == ' ') url ++;
 
   resumesize = 0;
-  fullfile = mystrjoin(gdata.uploaddir, name, '/');
+  fullfile = mystrjoin(uploaddir, name, '/');
   writefd = fopen(fullfile, "w+");
   if ((writefd == NULL) && (errno == EEXIST)) {
     retval = stat(fullfile, &s);

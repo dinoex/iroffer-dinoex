@@ -24,6 +24,23 @@
 #include "dinoex_curl.h"
 #include "dinoex_misc.h"
 
+/* returns custom uploaddir or default */
+char *get_uploaddir(const char *hostmask)
+{
+  group_admin_t *ga;
+
+  updatecontext();
+
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_get_next(ga)) {
+
+    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) == 0)
+      return ga->g_uploaddir;
+  }
+  return gdata.uploaddir;
+}
+
 /* open file on disk for upload */
 int l_setup_file(upload * const l, struct stat *stp)
 {
@@ -32,13 +49,13 @@ int l_setup_file(upload * const l, struct stat *stp)
 
   updatecontext();
 
-  if (gdata.uploaddir == NULL) {
+  if (l->uploaddir == NULL) {
     l_closeconn(l, "No uploaddir defined.", 0);
     return 1;
   }
 
   /* local file already exists? */
-  fullfile = mystrjoin(gdata.uploaddir, l->file, '/');
+  fullfile = mystrjoin(l->uploaddir, l->file, '/');
 
   l->filedescriptor = open(fullfile,
                            O_WRONLY | O_CREAT | O_EXCL | ADDED_OPEN_FLAGS,
@@ -270,6 +287,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
                   const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token)
 {
   upload *ul;
+  char *uploaddir;
   char *tempstr;
   off_t len;
 
@@ -302,7 +320,8 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
             hostmask, gnetwork->name);
     return;
   }
-  if (disk_full(gdata.uploaddir) != 0) {
+  uploaddir = get_uploaddir(hostmask);
+  if (disk_full(uploaddir) != 0) {
     notice(nick, "DCC Send Denied, not enough free space on disk");
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "DCC Send Denied (not enough free space on disk) from %s on %s",
@@ -325,7 +344,9 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   ul->totalsize = len;
   ul->nick = mystrdup(nick);
   ul->hostname = mystrdup(hostname);
+  ul->uploaddir = mystrdup(uploaddir);
   ul->net = gnetwork->net;
+  
   tempstr = getsendname(ul->file);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "dKB)",
@@ -341,6 +362,76 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   } else {
     /* Passive DCC */
     l_setup_passive(ul, token);
+  }
+}
+
+/* search for a custom uploaddir of a group admin */
+static char *verifyupload_group(const char *hostmask)
+{
+  group_admin_t *ga;
+
+  updatecontext();
+
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_get_next(ga)) {
+
+    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) == 0)
+      return ga->g_uploaddir;
+  }
+  return NULL;
+}
+
+/* check if this host is allowed to send */
+int verify_uploadhost(const char *hostmask)
+{
+  tupload_t *tu;
+  qupload_t *qu;
+
+  updatecontext();
+
+  if ( verifyupload_group(hostmask) != NULL )
+    return 0;
+
+  if ( verifyshell(&gdata.uploadhost, hostmask) != 0 )
+    return 0;
+
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu;
+       tu = irlist_get_next(tu)) {
+    if (tu->u_time <= gdata.curtime)
+      continue;
+
+    if (fnmatch(tu->u_host, hostmask, FNM_CASEFOLD) == 0)
+      return 0;
+  }
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (gnetwork->net != qu->q_net)
+      continue;
+
+    if (fnmatch(qu->q_host, hostmask, FNM_CASEFOLD) == 0)
+      return 0;
+  }
+  return 1;
+}
+
+/* remove temp uploadhosts */
+void clean_uploadhost(void)
+{
+  tupload_t *tu;
+
+  updatecontext();
+
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu; ) {
+    if (tu->u_time >= gdata.curtime) {
+      tu = irlist_get_next(tu);
+      continue;
+    }
+    mydelete(tu->u_host);
+    tu = irlist_delete(&gdata.tuploadhost, tu);
   }
 }
 

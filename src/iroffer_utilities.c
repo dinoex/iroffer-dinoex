@@ -975,6 +975,7 @@ void dumpgdata(void)
   gdata_iter_print_string(g_host);
   gdata_iter_print_string(g_pass);
   gdata_iter_print_string(g_groups);
+  gdata_iter_print_string(g_uploaddir);
   gdata_irlist_iter_end;
 
   gdata_print_string(statefile);

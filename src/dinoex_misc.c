@@ -968,54 +968,6 @@ char *transfer_limit_exceeded_msg(int ii)
    return tempstr;
 }
 
-int verify_uploadhost(const char *hostmask)
-{
-  tupload_t *tu;
-  qupload_t *qu;
-
-  updatecontext();
-
-  if ( verifyshell(&gdata.uploadhost, hostmask) != 0 )
-    return 0;
-
-  for (tu = irlist_get_head(&gdata.tuploadhost);
-       tu;
-       tu = irlist_get_next(tu)) {
-    if (tu->u_time <= gdata.curtime)
-      continue;
-
-    if (fnmatch(tu->u_host, hostmask, FNM_CASEFOLD) == 0)
-      return 0;
-  }
-  for (qu = irlist_get_head(&gdata.quploadhost);
-       qu;
-       qu = irlist_get_next(qu)) {
-    if (gnetwork->net != qu->q_net)
-      continue;
-
-    if (fnmatch(qu->q_host, hostmask, FNM_CASEFOLD) == 0)
-      return 0;
-  }
-  return 1;
-}
-
-void clean_uploadhost(void)
-{
-  tupload_t *tu;
-
-  updatecontext();
-
-  for (tu = irlist_get_head(&gdata.tuploadhost);
-       tu; ) {
-    if (tu->u_time >= gdata.curtime) {
-      tu = irlist_get_next(tu);
-      continue;
-    }
-    mydelete(tu->u_host);
-    tu = irlist_delete(&gdata.tuploadhost, tu);
-  }
-}
-
 char *user_getdatestr(char* str, time_t Tp, int len)
 {
   const char *format;
