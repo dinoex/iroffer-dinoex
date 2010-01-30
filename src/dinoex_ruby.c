@@ -404,7 +404,7 @@ static VALUE cie_mode(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
        ch;
        ch = irlist_get_next(ch)) {
     if (strcasecmp(ch->name, name) == 0) {
-      writeserver(WRITESERVER_SLOW, "MODE %s %s", name, msg);
+      writeserver(WRITESERVER_NORMAL, "MODE %s %s", name, msg);
       return Qtrue;
     }
   }

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+bigfix: ANNOUNCE (reported by Henrik Krohns)
+  Announces haben jetzt Vorrang vor XDCC LIST.
+
 bugfix: -plist
   Ignoriere plist wenn sehr viele Announces noch nicht gesendet sind.
 

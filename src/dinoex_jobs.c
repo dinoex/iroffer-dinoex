@@ -465,7 +465,7 @@ void sendannounce(void)
     return;
 
   if (gdata.noannounce_start <= gdata.curtime)
-    writeserver(WRITESERVER_SLOW, "%s", item->msg);
+    writeserver(WRITESERVER_NORMAL, "%s", item->msg);
   mydelete(item->msg);
   irlist_delete(&(gnetwork->serverq_channel), item);
 }
