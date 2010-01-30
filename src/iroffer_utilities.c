@@ -173,6 +173,7 @@ char* getuptime(char *str, int type, time_t fromwhen, int len)
 void mylog(calltype_e type, const char *format, ...)
 {
   char tempstr[maxtextlength];
+  char tempstr2[maxtextlengthshort];
   va_list args;
   int len;
   
@@ -198,10 +199,9 @@ void mylog(calltype_e type, const char *format, ...)
   
   if ((type == CALLTYPE_NORMAL) || (type == CALLTYPE_MULTI_FIRST))
     {
-      write(gdata.logfd,"** ",3);
       getdatestr(tempstr,0,maxtextlength);
-      write(gdata.logfd,tempstr,strlen(tempstr));
-      write(gdata.logfd,": ",2);
+      len = snprintf(tempstr2, maxtextlengthshort, "** %s: ", tempstr);
+      write(gdata.logfd, tempstr2, len);
     }
   
   va_start(args, format);
