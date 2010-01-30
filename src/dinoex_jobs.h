@@ -40,7 +40,6 @@ privmsg_chan(const channel_t *ch, const char *format, ...);
 
 void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char *message, int len);
 void writeserver_notice(writeserver_type_e delay, const char *nick, const char *message, int len);
-void cleanannounce(void);
 void clean_send_buffers(void);
 void sendannounce(void);
 

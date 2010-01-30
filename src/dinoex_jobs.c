@@ -434,7 +434,7 @@ void writeserver_notice(writeserver_type_e delay, const char *nick, const char *
   writeserver(delay, "NOTICE %s :%s", nick, message);
 }
 
-void cleanannounce(void)
+static void cleanannounce(void)
 {
   channel_announce_t *item;
 
