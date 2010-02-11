@@ -783,7 +783,7 @@ static int stoplist_announce(const char *nick)
 }
 
 /* remove all queued lines for this user */
-static void stoplist(const char *nick)
+static int stoplist(const char *nick)
 {
   char *item;
   int stopped = 0;
@@ -800,11 +800,19 @@ static void stoplist(const char *nick)
   stopped += stoplist_queue(nick, &(gnetwork->serverq_slow));
   stopped += stoplist_queue(nick, &(gnetwork->serverq_normal));
   stopped += stoplist_announce(nick);
+  return stopped;
+}
 
+/* remove all queued lines for this user */
+static void xdcc_stop(privmsginput *pi)
+{
+  int stopped;
+
+  stopped = stoplist(pi->nick);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC STOP from (%s on %s) stopped %d",
-          nick, gnetwork->name, stopped);
-  notice(nick, "LIST stopped (%d lines deleted)", stopped);
+          "XDCC STOP from (%s %s on %s) stopped %d",
+           pi->nick, pi->hostmask, gnetwork->name, stopped);
+  notice(pi->nick, "LIST stopped (%d lines deleted)", stopped);
 }
 
 static const char *send_xdcc_file(const char *nick, const char *hostname, const char *hostmask, const char *arg, const char *pwd)
@@ -864,7 +872,7 @@ static void command_xdcc(privmsginput *pi)
   }
 
   if (strcmp(pi->msg2, "STOP") == 0) {
-    stoplist(pi->nick);
+    xdcc_stop(pi);
     return;
   }
 
