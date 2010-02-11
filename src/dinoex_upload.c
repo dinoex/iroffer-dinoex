@@ -346,7 +346,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   ul->hostname = mystrdup(hostname);
   ul->uploaddir = mystrdup(uploaddir);
   ul->net = gnetwork->net;
-  
+
   tempstr = getsendname(ul->file);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "dKB)",
