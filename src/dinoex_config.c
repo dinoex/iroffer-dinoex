@@ -139,11 +139,11 @@ static config_bool_typ config_parse_bool[] = {
 {NULL, NULL }};
 
 
-/* dump a string to logfile */
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 1, 2)))
 #endif
+/* dump a string to logfile */
 dump_line(const char *format, ...)
 {
    va_list args;

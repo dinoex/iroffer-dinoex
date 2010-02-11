@@ -47,6 +47,7 @@ static void
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
+/* tell the admin what options we support on the commandline */
 usage(void)
 {
   printf("\n"
@@ -417,11 +418,11 @@ static void debug_memory(void)
 }
 #endif /* DEBUG */
 
-/* cleanup all stuff before exit or restart */
 void
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
+/* cleanup all stuff before exit or restart */
 exit_iroffer(int gotsignal)
 {
   if (gotsignal == 0)
