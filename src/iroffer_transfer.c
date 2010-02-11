@@ -88,7 +88,9 @@ void t_setup_send(transfer * const t)
    char *msg;
    SIGNEDSOCK int addrlen;
    SIGNEDSOCK int tempi;
-   int tempc;
+   int tempc1;
+   int tempc2;
+   int tempc3;
    
    updatecontext();
    
@@ -116,35 +118,29 @@ void t_setup_send(transfer * const t)
    t->bytessent = t->startresume;
    
    tempi = sizeof(int);
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_YELLOW,"SO_SNDBUF ");
-   getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, &tempi);
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," a %li",(long)tempc);
+   getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc1, &tempi);
    
-   tempc = 65535;
-   setsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, sizeof(int));
+   tempc2 = 65535;
+   setsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc2, sizeof(int));
 
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," b %li",(long)tempc);
-   getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc, &tempi);
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_YELLOW," c %li",(long)tempc);
+   getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc3, &tempi);
+   if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "SO_SNDBUF a %i b %i c %i", tempc1, tempc2, tempc3);
    
 #if defined(_OS_BSD_ANY)
    /* #define SO_SNDLOWAT     0x1003     */
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_YELLOW,"SO_SNDLOWAT ");
-   getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc, &tempi);
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," %i",tempc);
-      
-   tempc = 24577;
-   setsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc, sizeof(int));
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_YELLOW," %i",tempc);
-
-   getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc, &tempi);
-   if (gdata.debug > 0) ioutput(CALLTYPE_MULTI_END, OUT_S, COLOR_YELLOW, " %i\n", tempc);
+   getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc1, &tempi);
+   
+   tempc2 = 24577;
+   setsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc2, sizeof(int));
+   
+   getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc3, &tempi);
+   if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "SO_SNDLOWAT a %i b %i c %i", tempc1, tempc2, tempc3);
 #endif
    
 #if !defined(CANT_SET_TOS)
    /* Set TOS socket option to max throughput */
-   tempc = 0x8; /* IPTOS_THROUGHPUT */
-   setsockopt(t->con.clientsocket, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
+   tempc1 = 0x8; /* IPTOS_THROUGHPUT */
+   setsockopt(t->con.clientsocket, IPPROTO_IP, IP_TOS, &tempc1, sizeof(int));
 #endif
    
    if (set_socket_nonblocking(t->con.clientsocket, 1) < 0 )
@@ -716,7 +712,7 @@ void t_flushed (transfer * const t)
   
   if ((t->xpack->dlimit_max != 0) && (t->xpack->gets >= t->xpack->dlimit_used))
     {
-      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "Reached Pack Download Limit %d for %s",
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "Reached Pack Download Limit %d for %s",
               t->xpack->dlimit_max, t->xpack->desc);
        
       /* remove queued users */
