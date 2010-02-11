@@ -239,35 +239,38 @@ int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const 
 }
 
 /* add a request to the idle queue */
-char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
+const char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
 {
   ir_pqueue *tempq;
+  const char *hostname2;
 
   updatecontext();
   if (gdata.idlequeuesize == 0)
     return NULL;
 
-  if (inq >= gdata.maxidlequeuedperperson) {
-    ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (user/idle): ");
-    snprintf(tempstr, maxtextlength,
-             "Denied, You already have %i items queued, Try Again Later",
-             inq);
-    return tempstr;
+  if (hostname != NULL) {
+    if (inq >= gdata.maxidlequeuedperperson) {
+      snprintf(tempstr, maxtextlength,
+               "Denied, You already have %i items queued, Try Again Later",
+               inq);
+      return "Denied (user/idle)";
+    }
+
+    if (irlist_size(&gdata.idlequeue) >= gdata.idlequeuesize) {
+      snprintf(tempstr, maxtextlength,
+               "Idle queue of size %d is Full, Try Again Later",
+               gdata.idlequeuesize);
+      return "Denied (slot/idle)";
+    }
+    hostname2 = hostname;
+  } else {
+    hostname2 = "man";
   }
 
-  if (irlist_size(&gdata.idlequeue) >= gdata.idlequeuesize) {
-    ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (slot/idle): ");
-    snprintf(tempstr, maxtextlength,
-             "Idle queue of size %d is Full, Try Again Later",
-             gdata.idlequeuesize);
-    return tempstr;
-  }
-
-  ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Queued (idle slot): ");
   tempq = irlist_add(&gdata.idlequeue, sizeof(ir_pqueue));
   tempq->queuedtime = gdata.curtime;
   tempq->nick = mystrdup(nick);
-  tempq->hostname = mystrdup(hostname);
+  tempq->hostname = mystrdup(hostname2);
   tempq->xpack = xd;
   tempq->net = gnetwork->net;
 
@@ -277,8 +280,88 @@ char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc
            pack, xd->desc,
            irlist_size(&gdata.idlequeue),
            get_user_nick());
-  return tempstr;
+  return "Queued (idle slot)";
 }
+
+/* add a request to the main queue */
+const char *addtomainqueue(char *tempstr, const char *nick, const char *hostname, int pack)
+{
+  const char *idle;
+  const char *hostname2;
+  ir_pqueue *tempq;
+  xdcc *tempx;
+  int alreadytrans;
+  int inq;
+  int inq2;
+  int man;
+  int mainslot;
+
+  updatecontext();
+
+  tempx = get_xdcc_pack(pack);
+
+  if (hostname != NULL) {
+    hostname2 = hostname;
+    man = 0;
+  } else {
+    hostname2 = "man";
+    man = 1;
+  }
+
+  inq = 0;
+  inq2 = 0;
+  alreadytrans = queue_count_host(&gdata.mainqueue, &inq, man, nick, hostname2, tempx);
+  alreadytrans += queue_count_host(&gdata.idlequeue, &inq2, man, nick, hostname2, tempx);
+
+  if (alreadytrans) {
+    snprintf(tempstr, maxtextlength,
+             "Denied, You already have that item queued.");
+    return "Denied (queue/dup)";
+  }
+
+  if (hostname != NULL) {
+    if (inq >= gdata.maxqueueditemsperperson) {
+      idle = addtoidlequeue(tempstr, nick, hostname, tempx, pack, inq2);
+      if (idle != NULL)
+        return idle;
+
+      snprintf(tempstr, maxtextlength,
+               "Denied, You already have %i items queued, Try Again Later",
+               inq);
+      return "Denied (user/queue)";
+    }
+
+    mainslot = (irlist_size(&gdata.mainqueue) >= gdata.queuesize);
+    if (gdata.holdqueue || (gnetwork->botstatus != BOTSTATUS_JOINED) || mainslot) {
+      idle = addtoidlequeue(tempstr, nick, hostname, tempx, pack, inq2);
+      if (idle != NULL)
+        return idle;
+    }
+    if (mainslot) {
+      snprintf(tempstr, maxtextlength,
+               "Main queue of size %d is Full, Try Again Later",
+               gdata.queuesize);
+      return "Denied (slot/queue)";
+    }
+  }
+
+  tempq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
+  tempq->queuedtime = gdata.curtime;
+  tempq->nick = mystrdup(nick);
+  tempq->hostname = mystrdup(hostname2);
+  tempq->xpack = tempx;
+  tempq->net = gnetwork->net;
+
+  snprintf(tempstr, maxtextlength,
+           "Added you to the main queue for pack %d (\"%s\") in position %d. To Remove yourself at "
+           "a later time type \"/MSG %s XDCC REMOVE\".",
+           pack, tempx->desc,
+           irlist_size(&gdata.mainqueue),
+           save_nick(gnetwork->user_nick));
+
+  return "Queued (slot)";
+}
+
 
 static const char *send_queue_msg[] = { "", " (low bandwidth)" " (manual)" };
 
@@ -288,7 +371,6 @@ void send_from_queue(int type, int pos, char *lastnick)
   int pack;
   ir_pqueue *pq;
   transfer *tr;
-  char *hostmask;
   gnetwork_t *backup;
 
   updatecontext();
@@ -367,39 +449,13 @@ void send_from_queue(int type, int pos, char *lastnick)
     backup = gnetwork;
     gnetwork = &(gdata.networks[pq->net]);
 
-    pq->xpack->file_fd_count++;
-    tr = irlist_add(&gdata.trans, sizeof(transfer));
-    t_initvalues(tr);
-    tr->id = get_next_tr_id();
-    tr->nick = mystrdup(pq->nick);
-    tr->caps_nick = mystrdup(pq->nick);
-    caps(tr->caps_nick);
-    tr->hostname = mystrdup(pq->hostname);
-
-    tr->xpack = pq->xpack;
-    tr->maxspeed = pq->xpack->maxspeed;
-    hostmask = to_hostmask(tr->nick, tr->hostname);
-    tr->unlimited = verifyshell(&gdata.unlimitedhost, hostmask);
-    if (tr->unlimited)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-              "unlimitedhost found: %s (%s on %s)",
-              tr->nick, tr->hostname, gdata.networks[ tr->net ].name);
-    tr->nomax = tr->unlimited;
-    tr->net = pq->net;
-    mydelete(hostmask);
+    tr = create_transfer(pq->xpack, pq->nick, pq->hostname);
     mydelete(pq->nick);
     mydelete(pq->hostname);
     irlist_delete(&gdata.mainqueue, pq);
 
-    if (!gdata.quietmode) {
-      char *sizestrstr;
-      sizestrstr = sizestr(0, tr->xpack->st_size);
-      notice_fast(tr->nick,
-                  "** Sending You Your Queued Pack Which Is %sB. (Resume Supported)",
-                  sizestrstr);
-      mydelete(sizestrstr);
-    }
-
+    t_notice_transfer(tr, NULL, pack, 1);
+    t_unlmited(tr, NULL);
     t_setup_dcc(tr);
 
     gnetwork = backup;

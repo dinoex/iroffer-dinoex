@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+Debugging und Logging verbessert.
+
 313) group_admin uploadhost
   Bei Bedarf kann man nach der Gruppenliste noch ein Uploadir angeben.
   Die hostmask gilt dann auch als  uploadhost.

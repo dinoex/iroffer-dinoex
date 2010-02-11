@@ -93,6 +93,81 @@ void t_setup_dcc(transfer *tr)
   t_start_dcc_send(tr);
 }
 
+transfer *create_transfer(xdcc *xd, const char *nick, const char *hostname)
+{
+  transfer *tr;
+
+  xd->file_fd_count++;
+  tr = irlist_add(&gdata.trans, sizeof(transfer));
+  t_initvalues(tr);
+  tr->id = get_next_tr_id();
+  tr->nick = mystrdup(nick);
+  tr->caps_nick = mystrdup(nick);
+  caps(tr->caps_nick);
+  tr->hostname = mystrdup(hostname);
+  tr->xpack = xd;
+  tr->maxspeed = xd->maxspeed;
+  tr->net = gnetwork->net;
+  return tr;
+}
+
+static void t_unlmited2(transfer * const tr, const char *hostmask)
+{
+  tr->unlimited = verifyshell(&gdata.unlimitedhost, hostmask);
+  if (!tr->unlimited)
+    return;
+
+  tr->nomax = tr->unlimited;
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "unlimitedhost found: %s (%s on %s)",
+           tr->nick, hostmask, gnetwork->name);
+}
+
+void t_unlmited(transfer * const tr, const char *hostmask)
+{
+  char *qhostmask;
+
+  if (hostmask != NULL) {
+    t_unlmited2(tr, hostmask);
+    return;
+  }
+
+  qhostmask = to_hostmask(tr->nick, tr->hostname);
+  t_unlmited2(tr, qhostmask);
+  mydelete(qhostmask);
+}
+
+static void notice_transfer(const char *nick, xdcc *xd, const char *msg)
+{
+  char *sizestrstr;
+
+  sizestrstr = sizestr(0, xd->st_size);
+  notice_fast(nick, "%s, which is %sB. (resume supported)", msg, sizestrstr);
+  mydelete(sizestrstr);
+}
+
+void t_notice_transfer(transfer * const tr, const char *msg, int pack, int queue)
+{
+  char *tempstr;
+
+  if (gdata.quietmode)
+     return;
+
+  if (msg != NULL) {
+    notice_transfer(tr->nick, tr->xpack, msg);
+     return;
+  }
+
+  tempstr = mycalloc(maxtextlength);
+  if (queue) {
+    snprintf(tempstr, maxtextlength, "** Sending you queued pack #%i (\"%s\")", pack, tr->xpack->desc);
+  } else {
+    snprintf(tempstr, maxtextlength, "** Sending you pack #%i (\"%s\")", pack, tr->xpack->desc);
+  }
+  notice_transfer(tr->nick, tr->xpack, tempstr);
+  mydelete(tempstr);
+}
+
 /* check ip for matching blacklist and whitelist */
 int t_check_ip_access(transfer *const tr)
 {

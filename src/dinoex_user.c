@@ -80,52 +80,6 @@ static int test_ctcp(const char *msg1, const char *key)
   return 0;
 }
 
-static const char *sendxdccinfo2(const char* nick, const char* hostmask, int pack)
-{
-  userinput *pubinfo;
-  xdcc *xd;
-  char tempstr[maxtextlengthshort];
-
-  updatecontext();
-
-  if (gdata.disablexdccinfo) {
-    notice(nick, "** XDCC INFO denied, disabled by configuration");
-    return " ignored: ";
-  }
-
-  xd = get_download_pack(nick, hostmask, pack, 0, "INFO", gdata.restrictlist);
-  if (xd == NULL)
-    return NULL;
-
-  if (hide_pack(xd) != 0) {
-    notice(nick, "** Invalid Pack Number, Try Again");
-    return " Denied (pack locked): ";
-  }
-
-  pubinfo = mycalloc(sizeof(userinput));
-  snprintf(tempstr, sizeof(tempstr), "INFO %d", pack);
-  a_fillwith_msg2(pubinfo, nick, tempstr);
-  pubinfo->method = method_xdl_user_notice;
-  u_parseit(pubinfo);
-  mydelete(pubinfo);
-  return " requested: ";
-}
-
-static void sendxdccinfo(const char* nick, const char* hostmask, int pack)
-{
-  const char *msg;
-
-  updatecontext();
-
-  msg = sendxdccinfo2(nick, hostmask, pack);
-  if (msg) {
-    ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "%s", msg);
-  }
-  ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "%s (%s on %s)",
-          nick, hostmask, gnetwork->name);
-}
-
 static void send_clientinfo(const char *nick, char *msg2)
 {
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -307,7 +261,92 @@ static void command_dcc(privmsginput *pi)
   return;
 }
 
-static int send_batch_group(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
+
+static const char *send_xdcc_file2(const char *nick, const char *hostname, const char *hostmask, int pack, const char *msg, const char *pwd)
+{
+  int usertrans;
+  xdcc *xd;
+  transfer *tr;
+  const char *bad;
+  char *tempstr;
+
+  updatecontext();
+
+  bad = get_download_pack(&xd, nick, hostmask, pack, "SEND", gdata.restrictsend);
+  if (xd == NULL) {
+    return bad;
+  }
+
+  if (check_lock(xd->lock, pwd) != 0) {
+    notice(nick, "** XDCC SEND denied, this pack is locked");
+    return "Denied (pack locked)";
+  }
+
+  usertrans = 0;
+  for (tr = irlist_get_head(&gdata.trans);
+       tr;
+       tr = irlist_get_next(tr)) {
+    if (strcmp(tr->hostname, hostname) != 0)
+      continue;
+    usertrans++;
+    if (xd == tr->xpack) {
+      notice(nick, "** You already requested that pack");
+      return "Denied (dup)";
+    }
+  }
+
+  if (gdata.nonewcons > gdata.curtime) {
+    notice(nick, "** The Owner Has Requested That No New Connections Are Made In The Next %li Minutes%s%s",
+           (long)((gdata.nonewcons - gdata.curtime + 1)/60),
+           gdata.nosendmsg ? ", " : "",
+           gdata.nosendmsg ? gdata.nosendmsg : "");
+    return "(No New Cons)";
+  }
+  if (gdata.transferlimits_over) {
+    tempstr = transfer_limit_exceeded_msg(gdata.transferlimits_over - 1);
+    notice(nick, "** %s", tempstr);
+    mydelete(tempstr);
+    return "(Over Transfer Limit)";
+  }
+  if ((xd->dlimit_max != 0) && (xd->gets >= xd->dlimit_used)) {
+    notice(nick, "** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
+    if (xd->dlimit_desc != NULL)
+      notice(nick, "%s", xd->dlimit_desc);
+    return "(Over Pack Transfer Limit)";
+  }
+
+  /* if maxtransfersperperson is reached, queue the file, unless queues are used up, which is checked in addtoqueue() */
+  if (usertrans >= gdata.maxtransfersperperson) {
+    tempstr = mycalloc(maxtextlength);
+    bad = addtomainqueue(tempstr, nick, hostname, pack);
+    notice(nick, "** You can only have %d %s at a time, %s",
+            gdata.maxtransfersperperson,
+            gdata.maxtransfersperperson != 1 ? "transfers" : "transfer",
+            tempstr);
+    mydelete(tempstr);
+    return bad;
+  }
+  if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) || (gnetwork->botstatus != BOTSTATUS_JOINED) ||
+      (((xd->st_size < gdata.smallfilebypass) && (gdata.slotsmax >= MAXTRANS)) ||
+       ((xd->st_size >= gdata.smallfilebypass) && (gdata.slotsmax - irlist_size(&gdata.trans) <= 0)))) {
+    tempstr = mycalloc(maxtextlength);
+    bad = addtomainqueue(tempstr, nick, hostname, pack);
+    notice(nick, "** All Slots Full, %s", tempstr);
+    mydelete(tempstr);
+    return bad;
+  }
+  if (pack == -1)
+    init_xdcc_file(xd, gdata.xdcclistfile);
+  look_for_file_changes(xd);
+
+  tr = create_transfer(xd, nick, hostname);
+  t_notice_transfer(tr, msg, pack, 0);
+  t_unlmited(tr, hostmask);
+  t_setup_dcc(tr);
+  return "requested";
+}
+
+static int send_batch_group(const char *nick, const char *hostname, const char *hostmask, const char *what, const char *pwd)
 {
   xdcc *xd;
   int num;
@@ -325,13 +364,13 @@ static int send_batch_group(const char* nick, const char* hostname, const char* 
       continue;
 
     found ++;
-    if (sendxdccfile(nick, hostname, hostmask, num, NULL, pwd))
+    if (send_xdcc_file2(nick, hostname, hostmask, num, NULL, pwd) != NULL)
       return found;
   }
   return found;
 }
 
-static int send_batch_search(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
+static int send_batch_search(const char *nick, const char *hostname, const char *hostmask, const char *what, const char *pwd)
 {
   char *end;
   int num;
@@ -353,31 +392,27 @@ static int send_batch_search(const char* nick, const char* hostname, const char*
   last = atoi(end);
   for (num = first; num <= last; num ++) {
     found ++;
-    if (sendxdccfile(nick, hostname, hostmask, num, NULL, pwd))
+    if (send_xdcc_file2(nick, hostname, hostmask, num, NULL, pwd) != NULL)
       return found;
   }
   return found;
 }
 
-static void send_batch(const char* nick, const char* hostname, const char* hostmask, const char* what, const char* pwd)
+static void send_batch(const char *nick, const char *hostname, const char *hostmask, const char *what, const char *pwd)
 {
   int found;
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC BATCH %s (%s on %s)",
-          what, hostmask, gnetwork->name);
-
   found = send_batch_search(nick, hostname, hostmask, what, pwd);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC BATCH %s, %d packs (%s on %s)",
-          what, found, hostmask, gnetwork->name);
+          "XDCC BATCH %s: %d packs (%s %s on %s)",
+          what, found, nick, hostmask, gnetwork->name);
   if (found != 0)
     return;
 
   notice(nick, "** Invalid Pack Number, Try Again");
 }
 
-static int find_pack_crc(const char* crc)
+static int find_pack_crc(const char *crc)
 {
   xdcc *xd;
   char crctext[32];
@@ -436,6 +471,69 @@ static int packnumtonum(const char *a)
   return atoi(a);
 }
 
+static void log_xdcc_request1(privmsginput *pi)
+{
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC %s (%s %s on %s)",
+          pi->msg2, pi->nick, pi->hostmask, gnetwork->name);
+}
+
+static void log_xdcc_request2(const char *msg, const char *arg, privmsginput *pi)
+{
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC %s %s (%s %s on %s)",
+          msg, arg, pi->nick, pi->hostmask, gnetwork->name);
+}
+
+static void log_xdcc_request3(privmsginput *pi, const char *msg)
+{
+  const char *sep;
+
+  if (msg == NULL) {
+    msg = "";
+    sep = "";
+  } else {
+    sep = ": ";
+  }
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC %s %s%s%s (%s %s on %s)",
+          pi->msg2, pi->msg3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
+}
+
+static const char *send_xdcc_info(const char *nick, const char *hostmask, const char *arg)
+{
+  userinput *pubinfo;
+  xdcc *xd;
+  const char *bad;
+  char tempstr[maxtextlengthshort];
+  int pack;
+
+  updatecontext();
+
+  if (gdata.disablexdccinfo) {
+    notice(nick, "** XDCC INFO denied, disabled by configuration");
+    return "ignored";
+  }
+
+  pack = packnumtonum(arg);
+  bad = get_download_pack(&xd, nick, hostmask, pack, "INFO", gdata.restrictlist);
+  if (xd == NULL)
+    return bad;
+
+  if (hide_pack(xd) != 0) {
+    notice(nick, "** Invalid Pack Number, Try Again");
+    return "Denied (pack locked)";
+  }
+
+  pubinfo = mycalloc(sizeof(userinput));
+  snprintf(tempstr, sizeof(tempstr), "INFO %d", pack);
+  a_fillwith_msg2(pubinfo, nick, tempstr);
+  pubinfo->method = method_xdl_user_notice;
+  u_parseit(pubinfo);
+  mydelete(pubinfo);
+  return "requested";
+}
+
 static void restrictprivlistmsg(const char *nick)
 {
   if (gdata.restrictprivlistmsg) {
@@ -445,7 +543,7 @@ static void restrictprivlistmsg(const char *nick)
   }
 }
 
-static int parse_xdcc_list(const char *nick, char*msg3)
+static int parse_xdcc_list(const char *nick, char *msg3)
 {
   xlistqueue_t *user;
 
@@ -485,20 +583,6 @@ static int parse_xdcc_list(const char *nick, char*msg3)
   user->nick = mystrdup(nick);
   user->msg = mystrdup(msg3);
   return 3; /* queued */
-}
-
-static void log_xdcc_request(const char *msg, privmsginput *pi)
-{
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC %s (%s %s on %s)",
-          msg, pi->nick, pi->hostmask, gnetwork->name);
-}
-
-static void log_xdcc_request2(const char *msg, const char *arg, privmsginput *pi)
-{
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC %s %s (%s %s on %s)",
-          msg, arg, pi->nick, pi->hostmask, gnetwork->name);
 }
 
 static void send_cancel(const char *nick)
@@ -564,8 +648,21 @@ static void send_help(const char *nick)
   notice_slow(nick, "\2**\2 Cancel download:   \"/MSG %s XDCC CANCEL\" \2**\2", mynick);
 }
 
+static const char *send_xdcc_file(const char *nick, const char *hostname, const char *hostmask, const char *arg, const char *pwd)
+{
+  int pack;
+
+  updatecontext();
+
+  pack = packnumtonum(arg);
+  return send_xdcc_file2(nick, hostname, hostmask, pack, NULL, pwd);
+}
+
 static void command_xdcc(privmsginput *pi)
 {
+  const char *msg;
+  char *tmp;
+
   strip_trailing_action(pi->msg2);
   strip_trailing_action(pi->msg3);
   caps(pi->msg2);
@@ -573,35 +670,36 @@ static void command_xdcc(privmsginput *pi)
   if (strcmp(pi->msg2, "LIST") == 0) {
     int j;
     /* detect xdcc list group xxx */
-    if ((pi->msg3) && (pi->msg4) && (strcmp(caps(pi->msg3), "GROUP") == 0))
-      j = parse_xdcc_list(pi->nick, pi->msg4);
-    else
-      j = parse_xdcc_list(pi->nick, pi->msg3);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC LIST %s: (%s on %s)",
-            (j==1 ? "ignored" : (j==2 ? "denied" : "queued")),
-            pi->hostmask, gnetwork->name);
+    if ((pi->msg3) && (pi->msg4) && (strcmp(caps(pi->msg3), "GROUP") == 0)) {
+      tmp = pi->msg3;
+      pi->msg4 = pi->msg3;
+      pi->msg3 = tmp;
+    }
+    j = parse_xdcc_list(pi->nick, pi->msg3);
+    log_xdcc_request3(pi, (j==1 ? "ignored" : (j==2 ? "denied" : "queued")));
     return;
   }
 
-  if (((strcmp(pi->msg2, "SEND") == 0) ||
-       (strcmp(pi->msg2, "GET") == 0)) && pi->msg3) {
+  /* map XDC GET to XDCC SEND */
+  if ((strcmp(pi->msg2, "GET") == 0) && pi->msg3) {
+    mydelete(pi->msg2);
+    pi->msg2 = mystrdup("SEND");
+  }
+  if ((strcmp(pi->msg2, "SEND") == 0) && pi->msg3) {
     strip_trailing_action(pi->msg3);
     strip_trailing_action(pi->msg4);
-    ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC SEND %s", pi->msg3);
-    sendxdccfile(pi->nick, pi->hostname, pi->hostmask, packnumtonum(pi->msg3), NULL, pi->msg4);
+    msg = send_xdcc_file(pi->nick, pi->hostname, pi->hostmask, pi->msg3, pi->msg4);
+    log_xdcc_request3(pi, msg);
     return;
   }
 
   if ((strcmp(pi->msg2, "INFO") == 0) && pi->msg3) {
-    ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "XDCC INFO %s", pi->msg3);
-    sendxdccinfo(pi->nick, pi->hostmask, packnumtonum(pi->msg3));
+    msg = send_xdcc_info(pi->nick, pi->hostmask, pi->msg3);
+    log_xdcc_request3(pi, msg);
     return;
   }
   if (strcmp(pi->msg2, "QUEUE") == 0) {
-    log_xdcc_request(pi->msg2, pi);
+    log_xdcc_request1(pi);
     notifyqueued_nick(pi->nick);
     return;
   }
@@ -612,7 +710,7 @@ static void command_xdcc(privmsginput *pi)
   }
 
   if (strcmp(pi->msg2, "CANCEL") == 0) {
-    log_xdcc_request(pi->msg2, pi);
+    log_xdcc_request1(pi);
     send_cancel(pi->nick);
     return;
   }
@@ -623,20 +721,20 @@ static void command_xdcc(privmsginput *pi)
       number = atoi(pi->msg3);
       log_xdcc_request2(pi->msg2, pi->msg3, pi);
     } else {
-      log_xdcc_request(pi->msg2, pi);
+      log_xdcc_request1(pi);
     }
     send_remove(pi->nick, number);
     return;
   }
 
   if (strcmp(pi->msg2, "OWNER") == 0) {
-    log_xdcc_request(pi->msg2, pi);
+    log_xdcc_request1(pi);
     send_owner(pi->nick);
     return;
   }
 
   if (strcmp(pi->msg2, "HELP") == 0) {
-    log_xdcc_request(pi->msg2, pi);
+    log_xdcc_request1(pi);
     send_help(pi->nick);
     return;
   }
@@ -661,7 +759,6 @@ static void command_xdcc(privmsginput *pi)
     /* if restrictlist is enabled, visibility rules apply */
     grouplist = gdata.restrictlist ? get_grouplist_access(pi->nick) : NULL;
     msg3e = getpart_eol(pi->line, 6);
-    log_xdcc_request2("SEARCH", msg3e, pi);
     log_xdcc_request2(pi->msg2, msg3e, pi);
     notice_slow(pi->nick, "Searching for \"%s\"...", msg3e);
     convert_spaces_to_match(msg3e);
@@ -808,17 +905,20 @@ static void autoqueuef(int pack, const char *message, privmsginput *pi)
 {
   const char *format = "** Sending You %s by DCC";
   char *tempstr = NULL;
+  const char *msg;
 
   updatecontext();
 
-  ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "AutoSend ");
   gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
   if (message) {
     tempstr = mycalloc(strlen(message) + strlen(format) - 1);
     snprintf(tempstr, strlen(message) + strlen(format) - 1,
              format, message);
   }
-  sendxdccfile(pi->nick, pi->hostname, pi->hostmask, pack, tempstr, NULL);
+  msg = send_xdcc_file2(pi->nick, pi->hostname, pi->hostmask, pack, tempstr, NULL);
+  mydelete(pi->msg2);
+  pi->msg2 = mystrdup("AutoSend");
+  log_xdcc_request3(pi, msg);
   mydelete(tempstr);
 }
 
@@ -1255,7 +1355,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
           type_list[type], gnetwork->name, pi->line);
 }
 
-static int get_nick_hostname(char *nick, char *hostname, const char* line)
+static int get_nick_hostname(char *nick, char *hostname, const char *line)
 {
   if (line && *line == ':')
     line++;
@@ -1282,7 +1382,7 @@ static int get_nick_hostname(char *nick, char *hostname, const char* line)
 #define MAX_PRIVMSG_PARTS 10
 
 /* parse a privmsg from server for user actions */
-void privmsgparse(int type, int decoded, char* line)
+void privmsgparse(int type, int decoded, char *line)
 {
   privmsginput pi;
   char *part[MAX_PRIVMSG_PARTS];

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -15,6 +15,9 @@
 
 void t_start_dcc_send(transfer *tr);
 void t_setup_dcc(transfer *tr);
+transfer *create_transfer(xdcc *xd, const char *nick, const char *hostname);
+void t_unlmited(transfer * const tr, const char *hostmask);
+void t_notice_transfer(transfer * const tr, const char *msg, int pack, int queue);
 int t_check_ip_access(transfer *const tr);
 int t_find_transfer(const char *nick, const char *filename, const char *remoteip, const char *remoteport, const char *token);
 int t_find_resume(const char *nick, const char *filename, const char *localport, const char *bytes, char *token);

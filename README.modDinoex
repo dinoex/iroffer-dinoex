@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+extend debug and log information.
+
 313) group_admin uploadhost (inspired by dondieschotte)
   After the grouplist you can define an uploaddir for this admin.
   The hostmask will be automatically added as uploadhost.

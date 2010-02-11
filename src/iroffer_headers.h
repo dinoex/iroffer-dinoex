@@ -477,9 +477,6 @@ typedef struct
 
 /*------------ function declarations ------------- */
 
-/* iroffer.c */
-int sendxdccfile(const char* nick, const char* hostname, const char* hostmask, int pack, const char* msg, const char* pwd);
-
 /* display.c */
 void initscreen(int startup, int clear);
 void uninitscreen(void);
@@ -780,9 +777,6 @@ void u_parseit(userinput * const u);
 void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, const xdcc *xd);
 void u_listdir(const userinput * const u, const char *dir);
 void u_ignore(const userinput * const u);
-
-/* main.c */
-char* addtoqueue(const char* nick, const char* hostname, int pack);
 
 #endif
 

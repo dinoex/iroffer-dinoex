@@ -27,6 +27,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_config.h"
 #include "dinoex_ruby.h"
+#include "dinoex_transfer.h"
 #include "dinoex_misc.h"
 
 #include <ctype.h>
@@ -4099,8 +4100,11 @@ void a_autogroup(const userinput * const u)
 
 void a_send(const userinput * const u)
 {
-  int num;
+  xdcc *xd;
+  transfer *tr;
   gnetwork_t *backup;
+  const char *msg;
+  int num;
   int net;
 
   updatecontext();
@@ -4116,11 +4120,18 @@ void a_send(const userinput * const u)
   if (num <= 0)
     return;
 
-  a_respond(u, "Sending %s pack %i", u->arg1, num);
-
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  sendxdccfile(u->arg1, "man", "man", num, NULL, NULL);
+
+  msg = get_download_pack(&xd, u->arg1, NULL, num, "SEND", gdata.restrictsend);
+  if (xd != NULL) {
+    a_respond(u, "Sending %s pack %i", u->arg1, num);
+    look_for_file_changes(xd);
+    tr = create_transfer(xd, u->arg1, "man");
+    t_notice_transfer(tr, NULL, num, 0);
+    t_unlmited(tr, NULL);
+    t_setup_dcc(tr);
+  }
   gnetwork = backup;
 }
 
@@ -4131,6 +4142,7 @@ void a_queue(const userinput * const u)
   int alreadytrans;
   xdcc *xd;
   char *tempstr;
+  const char *msg;
   const char *hostname = "man";
   gnetwork_t *backup;
   int net;
@@ -4162,10 +4174,8 @@ void a_queue(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  tempstr = addtoqueue(u->arg1, hostname, num);
-  ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "%s (%s on %s)",
-          u->arg1, hostname, gnetwork->name);
+  tempstr = mycalloc(maxtextlength);
+  msg = addtomainqueue(tempstr, u->arg1, NULL, num);
   notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
   gnetwork = backup;
@@ -4183,6 +4193,7 @@ void a_iqueue(const userinput * const u)
   int alreadytrans;
   xdcc *xd;
   char *tempstr;
+  const char *msg;
   const char *hostname = "man";
   gnetwork_t *backup;
   int net;
@@ -4215,10 +4226,7 @@ void a_iqueue(const userinput * const u)
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
   tempstr = mycalloc(maxtextlength);
-  tempstr = addtoidlequeue(tempstr, u->arg1, hostname, xd, num, 0);
-  ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "%s (%s on %s)",
-          u->arg1, hostname, gnetwork->name);
+  msg = addtoidlequeue(tempstr, u->arg1, NULL, xd, num, 0);
   notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
   gnetwork = backup;
