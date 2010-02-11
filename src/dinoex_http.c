@@ -140,6 +140,7 @@ static const unsigned char BASE64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmno
 
 static unsigned char base64decode[ 256 ];
 
+/* create a table for fast base64 decoding */
 void init_base64decode( void )
 {
   int i;
@@ -150,8 +151,7 @@ void init_base64decode( void )
   }
 }
 
-static void
-b64decode_quartet(unsigned char *decoded, const unsigned char *coded )
+static void b64decode_quartet(unsigned char *decoded, const unsigned char *coded )
 {
   unsigned char ch;
 
@@ -169,8 +169,7 @@ b64decode_quartet(unsigned char *decoded, const unsigned char *coded )
   decoded[ 2 ] |= ch;
 }
 
-static char *
-b64decode_string(const char *coded)
+static char *b64decode_string(const char *coded)
 {
   char *dest;
   char *result;
@@ -786,6 +785,7 @@ static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
+/* print and ad text to send it to the htpp client */
 h_respond(http * const h, const char *format, ...)
 {
   va_list args;
