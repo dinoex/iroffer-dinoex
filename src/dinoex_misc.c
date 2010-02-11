@@ -43,6 +43,7 @@
 xdcc xdcc_statefile;
 xdcc xdcc_listfile;
 
+/* returns true if pack should not be listed */
 int hide_pack(const xdcc *xd)
 {
   if (gdata.hidelockedpacks == 0)
@@ -54,6 +55,7 @@ int hide_pack(const xdcc *xd)
   return 1;
 }
 
+/* returns true if password does not match the pack */
 int check_lock(const char* lockstr, const char* pwd)
 {
   if (lockstr == NULL)
@@ -63,6 +65,7 @@ int check_lock(const char* lockstr, const char* pwd)
   return strcmp(lockstr, pwd);
 }
 
+/* returns the current number of the pack */
 int number_of_pack(xdcc *pack)
 {
   xdcc *xd;
@@ -102,6 +105,7 @@ static int get_voice(void)
   return gdata.need_voice;
 }
 
+/* returns true if prefix of user matches need_level */
 int check_level(char prefix)
 {
   int ii;
@@ -147,6 +151,7 @@ int check_level(char prefix)
   return 0;
 }
 
+/* ckeck if we have any pack with a group */
 void set_support_groups(void)
 {
   xdcc *xd;
@@ -230,6 +235,7 @@ static int stoplist_announce(const char *nick)
   return stopped;
 }
 
+/* remove all queued lines for this user */
 void stoplist(const char *nick)
 {
   char *item;
@@ -263,6 +269,7 @@ static irlist_t end_trans;
 remaining_transfer_time *end_remain;
 unsigned long end_lastrtime;
 
+/* calculate next transfer time */
 unsigned long get_next_transfer_time(void)
 {
   unsigned long old;
@@ -279,6 +286,7 @@ unsigned long get_next_transfer_time(void)
   return old;
 }
 
+/* add up the time for a queued pack */
 void add_new_transfer_time(xdcc *xd)
 {
   float speed = 0.0;
@@ -306,6 +314,7 @@ void add_new_transfer_time(xdcc *xd)
   end_lastrtime += left;
 }
 
+/* calculate the time for the current running traansfers to end */
 void guess_end_transfers(void)
 {
   transfer *tr;
@@ -354,6 +363,7 @@ void guess_end_transfers(void)
   }
 }
 
+/* reset calculated times */
 void guess_end_cleanup(void)
 {
   irlist_delete_all(&end_trans);
@@ -403,6 +413,7 @@ static int notifyqueued_queue(irlist_t *list, const char *nick, const char *ntim
   return found;
 }
 
+/* infom the user of each pack in main queue and the first pack in idle queue */
 int notifyqueued_nick(const char *nick)
 {
   struct tm *localt;
@@ -421,6 +432,7 @@ int notifyqueued_nick(const char *nick)
   return found;
 }
 
+/* notify all queued users */
 void notifyqueued(void)
 {
   int found;
@@ -442,6 +454,7 @@ void notifyqueued(void)
           found, gnetwork->name);
 }
 
+/* check a new transfer */
 void check_new_connection(transfer *const tr)
 {
   updatecontext();
@@ -452,12 +465,14 @@ void check_new_connection(transfer *const tr)
 
 static int dinoex_lasthour;
 
+/* clear all data of a pack */
 static void init_xdcc(xdcc *xd)
 {
   bzero((char *)xd, sizeof(xdcc));
   xd->file_fd = FD_UNUSED;
 }
 
+/* initializes sub systems prior config */
 void startup_dinoex(void)
 {
 #ifndef WITHOUT_HTTP
@@ -482,6 +497,7 @@ void startup_dinoex(void)
 #endif /* _OS_CYGWIN */
 }
 
+/* copy global settings into each network */
 static void global_defaults(void)
 {
   gnetwork_t *backup;
@@ -504,6 +520,7 @@ static void global_defaults(void)
   }
 }
 
+/* initializes sub systems after config */
 void config_dinoex(void)
 {
 #ifdef USE_UPNP
@@ -522,6 +539,7 @@ void config_dinoex(void)
   global_defaults();
 }
 
+/* shutdown sub systems */
 void shutdown_dinoex(void)
 {
 #ifndef WITHOUT_TELNET
@@ -539,6 +557,7 @@ void shutdown_dinoex(void)
 #endif /* USE_RUBY */
 }
 
+/* do a reahsh for all sub systems */
 void rehash_dinoex(void)
 {
 #ifndef WITHOUT_TELNET
@@ -557,6 +576,7 @@ void rehash_dinoex(void)
 #endif /* _OS_CYGWIN */
 }
 
+/* init a pack with the information from disk */
 int init_xdcc_file(xdcc *xd, char *file)
 {
   struct stat st;
@@ -603,6 +623,7 @@ static int send_xdcc_file(xdcc *xd, char *file, const char *nick, const char *ho
   return 0;
 }
 
+/* send statefile once a hour */
 void update_hour_dinoex(int hour, int minute)
 {
   xdcc *xd;
@@ -653,6 +674,7 @@ void update_hour_dinoex(int hour, int minute)
     dinoex_lasthour = hour;
 }
 
+/* convert a search string into fnmatch */
 char *grep_to_fnmatch(const char *grep)
 {
   char *raw;
@@ -667,6 +689,7 @@ char *grep_to_fnmatch(const char *grep)
   return match;
 }
 
+/* check if a pack matches a fnmatch search */
 int fnmatch_xdcc(const char *match, xdcc *xd)
 {
   const char *file;
@@ -689,6 +712,7 @@ int fnmatch_xdcc(const char *match, xdcc *xd)
   return 0;
 }
 
+/* check for disk full on uploads */
 int disk_full(const char *path)
 {
 #ifndef NO_STATVFS
@@ -732,16 +756,19 @@ int disk_full(const char *path)
   return 1;
 }
 
+/* get user_modes for current network */
 char *get_user_modes(void)
 {
   return (gnetwork->user_modes) ? gnetwork->user_modes : gdata.user_modes;
 }
 
+/* get get_nickserv_pass  for current network */
 char *get_nickserv_pass(void)
 {
   return (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
 }
 
+/* get pack by number, pack -1 is the xdcc_listfile */
 xdcc *get_xdcc_pack(int pack)
 {
   if (pack == -1)
@@ -771,6 +798,7 @@ static const char *access_need_text(void)
   return NULL;
 }
 
+/* check level and inform the user which level he needs */
 int access_need_level(const char *nick, const char *text)
 {
   const char *level;
@@ -786,6 +814,7 @@ int access_need_level(const char *nick, const char *text)
   return 0;
 }
 
+/* get pack by number and returns an error string if it failks */
 const char *get_download_pack(xdcc **xdptr, const char* nick, const char* hostmask, int pack, const char* text, int restr)
 {
   char *grouplist;
@@ -846,6 +875,7 @@ const char *get_download_pack(xdcc **xdptr, const char* nick, const char* hostma
   return NULL;
 }
 
+/* remove user from queue after he left chammel or network */
 void lost_nick(const char *nick)
 {
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -857,6 +887,7 @@ void lost_nick(const char *nick)
   queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick, 0);
 }
 
+/* returns true if dir use parent */
 int is_unsave_directory(const char *dir)
 {
   char *line;
@@ -893,6 +924,7 @@ static void mylog_write(int logfd, const char *logfile, const char *msg, ssize_t
            logfile, strerror(errno));
 }
 
+/* write a line with timestamp to a logfile */
 void logfile_add(const char *logfile, const char *line)
 {
   char tempstr[maxtextlengthshort];
@@ -922,6 +954,7 @@ void logfile_add(const char *logfile, const char *line)
   }
 }
 
+/* clculate current bandwidth as text */
 char *get_current_bandwidth(void)
 {
   char *tempstr;
@@ -937,6 +970,7 @@ char *get_current_bandwidth(void)
   return tempstr;
 }
 
+/* inform the user a trasferlimit has reahed */
 char *transfer_limit_exceeded_msg(int ii)
 {
    char *tempstr = mycalloc(maxtextlength);
@@ -952,6 +986,7 @@ char *transfer_limit_exceeded_msg(int ii)
    return tempstr;
 }
 
+/* get local date and time in ISO */
 char *user_getdatestr(char* str, time_t Tp, int len)
 {
   const char *format;
@@ -1043,6 +1078,7 @@ static int verify_bits(int bits, const unsigned char *data1, const unsigned char
   return 1; /* bits matched */
 }
 
+/* chek if socket if it matches a list of networks */
 int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
 {
   ir_cidr_t *cidr;
@@ -1073,6 +1109,7 @@ int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
   return 0;
 }
 
+/* chek if socket if it matches a list of networks */
 void add_newest_xdcc(irlist_t *list, const char *grouplist)
 {
   xdcc **best;
@@ -1112,6 +1149,7 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist)
   *best = old;
 }
 
+/* drop all strings from a channel */
 void free_channel_data(channel_t *ch)
 {
   mydelete(ch->name);
@@ -1124,6 +1162,7 @@ void free_channel_data(channel_t *ch)
   mydelete(ch->rgroup);
 }
 
+/* check if config files have changed and start a rehash */
 void auto_rehash(void)
 {
   struct stat st;
