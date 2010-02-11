@@ -235,9 +235,6 @@ void stoplist(const char *nick)
   char *item;
   int stopped = 0;
 
-  ioutput(CALLTYPE_MULTI_FIRST, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC STOP from (%s on %s)",
-          nick, gnetwork->name);
   for (item = irlist_get_head(&(gnetwork->xlistqueue)); item; ) {
     if (strcasecmp(item, nick) == 0) {
       stopped ++;
@@ -251,7 +248,9 @@ void stoplist(const char *nick)
   stopped += stoplist_queue(nick, &(gnetwork->serverq_normal));
   stopped += stoplist_announce(nick);
 
-  ioutput(CALLTYPE_MULTI_END, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (stopped %d)", stopped);
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "XDCC STOP from (%s on %s) stopped %d",
+          nick, gnetwork->name, stopped);
   notice(nick, "LIST stopped (%d lines deleted)", stopped);
 }
 
@@ -599,17 +598,7 @@ static int send_xdcc_file(xdcc *xd, char *file, const char *nick, const char *ho
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "Send: %s to %s bytes=%" LLPRINTFMT "d",
           file, nick, xd->st_size);
-  tr = irlist_add(&gdata.trans, sizeof(transfer));
-  t_initvalues(tr);
-  tr->id = get_next_tr_id();
-  tr->nick = mystrdup(nick);
-  tr->caps_nick = mystrdup(nick);
-  caps(tr->caps_nick);
-  tr->hostname = mystrdup(hostname);
-  tr->xpack = xd;
-  tr->maxspeed = xd->maxspeed;
-  tr->net = gnetwork->net;
-
+  tr = create_transfer(xd, nick, hostname);
   t_setup_dcc(tr);
   return 0;
 }
@@ -797,68 +786,64 @@ int access_need_level(const char *nick, const char *text)
   return 0;
 }
 
-xdcc *get_download_pack(const char* nick, const char* hostmask, int pack, int man, const char* text, int restr)
+const char *get_download_pack(xdcc **xdptr, const char* nick, const char* hostmask, int pack, const char* text, int restr)
 {
   char *grouplist;
   xdcc *xd;
 
   updatecontext();
 
-  if (man == 0) {
+  *xdptr = NULL;
+  if (hostmask == NULL) {
     if (!verifyshell(&gdata.downloadhost, hostmask)) {
-      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (host denied): ");
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
-      return NULL;
+      return "Denied (host denied)";
     }
     if (verifyshell(&gdata.nodownloadhost, hostmask)) {
-      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (host denied): ");
       notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
-      return NULL;
+      return "Denied (host denied)";
     }
     if (restr && access_need_level(nick, text)) {
-      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (restricted): ");
-      return NULL;
+      return "Denied (restricted)";
     }
     if (gdata.enable_nick && !isinmemberlist(gdata.enable_nick)) {
-      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (offline): ");
       notice(nick, "** XDCC %s denied, owner of this bot is not online", text);
-      return NULL;
+      return "Denied (offline)";
     }
   }
 
   if (pack == -1) {
     if (gdata.xdcclistfile) {
       if (init_xdcc_file(&xdcc_listfile, gdata.xdcclistfile))
-        return NULL;
-      return &xdcc_listfile;
+        return "(Bad Pack Number)";
+      *xdptr = &xdcc_listfile;
+      return NULL;
     }
   }
 
   if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1)) {
-    ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " (Bad Pack Number): ");
     notice(nick, "** Invalid Pack Number, Try Again");
-    return NULL;
+    return "(Bad Pack Number)";
   }
 
   xd = get_xdcc_pack(pack);
   if (xd == NULL)
-    return NULL;
+    return "(Bad Pack Number)";
 
-  if (man != 0)
-    return xd;
-
-  /* apply group visibility rules */
-  if (restr) {
-    grouplist = get_grouplist_access(nick);
-    if (!verify_group_in_grouplist(xd->group, grouplist)) {
-      ioutput(CALLTYPE_MULTI_MIDDLE, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, " Denied (group access restricted): ");
-      notice(nick, "** XDCC %s denied, you must be on the correct channel to request this pack", text);
+  if (hostmask == NULL) {
+    /* apply group visibility rules */
+    if (restr) {
+      grouplist = get_grouplist_access(nick);
+      if (!verify_group_in_grouplist(xd->group, grouplist)) {
+        notice(nick, "** XDCC %s denied, you must be on the correct channel to request this pack", text);
+        mydelete(grouplist);
+        return "Denied (group access restricted)";
+      }
       mydelete(grouplist);
-      return NULL;
     }
-    mydelete(grouplist);
   }
-  return xd;
+  *xdptr = xd;
+  return NULL;
 }
 
 void lost_nick(const char *nick)
