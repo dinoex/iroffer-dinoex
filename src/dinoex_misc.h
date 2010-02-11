@@ -45,7 +45,6 @@ char *get_nickserv_pass(void);
 
 xdcc *get_xdcc_pack(int pack);
 int access_need_level(const char *nick, const char *text);
-const char *get_download_pack(xdcc **xdptr, const char* nick, const char* hostmask, int pack, const char* text, int restr);
 
 int is_unsave_directory(const char *dir);
 

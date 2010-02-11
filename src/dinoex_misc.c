@@ -55,16 +55,6 @@ int hide_pack(const xdcc *xd)
   return 1;
 }
 
-/* returns true if password does not match the pack */
-int check_lock(const char* lockstr, const char* pwd)
-{
-  if (lockstr == NULL)
-    return 0; /* no lock */
-  if (pwd == NULL)
-    return 1; /* locked */
-  return strcmp(lockstr, pwd);
-}
-
 /* returns the current number of the pack */
 int number_of_pack(xdcc *pack)
 {
@@ -710,67 +700,6 @@ int access_need_level(const char *nick, const char *text)
     return 1;
   }
   return 0;
-}
-
-/* get pack by number and returns an error string if it failks */
-const char *get_download_pack(xdcc **xdptr, const char* nick, const char* hostmask, int pack, const char* text, int restr)
-{
-  char *grouplist;
-  xdcc *xd;
-
-  updatecontext();
-
-  *xdptr = NULL;
-  if (hostmask == NULL) {
-    if (!verifyshell(&gdata.downloadhost, hostmask)) {
-      notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
-      return "Denied (host denied)";
-    }
-    if (verifyshell(&gdata.nodownloadhost, hostmask)) {
-      notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
-      return "Denied (host denied)";
-    }
-    if (restr && access_need_level(nick, text)) {
-      return "Denied (restricted)";
-    }
-    if (gdata.enable_nick && !isinmemberlist(gdata.enable_nick)) {
-      notice(nick, "** XDCC %s denied, owner of this bot is not online", text);
-      return "Denied (offline)";
-    }
-  }
-
-  if (pack == -1) {
-    if (gdata.xdcclistfile) {
-      if (init_xdcc_file(&xdcc_listfile, gdata.xdcclistfile))
-        return "(Bad Pack Number)";
-      *xdptr = &xdcc_listfile;
-      return NULL;
-    }
-  }
-
-  if ((pack > irlist_size(&gdata.xdccs)) || (pack < 1)) {
-    notice(nick, "** Invalid Pack Number, Try Again");
-    return "(Bad Pack Number)";
-  }
-
-  xd = get_xdcc_pack(pack);
-  if (xd == NULL)
-    return "(Bad Pack Number)";
-
-  if (hostmask == NULL) {
-    /* apply group visibility rules */
-    if (restr) {
-      grouplist = get_grouplist_access(nick);
-      if (!verify_group_in_grouplist(xd->group, grouplist)) {
-        notice(nick, "** XDCC %s denied, you must be on the correct channel to request this pack", text);
-        mydelete(grouplist);
-        return "Denied (group access restricted)";
-      }
-      mydelete(grouplist);
-    }
-  }
-  *xdptr = xd;
-  return NULL;
 }
 
 /* returns true if dir use parent */
