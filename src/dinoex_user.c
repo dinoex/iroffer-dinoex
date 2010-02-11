@@ -270,22 +270,20 @@ static const char *get_download_pack(xdcc **xdptr, const char* nick, const char*
   updatecontext();
 
   *xdptr = NULL;
-  if (hostmask == NULL) {
-    if (!verifyshell(&gdata.downloadhost, hostmask)) {
-      notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
-      return "Denied (host denied)";
-    }
-    if (verifyshell(&gdata.nodownloadhost, hostmask)) {
-      notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
-      return "Denied (host denied)";
-    }
-    if (restr && access_need_level(nick, text)) {
-      return "Denied (restricted)";
-    }
-    if (gdata.enable_nick && !isinmemberlist(gdata.enable_nick)) {
-      notice(nick, "** XDCC %s denied, owner of this bot is not online", text);
-      return "Denied (offline)";
-    }
+  if (!verifyshell(&gdata.downloadhost, hostmask)) {
+    notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
+    return "Denied (host denied)";
+  }
+  if (verifyshell(&gdata.nodownloadhost, hostmask)) {
+    notice(nick, "** XDCC %s denied, I don't send transfers to %s", text, hostmask);
+    return "Denied (host denied)";
+  }
+  if (restr && access_need_level(nick, text)) {
+    return "Denied (restricted)";
+  }
+  if (gdata.enable_nick && !isinmemberlist(gdata.enable_nick)) {
+    notice(nick, "** XDCC %s denied, owner of this bot is not online", text);
+    return "Denied (offline)";
   }
 
   if (pack == -1) {
@@ -306,17 +304,15 @@ static const char *get_download_pack(xdcc **xdptr, const char* nick, const char*
   if (xd == NULL)
     return "(Bad Pack Number)";
 
-  if (hostmask == NULL) {
-    /* apply group visibility rules */
-    if (restr) {
-      grouplist = get_grouplist_access(nick);
-      if (!verify_group_in_grouplist(xd->group, grouplist)) {
-        notice(nick, "** XDCC %s denied, you must be on the correct channel to request this pack", text);
-        mydelete(grouplist);
-        return "Denied (group access restricted)";
-      }
+  /* apply group visibility rules */
+  if (restr) {
+    grouplist = get_grouplist_access(nick);
+    if (!verify_group_in_grouplist(xd->group, grouplist)) {
+      notice(nick, "** XDCC %s denied, you must be on the correct channel to request this pack", text);
       mydelete(grouplist);
+      return "Denied (group access restricted)";
     }
+    mydelete(grouplist);
   }
   *xdptr = xd;
   return NULL;
