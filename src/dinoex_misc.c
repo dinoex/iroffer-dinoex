@@ -361,15 +361,6 @@ void notifyqueued(void)
           found, gnetwork->name);
 }
 
-/* check a new transfer */
-void check_new_connection(transfer *const tr)
-{
-  updatecontext();
-  geoip_new_connection(tr);
-  updatecontext();
-  t_check_duplicateip(tr);
-}
-
 static int dinoex_lasthour;
 
 /* clear all data of a pack */

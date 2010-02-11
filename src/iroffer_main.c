@@ -856,7 +856,7 @@ static void mainloop (void) {
               FD_ISSET(tr->con.listensocket, &gdata.readset))
             {
               t_establishcon(tr);
-              check_new_connection(tr);
+              t_check_new_connection(tr);
             }
           
           /*----- look for junk to read ----- */

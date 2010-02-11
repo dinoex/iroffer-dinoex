@@ -22,7 +22,7 @@ int t_check_ip_access(transfer *const tr);
 int t_find_transfer(const char *nick, const char *filename, const char *remoteip, const char *remoteport, const char *token);
 int t_find_resume(const char *nick, const char *filename, const char *localport, const char *bytes, char *token);
 void t_connected(transfer *tr);
-void t_check_duplicateip(transfer *const newtr);
+void t_check_new_connection(transfer *const tr);
 int verify_acknowlede(transfer *tr);
 const char *t_print_state(transfer *const tr);
 int t_select_fdset(int highests, int changequartersec);
