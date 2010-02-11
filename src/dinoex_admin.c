@@ -4103,7 +4103,6 @@ void a_send(const userinput * const u)
   xdcc *xd;
   transfer *tr;
   gnetwork_t *backup;
-  const char *msg;
   int num;
   int net;
 
