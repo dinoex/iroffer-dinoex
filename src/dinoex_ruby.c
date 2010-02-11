@@ -521,8 +521,7 @@ static void check_script(const char *name)
   load_script(name);
 }
 
-static int
-do_on_event(VALUE userobject, const char *event)
+static int do_on_event(VALUE userobject, const char *event)
 {
   ID method;
   VALUE skip;

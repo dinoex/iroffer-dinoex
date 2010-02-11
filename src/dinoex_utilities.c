@@ -36,10 +36,11 @@ char *mystrdup2(const char *str, const char *src_function, const char *src_file,
 
 #endif /* WITHOUT_MEMSAVE */
 
-/* append a suffix to a string */
 #ifndef WITHOUT_MEMSAVE
+/* append a suffix to a string, recording origin */
 char *mystrsuffix2(const char *str, const char *suffix, const char *src_function, const char *src_file, int src_line)
 #else
+/* append a suffix to a string */
 char *mystrsuffix(const char *str, const char *suffix)
 #endif /* WITHOUT_MEMSAVE */
 {
@@ -56,10 +57,11 @@ char *mystrsuffix(const char *str, const char *suffix)
   return copy;
 }
 
-/* append a suffix to a string and adding a separation character */
 #ifndef WITHOUT_MEMSAVE
+/* append a suffix to a string and adding a separation character, recording origin */
 char *mystrjoin2(const char *str1, const char *str2, char delimiter, const char *src_function, const char *src_file, int src_line)
 #else
+/* append a suffix to a string and adding a separation character */
 char *mystrjoin(const char *str1, const char *str2, char delimiter)
 #endif /* WITHOUT_MEMSAVE */
 {
@@ -576,11 +578,11 @@ static void clean_missing_parts(char **result, int part, int howmany)
     result[i] = NULL;
 }
 
-/* split a line in a number of arguments */
 #ifndef WITHOUT_MEMSAVE
-int get_argv2(char **result, const char *line, int howmany,
-             const char *src_function, const char *src_file, int src_line)
+/* split a line in a number of arguments, recording orign */
+int get_argv2(char **result, const char *line, int howmany, const char *src_function, const char *src_file, int src_line)
 #else /* WITHOUT_MEMSAVE */
+/* split a line in a number of arguments */
 int get_argv(char **result, const char *line, int howmany)
 #endif /* WITHOUT_MEMSAVE */
 {
@@ -666,11 +668,11 @@ int get_argv(char **result, const char *line, int howmany)
   }
 }
 
-/* extract one argument from a line */
 #ifndef WITHOUT_MEMSAVE
-char *getpart2(const char *line, int howmany,
-               const char *src_function, const char *src_file, int src_line)
+/* extract one argument from a line, recording orign */
+char *getpart2(const char *line, int howmany, const char *src_function, const char *src_file, int src_line)
 #else /* WITHOUT_MEMSAVE */
+/* extract one argument from a line */
 char *getpart(const char *line, int howmany)
 #endif /* WITHOUT_MEMSAVE */
 {
