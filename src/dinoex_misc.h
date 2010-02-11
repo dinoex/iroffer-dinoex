@@ -17,12 +17,10 @@ extern xdcc xdcc_statefile;
 extern xdcc xdcc_listfile;
 
 int hide_pack(const xdcc *xd);
-int check_lock(const char* lockstr, const char* pwd);
 int number_of_pack(xdcc *pack);
 int check_level(char prefix);
 
 void set_support_groups(void);
-void stoplist(const char *nick);
 unsigned long get_next_transfer_time(void);
 void add_new_transfer_time(xdcc *xd);
 void guess_end_transfers(void);
@@ -48,8 +46,6 @@ char *get_nickserv_pass(void);
 xdcc *get_xdcc_pack(int pack);
 int access_need_level(const char *nick, const char *text);
 const char *get_download_pack(xdcc **xdptr, const char* nick, const char* hostmask, int pack, const char* text, int restr);
-
-void lost_nick(const char *nick);
 
 int is_unsave_directory(const char *dir);
 

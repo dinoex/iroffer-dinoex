@@ -167,99 +167,6 @@ void set_support_groups(void)
   }
 }
 
-static int stoplist_queue(const char *nick, irlist_t *list)
-{
-  char *item;
-  char *copy;
-  char *end;
-  char *inick;
-  int stopped = 0;
-
-  for (item = irlist_get_head(list); item; ) {
-    inick = NULL;
-    copy = mystrdup(item);
-    inick = strchr(copy, ' ');
-    if (inick != NULL) {
-      *(inick++) = 0;
-      end = strchr(inick, ' ');
-      if (end != NULL) {
-        *(end++) = 0;
-        if (strcasecmp(inick, nick) == 0) {
-          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
-            stopped ++;
-            mydelete(copy);
-            item = irlist_delete(list, item);
-            continue;
-          }
-        }
-      }
-    }
-    mydelete(copy);
-    item = irlist_get_next(item);
-  }
-  return stopped;
-}
-
-static int stoplist_announce(const char *nick)
-{
-  channel_announce_t *item;
-  char *copy;
-  char *end;
-  char *inick;
-  int stopped = 0;
-
-  item = irlist_get_head(&(gnetwork->serverq_channel));
-  while (item) {
-    inick = NULL;
-    copy = mystrdup(item->msg);
-    inick = strchr(copy, ' ');
-    if (inick != NULL) {
-      *(inick++) = 0;
-      end = strchr(inick, ' ');
-      if (end != NULL) {
-        *(end++) = 0;
-        if (strcasecmp(inick, nick) == 0) {
-          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
-            stopped ++;
-            mydelete(copy);
-            mydelete(item->msg);
-            item = irlist_delete(&(gnetwork->serverq_channel), item);
-            continue;
-          }
-        }
-      }
-    }
-    mydelete(copy);
-    item = irlist_get_next(item);
-  }
-  return stopped;
-}
-
-/* remove all queued lines for this user */
-void stoplist(const char *nick)
-{
-  char *item;
-  int stopped = 0;
-
-  for (item = irlist_get_head(&(gnetwork->xlistqueue)); item; ) {
-    if (strcasecmp(item, nick) == 0) {
-      stopped ++;
-      item = irlist_delete(&(gnetwork->xlistqueue), item);
-      continue;
-    }
-    item = irlist_get_next(item);
-  }
-
-  stopped += stoplist_queue(nick, &(gnetwork->serverq_slow));
-  stopped += stoplist_queue(nick, &(gnetwork->serverq_normal));
-  stopped += stoplist_announce(nick);
-
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC STOP from (%s on %s) stopped %d",
-          nick, gnetwork->name, stopped);
-  notice(nick, "LIST stopped (%d lines deleted)", stopped);
-}
-
 typedef struct {
   transfer *tr;
   int left;
@@ -873,18 +780,6 @@ const char *get_download_pack(xdcc **xdptr, const char* nick, const char* hostma
   }
   *xdptr = xd;
   return NULL;
-}
-
-/* remove user from queue after he left chammel or network */
-void lost_nick(const char *nick)
-{
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "Nickname %s on %s left",
-          nick,
-          gnetwork->name);
-  stoplist(nick);
-  queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick, 0);
-  queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick, 0);
 }
 
 /* returns true if dir use parent */

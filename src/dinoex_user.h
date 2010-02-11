@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -14,5 +14,6 @@
  */
 
 void privmsgparse(int type, int decoded, char* line);
+void lost_nick(const char *nick);
 
 /* End of File */
