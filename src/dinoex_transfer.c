@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_transfer.h"
 #include "dinoex_irc.h"
+#include "dinoex_geoip.h"
 #include "dinoex_misc.h"
 
 /* send DCC command to start download */
@@ -403,7 +404,7 @@ void t_connected(transfer *tr)
 }
 
 /* check if a transfer will use more  connections per user than allowed */
-void t_check_duplicateip(transfer *const newtr)
+static void t_check_duplicateip(transfer *const newtr)
 {
   igninfo *ignore;
   char *bhostmask;
@@ -464,6 +465,15 @@ void t_check_duplicateip(transfer *const newtr)
   }
 
   write_statefile();
+}
+
+/* check a new transfer */
+void t_check_new_connection(transfer *const tr)
+{
+  updatecontext();
+  geoip_new_connection(tr);
+  updatecontext();
+  t_check_duplicateip(tr);
 }
 
 /* find out how many bytes the user has received */
