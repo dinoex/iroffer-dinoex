@@ -4120,18 +4120,18 @@ void a_send(const userinput * const u)
   if (num <= 0)
     return;
 
-  backup = gnetwork;
-  gnetwork = &(gdata.networks[net]);
+  xd = get_xdcc_pack(num);
+  if (xd == NULL)
+    return;
 
-  msg = get_download_pack(&xd, u->arg1, NULL, num, "SEND", gdata.restrictsend);
-  if (xd != NULL) {
-    a_respond(u, "Sending %s pack %i", u->arg1, num);
-    look_for_file_changes(xd);
-    tr = create_transfer(xd, u->arg1, "man");
-    t_notice_transfer(tr, NULL, num, 0);
-    t_unlmited(tr, NULL);
-    t_setup_dcc(tr);
-  }
+  backup = gnetwork;
+  a_respond(u, "Sending %s pack %i", u->arg1, num);
+  gnetwork = &(gdata.networks[net]);
+  look_for_file_changes(xd);
+  tr = create_transfer(xd, u->arg1, "man");
+  t_notice_transfer(tr, NULL, num, 0);
+  t_unlmited(tr, NULL);
+  t_setup_dcc(tr);
   gnetwork = backup;
 }
 
