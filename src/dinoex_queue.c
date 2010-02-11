@@ -365,6 +365,7 @@ const char *addtomainqueue(char *tempstr, const char *nick, const char *hostname
 
 static const char *send_queue_msg[] = { "", " (low bandwidth)" " (manual)" };
 
+/* send the next item form the queue */
 void send_from_queue(int type, int pos, char *lastnick)
 {
   int usertrans;

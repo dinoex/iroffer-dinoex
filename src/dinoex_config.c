@@ -139,7 +139,7 @@ static config_bool_typ config_parse_bool[] = {
 {NULL, NULL }};
 
 
-/* dump a string to console and logfile */
+/* dump a string to logfile */
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 1, 2)))
@@ -152,13 +152,13 @@ dump_line(const char *format, ...)
    va_end(args);
 }
 
-/* dump an integer variable to console and logfile */
+/* dump an integer variable to logfile */
 void dump_config_int2(const char *name, int val)
 {
   dump_line("GDATA * " "%s: %d", name, val);
 }
 
-/* dump a string variable to console and logfile */
+/* dump a string variable to logfile */
 void dump_config_string2(const char *name, const char *val)
 {
   dump_line("GDATA * " "%s: %s", name, val ? val : "<undef>" );

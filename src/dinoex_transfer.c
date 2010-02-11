@@ -93,6 +93,7 @@ void t_setup_dcc(transfer *tr)
   t_start_dcc_send(tr);
 }
 
+/* create a new transfer */
 transfer *create_transfer(xdcc *xd, const char *nick, const char *hostname)
 {
   transfer *tr;
@@ -123,6 +124,7 @@ static void t_unlmited2(transfer * const tr, const char *hostmask)
            tr->nick, hostmask, gnetwork->name);
 }
 
+/* check for a match with unlimitedhost */
 void t_unlmited(transfer * const tr, const char *hostmask)
 {
   char *qhostmask;
@@ -146,6 +148,7 @@ static void notice_transfer(const char *nick, xdcc *xd, const char *msg)
   mydelete(sizestrstr);
 }
 
+/* inform the user that the bot is starting a transfer */
 void t_notice_transfer(transfer * const tr, const char *msg, int pack, int queue)
 {
   char *tempstr;
