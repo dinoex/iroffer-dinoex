@@ -327,6 +327,7 @@ int t_find_resume(const char *nick, const char *filename, const char *localport,
     if (strcasecmp(tr->caps_nick, nick))
       continue;
 
+    /* the filename can be converted */
     if (guess == NULL)
       guess = tr;
     if (strcasestr(tr->xpack->file, filename))
