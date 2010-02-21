@@ -2248,7 +2248,7 @@
 2536 "  </idlequeue>\n"
 2537 "CHCOLOR"
 2538 "n [m] x"
-2539 "Set the pack <n> to <m> to color <x>"
+2539 "Imposta i pacchi da <n> ad <m> col colore <x>"
 2540 "\003%d%s\003"
 2542 "COLOR: [Pack %i] set: %d"
 2543 "packcolor"
