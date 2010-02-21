@@ -141,6 +141,7 @@ void close_server(void)
   gnetwork->lastservercontact = gdata.curtime + gdata.reconnect_delay;
 }
 
+#if defined(USE_OPENSSL) || defined(USE_GNUTLS)
 static char *keyfile_present(const char *suffix)
 {
   char *tempstr;
@@ -155,6 +156,7 @@ static char *keyfile_present(const char *suffix)
   mydelete(tempstr);
   return NULL;
 }
+#endif /* USE_OPENSSL or USE_GNUTLS */
 
 #ifdef USE_OPENSSL
 static void load_ssl_cert(const char *filename)
@@ -302,9 +304,9 @@ static int load_network_key(void)
 }
 
 static int cert_callback(gnutls_session_t session,
-                         const gnutls_datum_t * req_ca_rdn, int nreqs,
-                         const gnutls_pk_algorithm_t * sign_algos,
-                         int sign_algos_length, gnutls_retr_st * st)
+                         const gnutls_datum_t * UNUSED(req_ca_rdni), int UNUSED(nreqs),
+                         const gnutls_pk_algorithm_t * UNUSED(sign_algos),
+                         int UNUSED(sign_algos_length), gnutls_retr_st * st)
 {
   gnutls_certificate_type_t type;
 
