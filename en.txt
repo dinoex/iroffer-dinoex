@@ -1473,7 +1473,7 @@
 1651 "ip=%s\n"
 1652 "usenatip of %s looks wrong, this is probably not what you want to do"
 1653 "PRVMSG-CHAN: Output too large, ignoring!"
-1654 "XDCC STOP from (%s on %s) stopped %d"
+1654 "XDCC STOP from (%s %s on %s) stopped %d"
 1656 "Notifying Queued status to %s on %s"
 1657 "REMOVE %d"
 1658 "Resetting download limit of pack %d, used %d"
