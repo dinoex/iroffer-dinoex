@@ -2331,7 +2331,7 @@
 2620 "op"
 2621 "  Ignoro il nome file errato: %s"
 2622 "\1DCC CHAT CHAT %s %s\1"
-2623 "DCC passive Chat negata, usa il comando \"/MSG %s ADMIN password CHATME\ "."
+2623 "DCC passive Chat negata, usa il comando \"/MSG %s ADMIN password CHATME \"."
 2624 "passive_dcc_chat"
 2625 ".pem"
 2626 ".crt"
