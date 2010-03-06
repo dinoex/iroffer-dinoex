@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+314) -w dir
+  Setze dir als das aktuelle Verzeichnis.
+
 Debugging und Logging verbessert.
 
 313) group_admin uploadhost

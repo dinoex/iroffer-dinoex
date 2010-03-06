@@ -2341,3 +2341,4 @@
 2630 "Forced quit on %s: %s"
 2631 "** %s: %s\n"
 2632 "XDCC %s %s%s%s (%s %s on %s)"
+2633 "        -w dir    Chdir to dir as working directory.\n"

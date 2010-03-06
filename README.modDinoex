@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+314) -w dir
+  Chdir to dir as working directory.
+
 extend debug and log information.
 
 313) group_admin uploadhost (inspired by dondieschotte)

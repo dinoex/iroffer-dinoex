@@ -319,6 +319,7 @@ const char *chrootdir;
 #if !defined(NO_SETUID)
 const char *runasuser;
 #endif
+const char *workdir;
 const char *import;
 
 irlist_t listen_ports;
