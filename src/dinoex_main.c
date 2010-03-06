@@ -80,6 +80,7 @@ usage(void)
 #if !defined(NO_CHROOT)
 "        -t dir    Chroot to dir (you have to start as root).\n"
 #endif
+"        -w dir    Chdir to dir as working directory.\n"
 "        -i file   Import and old style mybot.xdcc file.\n"
 "\n", ir_basename);
   exit(64);
@@ -137,6 +138,10 @@ void command_options(int argc, char *const *argv)
       case 'v': /* show version */
         printf("iroffer-dinoex " VERSIONLONG ", see " "http://iroffer.dinoex.net/" "\n");
         exit(0);
+      case 'w': /* workdir */
+        GET_NEXT_DATA(cptr);
+        gdata.workdir = cptr;
+        break;
       default:
         usage();
       }

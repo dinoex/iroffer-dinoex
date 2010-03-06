@@ -1932,7 +1932,7 @@ void startupiroffer(void) {
 #endif
 
 #if !defined(NO_CHROOT)
-   if (gdata.chrootdir) {
+   if ((geteuid() == 0) && (gdata.chrootdir)) {
       printf( "** Changing root filesystem to '%s'\n", gdata.chrootdir );
       if( chroot( gdata.chrootdir ) < 0 ) {
 		   outerror( OUTERROR_TYPE_CRASH, "Can't chroot: %s", strerror(errno));
@@ -1942,6 +1942,11 @@ void startupiroffer(void) {
       }
    }
 #endif
+   if (gdata.workdir) {
+      if( chdir(gdata.workdir) < 0 ) {
+        outerror( OUTERROR_TYPE_CRASH, "Can't chdir: %s", strerror(errno) );
+      }
+   }
 #if !defined(NO_SETUID)
    if (gdata.runasuser) {
       
@@ -1957,9 +1962,12 @@ void startupiroffer(void) {
         {
           outerror(OUTERROR_TYPE_CRASH,"Can't change group: %s", strerror(errno));
         }
+      if (geteuid() == 0)
+        {
       if (setgroups(ngroups,groups) < 0)
         {
           outerror(OUTERROR_TYPE_CRASH,"Can't set group list: %s", strerror(errno));
+        }
         }
       if (setuid(runasuid) < 0)
         {
