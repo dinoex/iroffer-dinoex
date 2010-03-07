@@ -267,9 +267,12 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
   xdcc *xd;
   char *key;
   char *val;
+  char *tempstr;
   int nr;
   int ival;
   off_t oval;
+  size_t len;
+  VALUE rval;
 
   if (NIL_P(rnr) || NIL_P(rkey))
     return Qnil;
@@ -310,15 +313,59 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
       val = xd->trigger;
       break;
     }
+    if (strcmp(key, "lock") == 0) {
+      val = xd->lock;
+      break;
+    }
     if (strcmp(key, "gets") == 0) {
       ival = xd->gets;
+      return INT2NUM(ival);
+    }
+    if (strcmp(key, "color") == 0) {
+      ival = xd->color;
+      return INT2NUM(ival);
+    }
+    if (strcmp(key, "dlimit_max") == 0) {
+      ival = xd->dlimit_max;
+      return INT2NUM(ival);
+    }
+    if (strcmp(key, "dlimit_used") == 0) {
+      ival = xd->dlimit_used;
+      return INT2NUM(ival);
+    }
+    if (strcmp(key, "has_md5sum") == 0) {
+      ival = xd->has_md5sum;
+      return INT2NUM(ival);
+    }
+    if (strcmp(key, "has_crc32") == 0) {
+      ival = xd->has_crc32;
       return INT2NUM(ival);
     }
     if (strcmp(key, "size") == 0) {
       oval = xd->st_size;
       return OFFT2NUM(oval);
     }
-    /* crc32, md5sum ? */
+    if (strcmp(key, "mtime") == 0) {
+      return rb_time_new(xd->mtime, 0);
+    }
+    if (strcmp(key, "xtime") == 0) {
+      return rb_time_new(xd->xtime, 0);
+    }
+    if (strcmp(key, "crc32") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
+      len = snprintf(tempstr, maxtextlengthshort, "%.8lX", xd->crc32);
+      rval = rb_str_new(tempstr, len);
+      mydelete(tempstr);
+      return rval;
+    }
+    if (strcmp(key, "md5sum") == 0) {
+      tempstr = mycalloc(maxtextlengthshort);
+      len = snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
+      rval = rb_str_new(tempstr, len);
+      mydelete(tempstr);
+      return rval;
+    }
+    /* minspeed, maxspeed */
     return Qnil;
   }
   if (val == NULL)
