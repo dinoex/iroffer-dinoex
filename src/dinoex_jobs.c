@@ -1,13 +1,13 @@
-/*
- * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
- *
- * By using this file, you agree to the terms and conditions set
- * forth in the GNU General Public License.  More information is
- * available in the LICENSE file.
- *
- * If you received this file without documentation, it can be
- * downloaded from http://iroffer.dinoex.net/
+	/*
+	 * by Dirk Meyer (dinoex)
+	 * Copyright (C) 2004-2010 Dirk Meyer
+	 *
+	 * By using this file, you agree to the terms and conditions set
+	 * forth in the GNU General Public License.  More information is
+	 * available in the LICENSE file.
+	 *
+	 * If you received this file without documentation, it can be
+	 * downloaded from http://iroffer.dinoex.net/
  *
  * $Id$
  *
@@ -2116,6 +2116,51 @@ void a_read_config_files(const userinput *u)
   }
   gdata.networks_online ++;
   mydelete(templine);
+}
+
+/* get the new filename for a logfile */
+char *new_logfilename(const char *logfile)
+{
+  struct tm *lthen;
+  char *newname;
+  int max;
+
+  updatecontext();
+
+  if (logfile == NULL)
+    return NULL;
+
+  lthen = localtime(&gdata.curtime);
+  max = strlen(logfile) + 12;
+
+  newname = mymalloc(max);
+  snprintf(newname, max, "%s.%04i-%02i-%02i",
+          logfile,
+          lthen->tm_year+1900,
+          lthen->tm_mon+1,
+          lthen->tm_mday);
+  return newname;
+}
+
+/* rotae logfile */
+int rotatelog(const char *logfile)
+{
+  char *newname;
+
+  updatecontext();
+
+  newname = new_logfilename(logfile);
+  if (newname == NULL)
+    return 0;
+
+  if (rename(logfile, newname) < 0) {
+    mylog(CALLTYPE_NORMAL, "File %s could not be moved to %s: %s", logfile, newname, strerror(errno));
+    mydelete(newname);
+    return 0;
+  }
+  mylog(CALLTYPE_NORMAL, "File %s was moved to %s.", logfile, newname);
+  mydelete(newname);
+  return 1;
 }
 
 /* End of File */

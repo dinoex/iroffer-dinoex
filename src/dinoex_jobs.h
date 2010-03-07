@@ -75,4 +75,7 @@ void a_rehash_jump(void);
 void a_rehash_cleanup(const userinput *u);
 void a_read_config_files(const userinput *u);
 
+char *new_logfilename(const char *logfile);
+int rotatelog(const char *logfile);
+
 /* End of File */

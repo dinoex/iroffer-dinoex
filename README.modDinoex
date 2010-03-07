@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+315) logrotate (inspired by TheDeath)
+  The logfile_httpd will be rotated too.
+
 314) -w dir
   Chdir to dir as working directory.
 
