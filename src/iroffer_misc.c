@@ -2111,7 +2111,6 @@ void startupiroffer(void) {
 
 void isrotatelog(void)
 {
-  struct tm *lthen;
   char *newname;
   int call_val;
   
@@ -2124,14 +2123,8 @@ void isrotatelog(void)
       return;
     }
   
-  lthen = localtime(&gdata.curtime);
-  
-  newname = mymalloc(strlen(gdata.logfile) + 12);
-  sprintf(newname, "%s.%04i-%02i-%02i",
-          gdata.logfile,
-          lthen->tm_year+1900,
-          lthen->tm_mon+1,
-          lthen->tm_mday);
+  rotatelog(gdata.logfile_httpd);
+  newname = new_logfilename(gdata.logfile);
   
   mylog(CALLTYPE_NORMAL,"Rotating Log to '%s'", newname);
   call_val = link(gdata.logfile, newname);

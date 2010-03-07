@@ -96,6 +96,7 @@ TheDeath
 	admin command "NOANNOUNCE"
 	admin command "PRINT"
 	option "passive_dcc_chat"
+	option "logrotate" for httpd
 
 [GFE]Lunix
 	alias xdcc list group <group>
