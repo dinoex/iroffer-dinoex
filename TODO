@@ -1,6 +1,8 @@
 [Iroffer.dinoex.de]
 Feature #16 add support for variables in the announces
 Feature #38 xdcc command to export the crc32/md5 as sumfile
+Feature #58 httpd logs in a webserver (apache) compatible format
+Feature #59 delete old rotated logfiles
 
 [Iroffer.org]
 
@@ -70,6 +72,8 @@ Short Term Features:
   1379  different packlists for different groups
   1394  pack size included in the output of announce
   1438  more announce types for plist
+  1440  add tags Bold, Underline and Dual Color at CHCOLOR command
+  1442  queue set of packs.
 
 Long Term Features:
   1013  notify adminnick when autoadd
@@ -196,4 +200,5 @@ Not going to happen anytime soon:
   1351  http dowloads for users
   1398  dcc password containing spaces
   1437  trigger to find a pack by number of the episiode
+  1443  make ctrl+c disabled
 
