@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+317) restrictsend, restrictlist (inspired by HymnToLife)
+  You can set restrictsend and restrictlist for each network differently.
+
 316) ruby_script
   Extend method "info_pack" to request fields of a pack.
   Implemented: "lock", "dlimit_max", "dlimit_used", "has_md5sum", "has_crc32", "mtime", "xtime", "crc32", "md5sum"

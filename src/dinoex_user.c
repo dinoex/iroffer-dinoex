@@ -338,7 +338,7 @@ static const char *send_xdcc_file2(const char *nick, const char *hostname, const
 
   updatecontext();
 
-  bad = get_download_pack(&xd, nick, hostmask, pack, "SEND", gdata.restrictsend);
+  bad = get_download_pack(&xd, nick, hostmask, pack, "SEND", get_restrictsend());
   if (xd == NULL) {
     return bad;
   }
@@ -566,6 +566,12 @@ static void log_xdcc_request3(privmsginput *pi, const char *msg)
           pi->msg2, pi->msg3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
 }
 
+/* get restrictsend,for current network */
+static int get_restrictlist(void)
+{
+  return (gnetwork->restrictlist != -1) ? gnetwork->restrictlist : gdata.restrictlist;
+}
+
 static const char *send_xdcc_info(const char *nick, const char *hostmask, const char *arg)
 {
   userinput *pubinfo;
@@ -582,7 +588,7 @@ static const char *send_xdcc_info(const char *nick, const char *hostmask, const 
   }
 
   pack = packnumtonum(arg);
-  bad = get_download_pack(&xd, nick, hostmask, pack, "INFO", gdata.restrictlist);
+  bad = get_download_pack(&xd, nick, hostmask, pack, "INFO", get_restrictlist());
   if (xd == NULL)
     return bad;
 
@@ -617,7 +623,7 @@ static int parse_xdcc_list(const char *nick, char *msg3)
     restrictprivlistmsg(nick);
     return 2; /* deny */
   }
-  if (gdata.restrictlist && access_need_level(nick, "LIST")) {
+  if (get_restrictlist() && access_need_level(nick, "LIST")) {
     return 2; /* deny */
   }
   for (user = irlist_get_head(&(gnetwork->xlistqueue));
@@ -924,7 +930,7 @@ static void command_xdcc(privmsginput *pi)
     int k;
 
     /* if restrictlist is enabled, visibility rules apply */
-    grouplist = gdata.restrictlist ? get_grouplist_access(pi->nick) : NULL;
+    grouplist = get_restrictlist() ? get_grouplist_access(pi->nick) : NULL;
     msg3e = getpart_eol(pi->line, 6);
     log_xdcc_request2(pi->msg2, msg3e, pi);
     notice_slow(pi->nick, "Searching for \"%s\"...", msg3e);

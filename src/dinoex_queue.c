@@ -52,6 +52,10 @@ void queue_reverify_restrictsend(irlist_t *list)
       pq = irlist_get_next(pq);
       continue;
     }
+    if (!get_restrictsend()) {
+      pq = irlist_get_next(pq);
+      continue;
+    }
     if (strcmp(pq->hostname, "man") == 0) {
       pq = irlist_get_next(pq);
       continue;

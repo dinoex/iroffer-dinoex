@@ -1023,6 +1023,7 @@ void dumpgdata(void)
       gdata_print_int(networks[ss].usenatip);
       gdata_print_int(networks[ss].getip_net);
       gdata_print_string(networks[ss].natip);
+      gdata_print_int(networks[ss].need_voice);
       gdata_print_int(networks[ss].need_level);
   
       gdata_irlist_iter_start(networks[ss].proxyinfo, char);
@@ -1055,11 +1056,16 @@ void dumpgdata(void)
       gdata_print_int(networks[ss].servertime);
       gdata_print_number_cast("%d", networks[ss].serverstatus, int);
       gdata_print_number_cast("%d", networks[ss].botstatus, int);
+      gdata_print_number_cast("%d", networks[ss].lag_method, int);
       gdata_print_long(networks[ss].connecttime);
       gdata_print_long(networks[ss].lastservercontact);
       gdata_print_long(networks[ss].lastnotify);
+      gdata_print_long(networks[ss].lastping);
       gdata_print_int(networks[ss].slow_privmsg);
       gdata_print_long(networks[ss].lastslow);
+      gdata_print_long(networks[ss].lag);
+      gdata_print_long(networks[ss].next_identify);
+      gdata_print_long(networks[ss].next_restrict);
   
       gdata_irlist_iter_start(networks[ss].serverq_fast, char);
       gdata_iter_as_print_string;
@@ -1098,6 +1104,9 @@ void dumpgdata(void)
           gdata_print_int_array(networks[ss].inamnt);
         }
     
+      gdata_print_int(networks[ss].noannounce);
+      gdata_print_int(networks[ss].restrictsend);
+      gdata_print_int(networks[ss].restrictlist);
     } /* networks */
    
   /* r_channel t_channel r_pidfile */
@@ -1149,7 +1158,6 @@ void dumpgdata(void)
   /* members */
   gdata_irlist_iter_end;
   
-
       gdata_print_int(networks[ss].recentsent);
       gdata_print_int(networks[ss].nick_number);
   

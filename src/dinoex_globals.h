@@ -196,6 +196,8 @@ typedef struct {
   int need_level;
   int noannounce;
   int slow_privmsg;
+  int restrictsend;
+  int restrictlist;
   how_e r_connectionmethod;
   userinput_method_e lag_method;
 
