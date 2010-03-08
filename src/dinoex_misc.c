@@ -650,10 +650,16 @@ char *get_user_modes(void)
   return (gnetwork->user_modes) ? gnetwork->user_modes : gdata.user_modes;
 }
 
-/* get get_nickserv_pass  for current network */
+/* get get_nickserv_pass for current network */
 char *get_nickserv_pass(void)
 {
   return (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
+}
+
+/* get restrictsend,for current network */
+int get_restrictsend(void)
+{
+  return (gnetwork->restrictsend != -1) ? gnetwork->restrictsend : gdata.restrictsend;
 }
 
 /* get pack by number, pack -1 is the xdcc_listfile */

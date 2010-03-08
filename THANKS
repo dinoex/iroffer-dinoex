@@ -503,6 +503,7 @@ HymnToLife
 	reporting "FETCHCANCEL" bug
 	reporting "DCLD" nicknames in caps
 	buildfix for "GNU TLS"
+	option "restrictsend" per network
 
 Globulus
 	debugging "mirc_dcc64"

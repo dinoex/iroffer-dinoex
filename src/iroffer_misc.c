@@ -1584,6 +1584,8 @@ void reinit_config_vars(void)
     gdata.networks[si].need_voice = -1;
     gdata.networks[si].need_level = -1;
     gdata.networks[si].slow_privmsg = 1;
+    gdata.networks[si].restrictsend = -1;
+    gdata.networks[si].restrictlist = -1;
   } /* networks */
   mydelete(gdata.logfile);
   gdata.logrotate = 0;
@@ -2449,16 +2451,13 @@ void reverify_restrictsend(void)
   gnetwork_t *backup;
   transfer *tr;
   
-  if (!gdata.restrictsend)
-    {
-      return;
-    }
-  
   backup = gnetwork;
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
     {
       gnetwork = &(gdata.networks[tr->net]);
       if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
+         continue;
+      if (!get_restrictsend())
          continue;
       if (gdata.curtime < gnetwork->next_restrict)
          continue;

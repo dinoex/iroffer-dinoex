@@ -1314,6 +1314,26 @@ static void c_proxyinfo(char *var)
    irlist_add_string(&gdata.networks[gdata.networks_online].proxyinfo, var);
 }
 
+static void c_restrictlist(char *var)
+{
+  int val;
+
+  val = parse_bool_val("restrictlist", var);
+  if (val != -1 ) {
+    gdata.networks[gdata.networks_online].restrictlist = val;
+  }
+}
+
+static void c_restrictsend(char *var)
+{
+  int val;
+
+  val = parse_bool_val("restrictsend", var);
+  if (val != -1 ) {
+    gdata.networks[gdata.networks_online].restrictsend = val;
+  }
+}
+
 static void c_server(char *var)
 {
   server_t *ss;
@@ -1482,6 +1502,8 @@ static config_func_typ config_parse_func[] = {
 {"overallmaxspeeddaytime", c_overallmaxspeeddaytime },
 {"periodicmsg",            c_periodicmsg },
 {"proxyinfo",              c_proxyinfo },
+{"restrictlist",           c_restrictlist },
+{"restrictsend",           c_restrictsend },
 {"server",                 c_server },
 {"server_connected_raw",   c_server_connected_raw },
 {"server_join_raw",        c_server_join_raw },

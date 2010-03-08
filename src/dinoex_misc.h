@@ -42,6 +42,7 @@ int disk_full(const char *path);
 
 char *get_user_modes(void);
 char *get_nickserv_pass(void);
+int get_restrictsend(void);
 
 xdcc *get_xdcc_pack(int pack);
 int access_need_level(const char *nick, const char *text);
