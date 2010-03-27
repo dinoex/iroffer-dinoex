@@ -1531,6 +1531,23 @@ static int is_system_dir(const char *name)
   return 0;
 }
 
+static int a_readdir_sub(const userinput * const u, const char *thedir, DIR *dirp, struct dirent *entry, struct dirent **result)
+{
+  int rc;
+  int max = 3;
+
+  for (max = 3; max > 0; --max) {
+    rc = readdir_r(dirp, entry, result);
+    if (rc == 0)
+      break;
+
+    a_respond(u, "Error Reading Directory %s: %s", thedir, strerror(errno));
+    if (rc != EAGAIN)
+      break;
+  }
+  return rc;
+}
+
 static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
 {
   struct dirent f2;
@@ -1551,8 +1568,7 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
   for (;;) {
     struct stat st;
 
-    if (readdir_r(d, &f2, &f) != 0) {
-       a_respond(u, "Error Reading Directory %s: %s", thedir, strerror(errno));
+    if (a_readdir_sub(u, thedir, d, &f2, &f) != 0) {
        break;
     }
 
@@ -1903,8 +1919,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     xdcc *xd;
     int foundit;
 
-    if (readdir_r(d, &f2, &f) != 0) {
-       a_respond(u, "Error Reading Directory %s: %s", thedir, strerror(errno));
+    if (a_readdir_sub(u, thedir, d, &f2, &f) != 0) {
        break;
     }
 
