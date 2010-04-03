@@ -674,6 +674,7 @@ void mydelete2(void *t) {
    for (i=0; (i<(MEMINFOHASHSIZE * gdata.meminfo_depth) && (gdata.meminfo[(i+start)%(MEMINFOHASHSIZE * gdata.meminfo_depth)].ptr != t)); i++) ;
    
    if (i == (MEMINFOHASHSIZE * gdata.meminfo_depth)) {
+      gdata.crashing = 1; /* stop trackback here */
       outerror(OUTERROR_TYPE_WARN_LOUD,"Pointer 0x%8.8lX not found in meminfo database while trying to free!!",(long)t);
       outerror(OUTERROR_TYPE_WARN_LOUD, "Please report this error to Dinoex dinoex@dinoex.net");
       for(i=0; i<(12*12); i+=12) {
