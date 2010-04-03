@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+bugfix: viele gleichzeitige Transfers
+  versions affected: 1.2 - 3.20
+  Bot konnte bei der auswahl eines Transfers crashen.
+
 317) restrictsend, restrictlist
   Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
 

@@ -782,7 +782,7 @@ static void mainloop (void) {
       
       updatecontext();
       
-      i = j = gdata.cursendptr++ % max2(irlist_size(&gdata.trans),1);
+      i = j = select_starting_transfer(irlist_size(&gdata.trans));
       
       tr = irlist_get_nth(&gdata.trans, i);
       

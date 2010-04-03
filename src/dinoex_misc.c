@@ -970,6 +970,20 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist)
   *best = old;
 }
 
+/* select a transfer to start with */
+int select_starting_transfer(int max)
+{
+	int t;
+
+	if (max < 0)
+		max = 0;
+	t = gdata.cursendptr;
+	if (++t > max)
+		t = 0;
+	gdata.cursendptr = t;
+	return t;
+}
+
 /* drop all strings from a channel */
 void free_channel_data(channel_t *ch)
 {
