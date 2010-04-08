@@ -656,7 +656,7 @@ char *get_nickserv_pass(void)
   return (gnetwork->nickserv_pass) ? gnetwork->nickserv_pass : gdata.nickserv_pass;
 }
 
-/* get restrictsend,for current network */
+/* get restrictsend for current network */
 int get_restrictsend(void)
 {
   return (gnetwork->restrictsend != -1) ? gnetwork->restrictsend : gdata.restrictsend;

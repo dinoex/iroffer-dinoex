@@ -566,7 +566,7 @@ static void log_xdcc_request3(privmsginput *pi, const char *msg)
           pi->msg2, pi->msg3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
 }
 
-/* get restrictsend,for current network */
+/* get restrictlist for current network */
 static int get_restrictlist(void)
 {
   return (gnetwork->restrictlist != -1) ? gnetwork->restrictlist : gdata.restrictlist;
