@@ -150,7 +150,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_chlimitinfo,   "CHLIMITINFO","n [msg]","Change over limit info of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtrigger,     "CHTRIGGER","n [msg]","Change trigger for pack <n> to <msg>"},
 {3,5,method_allow_all,u_chgets,        "CHGETS","n x","Set the get counter of pack <n> to <x>"},
-{3,5,method_allow_all,a_chcolor,       "CHCOLOR","n [m] x","Set the pack <n> to <m> to color <x>"},
+{3,5,method_allow_all,a_chcolor,       "CHCOLOR","n [m] x[,b]","Set the pack <n> to <m> to color <x> background <b>"},
 {3,2,method_allow_all,a_lock,          "LOCK","n [m] password","Lock the pack <n> to <m> with <password>"},
 {3,2,method_allow_all,a_unlock,        "UNLOCK","n [m]","Unlock the pack <n> to <m>"},
 {3,2,method_allow_all,a_lockgroup,     "LOCKGROUP","group password","Lock all packs in <group> with <password>"},
@@ -543,6 +543,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
    char datestr[maxtextlengthshort];
    char *sizestrstr;
    char *colordesc;
+   int background;
    int len;
    
    sizestrstr = sizestr(1, xd->st_size);
@@ -556,7 +557,11 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
    if (xd->color)
      {
        colordesc = mycalloc(maxtextlength);
-       snprintf(colordesc, maxtextlength, "\003%d%s\003", xd->color, xd->desc);
+       background = xd->color >> 8;
+       if (background != 0)
+         snprintf(colordesc, maxtextlength, "\003%d,%d%s\003", xd->color & 0xFF, background, xd->desc);
+       else
+         snprintf(colordesc, maxtextlength, "\003%d%s\003", xd->color, xd->desc);
      }
    else
      {
