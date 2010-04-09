@@ -697,6 +697,12 @@ int irc_select(int highests)
       highests = max2(highests, gdata.networks[ss].ircserver);
       continue;
     }
+    if (gdata.networks[ss].serverstatus == SERVERSTATUS_SSL_HANDSHAKE) {
+      FD_SET(gdata.networks[ss].ircserver, &gdata.writeset);
+      FD_SET(gdata.networks[ss].ircserver, &gdata.readset);
+      highests = max2(highests, gdata.networks[ss].ircserver);
+      continue;
+    }
     if (gdata.networks[ss].serverstatus == SERVERSTATUS_TRYING) {
       FD_SET(gdata.networks[ss].ircserver, &gdata.writeset);
       highests = max2(highests, gdata.networks[ss].ircserver);

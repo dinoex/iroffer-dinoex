@@ -453,6 +453,12 @@ static void mainloop (void) {
            }
         }
       
+      if ((gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE) &&
+	((FD_ISSET(gnetwork->ircserver, &gdata.writeset)) || (FD_ISSET(gnetwork->ircserver, &gdata.readset))))
+        {
+          handshake_ssl();
+        }
+      
       if (gnetwork->serverstatus == SERVERSTATUS_TRYING && FD_ISSET(gnetwork->ircserver, &gdata.writeset))
         {
           int callval_i;
@@ -495,8 +501,10 @@ static void mainloop (void) {
                 start_sends();
               }
             FD_CLR(gnetwork->ircserver, &gdata.writeset);
+#if 0
             if (set_socket_nonblocking(gnetwork->ircserver, 0) < 0 )
 	      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
+#endif
 	    
             addrlen = sizeof(gnetwork->myip);
             bzero((char *) &(gnetwork->myip), sizeof(gnetwork->myip));
@@ -527,7 +535,7 @@ static void mainloop (void) {
             else
               outerror(OUTERROR_TYPE_WARN, "couldn't get ourip on %s", gnetwork->name);
 	    
-	    initirc();
+            handshake_ssl();
             }
          }
       
@@ -573,7 +581,7 @@ static void mainloop (void) {
             }
         }
       
-      if (changesec && gnetwork->serverstatus == SERVERSTATUS_TRYING)
+      if (changesec && ((gnetwork->serverstatus == SERVERSTATUS_TRYING) || (gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE)))
         {
           int timeout;
           timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+bugfix: connectionmethod ssl
+  Beim Verbindungsaufbau wird der Bot nicht mehr blockiert.
+
 318) login_name
   Wenn das Netzwek keine NickServ hat, kann hier der Name des Services
   fuer den LOGIN Befehl angegeben werden.
