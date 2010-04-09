@@ -726,6 +726,20 @@ void identify_needed(int force)
   }
   /* wait 1 sec before idetify again */
   gnetwork->next_identify = gdata.curtime + 1;
+  if (gnetwork->auth_name != NULL) {
+    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :AUTH %s %s",
+                gnetwork->auth_name, save_nick(gnetwork->user_nick), pwd);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            "AUTH send to %s on %s.", gnetwork->auth_name, gnetwork->name);
+    return;
+  }
+  if (gnetwork->login_name != NULL) {
+    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :LOGIN %s %s",
+                gnetwork->login_name, save_nick(gnetwork->user_nick), pwd);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            "LOGIN send to %s on %s.", gnetwork->login_name, gnetwork->name);
+    return;
+  }
   writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "IDENTIFY send to nickserv on %s.", gnetwork->name);

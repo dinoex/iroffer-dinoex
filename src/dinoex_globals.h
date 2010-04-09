@@ -179,6 +179,8 @@ typedef struct {
   char *caps_nick;
   char *name;
   char *nickserv_pass;
+  char *auth_name;
+  char *login_name;
   char *config_nick;
   char *r_config_nick;
   char *local_vhost;

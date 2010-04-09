@@ -27,6 +27,7 @@ Tak0r
 	option "nickserv_pass" per network
 	option "logfile_notices"
 	option "logfile_messages"
+	option "auth_name", "login_name"
 
 Keichi
 	option "auto_default_group"
