@@ -3,7 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+bugfix: CTCP
+  versions affected: 3.13 - 3.20
+  Antworte auch auf CTCP im Channel.
+
 bugfix: connectionmethod ssl
+  versions affected: 3.0 - 3.20
   Beim Verbindungsaufbau wird der Bot nicht mehr blockiert.
 
 318) login_name

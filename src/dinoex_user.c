@@ -985,10 +985,6 @@ static int botonly_parse(int type, privmsginput *pi)
 {
   char *tempstr2;
 
-  /* this must be for the bot */
-  if (not_for_me(pi->dest))
-    return 1;
-
   /*----- CLIENTINFO ----- */
   if (test_ctcp(pi->msg1, "\1CLIENTINFO")) {
     if (check_ignore(pi->nick, pi->hostmask))
