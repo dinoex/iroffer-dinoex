@@ -74,6 +74,7 @@ Short Term Features:
   1438  more announce types for plist
   1440  add tags Bold, Underline and Dual Color at CHCOLOR command
   1442  queue set of packs.
+  1447  faster log rotation
 
 Long Term Features:
   1013  notify adminnick when autoadd
@@ -137,6 +138,7 @@ Long Term Features:
   1431  CHCOLOR for background
   1433  Turbo DCC
   1434  transfer info for a upload
+  1448  announce xdcc batch
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
