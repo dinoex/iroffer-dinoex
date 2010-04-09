@@ -382,11 +382,11 @@ static void debug_memory(void)
   int i;
   int leak = 0;
 
+  gdata.crashing = 1; /* stop traceback */
   signal(SIGSEGV, SIG_DFL);
   free_state();
   free_config();
   reinit_config_vars();
-  updatecontext();
 
   for (j=1; j<(MEMINFOHASHSIZE * gdata.meminfo_depth); j++) {
     mi = &(gdata.meminfo[j]);
