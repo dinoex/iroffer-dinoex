@@ -418,6 +418,8 @@ static int send_batch_group(const char *nick, const char *hostname, const char *
   int num;
   int found;
 
+  updatecontext();
+
   found = 0;
   num = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
@@ -447,6 +449,8 @@ static int send_batch_search(const char *nick, const char *hostname, const char 
   found = send_batch_group(nick, hostname, hostmask, what, pwd);
   if (found != 0)
     return found;
+
+  updatecontext();
 
   /* range */
   if (*what == '#') what ++;
