@@ -835,6 +835,16 @@ static const char *send_xdcc_file(const char *nick, const char *hostname, const 
   return send_xdcc_file2(nick, hostname, hostmask, pack, NULL, pwd);
 }
 
+static void xdcc_send(privmsginput *pi)
+{
+  const char *msg;
+
+  strip_trailing_action(pi->msg3);
+  strip_trailing_action(pi->msg4);
+  msg = send_xdcc_file(pi->nick, pi->hostname, pi->hostmask, pi->msg3, pi->msg4);
+  log_xdcc_request3(pi, msg);
+}
+
 static void command_xdcc(privmsginput *pi)
 {
   const char *msg;
@@ -857,16 +867,12 @@ static void command_xdcc(privmsginput *pi)
     return;
   }
 
-  /* map XDC GET to XDCC SEND */
   if ((strcmp(pi->msg2, "GET") == 0) && pi->msg3) {
-    mydelete(pi->msg2);
-    pi->msg2 = mystrdup("SEND");
+    xdcc_send(pi);
+    return;
   }
   if ((strcmp(pi->msg2, "SEND") == 0) && pi->msg3) {
-    strip_trailing_action(pi->msg3);
-    strip_trailing_action(pi->msg4);
-    msg = send_xdcc_file(pi->nick, pi->hostname, pi->hostmask, pi->msg3, pi->msg4);
-    log_xdcc_request3(pi, msg);
+    xdcc_send(pi);
     return;
   }
 

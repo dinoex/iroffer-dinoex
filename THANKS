@@ -508,6 +508,7 @@ HymnToLife
 
 Globulus
 	debugging "mirc_dcc64"
+	debugging "XDCC SEND" crash
 
 Kamina
 	reporting 10TB bug
