@@ -114,6 +114,10 @@ case "$ostype" in
   # nothing fancy
   rstatic="-lpthread -ldl -lz"
   ;;
+ GNU/kFreeBSD | GNU )
+  ostype="Linux"
+  rstatic="-lpthread -ldl -lz"
+  ;;
  SunOS )
   libs="$libs -lsocket -lnsl -lresolv"
   ;;
