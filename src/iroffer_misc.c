@@ -32,8 +32,6 @@
 
 #include <locale.h>
 
-static void initirc2(void);
-
 void getconfig (void) {
    
    updatecontext();
@@ -225,16 +223,12 @@ static int connectirc (server_t *tserver) {
 void initirc(void)
 {
   int i,j,k;
+  channel_t *ch;
   char *pi;
+  char *tptr;
   
   updatecontext();
   
-  if (setup_ssl())
-    {
-      initirc2();
-      return;
-    }
-
   pi = irlist_get_head(&(gnetwork->proxyinfo));
   while((gnetwork->connectionmethod.how == how_custom) && pi)
     {
@@ -291,14 +285,6 @@ void initirc(void)
       writeserver(WRITESERVER_NOW, "%s %u",
                   gnetwork->curserver.hostname, gnetwork->curserver.port);
       }
-
-   initirc2();
-}
-   
-static void initirc2(void)
-{
-   channel_t *ch;
-   char *tptr;
 
    if (gnetwork->curserver.password)
      {
@@ -1232,6 +1218,11 @@ void quit_server(void)
       writeserver(WRITESERVER_NOW, "QUIT :Changing Servers");
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
               "Changing Servers on %s", gnetwork->name);
+      close_server();
+    }
+  
+  if (gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE)
+    {
       close_server();
     }
   

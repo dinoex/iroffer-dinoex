@@ -57,17 +57,16 @@ static void tls_log_func(int level, const char *str)
 #endif /* DEBUG and USE_GNUTLS */
 
 #ifdef USE_OPENSSL
-static void outerror_ssl(void)
+static unsigned long outerror_ssl(void)
 {
-#if !defined(_OS_CYGWIN)
   unsigned long err;
 
   err = ERR_get_error();
-  if (err == 0)
-    return;
-
-  outerror(OUTERROR_TYPE_WARN_LOUD, "SSL Error %ld:%s", err, ERR_error_string(err, NULL));
+#if !defined(_OS_CYGWIN)
+  if (err != 0)
+    outerror(OUTERROR_TYPE_WARN_LOUD, "SSL Error %ld:%s", err, ERR_error_string(err, NULL));
 #endif /* _OS_CYGWIN */
+  return err;
 }
 #endif /* USE_OPENSSL */
 
@@ -324,16 +323,49 @@ static int cert_callback(gnutls_session_t session,
 
 #endif /* USE_GNUTLS */
 
-/* setup an SSL connection if configured */
-int setup_ssl(void)
+/* retry setup an SSL connection */
+static int retry_ssl(void)
+{
+#ifdef USE_OPENSSL
+  unsigned long err;
+  int rc;
+
+  updatecontext();
+
+  rc = SSL_connect(gnetwork->ssl);
+  if (rc != 1) {
+    err = outerror_ssl();
+    if ((err == 0) || (err == SSL_ERROR_WANT_READ) || (err == SSL_ERROR_WANT_WRITE))
+      return -1;
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant set SSL socket");
+    close_server();
+    return 1;
+  }
+#endif /* USE_OPENSSL */
+#ifdef USE_GNUTLS
+  int ret;
+
+  updatecontext();
+
+  ret = gnutls_handshake(gnetwork->session);
+  if (ret < 0) {
+    if ((ret == GNUTLS_E_INTERRUPTED) || (ret == GNUTLS_E_AGAIN))
+      return -1;
+    outerror_ssl(ret);
+    close_server();
+    return 1;
+  }
+#endif /* USE_GNUTLS */
+  return 0;
+}
+
+/* setup an SSL connection */
+static int setup_ssl(void)
 {
 #ifdef USE_OPENSSL
   int rc;
 
   updatecontext();
-
-  if (gnetwork->connectionmethod.how != how_ssl)
-    return 0;
 
   if (gnetwork->ssl_ctx == NULL) {
     gnetwork->ssl_ctx = SSL_CTX_new( SSLv3_client_method() );
@@ -357,21 +389,12 @@ int setup_ssl(void)
     close_server();
     return 1;
   }
-  rc = SSL_connect(gnetwork->ssl);
-  if (rc == 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant set SSL socket");
-    close_server();
-    return 1;
-  }
-  outerror_ssl();
+  return retry_ssl();
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
   int ret;
 
   updatecontext();
-
-  if (gnetwork->connectionmethod.how != how_ssl)
-    return 0;
 
   ret = gnutls_init(&(gnetwork->session), GNUTLS_CLIENT);
   if (ret < 0) {
@@ -415,7 +438,8 @@ int setup_ssl(void)
     ret = gnutls_certificate_allocate_credentials (&(gnetwork->user_cred));
     if (ret < 0) {
       outerror_ssl(ret);
-      return 0;
+      gnutls_transport_set_ptr(gnetwork->session, (gnutls_transport_ptr_t) (gnetwork->ircserver));
+      return 1;
     }
     gnutls_certificate_client_set_retrieve_function(gnetwork->user_cred, cert_callback);
     ret = gnutls_credentials_set(gnetwork->session, GNUTLS_CRD_CERTIFICATE, gnetwork->user_cred);
@@ -429,14 +453,44 @@ int setup_ssl(void)
     return 1;
   }
   gnutls_transport_set_ptr(gnetwork->session, (gnutls_transport_ptr_t) (gnetwork->ircserver));
-  ret = gnutls_handshake(gnetwork->session);
-  if (ret < 0) {
-    outerror_ssl(ret);
-    close_server();
-    return 1;
-  }
+  return retry_ssl();
 #endif /* USE_GNUTLS */
   return 0;
+}
+
+static int handshake2_ssl(void)
+{
+  int rc;
+
+  if (gnetwork->connectionmethod.how != how_ssl)
+    return 0;
+
+  if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED) {
+    rc = setup_ssl();
+    if (rc < 0 )
+      gnetwork->serverstatus = SERVERSTATUS_SSL_HANDSHAKE;
+    return rc;
+  }
+
+  if (gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE) {
+    rc = retry_ssl();
+    if (rc == 0)
+      gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
+    return rc;
+  }
+  return 1;
+}
+
+/* setup ssl connection if configured */
+void handshake_ssl(void)
+{
+  int rc;
+
+  updatecontext();
+
+  rc = handshake2_ssl();
+  if (rc == 0)
+    initirc();
 }
 
 /* read buffer from server, use SSL if active */
