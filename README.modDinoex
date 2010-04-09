@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+Configure LOCALBASE= PREFIX=
+  Set paths for needed libs and installatiion.
+
 319) CHCOLOR
 
   new admin commands:

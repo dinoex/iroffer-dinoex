@@ -59,6 +59,7 @@ OPT_NOMEMSAVE=false
 OPT_STATIC=false
 cctype="gcc"
 ruby="ruby"
+PREFIX="/usr/local"
 LOCALBASE="/usr/local"
 
 while test "${1}" != ""
@@ -70,6 +71,7 @@ do
   LDFLAGS=*) LDFLAGS="${1#LDFLAGS=}" ;;
   LIBS=*) LIBS="${1#LIBS=}" ;;
   LOCALBASE=*) LOCALBASE="${1#LOCALBASE=}" ;;
+  PREFIX=*) PREFIX="${1#PREFIX=}" ;;
   WARN=*) OPT_WARN2="${1#WARN=}" ;;
   RUBY=*) ruby="${1#RUBY=}" ;;
   -e*) OPT_ERRORS=true ;;
@@ -1624,6 +1626,7 @@ echo CONFIG_SHARED=$RUBYLIB
 echo CONFIG_STATIC=$RUBYSLIB -static
 echo CONFIG_TARGETS=$TARGETS
 echo INSTALL_GROUP=$installgroup
+echo INSDIR?=$PREFIX/bin
 echo
 cat Makefile.config 
 ) > Makefile
