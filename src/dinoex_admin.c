@@ -2395,6 +2395,7 @@ void a_chcolor(const userinput * const u)
   int num2;
   int color = 0;
   char *last;
+  char *back;
   xdcc *xd;
 
   updatecontext();
@@ -2413,14 +2414,21 @@ void a_chcolor(const userinput * const u)
     last = u->arg3;
   }
 
-  if (last) color = atoi(last);
+  if (last) {
+    back = strchr(last, ',');
+    if (back != 0) {
+      *(back++) = 0;
+      color |= atoi(back) << 8;
+    }
+    color |= atoi(last);
+  }
   for (; num1 <= num2; num1++) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
     if (group_restricted(u, xd))
       return;
 
     xd->color = color;
-    a_respond(u, "COLOR: [Pack %i] set: %d", num1, color);
+    a_respond(u, "COLOR: [Pack %i] set: %d,%d", num1, color & 0xFF, color >> 8);
   }
 
   write_files();

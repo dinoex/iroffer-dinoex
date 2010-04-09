@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+319) CHCOLOR 
+
+  Neue Admin Kommandos:
+  CHCOLOR <n> <m> <x>,<b>            Setze für das Pack <n> bis <m> die Farbe <x> und den Hintergrund <b>
+  CHCOLOR <n> <x>,<b>                Setze für das Pack <n> die Farbe <x> und den Hintergrund <b>
+
 bugfix: CTCP
   versions affected: 3.13 - 3.20
   Antworte auch auf CTCP im Channel.
