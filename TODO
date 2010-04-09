@@ -144,7 +144,6 @@ Not going to happen anytime soon:
   1005  auto part annd join channel after netsplit
   1009  limit file access to upload and download
   1010  strip logfiles
-  1011  flexible auth mech for nicserver
   1022  send notes on mutiple triggers
   1030  msg to owner whn it activates flood protection
   1032  configureable note after Record

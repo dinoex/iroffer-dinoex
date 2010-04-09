@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+318) login_name
+  Wenn das Netzwek keine NickServ hat, kann hier der Name des Services
+  fuer den LOGIN Befehl angegeben werden.
+  Dies ist nur je Netzwerk einstellbar.
+
+318) auth_name
+  Wenn das Netzwek keine NickServ hat, kann hier der Name des Services
+  fuer den AUTH Befehl angegeben werden.
+  Dies ist nur je Netzwerk einstellbar.
+
 bugfix: viele gleichzeitige Transfers
   versions affected: 1.2 - 3.20
   Bot konnte bei der auswahl eines Transfers crashen.

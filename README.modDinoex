@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+318) login_name (suggested by Tak0r)
+   If you would like to register with the LOGIN command you need to
+   define the name if the service you have to use here.
+   This setting can only be set per network.
+
+318) auth_name (suggested by Tak0r)
+   If you would like to register with the AUTH command you need to define
+   the name if the service you have to use here.
+   This setting can only be set per network.
+
 bugfix: lots of concurrent transfers (reported by Loke_AF)
   versions affected: 1.2 - 3.20
   Bot could crash when selecting a transfer.

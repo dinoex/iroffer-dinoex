@@ -947,6 +947,10 @@ static int parse_channel_options(channel_t *cptr, char *var)
 }
 
 
+static void c_auth_name(char *var)
+{
+   irlist_add_string(&gdata.networks[gdata.networks_online].auth_name, var);
+}
 static void c_autoadd_group_match(char *var)
 {
   char *split;
@@ -1180,6 +1184,11 @@ static void c_local_vhost(char *var)
 {
   mydelete(gdata.networks[gdata.networks_online].local_vhost);
   gdata.networks[gdata.networks_online].local_vhost = mystrdup(var);
+}
+
+static void c_login_name(char *var)
+{
+   irlist_add_string(&gdata.networks[gdata.networks_online].login_name, var);
 }
 
 static void c_mime_type(char *var)
@@ -1501,6 +1510,7 @@ static void c_bracket_close(char *UNUSED(var))
 
 static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
+{"auth_name",              c_auth_name },
 {"autoadd_group_match",    c_autoadd_group_match },
 {"autosendpack",           c_autosendpack },
 {"channel",                c_channel },
@@ -1510,6 +1520,7 @@ static config_func_typ config_parse_func[] = {
 {"getip_network",          c_getip_network },
 {"group_admin",            c_group_admin },
 {"local_vhost",            c_local_vhost },
+{"login_name",             c_login_name },
 {"logrotate",              c_logrotate },
 {"mime_type",              c_mime_type },
 {"need_level",             c_need_level },
