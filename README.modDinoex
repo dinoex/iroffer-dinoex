@@ -3,7 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+bugfix: CTCP
+  versions affected: 3.13 - 3.20
+  Respond to CTCP in channel.
+
 bugfix: connectionmethod ssl (reported by Misha-SU)
+  versions affected: 3.0 - 3.20
   Connection handshake is now non-blocking.
 
 318) login_name (suggested by Tak0r)
