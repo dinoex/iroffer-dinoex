@@ -1855,7 +1855,7 @@ void startupiroffer(void) {
    
    printf("\n");
    if (!gdata.background && !gdata.nocolor) printf("\x1b[1;33m");
-   printf("Welcome to iroffer-dinoex - " "http://iroffer.dinoex.net/" "\n"
+   printf("Welcome to iroffer-dinoex - " "http://iroffer.dinoex.net/" FEATURES "\n"
           "Version " VERSIONLONG "\n");
    if (!gdata.background && !gdata.nocolor) printf("\x1b[0m");
    printf("\n");
@@ -2054,7 +2054,7 @@ void startupiroffer(void) {
    
    getconfig();
    
-   mylog(CALLTYPE_NORMAL, "iroffer-dinoex started " VERSIONLONG);
+   mylog(CALLTYPE_NORMAL, "iroffer-dinoex started " VERSIONLONG FEATURES);
 
    getos();
    

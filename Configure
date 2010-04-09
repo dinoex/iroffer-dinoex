@@ -39,6 +39,7 @@ echo "   -no-libs     Compile an static binary"
 exit 64
 }
 
+FEATURES=""
 OPT_WARN2=false
 OPT_ERRORS=false
 OPT_DEBUG=false
@@ -305,6 +306,7 @@ fi
 if $OPT_GEOIP; then
 echo "Configuring for GeoIP."
 echo "#define USE_GEOIP" >> src/iroffer_config.h
+FEATURES="${FEATURES},geoip"
 GEOLIB="-lGeoIP"
 GEOINC="-I${LOCALBASE}/include"
 GEOLDF="-L${LOCALBASE}/lib"
@@ -326,6 +328,7 @@ fi
 if $OPT_UPNP; then
 echo "Configuring for UPNP with lminiupnpc."
 echo "#define USE_UPNP" >> src/iroffer_config.h
+FEATURES="${FEATURES},upnp"
 UPNPLIB="-lminiupnpc"
 UPNPINC="-I${LOCALBASE}/include"
 UPNPLDF="-L${LOCALBASE}/lib"
@@ -1464,6 +1467,7 @@ main (int argc, char **argv) {exit(0);}
 	if $cctype config.temp.c $libs -lcurl -lz "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_CURL -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_CURL" >> src/iroffer_config.h
+		FEATURES="${FEATURES},curl"
 		CURLLIB=`curl-config  --libs`
 		CURLINC=`curl-config  --cflags`
 		CURLLDF="-L${LOCALBASE}/lib"
@@ -1499,6 +1503,7 @@ main (int argc, char **argv) {exit(0);}
 		echo "found"
 		echo "Configuring for OpenSSL."
 		echo "#define USE_OPENSSL" >> src/iroffer_config.h
+		FEATURES="${FEATURES},openssl"
 		SSLLIB="-lssl -lcrypto"
 		SSLINC="-I${LOCALBASE}/include"
 		SSLLDF="-L${LOCALBASE}/lib"
@@ -1529,6 +1534,7 @@ main (int argc, char **argv) {exit(0);}
 	if $cctype config.temp.c $libs -lgnutls-openssl "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_GNUTLS -o config.temp $WARNS $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
 		echo "#define USE_GNUTLS" >> src/iroffer_config.h
+		FEATURES="${FEATURES},gnutls"
 		SSLLIB="-lgnutls"
 		SSLINC="-I${LOCALBASE}/include"
 		SSLLDF="-L${LOCALBASE}/lib"
@@ -1573,6 +1579,7 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 		echo "Configuring for Ruby."
 		echo "#define USE_RUBY" >> src/iroffer_config.h
 		echo "#define USE_RUBYVERSION ${rubyversion}" >> src/iroffer_config.h
+		FEATURES="${FEATURES},ruby"
 		RUBYLIB="${libruby}"
 		RUBYSLIB="${libsruby} -lm $rstatic"
 		RUBYINC="${incruby}"
@@ -1589,6 +1596,10 @@ fi
 
 rm -f config.temp*
 
+if test "${FEATURES}" != ""; then
+	FEATURES=" - ${FEATURES#,}"
+fi
+echo "#define FEATURES \"${FEATURES}\"" >> src/iroffer_config.h
 echo "Creating src/iroffer_config.h... Done"
 
 echo -n "Creating Makefile... "

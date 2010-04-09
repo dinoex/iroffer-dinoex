@@ -1014,7 +1014,7 @@ static int botonly_parse(int type, privmsginput *pi)
   if (test_ctcp(pi->msg1, "\1VERSION")) {
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
-    notice(pi->nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s\1",
+    notice(pi->nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s" FEATURES "\1",
            gdata.hideos ? "" : " - ",
            gdata.hideos ? "" : gdata.osstring);
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,

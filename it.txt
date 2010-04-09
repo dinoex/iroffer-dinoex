@@ -734,7 +734,7 @@
 764 "[CTCP] %s on %s: PING"
 765 "\1VERSION"
 767 "\1VERSION Iroffer CWLabs ITA by CreeW 2009 "
-768 "%s%s\1"
+768 "\1"
 769 "[CTCP] %s on %s: VERSION"
 770 "\1UPTIME"
 772 "\1UPTIME %s\1"
