@@ -949,8 +949,10 @@ static int parse_channel_options(channel_t *cptr, char *var)
 
 static void c_auth_name(char *var)
 {
-   irlist_add_string(&gdata.networks[gdata.networks_online].auth_name, var);
+  mydelete(gdata.networks[gdata.networks_online].auth_name);
+  gdata.networks[gdata.networks_online].auth_name = mystrdup(var);
 }
+
 static void c_autoadd_group_match(char *var)
 {
   char *split;
@@ -1188,7 +1190,8 @@ static void c_local_vhost(char *var)
 
 static void c_login_name(char *var)
 {
-   irlist_add_string(&gdata.networks[gdata.networks_online].login_name, var);
+  mydelete(gdata.networks[gdata.networks_online].login_name);
+  gdata.networks[gdata.networks_online].login_name = mystrdup(var);
 }
 
 static void c_mime_type(char *var)
