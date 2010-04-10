@@ -1488,7 +1488,6 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs -lminiupnpc "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_UPNP -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
-		echo "#define USE_CURL" >> src/iroffer_config.h
 		echo "#define USE_UPNP" >> src/iroffer_config.h
 		FEATURES="${FEATURES},upnp"
 		UPNPLIB="-lminiupnpc"
