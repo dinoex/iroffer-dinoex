@@ -187,7 +187,6 @@ case "${cctype}" in
 -Wnested-externs
 -Wnonnull
 -Wparentheses
--Wpacked
 -Wredundant-decls
 -Wreturn-type
 -O 
@@ -215,7 +214,6 @@ case "${cctype}" in
 -Wnested-externs
 -Wnonnull
 -Wparentheses
--Wpacked
 -Wredundant-decls
 -Wreturn-type
 -Wstrict-aliasing
@@ -280,6 +278,7 @@ case "${cctype}" in
 	WARNS2="
 -Wconversion
 -Wfloat-equal
+-Wpacked
 -Wpadded
 -Wswitch-default
 -Wswitch-enum
@@ -294,6 +293,7 @@ case "${cctype}" in
 -Wformat=2
 -Wfloat-equal
 -Wlarger-than-20000
+-Wpacked
 -Wpadded
 -Wswitch-default
 -Wswitch-enum
@@ -311,11 +311,6 @@ fi
 
 if $OPT_GEOIP; then
 echo "Configuring for GeoIP."
-echo "#define USE_GEOIP" >> src/iroffer_config.h
-FEATURES="${FEATURES},geoip"
-GEOLIB="-lGeoIP"
-GEOINC="-I${LOCALBASE}/include"
-GEOLDF="-L${LOCALBASE}/lib"
 fi
 
 if $OPT_CURL; then
@@ -333,11 +328,6 @@ fi
 
 if $OPT_UPNP; then
 echo "Configuring for UPNP with lminiupnpc."
-echo "#define USE_UPNP" >> src/iroffer_config.h
-FEATURES="${FEATURES},upnp"
-UPNPLIB="-lminiupnpc"
-UPNPINC="-I${LOCALBASE}/include"
-UPNPLDF="-L${LOCALBASE}/lib"
 fi
 
 if $OPT_NOHTTP; then
@@ -1457,6 +1447,59 @@ echo "#define NO_HOSTCODES" >> src/iroffer_config.h
 echo "missing, won't report error codes"
 fi
 
+if $OPT_GEOIP; then
+	echo -n "Seeing if GeoIP libraries exist ... "
+	echo "
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+	if $cctype config.temp.c $libs -lGeoIP "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_GEOIP -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
+		echo "found"
+		echo "#define USE_GEOIP" >> src/iroffer_config.h
+		FEATURES="${FEATURES},geoip"
+		GEOLIB="-lGeoIP"
+		GEOINC="-I${LOCALBASE}/include"
+		GEOLDF="-L${LOCALBASE}/lib"
+	else
+		echo "not found"
+		echo "***Disabled the GeoIP-check. If u want to use this feature, please install liblGeoIP.***"
+	fi
+fi
+
+if $OPT_UPNP; then
+	echo -n "Seeing if miniupnpc libraries exist ... "
+	echo "
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {exit(0);}
+" > config.temp.c
+	if $cctype config.temp.c $libs -lminiupnpc "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_UPNP -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
+		echo "found"
+		echo "#define USE_CURL" >> src/iroffer_config.h
+		echo "#define USE_UPNP" >> src/iroffer_config.h
+		FEATURES="${FEATURES},upnp"
+		UPNPLIB="-lminiupnpc"
+		UPNPINC="-I${LOCALBASE}/include"
+		UPNPLDF="-L${LOCALBASE}/lib"
+	else
+		echo "not found"
+		echo "***Disabled the UPNP-feature. If u want to use this feature, please install liblminiupnpc.***"
+	fi
+fi
+
 if $OPT_CURL; then
 	echo -n "Seeing if libcurl libraries exist (for the FETCH-Command)... "
 	echo "
@@ -1565,7 +1608,7 @@ if $OPT_RUBY; then
 	rubyhdrdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'rubyhdrdir' ]"`
 	sitearch=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'sitearch' ]"`
 	rubyversion=`${ruby} -e "print RUBY_VERSION.sub(/\.[0-9]*$/,'').sub(/\./,'')"`
-	if test $rubyhdrdir = "nil"
+	if test "${rubyhdrdir}" = "nil"
 	then
 		incruby="-I${archdir}"
 	else
