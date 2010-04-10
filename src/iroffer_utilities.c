@@ -138,7 +138,7 @@ char* getdatestr(char* str, time_t Tp, int len)
   return str;
 }
 
-char* getuptime(char *str, int type, time_t fromwhen, int len)
+char* getuptime(char *str, int type, time_t fromwhen, size_t len)
 {
   int days, hours, mins;
   long temp;
@@ -162,7 +162,7 @@ char* getuptime(char *str, int type, time_t fromwhen, int len)
                       days, hours, mins);
     }
   
-  if ((llen < 0) || (llen >= len))
+  if ((llen < 0) || ((size_t)llen >= len))
     {
       str[0] = '\0';
     }
@@ -623,7 +623,7 @@ static void meminfo_grow(int grow)
   return;
 }
 
-void* mymalloc2(int len, int zero,
+void* mymalloc2(size_t len, int zero,
                 const char *src_function, const char *src_file, int src_line) {
    void *t = NULL;
    int i;

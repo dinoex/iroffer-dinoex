@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -19,11 +19,11 @@ char *mystrdup2(const char *str, const char *src_function, const char *src_file,
 #define mystrsuffix(x,y) mystrsuffix2(x,y,__FUNCTION__,__FILE__,__LINE__)
 char *mystrsuffix2(const char *str, const char *suffix, const char *src_function, const char *src_file, int src_line);
 #define mystrjoin(x,y,z) mystrjoin2(x,y,z,__FUNCTION__,__FILE__,__LINE__)
-char *mystrjoin2(const char *str1, const char *str2, char delimiter, const char *src_function, const char *src_file, int src_line);
+char *mystrjoin2(const char *str1, const char *str2, int delimiter, const char *src_function, const char *src_file, int src_line);
 #else
 #define mystrdup(x) strdup(x)
 char *mystrsuffix(const char *str, const char *suffix);
-char *mystrjoin(const char *str1, const char *str2, char delimiter);
+char *mystrjoin(const char *str1, const char *str2, int delimiter);
 #endif
 void irlist_add_string(irlist_t *list, const char *str);
 int verifyshell(irlist_t *list, const char *file);
@@ -40,8 +40,8 @@ int is_file_writeable(const char *f);
 char *hostmask_to_fnmatch(const char *str);
 int verify_group_in_grouplist(const char *group, const char *grouplist);
 char *sizestr(int spaces, off_t num);
-int isprintable(char a);
-char onlyprintable(char a);
+int isprintable(int a);
+int onlyprintable(int a);
 char *removenonprintable(char *str);
 char *removenonprintablectrl(char *str);
 char *removenonprintablefile(char *str);

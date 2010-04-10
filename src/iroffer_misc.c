@@ -232,7 +232,7 @@ void initirc(void)
   pi = irlist_get_head(&(gnetwork->proxyinfo));
   while((gnetwork->connectionmethod.how == how_custom) && pi)
     {
-      int len;
+      size_t len;
       char *tempstr;
       int found_s = 0;
       int found_p = 0;
@@ -562,9 +562,10 @@ void sendserver(void)
 char* getsendname(const char * const full)
 {
   char *copy;
-  int i, lastslash;
+  size_t i;
+  int lastslash;
   int spaced;
-  int len;
+  size_t len;
   
   updatecontext();
   
@@ -1404,7 +1405,7 @@ void sendxdlqueue (void)
   char *group;
   char *cmd;
   xlistqueue_t *user;
-  int len;
+  size_t len;
   userinput ui;
   
   updatecontext();

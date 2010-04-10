@@ -688,8 +688,9 @@ static const char *access_need_text(void)
     return "halfop";
   case 3:
     return "op";
+  default:
+    return NULL;
   }
-  return NULL;
 }
 
 /* check level and inform the user which level he needs */
@@ -732,13 +733,15 @@ int is_unsave_directory(const char *dir)
   return bad;
 }
 
-static void mylog_write(int logfd, const char *logfile, const char *msg, ssize_t len)
+static void mylog_write(int logfd, const char *logfile, const char *msg, size_t len)
 {
   ssize_t len2;
 
   len2 = write(logfd, msg, len);
-  if (len2 == len)
-    return;
+  if (len2 > 0) {
+    if ((size_t)len2 == len)
+      return;
+  }
 
   outerror(OUTERROR_TYPE_WARN_LOUD,
            "Cant Write Log File '%s': %s",
@@ -808,11 +811,11 @@ char *transfer_limit_exceeded_msg(int ii)
 }
 
 /* get local date and time in ISO */
-char *user_getdatestr(char* str, time_t Tp, int len)
+char *user_getdatestr(char* str, time_t Tp, size_t len)
 {
   const char *format;
   struct tm *localt = NULL;
-  ssize_t llen;
+  size_t llen;
 
   localt = localtime(&Tp);
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
