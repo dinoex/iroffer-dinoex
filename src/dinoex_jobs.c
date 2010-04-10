@@ -703,8 +703,8 @@ const char *validate_crc32(xdcc *xd, int quiet)
 
 static void crc32_init(void)
 {
-  gdata.crc32build.crc = -1;
-  gdata.crc32build.crc_total = -1;
+  gdata.crc32build.crc = ~0U;
+  gdata.crc32build.crc_total = ~0U;
 }
 
 void crc32_update(char *buf, unsigned long len)

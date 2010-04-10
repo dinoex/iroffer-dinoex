@@ -197,7 +197,7 @@ char *clean_quotes(char *str)
   return str;
 }
 
-static void replace_char(char *str, char ch1, char ch2)
+static void replace_char(char *str, int ch1, int ch2)
 {
   char *work;
 
