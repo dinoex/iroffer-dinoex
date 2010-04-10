@@ -805,7 +805,7 @@ static void u_xdl_foot(const userinput * const u) {
    xdcc *xd;
    char *sizestrstr;
    char *totalstr;
-   ir_uint64 toffered;
+   off_t toffered;
 
    if (gdata.creditline)
      {

@@ -42,8 +42,8 @@ int support_groups;
 
 struct
 {
-  ir_uint64  limit;
-  ir_uint64  used;
+  ir_int64   limit;
+  ir_int64   used;
   time_t     ends;
 } transferlimits[NUMBER_TRANSFERLIMITS];
 int transferlimits_over;
@@ -258,7 +258,7 @@ fd_set readset, writeset, execset;
 
 float record;
 float sentrecord;
-ir_uint64 totalsent;
+ir_int64 totalsent;
 long totaluptime;
 int debug;
 int exiting;

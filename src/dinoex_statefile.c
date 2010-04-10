@@ -92,17 +92,17 @@ static void read_statefile_incomplete_tag(const char *tag)
            "Ignoring Incomplete %s Tag", tag);
 }
 
-static void read_statefile_ullint(statefile_hdr_t *hdr, const char *tag, uint64_t *pval, const char *debug)
+static void read_statefile_llint(statefile_hdr_t *hdr, const char *tag, ir_int64 *pval, const char *debug)
 {
-  statefile_item_generic_ullint_t *g_ullint;
+  statefile_item_generic_llint_t *g_llint;
 
-  if (hdr->length != sizeof(statefile_item_generic_ullint_t)) {
+  if (hdr->length != sizeof(statefile_item_generic_llint_t)) {
     read_statefile_bad_tag(hdr, tag);
     return;
   }
 
-  g_ullint = (statefile_item_generic_ullint_t*)hdr;
-  *pval = (((ir_uint64)ntohl(g_ullint->g_ullint.upper)) << 32) | ((ir_uint64)ntohl(g_ullint->g_ullint.lower));
+  g_llint = (statefile_item_generic_llint_t*)hdr;
+  *pval = (((ir_uint64)ntohl(g_llint->g_llint.upper)) << 32) | ((ir_uint64)ntohl(g_llint->g_llint.lower));
 
   if (debug == NULL)
     return;
@@ -373,14 +373,14 @@ static void write_statefile_int(ir_moutput_t *bout, statefile_tag_t tag, ir_int3
   write_statefile_item(bout, &a_int);
 }
 
-static void write_statefile_ullint(ir_moutput_t *bout, statefile_tag_t tag, ir_uint64 val)
+static void write_statefile_llint(ir_moutput_t *bout, statefile_tag_t tag, ir_int64 val)
 {
-  statefile_item_generic_ullint_t a_ullint;
+  statefile_item_generic_llint_t a_llint;
 
-  create_statefile_hdr(&(a_ullint.hdr), tag, sizeof(statefile_item_generic_ullint_t));
-  a_ullint.g_ullint.upper = htonl(val >> 32);
-  a_ullint.g_ullint.lower = htonl(val & 0xFFFFFFFF);
-  write_statefile_item(bout, &a_ullint);
+  create_statefile_hdr(&(a_llint.hdr), tag, sizeof(statefile_item_generic_llint_t));
+  a_llint.g_llint.upper = htonl(val >> 32);
+  a_llint.g_llint.lower = htonl(val & 0xFFFFFFFF);
+  write_statefile_item(bout, &a_llint);
 }
 
 static void create_statefile_float(statefile_item_generic_float_t *g_float, statefile_tag_t tag, float val)
@@ -480,7 +480,7 @@ static void write_statefile_globals(ir_moutput_t *bout)
   write_statefile_time(bout, STATEFILE_TAG_TIMESTAMP, gdata.curtime);
   write_statefile_float(bout, STATEFILE_TAG_XFR_RECORD, gdata.record);
   write_statefile_float(bout, STATEFILE_TAG_SENT_RECORD, gdata.sentrecord);
-  write_statefile_ullint(bout, STATEFILE_TAG_TOTAL_SENT, gdata.totalsent );
+  write_statefile_llint(bout, STATEFILE_TAG_TOTAL_SENT, gdata.totalsent );
   write_statefile_int(bout, STATEFILE_TAG_TOTAL_UPTIME, gdata.totaluptime);
   write_statefile_time(bout, STATEFILE_TAG_LAST_LOGROTATE, gdata.last_logrotate);
 }
@@ -740,13 +740,13 @@ static void write_statefile_dinoex(ir_moutput_t *bout)
   write_statefile_msglog(bout);
   write_statefile_xdccs(bout);
 
-  write_statefile_ullint(bout, STATEFILE_TAG_TLIMIT_DAILY_USED, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
+  write_statefile_llint(bout, STATEFILE_TAG_TLIMIT_DAILY_USED, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
   write_statefile_time(bout, STATEFILE_TAG_TLIMIT_DAILY_ENDS, gdata.transferlimits[TRANSFERLIMIT_DAILY].ends);
 
-  write_statefile_ullint(bout, STATEFILE_TAG_TLIMIT_WEEKLY_USED, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
+  write_statefile_llint(bout, STATEFILE_TAG_TLIMIT_WEEKLY_USED, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
   write_statefile_time(bout, STATEFILE_TAG_TLIMIT_WEEKLY_ENDS, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].ends);
 
-  write_statefile_ullint(bout, STATEFILE_TAG_TLIMIT_MONTHLY_USED, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
+  write_statefile_llint(bout, STATEFILE_TAG_TLIMIT_MONTHLY_USED, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
   write_statefile_time(bout, STATEFILE_TAG_TLIMIT_MONTHLY_ENDS, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].ends);
 
   write_statefile_queue(bout, &gdata.mainqueue);

@@ -139,8 +139,8 @@ typedef struct
 typedef struct
 {
   statefile_hdr_t hdr;
-  statefile_uint64_t g_ullint;
-} statefile_item_generic_ullint_t;
+  statefile_uint64_t g_llint;
+} statefile_item_generic_llint_t;
 
 typedef struct
 {
@@ -436,7 +436,7 @@ void read_statefile(void)
           break;
           
         case STATEFILE_TAG_TOTAL_SENT:
-          read_statefile_ullint(hdr, "Total Transferred", &(gdata.totalsent), "Total Transferred");
+          read_statefile_llint(hdr, "Total Transferred", &(gdata.totalsent), "Total Transferred");
           break;
           
         case STATEFILE_TAG_TOTAL_UPTIME:
@@ -752,7 +752,7 @@ void read_statefile(void)
           break;
           
         case STATEFILE_TAG_TLIMIT_DAILY_USED:
-          read_statefile_ullint(hdr, "Daily Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_DAILY].used), "Daily Transfer Limit Used");
+          read_statefile_llint(hdr, "Daily Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_DAILY].used), "Daily Transfer Limit Used");
           break;
           
         case STATEFILE_TAG_TLIMIT_DAILY_ENDS:
@@ -760,7 +760,7 @@ void read_statefile(void)
           break;
           
         case STATEFILE_TAG_TLIMIT_WEEKLY_USED:
-          read_statefile_ullint(hdr, "Weekly Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used), "Weekly Transfer Limit Used");
+          read_statefile_llint(hdr, "Weekly Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used), "Weekly Transfer Limit Used");
           break;
           
         case STATEFILE_TAG_TLIMIT_WEEKLY_ENDS:
@@ -768,7 +768,7 @@ void read_statefile(void)
           break;
           
         case STATEFILE_TAG_TLIMIT_MONTHLY_USED:
-          read_statefile_ullint(hdr, "Monthly Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used), "Monthly Transfer Limit Used");
+          read_statefile_llint(hdr, "Monthly Transfer Limit Used", &(gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used), "Monthly Transfer Limit Used");
           break;
           
         case STATEFILE_TAG_TLIMIT_MONTHLY_ENDS:
