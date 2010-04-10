@@ -215,16 +215,17 @@ static const char *html_mime(const char *file)
   return http_magic[i].m_mime;
 }
 
-static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
+static ssize_t html_encode(char *buffer, size_t max, const char *src)
 {
   char *dest = buffer;
+  ssize_t max2 = max;
   ssize_t len;
   int i;
   char ch;
 
-  max--;
+  max2--;
   for (;;) {
-    if (max <= 0)
+    if (max2 <= 0)
       break;
     ch = *(src++);
     if (ch == 0)
@@ -233,13 +234,13 @@ static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
       if (ch != http_special[i].s_ch)
         continue;
       len = strlen(http_special[i].s_html);
-      if (len > max) {
-        max = 0;
+      if (len > max2) {
+        max2 = 0;
         break;
       }
       strncpy(dest, http_special[i].s_html, len);
       dest += len;
-      max -= len;
+      max2 -= len;
       break;
     }
     if (http_special[i].s_ch != 0)
@@ -261,6 +262,7 @@ static ssize_t html_encode(char *buffer, ssize_t max, const char *src)
       break;
     default:
       *(dest++) = ch;
+      max2 -= 1;
     }
   }
   *dest = 0;
@@ -310,18 +312,19 @@ static ssize_t html_encode_size(const char *src)
   return len;
 }
 
-static ssize_t html_decode(char *buffer, ssize_t max, const char *src)
+static ssize_t html_decode(char *buffer, size_t max, const char *src)
 {
   char *dest = buffer;
   const char *code;
+  ssize_t max2 = max;
   ssize_t len;
   int i;
   int hex;
   char ch;
 
-  max--;
+  max2--;
   for (;;) {
-    if (max <= 0)
+    if (max2 <= 0)
       break;
     code = src;
     ch = *(src++);
@@ -333,11 +336,11 @@ static ssize_t html_decode(char *buffer, ssize_t max, const char *src)
         continue;
       *(dest++) = http_special[i].s_ch;
       src += len - 1;
+      max2 -= 1;
       break;
     }
     if (http_special[i].s_ch != 0)
       continue;
-
 
     switch (ch) {
     case '+':
@@ -354,24 +357,28 @@ static ssize_t html_decode(char *buffer, ssize_t max, const char *src)
     default:
       *(dest++) = ch;
     }
+    max2 -= 1;
   }
   *dest = 0;
   len = dest - buffer;
   return len;
 }
 
-static ssize_t pattern_decode(char *buffer, ssize_t max, const char *src)
+static ssize_t pattern_decode(char *buffer, size_t max, const char *src)
 {
   char *dest = buffer;
   ssize_t len;
   char ch;
 
+  *dest = 0;
+  if (max < 3)
+    return 0;
   max--;
   max--;
   max--;
   *(dest++) = '*';
   for (;;) {
-    if (max <= 0)
+    if ((max--) == 0)
       break;
     ch = *(src++);
     if (ch == 0)
@@ -789,7 +796,7 @@ __attribute__ ((format(printf, 2, 3)))
 h_respond(http * const h, const char *format, ...)
 {
   va_list args;
-  ssize_t len;
+  int len;
 
   va_start(args, format);
   if (h->left > 0 ) {
@@ -817,7 +824,7 @@ static off_t h_stat(const char *path)
 
 static void h_include(http * const h, const char *file)
 {
-  ssize_t len;
+  size_t len;
   ssize_t howmuch;
   struct stat st;
   int fd;
@@ -836,7 +843,7 @@ static void h_include(http * const h, const char *file)
   }
 
   len = st.st_size;
-  if (len > h->left) {
+  if ((ssize_t)len > h->left) {
     len = h->left;
     outerror(OUTERROR_TYPE_WARN, "File to big '%s'", file);
   }
@@ -1230,7 +1237,7 @@ static void h_html_file(http * const h)
   char *tlabel;
   off_t sizes = 0;
   off_t traffic = 0;
-  ssize_t len;
+  size_t len;
   int packs = 0;
   int agets = 0;
   int num;
@@ -1398,7 +1405,7 @@ static int h_html_index(http * const h)
   char *tempstr;
   char *clean;
   char *tlabel;
-  ssize_t len;
+  size_t len;
   int slots;
 
   updatecontext();

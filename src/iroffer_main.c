@@ -1127,7 +1127,7 @@ static void mainloop (void) {
             if (gnetwork->servertime < 3)
               {
                 const char *servname = gnetwork->curserveractualname ? gnetwork->curserveractualname : gnetwork->curserver.hostname;
-                int        len       = 6 + strlen(servname);
+                size_t     len       = 6 + strlen(servname);
                 char       *tempstr3 = mycalloc(len + 1);
                 snprintf(tempstr3, len + 1, "PING %s\n", servname);
                 writeserver_ssl(tempstr3, len);

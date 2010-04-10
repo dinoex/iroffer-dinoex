@@ -485,7 +485,7 @@ void gototop(void);
 void drawbot(void);
 void gotobot(void);
 void parseconsole(void);
-int u_expand_command(void);
+size_t u_expand_command(void);
 
 void
 #ifdef __GNUC__
@@ -606,7 +606,7 @@ int is_fd_readable(int fd);
 int is_fd_writeable(int fd);
 char* convert_to_unix_slash(char *ss);
 
-void* mymalloc2(int a, int zero, const char *src_function, const char *src_file, int src_line);
+void* mymalloc2(size_t a, int zero, const char *src_function, const char *src_file, int src_line);
 void mydelete2(void *t);
 
 #ifdef NO_SNPRINTF
@@ -687,7 +687,7 @@ void pingserver(void);
 void xdccsavetext(void);
 void writepidfile (const char *filename);
 void gobackground(void);
-char* getuptime(char *str, int type, time_t fromwhen, int len);
+char* getuptime(char *str, int type, time_t fromwhen, size_t len);
 void shutdowniroffer(void);
 void quit_server(void);
 void switchserver(int which);

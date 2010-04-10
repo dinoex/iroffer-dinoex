@@ -703,8 +703,8 @@ const char *validate_crc32(xdcc *xd, int quiet)
 
 static void crc32_init(void)
 {
-  gdata.crc32build.crc = ~0;
-  gdata.crc32build.crc_total = ~0;
+  gdata.crc32build.crc = -1;
+  gdata.crc32build.crc_total = -1;
 }
 
 void crc32_update(char *buf, unsigned long len)
@@ -957,7 +957,7 @@ static const char *find_groupdesc(const char *group)
 void write_removed_xdcc(xdcc *xd)
 {
   char *line;
-  int len;
+  size_t len;
   int fd;
 
   if (gdata.xdccremovefile == NULL)
@@ -2123,7 +2123,7 @@ char *new_logfilename(const char *logfile)
 {
   struct tm *lthen;
   char *newname;
-  int max;
+  size_t max;
 
   updatecontext();
 

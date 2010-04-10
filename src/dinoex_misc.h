@@ -54,7 +54,7 @@ void logfile_add(const char *logfile, const char *line);
 char *get_current_bandwidth(void);
 char *transfer_limit_exceeded_msg(int ii);
 
-char *user_getdatestr(char* str, time_t Tp, int len);
+char *user_getdatestr(char* str, time_t Tp, size_t len);
 
 char *get_grouplist_access(const char *nick);
 const char *get_grouplist_channel(const char *dest);

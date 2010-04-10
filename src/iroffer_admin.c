@@ -366,8 +366,8 @@ void u_parseit(userinput * const u) {
 #ifdef DEBUG
    struct timeval timestruct1;
    struct timeval timestruct2;
-   long ms1;
-   long ms2;
+   ir_uint64 ms1;
+   ir_uint64 ms2;
 #endif /* DEBUG */
    
    updatecontext();
@@ -411,7 +411,7 @@ void u_parseit(userinput * const u) {
    ms1 = timeval_to_ms(&timestruct1);
    ms2 = timeval_to_ms(&timestruct2);
    if (gdata.debug > 0)
-     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, ms2 -ms1);
+     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, (long)(ms2 - ms1));
 #endif /* DEBUG */
    
    u_fillwith_clean(u);
@@ -419,7 +419,7 @@ void u_parseit(userinput * const u) {
    
    }
 
-int u_expand_command(void)
+size_t u_expand_command(void)
 {
   char *cmd;
   char *end;
@@ -618,7 +618,7 @@ static void u_xdl_head(const userinput * const u) {
    char *chan;
    const char *mynick;
    int a, i, m, m1;
-   int len;
+   size_t len;
    int head;
    xdcc *xd;
    channel_t *ch;
@@ -1881,7 +1881,7 @@ static void u_rehash(const userinput * const u) {
 static void u_botinfo(const userinput * const u) {
    char *tempstr = mycalloc(maxtextlength);
    struct rusage r;
-   int len;
+   size_t len;
    int ii;
    int ss;
    channel_t *ch;
@@ -2788,7 +2788,7 @@ void u_listdir(const userinput * const u, const char *dir)
       while (thefile)
         {
           struct stat st;
-          int len = strlen(thefile);
+          size_t len = strlen(thefile);
           
           tempstr = mycalloc(len + thedirlen + 2);
           

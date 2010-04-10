@@ -389,7 +389,6 @@ static int setup_ssl(void)
     close_server();
     return 1;
   }
-  return retry_ssl();
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
   int ret;
@@ -453,9 +452,8 @@ static int setup_ssl(void)
     return 1;
   }
   gnutls_transport_set_ptr(gnetwork->session, (gnutls_transport_ptr_t) (gnetwork->ircserver));
-  return retry_ssl();
 #endif /* USE_GNUTLS */
-  return 0;
+  return retry_ssl();
 }
 
 static int handshake2_ssl(void)

@@ -59,10 +59,10 @@ char *mystrsuffix(const char *str, const char *suffix)
 
 #ifndef WITHOUT_MEMSAVE
 /* append a suffix to a string and adding a separation character, recording origin */
-char *mystrjoin2(const char *str1, const char *str2, char delimiter, const char *src_function, const char *src_file, int src_line)
+char *mystrjoin2(const char *str1, const char *str2, int delimiter, const char *src_function, const char *src_file, int src_line)
 #else
 /* append a suffix to a string and adding a separation character */
-char *mystrjoin(const char *str1, const char *str2, char delimiter)
+char *mystrjoin(const char *str1, const char *str2, int delimiter)
 #endif /* WITHOUT_MEMSAVE */
 {
   char *copy;
@@ -212,7 +212,7 @@ char *to_hostmask(const char *nick, const char *hostname)
 {
   char *nick2;
   char *hostmask;
-  int len;
+  size_t len;
 
   len = strlen(hostname) + strlen(nick) + 4;
   hostmask = (char *)mymalloc(len);
@@ -415,7 +415,7 @@ char *sizestr(int spaces, off_t num)
 }
 
 /* check for non ASCII chars */
-int isprintable(char a)
+int isprintable(int a)
 {
   if ( (unsigned char)a < 0x20U )
      return 0;
@@ -425,7 +425,7 @@ int isprintable(char a)
 }
 
 /* convert to ASCII char */
-char onlyprintable(char a)
+int onlyprintable(int a)
 {
   if ( (unsigned char)a < 0x20U )
      return '.';

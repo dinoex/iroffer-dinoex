@@ -487,7 +487,7 @@ static int find_pack_crc(const char *crc)
   xdcc *xd;
   char crctext[32];
   int num;
-  int max;
+  size_t max;
 
   max = strlen(crc);
   max = min2(max, 8);
@@ -1124,7 +1124,8 @@ static size_t get_channel_limit(const char *dest)
 /* iroffer-lamm: @find and long !list */
 static int noticeresults(const char *nick, const char *pattern, const char *dest)
 {
-  int i, j, k, len;
+  int i, j, k;
+  size_t len;
   const char *grouplist;
   char *tempstr = mycalloc(maxtextlength);
   char *match;
@@ -1566,7 +1567,7 @@ void privmsgparse(int type, int decoded, char *line)
   privmsginput pi;
   char *part[MAX_PRIVMSG_PARTS];
   int m;
-  int line_len;
+  size_t line_len;
 
   updatecontext();
 

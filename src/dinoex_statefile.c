@@ -69,7 +69,7 @@ static void write_statefile_item(ir_moutput_t *bout, void *item)
   ir_int32 length;
 
   length = ntohl(hdr->length);
-  write_statefile_md5(bout, item, length);
+  write_statefile_md5(bout, item, (size_t)length);
 }
 
 static void read_statefile_unknown_tag(statefile_hdr_t *hdr, const char *tag)
@@ -426,7 +426,7 @@ static void write_statefile_queue(ir_moutput_t *bout, irlist_t *list)
   unsigned char *data;
   unsigned char *next;
   ir_pqueue *pq;
-  ir_int32 length;
+  size_t length;
 
   updatecontext();
 
@@ -490,7 +490,7 @@ static void write_statefile_ignore(ir_moutput_t *bout)
   unsigned char *data;
   unsigned char *next;
   igninfo *ignore;
-  ir_int32 length;
+  size_t length;
 
   updatecontext();
   ignore = irlist_get_head(&gdata.ignorelist);
@@ -533,7 +533,7 @@ static void write_statefile_msglog(ir_moutput_t *bout)
   unsigned char *data;
   unsigned char *next;
   msglog_t *msglog;
-  ir_int32 length;
+  size_t length;
 
   updatecontext();
   msglog = irlist_get_head(&gdata.msglog);
@@ -577,7 +577,7 @@ static void write_statefile_xdccs(ir_moutput_t *bout)
   int has_note = 1;
   int has_minspeed;
   int has_maxspeed;
-  ir_int32 length;
+  size_t length;
 
   updatecontext();
   for (xd = irlist_get_head(&gdata.xdccs);

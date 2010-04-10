@@ -2874,9 +2874,9 @@ static int a_newdir_check(const userinput * const u, const char *dir1, const cha
   struct stat st;
   const char *off2;
   char *tempstr;
-  int len1;
-  int len2;
-  int max;
+  size_t len1;
+  size_t len2;
+  size_t max;
   int xfiledescriptor;
 
   updatecontext();

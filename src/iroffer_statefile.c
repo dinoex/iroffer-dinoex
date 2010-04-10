@@ -176,7 +176,7 @@ void write_statefile(void)
   int fd;
   int callval;
   statefile_hdr_t *hdr;
-  ir_int32 length;
+  size_t length;
   ir_moutput_t bout;
   
   updatecontext();
