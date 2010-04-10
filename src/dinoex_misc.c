@@ -96,7 +96,7 @@ static int get_voice(void)
 }
 
 /* returns true if prefix of user matches need_level */
-int check_level(char prefix)
+int check_level(int prefix)
 {
   int ii;
   int need_level;
@@ -829,7 +829,7 @@ char *user_getdatestr(char* str, time_t Tp, size_t len)
 char *get_grouplist_access(const char *nick)
 {
   char *tempstr = mycalloc(maxtextlength);
-  int len = 0;
+  size_t len = 0;
   channel_t *ch;
   member_t *member;
 

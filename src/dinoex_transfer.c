@@ -303,7 +303,7 @@ int t_find_transfer(const char *nick, const char *filename, const char *remoteip
       continue;
 
     tr->con.remoteaddr = mystrdup(remoteip);
-    t_passive(tr, atoi(remoteport));
+    t_passive(tr, (unsigned)atoi(remoteport));
     return 1;
   }
   t_find_debug(nick, filename, remoteport);

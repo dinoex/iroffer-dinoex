@@ -118,10 +118,10 @@ void outerror (outerror_type_e type, const char *format, ...) {
    
    }
 
-char* getdatestr(char* str, time_t Tp, int len)
+char* getdatestr(char* str, time_t Tp, size_t len)
 {
   struct tm *localt = NULL;
-  ssize_t llen;
+  size_t llen;
     
   if (Tp == 0)
     {
@@ -175,7 +175,7 @@ void mylog(calltype_e type, const char *format, ...)
   char tempstr[maxtextlength];
   char tempstr2[maxtextlengthshort];
   va_list args;
-  int len;
+  size_t len;
   
   if (gdata.logfile == NULL)
     {
@@ -556,7 +556,7 @@ static void meminfo_grow(int grow)
   meminfo_t *newmeminfo;
   int cc;
   int dd;
-  int len;
+  size_t len;
   int i;
   int start;
 
@@ -1559,7 +1559,7 @@ void removefrommemberlist(channel_t *c, const char *nick)
 }
 
 
-void changeinmemberlist_mode(channel_t *c, const char *nick, char mode, int add)
+void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, int add)
 {
   member_t *member;
   int pi;

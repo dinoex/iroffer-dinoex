@@ -1268,7 +1268,7 @@ void switchserver(int which)
   gnetwork->servertime = 0;
 }
 
-char* getstatusline(char *str, int len)
+char* getstatusline(char *str, size_t len)
 {
   int i,srvq;
   ir_uint64 xdccsent;
@@ -1334,14 +1334,14 @@ char* getstatusline(char *str, int len)
                gdata.sentrecord);
     }
   
-  if ((i < 0) || (i >= len))
+  if ((i < 0) || ((size_t)i >= len))
     {
       str[0] = '\0';
     }
   return str;
 }
 
-char* getstatuslinenums(char *str, int len)
+char* getstatuslinenums(char *str, size_t len)
 {
   int i,gcount,srvq;
   float scount,ocount;
@@ -1392,7 +1392,7 @@ char* getstatuslinenums(char *str, int len)
                xdccsent/1024,
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
                gdata.sentrecord);
-   if ((i < 0) || (i >= len))
+   if ((i < 0) || ((size_t)i >= len))
     {
       str[0] = '\0';
     }
@@ -2237,7 +2237,7 @@ void createpassword(void) {
    }
 
 /* 0 .. 63 */
-char inttosaltchar (int n) {
+int inttosaltchar (int n) {
    
    if ( n < 26 )
       return  n + 'a';

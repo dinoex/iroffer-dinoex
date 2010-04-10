@@ -108,9 +108,9 @@ typedef struct
   ir_uint32 length; /* includes header */
 } statefile_hdr_t;
 
-#define STATEFILE_MAGIC (('I' << 24) | ('R' << 16) | ('F' << 8) | 'R')
-#define STATEFILE_OLD_VERSION 1
-#define STATEFILE_VERSION 2
+#define STATEFILE_MAGIC (unsigned)(('I' << 24) | ('R' << 16) | ('F' << 8) | 'R')
+#define STATEFILE_OLD_VERSION 1U
+#define STATEFILE_VERSION 2U
 
 typedef struct
 {

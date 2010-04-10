@@ -506,7 +506,7 @@ __attribute__ ((format(printf, 2, 3)))
 #endif
 outerror (outerror_type_e type, const char *format, ...);
 
-char* getdatestr(char* str, time_t Tp, int len);
+char* getdatestr(char* str, time_t Tp, size_t len);
 
 void
 #ifdef __GNUC__
@@ -598,7 +598,7 @@ void clearmemberlist(channel_t *c);
 int isinmemberlist(const char *nick);
 void addtomemberlist(channel_t *c, const char *nick);
 void removefrommemberlist(channel_t *c, const char *nick);
-void changeinmemberlist_mode(channel_t *c, const char *nick, char mode, int add);
+void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, int add);
 void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newnick);
 int set_socket_nonblocking (int s, int nonblock);
 void set_loginname(void);
@@ -691,8 +691,8 @@ char* getuptime(char *str, int type, time_t fromwhen, size_t len);
 void shutdowniroffer(void);
 void quit_server(void);
 void switchserver(int which);
-char* getstatusline(char *str, int len);
-char* getstatuslinenums(char *str, int len);
+char* getstatusline(char *str, size_t len);
+char* getstatuslinenums(char *str, size_t len);
 void sendxdlqueue(void);
 void reinit_config_vars(void);
 void initprefixes(void);
@@ -700,7 +700,7 @@ void initvars(void);
 void startupiroffer(void);
 void isrotatelog(void);
 void createpassword(void);
-char inttosaltchar (int n);
+int inttosaltchar (int n);
 void notifybandwidth(void);
 void notifybandwidthtrans(void);
 int look_for_file_changes(xdcc *xpack);

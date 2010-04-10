@@ -215,17 +215,16 @@ static const char *html_mime(const char *file)
   return http_magic[i].m_mime;
 }
 
-static ssize_t html_encode(char *buffer, size_t max, const char *src)
+static size_t html_encode(char *buffer, size_t max, const char *src)
 {
   char *dest = buffer;
-  ssize_t max2 = max;
-  ssize_t len;
+  size_t len;
   int i;
   char ch;
 
-  max2--;
+  --max;
   for (;;) {
-    if (max2 <= 0)
+    if (max == 0)
       break;
     ch = *(src++);
     if (ch == 0)
@@ -234,13 +233,11 @@ static ssize_t html_encode(char *buffer, size_t max, const char *src)
       if (ch != http_special[i].s_ch)
         continue;
       len = strlen(http_special[i].s_html);
-      if (len > max2) {
-        max2 = 0;
-        break;
-      }
+      if (len > max)
+        len = max;
       strncpy(dest, http_special[i].s_html, len);
       dest += len;
-      max2 -= len;
+      max -= len;
       break;
     }
     if (http_special[i].s_ch != 0)
@@ -262,7 +259,7 @@ static ssize_t html_encode(char *buffer, size_t max, const char *src)
       break;
     default:
       *(dest++) = ch;
-      max2 -= 1;
+      --max;
     }
   }
   *dest = 0;
@@ -312,19 +309,18 @@ static ssize_t html_encode_size(const char *src)
   return len;
 }
 
-static ssize_t html_decode(char *buffer, size_t max, const char *src)
+static size_t html_decode(char *buffer, size_t max, const char *src)
 {
   char *dest = buffer;
   const char *code;
-  ssize_t max2 = max;
-  ssize_t len;
+  size_t len;
   int i;
   int hex;
   char ch;
 
-  max2--;
+  --max;
   for (;;) {
-    if (max2 <= 0)
+    if (max == 0)
       break;
     code = src;
     ch = *(src++);
@@ -336,7 +332,7 @@ static ssize_t html_decode(char *buffer, size_t max, const char *src)
         continue;
       *(dest++) = http_special[i].s_ch;
       src += len - 1;
-      max2 -= 1;
+      --max;
       break;
     }
     if (http_special[i].s_ch != 0)
@@ -357,7 +353,7 @@ static ssize_t html_decode(char *buffer, size_t max, const char *src)
     default:
       *(dest++) = ch;
     }
-    max2 -= 1;
+    --max;
   }
   *dest = 0;
   len = dest - buffer;
@@ -800,7 +796,7 @@ h_respond(http * const h, const char *format, ...)
 
   va_start(args, format);
   if (h->left > 0 ) {
-    len = vsnprintf(h->end, h->left, format, args);
+    len = vsnprintf(h->end, (size_t)(h->left), format, args);
     if (len < 0) {
       h->end[0] = 0;
       len = 0;
