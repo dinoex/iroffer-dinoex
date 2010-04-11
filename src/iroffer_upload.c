@@ -325,6 +325,7 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
 #endif /* USE_UPNP */
   l->ul_status = UPLOAD_STATUS_DONE;
   mydelete(l->con.remoteaddr);
+  mydelete(l->uploaddir);
   
   backup = gnetwork;
   gnetwork = &(gdata.networks[l->net]);
