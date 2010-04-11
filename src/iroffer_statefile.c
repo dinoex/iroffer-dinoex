@@ -231,7 +231,7 @@ void write_statefile(void)
     if ((length < 0) || (length >= maxtextlength))
       {
        outerror(OUTERROR_TYPE_WARN_LOUD, "Version too long! %d",
-                 length);
+                 (int)length);
       }
     else
       {
