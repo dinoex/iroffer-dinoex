@@ -64,6 +64,7 @@ usage(void)
 #if !defined(NO_CHROOT)
 " [-t dir]"
 #endif
+" [-w dir]"
 " configfile [ configfile ... ]\n"
 "        -v        Print version and exit.\n"
 "        -c        Generate encrypted password and exit.\n"
