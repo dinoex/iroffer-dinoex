@@ -36,6 +36,13 @@ echo "   -no-admin    Compile without HTTP Admin"
 echo "   -no-telnet   Compile without Telnet server"
 echo "   -no-memsave  Compile without memory protection"
 echo "   -no-libs     Compile an static binary"
+echo "   PREFIX=      Set installation prefix (/usr/local)"
+echo "   LOCALBASE=   Set prefix for includes and libs (/usr/local)"
+echo "   CC=gcc       Set Compiler (gcc)"
+echo "   CFLAGS=      Set custom compiler flags"
+echo "   LDFLAGS=     Set custom linker flags"
+echo "   LIBS=        Set custom libs"
+echo "   RUBY=        Set ruby interpreter (ruby)"
 exit 64
 }
 
@@ -72,8 +79,8 @@ do
   LIBS=*) LIBS="${1#LIBS=}" ;;
   LOCALBASE=*) LOCALBASE="${1#LOCALBASE=}" ;;
   PREFIX=*) PREFIX="${1#PREFIX=}" ;;
-  WARN=*) OPT_WARN2="${1#WARN=}" ;;
   RUBY=*) ruby="${1#RUBY=}" ;;
+  WARN=*) OPT_WARN2="${1#WARN=}" ;;
   -e*) OPT_ERRORS=true ;;
   -d*) OPT_DEBUG=true ;;
   -w*) OPT_WARN=true ;;
