@@ -2357,3 +2357,4 @@
 2646 "PRIVMSG %s :LOGIN %s %s"
 2647 "LOGIN send to %s on %s."
 2648 "\003%d,%d%s\003"
+2649 " [-w dir]"
