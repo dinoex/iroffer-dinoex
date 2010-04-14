@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+320) configfile
+  Allow to network sections with same name to effect one network.
+
 Configure LOCALBASE= PREFIX=
   Set paths for needed libs and installatiion.
 

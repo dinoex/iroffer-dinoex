@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+320) configfile
+  Erlaube mehrere Bereiche von "network" mit dem gleichen Namen
+  zur Konfiguration eines Netzes.
+
 Configure LOCALBASE= PREFIX=
   Setze die Verzeichnisse für benötigte Bibliotheken und die Installation.
 

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -32,5 +32,7 @@ void config_startup(void);
 
 extern const char *current_config;
 extern long current_line;
+extern int current_bracket;
+extern int current_network;
 
 /* EOF */
