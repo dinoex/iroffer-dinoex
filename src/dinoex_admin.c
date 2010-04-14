@@ -3966,7 +3966,6 @@ void a_config(const userinput * const u)
   }
 
   current_config = "ADMIN";
-  current_line = 0;
   getconfig_set(u->arg1e);
 }
 

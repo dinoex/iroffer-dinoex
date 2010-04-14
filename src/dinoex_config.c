@@ -59,7 +59,8 @@ typedef struct {
 
 const char *current_config;
 long current_line;
-
+int current_network;
+int current_bracket;
 
 static int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
@@ -807,16 +808,16 @@ static void set_default_network_name(void)
 {
   char *var;
 
-  if (gdata.networks[gdata.networks_online].name != NULL) {
-    if (gdata.networks[gdata.networks_online].name[0] != 0) {
+  if (gdata.networks[current_network].name != NULL) {
+    if (gdata.networks[current_network].name[0] != 0) {
       return;
     }
-    mydelete(gdata.networks[gdata.networks_online].name);
+    mydelete(gdata.networks[current_network].name);
   }
 
   var = mymalloc(10);
-  snprintf(var, 10, "%d", gdata.networks_online + 1);
-  gdata.networks[gdata.networks_online].name = mystrdup(var);
+  snprintf(var, 10, "%d", current_network + 1);
+  gdata.networks[current_network].name = mystrdup(var);
   return;
 }
 
@@ -949,8 +950,8 @@ static int parse_channel_options(channel_t *cptr, char *var)
 
 static void c_auth_name(char *var)
 {
-  mydelete(gdata.networks[gdata.networks_online].auth_name);
-  gdata.networks[gdata.networks_online].auth_name = mystrdup(var);
+  mydelete(gdata.networks[current_network].auth_name);
+  gdata.networks[current_network].auth_name = mystrdup(var);
 }
 
 static void c_autoadd_group_match(char *var)
@@ -1004,7 +1005,7 @@ static void c_channel(char *var)
   if (part[0] == NULL)
     return;
 
-  for (rch = irlist_get_head(&gdata.networks[gdata.networks_online].channels);
+  for (rch = irlist_get_head(&gdata.networks[current_network].channels);
        rch;
        rch = irlist_get_next(rch)) {
     if (strcmp(rch->name, part[0]) == 0) {
@@ -1015,20 +1016,20 @@ static void c_channel(char *var)
     }
   }
 
-  cptr = irlist_add(&gdata.networks[gdata.networks_online].channels, sizeof(channel_t));
+  cptr = irlist_add(&gdata.networks[current_network].channels, sizeof(channel_t));
   cptr->name = part[0];
   caps(cptr->name);
   if (parse_channel_options(cptr, part[1]) < 0) {
      outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored channel '%s' on %s because it has invalid args: '%s'",
              current_config, current_line, part[0],
-             gdata.networks[gdata.networks_online].name, part[1]);
+             gdata.networks[current_network].name, part[1]);
   }
 
   if (cptr->plisttime && (cptr->plistoffset >= cptr->plisttime)) {
      outerror(OUTERROR_TYPE_WARN,
              "%s:%ld channel '%s' on %s: plistoffset must be less than plist time, ignoring offset",
-             current_config, current_line, part[0], gdata.networks[gdata.networks_online].name);
+             current_config, current_line, part[0], gdata.networks[current_network].name);
      cptr->plistoffset = 0;
   }
   mydelete(part[1]);
@@ -1036,7 +1037,7 @@ static void c_channel(char *var)
 
 static void c_channel_join_raw(char *var)
 {
-   irlist_add_string(&gdata.networks[gdata.networks_online].channel_join_raw, var);
+   irlist_add_string(&gdata.networks[current_network].channel_join_raw, var);
 }
 
 static void c_connectionmethod(char *var)
@@ -1044,47 +1045,47 @@ static void c_connectionmethod(char *var)
   char *part[5];
   int m;
 
-  mydelete(gdata.networks[gdata.networks_online].connectionmethod.host);
-  mydelete(gdata.networks[gdata.networks_online].connectionmethod.password);
-  mydelete(gdata.networks[gdata.networks_online].connectionmethod.vhost);
-  bzero((char *) &gdata.networks[gdata.networks_online].connectionmethod, sizeof(connectionmethod_t));
+  mydelete(gdata.networks[current_network].connectionmethod.host);
+  mydelete(gdata.networks[current_network].connectionmethod.password);
+  mydelete(gdata.networks[current_network].connectionmethod.vhost);
+  bzero((char *) &gdata.networks[current_network].connectionmethod, sizeof(connectionmethod_t));
 
   m = get_argv(part, var, 5);
   if (part[1]) {
-    gdata.networks[gdata.networks_online].connectionmethod.host = part[1];
+    gdata.networks[current_network].connectionmethod.host = part[1];
     part[1] = NULL;
   }
   if (part[2]) {
-    gdata.networks[gdata.networks_online].connectionmethod.port = atoi(part[2]);
+    gdata.networks[current_network].connectionmethod.port = atoi(part[2]);
   }
   if (part[2]) {
-    gdata.networks[gdata.networks_online].connectionmethod.password = part[3];
+    gdata.networks[current_network].connectionmethod.password = part[3];
     part[2] = NULL;
   }
   if (part[4]) {
-    gdata.networks[gdata.networks_online].connectionmethod.vhost = part[4];
+    gdata.networks[current_network].connectionmethod.vhost = part[4];
     part[4] = NULL;
   }
   if (part[0] != NULL) {
     if (!strcmp(part[0], "direct")) {
-      gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
+      gdata.networks[current_network].connectionmethod.how = how_direct;
     } else if (!strcmp(part[0], "ssl")) {
 #ifdef USE_SSL
-      gdata.networks[gdata.networks_online].connectionmethod.how = how_ssl;
+      gdata.networks[current_network].connectionmethod.how = how_ssl;
 #else
-      gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
+      gdata.networks[current_network].connectionmethod.how = how_direct;
       outerror(OUTERROR_TYPE_WARN_LOUD,
                "%s:%ld connectionmethod ssl not compiled, defaulting to direct",
                current_config, current_line);
 #endif /* USE_SSL */
     } else if ((m >= 4) && !strcmp(part[0], "bnc")) {
-      gdata.networks[gdata.networks_online].connectionmethod.how = how_bnc;
+      gdata.networks[current_network].connectionmethod.how = how_bnc;
     } else if ((m == 2) && !strcmp(part[0], "wingate")) {
-      gdata.networks[gdata.networks_online].connectionmethod.how = how_wingate;
+      gdata.networks[current_network].connectionmethod.how = how_wingate;
     } else if ((m == 2) && !strcmp(part[0], "custom")) {
-      gdata.networks[gdata.networks_online].connectionmethod.how = how_custom;
+      gdata.networks[current_network].connectionmethod.how = how_custom;
     } else {
-      gdata.networks[gdata.networks_online].connectionmethod.how = how_direct;
+      gdata.networks[current_network].connectionmethod.how = how_direct;
       outerror(OUTERROR_TYPE_WARN_LOUD,
                "%s:%ld Invalid connectionmethod %s in config file, defaulting to direct",
                current_config, current_line, part[0]);
@@ -1104,7 +1105,7 @@ static void c_disk_quota(char *var)
 
 static void c_getip_network(char *var)
 {
-  gdata.networks[gdata.networks_online].getip_net = get_network(var);
+  gdata.networks[current_network].getip_net = get_network(var);
 }
 
 static void c_group_admin(char *var)
@@ -1184,14 +1185,14 @@ static void c_logrotate(char *var)
 
 static void c_local_vhost(char *var)
 {
-  mydelete(gdata.networks[gdata.networks_online].local_vhost);
-  gdata.networks[gdata.networks_online].local_vhost = mystrdup(var);
+  mydelete(gdata.networks[current_network].local_vhost);
+  gdata.networks[current_network].local_vhost = mystrdup(var);
 }
 
 static void c_login_name(char *var)
 {
-  mydelete(gdata.networks[gdata.networks_online].login_name);
-  gdata.networks[gdata.networks_online].login_name = mystrdup(var);
+  mydelete(gdata.networks[current_network].login_name);
+  gdata.networks[current_network].login_name = mystrdup(var);
 }
 
 static void c_mime_type(char *var)
@@ -1219,13 +1220,36 @@ static void c_need_level(char *var)
   int rawval;
 
   if (check_range(key, var, &rawval, 0, 3) == 0) {
-    gdata.networks[gdata.networks_online].need_level = rawval;
+    gdata.networks[current_network].need_level = rawval;
   }
 }
 
 static void c_network(char *var)
 {
-  gdata.bracket = 0;
+  char *bracket;
+  int ss;
+
+  current_bracket = 0;
+  if (var[0] != 0) {
+    /* check for opening bracket */
+    bracket = strchr(var, ' ');
+    if (bracket != NULL) {
+      *(bracket++) = 0;
+      if (strchr(bracket, '{') != NULL)
+        current_bracket = 1;
+    }
+    /* check if the given network does exist */
+    for (ss=0; ss <= MAX_NETWORKS; ss++) {
+      if (ss > gdata.networks_online)
+        break;
+      if (gdata.networks[ss].name == NULL)
+        continue;
+      if (strcasecmp(gdata.networks[ss].name, var) != 0)
+        continue;
+      current_network = ss;
+      return;
+    }
+  }
   if (gdata.networks_online == 0) {
      /* add new network only when server defined */
      if (irlist_size(&gdata.networks[gdata.networks_online].servers))
@@ -1233,16 +1257,18 @@ static void c_network(char *var)
   } else {
     gdata.networks_online ++;
   }
-  if (gdata.networks_online >= MAX_NETWORKS) {
+  if (gdata.networks_online > MAX_NETWORKS) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored network '%s' because we have to many.",
              current_config, current_line, var);
+    gdata.networks_online = MAX_NETWORKS;
     return;
   }
-  gdata.networks[gdata.networks_online].net = gdata.networks_online;
-  mydelete(gdata.networks[gdata.networks_online].name);
+  current_network = gdata.networks_online;
+  gdata.networks[current_network].net = current_network;
+  mydelete(gdata.networks[current_network].name);
   if (var[0] != 0) {
-    gdata.networks[gdata.networks_online].name = mystrdup(var);
+    gdata.networks[current_network].name = mystrdup(var);
   } else {
     set_default_network_name();
   }
@@ -1250,8 +1276,8 @@ static void c_network(char *var)
 
 static void c_nickserv_pass(char *var)
 {
-  mydelete(gdata.networks[gdata.networks_online].nickserv_pass);
-  gdata.networks[gdata.networks_online].nickserv_pass = mystrdup(var);
+  mydelete(gdata.networks[current_network].nickserv_pass);
+  gdata.networks[current_network].nickserv_pass = mystrdup(var);
 }
 
 static void c_noannounce(char *var)
@@ -1260,7 +1286,7 @@ static void c_noannounce(char *var)
 
   val = parse_bool_val("noannounce", var);
   if (val != -1 ) {
-    gdata.networks[gdata.networks_online].noannounce = val;
+    gdata.networks[current_network].noannounce = val;
   }
 }
 
@@ -1341,7 +1367,7 @@ static void c_periodicmsg(char *var)
 
 static void c_proxyinfo(char *var)
 {
-   irlist_add_string(&gdata.networks[gdata.networks_online].proxyinfo, var);
+   irlist_add_string(&gdata.networks[current_network].proxyinfo, var);
 }
 
 static void c_restrictlist(char *var)
@@ -1350,7 +1376,7 @@ static void c_restrictlist(char *var)
 
   val = parse_bool_val("restrictlist", var);
   if (val != -1 ) {
-    gdata.networks[gdata.networks_online].restrictlist = val;
+    gdata.networks[current_network].restrictlist = val;
   }
 }
 
@@ -1360,7 +1386,7 @@ static void c_restrictsend(char *var)
 
   val = parse_bool_val("restrictsend", var);
   if (val != -1 ) {
-    gdata.networks[gdata.networks_online].restrictsend = val;
+    gdata.networks[current_network].restrictsend = val;
   }
 }
 
@@ -1380,7 +1406,7 @@ static void c_server(char *var)
     mydelete(part[2]);
     return;
   }
-  ss = irlist_add(&gdata.networks[gdata.networks_online].servers, sizeof(server_t));
+  ss = irlist_add(&gdata.networks[current_network].servers, sizeof(server_t));
   ss->hostname = part[0];
   ss->port = 6667;
   ss->password = part[2];
@@ -1392,12 +1418,12 @@ static void c_server(char *var)
 
 static void c_server_connected_raw(char *var)
 {
-   irlist_add_string(&gdata.networks[gdata.networks_online].server_connected_raw, var);
+   irlist_add_string(&gdata.networks[current_network].server_connected_raw, var);
 }
 
 static void c_server_join_raw(char *var)
 {
-   irlist_add_string(&gdata.networks[gdata.networks_online].server_join_raw, var);
+   irlist_add_string(&gdata.networks[current_network].server_join_raw, var);
 }
 
 static void c_slotsmax(char *var)
@@ -1419,7 +1445,7 @@ static void c_slow_privmsg(char *var)
   int rawval;
 
   if (check_range(key, var, &rawval, 0, 120) == 0) {
-    gdata.networks[gdata.networks_online].slow_privmsg = rawval;
+    gdata.networks[current_network].slow_privmsg = rawval;
   }
 }
 
@@ -1482,7 +1508,7 @@ static void c_usenatip(char *var)
   gnetwork_t *backup;
 
   backup = gnetwork;
-  gnetwork = &(gdata.networks[gdata.networks_online]);
+  gnetwork = &(gdata.networks[current_network]);
   gnetwork->natip = mystrdup(var);
   gnetwork->usenatip = 1;
   update_natip(var);
@@ -1491,24 +1517,24 @@ static void c_usenatip(char *var)
 
 static void c_user_modes(char *var)
 {
-  mydelete(gdata.networks[gdata.networks_online].user_modes);
-  gdata.networks[gdata.networks_online].user_modes = mystrdup(var);
+  mydelete(gdata.networks[current_network].user_modes);
+  gdata.networks[current_network].user_modes = mystrdup(var);
 }
 
 static void c_user_nick(char *var)
 {
-  mydelete(gdata.networks[gdata.networks_online].config_nick);
-  gdata.networks[gdata.networks_online].config_nick = mystrdup(var);
+  mydelete(gdata.networks[current_network].config_nick);
+  gdata.networks[current_network].config_nick = mystrdup(var);
 }
 
 static void c_bracket_open(char * UNUSED(var))
 {
-  gdata.bracket ++;
+  current_bracket ++;
 }
 
 static void c_bracket_close(char *UNUSED(var))
 {
-  gdata.bracket --;
+  current_bracket --;
 }
 
 static int config_func_anzahl = 0;
@@ -1610,7 +1636,7 @@ static int set_config_func(const char *key, char *text)
 
 static void parse_config_line(char **part)
 {
-  if (gdata.bracket == 0) {
+  if (current_bracket == 0) {
     /* globals */
     if (set_config_bool(part[0], part[1]) == 0)
       return;

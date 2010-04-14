@@ -2072,6 +2072,7 @@ void a_read_config_files(const userinput *u)
 
   updatecontext();
 
+  current_network = 0;
   templine = mycalloc(maxtextlength);
   for (h=0; h<MAXCONFIG && gdata.configfile[h]; h++) {
     if (u == NULL)
@@ -2099,7 +2100,7 @@ void a_read_config_files(const userinput *u)
     gdata.configtime[h] = st.st_mtime;
     current_config = gdata.configfile[h];
     current_line = 0;
-    gdata.bracket = 0;
+    current_bracket = 0;
     while (!feof(fin)) {
       r = fgets(templine, maxtextlength, fin);
       if (r == NULL )
@@ -2115,6 +2116,7 @@ void a_read_config_files(const userinput *u)
     fclose(fin);
   }
   gdata.networks_online ++;
+  current_line = 0;
   mydelete(templine);
 }
 
