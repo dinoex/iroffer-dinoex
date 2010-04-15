@@ -2921,7 +2921,7 @@ static void u_chanl(const userinput * const u)
 {
   int j;
   member_t *member;
-  char *tempstr = mycalloc(maxtextlength);
+  char *tempstr;
   channel_t *ch;
   int net;
   
@@ -2933,6 +2933,7 @@ static void u_chanl(const userinput * const u)
 
   u_respond(u,"Channel Members:");
   
+  tempstr = mycalloc(maxtextlength);
   ch = irlist_get_head(&gdata.networks[net].channels);
   while(ch)
     {
