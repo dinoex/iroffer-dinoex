@@ -295,7 +295,7 @@ void tostdout(const char *format, ...)
 
 void parseconsole(void)
 {
-  static char console_escape_seq[maxtextlengthshort] = {};
+  static char console_escape_seq[maxtextlengthshort];
   
   unsigned char tempbuffa[INPUT_BUFFER_LENGTH];
   int length;
@@ -305,6 +305,7 @@ void parseconsole(void)
   
   updatecontext();
   
+  bzero(console_escape_seq, sizeof(console_escape_seq));
   if (is_fd_readable(fileno(stdin)))
     {
       memset(tempbuffa, 0, INPUT_BUFFER_LENGTH);
