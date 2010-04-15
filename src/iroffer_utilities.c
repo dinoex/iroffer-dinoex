@@ -1473,10 +1473,11 @@ int isinmemberlist(const char *nick)
 void addtomemberlist(channel_t *c, const char *nick)
 {
   member_t *member;
-  char prefixes[MAX_PREFIX] = {};
+  char prefixes[MAX_PREFIX];
   
   updatecontext();
 
+  bzero(prefixes, sizeof(prefixes));
   if (gdata.debug > 2)
     {
       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,

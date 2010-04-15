@@ -246,8 +246,9 @@ void write_statefile(void)
    
   updatecontext();
   {
-    MD5Digest digest = {};
+    MD5Digest digest;
     
+    bzero(digest, sizeof(digest));
     ir_moutput_get_md5sum(&bout, digest);
     write_statefile_raw(&bout, &digest, sizeof(digest));
   }
