@@ -4267,6 +4267,7 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
   char *tempstr;
   char *tempstr2;
   char *tempstr3;
+  char *colordesc;
   char *datestr;
   int ss;
 
@@ -4278,21 +4279,24 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
   tempstr3 = mycalloc(maxtextlength);
+  colordesc = xd_color_description(xd);
   if (gdata.show_date_added) {
     datestr = mycalloc(maxtextlengthshort);
     user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
     snprintf(tempstr3, maxtextlength - 1, "%s%s%s%s",
-             gdata.announce_seperator, datestr, gdata.announce_seperator, xd->desc);
+             gdata.announce_seperator, datestr, gdata.announce_seperator, colordesc);
     mydelete(datestr);
   } else {
     snprintf(tempstr3, maxtextlength - 1, "%s%s",
-             gdata.announce_seperator, xd->desc);
+             gdata.announce_seperator, colordesc);
   }
   if (msg == NULL) {
     msg = gdata.autoaddann;
     if (msg == NULL)
       msg = "added";
   }
+  if (colordesc != xd->desc)
+    mydelete(colordesc);
   snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s", msg, tempstr3);
 
   backup = gnetwork;
@@ -4353,6 +4357,7 @@ static int a_new_announce(int max)
   const char *format;
   char *tempstr;
   char *tempstr3;
+  char *colordesc;
   time_t now;
   ssize_t llen;
   int i;
@@ -4374,10 +4379,12 @@ static int a_new_announce(int max)
     llen = strftime(tempstr, maxtextlengthshort - 1, format, localt);
     if (llen == 0)
       tempstr[0] = '\0';
-
+    colordesc = xd_color_description(xd);
     tempstr3 = mycalloc(maxtextlength);
     snprintf(tempstr3, maxtextlength - 1, "Added: %s \2%i\2%s%s",
-             tempstr, number_of_pack(xd), gdata.announce_seperator, xd->desc);
+             tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
+    if (colordesc != xd->desc)
+      mydelete(colordesc);
     a_announce_channels(tempstr3, NULL, xd->group);
     mydelete(tempstr3);
     mydelete(tempstr);
@@ -4430,6 +4437,7 @@ void a_sannounce(const userinput * const u)
   xdcc *xd;
   char *tempstr;
   char *tempstr3;
+  char *colordesc;
   int ss;
   gnetwork_t *backup;
 
@@ -4451,7 +4459,10 @@ void a_sannounce(const userinput * const u)
 
     tempstr = mycalloc(maxtextlength);
     tempstr3 = mycalloc(maxtextlength);
-    snprintf(tempstr3, maxtextlength - 1, "%s%s", gdata.announce_seperator, xd->desc);
+    colordesc = xd_color_description(xd);
+    snprintf(tempstr3, maxtextlength - 1, "%s%s", gdata.announce_seperator, colordesc);
+    if (colordesc != xd->desc)
+      mydelete(colordesc);
     snprintf(tempstr, maxtextlength-2, "\2%i\2%s", num1, tempstr3);
 
     backup = gnetwork;

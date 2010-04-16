@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+bugfix: CHCOLOR (reported by Vision)
+  Use Color in ANNOUNCE and !NEW trigger.
+
 320) configfile
   Allow to network sections with same name to effect one network.
 
