@@ -424,6 +424,7 @@ Vision
 	reporting "fish_only" CHAT bug
 	reporting "channel joinmsg" bug
 	reporting "micrc 64bit upload" bug
+	reporting missing color on !NEW
 
 TheBotKiller
 	suggesting "!new" trigger

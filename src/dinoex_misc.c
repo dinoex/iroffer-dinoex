@@ -976,15 +976,33 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist)
 /* select a transfer to start with */
 int select_starting_transfer(int max)
 {
-	int t;
+  int t;
 
-	if (max < 0)
-		max = 0;
-	t = gdata.cursendptr;
-	if (++t > max)
-		t = 0;
-	gdata.cursendptr = t;
-	return t;
+  if (max < 0)
+    max = 0;
+  t = gdata.cursendptr;
+  if (++t > max)
+    t = 0;
+  gdata.cursendptr = t;
+  return t;
+}
+
+/* colored description of a pack */
+char *xd_color_description(const xdcc *xd)
+{
+   char *colordesc;
+   int background;
+
+   if (xd->color == 0)
+     return xd->desc;
+
+   colordesc = mycalloc(maxtextlength);
+   background = xd->color >> 8;
+   if (background != 0)
+     snprintf(colordesc, maxtextlength, "\003%d,%d%s\003", xd->color & 0xFF, background, xd->desc);
+   else
+     snprintf(colordesc, maxtextlength, "\003%d%s\003", xd->color, xd->desc);
+   return colordesc;
 }
 
 /* drop all strings from a channel */

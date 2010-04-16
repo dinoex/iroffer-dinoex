@@ -1236,6 +1236,7 @@ static int run_new_trigger(const char *nick, const char *grouplist)
   xdcc *xd;
   const char *format;
   char *tempstr;
+  char *colordesc;
   time_t now;
   ssize_t llen;
   int i;
@@ -1257,8 +1258,12 @@ static int run_new_trigger(const char *nick, const char *grouplist)
     llen = strftime(tempstr, maxtextlengthshort - 1, format, localt);
     if (llen == 0)
       tempstr[0] = '\0';
+
+    colordesc = xd_color_description(xd);
     notice_slow(nick, "Added: %s \2%i\2%s%s",
-                tempstr, number_of_pack(xd), gdata.announce_seperator, xd->desc);
+                tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
+    if (colordesc != xd->desc)
+      mydelete(colordesc);
     mydelete(tempstr);
     i++;
   }

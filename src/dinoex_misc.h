@@ -65,6 +65,8 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist);
 
 int select_starting_transfer(int max);
 
+char *xd_color_description(const xdcc *xd);
+
 void free_channel_data(channel_t *ch);
 
 void auto_rehash(void);

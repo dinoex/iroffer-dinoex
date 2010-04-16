@@ -543,7 +543,6 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
    char datestr[maxtextlengthshort];
    char *sizestrstr;
    char *colordesc;
-   int background;
    int len;
    
    sizestrstr = sizestr(1, xd->st_size);
@@ -554,19 +553,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, c
        datestr[1] = 0;
        user_getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
      }
-   if (xd->color)
-     {
-       colordesc = mycalloc(maxtextlength);
-       background = xd->color >> 8;
-       if (background != 0)
-         snprintf(colordesc, maxtextlength, "\003%d,%d%s\003", xd->color & 0xFF, background, xd->desc);
-       else
-         snprintf(colordesc, maxtextlength, "\003%d%s\003", xd->color, xd->desc);
-     }
-   else
-     {
-       colordesc = xd->desc;
-     }
+   colordesc = xd_color_description(xd);
    snprintf(tempstr, maxtextlength,
            "\2#%-*i\2 %*ix [%s]%s %s",
             l,
