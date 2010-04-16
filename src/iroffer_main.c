@@ -1488,7 +1488,7 @@ static void mainloop (void) {
       if (changemin)
         {
           reverify_restrictsend();
-          update_hour_dinoex(lasthour, lastmin);
+          update_hour_dinoex(lastmin);
           check_idle_queue();
           clean_uploadhost();
           auto_rehash();

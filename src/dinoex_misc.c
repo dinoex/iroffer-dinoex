@@ -351,7 +351,7 @@ void notifyqueued(void)
           found, gnetwork->name);
 }
 
-static int dinoex_lasthour;
+static long dinoex_nexthour;
 
 /* clear all data of a pack */
 static void init_xdcc(xdcc *xd)
@@ -375,7 +375,7 @@ void startup_dinoex(void)
   config_startup();
   init_xdcc(&xdcc_statefile);
   init_xdcc(&xdcc_listfile);
-  dinoex_lasthour = -1;
+  dinoex_nexthour = 0;
 #ifdef USE_CURL
   curl_startup();
 #endif /* USE_CURL */
@@ -512,7 +512,7 @@ static int send_xdcc_file(xdcc *xd, char *file, const char *nick, const char *ho
 }
 
 /* send statefile once a hour */
-void update_hour_dinoex(int hour, int minute)
+void update_hour_dinoex(int minute)
 {
   xdcc *xd;
   transfer *tr;
@@ -524,7 +524,7 @@ void update_hour_dinoex(int hour, int minute)
 
   updatecontext();
 
-  if (dinoex_lasthour == hour)
+  if (gdata.curtime < dinoex_nexthour)
     return;
 
   minute %= 60;
@@ -559,7 +559,7 @@ void update_hour_dinoex(int hour, int minute)
       return;
   }
   if (send_xdcc_file(&xdcc_statefile, gdata.statefile, gdata.send_statefile, "man") == 0)
-    dinoex_lasthour = hour;
+    dinoex_nexthour = gdata.curtime + (60 * 30);
 }
 
 /* convert a search string into fnmatch */
