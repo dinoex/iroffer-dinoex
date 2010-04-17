@@ -851,6 +851,7 @@ void dumpgdata(void)
   int ss;
   char ip6[maxtextlengthshort];
   
+  dump_line("iroffer-dinoex " VERSIONLONG FEATURES);
   dump_line("GDATA DUMP BEGIN");
   
   config_dump();
