@@ -6,7 +6,7 @@ Ab Version 3.21:
 bugfix: AUTOADD
   Warne falls Dateien ein Datum in der Zukunft haben.
 
-bugfix: CHCOLOR (reported by Vision)
+bugfix: CHCOLOR
   Benutze Farbe auch bei ANNOUNCE und "!NEW" Trigger.
 
 320) configfile
@@ -64,7 +64,7 @@ Debugging und Logging verbessert.
   Die hostmask gilt dann auch als  uploadhost.
   Erlaube LISTUL wenn das Uploadir angegeben ist.
 
-bigfix: ANNOUNCE (reported by Henrik Krohns)
+bigfix: ANNOUNCE
   Announces haben jetzt Vorrang vor XDCC LIST.
 
 bugfix: -plist
@@ -370,7 +370,7 @@ bugfix: ignore
 Configure -no-libs
   Baue eine statische version des Bots.
 
-bugfix: CONFIG (reported by SellKony)
+bugfix: CONFIG
   Bot crashte wenn kein Argument angegeben wurde.
 
 bugfix: xdcclist_grouponly
@@ -421,7 +421,7 @@ bugfix: FILEDEL
   versions affected: 3.0 - 3.11
   Bot stürzte bei relativen Pfaden ab.
 
-279) channel -notrigger (inspired by AnimeNeko)
+279) channel -notrigger
   Antworte auf keine Trigger in diesem Channel.
 
 278) send_batch, XDCC BATCH 
@@ -442,7 +442,7 @@ bugfix: FILEDEL
   Autovoice ist jetzt möglich.
   Admin Kommandos sind jetzt möglich.
 
-bugfix: XDCC upload (reported by Bambus)
+bugfix: XDCC upload
   versions affected: 3.2 - 3.11
   Beim Upload wurde im Namen '&' und andere zeichen durch '_' ersetzt.
 
@@ -557,7 +557,7 @@ bugfix: XDCC LIST
 Ab Version 3.10:
 ----------------
 
-265) no_minspeed_on_free (inspired by TheDeath)
+265) no_minspeed_on_free
   Ignoriere minspeed solang noch Solts frei sind.
 
 bugfix: xdccxmlfile
@@ -854,7 +854,7 @@ bugfix: connectionmethod ssl
 
 Debugging und Logging verbessert.
 
-bugfix: PSEND (reported by dondieschotte)
+bugfix: PSEND
   versions affected: 2.10 - 3.6
   Erlaube wieder an nicks zu senden, ausgabe abbrechbar.
 
@@ -1539,7 +1539,7 @@ bugfix: DCC upload
   Bot kann crashen wenn kein 'uploaddir' definiert ist.
   versions affected: Alle
 
-144) SORT (inspired by TheDeath, dondieschotte, Benni-chan)
+144) SORT
   Neue Admin Kommandos:
   SORT <feld> <feld> ...           Sortiere alle Pakete nach den Feldern
   SORT NAME                        Sortiere alle Pakete nach der Dateinamen
