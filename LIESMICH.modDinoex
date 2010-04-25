@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+bugfix: AUTOADD
+  Warne falls Dateien ein Datum in der Zukunft haben.
+
 bugfix: CHCOLOR (reported by Vision)
   Benutze Farbe auch bei ANNOUNCE und "!NEW" Trigger.
 
