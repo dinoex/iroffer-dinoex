@@ -1979,6 +1979,11 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       continue;
     }
     if (gdata.autoadd_delay) {
+      if ((st.st_mtime) > gdata.curtime) {
+        a_respond(u, "  Ignoring future date on file: %s", tempstr);
+        mydelete(tempstr);
+        continue;
+      }
       if ((st.st_mtime + gdata.autoadd_delay) > gdata.curtime) {
         a_respond(u, "  Ignoring active file: %s", tempstr);
         mydelete(tempstr);
