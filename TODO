@@ -75,6 +75,9 @@ Short Term Features:
   1440  add tags Bold, Underline and Dual Color at CHCOLOR command
   1442  queue set of packs.
   1447  faster log rotation
+  1449  remove all triggers
+  1453  creditline after DL
+  1456  diskfree command
 
 Long Term Features:
   1013  notify adminnick when autoadd
@@ -139,6 +142,8 @@ Long Term Features:
   1433  Turbo DCC
   1434  transfer info for a upload
   1448  announce xdcc batch
+  1454  Auto-update GEOIP
+  1455  write running config as file
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -202,4 +207,5 @@ Not going to happen anytime soon:
   1398  dcc password containing spaces
   1437  trigger to find a pack by number of the episiode
   1443  make ctrl+c disabled
+  1452  zeroconf/mdns/avahi-support
 
