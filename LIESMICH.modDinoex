@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.21:
 ----------------
 
+bugfix: PRINT
+  versions affected: 3.13 - 3.20
+  Bot crashte, wenn auf einen nicht Parameter ohne Wert angefordert wurde.
+
 bugfix: AUTOADD
   Warne falls Dateien ein Datum in der Zukunft haben.
 

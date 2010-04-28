@@ -583,6 +583,9 @@ static char *print_config_string(const char *key)
     return NULL;
 
   val = *(config_parse_string[i].svar);
+  if (val == NULL)
+    return NULL;
+
   return mystrdup(val);
 }
 
