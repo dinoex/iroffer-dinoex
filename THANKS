@@ -603,6 +603,7 @@ PastisD
 Bachstelze
 	reporting gnutls bug.
 	Ubuntu package
+	patch for "PRINT" bug.
 
 super89
 	reporting "include_subdirs" bug
@@ -625,4 +626,7 @@ Henrik Krohns
 
 torque
 	reporting "restrictsend" bug.
+
+Rilly
+	reporting "PRINT" bug
 

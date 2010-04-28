@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.21:
 ------------------
 
+bugfix: PRINT (reported by Rilly, patch by Bachstelze)
+  versions affected: 3.13 - 3.20
+  Bot did crash if an undef config var was requested.
+
 bugfix: AUTOADD
   Warn if files have date in the future.
 
