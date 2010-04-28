@@ -11,7 +11,7 @@ bugfix: AUTOADD
   Warn if files have date in the future.
 
 bugfix: CHCOLOR (reported by Vision)
-  Use Color in ANNOUNCE and !NEW trigger.
+  Use Color in ANNOUNCE, XDCC SEARCH, and !NEW, !FIND trigger.
 
 320) configfile
   Allow to network sections with same name to effect one network.

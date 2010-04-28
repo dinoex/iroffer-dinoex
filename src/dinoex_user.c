@@ -936,6 +936,7 @@ static void command_xdcc(privmsginput *pi)
     char *match;
     char *msg3e;
     char *grouplist;
+    char *colordesc;
     int i;
     int k;
 
@@ -958,7 +959,10 @@ static void command_xdcc(privmsginput *pi)
       if (verify_group_in_grouplist(xd->group, grouplist) == 0)
         continue;
       if (fnmatch_xdcc(match, xd)) {
-        notice_slow(pi->nick, " - Pack #%i matches, \"%s\"", i, xd->desc);
+        colordesc = xd_color_description(xd);
+        notice_slow(pi->nick, " - Pack #%i matches, \"%s\"", i, colordesc);
+        if (colordesc != xd->desc)
+          mydelete(colordesc);
         k++;
         /* limit matches */
         if ((gdata.max_find != 0) && (k >= gdata.max_find)) {
@@ -1130,6 +1134,7 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
   char *tempstr = mycalloc(maxtextlength);
   char *match;
   char *sizestrstr;
+  char *colordesc;
   xdcc *xd;
 
   /* apply per-channel visibility rules */
@@ -1181,12 +1186,15 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
       len = strlen(tempstr);
     }
     sizestrstr = sizestr(0, xd->st_size);
-    snprintf(tempstr + len, maxtextlength - len, " #%i:%s,%s", i, xd->desc, sizestrstr);
+    colordesc = xd_color_description(xd);
+    snprintf(tempstr + len, maxtextlength - len, " #%i:%s,%s", i, colordesc, sizestrstr);
     if (strlen(tempstr) > get_channel_limit(dest)) {
       snprintf(tempstr + len, maxtextlength - len, " [...]");
       notice_slow(nick, "%s", tempstr);
-      snprintf(tempstr, maxtextlength, "[...] #%i:%s,%s", i, xd->desc, sizestrstr);
+      snprintf(tempstr, maxtextlength, "[...] #%i:%s,%s", i, colordesc, sizestrstr);
     }
+    if (colordesc != xd->desc)
+      mydelete(colordesc);
     len = strlen(tempstr);
     mydelete(sizestrstr);
     k++;
