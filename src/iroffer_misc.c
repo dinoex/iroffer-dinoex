@@ -1974,7 +1974,7 @@ void startupiroffer(void) {
    if (geteuid() == 0)
      {
        outerror(
-#if BLOCKROOT
+#if BLOCKROOT && !defined(_OS_CYGWIN)
 		OUTERROR_TYPE_CRASH,
 #else
 		OUTERROR_TYPE_WARN_LOUD,
