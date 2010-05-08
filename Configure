@@ -1454,6 +1454,29 @@ echo "#define NO_HOSTCODES" >> src/iroffer_config.h
 echo "missing, won't report error codes"
 fi
 
+echo -n "Checking for res_init() ... "
+echo "
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+#include <resolv.h>
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
+  res_init();
+  exit(0);
+}
+" > config.temp.c
+if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
+echo "found"
+echo "#define WITH_RESINIT" >> src/iroffer_config.h
+else
+echo "missing, won't use res_init()"
+fi
+
 if $OPT_GEOIP; then
 	echo -n "Seeing if GeoIP libraries exist ... "
 	echo "
