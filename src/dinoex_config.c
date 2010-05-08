@@ -432,7 +432,7 @@ static void dump_config_int(void)
   long i;
 
   for (i = 0L; config_parse_int[i].name != NULL; i ++) {
-    dump_config_int2(config_parse_bool[i].name, *(config_parse_bool[i].ivar));
+    dump_config_int2(config_parse_int[i].name, *(config_parse_int[i].ivar));
   }
 }
 
