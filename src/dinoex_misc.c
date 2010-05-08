@@ -36,9 +36,9 @@
 #include "upnp.h"
 #endif /* USE_UPNP */
 
-#if !defined(_OS_CYGWIN)
+#if defined(WITH_RESINIT)
 #include <resolv.h>
-#endif /* _OS_CYGWIN */
+#endif /* WITH_RESINIT */
 
 xdcc xdcc_statefile;
 xdcc xdcc_listfile;
@@ -380,9 +380,9 @@ void startup_dinoex(void)
   curl_startup();
 #endif /* USE_CURL */
   ssl_startup();
-#if !defined(_OS_CYGWIN)
+#if defined(WITH_RESINIT)
   res_init();
-#endif /* _OS_CYGWIN */
+#endif /* WITH_RESINIT */
 }
 
 /* copy global settings into each network */
@@ -459,9 +459,9 @@ void rehash_dinoex(void)
 #ifdef USE_RUBY
   rehash_myruby(0);
 #endif /* USE_RUBY */
-#if !defined(_OS_CYGWIN)
+#if defined(WITH_RESINIT)
   res_init();
-#endif /* _OS_CYGWIN */
+#endif /* WITH_RESINIT */
 }
 
 /* init a pack with the information from disk */
