@@ -563,8 +563,26 @@ else
 fi
 
 if [ "$ostype" = CYGWIN ]; then
-echo "#define USE_IPV6" >> src/iroffer_config.h
-echo "#define AF_INET6 23" >> src/iroffer_config.h
+  echo -n "Checking if AF_INET6 is defined ... "
+  echo "
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/socket.h>
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) {
+ printf(\"%d\", (int)AF_INET6);
+ exit(0);
+ }
+" > config.temp.c
+ if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
+  echo "looks good"
+ else
+  echo "failed, IPv6 will not work."
+  echo "#define AF_INET6 23" >> src/iroffer_config.h
+ fi
 fi
 
 echo -n "Seeing if compiling with standard #include's works... "
