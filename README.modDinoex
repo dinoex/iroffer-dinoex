@@ -3,7 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
-219) CLOSEGET
+323) DELTRIGGER (inspired by k1ll0r-chan)
+  new admin command:
+  DELTRIGGER <n> <m>              Delete trigger for pack <n> to <m>
+
+322) CLOSEGET
   new admin command:
   CLOSEGET <net> <nick>           Cancel Request for bot <nick>
 
