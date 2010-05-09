@@ -2360,3 +2360,6 @@
 2649 " [-w dir]"
 2650 "  Ignoro la data futura del file: %s"
 2651 "status_time_dcc_chat"
+2652 "CLOSEGET"
+2653 "net nick"
+2654 "Cancel Request for bot <nick>"
