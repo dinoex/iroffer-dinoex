@@ -302,6 +302,7 @@ static config_int_typ config_parse_int[] = {
 {"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1 },
 {"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024 },
 {"start_of_month",          &gdata.start_of_month,          1, 31, 1 },
+{"status_time_dcc_chat",    &gdata.status_time_dcc_chat,    10, 2000, 1 },
 {"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1 },
 {"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1 },
 #ifndef WITHOUT_TELNET

@@ -20,6 +20,25 @@
 #include "iroffer_globals.h"
 #include "dinoex_chat.h"
 
+/* send dcc status line to all chats */
+void chat_writestatus(void)
+{
+  dccchat_t *chat;
+
+  if (gdata.no_status_chat)
+    return;
+
+  for (chat = irlist_get_head(&gdata.dccchats);
+       chat;
+       chat = irlist_get_next(chat)) {
+
+    if (chat->status != DCCCHAT_CONNECTED)
+      continue;
+
+    writestatus(chat);
+  }
+}
+
 /* register active connections for select() */
 int chat_select_fdset(int highests)
 {

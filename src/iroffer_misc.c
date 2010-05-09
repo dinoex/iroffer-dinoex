@@ -1702,6 +1702,7 @@ void reinit_config_vars(void)
   gdata.no_find_trigger = 0;
   gdata.hide_list_stop = 0;
   gdata.passive_dcc_chat = 0;
+  gdata.status_time_dcc_chat = 120;
   mydelete(gdata.admin_job_file);
   mydelete(gdata.autoaddann);
   mydelete(gdata.autoadd_group);
