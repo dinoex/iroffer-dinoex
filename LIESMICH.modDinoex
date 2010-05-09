@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+322) CLOSEGET
+  Neues Admin Kommando:
+  CLOSEGET <net> <nick>            Breche den Upload von Bot <nick> ab
+
 321) status_time_dcc_chat
  Zeit in Sekunden bis zur nächsten Ausgabe der Status-Zeile im DCC Chat.
  Default: 120
@@ -971,6 +975,7 @@ bugfix: QUIT
   Neue Admin Kommandos:
   GETL                             Zeige aktuelle Upload Wartschlange
   GET <netz> <nick> <n> [passwort] Fordere Paket <n> von Bot <nick> an
+  GET <net> <nick>                 Breche den Upload von Bot <nick> ab
 
 218) channel -joinmsg
   joinmsg: Text nach diesem Wort wird bei Betreten des Channels gesendet.
