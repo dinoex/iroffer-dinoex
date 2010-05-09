@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+324) download_completed_msg
+  Nachricht am Ende des Transfers.
+
 323) DELTRIGGER
   Neues Admin Kommando:
   DELTRIGGER <n> <m>               Entferne die Trigger von Pack <n> bis <m>

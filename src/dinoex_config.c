@@ -454,6 +454,7 @@ static config_string_typ config_parse_string[] = {
 {"autoaddann",              &gdata.autoaddann,              0 },
 {"charset",                 &gdata.charset,                 0 },
 {"creditline",              &gdata.creditline,              0 },
+{"download_completed_msg",  &gdata.download_completed_msg,  0 },
 {"enable_nick",             &gdata.enable_nick,             0 },
 #ifdef USE_GEOIP
 {"geoipdatabase",           &gdata.geoipdatabase,           0 },

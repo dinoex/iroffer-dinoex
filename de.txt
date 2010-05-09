@@ -2365,3 +2365,4 @@
 2654 "Breche den Upload von Bot <nick> ab"
 2655 "DELTRIGGER"
 2656 "Entferne die Trigger von Pack <n> bis <m>"
+2657 "download_completed_msg"

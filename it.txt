@@ -2365,3 +2365,4 @@
 2654 "Cancel Request for bot <nick>"
 2655 "DELTRIGGER"
 2656 "Delete trigger for pack <n> to <m>"
+2657 "download_completed_msg"
