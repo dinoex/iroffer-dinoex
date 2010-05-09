@@ -2134,13 +2134,23 @@ char *new_logfilename(const char *logfile)
 
   lthen = localtime(&gdata.curtime);
   max = strlen(logfile) + 12;
-
-  newname = mymalloc(max);
-  snprintf(newname, max, "%s.%04i-%02i-%02i",
-          logfile,
-          lthen->tm_year+1900,
-          lthen->tm_mon+1,
-          lthen->tm_mday);
+  if (gdata.logrotate < 24*60*60) {
+    max += 4;
+    newname = mymalloc(max);
+    snprintf(newname, max, "%s.%04i-%02i-%02i-%02i",
+            logfile,
+            lthen->tm_year+1900,
+            lthen->tm_mon+1,
+            lthen->tm_mday,
+            lthen->tm_hour);
+  } else {
+    newname = mymalloc(max);
+    snprintf(newname, max, "%s.%04i-%02i-%02i",
+            logfile,
+            lthen->tm_year+1900,
+            lthen->tm_mon+1,
+            lthen->tm_mday);
+  }
   return newname;
 }
 

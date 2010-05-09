@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+325) logrotate <n> (inspired by Globulus)
+  Allow faster logroate each <n> hour.
+
 324) download_completed_msg (inspired by Xarda)
   Put a credit at the end of each transfer.
 
