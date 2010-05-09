@@ -511,6 +511,7 @@ HymnToLife
 Globulus
 	debugging "mirc_dcc64"
 	debugging "XDCC GET" crash
+	option "logrotate" 1 - 24
 
 Kamina
 	reporting 10TB bug

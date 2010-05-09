@@ -2366,3 +2366,4 @@
 2655 "DELTRIGGER"
 2656 "Entferne die Trigger von Pack <n> bis <m>"
 2657 "download_completed_msg"
+2658 "%s.%04i-%02i-%02i-%02i"

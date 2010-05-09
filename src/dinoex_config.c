@@ -1165,7 +1165,6 @@ static void c_group_admin(char *var)
 
 static void c_logrotate(char *var)
 {
-#if 0
   int val;
 
   val = atoi(var);
@@ -1173,7 +1172,6 @@ static void c_logrotate(char *var)
     gdata.logrotate = val*60*60;
     return;
   }
-#endif
   if (strcmp(var, "daily") == 0) {
     gdata.logrotate =    24*60*60;
     return;

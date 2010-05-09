@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+325) logrotate <n>
+  Schnelles Rotieren der Logfiles alle <n> Stunde.
+
 324) download_completed_msg
   Nachricht am Ende des Transfers.
 
