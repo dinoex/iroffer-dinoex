@@ -150,6 +150,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_chlimit,       "CHLIMIT","n x","Change download limit of pack <n> to <x> transfers per day"},
 {3,3,method_allow_all,a_chlimitinfo,   "CHLIMITINFO","n [msg]","Change over limit info of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtrigger,     "CHTRIGGER","n [msg]","Change trigger for pack <n> to <msg>"},
+{3,3,method_allow_all,a_deltrigger,    "DELTRIGGER","n [m]","Delete trigger for pack <n> to <m>"},
 {3,5,method_allow_all,u_chgets,        "CHGETS","n x","Set the get counter of pack <n> to <x>"},
 {3,5,method_allow_all,a_chcolor,       "CHCOLOR","n [m] x[,b]","Set the pack <n> to <m> to color <x> background <b>"},
 {3,2,method_allow_all,a_lock,          "LOCK","n [m] password","Lock the pack <n> to <m> with <password>"},

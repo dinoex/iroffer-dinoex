@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+323) DELTRIGGER
+  Neues Admin Kommando:
+  DELTRIGGER <n> <m>               Entferne die Trigger von Pack <n> bis <m>
+
 322) CLOSEGET
   Neues Admin Kommando:
   CLOSEGET <net> <nick>            Breche den Upload von Bot <nick> ab

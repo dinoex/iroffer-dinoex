@@ -2394,6 +2394,43 @@ void a_chtrigger(const userinput * const u)
   write_files();
 }
 
+void a_deltrigger(const userinput * const u)
+{
+  int num1;
+  int num2;
+  int dirty;
+  xdcc *xd;
+
+  updatecontext();
+
+  if (disabled_config(u) != 0)
+    return;
+
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 <= 0)
+    return;
+
+  num2 = get_pack_nr2(u, u->arg2, num1);
+  if (num2 <= 0)
+    return;
+
+  dirty = 0;
+  for (; num1 <= num2; num1++) {
+    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    if (group_restricted(u, xd))
+      return;
+
+    if (xd->trigger == NULL)
+      continue;
+
+    dirty ++;
+    mydelete(xd->trigger);
+    a_respond(u, "TRIGGER: [Pack %i] removed", num1);
+  }
+  if (dirty > 0)
+    autotrigger_rebuild();
+}
+
 void a_chcolor(const userinput * const u)
 {
   int num1;
