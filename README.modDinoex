@@ -3,6 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+324) download_completed_msg (inspired by Xarda)
+  Put a credit at the end of each transfer.
+
+   References TODO:
+Short Term Features:
+   141 11/12/00 Open send credit line when sending packs
+
 323) DELTRIGGER (inspired by k1ll0r-chan)
   new admin command:
   DELTRIGGER <n> <m>              Delete trigger for pack <n> to <m>

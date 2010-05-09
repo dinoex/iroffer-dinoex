@@ -14,7 +14,6 @@ Known Problems (All Versions):
 
 Short Term Features:
    165 02/03/01 Open specify more than one type of plist for a single channel with different times
-   141 11/12/00 Open send credit line when sending packs
    138 7/16/00 Open compress old logs
    135 4/22/00 Open let (queued) users request dcc list
    175 12/09/03 Open sort by name listing
@@ -73,7 +72,6 @@ Short Term Features:
   1440  add tags Bold, Underline and Dual Color at CHCOLOR command
   1442  queue set of packs.
   1447  faster log rotation
-  1453  creditline after DL
   1456  diskfree command
 
 Long Term Features:

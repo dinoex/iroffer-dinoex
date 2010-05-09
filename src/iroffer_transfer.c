@@ -687,6 +687,10 @@ void t_flushed (transfer * const t)
                  ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0));
         }
     }
+  if (gdata.download_completed_msg)
+    {
+      notice(t->nick, "%s", gdata.download_completed_msg);
+    }
   
   if ( ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0) > gdata.record )
     {
