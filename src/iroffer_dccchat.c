@@ -431,11 +431,8 @@ void writestatus(dccchat_t *chat) {
    
    tempstr = mycalloc(maxtextlength);
    
-   if (!gdata.no_status_chat)
-     {
    getstatusline(tempstr,maxtextlength);
    writedccchat(chat,0,"%s\n",tempstr);
-     }
    
    mydelete(tempstr);
    }

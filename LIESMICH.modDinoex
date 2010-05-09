@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+321) status_time_dcc_chat
+ Zeit in Sekunden bis zur nächsten Ausgabe der Status-Zeile im DCC Chat.
+ Default: 120
+
 Debugging und Logging verbessert.
 
 Ab Version 3.21:

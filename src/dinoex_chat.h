@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -13,6 +13,7 @@
  *
  */
 
+void chat_writestatus(void);
 int chat_select_fdset(int highests);
 
 /* End of File */

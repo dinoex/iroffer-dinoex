@@ -214,6 +214,7 @@ int http_geoip;
 int no_find_trigger;
 int hide_list_stop;
 int passive_dcc_chat;
+int status_time_dcc_chat;
 char *nickserv_pass;
 int notifytime;
 int respondtochannelxdcc;

@@ -2359,3 +2359,4 @@
 2648 "\003%d,%d%s\003"
 2649 " [-w dir]"
 2650 "  Ignoring future date on file: %s"
+2651 "status_time_dcc_chat"
