@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+326) http_access_log (inspired by TheDeath)
+  If defined, iroffer will log http request in CLF compatible format.
+  Default: disabled.
+
 325) logrotate <n> (inspired by Globulus)
   Allow faster logroate each <n> hour.
 
