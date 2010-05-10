@@ -21,7 +21,7 @@ by Ian Jackson in 1995, this files are in the public domain.
 src/crc32.c is written by 1986 Gary S. Brown and in the public domain.
 
 src/blowfish.[ch] are copyrighted 1997 by Paul Kocher
-and released under LGPL 2.1.
+and released under LGPL v2.1.
 
 src/upnp.[ch] is writen by Thomas Bernard under BSD license.
 
@@ -55,7 +55,7 @@ MaxMind GeoIP Country library is availible under LGPL v2.1 license.
 libminiupnp by Thomas Bernard is availible under BSD license.
 libcurl by Daniel Stenberg is availible under MIT/X license.
 libruby by Yukihiro Matsumoto is availible under RUBY license.
-GNU TLS is availible under GPL 2 license.
+GNU TLS is availible under LGPL v2.1+ license.
 
 =====================================================================
 
