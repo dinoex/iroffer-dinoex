@@ -508,6 +508,83 @@ int h_select_fdset(int highests)
   return highests;
 }
 
+static const char *get_host(http * const h)
+{
+  char *host;
+
+  host = h->con.remoteaddr;
+  if (host == NULL)
+    return "-";
+
+  host = html_str_split(host, '=');
+  html_str_split(host, ' ');
+  return host;
+}
+
+static void http_access_log_write(int logfd, const char *logfile, const char *msg, size_t len)
+{
+  ssize_t len2;
+
+  len2 = write(logfd, msg, len);
+  if (len2 > 0) {
+    if ((size_t)len2 == len)
+      return;
+  }
+
+  outerror(OUTERROR_TYPE_WARN_LOUD,
+           "Cant Write Log File '%s': %s",
+           logfile, strerror(errno));
+}
+
+static void http_access_log_add(const char *logfile, const char *line, size_t len)
+{
+  int rc;
+  int logfd;
+
+  logfd = open(logfile,
+               O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+               CREAT_PERMISSIONS);
+  if (logfd < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Cant Access Log File '%s': %s",
+             logfile, strerror(errno));
+    return;
+  }
+
+  http_access_log_write(logfd, logfile, line, len);
+  rc = close(logfd);
+  if (rc != 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Cant Write Log File '%s': %s",
+             logfile, strerror(errno));
+  }
+}
+
+static void h_access_log(http * const h)
+{
+  struct tm *localt;
+  char *tempstr;
+  char *date;
+  long bytes;
+  size_t len;
+
+  updatecontext();
+
+  if (gdata.http_access_log == NULL)
+    return;
+
+  localt = localtime(&gdata.curtime);
+  tempstr = mycalloc(maxtextlength);
+  date = mycalloc(maxtextlengthshort);
+  strftime(date, maxtextlengthshort - 1, "%d/%b/%Y:%T %Z", localt);
+  bytes = h->bytesgot + h->bytessent;
+  len = snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" HTTP/1.1 %d %ld\n",
+                 get_host(h), date, h->log_url, h->status_code, bytes);
+  mydelete(date);
+  http_access_log_add(gdata.http_access_log, tempstr, len);
+  mydelete(tempstr);
+}
+
 /* connections */
 
 static void h_closeconn(http * const h, const char *msg, int errno1)
@@ -538,7 +615,9 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
     h->filedescriptor = FD_UNUSED;
   }
 
+  h_access_log(h);
   mydelete(h->file);
+  mydelete(h->log_url);
   mydelete(h->url);
   mydelete(h->authorization);
   mydelete(h->group);
@@ -592,6 +671,7 @@ static void h_accept(int i)
   h->con.connecttime = gdata.curtime;
   h->con.lastcontact = gdata.curtime;
   h->status = HTTP_STATUS_GETTING;
+  h->status_code = 200;
 
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, addrlen);
@@ -649,7 +729,6 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
   char *last = NULL;
   struct tm *localt;
   size_t len;
-  int http_status = 200;
 
   tempstr = mycalloc(maxtextlength);
   localt = gmtime(&gdata.curtime);
@@ -661,15 +740,15 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
     strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
     if (h->modified) {
       if (strcmp(last, h->modified) == 0) {
-        http_status = 304;
+        h->status_code = 304;
         h->head = 1;
       }
     }
   }
   if (h->attachment)
-    len = snprintf(tempstr, maxtextlength, http_header_attachment, http_status, date, last ? last : date, html_mime(mime), h->totalsize, h->attachment);
+    len = snprintf(tempstr, maxtextlength, http_header_attachment, h->status_code, date, last ? last : date, html_mime(mime), h->totalsize, h->attachment);
   else
-    len = snprintf(tempstr, maxtextlength, http_header_status, http_status, date, last ? last : date, html_mime(mime), h->totalsize);
+    len = snprintf(tempstr, maxtextlength, http_header_status, h->status_code, date, last ? last : date, html_mime(mime), h->totalsize);
   mydelete(last);
   mydelete(date);
   send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
@@ -726,6 +805,13 @@ static int h_runruby(http * const h)
 }
 #endif /* USE_RUBY */
 
+static void h_herror_404(http * const h)
+{
+  h->filedescriptor = FD_UNUSED;
+  h->status_code = 404;
+  h_error(h, http_header_notfound);
+}
+
 static void h_readfile(http * const h, const char *file)
 {
   struct stat st;
@@ -734,16 +820,14 @@ static void h_readfile(http * const h, const char *file)
 
   h->bytessent = 0;
   if (file == NULL) {
-    h->filedescriptor = FD_UNUSED;
-    h_error(h, http_header_notfound);
+    h_herror_404(h);
     return;
   }
 
   h->file = mystrdup(file);
 #ifdef USE_RUBY
   if (h_runruby(h)) {
-    h->filedescriptor = FD_UNUSED;
-    h_error(h, http_header_notfound);
+    h_herror_404(h);
   }
 #endif /* USE_RUBY */
 
@@ -752,8 +836,7 @@ static void h_readfile(http * const h, const char *file)
     if (gdata.debug > 1)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
               "File not found: '%s'", file);
-    h->filedescriptor = FD_UNUSED;
-    h_error(h, http_header_notfound);
+    h_herror_404(h);
     return;
   }
   if (fstat(h->filedescriptor, &st) < 0) {
@@ -762,8 +845,7 @@ static void h_readfile(http * const h, const char *file)
               "Unable to stat file '%s': %s",
               file, strerror(errno));
     close(h->filedescriptor);
-    h->filedescriptor = FD_UNUSED;
-    h_error(h, http_header_notfound);
+    h_herror_404(h);
     return;
   }
 
@@ -1648,7 +1730,7 @@ static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
   if (gdata.debug > 1)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
             "HTTP not found: '%s'", h->url);
-  h_error(h, http_header_notfound);
+  h_herror_404(h);
 }
 #endif /* WITHOUT_HTTP_ADMIN */
 
@@ -1657,6 +1739,7 @@ static char *h_bad_request(http * const h)
   char *url;
   url = (char *)gdata.sendbuff;
 
+  h->log_url = url;
   h->modified = NULL;
   h->post = 0;
   h->head = 0;
@@ -1674,6 +1757,8 @@ static char *h_bad_request(http * const h)
     url += 5;
     return url;
   }
+  html_str_split(h->log_url, '\n');
+  h->log_url = mystrdup(h->log_url);
   return NULL;
 }
 
@@ -1807,6 +1892,7 @@ static void h_parse(http * const h, char *body)
   if ((gdata.http_admin) && (strncasecmp(h->url, "/admin/", 7) == 0)) {
     if (h_admin_auth(h, body)) {
       count_badip(&(h->con.remote));
+      h->status_code = 401;
       h_error(h, http_header_admin);
     }
     return;
@@ -1827,7 +1913,7 @@ static void h_parse(http * const h, char *body)
   if (gdata.debug > 1)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
             "HTTP not found: '%s'", h->url);
-  h_error(h, http_header_notfound);
+  h_herror_404(h);
 }
 
 static void h_get(http * const h)
@@ -1877,6 +1963,7 @@ static void h_get(http * const h)
     }
   }
 
+  h->log_url = mystrdup(h->log_url);
   hval = mystrdup(h->url);
   h->url = hval;
   if ((h->post) && (!data)) {

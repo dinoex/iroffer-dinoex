@@ -1727,6 +1727,7 @@ void reinit_config_vars(void)
   mydelete(gdata.http_admin_dir);
   mydelete(gdata.http_index);
   mydelete(gdata.download_completed_msg);
+  mydelete(gdata.http_access_log);
   gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
   gdata.overallmaxspeed = gdata.overallmaxspeeddayspeed = 0;
   gdata.overallmaxspeeddaytimestart = gdata.overallmaxspeeddaytimeend = 0;
@@ -2120,6 +2121,7 @@ void isrotatelog(void)
     }
   
   rotatelog(gdata.logfile_httpd);
+  rotatelog(gdata.http_access_log);
   newname = new_logfilename(gdata.logfile);
   
   mylog(CALLTYPE_NORMAL,"Rotating Log to '%s'", newname);

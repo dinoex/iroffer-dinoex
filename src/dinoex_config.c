@@ -463,6 +463,7 @@ static config_string_typ config_parse_string[] = {
 {"hadminpass",              &gdata.hadminpass,              4 },
 {"headline",                &gdata.headline,                0 },
 #ifndef WITHOUT_HTTP
+{"http_access_log",         &gdata.http_access_log,         1 },
 #ifndef WITHOUT_HTTP_ADMIN
 {"http_admin",              &gdata.http_admin,              0 },
 {"http_admin_dir",          &gdata.http_admin_dir,          1 },
@@ -475,7 +476,9 @@ static config_string_typ config_parse_string[] = {
 #endif /* WITHOUT_HTTP */
 {"local_vhost",             &gdata.local_vhost,             0 },
 {"logfile",                 &gdata.logfile,                 1 },
+#ifndef WITHOUT_HTTP
 {"logfile_httpd",           &gdata.logfile_httpd,           1 },
+#endif /* WITHOUT_HTTP */
 {"logfile_messages",        &gdata.logfile_messages,        1 },
 {"logfile_notices",         &gdata.logfile_notices,         1 },
 {"loginname",               &gdata.loginname,               0 },

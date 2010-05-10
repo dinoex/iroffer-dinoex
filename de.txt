@@ -2367,3 +2367,7 @@
 2656 "Entferne die Trigger von Pack <n> bis <m>"
 2657 "download_completed_msg"
 2658 "%s.%04i-%02i-%02i-%02i"
+2659 "http_access_log"
+2660 "-"
+2661 "%d/%b/%Y:%T %Z"
+2662 "%s - - [%s] \"%s\" HTTP/1.1 %d %ld\n"
