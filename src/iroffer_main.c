@@ -418,6 +418,7 @@ static void mainloop (void) {
          length = readserver_ssl(&tempbuffa, INPUT_BUFFER_LENGTH);
          
          if (length < 1) {
+            if (errno != EAGAIN) {
             ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
                     "Closing Server Connection on %s: %s",
                     gnetwork->name, (length<0) ? strerror(errno) : "Closed");
@@ -427,6 +428,7 @@ static void mainloop (void) {
               }
             close_server();
             mydelete(gnetwork->curserveractualname);
+            }
             }
          else
            {
