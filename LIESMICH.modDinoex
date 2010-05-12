@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+bugfix: SSL
+  Halte die Verbindung auch wenn der IRC-Server langsam ist.
+
 326) http_access_log
   Schreibe alle Zugriffe via HTTP im Format CLF in die angegebene Datei.
   Default: kein Protokoll.
