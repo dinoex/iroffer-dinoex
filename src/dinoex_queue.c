@@ -243,28 +243,31 @@ int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const 
 }
 
 /* add a request to the idle queue */
-const char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
+int addtoidlequeue(const char **msg, char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
 {
   ir_pqueue *tempq;
   const char *hostname2;
 
   updatecontext();
+  *msg = NULL;
   if (gdata.idlequeuesize == 0)
-    return NULL;
+    return 0;
 
   if (hostname != NULL) {
     if (inq >= gdata.maxidlequeuedperperson) {
       snprintf(tempstr, maxtextlength,
                "Denied, You already have %i items queued, Try Again Later",
                inq);
-      return "Denied (user/idle)";
+      *msg = "Denied (user/idle)";
+      return 1;
     }
 
     if (irlist_size(&gdata.idlequeue) >= gdata.idlequeuesize) {
       snprintf(tempstr, maxtextlength,
                "Idle queue of size %d is Full, Try Again Later",
                gdata.idlequeuesize);
-      return "Denied (slot/idle)";
+      *msg = "Denied (slot/idle)";
+      return 1;
     }
     hostname2 = hostname;
   } else {
@@ -284,13 +287,13 @@ const char* addtoidlequeue(char *tempstr, const char* nick, const char* hostname
            pack, xd->desc,
            irlist_size(&gdata.idlequeue),
            get_user_nick());
-  return "Queued (idle slot)";
+  *msg = "Queued (idle slot)";
+  return 0;
 }
 
 /* add a request to the main queue */
-const char *addtomainqueue(char *tempstr, const char *nick, const char *hostname, int pack)
+int addtomainqueue(const char **msg, char *tempstr, const char *nick, const char *hostname, int pack)
 {
-  const char *idle;
   const char *hostname2;
   ir_pqueue *tempq;
   xdcc *tempx;
@@ -299,6 +302,7 @@ const char *addtomainqueue(char *tempstr, const char *nick, const char *hostname
   int inq2;
   int man;
   int mainslot;
+  int fatal;
 
   updatecontext();
 
@@ -320,32 +324,35 @@ const char *addtomainqueue(char *tempstr, const char *nick, const char *hostname
   if (alreadytrans) {
     snprintf(tempstr, maxtextlength,
              "Denied, You already have that item queued.");
-    return "Denied (queue/dup)";
+    *msg = "Denied (queue/dup)";
+    return 1;
   }
 
   if (hostname != NULL) {
     if (inq >= gdata.maxqueueditemsperperson) {
-      idle = addtoidlequeue(tempstr, nick, hostname, tempx, pack, inq2);
-      if (idle != NULL)
-        return idle;
+      fatal = addtoidlequeue(msg, tempstr, nick, hostname, tempx, pack, inq2);
+      if (*msg != NULL)
+        return fatal;
 
       snprintf(tempstr, maxtextlength,
                "Denied, You already have %i items queued, Try Again Later",
                inq);
-      return "Denied (user/queue)";
+      *msg = "Denied (user/queue)";
+      return 1;
     }
 
     mainslot = (irlist_size(&gdata.mainqueue) >= gdata.queuesize);
     if (gdata.holdqueue || (gnetwork->botstatus != BOTSTATUS_JOINED) || mainslot) {
-      idle = addtoidlequeue(tempstr, nick, hostname, tempx, pack, inq2);
-      if (idle != NULL)
-        return idle;
+      fatal = addtoidlequeue(msg, tempstr, nick, hostname, tempx, pack, inq2);
+      if (*msg != NULL)
+        return fatal;
     }
     if (mainslot) {
       snprintf(tempstr, maxtextlength,
                "Main queue of size %d is Full, Try Again Later",
                gdata.queuesize);
-      return "Denied (slot/queue)";
+      *msg = "Denied (slot/queue)";
+      return 1;
     }
   }
 
@@ -363,7 +370,8 @@ const char *addtomainqueue(char *tempstr, const char *nick, const char *hostname
            irlist_size(&gdata.mainqueue),
            save_nick(gnetwork->user_nick));
 
-  return "Queued (slot)";
+  *msg = "Queued (slot)";
+  return 0;
 }
 
 

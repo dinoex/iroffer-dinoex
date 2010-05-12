@@ -4238,7 +4238,7 @@ void a_queue(const userinput * const u)
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
   tempstr = mycalloc(maxtextlength);
-  msg = addtomainqueue(tempstr, u->arg1, NULL, num);
+  addtomainqueue(&msg, tempstr, u->arg1, NULL, num);
   notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
   gnetwork = backup;
@@ -4289,7 +4289,7 @@ void a_iqueue(const userinput * const u)
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
   tempstr = mycalloc(maxtextlength);
-  msg = addtoidlequeue(tempstr, u->arg1, NULL, xd, num, 0);
+  addtoidlequeue(&msg, tempstr, u->arg1, NULL, xd, num, 0);
   notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
   gnetwork = backup;

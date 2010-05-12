@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+bugfix: XDCC BATCH
+  versions affected: 3.21
+  BATCH wurde nach dem ersten Pack abgebrochen.
+
 bugfix: SSL
   Halte die Verbindung auch wenn der IRC-Server langsam ist.
 
