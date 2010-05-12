@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+bugfix: SSL
+  Make connection more robust if the irc-server is busy.
+
 326) http_access_log (inspired by TheDeath)
   If defined, iroffer will log http request in CLF compatible format.
   Default: disabled.
