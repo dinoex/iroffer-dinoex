@@ -206,7 +206,7 @@ static int connectirc (server_t *tserver) {
        /* child */
        child_resolver();
        sleep(60);
-       exit(0);
+       _exit(0);
      }
    
    /* parent */
