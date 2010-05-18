@@ -426,6 +426,7 @@ void child_resolver(void)
   char portname[16];
 #endif /* NO_GETADDRINFO */
 
+  close(gnetwork->serv_resolv.sp_fd[0]);
   for (i=3; i<((int)FD_SETSIZE); i++) {
     /* include [0], but not [1] */
     if (i != gnetwork->serv_resolv.sp_fd[1]) {
@@ -450,22 +451,22 @@ void child_resolver(void)
   if (remotehost == NULL) {
 #endif /* NO_GETADDRINFO */
 #ifdef NO_HOSTCODES
-    exit(10);
+    _exit(10);
 #else /* NO_HOSTCODES */
     switch (h_errno) {
     case HOST_NOT_FOUND:
-      exit(20);
+      _exit(20);
     case NO_ADDRESS:
 #if NO_ADDRESS != NO_DATA
     case NO_DATA:
 #endif /* NO_ADDRESS != NO_DATA */
-      exit(21);
+      _exit(21);
     case NO_RECOVERY:
-      exit(22);
+      _exit(22);
     case TRY_AGAIN:
-      exit(23);
+      _exit(23);
     default:
-      exit(12);
+      _exit(12);
     }
 #endif /* NO_HOSTCODES */
   }
@@ -509,7 +510,7 @@ void child_resolver(void)
   freeaddrinfo(results);
 #endif /* NO_GETADDRINFO */
   if (bytes != sizeof(res_addrinfo_t)) {
-     exit(11);
+     _exit(11);
   }
 }
 
