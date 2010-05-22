@@ -24,8 +24,8 @@
 #include "dinoex_curl.h"
 #include "dinoex_misc.h"
 
-/* returns custom uploaddir or default */
-char *get_uploaddir(const char *hostmask)
+/* search for a custom uploaddir of a group admin */
+static char *verifyupload_group(const char *hostmask)
 {
   group_admin_t *ga;
 
@@ -38,7 +38,18 @@ char *get_uploaddir(const char *hostmask)
     if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) == 0)
       return ga->g_uploaddir;
   }
-  return gdata.uploaddir;
+  return NULL;
+}
+
+/* returns custom uploaddir or default */
+char *get_uploaddir(const char *hostmask)
+{
+  char *group_uploaddir;
+
+  group_uploaddir = verifyupload_group(hostmask);
+  if (group_uploaddir == NULL)
+    group_uploaddir = gdata.uploaddir;
+  return group_uploaddir;
 }
 
 /* open file on disk for upload */
@@ -363,23 +374,6 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
     /* Passive DCC */
     l_setup_passive(ul, token);
   }
-}
-
-/* search for a custom uploaddir of a group admin */
-static char *verifyupload_group(const char *hostmask)
-{
-  group_admin_t *ga;
-
-  updatecontext();
-
-  for (ga = irlist_get_head(&gdata.group_admin);
-       ga;
-       ga = irlist_get_next(ga)) {
-
-    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) == 0)
-      return ga->g_uploaddir;
-  }
-  return NULL;
 }
 
 /* check if this host is allowed to send */
