@@ -104,6 +104,7 @@ static const userinput_parse_t userinput_parse[] = {
 {1,1,method_allow_all,a_qul,           "QUL",NULL,"Lists current queue"},
 {1,1,method_allow_all,u_ignl,          "IGNL",NULL,"Show ignored list"},
 {1,3,method_allow_all,a_listul,        "LISTUL","[dir]","Shows contents of upload directory"},
+{1,3,method_allow_all,a_diskfree,      "DISKFREE",NULL,"Shows free space in upload directory"},
 {1,5,method_allow_all,u_chanl,         "CHANL","[net]","Shows channel list with member list"},
 
 {2,2,method_allow_all,u_close,         "CLOSE","id","Cancels transfer <id>"},
@@ -2733,13 +2734,6 @@ void u_listdir(const userinput * const u, const char *dir)
   char *thefile, *tempstr;
   irlist_t dirlist = {0, 0};
   int thedirlen;
-#ifndef NO_STATVFS
-  struct statvfs stf;
-#else
-#ifndef NO_STATFS
-  struct statfs stf;
-#endif
-#endif
   
   updatecontext();
   
@@ -2822,7 +2816,24 @@ void u_listdir(const userinput * const u, const char *dir)
           thefile = irlist_delete(&dirlist, thefile);
         }
     }
+  u_diskinfo(u, dir);
+  return;
   
+}
+
+
+void u_diskinfo(const userinput * const u, const char *dir)
+{
+#ifndef NO_STATVFS
+  struct statvfs stf;
+#else
+#ifndef NO_STATFS
+  struct statfs stf;
+#endif
+#endif
+  
+  updatecontext();
+   
 #ifndef NO_STATVFS
   if (statvfs(dir, &stf) < 0)
     {

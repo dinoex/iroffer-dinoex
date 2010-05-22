@@ -2371,3 +2371,5 @@
 2660 "-"
 2661 "%d/%b/%Y:%T %Z"
 2662 "%s - - [%s] \"%s\" HTTP/1.1 %d %ld\n"
+2663 "DISKFREE"
+2664 "Shows free space in upload directory"
