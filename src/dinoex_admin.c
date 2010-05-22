@@ -1379,6 +1379,19 @@ static char *a_valid_uploaddir(const userinput * const u)
   return uploaddir;
 }
 
+void a_diskfree(const userinput * const u)
+{
+  char *uploaddir;
+
+  updatecontext();
+
+  uploaddir = a_valid_uploaddir(u);
+  if (uploaddir == NULL)
+    return;
+
+  u_diskinfo(u, uploaddir);
+}
+
 void a_listul(const userinput * const u)
 {
   char *tempstr;

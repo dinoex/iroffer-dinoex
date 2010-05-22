@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+327) DISKFREE (inspired by Erdrick)
+  new admin command:
+  DISKFREE                        Shows free space in upload directory
+
 bugfix: fix small memory leaks
 
 bugfix: XDCC BATCH (reported by Loke_AF)

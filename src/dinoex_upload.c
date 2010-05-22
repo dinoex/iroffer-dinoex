@@ -46,10 +46,12 @@ char *get_uploaddir(const char *hostmask)
 {
   char *group_uploaddir;
 
-  group_uploaddir = verifyupload_group(hostmask);
-  if (group_uploaddir == NULL)
-    group_uploaddir = gdata.uploaddir;
-  return group_uploaddir;
+  if (hostmask != NULL) {
+    group_uploaddir = verifyupload_group(hostmask);
+    if (group_uploaddir != NULL)
+      return group_uploaddir;
+  }
+  return gdata.uploaddir;
 }
 
 /* open file on disk for upload */
