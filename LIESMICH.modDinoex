@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+bugfix: Speicherlecks behoben
+
 bugfix: XDCC BATCH
   versions affected: 3.21
   BATCH wurde nach dem ersten Pack abgebrochen.
