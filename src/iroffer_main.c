@@ -675,6 +675,7 @@ static void mainloop (void) {
               close_qupload(ul->net, ul->nick);
               mydelete(ul->nick);
               mydelete(ul->hostname);
+              mydelete(ul->uploaddir);
               mydelete(ul->file);
               mydelete(ul->con.remoteaddr);
               ul = irlist_delete(&gdata.uploads, ul);
