@@ -53,8 +53,25 @@ do
 		;;
 	esac
 done
-# Build enlglish version
+# Build english version
 zip -r "${name}-win32.zip" "${name}-win32/"
 zip -r "${name}-win32-de.zip" "${name}-win32-de/"
 zip -r "${name}-win32-it.zip" "${name}-win32-it/"
+#
+dlldir="cygwin-"`uname -r`
+dlldir="${dlldir%(*}-dll"
+mkdir "${dlldir}"
+ldd "${name}-win32/iroffer.exe" |
+while read dll dummy src offset
+do
+	case "${src}" in
+	*/system32/*)
+		continue
+		;;
+	esac
+	echo "${dll}" "${src}"
+	cp -p "${src}" "${dlldir}/"
+done
+mkdir "${dlldir}"
+zip -r "${dlldir}.zip" "${dlldir}"
 # eof
