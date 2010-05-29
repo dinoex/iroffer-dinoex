@@ -47,6 +47,7 @@ class IrofferEvent
     # trigger on text
     if /!autoadd/.match( message )
       # execute admin command
+      command2( "msg", config[ "owner_nick" ], "!autoadd was triggered" )
       command( "autoadd" )
     end
 
