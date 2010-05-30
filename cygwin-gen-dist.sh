@@ -72,6 +72,5 @@ do
 	echo "${dll}" "${src}"
 	cp -p "${src}" "${dlldir}/"
 done
-mkdir "${dlldir}"
 zip -r "${dlldir}.zip" "${dlldir}"
 # eof
