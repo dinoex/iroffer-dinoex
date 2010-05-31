@@ -65,7 +65,7 @@ ldd "${name}-win32/iroffer.exe" |
 while read dll dummy src offset
 do
 	case "${src}" in
-	*/system32/*|*/syswow64/*)
+	*/system32/*|*/syswow64/*|*/SysWOW64/*)
 		continue
 		;;
 	esac
