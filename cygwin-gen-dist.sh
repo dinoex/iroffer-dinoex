@@ -58,14 +58,14 @@ zip -r "${name}-win32.zip" "${name}-win32/"
 zip -r "${name}-win32-de.zip" "${name}-win32-de/"
 zip -r "${name}-win32-it.zip" "${name}-win32-it/"
 #
-dlldir="cygwin-"`uname -r`
+dlldir="iroffer-win32-cygwin-"`uname -r`
 dlldir="${dlldir%(*}-dll"
 mkdir "${dlldir}"
 ldd "${name}-win32/iroffer.exe" |
 while read dll dummy src offset
 do
 	case "${src}" in
-	*/system32/*)
+	*/system32/*|*/syswow64/*)
 		continue
 		;;
 	esac
