@@ -1671,7 +1671,11 @@ void reinit_config_vars(void)
   gdata.restrictsend_delay = 0;
   gdata.adminlevel = ADMIN_LEVEL_FULL;
   gdata.hadminlevel = ADMIN_LEVEL_HALF;
+#if defined(_OS_CYGWIN)
+  gdata.monitor_files = 5;
+#else /* _OS_CYGWIN */
   gdata.monitor_files = 20;
+#endif /* _OS_CYGWIN */
   gdata.xdcclist_by_privmsg = 0;
   gdata.autoadd_delay = 0;
   gdata.balanced_queue = 0;
