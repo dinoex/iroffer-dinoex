@@ -14,7 +14,7 @@ zip -l a.zip ${all} ${fen} ${fde} ${fit}
 unzip -o a.zip
 rm -f a.zip
 #
-./Configure -tls -geoip -upnp -ruby
+./Configure -tls -geoip -upnp -ruby -debug
 # Build translatetd versions
 for lang in de it en
 do
