@@ -987,23 +987,23 @@ int select_starting_transfer(int max)
   return t;
 }
 
-static const char *style_on[ 16 ] = { 
+static const char *style_on[ 16 ] = {
   /* 0 = none */ "",
   /* 1 = bold */ "\x02",
   /* 2 = underline */ "\x1F",
-  /* 3 = bold,underline */ "\x02\x1F",
+  /* 3 = bold, underline */ "\x02\x1F",
   /* 4 = italic */ "\x1D",
-  /* 5 = bold,italic */ "\x02\x1D",
-  /* 6 = underline,italic */ "\x1F\x1D",
-  /* 7 = bold,underline,italic */ "\x02\x1F\x1D",
+  /* 5 = bold, italic */ "\x02\x1D",
+  /* 6 = underline, italic */ "\x1F\x1D",
+  /* 7 = bold, underline, italic */ "\x02\x1F\x1D",
   /* 8 = inverse */ "\x16",
-  /* 9 = bold,inverse */ "\x02\x16",
-  /* 10 = underline,inverse */ "\x1F\x16",
-  /* 11 = bold,underline,inverse */ "\x02\x1F\x16",
-  /* 12 = italic,inverse */ "\x1D\x16",
-  /* 13 = bold,italic,inverse */ "\x02\x1D\x16",
-  /* 14 = underline,italic,inverse */ "\x1F\x1D\x16",
-  /* 15 = bold,underline,italic,inverse */ "\x02\x1F\x1D\x16",
+  /* 9 = bold, inverse */ "\x02\x16",
+  /* 10 = underline, inverse */ "\x1F\x16",
+  /* 11 = bold, underline, inverse */ "\x02\x1F\x16",
+  /* 12 = italic, inverse */ "\x1D\x16",
+  /* 13 = bold, italic, inverse */ "\x02\x1D\x16",
+  /* 14 = underline, italic, inverse */ "\x1F\x1D\x16",
+  /* 15 = bold, underline, italic, inverse */ "\x02\x1F\x1D\x16",
 };
 
 /* colored description of a pack */
