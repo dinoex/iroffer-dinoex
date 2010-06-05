@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+bugfix: Kursiver Text wurde nicht richtig ausgegeben.
+
 327) DISKFREE
   Neues Admin Kommando:
   DISKFREE                         Freien Paltz im Uploadverzeichnis anzeigen

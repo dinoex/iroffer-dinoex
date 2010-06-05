@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+bugfix: italic text was not stripped
+
 327) DISKFREE (inspired by Erdrick)
   new admin command:
   DISKFREE                        Shows free space in upload directory
