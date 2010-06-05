@@ -1025,13 +1025,13 @@ static int a_autoadd_color(void)
   char *last;
   char *back;
   char *style;
-  int color;
+  int color = 0;
   int color_fg;
   int color_bg;
   int color_st;
 
   if (!gdata.autoadd_color)
-    return 0;
+    return color;
 
   last = mystrdup(gdata.autoadd_color);
   back = strchr(last, ',');
@@ -1049,7 +1049,7 @@ static int a_autoadd_color(void)
   color_fg = atoi(last);
   color |= color_fg;
   mydelete(last);
-  return 0;
+  return color;
 }
 
 static xdcc *a_add2(const userinput * const u, const char *group)
