@@ -457,6 +457,7 @@ char *removenonprintable(char *str)
       case 0x0DU: /* cr */
       case 0x0FU: /* end formatting */
       case 0x16U: /* inverse */
+      case 0x1DU: /* italic */
       case 0x1FU: /* underline */
         /* good */
         break;

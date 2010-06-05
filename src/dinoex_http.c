@@ -255,6 +255,7 @@ static size_t html_encode(char *buffer, size_t max, const char *src)
     case 0x02: /* bold */
     case 0x0F: /* end formatting */
     case 0x16: /* inverse */
+    case 0x1D: /* italic */
     case 0x1F: /* underline */
       break;
     default:
@@ -300,6 +301,7 @@ static ssize_t html_encode_size(const char *src)
     case 0x02: /* bold */
     case 0x0F: /* end formatting */
     case 0x16: /* inverse */
+    case 0x1D: /* italic */
     case 0x1F: /* underline */
       break;
     default:
