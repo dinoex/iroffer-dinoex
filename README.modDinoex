@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+bugfix: server_connected_raw (reported by mynakee)
+  versions affected: 3.12 - 3.21
+  Do not crash on invalid config lines.
+
 329) autoadd_color (inspired by CreeW)
   Set color for files added in autoadd_dir. Default no color.
   Format: <color>,<background>,<style>

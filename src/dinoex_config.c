@@ -368,6 +368,13 @@ static int report_no_arg(const char *key, const char *text)
   return 0;
 }
 
+static void invalid_args(const char *key, const char *text)
+{
+  outerror(OUTERROR_TYPE_WARN,
+           "%s:%ld ignored '%s' because it has invalid args: '%s'",
+           current_config, current_line, key, text);
+}
+
 static int check_range(const char *key, const char *text, int *val, int min, int max)
 {
   int rawval;
@@ -378,9 +385,7 @@ static int check_range(const char *key, const char *text, int *val, int min, int
 
   rawval = (int)strtol(text, &endptr, 0);
   if (endptr[0] != 0) {
-    outerror(OUTERROR_TYPE_WARN,
-             "%s:%ld ignored '%s' because it has invalid args: '%s'",
-             current_config, current_line, key, text);
+    invalid_args(key, text);
     return 1;
   }
 
@@ -741,9 +746,7 @@ static int set_config_list(const char *key, char *text)
     }
     cidr->remote.sa.sa_family = cidr->family;
     if (e != 1) {
-       outerror(OUTERROR_TYPE_WARN,
-                "%s:%ld ignored '%s' because it has invalid args: '%s'",
-                current_config, current_line, key, text);
+       invalid_args(key, text);
        irlist_delete(config_parse_list[i].list, cidr);
     }
     return 0;
@@ -970,9 +973,7 @@ static void c_autoadd_group_match(char *var)
 
   split = strchr(var, ' ');
   if (split == NULL) {
-    outerror(OUTERROR_TYPE_WARN,
-             "%s:%ld ignored '%s' because it has invalid args: '%s'",
-             current_config, current_line, "autoadd_group_match", var);
+    invalid_args("autoadd_group_match", var);
     return;
   }
 
@@ -1046,7 +1047,12 @@ static void c_channel(char *var)
 
 static void c_channel_join_raw(char *var)
 {
-   irlist_add_string(&gdata.networks[current_network].channel_join_raw, var);
+  if (var == NULL) {
+    invalid_args("channel_join_raw", var);
+    return;
+  }
+
+  irlist_add_string(&gdata.networks[current_network].channel_join_raw, var);
 }
 
 static void c_connectionmethod(char *var)
@@ -1209,9 +1215,7 @@ static void c_mime_type(char *var)
 
   split = strchr(var, ' ');
   if (split == NULL) {
-    outerror(OUTERROR_TYPE_WARN,
-             "%s:%ld ignored '%s' because it has invalid args: '%s'",
-             current_config, current_line, "mime_type", var);
+    invalid_args("mime_type", var);
     return;
   }
 
@@ -1357,9 +1361,7 @@ static void c_periodicmsg(char *var)
   mydelete(gdata.periodicmsg_msg);
   m = get_argv(part, var, 3);
   if (m != 3) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "%s:%ld ignored '%s' because it has invalid args: '%s'",
-             current_config, current_line, "periodicmsg", var);
+    invalid_args("periodicmsg", var);
     mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
@@ -1374,7 +1376,12 @@ static void c_periodicmsg(char *var)
 
 static void c_proxyinfo(char *var)
 {
-   irlist_add_string(&gdata.networks[current_network].proxyinfo, var);
+  if (var == NULL) {
+    invalid_args("proxyinfo", var);
+    return;
+  }
+
+  irlist_add_string(&gdata.networks[current_network].proxyinfo, var);
 }
 
 static void c_restrictlist(char *var)
@@ -1405,9 +1412,7 @@ static void c_server(char *var)
   set_default_network_name();
   get_argv(part, var, 3);
   if (part[0] == NULL) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "%s:%ld ignored '%s' because it has invalid args: '%s'",
-             current_config, current_line, "server", var);
+    invalid_args("server", var);
     mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
@@ -1425,12 +1430,22 @@ static void c_server(char *var)
 
 static void c_server_connected_raw(char *var)
 {
-   irlist_add_string(&gdata.networks[current_network].server_connected_raw, var);
+  if (var == NULL) {
+    invalid_args("server_connected_raw", var);
+    return;
+  }
+
+  irlist_add_string(&gdata.networks[current_network].server_connected_raw, var);
 }
 
 static void c_server_join_raw(char *var)
 {
-   irlist_add_string(&gdata.networks[current_network].server_join_raw, var);
+  if (var == NULL) {
+    invalid_args("server_join_raw", var);
+    return;
+  }
+
+  irlist_add_string(&gdata.networks[current_network].server_join_raw, var);
 }
 
 static void c_slotsmax(char *var)
