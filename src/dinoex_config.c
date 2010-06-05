@@ -830,6 +830,7 @@ static void set_default_network_name(void)
   var = mymalloc(10);
   snprintf(var, 10, "%d", current_network + 1);
   gdata.networks[current_network].name = mystrdup(var);
+  mydelete(var);
   return;
 }
 
