@@ -1047,7 +1047,7 @@ static int a_autoadd_color(void)
     color |= color_bg << 8;
   }
   color_fg = atoi(last);
-  color |= color_fg; 
+  color |= color_fg;
   mydelete(last);
   return 0;
 }
