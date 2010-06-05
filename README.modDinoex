@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+329) autoadd_color (inspired by CreeW)
+  Set color for files added in autoadd_dir. Default no color.
+  Format: <color>,<background>,<style>
+
 328) CHCOLOR (inspired by CreeW)
 
   new admin commands:

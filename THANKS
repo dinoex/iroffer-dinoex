@@ -545,6 +545,7 @@ satmd
 CreeW
 	italian translation
 	suggesting "CHCOLOR"
+	suggesting "autoadd_color"
 
 [M]-V
 	reporting ADDDIR spaces bug

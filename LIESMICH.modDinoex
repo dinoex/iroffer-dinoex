@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+329) autoadd_color
+  Setze Farbe für Pakete auf dem Verzeichnis autoadd_dir.
+  Default keine Farbe
+  Format: <farbe>,<hintergrund>,<style>
+
 328) CHCOLOR 
 
   Neue Admin Kommandos:
