@@ -2449,8 +2449,12 @@ void a_chcolor(const userinput * const u)
   int num1;
   int num2;
   int color = 0;
+  int color_fg = 0;
+  int color_bg = 0;
+  int color_st = 0;
   char *last;
   char *back;
+  char *style;
   xdcc *xd;
 
   updatecontext();
@@ -2473,9 +2477,17 @@ void a_chcolor(const userinput * const u)
     back = strchr(last, ',');
     if (back != 0) {
       *(back++) = 0;
-      color |= atoi(back) << 8;
+      style = strchr(back, ',');
+      if (style != 0) {
+        *(style++) = 0;
+        color_st = atoi(style);
+        color |= color_st << 16;
+      }
+      color_bg = atoi(back);
+      color |= color_bg << 8;
     }
-    color |= atoi(last);
+    color_fg = atoi(last);
+    color |= color_fg;
   }
   for (; num1 <= num2; num1++) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
@@ -2483,7 +2495,7 @@ void a_chcolor(const userinput * const u)
       return;
 
     xd->color = color;
-    a_respond(u, "COLOR: [Pack %i] set: %d,%d", num1, color & 0xFF, color >> 8);
+    a_respond(u, "COLOR: [Pack %i] set: %d,%d,%d", num1, color_fg, color_bg, color_st);
   }
 
   write_files();

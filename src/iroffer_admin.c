@@ -153,7 +153,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_chtrigger,     "CHTRIGGER","n [msg]","Change trigger for pack <n> to <msg>"},
 {3,3,method_allow_all,a_deltrigger,    "DELTRIGGER","n [m]","Delete trigger for pack <n> to <m>"},
 {3,5,method_allow_all,u_chgets,        "CHGETS","n x","Set the get counter of pack <n> to <x>"},
-{3,5,method_allow_all,a_chcolor,       "CHCOLOR","n [m] x[,b]","Set the pack <n> to <m> to color <x> background <b>"},
+{3,5,method_allow_all,a_chcolor,       "CHCOLOR","n [m] x[,b][,s]","Set the pack <n> to <m> to color <x>, background <b> and style <s>"},
 {3,2,method_allow_all,a_lock,          "LOCK","n [m] password","Lock the pack <n> to <m> with <password>"},
 {3,2,method_allow_all,a_unlock,        "UNLOCK","n [m]","Unlock the pack <n> to <m>"},
 {3,2,method_allow_all,a_lockgroup,     "LOCKGROUP","group password","Lock all packs in <group> with <password>"},

@@ -987,21 +987,49 @@ int select_starting_transfer(int max)
   return t;
 }
 
+static const char *style_on[ 16 ] = { 
+  /* 0 = none */ "",
+  /* 1 = bold */ "\x02",
+  /* 2 = underline */ "\x1F",
+  /* 3 = bold,underline */ "\x02\x1F",
+  /* 4 = italic */ "\x1D",
+  /* 5 = bold,italic */ "\x02\x1D",
+  /* 6 = underline,italic */ "\x1F\x1D",
+  /* 7 = bold,underline,italic */ "\x02\x1F\x1D",
+  /* 8 = inverse */ "\x16",
+  /* 9 = bold,inverse */ "\x02\x16",
+  /* 10 = underline,inverse */ "\x1F\x16",
+  /* 11 = bold,underline,inverse */ "\x02\x1F\x16",
+  /* 12 = italic,inverse */ "\x1D\x16",
+  /* 13 = bold,italic,inverse */ "\x02\x1D\x16",
+  /* 14 = underline,italic,inverse */ "\x1F\x1D\x16",
+  /* 15 = bold,underline,italic,inverse */ "\x02\x1F\x1D\x16",
+};
+
 /* colored description of a pack */
 char *xd_color_description(const xdcc *xd)
 {
    char *colordesc;
+   int foreground;
    int background;
+   int style;
 
    if (xd->color == 0)
      return xd->desc;
 
    colordesc = mycalloc(maxtextlength);
-   background = xd->color >> 8;
-   if (background != 0)
-     snprintf(colordesc, maxtextlength, "\003%d,%d%s\003", xd->color & 0xFF, background, xd->desc);
-   else
-     snprintf(colordesc, maxtextlength, "\003%d%s\003", xd->color, xd->desc);
+   foreground = xd->color & 0xFF;
+   background = (xd->color >> 8) & 0xFF;
+   style = (xd->color >> 16 ) & 0x0F;
+   if (background != 0) {
+     snprintf(colordesc, maxtextlength, "%s\003%d,%d%s\003\017", style_on[ style ], foreground, background, xd->desc);
+     return colordesc;
+   }
+   if (foreground != 0) {
+     snprintf(colordesc, maxtextlength, "%s\003%d%s\003\017", style_on[ style ], foreground, xd->desc);
+     return colordesc;
+   }
+   snprintf(colordesc, maxtextlength, "%s%s\017", style_on[ style ], xd->desc);
    return colordesc;
 }
 

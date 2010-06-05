@@ -3,6 +3,38 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+328) CHCOLOR (inspired by CreeW)
+
+  new admin commands:
+  CHCOLOR <n> <m> <x>,<b>,<s>        Set the of pack <n> to <m> to color <x>, background <b> and style <s>
+  CHCOLOR <n> <x>,<b>,<s>            Set the of pack <n> to color <x>, background <b> and style <s>
+
+  values for color, background:
+     0 no color
+     1 black
+     2 blue (navy)
+     3 green
+     4 red
+     5 brown (maroon)
+     6 purple
+     7 orange (olive)
+     8 yellow
+     9 light green (lime)
+    10 teal (a green/blue cyan)
+    11 light cyan (cyan) (aqua)
+    12 light blue (royal)
+    13 pink (light purple) (fuchsia)
+    14 grey
+    15 light grey (silver)
+    16 white
+
+  values for style:
+     0 = none
+     1 = bold
+     2 = underline
+     4 = italic
+     8 = inverse
+
 bugfix: italic text was not stripped
 
 327) DISKFREE (inspired by Erdrick)
