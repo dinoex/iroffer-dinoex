@@ -1020,6 +1020,38 @@ static xdcc *a_oldest_xdcc(void)
   return old;
 }
 
+static int a_autoadd_color(void)
+{
+  char *last;
+  char *back;
+  char *style;
+  int color;
+  int color_fg;
+  int color_bg;
+  int color_st;
+
+  if (!gdata.autoadd_color)
+    return 0;
+
+  last = mystrdup(gdata.autoadd_color);
+  back = strchr(last, ',');
+  if (back != 0) {
+    *(back++) = 0;
+    style = strchr(back, ',');
+    if (style != 0) {
+      *(style++) = 0;
+      color_st = atoi(style);
+      color |= color_st << 16;
+    }
+    color_bg = atoi(back);
+    color |= color_bg << 8;
+  }
+  color_fg = atoi(last);
+  color |= color_fg; 
+  mydelete(last);
+  return 0;
+}
+
 static xdcc *a_add2(const userinput * const u, const char *group)
 {
   int xfiledescriptor;
@@ -1177,6 +1209,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
   }
 
   set_support_groups();
+  xd->color = a_autoadd_color();
   write_files();
 #ifdef USE_RUBY
    if (do_myruby_added(xd->file, n))

@@ -148,6 +148,7 @@ char *http_admin_dir;
 char *http_index;
 char *download_completed_msg;
 char *http_access_log;
+char *autoadd_color;
 time_t nomd5_start;
 time_t noannounce_start;
 int need_voice;
