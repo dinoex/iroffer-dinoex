@@ -8,7 +8,8 @@ bugfix: server_connected_raw (reported by mynakee)
   Do not crash on invalid config lines.
 
 329) autoadd_color (inspired by CreeW)
-  Set color for files added in autoadd_dir. Default no color.
+  Set color for files to be added in autoadd_dir.
+  Default no color.
   Format: <color>,<background>,<style>
 
 328) CHCOLOR (inspired by CreeW)
