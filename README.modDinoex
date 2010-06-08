@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+bugfix: CTCP PING (reported by TheDeath)
+  versions affected: 3.8 - 3.21
+  Bot did not respond on CTCP PING.
+
 bugfix: server_connected_raw (reported by mynakee)
   versions affected: 3.12 - 3.21
   Do not crash on invalid config lines.
