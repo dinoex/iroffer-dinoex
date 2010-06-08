@@ -8,14 +8,17 @@ fit="README.modDinoex sample.config help-admin-it.txt"
 set -e
 ver=`grep ^VERSION= Configure  | cut -d '=' -f2 | tr -d '"'`
 name="iroffer-dinoex-${ver}"
+cygwin="cygwin-"`uname -r`
 #
 # Convert into DOS files
 zip -l a.zip ${all} ${fen} ${fde} ${fit}
 unzip -o a.zip
 rm -f a.zip
 #
+# Enable options
 ./Configure -tls -geoip -upnp -ruby -debug
-# Build translatetd versions
+#
+# Build translated versions
 for lang in de it en
 do
 	case "${LANG}" in
@@ -30,11 +33,11 @@ do
 	make
 	case "${lang}" in
 	en)
-		dir="${name}-win32"
+		dir="${name}-win32-${cygwin}"
 		bin="iroffer.exe"
 		;;
 	*)
-		dir="${name}-win32-${lang}"
+		dir="${name}-win32-${cygwin}-${lang}"
 		bin="iroffer-${lang}.exe"
 		;;
 	esac
@@ -52,14 +55,11 @@ do
 		cp -p ${fit} "${dir}/"
 		;;
 	esac
+	zip -r "${dir}.zip" "${dir}/"
 done
-# Build english version
-zip -r "${name}-win32.zip" "${name}-win32/"
-zip -r "${name}-win32-de.zip" "${name}-win32-de/"
-zip -r "${name}-win32-it.zip" "${name}-win32-it/"
 #
-dlldir="iroffer-win32-cygwin-"`uname -r`
-dlldir="${dlldir%(*}-dll"
+# Build DLL pack
+dlldir="iroffer-win32-${cygwin}-dll"
 mkdir "${dlldir}"
 ldd "${name}-win32/iroffer.exe" |
 while read dll dummy src offset
