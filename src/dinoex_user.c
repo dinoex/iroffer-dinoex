@@ -1025,7 +1025,7 @@ static int botonly_parse(int type, privmsginput *pi)
     send_clientinfo(pi->nick, pi->msg2);
     return 0;
   }
-  if (type == 0) {
+  if (type != 0) {
     /*----- PING ----- */
     if (test_ctcp(pi->msg1, "\1PING")) {
       if (check_ignore(pi->nick, pi->hostmask))
