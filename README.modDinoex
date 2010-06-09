@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+Make autoadd less verbose.
+
 bugfix: CTCP PING (reported by TheDeath)
   versions affected: 3.8 - 3.21
   Bot did not respond on CTCP PING.

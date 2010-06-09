@@ -739,7 +739,8 @@ static void autoadd_scan(const char *dir, const char *group)
   updatecontext();
 
   gnetwork = &(gdata.networks[net]);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
+  if (gdata.debug > 0)
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
   line = mycalloc(maxtextlength);
   if (group != NULL)
     snprintf(line, maxtextlength, "ADDGROUP %s %s", group, dir);
