@@ -1998,7 +1998,8 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         continue;
       }
       if (gdata.include_subdirs == 0) {
-        a_respond(u, "  Ignoring directory: %s", tempstr);
+        if (gdata.debug > 0)
+          a_respond(u, "  Ignoring directory: %s", tempstr);
       } else {
         a_adddir_sub(u, tempstr, NULL, onlynew, setgroup, match);
       }
