@@ -9,6 +9,7 @@ set -e
 ver=`grep ^VERSION= Configure  | cut -d '=' -f2 | tr -d '"'`
 name="iroffer-dinoex-${ver}"
 cygwin="cygwin-"`uname -r`
+cygwin="${cygwin%(*}"
 #
 # Convert into DOS files
 zip -l a.zip ${all} ${fen} ${fde} ${fit}
@@ -61,7 +62,7 @@ done
 # Build DLL pack
 dlldir="iroffer-win32-${cygwin}-dll"
 mkdir "${dlldir}"
-ldd "${name}-win32/iroffer.exe" |
+ldd "${name}-win32-${cygwin}/iroffer.exe" |
 while read dll dummy src offset
 do
 	case "${src}" in
