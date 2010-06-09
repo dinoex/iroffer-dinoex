@@ -70,6 +70,7 @@ Short Term Features:
   1394  pack size included in the output of announce
   1438  more announce types for plist
   1442  queue set of packs.
+  1469  nocolorannounce
 
 Long Term Features:
   1013  notify adminnick when autoadd
@@ -135,6 +136,8 @@ Long Term Features:
   1448  announce xdcc batch
   1454  Auto-update GEOIP
   1455  write running config as file
+  1458  show list latest 5 packs on top
+  1459  transfer new files to another bot
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
