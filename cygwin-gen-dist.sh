@@ -56,7 +56,7 @@ do
 		cp -p ${fit} "${dir}/"
 		;;
 	esac
-	if test -e /bin/zza
+	if test -e /bin/7za
 	then
 		7za a -mx=9 -r "${dir}.7z" "${dir}/"
 	else
@@ -78,7 +78,7 @@ do
 	echo "${dll}" "${src}"
 	cp -p "${src}" "${dlldir}/"
 done
-if test -e /bin/zza
+if test -e /bin/7za
 then
 	7za a -mx=9 -r "${dlldir}.7z" "${dlldir}"
 else
