@@ -89,7 +89,7 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, soc
 }
 #endif /* NO_GETADDRINFO */
 
-static void udpate_getip_net(int net, unsigned long ourip)
+static void update_getip_net(int net, unsigned long ourip)
 {
   char *oldtxt;
   gnetwork_t *backup;
@@ -167,7 +167,7 @@ void update_natip(const char *var)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
     mydelete(oldtxt);
-    udpate_getip_net(gnetwork->net, gnetwork->ourip);
+    update_getip_net(gnetwork->net, gnetwork->ourip);
   }
 
   if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
@@ -207,7 +207,7 @@ void update_server_welcome(char *line)
     if (gnetwork->getip_net != -1) {
       /* copy IP from master */
       gnetwork->usenatip = 1;
-      udpate_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
+      update_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
       return;
     }
   }
