@@ -27,9 +27,9 @@
 #endif /* USE_UPNP */
 
 /* writes IP address and port as text into the buffer */
+#if !defined(NO_GETADDRINFO)
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen)
 {
-#if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
 
   if (salen == 0)
@@ -39,7 +39,10 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
     return snprintf(buffer, len, "(unknown)" );
   }
   return snprintf(buffer, len, "host=%s port=%s", hbuf, sbuf);
+}
 #else /* NO_GETADDRINFO */
+int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t UNUSED(salen))
+{
   const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
   unsigned long to_ip = ntohl(remoteaddr->sin_addr.s_addr);
   return snprintf(buffer, len, "%lu.%lu.%lu.%lu:%d",
@@ -48,17 +51,15 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
                   (to_ip >>  8) & 0xFF,
                   (to_ip      ) & 0xFF,
                   ntohs(remoteaddr->sin_port));
-#endif /* NO_GETADDRINFO */
 }
+#endif /* NO_GETADDRINFO */
 
+#if !defined(NO_GETADDRINFO)
 static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen)
 {
-#if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
-#endif /* NO_GETADDRINFO */
   unsigned long ip;
 
-#if !defined(NO_GETADDRINFO)
   if (sa->sa.sa_family == AF_INET) {
     if (gnetwork->usenatip)
       ip = gnetwork->ourip;
@@ -75,14 +76,18 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, soc
   }
   return snprintf(buffer, len, "%s %s", hbuf, sbuf);
 #else /* NO_GETADDRINFO */
+static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t UNUSED(salen))
+{
+  unsigned long ip;
+
   if (gnetwork->usenatip)
     ip = gnetwork->ourip;
   else
     ip = ntohl(sa->sin.sin_addr.s_addr);
   return snprintf(buffer, len, "%lu %d",
                   ip, ntohs(sa->sin.sin_port));
-#endif /* NO_GETADDRINFO */
 }
+#endif /* NO_GETADDRINFO */
 
 static void udpate_getip_net(int net, unsigned long ourip)
 {
@@ -276,7 +281,11 @@ int bind_irc_vhost(int family, int clientsocket)
 }
 
 #ifdef USE_UPNP
+#if !defined(NO_GETADDRINFO)
 static void my_get_upnp_data(const struct sockaddr *sa, socklen_t salen)
+#else /* NO_GETADDRINFO */
+static void my_get_upnp_data(const struct sockaddr *sa, socklen_t UNUSED(salen))
+#endif /* NO_GETADDRINFO */
 {
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
