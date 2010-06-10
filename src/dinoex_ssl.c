@@ -437,7 +437,7 @@ static int setup_ssl(void)
     ret = gnutls_certificate_allocate_credentials (&(gnetwork->user_cred));
     if (ret < 0) {
       outerror_ssl(ret);
-      gnutls_transport_set_ptr(gnetwork->session, (gnutls_transport_ptr_t) (gnetwork->ircserver));
+      gnutls_transport_set_ptr(gnetwork->session, (gnutls_transport_ptr_t) (long)(gnetwork->ircserver));
       return 1;
     }
     gnutls_certificate_client_set_retrieve_function(gnetwork->user_cred, cert_callback);
@@ -451,7 +451,7 @@ static int setup_ssl(void)
     close_server();
     return 1;
   }
-  gnutls_transport_set_ptr(gnetwork->session, (gnutls_transport_ptr_t) (gnetwork->ircserver));
+  gnutls_transport_set_ptr(gnetwork->session, (gnutls_transport_ptr_t) (long)(gnetwork->ircserver));
 #endif /* USE_GNUTLS */
   return retry_ssl();
 }
