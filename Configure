@@ -580,6 +580,7 @@ main (int argc, char **argv) {
  else
   echo "failed, IPv6 will not work."
   echo "#define AF_INET6 23" >> src/iroffer_config.h
+  CFLAGS="$CFLAGS -DUSE_IPV6=1"
  fi
 fi
 
