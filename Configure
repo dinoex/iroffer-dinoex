@@ -46,6 +46,13 @@ echo "   RUBY=        Set ruby interpreter (ruby)"
 exit 64
 }
 
+waserror()
+{
+echo "You should re-run Configure with the 'errors' arguemnt to see the details."
+echo
+exit 72
+}
+
 FEATURES=""
 OPT_WARN2=false
 OPT_ERRORS=false
@@ -157,13 +164,12 @@ case "$ostype" in
    echo "OK, $ver"
   else
    echo "***ERROR***: $ver < 1.5.6"
-   exit 72 # fatal error
-   waserror=yes
+   waserror
   fi
   ;;
  *)
   echo "***ERROR***: This OS is not supported"
-  exit 72
+  waserror
   ;;
 esac
 
@@ -369,7 +375,7 @@ if [ -f "`type make | awk '{print $NF}'`" ]; then
   echo "found $maketype"
  else
   echo "found $maketype. ***ERROR***: You are not allowed to execute $maketype"
-  waserror=yes
+  waserror
  fi
 elif [ -f "`type gmake | awk '{print $NF}'`" ]; then
  maketype="gmake"
@@ -377,16 +383,12 @@ elif [ -f "`type gmake | awk '{print $NF}'`" ]; then
   echo "found $maketype"
  else
   echo "found $maketype. ***ERROR***: You are not allowed to execute $maketype"
-  waserror=yes
+  waserror
  fi
 else
  echo "not found. ***ERROR***: Couldn't find make or gmake"
  maketype="make"
- waserror=yes
-fi
-
-if [ -n "$waserror" ]; then
- exit 69
+ waserror
 fi
 
 echo -n "Checking for gcc/cc... "
@@ -396,7 +398,7 @@ if [ -f "${ccrun}" ]; then
   echo "found $cctype"
  else
   echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
-  waserror=yes
+  waserror
  fi
 else
  cctype="cc"
@@ -405,17 +407,13 @@ else
    echo "found $cctype"
   else
    echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
-   waserror=yes
+   waserror
   fi
  else
   echo "not found. ***ERROR***: Couldn't find gcc or cc"
   maketype="gcc"
-  waserror=yes
+  waserror
  fi
-fi
-
-if [ -n "$waserror" ]; then
- exit 69
 fi
 
 echo -n "Seeing if $cctype works... "
@@ -431,7 +429,7 @@ if $cctype -o config.temp config.temp.c $CFLAGS $LDFLAGS $LIBS; then
  echo "yes"
 else
  echo " ***ERROR***: $cctype didn't seem to work."
- waserror=yes
+ waserror
 fi
 
 echo -n "Seeing if $cctype accepts '-Wall'... "
@@ -490,7 +488,7 @@ elif $cctype -DC_IR_INT16="int" config.temp.c $libs -o config.temp $WARNS $WERRO
  echo "typedef unsigned int ir_uint16;" >> src/iroffer_config.h
 else
  echo "Unknown. ***ERROR***: neither short or int worked."
- waserror=yes
+ waserror
 fi
 
 
@@ -525,7 +523,7 @@ elif $cctype -DC_IR_INT32="short" config.temp.c $libs -o config.temp $WARNS $WER
  echo "typedef unsigned short ir_uint32;" >> src/iroffer_config.h
 else
  echo "Unknown. ***ERROR***: neither short, int, long or long long worked."
- waserror=yes
+ waserror
 fi
 
 echo -n "Seeing how to define a 64 bit integer... "
@@ -559,7 +557,7 @@ elif $cctype -DC_IR_INT64="short" config.temp.c $libs -o config.temp $WARNS $WER
  echo "typedef unsigned short ir_uint64;" >> src/iroffer_config.h
 else
  echo "Unknown. ***ERROR***: neither short, int, long or long long worked."
- waserror=yes
+ waserror
 fi
 
 if [ "$ostype" = CYGWIN ]; then
@@ -601,7 +599,7 @@ if $cctype -DSIGNEDSOCK=signed config.temp.c $libs -o config.temp $CFLAGS $LDFLA
  echo "looks good"
 else
  echo " ***ERROR***: couldn't build with standard #include's"
- waserror=yes
+ waserror
 fi
 
 
@@ -626,7 +624,7 @@ if $cctype -E -o config.temp.p config.temp.c $WARNS $WERROR $CFLAGS $LDFLAGS $LI
  fi
 else
  echo " ***ERROR***: couldn't determine it"
- waserror=yes
+ waserror
 fi
 
 echo -n "Determining endianness... "
@@ -652,7 +650,7 @@ elif [ "`./config.temp`" = "little" ]; then
  echo "#define IR_ENDIAN_LITTLE" >> src/iroffer_config.h
 else
  echo "Unknown. ***ERROR***"
- waserror=yes
+ waserror
 fi
 
 
@@ -707,7 +705,7 @@ elif $cctype -DSIGNEDSOCK=unsigned config.temp.c $libs -o config.temp $WARNS $WE
 else
  echo "Unknown. ***ERROR***: neither signed or unsigned worked."
  echo "#define SIGNEDSOCK signed" >> src/iroffer_config.h
- waserror=yes
+ waserror
 fi
 
 
@@ -741,7 +739,7 @@ elif $cctype -DLLPRINTFMT=\"l\" config.temp.c $libs -o config.temp $WARNS $WERRO
 else
  echo "Unknown. ***ERROR***: neither ll, l, or L worked."
  echo "#define LLPRINTFMT \"L\"" >> src/iroffer_config.h
- waserror=yes
+ waserror
 fi
 
 
@@ -1013,7 +1011,7 @@ elif $cctype -c -DHAS_CRYPT_H -o config.temp.o config.temp.c $WARNS $WERROR $CFL
 else
  echo "Missing. ***ERROR***: couldn't find crypt() with or without crypt.h"
  echo "#define HAS_CRYPT_H" >> src/iroffer_config.h
- waserror=yes
+ waserror
 fi
 
 echo -n "Seeing if '-lcrypt' is needed... "
@@ -1031,7 +1029,7 @@ else
  else
   echo "Missing. ***ERROR***: couldn't link with or without -lcrypt or -lcrypto"
   libs="$libs -lcrypt"
-  waserror=yes
+  waserror
  fi
 fi
 
@@ -1282,8 +1280,8 @@ if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $L
 echo "RLIMIT_OFILE"
 echo "#define USE_OFILE" >> src/iroffer_config.h
 else
-waserror=yes
 echo "neither work, thats not good"
+waserror
 fi
 fi
 
@@ -1603,7 +1601,7 @@ main (int argc, char **argv) {exit(0);}
 	fi
 	if test "${curltls}" != ""; then
 		echo "*** Your libcurl is linked with GNU TLS, Please configure GNU TLS."
-		exit 69
+		waserror
 	fi
 fi
 
@@ -1634,7 +1632,7 @@ main (int argc, char **argv) {exit(0);}
 	fi
 	if test "${curlssl}" != ""; then
 		echo "*** Your libcurl is linked with OpenSSL, Please configure OpenSSL."
-		exit 69
+		waserror
 	fi
 fi
 
@@ -1717,14 +1715,6 @@ cat Makefile.config
 
 echo Done
 echo
-
-if [ -n "$waserror" ]; then
-echo "!!!!!WARNING!!!!!  one or more errors occured, guesses for those values that failed were included."
-echo "You should re-run Configure with the 'errors' arguemnt to see the details."
-echo
-exit 72
-fi
-
 echo "Type \"$maketype\" to compile"
 echo "No errors or warnings should appear when compiling, if they do, something is wrong"
 echo
