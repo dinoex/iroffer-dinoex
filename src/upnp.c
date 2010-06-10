@@ -91,7 +91,11 @@ void init_upnp (void)
 char *upnp_get_dccip (void)
 {
 	externalIPAddress[0] = 0;
+#ifdef UPNPCOMMAND_HTTP_ERROR
+	UPNP_GetExternalIPAddress(urls.controlURL, data.tmp.servicetype, externalIPAddress);
+#else
 	UPNP_GetExternalIPAddress(urls.controlURL, data.servicetype, externalIPAddress);
+#endif /* UPNPCOMMAND_HTTP_ERROR */
 	if (externalIPAddress[0] == 0)
 		return NULL;
 	return externalIPAddress;
@@ -112,8 +116,13 @@ void upnp_add_redir (const char * addr, const char * port)
 		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
 		return;
 	}
+#ifdef UPNPCOMMAND_HTTP_ERROR
+	r = UPNP_AddPortMapping(urls.controlURL, data.tmp.servicetype,
+	                        port, port, addr, 0, "TCP", 0);
+#else
 	r = UPNP_AddPortMapping(urls.controlURL, data.servicetype,
 	                        port, port, addr, 0, "TCP", 0);
+#endif /* UPNPCOMMAND_HTTP_ERROR */
 	if(r!=UPNPCOMMAND_SUCCESS)
 		ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
 			"AddPortMapping(%s, %s, %s) failed" , port, port, addr);
@@ -138,7 +147,11 @@ void upnp_rem_redir (int port)
 		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
 		return;
 	}
+#ifdef UPNPCOMMAND_HTTP_ERROR
+	UPNP_DeletePortMapping(urls.controlURL, data.tmp.servicetype, port_str, "TCP", 0);
+#else
 	UPNP_DeletePortMapping(urls.controlURL, data.servicetype, port_str, "TCP", 0);
+#endif /* UPNPCOMMAND_HTTP_ERROR */
 }
 
 #endif /* USE_UPNP */
