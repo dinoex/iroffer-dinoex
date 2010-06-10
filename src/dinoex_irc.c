@@ -75,6 +75,7 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, soc
     return snprintf(buffer, len, "(unknown)" );
   }
   return snprintf(buffer, len, "%s %s", hbuf, sbuf);
+}
 #else /* NO_GETADDRINFO */
 static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t UNUSED(salen))
 {
