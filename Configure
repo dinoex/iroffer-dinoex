@@ -1205,6 +1205,7 @@ main (int argc, char **argv)
   int ret_val;
   ret_val = sendfile(in_fd, out_fd, offset, count,
                      &hdr, &offset2, 0);
+  ret_val++;
   exit(0);
 }
 " > config.temp.c
@@ -1296,7 +1297,16 @@ int
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
-main (int argc, char **argv) {siginfo_t si; struct sigaction sa; sa.sa_sigaction = NULL; si.si_code = 0; exit(0);}
+main (int argc, char **argv)
+{
+  siginfo_t si;
+  struct sigaction sa;
+  sa.sa_sigaction = NULL;
+  si.si_code = 0;
+  bzero(&si, sizeof(si));
+  bzero(&sa, sizeof(sa));
+  exit(0);
+}
 " > config.temp.c
 if $cctype config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 echo "found"
@@ -1338,6 +1348,7 @@ main (int argc, char **argv) {
   si.si_code = FPE_FLTSUB;
   si.si_code = SEGV_MAPERR;
   si.si_code = SEGV_ACCERR;
+  bzero(&si, sizeof(si));
   exit(0);
 }
 " > config.temp.c
@@ -1420,6 +1431,7 @@ main (int argc, char **argv) {
   hints.ai_family = PF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   error = getaddrinfo(\"www.kame.net\", \"http\", &hints, &res0);
+  error ++;
   exit(0);
 }
 " > config.temp.c
