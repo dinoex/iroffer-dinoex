@@ -56,8 +56,12 @@ do
 		cp -p ${fit} "${dir}/"
 		;;
 	esac
-	#zip -r "${dir}.zip" "${dir}/"
-	7za a -mx=9 -r "${dir}.7z" "${dir}/"
+	if test -e /bin/zza
+	then
+		7za a -mx=9 -r "${dir}.7z" "${dir}/"
+	else
+		zip -r "${dir}.zip" "${dir}/"
+	fi
 done
 #
 # Build DLL pack
@@ -74,6 +78,10 @@ do
 	echo "${dll}" "${src}"
 	cp -p "${src}" "${dlldir}/"
 done
-#zip -r "${dlldir}.zip" "${dlldir}"
-7za a -mx=9 -r "${dlldir}.7z" "${dlldir}"
+if test -e /bin/zza
+then
+	7za a -mx=9 -r "${dlldir}.7z" "${dlldir}"
+else
+	zip -r "${dlldir}.zip" "${dlldir}"
+fi
 # eof
