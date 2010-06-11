@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+bugfix: Configure
+  Erkennung funktioniert jetzt auch mit gcc46.
+
 bugfix: upnp_router
   Update für libminiupnpc 1.4.20100609
 
