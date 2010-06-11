@@ -265,23 +265,6 @@ case "${cctype}" in
 -Wstrict-prototypes
 -Wwrite-strings"
 	;;
-gcc4*)
-        WARNS="-Wbad-function-cast
--Wc++-compat
--Wcast-qual
--Wcast-align
--Wformat
--Wimplicit
--Wmissing-declarations
--Wmissing-prototypes
--Wmissing-noreturn
--Wpointer-arith
--Wreturn-type
--Wshadow
--Wsign-compare
--Wstrict-prototypes
--Wwrite-strings"
-        ;;
 *)
 	WARNS="-Wbad-function-cast
 -Wcast-qual
@@ -308,6 +291,22 @@ case "${cctype}" in
 	WARNS2="
 -Wconversion
 -Wfloat-equal
+-Wpacked
+-Wpadded
+-Wswitch-default
+-Wswitch-enum
+-Wundef
+-Wunreachable-code
+"
+        ;;
+gcc4*)
+	WARNS2="
+-Wconversion
+-Wc++-compat
+-Wformat-nonliteral
+-Wformat=2
+-Wfloat-equal
+-Wlarger-than-20000
 -Wpacked
 -Wpadded
 -Wswitch-default
