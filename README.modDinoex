@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+330) AUTOADD
+  If a renamed file is found on AUTOADD, fix the existing pack with the new filename.
+
 bugfix: Configure
   Ensure detection works with gcc46.
 
