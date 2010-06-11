@@ -280,6 +280,7 @@ case "${cctype}" in
 -Wsign-compare
 -Wstrict-prototypes
 -Wwrite-strings"
+-Wc++-compat
 	;;
 esac
 fi
@@ -670,6 +671,7 @@ main (int argc, char **argv) {
  int array[ ((int)sizeof(off_t)) - 7 ];
  fd=open(\"foo\", O_RDWR | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS);
  array[0] = array[0];
+ close(fd);
  exit(0);
  }
 " > config.temp.c
