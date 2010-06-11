@@ -845,25 +845,25 @@ void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
 {
   irlist_t newlist = {0, 0};
   void *cur;
-  void *try;
+  void *ltry;
   void *last;
 
   while ((cur = irlist_get_head(list))) {
     irlist_remove(list, cur);
 
-    try = irlist_get_head(&newlist);
-    if (!try) {
+    ltry = irlist_get_head(&newlist);
+    if (!ltry) {
       irlist_insert_head(&newlist, cur);
       continue;
     }
 
     last = NULL;
-    while (try) {
-      if (cmpfunc(cur, try) < 0) {
+    while (ltry) {
+      if (cmpfunc(cur, ltry) < 0) {
         break;
       }
-      last = try;
-      try = irlist_get_next(try);
+      last = ltry;
+      ltry = irlist_get_next(ltry);
     }
 
     if (!last) {
