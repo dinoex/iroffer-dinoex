@@ -92,7 +92,7 @@ char *upnp_get_dccip (void)
 {
 	externalIPAddress[0] = 0;
 #ifdef UPNPCOMMAND_HTTP_ERROR
-	UPNP_GetExternalIPAddress(urls.controlURL, data.tmp.servicetype, externalIPAddress);
+	UPNP_GetExternalIPAddress(urls.controlURL, data.first.servicetype, externalIPAddress);
 #else
 	UPNP_GetExternalIPAddress(urls.controlURL, data.servicetype, externalIPAddress);
 #endif /* UPNPCOMMAND_HTTP_ERROR */
@@ -117,7 +117,7 @@ void upnp_add_redir (const char * addr, const char * port)
 		return;
 	}
 #ifdef UPNPCOMMAND_HTTP_ERROR
-	r = UPNP_AddPortMapping(urls.controlURL, data.tmp.servicetype,
+	r = UPNP_AddPortMapping(urls.controlURL, data.first.servicetype,
 	                        port, port, addr, 0, "TCP", 0);
 #else
 	r = UPNP_AddPortMapping(urls.controlURL, data.servicetype,
@@ -148,7 +148,7 @@ void upnp_rem_redir (int port)
 		return;
 	}
 #ifdef UPNPCOMMAND_HTTP_ERROR
-	UPNP_DeletePortMapping(urls.controlURL, data.tmp.servicetype, port_str, "TCP", 0);
+	UPNP_DeletePortMapping(urls.controlURL, data.first.servicetype, port_str, "TCP", 0);
 #else
 	UPNP_DeletePortMapping(urls.controlURL, data.servicetype, port_str, "TCP", 0);
 #endif /* UPNPCOMMAND_HTTP_ERROR */
