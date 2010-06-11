@@ -1054,7 +1054,7 @@ static int a_autoadd_color(void)
 
 static int check_for_renamed_file(const userinput * const u, xdcc *xd, struct stat *st, char *file)
 {
-  char *filename;
+  char *old;
   int xfiledescriptor;
 
   updatecontext();
@@ -1062,9 +1062,9 @@ static int check_for_renamed_file(const userinput * const u, xdcc *xd, struct st
   if (strcmp(xd->file, file) == 0)
     return 0; /* same name */
 
-  filename = mystrdup(xd->file);
-  xfiledescriptor = a_open_file(&filename, O_RDONLY | ADDED_OPEN_FLAGS);
-  mydelete(filename);
+  old = mystrdup(xd->file);
+  xfiledescriptor = a_open_file(&old, O_RDONLY | ADDED_OPEN_FLAGS);
+  mydelete(old);
   if ((xfiledescriptor >= 0) || (errno != ENOENT))
     return 0; /* hardlinked */
 
@@ -1083,8 +1083,14 @@ static int check_for_renamed_file(const userinput * const u, xdcc *xd, struct st
   /* renamed */
   a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
             number_of_pack(xd), xd->file, file);
-  mydelete(xd->file);
+  old = xd->file;
   xd->file = file;
+  /* change default description */
+  if (strcmp(xd->desc, getfilename(old)) == 0) {
+    mydelete(xd->desc);
+    xd->desc = mystrdup(getfilename(xd->file));
+  }
+  mydelete(old);
   return 1;
 }
 
