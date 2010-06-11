@@ -2090,6 +2090,10 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         if ((xd->st_dev == st.st_dev) &&
             (xd->st_ino == st.st_ino)) {
           foundit = 1;
+          if (check_for_renamed_file(u, xd, &st, tempstr)) {
+            tempstr = NULL;
+            break;
+          }
           if (gdata.debug > 2)
             a_respond(u, "  Ignoring added file: %s", tempstr);
           break;
