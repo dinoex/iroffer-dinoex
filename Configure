@@ -265,6 +265,23 @@ case "${cctype}" in
 -Wstrict-prototypes
 -Wwrite-strings"
 	;;
+gcc4*)
+        WARNS="-Wbad-function-cast
+-Wc++-compat
+-Wcast-qual
+-Wcast-align
+-Wformat
+-Wimplicit
+-Wmissing-declarations
+-Wmissing-prototypes
+-Wmissing-noreturn
+-Wpointer-arith
+-Wreturn-type
+-Wshadow
+-Wsign-compare
+-Wstrict-prototypes
+-Wwrite-strings"
+        ;;
 *)
 	WARNS="-Wbad-function-cast
 -Wcast-qual
@@ -280,7 +297,6 @@ case "${cctype}" in
 -Wsign-compare
 -Wstrict-prototypes
 -Wwrite-strings"
--Wc++-compat
 	;;
 esac
 fi
