@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.22:
 ----------------
 
+330) AUTOADD
+  Wenn einen umbenante Datei gefunden wird, repariere das Pack mit dem neuen Dateinamen.
+
 bugfix: Configure
   Erkennung funktioniert jetzt auch mit gcc46.
 
