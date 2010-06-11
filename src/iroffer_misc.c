@@ -2346,9 +2346,9 @@ int look_for_file_changes(xdcc *xpack)
                "Pack %d: File '%s' can no longer be accessed: %s",
                 number_of_pack(xpack),
                 xpack->file, strerror(errno));
-      if ((gdata.removelostfiles) && (errno == ENOENT))
-        return 1;
-      return 0;
+      if (errno != ENOENT)
+        return 0;
+      return gdata.removelostfiles;
     }
   
   if (st.st_size == 0)
