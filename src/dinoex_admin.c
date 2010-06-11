@@ -1052,6 +1052,42 @@ static int a_autoadd_color(void)
   return color;
 }
 
+static int check_for_renamed_file(const userinput * const u, xdcc *xd, struct stat *st, char *file)
+{
+  char *filename;
+  int xfiledescriptor;
+
+  updatecontext();
+
+  if (strcmp(xd->file, file) == 0)
+    return 0; /* same name */
+
+  filename = mystrdup(xd->file);
+  xfiledescriptor = a_open_file(&filename, O_RDONLY | ADDED_OPEN_FLAGS);
+  mydelete(filename);
+  if ((xfiledescriptor >= 0) || (errno != ENOENT))
+    return 0; /* hardlinked */
+
+  if (xd->st_size != st->st_size)
+    return 0; /* size differs */
+
+  if (xd->mtime != st->st_mtime)
+    return 0; /* mtime differs */
+
+  if (xd->st_dev != st->st_dev)
+    return 0; /* dev differs */
+
+  if (xd->st_ino != st->st_ino)
+    return 0; /* ino differs */
+   
+  /* renamed */
+  a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
+            number_of_pack(xd), xd->file, file);
+  mydelete(xd->file);
+  xd->file = file;
+  return 1;
+}
+
 static xdcc *a_add2(const userinput * const u, const char *group)
 {
   int xfiledescriptor;
@@ -1081,6 +1117,8 @@ static xdcc *a_add2(const userinput * const u, const char *group)
          xd = irlist_get_next(xd)) {
       if ((xd->st_dev == st.st_dev) &&
           (xd->st_ino == st.st_ino)) {
+        if (check_for_renamed_file(u, xd, &st, file))
+          return NULL;
         a_respond(u, "File '%s' is already added.", u->arg1);
         mydelete(file);
         return NULL;
