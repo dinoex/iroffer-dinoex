@@ -396,13 +396,14 @@ Lamune
 	reporting "FETCHCANCEL" bug
 	reporting "BOTINFO" joined for bug
 	suggesting "#channel -waitjoin" option
-	reporting trigger ignore bugA
+	reporting trigger ignore bug
 	option "xdcc_deny" 
 	reporting "CLOSEC" bug
 	reporting "FILEDEL" bug
 	option "slow_privmsg" 
 	admin command "NOANNOUNCE"
 	suggesting  SSL + CertFP
+	reporting autosendpack bug
 
 DevelDoll
 	report transferlimits to user

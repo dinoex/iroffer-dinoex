@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.22:
 ------------------
 
+bugfix: autosendpack, CHTRIGGER (reported by Lamune)
+  versions affected: 3.21
+  Bot crashes on trigger message.
+
 330) AUTOADD
   If a renamed file is found on AUTOADD, fix the existing pack with the new filename.
 
