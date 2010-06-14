@@ -1118,9 +1118,9 @@ static void autoqueuef(int pack, const char *message, privmsginput *pi)
              format, message);
   }
   send_xdcc_file2(&msg, pi, pack, tempstr, NULL);
-  mydelete(pi->msg2);
   pi->msg2 = mystrdup("AutoSend");
   log_xdcc_request3(pi, msg);
+  mydelete(pi->msg2);
   mydelete(tempstr);
 }
 
