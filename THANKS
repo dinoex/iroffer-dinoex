@@ -8,7 +8,7 @@ Splizzer
 
 Porakin
 	iroffer-lamm distribution
-	manual queue for sends 
+	manual queue for sends
 	announce/addann/autoaddann
 	option "noxdccinfo"
 	@find-reply ("atfind" config option)
@@ -143,7 +143,7 @@ Hikari
 Horst
 	channel anti flooding
 
-Terminator2k2 
+Terminator2k2
 	reporting win32 bugs
 
 Thunder
@@ -193,7 +193,7 @@ Road
 
 Skyw4lker
 	admin command "REMOVE n m"
-	admin command "CANNOUCNE channel n msg" 
+	admin command "CANNOUCNE channel n msg"
 	admin command "RENUMBER" with 3 args
 
 Cork
@@ -397,10 +397,10 @@ Lamune
 	reporting "BOTINFO" joined for bug
 	suggesting "#channel -waitjoin" option
 	reporting trigger ignore bug
-	option "xdcc_deny" 
+	option "xdcc_deny"
 	reporting "CLOSEC" bug
 	reporting "FILEDEL" bug
-	option "slow_privmsg" 
+	option "slow_privmsg"
 	admin command "NOANNOUNCE"
 	suggesting  SSL + CertFP
 	reporting autosendpack bug
@@ -614,9 +614,10 @@ super89
 
 Loke_AF
 	reporting timestamp problem with old statefiles.
-	reporting "AUTOADD" problem with '\'.	
+	reporting "AUTOADD" problem with '\'.
 	reporting crash with concurrent transfers
 	reporting "XDCC BATCH" bug
+	reporting "AUTOADD" problem with '//'.
 
 Nouhime
 	reporting "http_search" bug.
