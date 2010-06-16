@@ -1065,8 +1065,13 @@ static int check_for_renamed_file(const userinput * const u, xdcc *xd, struct st
   old = mystrdup(xd->file);
   xfiledescriptor = a_open_file(&old, O_RDONLY | ADDED_OPEN_FLAGS);
   mydelete(old);
-  if ((xfiledescriptor >= 0) || (errno != ENOENT))
+  if (xfiledescriptor >= 0) {
+    close(xfiledescriptor);
     return 0; /* hardlinked */
+  }
+
+  if (errno != ENOENT)
+    return 0; /* other error */
 
   if (xd->st_size != st->st_size)
     return 0; /* size differs */

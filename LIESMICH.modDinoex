@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: AUTOADD
+  Wenn die Dateinahmen doppelte Trennzeichen "/" enthalten,
+  kann der Bot mit dem Fehler "To many open files" abbrechen.
+
 Ab Version 3.22:
 ----------------
 
