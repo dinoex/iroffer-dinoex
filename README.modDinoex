@@ -4,6 +4,7 @@ With Version 3.23:
 ------------------
 
 bugfix: AUTOADD
+  versions affected: 3.22
   If you have filenames with multiple directory separators,
   Bot could stop working with "To many open files".
 

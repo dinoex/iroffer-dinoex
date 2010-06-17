@@ -4,6 +4,7 @@ Ab Version 3.23:
 ----------------
 
 bugfix: AUTOADD
+  versions affected: 3.22
   Wenn die Dateinahmen doppelte Trennzeichen "/" enthalten,
   kann der Bot mit dem Fehler "To many open files" abbrechen.
 
