@@ -164,6 +164,7 @@ Alita-Chan
 	reporting XDCC LIST problem with total line
 	reporting hidelockspacks for @find
 	suggesting better logging for QUEUED SEND
+	suggesting XDCC BATCH
 
 Terra_Knight
 	option "autoadd_dir"
@@ -535,9 +536,6 @@ Bambus
 	reporting XDDC SEND filename bug
 
 Otaku
-	suggesting XDCC BATCH
-
-Alita-chan
 	suggesting XDCC BATCH
 
 satmd
