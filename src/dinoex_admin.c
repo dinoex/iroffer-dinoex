@@ -4310,19 +4310,21 @@ void a_send(const userinput * const u)
   gnetwork = backup;
 }
 
-static int a_queue_found(const userinput * const u, const char *nick, xdcc *xd, int num)
+static int a_queue_found(const userinput * const u, xdcc *xd, int num)
 {
   const char *hostname = "man";
   int alreadytrans;
   int inq;
 
-  alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, nick, hostname, xd);
-  alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, nick, hostname, xd);
+  updatecontext();
+
+  alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, u->arg1, hostname, xd);
+  alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, u->arg1, hostname, xd);
   if (alreadytrans > 0) {
-    a_respond(u, "Already Queued %s for Pack %i!", nick, num);
+    a_respond(u, "Already Queued %s for Pack %i!", u->arg1, num);
     return 1;
   }
-  a_respond(u, "Queuing %s for Pack %i", nick, num);
+  a_respond(u, "Queuing %s for Pack %i", u->arg1, num);
   return 0;
 }
 
@@ -4350,8 +4352,7 @@ void a_queue(const userinput * const u)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
-
-  if (a_queue_found(u, u->arg1, xd, num))
+  if (a_queue_found(u, xd, num))
     return;
 
   backup = gnetwork;
@@ -4369,13 +4370,88 @@ void a_queue(const userinput * const u)
   }
 }
 
-void a_iqueue(const userinput * const u)
+static int a_iqueue_sub(const userinput * const u, xdcc *xd, int num, int net)
 {
-  int num;
-  xdcc *xd;
   char *tempstr;
   const char *msg;
   gnetwork_t *backup;
+
+  updatecontext();
+
+  if (xd == NULL)
+    xd = irlist_get_nth(&gdata.xdccs, num-1);
+
+  if (a_queue_found(u, xd, num))
+    return 1;
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  tempstr = mycalloc(maxtextlength);
+  addtoidlequeue(&msg, tempstr, u->arg1, NULL, xd, num, 0);
+  notice(u->arg1, "** %s", tempstr);
+  mydelete(tempstr);
+  gnetwork = backup;
+  return 0;
+}
+
+static int a_iqueue_group(const userinput * const u, const char *what, int net)
+{
+  xdcc *xd;
+  int num;
+  int found;
+
+  updatecontext();
+
+  found = 0;
+  num = 0;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    num ++;
+    if (xd->group == NULL)
+      continue;
+    if (strcasecmp(what, xd->group) != 0)
+      continue;
+
+    found ++;
+    a_iqueue_sub(u, xd, num, net);
+  }
+  return found;
+}
+
+static int a_iqueue_search(const userinput * const u, const char *what, int net)
+{
+  char *end;
+  int num;
+  int found;
+  int first;
+  int last;
+
+  found = a_iqueue_group(u, what, net);
+  if (found != 0)
+    return found;
+
+  updatecontext();
+
+  /* range */
+  if (*what == '#') what ++;
+  end = strchr(what, '-');
+  if (end == NULL) {
+    found ++;
+    a_iqueue_sub(u, NULL, first, net);
+    return found;
+  }
+  first = atoi(what);
+  if (*(++end) == '#') end ++;
+  last = atoi(end);
+  for (num = first; num <= last; num ++) {
+    found ++;
+    a_iqueue_sub(u, NULL, num, net);
+  }
+  return found;
+}
+void a_iqueue(const userinput * const u)
+{
   int net;
 
   updatecontext();
@@ -4387,22 +4463,15 @@ void a_iqueue(const userinput * const u)
   if (invalid_nick(u, u->arg1) != 0)
     return;
 
-  num = get_pack_nr(u, u->arg2);
-  if (num <= 0)
+  if (!u->arg2 || (u->arg2[0] == 0)) {
+    a_respond(u, "Try Specifying a Valid Pack Number");
     return;
+  }
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-
-  if (a_queue_found(u, u->arg1, xd, num)) 
+  if (a_iqueue_search(u, u->arg2, net) == 0) {
+    a_respond(u, "Try Specifying a Valid Pack Number");
     return;
-
-  backup = gnetwork;
-  gnetwork = &(gdata.networks[net]);
-  tempstr = mycalloc(maxtextlength);
-  addtoidlequeue(&msg, tempstr, u->arg1, NULL, xd, num, 0);
-  notice(u->arg1, "** %s", tempstr);
-  mydelete(tempstr);
-  gnetwork = backup;
+  }
 
   if (!gdata.exiting &&
        irlist_size(&gdata.idlequeue) &&
