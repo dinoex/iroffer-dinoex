@@ -342,7 +342,7 @@
 344 " md5sum         "
 345 " crc32          %.8lX"
 346 "%s/%s"
-347 "Non posso accedere alla directory: %s"
+347 "Non posso accedere alla directory: %s %s"
 348 "Cancellate tutte %d linee dello storico della console"
 349 "Sto inviando a %s il pack %i"
 350 "man"

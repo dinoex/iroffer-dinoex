@@ -1656,7 +1656,7 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
     d = opendir(thedir);
 
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", thedir, strerror(errno));
     return;
   }
 
@@ -1788,7 +1788,7 @@ void a_removedir(const userinput * const u)
   thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", u->arg1,  strerror(errno));
     return;
   }
 
@@ -2006,7 +2006,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     d = opendir(thedir);
 
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", thedir, strerror(errno));
     return;
   }
 
@@ -2186,7 +2186,7 @@ void a_addgroup(const userinput * const u)
   thedir = mystrdup(u->arg2);
   d = a_open_dir(&thedir);
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", u->arg2, strerror(errno));
     return;
   }
 
@@ -2216,7 +2216,7 @@ void a_addmatch(const userinput * const u)
   *(end++) = 0;
   d = a_open_dir(&thedir);
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
     mydelete(thedir);
     return;
   }
@@ -2239,7 +2239,7 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
     d = opendir(thedir);
 
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", thedir, strerror(errno));
     return;
   }
 
@@ -2308,7 +2308,7 @@ void a_newgroup(const userinput * const u)
   thedir = mystrdup(u->arg2);
   d = a_open_dir(&thedir);
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", u->arg2, strerror(errno));
   } else {
     a_newgroup_sub(u, thedir, d, u->arg1);
   }
@@ -3080,7 +3080,7 @@ void a_adddir(const userinput * const u)
   d = a_open_dir(&thedir);
   if (!d)
     {
-      a_respond(u, "Can't Access Directory: %s", strerror(errno));
+      a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
       mydelete(thedir);
       return;
     }
@@ -3103,7 +3103,7 @@ void a_addnew(const userinput * const u)
   thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
     mydelete(thedir);
     return;
   }
@@ -3279,7 +3279,7 @@ void a_movegroupdir(const userinput * const u)
   thedir = mystrdup(u->arg2);
   d = a_open_dir(&thedir);
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s", strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", u->arg2, strerror(errno));
     return;
   }
 

@@ -2745,7 +2745,7 @@ void u_listdir(const userinput * const u, const char *dir)
   
   if (!d)
     {
-      u_respond(u, "Can't Access Directory: %s", strerror(errno));
+      u_respond(u, "Can't Access Directory: %s %s", dir, strerror(errno));
       return;
     }
   
