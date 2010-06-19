@@ -469,7 +469,7 @@ void sendserver(void)
       return;
     }
   
-  if (gdata.exiting && !gnetwork->recentsent)
+  if (gdata.exiting && clean)
     {
       close_server();
       gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
@@ -1126,29 +1126,7 @@ void shutdowniroffer(void) {
    while(tr)
      {
        gnetwork = &(gdata.networks[tr->net]);
-       notice(tr->nick,"** Shutting Down. Closing Connection. (Resume Supported)");
-       
-       FD_CLR(tr->con.clientsocket, &gdata.writeset);
-       FD_CLR(tr->con.clientsocket, &gdata.readset);
-       if (tr->con.listensocket != FD_UNUSED)
-         {
-           close(tr->con.listensocket);
-         }
-       if (tr->con.clientsocket != FD_UNUSED)
-         {
-           shutdown_close(tr->con.clientsocket);
-         }
-       tr->xpack->file_fd_count--;
-       if (!tr->xpack->file_fd_count && (tr->xpack->file_fd != FD_UNUSED))
-         {
-           close(tr->xpack->file_fd);
-           tr->xpack->file_fd = FD_UNUSED;
-           tr->xpack->file_fd_location = 0;
-         }
-       tr->tr_status = TRANSFER_STATUS_DONE;
-       
-       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_YELLOW,"XDCC Transfer to %s Closed",tr->nick);
-       
+       t_closeconn(tr, "Server Shutting Down. (Resume Supported)", 0);
        tr = irlist_get_next(tr);
      }
    
@@ -1157,22 +1135,7 @@ void shutdowniroffer(void) {
    while (ul)
      {
        gnetwork = &(gdata.networks[ul->net]);
-       notice(ul->nick,"** Shutting Down. Closing Upload Connection. (Resume Supported)");
-       
-       FD_CLR(ul->con.clientsocket, &gdata.writeset);
-       FD_CLR(ul->con.clientsocket, &gdata.readset);
-       if (ul->con.clientsocket != FD_UNUSED)
-         {
-           shutdown_close(ul->con.clientsocket);
-         }
-       if (ul->filedescriptor != FD_UNUSED)
-         {
-           close(ul->filedescriptor);
-         }
-       ul->ul_status = UPLOAD_STATUS_DONE;
-       
-       ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_YELLOW,
-               "Upload Transfer from %s Closed",ul->nick);
+       l_closeconn(ul, "Server Shutting Down. (Resume Supported)", 0);
        ul = irlist_get_next(ul);
      }
    

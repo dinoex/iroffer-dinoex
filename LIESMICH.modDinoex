@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: SHUTDOWN
+  versions affected: 1.0 - 3.22
+  Not all messages where send out on shutdown
+  Uploads and Transfers where not cleanup up fully.
+
 bugfix: AUTOADD
   versions affected: 3.22
   Wenn die Dateinahmen doppelte Trennzeichen "/" enthalten,

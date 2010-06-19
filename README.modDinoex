@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+bugfix: SHUTDOWN
+  versions affected: 1.0 - 3.22
+  Nicht alle Nachricten wurden gesendet.
+  Laufende Uploads un Downloads wurden nicht sauber beendet.
+
 bugfix: AUTOADD
   versions affected: 3.22
   If you have filenames with multiple directory separators,
