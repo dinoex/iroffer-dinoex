@@ -4310,18 +4310,31 @@ void a_send(const userinput * const u)
   gnetwork = backup;
 }
 
+static int a_queue_found(const userinput * const u, const char *nick, xdcc *xd, int num)
+{
+  const char *hostname = "man";
+  int alreadytrans;
+  int inq;
+
+  alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, nick, hostname, xd);
+  alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, nick, hostname, xd);
+  if (alreadytrans > 0) {
+    a_respond(u, "Already Queued %s for Pack %i!", nick, num);
+    return 1;
+  }
+  a_respond(u, "Queuing %s for Pack %i", nick, num);
+  return 0;
+}
+
 /* this function imported from iroffer-lamm */
 void a_queue(const userinput * const u)
 {
   int num;
-  int alreadytrans;
   xdcc *xd;
   char *tempstr;
   const char *msg;
-  const char *hostname = "man";
   gnetwork_t *backup;
   int net;
-  int inq;
 
   updatecontext();
 
@@ -4338,14 +4351,8 @@ void a_queue(const userinput * const u)
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
 
-  alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, u->arg1, hostname, xd);
-  alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, u->arg1, hostname, xd);
-  if (alreadytrans > 0) {
-    a_respond(u, "Already Queued %s for Pack %i!", u->arg1, num);
+  if (a_queue_found(u, u->arg1, xd, num))
     return;
-  }
-
-  a_respond(u, "Queuing %s for Pack %i", u->arg1, num);
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
@@ -4365,14 +4372,11 @@ void a_queue(const userinput * const u)
 void a_iqueue(const userinput * const u)
 {
   int num;
-  int alreadytrans;
   xdcc *xd;
   char *tempstr;
   const char *msg;
-  const char *hostname = "man";
   gnetwork_t *backup;
   int net;
-  int inq;
 
   updatecontext();
 
@@ -4389,14 +4393,8 @@ void a_iqueue(const userinput * const u)
 
   xd = irlist_get_nth(&gdata.xdccs, num-1);
 
-  alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, u->arg1, hostname, xd);
-  alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, u->arg1, hostname, xd);
-  if (alreadytrans > 0) {
-      a_respond(u, "Already Queued %s for Pack %i!", u->arg1, num);
-      return;
-  }
-
-  a_respond(u, "Queuing %s for Pack %i", u->arg1, num);
+  if (a_queue_found(u, u->arg1, xd, num)) 
+    return;
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
