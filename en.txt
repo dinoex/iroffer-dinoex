@@ -342,7 +342,7 @@
 344 " md5sum         "
 345 " crc32          %.8lX"
 346 "%s/%s"
-347 "Can't Access Directory: %s"
+347 "Can't Access Directory: %s %s"
 348 "Deleted all %d lines of console history"
 349 "Sending %s pack %i"
 350 "man"
