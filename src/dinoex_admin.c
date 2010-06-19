@@ -1084,7 +1084,7 @@ static int check_for_renamed_file(const userinput * const u, xdcc *xd, struct st
 
   if (xd->st_ino != st->st_ino)
     return 0; /* ino differs */
-   
+
   /* renamed */
   a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
             number_of_pack(xd), xd->file, file);
