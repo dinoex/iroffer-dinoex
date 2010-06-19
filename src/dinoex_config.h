@@ -27,7 +27,7 @@ char *print_config_key(const char *key);
 void getconfig_set(const char *line);
 
 void config_dump(void);
-
+void config_reset(void);
 void config_startup(void);
 
 extern const char *current_config;

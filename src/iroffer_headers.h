@@ -694,7 +694,6 @@ void switchserver(int which);
 char* getstatusline(char *str, size_t len);
 char* getstatuslinenums(char *str, size_t len);
 void sendxdlqueue(void);
-void reinit_config_vars(void);
 void initprefixes(void);
 void initvars(void);
 void startupiroffer(void);
