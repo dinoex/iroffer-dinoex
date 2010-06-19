@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+331) BATCH (inspired by Aashiqmunda)
+
+  new admin commands:
+  BATCH <nick> <g>                   Queues pack with group <g> for <nick> in idle queue
+  BATCH <nick> <g> <net>             Queues pack with group <g> for <nick> in net <net> in idle queue
+  BATCH <nick> <n>-<m>               Queues pack <n> to <m> for <nick> in idle queue
+  BATCH <nick> <n>-<m> <net>         Queues pack <n> to <m> for <nick> in net <net> in idle queue
+
 bugfix: SHUTDOWN
   versions affected: 1.0 - 3.22
   Nicht alle Nachricten wurden gesendet.
@@ -1583,8 +1591,8 @@ bugfix: NEWDIR
 
   new admin commands:
   RMIQ <position>                 Removes entry at <position> from idle queue
-  IQUEUE <nick> <n>               Queues pack <n> for <nick> for idle queue
-  IQUEUE <nick> <n> <net>         Queues pack <n> for <nick> in net <net> for idle queue
+  IQUEUE <nick> <n>               Queues pack <n> for <nick> into idle queue
+  IQUEUE <nick> <n> <net>         Queues pack <n> for <nick> in net <net> into idle queue
   REIQUEUE <x> <y>                Moves idle queue entry from position <x> to <y>
 
 bugfix: fix small memory leaks

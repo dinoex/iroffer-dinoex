@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+331) BATCH
+
+  Neue Admin Kommandos:
+  BATCH <nick> <g>                   Pakete mit der Gruppe <g> in die 2. Warteschlange für <nick> einfügen
+  BATCH <nick> <g> <netz>            Pakete mit der Gruppe <g> in die 2. Warteschlange für <nick> aus <netz> einfügen
+  BATCH <nick> <n>-<m>               Paket <n> bis <m> in die 2. Warteschlange für <nick> einfügen
+  BATCH <nick> <n>-<m> <netz>        Paket <n> bis <m> in die 2. Warteschlange für <nick> aus <netz> einfügen
+
 bugfix: SHUTDOWN
   versions affected: 1.0 - 3.22
   Not all messages where send out on shutdown
@@ -1550,7 +1558,7 @@ bugfix: NEWDIR
   Option: maxidlequeuedperperson
   Maximale Anzahl gleichzeitiger Warteschlangeneinträge in der Idle Queue
 
-  Neues Admin Kommandos:
+  Neue Admin Kommandos:
   RMIQ <position>                  Löschen von <position> in der 2. Warteschlange
   IQUEUE <nick> <n>                Paket <n> in die 2. Warteschlange für <nick> einfügen
   IQUEUE <nick> <n> <netz>         Paket <n> in die 2. Warteschlange für <nick> aus <netz> einfügen
