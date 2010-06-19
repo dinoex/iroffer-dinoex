@@ -28,6 +28,7 @@
 #include "dinoex_transfer.h"
 #include "dinoex_upload.h"
 #include "dinoex_queue.h"
+#include "dinoex_config.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -1747,7 +1748,7 @@ static void u_rehash(const userinput * const u) {
        gdata.logfd = FD_UNUSED;
      }
    
-   reinit_config_vars();
+   config_reset();
    
    set_loginname();
    

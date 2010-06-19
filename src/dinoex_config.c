@@ -22,6 +22,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_admin.h"
 #include "dinoex_http.h"
+#include "dinoex_jobs.h"
 #include "dinoex_config.h"
 
 #include <ctype.h>
@@ -29,6 +30,7 @@
 typedef struct {
   const char *name;
   int *ivar;
+  int reset;
 } config_bool_typ;
 
 typedef struct {
@@ -37,6 +39,7 @@ typedef struct {
   int min;
   int max;
   int mult;
+  int reset;
 } config_int_typ;
 
 typedef struct {
@@ -64,80 +67,84 @@ int current_bracket;
 
 static int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
-{"auto_crc_check",         &gdata.auto_crc_check },
-{"auto_default_group",     &gdata.auto_default_group },
-{"auto_path_group",        &gdata.auto_path_group },
-{"autoaddann_short",       &gdata.autoaddann_short },
-{"balanced_queue",         &gdata.balanced_queue },
-{"direct_config_access",   &gdata.direct_config_access },
-{"direct_file_access",     &gdata.direct_file_access },
-{"disablexdccinfo",        &gdata.disablexdccinfo },
-{"dos_text_files",         &gdata.dos_text_files },
-{"extend_status_line",     &gdata.extend_status_line },
+{"auto_crc_check",         &gdata.auto_crc_check,          0 },
+{"auto_default_group",     &gdata.auto_default_group,      0 },
+{"auto_path_group",        &gdata.auto_path_group,         0 },
+{"autoaddann_short",       &gdata.autoaddann_short,        0 },
+{"balanced_queue",         &gdata.balanced_queue,          0 },
+{"direct_config_access",   &gdata.direct_config_access,    0 },
+{"direct_file_access",     &gdata.direct_file_access,      0 },
+{"disablexdccinfo",        &gdata.disablexdccinfo,         0 },
+#if defined(_OS_CYGWIN)
+{"dos_text_files",         &gdata.dos_text_files,          1 },
+#else /* _OS_CYGWIN */
+{"dos_text_files",         &gdata.dos_text_files,          0 },
+#endif /* _OS_CYGWIN */
+{"extend_status_line",     &gdata.extend_status_line,      0 },
 #ifndef WITHOUT_BLOWFISH
-{"fish_only",              &gdata.fish_only },
+{"fish_only",              &gdata.fish_only,               0 },
 #endif /* WITHOUT_BLOWFISH */
-{"getipfromserver",        &gdata.getipfromserver },
+{"getipfromserver",        &gdata.getipfromserver,         0 },
 #ifdef USE_UPNP
-{"getipfromupnp",          &gdata.getipfromupnp },
+{"getipfromupnp",          &gdata.getipfromupnp,           0 },
 #endif /* USE_UPNP */
-{"groupsincaps",           &gdata.groupsincaps },
-{"hide_list_info",         &gdata.hide_list_info },
-{"hide_list_stop",         &gdata.hide_list_stop },
-{"hidelockedpacks",        &gdata.hidelockedpacks },
-{"hideos",                 &gdata.hideos },
-{"holdqueue",              &gdata.holdqueue },
+{"groupsincaps",           &gdata.groupsincaps,            0 },
+{"hide_list_info",         &gdata.hide_list_info,          0 },
+{"hide_list_stop",         &gdata.hide_list_stop,          0 },
+{"hidelockedpacks",        &gdata.hidelockedpacks,         0 },
+{"hideos",                 &gdata.hideos,                  0 },
+{"holdqueue",              &gdata.holdqueue,               0 },
 #ifndef WITHOUT_HTTP
-{"http_geoip",             &gdata.http_geoip },
-{"http_search",            &gdata.http_search },
+{"http_geoip",             &gdata.http_geoip,              0 },
+{"http_search",            &gdata.http_search,             0 },
 #endif /* WITHOUT_HTTP */
-{"ignoreduplicateip",      &gdata.ignoreduplicateip },
-{"ignoreuploadbandwidth",  &gdata.ignoreuploadbandwidth },
-{"include_subdirs",        &gdata.include_subdirs },
-{"logmessages",            &gdata.logmessages },
-{"lognotices",             &gdata.lognotices },
-{"logstats",               &gdata.logstats },
-{"mirc_dcc64",             &gdata.mirc_dcc64 },
-{"need_voice",             &gdata.need_voice },
-{"no_auto_rehash",         &gdata.no_auto_rehash },
-{"no_duplicate_filenames", &gdata.no_duplicate_filenames },
-{"no_find_trigger",        &gdata.no_find_trigger },
-{"no_minspeed_on_free",    &gdata.no_minspeed_on_free },
-{"no_status_chat",         &gdata.no_status_chat },
-{"no_status_log",          &gdata.no_status_log },
-{"noautorejoin",           &gdata.noautorejoin },
-{"nocrc32",                &gdata.nocrc32 },
-{"noduplicatefiles",       &gdata.noduplicatefiles },
-{"nomd5sum",               &gdata.nomd5sum },
-{"old_statefile",          &gdata.old_statefile },
-{"passive_dcc",            &gdata.passive_dcc },
-{"passive_dcc_chat",       &gdata.passive_dcc_chat },
+{"ignoreduplicateip",      &gdata.ignoreduplicateip,       0 },
+{"ignoreuploadbandwidth",  &gdata.ignoreuploadbandwidth,   0 },
+{"include_subdirs",        &gdata.include_subdirs,         0 },
+{"logmessages",            &gdata.logmessages,             0 },
+{"lognotices",             &gdata.lognotices,              0 },
+{"logstats",               &gdata.logstats,                1 },
+{"mirc_dcc64",             &gdata.mirc_dcc64,              0 },
+{"need_voice",             &gdata.need_voice,              0 },
+{"no_auto_rehash",         &gdata.no_auto_rehash,          0 },
+{"no_duplicate_filenames", &gdata.no_duplicate_filenames,  0 },
+{"no_find_trigger",        &gdata.no_find_trigger,         0 },
+{"no_minspeed_on_free",    &gdata.no_minspeed_on_free,     0 },
+{"no_status_chat",         &gdata.no_status_chat,          0 },
+{"no_status_log",          &gdata.no_status_log,           0 },
+{"noautorejoin",           &gdata.noautorejoin,            0 },
+{"nocrc32",                &gdata.nocrc32,                 0 },
+{"noduplicatefiles",       &gdata.noduplicatefiles,        0 },
+{"nomd5sum",               &gdata.nomd5sum,                0 },
+{"old_statefile",          &gdata.old_statefile,           0 },
+{"passive_dcc",            &gdata.passive_dcc,             0 },
+{"passive_dcc_chat",       &gdata.passive_dcc_chat,        0 },
 #ifndef WITHOUT_BLOWFISH
-{"privmsg_encrypt",        &gdata.privmsg_encrypt },
+{"privmsg_encrypt",        &gdata.privmsg_encrypt,         0 },
 #endif /* WITHOUT_BLOWFISH */
-{"quietmode",              &gdata.quietmode },
-{"removelostfiles",        &gdata.removelostfiles },
-{"respondtochannellist",   &gdata.respondtochannellist },
-{"respondtochannelxdcc",   &gdata.respondtochannelxdcc },
-{"restrictlist",           &gdata.restrictlist },
-{"restrictprivlist",       &gdata.restrictprivlist },
-{"restrictprivlistfull",   &gdata.restrictprivlistfull },
-{"restrictprivlistmain",   &gdata.restrictprivlistmain },
-{"restrictsend",           &gdata.restrictsend },
-{"restrictsend_warning",   &gdata.restrictsend_warning },
-{"send_batch",             &gdata.send_batch },
-{"show_date_added",        &gdata.show_date_added },
-{"show_list_all",          &gdata.show_list_all },
-{"spaces_in_filenames",    &gdata.spaces_in_filenames },
-{"timestampconsole",       &gdata.timestampconsole },
+{"quietmode",              &gdata.quietmode,               0 },
+{"removelostfiles",        &gdata.removelostfiles,         0 },
+{"respondtochannellist",   &gdata.respondtochannellist,    0 },
+{"respondtochannelxdcc",   &gdata.respondtochannelxdcc,    0 },
+{"restrictlist",           &gdata.restrictlist,            0 },
+{"restrictprivlist",       &gdata.restrictprivlist,        0 },
+{"restrictprivlistfull",   &gdata.restrictprivlistfull,    0 },
+{"restrictprivlistmain",   &gdata.restrictprivlistmain,    0 },
+{"restrictsend",           &gdata.restrictsend,            0 },
+{"restrictsend_warning",   &gdata.restrictsend_warning,    0 },
+{"send_batch",             &gdata.send_batch,              0 },
+{"show_date_added",        &gdata.show_date_added,         0 },
+{"show_list_all",          &gdata.show_list_all,           0 },
+{"spaces_in_filenames",    &gdata.spaces_in_filenames,     0 },
+{"timestampconsole",       &gdata.timestampconsole,        0 },
 #ifdef USE_UPNP
-{"upnp_router",            &gdata.upnp_router },
+{"upnp_router",            &gdata.upnp_router,             0 },
 #endif /* USE_UPNP */
-{"verbose_crc32",          &gdata.verbose_crc32},
-{"xdcclist_by_privmsg",    &gdata.xdcclist_by_privmsg},
-{"xdcclist_grouponly",     &gdata.xdcclist_grouponly },
-{"xdcclistfileraw",        &gdata.xdcclistfileraw },
-{NULL, NULL }};
+{"verbose_crc32",          &gdata.verbose_crc32,           0 },
+{"xdcclist_by_privmsg",    &gdata.xdcclist_by_privmsg,     0 },
+{"xdcclist_grouponly",     &gdata.xdcclist_grouponly,      0 },
+{"xdcclistfileraw",        &gdata.xdcclistfileraw,         0 },
+{NULL, NULL, 0 }};
 
 
 void
@@ -264,52 +271,65 @@ static void dump_config_bool(void)
   }
 }
 
+static void reset_config_bool(void)
+{
+  long i;
+
+  for (i = 0L; config_parse_bool[i].name != NULL; i ++) {
+    *(config_parse_bool[i].ivar) = config_parse_bool[i].reset;
+  }
+}
+
 
 static int config_int_anzahl = 0;
 static config_int_typ config_parse_int[] = {
-{"adminlevel",              &gdata.adminlevel,              1, 5, 1 },
-{"atfind",                  &gdata.atfind,                  0, 10, 1 },
-{"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1 },
-{"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1 },
-{"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1 },
-{"debug",                   &gdata.debug,                   0, 65000, 1 },
-{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1 },
-{"hadminlevel",             &gdata.hadminlevel,             1, 5, 1 },
+{"adminlevel",              &gdata.adminlevel,              1, 5, 1, ADMIN_LEVEL_FULL },
+{"atfind",                  &gdata.atfind,                  0, 10, 1, 0 },
+{"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1, 0 },
+{"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1, 0 },
+{"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1, 10 },
+{"debug",                   &gdata.debug,                   0, 65000, 1, -1 },
+{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1, 0 },
+{"hadminlevel",             &gdata.hadminlevel,             1, 5, 1, ADMIN_LEVEL_HALF },
 #ifndef WITHOUT_HTTP
-{"http_port",               &gdata.http_port,               0, 65535, 1 },
+{"http_port",               &gdata.http_port,               0, 65535, 1, 0 },
 #endif /* WITHOUT_HTTP */
-{"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1 },
-{"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1 },
-{"max_find",                &gdata.max_find,                0, 65000, 1 },
-{"max_uploads",             &gdata.max_uploads,             0, 65000, 1 },
-{"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4 },
-{"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1 },
-{"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1 },
-{"maxtransfersperperson",   &gdata.maxtransfersperperson,   1, 1000000, 1 },
-{"monitor_files",           &gdata.monitor_files,           1, 65000, 1 },
-{"need_level",              &gdata.need_level,              0, 3, 1 },
-{"new_trigger",             &gdata.new_trigger,             0, 1000000, 1 },
-{"notifytime",              &gdata.notifytime,              0, 1000000, 1 },
-{"overallmaxspeed",         &gdata.overallmaxspeed,         0, 1000000, 4 },
-{"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, 0, 1000000, 4 },
-{"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1 },
-{"queuesize",               &gdata.queuesize,               0, 1000000, 1 },
-{"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1 },
-{"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1 },
-{"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1 },
-{"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1 },
-{"send_listfile",           &gdata.send_listfile,           -1, 1000000, 1 },
-{"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1 },
-{"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024 },
-{"start_of_month",          &gdata.start_of_month,          1, 31, 1 },
-{"status_time_dcc_chat",    &gdata.status_time_dcc_chat,    10, 2000, 1 },
-{"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1 },
-{"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1 },
+{"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1, 0 },
+{"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1, 0 },
+{"max_find",                &gdata.max_find,                0, 65000, 1, 0 },
+{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 65000 },
+{"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4, 65000 },
+{"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1, 1 },
+{"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1, 1 },
+{"maxtransfersperperson",   &gdata.maxtransfersperperson,   1, 1000000, 1, 1 },
+#if defined(_OS_CYGWIN)
+{"monitor_files",           &gdata.monitor_files,           1, 65000, 1, 5 },
+#else /* _OS_CYGWIN */
+{"monitor_files",           &gdata.monitor_files,           1, 65000, 1, 20 },
+#endif /* _OS_CYGWIN */
+{"need_level",              &gdata.need_level,              0, 3, 1, 0 },
+{"new_trigger",             &gdata.new_trigger,             0, 1000000, 1, 0 },
+{"notifytime",              &gdata.notifytime,              0, 1000000, 1, 5 },
+{"overallmaxspeed",         &gdata.overallmaxspeed,         0, 1000000, 4, 0 },
+{"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, 0, 1000000, 4, 0 },
+{"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1, 0 },
+{"queuesize",               &gdata.queuesize,               0, 1000000, 1, 0 },
+{"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1, 0 },
+{"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1, 0 },
+{"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1, 0 },
+{"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1, RESTRICTSEND_TIMEOUT },
+{"send_listfile",           &gdata.send_listfile,           -1, 1000000, 1, 0 },
+{"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1, 0 },
+{"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024, 0 },
+{"start_of_month",          &gdata.start_of_month,          1, 31, 1, 1 },
+{"status_time_dcc_chat",    &gdata.status_time_dcc_chat,    10, 2000, 1, 120 },
+{"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1, 65535 },
+{"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1, 0 },
 #ifndef WITHOUT_TELNET
-{"telnet_port",             &gdata.telnet_port,             0, 65535, 1 },
+{"telnet_port",             &gdata.telnet_port,             0, 65535, 1, 0 },
 #endif /* WITHOUT_TELNET */
-{"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1 },
-{NULL, NULL, 0, 0, 0 }};
+{"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1, 200 },
+{NULL, NULL, 0, 0, 0, 0 }};
 
 static void config_sorted_int(void)
 {
@@ -439,6 +459,16 @@ static void dump_config_int(void)
 
   for (i = 0L; config_parse_int[i].name != NULL; i ++) {
     dump_config_int2(config_parse_int[i].name, *(config_parse_int[i].ivar));
+  }
+}
+
+static void reset_config_int(void)
+{
+  long i;
+
+  for (i = 0L; config_parse_int[i].name != NULL; i ++) {
+    if (config_parse_int[i].reset != -1)
+      *(config_parse_int[i].ivar) = config_parse_int[i].reset;
   }
 }
 
@@ -606,6 +636,15 @@ static void dump_config_string(void)
 
   for (i = 0L; config_parse_string[i].name != NULL; i ++) {
     dump_config_string2(config_parse_string[i].name, *(config_parse_string[i].svar));
+  }
+}
+
+static void reset_config_string(void)
+{
+  long i;
+
+  for (i = 0L; config_parse_string[i].name != NULL; i ++) {
+    mydelete(*(config_parse_string[i].svar));
   }
 }
 
@@ -812,6 +851,15 @@ static void dump_config_list(void)
         dump_line("  " ": %s", string);
       }
     }
+  }
+}
+
+static void reset_config_list(void)
+{
+  long i;
+
+  for (i = 0L; config_parse_list[i].name != NULL; i ++) {
+    irlist_delete_all(config_parse_list[i].list);
   }
 }
 
@@ -1251,7 +1299,7 @@ static void c_network(char *var)
         current_bracket = 1;
     }
     /* check if the given network does exist */
-    for (ss=0; ss <= MAX_NETWORKS; ss++) {
+    for (ss=0; ss < MAX_NETWORKS; ss++) {
       if (ss > gdata.networks_online)
         break;
       if (gdata.networks[ss].name == NULL)
@@ -1657,6 +1705,104 @@ static int set_config_func(const char *key, char *text)
   return 0;
 }
 
+static void reset_config_func(void)
+{
+  autoqueue_t *aq;
+  tupload_t *tu;
+  qupload_t *qu;
+  group_admin_t *ga;
+  http_magic_t *mime;
+  autoadd_group_t *ag;
+  server_t *ss;
+  int si;
+  int ii;
+
+  for (si=0; si<MAX_NETWORKS; si++) {
+    for (ss = irlist_get_head(&gdata.networks[si].servers);
+         ss;
+         ss = irlist_delete(&gdata.networks[si].servers, ss)) {
+      mydelete(ss->hostname);
+      mydelete(ss->password);
+    }
+    mydelete(gdata.networks[si].nickserv_pass);
+    mydelete(gdata.networks[si].config_nick);
+    mydelete(gdata.networks[si].user_modes);
+    mydelete(gdata.networks[si].local_vhost);
+    mydelete(gdata.networks[si].natip);
+    irlist_delete_all(&gdata.networks[si].channels);
+    irlist_delete_all(&gdata.networks[si].server_join_raw);
+    irlist_delete_all(&gdata.networks[si].server_connected_raw);
+    irlist_delete_all(&gdata.networks[si].channel_join_raw);
+    irlist_delete_all(&gdata.networks[si].proxyinfo);
+    gdata.networks[si].connectionmethod.how = how_direct;
+    gdata.networks[si].usenatip = 0;
+    gdata.networks[si].getip_net = -1;
+    gdata.networks[si].need_voice = -1;
+    gdata.networks[si].need_level = -1;
+    gdata.networks[si].slow_privmsg = 1;
+    gdata.networks[si].restrictsend = -1;
+    gdata.networks[si].restrictlist = -1;
+  } /* networks */
+  gdata.networks_online = 0;
+  for (aq = irlist_get_head(&gdata.autoqueue);
+       aq;
+       aq = irlist_delete(&gdata.autoqueue, aq)) {
+    mydelete(aq->word);
+    mydelete(aq->message);
+  }
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu;
+       tu = irlist_delete(&gdata.tuploadhost, tu)) {
+    mydelete(tu->u_host);
+  }
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_delete(&gdata.quploadhost, qu)) {
+    mydelete(qu->q_host);
+    mydelete(qu->q_nick);
+    mydelete(qu->q_pack);
+  }
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_delete(&gdata.group_admin, ga)) {
+    mydelete(ga->g_host);
+    mydelete(ga->g_pass);
+    mydelete(ga->g_groups);
+    mydelete(ga->g_uploaddir);
+  }
+  for (mime = irlist_get_head(&gdata.mime_type);
+       mime;
+       mime = irlist_delete(&gdata.mime_type, mime)) {
+    mydelete(mime->m_ext);
+  }
+  for (ag = irlist_get_head(&gdata.autoadd_group_match);
+       ag;
+       ag = irlist_delete(&gdata.autoadd_group_match, ag)) {
+    mydelete(ag->a_group);
+    mydelete(ag->a_pattern);
+  }
+  for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++) {
+    gdata.transferlimits[ii].limit = 0;
+  }
+  mydelete(gdata.periodicmsg_nick);
+  mydelete(gdata.periodicmsg_msg);
+  mydelete(gdata.statefile);
+  /* int */
+  gdata.overallmaxspeeddaydays = 0x7F; /* all days */
+  gdata.logrotate = 0;
+  gdata.periodicmsg_time = 0;
+  gdata.slotsmax = 0;
+  gdata.overallmaxspeeddaytimestart = 0;
+  gdata.overallmaxspeeddaytimeend = 0;
+  /* 64bit */
+  gdata.disk_quota = 0;
+  gdata.uploadmaxsize = 0;
+  gdata.uploadminspace = 0;
+  /* float */
+  gdata.transferminspeed = gdata.transfermaxspeed = 0.0;
+}
+
+
 static void parse_config_line(char **part)
 {
   if (current_bracket == 0) {
@@ -1721,6 +1867,16 @@ void config_dump(void)
   dump_config_int();
   dump_config_string();
   dump_config_list();
+}
+
+/* reset config to default values */
+void config_reset(void)
+{
+  reset_config_bool();
+  reset_config_int();
+  reset_config_string();
+  reset_config_list();
+  reset_config_func();
 }
 
 /* check all tables are sorted for fast access */

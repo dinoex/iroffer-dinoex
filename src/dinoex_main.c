@@ -20,8 +20,8 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_http.h"
-#if 0
 #include "dinoex_config.h"
+#if 0
 #include "dinoex_transfer.h"
 #include "dinoex_geoip.h"
 #include "dinoex_ssl.h"
@@ -387,7 +387,7 @@ static void debug_memory(void)
   signal(SIGSEGV, SIG_DFL);
   free_state();
   free_config();
-  reinit_config_vars();
+  config_reset();
 
   for (j=1; j<(MEMINFOHASHSIZE * gdata.meminfo_depth); j++) {
     mi = &(gdata.meminfo[j]);
