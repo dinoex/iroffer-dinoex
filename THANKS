@@ -620,6 +620,7 @@ Loke_AF
 
 Nouhime
 	reporting "http_search" bug.
+	reporting "http_port" groups with "&".
 
 Eomyn
 	suggesting "http_index"
