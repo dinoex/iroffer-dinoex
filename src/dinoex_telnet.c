@@ -33,7 +33,7 @@ void telnet_close_listen(void)
 {
   int i;
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     if (telnet_listen[i] != FD_UNUSED) {
       FD_CLR(telnet_listen[i], &gdata.readset);
       close(telnet_listen[i]);
@@ -76,7 +76,7 @@ int telnet_setup_listen(void)
 
   updatecontext();
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     telnet_listen[i] = FD_UNUSED;
     telnet_family[i] = 0;
   }
@@ -84,7 +84,7 @@ int telnet_setup_listen(void)
   if (gdata.telnet_port == 0)
     return 1;
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     rc += telnet_open_listen(i);
   }
   return rc;
@@ -104,7 +104,7 @@ int telnet_select_fdset(int highests)
 {
   int i;
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     if (telnet_listen[i] != FD_UNUSED) {
       FD_SET(telnet_listen[i], &gdata.readset);
       highests = max2(highests, telnet_listen[i]);
@@ -150,7 +150,7 @@ static void telnet_accept(int i)
     return;
   }
 
-  gdata.num_dccchats++;
+  ++(gdata.num_dccchats);
   chat->status = DCCCHAT_AUTHENTICATING;
   chat->net = 0;
   chat->nick = mystrdup("telnet");
@@ -186,7 +186,7 @@ void telnet_perform(void)
 {
   int i;
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     if (telnet_listen[i] != FD_UNUSED) {
       if (FD_ISSET(telnet_listen[i], &gdata.readset)) {
         telnet_accept(i);

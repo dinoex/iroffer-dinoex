@@ -148,7 +148,7 @@ int get_network(const char *arg1)
     return --net;
 
   /* text */
-  for (net=0; net<gdata.networks_online; net++) {
+  for (net=0; net<gdata.networks_online; ++net) {
     if (gdata.networks[net].name == NULL)
       continue;
     if (strcasecmp(gdata.networks[net].name, arg1) == 0)
@@ -229,7 +229,7 @@ int reorder_new_groupdesc(const char *group, const char *desc)
     if (strcasecmp(xd->group, group) != 0)
       continue;
 
-    k++;
+    ++k;
     /* delete all matching entires */
     if (xd->group_desc != NULL)
       mydelete(xd->group_desc);
@@ -265,7 +265,7 @@ static int reorder_groupdesc(const char *group)
     if (strcasecmp(xd->group, group) != 0)
       continue;
 
-    k++;
+    ++k;
     if (xd->group_desc != NULL) {
       if (descxd == NULL) {
         descxd = xd;
@@ -312,7 +312,7 @@ int add_default_groupdesc(const char *group)
     if (strcasecmp(xd->group, group) != 0)
       continue;
 
-    k++;
+    ++k;
     /* descriptions alreaay there */
     if (xd->group_desc != NULL)
       return 0;
@@ -343,7 +343,7 @@ static char *file_without_numbers(const char *s)
   /* ignore path */
   x = strrchr(s, '/');
   if (x != NULL)
-    x ++;
+    ++x;
   else
     x = s;
 
@@ -386,7 +386,7 @@ static char *file_without_numbers(const char *s)
     if (ch == 0)
        break;
     if (isalpha(ch))
-       w++;
+       ++w;
   }
   return d;
 }
@@ -549,7 +549,7 @@ int get_pack_nr(const userinput * const u, const char *arg)
   if (!arg || (arg[0] == 0))
     return 0;
 
-  if (arg[0] == '#') arg++;
+  if (arg[0] == '#') ++arg;
   num = atoi(arg);
   if (invalid_pack(u, num) != 0)
     return -1;
@@ -645,7 +645,7 @@ static int queue_host_remove(const userinput * const u, irlist_t *list, const ch
     mydelete(pq->nick);
     mydelete(pq->hostname);
     pq = irlist_delete(list, pq);
-    changed ++;
+    ++changed;
   }
 
   return changed;
@@ -678,7 +678,7 @@ static int queue_nick_remove(const userinput * const u, irlist_t *list, int netw
     mydelete(pq->nick);
     mydelete(pq->hostname);
     pq = irlist_delete(list, pq);
-    changed ++;
+    ++changed;
   }
 
   return changed;
@@ -760,7 +760,7 @@ void a_remove_delayed(const userinput * const u)
   st = (struct stat *)(u->arg2);
   n = 0;
   for (xd = irlist_get_head(&gdata.xdccs); xd; ) {
-    n++;
+    ++n;
     if ((xd->st_dev == st->st_dev) &&
         (xd->st_ino == st->st_ino)) {
       gnetwork = &(gdata.networks[u->net]);
@@ -871,12 +871,12 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
     case '-':
       xd3 = xd2;
       xd4 = xd1;
-      k ++;
+      ++k;
       continue;
     case '+':
       xd3 = xd1;
       xd4 = xd2;
-      k ++;
+      ++k;
       break;
     case 'D':
     case 'd':
@@ -927,7 +927,7 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
       break;
     xd3 = xd1;
     xd4 = xd2;
-    k ++;
+    ++k;
   }
   return rc;
 }
@@ -944,7 +944,7 @@ static void a_sort_insert(xdcc *xdo, const char *k)
   for (xdn = irlist_get_head(&gdata.xdccs);
        xdn;
        xdn = irlist_get_next(xdn)) {
-    n++;
+    ++n;
     if (a_sort_cmp(k, xdo, xdn) < 0)
       break;
     xdl = xdn;
@@ -1305,7 +1305,7 @@ void a_xdlock(const userinput * const u)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    i++;
+    ++i;
     if (xd->lock == NULL)
       continue;
 
@@ -1334,7 +1334,7 @@ void a_xdtrigger(const userinput * const u)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    i++;
+    ++i;
     if (xd->trigger == NULL)
       continue;
 
@@ -1375,12 +1375,12 @@ void a_find(const userinput * const u)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    i++;
+    ++i;
     if (group_hidden(u, xd))
       continue;
 
     if (fnmatch_xdcc(match, xd)) {
-      k++;
+      ++k;
       u_xdl_pack(u, tempstr, i, l, s, xd);
       /* limit matches */
       if ((gdata.max_find != 0) && (k >= gdata.max_find))
@@ -1409,7 +1409,7 @@ static void a_qul2(const userinput * const u, irlist_t *list)
   for (pq = irlist_get_head(list);
        pq;
        pq = irlist_get_next(pq)) {
-    i++;
+    ++i;
     rtime = get_next_transfer_time();
     add_new_transfer_time(pq->xpack);
     if (rtime < 359999U) {
@@ -1731,7 +1731,7 @@ void a_remove(const userinput * const u)
   if (num2 <= 0)
     return;
 
-  for (; num2 >= num1; num2--) {
+  for (; num2 >= num1; --num2) {
     xd = irlist_get_nth(&gdata.xdccs, num2-1);
     if (group_restricted(u, xd))
       return;
@@ -1810,7 +1810,7 @@ void a_removegroup(const userinput * const u)
   n = 0;
   xd = irlist_get_head(&gdata.xdccs);
   while(xd) {
-    n++;
+    ++n;
     if (xd->group != NULL) {
       if (strcasecmp(xd->group, u->arg1) == 0) {
         if (a_remove_pack(u, xd, n) == 0) {
@@ -1881,10 +1881,10 @@ void a_renumber3(const userinput * const u)
     a_renumber1(u, oldp, newp);
 
     if (oldp > newp) {
-      oldp++;
-      newp++;
+      ++oldp;
+      ++newp;
     } else {
-      endp--;
+      --endp;
     }
   }
 
@@ -2270,10 +2270,10 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
       for (xd = irlist_get_head(&gdata.xdccs);
            xd;
            xd = irlist_get_next(xd)) {
-        num ++;
+        ++num;
         if ((xd->st_dev == st.st_dev) &&
             (xd->st_ino == st.st_ino)) {
-          foundit ++;
+          ++foundit;
           a_set_group(u, xd, num, group);
           break;
         }
@@ -2515,7 +2515,7 @@ void a_deltrigger(const userinput * const u)
     return;
 
   dirty = 0;
-  for (; num1 <= num2; num1++) {
+  for (; num1 <= num2; ++num1) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
     if (group_restricted(u, xd))
       return;
@@ -2523,7 +2523,7 @@ void a_deltrigger(const userinput * const u)
     if (xd->trigger == NULL)
       continue;
 
-    dirty ++;
+    ++dirty;
     mydelete(xd->trigger);
     a_respond(u, "TRIGGER: [Pack %i] removed", num1);
   }
@@ -2576,7 +2576,7 @@ void a_chcolor(const userinput * const u)
     color_fg = atoi(last);
     color |= color_fg;
   }
-  for (; num1 <= num2; num1++) {
+  for (; num1 <= num2; ++num1) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
     if (group_restricted(u, xd))
       return;
@@ -2614,7 +2614,7 @@ void a_lock(const userinput * const u)
   if (invalid_pwd(u, pass) != 0)
     return;
 
-  for (; num1 <= num2; num1++) {
+  for (; num1 <= num2; ++num1) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
     if (group_restricted(u, xd))
       return;
@@ -2643,7 +2643,7 @@ void a_unlock(const userinput * const u)
   if (num2 <= 0)
     return;
 
-  for (; num1 <= num2; num1++) {
+  for (; num1 <= num2; ++num1) {
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
     if (group_restricted(u, xd))
       return;
@@ -2674,7 +2674,7 @@ void a_lockgroup(const userinput * const u)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    n++;
+    ++n;
     if (xd->group == NULL)
       continue;
 
@@ -2702,7 +2702,7 @@ void a_unlockgroup(const userinput * const u)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    n++;
+    ++n;
     if (xd->group == NULL)
       continue;
 
@@ -2733,7 +2733,7 @@ void a_relock(const userinput * const u)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    n++;
+    ++n;
     if (xd->lock == NULL)
       continue;
 
@@ -2824,7 +2824,7 @@ void a_movegroup(const userinput * const u)
       caps(u->arg3);
   }
 
-  for (num = num1; num <= num2; num ++) {
+  for (num = num1; num <= num2; ++num) {
     xd = irlist_get_nth(&gdata.xdccs, num-1);
     if (group_restricted(u, xd))
       return;
@@ -2865,7 +2865,7 @@ void a_regroup(const userinput * const u)
     else
       g = "main";
     if (strcasecmp(g, u->arg1) == 0) {
-      k++;
+      ++k;
       if (xd->group != NULL)
         mydelete(xd->group);
       if (not_main)
@@ -2911,7 +2911,7 @@ void a_md5(const userinput * const u)
   if (bis <= 0)
     return;
 
-  for (num = von; num <= bis; num++) {
+  for (num = von; num <= bis; ++num) {
     xd = irlist_get_nth(&gdata.xdccs, num-1);
     if (group_restricted(u, xd))
       return;
@@ -2944,7 +2944,7 @@ void a_crc(const userinput * const u)
     if (bis <= 0)
       return;
 
-    for (num = von; num <= bis; num++) {
+    for (num = von; num <= bis; ++num) {
       xd = irlist_get_nth(&gdata.xdccs, num-1);
       if (group_restricted(u, xd))
         return;
@@ -2963,7 +2963,7 @@ void a_crc(const userinput * const u)
     if (group_hidden(u, xd))
       continue;
 
-    num ++;
+    ++num;
     crcmsg = validate_crc32(xd, 1);
     if (crcmsg != NULL)
       a_respond(u, "[CRC32 Pack %d]: File '%s' %s.", num, xd->file, crcmsg);
@@ -3293,7 +3293,7 @@ void a_movegroupdir(const userinput * const u)
     else
       g = "main";
     if (strcasecmp(g, u->arg1) == 0) {
-      foundit++;
+      ++foundit;
       snprintf(tempstr, maxtextlength - 2, "%s/%s", thedir, getfilename(xd->file));
       if (strcmp(tempstr, xd->file) != 0) {
         if (a_movefile_sub(u, xd, tempstr))
@@ -3345,7 +3345,7 @@ void a_fileremove(const userinput * const u)
   if (num2 <= 0)
     return;
 
-  for (; num2 >= num1; num2--) {
+  for (; num2 >= num1; --num2) {
     xd = irlist_get_nth(&gdata.xdccs, num2-1);
     if (group_restricted(u, xd))
       return;
@@ -3486,7 +3486,7 @@ void a_amsg(const userinput * const u)
     return;
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     if (gnetwork->noannounce == 0)
       a_announce_channels(u->arg1e, NULL, NULL);
@@ -3600,7 +3600,7 @@ void a_mesq(const userinput * const u)
        pq = irlist_get_next(pq)) {
     gnetwork = &(gdata.networks[pq->net]);
     notice(pq->nick, "MESSAGE FROM OWNER: %s", u->arg1e);
-    count++;
+    ++count;
   }
   gnetwork = backup;
   a_respond(u, "Sent message to %i %s", count, count!=1 ? "users" : "user");
@@ -3903,7 +3903,7 @@ void a_lag(const userinput * const u)
 
   backup = gnetwork;
   if (u->arg1 == NULL) {
-    for (ss=0; ss<gdata.networks_online; ss++) {
+    for (ss=0; ss<gdata.networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
       a_lag_net(u);
     }
@@ -3947,7 +3947,7 @@ void a_hop(const userinput * const u)
 
   backup = gnetwork;
   if (u->arg2 == NULL) {
-    for (ss=0; ss<gdata.networks_online; ss++) {
+    for (ss=0; ss<gdata.networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
       a_hop_net(u, u->arg1);
     }
@@ -3970,7 +3970,7 @@ void a_nochannel(const userinput * const u)
   if (u->arg1) val = atoi(u->arg1);
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     /* part channels */
     for (ch = irlist_get_head(&(gnetwork->channels));
@@ -4067,7 +4067,7 @@ void a_servqc(const userinput * const u)
   updatecontext();
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     a_respond(u, "Cleared server queue of %d lines",
               irlist_size(&gdata.networks[ss].serverq_channel) +
               irlist_size(&gdata.networks[ss].serverq_fast) +
@@ -4187,7 +4187,7 @@ void a_holdqueue(const userinput * const u)
   if (val != 0)
     return;
 
-  for (i=0; i<100; i++) {
+  for (i=0; i<100; ++i) {
     if (!gdata.exiting &&
         irlist_size(&gdata.mainqueue) &&
         (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax))) {
@@ -4240,7 +4240,7 @@ void a_autogroup(const userinput * const u)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    num ++;
+    ++num;
     if (xd->group != NULL)
       continue;
 
@@ -4258,7 +4258,7 @@ void a_autogroup(const userinput * const u)
       continue;
     }
 
-    newgroup ++;
+    ++newgroup;
     if (strlen(newgroup) == 0) {
       mydelete(tempstr);
       continue;
@@ -4407,13 +4407,13 @@ static int a_iqueue_group(const userinput * const u, const char *what, int net)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    num ++;
+    ++num;
     if (xd->group == NULL)
       continue;
     if (strcasecmp(what, xd->group) != 0)
       continue;
 
-    found ++;
+    ++found;
     a_iqueue_sub(u, xd, num, net);
   }
   return found;
@@ -4434,18 +4434,18 @@ static int a_iqueue_search(const userinput * const u, const char *what, int net)
   updatecontext();
 
   /* range */
-  if (*what == '#') what ++;
+  if (*what == '#') ++what;
   end = strchr(what, '-');
   if (end == NULL) {
-    found ++;
+    ++found;
     a_iqueue_sub(u, NULL, first, net);
     return found;
   }
   first = atoi(what);
-  if (*(++end) == '#') end ++;
+  if (*(++end) == '#') ++end;
   last = atoi(end);
-  for (num = first; num <= last; num ++) {
-    found ++;
+  for (num = first; num <= last; ++num) {
+    ++found;
     a_iqueue_sub(u, NULL, num, net);
   }
   return found;
@@ -4521,7 +4521,7 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
   snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s", msg, tempstr3);
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
              tempstr2, get_user_nick(), num);
@@ -4554,7 +4554,7 @@ static void a_announce_sub(const userinput * const u, const char *arg1, const ch
   if (msg != NULL)
     clean_quotes(msg);
 
-  for (; num1 <= num2; num1++) {
+  for (; num1 <= num2; ++num1) {
     a_announce_msg(u, NULL, num1, msg);
   }
 }
@@ -4586,7 +4586,7 @@ static int a_new_announce(int max)
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
 
   memset(&list, 0, sizeof(irlist_t));
-  for (i=0; i<max; i++)
+  for (i=0; i<max; ++i)
     add_newest_xdcc(&list, NULL);
 
   i = 0;
@@ -4609,7 +4609,7 @@ static int a_new_announce(int max)
     a_announce_channels(tempstr3, NULL, xd->group);
     mydelete(tempstr3);
     mydelete(tempstr);
-    i++;
+    ++i;
   }
   return i;
 }
@@ -4627,7 +4627,7 @@ void a_newann(const userinput * const u)
     return;
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     if (gnetwork->noannounce == 0)
       a_new_announce(max);
@@ -4672,7 +4672,7 @@ void a_sannounce(const userinput * const u)
   if (num2 <= 0)
     return;
 
-  for (; num1 <= num2; num1++) {
+  for (; num1 <= num2; ++num1) {
     a_respond(u, "Pack Info for Pack #%i:", num1);
     xd = irlist_get_nth(&gdata.xdccs, num1-1);
     if (group_restricted(u, xd))
@@ -4687,7 +4687,7 @@ void a_sannounce(const userinput * const u)
     snprintf(tempstr, maxtextlength-2, "\2%i\2%s", num1, tempstr3);
 
     backup = gnetwork;
-    for (ss=0; ss<gdata.networks_online; ss++) {
+    for (ss=0; ss<gdata.networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
       if (gnetwork->noannounce == 0)
         a_announce_channels(tempstr, NULL, xd->group);

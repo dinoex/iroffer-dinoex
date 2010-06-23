@@ -80,7 +80,7 @@ static void iroffer_ruby_errro(int error)
 
   if (!NIL_P(rb_errinfo())) {
     ary = rb_funcall(rb_errinfo(), rb_intern("backtrace"), 0);
-    for (c=0; c<RARRAY_LEN(ary); c++) {
+    for (c=0; c<RARRAY_LEN(ary); ++c) {
       outerror(OUTERROR_TYPE_WARN_LOUD,
                "backtrace from %s",
                RSTRING_PTR(RARRAY_PTR(ary)[c]));
@@ -108,7 +108,7 @@ static VALUE rb_funcall_protected(VALUE recvobj, ID mid, int argc, ...)
   if (argc > 0) {
     argv = ALLOCA_N(VALUE, argc);
     va_start(ap, argc);
-    for (i = 0; i < argc; i++) {
+    for (i = 0; i < argc; ++i) {
       argv[i] = va_arg(ap, VALUE);
     }
     va_end(ap);

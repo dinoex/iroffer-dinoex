@@ -363,7 +363,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, int pack, const c
        tr = irlist_get_next(tr)) {
     if (strcmp(tr->hostname, pi->hostname) != 0)
       continue;
-    usertrans++;
+    ++usertrans;
     if (xd == tr->xpack) {
       notice(pi->nick, "** You already requested that pack");
       *bad = "Denied (dup)";
@@ -440,13 +440,13 @@ static int send_batch_group(privmsginput *pi, const char *what, const char *pwd)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    num ++;
+    ++num;
     if (xd->group == NULL)
       continue;
     if (strcasecmp(what, xd->group) != 0)
       continue;
 
-    found ++;
+    ++found;
     if (send_xdcc_file2(&bad, pi, num, NULL, pwd))
       return found;
   }
@@ -469,15 +469,15 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
   updatecontext();
 
   /* range */
-  if (*what == '#') what ++;
+  if (*what == '#') ++what;
   end = strchr(what, '-');
   if (end == NULL)
     return found;
   first = atoi(what);
-  if (*(++end) == '#') end ++;
+  if (*(++end) == '#') ++end;
   last = atoi(end);
-  for (num = first; num <= last; num ++) {
-    found ++;
+  for (num = first; num <= last; ++num) {
+    ++found;
     if (send_xdcc_file2(&bad, pi, num, NULL, pwd))
       return found;
   }
@@ -511,7 +511,7 @@ static int find_pack_crc(const char *crc)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    num ++;
+    ++num;
     if (xd->has_crc32 == 0)
       continue;
 
@@ -530,11 +530,11 @@ static int packnumtonum(const char *a)
   if (!a) return 0;
 
   if (a[0] == '[') {
-    a++;
+    ++a;
     return find_pack_crc(a);
   }
   if (a[0] == '#') {
-    a++;
+    ++a;
     return atoi(a);
   }
   if (gdata.send_listfile) {
@@ -760,7 +760,7 @@ static int stoplist_queue(const char *nick, irlist_t *list)
         *(end++) = 0;
         if (strcasecmp(inick, nick) == 0) {
           if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
-            stopped ++;
+            ++stopped;
             mydelete(copy);
             item = irlist_delete(list, item);
             continue;
@@ -794,7 +794,7 @@ static int stoplist_announce(const char *nick)
         *(end++) = 0;
         if (strcasecmp(inick, nick) == 0) {
           if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
-            stopped ++;
+            ++stopped;
             mydelete(copy);
             mydelete(item->msg);
             item = irlist_delete(&(gnetwork->serverq_channel), item);
@@ -817,7 +817,7 @@ static int stoplist(const char *nick)
 
   for (item = irlist_get_head(&(gnetwork->xlistqueue)); item; ) {
     if (strcasecmp(item, nick) == 0) {
-      stopped ++;
+      ++stopped;
       item = irlist_delete(&(gnetwork->xlistqueue), item);
       continue;
     }
@@ -972,7 +972,7 @@ static void command_xdcc(privmsginput *pi)
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
-      i++;
+      ++i;
       if (hide_pack(xd))
         continue;
       if (verify_group_in_grouplist(xd->group, grouplist) == 0)
@@ -982,7 +982,7 @@ static void command_xdcc(privmsginput *pi)
         notice_slow(pi->nick, " - Pack #%i matches, \"%s\"", i, colordesc);
         if (colordesc != xd->desc)
           mydelete(colordesc);
-        k++;
+        ++k;
         /* limit matches */
         if ((gdata.max_find != 0) && (k >= gdata.max_find)) {
           notice_slow(pi->nick, "Search limit exceeded, please check the packlist for more results.");
@@ -1111,7 +1111,7 @@ static void autoqueuef(int pack, const char *message, privmsginput *pi)
 
   updatecontext();
 
-  gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+  ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
   if (message) {
     tempstr = mycalloc(strlen(message) + strlen(format) - 1);
     snprintf(tempstr, strlen(message) + strlen(format) - 1,
@@ -1163,7 +1163,7 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
 
   i = 0;
   for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd)) {
-    i++;
+    ++i;
     if (hide_pack(xd))
       continue;
 
@@ -1216,7 +1216,7 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
       mydelete(colordesc);
     len = strlen(tempstr);
     mydelete(sizestrstr);
-    k++;
+    ++k;
     /* limit matches */
     if ((gdata.max_find != 0) && (k >= gdata.max_find))
       break;
@@ -1241,7 +1241,7 @@ static void do_atfind(int min, privmsginput *pi)
     return;
 
   msg2e = getpart_eol(pi->line, 5);
-  gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+  ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
   k = convert_spaces_to_match(msg2e);
   if (k >= min) {
     k = noticeresults(pi->nick, msg2e, pi->dest);
@@ -1252,7 +1252,7 @@ static void do_atfind(int min, privmsginput *pi)
     }
   }
   mydelete(msg2e);
-  gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+  ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
 }
 
 static int run_new_trigger(const char *nick, const char *grouplist)
@@ -1271,7 +1271,7 @@ static int run_new_trigger(const char *nick, const char *grouplist)
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
 
   memset(&list, 0, sizeof(irlist_t));
-  for (i=0; i<gdata.new_trigger; i++)
+  for (i=0; i<gdata.new_trigger; ++i)
     add_newest_xdcc(&list, grouplist);
 
   i = 0;
@@ -1292,7 +1292,7 @@ static int run_new_trigger(const char *nick, const char *grouplist)
     if (colordesc != xd->desc)
       mydelete(colordesc);
     mydelete(tempstr);
-    i++;
+    ++i;
   }
   return i;
 }
@@ -1407,7 +1407,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
 
   /*----- CTCP ----- */
   if (botonly_parse(type, pi) == 0) {
-    gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+    ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
     return;
   }
 
@@ -1433,7 +1433,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
       return;
     if (pi->msg2 != NULL) {
       command_xdcc(pi);
-      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+      ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
       return;
     }
   }
@@ -1487,7 +1487,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
            gdata.creditline ? "\2)\2 " : "");
 
     mydelete(tempstr2);
-    gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+    ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
     return;
   }
 
@@ -1521,7 +1521,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
                 "!NEW (%s on %s) - %i packs.",
                 pi->hostmask, gnetwork->name, k);
       }
-      gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]++;
+      ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
       return;
     }
   }
@@ -1537,9 +1537,9 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
   exclude = 0;
   begin = pi->line + 5 + strlen(pi->hostmask) + strlen(type_list[type]) + strlen(pi->dest);
   if (verifyshell(&gdata.log_exclude_host, pi->hostmask))
-    exclude ++;
+    ++exclude;
   if (verifyshell(&gdata.log_exclude_text, begin))
-    exclude ++;
+    ++exclude;
 
   if (exclude == 0) {
     if (type == 0) {
@@ -1570,8 +1570,8 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
 static int get_nick_hostname(char *nick, char *hostname, const char *line)
 {
   if (line && *line == ':')
-    line++;
-  for (; *line && *line != '!'; line++)
+    ++line;
+  for (; *line && *line != '!'; ++line)
     *(nick++) = *line;
   *nick = 0;
   *hostname = 0;
@@ -1579,13 +1579,13 @@ static int get_nick_hostname(char *nick, char *hostname, const char *line)
   if (*line == 0)
     return 1;
 
-  for (; *line && *line != '@'; line++)
+  for (; *line && *line != '@'; ++line)
     ;
 
   if (*line == 0)
     return 1;
 
-  for (line++; *line && *line != ' '; line++)
+  for (++line; *line && *line != ' '; ++line)
     *(hostname++) = *line;
   *hostname = 0;
   return 0;
@@ -1622,7 +1622,7 @@ void privmsgparse(int type, int decoded, char *line)
 
   caps(pi.dest);
   if (pi.msg1) {
-    caps(++pi.msg1); /* point past the ":" */
+    caps(++(pi.msg1)); /* point past the ":" */
   }
 
   line_len = sstrlen(pi.hostmask);
@@ -1633,7 +1633,7 @@ void privmsgparse(int type, int decoded, char *line)
     privmsgparse2(type, decoded, &pi);
   mydelete(pi.nick);
   mydelete(pi.hostname);
-  for (m = 0; m < MAX_PRIVMSG_PARTS; m++)
+  for (m = 0; m < MAX_PRIVMSG_PARTS; ++m)
     mydelete(part[m]);
 }
 

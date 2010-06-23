@@ -39,7 +39,7 @@ static void write_statefile_raw(ir_moutput_t *bout, const void *buf, size_t nbyt
   if (saved != (ssize_t)nbytes) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Write To State File (%d != %d) %s",
              (int)saved, (int)nbytes, strerror(errno));
-    bout->error ++;
+    ++(bout->error);
   }
 }
 
@@ -77,7 +77,7 @@ static void read_statefile_unknown_tag(statefile_hdr_t *hdr, const char *tag)
   outerror(OUTERROR_TYPE_WARN,
            "Ignoring Unknown %s Tag 0x%X (len = %d)", tag, hdr->tag, hdr->length);
   /* in case of 0 bytes len we loop forever */
-  if ( hdr->length == 0 ) hdr->length ++;
+  if ( hdr->length == 0 ) ++(hdr->length);
 }
 
 static void read_statefile_bad_tag(statefile_hdr_t *hdr, const char *tag)
@@ -294,7 +294,7 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
     default:
       read_statefile_unknown_tag(ihdr, "Queue" );
       /* in case of 0 bytes len we loop forever */
-      if ( ihdr->length == 0 ) ihdr->length ++;
+      if ( ihdr->length == 0 ) ++(ihdr->length);
     }
     hdr->length -= ceiling(ihdr->length, 4);
     ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));

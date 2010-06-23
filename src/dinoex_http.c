@@ -149,7 +149,7 @@ void init_base64decode( void )
   int i;
 
   memset(base64decode, 0, sizeof(base64decode));
-  for ( i = 0; i < 64; i++) {
+  for ( i = 0; i < 64; ++i) {
     base64decode[ BASE64[ i ] ] = i;
   }
 }
@@ -202,7 +202,7 @@ static const char *html_mime(const char *file)
   if (ext == NULL)
     ext = file;
   else
-    ext++;
+    ++ext;
 
   for (mime = irlist_get_head(&gdata.mime_type);
        mime;
@@ -211,7 +211,7 @@ static const char *html_mime(const char *file)
       return mime->m_mime;
   }
 
-  for (i=0; http_magic[i].m_ext; i++) {
+  for (i=0; http_magic[i].m_ext; ++i) {
     if (strcasecmp(http_magic[i].m_ext, ext) == 0)
       break;
   }
@@ -232,7 +232,7 @@ static size_t html_encode(char *buffer, size_t max, const char *src)
     ch = *(src++);
     if (ch == 0)
       break;
-    for (i=0; http_special[i].s_ch; i++) {
+    for (i=0; http_special[i].s_ch; ++i) {
       if (ch != http_special[i].s_ch)
         continue;
       len = strlen(http_special[i].s_html);
@@ -248,12 +248,12 @@ static size_t html_encode(char *buffer, size_t max, const char *src)
     switch (ch) {
     case 0x03: /* color */
       if (!isdigit(*src)) break;
-      src++;
-      if (isdigit(*src)) src++;
+      ++src;
+      if (isdigit(*src)) ++src;
       if ((*src) != ',') break;
-      src++;
-      if (isdigit(*src)) src++;
-      if (isdigit(*src)) src++;
+      ++src;
+      if (isdigit(*src)) ++src;
+      if (isdigit(*src)) ++src;
       break;
     case 0x02: /* bold */
     case 0x0F: /* end formatting */
@@ -283,7 +283,7 @@ static ssize_t html_encode_size(const char *src)
     ch = *(src++);
     if (ch == 0)
       break;
-    for (i=0; http_special[i].s_ch; i++) {
+    for (i=0; http_special[i].s_ch; ++i) {
       if (ch != http_special[i].s_ch)
         continue;
       len += strlen(http_special[i].s_html);
@@ -294,12 +294,12 @@ static ssize_t html_encode_size(const char *src)
     switch (ch) {
     case 0x03: /* color */
       if (!isdigit(*src)) break;
-      src++;
-      if (isdigit(*src)) src++;
+      ++src;
+      if (isdigit(*src)) ++src;
       if ((*src) != ',') break;
-      src++;
-      if (isdigit(*src)) src++;
-      if (isdigit(*src)) src++;
+      ++src;
+      if (isdigit(*src)) ++src;
+      if (isdigit(*src)) ++src;
       break;
     case 0x02: /* bold */
     case 0x0F: /* end formatting */
@@ -308,7 +308,7 @@ static ssize_t html_encode_size(const char *src)
     case 0x1F: /* underline */
       break;
     default:
-      len++;
+      ++len;
     }
   }
   return len;
@@ -331,7 +331,7 @@ static size_t html_decode(char *buffer, size_t max, const char *src)
     ch = *(src++);
     if (ch == 0)
       break;
-    for (i=0; http_special[i].s_ch; i++) {
+    for (i=0; http_special[i].s_ch; ++i) {
       len = strlen(http_special[i].s_html);
       if (strncmp(code, http_special[i].s_html, len) != 0)
         continue;
@@ -352,8 +352,8 @@ static size_t html_decode(char *buffer, size_t max, const char *src)
       hex = 32;
       sscanf(src, "%2x", &hex);
       *(dest++) = hex;
-      src++;
-      src++;
+      ++src;
+      ++src;
       break;
     default:
       *(dest++) = ch;
@@ -381,12 +381,12 @@ static size_t url_encode(char *buffer, size_t max, const char *src)
     switch (ch) {
     case 0x03: /* color */
       if (!isdigit(*src)) break;
-      src++;
-      if (isdigit(*src)) src++;
+      ++src;
+      if (isdigit(*src)) ++src;
       if ((*src) != ',') break;
-      src++;
-      if (isdigit(*src)) src++;
-      if (isdigit(*src)) src++;
+      ++src;
+      if (isdigit(*src)) ++src;
+      if (isdigit(*src)) ++src;
       break;
     case 0x02: /* bold */
     case 0x0F: /* end formatting */
@@ -422,9 +422,9 @@ static ssize_t pattern_decode(char *buffer, size_t max, const char *src)
   *dest = 0;
   if (max < 3)
     return 0;
-  max--;
-  max--;
-  max--;
+  --max;
+  --max;
+  --max;
   *(dest++) = '*';
   for (;;) {
     if ((max--) == 0)
@@ -463,7 +463,7 @@ void h_close_listen(void)
 {
   int i;
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     if (http_listen[i] != FD_UNUSED) {
       FD_CLR(http_listen[i], &gdata.readset);
       close(http_listen[i]);
@@ -506,7 +506,7 @@ int h_setup_listen(void)
 
   updatecontext();
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     http_listen[i] = FD_UNUSED;
     http_family[i] = 0;
   }
@@ -514,7 +514,7 @@ int h_setup_listen(void)
   if (gdata.http_port == 0)
     return 1;
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     rc += h_open_listen(i);
   }
   return rc;
@@ -535,7 +535,7 @@ int h_select_fdset(int highests)
   http *h;
   int i;
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     if (http_listen[i] != FD_UNUSED) {
       FD_SET(http_listen[i], &gdata.readset);
       highests = max2(highests, http_listen[i]);
@@ -846,7 +846,7 @@ static int h_runruby(http * const h)
   if (params == NULL)
     params = h->url;
   else
-    params ++;
+    ++params;
   setenv("REQUEST_METHOD", "GET", 1);
   setenv("QUERY_STRING", params, 1);
 
@@ -1218,14 +1218,14 @@ static void h_html_main(http * const h)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    packs ++;
+    ++packs;
     agets += xd->gets;
     sizes += xd->st_size;
     traffic += xd->gets * xd->st_size;
     if (xd->group == NULL) {
       if (nogroup == 0) {
-        nogroup ++;
-        groups ++;
+        ++nogroup;
+        ++groups;
         snprintf(tempstr, maxtextlength,
                  "%s %s", ".", "no group");
         hg = irlist_add(&grplist, sizeof(html_group_t));
@@ -1236,7 +1236,7 @@ static void h_html_main(http * const h)
     }
     if (xd->group_desc == NULL)
       continue;
-    groups ++;
+    ++groups;
 
     snprintf(tempstr, maxtextlength,
              "%s %s", xd->group, xd->group_desc);
@@ -1262,7 +1262,7 @@ static void h_html_main(http * const h)
       if (html_filter_main(xd, hg->hg_group))
         continue;
 
-      hg->hg_packs ++;
+      ++(hg->hg_packs);
       hg->hg_agets += xd->gets;
       hg->hg_sizes += xd->st_size;
       if (h->traffic)
@@ -1384,7 +1384,7 @@ static void h_html_file(http * const h)
     if (h_html_filter_group(h, xd))
       continue;
 
-    packs ++;
+    ++packs;
     agets += xd->gets;
     sizes += xd->st_size;
     traffic += xd->gets * xd->st_size;
@@ -1836,7 +1836,7 @@ static char *h_read_http(http * const h)
   h->bytesgot = 0;
   gdata.sendbuff[0] = 0;
   howmuch2 = BUFFERSIZE;
-  for (i=0; i<MAXTXPERLOOP; i++) {
+  for (i=0; i<MAXTXPERLOOP; ++i) {
     if (h->bytesgot >= BUFFERSIZE - 1)
       break;
     if (!is_fd_readable(h->con.clientsocket))
@@ -2015,7 +2015,7 @@ static void h_get(http * const h)
       continue;
 
     while (hval[0] == ' ')
-      hval++;
+      ++hval;
 
     if (strcmp(data, "If-Modified-Since") == 0) {
       h->modified = mystrdup(hval);
@@ -2146,7 +2146,7 @@ void h_perform(int changesec)
   http *h;
   int i;
 
-  for (i=0; i<MAX_VHOSTS; i++) {
+  for (i=0; i<MAX_VHOSTS; ++i) {
     if (http_listen[i] != FD_UNUSED) {
       if (FD_ISSET(http_listen[i], &gdata.readset)) {
         h_accept(i);

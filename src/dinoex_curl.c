@@ -124,7 +124,7 @@ int fetch_cancel(int num)
     if ( cms != 0 ) {
       outerror(OUTERROR_TYPE_WARN_LOUD, "curl_multi_remove_handle() = %d", cms);
     }
-    fetch_started --;
+    --fetch_started;
     ft = clean_fetch(ft);
     return 0;
   }
@@ -173,8 +173,8 @@ void fetch_perform(void)
           a_respond(&(ft->u), "fetch %s completed", ft->name);
         }
         updatecontext();
-        seen ++;
-        fetch_started --;
+        ++seen;
+        --fetch_started;
         ft = clean_fetch(ft);
         continue;
       }
@@ -313,7 +313,7 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
 
   name = u->arg1;
   url = u->arg2e;
-  while (*url == ' ') url ++;
+  while (*url == ' ') ++url;
 
   resumesize = 0;
   fullfile = mystrjoin(uploaddir, name, '/');
@@ -362,7 +362,7 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
   }
 
   a_respond(u, "fetch %s started", ft->name);
-  fetch_started ++;
+  ++fetch_started;
 }
 
 /* show running transfers */

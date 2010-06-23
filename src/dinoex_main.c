@@ -35,7 +35,7 @@
 #include "dinoex_main.h"
 #include "dinoex_misc.h"
 
-#define GET_NEXT_DATA(x)	{ argv++; argc--; x = *argv; \
+#define GET_NEXT_DATA(x)	{ ++argv; --argc; x = *argv; \
 				if (x == NULL) usage(); }
 
 gnetwork_t *gnetwork;
@@ -109,7 +109,7 @@ void command_options(int argc, char *const *argv)
         createpassword();
         exit(0);
       case 'd': /* increase debug */
-        gdata.debug++;
+        ++(gdata.debug);
         break;
       case 'i': /* import xdccfile */
         GET_NEXT_DATA(cptr);
@@ -241,7 +241,7 @@ static void free_state(void)
      mydelete(xd->trigger);
   }
 
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     mydelete(gnetwork->curserveractualname);
     mydelete(gnetwork->user_nick);
@@ -366,12 +366,12 @@ static void free_config(void)
 
   mydelete(gdata.nosendmsg);
   mydelete(gdata.r_pidfile);
-  for (si=0; si<MAX_NETWORKS; si++) {
+  for (si=0; si<MAX_NETWORKS; ++si) {
     mydelete(gdata.networks[si].curserver.hostname);
     mydelete(gdata.networks[si].curserver.password);
     mydelete(gdata.networks[si].curserveractualname);
   } /* networks */
-  for (si=0; si<MAXCONFIG; si++)
+  for (si=0; si<MAXCONFIG; ++si)
     mydelete(gdata.configfile[si]);
 }
 
@@ -389,11 +389,11 @@ static void debug_memory(void)
   free_config();
   config_reset();
 
-  for (j=1; j<(MEMINFOHASHSIZE * gdata.meminfo_depth); j++) {
+  for (j=1; j<(MEMINFOHASHSIZE * gdata.meminfo_depth); ++j) {
     mi = &(gdata.meminfo[j]);
     ut = mi->ptr;
     if (ut != NULL) {
-      leak ++;
+      ++leak;
       outerror(OUTERROR_TYPE_WARN_LOUD, "Pointer 0x%8.8lX not free", (long)ut);
       outerror(OUTERROR_TYPE_WARN_LOUD, "alloctime = %ld", (long)(mi->alloctime));
       outerror(OUTERROR_TYPE_WARN_LOUD, "size      = %ld", (long)(mi->size));

@@ -72,7 +72,7 @@ char *mystrjoin(const char *str1, const char *str2, int delimiter)
   len1 = strlen(str1);
   max = len1 + strlen(str2) + 1;
   if ((delimiter != 0 ) && (str1[len1] != delimiter))
-    max ++;
+    ++max;
 #ifndef WITHOUT_MEMSAVE
   copy = (char *)mymalloc2(max, 0, src_function, src_file, src_line);
 #else /* WITHOUT_MEMSAVE */
@@ -159,16 +159,16 @@ void checkadminpass2(const char *masterpass)
 
   updatecontext();
 
-  if (!masterpass || strlen(masterpass) < 13U) err++;
+  if (!masterpass || strlen(masterpass) < 13U) ++err;
 
-  for (i=0; !err && i<strlen(masterpass); i++) {
+  for (i=0; !err && i<strlen(masterpass); ++i) {
     if (!((masterpass[i] >= 'a' && masterpass[i] <= 'z') ||
           (masterpass[i] >= 'A' && masterpass[i] <= 'Z') ||
           (masterpass[i] >= '0' && masterpass[i] <= '9') ||
           (masterpass[i] == '.') ||
           (masterpass[i] == '$') ||
           (masterpass[i] == '/')))
-      err++;
+      ++err;
   }
 
   if (err) outerror(OUTERROR_TYPE_CRASH, "adminpass is not encrypted!");
@@ -193,7 +193,7 @@ char *clean_quotes(char *str)
   for (dest = str; *src; ) {
     *(dest++) = *(src++);
   }
-  *(dest++) = 0;
+  *dest = 0;
   return str;
 }
 
@@ -201,7 +201,7 @@ static void replace_char(char *str, int ch1, int ch2)
 {
   char *work;
 
-  for (work=str; *work; work++) {
+  for (work=str; *work; ++work) {
     if (*work == ch1)
       *work = ch2;
   }
@@ -302,16 +302,16 @@ char *hostmask_to_fnmatch(const char *str)
   if (!str) return NULL;
 
   maxlen = 0;
-  for (src=str; *src; src++, maxlen++) {
+  for (src=str; *src; ++src, ++maxlen) {
     if (*src == '#') {
       maxlen += 10;
       continue;
     }
     if ( (*src == '[') || (*src == ']') )
-      maxlen ++;
+      ++maxlen;
   }
   base = (char *)mycalloc(maxlen + 1);
-  for (src=str, dest=base; *src; src++) {
+  for (src=str, dest=base; *src; ++src) {
     if (*src == '#') {
       *(dest++) = '[';
       *(dest++) = '0';
@@ -352,7 +352,7 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
   /* case insensitive token search */
   /* delimiters: space or coma */
   sptr = group;
-  for (tlptr = grouplist; *tlptr; tlptr++) {
+  for (tlptr = grouplist; *tlptr; ++tlptr) {
     if ((*tlptr == ' ') || (*tlptr == ',')) {
       sptr = group; /* end of token, reset search */
       continue;
@@ -365,7 +365,7 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
       continue;
     }
 
-    sptr++;
+    ++sptr;
     if (*sptr != 0)
       continue;
 
@@ -397,7 +397,7 @@ char *sizestr(int spaces, off_t num)
   }
   /* KB */
   val = (float)num;
-  for (i = 0; size_units[i]; i++) {
+  for (i = 0; size_units[i]; ++i) {
     val /= 1024.0;
     if ((i > 0) && (val < 9.5)) {
       snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1f%c" : "%.1f%c", val, size_units[i]);
@@ -440,7 +440,7 @@ char *removenonprintable(char *str)
   unsigned char *copy;
 
   if (str != NULL) {
-    for (copy=(unsigned char *)str; *copy != 0; copy++) {
+    for (copy=(unsigned char *)str; *copy != 0; ++copy) {
       if (*copy == 0x7FU) {
         *copy = '.';
         continue;
@@ -476,7 +476,7 @@ char *removenonprintablectrl(char *str)
   unsigned char *copy;
 
   if (str != NULL) {
-    for (copy=(unsigned char *)str; *copy != 0; copy++) {
+    for (copy=(unsigned char *)str; *copy != 0; ++copy) {
       if (*copy == 0x7FU) {
         *copy = ' ';
         continue;
@@ -497,9 +497,7 @@ char *removenonprintablefile(char *str)
   if (!str)
     return NULL;
 
-  for (copy = (unsigned char*)str;
-       *copy != 0;
-       copy++) {
+  for (copy = (unsigned char*)str; *copy != 0; ++copy) {
     if (*copy == 0x03U) { /* color */
       if (!isdigit(copy[1])) continue;
       copy++;
@@ -550,9 +548,7 @@ char *caps(char *str)
   if (!str)
     return NULL;
 
-  for (copy = (unsigned char*)str;
-       *copy != 0;
-       copy++) {
+  for (copy = (unsigned char*)str; *copy != 0; ++copy) {
     if ( islower( *copy ) )
       *copy = toupper( *copy );
   }
@@ -568,14 +564,14 @@ int max_minutes_waits(time_t *endtime, int min)
     *endtime = 0x7FFFFFFF;
     min = (*endtime - gdata.curtime)/60;
   }
-  (*endtime)--;
+  --(*endtime);
   return min;
 }
 
 static void clean_missing_parts(char **result, int part, int howmany)
 {
   int i;
-  for (i = part; i < howmany; i++)
+  for (i = part; i < howmany; ++i)
     result[i] = NULL;
 }
 
@@ -610,33 +606,33 @@ int get_argv(char **result, const char *line, int howmany)
   part = 0;
 
   start = line;
-  for (src = start; ; src++) {
+  for (src = start; ; ++src) {
     if ((*src == ' ') && (inquotes != 0))
       continue;
     if (*src == '"') {
       if ((start == src) && (inquotes == 0)) {
-        inquotes ++;
+        ++inquotes;
         continue;
       }
       if (inquotes == 0)
         continue;
-      inquotes --;
+      --inquotes;
       if (part + 1 == howmany) {
-        morequote ++;
+        ++morequote;
         continue;
       }
-      start ++;
+      ++start;
     } else {
       if (*src) {
         if (*src != ' ')
           continue;
         if (src == start) {
           /* skip leading spaces */
-          start ++;
+          ++start;
           continue;
         }
         if (part + 1 == howmany) {
-          moreargs ++;
+          ++moreargs;
           continue;
         }
       }
@@ -646,7 +642,7 @@ int get_argv(char **result, const char *line, int howmany)
       continue;
 
     if (*src == '"')
-      src ++;
+      ++src;
 
     /* found end */
 #ifndef WITHOUT_MEMSAVE
@@ -694,25 +690,25 @@ char *getpart(const char *line, int howmany)
   part = 0;
 
   start = line;
-  for (src = start; ; src++) {
+  for (src = start; ; ++src) {
     if ((*src == ' ') && (inquotes != 0))
       continue;
     if (*src == '"') {
       if ((start == src) && (inquotes == 0)) {
-        inquotes ++;
+        ++inquotes;
         continue;
       }
       if (inquotes == 0)
         continue;
-      inquotes --;
-      start ++;
+      --inquotes;
+      ++start;
     } else {
       if (*src) {
         if (*src != ' ')
           continue;
         if (src == start) {
           /* skip leading spaces */
-          start ++;
+          ++start;
           continue;
         }
       }
@@ -765,33 +761,33 @@ char *getpart_eol(const char *line, int howmany)
   part = 0;
 
   start = line;
-  for (src = start; ; src++) {
+  for (src = start; ; ++src) {
     if ((*src == ' ') && (inquotes != 0))
       continue;
     if (*src == '"') {
       if ((start == src) && (inquotes == 0)) {
-        inquotes ++;
+        ++inquotes;
         continue;
       }
       if (inquotes == 0)
         continue;
-      inquotes --;
+      --inquotes;
       if (part + 1 == howmany) {
-        morequote ++;
+        ++morequote;
         continue;
       }
-      start ++;
+      ++start;
     } else {
       if (*src) {
         if (*src != ' ')
           continue;
         if (src == start) {
           /* skip leading spaces */
-          start ++;
+          ++start;
           continue;
         }
         if (part + 1 == howmany) {
-          moreargs ++;
+          ++moreargs;
           continue;
         }
       }
@@ -821,7 +817,7 @@ int convert_spaces_to_match(char *str)
 {
   int k;
 
-  for (k = 0; *str; str++) {
+  for (k = 0; *str; ++str) {
     if (*str == ' ') *str = '*';
     if (*str == '*')
       continue;
@@ -829,7 +825,7 @@ int convert_spaces_to_match(char *str)
       continue;
     if (*str == '?')
       continue;
-    k++;
+    ++k;
   }
   return k;
 }

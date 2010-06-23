@@ -41,7 +41,7 @@ void init_fish64decode( void )
   int i;
 
   memset(fish64decode, 0, sizeof(fish64decode));
-  for ( i = 0; i < 64; i++) {
+  for ( i = 0; i < 64; ++i) {
     fish64decode[ FISH64[ i ] ] = i;
   }
 }
@@ -100,11 +100,11 @@ static char *encrypt_fish( const char *str, int len, const char *key)
     left = bytes_to_long(&str);
     right = bytes_to_long(&str);
     Blowfish_Encrypt(&ctx, &left, &right);
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < 6; ++i) {
       *(dest++) = FISH64[right & 0x3f];
       right = (right >> 6);
     }
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < 6; ++i) {
       *(dest++) = FISH64[left & 0x3f];
       left = (left >> 6);
     }
@@ -121,7 +121,7 @@ static unsigned long base64_to_long( const char **str )
   int i;
 
   result = 0L;
-  for (i = 0; i < 6; i++) {
+  for (i = 0; i < 6; ++i) {
     ch = (unsigned char)(*(*str)++);
     result |= fish64decode[ ch ] << (i * 6);
   }
@@ -159,13 +159,13 @@ static char *decrypt_fish( const char *str, int len, const char *key)
     Blowfish_Decrypt(&ctx, &left, &right);
     dest += 4;
     work = dest;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; ++i) {
       *(--work) = left & 0xff;
       left >>= 8;
     }
     dest += 4;
     work = dest;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; ++i) {
       *(--work) = right & 0xff;
       right >>= 8;
     }
@@ -596,13 +596,13 @@ void look_for_file_remove(void)
 
   p = irlist_size(&gdata.xdccs);
   m = min2(gdata.monitor_files, p);
-  for (i=0; i<m; i++) {
-    last_look_for_file_remove ++;
+  for (i=0; i<m; ++i) {
+    ++last_look_for_file_remove;
     if (last_look_for_file_remove < 0 || last_look_for_file_remove >= p)
       last_look_for_file_remove = 0;
 
     if (check_for_file_remove(last_look_for_file_remove + 1)) {
-      last_look_for_file_remove --;
+      --last_look_for_file_remove;
       return;
     }
   }
@@ -619,7 +619,7 @@ void reset_download_limits(void)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    num++;
+    ++num;
     if (xd->dlimit_max == 0)
       continue;
 
@@ -1166,7 +1166,7 @@ void import_xdccfile(void)
     r = fgets(templine, maxtextlength - 1, fin);
     if (r == NULL )
       break;
-    step ++;
+    ++step;
     l = templine + strlen(templine) - 1;
     while (( *l == '\r' ) || ( *l == '\n' ))
       *(l--) = 0;
@@ -1175,7 +1175,7 @@ void import_xdccfile(void)
       for (word = strtok(templine, " ");
            word;
            word = strtok(NULL, " ")) {
-        part ++;
+        ++part;
         switch (part) {
         case 6:
           val = atof(word);
@@ -1215,13 +1215,13 @@ void import_xdccfile(void)
     }
     word = strtok(templine, " ");
     if (word == NULL) {
-      err ++;
+      ++err;
       break;
     }
     data = strtok(NULL, "\n");
     if (strcmp(word, "xx_file") == 0) {
       if (data == NULL) {
-        err ++;
+        ++err;
         break;
       }
       xx_file = mystrdup(data);
@@ -1268,7 +1268,7 @@ void import_xdccfile(void)
         xx_trno = mystrdup(data);
       continue;
     }
-    err ++;
+    ++err;
     break;
   }
   fclose(fin);
@@ -1581,7 +1581,7 @@ static void xdcc_save_xml(void)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    num++;
+    ++num;
     if (hide_pack(xd))
       continue;
 
@@ -1602,7 +1602,7 @@ static void xdcc_save_xml(void)
     }
     write_asc_int(fd, 2, "adddate", xd->xtime ? xd->xtime : xd->mtime);
     if (xd->group != NULL) {
-      groups ++;
+      ++groups;
       write_asc_text(fd, 2, "groupname", xd->group);
     }
     if (xd->has_md5sum) {
@@ -1701,7 +1701,7 @@ static void xdcc_save_xml(void)
   write_string(fd, "  </limits>\n");
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     write_string(fd, "  <network>\n");
     write_asc_plain(fd, 4, "networkname", gdata.networks[ss].name);
     gnetwork = &(gdata.networks[ss]);
@@ -1852,7 +1852,7 @@ void a_rehash_prepare(void)
   if (gdata.local_vhost)
     r_local_vhost = mystrdup(gdata.local_vhost);
 
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gdata.networks[ss].r_needtojump = 0;
     gdata.networks[ss].r_connectionmethod = gdata.networks[ss].connectionmethod.how;
     gdata.networks[ss].r_config_nick = NULL;
@@ -1878,7 +1878,7 @@ void a_rehash_needtojump(const userinput *u)
 
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     /* keep dynamic IP */
     if (gdata.getipfromserver || gdata.getipfromupnp) {
@@ -1904,7 +1904,7 @@ void a_rehash_needtojump(const userinput *u)
   if (gdata.networks_online < gdata.r_networks_online) {
     a_respond(u, "network dropped, reconnecting");
     backup = gnetwork;
-    for (ss=gdata.networks_online; ss<gdata.r_networks_online; ss++) {
+    for (ss=gdata.networks_online; ss<gdata.r_networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
       quit_server();
       for (ch = irlist_get_head(&(gnetwork->channels));
@@ -1929,7 +1929,7 @@ void a_rehash_channels(void)
   int ss;
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
 
     /* part deleted channels, add common channels */
@@ -2008,7 +2008,7 @@ void a_rehash_jump(void)
   updatecontext();
 
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     if (gnetwork->r_needtojump == 0)
       continue;
@@ -2036,14 +2036,14 @@ void a_rehash_cleanup(const userinput *u)
     a_respond(u, "user_nick missing! keeping old nick!");
     gdata.config_nick = r_config_nick;
     r_config_nick = NULL;
-    for (ss=0; ss<gdata.networks_online; ss++) {
+    for (ss=0; ss<gdata.networks_online; ++ss) {
       mydelete(gnetwork->config_nick);
       gnetwork->config_nick = gnetwork->r_config_nick;
       mydelete(gnetwork->r_local_vhost);
     }
   } else {
     backup = gnetwork;
-    for (ss=0; ss<gdata.networks_online; ss++) {
+    for (ss=0; ss<gdata.networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
       old_nick = (gnetwork->r_config_nick) ? gnetwork->r_config_nick : r_config_nick;
       new_nick = get_config_nick();
@@ -2075,7 +2075,7 @@ void a_read_config_files(const userinput *u)
 
   current_network = 0;
   templine = mycalloc(maxtextlength);
-  for (h=0; h<MAXCONFIG && gdata.configfile[h]; h++) {
+  for (h=0; h<MAXCONFIG && gdata.configfile[h]; ++h) {
     if (u == NULL)
       printf("** Loading %s ... \n", gdata.configfile[h]);
     else
@@ -2109,14 +2109,14 @@ void a_read_config_files(const userinput *u)
       l = templine + strlen(templine) - 1;
       while (( *l == '\r' ) || ( *l == '\n' ))
         *(l--) = 0;
-      current_line ++;
+      ++current_line;
       if ((templine[0] != '#') && templine[0]) {
         getconfig_set(templine);
       }
     }
     fclose(fin);
   }
-  gdata.networks_online ++;
+  ++(gdata.networks_online);
   current_line = 0;
   mydelete(templine);
 }
