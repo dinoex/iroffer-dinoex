@@ -69,7 +69,7 @@ int number_of_pack(xdcc *pack)
   n = 0;
   xd = irlist_get_head(&gdata.xdccs);
   while(xd) {
-    n++;
+    ++n;
     if (xd == pack)
       return n;
 
@@ -114,7 +114,7 @@ int check_level(int prefix)
   }
 
   level = 0;
-  for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_symbol); ii++) {
+  for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_symbol); ++ii) {
     if (prefix == gnetwork->prefixes[ii].p_symbol) {
       /* found a nick mode */
       switch (gnetwork->prefixes[ii].p_mode) {
@@ -255,7 +255,7 @@ void guess_end_transfers(void)
     end_lastrtime = end_remain->left;
 
   /* if we are sending more than allowed, we need to skip the difference */
-  for (i=0; i<irlist_size(&gdata.trans) - gdata.slotsmax; i++) {
+  for (i=0; i<irlist_size(&gdata.trans) - gdata.slotsmax; ++i) {
     get_next_transfer_time();
   }
 }
@@ -278,7 +278,7 @@ static int notifyqueued_queue(irlist_t *list, const char *nick, const char *ntim
   for (pq = irlist_get_head(list);
        pq;
        pq = irlist_get_next(pq)) {
-    i ++;
+    ++i;
     rtime = get_next_transfer_time();
     add_new_transfer_time(pq->xpack);
 
@@ -290,7 +290,7 @@ static int notifyqueued_queue(irlist_t *list, const char *nick, const char *ntim
         continue;
     }
 
-    found ++;
+    ++found;
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
             "Notifying Queued status to %s on %s",
             pq->nick, gnetwork->name);
@@ -398,7 +398,7 @@ static void global_defaults(void)
 
   if (gdata.usenatip) {
     backup = gnetwork;
-    for (ss=0; ss<gdata.networks_online; ss++) {
+    for (ss=0; ss<gdata.networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
       if (gnetwork->usenatip != 0)
         continue;
@@ -725,7 +725,7 @@ int is_unsave_directory(const char *dir)
        word;
        word = strtok(NULL, "/")) {
     if (strcmp(word, "..") == 0) {
-      bad ++;
+      ++bad;
       break;
     }
   }
@@ -785,7 +785,7 @@ char *get_current_bandwidth(void)
   ir_uint64 xdccsent;
   int i;
 
-  for (i=0, xdccsent=0; i<XDCC_SENT_SIZE; i++) {
+  for (i=0, xdccsent=0; i<XDCC_SENT_SIZE; ++i) {
     xdccsent += (ir_uint64)gdata.xdccsent[i];
   }
   tempstr = mycalloc(maxtextlengthshort);
@@ -1058,7 +1058,7 @@ void auto_rehash(void)
   if (gdata.no_auto_rehash)
     return;
 
-  for (h=0; h<MAXCONFIG && gdata.configfile[h]; h++) {
+  for (h=0; h<MAXCONFIG && gdata.configfile[h]; ++h) {
     filedescriptor = open(gdata.configfile[h], O_RDONLY | ADDED_OPEN_FLAGS);
     if (filedescriptor < 0) {
       outerror(OUTERROR_TYPE_WARN_LOUD,

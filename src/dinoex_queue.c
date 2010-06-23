@@ -174,7 +174,7 @@ int queue_xdcc_remove(irlist_t *list, int network, const char *nick, int number)
     mydelete(pq->nick);
     mydelete(pq->hostname);
     pq = irlist_delete(list, pq);
-    changed ++;
+    ++changed;
   }
   return changed;
 }
@@ -235,9 +235,9 @@ int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const 
     if (man && strcasecmp(pq->nick, nick))
       continue;
 
-    (*inq)++;
+    ++(*inq);
     if (pq->xpack == xd)
-      alreadytrans ++;
+      ++alreadytrans;
   }
   return alreadytrans;
 }
@@ -420,7 +420,7 @@ void send_from_queue(int type, int pos, char *lastnick)
         usertrans=0;
         for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
           if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
-            usertrans++;
+            ++usertrans;
           }
         }
 
@@ -501,7 +501,7 @@ void check_idle_queue(void)
     return;
 
   pq = NULL;
-  for (pass = 0; pass < 2; pass++) {
+  for (pass = 0; pass < 2; ++pass) {
     for (pq = irlist_get_head(&gdata.idlequeue);
          pq;
          pq = irlist_get_next(pq)) {
@@ -520,7 +520,7 @@ void check_idle_queue(void)
            mq;
            mq = irlist_get_next(mq)) {
         if ((!strcmp(mq->hostname, pq->hostname)) || (!strcasecmp(mq->nick, pq->nick))) {
-          usertrans++;
+          ++usertrans;
         }
       }
 
@@ -535,7 +535,7 @@ void check_idle_queue(void)
            tr;
            tr = irlist_get_next(tr)) {
         if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
-          usertrans++;
+          ++usertrans;
         }
       }
       if (usertrans >= gdata.maxtransfersperperson)
@@ -562,7 +562,7 @@ void start_main_queue(void)
 {
   int i;
 
-  for (i=0; i<gdata.queuesize; i++) {
+  for (i=0; i<gdata.queuesize; ++i) {
     check_idle_queue();
   }
 }
@@ -572,7 +572,7 @@ void start_sends(void)
 {
   int i;
 
-  for (i=0; i<gdata.slotsmax; i++) {
+  for (i=0; i<gdata.slotsmax; ++i) {
     if (!gdata.exiting &&
         irlist_size(&gdata.mainqueue) &&
         (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax))) {

@@ -99,7 +99,7 @@ transfer *create_transfer(xdcc *xd, const char *nick, const char *hostname)
 {
   transfer *tr;
 
-  xd->file_fd_count++;
+  ++(xd->file_fd_count);
   tr = irlist_add(&gdata.trans, sizeof(transfer));
   t_initvalues(tr);
   tr->id = get_next_tr_id();
@@ -436,7 +436,7 @@ static void t_check_duplicateip(transfer *const newtr)
     if (!strcmp(tr->hostname, "man"))
       continue;
 
-    found ++;
+    ++found;
   }
 
   if (found <= gdata.maxtransfersperperson)
@@ -489,7 +489,7 @@ int verify_acknowlede(transfer *tr)
   if (tr->firstack == 0) {
     tr->halfack = tr->curack;
     tr->firstack = tr->curack;
-    show ++;
+    ++show;
     if (tr->firstack <= tr->startresume) {
       if (tr->xpack->st_size > 0xFFFFFFFFLL) {
          tr->mirc_dcc64 = 1;

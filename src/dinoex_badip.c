@@ -85,7 +85,7 @@ static void count_badip4(unsigned long remoteip)
        b;
        b = irlist_get_next(b)) {
     if (b->remoteip == remoteip) {
-      b->count ++;
+      ++(b->count);
       b->lastcontact = gdata.curtime;
       return;
     }
@@ -106,7 +106,7 @@ static void count_badip6(struct in6_addr *remoteip)
        b;
        b = irlist_get_next(b)) {
     if (memcmp(&(b->remoteip), remoteip, sizeof(struct in6_addr)) == 0) {
-      b->count ++;
+      ++(b->count);
       b->lastcontact = gdata.curtime;
       return;
     }

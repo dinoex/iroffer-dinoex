@@ -176,7 +176,7 @@ static void config_sorted_bool(void)
 {
   long i;
 
-  for (i = 0L; config_parse_bool[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_bool[i].name != NULL; ++i) {
     if (config_parse_bool[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_bool[i].name, config_parse_bool[i + 1].name) < 0)
@@ -266,7 +266,7 @@ static void dump_config_bool(void)
 {
   long i;
 
-  for (i = 0L; config_parse_bool[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_bool[i].name != NULL; ++i) {
     dump_config_int2(config_parse_bool[i].name, *(config_parse_bool[i].ivar));
   }
 }
@@ -275,7 +275,7 @@ static void reset_config_bool(void)
 {
   long i;
 
-  for (i = 0L; config_parse_bool[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_bool[i].name != NULL; ++i) {
     *(config_parse_bool[i].ivar) = config_parse_bool[i].reset;
   }
 }
@@ -335,7 +335,7 @@ static void config_sorted_int(void)
 {
   long i;
 
-  for (i = 0L; config_parse_int[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_int[i].name != NULL; ++i) {
     if (config_parse_int[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_int[i].name, config_parse_int[i + 1].name) < 0)
@@ -457,7 +457,7 @@ static void dump_config_int(void)
 {
   long i;
 
-  for (i = 0L; config_parse_int[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_int[i].name != NULL; ++i) {
     dump_config_int2(config_parse_int[i].name, *(config_parse_int[i].ivar));
   }
 }
@@ -466,7 +466,7 @@ static void reset_config_int(void)
 {
   long i;
 
-  for (i = 0L; config_parse_int[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_int[i].name != NULL; ++i) {
     if (config_parse_int[i].reset != -1)
       *(config_parse_int[i].ivar) = config_parse_int[i].reset;
   }
@@ -545,7 +545,7 @@ static void config_sorted_string(void)
 {
   long i;
 
-  for (i = 0L; config_parse_string[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_string[i].name != NULL; ++i) {
     if (config_parse_string[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_string[i].name, config_parse_string[i + 1].name) < 0)
@@ -634,7 +634,7 @@ static void dump_config_string(void)
 {
   long i;
 
-  for (i = 0L; config_parse_string[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_string[i].name != NULL; ++i) {
     dump_config_string2(config_parse_string[i].name, *(config_parse_string[i].svar));
   }
 }
@@ -643,7 +643,7 @@ static void reset_config_string(void)
 {
   long i;
 
-  for (i = 0L; config_parse_string[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_string[i].name != NULL; ++i) {
     mydelete(*(config_parse_string[i].svar));
   }
 }
@@ -700,7 +700,7 @@ static void config_sorted_list(void)
 {
   long i;
 
-  for (i = 0L; config_parse_list[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_list[i].name != NULL; ++i) {
     if (config_parse_list[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_list[i].name, config_parse_list[i + 1].name) < 0)
@@ -790,7 +790,7 @@ static int set_config_list(const char *key, char *text)
     }
     return 0;
   case 3:
-     for (j=strlen(text)-1; j>=0; j--) {
+     for (j=strlen(text)-1; j>=0; --j) {
        if (text[j] == '@') {
          j = 0;
        } else if ((text[j] != '*') && (text[j] != '?') && (text[j] != '#')) {
@@ -830,7 +830,7 @@ static void dump_config_list(void)
   long i;
   char ip6[maxtextlengthshort];
 
-  for (i = 0L; config_parse_list[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_list[i].name != NULL; ++i) {
     dump_line("GDATA * " "%s:",
             config_parse_list[i].name);
     switch (config_parse_list[i].flags) {
@@ -858,7 +858,7 @@ static void reset_config_list(void)
 {
   long i;
 
-  for (i = 0L; config_parse_list[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_list[i].name != NULL; ++i) {
     irlist_delete_all(config_parse_list[i].list);
   }
 }
@@ -995,7 +995,7 @@ static int parse_channel_options(channel_t *cptr, char *var)
   int m;
 
   m = get_argv(part, var, MAX_CHANNEL_OPTIONS);
-  for (i=0; i<m; i++) {
+  for (i=0; i<m; ++i) {
     tptr = part[i];
     if (tptr == NULL)
       break;
@@ -1203,12 +1203,12 @@ static void c_group_admin(char *var)
       ga->g_uploaddir = mystrdup(data);
       break;
     default:
-      drop ++;
+      ++drop;
       break;
     }
   }
   if (!ga->g_groups)
-    drop ++;
+    ++drop;
 
   if (drop) {
     outerror(OUTERROR_TYPE_WARN,
@@ -1299,7 +1299,7 @@ static void c_network(char *var)
         current_bracket = 1;
     }
     /* check if the given network does exist */
-    for (ss=0; ss < MAX_NETWORKS; ss++) {
+    for (ss=0; ss < MAX_NETWORKS; ++ss) {
       if (ss > gdata.networks_online)
         break;
       if (gdata.networks[ss].name == NULL)
@@ -1313,9 +1313,9 @@ static void c_network(char *var)
   if (gdata.networks_online == 0) {
      /* add new network only when server defined */
      if (irlist_size(&gdata.networks[gdata.networks_online].servers))
-       gdata.networks_online ++;
+       ++(gdata.networks_online);
   } else {
-    gdata.networks_online ++;
+    ++(gdata.networks_online);
   }
   if (gdata.networks_online > MAX_NETWORKS) {
     outerror(OUTERROR_TYPE_WARN,
@@ -1357,7 +1357,7 @@ static void c_overallmaxspeeddaydays(char *var)
 
   gdata.overallmaxspeeddaydays = 0;
   src = var;
-  for (i=0; (*src) && (i<8); i++) {
+  for (i=0; (*src) && (i<8); ++i) {
     switch (*(src++)) {
     case 'U':
       gdata.overallmaxspeeddaydays |= 0x01;
@@ -1541,7 +1541,7 @@ static void c_transferlimits(char *var)
 
   bzero((char *)part, sizeof(part));
   m = get_argv(part, var, (int)NUMBER_TRANSFERLIMITS);
-  for (i=0; i<m; i++) {
+  for (i=0; i<m; ++i) {
     if (part[i]) {
       ival = atoi(part[i]);
       gdata.transferlimits[i].limit = max2(0, ival);
@@ -1600,12 +1600,12 @@ static void c_user_nick(char *var)
 
 static void c_bracket_open(char * UNUSED(var))
 {
-  current_bracket ++;
+  ++current_bracket;
 }
 
 static void c_bracket_close(char *UNUSED(var))
 {
-  current_bracket --;
+  --current_bracket;
 }
 
 static int config_func_anzahl = 0;
@@ -1655,7 +1655,7 @@ static void config_sorted_func(void)
 {
   long i;
 
-  for (i = 0L; config_parse_func[i].name != NULL; i ++) {
+  for (i = 0L; config_parse_func[i].name != NULL; ++i) {
     if (config_parse_func[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_func[i].name, config_parse_func[i + 1].name) < 0)
@@ -1717,7 +1717,7 @@ static void reset_config_func(void)
   int si;
   int ii;
 
-  for (si=0; si<MAX_NETWORKS; si++) {
+  for (si=0; si<MAX_NETWORKS; ++si) {
     for (ss = irlist_get_head(&gdata.networks[si].servers);
          ss;
          ss = irlist_delete(&gdata.networks[si].servers, ss)) {
@@ -1781,7 +1781,7 @@ static void reset_config_func(void)
     mydelete(ag->a_group);
     mydelete(ag->a_pattern);
   }
-  for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++) {
+  for (ii=0; ii<NUMBER_TRANSFERLIMITS; ++ii) {
     gdata.transferlimits[ii].limit = 0;
   }
   mydelete(gdata.periodicmsg_nick);

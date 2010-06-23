@@ -100,7 +100,7 @@ static void update_getip_net(int net, unsigned long ourip)
 
   in.s_addr = htonl(ourip);
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     if (gnetwork->net == net)
       continue;
@@ -200,7 +200,7 @@ void update_server_welcome(char *line)
   if (gdata.getipfromserver) {
     tptr = strchr(line, '@');
     if (tptr != NULL) {
-      tptr ++;
+      ++tptr;
       ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "IP From Server: %s", tptr);
       update_natip(tptr);
       return;
@@ -437,7 +437,7 @@ void child_resolver(void)
 #endif /* NO_GETADDRINFO */
 
   close(gnetwork->serv_resolv.sp_fd[0]);
-  for (i=3; i<((int)FD_SETSIZE); i++) {
+  for (i=3; i<((int)FD_SETSIZE); ++i) {
     /* include [0], but not [1] */
     if (i != gnetwork->serv_resolv.sp_fd[1]) {
       close(i);
@@ -486,7 +486,7 @@ void child_resolver(void)
 #if !defined(NO_GETADDRINFO)
   found = -1;
   for (res = results; res; res = res->ai_next) {
-    found ++;
+    ++found;
     if (found < gnetwork->serv_resolv.next)
       continue;
     if (res->ai_next == NULL)
@@ -623,7 +623,7 @@ int has_closed_servers(void)
 {
   int ss;
 
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
       return 0;
   }
@@ -665,7 +665,7 @@ int check_ignore(const char *nick, const char *hostmask)
     return 0; /* host matches autoignore_exclude */
 
   ignore = get_ignore(hostmask);
-  ignore->bucket++;
+  ++(ignore->bucket);
   ignore->lastcontact = gdata.curtime;
 
   if (ignore->flags & IGN_IGNORING)
@@ -702,7 +702,7 @@ int irc_select(int highests)
 {
   int ss;
 
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) {
       FD_SET(gdata.networks[ss].ircserver, &gdata.readset);
       highests = max2(highests, gdata.networks[ss].ircserver);
