@@ -127,14 +127,17 @@ static const http_special_t http_special[] = {
   { 0, NULL },
 };
 
+
+static const unsigned char HEX_NIBBLE[] = "0123456789ABCDEF";
+
+#ifndef WITHOUT_HTTP_ADMIN
+
 /*
 	BASE 64
 
 	| b64  | b64   | b64   |  b64 |
 	| octect1 | octect2 | octect3 |
 */
-
-#ifndef WITHOUT_HTTP_ADMIN
 
 static const unsigned char BASE64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -356,6 +359,54 @@ static size_t html_decode(char *buffer, size_t max, const char *src)
       *(dest++) = ch;
     }
     --max;
+  }
+  *dest = 0;
+  len = dest - buffer;
+  return len;
+}
+
+static size_t url_encode(char *buffer, size_t max, const char *src)
+{
+  char *dest = buffer;
+  size_t len;
+  char ch;
+
+  --max;
+  for (;;) {
+    if (max == 0)
+      break;
+    ch = *(src++);
+    if (ch == 0)
+      break;
+    switch (ch) {
+    case 0x03: /* color */
+      if (!isdigit(*src)) break;
+      src++;
+      if (isdigit(*src)) src++;
+      if ((*src) != ',') break;
+      src++;
+      if (isdigit(*src)) src++;
+      if (isdigit(*src)) src++;
+      break;
+    case 0x02: /* bold */
+    case 0x0F: /* end formatting */
+    case 0x16: /* inverse */
+    case 0x1D: /* italic */
+    case 0x1F: /* underline */
+      break;
+    case '%':
+    case '&':
+    case '+':
+    case '?':
+    case ';':
+      *(dest++) = '%';
+      *(dest++) = HEX_NIBBLE[ ((unsigned char)ch & 0xF0) >> 4 ];
+      *(dest++) = HEX_NIBBLE[ ((unsigned char)ch & 0x0F) ];
+      break;
+    default:
+      *(dest++) = ch;
+      --max;
+    }
   }
   *dest = 0;
   len = dest - buffer;
@@ -1031,7 +1082,7 @@ static int html_link_option(char *str, size_t size, const char *option, const ch
     len = snprintf(str, size, ";");
   }
   tempstr = mycalloc(maxtextlength);
-  html_encode(tempstr, maxtextlength, val);
+  url_encode(tempstr, maxtextlength, val);
   len += snprintf(str + len, size - len, "%s=%s", option, tempstr);
   mydelete(tempstr);
   return len;
@@ -1580,7 +1631,9 @@ static int h_html_index(http * const h)
 static char *get_url_param(const char *url, const char *key)
 {
   char *result;
+  char *clean;
   const char *found;
+  size_t len;
 
   found = strcasestr(url, key);
   if (found == NULL)
@@ -1590,7 +1643,11 @@ static char *get_url_param(const char *url, const char *key)
   html_str_split(result, ' ');
   html_str_split(result, ';');
   html_str_split(result, '&');
-  return result;
+  len = strlen(result) + 1;
+  clean = mycalloc(len);
+  html_decode(clean, len, result);
+  mydelete(result);
+  return clean;
 }
 
 static int get_url_number(const char *url, const char *key)
@@ -1667,9 +1724,9 @@ static void h_webliste(http * const h, const char *body)
 
   if (body)
     h->search = get_url_param(body, "search=");
-  h->group = get_url_param(h->url, "group=");
-  h->order = get_url_param(h->url, "order=");
-  h->traffic = get_url_number(h->url, "traffic=");
+  h->group = get_url_param(h->log_url, "group=");
+  h->order = get_url_param(h->log_url, "order=");
+  h->traffic = get_url_number(h->log_url, "traffic=");
   guess = 2048;
   guess += h_guess_weblist(h);
   h_prepare_header(h, guess);
@@ -1738,29 +1795,34 @@ static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
 
 static char *h_bad_request(http * const h)
 {
+  char *request;
   char *url;
-  url = (char *)gdata.sendbuff;
+  char *header;
+  size_t len;
 
-  h->log_url = url;
   h->modified = NULL;
   h->post = 0;
   h->head = 0;
-  if (strncasecmp(url, "GET ", 4 ) == 0) {
-    url += 4;
-    return url;
+  request = (char *)gdata.sendbuff;
+  header = html_str_split(request, '\n');
+  html_str_split(request, '\r');
+  h->log_url = mystrdup(request);
+  url = html_str_split(request, ' ');
+  html_str_split(url, ' ');
+  len = strlen(url) + 1;
+  h->url = mycalloc(len);
+  html_decode(h->url, len, url);
+  if (strcasecmp(request, "GET" ) == 0) {
+    return header;
   }
-  if (strncasecmp(url, "POST ", 5 ) == 0) {
+  if (strcasecmp(request, "POST" ) == 0) {
     h->post = 1;
-    url += 5;
-    return url;
+    return header;
   }
-  if (strncasecmp(url, "HEAD ", 5 ) == 0) {
+  if (strcasecmp(request, "HEAD" ) == 0) {
     h->head = 1;
-    url += 5;
-    return url;
+    return header;
   }
-  html_str_split(h->log_url, '\n');
-  h->log_url = mystrdup(h->log_url);
   return NULL;
 }
 
@@ -1922,6 +1984,7 @@ static void h_get(http * const h)
 {
   char *data;
   char *hval;
+  char *header;
 
   updatecontext();
 
@@ -1932,15 +1995,14 @@ static void h_get(http * const h)
   if (data == NULL)
     return;
 
-  h->url = h_bad_request(h);
-  if (h->url == NULL) {
+  header = h_bad_request(h);
+  if (header == NULL) {
     h_closeconn(h, "Bad request", 0);
     return;
   }
 
   /* parse header */
-  data = html_str_split(h->url, ' ');
-  for (data = strtok(data, "\n");
+  for (data = strtok(header, "\n");
        data;
        data = strtok(NULL, "\n")) {
     html_str_split(data, '\r');
@@ -1965,10 +2027,7 @@ static void h_get(http * const h)
     }
   }
 
-  h->log_url = mystrdup(h->log_url);
-  hval = mystrdup(h->url);
-  h->url = hval;
-  if ((h->post) && (!data)) {
+  if ((h->post) && (!header)) {
     h->status = HTTP_STATUS_POST;
     return;
   }

@@ -3,7 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
-extend debug and log information.
+bugfix: http_port (reported by Nouhime)
+  Allow groups with "&" in weblist.
 
 331) BATCH (inspired by Aashiqmunda)
 

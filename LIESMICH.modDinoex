@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: http_port
+  Erlaube Gruppen mit "&" im Namen.
+
 Debugging und Logging verbessert.
 
 331) BATCH
