@@ -43,8 +43,8 @@ static void strip_trailing_path(char *str)
   if (len == 0)
     return;
 
-  if (str[len-1] == '/')
-    str[len-1] = '\0';
+  if (str[len - 1] == '/')
+    str[len - 1] = '\0';
 }
 
 void voutput_fd(int fd, const char *format, va_list args)
@@ -1596,13 +1596,13 @@ static void a_requeue2(const userinput * const u, irlist_t *list)
   a_respond(u, "** Moved Queue %i to %i", oldp, newp);
 
   /* get queue we are renumbering */
-  pqo = irlist_get_nth(list, oldp-1);
+  pqo = irlist_get_nth(list, oldp - 1);
   irlist_remove(list, pqo);
 
   if (newp == 1) {
     irlist_insert_head(list, pqo);
   } else {
-    pqn = irlist_get_nth(list, newp-2);
+    pqn = irlist_get_nth(list, newp - 2);
     irlist_insert_after(list, pqo, pqn);
   }
 }
@@ -1732,7 +1732,7 @@ void a_remove(const userinput * const u)
     return;
 
   for (; num2 >= num1; --num2) {
-    xd = irlist_get_nth(&gdata.xdccs, num2-1);
+    xd = irlist_get_nth(&gdata.xdccs, num2 - 1);
     if (group_restricted(u, xd))
       return;
 
@@ -1832,12 +1832,12 @@ static void a_renumber1(const userinput * const u, int oldp, int newp)
 
   a_respond(u, "** Moved pack %i to %i", oldp, newp);
   /* get pack we are renumbering */
-  xdo = irlist_get_nth(&gdata.xdccs, oldp-1);
+  xdo = irlist_get_nth(&gdata.xdccs, oldp - 1);
   irlist_remove(&gdata.xdccs, xdo);
   if (newp == 1) {
     irlist_insert_head(&gdata.xdccs, xdo);
   } else {
-    xdn = irlist_get_nth(&gdata.xdccs, newp-2);
+    xdn = irlist_get_nth(&gdata.xdccs, newp - 2);
     irlist_insert_after(&gdata.xdccs, xdo, xdn);
   }
   if (xdo->group != NULL)
@@ -2328,7 +2328,7 @@ void a_chdesc(const userinput * const u)
   if (num <= 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -2380,7 +2380,7 @@ void a_chtime(const userinput * const u)
     }
   }
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -2413,7 +2413,7 @@ void a_chlimit(const userinput * const u)
     return;
   }
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -2442,7 +2442,7 @@ void a_chlimitinfo(const userinput * const u)
   if (num <= 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -2470,7 +2470,7 @@ void a_chtrigger(const userinput * const u)
   if (num <= 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -2516,7 +2516,7 @@ void a_deltrigger(const userinput * const u)
 
   dirty = 0;
   for (; num1 <= num2; ++num1) {
-    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
     if (group_restricted(u, xd))
       return;
 
@@ -2577,7 +2577,7 @@ void a_chcolor(const userinput * const u)
     color |= color_fg;
   }
   for (; num1 <= num2; ++num1) {
-    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
     if (group_restricted(u, xd))
       return;
 
@@ -2615,7 +2615,7 @@ void a_lock(const userinput * const u)
     return;
 
   for (; num1 <= num2; ++num1) {
-    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
     if (group_restricted(u, xd))
       return;
 
@@ -2644,7 +2644,7 @@ void a_unlock(const userinput * const u)
     return;
 
   for (; num1 <= num2; ++num1) {
-    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
     if (group_restricted(u, xd))
       return;
 
@@ -2782,7 +2782,7 @@ void a_group(const userinput * const u)
   if (num <= 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -2805,7 +2805,6 @@ void a_group(const userinput * const u)
 void a_movegroup(const userinput * const u)
 {
   xdcc *xd;
-  int num;
   int num1;
   int num2;
 
@@ -2824,12 +2823,12 @@ void a_movegroup(const userinput * const u)
       caps(u->arg3);
   }
 
-  for (num = num1; num <= num2; ++num) {
-    xd = irlist_get_nth(&gdata.xdccs, num-1);
+  for (; num1 <= num2; ++num1) {
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
     if (group_restricted(u, xd))
       return;
 
-    a_set_group(u, xd, num, u->arg3);
+    a_set_group(u, xd, num1, u->arg3);
   }
 
   write_files();
@@ -2912,7 +2911,7 @@ void a_md5(const userinput * const u)
     return;
 
   for (num = von; num <= bis; ++num) {
-    xd = irlist_get_nth(&gdata.xdccs, num-1);
+    xd = irlist_get_nth(&gdata.xdccs, num - 1);
     if (group_restricted(u, xd))
       return;
 
@@ -2945,7 +2944,7 @@ void a_crc(const userinput * const u)
       return;
 
     for (num = von; num <= bis; ++num) {
-      xd = irlist_get_nth(&gdata.xdccs, num-1);
+      xd = irlist_get_nth(&gdata.xdccs, num - 1);
       if (group_restricted(u, xd))
         return;
 
@@ -2995,7 +2994,7 @@ void a_chfile(const userinput * const u)
   if (a_access_fstat(u, xfiledescriptor, &file, &st))
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -3249,7 +3248,7 @@ void a_movefile(const userinput * const u)
     return;
   }
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -3346,7 +3345,7 @@ void a_fileremove(const userinput * const u)
     return;
 
   for (; num2 >= num1; --num2) {
-    xd = irlist_get_nth(&gdata.xdccs, num2-1);
+    xd = irlist_get_nth(&gdata.xdccs, num2 - 1);
     if (group_restricted(u, xd))
       return;
 
@@ -3786,7 +3785,7 @@ static void a_rmq2(const userinput * const u, irlist_t *list)
     return;
   }
 
-  pq = irlist_get_nth(list, num-1);
+  pq = irlist_get_nth(list, num - 1);
   if (!pq) {
      a_respond(u, "Invalid ID number, Try \"QUL\" for a list");
     return;
@@ -4351,7 +4350,7 @@ void a_queue(const userinput * const u)
   if (num <= 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (a_queue_found(u, xd, num))
     return;
 
@@ -4379,7 +4378,7 @@ static int a_iqueue_sub(const userinput * const u, xdcc *xd, int num, int net)
   updatecontext();
 
   if (xd == NULL)
-    xd = irlist_get_nth(&gdata.xdccs, num-1);
+    xd = irlist_get_nth(&gdata.xdccs, num - 1);
 
   if (a_queue_found(u, xd, num))
     return 1;
@@ -4518,12 +4517,12 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
   }
   if (colordesc != xd->desc)
     mydelete(colordesc);
-  snprintf(tempstr2, maxtextlength-2, "[\2%s\2]%s", msg, tempstr3);
+  snprintf(tempstr2, maxtextlength - 2, "[\2%s\2]%s", msg, tempstr3);
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
-    snprintf(tempstr, maxtextlength-2, "%s - /MSG %s XDCC SEND %i",
+    snprintf(tempstr, maxtextlength - 2, "%s - /MSG %s XDCC SEND %i",
              tempstr2, get_user_nick(), num);
     if (gnetwork->noannounce == 0)
       a_announce_channels(tempstr, match, xd->group);
@@ -4674,7 +4673,7 @@ void a_sannounce(const userinput * const u)
 
   for (; num1 <= num2; ++num1) {
     a_respond(u, "Pack Info for Pack #%i:", num1);
-    xd = irlist_get_nth(&gdata.xdccs, num1-1);
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
     if (group_restricted(u, xd))
       return;
 
@@ -4684,7 +4683,7 @@ void a_sannounce(const userinput * const u)
     snprintf(tempstr3, maxtextlength - 1, "%s%s", gdata.announce_seperator, colordesc);
     if (colordesc != xd->desc)
       mydelete(colordesc);
-    snprintf(tempstr, maxtextlength-2, "\2%i\2%s", num1, tempstr3);
+    snprintf(tempstr, maxtextlength - 2, "\2%i\2%s", num1, tempstr3);
 
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ++ss) {

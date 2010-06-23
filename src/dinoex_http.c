@@ -1586,7 +1586,7 @@ static int h_html_index(http * const h)
   mydelete(tlabel);
 
   tempstr = mycalloc(maxtextlength);
-  user_getdatestr(tempstr, gdata.curtime, maxtextlength-1);
+  user_getdatestr(tempstr, gdata.curtime, maxtextlength - 1);
   h_respond(h, "<tr>\n");
   h_respond(h, "<td>%s</td>\n", "last update");
   h_respond(h, "<td>%s</td>\n", tempstr);

@@ -570,7 +570,7 @@ static int check_for_file_remove(int n)
 
   updatecontext();
 
-  xd = irlist_get_nth(&gdata.xdccs, n-1);
+  xd = irlist_get_nth(&gdata.xdccs, n - 1);
   if (look_for_file_changes(xd) == 0)
     return 0;
 
