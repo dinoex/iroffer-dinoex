@@ -925,7 +925,7 @@ void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
           p = irlist_get_next(p);
 	  irlist_remove(list, e);
           psize--;
-        } else if (cmpfunc(p,q) <= 0) {
+        } else if (cmpfunc(p, q) <= 0) {
           /* First element of p is lower (or same);
           * e must come from p. */
           e = p;
