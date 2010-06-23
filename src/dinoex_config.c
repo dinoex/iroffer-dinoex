@@ -790,7 +790,7 @@ static int set_config_list(const char *key, char *text)
     }
     return 0;
   case 3:
-     for (j=strlen(text)-1; j>=0; --j) {
+     for (j=strlen(text) - 1; j>=0; --j) {
        if (text[j] == '@') {
          j = 0;
        } else if ((text[j] != '*') && (text[j] != '?') && (text[j] != '#')) {

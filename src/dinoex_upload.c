@@ -151,8 +151,8 @@ int l_setup_passive(upload * const l, char *token)
 
   /* strip T */
   if (token != NULL) {
-    if (token[strlen(token)-1] == 'T')
-      token[strlen(token)-1] = '\0';
+    if (token[strlen(token) - 1] == 'T')
+      token[strlen(token) - 1] = '\0';
     l->token = atoi(token);
   } else {
     l->token = 0;

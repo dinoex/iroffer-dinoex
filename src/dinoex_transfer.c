@@ -551,9 +551,9 @@ int t_select_fdset(int highests, int changequartersec)
   int overlimit;
 
   sum = gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE]
-      + gdata.xdccsent[(gdata.curtime-1)%XDCC_SENT_SIZE]
-      + gdata.xdccsent[(gdata.curtime-2)%XDCC_SENT_SIZE]
-      + gdata.xdccsent[(gdata.curtime-3)%XDCC_SENT_SIZE];
+      + gdata.xdccsent[(gdata.curtime - 1)%XDCC_SENT_SIZE]
+      + gdata.xdccsent[(gdata.curtime - 2)%XDCC_SENT_SIZE]
+      + gdata.xdccsent[(gdata.curtime - 3)%XDCC_SENT_SIZE];
   overlimit = (gdata.maxb && (sum >= gdata.maxb*1024));
   for (tr = irlist_get_head(&gdata.trans);
        tr;
