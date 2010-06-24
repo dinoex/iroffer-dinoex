@@ -29,6 +29,8 @@
 # define MSG_NOSIGNAL 0
 #endif
 
+#define	XDCC_SEND_LIST ((unsigned int)-1)
+
 typedef struct {
   char *u_host;
   long u_time;
@@ -38,9 +40,9 @@ typedef struct {
   char *q_host;
   char *q_nick;
   char *q_pack;
-  int q_state;
-  int q_net;
-  long q_time;
+  unsigned int q_state;
+  unsigned int q_net;
+  unsigned long q_time;
 } qupload_t;
 
 typedef struct {
@@ -50,9 +52,10 @@ typedef struct {
 
 typedef struct
 {
-  int pack;
   char *word;
   char *message;
+  unsigned int pack;
+  unsigned int dummy;
 } autoqueue_t;
 
 typedef struct
@@ -63,8 +66,9 @@ typedef struct
 
 typedef struct
 {
-  int delay;
   char *msg;
+  unsigned int delay;
+  unsigned int dummy;
 } channel_announce_t;
 
 typedef struct {
@@ -92,12 +96,13 @@ typedef struct {
   char *g_pass;
   char *g_groups;
   char *g_uploaddir;
-  int g_level;
+  unsigned int g_level;
+  unsigned int dummy;
 } group_admin_t;
 
 typedef struct {
   int family;
-  int netmask;
+  unsigned int netmask;
   ir_sockaddr_union_t remote;
 } ir_cidr_t;
 
@@ -108,6 +113,7 @@ typedef struct {
   int sp_fd[2];
   pid_t child_pid;
   int next;
+  int dummy2;
 } serv_resolv_t;
 
 typedef enum {
@@ -141,27 +147,28 @@ typedef struct {
   irlist_t servers;
   server_t curserver;
   char *curserveractualname;
-  int nocon;
-  int servertime;
+  unsigned int nocon;
+  unsigned int servertime;
 
   serv_resolv_t serv_resolv;
   serverstatus_e serverstatus;
   botstatus_e botstatus;
 
-  long connecttime;
-  long lastservercontact;
-  long lastnotify;
-  long lastping;
-  long lastslow;
-  long lag;
+  time_t connecttime;
+  time_t lastservercontact;
+  time_t lastnotify;
+  time_t lastping;
+  time_t lastslow;
+  unsigned long lag;
   irlist_t serverq_fast;
   irlist_t serverq_normal;
   irlist_t serverq_slow;
   irlist_t serverq_channel;
   irlist_t xlistqueue;
-  int serverbucket;
   int ircserver;
-  int serverconnectbackoff;
+  int serverbucket;
+  unsigned int serverconnectbackoff;
+  unsigned int dummy;
 #ifdef USE_OPENSSL
   SSL_CTX *ssl_ctx;
   SSL *ssl;
@@ -188,28 +195,29 @@ typedef struct {
   char *r_local_vhost;
   char *user_modes;
   char *natip;
-  int net;
-  int recentsent;
-  int nick_number;
-  int inamnt[INAMNT_SIZE];
-  int r_needtojump;
-  int usenatip;
-  int getip_net;
-  int need_voice;
+  unsigned int net;
+  unsigned int recentsent;
+  unsigned int nick_number;
+  unsigned int inamnt[INAMNT_SIZE];
+  unsigned int r_needtojump;
+  unsigned int usenatip;
+  unsigned int getip_net;
+  unsigned int noannounce;
+  unsigned int slow_privmsg;
+  unsigned int need_voice;
+  unsigned int restrictsend;
+  unsigned int restrictlist;
   int need_level;
-  int noannounce;
-  int slow_privmsg;
-  int restrictsend;
-  int restrictlist;
   how_e r_connectionmethod;
   userinput_method_e lag_method;
 
-  long next_identify;
-  long next_restrict;
+  time_t next_identify;
+  time_t next_restrict;
   unsigned long ourip;
   unsigned long r_ourip;
 
   ir_sockaddr_union_t myip;
+  unsigned int dummy2;
 } gnetwork_t;
 
 extern gnetwork_t *gnetwork;

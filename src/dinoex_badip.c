@@ -22,14 +22,14 @@
 #include "dinoex_geoip.h"
 #include "dinoex_badip.h"
 
-static int is_in_badip4(unsigned long remoteip)
+static unsigned int is_in_badip4(unsigned long remoteip)
 {
   badip4 *b;
 
 #ifdef USE_GEOIP
 #ifndef WITHOUT_HTTP
   if (http_check_geoip(remoteip))
-    return -1; /* blocked by GeoIP */
+    return 2; /* blocked by GeoIP */
 #endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP */
 
@@ -46,7 +46,7 @@ static int is_in_badip4(unsigned long remoteip)
   return 0; /* not found */
 }
 
-static int is_in_badip6(struct in6_addr *remoteip)
+static unsigned int is_in_badip6(struct in6_addr *remoteip)
 {
   badip6 *b;
 
@@ -68,7 +68,7 @@ return: 0 = not blocked
 return: 1 = blacklisted
 return: -1 = blocked by GeoIP
 */
-int is_in_badip(ir_sockaddr_union_t *sa)
+unsigned int is_in_badip(ir_sockaddr_union_t *sa)
 {
   if (sa->sa.sa_family == AF_INET) {
     return is_in_badip4(ntohl(sa->sin.sin_addr.s_addr));

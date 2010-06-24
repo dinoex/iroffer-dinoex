@@ -127,7 +127,7 @@ void geoip_new_connection(transfer *const tr)
 #ifdef USE_GEOIP
 #ifndef WITHOUT_HTTP
 /* check a HTTP connection against the GeoIP database */
-int http_check_geoip(unsigned long remoteip)
+unsigned int http_check_geoip(unsigned long remoteip)
 {
   const char *country;
 

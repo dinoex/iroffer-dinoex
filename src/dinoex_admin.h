@@ -26,18 +26,18 @@ a_respond(const userinput * const u, const char *format, ...);
 
 void a_parse_inputline(userinput * const u, const char *line);
 
-int hide_locked(const userinput * const u, const xdcc *xd);
+unsigned int hide_locked(const userinput * const u, const xdcc *xd);
 int get_network(const char *arg1);
-int a_xdl_space(void);
-int a_xdl_left(void);
-int reorder_new_groupdesc(const char *group, const char *desc);
-int add_default_groupdesc(const char *group);
+unsigned int a_xdl_space(void);
+unsigned int a_xdl_left(void);
+unsigned int reorder_new_groupdesc(const char *group, const char *desc);
+unsigned int add_default_groupdesc(const char *group);
 
-int invalid_channel(const userinput * const u, const char *arg);
-int invalid_maxspeed(const userinput * const u, const char *arg);
-int get_pack_nr(const userinput * const u, const char *arg);
+unsigned int invalid_channel(const userinput * const u, const char *arg);
+unsigned int invalid_maxspeed(const userinput * const u, const char *arg);
+unsigned int get_pack_nr(const userinput * const u, const char *arg);
 int get_network_msg(const userinput * const u, const char *arg);
-int group_restricted(const userinput * const u, xdcc *xd);
+unsigned int group_restricted(const userinput * const u, xdcc *xd);
 
 void a_remove_delayed(const userinput * const u);
 void a_add_delayed(const userinput * const u);
@@ -61,7 +61,7 @@ void a_removegroup(const userinput * const u);
 void a_renumber3(const userinput * const u);
 void a_sort(const userinput * const u);
 int a_open_file(char **file, int mode);
-int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, struct stat *st);
+unsigned int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, struct stat *st);
 void a_add(const userinput * const u);
 void a_addgroup(const userinput * const u);
 void a_addmatch(const userinput * const u);

@@ -90,13 +90,13 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, soc
 }
 #endif /* NO_GETADDRINFO */
 
-static void update_getip_net(int net, unsigned long ourip)
+static void update_getip_net(unsigned int net, unsigned long ourip)
 {
   char *oldtxt;
   gnetwork_t *backup;
   struct in_addr old;
   struct in_addr in;
-  int ss;
+  unsigned int ss;
 
   in.s_addr = htonl(ourip);
   backup = gnetwork;
@@ -205,7 +205,7 @@ void update_server_welcome(char *line)
       update_natip(tptr);
       return;
     }
-    if (gnetwork->getip_net != -1) {
+    if (gnetwork->getip_net != 0) {
       /* copy IP from master */
       gnetwork->usenatip = 1;
       update_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
@@ -222,7 +222,7 @@ void update_server_welcome(char *line)
   }
 }
 
-static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, const char *vhost)
+static unsigned int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, const char *vhost)
 {
   int e;
 
@@ -246,7 +246,7 @@ static int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, const char *v
 }
 
 /* limit connection to the configured interface */
-int bind_irc_vhost(int family, int clientsocket)
+unsigned int bind_irc_vhost(int family, int clientsocket)
 {
   const char *vhost;
   ir_sockaddr_union_t localaddr;
@@ -320,7 +320,7 @@ static void my_get_upnp_data(const struct sockaddr *sa, socklen_t UNUSED(salen))
 #endif /* USE_UPNP */
 
 /* find a free port and open a new socket for an incoming connection */
-int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, int port, int reuse, int search, const char *vhost)
+unsigned int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, unsigned int port, unsigned int reuse, unsigned int search, const char *vhost)
 {
   int rc;
   int tempc;
@@ -388,9 +388,9 @@ int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket,
 }
 
 /* find a free port and open a new socket for an incoming connection */
-int irc_open_listen(ir_connection_t *con)
+unsigned int irc_open_listen(ir_connection_t *con)
 {
-  int rc;
+  unsigned int rc;
 
   rc = open_listen(con->family, &(con->local), &(con->listensocket), 0, gdata.tcprangestart, 1, NULL);
   if (rc != 0)
@@ -525,7 +525,7 @@ void child_resolver(void)
 }
 
 /* returns a text with the external IP address of the bot */
-const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, int net)
+const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, unsigned int net)
 {
   long ip;
 
@@ -540,7 +540,7 @@ const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, in
 }
 
 /* complete the connection to the IRC server */
-int connectirc2(res_addrinfo_t *remote)
+unsigned int connectirc2(res_addrinfo_t *remote)
 {
   int retval;
   int family;
@@ -619,9 +619,9 @@ char *get_user_nick(void)
 }
 
 /* check if all networks are disconnected */
-int has_closed_servers(void)
+unsigned int has_closed_servers(void)
 {
-  int ss;
+  unsigned int ss;
 
   for (ss=0; ss<gdata.networks_online; ++ss) {
     if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
@@ -653,7 +653,7 @@ igninfo *get_ignore(const char *hostmask)
 }
 
 /* count actions for ignore list */
-int check_ignore(const char *nick, const char *hostmask)
+unsigned int check_ignore(const char *nick, const char *hostmask)
 {
   igninfo *ignore;
   int left;
@@ -700,7 +700,7 @@ int check_ignore(const char *nick, const char *hostmask)
 /* register active connections for select() */
 int irc_select(int highests)
 {
-  int ss;
+  unsigned int ss;
 
   for (ss=0; ss<gdata.networks_online; ++ss) {
     if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) {
@@ -729,7 +729,7 @@ int irc_select(int highests)
 }
 
 /* try to identify at Nickserv */
-void identify_needed(int force)
+void identify_needed(unsigned int force)
 {
   char *pwd;
 

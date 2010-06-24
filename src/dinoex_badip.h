@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -18,7 +18,7 @@ typedef struct
   time_t lastcontact;
   time_t connecttime;
   unsigned long remoteip;
-  long count;
+  unsigned long count;
 } badip4;
 
 typedef struct
@@ -26,10 +26,10 @@ typedef struct
   time_t lastcontact;
   time_t connecttime;
   struct in6_addr remoteip;
-  long count;
+  unsigned long count;
 } badip6;
 
-int is_in_badip(ir_sockaddr_union_t *sa);
+unsigned int is_in_badip(ir_sockaddr_union_t *sa);
 void count_badip(ir_sockaddr_union_t *sa);
 void expire_badip(void);
 

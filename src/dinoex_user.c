@@ -172,7 +172,7 @@ static void command_dcc(privmsginput *pi)
   }
 
   if (strcmp(pi->msg2, "SEND") == 0) {
-    int down = 0;
+    unsigned int down = 0;
 
     if ((pi->msg3 == NULL) || (pi->msg4 == NULL) || (pi->msg5 == NULL) || (pi->msg6 == NULL))
       return;
@@ -193,7 +193,7 @@ static void command_dcc(privmsginput *pi)
     upload *ul;
     char *tempstr;
     off_t len;
-    int port;
+    unsigned int port;
 
     if ((pi->msg3 == NULL) || (pi->msg4 == NULL) || (pi->msg5 == NULL))
       return;
@@ -262,7 +262,7 @@ static void command_dcc(privmsginput *pi)
 }
 
 /* get pack by number and returns an error string if it failks */
-static xdcc *get_download_pack(const char **bad, const char* nick, const char* hostmask, int pack, const char* text, int restr)
+static xdcc *get_download_pack(const char **bad, const char* nick, const char* hostmask, unsigned int pack, const char* text, unsigned int restr)
 {
   char *grouplist;
   xdcc *xd;
@@ -289,7 +289,7 @@ static xdcc *get_download_pack(const char **bad, const char* nick, const char* h
     return NULL;
   }
 
-  if (pack == -1) {
+  if (pack == XDCC_SEND_LIST) {
     if (gdata.xdcclistfile) {
       if (init_xdcc_file(&xdcc_listfile, gdata.xdcclistfile)) {
         *bad = "(Bad Pack Number)";
@@ -337,13 +337,13 @@ static int check_lock(const char* lockstr, const char* pwd)
   return strcmp(lockstr, pwd);
 }
 
-static int send_xdcc_file2(const char **bad, privmsginput *pi, int pack, const char *msg, const char *pwd)
+static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack, const char *msg, const char *pwd)
 {
   xdcc *xd;
   transfer *tr;
   char *tempstr;
-  int usertrans;
-  int fatal;
+  unsigned int usertrans;
+  unsigned int fatal;
 
   updatecontext();
 
@@ -414,7 +414,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, int pack, const c
     mydelete(tempstr);
     return fatal;
   }
-  if (pack == -1)
+  if (pack == XDCC_SEND_LIST)
     init_xdcc_file(xd, gdata.xdcclistfile);
   look_for_file_changes(xd);
 
@@ -430,8 +430,8 @@ static int send_batch_group(privmsginput *pi, const char *what, const char *pwd)
 {
   xdcc *xd;
   const char *bad;
-  int num;
-  int found;
+  unsigned int num;
+  unsigned int found;
 
   updatecontext();
 
@@ -457,10 +457,10 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
 {
   const char *bad;
   char *end;
-  int num;
-  int found;
-  int first;
-  int last;
+  unsigned int num;
+  unsigned int found;
+  unsigned int first;
+  unsigned int last;
 
   found = send_batch_group(pi, what, pwd);
   if (found != 0)
@@ -486,7 +486,7 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
 
 static void send_batch(privmsginput *pi, const char *what, const char *pwd)
 {
-  int found;
+  unsigned int found;
 
   found = send_batch_search(pi, what, pwd);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -502,7 +502,7 @@ static int find_pack_crc(const char *crc)
 {
   xdcc *xd;
   char crctext[32];
-  int num;
+  unsigned int num;
   size_t max;
 
   max = strlen(crc);
@@ -587,9 +587,9 @@ static void log_xdcc_request3(privmsginput *pi, const char *msg)
 }
 
 /* get restrictlist for current network */
-static int get_restrictlist(void)
+static unsigned int get_restrictlist(void)
 {
-  return (gnetwork->restrictlist != -1) ? gnetwork->restrictlist : gdata.restrictlist;
+  return (gnetwork->restrictlist != 2) ? gnetwork->restrictlist : gdata.restrictlist;
 }
 
 static void send_xdcc_info(const char **bad, const char *nick, const char *hostmask, const char *arg)
@@ -597,7 +597,7 @@ static void send_xdcc_info(const char **bad, const char *nick, const char *hostm
   userinput *pubinfo;
   xdcc *xd;
   char tempstr[maxtextlengthshort];
-  int pack;
+  unsigned int pack;
 
   updatecontext();
 
@@ -681,7 +681,7 @@ static int parse_xdcc_list(const char *nick, char *msg3)
 static void send_cancel(const char *nick)
 {
   transfer *tr;
-  int k = 0;
+  unsigned int k = 0;
 
   /* stop transfers */
   for (tr = irlist_get_head(&gdata.trans);
@@ -697,9 +697,9 @@ static void send_cancel(const char *nick)
   if (!k) notice(nick, "You don't have a transfer running");
 }
 
-static void send_remove(const char *nick, int number)
+static void send_remove(const char *nick, unsigned int number)
 {
-  int k = 0;
+  unsigned int k = 0;
 
   k += queue_xdcc_remove(&gdata.mainqueue, gnetwork->net, nick, number);
   k += queue_xdcc_remove(&gdata.idlequeue, gnetwork->net, nick, number);
@@ -747,7 +747,7 @@ static int stoplist_queue(const char *nick, irlist_t *list)
   char *copy;
   char *end;
   char *inick;
-  int stopped = 0;
+  unsigned int stopped = 0;
 
   for (item = irlist_get_head(list); item; ) {
     inick = NULL;
@@ -780,7 +780,7 @@ static int stoplist_announce(const char *nick)
   char *copy;
   char *end;
   char *inick;
-  int stopped = 0;
+  unsigned int stopped = 0;
 
   item = irlist_get_head(&(gnetwork->serverq_channel));
   while (item) {
@@ -813,7 +813,7 @@ static int stoplist_announce(const char *nick)
 static int stoplist(const char *nick)
 {
   char *item;
-  int stopped = 0;
+  unsigned int stopped = 0;
 
   for (item = irlist_get_head(&(gnetwork->xlistqueue)); item; ) {
     if (strcasecmp(item, nick) == 0) {
@@ -833,7 +833,7 @@ static int stoplist(const char *nick)
 /* remove all queued lines for this user */
 static void xdcc_stop(privmsginput *pi)
 {
-  int stopped;
+  unsigned int stopped;
 
   stopped = stoplist(pi->nick);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -845,7 +845,7 @@ static void xdcc_stop(privmsginput *pi)
 static const char *send_xdcc_file(privmsginput *pi, const char *arg, const char *pwd)
 {
   const char *bad;
-  int pack;
+  unsigned int pack;
 
   updatecontext();
 
@@ -874,7 +874,7 @@ static void command_xdcc(privmsginput *pi)
   caps(pi->msg2);
 
   if (strcmp(pi->msg2, "LIST") == 0) {
-    int j;
+    unsigned int j;
     /* detect xdcc list group xxx */
     if ((pi->msg3) && (pi->msg4) && (strcmp(caps(pi->msg3), "GROUP") == 0)) {
       tmp = pi->msg3;
@@ -918,7 +918,7 @@ static void command_xdcc(privmsginput *pi)
   }
 
   if (strcmp(pi->msg2, "REMOVE") == 0) {
-    int number = 0;
+    unsigned int number = 0;
     if (pi->msg3) {
       number = atoi(pi->msg3);
       log_xdcc_request2(pi->msg2, pi->msg3, pi);
@@ -956,8 +956,8 @@ static void command_xdcc(privmsginput *pi)
     char *msg3e;
     char *grouplist;
     char *colordesc;
-    int i;
-    int k;
+    unsigned int i;
+    unsigned int k;
 
     /* if restrictlist is enabled, visibility rules apply */
     grouplist = get_restrictlist() ? get_grouplist_access(pi->nick) : NULL;
@@ -1103,7 +1103,7 @@ static int botonly_parse(int type, privmsginput *pi)
   return 1;
 }
 
-static void autoqueuef(int pack, const char *message, privmsginput *pi)
+static void autoqueuef(unsigned int pack, const char *message, privmsginput *pi)
 {
   const char *format = "** Sending You %s by DCC";
   char *tempstr = NULL;
@@ -1147,7 +1147,7 @@ static size_t get_channel_limit(const char *dest)
 /* iroffer-lamm: @find and long !list */
 static int noticeresults(const char *nick, const char *pattern, const char *dest)
 {
-  int i, j, k;
+  unsigned int i, j, k;
   size_t len;
   const char *grouplist;
   char *tempstr = mycalloc(maxtextlength);
@@ -1173,7 +1173,7 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
 
     if (fnmatch_xdcc(match, xd)) {
       if (!k) {
-        if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
+        if (gdata.slotsmax < irlist_size(&gdata.trans))
           j = irlist_size(&gdata.trans);
         else
           j = gdata.slotsmax;
@@ -1232,10 +1232,10 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
 }
 
 /* iroffer-lamm: @find */
-static void do_atfind(int min, privmsginput *pi)
+static void do_atfind(unsigned int min, privmsginput *pi)
 {
   char *msg2e;
-  int k;
+  unsigned int k;
 
   if (check_ignore(pi->nick, pi->hostmask))
     return;
@@ -1266,7 +1266,7 @@ static int run_new_trigger(const char *nick, const char *grouplist)
   char *colordesc;
   time_t now;
   ssize_t llen;
-  int i;
+  unsigned int i;
 
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
 
@@ -1403,7 +1403,7 @@ static void add_msg_statefile(const  char *begin, int type, privmsginput *pi)
 static void privmsgparse2(int type, int decoded, privmsginput *pi)
 {
   char *begin;
-  int exclude;
+  unsigned int exclude;
 
   /*----- CTCP ----- */
   if (botonly_parse(type, pi) == 0) {
@@ -1508,7 +1508,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
   if (gdata.new_trigger) {
     if (strcmp(pi->msg1, "!NEW") == 0) {
       const char *grouplist;
-      int k;
+      unsigned int k;
 
       if (check_ignore(pi->nick, pi->hostmask))
         return;
@@ -1598,7 +1598,7 @@ void privmsgparse(int type, int decoded, char *line)
 {
   privmsginput pi;
   char *part[MAX_PRIVMSG_PARTS];
-  int m;
+  unsigned int m;
   size_t line_len;
 
   updatecontext();

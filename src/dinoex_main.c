@@ -93,7 +93,7 @@ void command_options(int argc, char *const *argv)
   const char *cptr;
   char *newptr;
   char ch;
-  int fc = 0;
+  unsigned int fc = 0;
 
   gdata.argv = argv;
   ir_basename = getfilename(argv[0]);
@@ -224,7 +224,7 @@ static void free_state(void)
   http *h;
   http_magic_t *mime;
   autoadd_group_t *ag;
-  int ss;
+  unsigned int ss;
 
   updatecontext();
 
@@ -360,7 +360,7 @@ static void free_state(void)
 
 static void free_config(void)
 {
-  int si;
+  unsigned int si;
 
   updatecontext();
 
@@ -379,9 +379,9 @@ static void debug_memory(void)
 {
   meminfo_t *mi;
   unsigned char *ut;
-  int j;
-  int i;
-  int leak = 0;
+  unsigned int j;
+  unsigned int i;
+  unsigned int leak = 0;
 
   gdata.crashing = 1; /* stop traceback */
   signal(SIGSEGV, SIG_DFL);
@@ -429,7 +429,7 @@ void
 __attribute__ ((noreturn))
 #endif
 /* cleanup all stuff before exit or restart */
-exit_iroffer(int gotsignal)
+exit_iroffer(unsigned int gotsignal)
 {
   if (gotsignal == 0)
     shutdown_dinoex();

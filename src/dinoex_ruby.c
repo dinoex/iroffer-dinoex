@@ -48,7 +48,7 @@ time_t myruby_time;
 
 char *cLine;
 char *cFile;
-int cPack;
+unsigned int cPack;
 VALUE cIrofferConfig;
 VALUE cIrofferEvent;
 VALUE oIrofferEvent = Qnil;
@@ -268,7 +268,7 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
   char *key;
   char *val;
   char *tempstr;
-  int nr;
+  unsigned int nr;
   int ival;
   off_t oval;
   size_t len;
@@ -277,8 +277,8 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
   if (NIL_P(rnr) || NIL_P(rkey))
     return Qnil;
 
-  nr = FIX2INT(rnr);
-  if (nr <= 0)
+  nr = FIX2UINT(rnr);
+  if (nr == 0)
     return Qnil;
 
   if (nr > irlist_size(&gdata.xdccs))
@@ -568,7 +568,7 @@ static void check_script(const char *name)
   load_script(name);
 }
 
-static int do_on_event(VALUE userobject, const char *event)
+static unsigned int do_on_event(VALUE userobject, const char *event)
 {
   ID method;
   VALUE skip;
@@ -615,7 +615,7 @@ int do_myruby_privmsg(char *line)
 }
 
 /* call the ruby class after adding a pack */
-int do_myruby_added(char *filename, int pack)
+int do_myruby_added(char *filename, unsigned int pack)
 {
   if (myruby_loaded == 0)
     return 0;
@@ -661,7 +661,7 @@ void shutdown_myruby(void)
 
 #ifndef WITHOUT_HTTP
 /* call a ruby script as CGI via HTTP */
-int http_ruby_script(const char *name, const char *output)
+unsigned int http_ruby_script(const char *name, const char *output)
 {
   struct stat st;
   char *tempstr;

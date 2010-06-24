@@ -136,7 +136,7 @@ void a_parse_inputline(userinput * const u, const char *line)
 
 int get_network(const char *arg1)
 {
-  int net;
+  unsigned int net;
 
   /* default */
   if (arg1 == NULL)
@@ -159,7 +159,7 @@ int get_network(const char *arg1)
   return -1;
 }
 
-int hide_locked(const userinput * const u, const xdcc *xd)
+unsigned int hide_locked(const userinput * const u, const xdcc *xd)
 {
   if (gdata.hidelockedpacks == 0)
     return 0;
@@ -179,9 +179,10 @@ int hide_locked(const userinput * const u, const xdcc *xd)
   return 0;
 }
 
-int a_xdl_space(void)
+unsigned int a_xdl_space(void)
 {
-  int i, s;
+  unsigned int i;
+  unsigned int s;
   xdcc *xd;
 
   i = 0;
@@ -198,10 +199,10 @@ int a_xdl_space(void)
   return s;
 }
 
-int a_xdl_left(void)
+unsigned int a_xdl_left(void)
 {
-  int n;
-  int l;
+  unsigned int n;
+  unsigned int l;
 
   n = irlist_size(&gdata.xdccs);
   l = 5;
@@ -212,7 +213,7 @@ int a_xdl_left(void)
   return l;
 }
 
-int reorder_new_groupdesc(const char *group, const char *desc)
+unsigned int reorder_new_groupdesc(const char *group, const char *desc)
 {
   xdcc *xd;
   int k;
@@ -244,12 +245,12 @@ int reorder_new_groupdesc(const char *group, const char *desc)
   return k;
 }
 
-static int reorder_groupdesc(const char *group)
+unsigned static int reorder_groupdesc(const char *group)
 {
   xdcc *xd;
   xdcc *firstxd;
   xdcc *descxd;
-  int k;
+  unsigned int k;
 
   updatecontext();
 
@@ -293,11 +294,11 @@ static int reorder_groupdesc(const char *group)
   return k;
 }
 
-int add_default_groupdesc(const char *group)
+unsigned int add_default_groupdesc(const char *group)
 {
   xdcc *xd;
   xdcc *firstxd;
-  int k;
+  unsigned int k;
 
   updatecontext();
 
@@ -405,7 +406,7 @@ static char *file_to_dir(const char *s)
   return d;
 }
 
-static int group_is_restricted(const userinput * const u, const char *group)
+static unsigned int group_is_restricted(const userinput * const u, const char *group)
 {
   if (u->method != method_dcc)
     return 0;
@@ -422,7 +423,7 @@ static int group_is_restricted(const userinput * const u, const char *group)
   return 1;
 }
 
-static int invalid_group(const userinput * const u, char *arg)
+static unsigned int invalid_group(const userinput * const u, char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Group");
@@ -437,7 +438,7 @@ static int invalid_group(const userinput * const u, char *arg)
   return 0;
 }
 
-static int invalid_dir(const userinput * const u, char *arg)
+static unsigned int invalid_dir(const userinput * const u, char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Directory");
@@ -448,7 +449,7 @@ static int invalid_dir(const userinput * const u, char *arg)
 }
 
 #ifdef USE_CURL
-static int is_upload_file(const userinput * const u, const char *arg)
+static unsigned int is_upload_file(const userinput * const u, const char *arg)
 {
   if (file_uploading(arg)) {
     a_respond(u, "Upload still running");
@@ -458,7 +459,7 @@ static int is_upload_file(const userinput * const u, const char *arg)
 }
 #endif /* USE_CURL */
 
-static int invalid_file(const userinput * const u, char *arg)
+static unsigned int invalid_file(const userinput * const u, char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Filename");
@@ -468,7 +469,7 @@ static int invalid_file(const userinput * const u, char *arg)
   return 0;
 }
 
-static int invalid_pwd(const userinput * const u, const char *arg)
+static unsigned int invalid_pwd(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Password");
@@ -477,7 +478,7 @@ static int invalid_pwd(const userinput * const u, const char *arg)
   return 0;
 }
 
-static int invalid_nick(const userinput * const u, const char *arg)
+static unsigned int invalid_nick(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Nick");
@@ -486,7 +487,7 @@ static int invalid_nick(const userinput * const u, const char *arg)
   return 0;
 }
 
-static int invalid_message(const userinput * const u, const char *arg)
+static unsigned int invalid_message(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Message");
@@ -495,7 +496,7 @@ static int invalid_message(const userinput * const u, const char *arg)
   return 0;
 }
 
-static int invalid_announce(const userinput * const u, const char *arg)
+static unsigned int invalid_announce(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Message (e.g. NEW)");
@@ -505,7 +506,7 @@ static int invalid_announce(const userinput * const u, const char *arg)
   return 0;
 }
 
-static int invalid_command(const userinput * const u, const char *arg)
+static unsigned int invalid_command(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Command");
@@ -515,7 +516,7 @@ static int invalid_command(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_channel(const userinput * const u, const char *arg)
+unsigned int invalid_channel(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Channel");
@@ -524,7 +525,7 @@ int invalid_channel(const userinput * const u, const char *arg)
   return 0;
 }
 
-int invalid_maxspeed(const userinput * const u, const char *arg)
+unsigned int invalid_maxspeed(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Maxspeed");
@@ -533,18 +534,18 @@ int invalid_maxspeed(const userinput * const u, const char *arg)
   return 0;
 }
 
-static int invalid_pack(const userinput * const u, int num)
+static unsigned int invalid_pack(const userinput * const u, unsigned int num)
 {
-  if (num < 1 || num > irlist_size(&gdata.xdccs)) {
+  if (num == 0 || num > irlist_size(&gdata.xdccs)) {
     a_respond(u, "Try Specifying a Valid Pack Number");
     return 1;
   }
   return 0;
 }
 
-int get_pack_nr(const userinput * const u, const char *arg)
+unsigned int get_pack_nr(const userinput * const u, const char *arg)
 {
-  int num;
+  unsigned int num;
 
   if (!arg || (arg[0] == 0))
     return 0;
@@ -552,23 +553,23 @@ int get_pack_nr(const userinput * const u, const char *arg)
   if (arg[0] == '#') ++arg;
   num = atoi(arg);
   if (invalid_pack(u, num) != 0)
-    return -1;
+    return 0;
   return num;
 }
 
-static int get_pack_nr2(const userinput * const u, const char *arg, int num1)
+static int get_pack_nr2(const userinput * const u, const char *arg, unsigned int num1)
 {
-  int num2 = num1;
+  unsigned int num2 = num1;
 
   if (arg) {
     num2 = get_pack_nr(u, arg);
-    if (num2 <= 0)
+    if (num2 == 0)
       return num2;
   }
 
   if ( num2 < num1 ) {
     a_respond(u, "Pack numbers are not in order");
-    return -1;
+    return 0;
   }
   return num2;
 }
@@ -609,7 +610,7 @@ static int group_hidden(const userinput * const u, xdcc *xd)
   return 1;
 }
 
-int group_restricted(const userinput * const u, xdcc *xd)
+unsigned int group_restricted(const userinput * const u, xdcc *xd)
 {
   if (group_hidden(u, xd) == 0)
     return 0;
@@ -618,12 +619,12 @@ int group_restricted(const userinput * const u, xdcc *xd)
   return 1;
 }
 
-static int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask)
+static unsigned int queue_host_remove(const userinput * const u, irlist_t *list, const char *hostmask)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
   char *hostmask2;
-  int changed = 0;
+  unsigned int changed = 0;
 
   for (pq = irlist_get_head(list); pq;) {
     hostmask2 = to_hostmask(pq->nick, pq->hostname);
@@ -651,11 +652,11 @@ static int queue_host_remove(const userinput * const u, irlist_t *list, const ch
   return changed;
 }
 
-static int queue_nick_remove(const userinput * const u, irlist_t *list, int network, const char *nick)
+static unsigned int queue_nick_remove(const userinput * const u, irlist_t *list, unsigned int network, const char *nick)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
-  int changed = 0;
+  unsigned int changed = 0;
 
   for (pq = irlist_get_head(list); pq;) {
     if (pq->net != network) {
@@ -701,7 +702,7 @@ static void a_cancel_transfers(xdcc *xd, const char *msg)
   }
 }
 
-static int a_remove_pack(const userinput * const u, xdcc *xd, int num)
+static unsigned int a_remove_pack(const userinput * const u, xdcc *xd, unsigned int num)
 {
   char *tmpdesc;
   char *tmpgroup;
@@ -752,7 +753,7 @@ void a_remove_delayed(const userinput * const u)
   struct stat *st;
   xdcc *xd;
   gnetwork_t *backup;
-  int n;
+  unsigned int n;
 
   updatecontext();
 
@@ -776,12 +777,12 @@ void a_remove_delayed(const userinput * const u)
   gnetwork = backup;
 }
 
-static int a_set_group(const userinput * const u, xdcc *xd, int num, const char *group)
+static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned int num, const char *group)
 {
   const char *newgroup;
   char *tmpdesc;
   char *tmpgroup;
-  int rc;
+  unsigned int rc;
 
   updatecontext();
 
@@ -816,13 +817,13 @@ static int a_set_group(const userinput * const u, xdcc *xd, int num, const char 
   xd->group = mystrdup(group);
   reorder_groupdesc(group);
   rc = add_default_groupdesc(group);
-  if (rc == 1)
+  if (rc != 0)
     a_respond(u, "New GROUPDESC: %s", group);
   set_support_groups();
   return rc;
 }
 
-static int a_access_file(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
+static unsigned int a_access_file(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
 {
   if (xfiledescriptor < 0) {
     a_respond(u, "Cant Access File: %s: %s", *file, strerror(errno));
@@ -937,7 +938,7 @@ static void a_sort_insert(xdcc *xdo, const char *k)
   xdcc *xdn;
   xdcc *xdl;
   char *tmpdesc;
-  int n;
+  unsigned int n;
 
   n = 0;
   xdl = NULL;
@@ -967,7 +968,7 @@ static void a_sort_insert(xdcc *xdo, const char *k)
   }
 }
 
-static void a_make_announce(const userinput * const u, const char *cmd, int n)
+static void a_make_announce(const userinput * const u, const char *cmd, unsigned int n)
 {
   char *tempstr;
   userinput *ui;
@@ -1052,7 +1053,7 @@ static int a_autoadd_color(void)
   return color;
 }
 
-static int check_for_renamed_file(const userinput * const u, xdcc *xd, struct stat *st, char *file)
+static unsigned int check_for_renamed_file(const userinput * const u, xdcc *xd, struct stat *st, char *file)
 {
   char *old;
   int xfiledescriptor;
@@ -1109,7 +1110,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
   char *a1;
   char *a2;
   const char *newfile;
-  int n;
+  unsigned int n;
 
   updatecontext();
 
@@ -1290,9 +1291,9 @@ void a_add_delayed(const userinput * const u)
 void a_xdlock(const userinput * const u)
 {
   char *tempstr;
-  int i;
-  int l;
-  int s;
+  unsigned int i;
+  unsigned int l;
+  unsigned int s;
   xdcc *xd;
 
   updatecontext();
@@ -1319,9 +1320,9 @@ void a_xdlock(const userinput * const u)
 void a_xdtrigger(const userinput * const u)
 {
   char *tempstr;
-  int i;
-  int l;
-  int s;
+  unsigned int i;
+  unsigned int l;
+  unsigned int s;
   xdcc *xd;
 
   updatecontext();
@@ -1352,10 +1353,10 @@ void a_find(const userinput * const u)
 {
   char *match;
   char *tempstr;
-  int i;
-  int k;
-  int l;
-  int s;
+  unsigned int i;
+  unsigned int k;
+  unsigned int l;
+  unsigned int s;
   xdcc *xd;
 
   updatecontext();
@@ -1399,7 +1400,7 @@ static void a_qul2(const userinput * const u, irlist_t *list)
 {
   ir_pqueue *pq;
   unsigned long rtime;
-  int i;
+  unsigned int i;
 
   updatecontext();
 
@@ -1505,7 +1506,7 @@ void a_listul(const userinput * const u)
 
 void a_unlimited(const userinput * const u)
 {
-  int num = -1;
+  unsigned int num = 0;
   transfer *tr;
 
   updatecontext();
@@ -1526,7 +1527,7 @@ void a_maxspeed(const userinput * const u)
 {
   transfer *tr;
   float val;
-  int num = 0;
+  unsigned int num = 0;
 
   updatecontext();
 
@@ -1549,7 +1550,7 @@ void a_maxspeed(const userinput * const u)
 
 void a_slotsmax(const userinput * const u)
 {
-  int val;
+  unsigned int val;
 
   updatecontext();
 
@@ -1575,7 +1576,7 @@ void a_queuesize(const userinput * const u)
 
 static void a_requeue2(const userinput * const u, irlist_t *list)
 {
-  int oldp = 0, newp = 0;
+  unsigned int oldp = 0, newp = 0;
   ir_pqueue *pqo;
   ir_pqueue *pqn;
 
@@ -1617,7 +1618,7 @@ void a_reiqueue(const userinput * const u)
   a_requeue2(u, &gdata.idlequeue);
 }
 
-static int is_system_dir(const char *name)
+static unsigned int is_system_dir(const char *name)
 {
   if (strcmp(name, ".") == 0)
     return 1;
@@ -1717,18 +1718,18 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
 
 void a_remove(const userinput * const u)
 {
-  int num1;
-  int num2;
+  unsigned int num1;
+  unsigned int num2;
   xdcc *xd;
 
   updatecontext();
 
   num1 = get_pack_nr(u, u->arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   num2 = get_pack_nr2(u, u->arg2, num1);
-  if (num2 <= 0)
+  if (num2 == 0)
     return;
 
   for (; num2 >= num1; --num2) {
@@ -1745,7 +1746,7 @@ static DIR *a_open_dir(char **dir)
   DIR *d;
   char *adir;
   char *path;
-  int n;
+  unsigned int n;
 
   strip_trailing_path(*dir);
 
@@ -1800,7 +1801,7 @@ void a_removedir(const userinput * const u)
 void a_removegroup(const userinput * const u)
 {
   xdcc *xd;
-  int n;
+  unsigned int n;
 
   updatecontext();
 
@@ -1825,7 +1826,7 @@ void a_removegroup(const userinput * const u)
   }
 }
 
-static void a_renumber1(const userinput * const u, int oldp, int newp)
+static void a_renumber1(const userinput * const u, unsigned int oldp, unsigned int newp)
 {
   xdcc *xdo;
   xdcc *xdn;
@@ -1846,19 +1847,19 @@ static void a_renumber1(const userinput * const u, int oldp, int newp)
 
 void a_renumber3(const userinput * const u)
 {
-  int oldp;
-  int endp;
-  int newp;
+  unsigned int oldp;
+  unsigned int endp;
+  unsigned int newp;
 
   updatecontext();
 
   oldp = get_pack_nr(u, u->arg1);
-  if (oldp < 0)
+  if (oldp == 0)
     return;
 
   if (u->arg3) {
     endp = get_pack_nr2(u, u->arg2, oldp);
-    if (endp <= 0)
+    if (endp == 0)
       return;
 
     newp = get_pack_nr(u, u->arg3);
@@ -1866,7 +1867,7 @@ void a_renumber3(const userinput * const u)
     endp = oldp;
     newp = get_pack_nr(u, u->arg2);
   }
-  if (newp <= 0)
+  if (newp == 0)
     return;
 
   if ((newp >= oldp) && (newp <= endp)) {
@@ -1924,7 +1925,7 @@ void a_sort(const userinput * const u)
 int a_open_file(char **file, int mode)
 {
   int xfiledescriptor;
-  int n;
+  unsigned int n;
   char *adir;
   char *path;
 
@@ -1954,7 +1955,7 @@ int a_open_file(char **file, int mode)
   return -1;
 }
 
-int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
+unsigned int a_access_fstat(const userinput * const u, int xfiledescriptor, char **file, struct stat *st)
 {
   if (a_access_file(u, xfiledescriptor, file, st))
     return 1;
@@ -1979,7 +1980,7 @@ void a_add(const userinput * const u)
   a_add2(u, NULL);
 }
 
-static int check_bad_filename(const char *filename)
+static unsigned int check_bad_filename(const char *filename)
 {
   if (strchr(filename, '/') != NULL)
     return 1;
@@ -1990,7 +1991,7 @@ static int check_bad_filename(const char *filename)
  return 0;
 }
 
-static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, int onlynew, const char *setgroup, const char *match)
+static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, unsigned int onlynew, const char *setgroup, const char *match)
 {
   userinput *u2;
   struct dirent f2;
@@ -2012,7 +2013,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
 
   for (;;) {
     xdcc *xd;
-    int foundit;
+    unsigned int foundit;
 
     if (a_readdir_sub(u, thedir, d, &f2, &f) != 0) {
        break;
@@ -2230,8 +2231,8 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
   struct dirent *f;
   struct stat st;
   char *tempstr;
-  int num;
-  int foundit = 0;
+  unsigned int num;
+  unsigned int foundit = 0;
 
   updatecontext();
 
@@ -2318,14 +2319,14 @@ void a_newgroup(const userinput * const u)
 
 void a_chdesc(const userinput * const u)
 {
-  int num;
+  unsigned int num;
   xdcc *xd;
   const char *newdesc;
 
   updatecontext();
 
   num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
@@ -2356,7 +2357,7 @@ void a_chtime(const userinput * const u)
   const char *format;
   char *oldstr;
   char *newstr;
-  int num;
+  unsigned int num;
   unsigned long val = 0;
   xdcc *xd;
   struct tm tmval;
@@ -2364,7 +2365,7 @@ void a_chtime(const userinput * const u)
   updatecontext();
 
   num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   if (!u->arg2e || !strlen(u->arg2e)) {
@@ -2398,14 +2399,14 @@ void a_chtime(const userinput * const u)
 
 void a_chlimit(const userinput * const u)
 {
-  int num;
+  unsigned int num;
   int val;
   xdcc *xd;
 
   updatecontext();
 
   num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   if (!u->arg2 || !strlen(u->arg2)) {
@@ -2433,13 +2434,13 @@ void a_chlimit(const userinput * const u)
 
 void a_chlimitinfo(const userinput * const u)
 {
-  int num;
+  unsigned int num;
   xdcc *xd;
 
   updatecontext();
 
   num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
@@ -2461,13 +2462,13 @@ void a_chlimitinfo(const userinput * const u)
 
 void a_chtrigger(const userinput * const u)
 {
-  int num;
+  unsigned int num;
   xdcc *xd;
 
   updatecontext();
 
   num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
@@ -2496,9 +2497,9 @@ void a_chtrigger(const userinput * const u)
 
 void a_deltrigger(const userinput * const u)
 {
-  int num1;
-  int num2;
-  int dirty;
+  unsigned int num1;
+  unsigned int num2;
+  unsigned int dirty;
   xdcc *xd;
 
   updatecontext();
@@ -2507,11 +2508,11 @@ void a_deltrigger(const userinput * const u)
     return;
 
   num1 = get_pack_nr(u, u->arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   num2 = get_pack_nr2(u, u->arg2, num1);
-  if (num2 <= 0)
+  if (num2 == 0)
     return;
 
   dirty = 0;
@@ -2533,12 +2534,12 @@ void a_deltrigger(const userinput * const u)
 
 void a_chcolor(const userinput * const u)
 {
-  int num1;
-  int num2;
-  int color = 0;
-  int color_fg = 0;
-  int color_bg = 0;
-  int color_st = 0;
+  unsigned int num1;
+  unsigned int num2;
+  unsigned int color = 0;
+  unsigned int color_fg = 0;
+  unsigned int color_bg = 0;
+  unsigned int color_st = 0;
   char *last;
   char *back;
   char *style;
@@ -2547,14 +2548,14 @@ void a_chcolor(const userinput * const u)
   updatecontext();
 
   num1 = get_pack_nr(u, u->arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   last = u->arg2;
   num2 = num1;
   if (u->arg3) {
     num2 = get_pack_nr2(u, u->arg2, num1);
-    if (num2 <= 0)
+    if (num2 == 0)
       return;
 
     last = u->arg3;
@@ -2592,20 +2593,20 @@ void a_lock(const userinput * const u)
 {
   xdcc *xd;
   char *pass;
-  int num1;
-  int num2;
+  unsigned int num1;
+  unsigned int num2;
 
   updatecontext();
 
   num1 = get_pack_nr(u, u->arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   pass = u->arg2;
   num2 = num1;
   if (u->arg3) {
     num2 = get_pack_nr2(u, u->arg2, num1);
-    if (num2 <= 0)
+    if (num2 == 0)
       return;
 
     pass = u->arg3;
@@ -2630,17 +2631,17 @@ void a_lock(const userinput * const u)
 void a_unlock(const userinput * const u)
 {
   xdcc *xd;
-  int num1;
-  int num2;
+  unsigned int num1;
+  unsigned int num2;
 
   updatecontext();
 
   num1 = get_pack_nr(u, u->arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   num2 = get_pack_nr2(u, u->arg2, num1);
-  if (num2 <= 0)
+  if (num2 == 0)
     return;
 
   for (; num1 <= num2; ++num1) {
@@ -2660,7 +2661,7 @@ void a_unlock(const userinput * const u)
 void a_lockgroup(const userinput * const u)
 {
   xdcc *xd;
-  int n;
+  unsigned int n;
 
   updatecontext();
 
@@ -2691,7 +2692,7 @@ void a_lockgroup(const userinput * const u)
 void a_unlockgroup(const userinput * const u)
 {
   xdcc *xd;
-  int n;
+  unsigned int n;
 
   updatecontext();
 
@@ -2719,7 +2720,7 @@ void a_unlockgroup(const userinput * const u)
 void a_relock(const userinput * const u)
 {
   xdcc *xd;
-  int n;
+  unsigned int n;
 
   updatecontext();
 
@@ -2749,7 +2750,7 @@ void a_relock(const userinput * const u)
 
 void a_groupdesc(const userinput * const u)
 {
-  int k;
+  unsigned int k;
 
   updatecontext();
 
@@ -2774,12 +2775,12 @@ void a_group(const userinput * const u)
 {
   xdcc *xd;
   const char *newgroup;
-  int num;
+  unsigned int num;
 
   updatecontext();
 
   num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
@@ -2805,17 +2806,17 @@ void a_group(const userinput * const u)
 void a_movegroup(const userinput * const u)
 {
   xdcc *xd;
-  int num1;
-  int num2;
+  unsigned int num1;
+  unsigned int num2;
 
   updatecontext();
 
   num1 = get_pack_nr(u, u->arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   num2 = get_pack_nr2(u, u->arg2, num1);
-  if (num2 <= 0)
+  if (num2 == 0)
     return;
 
   if (u->arg3 && strlen(u->arg3)) {
@@ -2838,7 +2839,7 @@ void a_regroup(const userinput * const u)
 {
   xdcc *xd;
   const char *g;
-  int k;
+  unsigned int k;
   int not_main;
 
   updatecontext();
@@ -2887,9 +2888,9 @@ void a_regroup(const userinput * const u)
 void a_md5(const userinput * const u)
 {
   xdcc *xd;
-  int von = 0;
-  int bis;
-  int num;
+  unsigned int von = 0;
+  unsigned int bis;
+  unsigned int num;
 
   updatecontext();
 
@@ -2903,11 +2904,11 @@ void a_md5(const userinput * const u)
     return;
 
   von = get_pack_nr(u, u->arg1);
-  if (von <= 0)
+  if (von == 0)
     return;
 
   bis = get_pack_nr2(u, u->arg2, von);
-  if (bis <= 0)
+  if (bis == 0)
     return;
 
   for (num = von; num <= bis; ++num) {
@@ -2928,19 +2929,19 @@ void a_crc(const userinput * const u)
 {
   const char *crcmsg;
   xdcc *xd;
-  int von;
-  int bis;
-  int num;
+  unsigned int von;
+  unsigned int bis;
+  unsigned int num;
 
   updatecontext();
 
   if (u->arg1) {
     von = get_pack_nr(u, u->arg1);
-    if (von <= 0)
+    if (von == 0)
       return;
 
     bis = get_pack_nr2(u, u->arg2, von);
-    if (bis <= 0)
+    if (bis == 0)
       return;
 
     for (num = von; num <= bis; ++num) {
@@ -2971,7 +2972,7 @@ void a_crc(const userinput * const u)
 
 void a_chfile(const userinput * const u)
 {
-  int num;
+  unsigned int num;
   int xfiledescriptor;
   struct stat st;
   char *file;
@@ -2981,7 +2982,7 @@ void a_chfile(const userinput * const u)
   updatecontext();
 
   num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   if (invalid_file(u, u->arg2) != 0)
@@ -3022,7 +3023,7 @@ void a_chfile(const userinput * const u)
   write_files();
 }
 
-static int a_newdir_check(const userinput * const u, const char *dir1, const char *dir2, xdcc *xd)
+static unsigned int a_newdir_check(const userinput * const u, const char *dir1, const char *dir2, xdcc *xd)
 {
   struct stat st;
   const char *off2;
@@ -3115,7 +3116,7 @@ void a_addnew(const userinput * const u)
 void a_newdir(const userinput * const u)
 {
   xdcc *xd;
-  int found;
+  unsigned int found;
 
   updatecontext();
 
@@ -3200,7 +3201,7 @@ void a_filemove(const userinput * const u)
   mydelete(file2);
 }
 
-static int a_movefile_sub(const userinput * const u, xdcc *xd, const char *newfile)
+static unsigned int a_movefile_sub(const userinput * const u, xdcc *xd, const char *newfile)
 {
   struct stat st;
   char *file1;
@@ -3232,7 +3233,7 @@ static int a_movefile_sub(const userinput * const u, xdcc *xd, const char *newfi
 void a_movefile(const userinput * const u)
 {
   xdcc *xd;
-  int num;
+  unsigned int num;
 
   updatecontext();
 
@@ -3240,7 +3241,7 @@ void a_movefile(const userinput * const u)
     return;
 
   num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   if (!u->arg2 || !strlen(u->arg2)) {
@@ -3262,7 +3263,7 @@ void a_movegroupdir(const userinput * const u)
   char *thedir;
   char *tempstr;
   const char *g;
-  int foundit;
+  unsigned int foundit;
 
   updatecontext();
 
@@ -3326,8 +3327,8 @@ void a_filedel(const userinput * const u)
 
 void a_fileremove(const userinput * const u)
 {
-  int num1;
-  int num2;
+  unsigned int num1;
+  unsigned int num2;
   xdcc *xd;
   char *filename;
 
@@ -3337,11 +3338,11 @@ void a_fileremove(const userinput * const u)
     return;
 
   num1 = get_pack_nr(u, u->arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   num2 = get_pack_nr2(u, u->arg2, num1);
-  if (num2 <= 0)
+  if (num2 == 0)
     return;
 
   for (; num2 >= num1; --num2) {
@@ -3438,7 +3439,7 @@ void a_fetch(const userinput * const u)
 
 void a_fetchcancel(const userinput * const u)
 {
-  int num = 0;
+  unsigned int num = 0;
 
   updatecontext();
 
@@ -3476,7 +3477,7 @@ static void a_announce_channels(const char *msg, const char *match, const char *
 
 void a_amsg(const userinput * const u)
 {
-  int ss;
+  unsigned int ss;
   gnetwork_t *backup;
 
   updatecontext();
@@ -3583,7 +3584,7 @@ void a_mesg(const userinput * const u)
 
 void a_mesq(const userinput * const u)
 {
-  int count;
+  unsigned int count;
   ir_pqueue *pq;
   gnetwork_t *backup;
 
@@ -3593,7 +3594,7 @@ void a_mesq(const userinput * const u)
     return;
 
   backup = gnetwork;
-  count=0;
+  count = 0;
   for (pq = irlist_get_head(&gdata.mainqueue);
        pq;
        pq = irlist_get_next(pq)) {
@@ -3609,7 +3610,7 @@ static void a_bann_hostmask(const userinput * const u, const char *arg)
 {
   transfer *tr;
   char *hostmask;
-  int changed = 0;
+  unsigned int changed = 0;
 
   /* XDCC REMOVE */
   queue_host_remove(u, &gdata.idlequeue, arg);
@@ -3646,7 +3647,7 @@ void a_bannnick(const userinput * const u)
   gnetwork_t *backup;
   transfer *tr;
   char *nick;
-  int changed = 0;
+  unsigned int changed = 0;
   int net = 0;
 
   net = get_network_msg(u, u->arg2);
@@ -3663,9 +3664,9 @@ void a_bannnick(const userinput * const u)
   gnetwork = &(gdata.networks[net]);
 
   /* XDCC REMOVE */
-  queue_nick_remove(u, &gdata.idlequeue, net, nick);
-  changed = queue_nick_remove(u, &gdata.mainqueue, net, nick);
-  if (changed >0)
+  queue_nick_remove(u, &gdata.idlequeue, (unsigned int)net, nick);
+  changed = queue_nick_remove(u, &gdata.mainqueue, (unsigned int)net, nick);
+  if (changed > 0)
     write_statefile();
 
   /* XDCC CANCEL */
@@ -3675,7 +3676,7 @@ void a_bannnick(const userinput * const u)
     if (tr->tr_status == TRANSFER_STATUS_DONE)
       continue;
 
-    if (tr->net != net)
+    if (tr->net != (unsigned int)net)
       continue;
 
     if (strcasecmp(tr->nick, nick) != 0)
@@ -3742,7 +3743,7 @@ void a_get(const userinput * const u)
 {
   qupload_t *qu;
   int net;
-  int found;
+  unsigned int found;
 
   updatecontext();
 
@@ -3766,21 +3767,21 @@ void a_get(const userinput * const u)
     start_qupload();
     return;
   }
-  found = close_qupload(net, u->arg2);
+  found = close_qupload((unsigned int)net, u->arg2);
   if ( found > 0 )
     a_respond(u, "GET %s deactivated", u->arg2);
 }
 
 static void a_rmq2(const userinput * const u, irlist_t *list)
 {
-  int num = 0;
+  unsigned int num = 0;
   ir_pqueue *pq;
   gnetwork_t *backup;
 
   updatecontext();
 
   if (u->arg1) num = atoi(u->arg1);
-  if (num < 1) {
+  if (num == 0) {
     a_respond(u, "Invalid ID number, Try \"QUL\" for a list");
     return;
   }
@@ -3894,7 +3895,7 @@ void a_lag(const userinput * const u)
 {
   gnetwork_t *backup;
   int net;
-  int ss;
+  unsigned int ss;
 
   net = get_network_msg(u, u->arg1);
   if (net < 0)
@@ -3936,7 +3937,7 @@ void a_hop(const userinput * const u)
 {
   gnetwork_t *backup;
   int net;
-  int ss;
+  unsigned int ss;
 
   updatecontext();
 
@@ -3961,7 +3962,7 @@ void a_nochannel(const userinput * const u)
 {
   channel_t *ch;
   gnetwork_t *backup;
-  int ss;
+  unsigned int ss;
   int val = 0;
 
   updatecontext();
@@ -4061,7 +4062,7 @@ void a_part(const userinput * const u)
 void a_servqc(const userinput * const u)
 {
   gnetwork_t *backup;
-  int ss;
+  unsigned int ss;
 
   updatecontext();
 
@@ -4081,7 +4082,7 @@ void a_servqc(const userinput * const u)
 
 void a_nomd5(const userinput * const u)
 {
-  int num = 0;
+  unsigned int num = 0;
 
   updatecontext();
 
@@ -4233,7 +4234,7 @@ void a_autogroup(const userinput * const u)
   char *tempstr;
   char *newgroup;
   xdcc *xd;
-  int num;
+  unsigned int num;
 
   num = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
@@ -4278,7 +4279,7 @@ void a_send(const userinput * const u)
   xdcc *xd;
   transfer *tr;
   gnetwork_t *backup;
-  int num;
+  unsigned int num;
   int net;
 
   updatecontext();
@@ -4291,7 +4292,7 @@ void a_send(const userinput * const u)
     return;
 
   num = get_pack_nr(u, u->arg2);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   xd = get_xdcc_pack(num);
@@ -4309,11 +4310,11 @@ void a_send(const userinput * const u)
   gnetwork = backup;
 }
 
-static int a_queue_found(const userinput * const u, xdcc *xd, int num)
+static unsigned int a_queue_found(const userinput * const u, xdcc *xd, unsigned int num)
 {
   const char *hostname = "man";
-  int alreadytrans;
-  int inq;
+  unsigned int alreadytrans;
+  unsigned int inq;
 
   updatecontext();
 
@@ -4330,7 +4331,7 @@ static int a_queue_found(const userinput * const u, xdcc *xd, int num)
 /* this function imported from iroffer-lamm */
 void a_queue(const userinput * const u)
 {
-  int num;
+  unsigned int num;
   xdcc *xd;
   char *tempstr;
   const char *msg;
@@ -4347,7 +4348,7 @@ void a_queue(const userinput * const u)
     return;
 
   num = get_pack_nr(u, u->arg2);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
@@ -4369,7 +4370,7 @@ void a_queue(const userinput * const u)
   }
 }
 
-static int a_iqueue_sub(const userinput * const u, xdcc *xd, int num, int net)
+static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned int num, unsigned int net)
 {
   char *tempstr;
   const char *msg;
@@ -4393,11 +4394,11 @@ static int a_iqueue_sub(const userinput * const u, xdcc *xd, int num, int net)
   return 0;
 }
 
-static int a_iqueue_group(const userinput * const u, const char *what, int net)
+static unsigned int a_iqueue_group(const userinput * const u, const char *what, unsigned int net)
 {
   xdcc *xd;
-  int num;
-  int found;
+  unsigned int num;
+  unsigned int found;
 
   updatecontext();
 
@@ -4418,13 +4419,12 @@ static int a_iqueue_group(const userinput * const u, const char *what, int net)
   return found;
 }
 
-static int a_iqueue_search(const userinput * const u, const char *what, int net)
+static unsigned int a_iqueue_search(const userinput * const u, const char *what, unsigned int net)
 {
   char *end;
-  int num;
-  int found;
-  int first;
-  int last;
+  unsigned int found;
+  unsigned int first;
+  unsigned int last;
 
   found = a_iqueue_group(u, what, net);
   if (found != 0)
@@ -4435,17 +4435,17 @@ static int a_iqueue_search(const userinput * const u, const char *what, int net)
   /* range */
   if (*what == '#') ++what;
   end = strchr(what, '-');
+  first = atoi(what);
   if (end == NULL) {
     ++found;
     a_iqueue_sub(u, NULL, first, net);
     return found;
   }
-  first = atoi(what);
   if (*(++end) == '#') ++end;
   last = atoi(end);
-  for (num = first; num <= last; ++num) {
+  for (; first <= last; ++first) {
     ++found;
-    a_iqueue_sub(u, NULL, num, net);
+    a_iqueue_sub(u, NULL, first, net);
   }
   return found;
 }
@@ -4467,7 +4467,7 @@ void a_iqueue(const userinput * const u)
     return;
   }
 
-  if (a_iqueue_search(u, u->arg2, net) == 0) {
+  if (a_iqueue_search(u, u->arg2, (unsigned int)net) == 0) {
     a_respond(u, "Try Specifying a Valid Pack Number");
     return;
   }
@@ -4480,7 +4480,7 @@ void a_iqueue(const userinput * const u)
   }
 }
 
-static void a_announce_msg(const userinput * const u, const char *match, int num, const char *msg)
+static void a_announce_msg(const userinput * const u, const char *match, unsigned int num, const char *msg)
 {
   gnetwork_t *backup;
   xdcc *xd;
@@ -4489,7 +4489,7 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
   char *tempstr3;
   char *colordesc;
   char *datestr;
-  int ss;
+  unsigned int ss;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
@@ -4537,17 +4537,17 @@ static void a_announce_msg(const userinput * const u, const char *match, int num
 
 static void a_announce_sub(const userinput * const u, const char *arg1, const char *arg2, char *msg)
 {
-  int num1;
-  int num2;
+  unsigned int num1;
+  unsigned int num2;
 
   updatecontext();
 
   num1 = get_pack_nr(u, arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   num2 = get_pack_nr2(u, arg2, num1);
-  if (num2 <= 0)
+  if (num2 == 0)
     return;
 
   if (msg != NULL)
@@ -4568,7 +4568,7 @@ void a_mannounce(const userinput * const u)
   a_announce_sub(u, u->arg1, u->arg2, u->arg3e);
 }
 
-static int a_new_announce(int max)
+static unsigned int a_new_announce(unsigned int max)
 {
   struct tm *localt = NULL;
   irlist_t list;
@@ -4580,7 +4580,7 @@ static int a_new_announce(int max)
   char *colordesc;
   time_t now;
   ssize_t llen;
-  int i;
+  unsigned int i;
 
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
 
@@ -4616,13 +4616,13 @@ static int a_new_announce(int max)
 void a_newann(const userinput * const u)
 {
   gnetwork_t *backup;
-  int ss;
-  int max = 0;
+  unsigned int ss;
+  unsigned int max = 0;
 
   updatecontext();
 
   if (u->arg1) max = atoi (u->arg1);
-  if (max <= 0)
+  if (max == 0)
     return;
 
   backup = gnetwork;
@@ -4636,7 +4636,7 @@ void a_newann(const userinput * const u)
 
 void a_cannounce(const userinput * const u)
 {
-  int num;
+  unsigned int num;
 
   updatecontext();
 
@@ -4644,7 +4644,7 @@ void a_cannounce(const userinput * const u)
     return;
 
   num = get_pack_nr(u, u->arg2);
-  if (num <= 0)
+  if (num == 0)
     return;
 
   a_announce_msg(u, u->arg1, num, u->arg3e);
@@ -4652,23 +4652,23 @@ void a_cannounce(const userinput * const u)
 
 void a_sannounce(const userinput * const u)
 {
-  int num1;
-  int num2;
+  unsigned int num1;
+  unsigned int num2;
   xdcc *xd;
   char *tempstr;
   char *tempstr3;
   char *colordesc;
-  int ss;
+  unsigned int ss;
   gnetwork_t *backup;
 
   updatecontext();
 
   num1 = get_pack_nr(u, u->arg1);
-  if (num1 <= 0)
+  if (num1 == 0)
     return;
 
   num2 = get_pack_nr2(u, u->arg2, num1);
-  if (num2 <= 0)
+  if (num2 == 0)
     return;
 
   for (; num1 <= num2; ++num1) {
@@ -4715,7 +4715,7 @@ void a_addann(const userinput * const u)
 
 void a_noannounce(const userinput * const u)
 {
-  int num = 0;
+  unsigned int num = 0;
 
   updatecontext();
 

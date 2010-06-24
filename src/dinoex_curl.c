@@ -28,8 +28,8 @@
 typedef struct
 {
   userinput u;
-  int id;
-  int net;
+  unsigned int id;
+  unsigned int net;
   char *name;
   char *url;
   char *vhosttext;
@@ -42,7 +42,7 @@ typedef struct
 
 static CURLM *cm;
 static irlist_t fetch_trans;
-static int fetch_id;
+static unsigned int fetch_id;
 int fetch_started;
 
 /* setup the curl lib */
@@ -106,7 +106,7 @@ static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
 }
 
 /* cancel a running fetch command */
-int fetch_cancel(int num)
+unsigned int fetch_cancel(unsigned int num)
 {
   fetch_curl_t *ft;
   CURLMcode cms;
@@ -139,7 +139,7 @@ void fetch_perform(void)
   CURL *ch;
   int running;
   int msgs_in_queue;
-  int seen = 0;
+  unsigned int seen = 0;
   fetch_curl_t *ft;
   gnetwork_t *backup;
 
@@ -193,7 +193,7 @@ static void curl_respond(const userinput *const u, const char *text, CURLcode ce
   a_respond(u, "curl_easy_setopt %s failed with %d", text, ces);
 }
 
-static int curl_fetch(const userinput *const u, fetch_curl_t *ft)
+static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 {
   CURL *ch;
   CURLcode ces;
@@ -435,7 +435,7 @@ void dinoex_dcld(const userinput *const u)
 }
 
 /* check if a file is already in transfer */
-int fetch_is_running(const char *file)
+unsigned int fetch_is_running(const char *file)
 {
   fetch_curl_t *ft;
 

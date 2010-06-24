@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2009 Dirk Meyer
+ * Copyright (C) 2004-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -21,6 +21,6 @@ void
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
-exit_iroffer(int gotsignal);
+exit_iroffer(unsigned int gotsignal);
 
 /* End of File */

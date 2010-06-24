@@ -44,7 +44,7 @@ xdcc xdcc_statefile;
 xdcc xdcc_listfile;
 
 /* returns true if pack should not be listed */
-int hide_pack(const xdcc *xd)
+unsigned int hide_pack(const xdcc *xd)
 {
   if (gdata.hidelockedpacks == 0)
     return 0;
@@ -56,7 +56,7 @@ int hide_pack(const xdcc *xd)
 }
 
 /* returns the current number of the pack */
-int number_of_pack(xdcc *pack)
+unsigned int number_of_pack(xdcc *pack)
 {
   xdcc *xd;
   int n;
@@ -64,7 +64,7 @@ int number_of_pack(xdcc *pack)
   updatecontext();
 
   if (pack == &xdcc_listfile)
-    return -1;
+    return XDCC_SEND_LIST;
 
   n = 0;
   xd = irlist_get_head(&gdata.xdccs);
@@ -81,7 +81,7 @@ int number_of_pack(xdcc *pack)
 
 static int get_level(void)
 {
-  if (gnetwork->need_level >= 0)
+  if (gnetwork->need_level != 2)
     return gnetwork->need_level;
 
   return gdata.need_level;
@@ -89,16 +89,16 @@ static int get_level(void)
 
 static int get_voice(void)
 {
-  if (gnetwork->need_voice >= 0)
+  if (gnetwork->need_voice != 2)
     return gnetwork->need_voice;
 
   return gdata.need_voice;
 }
 
 /* returns true if prefix of user matches need_level */
-int check_level(int prefix)
+unsigned int check_level(int prefix)
 {
-  int ii;
+  unsigned int ii;
   int need_level;
   int level;
 
@@ -187,7 +187,7 @@ unsigned long get_next_transfer_time(void)
 void add_new_transfer_time(xdcc *xd)
 {
   float speed = 0.0;
-  int nolimit = 1;
+  unsigned int nolimit = 1;
   int left;
 
   if (gdata.overallmaxspeed > 0) {
@@ -220,7 +220,7 @@ void guess_end_transfers(void)
   remaining_transfer_time *rm;
   remaining_transfer_time *rmlast;
   int left;
-  int i;
+  unsigned int i;
 
   updatecontext();
 
@@ -266,12 +266,12 @@ void guess_end_cleanup(void)
   irlist_delete_all(&end_trans);
 }
 
-static int notifyqueued_queue(irlist_t *list, const char *nick, const char *ntime, int idle)
+static unsigned int notifyqueued_queue(irlist_t *list, const char *nick, const char *ntime, unsigned int idle)
 {
   ir_pqueue *pq;
   unsigned long rtime;
   int i = 0;
-  int found = 0;
+  unsigned int found = 0;
 
   updatecontext();
   i = 0;
@@ -311,11 +311,11 @@ static int notifyqueued_queue(irlist_t *list, const char *nick, const char *ntim
 }
 
 /* infom the user of each pack in main queue and the first pack in idle queue */
-int notifyqueued_nick(const char *nick)
+unsigned int notifyqueued_nick(const char *nick)
 {
   struct tm *localt;
   char ntime[ 16 ];
-  int found = 0;
+  unsigned int found = 0;
 
   updatecontext();
 
@@ -389,7 +389,7 @@ void startup_dinoex(void)
 static void global_defaults(void)
 {
   gnetwork_t *backup;
-  int ss;
+  unsigned int ss;
 
   if (!gdata.group_seperator)
     gdata.group_seperator = mystrdup(" ");
@@ -465,7 +465,7 @@ void rehash_dinoex(void)
 }
 
 /* init a pack with the information from disk */
-int init_xdcc_file(xdcc *xd, char *file)
+unsigned int init_xdcc_file(xdcc *xd, char *file)
 {
   struct stat st;
   int xfiledescriptor;
@@ -512,12 +512,12 @@ static int send_xdcc_file(xdcc *xd, char *file, const char *nick, const char *ho
 }
 
 /* send statefile once a hour */
-void update_hour_dinoex(int minute)
+void update_hour_dinoex(unsigned int minute)
 {
   xdcc *xd;
   transfer *tr;
-  int lastminute;
-  int net = 0;
+  unsigned int lastminute;
+  unsigned int net = 0;
 
   if (!gdata.send_statefile)
     return;
@@ -578,7 +578,7 @@ char *grep_to_fnmatch(const char *grep)
 }
 
 /* check if a pack matches a fnmatch search */
-int fnmatch_xdcc(const char *match, xdcc *xd)
+unsigned int fnmatch_xdcc(const char *match, xdcc *xd)
 {
   const char *file;
   char datestr[maxtextlengthshort];
@@ -601,7 +601,7 @@ int fnmatch_xdcc(const char *match, xdcc *xd)
 }
 
 /* check for disk full on uploads */
-int disk_full(const char *path)
+unsigned int disk_full(const char *path)
 {
 #ifndef NO_STATVFS
   struct statvfs stf;
@@ -657,15 +657,15 @@ char *get_nickserv_pass(void)
 }
 
 /* get restrictsend for current network */
-int get_restrictsend(void)
+unsigned int get_restrictsend(void)
 {
-  return (gnetwork->restrictsend != -1) ? gnetwork->restrictsend : gdata.restrictsend;
+  return (gnetwork->restrictsend != 2) ? gnetwork->restrictsend : gdata.restrictsend;
 }
 
 /* get pack by number, pack -1 is the xdcc_listfile */
-xdcc *get_xdcc_pack(int pack)
+xdcc *get_xdcc_pack(unsigned int pack)
 {
-  if (pack == -1)
+  if (pack == XDCC_SEND_LIST)
     return &xdcc_listfile;
 
   return irlist_get_nth(&gdata.xdccs, pack - 1);
@@ -694,7 +694,7 @@ static const char *access_need_text(void)
 }
 
 /* check level and inform the user which level he needs */
-int access_need_level(const char *nick, const char *text)
+unsigned int access_need_level(const char *nick, const char *text)
 {
   const char *level;
 
@@ -710,11 +710,11 @@ int access_need_level(const char *nick, const char *text)
 }
 
 /* returns true if dir use parent */
-int is_unsave_directory(const char *dir)
+unsigned int is_unsave_directory(const char *dir)
 {
   char *line;
   char *word;
-  int bad = 0;
+  unsigned int bad = 0;
 
   /* no device letters */
   if (strchr(dir, ':'))
@@ -783,7 +783,7 @@ char *get_current_bandwidth(void)
 {
   char *tempstr;
   ir_uint64 xdccsent;
-  int i;
+  unsigned int i;
 
   for (i=0, xdccsent=0; i<XDCC_SENT_SIZE; ++i) {
     xdccsent += (ir_uint64)gdata.xdccsent[i];
@@ -795,7 +795,7 @@ char *get_current_bandwidth(void)
 }
 
 /* inform the user a trasferlimit has reahed */
-char *transfer_limit_exceeded_msg(int ii)
+char *transfer_limit_exceeded_msg(unsigned int ii)
 {
    char *tempstr = mycalloc(maxtextlength);
    char *tempstr2 = mycalloc(maxtextlengthshort);
@@ -874,7 +874,7 @@ const char *get_grouplist_channel(const char *dest)
   return NULL;
 }
 
-static int verify_bits(int bits, const unsigned char *data1, const unsigned char *data2)
+static unsigned int verify_bits(unsigned int bits, const unsigned char *data1, const unsigned char *data2)
 {
   unsigned char ch1;
   unsigned char ch2;
@@ -903,7 +903,7 @@ static int verify_bits(int bits, const unsigned char *data1, const unsigned char
 }
 
 /* chek if socket if it matches a list of networks */
-int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
+unsigned int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote)
 {
   ir_cidr_t *cidr;
   const unsigned char *data1;
@@ -974,12 +974,10 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist)
 }
 
 /* select a transfer to start with */
-int select_starting_transfer(int max)
+int select_starting_transfer(unsigned int max)
 {
-  int t;
+  unsigned int t;
 
-  if (max < 0)
-    max = 0;
   t = gdata.cursendptr;
   if (++t > max)
     t = 0;
@@ -1010,9 +1008,9 @@ static const char *style_on[ 16 ] = {
 char *xd_color_description(const xdcc *xd)
 {
    char *colordesc;
-   int foreground;
-   int background;
-   int style;
+   unsigned int foreground;
+   unsigned int background;
+   unsigned int style;
 
    if (xd->color == 0)
      return xd->desc;
@@ -1051,7 +1049,7 @@ void auto_rehash(void)
 {
   struct stat st;
   int filedescriptor;
-  int h;
+  unsigned int h;
 
   updatecontext();
 

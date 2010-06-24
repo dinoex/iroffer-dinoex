@@ -104,10 +104,10 @@ static void mainloop (void) {
    userinput *pubplist;
    userinput *urehash;
    ir_uint64 xdccsent;
-   int i, j;
+   unsigned int i, j;
    int length;
    int highests;
-   int ss;
+   unsigned int ss;
    upload *ul;
    transfer *tr;
    channel_t *ch;
@@ -433,7 +433,7 @@ static void mainloop (void) {
          else
            {
              j=strlen(gnetwork->server_input_line);
-             for (i=0; i<length; i++)
+             for (i=0; i<(unsigned int)length; i++)
                {
                  if ((tempbuffa[i] == '\n') || (j == (INPUT_BUFFER_LENGTH-1)))
                    {
@@ -571,7 +571,7 @@ static void mainloop (void) {
       
       if (changesec && gnetwork->serverstatus == SERVERSTATUS_RESOLVING)
         {
-          int timeout;
+          unsigned int timeout;
           timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
           
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
@@ -585,7 +585,7 @@ static void mainloop (void) {
       
       if (changesec && ((gnetwork->serverstatus == SERVERSTATUS_TRYING) || (gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE)))
         {
-          int timeout;
+          unsigned int timeout;
           timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
           
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
@@ -760,7 +760,7 @@ static void mainloop (void) {
                   else
                     {
                       j=strlen(chat->dcc_input_line);
-                      for (i=0; i<length; i++)
+                      for (i=0; i<(unsigned int)length; i++)
                         {
                           if ((tempbuffa[i] == '\n') || (j == (INPUT_BUFFER_LENGTH-1)))
                             {
@@ -962,9 +962,9 @@ static void mainloop (void) {
             struct tm *localt;
             localt = localtime(&gdata.curtime);
 
-            if (localt->tm_hour >= gdata.overallmaxspeeddaytimestart
-                && localt->tm_hour < gdata.overallmaxspeeddaytimeend
-                && ( gdata.overallmaxspeeddaydays & (1 << localt->tm_wday)) )
+            if ((unsigned int)localt->tm_hour >= gdata.overallmaxspeeddaytimestart
+                && (unsigned int)localt->tm_hour < gdata.overallmaxspeeddaytimeend
+                && ( gdata.overallmaxspeeddaydays & (1 << (unsigned int)localt->tm_wday)) )
                gdata.maxb = gdata.overallmaxspeeddayspeed;
             }
          }
@@ -972,8 +972,8 @@ static void mainloop (void) {
       /*----- see if we've hit a transferlimit or need to reset counters */
       if (changesec)
         {
-          int ii;
-          int transferlimits_over = 0;
+          unsigned int ii;
+          unsigned int transferlimits_over = 0;
           for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
             {
               /* reset counters? */
@@ -1079,14 +1079,14 @@ static void mainloop (void) {
           while(ignore)
             {
               ignore->bucket--;
-              if ((ignore->flags & IGN_IGNORING) && (ignore->bucket < 0))
+              if ((ignore->flags & IGN_IGNORING) && (ignore->bucket == 0))
                 {
                   ignore->flags &= ~IGN_IGNORING;
                   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
                           "Ignore removed for %s",ignore->hostmask);
                   write_statefile();
                 }
-              if (ignore->bucket < 0)
+              if (ignore->bucket == 0)
                 {
                   mydelete(ignore->hostmask);
                   ignore = irlist_delete(&gdata.ignorelist, ignore);
@@ -1572,7 +1572,7 @@ static void mainloop (void) {
       
       if (!gdata.nomd5sum && changesec && (!gdata.md5build.xpack))
         {
-          int packnum = 1;
+          unsigned int packnum = 1;
           /* see if any pack needs a md5sum calculated */
           if (gdata.nomd5_start <= gdata.curtime)
           for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd), packnum++)
@@ -1781,7 +1781,7 @@ static void parseline(char *line) {
            if (!strncmp("PREFIX=(", item, 8))
              {
                char *ptr = item+8;
-               int pi;
+               unsigned int pi;
                memset(&(gnetwork->prefixes), 0, sizeof(gnetwork->prefixes));
                for (pi = 0; (ptr[pi] && (ptr[pi] != ')') && (pi < MAX_PREFIX)); pi++)
                  {
@@ -1811,8 +1811,8 @@ static void parseline(char *line) {
            if (!strncmp("CHANMODES=", item, 10))
              {
                char *ptr = item+10;
-               int ci;
-               int cm;
+               unsigned int ci;
+               unsigned int cm;
                memset(&(gnetwork->chanmodes), 0, sizeof(gnetwork->chanmodes));
                for (ci = cm = 0; (ptr[ci] && (cm < MAX_CHANMODES)); ci++)
                  {
@@ -2201,7 +2201,7 @@ static void parseline(char *line) {
                  }
                else
                  {
-                   int ii;
+                   unsigned int ii;
                    for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_mode); ii++)
                      {
                        if (*ptr == gnetwork->prefixes[ii].p_mode)

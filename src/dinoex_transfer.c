@@ -150,7 +150,7 @@ static void notice_transfer(const char *nick, xdcc *xd, const char *msg)
 }
 
 /* inform the user that the bot is starting a transfer */
-void t_notice_transfer(transfer * const tr, const char *msg, int pack, int queue)
+void t_notice_transfer(transfer * const tr, const char *msg, unsigned int pack, unsigned int queue)
 {
   char *tempstr;
 
@@ -173,7 +173,7 @@ void t_notice_transfer(transfer * const tr, const char *msg, int pack, int queue
 }
 
 /* check ip for matching blacklist and whitelist */
-int t_check_ip_access(transfer *const tr)
+unsigned int t_check_ip_access(transfer *const tr)
 {
   const char *msg;
   if (irlist_size(&gdata.xdcc_allow) > 0) {
@@ -283,10 +283,10 @@ static void t_find_debug(const char *nick, const char *filename, const char *rem
 }
 
 /* search the DDC transfer a user wants to accept */
-int t_find_transfer(const char *nick, const char *filename, const char *remoteip, const char *remoteport, const char *token)
+unsigned int t_find_transfer(const char *nick, const char *filename, const char *remoteip, const char *remoteport, const char *token)
 {
   transfer *tr;
-  int myid;
+  unsigned int myid;
 
   if (atoi(remoteport) == 0)
     return 0;
@@ -311,7 +311,7 @@ int t_find_transfer(const char *nick, const char *filename, const char *remoteip
 }
 
 /* search the DDC transfer a user wants to resume */
-int t_find_resume(const char *nick, const char *filename, const char *localport, const char *bytes, char *token)
+unsigned int t_find_resume(const char *nick, const char *filename, const char *localport, const char *bytes, char *token)
 {
   char *sendnamestr;
   transfer *guess;
@@ -410,8 +410,8 @@ static void t_check_duplicateip(transfer *const newtr)
   igninfo *ignore;
   char *bhostmask;
   transfer *tr;
-  int found;
-  int num;
+  unsigned int found;
+  unsigned int num;
 
   if (!gdata.ignoreduplicateip)
     return;
@@ -424,7 +424,6 @@ static void t_check_duplicateip(transfer *const newtr)
   if (newtr->con.family != AF_INET)
     return;
 
-  num = 24 * 60; /* 1 day */
   found = 0;
   for (tr = irlist_get_head(&gdata.trans);
        tr;
@@ -442,6 +441,7 @@ static void t_check_duplicateip(transfer *const newtr)
   if (found <= gdata.maxtransfersperperson)
     return;
 
+  num = 24 * 60; /* 1 day */
   for (tr = irlist_get_head(&gdata.trans);
        tr;
        tr = irlist_get_next(tr)) {
@@ -478,9 +478,9 @@ void t_check_new_connection(transfer *const tr)
 }
 
 /* find out how many bytes the user has received */
-int verify_acknowlede(transfer *tr)
+unsigned int verify_acknowlede(transfer *tr)
 {
-  int show = 0;
+  unsigned int show = 0;
   off_t halfack;
 
   if (tr->mirc_dcc64 != 0)
@@ -548,7 +548,7 @@ int t_select_fdset(int highests, int changequartersec)
 {
   transfer *tr;
   unsigned long sum;
-  int overlimit;
+  unsigned int overlimit;
 
   sum = gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE]
       + gdata.xdccsent[(gdata.curtime - 1)%XDCC_SENT_SIZE]

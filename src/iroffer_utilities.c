@@ -138,7 +138,7 @@ char* getdatestr(char* str, time_t Tp, size_t len)
   return str;
 }
 
-char* getuptime(char *str, int type, time_t fromwhen, size_t len)
+char* getuptime(char *str, unsigned int type, time_t fromwhen, size_t len)
 {
   int days, hours, mins;
   long temp;
@@ -554,8 +554,8 @@ static unsigned long mycalloc_hash(void *ptr)
 static void meminfo_grow(int grow)
 {
   meminfo_t *newmeminfo;
-  int cc;
-  int dd;
+  unsigned int cc;
+  unsigned int dd;
   size_t len;
   int i;
   int start;
@@ -624,9 +624,9 @@ static void meminfo_grow(int grow)
 }
 
 void* mymalloc2(size_t len, int zero,
-                const char *src_function, const char *src_file, int src_line) {
+                const char *src_function, const char *src_file, unsigned int src_line) {
    void *t = NULL;
-   int i;
+   unsigned int i;
    unsigned long start;
    
    updatecontext();
@@ -640,7 +640,7 @@ void* mymalloc2(size_t len, int zero,
    
    if (gdata.meminfo_count >= ((MEMINFOHASHSIZE * gdata.meminfo_depth) / 2))
      {
-       meminfo_grow(gdata.meminfo_depth/3 + 1);
+       meminfo_grow((int)(gdata.meminfo_depth/3 + 1));
      }
    
    start = mycalloc_hash(t) * gdata.meminfo_depth;
@@ -663,7 +663,7 @@ void* mymalloc2(size_t len, int zero,
 
 void mydelete2(void *t) {
    unsigned char *ut = (unsigned char *)t;
-   int i;
+   unsigned int i;
    unsigned long start;
    
    updatecontext();
@@ -717,7 +717,7 @@ void mydelete2(void *t) {
 
 #endif /* WITHOUT_MEMSAVE */
 
-void updatecontext_f(const char *file, const char *func, int line)
+void updatecontext_f(const char *file, const char *func, unsigned int line)
 {
   context_t *c;
   
@@ -750,7 +750,7 @@ void updatecontext_f(const char *file, const char *func, int line)
 
 void dumpcontext(void)
 {
-  int i;
+  unsigned int i;
   context_t *c;
   
   for (i=0; i<MAXCONTEXTS; i++)
@@ -847,8 +847,8 @@ void dumpcontext(void)
 
 void dumpgdata(void)
 {
-  int ii;
-  int ss;
+  unsigned int ii;
+  unsigned int ss;
   char ip6[maxtextlengthshort];
   
   dump_line("iroffer-dinoex " VERSIONLONG FEATURES);
@@ -1489,7 +1489,7 @@ void addtomemberlist(channel_t *c, const char *nick)
  more:
   if (*nick)
     {
-      int pi;
+      unsigned int pi;
       for (pi = 0; ((pi < MAX_PREFIX) && gnetwork->prefixes[pi].p_symbol); pi++)
         {
           if (*nick == gnetwork->prefixes[pi].p_symbol)
@@ -1564,7 +1564,7 @@ void removefrommemberlist(channel_t *c, const char *nick)
 void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, int add)
 {
   member_t *member;
-  int pi;
+  unsigned int pi;
   
   updatecontext();
   
@@ -1848,7 +1848,7 @@ char* convert_to_unix_slash(char *ss)
 
 #ifndef WITHOUT_MEMSAVE
 void* irlist_add2(irlist_t *list, unsigned int size,
-                  const char *src_function, const char *src_file, int src_line)
+                  const char *src_function, const char *src_file, unsigned int src_line)
 #else /* WITHOUT_MEMSAVE */
 void* irlist_add(irlist_t *list, unsigned int size)
 #endif /* WITHOUT_MEMSAVE */
@@ -2100,7 +2100,7 @@ void* irlist_get_next(const void *cur)
 }
 
 
-int irlist_size(const irlist_t *list)
+unsigned int irlist_size(const irlist_t *list)
 {
   updatecontext();
   
@@ -2109,7 +2109,7 @@ int irlist_size(const irlist_t *list)
   return list->size;
 }
 
-void* irlist_get_nth(irlist_t *list, int nth)
+void* irlist_get_nth(irlist_t *list, unsigned int nth)
 {
   irlist_item_t *iitem;
   
@@ -2142,7 +2142,7 @@ int irlist_sort_cmpfunc_off_t(const void *a, const void *b)
   return ai - bi;
 }
 
-transfer* does_tr_id_exist(int tr_id)
+transfer* does_tr_id_exist(unsigned int tr_id)
 {
   transfer *tr;
   
@@ -2159,13 +2159,13 @@ transfer* does_tr_id_exist(int tr_id)
   return NULL;
 }
 
-int get_next_tr_id(void)
+unsigned int get_next_tr_id(void)
 {
   transfer *tr;
   
   while(1)
     {
-      gdata.next_tr_id++;
+      ++(gdata.next_tr_id);
       gdata.next_tr_id %= max2((MAXTRANS * 3) / 2, 1000);
       gdata.next_tr_id = max2(1,gdata.next_tr_id);
       tr = does_tr_id_exist(gdata.next_tr_id);
@@ -2413,7 +2413,7 @@ int ir_boutput_attempt_flush(ir_boutput_t *bout)
   return count;
 }
 
-void ir_boutput_init(ir_boutput_t *bout, int fd, int flags)
+void ir_boutput_init(ir_boutput_t *bout, int fd, unsigned int flags)
 {
   memset(bout, 0, sizeof(*bout));
   bout->fd = fd;
