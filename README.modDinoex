@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
-332) no_natural_sort
+332) no_natural_sort (inspired by lailoken)
   Wenn konfiguriert, werden alle Texte nach ASCII sortiert.
   Default: natürlliche Sortierenung.
 
