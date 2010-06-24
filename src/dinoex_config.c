@@ -110,6 +110,7 @@ static config_bool_typ config_parse_bool[] = {
 {"no_duplicate_filenames", &gdata.no_duplicate_filenames,  0 },
 {"no_find_trigger",        &gdata.no_find_trigger,         0 },
 {"no_minspeed_on_free",    &gdata.no_minspeed_on_free,     0 },
+{"no_natural_sort",        &gdata.no_natural_sort,         0 },
 {"no_status_chat",         &gdata.no_status_chat,          0 },
 {"no_status_log",          &gdata.no_status_log,           0 },
 {"noautorejoin",           &gdata.noautorejoin,            0 },
