@@ -562,7 +562,7 @@ void admin_jobs(void)
   unlink(job);
 }
 
-static int check_for_file_remove(int n)
+static int check_for_file_remove(unsigned int n)
 {
   xdcc *xd;
   userinput *pubplist;
@@ -584,24 +584,24 @@ static int check_for_file_remove(int n)
   return 1;
 }
 
-static int last_look_for_file_remove = -1;
+static unsigned int last_look_for_file_remove = 0;
 
 void look_for_file_remove(void)
 {
-  int i;
-  int p;
-  int m;
+  unsigned int i;
+  unsigned int p;
+  unsigned int m;
 
   updatecontext();
 
   p = irlist_size(&gdata.xdccs);
   m = min2(gdata.monitor_files, p);
   for (i=0; i<m; ++i) {
-    ++last_look_for_file_remove;
-    if (last_look_for_file_remove < 0 || last_look_for_file_remove >= p)
+    if (last_look_for_file_remove >= p)
       last_look_for_file_remove = 0;
 
-    if (check_for_file_remove(last_look_for_file_remove + 1)) {
+    ++last_look_for_file_remove;
+    if (check_for_file_remove(last_look_for_file_remove)) {
       --last_look_for_file_remove;
       return;
     }
@@ -611,8 +611,8 @@ void look_for_file_remove(void)
 
 void reset_download_limits(void)
 {
-  int num;
-  int newlimit;
+  unsigned int num;
+  unsigned int newlimit;
   xdcc *xd;
 
   num = 0;
@@ -807,7 +807,7 @@ void run_delayed_jobs(void)
   }
 }
 
-static void admin_msg_line(const char *nick, char *line, int level)
+static void admin_msg_line(const char *nick, char *line, unsigned int level)
 {
   char *part5[6];
   userinput *u;
@@ -856,7 +856,7 @@ static group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
   return NULL;
 }
 
-static int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line)
+static unsigned int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line)
 {
   group_admin_t *ga;
 
@@ -866,7 +866,7 @@ static int msg_host_password(const char *nick, const char *hostmask, const char 
       admin_msg_line(nick, line, gdata.adminlevel);
       return 1;
     }
-    return -1;
+    return 2;
   }
   if ( verifyshell(&gdata.hadminhost, hostmask) ) {
     if ( verifypass2(gdata.hadminpass, passwd) ) {
@@ -874,7 +874,7 @@ static int msg_host_password(const char *nick, const char *hostmask, const char 
       admin_msg_line(nick, line, gdata.hadminlevel);
       return 1;
     }
-    return -1;
+    return 2;
   }
   if ((ga = verifypass_group(hostmask, passwd))) {
     reset_ignore(hostmask);
@@ -884,9 +884,9 @@ static int msg_host_password(const char *nick, const char *hostmask, const char 
   return 0;
 }
 
-int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line)
+unsigned int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line)
 {
-  int err = 0;
+  unsigned int err;
 
   err = msg_host_password(nick, hostmask, passwd, line);
   if (err == 0) {
@@ -895,7 +895,7 @@ int admin_message(const char *nick, const char *hostmask, const char *passwd, ch
             "Incorrect ADMIN Hostname (%s on %s)",
             hostmask, gnetwork->name);
   }
-  if (err < 0) {
+  if (err == 2) {
     notice(nick, "ADMIN: Incorrect Password");
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "Incorrect ADMIN Password (%s on %s)",
@@ -904,7 +904,7 @@ int admin_message(const char *nick, const char *hostmask, const char *passwd, ch
   return err;
 }
 
-int dcc_host_password(dccchat_t *chat, char *passwd)
+unsigned int dcc_host_password(dccchat_t *chat, char *passwd)
 {
   group_admin_t *ga;
 
@@ -915,14 +915,14 @@ int dcc_host_password(dccchat_t *chat, char *passwd)
       chat->level = gdata.adminlevel;
       return 1;
     }
-    return -1;
+    return 2;
   }
   if ( verifyshell(&gdata.hadminhost, chat->hostmask) ) {
     if ( verifypass2(gdata.hadminpass, passwd) ) {
       chat->level = gdata.hadminlevel;
       return 1;
     }
-    return -1;
+    return 2;
   }
   if ((ga = verifypass_group(chat->hostmask, passwd))) {
     chat->level = ga->g_level;
@@ -1316,7 +1316,7 @@ void autotrigger_rebuild(void)
   }
 }
 
-void start_md5_hash(xdcc *xd, int packnum)
+void start_md5_hash(xdcc *xd, unsigned int packnum)
 {
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "[MD5 Pack %d]: Calculating", packnum);
@@ -1473,13 +1473,13 @@ static size_t write_string(int fd, const char *line)
   return write(fd, line, len);
 }
 
-static size_t write_asc_int(int fd, int spaces, const char *tag, int val)
+static size_t write_asc_int(int fd, int spaces, const char *tag, unsigned int val)
 {
   char *tempstr;
   size_t len;
 
   tempstr = mycalloc(maxtextlengthshort);
-  len = snprintf(tempstr, maxtextlengthshort, "%*s<%s>%d</%s>\n", spaces, "", tag, val, tag);
+  len = snprintf(tempstr, maxtextlengthshort, "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag);
   len = write(fd, tempstr, len);
   mydelete(tempstr);
   return len;
@@ -1543,9 +1543,9 @@ static void xdcc_save_xml(void)
   xdcc *xd;
   off_t toffered;
   int fd;
-  int num;
-  int groups;
-  int ss;
+  unsigned int num;
+  unsigned int groups;
+  unsigned int ss;
 
   updatecontext();
 
@@ -1781,7 +1781,7 @@ void start_qupload(void)
   }
 }
 
-int close_qupload(int net, const char *nick)
+int close_qupload(unsigned int net, const char *nick)
 {
   qupload_t *qu;
 
@@ -1837,7 +1837,7 @@ static void irlist_move(irlist_t *dest, irlist_t *src)
 
 void a_rehash_prepare(void)
 {
-  int ss;
+  unsigned int ss;
 
   gdata.r_networks_online = gdata.networks_online;
   gdata.r_xdcclist_grouponly = gdata.xdcclist_grouponly;
@@ -1872,7 +1872,7 @@ void a_rehash_needtojump(const userinput *u)
   char *old_vhost;
   gnetwork_t *backup;
   channel_t *ch;
-  int ss;
+  unsigned int ss;
 
   updatecontext();
 
@@ -1926,7 +1926,7 @@ void a_rehash_channels(void)
   gnetwork_t *backup;
   channel_t *rch;
   channel_t *ch;
-  int ss;
+  unsigned int ss;
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
@@ -2003,7 +2003,7 @@ void a_rehash_channels(void)
 void a_rehash_jump(void)
 {
   gnetwork_t *backup;
-  int ss;
+  unsigned int ss;
 
   updatecontext();
 
@@ -2025,7 +2025,7 @@ void a_rehash_cleanup(const userinput *u)
   gnetwork_t *backup;
   char *new_nick;
   char *old_nick;
-  int ss;
+  unsigned int ss;
 
   updatecontext();
 
@@ -2069,7 +2069,7 @@ void a_read_config_files(const userinput *u)
   FILE *fin;
   char *r;
   char *l;
-  int h;
+  unsigned int h;
 
   updatecontext();
 

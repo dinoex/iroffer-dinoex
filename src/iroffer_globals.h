@@ -22,79 +22,32 @@
 typedef struct
 {
 /* config */
-char* configfile[MAXCONFIG];
-time_t configtime[MAXCONFIG];
-char* osstring;
-int hideos;
-int lognotices;
-int logmessages;
-int timestampconsole;
-char *local_vhost;
-long startuptime;
-int lowbdwth;
-int logstats;
-char *logfile;
-time_t logrotate;
-char *headline;
-char *creditline;
-int background;
-int support_groups;
-
 struct
 {
   ir_int64   limit;
   ir_int64   used;
   time_t     ends;
 } transferlimits[NUMBER_TRANSFERLIMITS];
-int transferlimits_over;
+gnetwork_t networks[MAX_NETWORKS];
 
-char *pidfile;
-int tcprangestart;
-int tcprangelimit;
-float transferminspeed, transfermaxspeed;
-int overallmaxspeed, overallmaxspeeddayspeed;
-unsigned int maxb;
-int overallmaxspeeddaytimestart, overallmaxspeeddaytimeend;
-char overallmaxspeeddaydays;
-char cdummy;
-short sdummy;
-int maxtransfersperperson, maxqueueditemsperperson;
-int maxidlequeuedperperson;
+off_t uploadmaxsize;
+off_t uploadminspace;
+off_t disk_quota;
+time_t configtime[MAXCONFIG];
+time_t logrotate;
 irlist_t downloadhost;
 irlist_t nodownloadhost;
 irlist_t http_allow;
 irlist_t http_deny;
 irlist_t xdcc_allow;
 irlist_t xdcc_deny;
-char *adminpass;
-char *hadminpass;
 irlist_t adminhost;
 irlist_t hadminhost;
 irlist_t filedir;
-char *statefile;
-char *xdcclistfile;
-int xdcclistfileraw;
-char *periodicmsg_nick, *periodicmsg_msg;
-int  periodicmsg_time;
-char *uploaddir;
-off_t uploadmaxsize;
-off_t uploadminspace;
-off_t disk_quota;
 irlist_t uploadhost;
 irlist_t tuploadhost;
 irlist_t quploadhost;
-char *config_nick;
-char *user_realname, *user_modes, *loginname;
-int restrictlist, restrictsend, restrictprivlist;
-char *restrictprivlistmsg;
-int punishslowusers;
-int nomd5sum;
-int getipfromserver;
-int noduplicatefiles;
-int dos_text_files;
-int no_duplicate_filenames;
-int show_list_all;
-int getipfromupnp;
+irlist_t autoignore_exclude;
 irlist_t adddir_exclude;
 irlist_t autoqueue;
 irlist_t autotrigger;
@@ -119,6 +72,23 @@ irlist_t log_exclude_host;
 irlist_t log_exclude_text;
 irlist_t fish_exclude_nick;
 irlist_t group_admin;
+char *configfile[MAXCONFIG];
+char *osstring;
+char *pidfile;
+char *local_vhost;
+char *logfile;
+char *headline;
+char *creditline;
+char *adminpass;
+char *hadminpass;
+char *statefile;
+char *xdcclistfile;
+char *periodicmsg_nick, *periodicmsg_msg;
+char *config_nick;
+char *user_realname, *user_modes, *loginname;
+char *restrictprivlistmsg;
+char *uploaddir;
+char *nickserv_pass;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;
@@ -149,173 +119,159 @@ char *http_index;
 char *download_completed_msg;
 char *http_access_log;
 char *autoadd_color;
+float transferminspeed, transfermaxspeed;
+unsigned char overallmaxspeeddaydays;
+unsigned char cdummy;
+unsigned short sdummy;
+/* int */
+unsigned int lowbdwth;
+unsigned int tcprangestart;
+unsigned int tcprangelimit;
+unsigned int overallmaxspeed, overallmaxspeeddayspeed;
+unsigned int maxtransfersperperson, maxqueueditemsperperson;
+unsigned int maxidlequeuedperperson;
+unsigned int debug;
+unsigned int slotsmax;
+unsigned int queuesize;
+unsigned int idlequeuesize;
+unsigned int punishslowusers;
+unsigned int need_level;
+unsigned int start_of_month;
+unsigned int atfind;
+unsigned int waitafterjoin;
+unsigned int autoadd_time;
+unsigned int restrictsend_timeout;
+unsigned int send_statefile_minute;
+unsigned int max_uploads;
+unsigned int max_upspeed;
+unsigned int max_find;
+unsigned int restrictsend_delay;
+unsigned int adminlevel;
+unsigned int hadminlevel;
+unsigned int monitor_files;
+unsigned int autoadd_delay;
+unsigned int http_port;
+unsigned int telnet_port;
+unsigned int remove_dead_users;
+unsigned int send_listfile;
+unsigned int fileremove_max_packs;
+unsigned int status_time_dcc_chat;
+unsigned int notifytime;
+unsigned int smallfilebypass;
+unsigned int autoignore_threshold;
+unsigned int reconnect_delay;
+unsigned int new_trigger;
+/* bool */
+unsigned int hideos;
+unsigned int lognotices;
+unsigned int logmessages;
+unsigned int timestampconsole;
+unsigned int logstats;
+unsigned int background;
+unsigned int xdcclistfileraw;
+unsigned int restrictlist, restrictsend, restrictprivlist;
+unsigned int nomd5sum;
+unsigned int getipfromserver;
+unsigned int noduplicatefiles;
+unsigned int dos_text_files;
+unsigned int no_duplicate_filenames;
+unsigned int show_list_all;
+unsigned int getipfromupnp;
+unsigned int hide_list_info;
+unsigned int xdcclist_grouponly;
+unsigned int auto_default_group;
+unsigned int auto_path_group;
+unsigned int restrictprivlistmain;
+unsigned int restrictprivlistfull;
+unsigned int groupsincaps;
+unsigned int ignoreuploadbandwidth;
+unsigned int holdqueue;
+unsigned int removelostfiles;
+unsigned int ignoreduplicateip;
+unsigned int hidelockedpacks;
+unsigned int disablexdccinfo;
+unsigned int need_voice;
+unsigned int noautorejoin;
+unsigned int auto_crc_check;
+unsigned int nocrc32;
+unsigned int direct_file_access;
+unsigned int autoaddann_short;
+unsigned int spaces_in_filenames;
+unsigned int restrictsend_warning;
+unsigned int extend_status_line;
+unsigned int include_subdirs;
+unsigned int xdcclist_by_privmsg;
+unsigned int balanced_queue;
+unsigned int passive_dcc;
+unsigned int upnp_router;
+unsigned int http_search;
+unsigned int old_statefile;
+unsigned int direct_config_access;
+unsigned int show_date_added;
+unsigned int fish_only;
+unsigned int privmsg_encrypt;
+unsigned int verbose_crc32;
+unsigned int mirc_dcc64;
+unsigned int no_minspeed_on_free;
+unsigned int no_status_chat;
+unsigned int no_status_log;
+unsigned int no_auto_rehash;
+unsigned int send_batch;
+unsigned int http_geoip;
+unsigned int no_find_trigger;
+unsigned int hide_list_stop;
+unsigned int passive_dcc_chat;
+unsigned int respondtochannelxdcc;
+unsigned int respondtochannellist;
+unsigned int quietmode;
+
+context_t context_log[MAXCONTEXTS];
+ir_boutput_t stdout_buffer;
+off_t max_file_size;
+time_t startuptime;
 time_t nomd5_start;
 time_t noannounce_start;
-int need_voice;
-int need_level;
-int hide_list_info;
-int xdcclist_grouponly;
-int auto_default_group;
-int auto_path_group;
-int start_of_month;
-int restrictprivlistmain;
-int restrictprivlistfull;
-int groupsincaps;
-int ignoreuploadbandwidth;
-int holdqueue;
-int removelostfiles;
-int ignoreduplicateip;
-int hidelockedpacks;
-int disablexdccinfo;
-int atfind;
-int waitafterjoin;
-int noautorejoin;
-int auto_crc_check;
-int nocrc32;
-int direct_file_access;
-int autoaddann_short;
-int spaces_in_filenames;
-int autoadd_time;
-int restrictsend_warning;
-int restrictsend_timeout;
-int send_statefile_minute;
-int extend_status_line;
-int max_uploads;
-int max_upspeed;
-int max_find;
-int include_subdirs;
-int restrictsend_delay;
-int adminlevel;
-int hadminlevel;
-int monitor_files;
-int xdcclist_by_privmsg;
-int autoadd_delay;
-int balanced_queue;
-int http_port;
-int passive_dcc;
-int telnet_port;
-int remove_dead_users;
-int upnp_router;
-int http_search;
-int send_listfile;
-int old_statefile;
-int fileremove_max_packs;
-int direct_config_access;
-int new_trigger;
-int show_date_added;
-int reconnect_delay;
-int fish_only;
-int privmsg_encrypt;
-int verbose_crc32;
-int mirc_dcc64;
-int no_minspeed_on_free;
-int no_status_chat;
-int no_status_log;
-int no_auto_rehash;
-int send_batch;
-int http_geoip;
-int no_find_trigger;
-int hide_list_stop;
-int passive_dcc_chat;
-int status_time_dcc_chat;
-char *nickserv_pass;
-int notifytime;
-int respondtochannelxdcc;
-int respondtochannellist;
-int quietmode;
-int smallfilebypass;
-irlist_t autoignore_exclude;
-int autoignore_threshold;
-
-/* rehash temp variables */
-char *r_pidfile;
-float r_transferminspeed, r_transfermaxspeed;
-
-gnetwork_t networks[MAX_NETWORKS];
-int networks_online;
-int r_networks_online;
-int r_xdcclist_grouponly;
-
-irlist_t msglog;
-
-int adjustcore;
-
-/* screen */
-int attop, needsclear, termcols, termlines, nocolor, noscreen;
-int curcol;
-irlist_t console_history;
-int console_history_offset;
-char *console_input_line;
-
-struct termios startup_tio;
-
-int stdout_buffer_init;
-ir_boutput_t stdout_buffer;
-
-irlist_t dccchats;
-int num_dccchats;
-
+time_t noautosave;
+time_t nonewcons;
+time_t nolisting;
+time_t last_logrotate;
+time_t last_update;
 time_t curtime;
-ir_uint64 curtimems;
-
-fd_set readset, writeset, execset;
-
-float record;
-float sentrecord;
-ir_int64 totalsent;
 long totaluptime;
-int debug;
-int exiting;
-int crashing;
-
+ir_uint64 curtimems;
+ir_int64 totalsent;
 unsigned long xdccsent[XDCC_SENT_SIZE];
 unsigned long xdccrecv[XDCC_SENT_SIZE];
 unsigned long xdccsum[XDCC_SENT_SIZE];
 
-int ignore;
-
-int slotsmax;
-int queuesize;
-int idlequeuesize;
-
-
-time_t noautosave;
-time_t nonewcons;
-time_t nolisting;
-int needsrehash;
-int needsshutdown;
-int needsswitch;
-int needsreap;
-int delayedshutdown;
-int cursendptr;
-int next_tr_id;
-
-off_t max_file_size;
-
-int max_fds_from_rlimit;
-
-int logfd;
-
-time_t last_logrotate;
-time_t last_update;
-
-unsigned char *sendbuff;
-
-context_t context_log[MAXCONTEXTS];
-int context_cur_ptr;
-
+irlist_t msglog;
+irlist_t dccchats;
 irlist_t ignorelist;
-
 irlist_t xdccs;
 irlist_t mainqueue;
 irlist_t idlequeue;
 irlist_t trans;
 irlist_t uploads;
+irlist_t console_history;
+irlist_t listen_ports;
+
+fd_set readset, writeset, execset;
+
+struct
+{
+  xdcc *xpack;
+  struct MD5Context md5sum;
+  int file_fd;
+  int dummy;
+} md5build;
+
+crc32build_t crc32build;
 
 meminfo_t *meminfo;
-int meminfo_count;
-int meminfo_depth;
-
+char *r_pidfile;
+char *console_input_line;
+unsigned char *sendbuff;
+char *const *argv;
 #if !defined(NO_CHROOT)
 const char *chrootdir;
 #endif
@@ -325,16 +281,47 @@ const char *runasuser;
 const char *workdir;
 const char *import;
 
-irlist_t listen_ports;
+float r_transferminspeed, r_transfermaxspeed;
 
-struct
-{
-  xdcc *xpack;
-  int file_fd;
-  struct MD5Context md5sum;
-} md5build;
+/* rehash temp variables */
+unsigned int networks_online;
+unsigned int r_networks_online;
+unsigned int r_xdcclist_grouponly;
+unsigned int support_groups;
+unsigned int transferlimits_over;
+unsigned int maxb;
+unsigned int adjustcore;
+unsigned int overallmaxspeeddaytimestart, overallmaxspeeddaytimeend;
+unsigned int periodicmsg_time;
+int ignore;
 
-crc32build_t crc32build;
+/* screen */
+unsigned int attop, needsclear, termcols, termlines, nocolor, noscreen;
+unsigned int curcol;
+unsigned int console_history_offset;
+unsigned int num_dccchats;
+unsigned int stdout_buffer_init;
+
+struct termios startup_tio;
+
+float record;
+float sentrecord;
+unsigned int exiting;
+unsigned int crashing;
+unsigned int needsrehash;
+unsigned int needsshutdown;
+unsigned int needsswitch;
+unsigned int needsreap;
+unsigned int delayedshutdown;
+unsigned int cursendptr;
+unsigned int next_tr_id;
+unsigned int context_cur_ptr;
+
+int max_fds_from_rlimit;
+int logfd;
+
+unsigned int meminfo_count;
+unsigned int meminfo_depth;
 
 enum
 {
@@ -350,9 +337,7 @@ enum
   TRANSFERMETHOD_READ_WRITE,
 } transfermethod;
 
-char *const *argv;
-int needrestart;
-int dummy;
+unsigned int needrestart;
 } gdata_t;
 
 

@@ -124,7 +124,7 @@ void l_establishcon (upload * const l)
 
 void l_transfersome (upload * const l) {
    int i, howmuch, howmuch2;
-   int j;
+   unsigned int j;
    unsigned long g;
    off_t mysize;
    

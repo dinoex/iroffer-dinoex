@@ -19,7 +19,7 @@ __attribute__ ((format(printf, 1, 2)))
 #endif
 dump_line(const char *format, ...);
 
-void dump_config_int2(const char *name, int val);
+void dump_config_int2(const char *name, unsigned int val);
 void dump_config_string2(const char *name, const char *val);
 
 char *print_config_key(const char *key);
@@ -31,8 +31,8 @@ void config_reset(void);
 void config_startup(void);
 
 extern const char *current_config;
-extern long current_line;
-extern int current_bracket;
-extern int current_network;
+extern unsigned long current_line;
+extern unsigned int current_bracket;
+extern unsigned int current_network;
 
 /* EOF */

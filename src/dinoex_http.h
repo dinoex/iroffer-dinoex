@@ -31,9 +31,9 @@ typedef struct
   off_t totalsize;
   ir_connection_t con;
   http_status_e status;
-  int support_groups;
-  int post;
-  int head;
+  unsigned int support_groups;
+  unsigned int post;
+  unsigned int head;
   char *file;
   char *buffer_out;
   char *end;
@@ -48,8 +48,8 @@ typedef struct
   char *pattern;
   char *modified;
   ssize_t left;
-  int traffic;
-  int status_code;
+  unsigned int traffic;
+  unsigned int status_code;
 } http;
 
 typedef struct {
@@ -64,7 +64,7 @@ void init_base64decode( void );
 #endif /* #ifndef WITHOUT_HTTP */
 
 void h_close_listen(void);
-int h_setup_listen(void);
+unsigned int h_setup_listen(void);
 void h_reash_listen(void);
 int h_select_fdset(int highests);
 void h_perform(int changesec);

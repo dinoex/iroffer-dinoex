@@ -15,15 +15,15 @@
 
 void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick);
 void queue_reverify_restrictsend(irlist_t *list);
-void queue_punishslowusers(irlist_t *list, int network, const char *nick);
-int queue_xdcc_remove(irlist_t *list, int network, const char *nick, int number);
+void queue_punishslowusers(irlist_t *list, unsigned int network, const char *nick);
+unsigned int queue_xdcc_remove(irlist_t *list, unsigned int network, const char *nick, unsigned int number);
 void queue_pack_limit(irlist_t *list, xdcc *xd);
 void queue_pack_remove(irlist_t *list, xdcc *xd);
 void queue_all_remove(irlist_t *list, const char *message);
-int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const char *hostname, xdcc *xd);
-int addtoidlequeue(const char **msg, char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq);
-int addtomainqueue(const char **msg, char *tempstr, const char *nick, const char *hostname, int pack);
-void send_from_queue(int type, int pos, char *lastnick);
+unsigned int queue_count_host(irlist_t *list, unsigned int *inq, unsigned int man, const char* nick, const char *hostname, xdcc *xd);
+unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, const char* hostname, xdcc *xd, unsigned int pack, unsigned int inq);
+unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, const char *hostname, unsigned int pack);
+void send_from_queue(unsigned int type, unsigned int pos, char *lastnick);
 void check_idle_queue(void);
 void start_main_queue(void);
 void start_sends(void);

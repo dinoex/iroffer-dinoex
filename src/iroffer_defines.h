@@ -48,45 +48,45 @@
 
 #define  ACTUAL_MAXSETSIZE (gdata.max_fds_from_rlimit)
 
-#define  MAXTRANS  (((ACTUAL_MAXSETSIZE) - RESERVED_FDS)/2)
+#define  MAXTRANS  ((unsigned int)((ACTUAL_MAXSETSIZE) - RESERVED_FDS)/2)
 
 
 /*       max number of networks */
-#define  MAX_NETWORKS	10
+#define  MAX_NETWORKS	10U
 
 /*       max number of vhosts */
-#define  MAX_VHOSTS	2
+#define  MAX_VHOSTS	2U
 
 /*       max size for xdcc list queue */
-#define  MAXXLQUE  5
+#define  MAXXLQUE  5U
 /*       max config files */
-#define  MAXCONFIG  10
+#define  MAXCONFIG  10U
 /*       meminfo hash size */
-#define  MEMINFOHASHSIZE 256
+#define  MEMINFOHASHSIZE 256U
 /*       Max context log */
-#define  MAXCONTEXTS 300
+#define  MAXCONTEXTS 300U
 /*       Server Connection Timeout In Seconds */
-#define  CTIMEOUT  5
+#define  CTIMEOUT  5U
 /*       Server Connection Timeout Backoff In Seconds */
-#define  CBKTIMEOUT 2
+#define  CBKTIMEOUT 2U
 /*       How Long to Wait Until We Giveup On A Non-responding Server */
-#define  SRVRTOUT  240
+#define  SRVRTOUT  240U
 
-#define  XDCC_SENT_SIZE 120
-#define  INAMNT_SIZE 10
+#define  XDCC_SENT_SIZE 120U
+#define  INAMNT_SIZE 10U
 
 /*       Max Server Send Queue Lines */
-#define  MAXSENDQ  10000
+#define  MAXSENDQ  10000U
 
 /*       threshhold for ignore, number of requests in bucket */
-#define  IGN_ON    8
+#define  IGN_ON    8U
 
 /*       weight for speed calcualtion in dcl initial */
 #define  DCL_SPDW_I  0.5
 /*       weight for speed calcualtion in dcl ongoing */
 #define  DCL_SPDW_O  0.9
 /*       time until minspeed checking becomes active */
-#define  MIN_TL    60
+#define  MIN_TL    60U
 
 /*       minimum transfer size */
 #define  TXSIZE 1460    /* max ethernet size tcp payload */
@@ -101,19 +101,19 @@
 #endif
 
 /*       notify level for server queue */
-#define  srvqnotify  60
+#define  srvqnotify  60U
 
 /*       excess flood protection */
 #define  EXCESS_BUCKET_MAX    600    /* max burst size */
 #define  EXCESS_BUCKET_ADD     25    /* ave cps */
 
 /*       max transfer speed */
-#define  MAX_TRANSFER_TX_BURST_SIZE   5    /* 5 seconds worth */
+#define  MAX_TRANSFER_TX_BURST_SIZE   5U    /* 5 seconds worth */
 
-#define MAX_HISTORY_SIZE 100
+#define MAX_HISTORY_SIZE 100U
 
-#define MAX_PREFIX     16
-#define MAX_CHANMODES  16
+#define MAX_PREFIX     16U
+#define MAX_CHANMODES  16U
 
 #ifndef WITHOUT_MEMSAVE
 /* free'ing just leads to trouble if we dont check first and then make NULL */
@@ -128,28 +128,28 @@
 
 #define  maxtextlengthshort 60
 #define  maxtextlength 512
-#define INPUT_BUFFER_LENGTH 2048
+#define INPUT_BUFFER_LENGTH 2048U
 
-#define LISTEN_PORT_REUSE_TIME (30*60) /* 30 minutes */
+#define LISTEN_PORT_REUSE_TIME (30*60U) /* 30 minutes */
 
 /* type definitions for igninfo flags */
-#define IGN_MANUAL      1
-#define IGN_IGNORING    2
+#define IGN_MANUAL      1U
+#define IGN_IGNORING    2U
 
 /* type definitions for channel_t flags */
-#define CHAN_ONCHAN     1
-#define CHAN_MINIMAL    2
-#define CHAN_SUMMARY    4
-#define CHAN_KICKED     0x40
+#define CHAN_ONCHAN     1U
+#define CHAN_MINIMAL    2U
+#define CHAN_SUMMARY    4U
+#define CHAN_KICKED     0x40U
 
 /* buffer output flags */
-#define BOUTPUT_NO_LIMIT       2
+#define BOUTPUT_NO_LIMIT       2U
 
 /* type definistions: Screen, Log, DCC CHAT, HTTPD */
-#define OUT_S    1
-#define OUT_L    2
-#define OUT_D    4
-#define OUT_H    8
+#define OUT_S    1U
+#define OUT_L    2U
+#define OUT_D    4U
+#define OUT_H    8U
 
 /* Buffer Output options */
 #define IR_BOUTPUT_SEGMENT_SIZE    (1024U)
@@ -165,13 +165,13 @@
 #define COLOR_MAGENTA    35
 #define COLOR_CYAN       36
 #define COLOR_WHITE      37
-#define COLOR_BOLD       0x80
+#define COLOR_BOLD       0x80U
 
 /* it's up to the umask to prune away.. */
 #define CREAT_PERMISSIONS ( S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH )
 
 /* how long to tollerate a missing user before disconnecting */
-#define RESTRICTSEND_TIMEOUT 300
+#define RESTRICTSEND_TIMEOUT 300U
 
 /* some os's (cygwin, cough, cough, ... ) require extra flags to open() */
 #define ADDED_OPEN_FLAGS 0

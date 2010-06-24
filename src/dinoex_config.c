@@ -29,29 +29,29 @@
 
 typedef struct {
   const char *name;
-  int *ivar;
-  int reset;
+  unsigned int *ivar;
+  unsigned int reset;
 } config_bool_typ;
 
 typedef struct {
   const char *name;
-  int *ivar;
+  unsigned int *ivar;
   int min;
   int max;
-  int mult;
-  int reset;
+  unsigned int mult;
+  unsigned int reset;
 } config_int_typ;
 
 typedef struct {
   const char *name;
   char **svar;
-  int flags;
+  unsigned int flags;
 } config_string_typ;
 
 typedef struct {
   const char *name;
   irlist_t *list;
-  int flags;
+  unsigned int flags;
 } config_list_typ;
 
 typedef struct {
@@ -61,11 +61,11 @@ typedef struct {
 
 
 const char *current_config;
-long current_line;
-int current_network;
-int current_bracket;
+unsigned long current_line;
+unsigned int current_network;
+unsigned int current_bracket;
 
-static int config_bool_anzahl = 0;
+static unsigned int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
 {"auto_crc_check",         &gdata.auto_crc_check,          0 },
 {"auto_default_group",     &gdata.auto_default_group,      0 },
@@ -161,9 +161,9 @@ dump_line(const char *format, ...)
 }
 
 /* dump an integer variable to logfile */
-void dump_config_int2(const char *name, int val)
+void dump_config_int2(const char *name, unsigned int val)
 {
-  dump_line("GDATA * " "%s: %d", name, val);
+  dump_line("GDATA * " "%s: %u", name, val);
 }
 
 /* dump a string variable to logfile */
@@ -174,9 +174,9 @@ void dump_config_string2(const char *name, const char *val)
 
 static void config_sorted_bool(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_bool[i].name != NULL; ++i) {
+  for (i = 0; config_parse_bool[i].name != NULL; ++i) {
     if (config_parse_bool[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_bool[i].name, config_parse_bool[i + 1].name) < 0)
@@ -195,7 +195,7 @@ static int config_find_bool(const char *key)
   int bin_low;
   int bin_high;
 
-  if (config_bool_anzahl > 0L) {
+  if (config_bool_anzahl > 0) {
     bin_low = 0;
     bin_high = config_bool_anzahl - 1;
     while (bin_low <= bin_high) {
@@ -229,7 +229,7 @@ static int parse_bool_val(const char *key, const char *text)
   return -1;
 }
 
-static int set_config_bool(const char *key, const char *text)
+static unsigned int set_config_bool(const char *key, const char *text)
 {
   int i;
   int val;
@@ -241,7 +241,7 @@ static int set_config_bool(const char *key, const char *text)
     return 1;
 
   val = parse_bool_val(key, text);
-  if (val != -1 ) {
+  if (val >= 0 ) {
     *(config_parse_bool[i].ivar) = val;
   }
   return 0;
@@ -264,31 +264,31 @@ static char *print_config_bool(const char *key)
 
 static void dump_config_bool(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_bool[i].name != NULL; ++i) {
+  for (i = 0; config_parse_bool[i].name != NULL; ++i) {
     dump_config_int2(config_parse_bool[i].name, *(config_parse_bool[i].ivar));
   }
 }
 
 static void reset_config_bool(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_bool[i].name != NULL; ++i) {
+  for (i = 0; config_parse_bool[i].name != NULL; ++i) {
     *(config_parse_bool[i].ivar) = config_parse_bool[i].reset;
   }
 }
 
 
-static int config_int_anzahl = 0;
+static unsigned int config_int_anzahl = 0;
 static config_int_typ config_parse_int[] = {
 {"adminlevel",              &gdata.adminlevel,              1, 5, 1, ADMIN_LEVEL_FULL },
 {"atfind",                  &gdata.atfind,                  0, 10, 1, 0 },
 {"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1, 0 },
 {"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1, 0 },
 {"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1, 10 },
-{"debug",                   &gdata.debug,                   0, 65000, 1, -1 },
+{"debug",                   &gdata.debug,                   0, 65000, 1, XDCC_SEND_LIST },
 {"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1, 0 },
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1, ADMIN_LEVEL_HALF },
 #ifndef WITHOUT_HTTP
@@ -318,7 +318,6 @@ static config_int_typ config_parse_int[] = {
 {"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1, 0 },
 {"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1, 0 },
 {"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1, RESTRICTSEND_TIMEOUT },
-{"send_listfile",           &gdata.send_listfile,           -1, 1000000, 1, 0 },
 {"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1, 0 },
 {"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024, 0 },
 {"start_of_month",          &gdata.start_of_month,          1, 31, 1, 1 },
@@ -333,9 +332,9 @@ static config_int_typ config_parse_int[] = {
 
 static void config_sorted_int(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_int[i].name != NULL; ++i) {
+  for (i = 0; config_parse_int[i].name != NULL; ++i) {
     if (config_parse_int[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_int[i].name, config_parse_int[i + 1].name) < 0)
@@ -371,7 +370,7 @@ static int config_find_int(const char *key)
   return -1;
 }
 
-static int report_no_arg(const char *key, const char *text)
+static unsigned int report_no_arg(const char *key, const char *text)
 {
   if (text == NULL) {
     outerror(OUTERROR_TYPE_WARN,
@@ -395,7 +394,7 @@ static void invalid_args(const char *key, const char *text)
            current_config, current_line, key, text);
 }
 
-static int check_range(const char *key, const char *text, int *val, int min, int max)
+static unsigned int check_range(const char *key, const char *text, int *val, int min, int max)
 {
   int rawval;
   char *endptr;
@@ -418,7 +417,7 @@ static int check_range(const char *key, const char *text, int *val, int min, int
   return 0;
 }
 
-static int set_config_int(const char *key, const char *text)
+static unsigned int set_config_int(const char *key, const char *text)
 {
   int i;
   int rawval;
@@ -455,19 +454,19 @@ static char *print_config_int(const char *key)
 
 static void dump_config_int(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_int[i].name != NULL; ++i) {
+  for (i = 0; config_parse_int[i].name != NULL; ++i) {
     dump_config_int2(config_parse_int[i].name, *(config_parse_int[i].ivar));
   }
 }
 
 static void reset_config_int(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_int[i].name != NULL; ++i) {
-    if (config_parse_int[i].reset != -1)
+  for (i = 0; config_parse_int[i].name != NULL; ++i) {
+    if (config_parse_int[i].reset != XDCC_SEND_LIST)
       *(config_parse_int[i].ivar) = config_parse_int[i].reset;
   }
 }
@@ -479,7 +478,7 @@ static void reset_config_int(void)
  4 -> adminpass
  */
 
-static int config_string_anzahl = 0;
+static unsigned int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
 {"admin_job_file",          &gdata.admin_job_file,          1 },
 {"adminpass",               &gdata.adminpass,               4 },
@@ -543,9 +542,9 @@ static config_string_typ config_parse_string[] = {
 
 static void config_sorted_string(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_string[i].name != NULL; ++i) {
+  for (i = 0; config_parse_string[i].name != NULL; ++i) {
     if (config_parse_string[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_string[i].name, config_parse_string[i + 1].name) < 0)
@@ -581,7 +580,7 @@ static int config_find_string(const char *key)
   return -1;
 }
 
-static int set_config_string(const char *key, char *text)
+static unsigned int set_config_string(const char *key, char *text)
 {
   int i;
 
@@ -632,18 +631,18 @@ static char *print_config_string(const char *key)
 
 static void dump_config_string(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_string[i].name != NULL; ++i) {
+  for (i = 0; config_parse_string[i].name != NULL; ++i) {
     dump_config_string2(config_parse_string[i].name, *(config_parse_string[i].svar));
   }
 }
 
 static void reset_config_string(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_string[i].name != NULL; ++i) {
+  for (i = 0; config_parse_string[i].name != NULL; ++i) {
     mydelete(*(config_parse_string[i].svar));
   }
 }
@@ -698,9 +697,9 @@ static config_list_typ config_parse_list[] = {
 
 static void config_sorted_list(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_list[i].name != NULL; ++i) {
+  for (i = 0; config_parse_list[i].name != NULL; ++i) {
     if (config_parse_list[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_list[i].name, config_parse_list[i + 1].name) < 0)
@@ -754,7 +753,7 @@ static int get_netmask(char *text, int init)
   return init;
 }
 
-static int set_config_list(const char *key, char *text)
+static unsigned int set_config_list(const char *key, char *text)
 {
   int i;
   int j;
@@ -827,10 +826,10 @@ static void dump_config_list(void)
 {
   ir_cidr_t *cidr;
   char *string;
-  long i;
+  unsigned int i;
   char ip6[maxtextlengthshort];
 
-  for (i = 0L; config_parse_list[i].name != NULL; ++i) {
+  for (i = 0; config_parse_list[i].name != NULL; ++i) {
     dump_line("GDATA * " "%s:",
             config_parse_list[i].name);
     switch (config_parse_list[i].flags) {
@@ -856,9 +855,9 @@ static void dump_config_list(void)
 
 static void reset_config_list(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_list[i].name != NULL; ++i) {
+  for (i = 0; config_parse_list[i].name != NULL; ++i) {
     irlist_delete_all(config_parse_list[i].list);
   }
 }
@@ -882,7 +881,7 @@ static void set_default_network_name(void)
   return;
 }
 
-static int parse_channel_int(short *iptr, char **part, int i)
+static int parse_channel_int(unsigned short *iptr, char **part, int i)
 {
   char *tptr2;
 
@@ -905,7 +904,7 @@ static int parse_channel_string(char **cptr, char **part, int i)
   return 1;
 }
 
-static int parse_channel_format(short *iptr, char *tptr2)
+static int parse_channel_format(unsigned short *iptr, char *tptr2)
 {
   if (!tptr2)
     return -1;
@@ -1287,7 +1286,7 @@ static void c_need_level(char *var)
 static void c_network(char *var)
 {
   char *bracket;
-  int ss;
+  unsigned int ss;
 
   current_bracket = 0;
   if (var[0] != 0) {
@@ -1345,7 +1344,7 @@ static void c_noannounce(char *var)
   int val;
 
   val = parse_bool_val("noannounce", var);
-  if (val != -1 ) {
+  if (val >= 0) {
     gdata.networks[current_network].noannounce = val;
   }
 }
@@ -1438,7 +1437,7 @@ static void c_restrictlist(char *var)
   int val;
 
   val = parse_bool_val("restrictlist", var);
-  if (val != -1 ) {
+  if (val >= 0) {
     gdata.networks[current_network].restrictlist = val;
   }
 }
@@ -1448,9 +1447,19 @@ static void c_restrictsend(char *var)
   int val;
 
   val = parse_bool_val("restrictsend", var);
-  if (val != -1 ) {
+  if (val >= 0) {
     gdata.networks[current_network].restrictsend = val;
   }
+}
+
+static void c_send_listfile(char *var)
+{
+  int rawval;
+
+  if (check_range("send_listfile", var, &rawval, -1, 1000000))
+    return;
+
+  gdata.send_listfile = rawval;
 }
 
 static void c_server(char *var)
@@ -1499,7 +1508,7 @@ static void c_server_join_raw(char *var)
 
 static void c_slotsmax(char *var)
 {
-  int ival;
+  unsigned int ival;
 
   ival = atoi(var);
   gdata.slotsmax = between(1, ival, MAXTRANS);
@@ -1633,6 +1642,7 @@ static config_func_typ config_parse_func[] = {
 {"proxyinfo",              c_proxyinfo },
 {"restrictlist",           c_restrictlist },
 {"restrictsend",           c_restrictsend },
+{"send_listfile",          c_send_listfile },
 {"server",                 c_server },
 {"server_connected_raw",   c_server_connected_raw },
 {"server_join_raw",        c_server_join_raw },
@@ -1653,9 +1663,9 @@ static config_func_typ config_parse_func[] = {
 
 static void config_sorted_func(void)
 {
-  long i;
+  unsigned int i;
 
-  for (i = 0L; config_parse_func[i].name != NULL; ++i) {
+  for (i = 0; config_parse_func[i].name != NULL; ++i) {
     if (config_parse_func[i + 1].name == NULL)
       break;
     if (strcmp(config_parse_func[i].name, config_parse_func[i + 1].name) < 0)
@@ -1714,8 +1724,8 @@ static void reset_config_func(void)
   http_magic_t *mime;
   autoadd_group_t *ag;
   server_t *ss;
-  int si;
-  int ii;
+  unsigned int si;
+  unsigned int ii;
 
   for (si=0; si<MAX_NETWORKS; ++si) {
     for (ss = irlist_get_head(&gdata.networks[si].servers);
@@ -1736,12 +1746,12 @@ static void reset_config_func(void)
     irlist_delete_all(&gdata.networks[si].proxyinfo);
     gdata.networks[si].connectionmethod.how = how_direct;
     gdata.networks[si].usenatip = 0;
-    gdata.networks[si].getip_net = -1;
-    gdata.networks[si].need_voice = -1;
+    gdata.networks[si].getip_net = 0;
     gdata.networks[si].need_level = -1;
     gdata.networks[si].slow_privmsg = 1;
-    gdata.networks[si].restrictsend = -1;
-    gdata.networks[si].restrictlist = -1;
+    gdata.networks[si].restrictsend = 2;
+    gdata.networks[si].restrictlist = 2;
+    gdata.networks[si].need_voice = 2;
   } /* networks */
   gdata.networks_online = 0;
   for (aq = irlist_get_head(&gdata.autoqueue);

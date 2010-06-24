@@ -158,9 +158,9 @@ void drawbot(void)
 {
   const char *mynick;
   char tchar = 0;
-  int len;
-  int maxlen;
-  int nicklen;
+  unsigned int len;
+  unsigned int maxlen;
+  unsigned int nicklen;
   
   if ((gdata.background == 2) || gdata.noscreen)
     {
@@ -171,11 +171,14 @@ void drawbot(void)
   
   mynick = get_console_nick();
   nicklen = 16 + strlen(mynick);
-  maxlen = gdata.termcols - 1 - nicklen;
   
-  if (maxlen < 0)
+  if (gdata.termcols - 1 < nicklen)
     {
       maxlen = 0;
+    }
+  else
+    {
+      maxlen = gdata.termcols - 1 - nicklen;
     }
   
   if ((len > maxlen))
@@ -207,8 +210,8 @@ void drawbot(void)
 void gotobot (void)
 {
   const char *mynick;
-  int maxlen;
-  int nicklen;
+  unsigned int maxlen;
+  unsigned int nicklen;
   
   if (gdata.background == 2) return;
   gdata.attop = 0;
@@ -299,9 +302,9 @@ void parseconsole(void)
   
   unsigned char tempbuffa[INPUT_BUFFER_LENGTH];
   int length;
-  int linelength;
+  unsigned int linelength;
   userinput ui;
-  int i,j;
+  unsigned int i,j;
   
   updatecontext();
   
@@ -317,11 +320,11 @@ void parseconsole(void)
         }
       
       linelength = strlen(gdata.console_input_line);
-      for (i=0; i<length; i++)
+      for (i=0; i<(unsigned int)length; i++)
         {
           if (console_escape_seq[0] != '\0')
             {
-              int esc_len = strlen(console_escape_seq);
+              size_t esc_len = strlen(console_escape_seq);
               
               if (esc_len < (maxtextlengthshort-2))
                 {

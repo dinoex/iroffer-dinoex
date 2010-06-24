@@ -16,14 +16,15 @@
 #ifdef USE_CURL
 void curl_startup(void);
 void curl_shutdown(void);
-extern int fetch_started;
 void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd_set, int *max_fd);
-int fetch_cancel(int num);
+unsigned int fetch_cancel(unsigned int num);
 void fetch_perform(void);
 void start_fetch_url(const userinput *const u, const char *uploaddir);
 void dinoex_dcl(const userinput *const u);
 void dinoex_dcld(const userinput *const u);
-int fetch_is_running(const char *file);
+unsigned int fetch_is_running(const char *file);
+
+extern int fetch_started;
 #endif /* USE_CURL */
 
 /* End of File */

@@ -179,17 +179,17 @@ static void read_statefile_float_set(statefile_hdr_t *hdr, const char *tag, floa
     *pval = g_float->g_float;
 }
 
-static void read_statefile_int(statefile_hdr_t *hdr, const char *tag, int *pval)
+static void read_statefile_int(statefile_hdr_t *hdr, const char *tag, unsigned int *pval)
 {
-  statefile_item_generic_int_t *g_int;
+  statefile_item_generic_uint_t *g_int;
 
-  if (hdr->length != sizeof(statefile_item_generic_int_t)) {
+  if (hdr->length != sizeof(statefile_item_generic_uint_t)) {
     read_statefile_bad_tag(hdr, tag);
     return;
   }
 
-  g_int = (statefile_item_generic_int_t*)hdr;
-  *pval = ntohl(g_int->g_int);
+  g_int = (statefile_item_generic_uint_t*)hdr;
+  *pval = ntohl(g_int->g_uint);
 }
 
 static void read_statefile_long(statefile_hdr_t *hdr, const char *tag, long *pval)
@@ -239,7 +239,7 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
 {
   ir_pqueue *pq;
   statefile_hdr_t *ihdr;
-  int num;
+  unsigned int num;
 
   if (gdata.idlequeuesize > 0 )
     pq = irlist_add(&gdata.idlequeue, sizeof(ir_pqueue));
@@ -258,11 +258,11 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
     case STATEFILE_TAG_QUEUE_PACK:
       num = 0;
       read_statefile_int(ihdr, "Queue Pack Nr", &(num));
-      if (num == -1) {
+      if (num == XDCC_SEND_LIST) {
         pq->xpack = get_xdcc_pack(num);
         break;
       }
-      if (num < 1 || num > irlist_size(&gdata.xdccs)) {
+      if (num == 0 || num > irlist_size(&gdata.xdccs)) {
         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Nr (%d)", num);
         break;
       }
@@ -284,7 +284,7 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
     case STATEFILE_TAG_QUEUE_NET:
       num = 0;
       read_statefile_int(ihdr, "Queue Net", &(num));
-      if (num < 0 || num > gdata.networks_online) {
+      if ((unsigned int)num > gdata.networks_online) {
         outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Net Nr (%d)", num);
         break;
       }
@@ -349,25 +349,25 @@ static void write_statefile_time(ir_moutput_t *bout, statefile_tag_t tag, time_t
   write_statefile_item(bout, &a_time);
 }
 
-static void create_statefile_int(statefile_item_generic_int_t *g_int, statefile_tag_t tag, ir_int32 val)
+static void create_statefile_int(statefile_item_generic_uint_t *g_int, statefile_tag_t tag, ir_uint32 val)
 {
-  create_statefile_hdr(&(g_int->hdr), tag, sizeof(statefile_item_generic_int_t));
-  g_int->g_int = htonl(val);
+  create_statefile_hdr(&(g_int->hdr), tag, sizeof(statefile_item_generic_uint_t));
+  g_int->g_uint = htonl(val);
 }
 
-static unsigned char *prepare_statefile_int(unsigned char *next, statefile_tag_t tag, ir_int32 val)
+static unsigned char *prepare_statefile_int(unsigned char *next, statefile_tag_t tag, ir_uint32 val)
 {
-  statefile_item_generic_int_t *g_int;
+  statefile_item_generic_uint_t *g_int;
 
-  g_int = (statefile_item_generic_int_t*)next;
+  g_int = (statefile_item_generic_uint_t*)next;
   create_statefile_int(g_int, tag, val);
   next = (unsigned char*)(&g_int[1]);
   return next;
 }
 
-static void write_statefile_int(ir_moutput_t *bout, statefile_tag_t tag, ir_int32 val)
+static void write_statefile_int(ir_moutput_t *bout, statefile_tag_t tag, ir_uint32 val)
 {
-  statefile_item_generic_int_t a_int;
+  statefile_item_generic_uint_t a_int;
 
   create_statefile_int(&a_int, tag, val);
   write_statefile_item(bout, &a_int);
@@ -573,10 +573,10 @@ static void write_statefile_xdccs(ir_moutput_t *bout)
   unsigned char *next;
   xdcc *xd;
   statefile_item_md5sum_info_t *md5sum_info;
-  int has_desc = 1;
-  int has_note = 1;
-  int has_minspeed;
-  int has_maxspeed;
+  unsigned int has_desc = 1;
+  unsigned int has_note = 1;
+  unsigned int has_minspeed;
+  unsigned int has_maxspeed;
   size_t length;
 
   updatecontext();

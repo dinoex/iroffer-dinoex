@@ -113,7 +113,7 @@ void queue_pack_limit(irlist_t *list, xdcc *xd)
 }
 
 /* remove all packs a user has because of his slowness */
-void queue_punishslowusers(irlist_t *list, int network, const char *nick)
+void queue_punishslowusers(irlist_t *list, unsigned int network, const char *nick)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
@@ -139,11 +139,11 @@ void queue_punishslowusers(irlist_t *list, int network, const char *nick)
 }
 
 /* remove all packs a user has because he send us XDCC REMOVE */
-int queue_xdcc_remove(irlist_t *list, int network, const char *nick, int number)
+unsigned int queue_xdcc_remove(irlist_t *list, unsigned int network, const char *nick, unsigned int number)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
-  int changed = 0;
+  unsigned int changed = 0;
 
   for (pq = irlist_get_head(list); pq;) {
     if (pq->net != network) {
@@ -220,10 +220,10 @@ void queue_all_remove(irlist_t *list, const char *message)
 }
 
 /* count number of entries in a queue for one user */
-int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const char *hostname, xdcc *xd)
+unsigned int queue_count_host(irlist_t *list, unsigned int *inq, unsigned int man, const char* nick, const char *hostname, xdcc *xd)
 {
   ir_pqueue *pq;
-  int alreadytrans = 0;
+  unsigned int alreadytrans = 0;
 
   *inq = 0;
   for (pq = irlist_get_head(list);
@@ -243,7 +243,7 @@ int queue_count_host(irlist_t *list, int *inq, int man, const char* nick, const 
 }
 
 /* add a request to the idle queue */
-int addtoidlequeue(const char **msg, char *tempstr, const char* nick, const char* hostname, xdcc *xd, int pack, int inq)
+unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, const char* hostname, xdcc *xd, unsigned int pack, unsigned int inq)
 {
   ir_pqueue *tempq;
   const char *hostname2;
@@ -292,17 +292,17 @@ int addtoidlequeue(const char **msg, char *tempstr, const char* nick, const char
 }
 
 /* add a request to the main queue */
-int addtomainqueue(const char **msg, char *tempstr, const char *nick, const char *hostname, int pack)
+unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, const char *hostname, unsigned int pack)
 {
   const char *hostname2;
   ir_pqueue *tempq;
   xdcc *tempx;
-  int alreadytrans;
-  int inq;
-  int inq2;
-  int man;
-  int mainslot;
-  int fatal;
+  unsigned int alreadytrans;
+  unsigned int inq;
+  unsigned int inq2;
+  unsigned int man;
+  unsigned int mainslot;
+  unsigned int fatal;
 
   updatecontext();
 
@@ -378,10 +378,10 @@ int addtomainqueue(const char **msg, char *tempstr, const char *nick, const char
 static const char *send_queue_msg[] = { "", " (low bandwidth)", " (manual)" };
 
 /* send the next item form the queue */
-void send_from_queue(int type, int pos, char *lastnick)
+void send_from_queue(unsigned int type, unsigned int pos, char *lastnick)
 {
-  int usertrans;
-  int pack;
+  unsigned int usertrans;
+  unsigned int pack;
   ir_pqueue *pq;
   transfer *tr;
   gnetwork_t *backup;
@@ -417,7 +417,7 @@ void send_from_queue(int type, int pos, char *lastnick)
         if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
           continue;
 
-        usertrans=0;
+        usertrans = 0;
         for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
           if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
             ++usertrans;
@@ -447,7 +447,6 @@ void send_from_queue(int type, int pos, char *lastnick)
       return;
     }
 
-    if (type < 0) type = 0;
     if (type > 2) type = 0;
     pack = number_of_pack(pq->xpack);
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -455,7 +454,7 @@ void send_from_queue(int type, int pos, char *lastnick)
             send_queue_msg[ type ],
             pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
 
-    if (pack == -1)
+    if (pack == XDCC_SEND_LIST)
       init_xdcc_file(pq->xpack, gdata.xdcclistfile);
     look_for_file_changes(pq->xpack);
 
@@ -484,8 +483,8 @@ void check_idle_queue(void)
   ir_pqueue *mq;
   ir_pqueue *tempq;
   transfer *tr;
-  int usertrans;
-  int pass;
+  unsigned int usertrans;
+  unsigned int pass;
 
   updatecontext();
   if (gdata.exiting)
@@ -560,7 +559,7 @@ void check_idle_queue(void)
 /* fill mainqueue with data from idle queue on start */
 void start_main_queue(void)
 {
-  int i;
+  unsigned int i;
 
   for (i=0; i<gdata.queuesize; ++i) {
     check_idle_queue();
@@ -570,7 +569,7 @@ void start_main_queue(void)
 /* start sendding the queued packs */
 void start_sends(void)
 {
-  int i;
+  unsigned int i;
 
   for (i=0; i<gdata.slotsmax; ++i) {
     if (!gdata.exiting &&

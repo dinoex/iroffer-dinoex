@@ -454,29 +454,32 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
 void sendserver(void)
 {
   char *item;
-  int clean;
+  unsigned int clean;
+  
+  if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
+    {
+      return;
+    }
   
   sendannounce();
   gnetwork->serverbucket += EXCESS_BUCKET_ADD;
   gnetwork->serverbucket = min2(gnetwork->serverbucket, EXCESS_BUCKET_MAX);
   
-  clean = ((irlist_size(&(gnetwork->serverq_fast)) == 0) &&
-           (irlist_size(&(gnetwork->serverq_normal)) == 0) &&
-           (irlist_size(&(gnetwork->serverq_slow)) == 0));
+  clean = (irlist_size(&(gnetwork->serverq_fast)) +
+           irlist_size(&(gnetwork->serverq_normal)) +
+           irlist_size(&(gnetwork->serverq_slow)));
   
-  if (clean || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
+  if (clean == 0)
     {
-      return;
-    }
-  
-  if (gdata.exiting && clean)
-    {
-      close_server();
-      gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_NO_COLOR,
-              "Connection to %s (%s) Closed",
-              gnetwork->curserver.hostname,
-              gnetwork->curserveractualname ? gnetwork->curserveractualname : "<unknown>");
+      if (gdata.exiting)
+        {
+          close_server();
+          gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_NO_COLOR,
+                  "Connection to %s (%s) Closed",
+                  gnetwork->curserver.hostname,
+                  gnetwork->curserveractualname ? gnetwork->curserveractualname : "<unknown>");
+        }
       return;
     }
   
@@ -992,7 +995,8 @@ static void iroffer_signal_handler(int signo)
 
 
 void floodchk(void) {
-   int i,count,last;
+   unsigned int i;
+   int count,last;
    
    updatecontext();
 
@@ -1083,7 +1087,7 @@ void shutdowniroffer(void) {
    transfer *tr;
    dccchat_t *chat;
    gnetwork_t *backup;
-   int ss;
+   unsigned int ss;
    
    updatecontext();
 
@@ -1223,7 +1227,7 @@ void switchserver(int which)
         }
     }
   
-  ss = irlist_get_nth(&(gnetwork->servers), which);
+  ss = irlist_get_nth(&(gnetwork->servers), (unsigned int)which);
   
   connectirc(ss);
   
@@ -1233,11 +1237,11 @@ void switchserver(int which)
 
 char* getstatusline(char *str, size_t len)
 {
-  int i,srvq;
+  unsigned int i,srvq;
   ir_uint64 xdccsent;
   ir_uint64 xdccrecv;
   ir_uint64 xdccsum;
-  int ss;
+  unsigned int ss;
   
   updatecontext();
   
@@ -1306,11 +1310,11 @@ char* getstatusline(char *str, size_t len)
 
 char* getstatuslinenums(char *str, size_t len)
 {
-  int i,gcount,srvq;
+  unsigned int i,gcount,srvq;
   float scount,ocount;
   xdcc *xd;
   ir_uint64 xdccsent;
-  int ss;
+  unsigned int ss;
   
   updatecontext();
   
@@ -1476,7 +1480,7 @@ static void initchanmodes(void)
 
 void initvars(void)
 {
-  int ss;
+  unsigned int ss;
 
   memset(&gdata, 0, sizeof(gdata_t));
   
@@ -1534,7 +1538,7 @@ void startupiroffer(void) {
    struct sigaction sa;
    struct rlimit rlim;
    int callval;
-   int ss;
+   unsigned int ss;
    
    updatecontext();
    
@@ -1949,7 +1953,7 @@ int inttosaltchar (int n) {
 
 void notifybandwidth(void)
 {
-  int i;
+  unsigned int i;
   transfer *tr;
   gnetwork_t *backup;
   ir_uint64 xdccsent;
@@ -2090,7 +2094,7 @@ void user_changed_nick(const char *oldnick, const char *newnick)
   transfer *tr;
   ir_pqueue *pq;
   ir_pqueue *old;
-  int userinqueue = 0;
+  unsigned int userinqueue = 0;
   
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr))
     {

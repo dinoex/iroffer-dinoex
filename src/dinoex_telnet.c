@@ -31,7 +31,7 @@ static int telnet_family[MAX_VHOSTS];
 /* close all telnet interfaces */
 void telnet_close_listen(void)
 {
-  int i;
+  unsigned int i;
 
   for (i=0; i<MAX_VHOSTS; ++i) {
     if (telnet_listen[i] != FD_UNUSED) {
@@ -42,11 +42,11 @@ void telnet_close_listen(void)
   }
 }
 
-static int telnet_open_listen(int i)
+static unsigned int telnet_open_listen(unsigned int i)
 {
   char *vhost = NULL;
   char *msg;
-  int rc;
+  unsigned int rc;
   ir_sockaddr_union_t listenaddr;
 
   updatecontext();
@@ -69,10 +69,10 @@ static int telnet_open_listen(int i)
 }
 
 /* setup all telnet interfaces */
-int telnet_setup_listen(void)
+unsigned int telnet_setup_listen(void)
 {
-  int i;
-  int rc = 0;
+  unsigned int i;
+  unsigned int rc = 0;
 
   updatecontext();
 
@@ -102,7 +102,7 @@ void telnet_reash_listen(void)
 /* register active connections for select() */
 int telnet_select_fdset(int highests)
 {
-  int i;
+  unsigned int i;
 
   for (i=0; i<MAX_VHOSTS; ++i) {
     if (telnet_listen[i] != FD_UNUSED) {
@@ -114,7 +114,7 @@ int telnet_select_fdset(int highests)
 }
 
 /* accept incoming connection */
-static void telnet_accept(int i)
+static void telnet_accept(unsigned int i)
 {
   gnetwork_t *backup;
   char *msg;
@@ -184,7 +184,7 @@ static void telnet_accept(int i)
 /* process all telnet connections */
 void telnet_perform(void)
 {
-  int i;
+  unsigned int i;
 
   for (i=0; i<MAX_VHOSTS; ++i) {
     if (telnet_listen[i] != FD_UNUSED) {

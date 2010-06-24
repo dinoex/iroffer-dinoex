@@ -36,8 +36,8 @@
 typedef struct {
   const char *hg_group;
   const char *hg_desc;
-  int hg_packs;
-  int hg_agets;
+  unsigned int hg_packs;
+  unsigned int hg_agets;
   float hg_rgets;
   off_t hg_sizes;
   off_t hg_traffic;
@@ -146,10 +146,10 @@ static unsigned char base64decode[ 256 ];
 /* create a table for fast base64 decoding */
 void init_base64decode( void )
 {
-  int i;
+  unsigned int i;
 
   memset(base64decode, 0, sizeof(base64decode));
-  for ( i = 0; i < 64; ++i) {
+  for (i = 0; i < 64; ++i) {
     base64decode[ BASE64[ i ] ] = i;
   }
 }
@@ -196,7 +196,7 @@ static const char *html_mime(const char *file)
 {
   const char *ext;
   http_magic_t *mime;
-  int i;
+  unsigned int i;
 
   ext = strrchr(file, '.');
   if (ext == NULL)
@@ -222,7 +222,7 @@ static size_t html_encode(char *buffer, size_t max, const char *src)
 {
   char *dest = buffer;
   size_t len;
-  int i;
+  unsigned int i;
   char ch;
 
   --max;
@@ -274,7 +274,7 @@ static size_t html_encode(char *buffer, size_t max, const char *src)
 static ssize_t html_encode_size(const char *src)
 {
   ssize_t len = 0;
-  int i;
+  unsigned int i;
   char ch;
 
   if (src == NULL)
@@ -319,7 +319,7 @@ static size_t html_decode(char *buffer, size_t max, const char *src)
   char *dest = buffer;
   const char *code;
   size_t len;
-  int i;
+  unsigned int i;
   int hex;
   char ch;
 
@@ -461,7 +461,7 @@ static char *html_str_split(char *buffer, int delimiter)
 /* close all HTTP interfaces */
 void h_close_listen(void)
 {
-  int i;
+  unsigned int i;
 
   for (i=0; i<MAX_VHOSTS; ++i) {
     if (http_listen[i] != FD_UNUSED) {
@@ -472,11 +472,11 @@ void h_close_listen(void)
   }
 }
 
-static int h_open_listen(int i)
+static unsigned int h_open_listen(unsigned int i)
 {
   char *vhost = NULL;
   char *msg;
-  int rc;
+  unsigned int rc;
   ir_sockaddr_union_t listenaddr;
 
   updatecontext();
@@ -499,10 +499,10 @@ static int h_open_listen(int i)
 }
 
 /* setup all HTTP interfaces */
-int h_setup_listen(void)
+unsigned int h_setup_listen(void)
 {
-  int i;
-  int rc = 0;
+  unsigned int i;
+  unsigned int rc = 0;
 
   updatecontext();
 
@@ -533,7 +533,7 @@ void h_reash_listen(void)
 int h_select_fdset(int highests)
 {
   http *h;
-  int i;
+  unsigned int i;
 
   for (i=0; i<MAX_VHOSTS; ++i) {
     if (http_listen[i] != FD_UNUSED) {
@@ -683,7 +683,7 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   h->status = HTTP_STATUS_DONE;
 }
 
-static void h_accept(int i)
+static void h_accept(unsigned int i)
 {
   SIGNEDSOCK int addrlen;
   ir_sockaddr_union_t remoteaddr;
@@ -734,16 +734,16 @@ static void h_accept(int i)
           "HTTP connection received from %s",  h->con.remoteaddr);
 
   blocked = is_in_badip(&(h->con.remote));
-  if (blocked > 0) {
-    h_closeconn(h, "HTTP connection ignored", 0);
-    return;
-  }
 #ifdef USE_GEOIP
-  if (blocked < 0) {
+  if (blocked == 2) {
     h_closeconn(h, "HTTP connection country blocked", 0);
     return;
   }
 #endif /* USE_GEOIP */
+  if (blocked > 0) {
+    h_closeconn(h, "HTTP connection ignored", 0);
+    return;
+  }
 
   if (irlist_size(&gdata.http_allow) > 0) {
     if (!verify_cidr(&gdata.http_allow, &remoteaddr)) {
@@ -1089,7 +1089,7 @@ static int html_link_option(char *str, size_t size, const char *option, const ch
 }
 
 static char *html_link_build(const char *css, const char *caption, const char *text,
-				const char *group, int traffic, const char *order)
+				const char *group, unsigned int traffic, const char *order)
 {
   char *tempstr;
   size_t len;
@@ -1109,7 +1109,7 @@ static char *html_link_build(const char *css, const char *caption, const char *t
 
 static char *h_html_link_more(http * const h, const char *caption, const char *text)
 {
-  int traffic;
+  unsigned int traffic;
 
   traffic = (h->traffic) ? 0 : 1; /* Toggle Traffic */
   return html_link_build("", caption, text, h->group, traffic, h->order);
@@ -1136,7 +1136,7 @@ static char *h_html_link_order(http * const h, const char *caption, const char *
   return html_link_build(" class=\"head\"", caption, text, h->group, h->traffic, order);
 }
 
-static float gets_per_pack(int agets, int packs)
+static float gets_per_pack(unsigned int agets, unsigned int packs)
 {
   float result = 0.0;
 
@@ -1147,7 +1147,7 @@ static float gets_per_pack(int agets, int packs)
   return result;
 }
 
-static int html_filter_main(xdcc *xd, const char *group)
+static unsigned int html_filter_main(xdcc *xd, const char *group)
 {
   if (strcmp(group, ".") == 0) {
     if (xd->group != NULL)
@@ -1161,7 +1161,7 @@ static int html_filter_main(xdcc *xd, const char *group)
   return 0;
 }
 
-static int h_html_filter_group(http * const h, xdcc *xd)
+static unsigned int h_html_filter_group(http * const h, xdcc *xd)
 {
   if (h->group != NULL) {
     if (strcmp(h->group, "*") != 0) {
@@ -1207,10 +1207,10 @@ static void h_html_main(http * const h)
   cmpfunc_t order_func;
   off_t sizes = 0;
   off_t traffic = 0;
-  int groups = 0;
-  int packs = 0;
-  int agets = 0;
-  int nogroup = 0;
+  unsigned int groups = 0;
+  unsigned int packs = 0;
+  unsigned int agets = 0;
+  unsigned int nogroup = 0;
 
   updatecontext();
 
@@ -1369,8 +1369,8 @@ static void h_html_file(http * const h)
   off_t sizes = 0;
   off_t traffic = 0;
   size_t len;
-  int packs = 0;
-  int agets = 0;
+  unsigned int packs = 0;
+  unsigned int agets = 0;
   int num;
 
   updatecontext();
@@ -1528,7 +1528,7 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
   mydelete(tempstr);
 }
 
-static int h_html_index(http * const h)
+static void h_html_index(http * const h)
 {
   char *info;
   char *buffer;
@@ -1625,7 +1625,6 @@ static int h_html_index(http * const h)
 
   h_respond(h, "</tbody>\n</table>\n<br>\n");
   h_respond(h, "<a class=\"credits\" href=\"" "http://iroffer.dinoex.net/" "\">%s</a>\n", "Sourcecode" );
-  return 0;
 }
 
 static char *get_url_param(const char *url, const char *key)
@@ -1739,7 +1738,7 @@ static void h_webliste(http * const h, const char *body)
 }
 
 #ifndef WITHOUT_HTTP_ADMIN
-static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
+static void h_admin(http * const h, unsigned int UNUSED(level), const char *UNUSED(body))
 {
   char *tempstr;
   char *tmp;
@@ -1762,7 +1761,7 @@ static void h_admin(http * const h, int UNUSED(level), const char *UNUSED(body))
   }
 
   if (strncasecmp(h->url, "/ddl/", 5) == 0) {
-    int pack = atoi(h->url + 5);
+    unsigned int pack = atoi(h->url + 5);
     xdcc *xd;
 
     if (pack > 0) {
@@ -1829,7 +1828,7 @@ static char *h_bad_request(http * const h)
 static char *h_read_http(http * const h)
 {
   int howmuch, howmuch2;
-  int i;
+  unsigned int i;
 
   updatecontext();
 
@@ -1863,7 +1862,7 @@ static char *h_read_http(http * const h)
 }
 
 #ifndef WITHOUT_HTTP_ADMIN
-static void html_str_prefix(char **str, int len)
+static void html_str_prefix(char **str, size_t len)
 {
   char *newstr;
 
@@ -1872,7 +1871,7 @@ static void html_str_prefix(char **str, int len)
   *str = newstr;
 }
 
-static int h_admin_auth(http * const h, char *body)
+static unsigned int h_admin_auth(http * const h, char *body)
 {
   const char *auth;
   char *buffer;
@@ -1997,6 +1996,10 @@ static void h_get(http * const h)
 
   header = h_bad_request(h);
   if (header == NULL) {
+    if (h->post) {
+      h->status = HTTP_STATUS_POST;
+      return;
+    }
     h_closeconn(h, "Bad request", 0);
     return;
   }
@@ -2025,11 +2028,6 @@ static void h_get(http * const h)
       h->authorization = mystrdup(hval);
       continue;
     }
-  }
-
-  if ((h->post) && (!header)) {
-    h->status = HTTP_STATUS_POST;
-    return;
   }
 
   h_parse(h, data);
@@ -2144,7 +2142,7 @@ static void h_istimeout(http * const h)
 void h_perform(int changesec)
 {
   http *h;
-  int i;
+  unsigned int i;
 
   for (i=0; i<MAX_VHOSTS; ++i) {
     if (http_listen[i] != FD_UNUSED) {

@@ -25,7 +25,7 @@
 #ifndef WITHOUT_MEMSAVE
 
 /* copy a string */
-char *mystrdup2(const char *str, const char *src_function, const char *src_file, int src_line)
+char *mystrdup2(const char *str, const char *src_function, const char *src_file, unsigned int src_line)
 {
   char *copy;
 
@@ -38,7 +38,7 @@ char *mystrdup2(const char *str, const char *src_function, const char *src_file,
 
 #ifndef WITHOUT_MEMSAVE
 /* append a suffix to a string, recording origin */
-char *mystrsuffix2(const char *str, const char *suffix, const char *src_function, const char *src_file, int src_line)
+char *mystrsuffix2(const char *str, const char *suffix, const char *src_function, const char *src_file, unsigned int src_line)
 #else
 /* append a suffix to a string */
 char *mystrsuffix(const char *str, const char *suffix)
@@ -59,10 +59,10 @@ char *mystrsuffix(const char *str, const char *suffix)
 
 #ifndef WITHOUT_MEMSAVE
 /* append a suffix to a string and adding a separation character, recording origin */
-char *mystrjoin2(const char *str1, const char *str2, int delimiter, const char *src_function, const char *src_file, int src_line)
+char *mystrjoin2(const char *str1, const char *str2, unsigned int delimiter, const char *src_function, const char *src_file, unsigned int src_line)
 #else
 /* append a suffix to a string and adding a separation character */
-char *mystrjoin(const char *str1, const char *str2, int delimiter)
+char *mystrjoin(const char *str1, const char *str2, unsigned int delimiter)
 #endif /* WITHOUT_MEMSAVE */
 {
   char *copy;
@@ -71,14 +71,14 @@ char *mystrjoin(const char *str1, const char *str2, int delimiter)
 
   len1 = strlen(str1);
   max = len1 + strlen(str2) + 1;
-  if ((delimiter != 0 ) && (str1[len1] != delimiter))
+  if ((delimiter != 0 ) && (str1[len1] != (unsigned char)delimiter))
     ++max;
 #ifndef WITHOUT_MEMSAVE
   copy = (char *)mymalloc2(max, 0, src_function, src_file, src_line);
 #else /* WITHOUT_MEMSAVE */
   copy = mymalloc(max);
 #endif /* WITHOUT_MEMSAVE */
-  if ((delimiter != 0 ) && (str1[len1 - 1] != delimiter)) {
+  if ((delimiter != 0 ) && (str1[len1 - 1] != (unsigned char)delimiter)) {
     snprintf(copy, max, "%s%c%s", str1, delimiter, str2);
   } else {
     snprintf(copy, max, "%s%s", str1, str2);
@@ -96,7 +96,7 @@ void irlist_add_string(irlist_t *list, const char *str)
 }
 
 /* match a given file against a list of patterns */
-int verifyshell(irlist_t *list, const char *file)
+unsigned int verifyshell(irlist_t *list, const char *file)
 {
   char *pattern;
 
@@ -120,7 +120,7 @@ const char *save_nick(const char * nick)
 }
 
 /* verify a password against the stored hash */
-int verifypass2(const char *masterpass, const char *testpass)
+unsigned int verifypass2(const char *masterpass, const char *testpass)
 {
 #ifndef NO_CRYPT
   char *pwout;
@@ -154,7 +154,7 @@ int verifypass2(const char *masterpass, const char *testpass)
 void checkadminpass2(const char *masterpass)
 {
 #ifndef NO_CRYPT
-  int err=0;
+  unsigned int err=0;
   unsigned int i;
 
   updatecontext();
@@ -197,11 +197,11 @@ char *clean_quotes(char *str)
   return str;
 }
 
-static void replace_char(char *str, int ch1, int ch2)
+static void replace_char(char *str, unsigned int ch1, unsigned int ch2)
 {
-  char *work;
+  unsigned char *work;
 
-  for (work=str; *work; ++work) {
+  for (work=(unsigned char *)str; *work; ++work) {
     if (*work == ch1)
       *work = ch2;
   }
@@ -273,7 +273,7 @@ int strcmp_null(const char *s1, const char *s2)
 }
 
 /* check if a file is writeable */
-int is_file_writeable(const char *f)
+unsigned int is_file_writeable(const char *f)
 {
    int fd;
 
@@ -336,7 +336,7 @@ char *hostmask_to_fnmatch(const char *str)
 }
 
 /* check if given group can be found in a list of allowed groups */
-int verify_group_in_grouplist(const char *group, const char *grouplist)
+unsigned int verify_group_in_grouplist(const char *group, const char *grouplist)
 {
   const char *tlptr; /* character to compare */
   const char *sptr; /* character to find */
@@ -380,7 +380,7 @@ int verify_group_in_grouplist(const char *group, const char *grouplist)
 static const char const size_units[] = { 'K', 'M', 'G', 'T', 'E', 0 };
 
 /* returns the size in a human readable form */
-char *sizestr(int spaces, off_t num)
+char *sizestr(unsigned int spaces, off_t num)
 {
 #define SIZESTR_SIZE 5
   char *str = (char *)mycalloc(SIZESTR_SIZE);
@@ -415,7 +415,7 @@ char *sizestr(int spaces, off_t num)
 }
 
 /* check for non ASCII chars */
-int isprintable(int a)
+unsigned int isprintable(unsigned int a)
 {
   if ( (unsigned char)a < 0x20U )
      return 0;
@@ -425,7 +425,7 @@ int isprintable(int a)
 }
 
 /* convert to ASCII char */
-int onlyprintable(int a)
+unsigned int onlyprintable(unsigned int a)
 {
   if ( (unsigned char)a < 0x20U )
      return '.';
@@ -556,7 +556,7 @@ char *caps(char *str)
 }
 
 /* calculate minutes left for reaching a timestamp */
-int max_minutes_waits(time_t *endtime, int min)
+unsigned int max_minutes_waits(time_t *endtime, unsigned int min)
 {
   *endtime = gdata.curtime;
   *endtime += (60 * min);
@@ -577,7 +577,7 @@ static void clean_missing_parts(char **result, int part, int howmany)
 
 #ifndef WITHOUT_MEMSAVE
 /* split a line in a number of arguments, recording orign */
-int get_argv2(char **result, const char *line, int howmany, const char *src_function, const char *src_file, int src_line)
+int get_argv2(char **result, const char *line, int howmany, const char *src_function, const char *src_file, unsigned int src_line)
 #else /* WITHOUT_MEMSAVE */
 /* split a line in a number of arguments */
 int get_argv(char **result, const char *line, int howmany)
@@ -667,7 +667,7 @@ int get_argv(char **result, const char *line, int howmany)
 
 #ifndef WITHOUT_MEMSAVE
 /* extract one argument from a line, recording orign */
-char *getpart2(const char *line, int howmany, const char *src_function, const char *src_file, int src_line)
+char *getpart2(const char *line, int howmany, const char *src_function, const char *src_file, unsigned int src_line)
 #else /* WITHOUT_MEMSAVE */
 /* extract one argument from a line */
 char *getpart(const char *line, int howmany)
@@ -813,9 +813,9 @@ char *getpart_eol(const char *line, int howmany)
 }
 
 /* count length of pattern without wildcards */
-int convert_spaces_to_match(char *str)
+unsigned int convert_spaces_to_match(char *str)
 {
-  int k;
+  unsigned int k;
 
   for (k = 0; *str; ++str) {
     if (*str == ' ') *str = '*';

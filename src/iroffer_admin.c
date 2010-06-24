@@ -430,7 +430,7 @@ size_t u_expand_command(void)
   char *end;
   size_t j;
   int i;
-  int found = 0;
+  size_t found = 0;
   int first = -1;
 
   cmd = mystrdup(gdata.console_input_line);
@@ -544,11 +544,11 @@ static void u_help(const userinput * const u)
   
 }
 
-void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, const xdcc *xd) {
+void u_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd) {
    char datestr[maxtextlengthshort];
    char *sizestrstr;
    char *colordesc;
-   int len;
+   unsigned int len;
    
    sizestrstr = sizestr(1, xd->st_size);
    datestr[0] = 0;
@@ -609,7 +609,9 @@ static void u_xdl_head(const userinput * const u) {
    char *tempnick;
    char *chan;
    const char *mynick;
-   int a, i, m, m1;
+   unsigned int i;
+   unsigned int a;
+   unsigned int m, m1;
    size_t len;
    int head;
    xdcc *xd;
@@ -667,7 +669,7 @@ static void u_xdl_head(const userinput * const u) {
    
    if (!m && !m1)
      {
-       if (gdata.slotsmax - irlist_size(&gdata.trans) < 0)
+       if (gdata.slotsmax < irlist_size(&gdata.trans))
          {
            a = irlist_size(&gdata.trans);
          }
@@ -826,9 +828,9 @@ static void u_xdl_foot(const userinput * const u) {
 static void u_xdl_full(const userinput * const u) {
    char *tempstr;
    xdcc *xd;
-   int i;
-   int l;
-   int s;
+   unsigned int i;
+   unsigned int l;
+   unsigned int s;
    
    updatecontext();
    
@@ -856,10 +858,10 @@ static void u_xdl_group(const userinput * const u) {
    char *tempstr;
    char *msg3;
    xdcc *xd;
-   int i;
-   int k;
-   int l;
-   int s;
+   unsigned int i;
+   unsigned int k;
+   unsigned int l;
+   unsigned int s;
 
    updatecontext();
 
@@ -914,9 +916,9 @@ static void u_xdl_group(const userinput * const u) {
 static void u_xdl(const userinput * const u) {
    char *tempstr;
    char *inlist;
-   int i;
-   int l;
-   int s;
+   unsigned int i;
+   unsigned int l;
+   unsigned int s;
    xdcc *xd;
    irlist_t grplist = {0, 0};
 
@@ -1211,12 +1213,12 @@ static void u_dcld(const userinput * const u)
 
 static void u_close(const userinput * const u)
 {
-  int num = -1;
+  unsigned int num = 0;
   updatecontext();
   
   if (u->arg1) num = atoi(u->arg1);
   
-  if ((num < 0) || !does_tr_id_exist(num))
+  if ((num == 0) || !does_tr_id_exist(num))
     {
       u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
     }
@@ -1228,14 +1230,14 @@ static void u_close(const userinput * const u)
 
 static void u_closeu(const userinput * const u)
 {
-  int num = -1;
+  unsigned int num = 0;
   upload *ul;
   
   updatecontext();
   
   if (u->arg1) num = atoi(u->arg1);
   
-  if ((num < 0) || (num >= irlist_size(&gdata.uploads)))
+  if ((num == 0) || (num >= irlist_size(&gdata.uploads)))
     {
       u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
     }
@@ -1249,14 +1251,14 @@ static void u_closeu(const userinput * const u)
 
 static void u_nomin(const userinput * const u)
 {
-  int num = -1;
+  unsigned int num = 0;
   transfer *tr;
   
   updatecontext();
   
   if (u->arg1) num = atoi(u->arg1);
   
-  if ((num < 0) || !does_tr_id_exist(num))
+  if ((num == 0) || !does_tr_id_exist(num))
     {
       u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
     }
@@ -1269,7 +1271,7 @@ static void u_nomin(const userinput * const u)
 
 static void u_nomax(const userinput * const u)
 {
-  int num = -1;
+  unsigned int num = 0;
   transfer *tr;
   
   updatecontext();
@@ -1289,7 +1291,7 @@ static void u_nomax(const userinput * const u)
 
 static void u_info(const userinput * const u)
 {
-  int num;
+  unsigned int num;
   xdcc *xd;
   char *sizestrstr;
   char *sendnamestr;
@@ -1494,7 +1496,7 @@ static void u_status(const userinput * const u) {
    }
 
 static void u_chnote(const userinput * const u) {
-   int num;
+   unsigned int num;
    xdcc *xd;
    
    updatecontext();
@@ -1527,7 +1529,7 @@ static void u_chnote(const userinput * const u) {
    }
 
 static void u_chmins(const userinput * const u) {
-   int num;
+   unsigned int num;
    xdcc *xd;
    
    updatecontext();
@@ -1556,7 +1558,7 @@ static void u_chmins(const userinput * const u) {
    }
 
 static void u_chmaxs(const userinput * const u) {
-   int num;
+   unsigned int num;
    xdcc *xd;
    
    updatecontext();
@@ -1584,7 +1586,7 @@ static void u_chmaxs(const userinput * const u) {
 
 static void u_chgets(const userinput * const u)
 {
-  int num;
+  unsigned int num;
   xdcc *xd;
   
   updatecontext();
@@ -1696,14 +1698,14 @@ static void u_chatl(const userinput * const u)
 
 static void u_closec(const userinput * const u)
 {
-  int num = -1;
+  unsigned int num = 0;
   dccchat_t *chat;
   
   updatecontext();
   
   if (u->arg1) num = atoi(u->arg1);
   
-  if ((num < 1) || (num > irlist_size(&gdata.dccchats)))
+  if ((num == 0) || (num > irlist_size(&gdata.dccchats)))
     {
       u_respond(u,"Invalid ID number, Try \"CHATL\" for a list");
     }
@@ -1732,7 +1734,7 @@ static void u_rehash(const userinput * const u) {
    /* other variables */
    char *templine = mycalloc(maxtextlength);
    int i;
-   int ss;
+   unsigned int ss;
    xdcc *xd;
    
    updatecontext();
@@ -1764,9 +1766,7 @@ static void u_rehash(const userinput * const u) {
    a_rehash_channels();
    a_rehash_jump();
    
-   if (((!gdata.pidfile) && (gdata.r_pidfile)) ||
-       ((gdata.pidfile) && (!gdata.r_pidfile)) ||
-       ((gdata.pidfile) && (gdata.r_pidfile) && strcmp(gdata.pidfile,gdata.r_pidfile)))
+   if (strcmp_null(gdata.pidfile, gdata.r_pidfile))
      {
        u_respond(u,"pidfile changed, switching");
        if (gdata.r_pidfile)
@@ -1785,9 +1785,9 @@ static void u_rehash(const userinput * const u) {
       struct tm *localt;
       localt = localtime(&gdata.curtime);
 
-      if (localt->tm_hour >= gdata.overallmaxspeeddaytimestart
-          && localt->tm_hour < gdata.overallmaxspeeddaytimeend
-          && ( gdata.overallmaxspeeddaydays & (1 << localt->tm_wday)) )
+      if ((unsigned int)localt->tm_hour >= gdata.overallmaxspeeddaytimestart
+          && (unsigned int)localt->tm_hour < gdata.overallmaxspeeddaytimeend
+          && ( gdata.overallmaxspeeddaydays & (1 << (unsigned int)localt->tm_wday)) )
          gdata.maxb = gdata.overallmaxspeeddayspeed;
       }
    
@@ -1875,7 +1875,7 @@ static void u_botinfo(const userinput * const u) {
    struct rusage r;
    size_t len;
    int ii;
-   int ss;
+   unsigned int ss;
    channel_t *ch;
    gnetwork_t *backup;
 
@@ -2212,7 +2212,7 @@ static void u_ignl(const userinput * const u)
 
 void u_ignore(const userinput * const u)
 {
-  int num=0;
+  unsigned int num=0;
   igninfo *ignore;
   
   updatecontext();
@@ -2285,7 +2285,7 @@ static void u_unignore(const userinput * const u)
 }
 
 static void u_nosave(const userinput * const u) {
-   int num = 0;
+   unsigned int num = 0;
    
    updatecontext();
    
@@ -2297,7 +2297,7 @@ static void u_nosave(const userinput * const u) {
 
 
 static void u_nosend(const userinput * const u) {
-   int num = 0;
+   unsigned int num = 0;
    
    updatecontext();
    
@@ -2315,7 +2315,7 @@ static void u_nosend(const userinput * const u) {
 
 
 static void u_nolist(const userinput * const u) {
-   int num = 0;
+   unsigned int num = 0;
    
    updatecontext();
    
@@ -2379,7 +2379,7 @@ static void u_msgdel(const userinput * const u)
 
 static void u_memstat(const userinput * const u)
 {
-  int i;
+  unsigned int i;
   long numcountrecent, sizecount;
   struct rusage r;
 #ifdef HAVE_MMAP
@@ -2508,7 +2508,7 @@ static void u_memstat(const userinput * const u)
 
 static void u_qsend(const userinput * const u)
 {
-  int num = 0;
+  unsigned int num = 0;
   
   updatecontext();
   
@@ -2581,7 +2581,7 @@ static void u_jump(const userinput * const u)
       int num;
       num = atoi(u->arg1);
       
-      if ((num < 0) || (num > irlist_size(&gdata.networks[net].servers)))
+      if ((num < 0) || ((unsigned int)num > irlist_size(&gdata.networks[net].servers)))
         {
           u_respond(u,"Try specifying a valid server number, use \"servers\" for a list");
         }
@@ -2641,7 +2641,7 @@ static void u_servers(const userinput * const u)
 
 static void u_trinfo(const userinput * const u)
 {
-  int num = -1;
+  unsigned int num = 0;
   char *tempstr2, *tempstr3;
   const char *y;
   int left,started,lcontact;

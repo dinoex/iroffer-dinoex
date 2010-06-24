@@ -121,8 +121,9 @@ typedef struct irlist_item_t2
 
 typedef struct
 {
-  int size;
   irlist_item_t *head;
+  unsigned int size;
+  unsigned int dummy;
 } irlist_t;
 
 typedef struct
@@ -135,12 +136,13 @@ typedef struct
 typedef struct
 {
   int fd;
-  int flags;
+  unsigned int flags;
   struct MD5Context *md5sum;
   irlist_t segments;
   unsigned int count_written;
   unsigned int count_flushed;
   unsigned int count_dropped;
+  unsigned int dummy;
 } ir_boutput_t;
 
 #ifdef HAVE_MMAP
@@ -149,7 +151,8 @@ typedef struct
   off_t mmap_offset; /* leave first */
   unsigned char *mmap_ptr;
   size_t mmap_size;
-  int ref_count;
+  unsigned int ref_count;
+  unsigned int dummy;
 } mmap_info_t;
 #endif
 
@@ -160,10 +163,10 @@ typedef struct {
    char *lock;
    char *dlimit_desc;
    char *trigger;
-   int gets;
-   int color;
-   int dlimit_max;
-   int dlimit_used;
+   unsigned int gets;
+   unsigned int color;
+   unsigned int dlimit_max;
+   unsigned int dlimit_used;
    float minspeed,
          maxspeed;
    off_t st_size;
@@ -171,12 +174,12 @@ typedef struct {
    ino_t st_ino;
    time_t mtime;
    time_t xtime;
-   int has_md5sum;
-   int has_crc32;
+   unsigned int has_md5sum;
+   unsigned int has_crc32;
    unsigned long crc32;
    MD5Digest md5sum;
    int file_fd;
-   int file_fd_count;
+   unsigned int file_fd_count;
    off_t file_fd_location;
 #ifdef HAVE_MMAP
    irlist_t mmaps;
@@ -190,15 +193,17 @@ typedef struct
   char *hostname;
   time_t queuedtime;
   time_t restrictsend_bad;
-  int net;
+  unsigned int net;
+  unsigned int dummy;
 } ir_pqueue;
 
 typedef struct
 {
-  char *hostmask;
-  int flags;
-  long bucket;
   time_t lastcontact;
+  char *hostmask;
+  long bucket;
+  unsigned int flags;
+  unsigned int dummy;
 } igninfo;
 
 typedef enum
@@ -230,6 +235,7 @@ typedef struct {
   int family;
   int listensocket;
   int clientsocket;
+  int dummy2;
   char *remoteaddr;
   char *localaddr;
   time_t lastcontact;
@@ -238,12 +244,13 @@ typedef struct {
   ir_uint16 remoteport;
   ir_sockaddr_union_t remote;
   ir_sockaddr_union_t local;
+  int dummy;
 } ir_connection_t;
 
 typedef struct
 {
-  int id;
-  int net;
+  unsigned int id;
+  unsigned int net;
   off_t bytessent;
   off_t bytesgot;
   off_t lastack;
@@ -274,7 +281,7 @@ typedef struct
   char unlimited;
   short dummy;
   transfer_status_e tr_status;
-  int mirc_dcc64;
+  unsigned int mirc_dcc64;
 } transfer;
 
 typedef enum
@@ -290,26 +297,32 @@ typedef enum
 
 typedef struct
 {
-  int filedescriptor;
+  ir_connection_t con;
   off_t bytesgot;
   off_t totalsize;
   off_t lastspeedamt;
   off_t resumesize;
-  float lastspeed;
   char *nick;
   char *hostname;
   char *file;
   char *uploaddir;
-  ir_connection_t con;
+  float lastspeed;
   upload_status_e ul_status;
-  int resumed;
-  int net;
-  int token;
-  int mirc_dcc64;
+  int filedescriptor;
+  unsigned int resumed;
+  unsigned int net;
+  unsigned int token;
+  unsigned int mirc_dcc64;
+  unsigned int dummy;
 } upload;
 
 typedef struct
 {
+  ir_connection_t con;
+  ir_boutput_t boutput;
+  char *nick;
+  char *hostmask;
+  char *groups;
   enum
     {
       DCCCHAT_UNUSED,
@@ -318,13 +331,9 @@ typedef struct
       DCCCHAT_AUTHENTICATING,
       DCCCHAT_CONNECTED,
     } status;
-  int net;
+  unsigned int net;
   int level;
-  ir_boutput_t boutput;
-  char *nick;
-  char *hostmask;
-  char *groups;
-  ir_connection_t con;
+  int dummy;
   char dcc_input_line[INPUT_BUFFER_LENGTH];
 } dccchat_t;
 
@@ -372,24 +381,24 @@ typedef enum
 
 typedef struct
 {
-  userinput_method_e method;
+  dccchat_t *chat;
   char *hostmask;
   char *snick, *cmd;
   char *arg1, *arg2, *arg3;
   char *arg1e, *arg2e, *arg3e;
+  userinput_method_e method;
   int fd;
-  int net;
+  unsigned int net;
   int level;
-  dccchat_t *chat;
 } userinput;
 
 typedef struct {
+   time_t alloctime;
    void *ptr;
    const char *src_func;
    const char *src_file;
-   int src_line;
-   time_t alloctime;
-   int size;
+   unsigned int src_line;
+   unsigned int size;
    } meminfo_t;
 
 typedef struct
@@ -414,17 +423,17 @@ typedef struct
   char *joinmsg;
   char *listmsg;
   char *rgroup;
-  short flags;
-  short plisttime;
-  short plistoffset;
-  short delay;
-  short noannounce;
-  short notrigger;
-  short waitjoin;
-  short dummy;
-  long nextann;
-  long nextjoin;
-  long lastjoin;
+  unsigned short flags;
+  unsigned short plisttime;
+  unsigned short plistoffset;
+  unsigned short delay;
+  unsigned short noannounce;
+  unsigned short notrigger;
+  unsigned short waitjoin;
+  unsigned short dummy;
+  time_t nextann;
+  time_t nextjoin;
+  time_t lastjoin;
   irlist_t members;
 } channel_t;
 
@@ -438,26 +447,28 @@ typedef enum {
 
 typedef struct
 {
-  how_e how;
   char *host;
-  ir_uint16 port;
-  ir_uint16 dummy;
   char *password;
   char *vhost;
+  how_e how;
+  ir_uint16 port;
+  ir_uint16 dummy;
 } connectionmethod_t;
 
 typedef struct {
+  struct timeval tv;
   const char *file;
   const char *func;
-  int line;
-  struct timeval tv;
+  unsigned int line;
+  unsigned int dummy;
 } context_t;
 
 typedef struct
 {
-  ir_uint16 port;
-  ir_uint16 dummy;
   time_t listen_time;
+  ir_uint16 port;
+  ir_uint16 dummy2;
+  unsigned int dummy;
 } ir_listen_port_item_t;
 
 typedef struct
@@ -470,9 +481,10 @@ typedef struct
 typedef struct
 {
   char *hostname;
-  ir_uint16 port;
-  ir_uint16 dummy;
   char *password;
+  ir_uint16 port;
+  ir_uint16 dummy2;
+  unsigned int dummy;
 } server_t;
 
 /*------------ function declarations ------------- */
@@ -591,7 +603,7 @@ __attribute__ ((format(printf, 2, 0)))
 vnotice(const char *nick, const char *format, va_list ap);
 int sstrlen (const char *p);
 void joinchannel(channel_t *c);
-void updatecontext_f(const char *file, const char *func, int line);
+void updatecontext_f(const char *file, const char *func, unsigned int line);
 void dumpcontext(void);
 void dumpgdata(void);
 void clearmemberlist(channel_t *c);
@@ -606,7 +618,7 @@ int is_fd_readable(int fd);
 int is_fd_writeable(int fd);
 char* convert_to_unix_slash(char *ss);
 
-void* mymalloc2(size_t a, int zero, const char *src_function, const char *src_file, int src_line);
+void* mymalloc2(size_t a, int zero, const char *src_function, const char *src_file, unsigned int src_line);
 void mydelete2(void *t);
 
 #ifdef NO_SNPRINTF
@@ -631,7 +643,7 @@ const char *strsignal(int sig);
 #ifndef WITHOUT_MEMSAVE
 #define irlist_add(x,y) irlist_add2(x,y,__FUNCTION__,__FILE__,__LINE__)
 void* irlist_add2(irlist_t *list, unsigned int size,
-                  const char *src_function, const char *src_file, int src_line);
+                  const char *src_function, const char *src_file, unsigned int src_line);
 #else
 void* irlist_add(irlist_t *list, unsigned int size);
 #endif
@@ -647,21 +659,21 @@ void irlist_insert_after(irlist_t *list, void *item, void *after_this);
 void* irlist_get_head(const irlist_t *list);
 void* irlist_get_tail(const irlist_t *list);
 void* irlist_get_next(const void *cur);
-int irlist_size(const irlist_t *list);
-void* irlist_get_nth(irlist_t *list, int nth); /* zero based n */
+unsigned int irlist_size(const irlist_t *list);
+void* irlist_get_nth(irlist_t *list, unsigned int nth); /* zero based n */
 
 /* other */
 int irlist_sort_cmpfunc_string(const void *a, const void *b);
 int irlist_sort_cmpfunc_off_t(const void *a, const void *b);
 
-transfer* does_tr_id_exist(int tr_id);
-int get_next_tr_id(void);
+transfer* does_tr_id_exist(unsigned int tr_id);
+unsigned int get_next_tr_id(void);
 void ir_listen_port_connected(ir_uint16 port);
 int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa);
 
 int ir_boutput_write(ir_boutput_t *bout, const void *buffer, int buffer_len);
 int ir_boutput_attempt_flush(ir_boutput_t *bout);
-void ir_boutput_init(ir_boutput_t *bout, int fd, int flags);
+void ir_boutput_init(ir_boutput_t *bout, int fd, unsigned int flags);
 void ir_boutput_delete(ir_boutput_t *bout);
 
 const char *transferlimit_type_to_string(transferlimit_type_e type);
@@ -687,7 +699,7 @@ void pingserver(void);
 void xdccsavetext(void);
 void writepidfile (const char *filename);
 void gobackground(void);
-char* getuptime(char *str, int type, time_t fromwhen, size_t len);
+char* getuptime(char *str, unsigned int type, time_t fromwhen, size_t len);
 void shutdowniroffer(void);
 void quit_server(void);
 void switchserver(int which);
@@ -773,7 +785,7 @@ void u_fillwith_dcc(userinput * const u, dccchat_t *chat, char *line);
 
 void u_parseit(userinput * const u);
 
-void u_xdl_pack(const userinput * const u, char *tempstr, int i, int l, int s, const xdcc *xd);
+void u_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd);
 void u_listdir(const userinput * const u, const char *dir);
 void u_diskinfo(const userinput * const u, const char *dir);
 void u_ignore(const userinput * const u);

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2007-2009 Dirk Meyer
+ * Copyright (C) 2007-2010 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -17,12 +17,12 @@
 int do_myruby_server(char *line);
 int do_myruby_notice(char *line);
 int do_myruby_privmsg(char *line);
-int do_myruby_added(char *filename, int pack);
+int do_myruby_added(char *filename, unsigned int pack);
 void rehash_myruby(int check);
 void startup_myruby(void);
 void shutdown_myruby(void);
 #ifndef WITHOUT_HTTP
-int http_ruby_script(const char *name, const char *output);
+unsigned int http_ruby_script(const char *name, const char *output);
 #endif /* WITHOUT_HTTP */
 #endif /* USE_RUBY */
 
