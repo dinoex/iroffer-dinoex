@@ -130,7 +130,6 @@ Long Term Features:
   1418  autodetect packlist and move it to 1.
   1421  configure autoignore limits.
   1422  don't log IP-adresses.
-  1427  Natural sort order
   1433  Turbo DCC
   1434  transfer info for a upload
   1448  announce xdcc batch
