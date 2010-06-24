@@ -2389,3 +2389,4 @@
 2684 "nick n-m [netz]"
 2685 "Paket <n>-<m> in die 2. Warteschlange für <nick> einfügen"
 2686 "0123456789ABCDEF"
+2687 "no_natural_sort"

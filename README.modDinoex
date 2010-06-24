@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+332) no_natural_sort
+  Wenn konfiguriert, werden alle Texte nach ASCII sortiert.
+  Default: natürlliche Sortierenung.
+
 bugfix: http_port (reported by Nouhime)
   Allow groups with "&" in weblist.
 

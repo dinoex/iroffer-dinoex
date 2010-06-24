@@ -29,6 +29,7 @@
 #include "dinoex_ruby.h"
 #include "dinoex_transfer.h"
 #include "dinoex_misc.h"
+#include "strnatcmp.h"
 
 #include <ctype.h>
 
@@ -847,6 +848,13 @@ static unsigned int a_access_file(const userinput * const u, int xfiledescriptor
   return 0;
 }
 
+static int a_sort_type(const char *str1, const char *str2)
+{
+  if (gdata.no_natural_sort)
+    return strcasecmp(str1, str2);
+  return strnatcasecmp(str1, str2);
+}
+
 static int a_sort_null(const char *str1, const char *str2)
 {
   if ((str1 == NULL) && (str2 == NULL))
@@ -858,7 +866,7 @@ static int a_sort_null(const char *str1, const char *str2)
   if (str2 == NULL)
     return 1;
 
-  return strcasecmp(str1, str2);
+  return a_sort_type(str1, str2);
 }
 
 static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
@@ -881,13 +889,13 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
       break;
     case 'D':
     case 'd':
-      rc = strcasecmp(xd3->desc, xd4->desc);
+      rc = a_sort_type(xd3->desc, xd4->desc);
       if (rc != 0)
         return rc;
       break;
     case 'P':
     case 'p':
-      rc = strcasecmp(xd3->file, xd4->file);
+      rc = a_sort_type(xd3->file, xd4->file);
       if (rc != 0)
         return rc;
       break;
@@ -918,7 +926,7 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
     case 'n':
     case 'F':
     case 'f':
-      rc = strcasecmp(getfilename(xd3->file), getfilename(xd4->file));
+      rc = a_sort_type(getfilename(xd3->file), getfilename(xd4->file));
       if (rc != 0)
         return rc;
       break;

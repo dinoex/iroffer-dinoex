@@ -23,6 +23,9 @@ src/crc32.c is written by 1986 Gary S. Brown and in the public domain.
 src/blowfish.[ch] are copyrighted 1997 by Paul Kocher
 and released under LGPL v2.1.
 
+src/strnatcmp.[ch] are copyrighted 2000, 2004 by Martin Pool
+and released under MIT License.
+
 src/upnp.[ch] is writen by Thomas Bernard under BSD license.
 
 All other files are written by Dirk Meyer, and are under GPL2,
