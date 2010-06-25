@@ -642,7 +642,7 @@ static void h_access_log(http * const h)
   date = mycalloc(maxtextlengthshort);
   strftime(date, maxtextlengthshort - 1, "%d/%b/%Y:%T %Z", localt);
   bytes = h->bytesgot + h->bytessent;
-  len = snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" HTTP/1.1 %d %ld\n",
+  len = snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" %d %ld\n",
                  get_host(h), date, h->log_url, h->status_code, bytes);
   mydelete(date);
   http_access_log_add(gdata.http_access_log, tempstr, len);
@@ -657,10 +657,10 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
 
   if (errno1) {
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
-              "HTTP: Connection closed: %s (%s)", msg, strerror(errno1));
+              "HTTP Connection closed: %s (%s)", msg, strerror(errno1));
   } else {
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
-              "HTTP: Connection closed: %s", msg);
+              "HTTP Connection closed: %s", msg);
   }
 
   if (gdata.debug > 0) {
@@ -728,10 +728,13 @@ static void h_error(http * const h, const char *header)
   h_start_sending(h);
 }
 
-static void h_herror_403(http * const h)
+static void h_herror_403(http * const h, const char *msg)
 {
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA, "%s", msg);
   h->filedescriptor = FD_UNUSED;
   h->status_code = 403;
+  h->url = mystrdup("-");
+  h->log_url = mystrdup("-");
   h_error(h, http_header_forbidden);
 }
 
@@ -795,7 +798,7 @@ static void h_accept(unsigned int i)
   blocked = is_in_badip(&(h->con.remote));
 #ifdef USE_GEOIP
   if (blocked == 2) {
-    h_herror_403(h);
+    h_herror_403(h, "HTTP connection country blocked");
     return;
   }
 #endif /* USE_GEOIP */
@@ -806,13 +809,13 @@ static void h_accept(unsigned int i)
 
   if (irlist_size(&gdata.http_allow) > 0) {
     if (!verify_cidr(&gdata.http_allow, &remoteaddr)) {
-      h_closeconn(h, "HTTP connection not allowed", 0);
+      h_herror_403(h, "HTTP connection not allowed");
       return;
     }
   }
 
   if (verify_cidr(&gdata.http_deny, &remoteaddr)) {
-    h_closeconn(h, "HTTP connection denied", 0);
+    h_herror_403(h, "HTTP connection denied");
     return;
   }
 }
