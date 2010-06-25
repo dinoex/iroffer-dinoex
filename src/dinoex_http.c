@@ -1807,6 +1807,9 @@ static char *h_bad_request(http * const h)
   html_str_split(request, '\r');
   h->log_url = mystrdup(request);
   url = html_str_split(request, ' ');
+  if (url == NULL)
+    return NULL; /* nothing to read */
+
   html_str_split(url, ' ');
   len = strlen(url) + 1;
   h->url = mycalloc(len);
