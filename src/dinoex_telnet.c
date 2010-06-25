@@ -61,7 +61,7 @@ static unsigned int telnet_open_listen(unsigned int i)
 
   telnet_family[i] = listenaddr.sa.sa_family;
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, 0);
+  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "Telnet SERVER waiting for connection on %s",  msg);
   mydelete(msg);
@@ -160,9 +160,9 @@ static void telnet_accept(unsigned int i)
   chat->con.lastcontact = gdata.curtime;
 
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa), addrlen);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa));
   chat->con.localaddr = mystrdup(msg);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa), 0);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa));
   chat->con.remoteaddr = mystrdup(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "Telnet connection received from %s",  msg);

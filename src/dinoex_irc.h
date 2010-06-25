@@ -13,7 +13,7 @@
  *
  */
 
-int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen);
+int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa);
 void update_natip (const char *var);
 void update_server_welcome(char *line);
 unsigned int bind_irc_vhost(int family, int clientsocket);

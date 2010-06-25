@@ -237,7 +237,7 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
 
   if (gdata.debug > 0) {
     msg = mycalloc(maxtextlength);
-    my_getnameinfo(msg, maxtextlength -1, &(tr->con.remote.sa), addrlen);
+    my_getnameinfo(msg, maxtextlength -1, &(tr->con.remote.sa));
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "DCC SEND passive sent to %s on %s, connecting to %s",
             tr->nick, gnetwork->name, msg);
