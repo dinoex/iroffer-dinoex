@@ -5,6 +5,7 @@ With Version 3.23:
 
 bugfix: http_geoip
   Could not be switched off.
+  Now generate HTTP 403 Forbidden.
 
 bugfix: CHCOLOR
   Fix problem when filename starts with a number.
