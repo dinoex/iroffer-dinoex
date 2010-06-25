@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+333) http_forbidden
+  Definiert die Seite, die angezeigt wird wenn der Zugang nicht erlaubt
+  ist. Die Seite muss als Datei in http_dir liegen.
+  Default: Sender nur die HTTP Fehlermeldung.
+
 bugfix: http_geoip
   Die Prüfung konnte nicht abgeschaltet werden.
   Antworte jetzt mit HTTP 403 Forbidden.

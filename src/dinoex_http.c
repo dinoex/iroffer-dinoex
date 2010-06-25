@@ -711,6 +711,37 @@ static void h_write_header(http * const h, const char *header)
   mydelete(tempstr);
 }
 
+#ifdef USE_RUBY
+static int h_runruby(http * const h)
+{
+  const char *params;
+  char *suffix;
+  char *tmp;
+  int rc;
+
+  suffix = strrchr(h->file, '.' );
+  if (suffix == NULL)
+    return 0;
+
+  if (strcasecmp(suffix, ".rb") != 0)
+    return 0;
+
+  params = strchr(h->url, '?');
+  if (params == NULL)
+    params = h->url;
+  else
+    ++params;
+  setenv("REQUEST_METHOD", "GET", 1);
+  setenv("QUERY_STRING", params, 1);
+
+  tmp = mystrsuffix(h->file, ".html");
+  rc = http_ruby_script(h->file, tmp);
+  mydelete(h->file);
+  h->file = tmp;
+  return rc;
+}
+#endif /* USE_RUBY */
+
 static void h_start_sending(http * const h)
 {
   h->status = HTTP_STATUS_SENDING;
@@ -728,21 +759,113 @@ static void h_error(http * const h, const char *header)
   h_start_sending(h);
 }
 
-static void h_herror_403(http * const h, const char *msg)
-{
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA, "%s", msg);
-  h->filedescriptor = FD_UNUSED;
-  h->status_code = 403;
-  h->url = mystrdup("-");
-  h->log_url = mystrdup("-");
-  h_error(h, http_header_forbidden);
-}
-
 static void h_herror_404(http * const h)
 {
   h->filedescriptor = FD_UNUSED;
   h->status_code = 404;
   h_error(h, http_header_notfound);
+}
+
+static void h_write_status(http * const h, const char *mime, time_t *now)
+{
+  char *tempstr;
+  char *date;
+  char *last = NULL;
+  struct tm *localt;
+  size_t len;
+
+  tempstr = mycalloc(maxtextlength);
+  localt = gmtime(&gdata.curtime);
+  date = mycalloc(maxtextlengthshort);
+  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
+  if (now && (h->status_code == 200)) {
+    last = mycalloc(maxtextlengthshort);
+    localt = gmtime(now);
+    strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
+    if (h->modified) {
+      if (strcmp(last, h->modified) == 0) {
+        h->status_code = 304;
+        h->head = 1;
+      }
+    }
+  }
+  if (h->attachment)
+    len = snprintf(tempstr, maxtextlength, http_header_attachment, h->status_code, date, last ? last : date, html_mime(mime), h->totalsize, h->attachment);
+  else
+    len = snprintf(tempstr, maxtextlength, http_header_status, h->status_code, date, last ? last : date, html_mime(mime), h->totalsize);
+  mydelete(last);
+  mydelete(date);
+  send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
+  mydelete(tempstr);
+  if (h->head)
+    h->totalsize = 0;
+}
+
+static void h_readfile(http * const h, const char *file)
+{
+  struct stat st;
+
+  updatecontext();
+
+  h->bytessent = 0;
+  if (file == NULL) {
+    h_herror_404(h);
+    return;
+  }
+
+  h->file = mystrdup(file);
+#ifdef USE_RUBY
+  if (h_runruby(h)) {
+    h_herror_404(h);
+  }
+#endif /* USE_RUBY */
+
+  h->filedescriptor = open(h->file, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (h->filedescriptor < 0) {
+    if (gdata.debug > 1)
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+              "File not found: '%s'", file);
+    h_herror_404(h);
+    return;
+  }
+  if (fstat(h->filedescriptor, &st) < 0) {
+    if (gdata.debug > 1)
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+              "Unable to stat file '%s': %s",
+              file, strerror(errno));
+    close(h->filedescriptor);
+    h_herror_404(h);
+    return;
+  }
+
+  h->bytessent = 0;
+  h->filepos = 0;
+  h->totalsize = st.st_size;
+  h_write_status(h, h->file, &st.st_mtime);
+  h_start_sending(h);
+}
+
+static void h_herror_403(http * const h, const char *msg)
+{
+  char *tempstr;
+
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA, "%s", msg);
+  h->filedescriptor = FD_UNUSED;
+  h->status_code = 403;
+  if (!gdata.http_forbidden) {
+    h->url = mystrdup("-");
+    h->log_url = mystrdup("-");
+    h_error(h, http_header_forbidden);
+    return;
+  }
+  h->url = mystrdup(gdata.http_forbidden);
+  h->log_url = mycalloc(maxtextlength);
+  snprintf(h->log_url, maxtextlength, "GET %s HTTP/1.1", gdata.http_forbidden);
+  tempstr = mycalloc(maxtextlength);
+  snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url);
+  h_readfile(h, tempstr);
+  mydelete(tempstr);
+  return;
 }
 
 static void h_accept(unsigned int i)
@@ -818,116 +941,6 @@ static void h_accept(unsigned int i)
     h_herror_403(h, "HTTP connection denied");
     return;
   }
-}
-
-static void h_write_status(http * const h, const char *mime, time_t *now)
-{
-  char *tempstr;
-  char *date;
-  char *last = NULL;
-  struct tm *localt;
-  size_t len;
-
-  tempstr = mycalloc(maxtextlength);
-  localt = gmtime(&gdata.curtime);
-  date = mycalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
-  if (now) {
-    last = mycalloc(maxtextlengthshort);
-    localt = gmtime(now);
-    strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
-    if (h->modified) {
-      if (strcmp(last, h->modified) == 0) {
-        h->status_code = 304;
-        h->head = 1;
-      }
-    }
-  }
-  if (h->attachment)
-    len = snprintf(tempstr, maxtextlength, http_header_attachment, h->status_code, date, last ? last : date, html_mime(mime), h->totalsize, h->attachment);
-  else
-    len = snprintf(tempstr, maxtextlength, http_header_status, h->status_code, date, last ? last : date, html_mime(mime), h->totalsize);
-  mydelete(last);
-  mydelete(date);
-  send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
-  mydelete(tempstr);
-  if (h->head)
-    h->totalsize = 0;
-}
-
-#ifdef USE_RUBY
-static int h_runruby(http * const h)
-{
-  const char *params;
-  char *suffix;
-  char *tmp;
-  int rc;
-
-  suffix = strrchr(h->file, '.' );
-  if (suffix == NULL)
-    return 0;
-
-  if (strcasecmp(suffix, ".rb") != 0)
-    return 0;
-
-  params = strchr(h->url, '?');
-  if (params == NULL)
-    params = h->url;
-  else
-    ++params;
-  setenv("REQUEST_METHOD", "GET", 1);
-  setenv("QUERY_STRING", params, 1);
-
-  tmp = mystrsuffix(h->file, ".html");
-  rc = http_ruby_script(h->file, tmp);
-  mydelete(h->file);
-  h->file = tmp;
-  return rc;
-}
-#endif /* USE_RUBY */
-
-static void h_readfile(http * const h, const char *file)
-{
-  struct stat st;
-
-  updatecontext();
-
-  h->bytessent = 0;
-  if (file == NULL) {
-    h_herror_404(h);
-    return;
-  }
-
-  h->file = mystrdup(file);
-#ifdef USE_RUBY
-  if (h_runruby(h)) {
-    h_herror_404(h);
-  }
-#endif /* USE_RUBY */
-
-  h->filedescriptor = open(h->file, O_RDONLY | ADDED_OPEN_FLAGS);
-  if (h->filedescriptor < 0) {
-    if (gdata.debug > 1)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
-              "File not found: '%s'", file);
-    h_herror_404(h);
-    return;
-  }
-  if (fstat(h->filedescriptor, &st) < 0) {
-    if (gdata.debug > 1)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
-              "Unable to stat file '%s': %s",
-              file, strerror(errno));
-    close(h->filedescriptor);
-    h_herror_404(h);
-    return;
-  }
-
-  h->bytessent = 0;
-  h->filepos = 0;
-  h->totalsize = st.st_size;
-  h_write_status(h, h->file, &st.st_mtime);
-  h_start_sending(h);
 }
 
 static void h_readbuffer(http * const h)

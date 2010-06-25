@@ -2392,3 +2392,5 @@
 2687 "no_natural_sort"
 2688 "HTTP/1.1 403 Forbidden\r\n"
 2689 "Forbidden\r\n"
+2690 "http_forbidden"
+2691 "GET %s HTTP/1.1"
