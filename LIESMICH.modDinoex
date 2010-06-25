@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: http_geoip
+  Die Prüfung konnte nicht abgeschaltet werden.
+
 bugfix: CHCOLOR
   Problem behoben, wenn der Dateiname mit einer Zffer beginnt.
 

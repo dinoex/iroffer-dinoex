@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+bugfix: http_geoip
+  Could not be switched off.
+
 bugfix: CHCOLOR
   Fix problem when filename starts with a number.
 
