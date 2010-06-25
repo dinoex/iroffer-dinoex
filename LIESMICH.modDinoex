@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: CHCOLOR
+  Problem behoben, wenn der Dateiname mit einer Zffer beginnt.
+
 332) no_natural_sort
   If configurend, all text is sorted by plain ASCII.
   Default: use natural sort order.
