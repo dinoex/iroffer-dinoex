@@ -1999,10 +1999,6 @@ static void h_get(http * const h)
 
   header = h_bad_request(h);
   if (header == NULL) {
-    if (h->post) {
-      h->status = HTTP_STATUS_POST;
-      return;
-    }
     h_closeconn(h, "Bad request", 0);
     return;
   }
@@ -2033,6 +2029,10 @@ static void h_get(http * const h)
     }
   }
 
+  if ((h->post) && (data == NULL)) {
+    h->status = HTTP_STATUS_POST;
+    return;
+  }
   h_parse(h, data);
 }
 
