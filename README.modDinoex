@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+333) http_forbidden (inspired by TheDeath)
+  Defines the URL page to show when access is forbidden.
+  The given URL must resolve in a file in http_dir.
+  Default: Send only the HTTP error.
+
 bugfix: http_geoip (reported by TheDeath)
   Could not be switched off.
   Now generate HTTP 403 Forbidden.

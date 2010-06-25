@@ -119,6 +119,7 @@ char *http_index;
 char *download_completed_msg;
 char *http_access_log;
 char *autoadd_color;
+char *http_forbidden;
 float transferminspeed, transfermaxspeed;
 unsigned char overallmaxspeeddaydays;
 unsigned char cdummy;
