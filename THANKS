@@ -545,6 +545,7 @@ CreeW
 	italian translation
 	suggesting "CHCOLOR"
 	suggesting "autoadd_color"
+	reporting "CHCOLOR" bug
 
 [M]-V
 	reporting ADDDIR spaces bug

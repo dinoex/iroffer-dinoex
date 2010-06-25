@@ -1020,11 +1020,11 @@ char *xd_color_description(const xdcc *xd)
    background = (xd->color >> 8) & 0xFF;
    style = (xd->color >> 16 ) & 0x0F;
    if (background != 0) {
-     snprintf(colordesc, maxtextlength, "%s\003%d,%d%s\003\017", style_on[ style ], foreground, background, xd->desc);
+     snprintf(colordesc, maxtextlength, "%s\003%02u,%02u%s\003\017", style_on[ style ], foreground, background, xd->desc);
      return colordesc;
    }
    if (foreground != 0) {
-     snprintf(colordesc, maxtextlength, "%s\003%d%s\003\017", style_on[ style ], foreground, xd->desc);
+     snprintf(colordesc, maxtextlength, "%s\003%02u%s\003\017", style_on[ style ], foreground, xd->desc);
      return colordesc;
    }
    snprintf(colordesc, maxtextlength, "%s%s\017", style_on[ style ], xd->desc);
