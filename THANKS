@@ -98,6 +98,7 @@ TheDeath
 	admin command "PRINT"
 	option "passive_dcc_chat"
 	option "logrotate" for httpd
+	suggesting HTTP 403 response
 
 [GFE]Lunix
 	alias xdcc list group <group>
