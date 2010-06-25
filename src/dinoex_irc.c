@@ -27,22 +27,19 @@
 #endif /* USE_UPNP */
 
 /* writes IP address and port as text into the buffer */
-#if !defined(NO_GETADDRINFO)
-int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t salen)
+int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa)
 {
+#if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+  socklen_t salen;
 
-  if (salen == 0)
-    salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+  salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     return snprintf(buffer, len, "(unknown)" );
   }
   return snprintf(buffer, len, "host=%s port=%s", hbuf, sbuf);
-}
 #else /* NO_GETADDRINFO */
-int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_t UNUSED(salen))
-{
   const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
   unsigned long to_ip = ntohl(remoteaddr->sin_addr.s_addr);
   return snprintf(buffer, len, "%lu.%lu.%lu.%lu:%d",
@@ -51,14 +48,15 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa, socklen_
                   (to_ip >>  8) & 0xFF,
                   (to_ip      ) & 0xFF,
                   ntohs(remoteaddr->sin_port));
-}
 #endif /* NO_GETADDRINFO */
+}
 
-#if !defined(NO_GETADDRINFO)
-static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t salen)
+static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
 {
+#if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
   unsigned long ip;
+  socklen_t salen;
 
   if (sa->sa.sa_family == AF_INET) {
     if (gnetwork->usenatip)
@@ -75,10 +73,7 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, soc
     return snprintf(buffer, len, "(unknown)" );
   }
   return snprintf(buffer, len, "%s %s", hbuf, sbuf);
-}
 #else /* NO_GETADDRINFO */
-static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, socklen_t UNUSED(salen))
-{
   unsigned long ip;
 
   if (gnetwork->usenatip)
@@ -87,8 +82,8 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa, soc
     ip = ntohl(sa->sin.sin_addr.s_addr);
   return snprintf(buffer, len, "%lu %d",
                   ip, ntohs(sa->sin.sin_port));
-}
 #endif /* NO_GETADDRINFO */
+}
 
 static void update_getip_net(unsigned int net, unsigned long ourip)
 {
@@ -282,17 +277,13 @@ unsigned int bind_irc_vhost(int family, int clientsocket)
 }
 
 #ifdef USE_UPNP
-#if !defined(NO_GETADDRINFO)
-static void my_get_upnp_data(const struct sockaddr *sa, socklen_t salen)
-#else /* NO_GETADDRINFO */
-static void my_get_upnp_data(const struct sockaddr *sa, socklen_t UNUSED(salen))
-#endif /* NO_GETADDRINFO */
+static void my_get_upnp_data(const struct sockaddr *sa)
 {
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+  socklen_t salen;
 
-  if (salen == 0)
-    salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+  salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", "upnp_router");
@@ -381,7 +372,7 @@ unsigned int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *liste
 
 #ifdef USE_UPNP
   if (gdata.upnp_router) {
-    my_get_upnp_data(&(listenaddr->sa), addrlen);
+    my_get_upnp_data(&(listenaddr->sa));
   }
 #endif /* USE_UPNP */
   return 0;
@@ -412,7 +403,7 @@ char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
   else
     listenaddr->sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
   msg = mycalloc(maxtextlength);
-  my_dcc_ip_port(msg, maxtextlength -1, listenaddr, 0);
+  my_dcc_ip_port(msg, maxtextlength -1, listenaddr);
   return msg;
 }
 
@@ -558,7 +549,7 @@ unsigned int connectirc2(res_addrinfo_t *remote)
   if (gdata.debug > 0) {
     char *msg;
     msg = mycalloc(maxtextlength);
-    my_getnameinfo(msg, maxtextlength -1, &(remote->ai_addr), remote->ai_addrlen);
+    my_getnameinfo(msg, maxtextlength -1, &(remote->ai_addr));
     ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "Connecting to %s", msg);
     mydelete(msg);
   }

@@ -491,7 +491,7 @@ static unsigned int h_open_listen(unsigned int i)
 
   http_family[i] = listenaddr.sa.sa_family;
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa, 0);
+  my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_H, COLOR_MAGENTA,
           "HTTP SERVER waiting for connection on %s",  msg);
   mydelete(msg);
@@ -727,7 +727,7 @@ static void h_accept(unsigned int i)
   h->status_code = 200;
 
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa, addrlen);
+  my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa);
   h->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,

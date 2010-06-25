@@ -516,7 +516,7 @@ static void mainloop (void) {
                   {
                     char *msg;
                     msg = mycalloc(maxtextlength);
-                    my_getnameinfo(msg, maxtextlength -1, &(gnetwork->myip.sa), 0);
+                    my_getnameinfo(msg, maxtextlength -1, &(gnetwork->myip.sa));
                     ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "using %s", msg);
                     mydelete(msg);
                   }

@@ -129,7 +129,7 @@ static int l_setup_listen(upload * const l)
                tempstr, msg, l->totalsize, l->token);
   mydelete(msg);
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(l->con.local.sa), 0);
+  my_getnameinfo(msg, maxtextlength -1, &(l->con.local.sa));
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND sent to %s on %s, waiting for connection on %s",
           l->nick, gnetwork->name, msg);
@@ -210,7 +210,7 @@ void l_setup_accept(upload * const l)
   notice(l->nick, "DCC Send Accepted, Connecting...");
 
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(l->con.remote.sa), addrlen);
+  my_getnameinfo(msg, maxtextlength -1, &(l->con.remote.sa));
   mydelete(l->con.remoteaddr);
   l->con.remoteaddr = mystrdup(msg);
   mydelete(msg);

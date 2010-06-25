@@ -168,10 +168,10 @@ void t_setup_send(transfer * const t)
       outerror(OUTERROR_TYPE_WARN, "Couldn't get Local IP: %s", strerror(errno));
    
    msg = mycalloc(maxtextlength);
-   my_getnameinfo(msg, maxtextlength -1, &(t->con.remote.sa), 0);
+   my_getnameinfo(msg, maxtextlength -1, &(t->con.remote.sa));
    mydelete(t->con.remoteaddr);
    t->con.remoteaddr = mystrdup(msg);
-   my_getnameinfo(msg, maxtextlength -1, &(t->con.local.sa), 0);
+   my_getnameinfo(msg, maxtextlength -1, &(t->con.local.sa));
    t->con.localaddr = mystrdup(msg);
    mydelete(msg);
 

@@ -59,7 +59,7 @@ int setupdccchatout(const char *nick, const char *hostmask, const char *token)
   } else {
     privmsg_fast(nick, "\1DCC CHAT CHAT %s\1", msg);
   }
-  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa), 0);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa));
   chat->con.localaddr = mystrdup(msg);
   mydelete(token2);
   mydelete(msg);
@@ -131,7 +131,7 @@ void setupdccchataccept(dccchat_t *chat)
   ir_boutput_init(&chat->boutput, chat->con.clientsocket, 0);
   
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa), addrlen);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa));
   chat->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
 
@@ -269,9 +269,9 @@ int setupdccchat(const char *nick,
   chat->net = gnetwork->net;
   
   msg = mycalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa), 0);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa));
   chat->con.localaddr = mystrdup(msg);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa), 0);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa));
   chat->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,

@@ -840,7 +840,7 @@ static void dump_config_list(void)
            cidr = irlist_get_next(cidr)) {
         dump_line("  " ": %s %d", "family", cidr->family);
         dump_line("  " ": %s %d", "netmask", cidr->netmask);
-        my_getnameinfo(ip6, maxtextlengthshort -1, &(cidr->remote.sa), 0);
+        my_getnameinfo(ip6, maxtextlengthshort -1, &(cidr->remote.sa));
         dump_line("  " ": %s %s", "remoteip", ip6);
       }
       break;
