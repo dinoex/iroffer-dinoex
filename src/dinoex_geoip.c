@@ -131,6 +131,9 @@ unsigned int http_check_geoip(unsigned long remoteip)
 {
   const char *country;
 
+  if (gdata.http_geoip == 0)
+    return 0;
+
   country = check_geoip(remoteip);
   if (irlist_size(&gdata.geoipcountry)) {
     if (!verifyshell(&gdata.geoipcountry, country)) {
