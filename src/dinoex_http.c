@@ -78,6 +78,17 @@ static const char *http_header_notfound =
 "Not Found\r\n"
 "\r\n";
 
+static const char *http_header_forbidden =
+"HTTP/1.1 403 Forbidden\r\n"
+"Date: %s\r\n"
+"Server: iroffer-dinoex/" VERSIONLONG "\r\n"
+"Content-Type: text/plain\r\n"
+"Connection: close\r\n"
+"Content-Length: 13\r\n"
+"\r\n"
+"Forbidden\r\n"
+"\r\n";
+
 #ifndef WITHOUT_HTTP_ADMIN
 static const char *http_header_admin =
 "HTTP/1.1 401 Unauthorized\r\n"
@@ -683,6 +694,54 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   h->status = HTTP_STATUS_DONE;
 }
 
+static void h_write_header(http * const h, const char *header)
+{
+  char *tempstr;
+  char *date;
+  struct tm *localt;
+  size_t len;
+
+  localt = gmtime(&gdata.curtime);
+  tempstr = mycalloc(maxtextlength);
+  date = mycalloc(maxtextlengthshort);
+  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
+  len = snprintf(tempstr, maxtextlength, header, date);
+  mydelete(date);
+  send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
+  mydelete(tempstr);
+}
+
+static void h_start_sending(http * const h)
+{
+  h->status = HTTP_STATUS_SENDING;
+  if (gdata.debug > 1)
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+            "HTTP '%s' response %ld bytes", h->url, (long)(h->totalsize));
+}
+
+static void h_error(http * const h, const char *header)
+{
+  updatecontext();
+
+  h->totalsize = 0;
+  h_write_header(h, header);
+  h_start_sending(h);
+}
+
+static void h_herror_403(http * const h)
+{
+  h->filedescriptor = FD_UNUSED;
+  h->status_code = 403;
+  h_error(h, http_header_forbidden);
+}
+
+static void h_herror_404(http * const h)
+{
+  h->filedescriptor = FD_UNUSED;
+  h->status_code = 404;
+  h_error(h, http_header_notfound);
+}
+
 static void h_accept(unsigned int i)
 {
   SIGNEDSOCK int addrlen;
@@ -736,7 +795,7 @@ static void h_accept(unsigned int i)
   blocked = is_in_badip(&(h->con.remote));
 #ifdef USE_GEOIP
   if (blocked == 2) {
-    h_closeconn(h, "HTTP connection country blocked", 0);
+    h_herror_403(h);
     return;
   }
 #endif /* USE_GEOIP */
@@ -756,23 +815,6 @@ static void h_accept(unsigned int i)
     h_closeconn(h, "HTTP connection denied", 0);
     return;
   }
-}
-
-static void h_write_header(http * const h, const char *header)
-{
-  char *tempstr;
-  char *date;
-  struct tm *localt;
-  size_t len;
-
-  localt = gmtime(&gdata.curtime);
-  tempstr = mycalloc(maxtextlength);
-  date = mycalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
-  len = snprintf(tempstr, maxtextlength, header, date);
-  mydelete(date);
-  send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
-  mydelete(tempstr);
 }
 
 static void h_write_status(http * const h, const char *mime, time_t *now)
@@ -810,23 +852,6 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
     h->totalsize = 0;
 }
 
-static void h_start_sending(http * const h)
-{
-  h->status = HTTP_STATUS_SENDING;
-  if (gdata.debug > 1)
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
-            "HTTP '%s' response %ld bytes", h->url, (long)(h->totalsize));
-}
-
-static void h_error(http * const h, const char *header)
-{
-  updatecontext();
-
-  h->totalsize = 0;
-  h_write_header(h, header);
-  h_start_sending(h);
-}
-
 #ifdef USE_RUBY
 static int h_runruby(http * const h)
 {
@@ -857,13 +882,6 @@ static int h_runruby(http * const h)
   return rc;
 }
 #endif /* USE_RUBY */
-
-static void h_herror_404(http * const h)
-{
-  h->filedescriptor = FD_UNUSED;
-  h->status_code = 404;
-  h_error(h, http_header_notfound);
-}
 
 static void h_readfile(http * const h, const char *file)
 {
