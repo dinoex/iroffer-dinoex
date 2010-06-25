@@ -5,6 +5,7 @@ Ab Version 3.23:
 
 bugfix: http_geoip
   Die Prüfung konnte nicht abgeschaltet werden.
+  Antworte jetzt mit HTTP 403 Forbidden.
 
 bugfix: CHCOLOR
   Problem behoben, wenn der Dateiname mit einer Zffer beginnt.
