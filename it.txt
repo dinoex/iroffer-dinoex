@@ -32,7 +32,7 @@
 32 "CLOSEU"
 33 "Stoppa gli uploads con <id>"
 34 "RMQ"
-35 "posizione"
+35 "[posizione]"
 36 "Rimuove la <posizione> dalla coda principale"
 37 "NOMIN"
 38 "Disabilita il limite minimo di velocità per il trasferimento con <id>"

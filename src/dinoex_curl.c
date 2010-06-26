@@ -115,9 +115,11 @@ unsigned int fetch_cancel(unsigned int num)
 
   ft = irlist_get_head(&fetch_trans);
   while (ft) {
-    if (ft->id != num) {
-      ft = irlist_get_next(ft);
-      continue;
+    if (num > 0) {
+      if (ft->id != num) {
+        ft = irlist_get_next(ft);
+        continue;
+      }
     }
     a_respond(&(ft->u), "fetch %s canceled", ft->name);
     cms = curl_multi_remove_handle(cm, ft->curlhandle);

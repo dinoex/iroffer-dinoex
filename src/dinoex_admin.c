@@ -535,6 +535,25 @@ unsigned int invalid_maxspeed(const userinput * const u, const char *arg)
   return 0;
 }
 
+static transfer *get_transfer_by_number(const userinput * const u, unsigned int num)
+{
+  transfer *tr;
+
+  tr = does_tr_id_exist(num);
+  if (tr == NULL) {
+    a_respond(u, "Invalid ID number, Try \"DCL\" for a list");
+  }
+  return tr;
+}
+
+static transfer *get_transfer_by_arg(const userinput * const u, const char *arg)
+{
+  unsigned int num = 0;
+
+  if (arg) num = atoi(arg);
+  return get_transfer_by_number(u, num);
+}
+
 static unsigned int invalid_pack(const userinput * const u, unsigned int num)
 {
   if (num == 0 || num > irlist_size(&gdata.xdccs)) {
@@ -1514,19 +1533,11 @@ void a_listul(const userinput * const u)
 
 void a_unlimited(const userinput * const u)
 {
-  unsigned int num = 0;
   transfer *tr;
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
-
-  tr = does_tr_id_exist(num);
-  if (tr == NULL) {
-    a_respond(u, "Invalid ID number, Try \"DCL\" for a list");
-    return;
-  }
-
+  tr = get_transfer_by_arg(u, u->arg1);
   tr->nomax = 1;
   tr->unlimited = 1;
 }
@@ -1541,14 +1552,12 @@ void a_maxspeed(const userinput * const u)
 
   if (u->arg1) num = atoi(u->arg1);
 
-  if (invalid_maxspeed(u, u->arg2) != 0)
+  tr = get_transfer_by_number(u, num);
+  if (tr == NULL)
     return;
 
-  tr = does_tr_id_exist(num);
-  if (tr == NULL) {
-    a_respond(u, "Invalid ID number, Try \"DCL\" for a list");
+  if (invalid_maxspeed(u, u->arg2) != 0)
     return;
-  }
 
   val = atof(u->arg2);
   a_respond(u, "MAXSPEED: [Transfer %i] Old: %1.1f New: %1.1f",
@@ -3696,6 +3705,59 @@ void a_bannnick(const userinput * const u)
   gnetwork = backup;
 }
 
+void a_close(const userinput * const u)
+{
+  transfer *tr;
+
+  updatecontext();
+
+  if (!u->arg1) {
+    for (tr = irlist_get_head(&gdata.trans);
+         tr;
+         tr = irlist_get_next(tr)) {
+      if (tr->tr_status == TRANSFER_STATUS_DONE)
+        continue;
+
+      t_closeconn(tr, "Owner Requested Close", 0);
+    }
+    return;
+  }
+
+  tr = get_transfer_by_arg(u, u->arg1);
+  if (tr == NULL)
+    return;
+
+  t_closeconn(tr, "Owner Requested Close", 0);
+}
+
+void a_closeu(const userinput * const u)
+{
+  upload *ul;
+  unsigned int num = 0;
+
+  updatecontext();
+
+  if (!u->arg1) {
+    for (ul = irlist_get_head(&gdata.uploads);
+         ul;
+         ul = irlist_get_next(ul)) {
+      if (ul->ul_status == UPLOAD_STATUS_DONE)
+        continue;
+
+      l_closeconn(ul, "Owner Requested Close", 0);
+    }
+    return;
+  }
+
+  num = atoi(u->arg1);
+  ul = irlist_get_nth(&gdata.uploads, num);
+  if (ul != NULL) {
+    a_respond(u, "Invalid ID number, Try \"DCL\" for a list");
+    return;
+  }
+  l_closeconn(ul, "Owner Requested Close", 0);
+}
+
 void a_acceptu(const userinput * const u)
 {
   int min = 0;
@@ -3780,6 +3842,25 @@ void a_get(const userinput * const u)
     a_respond(u, "GET %s deactivated", u->arg2);
 }
 
+static void a_rmq3(irlist_t *list)
+{
+  ir_pqueue *pq;
+  gnetwork_t *backup;
+
+  updatecontext();
+
+  backup = gnetwork;
+  for (pq = irlist_get_head(list);
+       pq;
+       pq = irlist_delete(list, pq)) {
+     gnetwork = &(gdata.networks[pq->net]);
+     notice(pq->nick, "** Removed From Queue: Owner Requested Remove");
+     mydelete(pq->nick);
+     mydelete(pq->hostname);
+  }
+  gnetwork = backup;
+}
+
 static void a_rmq2(const userinput * const u, irlist_t *list)
 {
   unsigned int num = 0;
@@ -3788,7 +3869,12 @@ static void a_rmq2(const userinput * const u, irlist_t *list)
 
   updatecontext();
 
-  if (u->arg1) num = atoi(u->arg1);
+  if (!u->arg1) {
+    a_rmq3(list);
+    return;
+  }
+
+  num = atoi(u->arg1);
   if (num == 0) {
     a_respond(u, "Invalid ID number, Try \"QUL\" for a list");
     return;
@@ -4111,6 +4197,40 @@ void a_cleargets(const userinput * const u)
 
   a_respond(u, "Cleared download counter for each pack");
   write_files();
+}
+
+static void a_closec_sub(const userinput * const u, dccchat_t *chat)
+{
+  if (chat == u->chat) {
+    a_respond(u, "Disconnecting yourself.");
+    shutdowndccchat(chat, 1);
+  } else {
+    writedccchat(chat, 0, "Disconnected due to CLOSEC\n");
+    shutdowndccchat(chat, 1);
+  }
+}
+
+void a_closec(const userinput * const u)
+{
+  dccchat_t *chat;
+  unsigned int num = 0;
+
+  updatecontext();
+
+  if (!u->arg1) {
+    for (chat = irlist_get_head(&gdata.dccchats);
+         chat;
+         chat = irlist_get_next(chat)) {
+      a_closec_sub(u, chat);
+    }
+    return;
+  }
+  num = atoi(u->arg1);
+  chat = irlist_get_nth(&gdata.dccchats, num-1);
+  if (chat == NULL) {
+    a_respond(u, "Invalid ID number, Try \"CHATL\" for a list");
+  }
+  a_closec_sub(u, chat);
 }
 
 void a_config(const userinput * const u)
