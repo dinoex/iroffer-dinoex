@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+334) RMQ, RMIQ (inspired by [M]-V)
+
+  Neue Admin Kommandos:
+  CLOSE                              Abbrechen aller Übertagungen
+  CLOSEU                             Abbrechen aller Uploads
+  RMQ                                Löschen aller Einträge in der Warteschlange
+  RMIQ                               Löschen aller Einträge in der 2. Warteschlange
+  FETCHCANCEL                        Bricht alle Downloads ab
+  CLOSEC                             Beende alle DCC-Chats
+
 333) http_forbidden
   Definiert die Seite, die angezeigt wird wenn der Zugang nicht erlaubt
   ist. Die Seite muss als Datei in http_dir liegen.

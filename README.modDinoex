@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+334) RMQ, RMIQ (inspired by [M]-V)
+
+  new admin commands:
+  CLOSE                              Cancels all transfers
+  CLOSEU                             Cancels all uploads
+  RMQ                                Removes all entries from main queue
+  RMIQ                               Removes all entries from idle queue
+  FETCHCANCEL                        Stop download of all fetch running
+  CLOSEC                             Closes all DCC chats
+
 333) http_forbidden (inspired by TheDeath)
   Defines the URL page to show when access is forbidden.
   The given URL must resolve in a file in http_dir.

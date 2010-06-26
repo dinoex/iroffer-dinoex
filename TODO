@@ -137,6 +137,7 @@ Long Term Features:
   1455  write running config as file
   1458  show list latest 5 packs on top
   1459  transfer new files to another bot
+  1477  batch announce
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

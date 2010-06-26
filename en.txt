@@ -32,7 +32,7 @@
 32 "CLOSEU"
 33 "Cancels upload <id>"
 34 "RMQ"
-35 "position"
+35 "[position]"
 36 "Removes entry at <position> from main queue"
 37 "NOMIN"
 38 "Disables minspeed for transfer <id>"

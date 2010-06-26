@@ -39,8 +39,6 @@ static void u_xdl(const userinput * const u);
 static void u_xds(const userinput * const u);
 static void u_dcl(const userinput * const u);
 static void u_dcld(const userinput * const u);
-static void u_close(const userinput * const u);
-static void u_closeu(const userinput * const u);
 static void u_nomin(const userinput * const u);
 static void u_nomax(const userinput * const u);
 static void u_redraw(const userinput * const u);
@@ -55,7 +53,6 @@ static void u_chmaxs(const userinput * const u);
 static void u_chgets(const userinput * const u);
 static void u_chatme(const userinput * const u);
 static void u_chatl(const userinput * const u);
-static void u_closec(const userinput * const u);
 static void u_rehash(const userinput * const u);
 static void u_botinfo(const userinput * const u);
 static void u_ignl(const userinput * const u);
@@ -108,13 +105,13 @@ static const userinput_parse_t userinput_parse[] = {
 {1,3,method_allow_all,a_diskfree,      "DISKFREE",NULL,"Shows free space in upload directory"},
 {1,5,method_allow_all,u_chanl,         "CHANL","[net]","Shows channel list with member list"},
 
-{2,2,method_allow_all,u_close,         "CLOSE","id","Cancels transfer <id>"},
-{2,2,method_allow_all,u_closeu,        "CLOSEU","id","Cancels upload <id>"},
+{2,2,method_allow_all,a_close,         "CLOSE","[id]","Cancels transfer <id>"},
+{2,2,method_allow_all,a_closeu,        "CLOSEU","[id]","Cancels upload <id>"},
 {2,2,method_allow_all,a_acceptu,       "ACCEPTU","min [hostmask]","Accepting uploads from <hostmask> for <x> minutes"},
 {2,2,method_allow_all,a_get,           "GET","net nick n [password]","Request pack <n> from bot <nick>"},
 {2,2,method_allow_all,a_get,           "CLOSEGET","net nick","Cancel Request for bot <nick>"},
-{2,2,method_allow_all,a_rmq,           "RMQ","position","Removes entry at <position> from main queue"},
-{2,2,method_allow_all,a_rmiq,          "RMIQ","position","Removes entry at <position> from idle queue"},
+{2,2,method_allow_all,a_rmq,           "RMQ","[position]","Removes entry at <position> from main queue"},
+{2,2,method_allow_all,a_rmiq,          "RMIQ","[position]","Removes entry at <position> from idle queue"},
 {2,5,method_allow_all,u_nomin,         "NOMIN","id","Disables minspeed for transfer <id>"},
 {2,5,method_allow_all,u_nomax,         "NOMAX","id","Disables maxspeed for transfer <id>"},
 {2,5,method_allow_all,a_unlimited,     "UNLIMITED","id","Disables bandwidth limits for transfer <id>"},
@@ -184,7 +181,7 @@ static const userinput_parse_t userinput_parse[] = {
 {4,5,method_allow_all,a_makedir,       "MAKEDIR","dir","create a new directory on disk"},
 #ifdef USE_CURL
 {4,3,method_allow_all,a_fetch,         "FETCH","file url","download url and save file in upload dir"},
-{4,3,method_allow_all,a_fetchcancel,   "FETCHCANCEL","id","stop download of fetch with <id>"},
+{4,3,method_allow_all,a_fetchcancel,   "FETCHCANCEL","[id]","stop download of fetch with <id>"},
 #endif /* USE_CURL */
 
 {5,2,method_allow_all,a_msg,           "MSG","nick message","Send <message> to user or channel <nick>"},
@@ -227,7 +224,7 @@ static const userinput_parse_t userinput_parse[] = {
 {6,1,method_dcc,      u_quit,          "LOGOUT",NULL,"Close this DCC chat"},
 {6,1,method_msg,      u_chatme,        "CHATME",NULL,"Sends you a DCC Chat Request"},
 {6,1,method_allow_all,u_chatl,         "CHATL",NULL,"Lists DCC chat information"},
-{6,5,method_allow_all,u_closec,        "CLOSEC","id","Closes DCC chat <id>"},
+{6,5,method_allow_all,a_closec,        "CLOSEC","[id]","Closes DCC chat <id>"},
 {6,5,method_console,  u_debug,         "DEBUG","x","Set debugging level to <x>"},
 {6,5,method_allow_all,a_config,        "CONFIG","key value","Set config variable <key> to <value>"},
 {6,5,method_allow_all,a_print,         "PRINT","key","Print config variable <key>"},
@@ -1211,44 +1208,6 @@ static void u_dcld(const userinput * const u)
   u_respond(u, " --------------------------------------------------------------------");
 }
 
-static void u_close(const userinput * const u)
-{
-  unsigned int num = 0;
-  updatecontext();
-  
-  if (u->arg1) num = atoi(u->arg1);
-  
-  if ((num == 0) || !does_tr_id_exist(num))
-    {
-      u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
-    }
-  else
-    {
-      t_closeconn(does_tr_id_exist(num),"Owner Requested Close",0);
-    }
-}
-
-static void u_closeu(const userinput * const u)
-{
-  unsigned int num = 0;
-  upload *ul;
-  
-  updatecontext();
-  
-  if (u->arg1) num = atoi(u->arg1);
-  
-  if ((num == 0) || (num >= irlist_size(&gdata.uploads)))
-    {
-      u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
-    }
-  else
-    {
-      ul = irlist_get_nth(&gdata.uploads, num);
-      
-      l_closeconn(ul,"Owner Requested Close",0);
-    }
-}
-
 static void u_nomin(const userinput * const u)
 {
   unsigned int num = 0;
@@ -1695,39 +1654,6 @@ static void u_chatl(const userinput * const u)
   
   return;
 }
-
-static void u_closec(const userinput * const u)
-{
-  unsigned int num = 0;
-  dccchat_t *chat;
-  
-  updatecontext();
-  
-  if (u->arg1) num = atoi(u->arg1);
-  
-  if ((num == 0) || (num > irlist_size(&gdata.dccchats)))
-    {
-      u_respond(u,"Invalid ID number, Try \"CHATL\" for a list");
-    }
-  else
-    {
-      chat = irlist_get_nth(&gdata.dccchats, num-1);
-      
-      if (chat == u->chat)
-        {
-          u_respond(u, "Disconnecting yourself.");
-          shutdowndccchat(chat,1);
-        }
-      else
-        {
-          writedccchat(chat, 0, "Disconnected due to CLOSEC\n");
-          shutdowndccchat(chat,1);
-        }
-    }
-  
-  return;
-}
-
 
 static void u_rehash(const userinput * const u) {
    

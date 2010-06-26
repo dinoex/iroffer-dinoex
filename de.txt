@@ -32,7 +32,7 @@
 32 "CLOSEU"
 33 "Abbrechen des Uploads mit ID = <n>"
 34 "RMQ"
-35 "position"
+35 "[position]"
 36 "Löschen von <position> in der Warteschlange"
 37 "NOMIN"
 38 "Mindestgeschwindigkeit für Transfer <id> deaktivieren"
