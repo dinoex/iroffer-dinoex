@@ -13,6 +13,8 @@
  *
  */
 
+unsigned int dcc_host_password(dccchat_t *chat, char *passwd);
+unsigned int admin_message(const char *nick, const char *hostmask, const char *passwd, char *line);
 void chat_writestatus(void);
 int chat_select_fdset(int highests);
 
