@@ -2115,11 +2115,6 @@ void* irlist_get_nth(irlist_t *list, unsigned int nth)
   
   updatecontext();
   
-  if(nth == 0)
-    {
-      return NULL;
-    }
-  
   for (iitem = list->head; (iitem && nth--); iitem = iitem->next) ;
   
   if (iitem)
