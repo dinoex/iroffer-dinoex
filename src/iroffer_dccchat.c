@@ -23,6 +23,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
 #include "dinoex_jobs.h"
+#include "dinoex_chat.h"
 #include "dinoex_misc.h"
 
 #ifdef USE_UPNP

@@ -24,6 +24,7 @@
 #include "dinoex_transfer.h"
 #include "dinoex_jobs.h"
 #include "dinoex_queue.h"
+#include "dinoex_chat.h"
 #include "dinoex_misc.h"
 #include "dinoex_user.h"
 
