@@ -461,8 +461,10 @@ void sendannounce(void)
   if (!item)
     return;
 
-  if ( --(item->delay) > 0 )
+  if (item->delay > 0 ) {
+    --(item->delay);
     return;
+  }
 
   if (gdata.noannounce_start <= gdata.curtime)
     writeserver(WRITESERVER_NORMAL, "%s", item->msg);
