@@ -610,7 +610,7 @@ void clearmemberlist(channel_t *c);
 int isinmemberlist(const char *nick);
 void addtomemberlist(channel_t *c, const char *nick);
 void removefrommemberlist(channel_t *c, const char *nick);
-void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, int add);
+void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, unsigned int add);
 void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newnick);
 int set_socket_nonblocking (int s, int nonblock);
 void set_loginname(void);

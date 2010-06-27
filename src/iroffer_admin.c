@@ -299,7 +299,7 @@ u_respond(const userinput * const u, const char *format, ...)
   char *tempnick;
   char *chan;
   char *fish;
-  int delay;
+  unsigned int delay;
 
   updatecontext();
   
