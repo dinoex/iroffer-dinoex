@@ -13,23 +13,13 @@
  *
  */
 
-#ifdef UNUSED
-#elif defined(__GNUC__)
-# define UNUSED(x) UNUSED_ ## x __attribute__((unused))
-#elif defined(__LCLINT__)
-# define UNUSED(x) /*@unused@*/ x
-#else
-# define UNUSED(x) x
-#endif
-
+/* portability */
 #ifndef MSG_DONTWAIT
 # define MSG_DONTWAIT 0
 #endif
 #ifndef MSG_NOSIGNAL
 # define MSG_NOSIGNAL 0
 #endif
-
-#define	XDCC_SEND_LIST ((unsigned int)-1)
 
 typedef struct {
   char *u_host;

@@ -67,8 +67,8 @@ void getconfig (void) {
    if (gdata.background) gdata.debug = 0;
    
    if ( !gdata.noscreen && !gdata.background) {
-      printf("\x1b[%u;12H%s) >",gdata.termlines,"");
-      printf("\x1b[%u;%uH",gdata.termlines, 16);
+      printf(IRVT_CURSOR_HOME2 ") >", gdata.termlines, 12);
+      printf(IRVT_CURSOR_HOME2, gdata.termlines, 16);
       gototop();
       }
    
@@ -1551,10 +1551,10 @@ void startupiroffer(void) {
       }
    
    printf("\n");
-   if (!gdata.background && !gdata.nocolor) printf("\x1b[1;33m");
+   if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_YELLOW);
    printf("Welcome to iroffer-dinoex - " "http://iroffer.dinoex.net/" FEATURES "\n"
           "Version " VERSIONLONG "\n");
-   if (!gdata.background && !gdata.nocolor) printf("\x1b[0m");
+   if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_RESET);
    printf("\n");
    
    /* signal handling */
