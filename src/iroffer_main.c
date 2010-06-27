@@ -1462,14 +1462,14 @@ static void mainloop (void) {
             
             if (gdata.attop) gotobot();
             
-            tostdout("\x1b[s");
+            tostdout(IRVT_SAVE_CURSOR);
             
             getstatusline(tempstr,maxtextlength);
             tempstr[min2(maxtextlength-2,gdata.termcols-4)] = '\0';
-            snprintf(tempstr2,maxtextlengthshort,"\x1b[%u;1H[ %%-%us ]",gdata.termlines-1,gdata.termcols-4);
+            snprintf(tempstr2, maxtextlengthshort, IRVT_CURSOR_HOME1 "[ %%-%us ]", gdata.termlines - 1, gdata.termcols - 4);
             tostdout(tempstr2,tempstr);
             
-            tostdout("\x1b[%u;%uH]\x1b[u",gdata.termlines,gdata.termcols);
+            tostdout(IRVT_CURSOR_HOME2 IRVT_UNSAVE_CURSOR, gdata.termlines, gdata.termcols);
             }
          
          admin_jobs();

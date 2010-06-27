@@ -290,7 +290,7 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
         {
           if (!gdata.nocolor && (color_flags != COLOR_NO_COLOR))
             {
-              tostdout("\x1b[%u;%um",
+              tostdout(IRVT_COLOR_SET1,
                        (color_flags & COLOR_BOLD) ? 1 : 0,
                        (color_flags & ~COLOR_BOLD));
             }
@@ -312,7 +312,7 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
         {
           if (!gdata.nocolor && (color_flags != COLOR_NO_COLOR))
             {
-              tostdout("\x1b[0m\n");
+              tostdout(IRVT_COLOR_RESET "\n");
             }
           else
             {

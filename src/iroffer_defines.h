@@ -17,6 +17,7 @@
 #if !defined _IROFFER_DEFINES
 #define _IROFFER_DEFINES
 
+#include "dinoex_defines.h"
 
 /* options, these should be on */
 /*       Ping The Server */
@@ -50,12 +51,6 @@
 
 #define  MAXTRANS  ((unsigned int)((ACTUAL_MAXSETSIZE) - RESERVED_FDS)/2)
 
-
-/*       max number of networks */
-#define  MAX_NETWORKS	10U
-
-/*       max number of vhosts */
-#define  MAX_VHOSTS	2U
 
 /*       max size for xdcc list queue */
 #define  MAXXLQUE  5U
