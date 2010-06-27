@@ -903,7 +903,7 @@ void t_checkminspeed(transfer * const t) {
                ignore->hostmask,
                gdata.punishslowusers);
        
-       notice(t->nick,"Punish-ignore activated for %s (%s) %u minutes",
+       notice(t->nick, "Punish-ignore activated for %s (%s) %u minutes",
               t->nick,
               ignore->hostmask,
               gdata.punishslowusers);

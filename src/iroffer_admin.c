@@ -1607,7 +1607,7 @@ static void u_chatl(const userinput * const u)
           continue;
         }
       
-      u_respond(u,"DCC CHAT %u:",count);
+      u_respond(u, "DCC CHAT %u:", count);
       switch (chat->status)
         {
         case DCCCHAT_LISTENING:
@@ -2288,7 +2288,7 @@ static void u_msgdel(const userinput * const u)
   
   updatecontext();
   
-  u_respond(u,"msglog: deleted %u messages",
+  u_respond(u, "msglog: deleted %u messages",
             irlist_size(&gdata.msglog));
   
   while ((ml = irlist_get_head(&gdata.msglog)))
