@@ -443,7 +443,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         }
       else
         {
-          outerror(OUTERROR_TYPE_CRASH,"Unknown type %u",type);
+          outerror(OUTERROR_TYPE_CRASH, "Unknown type %u", type);
         }
     }
   
@@ -996,7 +996,8 @@ static void iroffer_signal_handler(int signo)
 
 void floodchk(void) {
    unsigned int i;
-   int count,last;
+   unsigned int count;
+   int last;
    
    updatecontext();
 
@@ -1237,7 +1238,7 @@ void switchserver(int which)
 
 char* getstatusline(char *str, size_t len)
 {
-  unsigned int i,srvq;
+  unsigned int i, srvq;
   ir_uint64 xdccsent;
   ir_uint64 xdccrecv;
   ir_uint64 xdccsum;
@@ -1310,7 +1311,7 @@ char* getstatusline(char *str, size_t len)
 
 char* getstatuslinenums(char *str, size_t len)
 {
-  unsigned int i,gcount,srvq;
+  unsigned int i, gcount, srvq;
   float scount,ocount;
   xdcc *xd;
   ir_uint64 xdccsent;
@@ -1680,7 +1681,7 @@ void startupiroffer(void) {
      }
    
    if (!gdata.background)
-      printf("** Window Size: %ux%u\n",gdata.termcols,gdata.termlines);
+      printf("** Window Size: %ux%u\n", gdata.termcols, gdata.termlines);
    
    tempstr23 = mycalloc(maxtextlength);
    printf("** Started on: %s\n",getdatestr(tempstr23,0,maxtextlength));
