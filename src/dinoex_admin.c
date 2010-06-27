@@ -871,7 +871,7 @@ static int a_sort_type(const char *str1, const char *str2)
 {
   if (gdata.no_natural_sort)
     return strcasecmp(str1, str2);
-  return strnatcasecmp(str1, str2);
+  return strnatcasecmp((const unsigned char *)str1, (const unsigned char *)str2);
 }
 
 static int a_sort_null(const char *str1, const char *str2)
