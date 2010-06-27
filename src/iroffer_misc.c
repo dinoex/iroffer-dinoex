@@ -67,8 +67,6 @@ void getconfig (void) {
    if (gdata.background) gdata.debug = 0;
    
    if ( !gdata.noscreen && !gdata.background) {
-      printf(IRVT_CURSOR_HOME2 ") >", gdata.termlines, 12);
-      printf(IRVT_CURSOR_HOME2, gdata.termlines, 16);
       gototop();
       }
    
@@ -238,7 +236,7 @@ void initirc(void)
       int found_p = 0;
       char portstr[maxtextlengthshort];
       
-      snprintf(portstr, maxtextlengthshort, "%u", gnetwork->curserver.port);
+      snprintf(portstr, maxtextlengthshort, "%d", gnetwork->curserver.port);
       
       len = strlen(pi) + strlen(gnetwork->curserver.hostname) + strlen(portstr);
       
