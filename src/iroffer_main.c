@@ -1678,7 +1678,7 @@ static void parseline(char *line) {
    char *part2, *part3, *part4, *part5;
    char *part3a;
    char *t;
-   int i;
+   unsigned int i;
    char *tptr;
    channel_t *ch;
    
@@ -1767,7 +1767,7 @@ static void parseline(char *line) {
    /* :server 005 xxxx aaa bbb=x ccc=y :are supported... */
    if ( !strcmp(part2,"005") )
      {
-       int ii = 4;
+       unsigned int ii = 4;
        char *item;
        
        while((item = getpart(line, ii++)))

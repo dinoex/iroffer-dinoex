@@ -1561,7 +1561,7 @@ void removefrommemberlist(channel_t *c, const char *nick)
 }
 
 
-void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, int add)
+void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, unsigned int add)
 {
   member_t *member;
   unsigned int pi;
