@@ -40,25 +40,31 @@
 
 /* These are defined as macros to make it easier to adapt this code to
  * different characters types or comparison functions. */
+#if 0
 static inline int
-nat_isdigit(nat_char a)
+nat_isdigit(unsigned char a)
 {
-     return isdigit((unsigned char) a);
+     return isdigit(a);
 }
 
 
 static inline int
-nat_isspace(nat_char a)
+nat_isspace(unsigned char a)
 {
-     return isspace((unsigned char) a);
+     return isspace(a);
 }
 
 
 static inline nat_char
-nat_toupper(nat_char a)
+nat_toupper(unsigned char a)
 {
-     return toupper((unsigned char) a);
+     return toupper(a);
 }
+#else
+#define nat_isdigit isdigit
+#define nat_isspace isspace
+#define nat_toupper toupper
+#endif
 
 
 
@@ -73,7 +79,7 @@ compare_right(nat_char const *a, nat_char const *b)
 	remember it in BIAS. */
      for (;; a++, b++) {
 	  if (!nat_isdigit(*a)  &&  !nat_isdigit(*b))
-	       return bias;
+	       break;
 	  else if (!nat_isdigit(*a))
 	       return -1;
 	  else if (!nat_isdigit(*b))
@@ -88,7 +94,7 @@ compare_right(nat_char const *a, nat_char const *b)
 	       return bias;
      }
 
-     return 0;
+     return bias;
 }
 
 
@@ -99,7 +105,7 @@ compare_left(nat_char const *a, nat_char const *b)
         different value wins. */
      for (;; a++, b++) {
 	  if (!nat_isdigit(*a)  &&  !nat_isdigit(*b))
-	       return 0;
+	       break;
 	  else if (!nat_isdigit(*a))
 	       return -1;
 	  else if (!nat_isdigit(*b))
