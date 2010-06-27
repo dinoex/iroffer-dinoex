@@ -81,7 +81,7 @@ unsigned int number_of_pack(xdcc *pack)
 
 static int get_level(void)
 {
-  if (gnetwork->need_level != 2)
+  if (gnetwork->need_level != 10)
     return gnetwork->need_level;
 
   return gdata.need_level;
