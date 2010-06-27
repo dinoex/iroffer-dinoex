@@ -1003,6 +1003,84 @@ static void command_xdcc(privmsginput *pi)
   notice(pi->nick, "Sorry, this command is unsupported" );
 }
 
+static void admin_msg_line(const char *nick, char *line, unsigned int level)
+{
+  char *part5[6];
+  userinput *u;
+
+  updatecontext();
+  get_argv(part5, line, 6);
+  mydelete(part5[1]);
+  mydelete(part5[2]);
+  mydelete(part5[3]);
+  mydelete(part5[4]);
+  u = mycalloc(sizeof(userinput));
+  a_fillwith_msg2(u, nick, part5[5]);
+  u->hostmask = mystrdup(part5[0] + 1);
+  mydelete(part5[0]);
+  mydelete(part5[5]);
+  u->level = level;
+  u_parseit(u);
+  mydelete(u);
+}
+
+static void reset_ignore(const char *hostmask)
+{
+  igninfo *ignore;
+
+  /* admin commands shouldn't count against ignore */
+  ignore = get_ignore(hostmask);
+  ignore->bucket = 0;
+}
+
+static unsigned int msg_host_password(const char *nick, const char *hostmask, const char *passwd, char *line)
+{
+  group_admin_t *ga;
+
+  if ( verifyshell(&gdata.adminhost, hostmask) ) {
+    if ( verifypass2(gdata.adminpass, passwd) ) {
+      reset_ignore(hostmask);
+      admin_msg_line(nick, line, gdata.adminlevel);
+      return 1;
+    }
+    return 2;
+  }
+  if ( verifyshell(&gdata.hadminhost, hostmask) ) {
+    if ( verifypass2(gdata.hadminpass, passwd) ) {
+      reset_ignore(hostmask);
+      admin_msg_line(nick, line, gdata.hadminlevel);
+      return 1;
+    }
+    return 2;
+  }
+  if ((ga = verifypass_group(hostmask, passwd))) {
+    reset_ignore(hostmask);
+    admin_msg_line(nick, line, ga->g_level);
+    return 1;
+  }
+  return 0;
+}
+
+static void admin_message(privmsginput *pi)
+{
+  unsigned int err;
+
+  err = msg_host_password(pi->nick, pi->hostmask, pi->msg2, pi->line);
+  if (err == 0) {
+    notice(pi->nick, "ADMIN: %s is not allowed to issue admin commands", pi->hostmask);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "Incorrect ADMIN Hostname (%s on %s)",
+            pi->hostmask, gnetwork->name);
+    return;
+  }
+  if (err == 2) {
+    notice(pi->nick, "ADMIN: Incorrect Password");
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "Incorrect ADMIN Password (%s on %s)",
+            pi->hostmask, gnetwork->name);
+  }
+}
+
 static int not_for_me(const char *dest)
 {
   if (dest == NULL)
@@ -1097,7 +1175,7 @@ static int botonly_parse(int type, privmsginput *pi)
   if (strcmp(pi->msg1, "ADMIN") == 0) {
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
-    admin_message(pi->nick, pi->hostmask, pi->msg2, pi->line);
+    admin_message(pi);
     return 0;
   }
 

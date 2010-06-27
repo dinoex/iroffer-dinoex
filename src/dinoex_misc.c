@@ -1031,6 +1031,26 @@ char *xd_color_description(const xdcc *xd)
    return colordesc;
 }
 
+/* verify password for group admins */
+group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
+{
+  group_admin_t *ga;
+
+  if (!hostmask)
+    return NULL;
+
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_get_next(ga)) {
+    if (fnmatch(ga->g_host, hostmask, FNM_CASEFOLD) != 0)
+      continue;
+    if ( !verifypass2(ga->g_pass, passwd) )
+      continue;
+    return ga;
+  }
+  return NULL;
+}
+
 /* drop all strings from a channel */
 void free_channel_data(channel_t *ch)
 {
