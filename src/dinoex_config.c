@@ -449,7 +449,7 @@ static char *print_config_int(const char *key)
     return NULL;
 
   val = mycalloc(maxtextlengthshort);
-  snprintf(val, maxtextlengthshort, "%d", *(config_parse_int[i].ivar));
+  snprintf(val, maxtextlengthshort, "%u", *(config_parse_int[i].ivar));
   return val;
 }
 
@@ -791,34 +791,34 @@ static unsigned int set_config_list(const char *key, char *text)
     }
     return 0;
   case 3:
-     for (j=strlen(text) - 1; j>=0; --j) {
-       if (text[j] == '@') {
-         j = 0;
-       } else if ((text[j] != '*') && (text[j] != '?') && (text[j] != '#')) {
-         break;
-       }
-     }
-     if ((j<0) || (!strchr(text, '@'))) {
-       outerror(OUTERROR_TYPE_WARN,
-                "%s:%ld ignored %s '%s' because it's way too vague",
-                current_config, current_line, config_parse_list[i].name, text);
-       return 0;
-     }
-     /* FALLTHROUGH */
+    for (j=strlen(text) - 1; j>=0; --j) {
+      if (text[j] == '@') {
+        j = 0;
+      } else if ((text[j] != '*') && (text[j] != '?') && (text[j] != '#')) {
+        break;
+      }
+    }
+    if ((j<0) || (!strchr(text, '@'))) {
+      outerror(OUTERROR_TYPE_WARN,
+               "%s:%ld ignored %s '%s' because it's way too vague",
+               current_config, current_line, config_parse_list[i].name, text);
+      return 0;
+    }
+    /* FALLTHROUGH */
   case 2:
-     if (strchr(text, ' ') != NULL) {
-       outerror(OUTERROR_TYPE_WARN,
-                "%s:%ld ignored %s '%s' because it contains spaces",
-                current_config, current_line, key, text);
-       return 0;
-     }
-     mask = hostmask_to_fnmatch(text);
-     irlist_add_string(config_parse_list[i].list, mask);
-     mydelete(mask);
-     return 0;
+    if (strchr(text, ' ') != NULL) {
+      outerror(OUTERROR_TYPE_WARN,
+               "%s:%ld ignored %s '%s' because it contains spaces",
+               current_config, current_line, key, text);
+      return 0;
+    }
+    mask = hostmask_to_fnmatch(text);
+    irlist_add_string(config_parse_list[i].list, mask);
+    mydelete(mask);
+    return 0;
   case 1:
-     convert_to_unix_slash(text);
-     break;
+    convert_to_unix_slash(text);
+    break;
   }
   irlist_add_string(config_parse_list[i].list, text);
   return 0;
@@ -841,7 +841,7 @@ static void dump_config_list(void)
            cidr = irlist_get_next(cidr)) {
         dump_line("  " ": %s %d", "family", cidr->family);
         dump_line("  " ": %s %d", "netmask", cidr->netmask);
-        my_getnameinfo(ip6, maxtextlengthshort -1, &(cidr->remote.sa));
+        my_getnameinfo(ip6, maxtextlengthshort - 1, &(cidr->remote.sa));
         dump_line("  " ": %s %s", "remoteip", ip6);
       }
       break;
@@ -877,13 +877,13 @@ static void set_default_network_name(void)
   }
 
   var = mymalloc(10);
-  snprintf(var, 10, "%d", current_network + 1);
+  snprintf(var, 10, "%u", current_network + 1);
   gdata.networks[current_network].name = mystrdup(var);
   mydelete(var);
   return;
 }
 
-static int parse_channel_int(unsigned short *iptr, char **part, int i)
+static int parse_channel_int(unsigned short *iptr, char **part, unsigned int i)
 {
   char *tptr2;
 
@@ -895,7 +895,7 @@ static int parse_channel_int(unsigned short *iptr, char **part, int i)
   return 1;
 }
 
-static int parse_channel_string(char **cptr, char **part, int i)
+static int parse_channel_string(char **cptr, char **part, unsigned int i)
 {
   char *tptr2;
 
@@ -924,7 +924,7 @@ static int parse_channel_format(unsigned short *iptr, char *tptr2)
   return -1;
 }
 
-static int parse_channel_option(channel_t *cptr, char *tptr, char **part, int i)
+static int parse_channel_option(channel_t *cptr, char *tptr, char **part, unsigned int i)
 {
   char *tptr2;
   int j;
@@ -991,9 +991,9 @@ static int parse_channel_options(channel_t *cptr, char *var)
 {
   char *part[MAX_CHANNEL_OPTIONS];
   char *tptr;
-  int i;
+  unsigned int i;
   int j;
-  int m;
+  unsigned int m;
 
   m = get_argv(part, var, MAX_CHANNEL_OPTIONS);
   for (i=0; i<m; ++i) {
@@ -1036,7 +1036,7 @@ static void c_autoadd_group_match(char *var)
 static void c_autosendpack(char *var)
 {
   char *part[3];
-  int rawval;
+  unsigned int rawval;
 
   get_argv(part, var, 3);
   if (part[0] && part[1]) {
@@ -1108,7 +1108,7 @@ static void c_channel_join_raw(char *var)
 static void c_connectionmethod(char *var)
 {
   char *part[5];
-  int m;
+  unsigned int m;
 
   mydelete(gdata.networks[current_network].connectionmethod.host);
   mydelete(gdata.networks[current_network].connectionmethod.password);
@@ -1177,8 +1177,8 @@ static void c_group_admin(char *var)
 {
   group_admin_t *ga;
   char *data;
-  int stufe = 0;
-  int drop = 0;
+  unsigned int stufe = 0;
+  unsigned int drop = 0;
 
   ga = irlist_add(&(gdata.group_admin), sizeof(group_admin_t));
   for (data = strtok(var, " ");
@@ -1225,7 +1225,7 @@ static void c_group_admin(char *var)
 
 static void c_logrotate(char *var)
 {
-  int val;
+  unsigned int val;
 
   val = atoi(var);
   if (val > 0) {
@@ -1354,7 +1354,7 @@ static void c_noannounce(char *var)
 static void c_overallmaxspeeddaydays(char *var)
 {
   char *src;
-  int i;
+  unsigned int i;
 
   gdata.overallmaxspeeddaydays = 0;
   src = var;
@@ -1404,8 +1404,8 @@ static void c_overallmaxspeeddaytime(char *var)
 static void c_periodicmsg(char *var)
 {
   char *part[4];
-  int tnum;
-  int m;
+  unsigned int tnum;
+  unsigned int m;
 
   mydelete(gdata.periodicmsg_nick);
   mydelete(gdata.periodicmsg_msg);
@@ -1516,7 +1516,7 @@ static void c_slotsmax(char *var)
   gdata.slotsmax = between(1, ival, MAXTRANS);
   if (gdata.slotsmax != ival) {
     outerror(OUTERROR_TYPE_WARN,
-             "%s:%ld unable to have slotsmax of %d, using %d instead",
+             "%s:%ld unable to have slotsmax of %u, using %u instead",
              current_config, current_line, ival, gdata.slotsmax);
   }
 }
@@ -1538,6 +1538,8 @@ static void c_statefile(char *var)
   mydelete(gdata.statefile);
   gdata.statefile = mystrdup(var);
   convert_to_unix_slash(gdata.statefile);
+
+  /* create if not exist */
   i = open(gdata.statefile, O_RDWR | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS );
   if (i >= 0)
     close(i);
@@ -1546,9 +1548,9 @@ static void c_statefile(char *var)
 static void c_transferlimits(char *var)
 {
   char *part[NUMBER_TRANSFERLIMITS];
-  int m;
-  int i;
-  int ival;
+  unsigned int m;
+  unsigned int i;
+  unsigned int ival;
 
   bzero((char *)part, sizeof(part));
   m = get_argv(part, var, (int)NUMBER_TRANSFERLIMITS);
@@ -1741,6 +1743,7 @@ static void reset_config_func(void)
     mydelete(gdata.networks[si].user_modes);
     mydelete(gdata.networks[si].local_vhost);
     mydelete(gdata.networks[si].natip);
+    mydelete(gdata.networks[si].auth_name);
     irlist_delete_all(&gdata.networks[si].channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);

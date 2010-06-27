@@ -59,7 +59,7 @@ unsigned int hide_pack(const xdcc *xd)
 unsigned int number_of_pack(xdcc *pack)
 {
   xdcc *xd;
-  int n;
+  unsigned int n;
 
   updatecontext();
 
@@ -99,8 +99,8 @@ static int get_voice(void)
 unsigned int check_level(int prefix)
 {
   unsigned int ii;
-  int need_level;
-  int level;
+  unsigned int need_level;
+  unsigned int level;
 
   need_level = get_level();
   if (need_level == 0) {
@@ -270,7 +270,7 @@ static unsigned int notifyqueued_queue(irlist_t *list, const char *nick, const c
 {
   ir_pqueue *pq;
   unsigned long rtime;
-  int i = 0;
+  unsigned int i = 0;
   unsigned int found = 0;
 
   updatecontext();
@@ -294,7 +294,7 @@ static unsigned int notifyqueued_queue(irlist_t *list, const char *nick, const c
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
             "Notifying Queued status to %s on %s",
             pq->nick, gnetwork->name);
-    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %i of %i. %lih%lim or %s remaining. (at %s)",
+    notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %u of %u. %lih%lim or %s remaining. (at %s)",
                 (long)(gdata.curtime-pq->queuedtime)/60/60,
                 (long)((gdata.curtime-pq->queuedtime)/60)%60,
                 pq->xpack->desc,
@@ -332,7 +332,7 @@ unsigned int notifyqueued_nick(const char *nick)
 /* notify all queued users */
 void notifyqueued(void)
 {
-  int found;
+  unsigned int found;
 
   updatecontext();
 
@@ -347,7 +347,7 @@ void notifyqueued(void)
     return;
 
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
-          "Notifying %d Queued People on %s",
+          "Notifying %u Queued People on %s",
           found, gnetwork->name);
 }
 
@@ -673,7 +673,7 @@ xdcc *get_xdcc_pack(unsigned int pack)
 
 static const char *access_need_text(void)
 {
-  int need_level;
+  unsigned int need_level;
 
   need_level = get_level();
   if (need_level == 0)

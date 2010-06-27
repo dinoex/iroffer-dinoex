@@ -399,7 +399,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
   if (usertrans >= gdata.maxtransfersperperson) {
     tempstr = mycalloc(maxtextlength);
     fatal = addtomainqueue(bad, tempstr, pi->nick, pi->hostname, pack);
-    notice(pi->nick, "** You can only have %d %s at a time, %s",
+    notice(pi->nick, "** You can only have %u %s at a time, %s",
             gdata.maxtransfersperperson,
             gdata.maxtransfersperperson != 1 ? "transfers" : "transfer",
             tempstr);
@@ -491,7 +491,7 @@ static void send_batch(privmsginput *pi, const char *what, const char *pwd)
 
   found = send_batch_search(pi, what, pwd);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC BATCH %s: %d packs (%s %s on %s)",
+          "XDCC BATCH %s: %u packs (%s %s on %s)",
           what, found, pi->nick, pi->hostmask, gnetwork->name);
   if (found != 0)
     return;
@@ -620,7 +620,7 @@ static void send_xdcc_info(const char **bad, const char *nick, const char *hostm
   }
 
   pubinfo = mycalloc(sizeof(userinput));
-  snprintf(tempstr, sizeof(tempstr), "INFO %d", pack);
+  snprintf(tempstr, sizeof(tempstr), "INFO %u", pack);
   a_fillwith_msg2(pubinfo, nick, tempstr);
   pubinfo->method = method_xdl_user_notice;
   u_parseit(pubinfo);
@@ -838,9 +838,9 @@ static void xdcc_stop(privmsginput *pi)
 
   stopped = stoplist(pi->nick);
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC STOP from (%s %s on %s) stopped %d",
+          "XDCC STOP from (%s %s on %s) stopped %u",
            pi->nick, pi->hostmask, gnetwork->name, stopped);
-  notice(pi->nick, "LIST stopped (%d lines deleted)", stopped);
+  notice(pi->nick, "LIST stopped (%u lines deleted)", stopped);
 }
 
 static const char *send_xdcc_file(privmsginput *pi, const char *arg, const char *pwd)
@@ -980,7 +980,7 @@ static void command_xdcc(privmsginput *pi)
         continue;
       if (fnmatch_xdcc(match, xd)) {
         colordesc = xd_color_description(xd);
-        notice_slow(pi->nick, " - Pack #%i matches, \"%s\"", i, colordesc);
+        notice_slow(pi->nick, " - Pack #%u matches, \"%s\"", i, colordesc);
         if (colordesc != xd->desc)
           mydelete(colordesc);
         ++k;
@@ -1178,10 +1178,10 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
           j = irlist_size(&gdata.trans);
         else
           j = gdata.slotsmax;
-        snprintf(tempstr, maxtextlength, "XDCC SERVER - %s:[%i/%i]", j != 1 ? "slots" : "slot", j - irlist_size(&gdata.trans), j);
+        snprintf(tempstr, maxtextlength, "XDCC SERVER - %s:[%u/%u]", j != 1 ? "slots" : "slot", j - irlist_size(&gdata.trans), j);
         len = strlen(tempstr);
         if (gdata.slotsmax <= irlist_size(&gdata.trans)) {
-          snprintf(tempstr + len, maxtextlength - len, ", Queue:[%i/%i]", irlist_size(&gdata.mainqueue), gdata.queuesize);
+          snprintf(tempstr + len, maxtextlength - len, ", Queue:[%u/%u]", irlist_size(&gdata.mainqueue), gdata.queuesize);
           len = strlen(tempstr);
         }
         if (gdata.transferminspeed > 0) {
@@ -1207,11 +1207,11 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
     }
     sizestrstr = sizestr(0, xd->st_size);
     colordesc = xd_color_description(xd);
-    snprintf(tempstr + len, maxtextlength - len, " #%i:%s,%s", i, colordesc, sizestrstr);
+    snprintf(tempstr + len, maxtextlength - len, " #%u:%s,%s", i, colordesc, sizestrstr);
     if (strlen(tempstr) > get_channel_limit(dest)) {
       snprintf(tempstr + len, maxtextlength - len, " [...]");
       notice_slow(nick, "%s", tempstr);
-      snprintf(tempstr, maxtextlength, "[...] #%i:%s,%s", i, colordesc, sizestrstr);
+      snprintf(tempstr, maxtextlength, "[...] #%u:%s,%s", i, colordesc, sizestrstr);
     }
     if (colordesc != xd->desc)
       mydelete(colordesc);
@@ -1248,7 +1248,7 @@ static void do_atfind(unsigned int min, privmsginput *pi)
     k = noticeresults(pi->nick, msg2e, pi->dest);
     if (k) {
       ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
-              "@FIND %s (%s on %s) - %i %s found.",
+              "@FIND %s (%s on %s) - %u %s found.",
               msg2e, pi->hostmask, gnetwork->name, k, k != 1 ? "packs" : "pack");
     }
   }
@@ -1288,7 +1288,7 @@ static int run_new_trigger(const char *nick, const char *grouplist)
       tempstr[0] = '\0';
 
     colordesc = xd_color_description(xd);
-    notice_slow(nick, "Added: %s \2%i\2%s%s",
+    notice_slow(nick, "Added: %s \2%u\2%s%s",
                 tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
     if (colordesc != xd->desc)
       mydelete(colordesc);
@@ -1469,11 +1469,11 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
                "Trigger:\2(\2/MSG %s XDCC LIST\2)\2 ",
                save_nick(gnetwork->user_nick));
     notice_slow(pi->nick,
-           "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
+           "\2(\2XDCC\2)\2 Packs:\2(\2%u\2)\2 "
            "%s%s"
            "%s"
-           "Sends:\2(\2%i/%i\2)\2 "
-           "Queues:\2(\2%i/%i\2)\2 "
+           "Sends:\2(\2%u/%u\2)\2 "
+           "Queues:\2(\2%u/%u\2)\2 "
            "Record:\2(\2%1.1fKB/s\2)\2 "
            "%s%s%s\2=\2iroffer\2=\2",
            irlist_size(&gdata.xdccs),
@@ -1519,7 +1519,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
       k = run_new_trigger(pi->nick, grouplist);
       if (k) {
         ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
-                "!NEW (%s on %s) - %i packs.",
+                "!NEW (%s on %s) - %u packs.",
                 pi->hostmask, gnetwork->name, k);
       }
       ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);

@@ -36,7 +36,7 @@ void t_start_dcc_send(transfer *tr)
   dccdata = setup_dcc_local(&tr->con.local);
   if (gdata.passive_dcc) {
     bzero((char *) &(tr->con.local), sizeof(tr->con.local));
-    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %d\1",
+    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %u\1",
                  sendnamestr, dccdata,
                  tr->xpack->st_size,
                  tr->id);
@@ -164,9 +164,9 @@ void t_notice_transfer(transfer * const tr, const char *msg, unsigned int pack, 
 
   tempstr = mycalloc(maxtextlength);
   if (queue) {
-    snprintf(tempstr, maxtextlength, "** Sending you queued pack #%i (\"%s\")", pack, tr->xpack->desc);
+    snprintf(tempstr, maxtextlength, "** Sending you queued pack #%u (\"%s\")", pack, tr->xpack->desc);
   } else {
-    snprintf(tempstr, maxtextlength, "** Sending you pack #%i (\"%s\")", pack, tr->xpack->desc);
+    snprintf(tempstr, maxtextlength, "** Sending you pack #%u (\"%s\")", pack, tr->xpack->desc);
   }
   notice_transfer(tr->nick, tr->xpack, tempstr);
   mydelete(tempstr);
@@ -264,7 +264,7 @@ static void t_find_debug(const char *nick, const char *filename, const char *rem
            "Couldn't find transfer that %s on %s tried to resume!",
            nick, gnetwork->name);
   outerror(OUTERROR_TYPE_WARN,
-          "resume trying %s, %s, %i",
+          "resume trying %s, %s, %d",
           nick, filename, atoi(remoteport));
   if (gdata.debug == 0)
     return;
@@ -273,7 +273,7 @@ static void t_find_debug(const char *nick, const char *filename, const char *rem
        tr;
        tr = irlist_get_next(tr)) {
     ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
-            "transfer %i: %s on %s, %s, %i\n",
+            "transfer %u: %s on %s, %s, %d\n",
             tr->tr_status,
             tr->caps_nick,
             gdata.networks[tr->net].name,
@@ -341,7 +341,7 @@ unsigned int t_find_resume(const char *nick, const char *filename, const char *l
                "Guessed transfer that %s on %s tried to resume!",
                nick, gnetwork->name);
       outerror(OUTERROR_TYPE_WARN,
-               "resume trying %s, %s, %i",
+               "resume trying %s, %s, %d",
                nick, filename, atoi(localport));
       tr = guess;
     } else {
@@ -460,7 +460,7 @@ static void t_check_duplicateip(transfer *const newtr)
     ignore->bucket = (num*60)/gdata.autoignore_threshold;
 
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-            "same IP detected, Ignore activated for %s which will last %i min",
+            "same IP detected, Ignore activated for %s which will last %u min",
             bhostmask, num);
     mydelete(bhostmask);
   }

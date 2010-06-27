@@ -256,7 +256,7 @@ unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, c
   if (hostname != NULL) {
     if (inq >= gdata.maxidlequeuedperperson) {
       snprintf(tempstr, maxtextlength,
-               "Denied, You already have %i items queued, Try Again Later",
+               "Denied, You already have %u items queued, Try Again Later",
                inq);
       *msg = "Denied (user/idle)";
       return 1;
@@ -264,7 +264,7 @@ unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, c
 
     if (irlist_size(&gdata.idlequeue) >= gdata.idlequeuesize) {
       snprintf(tempstr, maxtextlength,
-               "Idle queue of size %d is Full, Try Again Later",
+               "Idle queue of size %u is Full, Try Again Later",
                gdata.idlequeuesize);
       *msg = "Denied (slot/idle)";
       return 1;
@@ -282,7 +282,7 @@ unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, c
   tempq->net = gnetwork->net;
 
   snprintf(tempstr, maxtextlength,
-           "Added you to the idle queue for pack %d (\"%s\") in position %d. To Remove yourself at "
+           "Added you to the idle queue for pack %u (\"%s\") in position %u. To Remove yourself at "
            "a later time type \"/MSG %s XDCC REMOVE\".",
            pack, xd->desc,
            irlist_size(&gdata.idlequeue),
@@ -335,7 +335,7 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
         return fatal;
 
       snprintf(tempstr, maxtextlength,
-               "Denied, You already have %i items queued, Try Again Later",
+               "Denied, You already have %u items queued, Try Again Later",
                inq);
       *msg = "Denied (user/queue)";
       return 1;
@@ -349,7 +349,7 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
     }
     if (mainslot) {
       snprintf(tempstr, maxtextlength,
-               "Main queue of size %d is Full, Try Again Later",
+               "Main queue of size %u is Full, Try Again Later",
                gdata.queuesize);
       *msg = "Denied (slot/queue)";
       return 1;
@@ -364,7 +364,7 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
   tempq->net = gnetwork->net;
 
   snprintf(tempstr, maxtextlength,
-           "Added you to the main queue for pack %d (\"%s\") in position %d. To Remove yourself at "
+           "Added you to the main queue for pack %u (\"%s\") in position %u. To Remove yourself at "
            "a later time type \"/MSG %s XDCC REMOVE\".",
            pack, tempx->desc,
            irlist_size(&gdata.mainqueue),
@@ -450,7 +450,7 @@ void send_from_queue(unsigned int type, unsigned int pos, char *lastnick)
     if (type > 2) type = 0;
     pack = number_of_pack(pq->xpack);
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "QUEUED SEND%s: %s (%s on %s), Pack #%d",
+            "QUEUED SEND%s: %s (%s on %s), Pack #%u",
             send_queue_msg[ type ],
             pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
 

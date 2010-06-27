@@ -30,7 +30,7 @@ void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 4, 0)))
 #endif
-vprivmsg_chan(int delay, const char *name, const char *fish, const char *format, va_list ap);
+vprivmsg_chan(unsigned int delay, const char *name, const char *fish, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__

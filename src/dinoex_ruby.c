@@ -66,7 +66,7 @@ static void iroffer_ruby_errro(int error)
   VALUE inclass;
   VALUE message;
   VALUE ary;
-  int c;
+  unsigned int c;
 
   if (error == 0)
     return;
@@ -269,7 +269,7 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
   char *val;
   char *tempstr;
   unsigned int nr;
-  int ival;
+  unsigned int ival;
   off_t oval;
   size_t len;
   VALUE rval;
@@ -319,27 +319,27 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
     }
     if (strcmp(key, "gets") == 0) {
       ival = xd->gets;
-      return INT2NUM(ival);
+      return UINT2NUM(ival);
     }
     if (strcmp(key, "color") == 0) {
       ival = xd->color;
-      return INT2NUM(ival);
+      return UINT2NUM(ival);
     }
     if (strcmp(key, "dlimit_max") == 0) {
       ival = xd->dlimit_max;
-      return INT2NUM(ival);
+      return UINT2NUM(ival);
     }
     if (strcmp(key, "dlimit_used") == 0) {
       ival = xd->dlimit_used;
-      return INT2NUM(ival);
+      return UINT2NUM(ival);
     }
     if (strcmp(key, "has_md5sum") == 0) {
       ival = xd->has_md5sum;
-      return INT2NUM(ival);
+      return UINT2NUM(ival);
     }
     if (strcmp(key, "has_crc32") == 0) {
       ival = xd->has_crc32;
-      return INT2NUM(ival);
+      return UINT2NUM(ival);
     }
     if (strcmp(key, "size") == 0) {
       oval = xd->st_size;

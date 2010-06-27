@@ -300,8 +300,8 @@ void parsedccchat(dccchat_t *chat,
 {
   char *linec;
   userinput ui;
-  int count;
-  int found;
+  unsigned int count;
+  unsigned int found;
   
   updatecontext();
   
@@ -328,7 +328,7 @@ void parsedccchat(dccchat_t *chat,
           if (chat->level >= ADMIN_LEVEL_FULL)
             {
           count = irlist_size(&gdata.msglog);
-          writedccchat(chat, 0, "** You have %i %s in the message log%s\n",
+          writedccchat(chat, 0, "** You have %u %s in the message log%s\n",
                        count,
                        count != 1 ? "messages" : "message",
                        count ? ", use MSGREAD to read them" : "");
@@ -361,7 +361,7 @@ void parsedccchat(dccchat_t *chat,
     case DCCCHAT_CONNECTING:
     default:
       outerror(OUTERROR_TYPE_WARN_LOUD,
-               "Unexpected dccchat state %d", chat->status);
+               "Unexpected dccchat state %u", chat->status);
       break;
     }
   

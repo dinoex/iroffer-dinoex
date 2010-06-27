@@ -180,13 +180,17 @@ char *clean_quotes(char *str)
 {
   char *src;
   char *dest;
-  int len;
+  unsigned int len;
 
   if (str[0] != '"')
     return str;
 
   src = str + 1;
-  len = strlen(src) - 1;
+  len = strlen(src);
+  if (len == 0)
+    return str;
+
+  --len;
   if (src[len] == '"')
     src[len] = 0;
 
@@ -385,7 +389,7 @@ char *sizestr(unsigned int spaces, off_t num)
 #define SIZESTR_SIZE 5
   char *str = (char *)mycalloc(SIZESTR_SIZE);
   float val;
-  int i;
+  unsigned int i;
 
   if (num <= 0) {
     snprintf(str, SIZESTR_SIZE, spaces ? "%4s" : "%s", "0");
@@ -568,31 +572,31 @@ unsigned int max_minutes_waits(time_t *endtime, unsigned int min)
   return min;
 }
 
-static void clean_missing_parts(char **result, int part, int howmany)
+static void clean_missing_parts(char **result, unsigned int part, unsigned int howmany)
 {
-  int i;
+  unsigned int i;
   for (i = part; i < howmany; ++i)
     result[i] = NULL;
 }
 
 #ifndef WITHOUT_MEMSAVE
 /* split a line in a number of arguments, recording orign */
-int get_argv2(char **result, const char *line, int howmany, const char *src_function, const char *src_file, unsigned int src_line)
+unsigned int get_argv2(char **result, const char *line, unsigned int howmany, const char *src_function, const char *src_file, unsigned int src_line)
 #else /* WITHOUT_MEMSAVE */
 /* split a line in a number of arguments */
-int get_argv(char **result, const char *line, int howmany)
+unsigned int get_argv(char **result, const char *line, unsigned int howmany)
 #endif /* WITHOUT_MEMSAVE */
 {
   const char *start;
   const char *src;
   char *dest;
   size_t plen;
-  int inquotes;
-  int moreargs;
-  int morequote;
-  int part;
+  unsigned int inquotes;
+  unsigned int moreargs;
+  unsigned int morequote;
+  unsigned int part;
 
-  if (howmany <= 0)
+  if (howmany == 0)
     return 0;
 
   if (line == NULL) {
@@ -667,23 +671,23 @@ int get_argv(char **result, const char *line, int howmany)
 
 #ifndef WITHOUT_MEMSAVE
 /* extract one argument from a line, recording orign */
-char *getpart2(const char *line, int howmany, const char *src_function, const char *src_file, unsigned int src_line)
+char *getpart2(const char *line, unsigned int howmany, const char *src_function, const char *src_file, unsigned int src_line)
 #else /* WITHOUT_MEMSAVE */
 /* extract one argument from a line */
-char *getpart(const char *line, int howmany)
+char *getpart(const char *line, unsigned int howmany)
 #endif /* WITHOUT_MEMSAVE */
 {
   const char *start;
   const char *src;
   char *dest;
   size_t plen;
-  int inquotes;
-  int part;
+  unsigned int inquotes;
+  unsigned int part;
 
   if (line == NULL)
     return NULL;
 
-  if (howmany <= 0)
+  if (howmany == 0)
     return NULL;
 
   inquotes = 0;
@@ -738,16 +742,16 @@ char *getpart(const char *line, int howmany)
 }
 
 /* extract everything starting with the given argument */
-char *getpart_eol(const char *line, int howmany)
+char *getpart_eol(const char *line, unsigned int howmany)
 {
   const char *start;
   const char *src;
   char *dest;
   size_t plen;
-  int inquotes;
-  int moreargs;
-  int morequote;
-  int part;
+  unsigned int inquotes;
+  unsigned int moreargs;
+  unsigned int morequote;
+  unsigned int part;
 
   if (line == NULL)
     return NULL;

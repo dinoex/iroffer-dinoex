@@ -578,7 +578,7 @@ static void mainloop (void) {
             {
               kill(gnetwork->serv_resolv.child_pid, SIGKILL);
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                      "Server Resolve Timed Out (%d seconds) on %s", timeout, gnetwork->name);
+                      "Server Resolve Timed Out (%u seconds) on %s", timeout, gnetwork->name);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
         }
@@ -591,7 +591,7 @@ static void mainloop (void) {
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
             {
               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                      "Server Connection Timed Out (%d seconds) on %s", timeout, gnetwork->name);
+                      "Server Connection Timed Out (%u seconds) on %s", timeout, gnetwork->name);
               close_server();
             }
         }
@@ -1012,7 +1012,7 @@ static void mainloop (void) {
                       break;
                       
                     default:
-                      outerror(OUTERROR_TYPE_CRASH, "unknown type %d", ii);
+                      outerror(OUTERROR_TYPE_CRASH, "unknown type %u", ii);
                     }
                   /* tm_wday and tm_yday are ignored in mktime() */
                   gdata.transferlimits[ii].ends = mktime(localt);
@@ -1145,7 +1145,7 @@ static void mainloop (void) {
               }
             else if (gnetwork->servertime == 3) {
                ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
-                       "Closing Server Connection on %s: No Response for %d minutes.",
+                       "Closing Server Connection on %s: No Response for %u minutes.",
                        gnetwork->name, SRVRTOUT/60);
                close_server();
                gnetwork->servertime = 0;
@@ -1466,10 +1466,10 @@ static void mainloop (void) {
             
             getstatusline(tempstr,maxtextlength);
             tempstr[min2(maxtextlength-2,gdata.termcols-4)] = '\0';
-            snprintf(tempstr2,maxtextlengthshort,"\x1b[%d;1H[ %%-%ds ]",gdata.termlines-1,gdata.termcols-4);
+            snprintf(tempstr2,maxtextlengthshort,"\x1b[%u;1H[ %%-%us ]",gdata.termlines-1,gdata.termcols-4);
             tostdout(tempstr2,tempstr);
             
-            tostdout("\x1b[%d;%dH]\x1b[u",gdata.termlines,gdata.termcols);
+            tostdout("\x1b[%u;%uH]\x1b[u",gdata.termlines,gdata.termcols);
             }
          
          admin_jobs();
@@ -1509,13 +1509,13 @@ static void mainloop (void) {
               
               if (gdata.debug > 4)
                 {
-                  ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "[MD5 Pack %d]: read %ld",
+                  ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "[MD5 Pack %u]: read %ld",
                           number_of_pack(gdata.md5build.xpack), (long)howmuch);
                 }
               
               if ((howmuch < 0) && (errno != EAGAIN))
                 {
-                  outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %d]: Can't read data from file '%s': %s",
+                  outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %u]: Can't read data from file '%s': %s",
                            number_of_pack(gdata.md5build.xpack),
                            gdata.md5build.xpack->file, strerror(errno));
                   
@@ -1538,12 +1538,12 @@ static void mainloop (void) {
                   gdata.md5build.xpack->has_md5sum = 1;
                   
                   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                          "[MD5 Pack %d]: is " MD5_PRINT_FMT,
+                          "[MD5 Pack %u]: is " MD5_PRINT_FMT,
                           number_of_pack(gdata.md5build.xpack),
                           MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
                   if (!gdata.nocrc32)
                     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                            "[CRC32 Pack %d]: is %.8lX",
+                            "[CRC32 Pack %u]: is %.8lX",
                             number_of_pack(gdata.md5build.xpack), gdata.md5build.xpack->crc32);
                   
                   FD_CLR(gdata.md5build.file_fd, &gdata.readset);
@@ -1555,7 +1555,7 @@ static void mainloop (void) {
                       if (crcmsg != NULL)
                         {
                            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                                   "[CRC32 Pack %d]: File '%s' %s.",
+                                   "[CRC32 Pack %u]: File '%s' %s.",
                                    number_of_pack(gdata.md5build.xpack),
                                    gdata.md5build.xpack->file, crcmsg);
                         }
@@ -1620,7 +1620,7 @@ static void mainloop (void) {
               if (gdata.debug > 0)
                 {
                   ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW,
-                          "Reconnecting to server (%d seconds) on %s",
+                          "Reconnecting to server (%u seconds) on %s",
                           timeout, gnetwork->name);
                 }
               switchserver(-1);
@@ -1692,7 +1692,7 @@ static void parseline(char *line) {
    line[maxtextlength-1] = '\0';
    
    if (gdata.debug > 0)
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_CYAN, ">IRC>: %d, %s", gnetwork->net + 1, line);
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_CYAN, ">IRC>: %u, %s", gnetwork->net + 1, line);
    
    part2 = getpart(line,2);
    if (part2 == NULL)
@@ -1838,14 +1838,14 @@ static void parseline(char *line) {
    if ( !strcmp(part2,"433") && part3 && !strcmp(part3,"*") && part4 )
      {
        ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
-               "Nickname %s already in use on %s, trying %s%d",
+               "Nickname %s already in use on %s, trying %s%u",
                part4,
                gnetwork->name,
                get_config_nick(),
                gnetwork->nick_number);
        
        /* generate new nick and retry */
-       writeserver(WRITESERVER_NORMAL, "NICK %s%d",
+       writeserver(WRITESERVER_NORMAL, "NICK %s%u",
                    get_config_nick(),
                    gnetwork->nick_number++);
      }
@@ -2185,8 +2185,8 @@ static void parseline(char *line) {
          }
        if (ch)
          {
-           int plus = 0;
-           int part = 5;
+           unsigned int plus = 0;
+           unsigned int part = 5;
            char *ptr;
            
            for (ptr = part4; *ptr; ptr++)

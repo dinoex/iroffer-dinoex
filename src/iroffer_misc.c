@@ -67,8 +67,8 @@ void getconfig (void) {
    if (gdata.background) gdata.debug = 0;
    
    if ( !gdata.noscreen && !gdata.background) {
-      printf("\x1b[%i;12H%s) >",gdata.termlines,"");
-      printf("\x1b[%i;%iH",gdata.termlines, 16);
+      printf("\x1b[%u;12H%s) >",gdata.termlines,"");
+      printf("\x1b[%u;%uH",gdata.termlines, 16);
       gototop();
       }
    
@@ -357,7 +357,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<SND<: %d: %s", gnetwork->net +1, msg);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<SND<: %u: %s", gnetwork->net +1, msg);
         }
       msg[len] = '\n';
       len++;
@@ -443,7 +443,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         }
       else
         {
-          outerror(OUTERROR_TYPE_CRASH,"Unknown type %d",type);
+          outerror(OUTERROR_TYPE_CRASH,"Unknown type %u",type);
         }
     }
   
@@ -489,7 +489,7 @@ void sendserver(void)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -511,7 +511,7 @@ void sendserver(void)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -538,7 +538,7 @@ void sendserver(void)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, item);
+          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -1160,7 +1160,7 @@ void shutdowniroffer(void) {
            gnetwork = &(gdata.networks[ss]);
            if (gdata.debug > 0)
               {
-                ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %d, %s", gnetwork->net + 1, msg);
+                ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, msg);
               }
            writeserver_ssl(msg, strlen(msg));
            writeserver_ssl("\n", 1);
@@ -1273,7 +1273,7 @@ char* getstatusline(char *str, size_t len)
          }
        
        i = snprintf(str, len,
-               "Stat: %i/%i Sls, %i/%i Q, %i/%i I, %i SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)",
+               "Stat: %u/%u Sls, %u/%u Q, %u/%u I, %u SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
                irlist_size(&gdata.mainqueue),
@@ -1289,7 +1289,7 @@ char* getstatusline(char *str, size_t len)
   else
     {
        i = snprintf(str, len,
-               "Stat: %i/%i Sls, %i/%i Q, %1.1fK/s Rcd, %i SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Rcd)",
+               "Stat: %u/%u Sls, %u/%u Q, %1.1fK/s Rcd, %u SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Rcd)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
                irlist_size(&gdata.mainqueue),
@@ -1344,7 +1344,7 @@ char* getstatuslinenums(char *str, size_t len)
     }
   
   i = snprintf(str, len,
-               "stat %i %1.0f %i %1.0f %i %i %i %i %i %i %1.1f %i %" LLPRINTFMT "u %1.1f %1.1f",
+               "stat %u %1.0f %u %1.0f %u %u %u %u %u %u %1.1f %u %" LLPRINTFMT "u %1.1f %1.1f",
                irlist_size(&gdata.xdccs),
                ocount/1024/1024,
                gcount,
@@ -1680,7 +1680,7 @@ void startupiroffer(void) {
      }
    
    if (!gdata.background)
-      printf("** Window Size: %ix%i\n",gdata.termcols,gdata.termlines);
+      printf("** Window Size: %ux%u\n",gdata.termcols,gdata.termlines);
    
    tempstr23 = mycalloc(maxtextlength);
    printf("** Started on: %s\n",getdatestr(tempstr23,0,maxtextlength));
@@ -2031,7 +2031,7 @@ int look_for_file_changes(xdcc *xpack)
   if (stat(xpack->file,&st) < 0)
     {
       outerror(OUTERROR_TYPE_WARN,
-               "Pack %d: File '%s' can no longer be accessed: %s",
+               "Pack %u: File '%s' can no longer be accessed: %s",
                 number_of_pack(xpack),
                 xpack->file, strerror(errno));
       if (errno != ENOENT)

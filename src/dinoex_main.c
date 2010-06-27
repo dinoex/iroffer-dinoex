@@ -399,7 +399,7 @@ static void debug_memory(void)
       outerror(OUTERROR_TYPE_WARN_LOUD, "size      = %ld", (long)(mi->size));
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_func  = %s", mi->src_func);
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_file  = %s", mi->src_file);
-      outerror(OUTERROR_TYPE_WARN_LOUD, "src_line  = %d", mi->src_line);
+      outerror(OUTERROR_TYPE_WARN_LOUD, "src_line  = %u", mi->src_line);
       for(i=0; i<(12*12); i+=12) {
         if (i >= mi->size)
           break;

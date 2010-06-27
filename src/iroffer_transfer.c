@@ -663,7 +663,7 @@ void t_flushed (transfer * const t)
           ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0));
   
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "Log: Pack %d, Nick %s, Network %s, File %s",
+          "Log: Pack %u, Nick %s, Network %s, File %s",
           number_of_pack(t->xpack),
           t->nick,
           gdata.networks[ t->net ].name,
@@ -716,7 +716,7 @@ void t_flushed (transfer * const t)
   
   if ((t->xpack->dlimit_max != 0) && (t->xpack->gets >= t->xpack->dlimit_used))
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "Reached Pack Download Limit %d for %s",
+      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "Reached Pack Download Limit %u for %s",
               t->xpack->dlimit_max, t->xpack->desc);
        
       /* remove queued users */
@@ -898,12 +898,12 @@ void t_checkminspeed(transfer * const t) {
        backup = gnetwork;
        gnetwork = &(gdata.networks[t->net]);
        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-               "Punish-ignore activated for (%s on %s) (%s) %d minutes",
+               "Punish-ignore activated for (%s on %s) (%s) %u minutes",
                t->nick, gdata.networks[ t->net ].name,
                ignore->hostmask,
                gdata.punishslowusers);
        
-       notice(t->nick,"Punish-ignore activated for %s (%s) %d minutes",
+       notice(t->nick,"Punish-ignore activated for %s (%s) %u minutes",
               t->nick,
               ignore->hostmask,
               gdata.punishslowusers);

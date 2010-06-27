@@ -47,7 +47,7 @@ static int http_listen[MAX_VHOSTS];
 static int http_family[MAX_VHOSTS];
 
 static const char *http_header_status =
-"HTTP/1.1 %d OK\r\n"
+"HTTP/1.1 %u OK\r\n"
 "Date: %s\r\n"
 "Last-Modified: %s\r\n"
 "Server: iroffer-dinoex/" VERSIONLONG "\r\n"
@@ -57,7 +57,7 @@ static const char *http_header_status =
 "\r\n";
 
 static const char *http_header_attachment =
-"HTTP/1.1 %d OK\r\n"
+"HTTP/1.1 %u OK\r\n"
 "Date: %s\r\n"
 "Last-Modified: %s\r\n"
 "Server: iroffer-dinoex/" VERSIONLONG "\r\n"
@@ -642,7 +642,7 @@ static void h_access_log(http * const h)
   date = mycalloc(maxtextlengthshort);
   strftime(date, maxtextlengthshort - 1, "%d/%b/%Y:%T %Z", localt);
   bytes = h->bytesgot + h->bytessent;
-  len = snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" %d %ld\n",
+  len = snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" %u %ld\n",
                  get_host(h), date, h->log_url, h->status_code, bytes);
   mydelete(date);
   http_access_log_add(gdata.http_access_log, tempstr, len);
@@ -875,7 +875,7 @@ static void h_accept(unsigned int i)
   char *msg;
   http *h;
   int clientsocket;
-  int blocked;
+  unsigned int blocked;
 
   updatecontext();
 
@@ -1343,8 +1343,8 @@ static void h_html_main(http * const h)
   mydelete(tlink);
   h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
 
-  h_respond(h, "<th class=\"right\">%d</th>\n", packs);
-  h_respond(h, "<th class=\"right\">%d</th>\n", agets);
+  h_respond(h, "<th class=\"right\">%u</th>\n", packs);
+  h_respond(h, "<th class=\"right\">%u</th>\n", agets);
   if (h->traffic)
     h_respond(h, "<th class=\"right\">%.1f</th>\n", gets_per_pack(agets, packs));
   tempstr = sizestr(0, sizes);
@@ -1355,7 +1355,7 @@ static void h_html_main(http * const h)
     h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
     mydelete(tempstr);
   }
-  h_respond(h, "<th class=\"head\">%d</th>\n", groups);
+  h_respond(h, "<th class=\"head\">%u</th>\n", groups);
   tlink = h_html_link_group(h, "show all packs in one list", "all packs", "*");
   tempstr = sizestr(0, traffic);
   h_respond(h, "<th class=\"head\">%s [%s]&nbsp;%s</th>\n", tlink, tempstr, "complete downloaded" );
@@ -1367,8 +1367,8 @@ static void h_html_main(http * const h)
   hg = irlist_get_head(&grplist);
   while (hg) {
     h_respond(h, "<tr>\n");
-    h_respond(h, "<td class=\"right\">%d</td>\n", hg->hg_packs);
-    h_respond(h, "<td class=\"right\">%d</td>\n", hg->hg_agets);
+    h_respond(h, "<td class=\"right\">%u</td>\n", hg->hg_packs);
+    h_respond(h, "<td class=\"right\">%u</td>\n", hg->hg_agets);
     if (h->traffic)
       h_respond(h, "<td class=\"right\">%.1f</td>\n", hg->hg_rgets);
     tempstr = sizestr(0, hg->hg_sizes);
@@ -1405,7 +1405,7 @@ static void h_html_file(http * const h)
   size_t len;
   unsigned int packs = 0;
   unsigned int agets = 0;
-  int num;
+  unsigned int num;
 
   updatecontext();
 
@@ -1436,8 +1436,8 @@ static void h_html_file(http * const h)
   h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tempstr);
   mydelete(tempstr);
   h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
-  h_respond(h, "<th class=\"right\">%d</th>\n", packs);
-  h_respond(h, "<th class=\"right\">%d</th>\n", agets);
+  h_respond(h, "<th class=\"right\">%u</th>\n", packs);
+  h_respond(h, "<th class=\"right\">%u</th>\n", agets);
   tempstr = sizestr(0, sizes);
   h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
   mydelete(tempstr);
@@ -1457,13 +1457,13 @@ static void h_html_file(http * const h)
 
     num = number_of_pack(xd);
     h_respond(h, "<tr>\n");
-    h_respond(h, "<td class=\"right\">#%d</td>\n", num);
-    h_respond(h, "<td class=\"right\">%d</td>\n", xd->gets);
+    h_respond(h, "<td class=\"right\">#%u</td>\n", num);
+    h_respond(h, "<td class=\"right\">%u</td>\n", xd->gets);
     tempstr = sizestr(0, xd->st_size);
     h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
     mydelete(tempstr);
     tlabel = mycalloc(maxtextlength);
-    len = snprintf(tlabel, maxtextlength, "%s\n/msg %s xdcc send %d",
+    len = snprintf(tlabel, maxtextlength, "%s\n/msg %s xdcc send %u",
                    "Download with:", h->nick, num);
     if (xd->has_md5sum)
       len += snprintf(tlabel + len, maxtextlength - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
@@ -1488,7 +1488,7 @@ static void h_html_file(http * const h)
     }
     javalink = mycalloc(maxtextlength);
     len = snprintf(javalink, maxtextlength,
-                   "<a href=\"javascript:ToClipboard('/msg %s xdcc send %d');\">%s</a>",
+                   "<a href=\"javascript:ToClipboard('/msg %s xdcc send %u');\">%s</a>",
                    h->nick, num, tempstr);
     mydelete(tempstr);
     h_respond(h, "<td class=\"content\"  title=\"%s\">%s</td>\n", tlabel, javalink);
@@ -1571,7 +1571,7 @@ static void h_html_index(http * const h)
   char *clean;
   char *tlabel;
   size_t len;
-  int slots;
+  unsigned int slots;
 
   updatecontext();
 
@@ -1627,12 +1627,13 @@ static void h_html_index(http * const h)
   h_respond(h, "</tr>\n");
   mydelete(tempstr);
 
-  slots = gdata.slotsmax - irlist_size(&gdata.trans);
-  if (slots < 0)
-    slots = 0;
+  if (gdata.slotsmax < irlist_size(&gdata.trans))
+    slots = gdata.slotsmax;
+  else
+    slots = irlist_size(&gdata.trans);
   h_respond(h, "<tr>\n");
   h_respond(h, "<td>%s</td>\n", "slots open");
-  h_respond(h, "<td>%d</td>\n", slots);
+  h_respond(h, "<td>%u</td>\n", slots);
   h_respond(h, "</tr>\n");
 
   tempstr = get_current_bandwidth();
