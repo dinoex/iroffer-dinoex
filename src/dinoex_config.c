@@ -1752,7 +1752,7 @@ static void reset_config_func(void)
     gdata.networks[si].connectionmethod.how = how_direct;
     gdata.networks[si].usenatip = 0;
     gdata.networks[si].getip_net = 0;
-    gdata.networks[si].need_level = -1;
+    gdata.networks[si].need_level = 10;
     gdata.networks[si].slow_privmsg = 1;
     gdata.networks[si].restrictsend = 2;
     gdata.networks[si].restrictlist = 2;
