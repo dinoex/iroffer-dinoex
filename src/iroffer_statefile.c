@@ -320,7 +320,7 @@ static statefile_hdr_t* read_statefile_item(ir_uint32 **buffer, ir_uint32 *buffe
   
   if (*buffer_len < all->length)
     {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Bad Header From State File (%d < %d)",
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Bad Header From State File (%u < %u)",
                *buffer_len, all->length);
       return NULL;
     }
@@ -380,7 +380,7 @@ void read_statefile(void)
   close(fd);
   if (callval != buffer_len)
     {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Read State File (%d != %d) %s",
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Read State File (%u != %u) %s",
                callval, buffer_len, strerror(errno));
       goto error_out;
     }
@@ -714,7 +714,7 @@ void read_statefile(void)
               {
                 if (stat(xd->file, &st) < 0)
                   {
-                    outerror(OUTERROR_TYPE_WARN, "Pack %d: Cant Access Offered File '%s': %s",
+                    outerror(OUTERROR_TYPE_WARN, "Pack %u: Cant Access Offered File '%s': %s",
                              number_of_pack(xd),
                              xd->file, strerror(errno));
                     memset(&st, 0, sizeof(st));
@@ -736,14 +736,14 @@ void read_statefile(void)
                 
                 if (xd->st_size == 0)
                   {
-                    outerror(OUTERROR_TYPE_WARN, "Pack %d: The file \"%s\" has size of 0 bytes!",
+                    outerror(OUTERROR_TYPE_WARN, "Pack %u: The file \"%s\" has size of 0 bytes!",
                              number_of_pack(xd),
                              xd->file);
                   }
                 
                 if (xd->st_size > gdata.max_file_size)
                   {
-                    outerror(OUTERROR_TYPE_CRASH, "Pack %d: The file \"%s\" is too large!",
+                    outerror(OUTERROR_TYPE_CRASH, "Pack %u: The file \"%s\" is too large!",
                              number_of_pack(xd),
                              xd->file);
                   }
@@ -788,7 +788,7 @@ void read_statefile(void)
   
   if (buffer_len)
     {
-      outerror(OUTERROR_TYPE_WARN, "Extra data at end of state file!? %d left",
+      outerror(OUTERROR_TYPE_WARN, "Extra data at end of state file!? %u left",
                buffer_len);
     }
   
@@ -797,7 +797,7 @@ void read_statefile(void)
   if ((gdata.debug > 0) || irlist_size(&gdata.ignorelist))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d %s]",
+              COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.ignorelist),
               (irlist_size(&gdata.ignorelist) == 1) ? "ignore" : "ignores");
     }
@@ -805,7 +805,7 @@ void read_statefile(void)
   if ((gdata.debug > 0) || irlist_size(&gdata.msglog))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d %s]",
+              COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.msglog),
               (irlist_size(&gdata.msglog) == 1) ? "message" : "messages");
     }
@@ -813,7 +813,7 @@ void read_statefile(void)
   if ((gdata.debug > 0) || irlist_size(&gdata.xdccs))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d %s]",
+              COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.xdccs),
               (irlist_size(&gdata.xdccs) == 1) ? "pack" : "packs");
     }
@@ -821,14 +821,14 @@ void read_statefile(void)
   if ((gdata.debug > 0) || irlist_size(&gdata.mainqueue))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d %s]",
+              COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.mainqueue),
               (irlist_size(&gdata.mainqueue) == 1) ? "queue" : "queues");
     }
   if ((gdata.debug > 0) || irlist_size(&gdata.idlequeue))
     {
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %d %s]",
+              COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.idlequeue),
               (irlist_size(&gdata.idlequeue) == 1) ? "queue" : "queues");
     }

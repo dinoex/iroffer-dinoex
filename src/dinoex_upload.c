@@ -125,7 +125,7 @@ static int l_setup_listen(upload * const l)
 
   msg = setup_dcc_local(&(l->con.local));
   tempstr = getsendname(l->file);
-  privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %d\1",
+  privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %u\1",
                tempstr, msg, l->totalsize, l->token);
   mydelete(msg);
   msg = mycalloc(maxtextlength);
@@ -162,7 +162,7 @@ int l_setup_passive(upload * const l, char *token)
   if (retval == 2)
     {
       tempstr = getsendname(l->file);
-      privmsg_fast(l->nick, "\1DCC RESUME %s %i %" LLPRINTFMT "d %d\1",
+      privmsg_fast(l->nick, "\1DCC RESUME %s %d %" LLPRINTFMT "d %u\1",
                    tempstr, l->con.remoteport, s.st_size, l->token);
       mydelete(tempstr);
       l->con.connecttime = gdata.curtime;

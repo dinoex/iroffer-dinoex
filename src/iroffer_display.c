@@ -81,7 +81,7 @@ void initscreen(int startup, int clear) {
    tempstr = mycalloc(maxtextlength);
    getstatusline(tempstr,maxtextlength);
    tempstr[between(0,gdata.termcols-4,maxtextlength-1)] = '\0';
-   tostdout("\x1b[%d;1H[ %-*s ]",
+   tostdout("\x1b[%u;1H[ %-*s ]",
             gdata.termlines - 1,
             gdata.termcols - 4, tempstr);
    mydelete(tempstr);
@@ -89,7 +89,7 @@ void initscreen(int startup, int clear) {
    drawbot();
 
    /* scrolling */
-   tostdout("\x1b[1;%dr",gdata.termlines-2);
+   tostdout("\x1b[1;%ur",gdata.termlines-2);
    
 }
 
@@ -101,7 +101,7 @@ void uninitscreen(void)
   if ( gdata.noscreen )
     return;
   
-  printf("\x1b[r\x1b[%i;1H\n",gdata.termlines);
+  printf("\x1b[r\x1b[%u;1H\n",gdata.termlines);
   
   tcsetattr(fileno(stdin), TCSANOW, &gdata.startup_tio);
    
@@ -125,7 +125,7 @@ void checktermsize(void) {
          gdata.termlines = win.ws_row;
          initscreen(0, 0);
          if (!gdata.attop) gototop();
-         tostdout("** Window Size Changed To: %dx%d\n",gdata.termcols,gdata.termlines);
+         tostdout("** Window Size Changed To: %ux%u\n",gdata.termcols,gdata.termlines);
          gotobot();
          }
       }
@@ -137,7 +137,7 @@ void gototop (void) {
    if ( gdata.noscreen )
       return;
    
-   tostdout("\x1b[%d;1H",gdata.termlines-2);
+   tostdout("\x1b[%u;1H",gdata.termlines-2);
    }
 
 static const char *get_console_nick(void)
@@ -188,14 +188,14 @@ void drawbot(void)
     }
   
   /* draw bottom line */
-  tostdout("\x1b[%d;1H[ iroffer (%s) > %-*s]",
+  tostdout("\x1b[%u;1H[ iroffer (%s) > %-*s]",
            gdata.termlines,
            mynick,
            gdata.termcols - nicklen,
            gdata.console_input_line);
   
   /* move cursor */
-  tostdout("\x1b[%d;%dH",
+  tostdout("\x1b[%u;%uH",
            gdata.termlines,
            ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + nicklen);
   
@@ -222,7 +222,7 @@ void gotobot (void)
   nicklen = 16 + strlen(mynick);
   maxlen = gdata.termcols - 1 - nicklen;
   
-  tostdout("\x1b[%d;%dH", gdata.termlines,
+  tostdout("\x1b[%u;%uH", gdata.termlines,
            ((gdata.curcol > maxlen) ? maxlen : gdata.curcol) + nicklen);
     }
 

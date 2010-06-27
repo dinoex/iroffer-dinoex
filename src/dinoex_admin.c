@@ -217,7 +217,7 @@ unsigned int a_xdl_left(void)
 unsigned int reorder_new_groupdesc(const char *group, const char *desc)
 {
   xdcc *xd;
-  int k;
+  unsigned int k;
 
   updatecontext();
 
@@ -737,7 +737,7 @@ static unsigned int a_remove_pack(const userinput * const u, xdcc *xd, unsigned 
   queue_pack_remove(&gdata.mainqueue, xd);
   queue_pack_remove(&gdata.idlequeue, xd);
 
-  a_respond(u, "Removed Pack %i [%s]", num, xd->desc);
+  a_respond(u, "Removed Pack %u [%s]", num, xd->desc);
 
   cancel_md5_hash(xd, "REMOVE");
 
@@ -812,7 +812,7 @@ static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned in
     newgroup = group;
 
   if (xd->group != NULL) {
-    a_respond(u, "GROUP: [Pack %i] Old: %s New: %s",
+    a_respond(u, "GROUP: [Pack %u] Old: %s New: %s",
               num, xd->group, newgroup);
     /* keep group info for later work */
     tmpgroup = xd->group;
@@ -827,7 +827,7 @@ static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned in
     if (tmpgroup != NULL)
       mydelete(tmpgroup);
   } else {
-    a_respond(u, "GROUP: [Pack %i] New: %s",
+    a_respond(u, "GROUP: [Pack %u] New: %s",
               num, newgroup);
   }
 
@@ -1002,7 +1002,7 @@ static void a_make_announce(const userinput * const u, const char *cmd, unsigned
 
   tempstr = mycalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength, "%s %i", cmd, n);
+  snprintf(tempstr, maxtextlength, "%s %u", cmd, n);
   a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = u->net;
@@ -1053,10 +1053,10 @@ static int a_autoadd_color(void)
   char *last;
   char *back;
   char *style;
-  int color = 0;
-  int color_fg;
-  int color_bg;
-  int color_st;
+  unsigned int color = 0;
+  unsigned int color_fg;
+  unsigned int color_bg;
+  unsigned int color_st;
 
   if (!gdata.autoadd_color)
     return color;
@@ -1114,7 +1114,7 @@ static unsigned int check_for_renamed_file(const userinput * const u, xdcc *xd, 
     return 0; /* ino differs */
 
   /* renamed */
-  a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
+  a_respond(u, "CHFILE: [Pack %u] Old: %s New: %s",
             number_of_pack(xd), xd->file, file);
   old = xd->file;
   xd->file = file;
@@ -1278,7 +1278,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
     mydelete(xd->group);
   }
 
-  a_respond(u, "ADD PACK: [Pack %i] [File %s] Use CHDESC to change description",
+  a_respond(u, "ADD PACK: [Pack %u] [File %s] Use CHDESC to change description",
             n, xd->file);
 
   if (group != NULL) {
@@ -1560,7 +1560,7 @@ void a_maxspeed(const userinput * const u)
     return;
 
   val = atof(u->arg2);
-  a_respond(u, "MAXSPEED: [Transfer %i] Old: %1.1f New: %1.1f",
+  a_respond(u, "MAXSPEED: [Transfer %u] Old: %1.1f New: %1.1f",
             num, tr->maxspeed, val);
   tr->maxspeed = val;
 }
@@ -1575,12 +1575,12 @@ void a_slotsmax(const userinput * const u)
     val = atoi(u->arg1);
     gdata.slotsmax = between(1, val, MAXTRANS);
   }
-  a_respond(u, "SLOTSMAX now %d", gdata.slotsmax);
+  a_respond(u, "SLOTSMAX now %u", gdata.slotsmax);
 }
 
 void a_queuesize(const userinput * const u)
 {
-  int val;
+  unsigned int val;
 
   updatecontext();
 
@@ -1588,7 +1588,7 @@ void a_queuesize(const userinput * const u)
     val = atoi(u->arg1);
     gdata.queuesize = between(0, val, 1000000);
   }
-  a_respond(u, "QUEUESIZE now %d", gdata.queuesize);
+  a_respond(u, "QUEUESIZE now %u", gdata.queuesize);
 }
 
 static void a_requeue2(const userinput * const u, irlist_t *list)
@@ -1611,7 +1611,7 @@ static void a_requeue2(const userinput * const u, irlist_t *list)
     return;
   }
 
-  a_respond(u, "** Moved Queue %i to %i", oldp, newp);
+  a_respond(u, "** Moved Queue %u to %u", oldp, newp);
 
   /* get queue we are renumbering */
   pqo = irlist_get_nth(list, oldp - 1);
@@ -1647,7 +1647,7 @@ static unsigned int is_system_dir(const char *name)
 static int a_readdir_sub(const userinput * const u, const char *thedir, DIR *dirp, struct dirent *entry, struct dirent **result)
 {
   int rc;
-  int max = 3;
+  unsigned int max = 3;
 
   for (max = 3; max > 0; --max) {
     rc = readdir_r(dirp, entry, result);
@@ -1848,7 +1848,7 @@ static void a_renumber1(const userinput * const u, unsigned int oldp, unsigned i
   xdcc *xdo;
   xdcc *xdn;
 
-  a_respond(u, "** Moved pack %i to %i", oldp, newp);
+  a_respond(u, "** Moved pack %u to %u", oldp, newp);
   /* get pack we are renumbering */
   xdo = irlist_get_nth(&gdata.xdccs, oldp - 1);
   irlist_remove(&gdata.xdccs, xdo);
@@ -2151,7 +2151,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
 
   irlist_sort2(&dirlist, irlist_sort_cmpfunc_string);
 
-  a_respond(u, "Adding %d files from dir %s",
+  a_respond(u, "Adding %u files from dir %s",
             irlist_size(&dirlist), thedir);
 
   thefile = irlist_get_head(&dirlist);
@@ -2361,7 +2361,7 @@ void a_chdesc(const userinput * const u)
     clean_quotes(u->arg2e);
   }
 
-  a_respond(u, "CHDESC: [Pack %i] Old: %s New: %s",
+  a_respond(u, "CHDESC: [Pack %u] Old: %s New: %s",
             num, xd->desc, newdesc);
 
   mydelete(xd->desc);
@@ -2406,7 +2406,7 @@ void a_chtime(const userinput * const u)
   user_getdatestr(newstr, val, maxtextlengthshort);
   oldstr = mycalloc(maxtextlengthshort);
   user_getdatestr(oldstr, xd->xtime, maxtextlengthshort);
-  a_respond(u, "CHTIME: [Pack %i] Old: %s New: %s",
+  a_respond(u, "CHTIME: [Pack %u] Old: %s New: %s",
             num, oldstr, newstr);
   mydelete(oldstr);
   mydelete(newstr);
@@ -2417,7 +2417,7 @@ void a_chtime(const userinput * const u)
 void a_chlimit(const userinput * const u)
 {
   unsigned int num;
-  int val;
+  unsigned int val;
   xdcc *xd;
 
   updatecontext();
@@ -2437,7 +2437,7 @@ void a_chlimit(const userinput * const u)
 
   val = atoi(u->arg2);
 
-  a_respond(u, "CHLIMIT: [Pack %i] Old: %d New: %d",
+  a_respond(u, "CHLIMIT: [Pack %u] Old: %u New: %u",
             num, xd->dlimit_max, val);
 
   xd->dlimit_max = val;
@@ -2465,12 +2465,12 @@ void a_chlimitinfo(const userinput * const u)
     return;
 
   if (!u->arg2 || !strlen(u->arg2)) {
-    a_respond(u, "DLIMIT: [Pack %i] descr removed", num);
+    a_respond(u, "DLIMIT: [Pack %u] descr removed", num);
     mydelete(xd->dlimit_desc);
     xd->dlimit_desc = NULL;
   } else {
     clean_quotes(u->arg2e);
-    a_respond(u, "DLIMIT: [Pack %i] descr: %s", num, u->arg2e);
+    a_respond(u, "DLIMIT: [Pack %u] descr: %s", num, u->arg2e);
     xd->dlimit_desc = mystrdup(u->arg2e);
   }
 
@@ -2494,7 +2494,7 @@ void a_chtrigger(const userinput * const u)
 
   if (!u->arg2 || !strlen(u->arg2)) {
     mydelete(xd->trigger);
-    a_respond(u, "TRIGGER: [Pack %i] removed", num);
+    a_respond(u, "TRIGGER: [Pack %u] removed", num);
     autotrigger_rebuild();
   } else {
     clean_quotes(u->arg2e);
@@ -2506,7 +2506,7 @@ void a_chtrigger(const userinput * const u)
       xd->trigger = mystrdup(u->arg2e);
       autotrigger_add(xd);
     }
-    a_respond(u, "TRIGGER: [Pack %i] set: %s", num, u->arg2e);
+    a_respond(u, "TRIGGER: [Pack %u] set: %s", num, u->arg2e);
   }
 
   write_files();
@@ -2543,7 +2543,7 @@ void a_deltrigger(const userinput * const u)
 
     ++dirty;
     mydelete(xd->trigger);
-    a_respond(u, "TRIGGER: [Pack %i] removed", num1);
+    a_respond(u, "TRIGGER: [Pack %u] removed", num1);
   }
   if (dirty > 0)
     autotrigger_rebuild();
@@ -2600,7 +2600,7 @@ void a_chcolor(const userinput * const u)
       return;
 
     xd->color = color;
-    a_respond(u, "COLOR: [Pack %i] set: %d,%d,%d", num1, color_fg, color_bg, color_st);
+    a_respond(u, "COLOR: [Pack %u] set: %u,%u,%u", num1, color_fg, color_bg, color_st);
   }
 
   write_files();
@@ -2637,7 +2637,7 @@ void a_lock(const userinput * const u)
     if (group_restricted(u, xd))
       return;
 
-    a_respond(u, "LOCK: [Pack %i] Password: %s", num1, pass);
+    a_respond(u, "LOCK: [Pack %u] Password: %s", num1, pass);
     mydelete(xd->lock);
     xd->lock = mystrdup(pass);
   }
@@ -2666,7 +2666,7 @@ void a_unlock(const userinput * const u)
     if (group_restricted(u, xd))
       return;
 
-    a_respond(u, "UNLOCK: [Pack %i]", num1);
+    a_respond(u, "UNLOCK: [Pack %u]", num1);
 
     mydelete(xd->lock);
     xd->lock = NULL;
@@ -2699,7 +2699,7 @@ void a_lockgroup(const userinput * const u)
     if (strcasecmp(xd->group, u->arg1) != 0)
       continue;
 
-    a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2);
+    a_respond(u, "LOCK: [Pack %u] Password: %s", n, u->arg2);
     mydelete(xd->lock);
     xd->lock = mystrdup(u->arg2);
   }
@@ -2727,7 +2727,7 @@ void a_unlockgroup(const userinput * const u)
     if (strcasecmp(xd->group, u->arg1) != 0)
       continue;
 
-    a_respond(u, "UNLOCK: [Pack %i]", n);
+    a_respond(u, "UNLOCK: [Pack %u]", n);
     mydelete(xd->lock);
     xd->lock = NULL;
   }
@@ -2759,7 +2759,7 @@ void a_relock(const userinput * const u)
       continue;
 
     mydelete(xd->lock);
-    a_respond(u, "LOCK: [Pack %i] Password: %s", n, u->arg2);
+    a_respond(u, "LOCK: [Pack %u] Password: %s", n, u->arg2);
     xd->lock = mystrdup(u->arg2);
   }
   write_files();
@@ -2913,7 +2913,7 @@ void a_md5(const userinput * const u)
 
   /* show status */
   if (gdata.md5build.xpack) {
-    a_respond(u, "calculating MD5/CRC32 for pack %d",
+    a_respond(u, "calculating MD5/CRC32 for pack %u",
               number_of_pack(gdata.md5build.xpack));
   }
 
@@ -2933,7 +2933,7 @@ void a_md5(const userinput * const u)
     if (group_restricted(u, xd))
       return;
 
-    a_respond(u, "Rebuilding MD5 and CRC for Pack #%i:", num);
+    a_respond(u, "Rebuilding MD5 and CRC for Pack #%u:", num);
     if (gdata.md5build.xpack) {
       xd->has_md5sum  = 0;
     } else {
@@ -2966,10 +2966,10 @@ void a_crc(const userinput * const u)
       if (group_restricted(u, xd))
         return;
 
-      a_respond(u, "Validating CRC for Pack #%i:", num);
+      a_respond(u, "Validating CRC for Pack #%u:", num);
       crcmsg = validate_crc32(xd, 0);
       if (crcmsg != NULL)
-        a_respond(u, "[CRC32 Pack %d]: File '%s' %s.", num, xd->file, crcmsg);
+        a_respond(u, "[CRC32 Pack %u]: File '%s' %s.", num, xd->file, crcmsg);
     }
     return;
   }
@@ -2983,7 +2983,7 @@ void a_crc(const userinput * const u)
     ++num;
     crcmsg = validate_crc32(xd, 1);
     if (crcmsg != NULL)
-      a_respond(u, "[CRC32 Pack %d]: File '%s' %s.", num, xd->file, crcmsg);
+      a_respond(u, "[CRC32 Pack %u]: File '%s' %s.", num, xd->file, crcmsg);
   }
 }
 
@@ -3018,7 +3018,7 @@ void a_chfile(const userinput * const u)
 
   a_cancel_transfers(xd, "Pack file changed");
 
-  a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
+  a_respond(u, "CHFILE: [Pack %u] Old: %s New: %s",
             num, xd->file, file);
 
   old = xd->file;
@@ -3067,7 +3067,7 @@ static unsigned int a_newdir_check(const userinput * const u, const char *dir1, 
   if (a_access_fstat(u, xfiledescriptor, &tempstr, &st))
     return 0;
 
-  a_respond(u, "CHFILE: [Pack %i] Old: %s New: %s",
+  a_respond(u, "CHFILE: [Pack %u] Old: %s New: %s",
             number_of_pack(xd), xd->file, tempstr);
 
   a_cancel_transfers(xd, "Pack file changed");
@@ -3153,7 +3153,7 @@ void a_newdir(const userinput * const u)
        xd = irlist_get_next(xd)) {
     found += a_newdir_check(u, u->arg1, u->arg2, xd);
   }
-  a_respond(u, "NEWDIR: %d Packs found", found);
+  a_respond(u, "NEWDIR: %u Packs found", found);
 
   if (found > 0)
     write_files();
@@ -3596,7 +3596,7 @@ void a_mesg(const userinput * const u)
   }
   gnetwork = backup;
 
-  a_respond(u, "Sent message to %i %s", irlist_size(&gdata.trans), irlist_size(&gdata.trans)!=1 ? "users" : "user");
+  a_respond(u, "Sent message to %u %s", irlist_size(&gdata.trans), irlist_size(&gdata.trans)!=1 ? "users" : "user");
 }
 
 void a_mesq(const userinput * const u)
@@ -3620,7 +3620,7 @@ void a_mesq(const userinput * const u)
     ++count;
   }
   gnetwork = backup;
-  a_respond(u, "Sent message to %i %s", count, count!=1 ? "users" : "user");
+  a_respond(u, "Sent message to %u %s", count, count!=1 ? "users" : "user");
 }
 
 static void a_bann_hostmask(const userinput * const u, const char *arg)
@@ -3760,7 +3760,7 @@ void a_closeu(const userinput * const u)
 
 void a_acceptu(const userinput * const u)
 {
-  int min = 0;
+  unsigned int min = 0;
   tupload_t *tu;
   const char *hostmask;
 
@@ -3772,7 +3772,7 @@ void a_acceptu(const userinput * const u)
     tu = irlist_add(&gdata.tuploadhost, sizeof(tupload_t));
     tu->u_host = mystrdup( hostmask );
     tu->u_time = gdata.curtime + (min * 60);
-    a_respond(u, "Uploadhost %s valid for %d minutes", hostmask, min);
+    a_respond(u, "Uploadhost %s valid for %u minutes", hostmask, min);
     return;
   }
   for (tu = irlist_get_head(&gdata.tuploadhost);
@@ -4057,7 +4057,7 @@ void a_nochannel(const userinput * const u)
   channel_t *ch;
   gnetwork_t *backup;
   unsigned int ss;
-  int val = 0;
+  unsigned int val = 0;
 
   updatecontext();
 
@@ -4162,7 +4162,7 @@ void a_servqc(const userinput * const u)
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
-    a_respond(u, "Cleared server queue of %d lines",
+    a_respond(u, "Cleared server queue of %u lines",
               irlist_size(&gdata.networks[ss].serverq_channel) +
               irlist_size(&gdata.networks[ss].serverq_fast) +
               irlist_size(&gdata.networks[ss].serverq_normal) +
@@ -4182,7 +4182,7 @@ void a_nomd5(const userinput * const u)
 
   if (u->arg1) num = atoi(u->arg1);
   num = max_minutes_waits(&gdata.nomd5_start, num);
-  a_respond(u, "** MD5 and CRC checksums have been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
+  a_respond(u, "** MD5 and CRC checksums have been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
 }
 
 void a_cleargets(const userinput * const u)
@@ -4301,8 +4301,8 @@ void a_identify(const userinput * const u)
 
 void a_holdqueue(const userinput * const u)
 {
-  int val;
-  int i;
+  unsigned int val;
+  unsigned int i;
 
   updatecontext();
 
@@ -4310,7 +4310,7 @@ void a_holdqueue(const userinput * const u)
   if (u->arg1) val = atoi(u->arg1);
 
   gdata.holdqueue = val;
-  a_respond(u, "HOLDQUEUE now %d", val);
+  a_respond(u, "HOLDQUEUE now %u", val);
 
   if (val != 0)
     return;
@@ -4428,7 +4428,7 @@ void a_send(const userinput * const u)
     return;
 
   backup = gnetwork;
-  a_respond(u, "Sending %s pack %i", u->arg1, num);
+  a_respond(u, "Sending %s pack %u", u->arg1, num);
   gnetwork = &(gdata.networks[net]);
   look_for_file_changes(xd);
   tr = create_transfer(xd, u->arg1, "man");
@@ -4449,10 +4449,10 @@ static unsigned int a_queue_found(const userinput * const u, xdcc *xd, unsigned 
   alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, u->arg1, hostname, xd);
   alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, u->arg1, hostname, xd);
   if (alreadytrans > 0) {
-    a_respond(u, "Already Queued %s for Pack %i!", u->arg1, num);
+    a_respond(u, "Already Queued %s for Pack %u!", u->arg1, num);
     return 1;
   }
-  a_respond(u, "Queuing %s for Pack %i", u->arg1, num);
+  a_respond(u, "Queuing %s for Pack %u", u->arg1, num);
   return 0;
 }
 
@@ -4623,7 +4623,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   if (group_restricted(u, xd))
     return;
 
-  a_respond(u, "Pack Info for Pack #%i:", num);
+  a_respond(u, "Pack Info for Pack #%u:", num);
   tempstr = mycalloc(maxtextlength);
   tempstr2 = mycalloc(maxtextlength);
   tempstr3 = mycalloc(maxtextlength);
@@ -4650,7 +4650,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
-    snprintf(tempstr, maxtextlength - 2, "%s - /MSG %s XDCC SEND %i",
+    snprintf(tempstr, maxtextlength - 2, "%s - /MSG %s XDCC SEND %u",
              tempstr2, get_user_nick(), num);
     if (gnetwork->noannounce == 0)
       a_announce_channels(tempstr, match, xd->group);
@@ -4729,7 +4729,7 @@ static unsigned int a_new_announce(unsigned int max)
       tempstr[0] = '\0';
     colordesc = xd_color_description(xd);
     tempstr3 = mycalloc(maxtextlength);
-    snprintf(tempstr3, maxtextlength - 1, "Added: %s \2%i\2%s%s",
+    snprintf(tempstr3, maxtextlength - 1, "Added: %s \2%u\2%s%s",
              tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
     if (colordesc != xd->desc)
       mydelete(colordesc);
@@ -4800,7 +4800,7 @@ void a_sannounce(const userinput * const u)
     return;
 
   for (; num1 <= num2; ++num1) {
-    a_respond(u, "Pack Info for Pack #%i:", num1);
+    a_respond(u, "Pack Info for Pack #%u:", num1);
     xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
     if (group_restricted(u, xd))
       return;
@@ -4811,7 +4811,7 @@ void a_sannounce(const userinput * const u)
     snprintf(tempstr3, maxtextlength - 1, "%s%s", gdata.announce_seperator, colordesc);
     if (colordesc != xd->desc)
       mydelete(colordesc);
-    snprintf(tempstr, maxtextlength - 2, "\2%i\2%s", num1, tempstr3);
+    snprintf(tempstr, maxtextlength - 2, "\2%u\2%s", num1, tempstr3);
 
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ++ss) {
@@ -4819,7 +4819,7 @@ void a_sannounce(const userinput * const u)
       if (gnetwork->noannounce == 0)
         a_announce_channels(tempstr, NULL, xd->group);
       gnetwork = backup;
-      a_respond(u, "Announced [%i]%s", num1, tempstr3);
+      a_respond(u, "Announced [%u]%s", num1, tempstr3);
     }
     gnetwork = backup;
     mydelete(tempstr);
@@ -4849,7 +4849,7 @@ void a_noannounce(const userinput * const u)
 
   if (u->arg1) num = atoi(u->arg1);
   num = max_minutes_waits(&gdata.noannounce_start, num);
-  a_respond(u, "** ANNOUNCE has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
+  a_respond(u, "** ANNOUNCE has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
 }
 
 void a_restart(const userinput * const UNUSED(u))

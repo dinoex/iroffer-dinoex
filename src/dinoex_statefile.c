@@ -263,7 +263,7 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
         break;
       }
       if (num == 0 || num > irlist_size(&gdata.xdccs)) {
-        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Nr (%d)", num);
+        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Pack Nr (%u)", num);
         break;
       }
       pq->xpack = get_xdcc_pack(num);
@@ -285,7 +285,7 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
       num = 0;
       read_statefile_int(ihdr, "Queue Net", &(num));
       if ((unsigned int)num > gdata.networks_online) {
-        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Net Nr (%d)", num);
+        outerror(OUTERROR_TYPE_WARN, "Ignoring Bad Queue Net Nr (%u)", num);
         break;
       }
       pq->net = num;

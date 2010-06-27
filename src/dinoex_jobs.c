@@ -38,7 +38,7 @@ static unsigned char fish64decode[ 256 ];
 
 void init_fish64decode( void )
 {
-  int i;
+  unsigned int i;
 
   memset(fish64decode, 0, sizeof(fish64decode));
   for ( i = 0; i < 64; ++i) {
@@ -80,7 +80,7 @@ static char *encrypt_fish( const char *str, int len, const char *key)
   char *msg;
   size_t max;
   unsigned long left, right;
-  int i;
+  unsigned int i;
 
   if (key == NULL)
     return NULL;
@@ -118,7 +118,7 @@ static unsigned long base64_to_long( const char **str )
 {
   unsigned long result;
   unsigned char ch;
-  int i;
+  unsigned int i;
 
   result = 0L;
   for (i = 0; i < 6; ++i) {
@@ -137,7 +137,7 @@ static char *decrypt_fish( const char *str, int len, const char *key)
   char *msg;
   size_t max;
   unsigned long left, right;
-  int i;
+  unsigned int i;
 
   if (key == NULL)
     return NULL;
@@ -264,7 +264,7 @@ static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 0)))
 #endif
-vwriteserver_channel(int delay, const char *format, va_list ap)
+vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
 {
   char *msg;
   channel_announce_t *item;
@@ -313,7 +313,7 @@ static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
-writeserver_channel(int delay, const char *format, ... )
+writeserver_channel(unsigned int delay, const char *format, ... )
 {
   va_list args;
   va_start(args, format);
@@ -325,7 +325,7 @@ void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 4, 0)))
 #endif
-vprivmsg_chan(int delay, const char *name, const char *fish, const char *format, va_list ap)
+vprivmsg_chan(unsigned int delay, const char *name, const char *fish, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   int len;
@@ -576,7 +576,7 @@ static int check_for_file_remove(unsigned int n)
 
   pubplist = mycalloc(sizeof(userinput));
   tempstr = mycalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength, "REMOVE %d", n);
+  snprintf(tempstr, maxtextlength, "REMOVE %u", n);
   u_fillwith_console(pubplist, tempstr);
   u_parseit(pubplist);
   mydelete(pubplist);
@@ -625,7 +625,7 @@ void reset_download_limits(void)
 
     newlimit = xd->gets + xd->dlimit_max;
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-            "Resetting download limit of pack %d, used %d",
+            "Resetting download limit of pack %u, used %u",
             num, newlimit - xd->dlimit_used);
     xd->dlimit_used = newlimit;
   }
@@ -676,7 +676,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
     /* unlock pack */
     if ((quiet == 2) && (xd->lock != NULL)) {
       if (strcmp(xd->lock, badcrc) == 0) {
-        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "unlock Pack %d, File %s",
+        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "unlock Pack %u, File %s",
                 number_of_pack(xd), line);
         mydelete(xd->lock);
         xd->lock = NULL;
@@ -688,7 +688,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
       x = "CRC32 failed";
       if (quiet == 2) {
-        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %d, File %s",
+        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %u, File %s",
                 number_of_pack(xd), line);
         mydelete(xd->lock);
         xd->lock = mystrdup(badcrc);
@@ -861,7 +861,7 @@ void write_removed_xdcc(xdcc *xd)
   write(fd, line, len);
   len = snprintf(line, maxtextlength, "xx_size %" LLPRINTFMT "d\n", xd->st_size);
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_gets %d\n", xd->gets);
+  len = snprintf(line, maxtextlength, "xx_gets %u\n", xd->gets);
   write(fd, line, len);
   if (gdata.transferminspeed == xd->minspeed)
     len = snprintf(line, maxtextlength, "xx_mins \n");
@@ -902,7 +902,7 @@ static void u_fillwith_console2(userinput * const u)
 }
 
 static void import_pack(const char *xx_file, const char *xx_desc, const char *xx_note,
-                        int xx_gets, float xx_mins, float xx_maxs,
+                        unsigned int xx_gets, float xx_mins, float xx_maxs,
                         const char *xx_data, const char *xx_trno)
 {
   char *file;
@@ -1017,10 +1017,10 @@ void import_xdccfile(void)
   char *xx_trno = NULL;
   FILE *fin;
   float val;
-  int part;
-  int err;
-  int step = 0;
-  int xx_gets = 0;
+  unsigned int part;
+  unsigned int err;
+  unsigned int step = 0;
+  unsigned int xx_gets = 0;
   float xx_mins = 0.0;
   float xx_maxs = 0.0;
 
@@ -1194,7 +1194,7 @@ void autotrigger_rebuild(void)
 void start_md5_hash(xdcc *xd, unsigned int packnum)
 {
   ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-          "[MD5 Pack %d]: Calculating", packnum);
+          "[MD5 Pack %u]: Calculating", packnum);
 
   gdata.md5build.file_fd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (gdata.md5build.file_fd >= 0) {
@@ -1203,11 +1203,11 @@ void start_md5_hash(xdcc *xd, unsigned int packnum)
       crc32_init();
     MD5Init(&gdata.md5build.md5sum);
     if (set_socket_nonblocking(gdata.md5build.file_fd, 1) < 0) {
-      outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %d]: Couldn't Set Non-Blocking", packnum);
+      outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %u]: Couldn't Set Non-Blocking", packnum);
     }
   } else {
     outerror(OUTERROR_TYPE_WARN,
-             "[MD5 Pack %d]: Cant Access Offered File '%s': %s",
+             "[MD5 Pack %u]: Cant Access Offered File '%s': %s",
              packnum, xd->file, strerror(errno));
              gdata.md5build.file_fd = FD_UNUSED;
              check_for_file_remove(packnum);
@@ -1217,7 +1217,7 @@ void start_md5_hash(xdcc *xd, unsigned int packnum)
 void cancel_md5_hash(xdcc *xd, const char *msg)
 {
   if (gdata.md5build.xpack == xd) {
-    outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %d]: Canceled (%s)", number_of_pack(xd), msg);
+    outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %u]: Canceled (%s)", number_of_pack(xd), msg);
 
     FD_CLR(gdata.md5build.file_fd, &gdata.readset);
     close(gdata.md5build.file_fd);
@@ -1279,7 +1279,7 @@ int save_unlink(const char *path)
   char *dest;
   size_t len;
   int rc;
-  int num;
+  unsigned int num;
 
   if (gdata.trashcan_dir) {
     file = getfilename(path);

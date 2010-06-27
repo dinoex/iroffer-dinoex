@@ -588,7 +588,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsign
    if (xd->dlimit_max != 0)
      {
         snprintf(tempstr + len, maxtextlength - len,
-                 " [%d of %d DL left]",
+                 " [%u of %u DL left]",
                  xd->dlimit_used - xd->gets, xd->dlimit_max);
         len = strlen(tempstr);
      }
@@ -676,7 +676,7 @@ static void u_xdl_head(const userinput * const u) {
          }
        
        snprintf(tempstr, maxtextlength,
-                "\2**\2 %i %s \2**\2  %i of %i %s open",
+                "\2**\2 %u %s \2**\2  %u of %u %s open",
                 irlist_size(&gdata.xdccs),
                 irlist_size(&gdata.xdccs) != 1 ? "packs" : "pack",
                 a - irlist_size(&gdata.trans),
@@ -687,7 +687,7 @@ static void u_xdl_head(const userinput * const u) {
        if (gdata.slotsmax <= irlist_size(&gdata.trans))
          {
            snprintf(tempstr + len, maxtextlength - len,
-                    ", Queue: %i/%i",
+                    ", Queue: %u/%u",
                     irlist_size(&gdata.mainqueue),
                     gdata.queuesize);
            len = strlen(tempstr);
@@ -1091,7 +1091,7 @@ static void u_dcld(const userinput * const u)
     {
       y = t_print_state(tr);
       
-      u_respond(u, "network: %d: %s", tr->net, gdata.networks[tr->net].name);
+      u_respond(u, "network: %u: %s", tr->net, gdata.networks[tr->net].name);
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
@@ -1266,7 +1266,7 @@ static void u_info(const userinput * const u)
   if (group_restricted(u, xd))
     return;
   
-  u_respond(u, "Pack Info for Pack #%i:", num);
+  u_respond(u, "Pack Info for Pack #%u:", num);
   
   sendnamestr = getsendname(xd->file);
   if (u->level > 0) 
@@ -1301,7 +1301,7 @@ static void u_info(const userinput * const u)
             (ir_uint64)xd->st_dev, (ir_uint64)xd->st_ino);
     }
   
-  u_respond(u, " Gets           %d", xd->gets);
+  u_respond(u, " Gets           %u", xd->gets);
   if (xd->minspeed)
     {
       u_respond(u, " Minspeed       %1.1fKB/sec", xd->minspeed);
@@ -1343,7 +1343,7 @@ static void u_delhist(const userinput * const u)
 {
   updatecontext();
   
-  u_respond(u, "Deleted all %d lines of console history",
+  u_respond(u, "Deleted all %u lines of console history",
             irlist_size(&gdata.console_history));
   
   irlist_delete_all(&gdata.console_history);
@@ -1468,7 +1468,7 @@ static void u_chnote(const userinput * const u) {
    if (group_restricted(u, xd))
      return;
    
-   u_respond(u, "CHNOTE: [Pack %i] Old: %s New: %s",
+   u_respond(u, "CHNOTE: [Pack %u] Old: %s New: %s",
              num,xd->note,
              u->arg2 ? u->arg2e : "");
    
@@ -1506,7 +1506,7 @@ static void u_chmins(const userinput * const u) {
    if (group_restricted(u, xd))
      return;
    
-   u_respond(u, "CHMINS: [Pack %i] Old: %1.1f New: %1.1f",
+   u_respond(u, "CHMINS: [Pack %u] Old: %1.1f New: %1.1f",
              num,xd->minspeed,atof(u->arg2));
    
    xd->minspeed = gdata.transferminspeed;
@@ -1533,7 +1533,7 @@ static void u_chmaxs(const userinput * const u) {
    if (group_restricted(u, xd))
      return;
    
-   u_respond(u, "CHMAXS: [Pack %i] Old: %1.1f New: %1.1f",
+   u_respond(u, "CHMAXS: [Pack %u] Old: %1.1f New: %1.1f",
              num,xd->maxspeed,atof(u->arg2));
    
    xd->maxspeed = gdata.transfermaxspeed;
@@ -1564,7 +1564,7 @@ static void u_chgets(const userinput * const u)
   if (group_restricted(u, xd))
     return;
   
-  u_respond(u, "CHGETS: [Pack %i] Old: %d New: %d",
+  u_respond(u, "CHGETS: [Pack %u] Old: %u New: %u",
             num,xd->gets,atoi(u->arg2));
   
   xd->gets = atoi(u->arg2);
@@ -1607,7 +1607,7 @@ static void u_chatl(const userinput * const u)
           continue;
         }
       
-      u_respond(u,"DCC CHAT %d:",count);
+      u_respond(u,"DCC CHAT %u:",count);
       switch (chat->status)
         {
         case DCCCHAT_LISTENING:
@@ -1633,7 +1633,7 @@ static void u_chatl(const userinput * const u)
         case DCCCHAT_UNUSED:
         default:
           outerror(OUTERROR_TYPE_WARN_LOUD,
-                   "Unexpected dccchat state %d", chat->status);
+                   "Unexpected dccchat state %u", chat->status);
           break;
         }
       
@@ -1831,10 +1831,10 @@ static void u_botinfo(const userinput * const u) {
    for (ss=0; ss<gdata.networks_online; ss++)
      {
        char *msg;
-       u_respond(u, "network: %d: %s", ss + 1, gdata.networks[ss].name);
+       u_respond(u, "network: %u: %s", ss + 1, gdata.networks[ss].name);
        msg = mycalloc(maxtextlength);
        my_dcc_ip_show(msg, maxtextlength - 1, &(gdata.networks[ss].myip), ss);
-       u_respond(u, "DCC IP: %s NAT=%d", msg, gdata.networks[ss].usenatip);
+       u_respond(u, "DCC IP: %s NAT=%u", msg, gdata.networks[ss].usenatip);
        mydelete(msg);
        
        backup = gnetwork;
@@ -2023,7 +2023,7 @@ static void u_botinfo(const userinput * const u) {
       }
    
    if (gdata.md5build.xpack) {
-      u_respond(u, "calculating MD5/CRC32 for pack %d",
+      u_respond(u, "calculating MD5/CRC32 for pack %u",
                 number_of_pack(gdata.md5build.xpack));
       }
 
@@ -2164,7 +2164,7 @@ void u_ignore(const userinput * const u)
   if (ignore->bucket < 0)
     ignore->bucket = 0x7FFFFFF;
   
-  u_respond(u, "Ignore activated for %s which will last %i min",
+  u_respond(u, "Ignore activated for %s which will last %u min",
             u->arg2,num);
   write_statefile();
   
@@ -2217,7 +2217,7 @@ static void u_nosave(const userinput * const u) {
    
    if (u->arg1) num = atoi(u->arg1);
    num = max_minutes_waits(&gdata.noautosave, num);
-   u_respond(u, "** XDCC AutoSave has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
+   u_respond(u, "** XDCC AutoSave has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -2235,7 +2235,7 @@ static void u_nosend(const userinput * const u) {
          gdata.nosendmsg=mystrdup(u->arg2e);
       }
    num = max_minutes_waits(&gdata.nonewcons, num);
-   u_respond(u, "** XDCC Send has been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
+   u_respond(u, "** XDCC Send has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -2247,7 +2247,7 @@ static void u_nolist(const userinput * const u) {
    
    if (u->arg1) num = atoi(u->arg1);
    num = max_minutes_waits(&gdata.nolisting, num);
-   u_respond(u, "** XDCC List and PLIST have been disabled for the next %i %s", num, num!=1 ? "minutes" : "minute");
+   u_respond(u, "** XDCC List and PLIST have been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -2288,7 +2288,7 @@ static void u_msgdel(const userinput * const u)
   
   updatecontext();
   
-  u_respond(u,"msglog: deleted %d messages",
+  u_respond(u,"msglog: deleted %u messages",
             irlist_size(&gdata.msglog));
   
   while ((ml = irlist_get_head(&gdata.msglog)))
