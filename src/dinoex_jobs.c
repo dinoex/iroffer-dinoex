@@ -1290,7 +1290,7 @@ int save_unlink(const char *path)
     snprintf(dest, len, "%s/%s", gdata.trashcan_dir, file);
     num = 0;
     while (file_not_exits(dest)) {
-      snprintf(dest, len, "%s/%s.%03d", gdata.trashcan_dir, file, ++num);
+      snprintf(dest, len, "%s/%s.%03u", gdata.trashcan_dir, file, ++num);
       if (num >= 200) {
          outerror(OUTERROR_TYPE_WARN_LOUD,
                   "Cant move file '%s' to '%s': %s",

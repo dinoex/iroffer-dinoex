@@ -557,7 +557,7 @@ void u_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsign
      }
    colordesc = xd_color_description(xd);
    snprintf(tempstr, maxtextlength,
-           "\2#%-*i\2 %*ix [%s]%s %s",
+           "\2#%-*u\2 %*ux [%s]%s %s",
             l,
             i,
             s, xd->gets,
