@@ -125,7 +125,7 @@ void checktermsize(void) {
          gdata.termlines = win.ws_row;
          initscreen(0, 0);
          if (!gdata.attop) gototop();
-         tostdout("** Window Size Changed To: %ux%u\n",gdata.termcols,gdata.termlines);
+         tostdout("** Window Size Changed To: %ux%u\n", gdata.termcols, gdata.termlines);
          gotobot();
          }
       }
@@ -304,7 +304,7 @@ void parseconsole(void)
   int length;
   unsigned int linelength;
   userinput ui;
-  unsigned int i,j;
+  unsigned int i, j;
   
   updatecontext();
   

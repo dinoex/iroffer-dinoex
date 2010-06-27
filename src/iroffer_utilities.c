@@ -616,7 +616,7 @@ static void meminfo_grow(int grow)
   if (gdata.debug > 0)
     {
       if (gdata.crashing == 0)
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"growing meminfo from %u to %u",
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "growing meminfo from %u to %u",
               gdata.meminfo_depth-grow, gdata.meminfo_depth);
     }
 
