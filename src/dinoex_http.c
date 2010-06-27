@@ -712,12 +712,12 @@ static void h_write_header(http * const h, const char *header)
 }
 
 #ifdef USE_RUBY
-static int h_runruby(http * const h)
+static unsigned int h_runruby(http * const h)
 {
   const char *params;
   char *suffix;
   char *tmp;
-  int rc;
+  unsigned int rc;
 
   suffix = strrchr(h->file, '.' );
   if (suffix == NULL)

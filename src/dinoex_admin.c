@@ -1048,7 +1048,7 @@ static xdcc *a_oldest_xdcc(void)
   return old;
 }
 
-static int a_autoadd_color(void)
+static unsigned int a_autoadd_color(void)
 {
   char *last;
   char *back;
