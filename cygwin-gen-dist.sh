@@ -68,6 +68,7 @@ done
 dlldir="iroffer-dinoex-win32-${cygwin}-dll"
 mkdir "${dlldir}"
 cygcheck "${name}-win32-${cygwin}/iroffer.exe" |
+tr '\\' '/' |
 while read line
 do
 	dll="${line## }"
