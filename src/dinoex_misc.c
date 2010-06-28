@@ -255,7 +255,7 @@ void guess_end_transfers(void)
     end_lastrtime = end_remain->left;
 
   /* if we are sending more than allowed, we need to skip the difference */
-  for (i=0; i<irlist_size(&gdata.trans) - gdata.slotsmax; ++i) {
+  for (i=irlist_size(&gdata.trans); i > gdata.slotsmax; --i) {
     get_next_transfer_time();
   }
 }
