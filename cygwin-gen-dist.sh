@@ -67,16 +67,17 @@ done
 # Build DLL pack
 dlldir="iroffer-dinoex-win32-${cygwin}-dll"
 mkdir "${dlldir}"
-ldd "${name}-win32-${cygwin}/iroffer.exe" |
-while read dll dummy src offset
+cygcheck "${name}-win32-${cygwin}/iroffer.exe" |
+while read line
 do
-	case "${src}" in
-	*/system32/*|*/syswow64/*|*/SysWOW64/*)
+	dll="${line## }"
+	case "${dll}" in
+	*.exe|*/system32/*|*/syswow64/*|*/SysWOW64/*)
 		continue
 		;;
 	esac
-	echo "${dll}" "${src}"
-	cp -p "${src}" "${dlldir}/"
+	echo "${dll}"
+	cp -p "${dll}" "${dlldir}/"
 done
 if test -e /bin/7za
 then
