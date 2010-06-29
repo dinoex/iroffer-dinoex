@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+bugfix: xdcclist_grouponly (reported by Trellmor)
+  if xdcclist_grouponly is not set, do not confuse the user with
+  "XDCC LIST group" and " XDCC LIST ALL".
+
 334) RMQ, RMIQ (inspired by [M]-V)
 
   new admin commands:

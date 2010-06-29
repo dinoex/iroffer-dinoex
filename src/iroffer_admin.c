@@ -767,12 +767,15 @@ static void u_xdl_head(const userinput * const u) {
          }
        if (i > 0)
          {
-            u_respond(u, "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
-                      mynick);
+           if (gdata.xdcclist_grouponly)
+             {
+               u_respond(u, "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
+                         mynick);
             
-            if (!gdata.restrictprivlistfull)
-              u_respond(u, "\2**\2 To list all packs, type \"/MSG %s XDCC LIST ALL\" \2**\2",
-                        mynick);
+               if (!gdata.restrictprivlistfull)
+                 u_respond(u, "\2**\2 To list all packs, type \"/MSG %s XDCC LIST ALL\" \2**\2",
+                           mynick);
+            }
          }
      }
    
