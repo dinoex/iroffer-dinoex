@@ -3,8 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+bugfix: ADMIN
+  Bot did respond in a message in a channel start with ADMIN.
+
 bugfix: xdcclist_grouponly (reported by Trellmor)
-  if xdcclist_grouponly is not set, do not confuse the user with
+  If xdcclist_grouponly is not set, do not confuse the user with
   "XDCC LIST group" and " XDCC LIST ALL".
 
 334) RMQ, RMIQ (inspired by [M]-V)
