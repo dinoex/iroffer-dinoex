@@ -1160,6 +1160,10 @@ static int botonly_parse(int type, privmsginput *pi)
     mydelete(tempstr2);
     return 0;
   }
+
+  if (not_for_me(pi->dest))
+    return 1;
+
   /*----- DCC SEND/CHAT/RESUME ----- */
   if (test_ctcp(pi->msg1, "\1DCC")) {
     if (pi->msg2 == NULL)
