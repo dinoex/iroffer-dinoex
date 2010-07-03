@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: CHCOLOR
+  xdcclistfileraw wurde ignoriert.
+  versions affected: 3.21 - 3.22
+
 bugfix: ADMIN
   versions affected: 3.21 - 3.22
   Bot hat auf ADMIN im channel geantwortet.

@@ -3,7 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+bugfix: CHCOLOR
+  xdcclistfileraw was ignored.
+  versions affected: 3.21 - 3.22
+
 bugfix: ADMIN
+  versions affected: 3.21 - 3.22
   Bot did respond in a message in a channel start with ADMIN.
 
 bugfix: xdcclist_grouponly (reported by Trellmor)

@@ -43,7 +43,6 @@ char *sizestr(unsigned int spaces, off_t num);
 unsigned int isprintable(unsigned int a);
 unsigned int onlyprintable(unsigned int a);
 char *removenonprintable(char *str);
-char *removenonprintablectrl(char *str);
 char *removenonprintablefile(char *str);
 char *caps(char *str);
 unsigned int max_minutes_waits(time_t *endtime, unsigned int min);

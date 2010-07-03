@@ -1466,7 +1466,7 @@ static void xdcc_save_xml(void)
     write_string(fd, "<pack>\n");
     write_asc_int(fd, 2, "packnr", num);
     tempstr = mystrdup(xd->desc);
-    removenonprintablectrl(tempstr);
+    removenonprintable(tempstr);
     write_asc_text(fd, 2, "packname", tempstr);
     mydelete(tempstr);
     tempstr = sizestr(0, xd->st_size);
@@ -1508,7 +1508,7 @@ static void xdcc_save_xml(void)
       write_string(fd, "  <group>\n");
       write_asc_text(fd, 4, "groupname", xd->group);
       tempstr = mystrdup(xd->group_desc);
-      removenonprintablectrl(tempstr);
+      removenonprintable(tempstr);
       write_asc_text(fd, 4, "groupdesc", xd->group_desc);
       mydelete(tempstr);
       write_string(fd, "  </group>\n");

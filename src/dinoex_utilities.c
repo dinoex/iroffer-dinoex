@@ -442,53 +442,42 @@ unsigned int onlyprintable(unsigned int a)
 char *removenonprintable(char *str)
 {
   unsigned char *copy;
+  unsigned char *dest;
 
-  if (str != NULL) {
-    for (copy=(unsigned char *)str; *copy != 0; ++copy) {
-      if (*copy == 0x7FU) {
-        *copy = '.';
-        continue;
-      }
-      if (*copy >= 0x20U)
-        continue;
+  if (str == NULL)
+    return str;
 
-      switch (*copy) {
-      case 0x01U: /* ctcp */
-      case 0x02U: /* bold */
-      case 0x03U: /* color */
-      case 0x09U: /* tab */
-      case 0x0AU: /* lf */
-      case 0x0DU: /* cr */
-      case 0x0FU: /* end formatting */
-      case 0x16U: /* inverse */
-      case 0x1DU: /* italic */
-      case 0x1FU: /* underline */
-        /* good */
-        break;
-      default:
-        *copy = '.';
-        break;
-      }
+  dest = (unsigned char *)str;
+  for (copy=dest; *copy != 0; ++copy) {
+    if (*copy == 0x03U) { /* color */
+      if (!isdigit(copy[1])) continue;
+      ++copy;
+      if (!isdigit(copy[1])) continue;
+      ++copy;
+      if (copy[1] != ',') continue;
+      ++copy;
+      if (!isdigit(copy[1])) continue;
+      ++copy;
+      if (!isdigit(copy[1])) continue;
+      ++copy;
+      continue;
+    }
+    switch (*copy) {
+    case 0x01U: /* ctcp */
+    case 0x02U: /* bold */
+    case 0x09U: /* tab */
+    case 0x0FU: /* end formatting */
+    case 0x16U: /* inverse */
+    case 0x1DU: /* italic */
+    case 0x1FU: /* underline */
+    case 0x7FU:
+      break;
+    default:
+      *(dest++) = *copy;
+      break;
     }
   }
-  return str;
-}
-
-/* remove all control codes */
-char *removenonprintablectrl(char *str)
-{
-  unsigned char *copy;
-
-  if (str != NULL) {
-    for (copy=(unsigned char *)str; *copy != 0; ++copy) {
-      if (*copy == 0x7FU) {
-        *copy = ' ';
-        continue;
-      }
-      if (*copy < 0x20U)
-        *copy = ' ';
-    }
-  }
+  *dest = 0;
   return str;
 }
 
@@ -498,20 +487,10 @@ char *removenonprintablefile(char *str)
   unsigned char *copy;
   char last = '/';
 
-  if (!str)
-    return NULL;
+  if (str == NULL)
+    return str;
 
   for (copy = (unsigned char*)str; *copy != 0; ++copy) {
-    if (*copy == 0x03U) { /* color */
-      if (!isdigit(copy[1])) continue;
-      copy++;
-      if (isdigit(copy[1])) copy++;
-      if (copy[1] != ',') continue;
-      copy++;
-      if (isdigit(copy[1])) copy++;
-      if (isdigit(copy[1])) copy++;
-      continue;
-    }
     if (*copy < 0x20U) {
       *copy = '_';
       continue;
@@ -549,8 +528,8 @@ char *caps(char *str)
 {
   unsigned char *copy;
 
-  if (!str)
-    return NULL;
+  if (str == NULL)
+    return str;
 
   for (copy = (unsigned char*)str; *copy != 0; ++copy) {
     if ( islower( *copy ) )
