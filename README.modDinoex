@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
-bugfix: CHCOLOR
+bugfix: CHCOLOR (reported by Aashiqmunda)
   xdcclistfileraw was ignored.
   versions affected: 3.21 - 3.22
 
