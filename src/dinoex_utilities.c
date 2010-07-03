@@ -463,9 +463,7 @@ char *removenonprintable(char *str)
       continue;
     }
     switch (*copy) {
-    case 0x01U: /* ctcp */
     case 0x02U: /* bold */
-    case 0x09U: /* tab */
     case 0x0FU: /* end formatting */
     case 0x16U: /* inverse */
     case 0x1DU: /* italic */
