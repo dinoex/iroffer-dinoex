@@ -24,9 +24,9 @@ unsigned int queue_count_host(irlist_t *list, unsigned int *inq, unsigned int ma
 unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, const char* hostname, xdcc *xd, unsigned int pack, unsigned int inq);
 unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, const char *hostname, unsigned int pack);
 void send_from_queue(unsigned int type, unsigned int pos, char *lastnick);
-void check_idle_queue(void);
-void start_main_queue(void);
 void start_one_send(void);
 void start_sends(void);
+void check_idle_queue(void);
+void start_main_queue(void);
 
 /* End of File */
