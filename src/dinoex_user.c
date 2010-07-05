@@ -406,9 +406,8 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
     mydelete(tempstr);
     return fatal;
   }
-  if ((irlist_size(&gdata.trans) >= MAXTRANS) || (gdata.holdqueue) || (gnetwork->botstatus != BOTSTATUS_JOINED) ||
-      (((xd->st_size < gdata.smallfilebypass) && (gdata.slotsmax >= MAXTRANS)) ||
-       ((xd->st_size >= gdata.smallfilebypass) && (gdata.slotsmax - irlist_size(&gdata.trans) <= 0)))) {
+  if ((irlist_size(&gdata.trans) >= gdata.maxtrans) || (gdata.holdqueue) || (gnetwork->botstatus != BOTSTATUS_JOINED) ||
+      ((xd->st_size >= gdata.smallfilebypass) && (irlist_size(&gdata.trans) >= gdata.slotsmax))) {
     tempstr = mycalloc(maxtextlength);
     fatal = addtomainqueue(bad, tempstr, pi->nick, pi->hostname, pack);
     notice(pi->nick, "** All Slots Full, %s", tempstr);

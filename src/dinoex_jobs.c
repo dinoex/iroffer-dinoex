@@ -1423,6 +1423,7 @@ static void xdcc_save_xml(void)
   unsigned int num;
   unsigned int groups;
   unsigned int ss;
+  unsigned int slots;
 
   updatecontext();
 
@@ -1518,7 +1519,11 @@ static void xdcc_save_xml(void)
 
   write_string(fd, "<sysinfo>\n");
   write_string(fd, "  <slots>\n");
-  write_asc_int(fd, 4, "slotsfree", gdata.slotsmax - irlist_size(&gdata.trans));
+  if (irlist_size(&gdata.trans) < gdata.slotsmax)
+    slots = gdata.slotsmax - irlist_size(&gdata.trans);
+  else
+    slots = 0;
+  write_asc_int(fd, 4, "slotsfree", slots);
   write_asc_int(fd, 4, "slotsmax", gdata.slotsmax);
   write_string(fd, "  </slots>\n");
 

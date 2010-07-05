@@ -1575,7 +1575,7 @@ void a_slotsmax(const userinput * const u)
 
   if (u->arg1) {
     val = atoi(u->arg1);
-    gdata.slotsmax = between(1, val, MAXTRANS);
+    gdata.slotsmax = between(1, val, gdata.maxtrans);
   }
   a_respond(u, "SLOTSMAX now %u", gdata.slotsmax);
 }
@@ -4304,7 +4304,6 @@ void a_identify(const userinput * const u)
 void a_holdqueue(const userinput * const u)
 {
   unsigned int val;
-  unsigned int i;
 
   updatecontext();
 
@@ -4317,13 +4316,7 @@ void a_holdqueue(const userinput * const u)
   if (val != 0)
     return;
 
-  for (i=0; i<100; ++i) {
-    if (!gdata.exiting &&
-        irlist_size(&gdata.mainqueue) &&
-        (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax))) {
-      send_from_queue(0, 0, NULL);
-    }
-  }
+  start_sends();
 }
 
 void a_dump(const userinput * const u)
@@ -4493,11 +4486,7 @@ void a_queue(const userinput * const u)
   mydelete(tempstr);
   gnetwork = backup;
 
-  if (!gdata.exiting &&
-      irlist_size(&gdata.mainqueue) &&
-      (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax))) {
-    send_from_queue(0, 0, NULL);
-  }
+  start_one_send();
 }
 
 static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned int num, unsigned int net)
@@ -4602,12 +4591,7 @@ void a_iqueue(const userinput * const u)
     return;
   }
 
-  if (!gdata.exiting &&
-       irlist_size(&gdata.idlequeue) &&
-       (irlist_size(&gdata.trans) < min2(MAXTRANS, gdata.slotsmax)))
-     {
-       send_from_queue(0, 0, NULL);
-  }
+  start_one_send();
 }
 
 static void a_announce_msg(const userinput * const u, const char *match, unsigned int num, const char *msg)

@@ -26,6 +26,7 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
 void send_from_queue(unsigned int type, unsigned int pos, char *lastnick);
 void check_idle_queue(void);
 void start_main_queue(void);
+void start_one_send(void);
 void start_sends(void);
 
 /* End of File */

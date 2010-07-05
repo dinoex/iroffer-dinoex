@@ -1716,11 +1716,12 @@ void startupiroffer(void) {
        outerror(OUTERROR_TYPE_CRASH, "Unable to read fd limit: %s", strerror(errno));
      }
    
-   if (MAXTRANS < 1)
+   if (gdata.max_fds_from_rlimit < (RESERVED_FDS + RESERVED_FDS))
      {
        outerror(OUTERROR_TYPE_CRASH, "fd limit of %u is too small",
                 gdata.max_fds_from_rlimit);
      }
+   gdata.maxtrans = (((gdata.max_fds_from_rlimit) - RESERVED_FDS)/2);
    
    if (gdata.adjustcore)
      {
