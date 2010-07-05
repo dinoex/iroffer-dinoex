@@ -1662,7 +1662,6 @@ static void u_rehash(const userinput * const u) {
    
    /* other variables */
    char *templine = mycalloc(maxtextlength);
-   int i;
    unsigned int ss;
    xdcc *xd;
    
@@ -1785,15 +1784,7 @@ static void u_rehash(const userinput * const u) {
    
    reverify_restrictsend();
    
-   for (i=0; i<100; i++)
-     {
-       if (!gdata.exiting &&
-           irlist_size(&gdata.mainqueue) &&
-           (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
-         {
-           send_from_queue(0, 0, NULL);
-         }
-     }
+   start_sends();
    
    mydelete(templine);
 
@@ -2447,7 +2438,7 @@ static void u_qsend(const userinput * const u)
       return;
     }
   
-  if (irlist_size(&gdata.trans) >= MAXTRANS)
+  if (irlist_size(&gdata.trans) >= gdata.maxtrans)
     {
       u_respond(u,"Too many transfers");
       return;

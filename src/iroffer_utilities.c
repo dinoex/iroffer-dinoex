@@ -1235,6 +1235,7 @@ void dumpgdata(void)
   gdata_print_int(next_tr_id);
   gdata_print_number("%" LLPRINTFMT "d", max_file_size);
 
+  gdata_print_uint(maxtrans);
   gdata_print_uint(max_fds_from_rlimit);
 
   gdata_print_int(logfd);
@@ -2164,7 +2165,7 @@ unsigned int get_next_tr_id(void)
   while(1)
     {
       ++(gdata.next_tr_id);
-      gdata.next_tr_id %= max2((MAXTRANS * 3) / 2, 1000);
+      gdata.next_tr_id %= max2((gdata.maxtrans * 3) / 2, 1000);
       gdata.next_tr_id = max2(1,gdata.next_tr_id);
       tr = does_tr_id_exist(gdata.next_tr_id);
       if (!tr)
@@ -2235,7 +2236,7 @@ int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa)
   ir_uint16 port;
   SIGNEDSOCK int addrlen;
   
-  max = (MAXTRANS+irlist_size(&gdata.listen_ports));
+  max = (gdata.maxtrans + irlist_size(&gdata.listen_ports));
   addrlen = (sa->sa.sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   
   for (retry = 0; retry < max; retry++)

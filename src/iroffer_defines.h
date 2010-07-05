@@ -47,11 +47,6 @@
 
 #define  RESERVED_FDS (7)
 
-#define  ACTUAL_MAXSETSIZE (gdata.max_fds_from_rlimit)
-
-#define  MAXTRANS  ((unsigned int)((ACTUAL_MAXSETSIZE) - RESERVED_FDS)/2)
-
-
 /*       max size for xdcc list queue */
 #define  MAXXLQUE  5U
 /*       max config files */

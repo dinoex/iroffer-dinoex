@@ -1513,7 +1513,7 @@ static void c_slotsmax(char *var)
   unsigned int ival;
 
   ival = atoi(var);
-  gdata.slotsmax = between(1, ival, MAXTRANS);
+  gdata.slotsmax = between(1, ival, gdata.maxtrans);
   if (gdata.slotsmax != ival) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld unable to have slotsmax of %u, using %u instead",

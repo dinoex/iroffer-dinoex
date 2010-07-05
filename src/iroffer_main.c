@@ -904,7 +904,7 @@ static void mainloop (void) {
               
               if (!gdata.exiting &&
                   irlist_size(&gdata.mainqueue) &&
-                  (irlist_size(&gdata.trans) < min2(MAXTRANS,gdata.slotsmax)))
+                  (irlist_size(&gdata.trans) < gdata.slotsmax))
                 {
                   check_idle_queue();
                   send_from_queue(0, 0, trnick);
@@ -1350,7 +1350,7 @@ static void mainloop (void) {
          if ((xdccsent < (unsigned)gdata.lowbdwth) &&
              !gdata.exiting &&
              irlist_size(&gdata.mainqueue) &&
-             (irlist_size(&gdata.trans) < MAXTRANS))
+             (irlist_size(&gdata.trans) < gdata.maxtrans))
            {
              check_idle_queue();
              send_from_queue(1, 0, NULL);
