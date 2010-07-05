@@ -71,6 +71,7 @@ Short Term Features:
   1438  more announce types for plist
   1442  queue set of packs.
   1469  nocolorannounce
+  1882  auto upload
 
 Long Term Features:
   1013  notify adminnick when autoadd
@@ -138,6 +139,7 @@ Long Term Features:
   1458  show list latest 5 packs on top
   1459  transfer new files to another bot
   1477  batch announce
+  1483  autoaddann pattern
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
