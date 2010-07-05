@@ -476,6 +476,26 @@ void send_from_queue(unsigned int type, unsigned int pos, char *lastnick)
   }
 }
 
+/* start sending one queued pack */
+void start_one_send(void)
+{
+  if (!gdata.exiting &&
+      irlist_size(&gdata.mainqueue) &&
+      (irlist_size(&gdata.trans) < gdata.slotsmax)) {
+    send_from_queue(0, 0, NULL);
+  }
+}
+
+/* start sending the queued packs */
+void start_sends(void)
+{
+  unsigned int i;
+
+  for (i=0; i<gdata.slotsmax; ++i) {
+    start_one_send();
+  }
+}
+
 /* check idle queue and move one entry into the main queue */
 void check_idle_queue(void)
 {
@@ -550,10 +570,7 @@ void check_idle_queue(void)
   *tempq = *pq;
   irlist_delete(&gdata.idlequeue, pq);
 
-  if (irlist_size(&gdata.mainqueue) &&
-      (irlist_size(&gdata.trans) < gdata.slotsmax)) {
-    send_from_queue(0, 0, NULL);
-  }
+  start_one_send();
 }
 
 /* fill mainqueue with data from idle queue on start */
@@ -563,26 +580,6 @@ void start_main_queue(void)
 
   for (i=0; i<gdata.queuesize; ++i) {
     check_idle_queue();
-  }
-}
-
-/* start sending one queued pack */
-void start_one_send(void)
-{
-  if (!gdata.exiting &&
-      irlist_size(&gdata.mainqueue) &&
-      (irlist_size(&gdata.trans) < gdata.slotsmax)) {
-    send_from_queue(0, 0, NULL);
-  }
-}
-
-/* start sendding the queued packs */
-void start_sends(void)
-{
-  unsigned int i;
-
-  for (i=0; i<gdata.slotsmax; ++i) {
-    start_one_send();
   }
 }
 
