@@ -788,9 +788,6 @@ elif $cctype -DTTPRINTFMT=\"lli\" config.temp.c $libs -o config.temp $WARNS $WER
 elif $cctype -DTTPRINTFMT=\"li\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "li"
  echo "#define TTPRINTFMT \"li\"" >> src/iroffer_config.h
-elif $cctype -DTTPRINTFMT=\"u\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "1410065408" ]; then
- echo "u"
- echo "#define TTPRINTFMT \"u\"" >> src/iroffer_config.h
 elif $cctype -DTTPRINTFMT=\"i\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "1410065408" ]; then
  echo "i"
  echo "#define TTPRINTFMT \"i\"" >> src/iroffer_config.h
