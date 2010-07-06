@@ -73,7 +73,7 @@ void queue_reverify_restrictsend(irlist_t *list)
       pq = irlist_get_next(pq);
       continue;
     }
-    if ((gdata.curtime - pq->restrictsend_bad) < gdata.restrictsend_timeout) {
+    if (gdata.curtime < (pq->restrictsend_bad + gdata.restrictsend_timeout)) {
       pq = irlist_get_next(pq);
       continue;
     }
