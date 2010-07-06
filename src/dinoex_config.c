@@ -125,6 +125,7 @@ static config_bool_typ config_parse_bool[] = {
 #endif /* WITHOUT_BLOWFISH */
 {"quietmode",              &gdata.quietmode,               0 },
 {"removelostfiles",        &gdata.removelostfiles,         0 },
+{"requeue_sends",          &gdata.requeue_sends,           0 },
 {"respondtochannellist",   &gdata.respondtochannellist,    0 },
 {"respondtochannelxdcc",   &gdata.respondtochannelxdcc,    0 },
 {"restrictlist",           &gdata.restrictlist,            0 },

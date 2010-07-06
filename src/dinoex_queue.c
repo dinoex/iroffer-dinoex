@@ -583,4 +583,25 @@ void start_main_queue(void)
   }
 }
 
+/* put transfer back into queue */
+ir_pqueue *requeue(transfer *tr, ir_pqueue *old)
+{
+  ir_pqueue *tempq;
+ 
+  tempq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
+  tempq->queuedtime = tr->connecttimems / 1000;
+  tempq->nick = mystrdup(tr->nick);
+  tempq->hostname = mystrdup(tr->hostname);
+  tempq->xpack = tr->xpack;
+  tempq->net = tr->net;
+  irlist_remove(&gdata.mainqueue, tempq);
+
+  if (old == NULL) {
+    irlist_insert_head(&gdata.mainqueue, tempq);
+  } else {
+    irlist_insert_after(&gdata.mainqueue, tempq, old);
+  }
+  return tempq;
+}
+
 /* End of File */
