@@ -304,7 +304,7 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
     if (gdata.idlequeuesize > 0 )
       irlist_delete(&gdata.idlequeue, pq);
     else
-       irlist_delete(&gdata.mainqueue, pq);
+      irlist_delete(&gdata.mainqueue, pq);
   }
 }
 
