@@ -787,6 +787,7 @@ void dumpcontext(void)
 #define gdata_print_uint(name)  gdata_print_number("%u", name)
 #define gdata_print_long(name)  gdata_print_number("%ld", name)
 #define gdata_print_float(name) gdata_print_number("%.5f", name)
+#define gdata_print_time(name)  gdata_print_number("%" TTPRINTFMT, name)
 
 
 #define gdata_print_number_array(format,name) \
@@ -842,6 +843,7 @@ void dumpcontext(void)
 #define gdata_iter_print_int(name)   gdata_iter_print_number("%d", name)
 #define gdata_iter_print_uint(name)  gdata_iter_print_number("%u", name)
 #define gdata_iter_print_long(name)  gdata_iter_print_number("%ld", name)
+#define gdata_iter_print_time(name)  gdata_iter_print_number("%" TTPRINTFMT, name)
 
 
 
@@ -864,7 +866,7 @@ void dumpgdata(void)
       dump_line("  : lastmodified=%ld", (long)gdata.configtime[ii]);
     }
   gdata_print_string(osstring);
-  gdata_print_long(startuptime);
+  gdata_print_time(startuptime);
   gdata_print_int(background);
   gdata_print_number_cast("%d",logrotate,int);
   gdata_print_number_cast("%d",last_logrotate,int);
@@ -1060,15 +1062,15 @@ void dumpgdata(void)
       gdata_print_number_cast("%d", networks[ss].serverstatus, int);
       gdata_print_number_cast("%d", networks[ss].botstatus, int);
       gdata_print_number_cast("%d", networks[ss].lag_method, int);
-      gdata_print_long(networks[ss].connecttime);
-      gdata_print_long(networks[ss].lastservercontact);
-      gdata_print_long(networks[ss].lastnotify);
-      gdata_print_long(networks[ss].lastping);
+      gdata_print_time(networks[ss].connecttime);
+      gdata_print_time(networks[ss].lastservercontact);
+      gdata_print_time(networks[ss].lastnotify);
+      gdata_print_time(networks[ss].lastping);
       gdata_print_int(networks[ss].slow_privmsg);
-      gdata_print_long(networks[ss].lastslow);
+      gdata_print_time(networks[ss].lastslow);
       gdata_print_long(networks[ss].lag);
-      gdata_print_long(networks[ss].next_identify);
-      gdata_print_long(networks[ss].next_restrict);
+      gdata_print_time(networks[ss].next_identify);
+      gdata_print_time(networks[ss].next_restrict);
   
       gdata_irlist_iter_start(networks[ss].serverq_fast, char);
       gdata_iter_as_print_string;
@@ -1155,9 +1157,9 @@ void dumpgdata(void)
       gdata_iter_print_int(noannounce);
       gdata_iter_print_int(notrigger);
       gdata_iter_print_int(waitjoin);
-      gdata_iter_print_long(nextann);
-      gdata_iter_print_long(nextjoin);
-      gdata_iter_print_long(lastjoin);
+      gdata_iter_print_time(nextann);
+      gdata_iter_print_time(nextjoin);
+      gdata_iter_print_time(lastjoin);
   /* members */
   gdata_irlist_iter_end;
   

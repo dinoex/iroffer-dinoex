@@ -2376,7 +2376,7 @@ static void u_memstat(const userinput * const u)
         {
           if (meminfo[i].ptr != NULL)
             {
-              u_respond(u, "%3i %3i | 0x%8.8lX | %6iB | %7lis | %s:%d %s()",
+              u_respond(u, "%3i %3i | 0x%8.8lX | %6iB | %7" TTPRINTFMT "s | %s:%d %s()",
                         i / meminfo_depth,
                         i % meminfo_depth,
                         (long)meminfo[i].ptr,
