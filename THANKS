@@ -603,7 +603,7 @@ Hamikzo
 	suggesting "noannounce" for networks
 
 isengaurd
-	reporting "linux-sendfile" bug
+reporting "linux-sendfile" bug
 
 PastisD
 	suggesting "xdccxmlfile" with nicknames
@@ -622,6 +622,7 @@ Loke_AF
 	reporting crash with concurrent transfers
 	reporting "XDCC BATCH" bug
 	reporting "AUTOADD" problem with '//'.
+	suggesting "requeue_sends
 
 Nouhime
 	reporting "http_search" bug.
@@ -646,6 +647,7 @@ k1ll0r-chan
 
 Xarda
 	suggesting "download_completed_msg"
+	suggesting "requeue_sends"
 
 Erdrick
 	suggesting "DISKFREE"

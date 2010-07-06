@@ -28,5 +28,6 @@ void start_one_send(void);
 void start_sends(void);
 void check_idle_queue(void);
 void start_main_queue(void);
+ir_pqueue *requeue(transfer *tr, ir_pqueue *old);
 
 /* End of File */

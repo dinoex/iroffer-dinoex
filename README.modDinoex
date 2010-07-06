@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+335) requeue_sends (inspired by Loke_AF, Xarda)
+  When the bot shutdowns, sends are aborted. With this option set, sends
+  are saved with the queued items, so transfers might resume on restart.
+
 bugfix: CHCOLOR (reported by Aashiqmunda)
   xdcclistfileraw was ignored.
   versions affected: 3.21 - 3.22

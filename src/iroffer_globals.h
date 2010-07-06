@@ -226,7 +226,7 @@ unsigned int respondtochannelxdcc;
 unsigned int respondtochannellist;
 unsigned int quietmode;
 unsigned int no_natural_sort;
-unsigned int reserved_bool;
+unsigned int requeue_sends;
 
 context_t context_log[MAXCONTEXTS];
 ir_boutput_t stdout_buffer;

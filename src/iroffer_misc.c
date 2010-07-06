@@ -1083,6 +1083,7 @@ void shutdowniroffer(void) {
    char *tempstr2;
    char *msg;
    upload *ul;
+   ir_pqueue *old;
    transfer *tr;
    dccchat_t *chat;
    gnetwork_t *backup;
@@ -1092,14 +1093,14 @@ void shutdowniroffer(void) {
 
    backup = gnetwork;
    
-   if ( SAVEQUIT )
-      write_statefile();
-   
    if (gdata.exiting || has_closed_servers()) {
       if (gdata.exiting)
          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Shutting Down (FORCED)");
       else
          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Shutting Down");
+      
+      if ( SAVEQUIT )
+         write_statefile();
       
       for (chat = irlist_get_head(&gdata.dccchats);
            chat;
@@ -1110,7 +1111,7 @@ void shutdowniroffer(void) {
         }
       
       mylog(CALLTYPE_NORMAL,"iroffer exited (shutdown)\n\n");
-
+   
       exit_iroffer(0);
       }
    
@@ -1124,11 +1125,14 @@ void shutdowniroffer(void) {
        clean_send_buffers();
      }
    
+   old = NULL;
    /* close connections */
    tr = irlist_get_head(&gdata.trans);
    while(tr)
      {
        gnetwork = &(gdata.networks[tr->net]);
+       if (gdata.requeue_sends)
+         old = requeue(tr, old);
        t_closeconn(tr, "Server Shutting Down. (Resume Supported)", 0);
        tr = irlist_get_next(tr);
      }
@@ -1141,6 +1145,9 @@ void shutdowniroffer(void) {
        l_closeconn(ul, "Server Shutting Down. (Resume Supported)", 0);
        ul = irlist_get_next(ul);
      }
+   
+   if ( SAVEQUIT )
+      write_statefile();
    
    /* quit */
    if (has_closed_servers() == 0)
