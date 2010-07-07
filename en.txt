@@ -492,7 +492,7 @@
 506 "list"
 507 "iroffer heap details:"
 508 "     id |    address |    size |     when | where"
-509 "%3i %3i | 0x%8.8lX | %6iB | %7lis | %s:%d %s()"
+509 "%3i %3i | 0x%8.8lX | %6iB | %7"
 510 "iroffer memmap details:"
 511 " pack |                 location |    address | references"
 512 " %4i | 0x%8.8"
@@ -2381,3 +2381,4 @@
 2690 "http_forbidden"
 2691 "GET %s HTTP/1.1"
 2692 "requeue_sends"
+2693 "s | %s:%d %s()"
