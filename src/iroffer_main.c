@@ -97,7 +97,7 @@ static void mainloop (void) {
    static int changequartersec, changesec, changemin, changehour;
    static time_t lasttime, lastmin, lasthour, last4sec, last5sec, last20sec;
    static time_t lastautoadd;
-   static long last3min, last2min, lastignoredec, lastperiodicmsg;
+   static time_t last3min, last2min, lastignoredec, lastperiodicmsg;
    static int first_loop = 1;
    static ir_uint64 last250ms;
 
@@ -571,7 +571,7 @@ static void mainloop (void) {
       
       if (changesec && gnetwork->serverstatus == SERVERSTATUS_RESOLVING)
         {
-          unsigned int timeout;
+          int timeout;
           timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
           
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
@@ -585,7 +585,7 @@ static void mainloop (void) {
       
       if (changesec && ((gnetwork->serverstatus == SERVERSTATUS_TRYING) || (gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE)))
         {
-          unsigned int timeout;
+          int timeout;
           timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
           
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
@@ -1068,7 +1068,7 @@ static void mainloop (void) {
         }
       
       /*----- gdata.autoignore_threshold seconds ----- */
-      if (changesec && (gdata.curtime - lastignoredec > gdata.autoignore_threshold))
+      if (changesec && (gdata.curtime > lastignoredec + gdata.autoignore_threshold))
         {
           igninfo *ignore;
           
@@ -1099,7 +1099,7 @@ static void mainloop (void) {
         }
       
       /*----- periodicmsg_time seconds ----- */
-      if (changesec && (gdata.curtime - lastperiodicmsg > gdata.periodicmsg_time*60)) {
+      if (changesec && (gdata.curtime > lastperiodicmsg + gdata.periodicmsg_time*60)) {
          lastperiodicmsg = gdata.curtime;
          
          for (ss=0; ss<gdata.networks_online; ss++) {
@@ -1126,7 +1126,7 @@ static void mainloop (void) {
            if (gdata.needsshutdown)
              continue;
          if ((gnetwork->serverstatus == SERVERSTATUS_CONNECTED) &&
-             (gdata.curtime - gnetwork->lastservercontact > SRVRTOUT)) {
+             (gdata.curtime > gnetwork->lastservercontact + SRVRTOUT)) {
             if (gnetwork->servertime < 3)
               {
                 const char *servname = gnetwork->curserveractualname ? gnetwork->curserveractualname : gnetwork->curserver.hostname;
@@ -1363,7 +1363,7 @@ static void mainloop (void) {
         gnetwork = &(gdata.networks[ss]);
       /*----- queue notify ----- */
       if (changesec && gdata.notifytime && (!gdata.quietmode) &&
-          (gdata.curtime - gnetwork->lastnotify > (gdata.notifytime*60)))
+          (gdata.curtime > gnetwork->lastnotify + (gdata.notifytime*60)))
         {
          gnetwork->lastnotify = gdata.curtime;
          
@@ -1392,7 +1392,7 @@ static void mainloop (void) {
       updatecontext();
       /*----- log stats / remote admin stats ----- */
       if ( gdata.logstats && changesec && gdata.logfile &&
-           (gdata.curtime - last2min >= gdata.status_time_dcc_chat))
+           (gdata.curtime >= last2min + gdata.status_time_dcc_chat))
         {
           last2min = gdata.curtime;
           logstat();
@@ -1658,7 +1658,7 @@ static void mainloop (void) {
       
       if (gdata.autoadd_time > 0)
         {
-          if (changesec && (gdata.curtime - lastautoadd > gdata.autoadd_time))
+          if (changesec && (gdata.curtime > lastautoadd + gdata.autoadd_time))
             {
               lastautoadd = gdata.curtime;
               autoadd_all();

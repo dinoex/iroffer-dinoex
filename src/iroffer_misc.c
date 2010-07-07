@@ -2016,7 +2016,7 @@ void notifybandwidthtrans(void)
         continue;
       if (!tr->nomax &&
           (tr->maxspeed > 0) &&
-          (gdata.curtime-tr->con.connecttime > MIN_TL) &&
+          (gdata.curtime > tr->con.connecttime + MIN_TL) &&
           (tr->lastspeed*10 > tr->maxspeed*9))
         {
           /* send if over 90% */
@@ -2172,7 +2172,7 @@ void reverify_restrictsend(void)
                   notice(tr->nick, "You are no longer on a known channel");
                 }
             }
-          else if ((gdata.curtime - tr->restrictsend_bad) >= gdata.restrictsend_timeout)
+          else if (gdata.curtime >= (tr->restrictsend_bad + gdata.restrictsend_timeout))
             {
               t_closeconn(tr, "You are no longer on a known channel", 0);
             }
