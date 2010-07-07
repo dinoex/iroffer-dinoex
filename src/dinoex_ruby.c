@@ -66,7 +66,7 @@ static void iroffer_ruby_errro(int error)
   VALUE inclass;
   VALUE message;
   VALUE ary;
-  unsigned int c;
+  long c;
 
   if (error == 0)
     return;

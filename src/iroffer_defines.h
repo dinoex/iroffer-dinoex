@@ -56,11 +56,11 @@
 /*       Max context log */
 #define  MAXCONTEXTS 300U
 /*       Server Connection Timeout In Seconds */
-#define  CTIMEOUT  5U
+#define  CTIMEOUT  5
 /*       Server Connection Timeout Backoff In Seconds */
 #define  CBKTIMEOUT 2U
 /*       How Long to Wait Until We Giveup On A Non-responding Server */
-#define  SRVRTOUT  240U
+#define  SRVRTOUT  240
 
 #define  XDCC_SENT_SIZE 120U
 #define  INAMNT_SIZE 10U
@@ -76,7 +76,7 @@
 /*       weight for speed calcualtion in dcl ongoing */
 #define  DCL_SPDW_O  0.9
 /*       time until minspeed checking becomes active */
-#define  MIN_TL    60U
+#define  MIN_TL    60
 
 /*       minimum transfer size */
 #define  TXSIZE 1460    /* max ethernet size tcp payload */
@@ -89,9 +89,6 @@
 /* how large of a mmap to do at a time, MUST BE POWER OF 2! */
 #define IR_MMAP_SIZE (512*1024)
 #endif
-
-/*       notify level for server queue */
-#define  srvqnotify  60U
 
 /*       excess flood protection */
 #define  EXCESS_BUCKET_MAX    600    /* max burst size */
@@ -120,7 +117,7 @@
 #define  maxtextlength 512
 #define INPUT_BUFFER_LENGTH 2048U
 
-#define LISTEN_PORT_REUSE_TIME (30*60U) /* 30 minutes */
+#define LISTEN_PORT_REUSE_TIME (30*60) /* 30 minutes */
 
 /* type definitions for igninfo flags */
 #define IGN_MANUAL      1U
