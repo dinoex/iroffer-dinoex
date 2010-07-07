@@ -779,20 +779,14 @@ main (int argc, char **argv)
     exit(0);
   }
 " > config.temp.c
-if $cctype -DTTPRINTFMT=\"Li\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
- echo "Li"
- echo "#define TTPRINTFMT \"Li\"" >> src/iroffer_config.h
-elif $cctype -DTTPRINTFMT=\"lli\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
- echo "lli"
- echo "#define TTPRINTFMT \"lli\"" >> src/iroffer_config.h
-elif $cctype -DTTPRINTFMT=\"li\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
+if $cctype -DTTPRINTFMT=\"li\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "li"
  echo "#define TTPRINTFMT \"li\"" >> src/iroffer_config.h
 elif $cctype -DTTPRINTFMT=\"i\" config.temp.c $libs -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS && [ "`./config.temp`" = "1410065408" ]; then
  echo "i"
  echo "#define TTPRINTFMT \"i\"" >> src/iroffer_config.h
 else
- echo "Unknown. ***ERROR***: neither lli, li, Li, u or i worked."
+ echo "Unknown. ***ERROR***: neither li or i worked."
  echo "#define TTPRINTFMT \"\"" >> src/iroffer_config.h
  waserror
 fi
