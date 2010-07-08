@@ -661,3 +661,6 @@ lailoken
 Trellmor
 	reporting "xdcclist_grouponly" verbosity
 
+praya
+	bugfix "xdccxmlfile" transfereddaily
+
