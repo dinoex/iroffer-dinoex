@@ -648,6 +648,7 @@ k1ll0r-chan
 Xarda
 	suggesting "download_completed_msg"
 	suggesting "requeue_sends"
+	testing time_t on Suse Linux
 
 Erdrick
 	suggesting "DISKFREE"
