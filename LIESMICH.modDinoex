@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: xdccxmlfile
+  Das XML war nicht sauber, transfereddaily and änliche Werte können Sonderzeichen haben.
+
 335) requeue_sends
   Beim "shutdown" des Bots werden laufenden Transfers abgebrochen. Ist
   diese Option aktivuert, werden die Transfers in die Queue gesichert.

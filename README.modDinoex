@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+bugfix: xdccxmlfile (submitted by praya)
+  The XML was not well-formed for transfereddaily an more.
+
 335) requeue_sends (inspired by Loke_AF, Xarda)
   When the bot shutdowns, sends are aborted. With this option set, sends
   are saved with the queued items, so transfers might resume on restart.
