@@ -69,7 +69,8 @@ bugfix: SHUTDOWN
 
 bugfix: AUTOADD
   versions affected: 3.22
-  Wenn die Dateinahmen doppelte Trennzeichen "/" enthalten,
+  Wenn die Dateinahmen doppelte Trennzeichen enthalten,
+  z.B.: "//",  "/./" oder "/../", dann
   kann der Bot mit dem Fehler "To many open files" abbrechen.
 
 Ab Version 3.22:

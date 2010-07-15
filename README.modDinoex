@@ -67,6 +67,7 @@ bugfix: SHUTDOWN
 bugfix: AUTOADD
   versions affected: 3.22
   If you have filenames with multiple directory separators,
+  e.G. "//",  "/./" or "/../" then the
   Bot could stop working with "To many open files".
 
 With Version 3.22:
