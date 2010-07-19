@@ -277,7 +277,7 @@ void t_transfersome (transfer * const t)
                        &offset,
                        0);
           
-          if (jj < 0 && ((errno == ENOSYS) || (errno == EOVERFLOW)))
+          if (jj < 0 && ((errno == ENOSYS) || (errno == EOPNOTSUPP)))
             {
               /* sendfile doesn't work on this system, fall back */
               outerror(OUTERROR_TYPE_WARN, "%s transfer method does not work on this system, falling back to next available method", "freebsd-sendfile");
