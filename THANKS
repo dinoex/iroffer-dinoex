@@ -603,7 +603,7 @@ Hamikzo
 	suggesting "noannounce" for networks
 
 isengaurd
-reporting "linux-sendfile" bug
+	reporting "linux-sendfile" bug
 
 PastisD
 	suggesting "xdccxmlfile" with nicknames
@@ -664,4 +664,7 @@ Trellmor
 
 praya
 	bugfix "xdccxmlfile" transfereddaily
+
+SamKook
+	reporting "freebsd-sendfile" bug
 

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: transfermethod "freebsd-sendfile"
+  Benutze normales Lesen/Screiben wenn sendfile nicht startet.
+
 bugfix: xdccxmlfile
   Das XML war nicht sauber, transfereddaily and änliche Werte können Sonderzeichen haben.
 

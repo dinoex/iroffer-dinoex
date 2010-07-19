@@ -245,7 +245,7 @@ void t_transfersome (transfer * const t)
           if (howmuch < 0 && ((errno == ENOSYS) || (errno == EOVERFLOW)))
             {
               /* sendfile doesn't work on this system, fall back */
-              outerror(OUTERROR_TYPE_WARN, "linux-sendfile transfer method does not work on this system, falling back to next available method");
+              outerror(OUTERROR_TYPE_WARN, "%s transfer method does not work on this system, falling back to next available method", "linux-sendfile");
               gdata.transfermethod++;
               return;
             }
@@ -277,7 +277,14 @@ void t_transfersome (transfer * const t)
                        &offset,
                        0);
           
-          if ((jj < 0) && (errno != EAGAIN))
+          if (jj < 0 && ((errno == ENOSYS) || (errno == EOVERFLOW)))
+            {
+              /* sendfile doesn't work on this system, fall back */
+              outerror(OUTERROR_TYPE_WARN, "%s transfer method does not work on this system, falling back to next available method", "freebsd-sendfile");
+              gdata.transfermethod++;
+              return;
+            }
+          else if ((jj < 0) && (errno != EAGAIN))
             {
               t_closeconn(t,"Unable to transfer data",errno);
               return;
@@ -409,7 +416,7 @@ void t_transfersome (transfer * const t)
                       if (errno == ENOMEM)
                         {
                           /* mmap doesn't work on this system, fall back */
-                          outerror(OUTERROR_TYPE_WARN, "mmap transfer method does not work on this system, falling back to next available method");
+                          outerror(OUTERROR_TYPE_WARN, "%s transfer method does not work on this system, falling back to next available method", "mmap");
                           gdata.transfermethod++;
                         }
                       else
