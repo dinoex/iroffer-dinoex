@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+bugfix: transfermethod "freebsd-sendfile" (reported by SamKook)
+  Fall back on plain read/write if sendfile aborts.
+
 bugfix: xdccxmlfile (submitted by praya)
   The XML was not well-formed for transfereddaily an more.
 
