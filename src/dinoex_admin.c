@@ -1291,7 +1291,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
   xd->color = a_autoadd_color();
   write_files();
 #ifdef USE_RUBY
-   if (do_myruby_added(xd->file, n))
+   if (do_myruby_added(xd->file, n) == 0)
      return xd;
 #endif /* USE_RUBY */
 

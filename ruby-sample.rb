@@ -76,6 +76,7 @@ class IrofferEvent
     text << desc
     text << "\015" # end color
     command2( "CHNOTE", added_pack.to_s, text )
+    return false # do not send anounce
   end
 end
 

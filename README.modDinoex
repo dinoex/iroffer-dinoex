@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.23:
 ------------------
 
+bugfix: ruby_script (reported by Zir0h)
+  Method "on_added" did not announce on true.
+
 bugfix: transfermethod "freebsd-sendfile" (reported by SamKook)
   Fall back on plain read/write if sendfile aborts.
 

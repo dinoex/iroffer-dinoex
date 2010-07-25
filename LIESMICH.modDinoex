@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.23:
 ----------------
 
+bugfix: ruby_script
+  Methode "on_added" erzeugte keinen Announces mit true.
+
 bugfix: transfermethod "freebsd-sendfile"
   Benutze normales Lesen/Screiben wenn sendfile nicht startet.
 
