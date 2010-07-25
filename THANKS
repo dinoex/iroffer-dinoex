@@ -668,3 +668,6 @@ praya
 SamKook
 	reporting "freebsd-sendfile" bug
 
+Zir0h
+	reporting bug "on_added" in "rubyscript"
+
