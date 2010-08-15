@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.24:
 ------------------
 
+bugfix: autoadd_dir
+  Directories with spaces where not parsed.
+
 bugfix: GET (reported by unlogisch)
   Bot crashed if uploaddir was not defined.
   versions affected: 3.21 - 3.23
