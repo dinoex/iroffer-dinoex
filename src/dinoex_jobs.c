@@ -745,9 +745,9 @@ static void autoadd_scan(const char *dir, const char *group)
     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
   line = mycalloc(maxtextlength);
   if (group != NULL)
-    snprintf(line, maxtextlength, "ADDGROUP %s %s", group, dir);
+    snprintf(line, maxtextlength, "ADDGROUP %s \"%s\"", group, dir);
   else
-    snprintf(line, maxtextlength, "ADDNEW %s", dir);
+    snprintf(line, maxtextlength, "ADDNEW \"%s\"", dir);
 
   uxdl = mycalloc(sizeof(userinput));
   a_fillwith_msg2(uxdl, NULL, line);

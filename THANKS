@@ -672,3 +672,6 @@ SamKook
 Zir0h
 	reporting bug "on_added" in "rubyscript"
 
+death_walker
+	reporting bug "autoadd_dir" with spaces
+
