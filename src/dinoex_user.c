@@ -201,27 +201,8 @@ static void command_dcc(privmsginput *pi)
 
     strip_trailing_action(pi->msg5);
     len = atoull(pi->msg5);
-    if (verify_uploadhost(pi->hostmask)) {
-      notice(pi->nick, "DCC Send Denied, I don't accept transfers from %s", pi->hostmask);
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "DCC Send Denied from %s on %s",
-              pi->hostmask, gnetwork->name);
+    if (invalid_upload(pi->nick, pi->hostmask, len))
       return;
-    }
-    if (gdata.uploadmaxsize && (len > gdata.uploadmaxsize)) {
-      notice(pi->nick, "DCC Send Denied, I don't accept transfers that big");
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "DCC Send denied from %s on %s (too big)",
-              pi->hostmask, gnetwork->name);
-      return;
-    }
-    if (len > gdata.max_file_size) {
-      notice(pi->nick, "DCC Send Denied, I can't accept transfers that large");
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "DCC Send denied from %s on %s (too large)",
-              pi->hostmask, gnetwork->name);
-      return;
-    }
 
     port = atoi(pi->msg4);
     for (ul = irlist_get_head(&gdata.uploads);

@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.24:
 ------------------
 
+bugfix: GET (reported by unlogisch)
+  Bot crashed if uploaddir was not defined.
+  versions affected: 3.21 - 3.23
+
 bugfix: autoaddann (reported by Aashiqmunda)
   If no ruby_script was defined, bot did no announce.
 
