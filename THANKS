@@ -348,6 +348,7 @@ Radicand
 unlogisch
 	option "autoadd_sort"
 	reporting "autoadd_sort" by GROUP bug
+	reporting "GET" without uploaddir bug
 
 Misha-SU
 	reporting "ANNOUNCE" bug

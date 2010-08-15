@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.24:
 ----------------
 
+bugfix: GET
+  Bot stürtze ab, wenn "uplaoddir" nicht definiert ist.
+  versions affected: 3.21 - 3.23
+
 bugfix: autoaddann
   Wenn kein ruby_script eingetragen ist, wurde auch kein announce germacht.
 

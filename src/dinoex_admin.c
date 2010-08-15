@@ -3813,10 +3813,15 @@ void a_getl(const userinput * const u)
 void a_get(const userinput * const u)
 {
   qupload_t *qu;
+  char *uploaddir;
   int net;
   unsigned int found;
 
   updatecontext();
+
+  uploaddir = a_valid_uploaddir(u);
+  if (uploaddir == NULL)
+    return;
 
   net = get_network_msg(u, u->arg1);
   if (net < 0)

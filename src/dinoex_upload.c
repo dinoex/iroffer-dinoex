@@ -295,6 +295,36 @@ int file_uploading(const char *file)
 #endif /* USE_CURL */
 }
 
+static void error_upload_start(const char *nick, const char *hostmask, const char *key, const char *msg)
+{
+  notice(nick, "DCC Send Denied, %s", msg);
+  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          "DCC Send Denied (%s) from %s on %s",
+          key, hostmask, gnetwork->name);
+}
+
+int invalid_upload(const char *nick, const char *hostmask, off_t len)
+{
+  updatecontext();
+
+  if (verify_uploadhost(hostmask)) {
+    notice(nick, "DCC Send Denied, I don't accept transfers from %s", hostmask);
+    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+            "DCC Send Denied from %s on %s",
+            hostmask, gnetwork->name);
+    return 1;
+  }
+  if (gdata.uploadmaxsize && (len > gdata.uploadmaxsize)) {
+    error_upload_start(nick, hostmask, "too big", "I don't accept transfers that big");
+    return 1;
+  }
+  if (len > gdata.max_file_size) {
+    error_upload_start(nick, hostmask, "too large", "I can't accept transfers that large");
+    return 1;
+  }
+  return 0;
+}
+
 /* check permissions and setup the upload transfer */
 void upload_start(const char *nick, const char *hostname, const char *hostmask,
                   const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token)
@@ -304,48 +334,26 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   char *tempstr;
   off_t len;
 
-  if (verify_uploadhost(hostmask)) {
-    notice(nick, "DCC Send Denied, I don't accept transfers from %s", hostmask);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC Send Denied from %s on %s",
-            hostmask, gnetwork->name);
-    return;
-  }
+  updatecontext();
+
   len = atoull(bytes);
-  if (gdata.uploadmaxsize && (len > gdata.uploadmaxsize)) {
-    notice(nick, "DCC Send Denied, I don't accept transfers that big");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC Send Denied (Too Big) from %s on %s",
-            hostmask, gnetwork->name);
+  if (invalid_upload(nick, hostmask, len))
     return;
-  }
-  if (len > gdata.max_file_size) {
-    notice(nick, "DCC Send Denied, I can't accept transfers that large");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC Send Denied (Too Large) from %s on %s",
-            hostmask, gnetwork->name);
-    return;
-  }
-  if (irlist_size(&gdata.uploads) >= gdata.max_uploads) {
-    notice(nick, "DCC Send Denied, I'm already getting too many files");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC Send Denied (too many uploads) from %s on %s",
-            hostmask, gnetwork->name);
-    return;
-  }
   uploaddir = get_uploaddir(hostmask);
+  if (uploaddir == NULL) {
+    error_upload_start(nick, hostmask, "no uploaddir", "No uploaddir defined.");
+    return;
+  }
   if (disk_full(uploaddir) != 0) {
-    notice(nick, "DCC Send Denied, not enough free space on disk");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC Send Denied (not enough free space on disk) from %s on %s",
-            hostmask, gnetwork->name);
+    error_upload_start(nick, hostmask, "disk full", "not enough free space on disk");
     return;
   }
   if (file_uploading(filename) != 0) {
-    notice(nick, "DCC Send Denied, I'm already getting this file");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC Send Denied (upload running) from %s on %s",
-            hostmask, gnetwork->name);
+    error_upload_start(nick, hostmask, "upload running", "I'm already getting this file");
+    return;
+  }
+  if (irlist_size(&gdata.uploads) >= gdata.max_uploads) {
+    error_upload_start(nick, hostmask, "too many uploads", "I'm already getting too many files");
     return;
   }
   ul = irlist_add(&gdata.uploads, sizeof(upload));

@@ -22,6 +22,7 @@ const char *l_print_state(upload * const l);
 int l_select_fdset(int highests);
 
 int file_uploading(const char *file);
+int invalid_upload(const char *nick, const char *hostmask, off_t len);
 void upload_start(const char *nick, const char *hostname, const char *hostmask,
                   const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token);
 
