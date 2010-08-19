@@ -3752,7 +3752,7 @@ void a_closeu(const userinput * const u)
 
   num = atoi(u->arg1);
   ul = irlist_get_nth(&gdata.uploads, num);
-  if (ul != NULL) {
+  if (ul == NULL) {
     a_respond(u, "Invalid ID number, Try \"DCL\" for a list");
     return;
   }
