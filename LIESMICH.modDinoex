@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.24:
 ----------------
 
+bugfix: CLOSEU
+  Bot stürtze ab, wenn eine fehlerhafte Upload ID übergeben wurde.
+  versions affected: 3.23
+
 bugfix: autoadd_dir
   Verzeichnisse mit Leerzeichen wurden nicht durchsucht.
 
