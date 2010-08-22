@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.24:
 ------------------
 
+bugfix: xdccxmlfile (report by nanashiRei)
+  Fix spelling in xmltag bandwith -> bandwidth.
+
 bugfix: CLOSEU (reported by [M]-V)
   Bot did crash when a bad upload id is passed.
   versions affected: 3.23

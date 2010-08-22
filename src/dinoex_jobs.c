@@ -1541,7 +1541,7 @@ static void xdcc_save_xml(void)
     write_string(fd, "  </idlequeue>\n");
   }
 
-  write_string(fd, "  <bandwith>\n");
+  write_string(fd, "  <bandwidth>\n");
   tempstr = get_current_bandwidth();
   write_asc_plain(fd, 4, "banduse", tempstr);
   mydelete(tempstr);
@@ -1549,7 +1549,7 @@ static void xdcc_save_xml(void)
   snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
   write_asc_plain(fd, 4, "bandmax", tempstr);
   mydelete(tempstr);
-  write_string(fd, "  </bandwith>\n");
+  write_string(fd, "  </bandwidth>\n");
 
   write_string(fd, "  <quota>\n");
   write_asc_int(fd, 4, "packsum", num);
