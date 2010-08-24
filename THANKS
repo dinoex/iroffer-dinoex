@@ -671,11 +671,12 @@ SamKook
 	reporting "freebsd-sendfile" bug
 
 Zir0h
-	reporting bug "on_added" in "rubyscript"
+	reporting "on_added" bug in "rubyscript"
+	reporting "SHUTDOWN" bug with ruby 1.9
 
 death_walker
-	reporting bug "autoadd_dir" with spaces
+	reporting "autoadd_dir" bug with spaces
 
 nanashiRei
-	reporting bug in "xdccxmlfile" bandwidth
+	reporting "xdccxmlfile" spelling of bandwidth
 

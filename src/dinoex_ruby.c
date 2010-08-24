@@ -656,7 +656,11 @@ void startup_myruby(void)
 void shutdown_myruby(void)
 {
   myruby_status = ruby_cleanup(myruby_status);
+#if USE_RUBYVERSION < 19
   ruby_finalize();
+#else
+  /* segfaults with ruby19 */
+#endif
 }
 
 #ifndef WITHOUT_HTTP
