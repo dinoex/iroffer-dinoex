@@ -431,16 +431,22 @@ __attribute__ ((noreturn))
 /* cleanup all stuff before exit or restart */
 exit_iroffer(unsigned int gotsignal)
 {
-  if (gotsignal == 0)
+  if (gotsignal == 0) {
+    updatecontext();
     shutdown_dinoex();
+    updatecontext();
+  }
   tostdout_disable_buffering();
   uninitscreen();
   if (gdata.pidfile)
     unlink(gdata.pidfile);
 
 #ifdef DEBUG
-  if (gotsignal == 0)
+  if (gotsignal == 0) {
+    updatecontext();
     debug_memory();
+    updatecontext();
+  }
 #endif /* DEBUG */
 
   if (gdata.needrestart)
