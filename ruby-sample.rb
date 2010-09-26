@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby -w
 
-# Write somthing in a logfile with date and time.
+# Write something in a logfile with date and time.
 def write_log( *args )
   f = File.open( "ruby-dump.txt", "a+" )
   f.write Time.now.to_s
