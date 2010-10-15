@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.24:
 ------------------
 
+bugfix: fix small memory leaks
+
 bugfix: SHUTDOWN (reported by Zir0h)
   Bot crashes on "SHUTDOWN" when build  with ruby 1.9.
 

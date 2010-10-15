@@ -301,6 +301,8 @@ static void read_statefile_queue(statefile_hdr_t *hdr)
   }
   /* remove bad entry */
   if (pq->xpack == NULL) {
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
     if (gdata.idlequeuesize > 0 )
       irlist_delete(&gdata.idlequeue, pq);
     else
