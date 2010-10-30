@@ -65,13 +65,20 @@ Page last modified: 09/01/04
 
 Short Term Features:
   1335  NEWSANNOUNCE
-  1376  SSL-Bouncer connecten
   1379  different packlists for different groups
   1394  pack size included in the output of announce
   1438  more announce types for plist
   1442  queue set of packs.
   1469  nocolorannounce
-  1882  auto upload
+  1482  auto upload
+  1485  dump the transfers into the queue
+  1486  autotrim input
+  1487  only auto add files bigger than
+  1488  offline or maintenance mode
+  1494  send note to user when queuing
+  1497  group name as seperator in the xdcc list
+  1498  rss feed on the bot
+  1499  stop an autoadd half way adding
 
 Long Term Features:
   1013  notify adminnick when autoadd
@@ -119,6 +126,7 @@ Long Term Features:
   1368  XDCC SNOOZE
   1389  PART all channels till REHASH
   1370  inform user after ACCEPTU
+  1376  SSL-Bouncer connecten
   1381  support for 8 bit nicks
   1383  support { in network line
   1384  auto delete of rotated logfiles
@@ -140,6 +148,8 @@ Long Term Features:
   1459  transfer new files to another bot
   1477  batch announce
   1483  autoaddann pattern
+  1490  delay the responce to the !new command
+  1500  force to send a pack to someone who downloaded a certain pack
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -204,4 +214,5 @@ Not going to happen anytime soon:
   1437  trigger to find a pack by number of the episiode
   1443  make ctrl+c disabled
   1452  zeroconf/mdns/avahi-support
+  1495  support for plowshare
 
