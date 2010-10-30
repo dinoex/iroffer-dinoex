@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+- bugfix: BOTINFO
+  Zeige Liste der aktivierten Features.
+
 Ab Version 3.24:
 ----------------
 

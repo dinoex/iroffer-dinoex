@@ -1802,8 +1802,8 @@ static void u_botinfo(const userinput * const u) {
    updatecontext();
    
    u_respond(u,"BotInfo:");
-   
-   u_respond(u, "iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s",
+
+   u_respond(u, "iroffer-dinoex " VERSIONLONG FEATURES ", " "http://iroffer.dinoex.net/" "%s%s",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
 
