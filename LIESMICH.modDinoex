@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+335) plaintext
+  Sende bei Announces in das Netzwerk keine Farben.
+
 - bugfix: console
   Bot stürtze beim editieren der Befehlszeile ab.
   versions affected: 3.23 - 3.24

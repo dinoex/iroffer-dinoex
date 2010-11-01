@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+335) plaintext
+  Disable colors when announcing on this network. 
+
 - bugfix: console
   Bot coulld crash when editing commandline.
   versions affected: 3.23 - 3.24

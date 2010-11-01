@@ -193,6 +193,7 @@ typedef struct {
   unsigned int usenatip;
   unsigned int getip_net;
   unsigned int noannounce;
+  unsigned int plaintext;
   unsigned int slow_privmsg;
   unsigned int need_voice;
   unsigned int restrictsend;
@@ -207,7 +208,6 @@ typedef struct {
   unsigned long r_ourip;
 
   ir_sockaddr_union_t myip;
-  unsigned int dummy2;
 } gnetwork_t;
 
 extern gnetwork_t *gnetwork;
