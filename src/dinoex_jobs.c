@@ -339,6 +339,11 @@ vprivmsg_chan(unsigned int delay, const char *name, const char *fish, const char
     return;
   }
 
+  if (gnetwork->plaintext) {
+    removenonprintable(tempstr);
+    len = strlen(tempstr);
+  }
+
 #ifndef WITHOUT_BLOWFISH
   if (fish) {
     char *tempcrypt;
