@@ -1110,6 +1110,7 @@ void dumpgdata(void)
         }
     
       gdata_print_int(networks[ss].noannounce);
+      gdata_print_int(networks[ss].plaintext);
       gdata_print_int(networks[ss].restrictsend);
       gdata_print_int(networks[ss].restrictlist);
     } /* networks */

@@ -1015,6 +1015,9 @@ char *xd_color_description(const xdcc *xd)
    if (xd->color == 0)
      return xd->desc;
 
+   if (gnetwork->plaintext)
+     return xd->desc;
+
    colordesc = mycalloc(maxtextlength);
    foreground = xd->color & 0xFF;
    background = (xd->color >> 8) & 0xFF;

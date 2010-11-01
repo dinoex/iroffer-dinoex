@@ -2383,3 +2383,4 @@
 2694 "DCC Send abgewiesen, %s"
 2695 "DCC Send Denied (%s) from %s on %s"
 2696 "no uploaddir"
+2697 "plaintext"

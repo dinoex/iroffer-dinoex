@@ -1352,6 +1352,16 @@ static void c_noannounce(char *var)
   }
 }
 
+static void c_plaintext(char *var)
+{
+  int val;
+
+  val = parse_bool_val("plaintext", var);
+  if (val >= 0) {
+    gdata.networks[current_network].plaintext = val;
+  }
+}
+
 static void c_overallmaxspeeddaydays(char *var)
 {
   char *src;
@@ -1644,6 +1654,7 @@ static config_func_typ config_parse_func[] = {
 {"overallmaxspeeddaydays", c_overallmaxspeeddaydays },
 {"overallmaxspeeddaytime", c_overallmaxspeeddaytime },
 {"periodicmsg",            c_periodicmsg },
+{"plaintext",              c_plaintext },
 {"proxyinfo",              c_proxyinfo },
 {"restrictlist",           c_restrictlist },
 {"restrictsend",           c_restrictsend },
