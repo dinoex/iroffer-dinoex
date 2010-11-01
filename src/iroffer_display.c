@@ -417,7 +417,7 @@ void parseconsole(void)
                           else if (console_escape_seq[esc_len-1] == 'D')
                             {
                               /* left */
-                              int count;
+                              unsigned int count;
                               if (esc_len > 3)
                                 {
                                   count=atoi(&console_escape_seq[2]);
@@ -426,7 +426,8 @@ void parseconsole(void)
                                 {
                                   count=1;
                                 }
-                              gdata.curcol = max2(0, gdata.curcol-count);
+                              if (count <= gdata.curcol)
+                                gdata.curcol -= count;
                             }
                           /* else ignore */
                         }
