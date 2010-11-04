@@ -3472,6 +3472,9 @@ static void a_announce_channels(const char *msg, const char *match, const char *
 {
   channel_t *ch;
 
+  if (msg == NULL)
+    return;
+
   for (ch = irlist_get_head(&(gnetwork->channels));
        ch;
        ch = irlist_get_next(ch)) {
@@ -4602,11 +4605,11 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
 {
   gnetwork_t *backup;
   xdcc *xd;
-  char *tempstr;
-  char *tempstr2;
-  char *tempstr3;
+  char *prefix;
   char *colordesc;
   char *datestr;
+  char *dateprefix;
+  char *suffix;
   unsigned int ss;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
@@ -4614,43 +4617,42 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     return;
 
   a_respond(u, "Pack Info for Pack #%u:", num);
-  tempstr = mycalloc(maxtextlength);
-  tempstr2 = mycalloc(maxtextlength);
-  tempstr3 = mycalloc(maxtextlength);
+  prefix = mycalloc(maxtextlength);
+  suffix = mycalloc(maxtextlength);
   colordesc = xd_color_description(xd);
   if (gdata.show_date_added) {
+    dateprefix = mycalloc(maxtextlengthshort);
     datestr = mycalloc(maxtextlengthshort);
     user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
-    snprintf(tempstr3, maxtextlength - 1, "%s%s%s%s",
-             gdata.announce_seperator, datestr, gdata.announce_seperator, colordesc);
+    snprintf(dateprefix, maxtextlengthshort - 1, "%s%s%s",
+             gdata.announce_seperator, datestr, gdata.announce_seperator);
     mydelete(datestr);
   } else {
-    snprintf(tempstr3, maxtextlength - 1, "%s%s",
-             gdata.announce_seperator, colordesc);
+    dateprefix = strdup(gdata.announce_seperator);
   }
   if (msg == NULL) {
     msg = gdata.autoaddann;
     if (msg == NULL)
       msg = "added";
   }
-  if (colordesc != xd->desc)
-    mydelete(colordesc);
-  snprintf(tempstr2, maxtextlength - 2, "[\2%s\2]%s", msg, tempstr3);
+  snprintf(prefix, maxtextlength - 2, "[\2%s\2]%s%s", msg, dateprefix, colordesc);
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
-    snprintf(tempstr, maxtextlength - 2, "%s - /MSG %s XDCC SEND %u",
-             tempstr2, get_user_nick(), num);
+    snprintf(suffix, maxtextlength - 2, "%s - /MSG %s XDCC SEND %u",
+             prefix, get_user_nick(), num);
     if (gnetwork->noannounce == 0)
-      a_announce_channels(tempstr, match, xd->group);
+     a_announce_channels(suffix, match, xd->group);
     gnetwork = backup;
-    a_respond(u, "Announced [%s]%s", msg, tempstr3);
+    a_respond(u, "Announced [%s]%s%s%s", msg, dateprefix, xd->desc, suffix);
   }
   gnetwork = backup;
-  mydelete(tempstr3);
-  mydelete(tempstr2);
-  mydelete(tempstr);
+  mydelete(dateprefix);
+  if (colordesc != xd->desc)
+    mydelete(colordesc);
+  mydelete(suffix);
+  mydelete(prefix);
 }
 
 static void a_announce_sub(const userinput * const u, const char *arg1, const char *arg2, char *msg)
@@ -4718,7 +4720,6 @@ static unsigned int a_new_announce(unsigned int max)
     if (llen == 0)
       tempstr[0] = '\0';
     colordesc = xd_color_description(xd);
-    tempstr3 = mycalloc(maxtextlength);
     snprintf(tempstr3, maxtextlength - 1, "Added: %s \2%u\2%s%s",
              tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
     if (colordesc != xd->desc)
@@ -4774,7 +4775,6 @@ void a_sannounce(const userinput * const u)
   unsigned int num2;
   xdcc *xd;
   char *tempstr;
-  char *tempstr3;
   char *colordesc;
   unsigned int ss;
   gnetwork_t *backup;
@@ -4796,12 +4796,8 @@ void a_sannounce(const userinput * const u)
       return;
 
     tempstr = mycalloc(maxtextlength);
-    tempstr3 = mycalloc(maxtextlength);
     colordesc = xd_color_description(xd);
-    snprintf(tempstr3, maxtextlength - 1, "%s%s", gdata.announce_seperator, colordesc);
-    if (colordesc != xd->desc)
-      mydelete(colordesc);
-    snprintf(tempstr, maxtextlength - 2, "\2%u\2%s", num1, tempstr3);
+    snprintf(tempstr, maxtextlength - 2, "\2%u\2%s%s", num1, gdata.announce_seperator, colordesc);
 
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ++ss) {
@@ -4809,11 +4805,12 @@ void a_sannounce(const userinput * const u)
       if (gnetwork->noannounce == 0)
         a_announce_channels(tempstr, NULL, xd->group);
       gnetwork = backup;
-      a_respond(u, "Announced [%u]%s", num1, tempstr3);
+      a_respond(u, "Announced [%u]%s%s", num1, gdata.announce_seperator, xd->desc);
     }
     gnetwork = backup;
+    if (colordesc != xd->desc)
+      mydelete(colordesc);
     mydelete(tempstr);
-    mydelete(tempstr3);
   }
 }
 

@@ -428,9 +428,9 @@ typedef struct
   unsigned short plistoffset;
   unsigned short delay;
   unsigned short noannounce;
+  unsigned short plaintext;
   unsigned short notrigger;
   unsigned short waitjoin;
-  unsigned short dummy;
   time_t nextann;
   time_t nextjoin;
   time_t lastjoin;

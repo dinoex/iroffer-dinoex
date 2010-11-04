@@ -28,9 +28,9 @@ char *test_fish_message(const char *line, const char *channel, const char *str, 
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 4, 0)))
+__attribute__ ((format(printf, 2, 0)))
 #endif
-vprivmsg_chan(unsigned int delay, const char *name, const char *fish, const char *format, va_list ap);
+vprivmsg_chan(const channel_t *ch, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__

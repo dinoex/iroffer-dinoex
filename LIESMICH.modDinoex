@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+336) channel -plaintext
+  Sende bei Announces in dem Channel keine Farben.
+
 335) plaintext
   Sende bei Announces in das Netzwerk keine Farben.
 
