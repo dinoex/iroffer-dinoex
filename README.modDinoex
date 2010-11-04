@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+336) channel -plaintext (inspired by TheDeath)
+  Disable colors when announcing for this channel.
+
 335) plaintext
   Disable colors when announcing on this network. 
 

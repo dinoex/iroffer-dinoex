@@ -975,6 +975,10 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char **part, unsign
     cptr->notrigger = 1;
     return 0;
   }
+  if (!strcmp(tptr, "-plaintext")) {
+    cptr->plaintext = 1;
+    return 0;
+  }
 
   if (!strcmp(tptr, "-pformat")) {
     tptr2 = part[++i];

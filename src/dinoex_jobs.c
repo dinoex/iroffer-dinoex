@@ -323,14 +323,15 @@ writeserver_channel(unsigned int delay, const char *format, ... )
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 4, 0)))
+__attribute__ ((format(printf, 2, 0)))
 #endif
-vprivmsg_chan(unsigned int delay, const char *name, const char *fish, const char *format, va_list ap)
+vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   int len;
 
-  if (!name) return;
+  if (ch == NULL) return;
+  if (!ch->name) return;
 
   len = vsnprintf(tempstr, maxtextlength, format, ap);
 
@@ -339,27 +340,27 @@ vprivmsg_chan(unsigned int delay, const char *name, const char *fish, const char
     return;
   }
 
-  if (gnetwork->plaintext) {
+  if (gnetwork->plaintext || ch->plaintext) {
     removenonprintable(tempstr);
     len = strlen(tempstr);
   }
 
 #ifndef WITHOUT_BLOWFISH
-  if (fish) {
+  if (ch->fish) {
     char *tempcrypt;
 
     if (gdata.debug > 0) {
       ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
     }
-    tempcrypt = encrypt_fish(tempstr, len, fish);
+    tempcrypt = encrypt_fish(tempstr, len, ch->fish);
     if (tempcrypt) {
-      writeserver_channel(delay, "PRIVMSG %s :+OK %s", name, tempcrypt);
+      writeserver_channel(ch->delay, "PRIVMSG %s :+OK %s", ch->name, tempcrypt);
       mydelete(tempcrypt);
       return;
     }
   }
 #endif /* WITHOUT_BLOWFISH */
-  writeserver_channel(delay, "PRIVMSG %s :%s", name, tempstr);
+  writeserver_channel(ch->delay, "PRIVMSG %s :%s", ch->name, tempstr);
 }
 
 void
@@ -370,7 +371,7 @@ privmsg_chan(const channel_t *ch, const char *format, ...)
 {
   va_list args;
   va_start(args, format);
-  vprivmsg_chan(ch->delay, ch->name, ch->fish, format, args);
+  vprivmsg_chan(ch, format, args);
   va_end(args);
 }
 
