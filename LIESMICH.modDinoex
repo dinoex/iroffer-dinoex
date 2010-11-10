@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+- bugfix: getip_network
+  Bot stürtze ab wenn als Parameter kein gültiges Netzwerk angegeben wurde.
+  versions affected: 3.23 - 3.24
+
 336) channel -plaintext
   Sende bei Announces in dem Channel keine Farben.
 

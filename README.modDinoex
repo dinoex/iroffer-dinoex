@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+- bugfix: getip_network (reported by paulhamm)
+  Bot could crash when paramater did not match a network.
+  versions affected: 3.23 - 3.24
+
 336) channel -plaintext (inspired by TheDeath)
   Disable colors when announcing for this channel.
 
@@ -10,7 +14,7 @@ With Version 3.25:
   Disable colors when announcing on this network. 
 
 - bugfix: console
-  Bot coulld crash when editing commandline.
+  Bot could crash when editing commandline.
   versions affected: 3.23 - 3.24
 
 - bugfix: BOTINFO

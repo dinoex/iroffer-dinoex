@@ -181,6 +181,8 @@ void update_server_welcome(char *line)
 {
   const char *tptr;
 
+  updatecontext();
+
 #ifdef USE_UPNP
   if (gdata.getipfromupnp) {
     tptr = upnp_get_dccip();
