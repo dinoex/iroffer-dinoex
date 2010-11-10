@@ -2345,7 +2345,7 @@
 2661 "%d/%b/%Y:%T %Z"
 2662 "%s - - [%s] \"%s\" %u %ld\n"
 2663 "DISKFREE"
-2664 "Mostra lo spazio libero nella directiry upload"
+2664 "Mostra lo spazio libero nella cartella upload"
 2665 "\x02"
 2666 "\x1F"
 2667 "\x02\x1F"
