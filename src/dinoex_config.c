@@ -1175,7 +1175,15 @@ static void c_disk_quota(char *var)
 
 static void c_getip_network(char *var)
 {
-  gdata.networks[current_network].getip_net = get_network(var);
+  int net;
+  net = get_network(var);
+  if (net < 0) {
+    outerror(OUTERROR_TYPE_WARN,
+             "%s:%ld ignored '%s' because it has unknown args: '%s'",
+             current_config, current_line, "getip_network", var);
+  } else {
+    gdata.networks[current_network].getip_net = net;
+  }
 }
 
 static void c_group_admin(char *var)
