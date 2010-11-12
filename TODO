@@ -71,7 +71,6 @@ Short Term Features:
   1442  queue set of packs.
   1469  nocolorannounce
   1482  auto upload
-  1485  dump the transfers into the queue
   1486  autotrim input
   1487  only auto add files bigger than
   1488  offline or maintenance mode
