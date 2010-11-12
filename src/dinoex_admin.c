@@ -1194,6 +1194,14 @@ static xdcc *a_add2(const userinput * const u, const char *group)
     }
   }
 
+  if (gdata.adddir_min_size) {
+    if (st.st_size < (off_t)gdata.adddir_min_size) {
+      a_respond(u, "File '%s' not added, to small", u->arg1);
+      mydelete(file);
+      return NULL;
+    }
+  }
+
   if ((gdata.auto_default_group) && (group == NULL)) {
     a1 = file_without_numbers(newfile);
     for (xd = irlist_get_head(&gdata.xdccs);
@@ -2137,6 +2145,14 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
           a_respond(u, "  Ignoring queued file: %s", tempstr);
           break;
         }
+      }
+    }
+
+    if (gdata.adddir_min_size) {
+      if (st.st_size < (off_t)gdata.adddir_min_size) {
+        a_respond(u, "  Ignoring small file: %s", tempstr);
+        mydelete(tempstr);
+        continue;
       }
     }
 

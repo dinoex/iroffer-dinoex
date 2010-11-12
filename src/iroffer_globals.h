@@ -162,6 +162,8 @@ unsigned int smallfilebypass;
 unsigned int autoignore_threshold;
 unsigned int reconnect_delay;
 unsigned int new_trigger;
+unsigned int adddir_min_size;
+unsigned int dummy2;
 /* bool */
 unsigned int hideos;
 unsigned int lognotices;

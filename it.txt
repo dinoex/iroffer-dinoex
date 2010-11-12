@@ -2384,3 +2384,6 @@
 2700 "\2%u\2%s%s"
 2701 "Annunciato [%u]%s%s"
 2702 "-plaintext"
+2703 "File '%s' not added, to small"
+2704 "  Ignoring small file: %s"
+2705 "adddir_min_size"
