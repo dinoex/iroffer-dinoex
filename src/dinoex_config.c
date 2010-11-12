@@ -285,6 +285,7 @@ static void reset_config_bool(void)
 
 static unsigned int config_int_anzahl = 0;
 static config_int_typ config_parse_int[] = {
+{"adddir_min_size",         &gdata.adddir_min_size,         0, 1024, 65000, 0 },
 {"adminlevel",              &gdata.adminlevel,              1, 5, 1, ADMIN_LEVEL_FULL },
 {"atfind",                  &gdata.atfind,                  0, 10, 1, 0 },
 {"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1, 0 },

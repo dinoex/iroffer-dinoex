@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+337) adddir_min_size
+  Bei addir, adnew und autoadd werden Datein kleiner als die angegebene
+  Größe in KB übersprungen.
+  Default: keine Prüfung
+
 - bugfix: getip_network
   Bot stürtze ab wenn als Parameter kein gültiges Netzwerk angegeben wurde.
   versions affected: 3.23 - 3.24
