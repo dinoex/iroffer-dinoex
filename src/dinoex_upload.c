@@ -303,6 +303,41 @@ static void error_upload_start(const char *nick, const char *hostmask, const cha
           key, hostmask, gnetwork->name);
 }
 
+/* check if this host is allowed to send */
+static int verify_uploadhost(const char *hostmask)
+{
+  tupload_t *tu;
+  qupload_t *qu;
+
+  updatecontext();
+
+  if ( verifyupload_group(hostmask) != NULL )
+    return 0;
+
+  if ( verifyshell(&gdata.uploadhost, hostmask) != 0 )
+    return 0;
+
+  for (tu = irlist_get_head(&gdata.tuploadhost);
+       tu;
+       tu = irlist_get_next(tu)) {
+    if (tu->u_time <= gdata.curtime)
+      continue;
+
+    if (fnmatch(tu->u_host, hostmask, FNM_CASEFOLD) == 0)
+      return 0;
+  }
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (gnetwork->net != qu->q_net)
+      continue;
+
+    if (fnmatch(qu->q_host, hostmask, FNM_CASEFOLD) == 0)
+      return 0;
+  }
+  return 1;
+}
+
 int invalid_upload(const char *nick, const char *hostmask, off_t len)
 {
   updatecontext();
@@ -384,41 +419,6 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
     /* Passive DCC */
     l_setup_passive(ul, token);
   }
-}
-
-/* check if this host is allowed to send */
-int verify_uploadhost(const char *hostmask)
-{
-  tupload_t *tu;
-  qupload_t *qu;
-
-  updatecontext();
-
-  if ( verifyupload_group(hostmask) != NULL )
-    return 0;
-
-  if ( verifyshell(&gdata.uploadhost, hostmask) != 0 )
-    return 0;
-
-  for (tu = irlist_get_head(&gdata.tuploadhost);
-       tu;
-       tu = irlist_get_next(tu)) {
-    if (tu->u_time <= gdata.curtime)
-      continue;
-
-    if (fnmatch(tu->u_host, hostmask, FNM_CASEFOLD) == 0)
-      return 0;
-  }
-  for (qu = irlist_get_head(&gdata.quploadhost);
-       qu;
-       qu = irlist_get_next(qu)) {
-    if (gnetwork->net != qu->q_net)
-      continue;
-
-    if (fnmatch(qu->q_host, hostmask, FNM_CASEFOLD) == 0)
-      return 0;
-  }
-  return 1;
 }
 
 /* remove temp uploadhosts */
