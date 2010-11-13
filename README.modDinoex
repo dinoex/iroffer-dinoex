@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+bugfix: xdccxmlfile (report by Hikaru Shindo)
+  Extend the structure so it is easier to parse.
+
 338) AUTOCANCEL (inspired by [M]-V)
 
   new admin command:

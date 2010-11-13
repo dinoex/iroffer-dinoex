@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+bugfix: xdccxmlfile
+  Erweitere die Struktur der XML-Datei, damit diese besser gelsen werden kann.
+
 338) AUTOCANCEL
 
   Neues Admin Kommando:

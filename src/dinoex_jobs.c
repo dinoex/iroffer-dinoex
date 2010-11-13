@@ -1457,7 +1457,9 @@ static void xdcc_save_xml(void)
   else
     write_string(fd, "UTF-8");
   write_string(fd, "\"?>\n");
-  write_string(fd, "<packlist>\n\n");
+  write_string(fd, "<xdcc>\n");
+  if (irlist_size(&gdata.xdccs) > 0)
+    write_string(fd, "<packlist>\n\n");
 
   groups = 0;
   toffered = 0;
@@ -1500,6 +1502,8 @@ static void xdcc_save_xml(void)
     }
     write_string(fd, "</pack>\n\n");
   }
+  if (irlist_size(&gdata.xdccs) > 0)
+    write_string(fd, "</packlist>\n\n");
 
   if (groups > 0) {
     write_string(fd, "<grouplist>\n");
@@ -1623,7 +1627,7 @@ static void xdcc_save_xml(void)
   write_string(fd, "  </stats>\n");
   write_string(fd, "</sysinfo>\n\n");
 
-  write_string(fd, "</packlist>\n");
+  write_string(fd, "</xdcc>\n");
   close(fd);
 
   rename_with_backup(gdata.xdccxmlfile, filename_bak, filename_tmp, "XDCC XML");
