@@ -26,7 +26,6 @@ int invalid_upload(const char *nick, const char *hostmask, off_t len);
 void upload_start(const char *nick, const char *hostname, const char *hostmask,
                   const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token);
 
-int verify_uploadhost(const char *hostmask);
 void clean_uploadhost(void);
 
 /* End of File */
