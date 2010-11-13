@@ -333,15 +333,13 @@ u_respond(const userinput * const u, const char *format, ...)
             {
               if (!strcasecmp(ch->name, chan))
                 {
-                  break;
+                  vprivmsg_chan(ch, format, args);
+                  va_end(args);
+                  va_start(args, format);
                 }
             }
-          if (ch != NULL)
-            break;
         }
       mydelete(tempnick);
-      if (ch != NULL)
-        vprivmsg_chan(ch, format, args);
       break;
     case method_xdl_user_privmsg:
       vprivmsg_slow(u->snick, format, args);
