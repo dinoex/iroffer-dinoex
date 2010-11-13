@@ -2431,6 +2431,86 @@ void a_chtime(const userinput * const u)
   write_files();
 }
 
+void a_chmins(const userinput * const u)
+{
+  unsigned int num1;
+  unsigned int num2;
+  char *last;
+  xdcc *xd;
+
+  updatecontext();
+
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 == 0)
+    return;
+
+  last = u->arg2;
+  num2 = num1;
+  if (u->arg3) {
+    num2 = get_pack_nr2(u, u->arg2, num1);
+    if (num2 == 0)
+      return;
+
+    last = u->arg3;
+  }
+  if (!last || !strlen(last)) {
+    a_respond(u,"Try Specifying a Minspeed");
+    return;
+  }
+
+  for (; num1 <= num2; ++num1) {
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
+    if (group_restricted(u, xd))
+      return;
+
+    xd->minspeed = gdata.transferminspeed;
+    if ( atof(last) != gdata.transferminspeed )
+      xd->minspeed = atof(last);
+    a_respond(u, "CHMINS: [Pack %u] Old: %1.1f New: %1.1f", num1, xd->minspeed, atof(last));
+  }
+
+  write_files();
+}
+
+void a_chmaxs(const userinput * const u)
+{
+  unsigned int num1;
+  unsigned int num2;
+  char *last;
+  xdcc *xd;
+
+  updatecontext();
+
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 == 0)
+    return;
+
+  last = u->arg2;
+  num2 = num1;
+  if (u->arg3) {
+    num2 = get_pack_nr2(u, u->arg2, num1);
+    if (num2 == 0)
+      return;
+
+    last = u->arg3;
+  }
+  if (invalid_maxspeed(u, last) != 0)
+    return;
+
+  for (; num1 <= num2; ++num1) {
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
+    if (group_restricted(u, xd))
+      return;
+
+    xd->maxspeed = gdata.transfermaxspeed;
+    if ( atof(last) != gdata.transfermaxspeed )
+      xd->maxspeed = atof(last);
+    a_respond(u, "CHMAXS: [Pack %u] Old: %1.1f New: %1.1f", num1, xd->maxspeed, atof(last));
+  }
+
+  write_files();
+}
+
 void a_chlimit(const userinput * const u)
 {
   unsigned int num;

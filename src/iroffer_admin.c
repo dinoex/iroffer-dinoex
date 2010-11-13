@@ -48,8 +48,6 @@ static void u_psend(const userinput * const u);
 static void u_quit(const userinput * const u);
 static void u_status(const userinput * const u);
 static void u_chnote(const userinput * const u);
-static void u_chmins(const userinput * const u);
-static void u_chmaxs(const userinput * const u);
 static void u_chgets(const userinput * const u);
 static void u_chatme(const userinput * const u);
 static void u_chatl(const userinput * const u);
@@ -146,8 +144,8 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_chdesc,        "CHDESC","n [msg]","Change description of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chnote,        "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtime,        "CHTIME","n [msg]","Change add time of pack <n> to <msg>"},
-{3,3,method_allow_all,u_chmins,        "CHMINS","n x","Change min speed of pack <n> to <x> KB/s"},
-{3,3,method_allow_all,u_chmaxs,        "CHMAXS","n x","Change max speed of pack <n> to <x> KB/s"},
+{3,3,method_allow_all,a_chmins,        "CHMINS","n [m] x","Change min speed to <x> KB/s for pack <n> to <m>"},
+{3,3,method_allow_all,a_chmaxs,        "CHMAXS","n [m] x","Change max speed to <x> KB/s for pack <n> to <m>"},
 {3,3,method_allow_all,a_chlimit,       "CHLIMIT","n x","Change download limit of pack <n> to <x> transfers per day"},
 {3,3,method_allow_all,a_chlimitinfo,   "CHLIMITINFO","n [msg]","Change over limit info of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtrigger,     "CHTRIGGER","n [msg]","Change trigger for pack <n> to <msg>"},
@@ -1494,62 +1492,6 @@ static void u_chnote(const userinput * const u) {
        clean_quotes(u->arg2e);
        xd->note = mystrdup(u->arg2e);
      }
-   
-   write_files();
-   }
-
-static void u_chmins(const userinput * const u) {
-   unsigned int num;
-   xdcc *xd;
-   
-   updatecontext();
-   
-   num = get_pack_nr(u, u->arg1);
-   if (num <= 0)
-      return;
-
-   if (!u->arg2 || !strlen(u->arg2)) {
-      u_respond(u,"Try Specifying a Minspeed");
-      return;
-      }
-
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd))
-     return;
-   
-   u_respond(u, "CHMINS: [Pack %u] Old: %1.1f New: %1.1f",
-             num,xd->minspeed,atof(u->arg2));
-   
-   xd->minspeed = gdata.transferminspeed;
-   if ( atof(u->arg2) != gdata.transferminspeed )
-      xd->minspeed = atof(u->arg2);
-   
-   write_files();
-   }
-
-static void u_chmaxs(const userinput * const u) {
-   unsigned int num;
-   xdcc *xd;
-   
-   updatecontext();
-   
-   num = get_pack_nr(u, u->arg1);
-   if (num <= 0)
-      return;
-
-   if (invalid_maxspeed(u, u->arg2) != 0)
-     return;
-
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd))
-     return;
-   
-   u_respond(u, "CHMAXS: [Pack %u] Old: %1.1f New: %1.1f",
-             num,xd->maxspeed,atof(u->arg2));
-   
-   xd->maxspeed = gdata.transfermaxspeed;
-   if ( atof(u->arg2) != gdata.transfermaxspeed )
-      xd->maxspeed = atof(u->arg2);
    
    write_files();
    }

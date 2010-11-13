@@ -68,6 +68,8 @@ void a_addmatch(const userinput * const u);
 void a_newgroup(const userinput * const u);
 void a_chdesc(const userinput * const u);
 void a_chtime(const userinput * const u);
+void a_chmins(const userinput * const u);
+void a_chmaxs(const userinput * const u);
 void a_chlimit(const userinput * const u);
 void a_chlimitinfo(const userinput * const u);
 void a_chtrigger(const userinput * const u);
