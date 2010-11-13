@@ -549,6 +549,7 @@ CreeW
 	suggesting "CHCOLOR"
 	suggesting "autoadd_color"
 	reporting "CHCOLOR" bug
+	suggesting "CHMAXS" with range
 
 [M]-V
 	reporting ADDDIR spaces bug

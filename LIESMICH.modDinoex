@@ -3,10 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+340) CHMINS, CHMAXS
+
+  Neue Admin Kommandos:
+  CHMINS <n> <m> <x>                 Change min speed to <x> KB/s for pack <n> to <m>
+  CHMAXS <n> <m> <x>                 Change max speed to <x> KB/s for pack <n> to <m>
+
 bugfix: autoaddann
   Die []-Klammern wurden auf dem Default-Text entfernt.
 
-338) show_group_of_pack 
+339) show_group_of_pack 
   Zeige zu allen Paketen auch die Gruppe an.
   Default Ausgabe ohne die Gruppe
 

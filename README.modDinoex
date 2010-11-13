@@ -3,10 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+340) CHMINS, CHMAXS (inspired by CreeW)
+
+  new admin commands:
+  CHMINS <n> <m> <x>                 Change min speed to <x> KB/s for pack <n> to <m>
+  CHMAXS <n> <m> <x>                 Change max speed to <x> KB/s for pack <n> to <m>
+
 bugfix: autoaddann (reported by Aashiqmunda)
   Removed []-brackets from default announce text.
 
-338) show_group_of_pack (inspired by Zenquibo)
+339) show_group_of_pack (inspired by Zenquibo)
   Export your xdcc list with group for each pack.
   Default output is just the packs
 
