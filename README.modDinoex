@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+338) show_group_of_pack (inspired by Zenquibo)
+  Export your xdcc list with group for each pack.
+  Default output is just the packs
+
 bugfix: xdccxmlfile (report by Hikaru Shindo)
   Extend the structure so it is easier to parse.
 

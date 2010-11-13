@@ -163,7 +163,6 @@ unsigned int autoignore_threshold;
 unsigned int reconnect_delay;
 unsigned int new_trigger;
 unsigned int adddir_min_size;
-unsigned int dummy2;
 /* bool */
 unsigned int hideos;
 unsigned int lognotices;
@@ -229,6 +228,7 @@ unsigned int respondtochannellist;
 unsigned int quietmode;
 unsigned int no_natural_sort;
 unsigned int requeue_sends;
+unsigned int show_group_of_pack;
 
 context_t context_log[MAXCONTEXTS];
 ir_boutput_t stdout_buffer;

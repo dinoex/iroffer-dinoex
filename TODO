@@ -69,12 +69,10 @@ Short Term Features:
   1394  pack size included in the output of announce
   1438  more announce types for plist
   1442  queue set of packs.
-  1469  nocolorannounce
   1482  auto upload
   1486  autotrim input
   1488  offline or maintenance mode
   1494  send note to user when queuing
-  1497  group name as seperator in the xdcc list
   1498  rss feed on the bot
 
 Long Term Features:

@@ -255,7 +255,7 @@
 256 "  %s %-*s : %s"
 257 "  %-20s : %s"
 258 "Per maggior aiuto consulta la documentazione "
-259 "\2#%-*u\2 %*ux [%s]%s %s"
+259 "\2#%-*u\2 %*ux [%s]%s %s%s%s"
 260 " [%1.1fK Min]"
 261 " [%1.1fK Max]"
 262 " [%u di %u DL al termine]"
@@ -2392,3 +2392,4 @@
 2708 "Cancelled %u pending add/remove"
 2709 "<xdcc>\n"
 2710 "</xdcc>\n"
+2711 "show_group_of_pack"
