@@ -48,7 +48,6 @@ static void u_psend(const userinput * const u);
 static void u_quit(const userinput * const u);
 static void u_status(const userinput * const u);
 static void u_chnote(const userinput * const u);
-static void u_chgets(const userinput * const u);
 static void u_chatme(const userinput * const u);
 static void u_chatl(const userinput * const u);
 static void u_rehash(const userinput * const u);
@@ -146,11 +145,11 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_chtime,        "CHTIME","n [msg]","Change add time of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chmins,        "CHMINS","n [m] x","Change min speed to <x> KB/s for pack <n> to <m>"},
 {3,3,method_allow_all,a_chmaxs,        "CHMAXS","n [m] x","Change max speed to <x> KB/s for pack <n> to <m>"},
-{3,3,method_allow_all,a_chlimit,       "CHLIMIT","n x","Change download limit of pack <n> to <x> transfers per day"},
+{3,3,method_allow_all,a_chlimit,       "CHLIMIT","n [m] x","Change download limit to <x> transfers per day for pack <n> to <m>"},
 {3,3,method_allow_all,a_chlimitinfo,   "CHLIMITINFO","n [msg]","Change over limit info of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtrigger,     "CHTRIGGER","n [msg]","Change trigger for pack <n> to <msg>"},
 {3,3,method_allow_all,a_deltrigger,    "DELTRIGGER","n [m]","Delete trigger for pack <n> to <m>"},
-{3,5,method_allow_all,u_chgets,        "CHGETS","n x","Set the get counter of pack <n> to <x>"},
+{3,5,method_allow_all,a_chgets,        "CHGETS","n [m] x","Set the get counter to <x> for pack <n> to <m>"},
 {3,5,method_allow_all,a_chcolor,       "CHCOLOR","n [m] x[,b][,s]","Set the pack <n> to <m> to color <x>, background <b> and style <s>"},
 {3,2,method_allow_all,a_lock,          "LOCK","n [m] password","Lock the pack <n> to <m> with <password>"},
 {3,2,method_allow_all,a_unlock,        "UNLOCK","n [m]","Unlock the pack <n> to <m>"},
@@ -1495,35 +1494,6 @@ static void u_chnote(const userinput * const u) {
    
    write_files();
    }
-
-static void u_chgets(const userinput * const u)
-{
-  unsigned int num;
-  xdcc *xd;
-  
-  updatecontext();
-  
-  num = get_pack_nr(u, u->arg1);
-  if (num <= 0)
-     return;
-
-  if (!u->arg2 || !strlen(u->arg2))
-    {
-      u_respond(u,"Try Specifying a Count");
-      return;
-    }
-  
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
-  if (group_restricted(u, xd))
-    return;
-  
-  u_respond(u, "CHGETS: [Pack %u] Old: %u New: %u",
-            num,xd->gets,atoi(u->arg2));
-  
-  xd->gets = atoi(u->arg2);
-  
-  write_files();
-}
 
 static void u_chatme(const userinput * const u) {
    

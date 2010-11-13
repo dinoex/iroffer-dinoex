@@ -2627,10 +2627,10 @@ void a_chtrigger(const userinput * const u)
 
 void a_deltrigger(const userinput * const u)
 {
+  xdcc *xd;
   unsigned int num1;
   unsigned int num2;
   unsigned int dirty;
-  xdcc *xd;
 
   updatecontext();
 
@@ -2660,6 +2660,49 @@ void a_deltrigger(const userinput * const u)
   }
   if (dirty > 0)
     autotrigger_rebuild();
+}
+
+void a_chgets(const userinput * const u)
+{
+  xdcc *xd;
+  char *last;
+  unsigned int num1;
+  unsigned int num2;
+  unsigned int val;
+
+  updatecontext();
+
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 == 0)
+    return;
+
+  last = u->arg2;
+  num2 = num1;
+  if (u->arg3) {
+    num2 = get_pack_nr2(u, u->arg2, num1);
+    if (num2 == 0)
+      return;
+
+    last = u->arg3;
+  }
+
+  if (!last || !strlen(last)) {
+    a_respond(u,"Try Specifying a Count");
+    return;
+  }
+
+  val = atoi(last);
+  for (; num1 <= num2; ++num1) {
+    xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
+    if (group_restricted(u, xd))
+      return;
+
+    a_respond(u, "CHGETS: [Pack %u] Old: %u New: %u",
+              num1, xd->gets, val);
+    xd->gets = val;
+  }
+
+  write_files();
 }
 
 void a_chcolor(const userinput * const u)
