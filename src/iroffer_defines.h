@@ -157,9 +157,6 @@
 /* it's up to the umask to prune away.. */
 #define CREAT_PERMISSIONS ( S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH )
 
-/* how long to tollerate a missing user before disconnecting */
-#define RESTRICTSEND_TIMEOUT 300U
-
 /* some os's (cygwin, cough, cough, ... ) require extra flags to open() */
 #define ADDED_OPEN_FLAGS 0
 
@@ -172,10 +169,7 @@
 /* where would we be without these? */
 #define max2(a,b) ( (a > b) ? a : b )
 #define min2(a,b) ( (a < b) ? a : b )
-#define max3(a,b,c) ( max2(a,max2(b,c)) )
-#define min3(a,b,c) ( min2(a,min2(b,c)) )
 #define between(min,a,max) ( max2(min2(a,max),min) )
-#define floor(v,f) ( (v) - ((v) % (f)) )
 #define ceiling(v,c) ( (v) + (((v) % (c)) ? ((c) - ((v) % (c))) : 0) )
 
 
