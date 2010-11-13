@@ -136,6 +136,7 @@ static config_bool_typ config_parse_bool[] = {
 {"restrictsend_warning",   &gdata.restrictsend_warning,    0 },
 {"send_batch",             &gdata.send_batch,              0 },
 {"show_date_added",        &gdata.show_date_added,         0 },
+{"show_group_of_pack",     &gdata.show_group_of_pack,      0 },
 {"show_list_all",          &gdata.show_list_all,           0 },
 {"spaces_in_filenames",    &gdata.spaces_in_filenames,     0 },
 {"timestampconsole",       &gdata.timestampconsole,        0 },

@@ -538,6 +538,8 @@ static void u_help(const userinput * const u)
 
 void u_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd) {
    char datestr[maxtextlengthshort];
+   const char *sep;
+   const char *groupstr;
    char *sizestrstr;
    char *colordesc;
    unsigned int len;
@@ -550,19 +552,30 @@ void u_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsign
        datestr[1] = 0;
        user_getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
      }
+   sep = "";
+   groupstr = "";
+   if (gdata.show_group_of_pack)
+     {
+       if (xd->group != NULL)
+         {
+           sep = gdata.group_seperator;
+           groupstr = xd->group;
+         }
+     }
    colordesc = xd_color_description(xd);
    snprintf(tempstr, maxtextlength,
-           "\2#%-*u\2 %*ux [%s]%s %s",
+           "\2#%-*u\2 %*ux [%s]%s %s%s%s",
             l,
             i,
             s, xd->gets,
             sizestrstr,
             datestr,
-            colordesc);
+            colordesc,
+            sep, groupstr);
    len = strlen(tempstr);
-   mydelete(sizestrstr);
    if (colordesc != xd->desc)
      mydelete(colordesc);
+   mydelete(sizestrstr);
    
    if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed)
      {
