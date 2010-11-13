@@ -34,7 +34,6 @@ unsigned int reorder_new_groupdesc(const char *group, const char *desc);
 unsigned int add_default_groupdesc(const char *group);
 
 unsigned int invalid_channel(const userinput * const u, const char *arg);
-unsigned int invalid_maxspeed(const userinput * const u, const char *arg);
 unsigned int get_pack_nr(const userinput * const u, const char *arg);
 int get_network_msg(const userinput * const u, const char *arg);
 unsigned int group_restricted(const userinput * const u, xdcc *xd);
