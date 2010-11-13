@@ -3529,7 +3529,7 @@ void a_amsg(const userinput * const u)
       a_announce_channels(u->arg1e, NULL, NULL);
   }
   gnetwork = backup;
-  a_respond(u, "Announced [%s]", u->arg1e);
+  a_respond(u, "Announced %s", u->arg1e);
 }
 
 channel_t *is_not_joined_channel(const userinput * const u, const char *name)
@@ -4660,7 +4660,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     if (msg == NULL)
       msg = "added";
   }
-  snprintf(prefix, maxtextlength - 2, "[\2%s\2]%s%s", msg, dateprefix, colordesc);
+  snprintf(prefix, maxtextlength - 2, "\2%s\2%s%s", msg, dateprefix, colordesc);
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
@@ -4670,7 +4670,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     if (gnetwork->noannounce == 0)
      a_announce_channels(suffix, match, xd->group);
     gnetwork = backup;
-    a_respond(u, "Announced [%s]%s%s%s", msg, dateprefix, xd->desc, suffix);
+    a_respond(u, "Announced %s%s%s%s", msg, dateprefix, xd->desc, suffix);
   }
   gnetwork = backup;
   mydelete(dateprefix);
@@ -4830,7 +4830,7 @@ void a_sannounce(const userinput * const u)
       if (gnetwork->noannounce == 0)
         a_announce_channels(tempstr, NULL, xd->group);
       gnetwork = backup;
-      a_respond(u, "Announced [%u]%s%s", num1, gdata.announce_seperator, xd->desc);
+      a_respond(u, "Announced %u%s%s", num1, gdata.announce_seperator, xd->desc);
     }
     gnetwork = backup;
     if (colordesc != xd->desc)
