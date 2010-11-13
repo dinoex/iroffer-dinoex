@@ -528,7 +528,7 @@ unsigned int invalid_channel(const userinput * const u, const char *arg)
   return 0;
 }
 
-unsigned int invalid_maxspeed(const userinput * const u, const char *arg)
+static unsigned int invalid_maxspeed(const userinput * const u, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
     a_respond(u, "Try Specifying a Maxspeed");
@@ -2454,7 +2454,7 @@ void a_chmins(const userinput * const u)
     last = u->arg3;
   }
   if (!last || !strlen(last)) {
-    a_respond(u,"Try Specifying a Minspeed");
+    a_respond(u, "Try Specifying a Minspeed");
     return;
   }
 
@@ -2687,7 +2687,7 @@ void a_chgets(const userinput * const u)
   }
 
   if (!last || !strlen(last)) {
-    a_respond(u,"Try Specifying a Count");
+    a_respond(u, "Try Specifying a Count");
     return;
   }
 
