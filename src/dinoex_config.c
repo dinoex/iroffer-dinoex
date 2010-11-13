@@ -321,7 +321,7 @@ static config_int_typ config_parse_int[] = {
 {"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1, 0 },
 {"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1, 0 },
 {"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1, 0 },
-{"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1, RESTRICTSEND_TIMEOUT },
+{"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1, 300 },
 {"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1, 0 },
 {"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024, 0 },
 {"start_of_month",          &gdata.start_of_month,          1, 31, 1, 1 },
