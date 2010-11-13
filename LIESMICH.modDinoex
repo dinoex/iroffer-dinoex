@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+338) AUTOCANCEL
+
+  Neues Admin Kommando:
+  AUTOCANCEL                         Abbrechen aller laufendend ADD und REMOVE Befehle.
+
 337) adddir_min_size
   Bei addir, adnew und autoadd werden Datein kleiner als die angegebene
   Größe in KB übersprungen.

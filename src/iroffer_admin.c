@@ -139,6 +139,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_addgroup,      "ADDGROUP","group dir","Add new files in <dir> to <group>"},
 {3,3,method_allow_all,a_addmatch,      "ADDMATCH","pattern","Add new files matching this pattern"},
 {3,3,method_allow_all,a_autoadd,       "AUTOADD",NULL,"scan autoadd_dirs for new files now"},
+{3,3,method_allow_all,a_autocancel,    "AUTOCANCEL",NULL,"Cancels pending add and remove actions"},
 {3,3,method_allow_all,a_autogroup,     "AUTOGROUP",NULL,"Create a group for each directory with packs"},
 {3,3,method_allow_all,a_chfile,        "CHFILE","n filename","Change file of pack <n> to <filename>"},
 {3,3,method_allow_all,a_newdir,        "NEWDIR","dirname newdir","rename pathnames of all matching packs"},

@@ -4375,6 +4375,15 @@ void a_autoadd(const userinput * const u)
   a_respond(u, "AUTOADD done.");
 }
 
+void a_autocancel(const userinput * const u)
+{
+  unsigned int sum;
+
+  sum = irlist_size(&gdata.packs_delayed);
+  free_delayed();
+  a_respond(u, "Cancelled %u pending add/remove", sum);
+}
+
 void a_autogroup(const userinput * const u)
 {
   char *tempstr;

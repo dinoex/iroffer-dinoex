@@ -217,7 +217,6 @@ static void free_state(void)
   transfer *tr;
   upload *up;
   ir_pqueue *pq;
-  userinput *u;
   igninfo *i;
   msglog_t *ml;
   xlistqueue_t *user;
@@ -301,13 +300,7 @@ static void free_state(void)
      mydelete(pq->nick);
      mydelete(pq->hostname);
   }
-  for (u = irlist_get_head(&gdata.packs_delayed);
-       u;
-       u = irlist_delete(&gdata.packs_delayed, u)) {
-     mydelete(u->cmd);
-     mydelete(u->arg1);
-     mydelete(u->arg2);
-  }
+  free_delayed();
   for (i = irlist_get_head(&gdata.ignorelist);
        i;
        i = irlist_delete(&gdata.ignorelist, i)) {

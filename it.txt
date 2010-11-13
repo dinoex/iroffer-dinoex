@@ -2387,3 +2387,6 @@
 2703 "File '%s' not added, to small"
 2704 "  Ignoring small file: %s"
 2705 "adddir_min_size"
+2706 "AUTOCANCEL"
+2707 "Cancels pending add and remove actions"
+2708 "Cancelled %u pending add/remove"

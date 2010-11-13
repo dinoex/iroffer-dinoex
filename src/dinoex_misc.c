@@ -1054,6 +1054,20 @@ group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
   return NULL;
 }
 
+/* drop all delayed actions */
+void free_delayed(void)
+{
+  userinput *u;
+
+  for (u = irlist_get_head(&gdata.packs_delayed);
+       u;
+       u = irlist_delete(&gdata.packs_delayed, u)) {
+     mydelete(u->cmd);
+     mydelete(u->arg1);
+     mydelete(u->arg2);
+  }
+}
+
 /* drop all strings from a channel */
 void free_channel_data(channel_t *ch)
 {
