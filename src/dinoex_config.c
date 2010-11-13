@@ -1582,7 +1582,7 @@ static void c_transferlimits(char *var)
   for (i=0; i<m; ++i) {
     if (part[i]) {
       ival = atoi(part[i]);
-      gdata.transferlimits[i].limit = max2(0, ival);
+      gdata.transferlimits[i].limit = ival;
       gdata.transferlimits[i].limit *= 1024 * 1024;
       mydelete(part[i]);
     }
