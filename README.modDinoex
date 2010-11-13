@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+338) AUTOCANCEL (inspired by [M]-V)
+
+  new admin command:
+  AUTOCANCEL                         Cancels all pending add and remove actions
+
 337) adddir_min_size (inspired by Gamerkun)
   When configured, addir, adnew and autoadd will skip all files that are
   smaller then the gives size in kB.

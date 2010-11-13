@@ -69,6 +69,7 @@ char *xd_color_description(const xdcc *xd);
 
 group_admin_t *verifypass_group(const char *hostmask, const char *passwd);
 
+void free_delayed(void);
 void free_channel_data(channel_t *ch);
 
 void auto_rehash(void);
