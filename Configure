@@ -144,7 +144,6 @@ case "$ostype" in
   ostype=HPUX
   ;;
  CYGWIN* )
-  VERSIONLONG="${VERSIONLONG} (Win32)"
   short_ostype=`uname | cut -d "_" -f 1`
   ostype=$short_ostype
   exe=.exe
@@ -152,6 +151,7 @@ case "$ostype" in
   # only 1.5.6 or later is supported
   echo -n "Checking for cygwin >= 1.5.6... "
   ver=`uname -r | cut -d '(' -f 1`
+  VERSIONLONG="${VERSIONLONG} (Win32) $ver"
   ver_A=`echo $ver | cut -d '.' -f 1`
   ver_B=`echo $ver | cut -d '.' -f 2`
   ver_C=`echo $ver | cut -d '.' -f 3`
