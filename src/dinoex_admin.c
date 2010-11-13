@@ -50,8 +50,8 @@ static void strip_trailing_path(char *str)
 
 void voutput_fd(int fd, const char *format, va_list args)
 {
-  ssize_t retval;
   char *tempstr;
+  ssize_t retval;
   int llen;
 
   updatecontext();
@@ -999,8 +999,8 @@ static void a_sort_insert(xdcc *xdo, const char *k)
 
 static void a_make_announce(const userinput * const u, const char *cmd, unsigned int n)
 {
-  char *tempstr;
   userinput *ui;
+  char *tempstr;
 
   tempstr = mycalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
@@ -1016,8 +1016,8 @@ static void a_make_announce(const userinput * const u, const char *cmd, unsigned
 
 static void a_filedel_disk(const userinput * const u, char **file)
 {
-  int xfiledescriptor;
   struct stat st;
+  int xfiledescriptor;
 
   updatecontext();
 
@@ -1131,7 +1131,6 @@ static unsigned int check_for_renamed_file(const userinput * const u, xdcc *xd, 
 
 static xdcc *a_add2(const userinput * const u, const char *group)
 {
-  int xfiledescriptor;
   struct stat st;
   xdcc *xd;
   autoadd_group_t *ag;
@@ -1139,6 +1138,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
   char *a1;
   char *a2;
   const char *newfile;
+  int xfiledescriptor;
   unsigned int n;
 
   updatecontext();
@@ -1326,11 +1326,11 @@ void a_add_delayed(const userinput * const u)
 
 void a_xdlock(const userinput * const u)
 {
+  xdcc *xd;
   char *tempstr;
   unsigned int i;
   unsigned int l;
   unsigned int s;
-  xdcc *xd;
 
   updatecontext();
 
@@ -1355,11 +1355,11 @@ void a_xdlock(const userinput * const u)
 
 void a_xdtrigger(const userinput * const u)
 {
+  xdcc *xd;
   char *tempstr;
   unsigned int i;
   unsigned int l;
   unsigned int s;
-  xdcc *xd;
 
   updatecontext();
 
@@ -1387,13 +1387,13 @@ void a_xdtrigger(const userinput * const u)
 
 void a_find(const userinput * const u)
 {
+  xdcc *xd;
   char *match;
   char *tempstr;
   unsigned int i;
   unsigned int k;
   unsigned int l;
   unsigned int s;
-  xdcc *xd;
 
   updatecontext();
 
@@ -1744,9 +1744,9 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
 
 void a_remove(const userinput * const u)
 {
+  xdcc *xd;
   unsigned int num1;
   unsigned int num2;
-  xdcc *xd;
 
   updatecontext();
 
@@ -1950,10 +1950,10 @@ void a_sort(const userinput * const u)
 
 int a_open_file(char **file, int mode)
 {
-  int xfiledescriptor;
-  unsigned int n;
   char *adir;
   char *path;
+  int xfiledescriptor;
+  unsigned int n;
 
   xfiledescriptor = open(*file, mode);
   if ((xfiledescriptor >= 0) || (errno != ENOENT))
@@ -2353,9 +2353,9 @@ void a_newgroup(const userinput * const u)
 
 void a_chdesc(const userinput * const u)
 {
-  unsigned int num;
   xdcc *xd;
   const char *newdesc;
+  unsigned int num;
 
   updatecontext();
 
@@ -2388,13 +2388,13 @@ void a_chdesc(const userinput * const u)
 
 void a_chtime(const userinput * const u)
 {
+  struct tm tmval;
+  xdcc *xd;
   const char *format;
   char *oldstr;
   char *newstr;
   unsigned int num;
   unsigned long val = 0;
-  xdcc *xd;
-  struct tm tmval;
 
   updatecontext();
 
@@ -2433,10 +2433,10 @@ void a_chtime(const userinput * const u)
 
 void a_chmins(const userinput * const u)
 {
+  xdcc *xd;
+  char *last;
   unsigned int num1;
   unsigned int num2;
-  char *last;
-  xdcc *xd;
 
   updatecontext();
 
@@ -2466,7 +2466,8 @@ void a_chmins(const userinput * const u)
     xd->minspeed = gdata.transferminspeed;
     if ( atof(last) != gdata.transferminspeed )
       xd->minspeed = atof(last);
-    a_respond(u, "CHMINS: [Pack %u] Old: %1.1f New: %1.1f", num1, xd->minspeed, atof(last));
+    a_respond(u, "CHMINS: [Pack %u] Old: %1.1f New: %1.1f",
+              num1, xd->minspeed, atof(last));
   }
 
   write_files();
@@ -2474,10 +2475,10 @@ void a_chmins(const userinput * const u)
 
 void a_chmaxs(const userinput * const u)
 {
+  xdcc *xd;
+  char *last;
   unsigned int num1;
   unsigned int num2;
-  char *last;
-  xdcc *xd;
 
   updatecontext();
 
@@ -2505,7 +2506,8 @@ void a_chmaxs(const userinput * const u)
     xd->maxspeed = gdata.transfermaxspeed;
     if ( atof(last) != gdata.transfermaxspeed )
       xd->maxspeed = atof(last);
-    a_respond(u, "CHMAXS: [Pack %u] Old: %1.1f New: %1.1f", num1, xd->maxspeed, atof(last));
+    a_respond(u, "CHMAXS: [Pack %u] Old: %1.1f New: %1.1f",
+              num1, xd->maxspeed, atof(last));
   }
 
   write_files();
@@ -2513,35 +2515,49 @@ void a_chmaxs(const userinput * const u)
 
 void a_chlimit(const userinput * const u)
 {
-  unsigned int num;
-  unsigned int val;
   xdcc *xd;
+  char *last;
+  unsigned int num1;
+  unsigned int num2;
+  unsigned int val;
 
   updatecontext();
 
-  num = get_pack_nr(u, u->arg1);
-  if (num == 0)
+  num1 = get_pack_nr(u, u->arg1);
+  if (num1 == 0)
     return;
 
-  if (!u->arg2 || !strlen(u->arg2)) {
+  last = u->arg2;
+  num2 = num1;
+  if (u->arg3) {
+    num2 = get_pack_nr2(u, u->arg2, num1);
+    if (num2 == 0)
+      return;
+
+    last = u->arg3;
+  }
+
+  if (!last || !strlen(last)) {
     a_respond(u, "Try Specifying a daily Downloadlimit");
     return;
   }
 
-  xd = irlist_get_nth(&gdata.xdccs, num - 1);
+  xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
   if (group_restricted(u, xd))
     return;
 
-  val = atoi(u->arg2);
+  val = atoi(last);
+  for (; num1 <= num2; ++num1) {
 
-  a_respond(u, "CHLIMIT: [Pack %u] Old: %u New: %u",
-            num, xd->dlimit_max, val);
+    a_respond(u, "CHLIMIT: [Pack %u] Old: %u New: %u",
+              num1, xd->dlimit_max, val);
 
-  xd->dlimit_max = val;
-  if (val == 0)
-    xd->dlimit_used = 0;
-  else
-    xd->dlimit_used = xd->gets + xd->dlimit_max;
+    xd->dlimit_max = val;
+    if (val == 0)
+      xd->dlimit_used = 0;
+    else
+      xd->dlimit_used = xd->gets + xd->dlimit_max;
+  }
 
   write_files();
 }
@@ -2576,8 +2592,8 @@ void a_chlimitinfo(const userinput * const u)
 
 void a_chtrigger(const userinput * const u)
 {
-  unsigned int num;
   xdcc *xd;
+  unsigned int num;
 
   updatecontext();
 
@@ -2648,16 +2664,16 @@ void a_deltrigger(const userinput * const u)
 
 void a_chcolor(const userinput * const u)
 {
+  xdcc *xd;
+  char *last;
+  char *back;
+  char *style;
   unsigned int num1;
   unsigned int num2;
   unsigned int color = 0;
   unsigned int color_fg = 0;
   unsigned int color_bg = 0;
   unsigned int color_st = 0;
-  char *last;
-  char *back;
-  char *style;
-  xdcc *xd;
 
   updatecontext();
 
@@ -3086,12 +3102,12 @@ void a_crc(const userinput * const u)
 
 void a_chfile(const userinput * const u)
 {
-  unsigned int num;
-  int xfiledescriptor;
   struct stat st;
+  xdcc *xd;
   char *file;
   char *old;
-  xdcc *xd;
+  unsigned int num;
+  int xfiledescriptor;
 
   updatecontext();
 
@@ -3278,10 +3294,10 @@ static void a_target_file(char **file2, const char *file1)
 
 void a_filemove(const userinput * const u)
 {
-  int xfiledescriptor;
   struct stat st;
   char *file1;
   char *file2;
+  int xfiledescriptor;
 
   updatecontext();
 
@@ -3441,10 +3457,10 @@ void a_filedel(const userinput * const u)
 
 void a_fileremove(const userinput * const u)
 {
-  unsigned int num1;
-  unsigned int num2;
   xdcc *xd;
   char *filename;
+  unsigned int num1;
+  unsigned int num2;
 
   updatecontext();
 
@@ -3594,8 +3610,8 @@ static void a_announce_channels(const char *msg, const char *match, const char *
 
 void a_amsg(const userinput * const u)
 {
-  unsigned int ss;
   gnetwork_t *backup;
+  unsigned int ss;
 
   updatecontext();
 
@@ -3701,9 +3717,9 @@ void a_mesg(const userinput * const u)
 
 void a_mesq(const userinput * const u)
 {
-  unsigned int count;
   ir_pqueue *pq;
   gnetwork_t *backup;
+  unsigned int count;
 
   updatecontext();
 
@@ -3860,9 +3876,9 @@ void a_closeu(const userinput * const u)
 
 void a_acceptu(const userinput * const u)
 {
-  unsigned int min = 0;
   tupload_t *tu;
   const char *hostmask;
+  unsigned int min = 0;
 
   updatecontext();
 
@@ -3968,9 +3984,9 @@ static void a_rmq3(irlist_t *list)
 
 static void a_rmq2(const userinput * const u, irlist_t *list)
 {
-  unsigned int num = 0;
   ir_pqueue *pq;
   gnetwork_t *backup;
+  unsigned int num = 0;
 
   updatecontext();
 
@@ -4466,9 +4482,9 @@ void a_autocancel(const userinput * const u)
 
 void a_autogroup(const userinput * const u)
 {
+  xdcc *xd;
   char *tempstr;
   char *newgroup;
-  xdcc *xd;
   unsigned int num;
 
   num = 0;
@@ -4566,11 +4582,11 @@ static unsigned int a_queue_found(const userinput * const u, xdcc *xd, unsigned 
 /* this function imported from iroffer-lamm */
 void a_queue(const userinput * const u)
 {
-  unsigned int num;
   xdcc *xd;
   char *tempstr;
   const char *msg;
   gnetwork_t *backup;
+  unsigned int num;
   int net;
 
   updatecontext();
@@ -4603,9 +4619,9 @@ void a_queue(const userinput * const u)
 
 static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned int num, unsigned int net)
 {
+  gnetwork_t *backup;
   char *tempstr;
   const char *msg;
-  gnetwork_t *backup;
 
   updatecontext();
 
@@ -4795,8 +4811,8 @@ void a_mannounce(const userinput * const u)
 
 static unsigned int a_new_announce(unsigned int max)
 {
-  struct tm *localt = NULL;
   irlist_t list;
+  struct tm *localt = NULL;
   xdcc **best;
   xdcc *xd;
   const char *format;
@@ -4876,13 +4892,13 @@ void a_cannounce(const userinput * const u)
 
 void a_sannounce(const userinput * const u)
 {
-  unsigned int num1;
-  unsigned int num2;
+  gnetwork_t *backup;
   xdcc *xd;
   char *tempstr;
   char *colordesc;
+  unsigned int num1;
+  unsigned int num2;
   unsigned int ss;
-  gnetwork_t *backup;
 
   updatecontext();
 
