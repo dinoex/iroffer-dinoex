@@ -441,12 +441,20 @@ static unsigned int invalid_group(const userinput * const u, char *arg)
   return 0;
 }
 
-static unsigned int invalid_dir(const userinput * const u, char *arg)
+static unsigned int invalid_text(const userinput * const u, const char *text, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Directory");
+    a_respond(u, "%s", text);
     return 1;
   }
+  return 0;
+}
+
+static unsigned int invalid_dir(const userinput * const u, char *arg)
+{
+  if (invalid_text(u, "Try Specifying a Directory", arg))
+    return 1;
+
   convert_to_unix_slash(arg);
   return 0;
 }
@@ -464,77 +472,45 @@ static unsigned int is_upload_file(const userinput * const u, const char *arg)
 
 static unsigned int invalid_file(const userinput * const u, char *arg)
 {
-  if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Filename");
+  if (invalid_text(u, "Try Specifying a Filename", arg))
     return 1;
-  }
+
   convert_to_unix_slash(arg);
   return 0;
 }
 
 static unsigned int invalid_pwd(const userinput * const u, const char *arg)
 {
-  if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Password");
-    return 1;
-  }
-  return 0;
+  return invalid_text(u, "Try Specifying a Password", arg);
 }
 
 static unsigned int invalid_nick(const userinput * const u, const char *arg)
 {
-  if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Nick");
-    return 1;
-  }
-  return 0;
+  return invalid_text(u, "Try Specifying a Nick", arg);
 }
 
 static unsigned int invalid_message(const userinput * const u, const char *arg)
 {
-  if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Message");
-    return 1;
-  }
-  return 0;
+  return invalid_text(u, "Try Specifying a Message", arg);
 }
 
-static unsigned int invalid_announce(const userinput * const u, const char *arg)
+static unsigned int invalid_command(const userinput * const u, char *arg)
 {
-  if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Message (e.g. NEW)");
+  if (invalid_text(u, "Try Specifying a Command", arg))
     return 1;
-  }
-  clean_quotes(u->arg1e);
-  return 0;
-}
 
-static unsigned int invalid_command(const userinput * const u, const char *arg)
-{
-  if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Command");
-    return 1;
-  }
-  clean_quotes(u->arg1e);
+  clean_quotes(arg);
   return 0;
 }
 
 unsigned int invalid_channel(const userinput * const u, const char *arg)
 {
-  if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Channel");
-    return 1;
-  }
-  return 0;
+  return invalid_text(u, "Try Specifying a Channel", arg);
 }
 
 static unsigned int invalid_maxspeed(const userinput * const u, const char *arg)
 {
-  if (!arg || (arg[0] == 0)) {
-    a_respond(u, "Try Specifying a Maxspeed");
-    return 1;
-  }
-  return 0;
+  return invalid_text(u, "Try Specifying a Maxspeed", arg);
 }
 
 static transfer *get_transfer_by_number(const userinput * const u, unsigned int num)
@@ -3658,9 +3634,10 @@ void a_amsg(const userinput * const u)
 
   updatecontext();
 
-  if (invalid_announce(u, u->arg1e) != 0)
+  if (invalid_message(u, u->arg1e) != 0)
     return;
 
+  clean_quotes(u->arg1e);
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
@@ -3830,10 +3807,8 @@ void a_bannnick(const userinput * const u)
   if (net < 0)
     return;
 
-  if (!u->arg1 || !strlen(u->arg1)) {
-    a_respond(u, "Try Specifying a Nick");
+  if (invalid_nick(u, u->arg1) != 0)
     return;
-  }
 
   nick = u->arg1;
   backup = gnetwork;

@@ -1387,7 +1387,6 @@
 1572 "Prova Specificando una Password"
 1573 "Prova Specificando un Nick"
 1574 "Prova Specificando un Message"
-1575 "Prova Specificando un Message (e.g. NEW)"
 1576 "Prova Specificando un Comando"
 1577 "Prova Specificando un Numero di Pack Valido"
 1578 "Prova Specificando un Network Valido"
