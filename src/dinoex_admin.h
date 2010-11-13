@@ -74,6 +74,7 @@ void a_chlimit(const userinput * const u);
 void a_chlimitinfo(const userinput * const u);
 void a_chtrigger(const userinput * const u);
 void a_deltrigger(const userinput * const u);
+void a_chgets(const userinput * const u);
 void a_chcolor(const userinput * const u);
 void a_lock(const userinput * const u);
 void a_unlock(const userinput * const u);

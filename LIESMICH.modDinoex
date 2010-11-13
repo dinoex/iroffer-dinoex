@@ -3,11 +3,17 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+341) CHLIMIT, CHGETS
+
+  Neue Admin Kommandos:
+  CHLIMIT <n> <m> <x>                Ändert das tägliche Downloadlimit von Pack <n> bis <m> auf <x> Übertragungen (0 für aus)
+  CHGETS <n> <m> <x>                 Verändert den Downloadzähler von Pack <n> bis <m> zu Wert <x>
+
 340) CHMINS, CHMAXS
 
   Neue Admin Kommandos:
-  CHMINS <n> <m> <x>                 Change min speed to <x> KB/s for pack <n> to <m>
-  CHMAXS <n> <m> <x>                 Change max speed to <x> KB/s for pack <n> to <m>
+  CHMINS <n> <m> <x>                 Ändert die Minimalgeschwindigkeit von Pack <n> bis <m> auf <x> KB (0 für aus)
+  CHMAXS <n> <m> <x>                 Ändert die Maximalgeschwindigkeit von Pack <n> bis <m> auf <x> KB (0 für aus)
 
 bugfix: autoaddann
   Die []-Klammern wurden auf dem Default-Text entfernt.
