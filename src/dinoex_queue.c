@@ -587,7 +587,7 @@ void start_main_queue(void)
 ir_pqueue *requeue(transfer *tr, ir_pqueue *old)
 {
   ir_pqueue *tempq;
- 
+
   tempq = irlist_add(&gdata.mainqueue, sizeof(ir_pqueue));
   tempq->queuedtime = tr->connecttimems / 1000;
   tempq->nick = mystrdup(tr->nick);
