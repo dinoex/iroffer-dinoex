@@ -1387,7 +1387,6 @@
 1572 "Try Specifying a Password"
 1573 "Try Specifying a Nick"
 1574 "Try Specifying a Message"
-1575 "Try Specifying a Message (e.g. NEW)"
 1576 "Try Specifying a Command"
 1577 "Try Specifying a Valid Pack Number"
 1578 "Try Specifying a Valid Network"
