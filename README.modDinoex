@@ -6,7 +6,7 @@ With Version 3.25:
 341) CHLIMIT, CHGETS
 
   new admin commands:
-  CHMINS <n> <m> <x>                 Change download limit to <x> transfers per day for pack <n> to <m>
+  CHLIMIT <n> <m> <x>                Change download limit to <x> transfers per day for pack <n> to <m>
   CHGETS <n> <m> <x>                 Set the get counter to <x> for pack <n> to <m>
 
 340) CHMINS, CHMAXS (inspired by CreeW)
