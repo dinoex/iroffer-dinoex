@@ -2379,7 +2379,7 @@
 2696 "no uploaddir"
 2697 "plaintext"
 2698 "\2%s\2%s%s"
-2699 "Annunciato %s%s%s%s"
+2699 "Annunciato %s%s%s%s%s"
 2700 "\2%u\2%s%s"
 2701 "Annunciato %u%s%s"
 2702 "-plaintext"

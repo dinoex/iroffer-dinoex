@@ -4786,6 +4786,9 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
+    if (gnetwork->noannounce != 0)
+     continue;
+
     snprintf(suffix, maxtextlength - 2, "/MSG %s XDCC SEND %u",
              get_user_nick(), num);
     color_suffix = color_text(suffix, color);
@@ -4793,12 +4796,9 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
              prefix, gdata.announce_seperator, color_suffix);
     if (color_suffix != suffix)
       mydelete(color_suffix);
-    if (gnetwork->noannounce != 0)
-     continue;
-
-    a_announce_channels(suffix, match, xd->group);
+    a_announce_channels(message, match, xd->group);
     gnetwork = backup;
-    a_respond(u, "Announced %s%s%s%s", msg, dateprefix, xd->desc, suffix);
+    a_respond(u, "Announced %s%s%s%s%s", msg, dateprefix, xd->desc, gdata.announce_seperator, suffix);
   }
   gnetwork = backup;
   mydelete(message);
