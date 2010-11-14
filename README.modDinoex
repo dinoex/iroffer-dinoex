@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+344) DUMP
+  On DUMP now all config data is written in seperate section.
+
 343) dump_all
   If set shows all config vars on DUMP.
   Default is to show only non default entries.
