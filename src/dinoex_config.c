@@ -487,6 +487,7 @@ static config_string_typ config_parse_string[] = {
 {"admin_job_file",          &gdata.admin_job_file,          1 },
 {"adminpass",               &gdata.adminpass,               4 },
 {"announce_seperator",      &gdata.announce_seperator,      0 },
+{"announce_suffix_color",   &gdata.announce_suffix_color,   0 },
 {"autoadd_color",           &gdata.autoadd_color,           0 },
 {"autoadd_group",           &gdata.autoadd_group,           0 },
 {"autoadd_sort",            &gdata.autoadd_sort,            0 },

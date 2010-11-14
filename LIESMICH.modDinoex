@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+342) announce_suffix_color
+  Setze Farbe für die Downloadhilfe in der Announce-Nachricht.
+  Damit wird der Text "/MSG <botname> XDCC GET <nr>" in Farbe angezeigt.
+  Default keine Farbe.
+
 341) CHLIMIT, CHGETS
 
   Neue Admin Kommandos:

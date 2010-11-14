@@ -1004,35 +1004,42 @@ static const char *style_on[ 16 ] = {
   /* 15 = bold, underline, italic, inverse */ "\x02\x1F\x1D\x16",
 };
 
-/* colored description of a pack */
-char *xd_color_description(const xdcc *xd)
+/* colored text */
+char *color_text(char *desc, int color)
 {
    char *colordesc;
    unsigned int foreground;
    unsigned int background;
    unsigned int style;
 
-   if (xd->color == 0)
-     return xd->desc;
+   if (color == 0)
+     return desc;
 
    if (gnetwork->plaintext)
-     return xd->desc;
+     return desc;
 
    colordesc = mycalloc(maxtextlength);
-   foreground = xd->color & 0xFF;
-   background = (xd->color >> 8) & 0xFF;
-   style = (xd->color >> 16 ) & 0x0F;
+   foreground = color & 0xFF;
+   background = (color >> 8) & 0xFF;
+   style = (color >> 16 ) & 0x0F;
    if (background != 0) {
-     snprintf(colordesc, maxtextlength, "%s\003%02u,%02u%s\003\017", style_on[ style ], foreground, background, xd->desc);
+     snprintf(colordesc, maxtextlength, "%s\003%02u,%02u%s\003\017", style_on[ style ], foreground, background, desc);
      return colordesc;
    }
    if (foreground != 0) {
-     snprintf(colordesc, maxtextlength, "%s\003%02u%s\003\017", style_on[ style ], foreground, xd->desc);
+     snprintf(colordesc, maxtextlength, "%s\003%02u%s\003\017", style_on[ style ], foreground, desc);
      return colordesc;
    }
-   snprintf(colordesc, maxtextlength, "%s%s\017", style_on[ style ], xd->desc);
+   snprintf(colordesc, maxtextlength, "%s%s\017", style_on[ style ], desc);
    return colordesc;
 }
+
+/* colored description of a pack */
+char *xd_color_description(const xdcc *xd)
+{
+   return color_text(xd->desc, xd->color);
+}
+
 
 /* verify password for group admins */
 group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
