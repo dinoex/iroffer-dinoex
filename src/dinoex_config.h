@@ -19,9 +19,6 @@ __attribute__ ((format(printf, 1, 2)))
 #endif
 dump_line(const char *format, ...);
 
-void dump_config_int2(const char *name, unsigned int val);
-void dump_config_string2(const char *name, const char *val);
-
 char *print_config_key(const char *key);
 
 void getconfig_set(const char *line);

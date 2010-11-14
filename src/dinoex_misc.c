@@ -1061,6 +1061,34 @@ group_admin_t *verifypass_group(const char *hostmask, const char *passwd)
   return NULL;
 }
 
+/* show connectionmethod in text */
+const char *text_connectionmethod(how_e how)
+{
+  switch (how) {
+  case how_direct:
+    return "direct";
+  case how_ssl:
+    return "ssl";
+  case how_bnc:
+    return "bnc";
+  case how_wingate:
+    return "wingate";
+  case how_custom:
+    return "custom";
+  }
+  return "unknown";
+}
+
+/* show style of plist in text */
+const char *text_pformat(unsigned int val)
+{
+  if ((val & CHAN_MINIMAL) != 0)
+    return "minimal";
+  if ((val & CHAN_SUMMARY) != 0)
+    return "summary";
+  return "full";
+}
+
 /* drop all delayed actions */
 void free_delayed(void)
 {

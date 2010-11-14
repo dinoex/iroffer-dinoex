@@ -770,6 +770,16 @@ void dumpcontext(void)
 }
 
 
+static void dump_config_string4(const char *name, const char *val)
+{
+  dump_line("GDATA * " "%s: %s", name, val ? val : "<undef>" );
+}
+
+static void dump_config_int4(const char *name, unsigned int val)
+{
+  dump_line("GDATA * " "%s: %u", name, val);
+}
+
 #define gdata_string(x) ((x) ? (x) : "<undef>")
 
 #define gdata_print_number(format,name) \
@@ -779,10 +789,10 @@ void dumpcontext(void)
     dump_line("GDATA * " #name ": " format, (type) gdata. name);
 
 #define gdata_print_string(name) \
-    dump_config_string2(#name, gdata. name);
+    dump_config_string4(#name, gdata. name);
 
 #define gdata_print_int(name) \
-    dump_config_int2(#name, gdata. name);
+    dump_config_int4(#name, gdata. name);
 
 #define gdata_print_uint(name)  gdata_print_number("%u", name)
 #define gdata_print_long(name)  gdata_print_number("%ld", name)
@@ -854,9 +864,8 @@ void dumpgdata(void)
   char ip6[maxtextlengthshort];
   
   dump_line("iroffer-dinoex " VERSIONLONG FEATURES);
-  dump_line("GDATA DUMP BEGIN");
-  
   config_dump();
+  dump_line("GDATA DUMP BEGIN");
   
   gdata_print_int(transfermethod);
   
@@ -868,16 +877,10 @@ void dumpgdata(void)
   gdata_print_string(osstring);
   gdata_print_time(startuptime);
   gdata_print_int(background);
-  gdata_print_number_cast("%d",logrotate,int);
   gdata_print_number_cast("%d",last_logrotate,int);
   gdata_print_number_cast("%d", last_update, int);
 
-  gdata_print_float(transferminspeed);
-  gdata_print_float(transfermaxspeed);
   gdata_print_int(maxb);
-  gdata_print_int(overallmaxspeeddaytimestart);
-  gdata_print_int(overallmaxspeeddaytimeend);
-  gdata_print_int(overallmaxspeeddaydays);
   
   for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
     {
@@ -887,12 +890,6 @@ void dumpgdata(void)
     }
   gdata_print_int(transferlimits_over);
   
-  gdata_irlist_iter_start(autoqueue, autoqueue_t);
-  gdata_iter_print_uint(pack);
-  gdata_iter_print_string(word);
-  gdata_iter_print_string(message);
-  gdata_irlist_iter_end;
-
   gdata_irlist_iter_start(autotrigger, autotrigger_t);
   dump_line("GDATA * " "pack" ": " "%d", number_of_pack(iter->pack));
   gdata_iter_print_string(word);
@@ -960,33 +957,10 @@ void dumpgdata(void)
   gdata_iter_print_long(count);
   gdata_irlist_iter_end;
 
-  gdata_irlist_iter_start(mime_type, http_magic_t);
-  gdata_iter_print_string(m_ext);
-  gdata_iter_print_string(m_mime);
-  gdata_irlist_iter_end;
-
-  gdata_irlist_iter_start(autoadd_group_match, autoadd_group_t);
-  gdata_iter_print_string(a_group);
-  gdata_iter_print_string(a_pattern);
-  gdata_irlist_iter_end;
-
   gdata_print_string(nosendmsg);
 
   gdata_print_number_cast("%ld", nomd5_start, long);
   gdata_print_number_cast("%ld", noannounce_start, long);
-  
-  gdata_irlist_iter_start(group_admin, group_admin_t);
-  gdata_iter_print_int(g_level);
-  gdata_iter_print_string(g_host);
-  gdata_iter_print_string(g_pass);
-  gdata_iter_print_string(g_groups);
-  gdata_iter_print_string(g_uploaddir);
-  gdata_irlist_iter_end;
-
-  gdata_print_string(statefile);
-  gdata_print_string(periodicmsg_nick);
-  gdata_print_string(periodicmsg_msg);
-  gdata_print_int(periodicmsg_time);
   
   gdata_irlist_iter_start(tuploadhost, tupload_t);
   gdata_iter_print_string(u_host);
@@ -1000,59 +974,16 @@ void dumpgdata(void)
   gdata_iter_print_long(q_time);
   gdata_irlist_iter_end;
   
-  gdata_print_number("%" LLPRINTFMT "d", uploadmaxsize);
-  gdata_print_number("%" LLPRINTFMT "d", uploadminspace);
-  gdata_print_number("%" LLPRINTFMT "d", disk_quota);
-
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)
     {
-      dump_line("GDATA * connectionmethod: how=%d host=%s port=%d passwd=%s vhost=%s",
-              (int)gdata.networks[ss].connectionmethod.how,
-              gdata_string(gdata.networks[ss].connectionmethod.host),
-              (int)gdata.networks[ss].connectionmethod.port,
-              gdata_string(gdata.networks[ss].connectionmethod.password),
-              gdata_string(gdata.networks[ss].connectionmethod.vhost));
-
       gdata_print_int(networks[ss].net);
       gdata_print_string(networks[ss].name);
       gdata_print_string(networks[ss].user_nick);
       gdata_print_string(networks[ss].caps_nick);
-      gdata_print_string(networks[ss].nickserv_pass);
-      gdata_print_string(networks[ss].config_nick);
-      gdata_print_string(networks[ss].user_modes);
-      gdata_print_string(networks[ss].local_vhost);
       /* r_config_nick */
       gdata_print_number("0x%.8lX", networks[ss].ourip);
       /* r_ourip */
-      gdata_print_int(networks[ss].usenatip);
-      gdata_print_int(networks[ss].getip_net);
-      gdata_print_string(networks[ss].natip);
-      gdata_print_int(networks[ss].need_voice);
-      gdata_print_int(networks[ss].need_level);
-  
-      gdata_irlist_iter_start(networks[ss].proxyinfo, char);
-      gdata_iter_as_print_string;
-      gdata_irlist_iter_end;
-
-      gdata_irlist_iter_start(networks[ss].server_join_raw, char);
-      gdata_iter_as_print_string;
-      gdata_irlist_iter_end;
-
-      gdata_irlist_iter_start(networks[ss].server_connected_raw, char);
-      gdata_iter_as_print_string;
-      gdata_irlist_iter_end;
-
-      gdata_irlist_iter_start(networks[ss].channel_join_raw, char);
-      gdata_iter_as_print_string;
-      gdata_irlist_iter_end;
-
-      gdata_irlist_iter_start(networks[ss].servers, server_t);
-      gdata_iter_print_string(hostname);
-      gdata_iter_print_uint(port);
-      gdata_iter_print_string(password);
-      gdata_irlist_iter_end;
-  
       gdata_print_string(networks[ss].curserver.hostname);
       gdata_print_uint(networks[ss].curserver.port);
       gdata_print_string(networks[ss].curserver.password);
@@ -1066,7 +997,6 @@ void dumpgdata(void)
       gdata_print_time(networks[ss].lastservercontact);
       gdata_print_time(networks[ss].lastnotify);
       gdata_print_time(networks[ss].lastping);
-      gdata_print_int(networks[ss].slow_privmsg);
       gdata_print_time(networks[ss].lastslow);
       gdata_print_long(networks[ss].lag);
       gdata_print_time(networks[ss].next_identify);
@@ -1108,11 +1038,6 @@ void dumpgdata(void)
         {
           gdata_print_int_array(networks[ss].inamnt);
         }
-    
-      gdata_print_int(networks[ss].noannounce);
-      gdata_print_int(networks[ss].plaintext);
-      gdata_print_int(networks[ss].restrictsend);
-      gdata_print_int(networks[ss].restrictlist);
     } /* networks */
    
   /* r_channel t_channel r_pidfile */
@@ -1142,23 +1067,7 @@ void dumpgdata(void)
     {
       
       gdata_irlist_iter_start(networks[ss].channels, channel_t);
-      dump_line("  : name=%s key=%s",
-          iter->name,
-          gdata_string(iter->key));
-      dump_line("  : flags=%d plisttime=%d plistoffset=%d",
-          iter->flags,
-          iter->plisttime,
-          iter->plistoffset);
-      gdata_iter_print_string(headline);
-      gdata_iter_print_string(pgroup);
-      gdata_iter_print_string(joinmsg);
-      gdata_iter_print_string(listmsg);
-      gdata_iter_print_string(rgroup);
-      gdata_iter_print_int(delay);
-      gdata_iter_print_int(noannounce);
-      gdata_iter_print_int(plaintext);
-      gdata_iter_print_int(notrigger);
-      gdata_iter_print_int(waitjoin);
+      dump_line("  : name=%s flags=%x", iter->name, iter->flags);
       gdata_iter_print_time(nextann);
       gdata_iter_print_time(nextjoin);
       gdata_iter_print_time(lastjoin);
@@ -1226,7 +1135,6 @@ void dumpgdata(void)
     }
   
   gdata_print_int(ignore);
-  gdata_print_int(slotsmax);
   gdata_print_number_cast("%ld", noautosave, long);
   gdata_print_number_cast("%ld", nonewcons, long);
   gdata_print_number_cast("%ld", nolisting, long);

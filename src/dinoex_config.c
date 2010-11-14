@@ -23,6 +23,7 @@
 #include "dinoex_admin.h"
 #include "dinoex_http.h"
 #include "dinoex_jobs.h"
+#include "dinoex_misc.h"
 #include "dinoex_config.h"
 
 #include <ctype.h>
@@ -56,7 +57,8 @@ typedef struct {
 
 typedef struct {
   const char *name;
-  void (*func)(char *var);
+  void (*func)(const char *key, char *var);
+  void (*fprint)(const char *key);
 } config_func_typ;
 
 
@@ -64,6 +66,104 @@ const char *current_config;
 unsigned long current_line;
 unsigned int current_network;
 unsigned int current_bracket;
+
+
+void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 1, 2)))
+#endif
+/* dump a string to logfile */
+dump_line(const char *format, ...)
+{
+   va_list args;
+   va_start(args, format);
+   vioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR, format, args);
+   va_end(args);
+}
+
+/* dump an bool variable to logfile */
+static void dump_config_bool2(const char *name, unsigned int val)
+{
+  const char *text;
+
+  text = "no";
+  for (;;) {
+    if (val == 2)
+      return;
+    if (val == 0)
+      break;
+    text = "yes";
+    break;
+  }
+  dump_line("%s %s", name, text);
+}
+
+/* dump an bool variable to logfile if defined */
+static void dump_config_bool3(const char *name, unsigned int val, unsigned int reset)
+{
+  if ((gdata.dump_all != 0) || (val != reset))
+    dump_config_bool2(name, val);
+}
+
+/* dump an integer variable to logfile */
+static void dump_config_int2(const char *name, unsigned int val)
+{
+  dump_line("%s %u", name, val);
+}
+
+/* dump an integer variable to logfile if defined */
+static void dump_config_int3(const char *name, unsigned int val, unsigned int reset)
+{
+  if ((gdata.dump_all != 0) || (val != reset))
+    dump_config_int2(name, val);
+}
+
+/* dump an float variable to logfile */
+static void dump_config_float2(const char *name, float val)
+{
+  if ((gdata.dump_all != 0) || (val != 0.0))
+    dump_line("%s %.5f", name, val);
+}
+
+/* dump an 64bit variable to logfile */
+static void dump_config_long2(const char *name, ir_int64 val)
+{
+  if ((gdata.dump_all != 0) || (val != 0))
+    dump_line("%s %" LLPRINTFMT "d", name, val);
+}
+
+/* dump an megabyte variable to logfile */
+static void dump_config_mega2(const char *name, ir_int64 val)
+{
+  val /= (1024*1024);
+  dump_config_long2(name, val);
+}
+
+/* dump a string variable to logfile */
+static void dump_config_string2(const char *name, const char *val)
+{
+  dump_line("%s \"%s\"", name, val ? val : "<undef>" );
+}
+
+/* dump a string variable to logfile skip if not defined */
+static void dump_config_string3(const char *name, const char *val)
+{
+  if ((gdata.dump_all != 0) || (val != NULL))
+    dump_config_string2(name, val);
+}
+
+/* dump a list variable to logfile skip if not defined */
+static void dump_config_list2(const char *name, const irlist_t *list)
+{
+  char *string;
+
+  for (string = irlist_get_head(list);
+       string;
+       string = irlist_get_next(string)) {
+    dump_config_string2(name, string);
+  }
+}
+
 
 static unsigned int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
@@ -149,32 +249,6 @@ static config_bool_typ config_parse_bool[] = {
 {"xdcclist_grouponly",     &gdata.xdcclist_grouponly,      0 },
 {"xdcclistfileraw",        &gdata.xdcclistfileraw,         0 },
 {NULL, NULL, 0 }};
-
-
-void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 1, 2)))
-#endif
-/* dump a string to logfile */
-dump_line(const char *format, ...)
-{
-   va_list args;
-   va_start(args, format);
-   vioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR, format, args);
-   va_end(args);
-}
-
-/* dump an integer variable to logfile */
-void dump_config_int2(const char *name, unsigned int val)
-{
-  dump_line("GDATA * " "%s: %u", name, val);
-}
-
-/* dump a string variable to logfile */
-void dump_config_string2(const char *name, const char *val)
-{
-  dump_line("GDATA * " "%s: %s", name, val ? val : "<undef>" );
-}
 
 static void config_sorted_bool(void)
 {
@@ -271,11 +345,7 @@ static void dump_config_bool(void)
   unsigned int i;
 
   for (i = 0; config_parse_bool[i].name != NULL; ++i) {
-    if (gdata.dump_all == 0) {
-      if (*(config_parse_bool[i].ivar) == config_parse_bool[i].reset)
-        continue;
-    }
-    dump_config_int2(config_parse_bool[i].name, *(config_parse_bool[i].ivar));
+    dump_config_bool3(config_parse_bool[i].name, *(config_parse_bool[i].ivar), config_parse_bool[i].reset);
   }
 }
 
@@ -651,11 +721,7 @@ static void dump_config_string(void)
   unsigned int i;
 
   for (i = 0; config_parse_string[i].name != NULL; ++i) {
-    if (gdata.dump_all == 0) {
-      if (*(config_parse_string[i].svar) == NULL);
-        continue;
-    }
-    dump_config_string2(config_parse_string[i].name, *(config_parse_string[i].svar));
+    dump_config_string3(config_parse_string[i].name, *(config_parse_string[i].svar));
   }
 }
 
@@ -846,8 +912,8 @@ static unsigned int set_config_list(const char *key, char *text)
 static void dump_config_list(void)
 {
   ir_cidr_t *cidr;
-  char *string;
   unsigned int i;
+  unsigned int netmask;
   char ip6[maxtextlengthshort];
 
   for (i = 0; config_parse_list[i].name != NULL; ++i) {
@@ -855,25 +921,30 @@ static void dump_config_list(void)
       if (irlist_size(config_parse_list[i].list) == 0)
         continue;
     }
-    dump_line("GDATA * " "%s:",
-            config_parse_list[i].name);
     switch (config_parse_list[i].flags) {
     case 5:
       for (cidr = irlist_get_head(config_parse_list[i].list);
            cidr;
            cidr = irlist_get_next(cidr)) {
-        dump_line("  " ": %s %d", "family", cidr->family);
-        dump_line("  " ": %s %d", "netmask", cidr->netmask);
         my_getnameinfo(ip6, maxtextlengthshort - 1, &(cidr->remote.sa));
-        dump_line("  " ": %s %s", "remoteip", ip6);
+        netmask = 0;
+        if (cidr->family == AF_INET) {
+          netmask = 32;
+        }
+        if (cidr->family == AF_INET6) {
+          netmask = 128;
+        }
+        if (cidr->netmask == netmask) {
+          dump_line("%s %s",
+                    config_parse_list[i].name, ip6);
+        } else {
+          dump_line("%s %s/%u",
+                    config_parse_list[i].name, ip6, cidr->netmask);
+        }
       }
       break;
     default:
-      for (string = irlist_get_head(config_parse_list[i].list);
-           string;
-           string = irlist_get_next(string)) {
-        dump_line("  " ": %s", string);
-      }
+      dump_config_list2(config_parse_list[i].name, config_parse_list[i].list);
     }
   }
 }
@@ -1037,20 +1108,20 @@ static int parse_channel_options(channel_t *cptr, char *var)
 }
 
 
-static void c_auth_name(char *var)
+static void c_auth_name(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].auth_name);
   gdata.networks[current_network].auth_name = mystrdup(var);
 }
 
-static void c_autoadd_group_match(char *var)
+static void c_autoadd_group_match(const char *key, char *var)
 {
   char *split;
   autoadd_group_t *ag;
 
   split = strchr(var, ' ');
   if (split == NULL) {
-    invalid_args("autoadd_group_match", var);
+    invalid_args(key, var);
     return;
   }
 
@@ -1060,7 +1131,18 @@ static void c_autoadd_group_match(char *var)
   ag->a_pattern = mystrdup(split);
 }
 
-static void c_autosendpack(char *var)
+static void d_autoadd_group_match(const char *key)
+{
+  autoadd_group_t *ag;
+
+  for (ag = irlist_get_head(&gdata.autoadd_group_match);
+       ag;
+       ag = irlist_get_next(ag)) {
+    dump_line("%s %s \"%s\"", key, ag->a_group, ag->a_pattern);
+  }
+}
+
+static void c_autosendpack(const char * UNUSED(key), char *var)
 {
   char *part[3];
   unsigned int rawval;
@@ -1080,7 +1162,18 @@ static void c_autosendpack(char *var)
   mydelete(part[0]);
 }
 
-static void c_channel(char *var)
+static void d_autosendpack(const char *key)
+{
+  autoqueue_t *aq;
+
+  for (aq = irlist_get_head(&gdata.autoqueue);
+       aq;
+       aq = irlist_get_next(aq)) {
+    dump_line("%s %u %s \"%s\"", key, aq->pack, aq->word, aq->message);
+  }
+}
+
+static void c_channel(const char * UNUSED(key), char *var)
 {
   char *part[2];
   channel_t *cptr;
@@ -1122,17 +1215,17 @@ static void c_channel(char *var)
   mydelete(part[1]);
 }
 
-static void c_channel_join_raw(char *var)
+static void c_channel_join_raw(const char *key, char *var)
 {
   if (var == NULL) {
-    invalid_args("channel_join_raw", var);
+    invalid_args(key, var);
     return;
   }
 
   irlist_add_string(&gdata.networks[current_network].channel_join_raw, var);
 }
 
-static void c_connectionmethod(char *var)
+static void c_connectionmethod(const char * UNUSED(key), char *var)
 {
   char *part[5];
   unsigned int m;
@@ -1190,25 +1283,30 @@ static void c_connectionmethod(char *var)
   mydelete(part[4]);
 }
 
-static void c_disk_quota(char *var)
+static void c_disk_quota(const char * UNUSED(key), char *var)
 {
   gdata.disk_quota = atoull(var)*1024*1024;
 }
 
-static void c_getip_network(char *var)
+static void d_disk_quota(const char *key)
+{
+  dump_config_mega2(key, gdata.disk_quota);
+}
+
+static void c_getip_network(const char *key, char *var)
 {
   int net;
   net = get_network(var);
   if (net < 0) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has unknown args: '%s'",
-             current_config, current_line, "getip_network", var);
+             current_config, current_line, key, var);
   } else {
     gdata.networks[current_network].getip_net = net;
   }
 }
 
-static void c_group_admin(char *var)
+static void c_group_admin(const char *key, char *var)
 {
   group_admin_t *ga;
   char *data;
@@ -1249,7 +1347,7 @@ static void c_group_admin(char *var)
   if (drop) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has unknown args: '%s'",
-             current_config, current_line, "group_admin", var);
+             current_config, current_line, key, var);
     mydelete(ga->g_host);
     mydelete(ga->g_pass);
     mydelete(ga->g_groups);
@@ -1258,7 +1356,25 @@ static void c_group_admin(char *var)
   }
 }
 
-static void c_logrotate(char *var)
+static void d_group_admin(const char *key)
+{
+  group_admin_t *ga;
+
+  for (ga = irlist_get_head(&gdata.group_admin);
+       ga;
+       ga = irlist_get_next(ga)) {
+
+    if (ga->g_uploaddir != NULL) {
+      dump_line("%s %u %s %s %s \"%s\"",
+                key, ga->g_level, ga->g_host, ga->g_pass, ga->g_groups, ga->g_uploaddir);
+    } else {
+      dump_line("%s %u %s %s %s",
+                key, ga->g_level, ga->g_host, ga->g_pass, ga->g_groups);
+    }
+  }
+}
+
+static void c_logrotate(const char * UNUSED(key), char *var)
 {
   unsigned int val;
 
@@ -1281,26 +1397,43 @@ static void c_logrotate(char *var)
   }
 }
 
-static void c_local_vhost(char *var)
+static void d_logrotate(const char *key)
+{
+  if (gdata.logrotate == 30*24*60*60) {
+    dump_config_string2(key, "monthly");
+    return;
+  }
+  if (gdata.logrotate ==  7*24*60*60) {
+    dump_config_string2(key, "weekly");
+    return;
+  }
+  if (gdata.logrotate ==    24*60*60) {
+    dump_config_string2(key, "daily");
+    return;
+  }
+  dump_config_int3(key, gdata.logrotate, 0);
+}
+
+static void c_local_vhost(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].local_vhost);
   gdata.networks[current_network].local_vhost = mystrdup(var);
 }
 
-static void c_login_name(char *var)
+static void c_login_name(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].login_name);
   gdata.networks[current_network].login_name = mystrdup(var);
 }
 
-static void c_mime_type(char *var)
+static void c_mime_type(const char *key, char *var)
 {
   char *split;
   http_magic_t *mime;
 
   split = strchr(var, ' ');
   if (split == NULL) {
-    invalid_args("mime_type", var);
+    invalid_args(key, var);
     return;
   }
 
@@ -1310,9 +1443,19 @@ static void c_mime_type(char *var)
   mime->m_mime = split;
 }
 
-static void c_need_level(char *var)
+static void d_mime_type(const char *key)
 {
-  const char *key = "need_level";
+  http_magic_t *mime;
+
+  for (mime = irlist_get_head(&gdata.mime_type);
+       mime;
+       mime = irlist_get_next(mime)) {
+    dump_line("%s %s %s", key, mime->m_ext, mime->m_mime);
+  }
+}
+
+static void c_need_level(const char *key, char *var)
+{
   int rawval;
 
   if (check_range(key, var, &rawval, 0, 3) == 0) {
@@ -1320,7 +1463,7 @@ static void c_need_level(char *var)
   }
 }
 
-static void c_network(char *var)
+static void c_network(const char * UNUSED(key), char *var)
 {
   char *bracket;
   unsigned int ss;
@@ -1370,33 +1513,33 @@ static void c_network(char *var)
   }
 }
 
-static void c_nickserv_pass(char *var)
+static void c_nickserv_pass(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].nickserv_pass);
   gdata.networks[current_network].nickserv_pass = mystrdup(var);
 }
 
-static void c_noannounce(char *var)
+static void c_noannounce(const char *key, char *var)
 {
   int val;
 
-  val = parse_bool_val("noannounce", var);
+  val = parse_bool_val(key, var);
   if (val >= 0) {
     gdata.networks[current_network].noannounce = val;
   }
 }
 
-static void c_plaintext(char *var)
+static void c_plaintext(const char *key, char *var)
 {
   int val;
 
-  val = parse_bool_val("plaintext", var);
+  val = parse_bool_val(key, var);
   if (val >= 0) {
     gdata.networks[current_network].plaintext = val;
   }
 }
 
-static void c_overallmaxspeeddaydays(char *var)
+static void c_overallmaxspeeddaydays(const char * UNUSED(key), char *var)
 {
   char *src;
   unsigned int i;
@@ -1430,7 +1573,31 @@ static void c_overallmaxspeeddaydays(char *var)
   }
 }
 
-static void c_overallmaxspeeddaytime(char *var)
+static char d_weekdays[8] = { 'U', 'M', 'T', 'W', 'R', 'F', 'S', 0 };
+
+static void d_overallmaxspeeddaydays(const char *key)
+{
+  char val[8];
+  char *src;
+  unsigned int i;
+  unsigned int mask;
+
+  if ((gdata.dump_all == 0) && (gdata.overallmaxspeeddaydays == 0x7F))
+    return;
+
+  src = val;
+  mask = 1;
+  for (i=0; (i<7); ++i) {
+    if ((gdata.overallmaxspeeddaydays & mask) != 0) {
+      *(src++) = d_weekdays[i];
+    }
+    mask <<= 1;
+  }
+  *src = 0;
+  dump_config_string2(key, val);
+}
+
+static void c_overallmaxspeeddaytime(const char * UNUSED(key), char *var)
 {
   char *part[2];
   int a = 0;
@@ -1446,7 +1613,16 @@ static void c_overallmaxspeeddaytime(char *var)
   mydelete(part[1]);
 }
 
-static void c_periodicmsg(char *var)
+static void d_overallmaxspeeddaytime(const char *key)
+{
+  if ((gdata.dump_all == 0) && (gdata.overallmaxspeeddaytimestart == 0) && (gdata.overallmaxspeeddaytimeend == 0))
+    return;
+
+  dump_line("%s %u %u",
+            key, gdata.overallmaxspeeddaytimestart, gdata.overallmaxspeeddaytimeend);
+}
+
+static void c_periodicmsg(const char *key, char *var)
 {
   char *part[4];
   unsigned int tnum;
@@ -1456,7 +1632,7 @@ static void c_periodicmsg(char *var)
   mydelete(gdata.periodicmsg_msg);
   m = get_argv(part, var, 3);
   if (m != 3) {
-    invalid_args("periodicmsg", var);
+    invalid_args(key, var);
     mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
@@ -1469,47 +1645,56 @@ static void c_periodicmsg(char *var)
   gdata.periodicmsg_time = max2(1, tnum);
 }
 
-static void c_proxyinfo(char *var)
+static void d_periodicmsg(const char *key)
+{
+  if ((gdata.dump_all == 0) && (gdata.periodicmsg_nick == NULL))
+    return;
+
+  dump_line("%s %s %u \"%s\"",
+            key, gdata.periodicmsg_nick, gdata.periodicmsg_time, gdata.periodicmsg_msg);
+}
+
+static void c_proxyinfo(const char *key, char *var)
 {
   if (var == NULL) {
-    invalid_args("proxyinfo", var);
+    invalid_args(key, var);
     return;
   }
 
   irlist_add_string(&gdata.networks[current_network].proxyinfo, var);
 }
 
-static void c_restrictlist(char *var)
+static void c_restrictlist(const char *key, char *var)
 {
   int val;
 
-  val = parse_bool_val("restrictlist", var);
+  val = parse_bool_val(key, var);
   if (val >= 0) {
     gdata.networks[current_network].restrictlist = val;
   }
 }
 
-static void c_restrictsend(char *var)
+static void c_restrictsend(const char *key, char *var)
 {
   int val;
 
-  val = parse_bool_val("restrictsend", var);
+  val = parse_bool_val(key, var);
   if (val >= 0) {
     gdata.networks[current_network].restrictsend = val;
   }
 }
 
-static void c_send_listfile(char *var)
+static void c_send_listfile(const char *key, char *var)
 {
   int rawval;
 
-  if (check_range("send_listfile", var, &rawval, -1, 1000000))
+  if (check_range(key, var, &rawval, -1, 1000000))
     return;
 
   gdata.send_listfile = rawval;
 }
 
-static void c_server(char *var)
+static void c_server(const char *key, char *var)
 {
   server_t *ss;
   char *part[3];
@@ -1517,7 +1702,7 @@ static void c_server(char *var)
   set_default_network_name();
   get_argv(part, var, 3);
   if (part[0] == NULL) {
-    invalid_args("server", var);
+    invalid_args(key, var);
     mydelete(part[0]);
     mydelete(part[1]);
     mydelete(part[2]);
@@ -1533,27 +1718,27 @@ static void c_server(char *var)
   }
 }
 
-static void c_server_connected_raw(char *var)
+static void c_server_connected_raw(const char *key, char *var)
 {
   if (var == NULL) {
-    invalid_args("server_connected_raw", var);
+    invalid_args(key, var);
     return;
   }
 
   irlist_add_string(&gdata.networks[current_network].server_connected_raw, var);
 }
 
-static void c_server_join_raw(char *var)
+static void c_server_join_raw(const char *key, char *var)
 {
   if (var == NULL) {
-    invalid_args("server_join_raw", var);
+    invalid_args(key, var);
     return;
   }
 
   irlist_add_string(&gdata.networks[current_network].server_join_raw, var);
 }
 
-static void c_slotsmax(char *var)
+static void c_slotsmax(const char * UNUSED(key), char *var)
 {
   unsigned int ival;
 
@@ -1566,9 +1751,13 @@ static void c_slotsmax(char *var)
   }
 }
 
-static void c_slow_privmsg(char *var)
+static void d_slotsmax(const char *key)
 {
-  const char *key = "need_level";
+  dump_config_int3(key, gdata.slotsmax, 0);
+}
+
+static void c_slow_privmsg(const char *key, char *var)
+{
   int rawval;
 
   if (check_range(key, var, &rawval, 0, 120) == 0) {
@@ -1576,7 +1765,7 @@ static void c_slow_privmsg(char *var)
   }
 }
 
-static void c_statefile(char *var)
+static void c_statefile(const char * UNUSED(key), char *var)
 {
   int i;
 
@@ -1590,7 +1779,12 @@ static void c_statefile(char *var)
     close(i);
 }
 
-static void c_transferlimits(char *var)
+static void d_statefile(const char *key)
+{
+  dump_config_string3(key, gdata.statefile);
+}
+
+static void c_transferlimits(const char * UNUSED(key), char *var)
 {
   char *part[NUMBER_TRANSFERLIMITS];
   unsigned int m;
@@ -1609,7 +1803,20 @@ static void c_transferlimits(char *var)
   }
 }
 
-static void c_transfermaxspeed(char *var)
+static void d_transferlimits(const char *key)
+{
+  unsigned int ii;
+  ir_int64 val[NUMBER_TRANSFERLIMITS];
+
+  for (ii=0; ii<NUMBER_TRANSFERLIMITS; ++ii) {
+    val[ii] = gdata.transferlimits[ii].limit;
+    val[ii] /= ( 1024 * 1024 );
+  }
+  dump_line("%s %" LLPRINTFMT "u %" LLPRINTFMT "u %" LLPRINTFMT "u",
+            key, val[TRANSFERLIMIT_DAILY], val[TRANSFERLIMIT_WEEKLY], val[TRANSFERLIMIT_MONTHLY]);
+}
+
+static void c_transfermaxspeed(const char * UNUSED(key), char *var)
 {
   float fval;
 
@@ -1617,22 +1824,42 @@ static void c_transfermaxspeed(char *var)
   gdata.transfermaxspeed = max2(0, fval);
 }
 
-static void c_transferminspeed(char *var)
+static void d_transfermaxspeed(const char *key)
+{
+  dump_config_float2(key, gdata.transfermaxspeed);
+}
+
+static void c_transferminspeed(const char * UNUSED(key), char *var)
 {
   gdata.transferminspeed = atof(var);
 }
 
-static void c_uploadmaxsize(char *var)
+static void d_transferminspeed(const char *key)
+{
+  dump_config_float2(key, gdata.transferminspeed);
+}
+
+static void c_uploadmaxsize(const char * UNUSED(key), char *var)
 {
   gdata.uploadmaxsize = atoull(var)*1024*1024;
 }
 
-static void c_uploadminspace(char *var)
+static void d_uploadmaxsize(const char *key)
+{
+  dump_config_mega2(key, gdata.uploadmaxsize);
+}
+
+static void c_uploadminspace(const char * UNUSED(key), char *var)
 {
   gdata.uploadminspace = atoull(var)*1024*1024;
 }
 
-static void c_usenatip(char *var)
+static void d_uploadminspace(const char *key)
+{
+  dump_config_mega2(key, gdata.uploadminspace);
+}
+
+static void c_usenatip(const char * UNUSED(key), char *var)
 {
   gnetwork_t *backup;
 
@@ -1644,71 +1871,71 @@ static void c_usenatip(char *var)
   gnetwork = backup;
 }
 
-static void c_user_modes(char *var)
+static void c_user_modes(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].user_modes);
   gdata.networks[current_network].user_modes = mystrdup(var);
 }
 
-static void c_user_nick(char *var)
+static void c_user_nick(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].config_nick);
   gdata.networks[current_network].config_nick = mystrdup(var);
 }
 
-static void c_bracket_open(char * UNUSED(var))
+static void c_bracket_open(const char * UNUSED(key), char * UNUSED(var))
 {
   ++current_bracket;
 }
 
-static void c_bracket_close(char *UNUSED(var))
+static void c_bracket_close(const char * UNUSED(key), char *UNUSED(var))
 {
   --current_bracket;
 }
 
 static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
-{"auth_name",              c_auth_name },
-{"autoadd_group_match",    c_autoadd_group_match },
-{"autosendpack",           c_autosendpack },
-{"channel",                c_channel },
-{"channel_join_raw",       c_channel_join_raw },
-{"connectionmethod",       c_connectionmethod },
-{"disk_quota",             c_disk_quota },
-{"getip_network",          c_getip_network },
-{"group_admin",            c_group_admin },
-{"local_vhost",            c_local_vhost },
-{"login_name",             c_login_name },
-{"logrotate",              c_logrotate },
-{"mime_type",              c_mime_type },
-{"need_level",             c_need_level },
-{"network",                c_network },
-{"nickserv_pass",          c_nickserv_pass },
-{"noannounce",             c_noannounce },
-{"overallmaxspeeddaydays", c_overallmaxspeeddaydays },
-{"overallmaxspeeddaytime", c_overallmaxspeeddaytime },
-{"periodicmsg",            c_periodicmsg },
-{"plaintext",              c_plaintext },
-{"proxyinfo",              c_proxyinfo },
-{"restrictlist",           c_restrictlist },
-{"restrictsend",           c_restrictsend },
-{"send_listfile",          c_send_listfile },
-{"server",                 c_server },
-{"server_connected_raw",   c_server_connected_raw },
-{"server_join_raw",        c_server_join_raw },
-{"slotsmax",               c_slotsmax },
-{"slow_privmsg",           c_slow_privmsg },
-{"statefile",              c_statefile },
-{"transferlimits",         c_transferlimits },
-{"transfermaxspeed",       c_transfermaxspeed },
-{"transferminspeed",       c_transferminspeed },
-{"uploadmaxsize",          c_uploadmaxsize },
-{"uploadminspace",         c_uploadminspace },
-{"usenatip",               c_usenatip },
-{"user_modes",             c_user_modes },
-{"user_nick",              c_user_nick },
-{"{",                      c_bracket_open },
-{"}",                      c_bracket_close },
+{"auth_name",              c_auth_name,              NULL },
+{"autoadd_group_match",    c_autoadd_group_match,    d_autoadd_group_match },
+{"autosendpack",           c_autosendpack,           d_autosendpack },
+{"channel",                c_channel,                NULL },
+{"channel_join_raw",       c_channel_join_raw,       NULL },
+{"connectionmethod",       c_connectionmethod,       NULL },
+{"disk_quota",             c_disk_quota,             d_disk_quota },
+{"getip_network",          c_getip_network,          NULL },
+{"group_admin",            c_group_admin,            d_group_admin },
+{"local_vhost",            c_local_vhost,            NULL },
+{"login_name",             c_login_name,             NULL },
+{"logrotate",              c_logrotate,              d_logrotate },
+{"mime_type",              c_mime_type,              d_mime_type },
+{"need_level",             c_need_level,             NULL },
+{"network",                c_network,                NULL },
+{"nickserv_pass",          c_nickserv_pass,          NULL },
+{"noannounce",             c_noannounce,             NULL },
+{"overallmaxspeeddaydays", c_overallmaxspeeddaydays, d_overallmaxspeeddaydays },
+{"overallmaxspeeddaytime", c_overallmaxspeeddaytime, d_overallmaxspeeddaytime },
+{"periodicmsg",            c_periodicmsg,            d_periodicmsg },
+{"plaintext",              c_plaintext,              NULL },
+{"proxyinfo",              c_proxyinfo,              NULL },
+{"restrictlist",           c_restrictlist,           NULL },
+{"restrictsend",           c_restrictsend,           NULL },
+{"send_listfile",          c_send_listfile,          NULL },
+{"server",                 c_server,                 NULL },
+{"server_connected_raw",   c_server_connected_raw,   NULL },
+{"server_join_raw",        c_server_join_raw,        NULL },
+{"slotsmax",               c_slotsmax,               d_slotsmax },
+{"slow_privmsg",           c_slow_privmsg,           NULL },
+{"statefile",              c_statefile,              d_statefile },
+{"transferlimits",         c_transferlimits,         d_transferlimits },
+{"transfermaxspeed",       c_transfermaxspeed,       d_transfermaxspeed },
+{"transferminspeed",       c_transferminspeed,       d_transferminspeed },
+{"uploadmaxsize",          c_uploadmaxsize,          d_uploadmaxsize },
+{"uploadminspace",         c_uploadminspace,         d_uploadminspace },
+{"usenatip",               c_usenatip,               NULL },
+{"user_modes",             c_user_modes,             NULL },
+{"user_nick",              c_user_nick,              NULL },
+{"{",                      c_bracket_open,           NULL },
+{"}",                      c_bracket_close,          NULL },
 {NULL, NULL }};
 
 static void config_sorted_func(void)
@@ -1761,8 +1988,135 @@ static int set_config_func(const char *key, char *text)
   if (i < 0)
     return 1;
 
-  (*config_parse_func[i].func)(text);
+  (*config_parse_func[i].func)(config_parse_func[i].name, text);
   return 0;
+}
+
+static void dump_config_func(void)
+{
+  server_t *ss;
+  channel_t *ch;
+  const char *how;
+  char *buffer;
+  size_t len;
+  unsigned int si;
+  unsigned int i;
+
+  for (i = 0; config_parse_func[i].name != NULL; ++i) {
+    if (config_parse_func[i].fprint != NULL)
+      (*config_parse_func[i].fprint)(config_parse_func[i].name);
+  }
+
+  for (si=0; si<gdata.networks_online; ++si) {
+    dump_line("%s \"%s\"", "network", gdata.networks[si].name);
+    dump_line("{");
+
+    how = text_connectionmethod(gdata.networks[si].connectionmethod.how);
+    for (;;) {
+      if (gdata.networks[si].connectionmethod.vhost) {
+        dump_line("%s %s %s %u \"%s\" %s", "connectionmethod", how,
+                  gdata.networks[si].connectionmethod.host,
+                  gdata.networks[si].connectionmethod.port,
+                  gdata.networks[si].connectionmethod.password,
+                  gdata.networks[si].connectionmethod.vhost);
+        break;
+      }
+      if (gdata.networks[si].connectionmethod.password) {
+         dump_line("%s %s %s %u \"%s\"", "connectionmethod",  how,
+                    gdata.networks[si].connectionmethod.host,
+                    gdata.networks[si].connectionmethod.port,
+                    gdata.networks[si].connectionmethod.password);
+        break;
+      }
+      if (gdata.networks[si].connectionmethod.host) {
+        dump_line("%s %s %s %u", "connectionmethod", how,
+                  gdata.networks[si].connectionmethod.host,
+                  gdata.networks[si].connectionmethod.port);
+        break;
+      }
+      dump_line("%s %s", "connectionmethod", how);
+      break;
+    }
+
+    dump_config_list2("proxyinfo", &gdata.networks[si].proxyinfo);
+    dump_config_list2("server_join_raw", &gdata.networks[si].server_join_raw);
+    dump_config_list2("server_connected_raw", &gdata.networks[si].server_connected_raw);
+    dump_config_list2("channel_join_raw", &gdata.networks[si].channel_join_raw);
+    dump_config_string3("local_vhost", gdata.networks[si].local_vhost);
+    if (gnetwork->usenatip != 0) {
+      dump_config_string2("usenatip", gdata.networks[si].natip);
+    }
+    dump_config_int3("getip_network", gdata.networks[si].getip_net, si);
+    dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0);
+    dump_config_bool3("plaintext", gdata.networks[si].plaintext, 0);
+    dump_config_string3("nickserv_pass", gdata.networks[si].nickserv_pass);
+    dump_config_string3("auth_name", gdata.networks[si].auth_name);
+    dump_config_string3("login_name", gdata.networks[si].login_name);
+
+    for (ss = irlist_get_head(&gdata.networks[si].servers);
+         ss;
+         ss = irlist_get_next(ss)) {
+      if (ss->password != NULL) {
+        dump_line("%s %s %u %s", "server", ss->hostname, ss->port, ss->password);
+      } else {
+        if (ss->port != 6667) {
+          dump_line("%s %s %u", "server", ss->hostname, ss->port);
+        } else {
+          dump_line("%s %s", "server", ss->hostname);
+        }
+      }
+    }
+
+    for (ch = irlist_get_head(&(gnetwork->channels));
+         ch;
+         ch = irlist_get_next(ch)) {
+      buffer = mycalloc(maxtextlength);
+      len = snprintf(buffer, maxtextlength, "%s", ch->name);
+      if (ch->plisttime != 0)
+        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime);
+      if (ch->plistoffset != 0)
+        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plistoffset", ch->plistoffset);
+      if (ch->flags != 0)
+        len += snprintf(buffer + len, maxtextlength - len, " %s %s", "-pformat", text_pformat(ch->flags));
+      if (ch->pgroup != NULL)
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-pgroup", ch->pgroup);
+      if (ch->key != NULL)
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-key", ch->key);
+      if (ch->delay != 0)
+        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-delay", ch->delay);
+      if (ch->noannounce != 0)
+        len += snprintf(buffer + len, maxtextlength - len, " %s", "-noannounce");
+      if (ch->joinmsg != NULL)
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-joinmsg", ch->joinmsg);
+      if (ch->headline != NULL)
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", ch->headline);
+#ifndef WITHOUT_BLOWFISH
+      if (ch->fish != NULL)
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-fish", ch->fish);
+#endif /* WITHOUT_BLOWFISH */
+      if (ch->listmsg != NULL)
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-listmsg", ch->listmsg);
+      if (ch->rgroup != NULL)
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-rgroup", ch->rgroup);
+      if (ch->notrigger != 0)
+        len += snprintf(buffer + len, maxtextlength - len, " %s", "-notrigger");
+      if (ch->plaintext != 0)
+        len += snprintf(buffer + len, maxtextlength - len, " %s", "-plaintext");
+      if (ch->waitjoin != 0)
+        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin);
+      dump_line("%s %s", "channel", buffer);
+      mydelete(buffer);
+    }
+
+    dump_config_string3("user_nick", gdata.networks[si].config_nick);
+    dump_config_string3("user_modes", gdata.networks[si].user_modes);
+    dump_config_bool3("restrictsend", gdata.networks[si].restrictsend, 0);
+    dump_config_bool3("restrictlist", gdata.networks[si].restrictlist, 0);
+    dump_config_bool3("need_voice", gdata.networks[si].need_voice, 0);
+    dump_config_int3("need_level", gdata.networks[si].need_level, 10);
+    dump_config_int3("slow_privmsg", gdata.networks[si].slow_privmsg, 1);
+    dump_line("}");
+  } /* networks */
 }
 
 static void reset_config_func(void)
@@ -1790,6 +2144,7 @@ static void reset_config_func(void)
     mydelete(gdata.networks[si].local_vhost);
     mydelete(gdata.networks[si].natip);
     mydelete(gdata.networks[si].auth_name);
+    mydelete(gdata.networks[si].login_name);
     irlist_delete_all(&gdata.networks[si].channels);
     irlist_delete_all(&gdata.networks[si].server_join_raw);
     irlist_delete_all(&gdata.networks[si].server_connected_raw);
@@ -1797,7 +2152,7 @@ static void reset_config_func(void)
     irlist_delete_all(&gdata.networks[si].proxyinfo);
     gdata.networks[si].connectionmethod.how = how_direct;
     gdata.networks[si].usenatip = 0;
-    gdata.networks[si].getip_net = 0;
+    gdata.networks[si].getip_net = si;
     gdata.networks[si].need_level = 10;
     gdata.networks[si].slow_privmsg = 1;
     gdata.networks[si].restrictsend = 2;
@@ -1924,10 +2279,13 @@ char *print_config_key(const char *key)
 /* dump the global config to console and logfile */
 void config_dump(void)
 {
+  dump_line("CONFIG DUMP BEGIN");
   dump_config_bool();
   dump_config_int();
   dump_config_string();
   dump_config_list();
+  dump_config_func();
+  dump_line("CONFIG DUMP END");
 }
 
 /* reset config to default values */

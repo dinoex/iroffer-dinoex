@@ -1744,6 +1744,7 @@ static void u_botinfo(const userinput * const u) {
 
    for (ss=0; ss<gdata.networks_online; ss++)
      {
+       const char *how;
        char *msg;
        u_respond(u, "network: %u: %s", ss + 1, gdata.networks[ss].name);
        msg = mycalloc(maxtextlength);
@@ -1760,52 +1761,41 @@ static void u_botinfo(const userinput * const u) {
                  get_user_modes());
        gnetwork = backup;
        
+       how = text_connectionmethod(gdata.networks[ss].connectionmethod.how);
        switch (gdata.networks[ss].connectionmethod.how)
          {
          case how_direct:
-             {
-                u_respond(u, "current server: %s:%u (direct)",
-                          gdata.networks[ss].curserver.hostname,
-                          gdata.networks[ss].curserver.port);
-             }
-           break;
          case how_ssl:
              {
-                u_respond(u, "current server: %s:%u (ssl)",
+                u_respond(u, "current server: %s:%u (%s)",
                           gdata.networks[ss].curserver.hostname,
-                          gdata.networks[ss].curserver.port);
+                          gdata.networks[ss].curserver.port, how);
              }
            break;
          case how_bnc:
            if (gdata.networks[ss].connectionmethod.vhost)
              {
-               u_respond(u, "current server: %s:%u (bnc at %s:%i with %s)",
+               u_respond(u, "current server: %s:%u (%s at %s:%i with %s)",
                          gdata.networks[ss].curserver.hostname,
-                         gdata.networks[ss].curserver.port,
+                         gdata.networks[ss].curserver.port, how,
                          gdata.networks[ss].connectionmethod.host,
                          gdata.networks[ss].connectionmethod.port,
                          gdata.networks[ss].connectionmethod.vhost);
              }
            else
              {
-               u_respond(u, "current server: %s:%u (bnc at %s:%i)",
+               u_respond(u, "current server: %s:%u (%s at %s:%i)",
                          gdata.networks[ss].curserver.hostname,
-                         gdata.networks[ss].curserver.port,
+                         gdata.networks[ss].curserver.port, how,
                          gdata.networks[ss].connectionmethod.host,
                          gdata.networks[ss].connectionmethod.port);
              }
            break;
          case how_wingate:
-           u_respond(u, "current server: %s:%u (wingate at %s:%i)",
-                     gdata.networks[ss].curserver.hostname,
-                     gdata.networks[ss].curserver.port,
-                     gdata.networks[ss].connectionmethod.host,
-                     gdata.networks[ss].connectionmethod.port);
-           break;
          case how_custom:
-           u_respond(u, "current server: %s:%u (custom at %s:%i)",
+           u_respond(u, "current server: %s:%u (%s at %s:%i)",
                      gdata.networks[ss].curserver.hostname,
-                     gdata.networks[ss].curserver.port,
+                     gdata.networks[ss].curserver.port, how,
                      gdata.networks[ss].connectionmethod.host,
                      gdata.networks[ss].connectionmethod.port);
            break;
@@ -1854,7 +1844,7 @@ static void u_botinfo(const userinput * const u) {
                snprintf(tempstr + len, maxtextlength - len,
                         ", plist every %2i min (%s)",
                         ch->plisttime,
-                        ch->flags & CHAN_MINIMAL ? "minimal" : (ch->flags & CHAN_SUMMARY ? "summary" : "full"));
+                        text_pformat(ch->flags));
              }
            
            u_respond(u, "%s", tempstr);

@@ -70,6 +70,9 @@ char *xd_color_description(const xdcc *xd);
 
 group_admin_t *verifypass_group(const char *hostmask, const char *passwd);
 
+const char *text_connectionmethod(how_e how);
+const char *text_pformat(unsigned int val);
+
 void free_delayed(void);
 void free_channel_data(channel_t *ch);
 
