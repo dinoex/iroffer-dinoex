@@ -65,6 +65,7 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist);
 
 int select_starting_transfer(unsigned int max);
 
+char *color_text(char *desc, int color);
 char *xd_color_description(const xdcc *xd);
 
 group_admin_t *verifypass_group(const char *hostmask, const char *passwd);

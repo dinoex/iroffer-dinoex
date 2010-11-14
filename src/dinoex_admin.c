@@ -1026,7 +1026,7 @@ static xdcc *a_oldest_xdcc(void)
   return old;
 }
 
-static unsigned int a_autoadd_color(void)
+static unsigned int a_get_color(const char *definition)
 {
   char *last;
   char *back;
@@ -1036,10 +1036,10 @@ static unsigned int a_autoadd_color(void)
   unsigned int color_bg;
   unsigned int color_st;
 
-  if (!gdata.autoadd_color)
+  if (!definition)
     return color;
 
-  last = mystrdup(gdata.autoadd_color);
+  last = mystrdup(definition);
   back = strchr(last, ',');
   if (back != 0) {
     *(back++) = 0;
@@ -1272,7 +1272,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
   }
 
   set_support_groups();
-  xd->color = a_autoadd_color();
+  xd->color = a_get_color(gdata.autoadd_color);
   write_files();
 #ifdef USE_RUBY
   do_myruby_added(xd->file, n);
@@ -3641,8 +3641,10 @@ void a_amsg(const userinput * const u)
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
-    if (gnetwork->noannounce == 0)
-      a_announce_channels(u->arg1e, NULL, NULL);
+    if (gnetwork->noannounce != 0)
+      continue;
+
+    a_announce_channels(u->arg1e, NULL, NULL);
   }
   gnetwork = backup;
   a_respond(u, "Announced %s", u->arg1e);
@@ -4749,7 +4751,10 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   char *datestr;
   char *dateprefix;
   char *suffix;
+  char *message;
+  char *color_suffix;
   unsigned int ss;
+  unsigned int color;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
@@ -4775,18 +4780,28 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
       msg = "added";
   }
   snprintf(prefix, maxtextlength - 2, "\2%s\2%s%s", msg, dateprefix, colordesc);
+  message = mycalloc(maxtextlength);
+  color = a_get_color(gdata.announce_suffix_color);
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
-    snprintf(suffix, maxtextlength - 2, "%s - /MSG %s XDCC SEND %u",
-             prefix, get_user_nick(), num);
-    if (gnetwork->noannounce == 0)
-     a_announce_channels(suffix, match, xd->group);
+    snprintf(suffix, maxtextlength - 2, "/MSG %s XDCC SEND %u",
+             get_user_nick(), num);
+    color_suffix = color_text(suffix, color);
+    snprintf(message, maxtextlength - 2, "%s%s%s",
+             prefix, gdata.announce_seperator, color_suffix);
+    if (color_suffix != suffix)
+      mydelete(color_suffix);
+    if (gnetwork->noannounce != 0)
+     continue;
+
+    a_announce_channels(suffix, match, xd->group);
     gnetwork = backup;
-    a_respond(u, "Announced %s%s%s", msg, dateprefix, xd->desc);
+    a_respond(u, "Announced %s%s%s%s", msg, dateprefix, xd->desc, suffix);
   }
   gnetwork = backup;
+  mydelete(message);
   mydelete(dateprefix);
   if (colordesc != xd->desc)
     mydelete(colordesc);
@@ -4941,8 +4956,10 @@ void a_sannounce(const userinput * const u)
     backup = gnetwork;
     for (ss=0; ss<gdata.networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
-      if (gnetwork->noannounce == 0)
-        a_announce_channels(tempstr, NULL, xd->group);
+      if (gnetwork->noannounce != 0)
+        continue;
+
+      a_announce_channels(tempstr, NULL, xd->group);
       gnetwork = backup;
       a_respond(u, "Announced %u%s%s", num1, gdata.announce_seperator, xd->desc);
     }
