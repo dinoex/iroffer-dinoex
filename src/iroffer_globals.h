@@ -230,6 +230,8 @@ unsigned int quietmode;
 unsigned int no_natural_sort;
 unsigned int requeue_sends;
 unsigned int show_group_of_pack;
+unsigned int dump_all;
+unsigned int bdummy;
 
 context_t context_log[MAXCONTEXTS];
 ir_boutput_t stdout_buffer;

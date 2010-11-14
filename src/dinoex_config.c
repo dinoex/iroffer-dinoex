@@ -80,6 +80,7 @@ static config_bool_typ config_parse_bool[] = {
 #else /* _OS_CYGWIN */
 {"dos_text_files",         &gdata.dos_text_files,          0 },
 #endif /* _OS_CYGWIN */
+{"dump_all",               &gdata.dump_all,                0 },
 {"extend_status_line",     &gdata.extend_status_line,      0 },
 #ifndef WITHOUT_BLOWFISH
 {"fish_only",              &gdata.fish_only,               0 },
@@ -270,6 +271,10 @@ static void dump_config_bool(void)
   unsigned int i;
 
   for (i = 0; config_parse_bool[i].name != NULL; ++i) {
+    if (gdata.dump_all == 0) {
+      if (*(config_parse_bool[i].ivar) == config_parse_bool[i].reset)
+        continue;
+    }
     dump_config_int2(config_parse_bool[i].name, *(config_parse_bool[i].ivar));
   }
 }
@@ -461,6 +466,12 @@ static void dump_config_int(void)
   unsigned int i;
 
   for (i = 0; config_parse_int[i].name != NULL; ++i) {
+    if (gdata.dump_all == 0) {
+      if (config_parse_int[i].reset == XDCC_SEND_LIST)
+        continue;
+      if (*(config_parse_int[i].ivar) == config_parse_int[i].reset)
+        continue;
+    }
     dump_config_int2(config_parse_int[i].name, *(config_parse_int[i].ivar));
   }
 }
@@ -640,6 +651,10 @@ static void dump_config_string(void)
   unsigned int i;
 
   for (i = 0; config_parse_string[i].name != NULL; ++i) {
+    if (gdata.dump_all == 0) {
+      if (*(config_parse_string[i].svar) == NULL);
+        continue;
+    }
     dump_config_string2(config_parse_string[i].name, *(config_parse_string[i].svar));
   }
 }
@@ -836,6 +851,10 @@ static void dump_config_list(void)
   char ip6[maxtextlengthshort];
 
   for (i = 0; config_parse_list[i].name != NULL; ++i) {
+    if (gdata.dump_all == 0) {
+      if (irlist_size(config_parse_list[i].list) == 0)
+        continue;
+    }
     dump_line("GDATA * " "%s:",
             config_parse_list[i].name);
     switch (config_parse_list[i].flags) {
