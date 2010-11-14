@@ -4784,7 +4784,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     if (gnetwork->noannounce == 0)
      a_announce_channels(suffix, match, xd->group);
     gnetwork = backup;
-    a_respond(u, "Announced %s%s%s%s", msg, dateprefix, xd->desc, suffix);
+    a_respond(u, "Announced %s%s%s", msg, dateprefix, xd->desc);
   }
   gnetwork = backup;
   mydelete(dateprefix);
