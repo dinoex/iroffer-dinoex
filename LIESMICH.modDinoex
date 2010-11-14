@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+343) dump_all
+  Wenn definiert werden alle Konfigurations-Varaiablen beim DUMP ausgegeben.
+  Default werden nur die geänderten Werte ausgegeben.
+
 342) announce_suffix_color
   Setze Farbe für die Downloadhilfe in der Announce-Nachricht.
   Damit wird der Text "/MSG <botname> XDCC GET <nr>" in Farbe angezeigt.

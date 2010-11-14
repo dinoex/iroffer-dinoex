@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+343) dump_all
+  If set shows all config vars on DUMP.
+  Default is to show only non default entries.
+
 342) announce_suffix_color (inspired by Aashiqmunda)
   Set color for the instructions suffix in the announce message.
   This will print the text "/MSG <botname> XDCC GET <nr>" in color.

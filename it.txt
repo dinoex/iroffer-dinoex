@@ -2393,3 +2393,4 @@
 2710 "</xdcc>\n"
 2711 "show_group_of_pack"
 2712 "announce_suffix_color"
+2713 "dump_all"
