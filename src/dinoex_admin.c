@@ -3603,6 +3603,8 @@ static void a_announce_channels(const char *msg, const char *match, const char *
 {
   channel_t *ch;
 
+  updatecontext();
+
   if (msg == NULL)
     return;
 
@@ -4756,6 +4758,8 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   unsigned int ss;
   unsigned int color;
 
+  updatecontext();
+
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
@@ -4772,7 +4776,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
              gdata.announce_seperator, datestr, gdata.announce_seperator);
     mydelete(datestr);
   } else {
-    dateprefix = strdup(gdata.announce_seperator);
+    dateprefix = mystrdup(gdata.announce_seperator);
   }
   if (msg == NULL) {
     msg = gdata.autoaddann;
