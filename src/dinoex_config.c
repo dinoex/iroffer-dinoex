@@ -2076,7 +2076,7 @@ static void dump_config_func(void)
         len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime);
       if (ch->plistoffset != 0)
         len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plistoffset", ch->plistoffset);
-      if (ch->flags != 0)
+      if (((ch->flags & (CHAN_SUMMARY|CHAN_MINIMAL)) != 0) || (ch->plisttime != 0))
         len += snprintf(buffer + len, maxtextlength - len, " %s %s", "-pformat", text_pformat(ch->flags));
       if (ch->pgroup != NULL)
         len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-pgroup", ch->pgroup);
