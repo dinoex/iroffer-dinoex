@@ -1373,10 +1373,8 @@ void a_find(const userinput * const u)
 
   updatecontext();
 
-  if (!u->arg1e || !strlen(u->arg1e)) {
-    a_respond(u, "Try Specifying a Pattern");
+  if (invalid_text(u, "Try Specifying a Pattern", u->arg1e))
     return;
-  }
 
   tempstr = mycalloc(maxtextlength);
   clean_quotes(u->arg1e);
@@ -2429,10 +2427,8 @@ void a_chmins(const userinput * const u)
 
     last = u->arg3;
   }
-  if (!last || !strlen(last)) {
-    a_respond(u, "Try Specifying a Minspeed");
+  if (invalid_text(u, "Try Specifying a Minspeed", last))
     return;
-  }
 
   for (; num1 <= num2; ++num1) {
     xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
@@ -2513,10 +2509,8 @@ void a_chlimit(const userinput * const u)
     last = u->arg3;
   }
 
-  if (!last || !strlen(last)) {
-    a_respond(u, "Try Specifying a daily Downloadlimit");
+  if (invalid_text(u, "Try Specifying a daily Downloadlimit", last))
     return;
-  }
 
   xd = irlist_get_nth(&gdata.xdccs, num1 - 1);
   if (group_restricted(u, xd))
@@ -2662,10 +2656,8 @@ void a_chgets(const userinput * const u)
     last = u->arg3;
   }
 
-  if (!last || !strlen(last)) {
-    a_respond(u, "Try Specifying a Count");
+  if (invalid_text(u, "Try Specifying a Count", last))
     return;
-  }
 
   val = atoi(last);
   for (; num1 <= num2; ++num1) {
@@ -3272,10 +3264,8 @@ void a_newdir(const userinput * const u)
   if (invalid_dir(u, u->arg1) != 0)
     return;
 
-  if (!u->arg2 || !strlen(u->arg2)) {
-    a_respond(u, "Try Specifying a new Directory");
+  if (invalid_text(u, "Try Specifying a new Directory", u->arg2))
     return;
-  }
 
   convert_to_unix_slash(u->arg2);
 
@@ -3326,10 +3316,8 @@ void a_filemove(const userinput * const u)
   if (invalid_file(u, u->arg1) != 0)
     return;
 
-  if (!u->arg2 || !strlen(u->arg2)) {
-    a_respond(u, "Try Specifying a new Filename");
+  if (invalid_text(u, "Try Specifying a new Filename", u->arg2))
     return;
-  }
 
   file1 = mystrdup(u->arg1);
 
@@ -3393,10 +3381,8 @@ void a_movefile(const userinput * const u)
   if (num == 0)
     return;
 
-  if (!u->arg2 || !strlen(u->arg2)) {
-    a_respond(u, "Try Specifying a new Filename");
+  if (invalid_text(u, "Try Specifying a new Filename", u->arg2))
     return;
-  }
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
@@ -3578,10 +3564,9 @@ void a_fetch(const userinput * const u)
   if (is_upload_file(u, u->arg1) != 0)
     return;
 
-  if (!u->arg2e || !strlen(u->arg2e)) {
-    a_respond(u, "Try Specifying a URL");
+  if (invalid_text(u, "Try Specifying a new URL", u->arg2e))
     return;
-  }
+
   clean_quotes(u->arg2e);
   start_fetch_url(u, uploaddir);
 }
@@ -4385,10 +4370,8 @@ void a_config(const userinput * const u)
     }
   }
 
-  if (!u->arg1e || !strlen(u->arg1e)) {
-    a_respond(u, "Try Specifying a Key");
+  if (invalid_text(u, "Try Specifying a Key", u->arg1e))
     return;
-  }
 
   current_config = "ADMIN";
   getconfig_set(u->arg1e);
@@ -4405,10 +4388,8 @@ void a_print(const userinput * const u)
     }
   }
 
-  if (!u->arg1 || !strlen(u->arg1)) {
-    a_respond(u, "Try Specifying a Key");
+  if (invalid_text(u, "Try Specifying a Key", u->arg1e))
     return;
-  }
 
   val = print_config_key(u->arg1);
   if (val != NULL) {
@@ -4731,10 +4712,8 @@ void a_iqueue(const userinput * const u)
   if (invalid_nick(u, u->arg1) != 0)
     return;
 
-  if (!u->arg2 || (u->arg2[0] == 0)) {
-    a_respond(u, "Try Specifying a Valid Pack Number");
+  if (invalid_text(u, "Try Specifying a Valid Pack Number", u->arg2))
     return;
-  }
 
   if (a_iqueue_search(u, u->arg2, (unsigned int)net) == 0) {
     a_respond(u, "Try Specifying a Valid Pack Number");
