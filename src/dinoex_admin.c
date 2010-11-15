@@ -479,21 +479,6 @@ static unsigned int invalid_file(const userinput * const u, char *arg)
   return 0;
 }
 
-static unsigned int invalid_pwd(const userinput * const u, const char *arg)
-{
-  return invalid_text(u, "Try Specifying a Password", arg);
-}
-
-static unsigned int invalid_nick(const userinput * const u, const char *arg)
-{
-  return invalid_text(u, "Try Specifying a Nick", arg);
-}
-
-static unsigned int invalid_message(const userinput * const u, const char *arg)
-{
-  return invalid_text(u, "Try Specifying a Message", arg);
-}
-
 static unsigned int invalid_command(const userinput * const u, char *arg)
 {
   if (invalid_text(u, "Try Specifying a Command", arg))
@@ -506,11 +491,6 @@ static unsigned int invalid_command(const userinput * const u, char *arg)
 unsigned int invalid_channel(const userinput * const u, const char *arg)
 {
   return invalid_text(u, "Try Specifying a Channel", arg);
-}
-
-static unsigned int invalid_maxspeed(const userinput * const u, const char *arg)
-{
-  return invalid_text(u, "Try Specifying a Maxspeed", arg);
 }
 
 static transfer *get_transfer_by_number(const userinput * const u, unsigned int num)
@@ -1539,7 +1519,7 @@ void a_maxspeed(const userinput * const u)
   if (tr == NULL)
     return;
 
-  if (invalid_maxspeed(u, u->arg2) != 0)
+  if (invalid_text(u, "Try Specifying a Maxspeed", u->arg2))
     return;
 
   val = atof(u->arg2);
@@ -2467,7 +2447,7 @@ void a_chmaxs(const userinput * const u)
 
     last = u->arg3;
   }
-  if (invalid_maxspeed(u, last) != 0)
+  if (invalid_text(u, "Try Specifying a Maxspeed", last))
     return;
 
   for (; num1 <= num2; ++num1) {
@@ -2753,7 +2733,7 @@ void a_lock(const userinput * const u)
     pass = u->arg3;
   }
 
-  if (invalid_pwd(u, pass) != 0)
+  if (invalid_text(u, "Try Specifying a Password", pass))
     return;
 
   for (; num1 <= num2; ++num1) {
@@ -2809,7 +2789,7 @@ void a_lockgroup(const userinput * const u)
   if (invalid_group(u, u->arg1) != 0)
     return;
 
-  if (invalid_pwd(u, u->arg2) != 0)
+  if (invalid_text(u, "Try Specifying a Password", u->arg2))
     return;
 
   n = 0;
@@ -2865,10 +2845,10 @@ void a_relock(const userinput * const u)
 
   updatecontext();
 
-  if (invalid_pwd(u, u->arg1) != 0)
+  if (invalid_text(u, "Try Specifying a Password", u->arg1))
     return;
 
-  if (invalid_pwd(u, u->arg2) != 0)
+  if (invalid_text(u, "Try Specifying a Password", u->arg2))
     return;
 
   n = 0;
@@ -3621,7 +3601,7 @@ void a_amsg(const userinput * const u)
 
   updatecontext();
 
-  if (invalid_message(u, u->arg1e) != 0)
+  if (invalid_text(u, "Try Specifying a Message", u->arg1e))
     return;
 
   clean_quotes(u->arg1e);
@@ -3655,10 +3635,10 @@ static void a_msg_nick_or_chan(const userinput * const u, const char *name, cons
 {
   channel_t *ch;
 
-  if (invalid_nick(u, name) != 0)
+  if (invalid_text(u, "Try Specifying a Nick", name))
     return;
 
-  if (invalid_message(u, msg) != 0)
+  if (invalid_text(u, "Try Specifying a Message", msg))
     return;
 
   if (name[0] != '#') {
@@ -3709,7 +3689,7 @@ void a_mesg(const userinput * const u)
 
   updatecontext();
 
-  if (invalid_message(u, u->arg1e) != 0)
+  if (invalid_text(u, "Try Specifying a Message", u->arg1e))
     return;
 
   backup = gnetwork;
@@ -3732,7 +3712,7 @@ void a_mesq(const userinput * const u)
 
   updatecontext();
 
-  if (invalid_message(u, u->arg1e) != 0)
+  if (invalid_text(u, "Try Specifying a Message", u->arg1e))
     return;
 
   backup = gnetwork;
@@ -3796,7 +3776,7 @@ void a_bannnick(const userinput * const u)
   if (net < 0)
     return;
 
-  if (invalid_nick(u, u->arg1) != 0)
+  if (invalid_text(u, "Try Specifying a Nick", u->arg1))
     return;
 
   nick = u->arg1;
@@ -3949,7 +3929,7 @@ void a_get(const userinput * const u)
   if (net < 0)
     return;
 
-  if (invalid_nick(u, u->arg2) != 0)
+  if (invalid_text(u, "Try Specifying a Nick", u->arg2))
     return;
 
   if (u->arg3e) {
@@ -4542,7 +4522,7 @@ void a_send(const userinput * const u)
   if (net < 0)
     return;
 
-  if (invalid_nick(u, u->arg1) != 0)
+  if (invalid_text(u, "Try Specifying a Nick", u->arg1))
     return;
 
   num = get_pack_nr(u, u->arg2);
@@ -4598,7 +4578,7 @@ void a_queue(const userinput * const u)
   if (net < 0)
     return;
 
-  if (invalid_nick(u, u->arg1) != 0)
+  if (invalid_text(u, "Try Specifying a Nick", u->arg1))
     return;
 
   num = get_pack_nr(u, u->arg2);
@@ -4709,7 +4689,7 @@ void a_iqueue(const userinput * const u)
   if (net < 0)
     return;
 
-  if (invalid_nick(u, u->arg1) != 0)
+  if (invalid_text(u, "Try Specifying a Nick", u->arg1))
     return;
 
   if (invalid_text(u, "Try Specifying a Valid Pack Number", u->arg2))
