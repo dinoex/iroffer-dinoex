@@ -3544,7 +3544,7 @@ void a_fetch(const userinput * const u)
   if (is_upload_file(u, u->arg1) != 0)
     return;
 
-  if (invalid_text(u, "Try Specifying a new URL", u->arg2e))
+  if (invalid_text(u, "Try Specifying a URL", u->arg2e))
     return;
 
   clean_quotes(u->arg2e);
