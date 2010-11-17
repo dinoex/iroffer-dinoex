@@ -36,6 +36,7 @@ bugfix: autoaddann
 
 bugfix: xdccxmlfile
   Erweitere die Struktur der XML-Datei, damit diese besser gelsen werden kann.
+  Erstelle und veröffentliche eine XML DTD Datei.
 
 338) AUTOCANCEL
 
