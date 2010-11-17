@@ -1,0 +1,82 @@
+<!--
+Iroffer Packlist Markup Language version 1.0
+
+Namespace = http://iroffer.dinoex.net/apps/iroffer-1
+
+This DTD module is identified by the PUBLIC and SYSTEM identifiers:
+
+PUBLIC "-//roffer.dinoex.net//DTD iroffer 1.0//EN"
+SYSTEM "http://roffer.dinoex.net/dtd/iroffer-10.dtd"
+
+Copyright (c) 2004 Dirk Meyer
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+-->
+
+<!-- Import XHTML datatypes for `URI.datatype'. -->
+<!ENTITY % xhtml-datatypes.mod
+        PUBLIC "-//W3C//ENTITIES XHTML Datatypes 1.0//EN"
+        "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-datatypes-1.mod"
+>
+%xhtml-datatypes.mod;
+
+<!ENTITY % iroffer.xmlns "http://iroffer.dinoex.net/apps/iroffer-1" >
+<!ENTITY % NS.prefixed "IGNORE" >
+<!ENTITY % iroffer.prefixed "%NS.prefixed;" >
+
+<!ENTITY % iroffer.prefix "iroffer" >
+<![%iroffer.prefixed;[
+        <!ENTITY % iroffer.pfx "%iroffer.prefix;:" >
+]]>
+<!ENTITY % iroffer.pfx "" >
+
+<![%iroffer.prefixed;[
+        <!ENTITY % iroffer.xmlns.extra.attrib
+                "xmlns:%iroffer.prefix; %URI.datatype; #FIXED '%iroffer.xmlns;'"
+        >
+]]>
+<!ENTITY % iroffer.xmlns.extra.attrib
+        "xmlns %URI.datatype; #FIXED '%iroffer.xmlns;'"
+>
+<!ENTITY % XHTML.xmlns.extra.attrib "%iroffer.xmlns.extra.attrib;" >
+
+<!ENTITY % xhtml-model.mod
+        PUBLIC "-//iroffer.dinoex.net//ELEMENTS iroffer 1.0 Document Model//EN"
+        "http://iroffer.dinoex.net/dtd/iroffer-model-10.mod"
+>
+
+<!ENTITY % xhtml-basic PUBLIC "-//W3C//DTD XHTML Basic 1.0//EN"
+        "http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd"
+>
+<!--
+These are default.
+<!ENTITY % xhtml-image.module "INCLUDE">
+<!ENTITY % xhtml-table.module "INCLUDE"> 
+-->
+<!ENTITY % xhtml-form.module "IGNORE" >
+<!ENTITY % xhtml-link.module "IGNORE" >
+<!ENTITY % xhtml-meta.module "IGNORE" >
+<!ENTITY % xhtml-base.module "IGNORE" >
+<!ENTITY % xhtml-param.module "IGNORE" >
+<!ENTITY % xhtml-object.module "IGNORE" >
+%xhtml-basic;

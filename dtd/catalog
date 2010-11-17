@@ -1,0 +1,7 @@
+OVERRIDE YES
+
+PUBLIC  "-//iroffer.dinoex-net//DTD iroffer 1.0//EN" "iroffer-10.dtd"
+DTDDECL "-//iroffer.dinoex-net//DTD iroffer 1.0//EN" "xml1.dcl"
+
+PUBLIC  "-//iroffer.dinoex-net//ELEMENTS iroffer 1.0 Document Model//EN" "iroffer-model-10.mod"
+DTDDECL "-//iroffer.dinoex-net//ELEMENTS iroffer 1.0 Document Model//EN" "xml1.dcl"

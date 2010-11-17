@@ -36,6 +36,7 @@ bugfix: autoaddann (reported by Aashiqmunda)
 
 bugfix: xdccxmlfile (report by Hikaru Shindo)
   Extend the structure so it is easier to parse.
+  Create and publish an XML DTD file.
 
 338) AUTOCANCEL (inspired by [M]-V)
 

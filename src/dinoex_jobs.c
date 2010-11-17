@@ -1457,7 +1457,8 @@ static void xdcc_save_xml(void)
   else
     write_string(fd, "UTF-8");
   write_string(fd, "\"?>\n");
-  write_string(fd, "<xdcc>\n");
+  write_string(fd, "<!DOCTYPE " "iroffer" " PUBLIC \"-//iroffer.dinoex.net//DTD " "iroffer" " 1.0//EN\" \"" "http://iroffer.dinoex.net/" "dtd/iroffer-10.dtd\">\n");
+  write_string(fd, "<iroffer>\n");
   if (irlist_size(&gdata.xdccs) > 0)
     write_string(fd, "<packlist>\n\n");
 
@@ -1627,7 +1628,7 @@ static void xdcc_save_xml(void)
   write_string(fd, "  </stats>\n");
   write_string(fd, "</sysinfo>\n\n");
 
-  write_string(fd, "</xdcc>\n");
+  write_string(fd, "</iroffer>\n");
   close(fd);
 
   rename_with_backup(gdata.xdccxmlfile, filename_bak, filename_tmp, "XDCC XML");
