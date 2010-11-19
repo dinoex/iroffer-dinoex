@@ -210,7 +210,7 @@ static char *privmsg_decrypt(const char *line, const char *channel, const char *
   snprintf(end, len, "%s :%s", channel, newstr);
   mydelete(newstr);
   if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
+    ioutput(OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
   }
   return newline;
 }
@@ -288,7 +288,7 @@ vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
   }
 
   if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
+    ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
   }
 
   if (len > EXCESS_BUCKET_MAX) {
@@ -350,7 +350,7 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
     char *tempcrypt;
 
     if (gdata.debug > 0) {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
+      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
     }
     tempcrypt = encrypt_fish(tempstr, len, ch->fish);
     if (tempcrypt) {
@@ -402,7 +402,7 @@ void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char 
     char *tempcrypt;
 
     if (gdata.debug > 0) {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
+      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
     }
     tempcrypt = encrypt_fish(message, len, fish);
     if (tempcrypt) {
@@ -427,7 +427,7 @@ void writeserver_notice(writeserver_type_e delay, const char *nick, const char *
     char *tempcrypt;
 
     if (gdata.debug > 0) {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
+      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
     }
     tempcrypt = encrypt_fish(message, len, fish);
     if (tempcrypt) {
@@ -632,7 +632,7 @@ void reset_download_limits(void)
       continue;
 
     newlimit = xd->gets + xd->dlimit_max;
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "Resetting download limit of pack %u, used %u",
             num, newlimit - xd->dlimit_used);
     xd->dlimit_used = newlimit;
@@ -684,7 +684,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
     /* unlock pack */
     if ((quiet == 2) && (xd->lock != NULL)) {
       if (strcmp(xd->lock, badcrc) == 0) {
-        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "unlock Pack %u, File %s",
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "unlock Pack %u, File %s",
                 number_of_pack(xd), line);
         mydelete(xd->lock);
         xd->lock = NULL;
@@ -693,10 +693,10 @@ const char *validate_crc32(xdcc *xd, int quiet)
   } else {
     x = "CRC32 not found";
     if (fnmatch("*[0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F]*", line, FNM_CASEFOLD) == 0) {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "crc expected %s, failed %s", newcrc, line);
       x = "CRC32 failed";
       if (quiet == 2) {
-        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %u, File %s",
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "lock Pack %u, File %s",
                 number_of_pack(xd), line);
         mydelete(xd->lock);
         xd->lock = mystrdup(badcrc);
@@ -748,7 +748,7 @@ static void autoadd_scan(const char *dir, const char *group)
 
   gnetwork = &(gdata.networks[net]);
   if (gdata.debug > 0)
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
   line = mycalloc(maxtextlength);
   if (group != NULL)
     snprintf(line, maxtextlength, "ADDGROUP %s \"%s\"", group, dir);
@@ -1201,7 +1201,7 @@ void autotrigger_rebuild(void)
 
 void start_md5_hash(xdcc *xd, unsigned int packnum)
 {
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "[MD5 Pack %u]: Calculating", packnum);
 
   gdata.md5build.file_fd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
@@ -1845,7 +1845,7 @@ void a_rehash_channels(void)
           writeserver(WRITESERVER_NORMAL, "PART %s", rch->name);
         }
         if (gdata.debug > 2) {
-           ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+           ioutput(OUT_S, COLOR_NO_COLOR,
                    "1 = %s parted", rch->name);
         }
         clearmemberlist(rch);
@@ -1857,7 +1857,7 @@ void a_rehash_channels(void)
         ch->lastjoin = rch->lastjoin;
         ch->nextann = rch->nextann;
         if (gdata.debug > 2) {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+          ioutput(OUT_S, COLOR_NO_COLOR,
                   "2 = %s common", ch->name);
         }
         rch = irlist_get_next(rch);
@@ -1881,7 +1881,7 @@ void a_rehash_channels(void)
           joinchannel(ch);
         }
         if (gdata.debug > 2) {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+          ioutput(OUT_S, COLOR_NO_COLOR,
                   "3 = %s new", ch->name);
         }
       }
@@ -2064,11 +2064,11 @@ int rotatelog(const char *logfile)
     return 0;
 
   if (rename(logfile, newname) < 0) {
-    mylog(CALLTYPE_NORMAL, "File %s could not be moved to %s: %s", logfile, newname, strerror(errno));
+    mylog("File %s could not be moved to %s: %s", logfile, newname, strerror(errno));
     mydelete(newname);
     return 0;
   }
-  mylog(CALLTYPE_NORMAL, "File %s was moved to %s.", logfile, newname);
+  mylog("File %s was moved to %s.", logfile, newname);
   mydelete(newname);
   return 1;
 }

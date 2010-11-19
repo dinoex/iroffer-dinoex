@@ -108,7 +108,7 @@ static void update_getip_net(unsigned int net, unsigned long ourip)
     gnetwork->usenatip = 1;
     old.s_addr = htonl(gnetwork->ourip);
     oldtxt = mystrdup(inet_ntoa(old));
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
     mydelete(oldtxt);
     gnetwork->ourip = ourip;
@@ -159,13 +159,13 @@ void update_natip(const char *var)
   gnetwork->ourip = ntohl(in.s_addr);
   if (oldip != 0 ) {
     oldtxt = mystrdup(inet_ntoa(old));
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
     mydelete(oldtxt);
     update_getip_net(gnetwork->net, gnetwork->ourip);
   }
 
-  if (gdata.debug > 0) ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
+  if (gdata.debug > 0) ioutput(OUT_S, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
 
   /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
   if (((gnetwork->ourip & 0xFF000000UL) == 0x0A000000UL) ||
@@ -187,7 +187,7 @@ void update_server_welcome(char *line)
   if (gdata.getipfromupnp) {
     tptr = upnp_get_dccip();
     if (tptr != NULL) {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "IP From UPnP = %s", tptr);
+      ioutput(OUT_S, COLOR_NO_COLOR, "IP From UPnP = %s", tptr);
       update_natip(tptr);
       return;
     }
@@ -197,7 +197,7 @@ void update_server_welcome(char *line)
     tptr = strchr(line, '@');
     if (tptr != NULL) {
       ++tptr;
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "IP From Server: %s", tptr);
+      ioutput(OUT_S, COLOR_NO_COLOR, "IP From Server: %s", tptr);
       update_natip(tptr);
       return;
     }
@@ -551,7 +551,7 @@ unsigned int connectirc2(res_addrinfo_t *remote)
     char *msg;
     msg = mycalloc(maxtextlength);
     my_getnameinfo(msg, maxtextlength -1, &(remote->ai_addr));
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "Connecting to %s", msg);
+    ioutput(OUT_S, COLOR_YELLOW, "Connecting to %s", msg);
     mydelete(msg);
   }
 
@@ -575,7 +575,7 @@ unsigned int connectirc2(res_addrinfo_t *remote)
   alarm(0);
 
   if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "ircserver socket = %d", gnetwork->ircserver);
+    ioutput(OUT_S, COLOR_YELLOW, "ircserver socket = %d", gnetwork->ircserver);
   }
 
   gnetwork->lastservercontact=gdata.curtime;
@@ -669,7 +669,7 @@ unsigned int check_ignore(const char *nick, const char *hostmask)
   left = gdata.autoignore_threshold * (ignore->bucket + 1);
   ignore->flags |= IGN_IGNORING;
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "Auto-ignore activated for %s (%s) lasting %i%c%i%c",
           nick, hostmask,
           left < 3600 ? left/60 : left/60/60 ,
@@ -738,19 +738,19 @@ void identify_needed(unsigned int force)
   if (gnetwork->auth_name != NULL) {
     writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :AUTH %s %s",
                 gnetwork->auth_name, save_nick(gnetwork->user_nick), pwd);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "AUTH send to %s on %s.", gnetwork->auth_name, gnetwork->name);
     return;
   }
   if (gnetwork->login_name != NULL) {
     writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :LOGIN %s %s",
                 gnetwork->login_name, save_nick(gnetwork->user_nick), pwd);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "LOGIN send to %s on %s.", gnetwork->login_name, gnetwork->name);
     return;
   }
   writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "IDENTIFY send to nickserv on %s.", gnetwork->name);
 }
 

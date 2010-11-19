@@ -77,7 +77,7 @@ dump_line(const char *format, ...)
 {
    va_list args;
    va_start(args, format);
-   vioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR, format, args);
+   vioutput(OUT_L, COLOR_NO_COLOR, format, args);
    va_end(args);
 }
 

@@ -110,8 +110,8 @@ static void read_statefile_llint(statefile_hdr_t *hdr, const char *tag, ir_int64
   if (gdata.debug > 0) {
     char *tempstr;
     tempstr = sizestr(0, *pval);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-            COLOR_NO_COLOR, "  [%s %s]", debug, tempstr);
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            "  [%s %s]", debug, tempstr);
     mydelete(tempstr);
   }
 }
@@ -141,7 +141,7 @@ static void read_statefile_time(statefile_hdr_t *hdr, const char *tag, time_t *p
     char *tempstr;
     tempstr = mycalloc(maxtextlength);
     getdatestr(tempstr, *pval, maxtextlength);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "  [%s %s]", debug, tempstr);
     mydelete(tempstr);
   }
@@ -160,7 +160,7 @@ static void read_statefile_float(statefile_hdr_t *hdr, const char *tag, float *p
   *pval = g_float->g_float;
 
   if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "  [%s %1.1fKB/s]", debug, *pval);
   }
 }

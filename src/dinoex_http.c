@@ -503,7 +503,7 @@ static unsigned int h_open_listen(unsigned int i)
   http_family[i] = listenaddr.sa.sa_family;
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_H, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_H, COLOR_MAGENTA,
           "HTTP SERVER waiting for connection on %s",  msg);
   mydelete(msg);
   return 0;
@@ -656,15 +656,15 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   updatecontext();
 
   if (errno1) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "HTTP Connection closed: %s (%s)", msg, strerror(errno1));
   } else {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "HTTP Connection closed: %s", msg);
   }
 
   if (gdata.debug > 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", h->con.clientsocket);
+    ioutput(OUT_S, COLOR_YELLOW, "clientsock = %d", h->con.clientsocket);
   }
 
   if (h->con.clientsocket != FD_UNUSED && h->con.clientsocket > 2) {
@@ -746,7 +746,7 @@ static void h_start_sending(http * const h)
 {
   h->status = HTTP_STATUS_SENDING;
   if (gdata.debug > 1)
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
             "HTTP '%s' response %ld bytes", h->url, (long)(h->totalsize));
 }
 
@@ -823,14 +823,14 @@ static void h_readfile(http * const h, const char *file)
   h->filedescriptor = open(h->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (h->filedescriptor < 0) {
     if (gdata.debug > 1)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "File not found: '%s'", file);
     h_herror_404(h);
     return;
   }
   if (fstat(h->filedescriptor, &st) < 0) {
     if (gdata.debug > 1)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "Unable to stat file '%s': %s",
               file, strerror(errno));
     close(h->filedescriptor);
@@ -849,7 +849,7 @@ static void h_herror_403(http * const h, const char *msg)
 {
   char *tempstr;
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA, "%s", msg);
+  ioutput(OUT_S|OUT_H, COLOR_MAGENTA, "%s", msg);
   h->filedescriptor = FD_UNUSED;
   h->status_code = 403;
   if (!gdata.http_forbidden) {
@@ -915,7 +915,7 @@ static void h_accept(unsigned int i)
   my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa);
   h->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
           "HTTP connection received from %s",  h->con.remoteaddr);
 
   blocked = is_in_badip(&(h->con.remote));
@@ -997,7 +997,7 @@ static void h_include(http * const h, const char *file)
   fd = open(file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (fd < 0) {
     if (gdata.debug > 1)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "File not found: '%s'", file);
     return;
   }
@@ -1821,7 +1821,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char *UNUS
   }
 
   if (gdata.debug > 1)
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
             "HTTP not found: '%s'", h->url);
   h_herror_404(h);
 }
@@ -1892,7 +1892,7 @@ static char *h_read_http(http * const h)
     howmuch2 -= howmuch;
     gdata.sendbuff[h->bytesgot] = 0;
     if (gdata.debug > 3) {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "HTTP data received data=\n%s", gdata.sendbuff);
     }
   }
@@ -2012,7 +2012,7 @@ static void h_parse(http * const h, char *body)
   }
 
   if (gdata.debug > 1)
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_H, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
             "HTTP not found: '%s'", h->url);
   h_herror_404(h);
 }
@@ -2152,7 +2152,7 @@ static void h_send(http * const h)
     h->bytessent += howmuch2;
     bucket -= howmuch2;
     if (gdata.debug > 4)
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_BLUE, "File %ld Write %ld", (long)howmuch, (long)howmuch2);
+      ioutput(OUT_S, COLOR_BLUE, "File %ld Write %ld", (long)howmuch, (long)howmuch2);
 
   } while ((bucket >= TXSIZE) && (howmuch2 > 0));
 

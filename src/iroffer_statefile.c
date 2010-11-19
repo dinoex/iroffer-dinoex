@@ -191,8 +191,7 @@ void write_statefile(void)
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "Saving State File... ");
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Saving State File... ");
     }
   
   fd = open(statefile_tmp,
@@ -292,8 +291,7 @@ void write_statefile(void)
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "Done");
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Done");
     }
   
  error_out:
@@ -351,8 +349,7 @@ void read_statefile(void)
       return;
     }
   
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-          COLOR_NO_COLOR, "Loading State File... ");
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Loading State File... ");
   
   fd = open(gdata.statefile,
             O_RDONLY | O_CREAT | ADDED_OPEN_FLAGS,
@@ -367,8 +364,7 @@ void read_statefile(void)
   
   if ((fstat(fd, &st) < 0) || (st.st_size < ((off_t)(sizeof(ir_uint32) * 2) + (off_t)(sizeof(MD5Digest)))))
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "State File: Too small, Skipping");
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "State File: Too small, Skipping");
       close(fd);
       return;
     }
@@ -414,8 +410,8 @@ void read_statefile(void)
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Version %lu State File]", (unsigned long)ntohl(*buffer));
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+              "  [Version %lu State File]", (unsigned long)ntohl(*buffer));
     }
   buffer++;
   buffer_len -= sizeof(ir_uint32);
@@ -447,9 +443,8 @@ void read_statefile(void)
                   char *tempstr;
                   tempstr = mycalloc(maxtextlength);
                   getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlength);
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Total Runtime %s]",
-                          tempstr);
+                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                          "  [Total Runtime %s]", tempstr);
                   mydelete(tempstr);
                 }
           break;
@@ -466,8 +461,8 @@ void read_statefile(void)
               
               if (gdata.debug > 0)
                 {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-                          COLOR_NO_COLOR, "  [Written by %s]", iroffer_version);
+                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                          "  [Written by %s]", iroffer_version);
                 }
             }
           else
@@ -796,45 +791,39 @@ void read_statefile(void)
   
   if ((gdata.debug > 0) || irlist_size(&gdata.ignorelist))
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %u %s]",
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.ignorelist),
               (irlist_size(&gdata.ignorelist) == 1) ? "ignore" : "ignores");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.msglog))
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %u %s]",
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.msglog),
               (irlist_size(&gdata.msglog) == 1) ? "message" : "messages");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.xdccs))
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %u %s]",
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.xdccs),
               (irlist_size(&gdata.xdccs) == 1) ? "pack" : "packs");
     }
   
   if ((gdata.debug > 0) || irlist_size(&gdata.mainqueue))
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %u %s]",
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.mainqueue),
               (irlist_size(&gdata.mainqueue) == 1) ? "queue" : "queues");
     }
   if ((gdata.debug > 0) || irlist_size(&gdata.idlequeue))
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-              COLOR_NO_COLOR, "  [Found %u %s]",
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "  [Found %u %s]",
               irlist_size(&gdata.idlequeue),
               (irlist_size(&gdata.idlequeue) == 1) ? "queue" : "queues");
     }
   
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D,
-          COLOR_NO_COLOR, "  [Done]");
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "  [Done]");
   
  error_out:
   

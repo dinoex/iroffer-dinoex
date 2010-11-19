@@ -45,7 +45,7 @@ void t_start_dcc_send(transfer *tr)
                  sendnamestr, dccdata,
                  tr->xpack->st_size);
 
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "listen on port %d for %s (%s on %s)",
             tr->con.localport, tr->nick, tr->hostname, gnetwork->name);
   }
@@ -120,7 +120,7 @@ static void t_unlmited2(transfer * const tr, const char *hostmask)
     return;
 
   tr->nomax = tr->unlimited;
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "unlimitedhost found: %s (%s on %s)",
            tr->nick, hostmask, gnetwork->name);
 }
@@ -180,7 +180,7 @@ unsigned int t_check_ip_access(transfer *const tr)
     if (!verify_cidr(&gdata.xdcc_allow, &(tr->con.remote))) {
       msg = "Sorry, downloads to your IP not allowed, ask owner.";
       t_closeconn(tr, msg, 0);
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "%s", msg);
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "%s", msg);
       return 1;
     }
   }
@@ -188,7 +188,7 @@ unsigned int t_check_ip_access(transfer *const tr)
   if (verify_cidr(&gdata.xdcc_deny, &(tr->con.remote))) {
     msg = "Sorry, downloads to your IP denied, ask owner.";
     t_closeconn(tr, msg, 0);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "%s", msg);
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "%s", msg);
     return 1;
   }
   return 0;
@@ -238,7 +238,7 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
   if (gdata.debug > 0) {
     msg = mycalloc(maxtextlength);
     my_getnameinfo(msg, maxtextlength -1, &(tr->con.remote.sa));
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "DCC SEND passive sent to %s on %s, connecting to %s",
             tr->nick, gnetwork->name, msg);
     mydelete(msg);
@@ -272,7 +272,7 @@ static void t_find_debug(const char *nick, const char *filename, const char *rem
   for (tr = irlist_get_head(&gdata.trans);
        tr;
        tr = irlist_get_next(tr)) {
-    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+    ioutput(OUT_S, COLOR_NO_COLOR,
             "transfer %u: %s on %s, %s, %d\n",
             tr->tr_status,
             tr->caps_nick,
@@ -352,7 +352,7 @@ unsigned int t_find_resume(const char *nick, const char *filename, const char *l
   len = atoull(bytes);
   if (len >= tr->xpack->st_size) {
     notice(nick, "You can't resume the transfer at a point greater than the size of the file");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "XDCC [%02i:%s on %s]: Resume attempted beyond end of file ( %" LLPRINTFMT "d >= %" LLPRINTFMT "d )",
             tr->id, tr->nick, gnetwork->name, len,
             tr->xpack->st_size);
@@ -366,7 +366,7 @@ unsigned int t_find_resume(const char *nick, const char *filename, const char *l
     privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", sendnamestr, localport, bytes);
   }
   mydelete(sendnamestr);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "dK", tr->id,
           tr->nick, gnetwork->name, tr->startresume/1024);
   return 0;
@@ -397,7 +397,7 @@ void t_connected(transfer *tr)
     return;
   }
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "Download Connection Established on %s", gnetwork->name);
 
   t_setup_send(tr);
@@ -459,7 +459,7 @@ static void t_check_duplicateip(transfer *const newtr)
     ignore->flags |= IGN_MANUAL;
     ignore->bucket = (num*60)/gdata.autoignore_threshold;
 
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "same IP detected, Ignore activated for %s which will last %u min",
             bhostmask, num);
     mydelete(bhostmask);
@@ -494,7 +494,7 @@ unsigned int verify_acknowlede(transfer *tr)
       if (tr->xpack->st_size > 0xFFFFFFFFLL) {
          tr->mirc_dcc64 = 1;
          tr->curack = tr->firstack << 32;
-         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+         ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                  "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "d Bytes, forcing 64bit",
                  tr->id, tr->nick, gdata.networks[ tr->net ].name,
                  tr->firstack );

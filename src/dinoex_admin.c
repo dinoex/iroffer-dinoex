@@ -96,13 +96,13 @@ void a_respond(const userinput * const u, const char *format, ...)
   switch (u->method)
     {
     case method_console:
-      vioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, format, args);
+      vioutput(OUT_S, COLOR_NO_COLOR, format, args);
       break;
     case method_dcc:
       vwritedccchat(u->chat, 1, format, args);
       break;
     case method_out_all:
-      vioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, format, args);
+      vioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, format, args);
       break;
     case method_fd:
       voutput_fd(u->fd, format, args);
@@ -618,7 +618,7 @@ static unsigned int queue_host_remove(const userinput * const u, irlist_t *list,
     notice_slow(pq->nick,
                 "Removed from the queue for \"%s\"", pq->xpack->desc);
     gnetwork = backup;
-    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_YELLOW,
+    ioutput(OUT_L, COLOR_YELLOW,
             "Removed from the queue for \"%s\"", pq->xpack->desc);
     a_respond(u, "Removed from the queue for \"%s\"", pq->xpack->desc);
     mydelete(pq->nick);
@@ -651,7 +651,7 @@ static unsigned int queue_nick_remove(const userinput * const u, irlist_t *list,
     notice_slow(pq->nick,
                 "Removed from the queue for \"%s\"", pq->xpack->desc);
     gnetwork = backup;
-    ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_YELLOW,
+    ioutput(OUT_L, COLOR_YELLOW,
             "Removed from the queue for \"%s\"", pq->xpack->desc);
     a_respond(u, "Removed from the queue for \"%s\"", pq->xpack->desc);
     mydelete(pq->nick);

@@ -64,7 +64,7 @@ int setupdccchatout(const char *nick, const char *hostmask, const char *token)
   chat->con.localaddr = mystrdup(msg);
   mydelete(token2);
   mydelete(msg);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT sent to %s on %s, waiting for connection on %s",
           nick, gnetwork->name, chat->con.localaddr);
   return 0;
@@ -113,7 +113,7 @@ void setupdccchataccept(dccchat_t *chat)
   close(chat->con.listensocket);
   chat->con.listensocket = FD_UNUSED;
   
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT connection received, authenticating");
   
   if (set_socket_nonblocking(chat->con.clientsocket, 1) < 0 )
@@ -177,7 +177,7 @@ int setupdccchat(const char *nick,
       else
         {
           notice(nick, "DCC passive Chat denied, use \"/MSG %s ADMIN password CHATME\" instead.", get_user_nick());
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                   "DCC CHAT attempt denied from %s on %s",
                   hostmask, gnetwork->name);
         }
@@ -257,7 +257,7 @@ int setupdccchat(const char *nick,
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "dccchat socket = %d", chat->con.clientsocket);
+      ioutput(OUT_S, COLOR_YELLOW, "dccchat socket = %d", chat->con.clientsocket);
     }
   
   gdata.num_dccchats++;
@@ -275,7 +275,7 @@ int setupdccchat(const char *nick,
   my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa));
   chat->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT received from %s on %s, attempting connection to %s",
           nick, gnetwork->name, chat->con.remoteaddr);
   return 0;
@@ -283,7 +283,7 @@ int setupdccchat(const char *nick,
 
 void setupdccchatconnected(dccchat_t *chat)
 {
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT connection succeeded, authenticating");
   
   chat->status = DCCCHAT_AUTHENTICATING;
@@ -316,7 +316,7 @@ void parsedccchat(dccchat_t *chat,
       found = dcc_host_password(chat, line);
       if (found == 1)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                   "DCC CHAT Correct password");
           
           chat->status = DCCCHAT_CONNECTED;
@@ -337,7 +337,7 @@ void parsedccchat(dccchat_t *chat,
         }
       else
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                   "DCC CHAT: Incorrect password");
           
           writedccchat(chat,0,"Incorrect Password\n");
@@ -350,7 +350,7 @@ void parsedccchat(dccchat_t *chat,
     case DCCCHAT_CONNECTED:
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_CYAN,">DCC>: %s",line);
+          ioutput(OUT_S, COLOR_CYAN, ">DCC>: %s", line);
         }
       u_fillwith_dcc(&ui,chat,line);
       u_parseit(&ui);
@@ -411,7 +411,7 @@ void vwritedccchat(dccchat_t *chat, int add_return, const char *format, va_list 
         {
           tempstr[len-1] = '\0';
         }
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_CYAN,"<DCC<: %s",tempstr);
+      ioutput(OUT_S, COLOR_CYAN, "<DCC<: %s", tempstr);
     }
 }
 

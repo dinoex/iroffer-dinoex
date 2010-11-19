@@ -183,7 +183,7 @@ void l_transfersome (upload * const l) {
            }
          
          if (gdata.debug > 4) {
-            ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_BLUE,"Read %d File %d",howmuch,howmuch2);
+            ioutput(OUT_S, COLOR_BLUE, "Read %d File %d", howmuch, howmuch2);
             }
          
          }
@@ -236,7 +236,7 @@ void l_transfersome (upload * const l) {
       snprintf(tempstr+strlen(tempstr), maxtextlength-strlen(tempstr),
                " %li sec", timetook%60);
       
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "DCC Upload: Transfer Completed (%" LLPRINTFMT "d KB,%s, %0.1f KB/sec)",
               mysize/1024,
               tempstr,
@@ -261,7 +261,7 @@ void l_istimeout (upload * const l)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
+          ioutput(OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
         }
       FD_CLR(l->con.clientsocket, &gdata.readset);
       shutdown_close(l->con.clientsocket);
@@ -284,18 +284,18 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
   
   if (errno1)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "Upload: Connection closed: %s (%s)", msg, strerror(errno1));
     }
   else
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "Upload: Connection closed: %s", msg);
     }
   
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
+      ioutput(OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
     }
   
   if (l->con.listensocket != FD_UNUSED && l->con.listensocket > 2)

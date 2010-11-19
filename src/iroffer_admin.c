@@ -304,13 +304,13 @@ u_respond(const userinput * const u, const char *format, ...)
   switch (u->method)
     {
     case method_console:
-      vioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, format, args);
+      vioutput(OUT_S, COLOR_NO_COLOR, format, args);
       break;
     case method_dcc:
       vwritedccchat(u->chat, 1, format, args);
       break;
     case method_out_all:
-      vioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, format, args);
+      vioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, format, args);
       break;
     case method_fd:
       voutput_fd(u->fd, format, args);
@@ -392,12 +392,12 @@ void u_parseit(userinput * const u) {
       u_respond(u,"** User Command Not Recognized, try \"HELP\"");
    
    if (found && u->method==method_console)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (console)", u->cmd);
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (console)", u->cmd);
    if (found && u->method==method_dcc)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (DCC Chat: %s) (network: %s)",
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (DCC Chat: %s) (network: %s)",
                u->cmd, save_nick(u->chat->nick), gnetwork->name);
    if (found && u->method==method_msg)
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (MSG: %s) (network: %s)",
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (MSG: %s) (network: %s)",
               u->cmd, u->snick, gnetwork->name);
    
 #ifdef DEBUG
@@ -405,7 +405,7 @@ void u_parseit(userinput * const u) {
    ms1 = timeval_to_ms(&timestruct1);
    ms2 = timeval_to_ms(&timestruct2);
    if (gdata.debug > 0)
-     ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, (long)(ms2 - ms1));
+     ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, (long)(ms2 - ms1));
 #endif /* DEBUG */
    
    u_fillwith_clean(u);
@@ -1444,7 +1444,7 @@ static void u_quit(const userinput * const u)
 {
   updatecontext();
   
-  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L,COLOR_MAGENTA,"DCC CHAT: QUIT");
+  ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "DCC CHAT: QUIT");
   u_respond(u,"Bye.");
   
   shutdowndccchat(u->chat,1);

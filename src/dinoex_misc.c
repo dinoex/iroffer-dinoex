@@ -291,7 +291,7 @@ static unsigned int notifyqueued_queue(irlist_t *list, const char *nick, const c
     }
 
     ++found;
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_D, COLOR_YELLOW,
             "Notifying Queued status to %s on %s",
             pq->nick, gnetwork->name);
     notice_slow(pq->nick, "Queued %lih%lim for \"%s\", in position %u of %u. %lih%lim or %s remaining. (at %s)",
@@ -346,7 +346,7 @@ void notifyqueued(void)
   if (found == 0)
     return;
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_D, COLOR_YELLOW,
           "Notifying %u Queued People on %s",
           found, gnetwork->name);
 }
@@ -503,7 +503,7 @@ static int send_xdcc_file(xdcc *xd, char *file, const char *nick, const char *ho
 
   if (init_xdcc_file(xd, file))
     return 1;
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "Send: %s to %s bytes=%" LLPRINTFMT "d",
           file, nick, xd->st_size);
   tr = create_transfer(xd, nick, hostname);
@@ -615,7 +615,7 @@ unsigned int disk_full(const char *path)
   freebytes = 0L;
 #ifndef NO_STATVFS
   if (statvfs(path, &stf) < 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "Unable to determine device sizes: %s",
             strerror(errno));
   } else {
@@ -624,7 +624,7 @@ unsigned int disk_full(const char *path)
 #else /* NO_STATVFS */
 #ifndef NO_STATFS
   if (statfs(path, &stf) < 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "Unable to determine device sizes: %s",
             strerror(errno));
   } else {
@@ -634,7 +634,7 @@ unsigned int disk_full(const char *path)
 #endif /* NO_STATVFS */
 
   if (gdata.debug > 0)
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
            "disk_free= %" LLPRINTFMT "d, required= %" LLPRINTFMT "d",
            freebytes, gdata.uploadminspace);
 
@@ -1165,7 +1165,7 @@ static unsigned int onlyprintable(unsigned int a)
 }
 
 /* generate an hexdump from a buffer with given length */
-void hexdump(calltype_e type, int dest, unsigned int color_flags, const char *prefix, void *t, size_t max)
+void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, size_t max)
 {
   char buffer[maxtextlength];
   unsigned char *ut = (unsigned char *)t;
@@ -1191,7 +1191,7 @@ void hexdump(calltype_e type, int dest, unsigned int color_flags, const char *pr
       len += snprintf(buffer + len, maxtextlength - len, "%c", onlyprintable(ut[j]));
     }
     len += snprintf(buffer + len, maxtextlength - len, "\"");
-    ioutput(type, dest, color_flags, "%s%s", prefix, buffer);
+    ioutput(dest, color_flags, "%s%s", prefix, buffer);
     if (max <= 16)
       break;
     j += 16;

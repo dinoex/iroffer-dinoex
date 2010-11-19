@@ -65,29 +65,29 @@ main(int argc, char *const *argv) {
 
 static void select_dump(const char *desc, int highests)
 {
+  char buffer[maxtextlength];
+  size_t len;
   int ii;
   
-  ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_CYAN,
-          "select %s: [read",desc);
+  len = 0;
+  len += snprintf(buffer + len, maxtextlength - len, "select %s: [read", desc);
   for (ii=0; ii<highests+1; ii++)
     {
       if (FD_ISSET(ii, &gdata.readset))
         {
-          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_CYAN,
-                  " %d",ii);
+          len += snprintf(buffer + len, maxtextlength - len, " %d", ii);
         }
     }
-  ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_CYAN,
-          "] [write");
+  len += snprintf(buffer + len, maxtextlength - len, "] [write");
   for (ii=0; ii<highests+1; ii++)
     {
       if (FD_ISSET(ii, &gdata.writeset))
         {
-          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_CYAN,
-                  " %d",ii);
+          len += snprintf(buffer + len, maxtextlength - len, " %d", ii);
         }
     }
-  ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_CYAN, "]");
+  len += snprintf(buffer + len, maxtextlength - len, "]");
+  ioutput(OUT_S, COLOR_CYAN, "%s", buffer);
   
 }
 
@@ -237,7 +237,7 @@ static void mainloop (void) {
                         {
                       /* lookup failed */
 #ifdef NO_WSTATUS_CODES
-                      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+                      ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
                               "Unable to resolve server %s (status=0x%.8X)",
                               gdata.networks[ss].curserver.hostname,
                               status);
@@ -270,14 +270,14 @@ static void mainloop (void) {
                               errstr = "unknown";
                               break;
                             }
-                          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+                          ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
                                   "Unable to resolve server %s (%s)",
                                   gdata.networks[ss].curserver.hostname, errstr);
                         }
                       else
 #endif
                         {
-                          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+                          ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
                                   "Unable to resolve server %s (status=0x%.8X, %s: %d)",
                                   gdata.networks[ss].curserver.hostname,
                                   status,
@@ -419,7 +419,7 @@ static void mainloop (void) {
          
          if (length < 1) {
             if (errno != EAGAIN) {
-            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
                     "Closing Server Connection on %s: %s",
                     gnetwork->name, (length<0) ? strerror(errno) : "Closed");
             if (gdata.exiting)
@@ -479,7 +479,7 @@ static void mainloop (void) {
             }
           else if (connect_error)
             {
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                       "Server Connection Failed: %s on %s", strerror(connect_error), gnetwork->name);
             }
           
@@ -491,7 +491,7 @@ static void mainloop (void) {
             {
 	    SIGNEDSOCK int addrlen; 
           
-            ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Server Connection to %s Established, Logging In",  gnetwork->name);
             gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
             gnetwork->connecttime = gdata.curtime;
@@ -517,7 +517,7 @@ static void mainloop (void) {
                     char *msg;
                     msg = mycalloc(maxtextlength);
                     my_getnameinfo(msg, maxtextlength -1, &(gnetwork->myip.sa));
-                    ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "using %s", msg);
+                    ioutput(OUT_S, COLOR_YELLOW, "using %s", msg);
                     mydelete(msg);
                   }
                 if (!gnetwork->usenatip)
@@ -525,7 +525,7 @@ static void mainloop (void) {
                     gnetwork->ourip = ntohl(gnetwork->myip.sin.sin_addr.s_addr);
                     if (gdata.debug > 0)
                       {
-                        ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,"ourip = %lu.%lu.%lu.%lu",
+                        ioutput(OUT_S, COLOR_YELLOW, "ourip = %lu.%lu.%lu.%lu",
                                 (gnetwork->ourip >> 24) & 0xFF,
                                 (gnetwork->ourip >> 16) & 0xFF,
                                 (gnetwork->ourip >>  8) & 0xFF,
@@ -553,7 +553,7 @@ static void mainloop (void) {
           
           if (length != sizeof(res_addrinfo_t))
             {
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+              ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
                       "Error resolving server %s on %s",
                       gnetwork->curserver.hostname, gnetwork->name);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
@@ -577,7 +577,7 @@ static void mainloop (void) {
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
             {
               kill(gnetwork->serv_resolv.child_pid, SIGKILL);
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                       "Server Resolve Timed Out (%u seconds) on %s", timeout, gnetwork->name);
               gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
             }
@@ -590,7 +590,7 @@ static void mainloop (void) {
           
           if (gnetwork->lastservercontact + timeout < gdata.curtime)
             {
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                       "Server Connection Timed Out (%u seconds) on %s", timeout, gnetwork->name);
               close_server();
             }
@@ -650,7 +650,7 @@ static void mainloop (void) {
                 }
               else
                 {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                           "Upload Connection Established on %s", gnetwork->name);
                   ul->ul_status = UPLOAD_STATUS_GETTING;
                   FD_CLR(ul->con.clientsocket, &gdata.writeset);
@@ -718,7 +718,7 @@ static void mainloop (void) {
                 }
               else if (connect_error)
                 {
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                           "DCC Chat Connect Attempt Failed on %s: %s",
                           gnetwork->name, strerror(connect_error));
                   notice(chat->nick, "DCC Chat Connect Attempt Failed: %s", strerror(connect_error));
@@ -749,7 +749,7 @@ static void mainloop (void) {
                   
                   if (length < 1)
                     {
-                      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                               "DCC Chat Lost on %s: %s",
                               gnetwork->name,
                               (length<0) ? strerror(errno) : "Closed");
@@ -930,7 +930,7 @@ static void mainloop (void) {
         {
           if (!irlist_size(&gdata.trans))
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                       "Delayed Shutdown Activated, No Transfers Remaining");
               shutdowniroffer();
             }
@@ -983,7 +983,7 @@ static void mainloop (void) {
                   struct tm *localt;
                   if (gdata.transferlimits[ii].limit && gdata.transferlimits[ii].ends)
                     {
-                      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                               "Resetting %s transfer limit, used %" LLPRINTFMT "uMB of the %" LLPRINTFMT "uMB limit",
                               transferlimit_type_to_string(ii),
                               gdata.transferlimits[ii].used / 1024 / 1024,
@@ -1031,7 +1031,7 @@ static void mainloop (void) {
                     {
                       char *tempstr = transfer_limit_exceeded_msg(ii);
                       
-                      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                               "All %" LLPRINTFMT "uMB of the %s transfer limit used. Stopping transfers.",
                               gdata.transferlimits[ii].limit / 1024 / 1024,
                               transferlimit_type_to_string(ii));
@@ -1060,7 +1060,7 @@ static void mainloop (void) {
             {
               if (!transferlimits_over)
                 {
-                  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                           "No longer over any transfer limits. Transfers are now allowed.");
                 }
               gdata.transferlimits_over = transferlimits_over;
@@ -1082,7 +1082,7 @@ static void mainloop (void) {
               if ((ignore->flags & IGN_IGNORING) && (ignore->bucket == 0))
                 {
                   ignore->flags &= ~IGN_IGNORING;
-                  ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                           "Ignore removed for %s",ignore->hostmask);
                   write_statefile();
                 }
@@ -1138,13 +1138,13 @@ static void mainloop (void) {
                   {
                     tempstr3[len-1] = '\0';
                     len--;
-                    ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<NORES<: %s",tempstr3);
+                    ioutput(OUT_S, COLOR_MAGENTA, "<NORES<: %s", tempstr3);
                   }
                 mydelete(tempstr3);
                 gnetwork->servertime++;
               }
             else if (gnetwork->servertime == 3) {
-               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+               ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
                        "Closing Server Connection on %s: No Response for %u minutes.",
                        gnetwork->name, SRVRTOUT/60);
                close_server();
@@ -1245,7 +1245,7 @@ static void mainloop (void) {
                   {
                     if (ch->pgroup != NULL)
                       {
-                        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_NO_COLOR, "Plist sent to %s (pgroup)", ch->name);
+                        ioutput(OUT_S|OUT_D, COLOR_NO_COLOR, "Plist sent to %s (pgroup)", ch->name);
                         pubplist = mycalloc(sizeof(userinput));
                         pubplist->method = method_xdl_channel;
                         pubplist->net = gnetwork->net;
@@ -1301,11 +1301,12 @@ static void mainloop (void) {
               {
                 if (gdata.restrictprivlist && !gdata.creditline && !gdata.headline)
                   {
-                    ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Can't send Summary Plist to %s (restrictprivlist is set and no creditline or headline, summary makes no sense!)",tchans);
+                    ioutput(OUT_S|OUT_D, COLOR_NO_COLOR,
+                            "Can't send Summary Plist to %s (restrictprivlist is set and no creditline or headline, summary makes no sense!)", tchans);
                   }
                 else
                   {
-                    ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Plist sent to %s (summary)",tchans);
+                    ioutput(OUT_S|OUT_D, COLOR_NO_COLOR, "Plist sent to %s (summary)", tchans);
                     pubplist = mycalloc(sizeof(userinput));
                     a_fillwith_msg2(pubplist, tchans, "XDL");
                     pubplist->method = method_xdl_channel_sum;
@@ -1315,7 +1316,7 @@ static void mainloop (void) {
                 mydelete(tchans);
               }
             if (tchanf) {
-               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Plist sent to %s (full)",tchanf);
+               ioutput(OUT_S|OUT_D, COLOR_NO_COLOR, "Plist sent to %s (full)", tchanf);
                pubplist = mycalloc(sizeof(userinput));
                a_fillwith_plist(pubplist, tchanf, NULL);
                pubplist->method = method_xdl_channel;
@@ -1324,7 +1325,7 @@ static void mainloop (void) {
                mydelete(tchanf);
                }
             if (tchanm) {
-               ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Plist sent to %s (minimal)",tchanm);
+               ioutput(OUT_S|OUT_D, COLOR_NO_COLOR, "Plist sent to %s (minimal)", tchanm);
                pubplist = mycalloc(sizeof(userinput));
                a_fillwith_msg2(pubplist, tchanm, "XDL");
                pubplist->method = method_xdl_channel_min;
@@ -1373,7 +1374,7 @@ static void mainloop (void) {
                  (irlist_size(&(gnetwork->serverq_normal)) >= 10) ||
                  (irlist_size(&(gnetwork->serverq_slow)) >= 50))
                {
-                 ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D|OUT_L, COLOR_NO_COLOR,
+                 ioutput(OUT_S|OUT_D|OUT_L, COLOR_NO_COLOR,
                          "notifications skipped on %s, server queue is rather large",
                          gnetwork->name);
                }
@@ -1509,7 +1510,7 @@ static void mainloop (void) {
               
               if (gdata.debug > 4)
                 {
-                  ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW, "[MD5 Pack %u]: read %ld",
+                  ioutput(OUT_S, COLOR_YELLOW, "[MD5 Pack %u]: read %ld",
                           number_of_pack(gdata.md5build.xpack), (long)howmuch);
                 }
               
@@ -1537,12 +1538,12 @@ static void mainloop (void) {
                     crc32_final(gdata.md5build.xpack);
                   gdata.md5build.xpack->has_md5sum = 1;
                   
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                           "[MD5 Pack %u]: is " MD5_PRINT_FMT,
                           number_of_pack(gdata.md5build.xpack),
                           MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
                   if (!gdata.nocrc32)
-                    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                             "[CRC32 Pack %u]: is %.8lX",
                             number_of_pack(gdata.md5build.xpack), gdata.md5build.xpack->crc32);
                   
@@ -1554,7 +1555,7 @@ static void mainloop (void) {
                       const char *crcmsg = validate_crc32(gdata.md5build.xpack, 2);
                       if (crcmsg != NULL)
                         {
-                           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                           ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                                    "[CRC32 Pack %u]: File '%s' %s.",
                                    number_of_pack(gdata.md5build.xpack),
                                    gdata.md5build.xpack->file, crcmsg);
@@ -1602,7 +1603,7 @@ static void mainloop (void) {
              shutdowndccchat(chat,1);
            }
          
-         mylog(CALLTYPE_NORMAL,"iroffer exited\n\n");
+         mylog("iroffer exited\n\n");
          
          exit_iroffer(0);
          }
@@ -1619,7 +1620,7 @@ static void mainloop (void) {
             {
               if (gdata.debug > 0)
                 {
-                  ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_YELLOW,
+                  ioutput(OUT_S, COLOR_YELLOW,
                           "Reconnecting to server (%u seconds) on %s",
                           timeout, gnetwork->name);
                 }
@@ -1692,7 +1693,7 @@ static void parseline(char *line) {
    line[maxtextlength-1] = '\0';
    
    if (gdata.debug > 0)
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_CYAN, ">IRC>: %u, %s", gnetwork->net + 1, line);
+      ioutput(OUT_S, COLOR_CYAN, ">IRC>: %u, %s", gnetwork->net + 1, line);
    
    part2 = getpart(line,2);
    if (part2 == NULL)
@@ -1727,8 +1728,7 @@ static void parseline(char *line) {
  /* :server 001  xxxx :welcome.... */
    if ( !strcmp(part2,"001") )
      {
-       ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Server welcome: %s",line);
-       mylog(CALLTYPE_NORMAL, "Server welcome: %s", line);
+       ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "Server welcome: %s", line);
        update_server_welcome(line);
        
        /* update server name */
@@ -1837,7 +1837,7 @@ static void parseline(char *line) {
  /* :server 433 old new :Nickname is already in use. */
    if ( !strcmp(part2,"433") && part3 && !strcmp(part3,"*") && part4 )
      {
-       ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+       ioutput(OUT_S, COLOR_NO_COLOR,
                "Nickname %s already in use on %s, trying %s%u",
                part4,
                gnetwork->name,
@@ -1885,7 +1885,7 @@ static void parseline(char *line) {
        
        if (!ch)
          {
-           ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+           ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                    "Got name data for %s which is not a known channel on %s!",
                    part5, gnetwork->name);
            writeserver(WRITESERVER_NORMAL, "PART %s", part5);
@@ -1905,7 +1905,7 @@ static void parseline(char *line) {
       if (gdata.exiting)
          gnetwork->recentsent = 0;
       else {
-         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+         ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
                  "Server Closed Connection on %s: %s",
                  gnetwork->name, line);
          close_server();
@@ -1915,7 +1915,7 @@ static void parseline(char *line) {
  /* server ping */
    if (PING_SRVR && (strncmp(line, "PING :", 6) == 0)) {
       if (gdata.debug > 0)
-         ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+         ioutput(OUT_S, COLOR_NO_COLOR,
                  "Server Ping on %s: %s",
                  gnetwork->name, line);
       writeserver(WRITESERVER_NOW, "PO%s", line+2);
@@ -1944,7 +1944,7 @@ static void parseline(char *line) {
           /* we joined */
           /* clear now, we have succesfully logged in */
           gnetwork->serverconnectbackoff = 0;
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                   "Joined %s on %s", caps(part3a), gnetwork->name);
           
           ch = irlist_get_head(&(gnetwork->channels));
@@ -1969,7 +1969,7 @@ static void parseline(char *line) {
 
           if (!ch)
             {
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                   "%s is not a known channel on %s!",
                   part3a, gnetwork->name);
             }
@@ -1990,7 +1990,7 @@ static void parseline(char *line) {
 	  
 	  if (!ch)
             {
-              ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                       "%s is not a known channel on %s!",
                       part3a, gnetwork->name);
             }
@@ -2038,7 +2038,7 @@ static void parseline(char *line) {
 	   
 	   if (!ch)
              {
-               ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+               ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                        "%s is not a known channel on %s!",
                        part3a, gnetwork->name);
              }

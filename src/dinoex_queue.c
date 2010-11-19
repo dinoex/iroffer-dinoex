@@ -79,7 +79,7 @@ void queue_reverify_restrictsend(irlist_t *list)
     }
 
     notice(pq->nick, "** Removed From Queue: You are no longer on a known channel");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "Removed From Queue: %s on %s not in known Channel.",
             pq->nick, gdata.networks[ pq->net ].name);
     mydelete(pq->nick);
@@ -449,7 +449,7 @@ void send_from_queue(unsigned int type, unsigned int pos, char *lastnick)
 
     if (type > 2) type = 0;
     pack = number_of_pack(pq->xpack);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "QUEUED SEND%s: %s (%s on %s), Pack #%u",
             send_queue_msg[ type ],
             pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
