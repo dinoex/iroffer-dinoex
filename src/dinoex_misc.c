@@ -757,6 +757,9 @@ void logfile_add(const char *logfile, const char *line)
   int rc;
   int logfd;
 
+  if (logfile == NULL)
+    return;
+
   logfd = open(logfile,
                O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
                CREAT_PERMISSIONS);

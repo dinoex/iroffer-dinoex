@@ -174,7 +174,6 @@ char* getuptime(char *str, unsigned int type, time_t fromwhen, size_t len)
 void mylog(const char *format, ...)
 {
   char tempstr[maxtextlength];
-  char tempstr2[maxtextlengthshort];
   va_list args;
   size_t len;
   
@@ -182,25 +181,6 @@ void mylog(const char *format, ...)
     {
       return;
     }
-  
-  if (gdata.logfd == FD_UNUSED)
-    {
-      gdata.logfd = open(gdata.logfile,
-                         O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
-                         CREAT_PERMISSIONS);
-      if (gdata.logfd < 0)
-        {
-          outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
-                   "Cant Access Log File '%s': %s",
-                   gdata.logfile,strerror(errno));
-          gdata.logfd = FD_UNUSED;
-          return;
-        }
-    }
-  
-      getdatestr(tempstr,0,maxtextlength);
-      len = snprintf(tempstr2, maxtextlengthshort, "** %s: ", tempstr);
-      write(gdata.logfd, tempstr2, len);
   
   va_start(args, format);
   len = vsnprintf(tempstr, maxtextlength, format, args);
@@ -213,10 +193,7 @@ void mylog(const char *format, ...)
       return;
     }
   
-  write(gdata.logfd,tempstr,strlen(tempstr));
-  
-      write(gdata.logfd,"\n",1);
-  
+  logfile_add(gdata.logfile, tempstr);
   return;
 }
 
