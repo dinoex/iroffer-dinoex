@@ -78,7 +78,7 @@ void geoip_new_connection(transfer *const tr)
 
 #ifdef USE_GEOIP
   country = check_geoip(tr->remoteip);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "GeoIP [%02i:%s on %s]: Info %ld.%ld.%ld.%ld -> %s)",
             tr->id, tr->nick, gdata.networks[ tr->net ].name,
             tr->remoteip>>24, (tr->remoteip>>16) & 0xFF,
@@ -101,7 +101,7 @@ void geoip_new_connection(transfer *const tr)
          msg = mycalloc(maxtextlength);
          snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
          t_closeconn(tr, msg, 0);
-         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+         ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                  "IP from other country (%s) detected", country);
          mydelete(msg);
          return;
@@ -114,7 +114,7 @@ void geoip_new_connection(transfer *const tr)
          msg = mycalloc(maxtextlength);
          snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
          t_closeconn(tr, msg, 0);
-         ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+         ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                  "IP from other country (%s) detected", country);
          mydelete(msg);
          return;

@@ -1,4 +1,5 @@
-/*      
+
+/*
  * iroffer by David Johnson (PMG) 
  * Copyright (C) 1998-2005 David Johnson 
  * 
@@ -41,7 +42,7 @@ void getos (void) {
       outerror(OUTERROR_TYPE_CRASH,"Couldn't Get Your OS Type");
    
    printf("** You Are Running %s %s on a %s",u1.sysname,u1.release,u1.machine);
-   mylog(CALLTYPE_NORMAL,"You Are Running %s %s on a %s",u1.sysname,u1.release,u1.machine);
+   mylog("You Are Running %s %s on a %s", u1.sysname, u1.release, u1.machine);
    
    gdata.osstring = mymalloc(strlen(u1.sysname) + strlen(u1.release) + 2);
    
@@ -93,7 +94,7 @@ void outerror (outerror_type_e type, const char *format, ...) {
 
    if ( type == OUTERROR_TYPE_CRASH ) {
       
-      ioutput(CALLTYPE_NORMAL,ioutput_options,COLOR_RED|COLOR_BOLD,"ERROR: %s",tempstr);
+      ioutput(ioutput_options, COLOR_RED|COLOR_BOLD, "ERROR: %s", tempstr);
       
       tostdout_disable_buffering();
       
@@ -104,16 +105,16 @@ void outerror (outerror_type_e type, const char *format, ...) {
           printf("** ERROR: %s\n\n",tempstr);
         }
          
-      mylog(CALLTYPE_NORMAL,"iroffer exited (Error)\n\n");
+      mylog("iroffer exited (Error)\n\n");
       if (gdata.pidfile) unlink(gdata.pidfile);
 
       exit(1);
       }
    else if (type == OUTERROR_TYPE_WARN_LOUD ) {
-      ioutput(CALLTYPE_NORMAL,ioutput_options,COLOR_RED|COLOR_BOLD,"WARNING: %s",tempstr);
+      ioutput(ioutput_options, COLOR_RED|COLOR_BOLD, "WARNING: %s", tempstr);
       }
    else if (type == OUTERROR_TYPE_WARN ) {
-      ioutput(CALLTYPE_NORMAL,ioutput_options,COLOR_RED,"WARNING: %s",tempstr);
+      ioutput(ioutput_options, COLOR_RED, "WARNING: %s", tempstr);
       }
    
    }
@@ -170,7 +171,7 @@ char* getuptime(char *str, unsigned int type, time_t fromwhen, size_t len)
 }
 
 
-void mylog(calltype_e type, const char *format, ...)
+void mylog(const char *format, ...)
 {
   char tempstr[maxtextlength];
   char tempstr2[maxtextlengthshort];
@@ -197,12 +198,9 @@ void mylog(calltype_e type, const char *format, ...)
         }
     }
   
-  if ((type == CALLTYPE_NORMAL) || (type == CALLTYPE_MULTI_FIRST))
-    {
       getdatestr(tempstr,0,maxtextlength);
       len = snprintf(tempstr2, maxtextlengthshort, "** %s: ", tempstr);
       write(gdata.logfd, tempstr2, len);
-    }
   
   va_start(args, format);
   len = vsnprintf(tempstr, maxtextlength, format, args);
@@ -217,10 +215,7 @@ void mylog(calltype_e type, const char *format, ...)
   
   write(gdata.logfd,tempstr,strlen(tempstr));
   
-  if ((type == CALLTYPE_NORMAL) || (type == CALLTYPE_MULTI_END))
-    {
       write(gdata.logfd,"\n",1);
-    }
   
   return;
 }
@@ -258,14 +253,14 @@ unsigned long long atoull (const char *str) {
    return num;
    }
 
-void ioutput(calltype_e type, int dest, unsigned int color_flags, const char *format, ...) {
+void ioutput(int dest, unsigned int color_flags, const char *format, ...) {
    va_list args;
    va_start(args, format);
-   vioutput(type, dest, color_flags, format, args);
+   vioutput(dest, color_flags, format, args);
    va_end(args);
 }
 
-void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *format, va_list ap) {
+void vioutput(int dest, unsigned int color_flags, const char *format, va_list ap) {
    char tempstr[maxtextlength];
    int len;
    dccchat_t *chat;
@@ -286,8 +281,6 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
       
       if (!gdata.attop) gototop();
       
-      if ((type == CALLTYPE_NORMAL) || (type == CALLTYPE_MULTI_FIRST))
-        {
           if (!gdata.nocolor && (color_flags != COLOR_NO_COLOR))
             {
               tostdout(IRVT_COLOR_SET1,
@@ -304,12 +297,9 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
             {
               tostdout("** ");
             }
-        }
       
       tostdout("%s",tempstr);
       
-      if ((type == CALLTYPE_NORMAL) || (type == CALLTYPE_MULTI_END))
-        {
           if (!gdata.nocolor && (color_flags != COLOR_NO_COLOR))
             {
               tostdout(IRVT_COLOR_RESET "\n");
@@ -318,12 +308,11 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
             {
               tostdout("\n");
             }
-        }
       }
    
    /* log */
    if (dest & OUT_L)
-      mylog(type,"%s",tempstr);
+      mylog("%s", tempstr);
    
    /* dcc chat */
    if (dest & OUT_D)
@@ -334,17 +323,11 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
          {
            if (chat->status == DCCCHAT_CONNECTED)
              {
-               if ((type == CALLTYPE_NORMAL) || (type == CALLTYPE_MULTI_FIRST))
-                 {
                    writedccchat(chat, 0, "--> ");
-                 }
                
                writedccchat(chat, 0, "%s", tempstr);
                
-               if ((type == CALLTYPE_NORMAL) || (type == CALLTYPE_MULTI_END))
-                 {
                    writedccchat(chat, 0, "\n");
-                 }
              }
          }
       }
@@ -361,7 +344,7 @@ void vioutput(calltype_e type, int dest, unsigned int color_flags, const char *f
         if (dest & OUT_L)
            return;
         
-        mylog(type, "%s", tempstr);
+        mylog("%s", tempstr);
      }
    
    }
@@ -616,7 +599,7 @@ static void meminfo_grow(int grow)
   if (gdata.debug > 0)
     {
       if (gdata.crashing == 0)
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR, "growing meminfo from %u to %u",
+      ioutput(OUT_S, COLOR_NO_COLOR, "growing meminfo from %u to %u",
               gdata.meminfo_depth-grow, gdata.meminfo_depth);
     }
 
@@ -678,7 +661,7 @@ void mydelete2(void *t) {
       gdata.crashing = 1; /* stop trackback here */
       outerror(OUTERROR_TYPE_WARN_LOUD,"Pointer 0x%8.8lX not found in meminfo database while trying to free!!",(long)t);
       outerror(OUTERROR_TYPE_WARN_LOUD, "Please report this error to Dinoex dinoex@dinoex.net");
-      hexdump(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED|COLOR_BOLD, "WARNING:" , ut, 8*16);
+      hexdump(OUT_S|OUT_L|OUT_D, COLOR_RED|COLOR_BOLD, "WARNING:" , ut, 8*16);
       outerror(OUTERROR_TYPE_WARN_LOUD,"Aborting Program! (core file should be generated)");
       abort(); /* getting a core file will help greatly */
       }
@@ -748,7 +731,7 @@ void dumpcontext(void)
     {
       c = &gdata.context_log[(gdata.context_cur_ptr + 1 + i) % MAXCONTEXTS];
       
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L, COLOR_NO_COLOR,
+      ioutput(OUT_S|OUT_L, COLOR_NO_COLOR,
               "Trace %3i  %-20s %-16s:%5i  %lu.%06lu",
               i-MAXCONTEXTS+1,
               c->func ? c->func : "UNKNOWN",
@@ -1328,7 +1311,7 @@ void clearmemberlist(channel_t *c)
   /* clear members list */
   if (gdata.debug > 2)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
+      ioutput(OUT_S, COLOR_NO_COLOR,
               "clearing %s",c->name);
     }
   
@@ -1351,7 +1334,7 @@ int isinmemberlist(const char *nick)
 
   if (gdata.debug > 2)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
+      ioutput(OUT_S, COLOR_NO_COLOR,
               "checking for %s",nick);
     }
   
@@ -1385,7 +1368,7 @@ void addtomemberlist(channel_t *c, const char *nick)
   bzero(prefixes, sizeof(prefixes));
   if (gdata.debug > 2)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
+      ioutput(OUT_S, COLOR_NO_COLOR,
               "adding %s to %s",nick,c->name);
     }
   
@@ -1441,9 +1424,9 @@ void removefrommemberlist(channel_t *c, const char *nick)
   
   if (gdata.debug > 2)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
+      ioutput(OUT_S, COLOR_NO_COLOR,
               "removing %s from %s",nick,c->name);
-      ioutput(CALLTYPE_NORMAL, OUT_L, COLOR_NO_COLOR,
+      ioutput(OUT_L, COLOR_NO_COLOR,
               "removing %s from %s", nick, c->name);
     }
   
@@ -1474,7 +1457,7 @@ void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, unsigned 
   
   if (gdata.debug > 2)
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_NO_COLOR,
+      ioutput(OUT_S, COLOR_NO_COLOR,
               "%s prefix %c on %s in %s",
               add ? "adding" : "removing",
               mode, nick, c->name);
@@ -1533,7 +1516,7 @@ void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newn
   
   if (gdata.debug > 2)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,
+      ioutput(OUT_S, COLOR_NO_COLOR,
               "changing %s to %s in %s",oldnick,newnick,c->name);
     }
   
@@ -2089,7 +2072,7 @@ void ir_listen_port_connected(ir_uint16 port)
         {
           if (gdata.debug > 0)
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,
+              ioutput(OUT_S, COLOR_YELLOW,
                       "listen complete port %d", port);
             }
           lp = irlist_delete(&gdata.listen_ports, lp);
@@ -2114,7 +2097,7 @@ static int ir_listen_port_is_in_list(ir_uint16 port)
         {
           if (gdata.debug > 0)
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,
+              ioutput(OUT_S, COLOR_YELLOW,
                       "listen expire port %d", lp->port);
             }
           lp = irlist_delete(&gdata.listen_ports, lp);
@@ -2195,7 +2178,7 @@ int ir_bind_listen_socket(int fd, ir_sockaddr_union_t *sa)
   port = get_port(sa);
   if (gdata.debug > 0)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_YELLOW,
+      ioutput(OUT_S, COLOR_YELLOW,
               "listen got port %d", port);
     }
   

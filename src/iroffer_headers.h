@@ -357,14 +357,6 @@ typedef enum
 
 typedef enum
 {
-  CALLTYPE_NORMAL,
-  CALLTYPE_MULTI_FIRST,
-  CALLTYPE_MULTI_MIDDLE,
-  CALLTYPE_MULTI_END
-} calltype_e;
-
-typedef enum
-{
   OUTERROR_TYPE_CRASH,
   OUTERROR_TYPE_WARN_LOUD,
   OUTERROR_TYPE_WARN,
@@ -522,9 +514,9 @@ char* getdatestr(char* str, time_t Tp, size_t len);
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
+__attribute__ ((format(printf, 1, 2)))
 #endif
-mylog(calltype_e type, const char *format, ...);
+mylog(const char *format, ...);
 
 void logstat(void);
 unsigned long atoul (const char *str);
@@ -532,15 +524,15 @@ unsigned long long atoull (const char *str);
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 4, 5)))
+__attribute__ ((format(printf, 3, 4)))
 #endif
-ioutput(calltype_e type, int dest, unsigned int color_flags, const char *format, ...);
+ioutput(int dest, unsigned int color_flags, const char *format, ...);
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 4, 0)))
+__attribute__ ((format(printf, 3, 0)))
 #endif
-vioutput(calltype_e type, int dest, unsigned int color_flags, const char *format, va_list ap);
+vioutput(int dest, unsigned int color_flags, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__

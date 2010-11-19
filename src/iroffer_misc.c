@@ -161,7 +161,7 @@ static int connectirc (server_t *tserver) {
    vhost = get_local_vhost();
    if (vhost)
      {
-       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+       ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                "Attempting Connection to %s:%u from %s%s",
                gnetwork->curserver.hostname,
                gnetwork->curserver.port,
@@ -170,7 +170,7 @@ static int connectirc (server_t *tserver) {
      }
    else
      {
-       ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Attempting Connection to %s:%u%s",
+       ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Attempting Connection to %s:%u%s",
                gnetwork->curserver.hostname,
                gnetwork->curserver.port, tempstr);
      }
@@ -355,7 +355,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<SND<: %u: %s", gnetwork->net +1, msg);
+          ioutput(OUT_S, COLOR_MAGENTA, "<SND<: %u: %s", gnetwork->net +1, msg);
         }
       msg[len] = '\n';
       len++;
@@ -374,7 +374,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 0)
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<QUEF<: %s",msg);
+              ioutput(OUT_S, COLOR_MAGENTA, "<QUEF<: %s", msg);
             }
           
           if (len > EXCESS_BUCKET_MAX)
@@ -397,7 +397,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 0)
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<QUEN<: %s",msg);
+              ioutput(OUT_S, COLOR_MAGENTA, "<QUEN<: %s", msg);
             }
           
           if (len > EXCESS_BUCKET_MAX)
@@ -420,7 +420,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 0)
             {
-              ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_MAGENTA,"<QUES<: %s",msg);
+              ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
             }
           
           if (len > EXCESS_BUCKET_MAX)
@@ -473,7 +473,7 @@ void sendserver(void)
         {
           close_server();
           gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-          ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_NO_COLOR,
+          ioutput(OUT_S|OUT_D, COLOR_NO_COLOR,
                   "Connection to %s (%s) Closed",
                   gnetwork->curserver.hostname,
                   gnetwork->curserveractualname ? gnetwork->curserveractualname : "<unknown>");
@@ -487,7 +487,7 @@ void sendserver(void)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -509,7 +509,7 @@ void sendserver(void)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -536,7 +536,7 @@ void sendserver(void)
     {
       if (gdata.debug > 0)
         {
-          ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -681,7 +681,7 @@ void writepidfile (const char *filename) {
    
    updatecontext();
 
-   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Writing pid file...");
+   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Writing pid file...");
    
    filedescriptor=open(filename, O_WRONLY | O_TRUNC | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS);
    if (filedescriptor < 0) outerror(OUTERROR_TYPE_CRASH,"Cant Create PID File '%s': %s",filename,strerror(errno));
@@ -742,7 +742,7 @@ void gobackground(void) {
    dup(s);                        /* stdout */
    dup(s);                        /* stderr */
    
-   mylog(CALLTYPE_NORMAL,"Entered Background Mode");
+   mylog("Entered Background Mode");
    gdata.background = 2;
    
 /*   execlp(program,"iroffer","--background-mode--",config,NULL); */
@@ -766,7 +766,7 @@ static void iroffer_signal_handler(int signo)
           
           uninitscreen();
           
-          mylog(CALLTYPE_NORMAL,"iroffer exited (signal forced!)\n\n");
+          mylog("iroffer exited (signal forced!)\n\n");
           printf("iroffer exited (signal forced!)\n");
           
           exit_iroffer(1);
@@ -805,16 +805,17 @@ static void iroffer_signal_handler(int signo)
         
         gdata.crashing = 1;
         
-        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                 "!!! iroffer has received a fatal signal. !!!");
-        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                 "Signal %d (%s)", signo, strsignal(signo));
         
 #if !defined(NO_SIGINFO)
         switch (signo)
           {
           case SIGBUS:
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Faulting Address: 0x%.8lX", (unsigned long)sinfo->si_addr);
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                    "Faulting Address: 0x%.8lX", (unsigned long)sinfo->si_addr);
 #if !defined(NO_SIGCODES)
             switch (sinfo->si_code)
               {
@@ -836,13 +837,14 @@ static void iroffer_signal_handler(int signo)
                 
               }
             
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
-                    "Code: %s",code);
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                    "Code: %s", code);
 #endif
             break;
             
           case SIGILL:
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Faulting Address: 0x%.8lX", (unsigned long)sinfo->si_addr);
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                    "Faulting Address: 0x%.8lX", (unsigned long)sinfo->si_addr);
 #if !defined(NO_SIGCODES)
             switch (sinfo->si_code)
               {
@@ -884,13 +886,14 @@ static void iroffer_signal_handler(int signo)
                 
               }
             
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Code: %s",code);
 #endif
             break;
             
           case SIGFPE:
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Faulting Address: 0x%.8lX", (unsigned long)sinfo->si_addr);
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                    "Faulting Address: 0x%.8lX", (unsigned long)sinfo->si_addr);
 #if !defined(NO_SIGCODES)
             switch (sinfo->si_code)
               {
@@ -932,13 +935,14 @@ static void iroffer_signal_handler(int signo)
                 
               }
             
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Code: %s",code);
 #endif
             break;
             
           case SIGSEGV:
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Faulting Address: 0x%.8lX", (unsigned long)sinfo->si_addr);
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                    "Faulting Address: 0x%.8lX", (unsigned long)sinfo->si_addr);
 #if !defined(NO_SIGCODES)
             switch (sinfo->si_code)
               {
@@ -956,7 +960,7 @@ static void iroffer_signal_handler(int signo)
                 
               }
             
-            ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                     "Code: %s",code);
 #endif
             break;
@@ -968,12 +972,12 @@ static void iroffer_signal_handler(int signo)
           }
 #endif
         
-        ioutput(CALLTYPE_NORMAL,OUT_S|OUT_L|OUT_D,COLOR_NO_COLOR,"Context Trace:");
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Context Trace:");
         
         dumpcontext();
         dumpgdata();
         
-        ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Crashing... Please report this problem to dinoex");
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Crashing... Please report this problem to dinoex");
         
         tostdout_disable_buffering();
         
@@ -1037,7 +1041,7 @@ void logstat(void)
   tempstr = mycalloc(maxtextlength);
   getstatusline(tempstr,maxtextlength);
   
-  mylog(CALLTYPE_NORMAL, "%s", tempstr);
+  mylog("%s", tempstr);
   
   mydelete(tempstr);
   
@@ -1095,9 +1099,9 @@ void shutdowniroffer(void) {
    
    if (gdata.exiting || has_closed_servers()) {
       if (gdata.exiting)
-         ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Shutting Down (FORCED)");
+         ioutput(OUT_S, COLOR_NO_COLOR, "Shutting Down (FORCED)");
       else
-         ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Shutting Down");
+         ioutput(OUT_S, COLOR_NO_COLOR, "Shutting Down");
       
       if ( SAVEQUIT )
          write_statefile();
@@ -1110,13 +1114,13 @@ void shutdowniroffer(void) {
           shutdowndccchat(chat,1);
         }
       
-      mylog(CALLTYPE_NORMAL,"iroffer exited (shutdown)\n\n");
+      mylog("iroffer exited (shutdown)\n\n");
    
       exit_iroffer(0);
       }
    
    
-   ioutput(CALLTYPE_NORMAL,OUT_S,COLOR_NO_COLOR,"Shutting Down... (Issue \"SHUTDOWN\" again to force quit)");
+   ioutput(OUT_S, COLOR_NO_COLOR, "Shutting Down... (Issue \"SHUTDOWN\" again to force quit)");
    
    for (ss=0; ss<gdata.networks_online; ss++)
      {
@@ -1166,7 +1170,7 @@ void shutdowniroffer(void) {
            gnetwork = &(gdata.networks[ss]);
            if (gdata.debug > 0)
               {
-                ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, msg);
+                ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, msg);
               }
            writeserver_ssl(msg, strlen(msg));
            writeserver_ssl("\n", 1);
@@ -1177,7 +1181,7 @@ void shutdowniroffer(void) {
    gdata.exiting = 1;
    gdata.delayedshutdown = 0;
    
-   ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_NO_COLOR,"Waiting for Server Queue To Flush...");
+   ioutput(OUT_S|OUT_D, COLOR_NO_COLOR, "Waiting for Server Queue To Flush...");
    gnetwork = backup;
    
    }
@@ -1190,7 +1194,7 @@ void quit_server(void)
   if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED)
     {
       writeserver(WRITESERVER_NOW, "QUIT :Changing Servers");
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
               "Changing Servers on %s", gnetwork->name);
       close_server();
     }
@@ -1425,7 +1429,7 @@ void sendxdlqueue (void)
   
   if (gdata.nolisting > gdata.curtime)
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_YELLOW,"Not Sending XDCC LIST to: %s (nolist set)",tempstr);
+      ioutput(OUT_S|OUT_D, COLOR_YELLOW, "Not Sending XDCC LIST to: %s (nolist set)", tempstr);
       
       notice(tempstr,
              "The Owner Has Requested That No Lists Be Sent In The Next %li %s",
@@ -1434,7 +1438,7 @@ void sendxdlqueue (void)
     }
   else
     {
-      ioutput(CALLTYPE_NORMAL,OUT_S|OUT_D,COLOR_YELLOW,"Sending XDCC LIST to: %s",tempstr);
+      ioutput(OUT_S|OUT_D, COLOR_YELLOW, "Sending XDCC LIST to: %s", tempstr);
       
       bzero((char *)&ui, sizeof(userinput));
       cmd = NULL;
@@ -1758,7 +1762,7 @@ void startupiroffer(void) {
    
    getconfig();
    
-   mylog(CALLTYPE_NORMAL, "iroffer-dinoex started " VERSIONLONG FEATURES);
+   mylog("iroffer-dinoex started " VERSIONLONG FEATURES);
 
    getos();
    
@@ -1824,7 +1828,7 @@ void isrotatelog(void)
   rotatelog(gdata.http_access_log);
   newname = new_logfilename(gdata.logfile);
   
-  mylog(CALLTYPE_NORMAL,"Rotating Log to '%s'", newname);
+  mylog("Rotating Log to '%s'", newname);
   call_val = link(gdata.logfile, newname);
   
   if (call_val < 0)
@@ -1837,7 +1841,7 @@ void isrotatelog(void)
     }
   else
     {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
               "Logfile rotated to '%s'", newname);
       
       if (gdata.logfd != FD_UNUSED)
@@ -1857,7 +1861,7 @@ void isrotatelog(void)
       
       gdata.last_logrotate = gdata.curtime;
       write_statefile();
-      mylog(CALLTYPE_NORMAL,"Rotated Log to '%s'", newname);
+      mylog("Rotated Log to '%s'", newname);
     }
   
   mydelete(newname);
@@ -2125,7 +2129,7 @@ void user_changed_nick(const char *oldnick, const char *newnick)
               if ( userinqueue > gdata.maxqueueditemsperperson )
                 {
                   notice(pq->nick, "** Removed From Queue: To many requests");
-                  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                           "Removed From Queue: To many requests for %s on %s.",
                           pq->nick, gdata.networks[ pq->net ].name);
                   mydelete(pq->nick);

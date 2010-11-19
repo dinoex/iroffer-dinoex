@@ -392,7 +392,7 @@ static void debug_memory(void)
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_func  = %s", mi->src_func);
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_file  = %s", mi->src_file);
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_line  = %u", mi->src_line);
-      hexdump(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED|COLOR_BOLD, "WARNING:" , ut, mi->size);
+      hexdump(OUT_S|OUT_L|OUT_D, COLOR_RED|COLOR_BOLD, "WARNING:" , ut, mi->size);
     }
   }
   if (leak == 0)

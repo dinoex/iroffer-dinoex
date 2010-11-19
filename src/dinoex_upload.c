@@ -130,7 +130,7 @@ static int l_setup_listen(upload * const l)
   mydelete(msg);
   msg = mycalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &(l->con.local.sa));
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND sent to %s on %s, waiting for connection on %s",
           l->nick, gnetwork->name, msg);
   mydelete(tempstr);
@@ -200,7 +200,7 @@ void l_setup_accept(upload * const l)
   close(l->con.listensocket);
   l->con.listensocket = FD_UNUSED;
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND connection received");
 
   if (set_socket_nonblocking(l->con.clientsocket, 1) < 0 ) {
@@ -298,7 +298,7 @@ int file_uploading(const char *file)
 static void error_upload_start(const char *nick, const char *hostmask, const char *key, const char *msg)
 {
   notice(nick, "DCC Send Denied, %s", msg);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC Send Denied (%s) from %s on %s",
           key, hostmask, gnetwork->name);
 }
@@ -344,7 +344,7 @@ int invalid_upload(const char *nick, const char *hostmask, off_t len)
 
   if (verify_uploadhost(hostmask)) {
     notice(nick, "DCC Send Denied, I don't accept transfers from %s", hostmask);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "DCC Send Denied from %s on %s",
             hostmask, gnetwork->name);
     return 1;
@@ -404,7 +404,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   ul->net = gnetwork->net;
 
   tempstr = getsendname(ul->file);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "dKB)",
           nick, gnetwork->name, tempstr,
           (ul->totalsize / 1024));

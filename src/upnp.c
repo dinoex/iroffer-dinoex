@@ -2,7 +2,7 @@
 Copyright (c) 2005-2007, Thomas BERNARD
 All rights reserved.
 
-Copyright (c) 2007-2009 Dirk Meyer
+Copyright (c) 2007-2010 Dirk Meyer
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -56,7 +56,7 @@ void init_upnp (void)
 	char * descXML;
 	int descXMLsize = 0;
 
-	ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP discover" );
+	ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP discover" );
 	tostdout_write();
 	memset(&urls, 0, sizeof(struct UPNPUrls));
 	memset(&data, 0, sizeof(struct IGDdatas));
@@ -73,7 +73,7 @@ void init_upnp (void)
 		if (!dev)
 			dev = devlist; /* defaulting to first device */
 
-		ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+		ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
 			"UPnP device : desc: %s\n st: %s",
 			dev->descURL, dev->st);
 
@@ -105,7 +105,7 @@ void upnp_add_redir (const char * addr, const char * port)
 {
 	int r;
 
-	ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP add redirect (%s, %s)", addr, port);
+	ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP add redirect (%s, %s)", addr, port);
 	if(urls.controlURL == NULL)
 	{
 		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
@@ -124,7 +124,7 @@ void upnp_add_redir (const char * addr, const char * port)
 	                        port, port, addr, 0, "TCP", 0);
 #endif /* UPNPCOMMAND_HTTP_ERROR */
 	if(r!=UPNPCOMMAND_SUCCESS)
-		ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+		ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
 			"AddPortMapping(%s, %s, %s) failed" , port, port, addr);
 }
 
@@ -136,7 +136,7 @@ void upnp_rem_redir (int port)
 		return;
 
 	snprintf(port_str, 16, "%d", port);
-	ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP remove redirect (%s)", port_str);
+	ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP remove redirect (%s)", port_str);
 	if(urls.controlURL == NULL)
 	{
 		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");

@@ -78,6 +78,6 @@ void free_channel_data(channel_t *ch);
 
 void auto_rehash(void);
 
-void hexdump(calltype_e type, int dest, unsigned int color_flags, const char *prefix, void *t, size_t max);
+void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, size_t max);
 
 /* End of File */

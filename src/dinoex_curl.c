@@ -56,12 +56,12 @@ void curl_startup(void)
 
   cs = curl_global_init(CURL_GLOBAL_ALL);
   if (cs != 0) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "curl_global_init failed with %d", cs);
   }
   cm = curl_multi_init();
   if (cm == NULL) {
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "curl_multi_init failed");
   }
 }

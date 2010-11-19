@@ -83,7 +83,7 @@ static int test_ctcp(const char *msg1, const char *key)
 
 static void send_clientinfo(const char *nick, char *msg2)
 {
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "[CTCP] %s in %s: CLIENTINFO",
           nick, gnetwork->name);
 
@@ -145,28 +145,28 @@ static void command_dcc(privmsginput *pi)
 
   if (strcmp(pi->msg2, "CHAT") == 0) {
     if (verifyshell(&gdata.adminhost, pi->hostmask)) {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "DCC CHAT attempt authorized from %s on %s",
               pi->hostmask, gnetwork->name);
       setupdccchat(pi->nick, pi->hostmask, pi->line);
       return;
     }
     if (verifyshell(&gdata.hadminhost, pi->hostmask)) {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "DCC CHAT attempt authorized from %s on %s",
               pi->hostmask, gnetwork->name);
       setupdccchat(pi->nick, pi->hostmask, pi->line);
       return;
     }
     if (verifyhost_group(pi->hostmask)) {
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "DCC CHAT attempt authorized from %s on %s",
               pi->hostmask, gnetwork->name);
       setupdccchat(pi->nick, pi->hostmask, pi->line);
       return;
     }
     notice(pi->nick, "DCC Chat denied from %s", pi->hostmask);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "DCC CHAT attempt denied from %s on %s",
             pi->hostmask, gnetwork->name);
     return;
@@ -217,7 +217,7 @@ static void command_dcc(privmsginput *pi)
 
       ul->resumed = 1;
       tempstr = getsendname(ul->file);
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "d of %" LLPRINTFMT "dKB left)",
               pi->nick, gnetwork->name, tempstr,
               ((ul->totalsize - ul->resumesize) / 1024),
@@ -470,7 +470,7 @@ static void send_batch(privmsginput *pi, const char *what, const char *pwd)
   unsigned int found;
 
   found = send_batch_search(pi, what, pwd);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC BATCH %s: %u packs (%s %s on %s)",
           what, found, pi->nick, pi->hostmask, gnetwork->name);
   if (found != 0)
@@ -540,14 +540,14 @@ static int packnumtonum(const char *a)
 
 static void log_xdcc_request1(privmsginput *pi)
 {
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC %s (%s %s on %s)",
           pi->msg2, pi->nick, pi->hostmask, gnetwork->name);
 }
 
 static void log_xdcc_request2(const char *msg, const char *arg, privmsginput *pi)
 {
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC %s %s (%s %s on %s)",
           msg, arg, pi->nick, pi->hostmask, gnetwork->name);
 }
@@ -562,7 +562,7 @@ static void log_xdcc_request3(privmsginput *pi, const char *msg)
   } else {
     sep = ": ";
   }
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC %s %s%s%s (%s %s on %s)",
           pi->msg2, pi->msg3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
 }
@@ -817,7 +817,7 @@ static void xdcc_stop(privmsginput *pi)
   unsigned int stopped;
 
   stopped = stoplist(pi->nick);
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC STOP from (%s %s on %s) stopped %u",
            pi->nick, pi->hostmask, gnetwork->name, stopped);
   notice(pi->nick, "LIST stopped (%u lines deleted)", stopped);
@@ -1048,14 +1048,14 @@ static void admin_message(privmsginput *pi)
   err = msg_host_password(pi->nick, pi->hostmask, pi->msg2, pi->line);
   if (err == 0) {
     notice(pi->nick, "ADMIN: %s is not allowed to issue admin commands", pi->hostmask);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "Incorrect ADMIN Hostname (%s on %s)",
             pi->hostmask, gnetwork->name);
     return;
   }
   if (err == 2) {
     notice(pi->nick, "ADMIN: Incorrect Password");
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "Incorrect ADMIN Password (%s on %s)",
             pi->hostmask, gnetwork->name);
   }
@@ -1096,7 +1096,7 @@ static int botonly_parse(int type, privmsginput *pi)
              pi->msg2 ? pi->msg2 : "",
              pi->msg3 ? " " : "",
              pi->msg3 ? pi->msg3 : "");
-      ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "[CTCP] %s on %s: PING",
               pi->nick, gnetwork->name);
       return 0;
@@ -1109,7 +1109,7 @@ static int botonly_parse(int type, privmsginput *pi)
     notice(pi->nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s" FEATURES "\1",
            gdata.hideos ? "" : " - ",
            gdata.hideos ? "" : gdata.osstring);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "[CTCP] %s on %s: VERSION",
             pi->nick, gnetwork->name);
     return 0;
@@ -1121,7 +1121,7 @@ static int botonly_parse(int type, privmsginput *pi)
     tempstr2 = mycalloc(maxtextlength);
     tempstr2 = getuptime(tempstr2, 0, gdata.startuptime, maxtextlength);
     notice(pi->nick, "\1UPTIME %s\1", tempstr2);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "[CTCP] %s on %s: UPTIME",
              pi->nick, gnetwork->name);
     mydelete(tempstr2);
@@ -1134,7 +1134,7 @@ static int botonly_parse(int type, privmsginput *pi)
     tempstr2 = mycalloc(maxtextlength);
     tempstr2 = getstatuslinenums(tempstr2, maxtextlength);
     notice(pi->nick, "\1%s\1", tempstr2);
-    ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                "[CTCP] %s on %s: STATUS",
                pi->nick, gnetwork->name);
     mydelete(tempstr2);
@@ -1309,7 +1309,7 @@ static void do_atfind(unsigned int min, privmsginput *pi)
   if (k >= min) {
     k = noticeresults(pi->nick, msg2e, pi->dest);
     if (k) {
-      ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
+      ioutput(OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
               "@FIND %s (%s on %s) - %u %s found.",
               msg2e, pi->hostmask, gnetwork->name, k, k != 1 ? "packs" : "pack");
     }
@@ -1450,7 +1450,7 @@ static void add_msg_statefile(const  char *begin, int type, privmsginput *pi)
 {
   msglog_t *ml;
 
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_D, COLOR_GREEN,
+  ioutput(OUT_S|OUT_D, COLOR_GREEN,
           "%s from %s on %s logged, use MSGREAD to display it.",
           type_list[type], pi->nick, gnetwork->name);
 
@@ -1580,7 +1580,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
       grouplist = get_grouplist_channel(pi->dest);
       k = run_new_trigger(pi->nick, grouplist);
       if (k) {
-        ioutput(CALLTYPE_NORMAL, OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
+        ioutput(OUT_S | OUT_L | OUT_D, COLOR_YELLOW,
                 "!NEW (%s on %s) - %u packs.",
                 pi->hostmask, gnetwork->name, k);
       }
@@ -1625,7 +1625,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
       }
     }
   }
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_GREEN,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_GREEN,
           "%s on %s: %s",
           type_list[type], gnetwork->name, pi->line);
 }
@@ -1703,7 +1703,7 @@ void privmsgparse(int type, int decoded, char *line)
 /* remove user from queue after he left chammel or network */
 void lost_nick(const char *nick)
 {
-  ioutput(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "Nickname %s on %s left",
           nick,
           gnetwork->name);
