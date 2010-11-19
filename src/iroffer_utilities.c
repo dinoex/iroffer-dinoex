@@ -300,11 +300,7 @@ void vioutput(int dest, unsigned int color_flags, const char *format, va_list ap
          {
            if (chat->status == DCCCHAT_CONNECTED)
              {
-                   writedccchat(chat, 0, "--> ");
-               
-               writedccchat(chat, 0, "%s", tempstr);
-               
-                   writedccchat(chat, 0, "\n");
+               writedccchat(chat, 0, "--> %s\n", tempstr);
              }
          }
       }

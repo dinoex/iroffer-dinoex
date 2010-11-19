@@ -1285,7 +1285,7 @@
 1468 "MYLOG-INT: Output too large, ignoring!"
 1469 "IOUTPUT-INT: Output too large, ignoring!"
 1471 "** %s: "
-1473 "--> "
+1473 "--> %s\n"
 1474 "PRVMSG-SLOW: Output too large, ignoring!"
 1475 "PRIVMSG %s :%s"
 1476 "PRVMSG-FAST: Output too large, ignoring!"
