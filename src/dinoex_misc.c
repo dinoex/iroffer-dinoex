@@ -1154,4 +1154,50 @@ void auto_rehash(void)
   }
 }
 
+/* convert to ASCII char */
+static unsigned int onlyprintable(unsigned int a)
+{
+  if ( (unsigned char)a < 0x20U )
+     return '.';
+  if ( (unsigned char)a == 0x7FU )
+     return '.';
+  return a;
+}
+
+/* generate an hexdump from a buffer with given length */
+void hexdump(calltype_e type, int dest, unsigned int color_flags, const char *prefix, void *t, size_t max)
+{
+  char buffer[maxtextlength];
+  unsigned char *ut = (unsigned char *)t;
+  size_t len;
+  unsigned int j;
+
+  if (t == NULL) return;
+  if (prefix == NULL) prefix = "";
+
+  for (;;) {
+    len = 0;
+    for (j=0; j<16; j++) {
+      if (j >= max) {
+        len += snprintf(buffer + len, maxtextlength - len, "   ");
+      } else {
+        len += snprintf(buffer + len, maxtextlength - len, " %2.2X", ut[j]);
+      }
+    }
+    len += snprintf(buffer + len, maxtextlength - len, " \"");
+    for (j=0; j<16; j++) {
+      if (j >= max)
+        break;
+      len += snprintf(buffer + len, maxtextlength - len, "%c", onlyprintable(ut[j]));
+    }
+    len += snprintf(buffer + len, maxtextlength - len, "\"");
+    ioutput(type, dest, color_flags, "%s%s", prefix, buffer);
+    if (max <= 16)
+      break;
+    j += 16;
+    ut += 16;
+    max -= 16;
+  }
+}
+
 /* End of File */

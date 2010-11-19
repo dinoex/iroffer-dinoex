@@ -373,7 +373,6 @@ static void debug_memory(void)
   meminfo_t *mi;
   unsigned char *ut;
   unsigned int j;
-  unsigned int i;
   unsigned int leak = 0;
 
   gdata.crashing = 1; /* stop traceback */
@@ -393,18 +392,7 @@ static void debug_memory(void)
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_func  = %s", mi->src_func);
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_file  = %s", mi->src_file);
       outerror(OUTERROR_TYPE_WARN_LOUD, "src_line  = %u", mi->src_line);
-      for(i=0; i<(12*12); i+=12) {
-        if (i >= mi->size)
-          break;
-        outerror(OUTERROR_TYPE_WARN_LOUD, " : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\"",
-               ut[i+0], ut[i+1], ut[i+2], ut[i+3], ut[i+4], ut[i+5], ut[i+6], ut[i+7], ut[i+8], ut[i+9], ut[i+10], ut[i+11],
-               onlyprintable(ut[i+0]), onlyprintable(ut[i+1]),
-               onlyprintable(ut[i+2]), onlyprintable(ut[i+3]),
-               onlyprintable(ut[i+4]), onlyprintable(ut[i+5]),
-               onlyprintable(ut[i+6]), onlyprintable(ut[i+7]),
-               onlyprintable(ut[i+8]), onlyprintable(ut[i+9]),
-               onlyprintable(ut[i+10]), onlyprintable(ut[i+11]));
-      }
+      hexdump(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED|COLOR_BOLD, "WARNING:" , ut, mi->size);
     }
   }
   if (leak == 0)
