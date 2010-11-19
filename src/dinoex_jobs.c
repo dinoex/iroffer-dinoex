@@ -1456,9 +1456,9 @@ static void xdcc_save_xml(void)
     write_string(fd, gdata.charset);
   else
     write_string(fd, "UTF-8");
-  write_string(fd, "\"?>\n");
-  write_string(fd, "<!DOCTYPE " "iroffer" " PUBLIC \"-//iroffer.dinoex.net//DTD " "iroffer" " 1.0//EN\" \"" "http://iroffer.dinoex.net/" "dtd/iroffer-10.dtd\">\n");
-  write_string(fd, "<iroffer>\n");
+  write_string(fd, "\"?>\n"
+               "<!DOCTYPE " "iroffer" " PUBLIC \"-//iroffer.dinoex.net//DTD " "iroffer" " 1.0//EN\" \""
+               "http://iroffer.dinoex.net/" "dtd/iroffer-10.dtd\">\n" "<iroffer>\n");
   if (irlist_size(&gdata.xdccs) > 0)
     write_string(fd, "<packlist>\n\n");
 
@@ -1528,8 +1528,8 @@ static void xdcc_save_xml(void)
     write_string(fd, "</grouplist>\n\n");
   }
 
-  write_string(fd, "<sysinfo>\n");
-  write_string(fd, "  <slots>\n");
+  write_string(fd, "<sysinfo>\n"
+                   "  <slots>\n");
   if (irlist_size(&gdata.trans) < gdata.slotsmax)
     slots = gdata.slotsmax - irlist_size(&gdata.trans);
   else
@@ -1625,10 +1625,9 @@ static void xdcc_save_xml(void)
   write_asc_plain(fd, 4, "totaluptime", tempstr);
   mydelete(tempstr);
   write_asc_int(fd, 4, "lastupdate", gdata.curtime);
-  write_string(fd, "  </stats>\n");
-  write_string(fd, "</sysinfo>\n\n");
-
-  write_string(fd, "</iroffer>\n");
+  write_string(fd, "  </stats>\n"
+                   "</sysinfo>\n\n"
+                   "</iroffer>\n");
   close(fd);
 
   rename_with_backup(gdata.xdccxmlfile, filename_bak, filename_tmp, "XDCC XML");
