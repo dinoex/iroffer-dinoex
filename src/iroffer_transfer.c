@@ -541,13 +541,8 @@ void t_readjunk (transfer * const t)
   
   if (gdata.debug > 4)
     {
-      ioutput(CALLTYPE_MULTI_FIRST,OUT_S,COLOR_BLUE,"Read %d: ",i);
-      for (j=0; j<i; j++)
-        {
-          ioutput(CALLTYPE_MULTI_MIDDLE,OUT_S,COLOR_BLUE,
-                  "%2.2X ",gdata.sendbuff[j]);
-        }
-      ioutput(CALLTYPE_MULTI_END,OUT_S,COLOR_BLUE,"%s","");
+      ioutput(CALLTYPE_NORMAL, OUT_S, COLOR_BLUE, "Read %d:", i);
+      hexdump(CALLTYPE_NORMAL, OUT_S, COLOR_BLUE, "", gdata.sendbuff, i);
     }
   
   if (i < 0)

@@ -678,16 +678,7 @@ void mydelete2(void *t) {
       gdata.crashing = 1; /* stop trackback here */
       outerror(OUTERROR_TYPE_WARN_LOUD,"Pointer 0x%8.8lX not found in meminfo database while trying to free!!",(long)t);
       outerror(OUTERROR_TYPE_WARN_LOUD, "Please report this error to Dinoex dinoex@dinoex.net");
-      for(i=0; i<(12*12); i+=12) {
-         outerror(OUTERROR_TYPE_WARN_LOUD," : %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X %2.2X = \"%c%c%c%c%c%c%c%c%c%c%c%c\"",
-               ut[i+0], ut[i+1], ut[i+2], ut[i+3], ut[i+4], ut[i+5], ut[i+6], ut[i+7], ut[i+8], ut[i+9], ut[i+10], ut[i+11],
-               onlyprintable(ut[i+0]), onlyprintable(ut[i+1]),
-               onlyprintable(ut[i+2]), onlyprintable(ut[i+3]),
-               onlyprintable(ut[i+4]), onlyprintable(ut[i+5]),
-               onlyprintable(ut[i+6]), onlyprintable(ut[i+7]),
-               onlyprintable(ut[i+8]), onlyprintable(ut[i+9]),
-               onlyprintable(ut[i+10]), onlyprintable(ut[i+11]));
-         }
+      hexdump(CALLTYPE_NORMAL, OUT_S|OUT_L|OUT_D, COLOR_RED|COLOR_BOLD, "WARNING:" , ut, 8*16);
       outerror(OUTERROR_TYPE_WARN_LOUD,"Aborting Program! (core file should be generated)");
       abort(); /* getting a core file will help greatly */
       }

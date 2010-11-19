@@ -428,16 +428,6 @@ unsigned int isprintable(unsigned int a)
   return 1;
 }
 
-/* convert to ASCII char */
-unsigned int onlyprintable(unsigned int a)
-{
-  if ( (unsigned char)a < 0x20U )
-     return '.';
-  if ( (unsigned char)a == 0x7FU )
-     return '.';
-  return a;
-}
-
 /* remove unknown control codes */
 char *removenonprintable(char *str)
 {
