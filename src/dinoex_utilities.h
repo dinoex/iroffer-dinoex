@@ -41,8 +41,8 @@ char *hostmask_to_fnmatch(const char *str);
 unsigned int verify_group_in_grouplist(const char *group, const char *grouplist);
 char *sizestr(unsigned int spaces, off_t num);
 unsigned int isprintable(unsigned int a);
-char *removenonprintable(char *str);
-char *removenonprintablefile(char *str);
+size_t removenonprintable(char *str);
+void removenonprintablefile(char *str);
 char *caps(char *str);
 unsigned int max_minutes_waits(time_t *endtime, unsigned int min);
 

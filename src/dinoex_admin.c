@@ -65,8 +65,7 @@ void voutput_fd(int fd, const char *format, va_list args)
   }
 
   if (!gdata.xdcclistfileraw) {
-    removenonprintable(tempstr);
-    llen = strlen(tempstr);
+    llen = removenonprintable(tempstr);
   }
 
   if (gdata.dos_text_files)

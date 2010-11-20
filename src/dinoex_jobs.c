@@ -341,8 +341,7 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
   }
 
   if (gnetwork->plaintext || ch->plaintext) {
-    removenonprintable(tempstr);
-    len = strlen(tempstr);
+    len = removenonprintable(tempstr);
   }
 
 #ifndef WITHOUT_BLOWFISH

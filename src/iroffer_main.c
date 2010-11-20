@@ -442,7 +442,8 @@ static void mainloop (void) {
                          j--;
                        }
                      gnetwork->server_input_line[j] = '\0';
-                     parseline(removenonprintable(gnetwork->server_input_line));
+                     removenonprintable(gnetwork->server_input_line);
+                     parseline(gnetwork->server_input_line);
                      j = 0;
                    }
                  else

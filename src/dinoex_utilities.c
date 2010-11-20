@@ -429,13 +429,13 @@ unsigned int isprintable(unsigned int a)
 }
 
 /* remove unknown control codes */
-char *removenonprintable(char *str)
+size_t removenonprintable(char *str)
 {
   unsigned char *copy;
   unsigned char *dest;
 
   if (str == NULL)
-    return str;
+    return 0;
 
   dest = (unsigned char *)str;
   for (copy=dest; *copy != 0; ++copy) {
@@ -466,17 +466,17 @@ char *removenonprintable(char *str)
     }
   }
   *dest = 0;
-  return str;
+  return (dest - (unsigned char *)str);
 }
 
 /* remove control codes and color */
-char *removenonprintablefile(char *str)
+void removenonprintablefile(char *str)
 {
   unsigned char *copy;
   char last = '/';
 
   if (str == NULL)
-    return str;
+    return;
 
   for (copy = (unsigned char*)str; *copy != 0; ++copy) {
     if (*copy < 0x20U) {
@@ -508,7 +508,6 @@ char *removenonprintablefile(char *str)
     }
     last = *copy;
   }
-  return str;
 }
 
 /* convert a string to uppercase */
