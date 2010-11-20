@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+345) xdccxmlfile
+  Schreibe des 'xdccxmlfile' schneller.
+
 344) DUMP
   Bei DUMP werden alle Konfigurationsdaten in einen neuen Abschnitt geschrieben.
 
