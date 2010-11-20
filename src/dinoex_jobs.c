@@ -28,6 +28,14 @@
 
 #include <ctype.h>
 
+typedef struct {
+  const char *filename;
+  char buffer[MAX_XML_CHUNK];
+  size_t len;
+  int fd;
+  int dummy;
+} xml_buffer_t;
+
 #ifndef WITHOUT_BLOWFISH
 
 #include "blowfish.h"
@@ -1347,78 +1355,110 @@ void rename_with_backup(const char *filename, const char *backup, const char *te
   }
 }
 
-static size_t write_string(int fd, const char *line)
+static void xml_buffer_init(xml_buffer_t *xmlbuf)
+{
+  xmlbuf->len = 0;
+  xmlbuf->buffer[0] = 0;
+}
+
+static void xml_buffer_flush(xml_buffer_t *xmlbuf)
+{
+  size_t len;
+
+  if (xmlbuf->len == 0)
+    return;
+
+  if (xmlbuf->buffer[0] == 0)
+    return;
+
+  len = write(xmlbuf->fd, xmlbuf->buffer, xmlbuf->len);
+  if (len != xmlbuf->len)
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Cant Write XDCC List File '%s': %s",
+             xmlbuf->filename, strerror(errno));
+  xml_buffer_init(xmlbuf);
+  return;
+}
+
+static void xml_buffer_check(xml_buffer_t *xmlbuf, size_t len)
+{
+  if (xmlbuf->len == 0)
+    return;
+
+  if (xmlbuf->buffer[0] == 0)
+    return;
+
+  if (xmlbuf->len + len < MAX_XML_CHUNK)
+    return;
+
+  xml_buffer_flush(xmlbuf);
+}
+
+static void write_string(xml_buffer_t *xmlbuf, const char *line)
 {
   size_t len;
 
   len = strlen(line);
-  return write(fd, line, len);
+  xml_buffer_check(xmlbuf, len);
+  strncpy(xmlbuf->buffer+ xmlbuf->len, line, len);
+  xmlbuf->len += len;
 }
 
-static size_t write_asc_int(int fd, int spaces, const char *tag, unsigned int val)
+static void write_asc_int(xml_buffer_t *xmlbuf, int spaces, const char *tag, unsigned int val)
 {
-  char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlengthshort);
-  len = snprintf(tempstr, maxtextlengthshort, "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag);
-  len = write(fd, tempstr, len);
-  mydelete(tempstr);
-  return len;
+  xml_buffer_check(xmlbuf, maxtextlengthshort);
+  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                 "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag);
+  xmlbuf->len += len;
 }
 
-static size_t write_asc_int64(int fd, int spaces, const char *tag, ir_int64 val)
+static void write_asc_int64(xml_buffer_t *xmlbuf, int spaces, const char *tag, ir_int64 val)
 {
-  char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength, "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag);
-  len = write(fd, tempstr, len);
-  mydelete(tempstr);
-  return len;
+  xml_buffer_check(xmlbuf, maxtextlength);
+  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                 "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag);
+  xmlbuf->len += len;
 }
 
-static size_t write_asc_hex(int fd, int spaces, const char *tag, unsigned long val)
+static void write_asc_hex(xml_buffer_t *xmlbuf, int spaces, const char *tag, unsigned long val)
 {
-  char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlengthshort);
-  len = snprintf(tempstr, maxtextlengthshort, "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag);
-  len = write(fd, tempstr, len);
-  mydelete(tempstr);
-  return len;
+  xml_buffer_check(xmlbuf, maxtextlengthshort);
+  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                 "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag);
+  xmlbuf->len += len;
 }
 
-static size_t write_asc_text(int fd, int spaces, const char *tag, const char *val)
+static void write_asc_text(xml_buffer_t *xmlbuf, int spaces, const char *tag, const char *val)
 {
-  char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength, "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag);
-  len = write(fd, tempstr, len);
-  mydelete(tempstr);
-  return len;
+  xml_buffer_check(xmlbuf, maxtextlength);
+  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                 "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag);
+  xmlbuf->len += len;
 }
 
-static size_t write_asc_plain(int fd, int spaces, const char *tag, const char *val)
+static void write_asc_plain(xml_buffer_t *xmlbuf, int spaces, const char *tag, const char *val)
 {
-  char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength, "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag);
-  len = write(fd, tempstr, len);
-  mydelete(tempstr);
-  return len;
+  xml_buffer_check(xmlbuf, maxtextlength);
+  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                 "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag);
+  xmlbuf->len += len;
 }
 
 static void xdcc_save_xml(void)
 {
   channel_t *ch;
   gnetwork_t *backup;
+  xml_buffer_t *xmlbuf;
   char *filename_tmp;
   char *filename_bak;
   char *tempstr;
@@ -1431,7 +1471,7 @@ static void xdcc_save_xml(void)
   unsigned int slots;
 
   updatecontext();
-
+  
   if (!gdata.xdccxmlfile)
     return;
 
@@ -1450,16 +1490,21 @@ static void xdcc_save_xml(void)
     return;
   }
 
-  write_string(fd, "<?xml version=\"1.0\" encoding=\"");
+  xmlbuf = mymalloc(MAX_XML_CHUNK);
+  xml_buffer_init(xmlbuf);
+  xmlbuf->filename = filename_tmp;
+  xmlbuf->fd = fd;
+
+  write_string(xmlbuf, "<?xml version=\"1.0\" encoding=\"");
   if (gdata.charset != NULL)
-    write_string(fd, gdata.charset);
+    write_string(xmlbuf, gdata.charset);
   else
-    write_string(fd, "UTF-8");
-  write_string(fd, "\"?>\n"
+    write_string(xmlbuf, "UTF-8");
+  write_string(xmlbuf, "\"?>\n"
                "<!DOCTYPE " "iroffer" " PUBLIC \"-//iroffer.dinoex.net//DTD " "iroffer" " 1.0//EN\" \""
                "http://iroffer.dinoex.net/" "dtd/iroffer-10.dtd\">\n" "<iroffer>\n");
   if (irlist_size(&gdata.xdccs) > 0)
-    write_string(fd, "<packlist>\n\n");
+    write_string(xmlbuf, "<packlist>\n\n");
 
   groups = 0;
   toffered = 0;
@@ -1472,41 +1517,41 @@ static void xdcc_save_xml(void)
       continue;
 
     toffered += xd->st_size;
-    write_string(fd, "<pack>\n");
-    write_asc_int(fd, 2, "packnr", num);
+    write_string(xmlbuf, "<pack>\n");
+    write_asc_int(xmlbuf, 2, "packnr", num);
     tempstr = mystrdup(xd->desc);
     removenonprintable(tempstr);
-    write_asc_text(fd, 2, "packname", tempstr);
+    write_asc_text(xmlbuf, 2, "packname", tempstr);
     mydelete(tempstr);
     tempstr = sizestr(0, xd->st_size);
-    write_asc_text(fd, 2, "packsize", tempstr);
+    write_asc_text(xmlbuf, 2, "packsize", tempstr);
     mydelete(tempstr);
-    write_asc_int64(fd, 2, "packbytes", xd->st_size);
-    write_asc_int(fd, 2, "packgets", xd->gets);
+    write_asc_int64(xmlbuf, 2, "packbytes", xd->st_size);
+    write_asc_int(xmlbuf, 2, "packgets", xd->gets);
     if (xd->color > 0) {
-      write_asc_int(fd, 2, "packcolor", xd->color);
+      write_asc_int(xmlbuf, 2, "packcolor", xd->color);
     }
-    write_asc_int(fd, 2, "adddate", xd->xtime ? xd->xtime : xd->mtime);
+    write_asc_int(xmlbuf, 2, "adddate", xd->xtime ? xd->xtime : xd->mtime);
     if (xd->group != NULL) {
       ++groups;
-      write_asc_text(fd, 2, "groupname", xd->group);
+      write_asc_text(xmlbuf, 2, "groupname", xd->group);
     }
     if (xd->has_md5sum) {
       tempstr = mycalloc(maxtextlengthshort);
       snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
-      write_asc_text(fd, 2, "md5sum", tempstr);
+      write_asc_text(xmlbuf, 2, "md5sum", tempstr);
       mydelete(tempstr);
     }
     if (xd->has_crc32) {
-      write_asc_hex(fd, 2, "crc32", xd->crc32);
+      write_asc_hex(xmlbuf, 2, "crc32", xd->crc32);
     }
-    write_string(fd, "</pack>\n\n");
+    write_string(xmlbuf, "</pack>\n\n");
   }
   if (irlist_size(&gdata.xdccs) > 0)
-    write_string(fd, "</packlist>\n\n");
+    write_string(xmlbuf, "</packlist>\n\n");
 
   if (groups > 0) {
-    write_string(fd, "<grouplist>\n");
+    write_string(xmlbuf, "<grouplist>\n");
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
@@ -1516,117 +1561,120 @@ static void xdcc_save_xml(void)
       if (xd->group_desc == NULL)
         continue;
 
-      write_string(fd, "  <group>\n");
-      write_asc_text(fd, 4, "groupname", xd->group);
+      write_string(xmlbuf, "  <group>\n");
+      write_asc_text(xmlbuf, 4, "groupname", xd->group);
       tempstr = mystrdup(xd->group_desc);
       removenonprintable(tempstr);
-      write_asc_text(fd, 4, "groupdesc", xd->group_desc);
+      write_asc_text(xmlbuf, 4, "groupdesc", xd->group_desc);
       mydelete(tempstr);
-      write_string(fd, "  </group>\n");
+      write_string(xmlbuf, "  </group>\n");
     }
-    write_string(fd, "</grouplist>\n\n");
+    write_string(xmlbuf, "</grouplist>\n\n");
   }
 
-  write_string(fd, "<sysinfo>\n"
+  write_string(xmlbuf, "<sysinfo>\n"
                    "  <slots>\n");
   if (irlist_size(&gdata.trans) < gdata.slotsmax)
     slots = gdata.slotsmax - irlist_size(&gdata.trans);
   else
     slots = 0;
-  write_asc_int(fd, 4, "slotsfree", slots);
-  write_asc_int(fd, 4, "slotsmax", gdata.slotsmax);
-  write_string(fd, "  </slots>\n");
+  write_asc_int(xmlbuf, 4, "slotsfree", slots);
+  write_asc_int(xmlbuf, 4, "slotsmax", gdata.slotsmax);
+  write_string(xmlbuf, "  </slots>\n");
 
   if (gdata.queuesize > 0) {
-    write_string(fd, "  <mainqueue>\n");
-    write_asc_int(fd, 4, "queueuse", irlist_size(&gdata.mainqueue));
-    write_asc_int(fd, 4, "queuemax", gdata.queuesize);
-    write_string(fd, "  </mainqueue>\n");
+    write_string(xmlbuf, "  <mainqueue>\n");
+    write_asc_int(xmlbuf, 4, "queueuse", irlist_size(&gdata.mainqueue));
+    write_asc_int(xmlbuf, 4, "queuemax", gdata.queuesize);
+    write_string(xmlbuf, "  </mainqueue>\n");
   }
 
   if (gdata.idlequeuesize > 0) {
-    write_string(fd, "  <idlequeue>\n");
-    write_asc_int(fd, 4, "queueuse", irlist_size(&gdata.idlequeue));
-    write_asc_int(fd, 4, "queuemax", gdata.idlequeuesize);
-    write_string(fd, "  </idlequeue>\n");
+    write_string(xmlbuf, "  <idlequeue>\n");
+    write_asc_int(xmlbuf, 4, "queueuse", irlist_size(&gdata.idlequeue));
+    write_asc_int(xmlbuf, 4, "queuemax", gdata.idlequeuesize);
+    write_string(xmlbuf, "  </idlequeue>\n");
   }
 
-  write_string(fd, "  <bandwidth>\n");
+  write_string(xmlbuf, "  <bandwidth>\n");
   tempstr = get_current_bandwidth();
-  write_asc_plain(fd, 4, "banduse", tempstr);
+  write_asc_plain(xmlbuf, 4, "banduse", tempstr);
   mydelete(tempstr);
   tempstr = mycalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
-  write_asc_plain(fd, 4, "bandmax", tempstr);
+  write_asc_plain(xmlbuf, 4, "bandmax", tempstr);
   mydelete(tempstr);
-  write_string(fd, "  </bandwidth>\n");
+  write_string(xmlbuf, "  </bandwidth>\n");
 
-  write_string(fd, "  <quota>\n");
-  write_asc_int(fd, 4, "packsum", num);
+  write_string(xmlbuf, "  <quota>\n");
+  write_asc_int(xmlbuf, 4, "packsum", num);
   tempstr = sizestr(0, toffered);
-  write_asc_text(fd, 4, "diskspace", tempstr);
+  write_asc_text(xmlbuf, 4, "diskspace", tempstr);
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
-  write_asc_text(fd, 4, "transfereddaily", tempstr);
+  write_asc_text(xmlbuf, 4, "transfereddaily", tempstr);
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
-  write_asc_text(fd, 4, "transferedweekly", tempstr);
+  write_asc_text(xmlbuf, 4, "transferedweekly", tempstr);
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
-  write_asc_text(fd, 4, "transferedmonthly", tempstr);
+  write_asc_text(xmlbuf, 4, "transferedmonthly", tempstr);
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.totalsent);
-  write_asc_text(fd, 4, "transferedtotal", tempstr);
-  write_asc_int64(fd, 4, "transferedtotalbytes", gdata.totalsent);
+  write_asc_text(xmlbuf, 4, "transferedtotal", tempstr);
+  write_asc_int64(xmlbuf, 4, "transferedtotalbytes", gdata.totalsent);
   mydelete(tempstr);
-  write_string(fd, "  </quota>\n");
+  write_string(xmlbuf, "  </quota>\n");
 
-  write_string(fd, "  <limits>\n");
+  write_string(xmlbuf, "  <limits>\n");
   tempstr = mycalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transferminspeed);
-  write_asc_plain(fd, 4, "minspeed", tempstr);
+  write_asc_plain(xmlbuf, 4, "minspeed", tempstr);
   mydelete(tempstr);
   tempstr = mycalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transfermaxspeed);
-  write_asc_plain(fd, 4, "maxspeed", tempstr);
+  write_asc_plain(xmlbuf, 4, "maxspeed", tempstr);
   mydelete(tempstr);
-  write_string(fd, "  </limits>\n");
+  write_string(xmlbuf, "  </limits>\n");
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
-    write_string(fd, "  <network>\n");
-    write_asc_plain(fd, 4, "networkname", gdata.networks[ss].name);
+    write_string(xmlbuf, "  <network>\n");
+    write_asc_plain(xmlbuf, 4, "networkname", gdata.networks[ss].name);
     gnetwork = &(gdata.networks[ss]);
-    write_asc_plain(fd, 4, "confignick", get_config_nick());
-    write_asc_plain(fd, 4, "currentnick", get_user_nick());
-    write_asc_plain(fd, 4, "servername", gdata.networks[ss].curserver.hostname);
+    write_asc_plain(xmlbuf, 4, "confignick", get_config_nick());
+    write_asc_plain(xmlbuf, 4, "currentnick", get_user_nick());
+    write_asc_plain(xmlbuf, 4, "servername", gdata.networks[ss].curserver.hostname);
     if (gdata.networks[ss].curserveractualname != NULL)
-      write_asc_plain(fd, 4, "currentservername", gdata.networks[ss].curserveractualname);
+      write_asc_plain(xmlbuf, 4, "currentservername", gdata.networks[ss].curserveractualname);
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;
          ch = irlist_get_next(ch)) {
       if ((ch->flags & CHAN_ONCHAN) == 0)
         continue;
-      write_asc_plain(fd, 4, "channel", ch->name);
+      write_asc_plain(xmlbuf, 4, "channel", ch->name);
     }
-    write_string(fd, "  </network>\n");
+    write_string(xmlbuf, "  </network>\n");
   }
   gnetwork = backup;
 
-  write_string(fd, "  <stats>\n");
-  write_asc_plain(fd, 4, "version", "iroffer-dinoex " VERSIONLONG );
+  write_string(xmlbuf, "  <stats>\n");
+  write_asc_plain(xmlbuf, 4, "version", "iroffer-dinoex " VERSIONLONG );
   tempstr = mycalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
-  write_asc_plain(fd, 4, "uptime", tempstr);
+  write_asc_plain(xmlbuf, 4, "uptime", tempstr);
   mydelete(tempstr);
   tempstr = mycalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);
-  write_asc_plain(fd, 4, "totaluptime", tempstr);
+  write_asc_plain(xmlbuf, 4, "totaluptime", tempstr);
   mydelete(tempstr);
-  write_asc_int(fd, 4, "lastupdate", gdata.curtime);
-  write_string(fd, "  </stats>\n"
+  write_asc_int(xmlbuf, 4, "lastupdate", gdata.curtime);
+  write_string(xmlbuf, "  </stats>\n"
                    "</sysinfo>\n\n"
                    "</iroffer>\n");
+
+  xml_buffer_flush(xmlbuf);
+  mydelete(xmlbuf);
   close(fd);
 
   rename_with_backup(gdata.xdccxmlfile, filename_bak, filename_tmp, "XDCC XML");

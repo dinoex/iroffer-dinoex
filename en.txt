@@ -2411,3 +2411,4 @@
 2740 "WARNING:"
 2741 "   "
 2742 "\""
+2743 "Cant Write XDCC List File '%s': %s"

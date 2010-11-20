@@ -29,6 +29,7 @@
 #endif
 
 #define XDCC_SEND_LIST ((unsigned int)-1)
+#define MAX_XML_CHUNK		8192
 
 /* terminal */
 #define IRVT_CURSOR_HOME0       "\x1b[H"
