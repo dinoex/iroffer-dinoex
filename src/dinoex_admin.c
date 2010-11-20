@@ -1464,6 +1464,30 @@ void a_diskfree(const userinput * const u)
   u_diskinfo(u, uploaddir);
 }
 
+/* returns true if dir use parent */
+static unsigned int is_unsave_directory(const char *dir)
+{
+  char *line;
+  char *word;
+  unsigned int bad = 0;
+
+  /* no device letters */
+  if (strchr(dir, ':'))
+    return 1;
+
+  line = mystrdup(dir);
+  for (word = strtok(line, "/");
+       word;
+       word = strtok(NULL, "/")) {
+    if (strcmp(word, "..") == 0) {
+      ++bad;
+      break;
+    }
+  }
+  mydelete(line);
+  return bad;
+}
+
 void a_listul(const userinput * const u)
 {
   char *tempstr;

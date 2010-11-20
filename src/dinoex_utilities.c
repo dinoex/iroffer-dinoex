@@ -806,6 +806,36 @@ ir_uint64 timeval_to_ms(struct timeval *tv)
   return (((ir_uint64)(tv->tv_sec)) * 1000) + (((ir_uint64)(tv->tv_usec)) / 1000);
 }
 
+/* get local date and time in ISO */
+char *user_getdatestr(char* str, time_t Tp, size_t len)
+{
+  const char *format;
+  struct tm *localt = NULL;
+  size_t llen;
+
+  localt = localtime(&Tp);
+  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
+  llen = strftime(str, len, format, localt);
+  if ((llen == 0) || (llen == len))
+    str[0] = '\0';
+  return str;
+}
+
+/* convert a search string into fnmatch */
+char *grep_to_fnmatch(const char *grep)
+{
+  char *raw;
+  char *match;
+  size_t len;
+
+  len = strlen(grep) + 3;
+  raw = mycalloc(len);
+  snprintf(raw, len, "*%s*", grep);
+  match = hostmask_to_fnmatch(raw);
+  mydelete(raw);
+  return match;
+}
+
 #ifndef USE_MERGESORT
 /* sort a linked list with selection sort */
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))

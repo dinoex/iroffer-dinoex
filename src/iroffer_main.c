@@ -442,7 +442,6 @@ static void mainloop (void) {
                          j--;
                        }
                      gnetwork->server_input_line[j] = '\0';
-                     removenonprintable(gnetwork->server_input_line);
                      parseline(gnetwork->server_input_line);
                      j = 0;
                    }
@@ -1686,6 +1685,7 @@ static void parseline(char *line) {
    
    updatecontext();
    
+   removenonprintable(line);
 #ifdef USE_RUBY
    if (do_myruby_server(line))
      return;

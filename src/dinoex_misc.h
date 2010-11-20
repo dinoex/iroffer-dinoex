@@ -35,7 +35,6 @@ void rehash_dinoex(void);
 unsigned int init_xdcc_file(xdcc *xd, char *file) ;
 void update_hour_dinoex(unsigned int minute);
 void check_new_connection(transfer *const tr);
-char *grep_to_fnmatch(const char *grep);
 unsigned int fnmatch_xdcc(const char *match, xdcc *xd);
 
 unsigned int disk_full(const char *path);
@@ -47,14 +46,10 @@ unsigned int get_restrictsend(void);
 xdcc *get_xdcc_pack(unsigned int pack);
 unsigned int access_need_level(const char *nick, const char *text);
 
-unsigned int is_unsave_directory(const char *dir);
-
 void logfile_add(const char *logfile, const char *line);
 
 char *get_current_bandwidth(void);
 char *transfer_limit_exceeded_msg(unsigned int ii);
-
-char *user_getdatestr(char* str, time_t Tp, size_t len);
 
 char *get_grouplist_access(const char *nick);
 const char *get_grouplist_channel(const char *dest);
