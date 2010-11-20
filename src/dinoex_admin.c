@@ -40,10 +40,10 @@ static void strip_trailing_path(char *str)
   if (str == NULL)
     return;
 
-  len = strlen(str);
-  if (len == 0)
+  if (str[0] == 0)
     return;
 
+  len = strlen(str);
   if (str[len - 1] == '/')
     str[len - 1] = '\0';
 }
@@ -240,7 +240,7 @@ unsigned int reorder_new_groupdesc(const char *group, const char *desc)
     if (k != 1)
       continue;
 
-    if (desc && strlen(desc))
+    if (desc && (desc[0] != 0))
       xd->group_desc = mystrdup(desc);
   }
 
@@ -765,7 +765,7 @@ static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned in
 
   if (num == 0) num = number_of_pack(xd);
   newgroup = "MAIN";
-  if (group && strlen(group))
+  if (group && (group[0] != 0))
     newgroup = group;
 
   if (xd->group != NULL) {
@@ -2345,7 +2345,7 @@ void a_chdesc(const userinput * const u)
     return;
 
   newdesc = u->arg2e;
-  if (!u->arg2e || !strlen(u->arg2e)) {
+  if (!u->arg2e || (u->arg2e[0] == 0)) {
     newdesc = getfilename(xd->file);
     if (strcmp(newdesc, xd->desc) == 0) {
       a_respond(u, "Try Specifying a Description");
@@ -2379,7 +2379,7 @@ void a_chtime(const userinput * const u)
   if (num == 0)
     return;
 
-  if (!u->arg2e || !strlen(u->arg2e)) {
+  if (!u->arg2e || (u->arg2e[0] == 0)) {
     val = 0;
   } else {
     val = atoi(u->arg2e);
@@ -2550,7 +2550,7 @@ void a_chlimitinfo(const userinput * const u)
   if (group_restricted(u, xd))
     return;
 
-  if (!u->arg2 || !strlen(u->arg2)) {
+  if (!u->arg2 || (u->arg2[0] == 0)) {
     a_respond(u, "DLIMIT: [Pack %u] descr removed", num);
     mydelete(xd->dlimit_desc);
     xd->dlimit_desc = NULL;
@@ -2578,7 +2578,7 @@ void a_chtrigger(const userinput * const u)
   if (group_restricted(u, xd))
     return;
 
-  if (!u->arg2 || !strlen(u->arg2)) {
+  if (!u->arg2 || (u->arg2[0] == 0)) {
     mydelete(xd->trigger);
     a_respond(u, "TRIGGER: [Pack %u] removed", num);
     autotrigger_rebuild();
@@ -2901,7 +2901,7 @@ void a_groupdesc(const userinput * const u)
   if (invalid_group(u, u->arg1) != 0)
     return;
 
-  if (u->arg2e && strlen(u->arg2e)) {
+  if (u->arg2e && (u->arg2e[0] != 0)) {
     clean_quotes(u->arg2e);
     a_respond(u, "New GROUPDESC: %s", u->arg2e);
   } else {
@@ -2932,7 +2932,7 @@ void a_group(const userinput * const u)
     return;
 
   newgroup = u->arg2;
-  if (!u->arg2 || !strlen(u->arg2)) {
+  if (!u->arg2 || (u->arg2[0] == 0)) {
     if (xd->group == NULL) {
       a_respond(u, "Try Specifying a Group");
       return;
@@ -2963,7 +2963,7 @@ void a_movegroup(const userinput * const u)
   if (num2 == 0)
     return;
 
-  if (u->arg3 && strlen(u->arg3)) {
+  if (u->arg3 && (u->arg3[0] != 0)) {
     if (gdata.groupsincaps)
       caps(u->arg3);
   }
@@ -4516,7 +4516,7 @@ void a_autogroup(const userinput * const u)
     }
 
     ++newgroup;
-    if (strlen(newgroup) == 0) {
+    if (newgroup[0] == 0) {
       mydelete(tempstr);
       continue;
     }

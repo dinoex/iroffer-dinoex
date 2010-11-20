@@ -57,10 +57,10 @@ static void strip_trailing_action(char *str)
   if (str == NULL)
     return;
 
-  len = strlen(str);
-  if (len == 0)
+  if (str[0] == 0)
     return;
 
+  len = strlen(str);
   if (str[--len] != '\1')
     return;
 

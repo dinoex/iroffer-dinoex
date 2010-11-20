@@ -186,10 +186,10 @@ char *clean_quotes(char *str)
     return str;
 
   src = str + 1;
-  len = strlen(src);
-  if (len == 0)
+  if (str[0] == 0)
     return str;
 
+  len = strlen(src);
   --len;
   if (src[len] == '"')
     src[len] = 0;
