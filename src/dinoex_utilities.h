@@ -37,6 +37,7 @@ void shutdown_close(int handle);
 int get_port(ir_sockaddr_union_t *listenaddr);
 int strcmp_null(const char *s1, const char *s2);
 unsigned int is_file_writeable(const char *f);
+char *grep_to_fnmatch(const char *grep);
 char *hostmask_to_fnmatch(const char *str);
 unsigned int verify_group_in_grouplist(const char *group, const char *grouplist);
 char *sizestr(unsigned int spaces, off_t num);
@@ -62,6 +63,7 @@ char *getpart(const char *line, unsigned int howmany);
 char *getpart_eol(const char *line, unsigned int howmany);
 unsigned int convert_spaces_to_match(char *str);
 ir_uint64 timeval_to_ms(struct timeval *tv);
+char *user_getdatestr(char* str, time_t Tp, size_t len);
 
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b));
 

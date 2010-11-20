@@ -562,21 +562,6 @@ void update_hour_dinoex(unsigned int minute)
     dinoex_nexthour = gdata.curtime + (60 * 30);
 }
 
-/* convert a search string into fnmatch */
-char *grep_to_fnmatch(const char *grep)
-{
-  char *raw;
-  char *match;
-  size_t len;
-
-  len = strlen(grep) + 3;
-  raw = mycalloc(len);
-  snprintf(raw, len, "*%s*", grep);
-  match = hostmask_to_fnmatch(raw);
-  mydelete(raw);
-  return match;
-}
-
 /* check if a pack matches a fnmatch search */
 unsigned int fnmatch_xdcc(const char *match, xdcc *xd)
 {
@@ -709,30 +694,6 @@ unsigned int access_need_level(const char *nick, const char *text)
   return 0;
 }
 
-/* returns true if dir use parent */
-unsigned int is_unsave_directory(const char *dir)
-{
-  char *line;
-  char *word;
-  unsigned int bad = 0;
-
-  /* no device letters */
-  if (strchr(dir, ':'))
-    return 1;
-
-  line = mystrdup(dir);
-  for (word = strtok(line, "/");
-       word;
-       word = strtok(NULL, "/")) {
-    if (strcmp(word, "..") == 0) {
-      ++bad;
-      break;
-    }
-  }
-  mydelete(line);
-  return bad;
-}
-
 static void mylog_write(int logfd, const char *logfile, const char *msg, size_t len)
 {
   ssize_t len2;
@@ -811,21 +772,6 @@ char *transfer_limit_exceeded_msg(unsigned int ii)
             tempstr2);
    mydelete(tempstr2);
    return tempstr;
-}
-
-/* get local date and time in ISO */
-char *user_getdatestr(char* str, time_t Tp, size_t len)
-{
-  const char *format;
-  struct tm *localt = NULL;
-  size_t llen;
-
-  localt = localtime(&Tp);
-  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
-  llen = strftime(str, len, format, localt);
-  if ((llen == 0) || (llen == len))
-    str[0] = '\0';
-  return str;
 }
 
 /* returns list of allowed groups for nick on current network, or NULL for unrestricted access. calling function must take care of freeing result */
