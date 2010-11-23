@@ -2049,12 +2049,15 @@ void a_read_config_files(const userinput *u)
       r = fgets(templine, maxtextlength, fin);
       if (r == NULL )
         break;
-      l = templine + strlen(templine) - 1;
-      while (( *l == '\r' ) || ( *l == '\n' ))
-        *(l--) = 0;
       ++current_line;
-      if ((templine[0] != '#') && templine[0]) {
-        getconfig_set(templine);
+      if (templine[0] == 0)
+        continue;
+      if (templine[0] != '#') {
+        l = templine + strlen(templine) - 1;
+        while (( l >= templine ) && (( *l == '\r' ) || ( *l == '\n' )))
+          *(l--) = 0;
+        if (templine[0] != 0)
+          getconfig_set(templine);
       }
     }
     fclose(fin);
