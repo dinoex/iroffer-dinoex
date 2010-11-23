@@ -199,7 +199,6 @@ static config_bool_typ config_parse_bool[] = {
 {"http_geoip",             &gdata.http_geoip,              0 },
 {"http_search",            &gdata.http_search,             0 },
 #endif /* WITHOUT_HTTP */
-{"ignoreduplicateip",      &gdata.ignoreduplicateip,       0 },
 {"ignoreuploadbandwidth",  &gdata.ignoreuploadbandwidth,   0 },
 {"include_subdirs",        &gdata.include_subdirs,         0 },
 {"logmessages",            &gdata.logmessages,             0 },
@@ -374,6 +373,7 @@ static config_int_typ config_parse_int[] = {
 {"http_port",               &gdata.http_port,               0, 65535, 1, 0 },
 #endif /* WITHOUT_HTTP */
 {"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1, 0 },
+{"ignore_duplicate_ip",     &gdata.ignore_duplicate_ip,     0, 24*31, 1, 0 },
 {"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1, 0 },
 {"max_find",                &gdata.max_find,                0, 65000, 1, 0 },
 {"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 65000 },
@@ -1374,6 +1374,21 @@ static void d_group_admin(const char *key)
   }
 }
 
+static void c_ignoreduplicateip(const char * key, char *var)
+{
+  int val;
+
+  val = parse_bool_val(key, var);
+  if (val < 0)
+    return;
+
+  if (val > 0) {
+    gdata.ignore_duplicate_ip = 24;
+  } else {
+    gdata.ignore_duplicate_ip = 0;
+  }
+}
+
 static void c_logrotate(const char * UNUSED(key), char *var)
 {
   unsigned int val;
@@ -1904,6 +1919,7 @@ static config_func_typ config_parse_func[] = {
 {"disk_quota",             c_disk_quota,             d_disk_quota },
 {"getip_network",          c_getip_network,          NULL },
 {"group_admin",            c_group_admin,            d_group_admin },
+{"ignoreduplicateip",      c_ignoreduplicateip,      NULL },
 {"local_vhost",            c_local_vhost,            NULL },
 {"login_name",             c_login_name,             NULL },
 {"logrotate",              c_logrotate,              d_logrotate },

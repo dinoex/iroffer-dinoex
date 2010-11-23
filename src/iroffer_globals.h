@@ -164,6 +164,7 @@ unsigned int autoignore_threshold;
 unsigned int reconnect_delay;
 unsigned int new_trigger;
 unsigned int adddir_min_size;
+unsigned int ignore_duplicate_ip;
 /* bool */
 unsigned int hideos;
 unsigned int lognotices;
@@ -190,7 +191,6 @@ unsigned int groupsincaps;
 unsigned int ignoreuploadbandwidth;
 unsigned int holdqueue;
 unsigned int removelostfiles;
-unsigned int ignoreduplicateip;
 unsigned int hidelockedpacks;
 unsigned int disablexdccinfo;
 unsigned int need_voice;

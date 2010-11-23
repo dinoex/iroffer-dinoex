@@ -413,7 +413,7 @@ static void t_check_duplicateip(transfer *const newtr)
   unsigned int found;
   unsigned int num;
 
-  if (!gdata.ignoreduplicateip)
+  if (gdata.ignore_duplicate_ip == 0)
     return;
 
   if (gdata.maxtransfersperperson == 0)
@@ -441,7 +441,7 @@ static void t_check_duplicateip(transfer *const newtr)
   if (found <= gdata.maxtransfersperperson)
     return;
 
-  num = 24 * 60; /* 1 day */
+  num = gdata.ignore_duplicate_ip * 60; /* n hours */
   for (tr = irlist_get_head(&gdata.trans);
        tr;
        tr = irlist_get_next(tr)) {
