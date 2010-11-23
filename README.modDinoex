@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+346) ignore_duplicate_ip (inspired by Loke_AF)
+  Detect faked hostmasks and abort multiple transfers to the same host
+  and ignore the user for the give time in hours.
+  Default: 0 == no check.
+
 bugfix: ruby_script (reported by Zir0h)
   Bot did not build with ruby 1.9.1.
 

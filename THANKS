@@ -628,7 +628,8 @@ Loke_AF
 	reporting crash with concurrent transfers
 	reporting "XDCC BATCH" bug
 	reporting "AUTOADD" problem with '//'.
-	suggesting "requeue_sends
+	suggesting "requeue_sends"
+	suggesting "ignore_duplicate_ip"
 
 Nouhime
 	reporting "http_search" bug.
