@@ -677,6 +677,7 @@ SamKook
 Zir0h
 	reporting "on_added" bug in "rubyscript"
 	reporting "SHUTDOWN" bug with ruby 1.9
+	reporting build failure with ruby 1.9.1
 
 death_walker
 	reporting "autoadd_dir" bug with spaces
