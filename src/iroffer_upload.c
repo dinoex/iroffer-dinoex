@@ -219,7 +219,7 @@ void l_transfersome (upload * const l) {
       if (mysize <= 0)
          mysize = 1;
          
-      tempstr = mycalloc(maxtextlength);
+      tempstr = mymalloc(maxtextlength);
       
       if (timetook > (60*60))
         {

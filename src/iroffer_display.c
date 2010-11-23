@@ -78,7 +78,7 @@ void initscreen(int startup, int clear) {
      }
    
    /* last 2 lines */
-   tempstr = mycalloc(maxtextlength);
+   tempstr = mymalloc(maxtextlength);
    getstatusline(tempstr,maxtextlength);
    tempstr[between(0,gdata.termcols-4,maxtextlength-1)] = '\0';
    tostdout(IRVT_CURSOR_HOME1 "[ %-*s ]",

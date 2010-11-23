@@ -526,7 +526,7 @@ static char *print_config_int(const char *key)
   if (i < 0)
     return NULL;
 
-  val = mycalloc(maxtextlengthshort);
+  val = mymalloc(maxtextlengthshort);
   snprintf(val, maxtextlengthshort, "%u", *(config_parse_int[i].ivar));
   return val;
 }
@@ -2070,7 +2070,7 @@ static void dump_config_func(void)
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;
          ch = irlist_get_next(ch)) {
-      buffer = mycalloc(maxtextlength);
+      buffer = mymalloc(maxtextlength);
       len = snprintf(buffer, maxtextlength, "%s", ch->name);
       if (ch->plisttime != 0)
         len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime);

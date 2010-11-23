@@ -501,7 +501,7 @@ static unsigned int h_open_listen(unsigned int i)
     return 1;
 
   http_family[i] = listenaddr.sa.sa_family;
-  msg = mycalloc(maxtextlength);
+  msg = mymalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa);
   ioutput(OUT_S|OUT_L|OUT_H, COLOR_MAGENTA,
           "HTTP SERVER waiting for connection on %s",  msg);
@@ -638,8 +638,8 @@ static void h_access_log(http * const h)
     return;
 
   localt = localtime(&gdata.curtime);
-  tempstr = mycalloc(maxtextlength);
-  date = mycalloc(maxtextlengthshort);
+  tempstr = mymalloc(maxtextlength);
+  date = mymalloc(maxtextlengthshort);
   strftime(date, maxtextlengthshort - 1, "%d/%b/%Y:%T %Z", localt);
   bytes = h->bytesgot + h->bytessent;
   len = snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" %u %ld\n",
@@ -702,8 +702,8 @@ static void h_write_header(http * const h, const char *header)
   size_t len;
 
   localt = gmtime(&gdata.curtime);
-  tempstr = mycalloc(maxtextlength);
-  date = mycalloc(maxtextlengthshort);
+  tempstr = mymalloc(maxtextlength);
+  date = mymalloc(maxtextlengthshort);
   strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
   len = snprintf(tempstr, maxtextlength, header, date);
   mydelete(date);
@@ -774,12 +774,12 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
   struct tm *localt;
   size_t len;
 
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   localt = gmtime(&gdata.curtime);
-  date = mycalloc(maxtextlengthshort);
+  date = mymalloc(maxtextlengthshort);
   strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
   if (now && (h->status_code == 200)) {
-    last = mycalloc(maxtextlengthshort);
+    last = mymalloc(maxtextlengthshort);
     localt = gmtime(now);
     strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
     if (h->modified) {
@@ -859,9 +859,9 @@ static void h_herror_403(http * const h, const char *msg)
     return;
   }
   h->url = mystrdup(gdata.http_forbidden);
-  h->log_url = mycalloc(maxtextlength);
+  h->log_url = mymalloc(maxtextlength);
   snprintf(h->log_url, maxtextlength, "GET %s HTTP/1.1", gdata.http_forbidden);
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url);
   h_readfile(h, tempstr);
   mydelete(tempstr);
@@ -911,7 +911,7 @@ static void h_accept(unsigned int i)
   h->status = HTTP_STATUS_GETTING;
   h->status_code = 200;
 
-  msg = mycalloc(maxtextlength);
+  msg = mymalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &remoteaddr.sa);
   h->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
@@ -1115,7 +1115,7 @@ static int html_link_option(char *str, size_t size, const char *option, const ch
   if (html_link_start++ > 0) {
     len = snprintf(str, size, ";");
   }
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   url_encode(tempstr, maxtextlength, val);
   len += snprintf(str + len, size - len, "%s=%s", option, tempstr);
   mydelete(tempstr);
@@ -1128,7 +1128,7 @@ static char *html_link_build(const char *css, const char *caption, const char *t
   char *tempstr;
   size_t len;
 
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   len = snprintf(tempstr, maxtextlength, "<a%s title=\"%s\" href=\"/?", css, caption);
   html_link_start = 0;
   if (group)
@@ -1248,7 +1248,7 @@ static void h_html_main(http * const h)
 
   updatecontext();
 
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
@@ -1379,11 +1379,11 @@ static void h_html_main(http * const h)
       h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
       mydelete(tempstr);
     }
-    savegroup = mycalloc(maxtextlength);
+    savegroup = mymalloc(maxtextlength);
     html_encode(savegroup, maxtextlength, hg->hg_group);
     h_respond(h, "<td class=\"content\">%s</td>\n", savegroup);
     mydelete(savegroup);
-    savedesc = mycalloc(maxtextlength);
+    savedesc = mymalloc(maxtextlength);
     html_encode(savedesc, maxtextlength, hg->hg_desc);
     tlink = h_html_link_group(h, "show list of packs", savedesc, hg->hg_group);
     mydelete(savedesc);
@@ -1462,14 +1462,14 @@ static void h_html_file(http * const h)
     tempstr = sizestr(0, xd->st_size);
     h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
     mydelete(tempstr);
-    tlabel = mycalloc(maxtextlength);
+    tlabel = mymalloc(maxtextlength);
     len = snprintf(tlabel, maxtextlength, "%s\n/msg %s xdcc send %u",
                    "Download with:", h->nick, num);
     if (xd->has_md5sum)
       len += snprintf(tlabel + len, maxtextlength - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
     if (xd->has_crc32)
       len += snprintf(tlabel + len, maxtextlength - len, "\ncrc32: %.8lX", xd->crc32);
-    tempstr = mycalloc(maxtextlength);
+    tempstr = mymalloc(maxtextlength);
     len = 0;
     if (gdata.show_date_added) {
        user_getdatestr(tempstr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlength - 1);
@@ -1486,7 +1486,7 @@ static void h_html_file(http * const h)
         len += html_encode(tempstr + len, maxtextlength - len, xd->note);
       }
     }
-    javalink = mycalloc(maxtextlength);
+    javalink = mymalloc(maxtextlength);
     len = snprintf(javalink, maxtextlength,
                    "<a href=\"javascript:ToClipboard('/msg %s xdcc send %u');\">%s</a>",
                    h->nick, num, tempstr);
@@ -1506,37 +1506,37 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
 
   while (text != NULL) {
     if (strcmp(key, "uptime") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
       break;
     }
     if (strcmp(key, "running") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       tempstr = getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);
       break;
     }
     if (strcmp(key, "minspeed") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transferminspeed);
       break;
     }
     if (strcmp(key, "maxspeed") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transfermaxspeed);
       break;
     }
     if (strcmp(key, "cap") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
       break;
     }
     if (strcmp(key, "record") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.record);
       break;
     }
     if (strcmp(key, "send") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.sentrecord);
       break;
     }
@@ -1584,13 +1584,13 @@ static void h_html_index(http * const h)
       mydelete(h->group);
       h->group = mystrdup("*");
       len = strlen(h->search) + 1;
-      clean = mycalloc(len);
+      clean = mymalloc(len);
       html_decode(clean, len, h->search);
       mydelete(h->search);
       len = strlen(clean) + 3;
-      h->pattern = mycalloc(len);
+      h->pattern = mymalloc(len);
       pattern_decode(h->pattern, len, clean);
-      h->search = mycalloc(maxtextlength);
+      h->search = mymalloc(maxtextlength);
       html_encode(h->search, maxtextlength - 1, clean);
       mydelete(clean);
     } else {
@@ -1606,7 +1606,7 @@ static void h_html_index(http * const h)
 
   h_respond(h, "</tbody>\n</table>\n<table class=\"status\">\n<tbody>\n<tr><td>Version</td>\n");
 
-  tlabel = mycalloc(maxtextlength);
+  tlabel = mymalloc(maxtextlength);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
   len  = snprintf(tlabel,       maxtextlength,       "%6s %s\n", tempstr, "Traffic today");
   mydelete(tempstr);
@@ -1619,7 +1619,7 @@ static void h_html_index(http * const h)
   h_respond(h, "<td title=\"%s\">%s</td>\n", tlabel, "iroffer-dinoex " VERSIONLONG);
   mydelete(tlabel);
 
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   user_getdatestr(tempstr, gdata.curtime, maxtextlength - 1);
   h_respond(h, "<tr>\n");
   h_respond(h, "<td>%s</td>\n", "last update");
@@ -1678,7 +1678,7 @@ static char *get_url_param(const char *url, const char *key)
   html_str_split(result, ';');
   html_str_split(result, '&');
   len = strlen(result) + 1;
-  clean = mycalloc(len);
+  clean = mymalloc(len);
   html_decode(clean, len, result);
   mydelete(result);
   return clean;
@@ -1700,7 +1700,7 @@ static int get_url_number(const char *url, const char *key)
 
 static void h_prepare_respond(http * const h, size_t guess)
 {
-  h->buffer_out = mycalloc(guess);
+  h->buffer_out = mymalloc(guess);
   h->buffer_out[ 0 ] = 0;
   h->end = h->buffer_out;
   h->left = guess - 1;
@@ -1810,7 +1810,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char *UNUS
   }
 
   if (gdata.http_admin_dir) {
-    tempstr = mycalloc(maxtextlength);
+    tempstr = mymalloc(maxtextlength);
     snprintf(tempstr, maxtextlength, "%s%s", gdata.http_admin_dir, h->url);
     tmp = strchr(tempstr, '?' );
     if (tmp != NULL)
@@ -1847,7 +1847,7 @@ static char *h_bad_request(http * const h)
 
   html_str_split(url, ' ');
   len = strlen(url) + 1;
-  h->url = mycalloc(len);
+  h->url = mymalloc(len);
   html_decode(h->url, len, url);
   if (strcasecmp(request, "GET" ) == 0) {
     return header;
@@ -2001,7 +2001,7 @@ static void h_parse(http * const h, char *body)
 #endif /* WITHOUT_HTTP_ADMIN */
 
   if (gdata.http_dir) {
-    tempstr = mycalloc(maxtextlength);
+    tempstr = mymalloc(maxtextlength);
     snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url);
     tmp = strchr(tempstr, '?' );
     if (tmp != NULL)

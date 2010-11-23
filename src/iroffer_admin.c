@@ -621,7 +621,7 @@ static void u_xdl_head(const userinput * const u) {
    ir_uint64 xdccsent;
    
    updatecontext();
-   tempstr  = mycalloc(maxtextlength);
+   tempstr  = mymalloc(maxtextlength);
 
    if (u->method==method_xdl_channel_min) m = 1; else m = 0;
    if (u->method==method_xdl_channel_sum) m1 = 1; else m1 = 0;
@@ -841,7 +841,7 @@ static void u_xdl_full(const userinput * const u) {
    
    u_xdl_head(u);
    
-   tempstr = mycalloc(maxtextlength);
+   tempstr = mymalloc(maxtextlength);
    i = 1;
    l = a_xdl_left();
    s = a_xdl_space();
@@ -873,7 +873,7 @@ static void u_xdl_group(const userinput * const u) {
    u_xdl_head(u);
 
    msg3 = u->arg1;
-   tempstr = mycalloc(maxtextlength);
+   tempstr = mymalloc(maxtextlength);
    i = 1;
    k = 0;
    l = a_xdl_left();
@@ -933,7 +933,7 @@ static void u_xdl(const userinput * const u) {
 
    if (u->method==method_xdl_channel_sum) return;
 
-   tempstr  = mycalloc(maxtextlength);
+   tempstr  = mymalloc(maxtextlength);
    
    l = a_xdl_left();
    s = a_xdl_space();
@@ -1082,9 +1082,9 @@ static void u_dcld(const userinput * const u)
       return;
     }
   
-   tempstr2 = mycalloc(maxtextlengthshort);
-   tempstr3 = mycalloc(maxtextlengthshort);
-   tempstr4 = mycalloc(maxtextlengthshort);
+   tempstr2 = mymalloc(maxtextlengthshort);
+   tempstr3 = mymalloc(maxtextlengthshort);
+   tempstr4 = mymalloc(maxtextlengthshort);
    
    if (irlist_size(&gdata.trans))
      {
@@ -1452,7 +1452,7 @@ static void u_quit(const userinput * const u)
 }
 
 static void u_status(const userinput * const u) {
-   char *tempstr = mycalloc(maxtextlength);
+   char *tempstr = mymalloc(maxtextlength);
    
    updatecontext();
    
@@ -1560,7 +1560,7 @@ static void u_chatl(const userinput * const u)
           break;
         }
       
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       
       getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
       u_respond(u,"  Connected at %s",tempstr);
@@ -1581,7 +1581,7 @@ static void u_chatl(const userinput * const u)
 static void u_rehash(const userinput * const u) {
    
    /* other variables */
-   char *templine = mycalloc(maxtextlength);
+   char *templine = mymalloc(maxtextlength);
    unsigned int ss;
    xdcc *xd;
    
@@ -1711,7 +1711,7 @@ static void u_rehash(const userinput * const u) {
    }
 
 static void u_botinfo(const userinput * const u) {
-   char *tempstr = mycalloc(maxtextlength);
+   char *tempstr = mymalloc(maxtextlength);
    struct rusage r;
    size_t len;
    int ii;
@@ -1747,7 +1747,7 @@ static void u_botinfo(const userinput * const u) {
        const char *how;
        char *msg;
        u_respond(u, "network: %u: %s", ss + 1, gdata.networks[ss].name);
-       msg = mycalloc(maxtextlength);
+       msg = mymalloc(maxtextlength);
        my_dcc_ip_show(msg, maxtextlength - 1, &(gdata.networks[ss].myip), ss);
        u_respond(u, "DCC IP: %s NAT=%u", msg, gdata.networks[ss].usenatip);
        mydelete(msg);
@@ -1877,7 +1877,7 @@ static void u_botinfo(const userinput * const u) {
    
    for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
      {
-       char *tempstr2 = mycalloc(maxtextlength);
+       char *tempstr2 = mymalloc(maxtextlength);
        
        getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlength);
        
@@ -2164,7 +2164,7 @@ static void u_msgread(const userinput * const u)
   
   updatecontext();
   
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
    
   for (ml = irlist_get_head(&gdata.msglog); ml; ml = irlist_get_next(ml))
     {
@@ -2505,8 +2505,8 @@ static void u_trinfo(const userinput * const u)
             ((float)tr->bytessent)*100.0/((float)tr->xpack->st_size),
             ((float)(tr->bytessent-tr->startresume))*100.0/((float)max2(1,(tr->xpack->st_size-tr->startresume))));
   
-  tempstr2 = mycalloc(maxtextlengthshort);
-  tempstr3 = mycalloc(maxtextlengthshort);
+  tempstr2 = mymalloc(maxtextlengthshort);
+  tempstr3 = mymalloc(maxtextlengthshort);
   
   snprintf(tempstr2, maxtextlengthshort, "%1.1fK/s", tr->xpack->minspeed);
   snprintf(tempstr3, maxtextlengthshort, "%1.1fK/s", tr->maxspeed);
@@ -2605,7 +2605,7 @@ void u_listdir(const userinput * const u, const char *dir)
           struct stat st;
           size_t len = strlen(thefile);
           
-          tempstr = mycalloc(len + thedirlen + 2);
+          tempstr = mymalloc(len + thedirlen + 2);
           
           snprintf(tempstr, len + thedirlen + 2,
                    "%s/%s", dir, thefile);
@@ -2765,7 +2765,7 @@ static void u_chanl(const userinput * const u)
 
   u_respond(u,"Channel Members:");
   
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   ch = irlist_get_head(&gdata.networks[net].channels);
   while(ch)
     {

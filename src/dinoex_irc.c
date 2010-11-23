@@ -403,7 +403,7 @@ char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
     listenaddr->sin.sin_addr = gnetwork->myip.sin.sin_addr;
   else
     listenaddr->sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
-  msg = mycalloc(maxtextlength);
+  msg = mymalloc(maxtextlength);
   my_dcc_ip_port(msg, maxtextlength -1, listenaddr);
   return msg;
 }
@@ -436,6 +436,7 @@ void child_resolver(void)
     }
   }
 
+  memset(&rbuffer, 0, sizeof(res_addrinfo_t));
   /* enable logfile */
   gdata.logfd = FD_UNUSED;
 
@@ -549,7 +550,7 @@ unsigned int connectirc2(res_addrinfo_t *remote)
 
   if (gdata.debug > 0) {
     char *msg;
-    msg = mycalloc(maxtextlength);
+    msg = mymalloc(maxtextlength);
     my_getnameinfo(msg, maxtextlength -1, &(remote->ai_addr));
     ioutput(OUT_S, COLOR_YELLOW, "Connecting to %s", msg);
     mydelete(msg);

@@ -515,7 +515,7 @@ static void mainloop (void) {
                 if (gdata.debug > 0)
                   {
                     char *msg;
-                    msg = mycalloc(maxtextlength);
+                    msg = mymalloc(maxtextlength);
                     my_getnameinfo(msg, maxtextlength -1, &(gnetwork->myip.sa));
                     ioutput(OUT_S, COLOR_YELLOW, "using %s", msg);
                     mydelete(msg);
@@ -1131,7 +1131,7 @@ static void mainloop (void) {
               {
                 const char *servname = gnetwork->curserveractualname ? gnetwork->curserveractualname : gnetwork->curserver.hostname;
                 size_t     len       = 6 + strlen(servname);
-                char       *tempstr3 = mycalloc(len + 1);
+                char       *tempstr3 = mymalloc(len + 1);
                 snprintf(tempstr3, len + 1, "PING %s\n", servname);
                 writeserver_ssl(tempstr3, len);
                 if (gdata.debug > 0)
@@ -1264,7 +1264,7 @@ static void mainloop (void) {
                           }
                         else
                           {
-                            tchanm = mycalloc(maxtextlength);
+                            tchanm = mymalloc(maxtextlength);
                             strncpy(tchanm,ch->name,maxtextlength-1);
                           }
                       }
@@ -1277,7 +1277,7 @@ static void mainloop (void) {
                           }
                         else
                           {
-                            tchans = mycalloc(maxtextlength);
+                            tchans = mymalloc(maxtextlength);
                             strncpy(tchans,ch->name,maxtextlength-1);
                           }
                       }
@@ -1290,7 +1290,7 @@ static void mainloop (void) {
                           }
                         else
                           {
-                            tchanf = mycalloc(maxtextlength);
+                            tchanf = mymalloc(maxtextlength);
                             strncpy(tchanf,ch->name,maxtextlength-1);
                           }
                       }
@@ -1932,7 +1932,7 @@ static void parseline(char *line) {
    if (!strcmp(part2, "JOIN") && part3a && gnetwork->caps_nick) {
       char* nick;
       int j;
-      nick = mycalloc(strlen(line)+1);
+      nick = mymalloc(strlen(line)+1);
       j=1;
       gnetwork->nocon = 0;
       while(line[j] != '!' && j<sstrlen(line)) {
@@ -2009,7 +2009,7 @@ static void parseline(char *line) {
      {
        char* nick;
        int j;
-       nick = mycalloc(strlen(line)+1);
+       nick = mymalloc(strlen(line)+1);
        j=1;
        while(line[j] != '!' && j<sstrlen(line))
 	 {
@@ -2058,7 +2058,7 @@ static void parseline(char *line) {
      {
        char* nick;
        int j;
-       nick = mycalloc(strlen(line)+1);
+       nick = mymalloc(strlen(line)+1);
        j=1;
        while(line[j] != '!' && j<sstrlen(line))
 	 {
@@ -2097,7 +2097,7 @@ static void parseline(char *line) {
      {
        char *oldnick, *newnick;
        int j;
-       oldnick = mycalloc(strlen(line)+1);
+       oldnick = mymalloc(strlen(line)+1);
        j=1;
        while(line[j] != '!' && j<sstrlen(line))
 	 {

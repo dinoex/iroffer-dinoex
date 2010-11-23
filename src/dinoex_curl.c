@@ -355,7 +355,8 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
   ft->url = mystrdup(url);
   ft->writefd = writefd;
   ft->resumesize = resumesize;
-  ft->errorbuf = mycalloc(CURL_ERROR_SIZE);
+  ft->errorbuf = mymalloc(CURL_ERROR_SIZE);
+  ft->errorbuf[0] = 0;
   ft->starttime = gdata.curtime;
 
   if (curl_fetch(u, ft)) {

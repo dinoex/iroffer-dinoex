@@ -100,7 +100,7 @@ static char *encrypt_fish( const char *str, int len, const char *key)
 
   max = ( len + 3 ) / 4; /* immer 32bit */
   max *= 12; /* base64 */
-  msg = mycalloc(max+1);
+  msg = mymalloc(max+1);
 
   dest = msg;
   Blowfish_Init(&ctx, (const unsigned char*)key, strlen(key));
@@ -157,7 +157,7 @@ static char *decrypt_fish( const char *str, int len, const char *key)
 
   max = ( len + 11 / 12 );
   max *= 4;
-  msg = mycalloc(max+1);
+  msg = mymalloc(max+1);
 
   dest = msg;
   Blowfish_Init(&ctx, (const unsigned char*)key, strlen(key));
@@ -280,7 +280,7 @@ vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
 
   updatecontext();
 
-  msg = mycalloc(maxtextlength);
+  msg = mymalloc(maxtextlength);
 
   len = vsnprintf(msg, maxtextlength, format, ap);
 
@@ -559,7 +559,7 @@ void admin_jobs(void)
   if (fin == NULL)
     return;
 
-  line = mycalloc(maxtextlength);
+  line = mymalloc(maxtextlength);
   while (!feof(fin)) {
     r = fgets(line, maxtextlength - 1, fin);
     if (r == NULL )
@@ -590,7 +590,7 @@ static int check_for_file_remove(unsigned int n)
     return 0;
 
   pubplist = mycalloc(sizeof(userinput));
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "REMOVE %u", n);
   u_fillwith_console(pubplist, tempstr);
   u_parseit(pubplist);
@@ -669,9 +669,9 @@ const char *validate_crc32(xdcc *xd, int quiet)
       return "skipped CRC32";
   }
 
-  newcrc = mycalloc(10);
+  newcrc = mymalloc(10);
   snprintf(newcrc, 10, "%.8lX", xd->crc32);
-  line = mycalloc(strlen(xd->file)+1);
+  line = mymalloc(strlen(xd->file)+1);
 
   /* ignore path */
   x = getfilename(xd->file);
@@ -756,7 +756,7 @@ static void autoadd_scan(const char *dir, const char *group)
   gnetwork = &(gdata.networks[net]);
   if (gdata.debug > 0)
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
-  line = mycalloc(maxtextlength);
+  line = mymalloc(maxtextlength);
   if (group != NULL)
     snprintf(line, maxtextlength, "ADDGROUP %s \"%s\"", group, dir);
   else
@@ -865,7 +865,7 @@ void write_removed_xdcc(xdcc *xd)
     return;
   }
 
-  line = mycalloc(maxtextlength);
+  line = mymalloc(maxtextlength);
   len = snprintf(line, maxtextlength, "\n");
   write(fd, line, len);
   len = snprintf(line, maxtextlength, "xx_file %s\n", xd->file);
@@ -1050,7 +1050,7 @@ void import_xdccfile(void)
     return;
   }
 
-  templine = mycalloc(maxtextlength);
+  templine = mymalloc(maxtextlength);
   err = 0;
   while (!feof(fin)) {
     r = fgets(templine, maxtextlength - 1, fin);
@@ -1258,7 +1258,7 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
   method = manplist->method;
   if (ch) {
     if (ch->pgroup) {
-      line = mycalloc(maxtextlength);
+      line = mymalloc(maxtextlength);
       snprintf(line, maxtextlength, "XDLGROUP %s", ch->pgroup);
       a_fillwith_msg2(manplist, name, line);
       mydelete(line);
@@ -1299,7 +1299,7 @@ int save_unlink(const char *path)
   if (gdata.trashcan_dir) {
     file = getfilename(path);
     len = strlen(gdata.trashcan_dir) + strlen(file) + 15;
-    dest = mycalloc(len);
+    dest = mymalloc(len);
     snprintf(dest, len, "%s/%s", gdata.trashcan_dir, file);
     num = 0;
     while (file_not_exits(dest)) {
@@ -1490,7 +1490,7 @@ static void xdcc_save_xml(void)
     return;
   }
 
-  xmlbuf = mymalloc(MAX_XML_CHUNK);
+  xmlbuf = mymalloc(sizeof(xml_buffer_t));
   xml_buffer_init(xmlbuf);
   xmlbuf->filename = filename_tmp;
   xmlbuf->fd = fd;
@@ -1537,7 +1537,7 @@ static void xdcc_save_xml(void)
       write_asc_text(xmlbuf, 2, "groupname", xd->group);
     }
     if (xd->has_md5sum) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
       write_asc_text(xmlbuf, 2, "md5sum", tempstr);
       mydelete(tempstr);
@@ -1600,7 +1600,7 @@ static void xdcc_save_xml(void)
   tempstr = get_current_bandwidth();
   write_asc_plain(xmlbuf, 4, "banduse", tempstr);
   mydelete(tempstr);
-  tempstr = mycalloc(maxtextlengthshort);
+  tempstr = mymalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
   write_asc_plain(xmlbuf, 4, "bandmax", tempstr);
   mydelete(tempstr);
@@ -1627,11 +1627,11 @@ static void xdcc_save_xml(void)
   write_string(xmlbuf, "  </quota>\n");
 
   write_string(xmlbuf, "  <limits>\n");
-  tempstr = mycalloc(maxtextlengthshort);
+  tempstr = mymalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transferminspeed);
   write_asc_plain(xmlbuf, 4, "minspeed", tempstr);
   mydelete(tempstr);
-  tempstr = mycalloc(maxtextlengthshort);
+  tempstr = mymalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transfermaxspeed);
   write_asc_plain(xmlbuf, 4, "maxspeed", tempstr);
   mydelete(tempstr);
@@ -1660,11 +1660,11 @@ static void xdcc_save_xml(void)
 
   write_string(xmlbuf, "  <stats>\n");
   write_asc_plain(xmlbuf, 4, "version", "iroffer-dinoex " VERSIONLONG );
-  tempstr = mycalloc(maxtextlengthshort);
+  tempstr = mymalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
   write_asc_plain(xmlbuf, 4, "uptime", tempstr);
   mydelete(tempstr);
-  tempstr = mycalloc(maxtextlengthshort);
+  tempstr = mymalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);
   write_asc_plain(xmlbuf, 4, "totaluptime", tempstr);
   mydelete(tempstr);
@@ -2017,7 +2017,7 @@ void a_read_config_files(const userinput *u)
   updatecontext();
 
   current_network = 0;
-  templine = mycalloc(maxtextlength);
+  templine = mymalloc(maxtextlength);
   for (h=0; h<MAXCONFIG && gdata.configfile[h]; ++h) {
     if (u == NULL)
       printf("** Loading %s ... \n", gdata.configfile[h]);

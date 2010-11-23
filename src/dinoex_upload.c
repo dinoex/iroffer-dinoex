@@ -128,7 +128,7 @@ static int l_setup_listen(upload * const l)
   privmsg_fast(l->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %u\1",
                tempstr, msg, l->totalsize, l->token);
   mydelete(msg);
-  msg = mycalloc(maxtextlength);
+  msg = mymalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &(l->con.local.sa));
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND sent to %s on %s, waiting for connection on %s",
@@ -211,7 +211,7 @@ void l_setup_accept(upload * const l)
 
   notice(l->nick, "DCC Send Accepted, Connecting...");
 
-  msg = mycalloc(maxtextlength);
+  msg = mymalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &(l->con.remote.sa));
   mydelete(l->con.remoteaddr);
   l->con.remoteaddr = mystrdup(msg);

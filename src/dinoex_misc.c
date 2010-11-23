@@ -752,7 +752,7 @@ char *get_current_bandwidth(void)
   for (i=0, xdccsent=0; i<XDCC_SENT_SIZE; ++i) {
     xdccsent += (ir_uint64)gdata.xdccsent[i];
   }
-  tempstr = mycalloc(maxtextlengthshort);
+  tempstr = mymalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s",
            ((float)xdccsent) / XDCC_SENT_SIZE / 1024.0);
   return tempstr;
@@ -761,8 +761,8 @@ char *get_current_bandwidth(void)
 /* inform the user a trasferlimit has reahed */
 char *transfer_limit_exceeded_msg(unsigned int ii)
 {
-   char *tempstr = mycalloc(maxtextlength);
-   char *tempstr2 = mycalloc(maxtextlengthshort);
+   char *tempstr = mymalloc(maxtextlength);
+   char *tempstr2 = mymalloc(maxtextlengthshort);
 
    getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlengthshort);
    snprintf(tempstr, maxtextlength,
@@ -777,7 +777,7 @@ char *transfer_limit_exceeded_msg(unsigned int ii)
 /* returns list of allowed groups for nick on current network, or NULL for unrestricted access. calling function must take care of freeing result */
 char *get_grouplist_access(const char *nick)
 {
-  char *tempstr = mycalloc(maxtextlength);
+  char *tempstr = mymalloc(maxtextlength);
   size_t len = 0;
   channel_t *ch;
   member_t *member;
@@ -967,7 +967,7 @@ char *color_text(char *desc, int color)
    if (gnetwork->plaintext)
      return desc;
 
-   colordesc = mycalloc(maxtextlength);
+   colordesc = mymalloc(maxtextlength);
    foreground = color & 0xFF;
    background = (color >> 8) & 0xFF;
    style = (color >> 16 ) & 0x0F;

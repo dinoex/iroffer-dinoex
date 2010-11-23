@@ -441,7 +441,7 @@ void read_statefile(void)
               if (gdata.debug > 0)
                 {
                   char *tempstr;
-                  tempstr = mycalloc(maxtextlength);
+                  tempstr = mymalloc(maxtextlength);
                   getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlength);
                   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                           "  [Total Runtime %s]", tempstr);
