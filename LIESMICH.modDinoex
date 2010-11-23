@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+bugfix: ruby_script
+  Bot konnte micht mit Ruby 1.9.1 gebaut werden.
+
 345) xdccxmlfile
   Schreibe des 'xdccxmlfile' schneller.
 
