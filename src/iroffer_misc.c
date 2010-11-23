@@ -193,7 +193,7 @@ static int connectirc (server_t *tserver) {
        return 1;
      }
    
-#if 0
+#ifndef DEBUG_VALGRIND
    callval = fork();
    if (callval < 0)
 #endif
