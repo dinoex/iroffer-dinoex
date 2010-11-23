@@ -138,7 +138,7 @@ static char *rb_obj_as_string_protected(VALUE objval)
     return NULL;
   }
 
-  return rb_str2cstr(rval, 0);
+  return rb_string_value_ptr(&rval);
 }
 
 static void ci_free(void * UNUSED(p))
