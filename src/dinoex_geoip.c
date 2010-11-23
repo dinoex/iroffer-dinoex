@@ -98,7 +98,7 @@ void geoip_new_connection(transfer *const tr)
   if (irlist_size(&gdata.geoipcountry)) {
     if (!verifyshell(&gdata.geoipcountry, country)) {
       if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
-         msg = mycalloc(maxtextlength);
+         msg = mymalloc(maxtextlength);
          snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
          t_closeconn(tr, msg, 0);
          ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
@@ -111,7 +111,7 @@ void geoip_new_connection(transfer *const tr)
   if (irlist_size(&gdata.nogeoipcountry)) {
     if (verifyshell(&gdata.nogeoipcountry, country)) {
       if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
-         msg = mycalloc(maxtextlength);
+         msg = mymalloc(maxtextlength);
          snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
          t_closeconn(tr, msg, 0);
          ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,

@@ -139,7 +139,7 @@ static void read_statefile_time(statefile_hdr_t *hdr, const char *tag, time_t *p
 
   if (gdata.debug > 0) {
     char *tempstr;
-    tempstr = mycalloc(maxtextlength);
+    tempstr = mymalloc(maxtextlength);
     getdatestr(tempstr, *pval, maxtextlength);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "  [%s %s]", debug, tempstr);

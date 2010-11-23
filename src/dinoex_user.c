@@ -378,7 +378,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
 
   /* if maxtransfersperperson is reached, queue the file, unless queues are used up, which is checked in addtoqueue() */
   if (usertrans >= gdata.maxtransfersperperson) {
-    tempstr = mycalloc(maxtextlength);
+    tempstr = mymalloc(maxtextlength);
     fatal = addtomainqueue(bad, tempstr, pi->nick, pi->hostname, pack);
     notice(pi->nick, "** You can only have %u %s at a time, %s",
             gdata.maxtransfersperperson,
@@ -389,7 +389,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
   }
   if ((irlist_size(&gdata.trans) >= gdata.maxtrans) || (gdata.holdqueue) || (gnetwork->botstatus != BOTSTATUS_JOINED) ||
       ((xd->st_size >= gdata.smallfilebypass) && (irlist_size(&gdata.trans) >= gdata.slotsmax))) {
-    tempstr = mycalloc(maxtextlength);
+    tempstr = mymalloc(maxtextlength);
     fatal = addtomainqueue(bad, tempstr, pi->nick, pi->hostname, pack);
     notice(pi->nick, "** All Slots Full, %s", tempstr);
     mydelete(tempstr);
@@ -1118,7 +1118,7 @@ static int botonly_parse(int type, privmsginput *pi)
   if (test_ctcp(pi->msg1, "\1UPTIME")) {
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
-    tempstr2 = mycalloc(maxtextlength);
+    tempstr2 = mymalloc(maxtextlength);
     tempstr2 = getuptime(tempstr2, 0, gdata.startuptime, maxtextlength);
     notice(pi->nick, "\1UPTIME %s\1", tempstr2);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -1131,7 +1131,7 @@ static int botonly_parse(int type, privmsginput *pi)
   if (test_ctcp(pi->msg1, "\1STATUS")) {
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
-    tempstr2 = mycalloc(maxtextlength);
+    tempstr2 = mymalloc(maxtextlength);
     tempstr2 = getstatuslinenums(tempstr2, maxtextlength);
     notice(pi->nick, "\1%s\1", tempstr2);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -1176,7 +1176,7 @@ static void autoqueuef(unsigned int pack, const char *message, privmsginput *pi)
 
   ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
   if (message) {
-    tempstr = mycalloc(strlen(message) + strlen(format) - 1);
+    tempstr = mymalloc(strlen(message) + strlen(format) - 1);
     snprintf(tempstr, strlen(message) + strlen(format) - 1,
              format, message);
   }
@@ -1213,7 +1213,7 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
   unsigned int i, j, k;
   size_t len;
   const char *grouplist;
-  char *tempstr = mycalloc(maxtextlength);
+  char *tempstr = mymalloc(maxtextlength);
   char *match;
   char *sizestrstr;
   char *colordesc;
@@ -1344,7 +1344,7 @@ static int run_new_trigger(const char *nick, const char *grouplist)
     xd = *best;
     now = xd->xtime;
     localt = localtime(&now);
-    tempstr = mycalloc(maxtextlengthshort);
+    tempstr = mymalloc(maxtextlengthshort);
     llen = strftime(tempstr, maxtextlengthshort - 1, format, localt);
     if (llen == 0)
       tempstr[0] = '\0';
@@ -1520,7 +1520,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
     if (check_ignore(pi->nick, pi->hostmask))
       return;
 
-    tempstr2 = mycalloc(maxtextlength);
+    tempstr2 = mymalloc(maxtextlength);
     /* generate !list styled message */
     /* search for custom listmsg */
     rtclmsg = get_listmsg_channel(pi->dest);
@@ -1689,8 +1689,8 @@ void privmsgparse(int type, int decoded, char *line)
   }
 
   line_len = sstrlen(pi.hostmask);
-  pi.nick = mycalloc(line_len+1);
-  pi.hostname = mycalloc(line_len+1);
+  pi.nick = mymalloc(line_len+1);
+  pi.hostname = mymalloc(line_len+1);
   /* see if it came from a user or server, ignore if from server */
   if (get_nick_hostname(pi.nick, pi.hostname, pi.hostmask) == 0)
     privmsgparse2(type, decoded, &pi);

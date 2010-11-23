@@ -162,7 +162,7 @@ void t_notice_transfer(transfer * const tr, const char *msg, unsigned int pack, 
      return;
   }
 
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   if (queue) {
     snprintf(tempstr, maxtextlength, "** Sending you queued pack #%u (\"%s\")", pack, tr->xpack->desc);
   } else {
@@ -236,7 +236,7 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
   }
 
   if (gdata.debug > 0) {
-    msg = mycalloc(maxtextlength);
+    msg = mymalloc(maxtextlength);
     my_getnameinfo(msg, maxtextlength -1, &(tr->con.remote.sa));
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
             "DCC SEND passive sent to %s on %s, connecting to %s",

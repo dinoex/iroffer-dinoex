@@ -314,7 +314,7 @@ char *hostmask_to_fnmatch(const char *str)
     if ( (*src == '[') || (*src == ']') )
       ++maxlen;
   }
-  base = (char *)mycalloc(maxlen + 1);
+  base = (char *)mymalloc(maxlen + 1);
   for (src=str, dest=base; *src; ++src) {
     if (*src == '#') {
       *(dest++) = '[';
@@ -387,7 +387,7 @@ static const char const size_units[] = { 'K', 'M', 'G', 'T', 'E', 0 };
 char *sizestr(unsigned int spaces, off_t num)
 {
 #define SIZESTR_SIZE 5
-  char *str = (char *)mycalloc(SIZESTR_SIZE);
+  char *str = (char *)mymalloc(SIZESTR_SIZE);
   float val;
   unsigned int i;
 
@@ -413,7 +413,7 @@ char *sizestr(unsigned int spaces, off_t num)
     }
   }
   mydelete(str);
-  str = (char *)mycalloc(SIZESTR_SIZE + SIZESTR_SIZE);
+  str = (char *)mymalloc(SIZESTR_SIZE + SIZESTR_SIZE);
   snprintf(str, SIZESTR_SIZE + SIZESTR_SIZE , "%.0fE", val);
   return str;
 }
@@ -829,7 +829,7 @@ char *grep_to_fnmatch(const char *grep)
   size_t len;
 
   len = strlen(grep) + 3;
-  raw = mycalloc(len);
+  raw = mymalloc(len);
   snprintf(raw, len, "*%s*", grep);
   match = hostmask_to_fnmatch(raw);
   mydelete(raw);

@@ -167,7 +167,7 @@ void t_setup_send(transfer * const t)
    if ((getsockname(t->con.clientsocket, &(t->con.local.sa), &(addrlen))) < 0)
       outerror(OUTERROR_TYPE_WARN, "Couldn't get Local IP: %s", strerror(errno));
    
-   msg = mycalloc(maxtextlength);
+   msg = mymalloc(maxtextlength);
    my_getnameinfo(msg, maxtextlength -1, &(t->con.remote.sa));
    mydelete(t->con.remoteaddr);
    t->con.remoteaddr = mystrdup(msg);
@@ -634,7 +634,8 @@ void t_flushed (transfer * const t)
       return;
     }
   
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
+  tempstr[0] = 0;
   
   timetookms = gdata.curtimems - t->connecttimems;
   if (timetookms < 1U)
@@ -866,7 +867,7 @@ void t_checkminspeed(transfer * const t) {
         if (irlist_size(&gdata.trans) < gdata.slotsmax) return; /* free slots */
      }
    
-   tempstr2 = mycalloc(maxtextlength);
+   tempstr2 = mymalloc(maxtextlength);
    snprintf(tempstr2, maxtextlength,
         "Under Min Speed Requirement, %2.1fK/sec is less than %2.1fK/sec",
          t->lastspeed,t->xpack->minspeed);

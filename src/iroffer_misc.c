@@ -99,7 +99,7 @@ static int connectirc (server_t *tserver) {
        gnetwork->curserver.password = mystrdup(tserver->password);
      }
    
-   tempstr = mycalloc(maxtextlength);
+   tempstr = mymalloc(maxtextlength);
    
    switch (gnetwork->connectionmethod.how)
      {
@@ -193,8 +193,10 @@ static int connectirc (server_t *tserver) {
        return 1;
      }
    
+#if 0
    callval = fork();
    if (callval < 0)
+#endif
      {
        outerror(OUTERROR_TYPE_WARN_LOUD,"fork(): %s", strerror(errno));
        return 1;
@@ -240,7 +242,7 @@ void initirc(void)
       
       len = strlen(pi) + strlen(gnetwork->curserver.hostname) + strlen(portstr);
       
-      tempstr = mycalloc(len+1);
+      tempstr = mymalloc(len+1);
       
       for (i=j=0; pi[i]; i++,j++)
         {
@@ -339,7 +341,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
   char *msg;
   int len;
   
-  msg = mycalloc(maxtextlength+1);
+  msg = mymalloc(maxtextlength+1);
   
   len = vsnprintf(msg,maxtextlength,format,ap);
   
@@ -588,7 +590,7 @@ char* getsendname(const char * const full)
     }
   
   len -= lastslash + 1;
-  copy = mycalloc(len + 1 + spaced);
+  copy = mymalloc(len + 1 + spaced);
   
   if ((spaced != 0) && (gdata.spaces_in_filenames != 0))
     sprintf(copy, "\"%s\"", full + lastslash + 1);
@@ -676,7 +678,7 @@ void xdccsavetext(void)
 }
   
 void writepidfile (const char *filename) {
-   char *tempstr2 = mycalloc(maxtextlengthshort);
+   char *tempstr2 = mymalloc(maxtextlengthshort);
    int filedescriptor;
    
    updatecontext();
@@ -1038,7 +1040,7 @@ void logstat(void)
       return;
     }
   
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   getstatusline(tempstr,maxtextlength);
   
   mylog("%s", tempstr);
@@ -1156,8 +1158,8 @@ void shutdowniroffer(void) {
    /* quit */
    if (has_closed_servers() == 0)
      {
-       msg = mycalloc(maxtextlength);
-       tempstr2 = mycalloc(maxtextlengthshort);
+       msg = mymalloc(maxtextlength);
+       tempstr2 = mymalloc(maxtextlengthshort);
        getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
        snprintf(msg, maxtextlength,
                 "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
@@ -1400,7 +1402,7 @@ void sendxdlqueue (void)
       user = irlist_get_next(user);
     }
   
-  tempstr = mycalloc(len);
+  tempstr = mymalloc(len);
   
   len = 0;
   user = irlist_get_head(&(gnetwork->xlistqueue));
@@ -1450,7 +1452,7 @@ void sendxdlqueue (void)
              }
            else
              {
-                cmd = mycalloc(maxtextlength);
+                cmd = mymalloc(maxtextlength);
                 snprintf(cmd, maxtextlength, "XDLGROUP %s", group);
                 a_fillwith_msg2(&ui, tempstr, cmd);
              }
@@ -1692,7 +1694,7 @@ void startupiroffer(void) {
    if (!gdata.background)
       printf("** Window Size: %ux%u\n", gdata.termcols, gdata.termlines);
    
-   tempstr23 = mycalloc(maxtextlength);
+   tempstr23 = mymalloc(maxtextlength);
    printf("** Started on: %s\n",getdatestr(tempstr23,0,maxtextlength));
    mydelete(tempstr23);
    

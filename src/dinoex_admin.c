@@ -55,7 +55,7 @@ void voutput_fd(int fd, const char *format, va_list args)
   int llen;
 
   updatecontext();
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
 
   llen = vsnprintf(tempstr, maxtextlength - 3, format, args);
   if ((llen < 0) || (llen >= maxtextlength - 3)) {
@@ -957,7 +957,7 @@ static void a_make_announce(const userinput * const u, const char *cmd, unsigned
   userinput *ui;
   char *tempstr;
 
-  tempstr = mycalloc (maxtextlength);
+  tempstr = mymalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
   snprintf(tempstr, maxtextlength, "%s %u", cmd, n);
   a_fillwith_msg2(ui, NULL, tempstr);
@@ -1289,7 +1289,7 @@ void a_xdlock(const userinput * const u)
 
   updatecontext();
 
-  tempstr  = mycalloc(maxtextlength);
+  tempstr  = mymalloc(maxtextlength);
 
   l = a_xdl_left();
   s = a_xdl_space();
@@ -1318,7 +1318,7 @@ void a_xdtrigger(const userinput * const u)
 
   updatecontext();
 
-  tempstr  = mycalloc(maxtextlength);
+  tempstr  = mymalloc(maxtextlength);
 
   l = a_xdl_left();
   s = a_xdl_space();
@@ -1355,7 +1355,7 @@ void a_find(const userinput * const u)
   if (invalid_text(u, "Try Specifying a Pattern", u->arg1e))
     return;
 
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   clean_quotes(u->arg1e);
   match = grep_to_fnmatch(u->arg1e);
   l = a_xdl_left();
@@ -2396,9 +2396,9 @@ void a_chtime(const userinput * const u)
   if (group_restricted(u, xd))
     return;
 
-  newstr = mycalloc(maxtextlengthshort);
+  newstr = mymalloc(maxtextlengthshort);
   user_getdatestr(newstr, val, maxtextlengthshort);
-  oldstr = mycalloc(maxtextlengthshort);
+  oldstr = mymalloc(maxtextlengthshort);
   user_getdatestr(oldstr, xd->xtime, maxtextlengthshort);
   a_respond(u, "CHTIME: [Pack %u] Old: %s New: %s",
             num, oldstr, newstr);
@@ -3422,7 +3422,7 @@ void a_movegroupdir(const userinput * const u)
   }
 
   foundit = 0;
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
@@ -4614,7 +4614,7 @@ void a_queue(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   addtomainqueue(&msg, tempstr, u->arg1, NULL, num);
   notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
@@ -4639,7 +4639,7 @@ static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned i
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   addtoidlequeue(&msg, tempstr, u->arg1, NULL, xd, num, 0);
   notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
@@ -4747,12 +4747,12 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     return;
 
   a_respond(u, "Pack Info for Pack #%u:", num);
-  prefix = mycalloc(maxtextlength);
-  suffix = mycalloc(maxtextlength);
+  prefix = mymalloc(maxtextlength);
+  suffix = mymalloc(maxtextlength);
   colordesc = xd_color_description(xd);
   if (gdata.show_date_added) {
-    dateprefix = mycalloc(maxtextlengthshort);
-    datestr = mycalloc(maxtextlengthshort);
+    dateprefix = mymalloc(maxtextlengthshort);
+    datestr = mymalloc(maxtextlengthshort);
     user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
     snprintf(dateprefix, maxtextlengthshort - 1, "%s%s%s",
              gdata.announce_seperator, datestr, gdata.announce_seperator);
@@ -4766,7 +4766,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
       msg = "added";
   }
   snprintf(prefix, maxtextlength - 2, "\2%s\2%s%s", msg, dateprefix, colordesc);
-  message = mycalloc(maxtextlength);
+  message = mymalloc(maxtextlength);
   color = a_get_color(gdata.announce_suffix_color);
 
   backup = gnetwork;
@@ -4855,7 +4855,7 @@ static unsigned int a_new_announce(unsigned int max)
     xd = *best;
     now = xd->xtime;
     localt = localtime(&now);
-    tempstr = mycalloc(maxtextlengthshort);
+    tempstr = mymalloc(maxtextlengthshort);
     llen = strftime(tempstr, maxtextlengthshort - 1, format, localt);
     if (llen == 0)
       tempstr[0] = '\0';
@@ -4935,7 +4935,7 @@ void a_sannounce(const userinput * const u)
     if (group_restricted(u, xd))
       return;
 
-    tempstr = mycalloc(maxtextlength);
+    tempstr = mymalloc(maxtextlength);
     colordesc = xd_color_description(xd);
     snprintf(tempstr, maxtextlength - 2, "\2%u\2%s%s", num1, gdata.announce_seperator, colordesc);
 

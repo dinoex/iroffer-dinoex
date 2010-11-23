@@ -74,7 +74,7 @@ void setup_chat_banner(dccchat_t *chat)
 {
   char *tempstr;
 
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
   
   writedccchat(chat, 0, "Welcome to %s\n",
@@ -131,7 +131,7 @@ void setupdccchataccept(dccchat_t *chat)
   chat->con.lastcontact = gdata.curtime;
   ir_boutput_init(&chat->boutput, chat->con.clientsocket, 0);
   
-  msg = mycalloc(maxtextlength);
+  msg = mymalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa));
   chat->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
@@ -269,7 +269,7 @@ int setupdccchat(const char *nick,
   chat->con.lastcontact = gdata.curtime;
   chat->net = gnetwork->net;
   
-  msg = mycalloc(maxtextlength);
+  msg = mymalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa));
   chat->con.localaddr = mystrdup(msg);
   my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa));
@@ -430,7 +430,7 @@ void writestatus(dccchat_t *chat) {
    
    updatecontext();
    
-   tempstr = mycalloc(maxtextlength);
+   tempstr = mymalloc(maxtextlength);
    
    getstatusline(tempstr,maxtextlength);
    writedccchat(chat,0,"%s\n",tempstr);

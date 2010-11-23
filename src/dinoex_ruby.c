@@ -352,14 +352,14 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
       return rb_time_new(xd->xtime, 0);
     }
     if (strcmp(key, "crc32") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       len = snprintf(tempstr, maxtextlengthshort, "%.8lX", xd->crc32);
       rval = rb_str_new(tempstr, len);
       mydelete(tempstr);
       return rval;
     }
     if (strcmp(key, "md5sum") == 0) {
-      tempstr = mycalloc(maxtextlengthshort);
+      tempstr = mymalloc(maxtextlengthshort);
       len = snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
       rval = rb_str_new(tempstr, len);
       mydelete(tempstr);
@@ -684,7 +684,7 @@ unsigned int http_ruby_script(const char *name, const char *output)
   }
   ruby_init_loadpath();
   ruby_script(name);
-  tempstr = mycalloc(maxtextlength);
+  tempstr = mymalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "$stdout = File.new(\"%s\", \"w+\")", output);
   rb_eval_string_protect(tempstr, &rc);
   mydelete(tempstr);
