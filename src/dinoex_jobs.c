@@ -543,12 +543,32 @@ static void admin_run(const char *cmd)
   mydelete(done)
 }
 
+/* ignore empty lines and comments and trailing spaces */
+static int admin_clean_input(char * line)
+{
+  char *l;
+
+  if (line[0] == 0)
+    return 1;
+
+  if (line[0] == '#')
+    return 1;
+
+  l = line + strlen(line) - 1;
+  while (( l >= line ) && (( *l == '\r' ) || ( *l == '\n' ) || ( *l == '\t' ) || ( *l == ' ' )))
+    *(l--) = 0;
+
+  if (line[0] == 0)
+    return 1;
+
+  return 0;
+}
+
 void admin_jobs(void)
 {
   FILE *fin;
   const char *job;
   char *line;
-  char *l;
   char *r;
 
   job = gdata.admin_job_file;
@@ -564,11 +584,7 @@ void admin_jobs(void)
     r = fgets(line, maxtextlength - 1, fin);
     if (r == NULL )
       break;
-    l = line + strlen(line) - 1;
-    while (( *l == '\r' ) || ( *l == '\n' ))
-      *(l--) = 0;
-    /* ignore empty lines and comments */
-    if ((line[0] == 0) || (line[0] == '#'))
+    if (admin_clean_input(line))
       continue;
     irlist_add_string(&gdata.jobs_delayed, line);
   }
@@ -1023,7 +1039,6 @@ void import_xdccfile(void)
   char *templine;
   char *word;
   char *data;
-  char *l;
   char *r;
   char *xx_file = NULL;
   char *xx_desc = NULL;
@@ -1057,9 +1072,7 @@ void import_xdccfile(void)
     if (r == NULL )
       break;
     ++step;
-    l = templine + strlen(templine) - 1;
-    while (( *l == '\r' ) || ( *l == '\n' ))
-      *(l--) = 0;
+    admin_clean_input(templine);
     if (step == 1) {
       part = 0;
       for (word = strtok(templine, " ");
@@ -2011,7 +2024,6 @@ void a_read_config_files(const userinput *u)
   char *templine;
   FILE *fin;
   char *r;
-  char *l;
   unsigned int h;
 
   updatecontext();
@@ -2050,15 +2062,9 @@ void a_read_config_files(const userinput *u)
       if (r == NULL )
         break;
       ++current_line;
-      if (templine[0] == 0)
+      if (admin_clean_input(templine))
         continue;
-      if (templine[0] != '#') {
-        l = templine + strlen(templine) - 1;
-        while (( l >= templine ) && (( *l == '\r' ) || ( *l == '\n' )))
-          *(l--) = 0;
-        if (templine[0] != 0)
-          getconfig_set(templine);
-      }
+      getconfig_set(templine);
     }
     fclose(fin);
   }
