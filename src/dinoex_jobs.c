@@ -1490,7 +1490,7 @@ static void xdcc_save_xml(void)
   unsigned int slots;
 
   updatecontext();
-  
+
   if (!gdata.xdccxmlfile)
     return;
 
@@ -2167,7 +2167,7 @@ unsigned long get_zip_crc32_pack(xdcc *xd)
   ssize_t howmuch;
 
   updatecontext();
- 
+
   zipcrc32 = 0;
   /* verify file is ok first */
   file = mystrdup(xd->file);
