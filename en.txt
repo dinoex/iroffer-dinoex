@@ -2413,3 +2413,4 @@
 2742 "\""
 2743 "Cant Write XDCC List File '%s': %s"
 2744 "ignore_duplicate_ip"
+2745 " content crc32  %.8lX"

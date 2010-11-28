@@ -76,4 +76,6 @@ void a_read_config_files(const userinput *u);
 char *new_logfilename(const char *logfile);
 int rotatelog(const char *logfile);
 
+unsigned long get_zip_crc32_pack(xdcc *xd);
+
 /* End of File */
