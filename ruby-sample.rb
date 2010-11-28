@@ -67,16 +67,22 @@ class IrofferEvent
     bytes = info_pack(added_pack, "size" )
     write_log( "group:",  group, "desc:", desc, "size:", bytes )
 
-    # set an trigger for each new pack.
+    # generate a trigger for each new pack.
     command2( "CHTRIGGER", added_pack.to_s, "#{group}#{added_pack}" )
 
-    # add color as a fancy note
-    text = "\003" # color
-    text << "4" # red
+    # custom announce with size
+    megabytes = bytes/1024/1024
+    text = "\"addded "
+    text << "\00304" # color red
     text << desc
-    text << "\015" # end color
-    command2( "CHNOTE", added_pack.to_s, text )
-    return false # do not send anounce
+    text << "\003\017" # end color
+    text << " - "
+    text << megabytes.to_s
+    text << "MB - /MSG mybot XDCC SEND "
+    text << added_pack.to_s
+    text << "\""
+    write_log( text )
+    command2( "AMSG", text )
   end
 end
 
