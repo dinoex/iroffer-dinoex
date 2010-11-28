@@ -1258,11 +1258,12 @@ static void u_nomax(const userinput * const u)
 
 static void u_info(const userinput * const u)
 {
-  unsigned int num;
+  unsigned long zipcrc32;
   xdcc *xd;
   char *sizestrstr;
   char *sendnamestr;
   char tempstr[maxtextlengthshort];
+  unsigned int num;
   
   updatecontext();
   
@@ -1326,6 +1327,11 @@ static void u_info(const userinput * const u)
   if (xd->has_crc32)
     {
       u_respond(u, " crc32          %.8lX", xd->crc32);
+    }
+  zipcrc32 = get_zip_crc32_pack(xd);
+  if (zipcrc32 != 0)
+    {
+      u_respond(u, " content crc32  %.8lX", zipcrc32);
     }
   if ((u->level > 0) && (xd->xtime != 0))
     {

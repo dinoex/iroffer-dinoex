@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+347) XDCC INFO
+  Show the CRC32 of content of a compressed file.
+
 346) ignore_duplicate_ip (inspired by Loke_AF)
   Detect faked hostmasks and abort multiple transfers to the same host
   and ignore the user for the give time in hours.

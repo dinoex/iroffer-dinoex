@@ -36,6 +36,12 @@ typedef struct {
   int dummy;
 } xml_buffer_t;
 
+typedef struct {
+  size_t offset;
+  size_t len;
+  unsigned char magic[8];
+} magic_crc_t;
+
 #ifndef WITHOUT_BLOWFISH
 
 #include "blowfish.h"
@@ -2126,6 +2132,56 @@ int rotatelog(const char *logfile)
   mylog("File %s was moved to %s.", logfile, newname);
   mydelete(newname);
   return 1;
+}
+
+static magic_crc_t magic_crc_table[] = {
+  { 0x24, 7, { 0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x00, 0} },
+  { 0x0E, 4, { 0x50, 0x4b, 0x03, 0x04, 0, 0, 0, 0 } },
+  { 0x00, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } },
+};
+
+/* check for CRC32 in compressed buffer */
+static unsigned long get_zip_crc32_buffer(char *buffer)
+{
+  unsigned long zipcrc32;
+  unsigned int i;
+
+  for (i=0; magic_crc_table[i].len > 0; i++) {
+    if (memcmp(buffer, magic_crc_table[i].magic, magic_crc_table[i].len) != 0)
+      continue;
+    zipcrc32 = 0;
+    memcpy(&zipcrc32, buffer + magic_crc_table[i].offset, 4);
+    zipcrc32 = ntohl(zipcrc32);
+    return zipcrc32;
+  }
+  return 0;
+}
+
+/* check for CRC32 in compressed pack */
+unsigned long get_zip_crc32_pack(xdcc *xd)
+{
+  unsigned long zipcrc32;
+  char *file;
+  char *buffer;
+  int xfiledescriptor;
+  ssize_t howmuch;
+
+  updatecontext();
+ 
+  zipcrc32 = 0;
+  /* verify file is ok first */
+  file = mystrdup(xd->file);
+  xfiledescriptor = a_open_file(&file, O_RDONLY | ADDED_OPEN_FLAGS);
+  mydelete(file);
+  if (xfiledescriptor < 0)
+    return zipcrc32;
+  buffer = mymalloc(maxtextlength);
+  howmuch = read(xfiledescriptor, buffer, maxtextlength);
+  if (howmuch == maxtextlength)
+    zipcrc32 = get_zip_crc32_buffer(buffer);
+  mydelete(buffer);
+  close(xfiledescriptor);
+  return zipcrc32;
 }
 
 /* End of File */

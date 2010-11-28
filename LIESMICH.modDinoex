@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+347) XDCC INFO
+  Zeige die CRC32 des Inhaltes einer kommrimierten Datei.
+
 346) ignore_duplicate_ip
   Erkennt gefälschte Hostmasken und unterbindet damit das mehr Über-
   tragungen als erlaubt zum selben Host stattfinden. Beim Feststellen
