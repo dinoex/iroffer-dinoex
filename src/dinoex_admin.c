@@ -2084,7 +2084,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         mydelete(tempstr);
         continue;
       }
-      if ((st.st_mtime + gdata.autoadd_delay) > gdata.curtime) {
+      if ((st.st_mtime + gdata.autoadd_delay) > (unsigned)gdata.curtime) {
         a_respond(u, "  Ignoring active file: %s", tempstr);
         mydelete(tempstr);
         continue;
