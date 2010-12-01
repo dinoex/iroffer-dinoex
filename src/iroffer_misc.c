@@ -527,7 +527,7 @@ void sendserver(void)
       return;
     }
   
-  if (gdata.curtime <= (gnetwork->lastslow + gnetwork->slow_privmsg))
+  if ((unsigned)gdata.curtime <= (gnetwork->lastslow + gnetwork->slow_privmsg))
     {
       return;
     }
@@ -2178,7 +2178,7 @@ void reverify_restrictsend(void)
                   notice(tr->nick, "You are no longer on a known channel");
                 }
             }
-          else if (gdata.curtime >= (tr->restrictsend_bad + gdata.restrictsend_timeout))
+          else if ((unsigned)gdata.curtime >= (tr->restrictsend_bad + gdata.restrictsend_timeout))
             {
               t_closeconn(tr, "You are no longer on a known channel", 0);
             }

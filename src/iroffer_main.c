@@ -1068,7 +1068,7 @@ static void mainloop (void) {
         }
       
       /*----- gdata.autoignore_threshold seconds ----- */
-      if (changesec && (gdata.curtime > lastignoredec + gdata.autoignore_threshold))
+      if (changesec && ((unsigned)gdata.curtime > (lastignoredec + gdata.autoignore_threshold)))
         {
           igninfo *ignore;
           
@@ -1099,7 +1099,7 @@ static void mainloop (void) {
         }
       
       /*----- periodicmsg_time seconds ----- */
-      if (changesec && (gdata.curtime > lastperiodicmsg + gdata.periodicmsg_time*60)) {
+      if (changesec && ((unsigned)gdata.curtime > (lastperiodicmsg + gdata.periodicmsg_time*60))) {
          lastperiodicmsg = gdata.curtime;
          
          for (ss=0; ss<gdata.networks_online; ss++) {
@@ -1364,7 +1364,7 @@ static void mainloop (void) {
         gnetwork = &(gdata.networks[ss]);
       /*----- queue notify ----- */
       if (changesec && gdata.notifytime && (!gdata.quietmode) &&
-          (gdata.curtime > gnetwork->lastnotify + (gdata.notifytime*60)))
+          ((unsigned)gdata.curtime > (gnetwork->lastnotify + (gdata.notifytime*60))))
         {
          gnetwork->lastnotify = gdata.curtime;
          
@@ -1393,7 +1393,7 @@ static void mainloop (void) {
       updatecontext();
       /*----- log stats / remote admin stats ----- */
       if ( gdata.logstats && changesec && gdata.logfile &&
-           (gdata.curtime >= last2min + gdata.status_time_dcc_chat))
+           ((unsigned)gdata.curtime >= (last2min + gdata.status_time_dcc_chat)))
         {
           last2min = gdata.curtime;
           logstat();
@@ -1659,7 +1659,7 @@ static void mainloop (void) {
       
       if (gdata.autoadd_time > 0)
         {
-          if (changesec && (gdata.curtime > lastautoadd + gdata.autoadd_time))
+          if (changesec && ((unsigned)gdata.curtime > (lastautoadd + gdata.autoadd_time)))
             {
               lastautoadd = gdata.curtime;
               autoadd_all();
