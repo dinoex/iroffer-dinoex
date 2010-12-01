@@ -4,6 +4,7 @@ all="LICENSE README-iroffer.txt THANKS header.html footer.html"
 fen="README.modDinoex sample.config help-admin-en.txt"
 fde="LIESMICH.modDinoex beispiel.config help-admin-de.txt"
 fit="README.modDinoex sample.config help-admin-it.txt"
+ffr="README.modDinoex exemple.config help-admin-fr.txt"
 #
 set -e
 ver=`grep ^VERSION= Configure  | cut -d '=' -f2 | tr -d '"'`
@@ -12,15 +13,17 @@ cygwin="cygwin-"`uname -r`
 cygwin="${cygwin%(*}"
 #
 # Convert into DOS files
-zip -l a.zip ${all} ${fen} ${fde} ${fit}
+zip -l a.zip ${all} ${fen} ${fde} ${fit} ${ffr}
 unzip -o a.zip
 rm -f a.zip
 #
 # Enable options
+# Activer les options
 ./Configure -tls -geoip -upnp -ruby -debug
 #
 # Build translated versions
-for lang in de it en
+# Construire la version traduite
+for lang in de it fr en
 do
 	case "${LANG}" in
 	*UTF-8*|*utf-8*)
@@ -54,6 +57,9 @@ do
 		;;
 	it)
 		cp -p ${fit} "${dir}/"
+		;;
+	fr)
+		cp -p ${ffr} "${dir}/"
 		;;
 	esac
 	if test -e /bin/7za
