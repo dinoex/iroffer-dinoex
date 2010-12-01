@@ -465,7 +465,7 @@ dns777
 	reporting autoadd_group_match bug
 
 [V]4Mp|r
-	italian translation
+	Italian translation
 
 Infamous
 	option "dos_text_files"
@@ -545,7 +545,7 @@ satmd
 	suggesting XDCC BATCH
 
 CreeW
-	italian translation
+	Italian translation
 	suggesting "CHCOLOR"
 	suggesting "autoadd_color"
 	reporting "CHCOLOR" bug
@@ -696,4 +696,8 @@ Hikaru Shindo
 	bugfix "xdccxmlfile" struture
 
 Zenquibo
+	suggesting "show_group_of_pack"
+
+Dan Davito
+	Frensh translation
 

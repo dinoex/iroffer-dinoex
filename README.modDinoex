@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+348) Frensh translation (contributed by Dan Davito)
+  activate with "./Lang fr" after "Configure"
+  to switch back to English call "./Lang en"
+
 347) XDCC INFO
   Show the CRC32 of content of a compressed file.
 

@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+348) Französiche Texte
+  Aktiviert werde diese durch "./Lang fr" nach dem "Configure"
+  Zurück zum Englischen gehts es mit "./Lang en"
+
 347) XDCC INFO
   Zeige die CRC32 des Inhaltes einer kommrimierten Datei.
 
@@ -1087,7 +1091,7 @@ bugfix: autoadd_group_match
 
 237) Italienische Texte
   Aktiviert werde diese durch "./Lang it" nach dem "Configure"
-  Zurück zum Englischen gehts es mit "./Lang it"
+  Zurück zum Englischen gehts es mit "./Lang en"
 
 bugfix: channel -fish key
   Bot konnte crashen, wenn Zeile mit bestimmter Länge ausgegeben wurden.
