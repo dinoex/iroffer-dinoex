@@ -14,7 +14,7 @@ utf8="cat"
 sh ./Lang en
 awk -f ./admin.awk src/iroffer_admin.c > help-admin-en.neu
 copy_if_differ help-admin-en.txt help-admin-en.neu
-for lang in de it
+for lang in de it fr
 do
 	if test ! "${lang}.sed" -nt "${lang}.txt"
 	then
@@ -98,9 +98,12 @@ fi
 cut -d " " -f1 en.txt >en.txt.1
 cut -d " " -f1 de.txt >de.txt.1
 cut -d " " -f1 it.txt >it.txt.1
+cut -d " " -f1 fr.txt >fr.txt.1
 echo "Obsolete in de.txt:"
 diff de.txt.1 en.txt.1
 echo "Obsolete in it.txt:"
 diff it.txt.1 en.txt.1
-rm -f de.txt.1 en.txt.1 it.txt.1
+echo "Obsolete in fr.txt:"
+diff fr.txt.1 en.txt.1
+rm -f de.txt.1 en.txt.1 it.txt.1 fr.txt.1
 # eof
