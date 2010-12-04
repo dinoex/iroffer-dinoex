@@ -3,6 +3,20 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+350) XDCC BATCH
+  Erlaube mehrere Angaben in BATCH.
+
+  Neue User Kommandos:
+  XDCC BATCH <a>,<b>,<c>             Sende die Pakete mit Nummer <a>, <b> und <c>
+  XDCC BATCH <a>-<b>,<n>-<m>         Sende die Pakete von Nummer <a> bis Nummer <b> und von Nummer <n> bis Nummer <m>
+
+349) BATCH
+  Erlaube mehrere Angaben in BATCH.
+
+  Neue Admin Kommandos:
+  BATCH <nick> <g>,<s>,<n-m>         Pakete mit der Gruppe <g>, Paket <s>, Paket <n> bis <m> in die 2. Warteschlange für <nick> einfügen
+  BATCH <nick> <g>,<s>,<n-m> <net>   Pakete mit der Gruppe <g> in die 2. Warteschlange für <nick> aus <netz> einfügen
+
 348) Französiche Texte
   Aktiviert werde diese durch "./Lang fr" nach dem "Configure"
   Zurück zum Englischen gehts es mit "./Lang en"

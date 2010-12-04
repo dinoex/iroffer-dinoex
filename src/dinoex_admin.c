@@ -4687,6 +4687,9 @@ static unsigned int a_iqueue_search(const userinput * const u, const char *what,
 
   /* range */
   if (*what == '#') ++what;
+  if (*what == 0)
+    return found;
+
   end = strchr(what, '-');
   first = atoi(what);
   if (end == NULL) {
@@ -4702,6 +4705,27 @@ static unsigned int a_iqueue_search(const userinput * const u, const char *what,
   }
   return found;
 }
+
+static unsigned int a_iqueue_words(const userinput * const u, const char *what, unsigned int net)
+{
+  char *copy;
+  char *data;
+  unsigned int found;
+
+  copy = mystrdup(what);
+  found = 0;
+  /* parse list of packs */
+  for (data = strtok(copy, ",");
+       data;
+       data = strtok(NULL, ",")) {
+    if (data[0] == 0)
+      break;
+    found += a_iqueue_search(u, data, net);
+  }
+  mydelete(copy);
+  return found;
+}
+
 void a_iqueue(const userinput * const u)
 {
   int net;
@@ -4718,7 +4742,7 @@ void a_iqueue(const userinput * const u)
   if (invalid_text(u, "Try Specifying a Valid Pack Number", u->arg2))
     return;
 
-  if (a_iqueue_search(u, u->arg2, (unsigned int)net) == 0) {
+  if (a_iqueue_words(u, u->arg2, (unsigned int)net) == 0) {
     a_respond(u, "Try Specifying a Valid Pack Number");
     return;
   }
