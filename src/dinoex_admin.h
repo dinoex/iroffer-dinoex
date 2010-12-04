@@ -138,6 +138,7 @@ void a_backgroud(const userinput * const u);
 void a_autoadd(const userinput * const u);
 void a_autocancel(const userinput * const u);
 void a_autogroup(const userinput * const u);
+void a_noautoadd(const userinput * const u);
 
 void a_send(const userinput * const u);
 void a_queue(const userinput * const u);

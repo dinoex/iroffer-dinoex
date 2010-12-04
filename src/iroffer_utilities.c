@@ -908,6 +908,7 @@ void dumpgdata(void)
 
   gdata_print_number_cast("%ld", nomd5_start, long);
   gdata_print_number_cast("%ld", noannounce_start, long);
+  gdata_print_number_cast("%ld", noautoadd, long);
   
   gdata_irlist_iter_start(tuploadhost, tupload_t);
   gdata_iter_print_string(u_host);

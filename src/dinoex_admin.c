@@ -4530,6 +4530,17 @@ void a_autogroup(const userinput * const u)
   write_files();
 }
 
+void a_noautoadd(const userinput * const u)
+{
+  unsigned int num = 0;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+  num = max_minutes_waits(&gdata.noautoadd, num);
+  a_respond(u, "** AUTOADD have been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
+}
+
 void a_send(const userinput * const u)
 {
   xdcc *xd;

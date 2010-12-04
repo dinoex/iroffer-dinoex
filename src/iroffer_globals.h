@@ -239,6 +239,7 @@ off_t max_file_size;
 time_t startuptime;
 time_t nomd5_start;
 time_t noannounce_start;
+time_t noautoadd;
 time_t noautosave;
 time_t nonewcons;
 time_t nolisting;
