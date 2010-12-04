@@ -451,10 +451,15 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
 
   /* range */
   if (*what == '#') ++what;
-  end = strchr(what, '-');
-  if (end == NULL)
+  if (*what == 0)
     return found;
+  end = strchr(what, '-');
   first = atoi(what);
+  if (end == NULL) {
+    ++found;
+    send_xdcc_file2(&bad, pi, first, NULL, pwd);
+    return found;
+  }
   if (*(++end) == '#') ++end;
   last = atoi(end);
   for (num = first; num <= last; ++num) {
@@ -467,9 +472,21 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
 
 static void send_batch(privmsginput *pi, const char *what, const char *pwd)
 {
+  char *copy;
+  char *data;
   unsigned int found;
 
-  found = send_batch_search(pi, what, pwd);
+  copy = mystrdup(what);
+  found = 0;
+  /* parse list of packs */
+  for (data = strtok(copy, ",");
+       data;
+       data = strtok(NULL, ",")) {
+    if (data[0] == 0)
+      break;
+    found += send_batch_search(pi, data, pwd);
+  }
+  mydelete(copy);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC BATCH %s: %u packs (%s %s on %s)",
           what, found, pi->nick, pi->hostmask, gnetwork->name);

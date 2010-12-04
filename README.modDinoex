@@ -3,6 +3,20 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+350) XDCC BATCH
+  Allow mutiple segments and lists in BATCH.
+
+  new user commands:
+  XDCC BATCH <a>,<b>,<c>             Sende die Pakete mit Nummer <a>, <b> und <c>
+  XDCC BATCH <a>-<b>,<n>-<m>         Sende die Pakete von Nummer <a> bis Nummer <b> und von Nummer <n> bis Nummer <m>
+
+349) BATCH (inspired by Aashiqmunda)
+  Allow mutiple segments and lists in BATCH.
+
+  new admin commands:
+  BATCH <nick> <g>,<s>,<n-m>         Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
+  BATCH <nick> <g>,<s>,<n-m> <net>   Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
+
 348) French translation (contributed by Dan Davito)
   Activate with "./Lang fr" after "Configure"
   to switch back to English call "./Lang en"
