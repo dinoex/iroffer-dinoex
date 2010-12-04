@@ -4304,6 +4304,11 @@ void a_servqc(const userinput * const u)
   }
 }
 
+static void a_respond_disabled(const userinput * const u, const char *text, unsigned int num)
+{
+  a_respond(u, "** %s disabled for the next %u %s", text, num, num!=1 ? "minutes" : "minute");
+}
+
 void a_nomd5(const userinput * const u)
 {
   unsigned int num = 0;
@@ -4312,7 +4317,7 @@ void a_nomd5(const userinput * const u)
 
   if (u->arg1) num = atoi(u->arg1);
   num = max_minutes_waits(&gdata.nomd5_start, num);
-  a_respond(u, "** MD5 and CRC checksums have been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
+  a_respond_disabled(u, "MD5 and CRC checksums have been", num);
 }
 
 void a_cleargets(const userinput * const u)
@@ -4538,7 +4543,7 @@ void a_noautoadd(const userinput * const u)
 
   if (u->arg1) num = atoi(u->arg1);
   num = max_minutes_waits(&gdata.noautoadd, num);
-  a_respond(u, "** AUTOADD have been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
+  a_respond_disabled(u, "AUTOADD" " has been", num);
 }
 
 void a_send(const userinput * const u)
@@ -5012,7 +5017,7 @@ void a_noannounce(const userinput * const u)
 
   if (u->arg1) num = atoi(u->arg1);
   num = max_minutes_waits(&gdata.noannounce_start, num);
-  a_respond(u, "** ANNOUNCE has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
+  a_respond_disabled(u, "ANNOUNCE" " has been", num);
 }
 
 void a_restart(const userinput * const UNUSED(u))
