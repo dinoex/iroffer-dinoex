@@ -1675,7 +1675,7 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
 
     tempstr = mystrjoin(thedir, f->d_name, '/');
     if (stat(tempstr, &st) < 0) {
-      a_respond(u, "cannot access %s, ignoring: %s",
+      a_respond(u, "cannot access '%s', ignoring: %s",
                 tempstr, strerror(errno));
       mydelete(tempstr);
       continue;
@@ -2039,7 +2039,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     tempstr = mystrjoin(thedir, f->d_name, '/');
 
     if (stat(tempstr, &st) < 0) {
-      a_respond(u, "cannot access %s, ignoring: %s",
+      a_respond(u, "cannot access '%s', ignoring: %s",
                 tempstr, strerror(errno));
       mydelete(tempstr);
       continue;
@@ -2262,7 +2262,7 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
 
     tempstr = mystrjoin(thedir, f->d_name, '/');
     if (stat(tempstr, &st) < 0) {
-      a_respond(u, "cannot access %s, ignoring: %s",
+      a_respond(u, "cannot access '%s', ignoring: %s",
                 tempstr, strerror(errno));
       mydelete(tempstr);
       continue;

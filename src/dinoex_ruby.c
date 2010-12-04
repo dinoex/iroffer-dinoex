@@ -520,7 +520,7 @@ static void load_script(const char *name)
   if (stat(name, &st) < 0) {
     myruby_loaded = -1;
     outerror(OUTERROR_TYPE_WARN_LOUD,
-             "access ruby_script '%s' failed: %s",
+             "cannot access '%s', ignoring: %s",
              name, strerror(errno));
     return;
   }
@@ -558,7 +558,7 @@ static void check_script(const char *name)
   if (stat(name, &st) < 0) {
     myruby_loaded = -1;
     outerror(OUTERROR_TYPE_WARN_LOUD,
-             "access ruby_script '%s' failed: %s",
+             "cannot access '%s', ignoring: %s",
              name, strerror(errno));
     return;
   }
@@ -678,7 +678,7 @@ unsigned int http_ruby_script(const char *name, const char *output)
 
   if (stat(name, &st) < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
-             "access ruby_script '%s' failed: %s",
+             "cannot access '%s', ignoring: %s",
              name, strerror(errno));
     return 1;
   }
