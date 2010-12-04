@@ -800,6 +800,9 @@ void autoadd_all(void)
 
   updatecontext();
 
+  if (gdata.noautoadd > gdata.curtime)
+    return;
+
   for (dir = irlist_get_head(&gdata.autoadd_dirs);
        dir;
        dir = irlist_get_next(dir)) {
