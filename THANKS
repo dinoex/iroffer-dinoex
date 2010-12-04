@@ -359,6 +359,7 @@ Misha-SU
 	reporting "connectionmethod ssl" bug
 	reporting "DCC RESUME" bug
 	suggesting "XDCC SEND LIST"
+	suggesting "QUEUE" with range
 
 Lamarr
 	reporting "MAXSPEED" bug
