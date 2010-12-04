@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+351) NOAUTOADD (inspired by [M]-V)
+
+  new admin command:
+  NOAUTOADD <x>                      Disables AUTOADD for next <x> minutes
+
 350) XDCC BATCH
   Allow mutiple segments and lists in BATCH.
 

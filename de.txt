@@ -2414,3 +2414,6 @@
 2743 "Cant Write XDCC List File '%s': %s"
 2744 "ignore_duplicate_ip"
 2745 " Inhalt crc32   %.8lX"
+2746 "NOAUTOADD"
+2747 "Sperrt AUTOADD für die nächsten <x> Minuten"
+2748 "** AUTOADD have been disabled for the next %u %s"
