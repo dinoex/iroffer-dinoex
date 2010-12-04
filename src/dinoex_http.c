@@ -2044,7 +2044,7 @@ static void h_get(http * const h)
        data;
        data = strtok(NULL, "\n")) {
     html_str_split(data, '\r');
-    if (strlen(data) == 0) {
+    if (data[0] == 0) {
       data = strtok(NULL, "\n");
       break;
     }
