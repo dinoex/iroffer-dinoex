@@ -1149,4 +1149,65 @@ void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, si
   }
 }
 
+/* find a pack by its CRC32 */
+static int find_pack_crc(const char *crc)
+{
+  xdcc *xd;
+  char crctext[32];
+  unsigned int num;
+  size_t max;
+
+  max = strlen(crc);
+  max = min2(max, 8);
+  num = 0;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    ++num;
+    if (xd->has_crc32 == 0)
+      continue;
+
+    snprintf(crctext, sizeof(crctext), "%.8lX", xd->crc32);
+    if (strncmp(crctext, crc, max) == 0)
+      return num;
+  }
+  return 0;
+}
+
+/* find a pack by a number, #number or trigger */
+int packnumtonum(const char *a)
+{
+  autoqueue_t *aq;
+  autotrigger_t *at;
+
+  if (!a) return 0;
+
+  if (a[0] == '[') {
+    ++a;
+    return find_pack_crc(a);
+  }
+  if (a[0] == '#') {
+    ++a;
+    return atoi(a);
+  }
+  if (gdata.send_listfile) {
+    if (strcasecmp(a, "LIST") == 0)
+      return gdata.send_listfile;
+  }
+
+  for (aq = irlist_get_head(&gdata.autoqueue);
+       aq;
+       aq = irlist_get_next(aq)) {
+    if (!strcasecmp(a, aq->word))
+      return aq->pack;
+  }
+  for (at = irlist_get_head(&gdata.autotrigger);
+       at;
+       at = irlist_get_next(at)) {
+    if (!strcasecmp(a, at->word))
+      return number_of_pack(at->pack);
+  }
+  return atoi(a);
+}
+
 /* End of File */

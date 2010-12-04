@@ -527,8 +527,7 @@ unsigned int get_pack_nr(const userinput * const u, const char *arg)
   if (!arg || (arg[0] == 0))
     return 0;
 
-  if (arg[0] == '#') ++arg;
-  num = atoi(arg);
+  num = packnumtonum(arg);
   if (invalid_pack(u, num) != 0)
     return 0;
   return num;
