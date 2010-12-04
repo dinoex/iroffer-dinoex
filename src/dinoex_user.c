@@ -450,18 +450,16 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
   updatecontext();
 
   /* range */
-  if (*what == '#') ++what;
   if (*what == 0)
     return found;
   end = strchr(what, '-');
-  first = atoi(what);
+  first = packnumtonum(what);
   if (end == NULL) {
     ++found;
     send_xdcc_file2(&bad, pi, first, NULL, pwd);
     return found;
   }
-  if (*(++end) == '#') ++end;
-  last = atoi(end);
+  last = packnumtonum(end);
   for (num = first; num <= last; ++num) {
     ++found;
     if (send_xdcc_file2(&bad, pi, num, NULL, pwd))
@@ -494,65 +492,6 @@ static void send_batch(privmsginput *pi, const char *what, const char *pwd)
     return;
 
   notice(pi->nick, "** Invalid Pack Number, Try Again");
-}
-
-static int find_pack_crc(const char *crc)
-{
-  xdcc *xd;
-  char crctext[32];
-  unsigned int num;
-  size_t max;
-
-  max = strlen(crc);
-  max = min2(max, 8);
-  num = 0;
-  for (xd = irlist_get_head(&gdata.xdccs);
-       xd;
-       xd = irlist_get_next(xd)) {
-    ++num;
-    if (xd->has_crc32 == 0)
-      continue;
-
-    snprintf(crctext, sizeof(crctext), "%.8lX", xd->crc32);
-    if (strncmp(crctext, crc, max) == 0)
-      return num;
-  }
-  return 0;
-}
-
-static int packnumtonum(const char *a)
-{
-  autoqueue_t *aq;
-  autotrigger_t *at;
-
-  if (!a) return 0;
-
-  if (a[0] == '[') {
-    ++a;
-    return find_pack_crc(a);
-  }
-  if (a[0] == '#') {
-    ++a;
-    return atoi(a);
-  }
-  if (gdata.send_listfile) {
-    if (strcasecmp(a, "LIST") == 0)
-      return gdata.send_listfile;
-  }
-
-  for (aq = irlist_get_head(&gdata.autoqueue);
-       aq;
-       aq = irlist_get_next(aq)) {
-    if (!strcasecmp(a, aq->word))
-      return aq->pack;
-  }
-  for (at = irlist_get_head(&gdata.autotrigger);
-       at;
-       at = irlist_get_next(at)) {
-    if (!strcasecmp(a, at->word))
-      return number_of_pack(at->pack);
-  }
-  return atoi(a);
 }
 
 static void log_xdcc_request1(privmsginput *pi)
