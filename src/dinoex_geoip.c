@@ -29,39 +29,103 @@
 
 #define GEOIP_FLAGS GEOIP_MEMORY_CACHE
 
-static GeoIP *gi = NULL;
+typedef struct {
+  GeoIP *gi;
+  time_t loaded;
+  char code[8];
+} ir_geoip;
 
-static char *check_geoip(unsigned long remoteip)
+static ir_geoip geoip4 = { NULL, 0 };
+static ir_geoip geoip6 = { NULL, 0 };
+
+static time_t geoip_time(const char *name)
+{
+  struct stat st;
+
+  if (name == NULL)
+    return 0;
+
+  if (stat(name, &st) < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+	     "cannot access '%s', ignoring: %s",
+             name, strerror(errno));
+    return 0;
+  }
+  return st.st_mtime;
+}
+
+static void geoip_close(ir_geoip *geoip)
+{
+  if (geoip->gi != NULL) {
+    GeoIP_delete(geoip->gi);
+    geoip->gi = NULL;
+  }
+}
+
+static void geoip_open(ir_geoip *geoip, const char *geoipdatabase)
+{
+  if (geoip->gi != NULL) {
+    if (geoip->loaded != geoip_time(geoipdatabase)) {
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "File '%s' has changed", geoipdatabase);
+      /* reload on change */
+      geoip_close(geoip);
+    }
+  }
+  if (geoip->gi == NULL) {
+    if (geoipdatabase == NULL) {
+      geoip->gi = GeoIP_new(GEOIP_FLAGS);
+      return;
+    }
+    geoip->loaded = geoip_time(geoipdatabase);
+    geoip->gi = GeoIP_open(geoipdatabase, GEOIP_FLAGS);
+  }
+}
+
+static const char *geoip_return_null(ir_geoip *geoip)
+{
+  geoip->code[0] = 0;
+  return geoip->code;
+}
+
+static const char *geoip_return_reusult(ir_geoip *geoip, const char *result)
+{
+  if (result == NULL)
+    return geoip_return_null(geoip);
+
+  geoip->code[0] = tolower(result[0]);
+  geoip->code[1] = tolower(result[1]);
+  geoip->code[2] = 0;
+  return geoip->code;
+}
+
+static const char *check_geoip(unsigned long remoteip)
 {
   static char hostname[20];
-  static char code[20];
   const char *result;
 
-  if (gi == NULL) {
-    if (gdata.geoipdatabase != NULL)
-      gi = GeoIP_open(gdata.geoipdatabase, GEOIP_FLAGS);
-    else
-      gi = GeoIP_new(GEOIP_FLAGS);
-  }
-
-  if (gi == NULL) {
-    code[0] = 0;
-    return code;
-  }
+  geoip_open(&geoip4, gdata.geoipdatabase);
+  if (geoip4.gi == NULL)
+    return geoip_return_null(&geoip4);
 
   snprintf(hostname, sizeof(hostname), "%lu.%lu.%lu.%lu",
             remoteip>>24, (remoteip>>16) & 0xFF, (remoteip>>8) & 0xFF, remoteip & 0xFF );
-  result = GeoIP_country_code_by_addr(gi, hostname);
-  if (result == NULL) {
-    code[0] = 0;
-    return code;
-  }
-
-  code[0] = tolower(result[0]);
-  code[1] = tolower(result[1]);
-  code[2] = 0;
-  return code;
+  result = GeoIP_country_code_by_addr(geoip4.gi, hostname);
+  return geoip_return_reusult(&geoip4, result);
 }
+
+static const char *check_geoip6(geoipv6_t *remoteip)
+{
+  const char *result;
+
+  geoip_open(&geoip6, gdata.geoip6database);
+  if (geoip6.gi == NULL)
+    return geoip_return_null(&geoip6);
+
+  result = GeoIP_country_code_by_ipnum_v6(geoip6.gi, *remoteip);
+  return geoip_return_reusult(&geoip6, result);
+}
+
 #endif /* USE_GEOIP */
 
 /* check an IRC download against the GeoIP database */
@@ -71,20 +135,18 @@ void geoip_new_connection(transfer *const tr)
   const char *country;
   const char *group;
   char *msg;
-#endif /* USE_GEOIP */
 
-  if (tr->con.family != AF_INET)
-    return;
-
-#ifdef USE_GEOIP
-  country = check_geoip(tr->remoteip);
+  if (tr->con.family != AF_INET) {
+    if (gdata.geoip6database == NULL)
+      return;
+    country = check_geoip6(&(tr->con.remote.sin6.sin6_addr));
+  } else {
+    country = check_geoip(tr->remoteip);
+  }
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "GeoIP [%02i:%s on %s]: Info %ld.%ld.%ld.%ld -> %s)",
+            "GeoIP [%02i:%s on %s]: Info %s -> %s)",
             tr->id, tr->nick, gdata.networks[ tr->net ].name,
-            tr->remoteip>>24, (tr->remoteip>>16) & 0xFF,
-            (tr->remoteip>>8) & 0xFF, tr->remoteip & 0xFF,
-            country);
-
+            tr->con.remoteaddr, country);
   if (irlist_size(&gdata.geoipexcludegroup)) {
     for (group = (char *)irlist_get_head(&gdata.geoipexcludegroup);
          group;
@@ -126,15 +188,8 @@ void geoip_new_connection(transfer *const tr)
 
 #ifdef USE_GEOIP
 #ifndef WITHOUT_HTTP
-/* check a HTTP connection against the GeoIP database */
-unsigned int http_check_geoip(unsigned long remoteip)
+static unsigned int http_check_country(const char *country)
 {
-  const char *country;
-
-  if (gdata.http_geoip == 0)
-    return 0;
-
-  country = check_geoip(remoteip);
   if (irlist_size(&gdata.geoipcountry)) {
     if (!verifyshell(&gdata.geoipcountry, country)) {
       return 1;
@@ -147,6 +202,30 @@ unsigned int http_check_geoip(unsigned long remoteip)
   }
   return 0;
 }
+
+/* check a HTTP connection against the GeoIP database */
+unsigned int http_check_geoip(unsigned long remoteip)
+{
+  const char *country;
+
+  if (gdata.http_geoip == 0)
+    return 0;
+
+  country = check_geoip(remoteip);
+  return http_check_country(country);
+}
+
+/* check a HTTP connection against the GeoIPv6 database */
+unsigned int http_check_geoip6(struct in6_addr *remoteip)
+{
+  const char *country;
+
+  if (gdata.http_geoip == 0)
+    return 0;
+
+  country = check_geoip6(remoteip);
+  return http_check_country(country);
+}
 #endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP */
 
@@ -154,10 +233,8 @@ unsigned int http_check_geoip(unsigned long remoteip)
 void geoip_shutdown(void)
 {
 #ifdef USE_GEOIP
-  if (gi != NULL) {
-    GeoIP_delete(gi);
-    gi = NULL;
-  }
+  geoip_close(&geoip4);
+  geoip_close(&geoip6);
 #endif /* USE_GEOIP */
 }
 

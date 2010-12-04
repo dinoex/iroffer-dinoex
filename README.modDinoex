@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+352) geoip6database (inspired by TheDeath)
+  Set the path to the database file for IPv6.
+  If you don't have a database you can download it from:
+  http://www.maxmind.com/app/geolitecountry
+  Default: no lookups for IPv6.
+
+bugfix: geoipdatabase
+  Reload database after file is updated.
+
 351) NOAUTOADD (inspired by [M]-V)
 
   new admin command:
