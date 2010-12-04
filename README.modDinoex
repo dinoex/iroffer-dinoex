@@ -195,7 +195,7 @@ bugfix: CHCOLOR
 bugfix: http_port (reported by Nouhime)
   Allow groups with "&" in weblist.
 
-331) BATCH (inspired by Aashiqmunda)
+331) BATCH (inspired by Misha-SU, Aashiqmunda)
 
   new admin commands:
   BATCH <nick> <g>                   Queues pack with group <g> for <nick> in idle queue
