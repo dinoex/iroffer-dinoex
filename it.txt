@@ -2415,5 +2415,5 @@
 2744 "ignore_duplicate_ip"
 2745 " content crc32  %.8lX"
 2746 "NOAUTOADD"
-2747 "Disables AUTOADD for next <x> minutes"
+2747 "Disabilita AUTOADD per i prossimi <x> minuti"
 2748 "** AUTOADD have been disabled for the next %u %s"
