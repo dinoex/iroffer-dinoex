@@ -1598,7 +1598,7 @@ int
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
-main (int argc, char **argv) {exit(0);}
+main (int argc, char **argv) { GeoIP_country_code_by_addr(NULL, NULL);; exit(0);}
 " > config.temp.c
 	if $cctype config.temp.c $libs -lGeoIP "-I${LOCALBASE}/include" "-L${LOCALBASE}/lib" -DUSE_GEOIP -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
 		echo "found"
