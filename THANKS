@@ -100,6 +100,7 @@ TheDeath
 	option "logrotate" for httpd
 	suggesting HTTP 403 response
 	option "http_forbidden"
+	suggesting "expire_logfiles"
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -702,4 +703,7 @@ Zenquibo
 
 Dan Davito
 	French translation
+
+UndErDarK
+	suggesting "expire_logfiles"
 

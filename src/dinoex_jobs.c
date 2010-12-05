@@ -2116,6 +2116,112 @@ char *new_logfilename(const char *logfile)
   return newname;
 }
 
+static int readdir_sub(const char *thedir, DIR *dirp, struct dirent *entry, struct dirent **result)
+{
+  int rc;
+  unsigned int max = 3;
+
+  for (max = 3; max > 0; --max) {
+    rc = readdir_r(dirp, entry, result);
+    if (rc == 0)
+      break;
+
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Error Reading Directory %s: %s", thedir, strerror(errno));
+    if (rc != EAGAIN)
+      break;
+  }
+  return rc;
+}
+
+/* expire old logfiles */
+void expire_logfiles(const char *logfile)
+{
+  struct stat st;
+  struct dirent f2;
+  struct dirent *f;
+  DIR *d;
+  const char *base;
+  char *thedir;
+  char *tempstr;
+  size_t len;
+  long expire_seconds;
+
+  if (logfile == NULL)
+    return;
+
+  if (gdata.expire_logfiles == 0)
+    return;
+
+  updatecontext();
+
+  thedir = mystrdup(logfile);
+  tempstr = strrchr(thedir, '/');
+  if (tempstr != NULL) {
+    tempstr[0] = 0;
+    base = tempstr + 1;
+  } else {
+    base = logfile;
+    mydelete(thedir);
+    thedir = mystrdup(".");
+  }
+  len = strlen(base);
+  d = opendir(thedir);
+  if (d == NULL) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Can't Access Directory: %s %s", thedir, strerror(errno));
+    mydelete(thedir);
+    return;
+  }
+  expire_seconds = gdata.expire_logfiles;
+  expire_seconds *= 24*60*60;
+  for (;;) {
+    if (readdir_sub(thedir, d, &f2, &f) != 0)
+      break;
+
+    if (f == NULL)
+      break;
+
+    tempstr = mystrjoin(thedir, f->d_name, '/');
+    if (stat(tempstr, &st) < 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD, "cannot access '%s', ignoring: %s", tempstr, strerror(errno));
+      mydelete(tempstr);
+      continue;
+    }
+    mydelete(tempstr);
+    if (S_ISDIR(st.st_mode)) {
+      mydelete(tempstr);
+      continue;
+    }
+    if (!S_ISREG(st.st_mode)) {
+      mydelete(tempstr);
+      continue;
+    }
+
+    if (strncmp(f->d_name, base, len) != 0) {
+      mydelete(tempstr);
+      continue;
+    }
+
+    if (strcmp(f->d_name, base) == 0) {
+      mydelete(tempstr);
+      continue;
+    }
+
+    if (gdata.curtime - st.st_mtime < expire_seconds ) {
+      mydelete(tempstr);
+      continue;
+    }
+    /* remove old log */
+    if (unlink(tempstr) < 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD, "File %s could not be deleted: %s", tempstr, strerror(errno));
+    }
+    mydelete(tempstr);
+  }
+
+  closedir(d);
+  mydelete(thedir);
+  return;
+}
+
 /* rotae logfile */
 int rotatelog(const char *logfile)
 {
@@ -2134,6 +2240,7 @@ int rotatelog(const char *logfile)
   }
   mylog("File %s was moved to %s.", logfile, newname);
   mydelete(newname);
+  expire_logfiles(logfile);
   return 1;
 }
 

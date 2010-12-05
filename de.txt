@@ -2416,3 +2416,4 @@
 2747 "Sperrt AUTOADD für die nächsten <x> Minuten"
 2748 "geoip6database"
 2749 "** %s disabled for the next %u %s"
+2750 "expire_logfiles"

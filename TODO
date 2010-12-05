@@ -1,7 +1,6 @@
 [Iroffer.dinoex.de]
 Feature #16 add support for variables in the announces
 Feature #38 xdcc command to export the crc32/md5 as sumfile
-Feature #59 delete old rotated logfiles
 Feature #70 command for saving the "running" config
 Feature #89 limit autoaddan to file that matches a given mask
 Feature #91 rmqall to empty all queues in one go

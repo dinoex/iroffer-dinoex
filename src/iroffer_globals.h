@@ -166,6 +166,8 @@ unsigned int reconnect_delay;
 unsigned int new_trigger;
 unsigned int adddir_min_size;
 unsigned int ignore_duplicate_ip;
+unsigned int expire_logfiles;
+unsigned int idummy;
 /* bool */
 unsigned int hideos;
 unsigned int lognotices;

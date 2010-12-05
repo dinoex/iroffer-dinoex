@@ -367,6 +367,7 @@ static config_int_typ config_parse_int[] = {
 {"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1, 0 },
 {"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1, 10 },
 {"debug",                   &gdata.debug,                   0, 65000, 1, XDCC_SEND_LIST },
+{"expire_logfiles",         &gdata.expire_logfiles,         0, 65000, 1, 0 },
 {"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1, 0 },
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1, ADMIN_LEVEL_HALF },
 #ifndef WITHOUT_HTTP

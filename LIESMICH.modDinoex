@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+353) expire_logfiles
+  Nach den angegebenen Tagen werden die alten Logdateien gelöscht.
+  Es wir nur nach dem Logroate geprüft.
+  Default: Es werden keine Logdateien gelöscht.
+
 352) geoip6database
   Definiere die Datenbankdatei für IPv6.
   Wenn du keine Datenbank hast kannst, du dieses hier herunterladen:
