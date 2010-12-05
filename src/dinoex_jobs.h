@@ -74,6 +74,7 @@ void a_rehash_cleanup(const userinput *u);
 void a_read_config_files(const userinput *u);
 
 char *new_logfilename(const char *logfile);
+void expire_logfiles(const char *logfile);
 int rotatelog(const char *logfile);
 
 unsigned long get_zip_crc32_pack(xdcc *xd);

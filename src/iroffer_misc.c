@@ -1867,6 +1867,7 @@ void isrotatelog(void)
     }
   
   mydelete(newname);
+  expire_logfiles(gdata.logfile);
   
   return;
 }
