@@ -78,6 +78,7 @@ static int connectirc (server_t *tserver) {
    char *tempstr;
    char *vhost;
    int callval;
+   int family;
    
    updatecontext();
 
@@ -167,9 +168,14 @@ static int connectirc (server_t *tserver) {
                gnetwork->curserver.port,
                vhost,
                tempstr);
+       if (strchr(vhost, ':') == NULL) 
+         family = AF_INET;
+       else
+         family = AF_INET6;
      }
    else
      {
+       family = 0;
        ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Attempting Connection to %s:%u%s",
                gnetwork->curserver.hostname,
                gnetwork->curserver.port, tempstr);
@@ -204,7 +210,7 @@ static int connectirc (server_t *tserver) {
    if (callval == 0)
      {
        /* child */
-       child_resolver();
+       child_resolver(family);
        sleep(60);
        _exit(0);
      }

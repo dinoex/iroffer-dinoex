@@ -409,7 +409,7 @@ char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
 }
 
 /* the DNS resolution as a separate process */
-void child_resolver(void)
+void child_resolver(int family)
 {
 #if !defined(NO_GETADDRINFO)
   struct addrinfo hints;
@@ -442,7 +442,17 @@ void child_resolver(void)
 
 #if !defined(NO_GETADDRINFO)
   memset(&hints, 0, sizeof(hints));
-  hints.ai_family = PF_UNSPEC;
+  switch (family) {
+  case 0:
+    hints.ai_family = PF_UNSPEC;
+    break;
+  case AF_INET:
+    hints.ai_family = PF_INET;
+    break;
+  default:
+    hints.ai_family = PF_INET6;
+    break;
+  }
   hints.ai_socktype = SOCK_STREAM;
   snprintf(portname, sizeof(portname), "%d",
            gnetwork->serv_resolv.to_port);

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+bugfix: local_vhost
+  Vebinde nur zu der passenden Adress-Familie.
+
 353) expire_logfiles
   Nach den angegebenen Tagen werden die alten Logdateien gelöscht.
   Es wir nur nach dem Logroate geprüft.
