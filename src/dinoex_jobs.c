@@ -2219,7 +2219,7 @@ void expire_logfiles(const char *logfile)
     if (unlink(tempstr) < 0) {
       outerror(OUTERROR_TYPE_WARN_LOUD, "File %s could not be deleted: %s", tempstr, strerror(errno));
     }
-    
+ 
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,  "File %s was deleted.", tempstr);
     mydelete(tempstr);
   }
