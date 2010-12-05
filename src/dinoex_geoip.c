@@ -36,7 +36,9 @@ typedef struct {
 } ir_geoip;
 
 static ir_geoip geoip4 = { NULL, 0 };
+#ifdef USE_GEOIP6
 static ir_geoip geoip6 = { NULL, 0 };
+#endif /* USE_GEOIP6 */
 
 static time_t geoip_time(const char *name)
 {
@@ -114,7 +116,8 @@ static const char *check_geoip(unsigned long remoteip)
   return geoip_return_reusult(&geoip4, result);
 }
 
-static const char *check_geoip6(geoipv6_t *remoteip)
+#ifdef USE_GEOIP6
+static const char *check_geoip6(struct in6_addr *remoteip)
 {
   const char *result;
 
@@ -125,6 +128,7 @@ static const char *check_geoip6(geoipv6_t *remoteip)
   result = GeoIP_country_code_by_ipnum_v6(geoip6.gi, *remoteip);
   return geoip_return_reusult(&geoip6, result);
 }
+#endif /* USE_GEOIP6 */
 
 #endif /* USE_GEOIP */
 
@@ -137,9 +141,13 @@ void geoip_new_connection(transfer *const tr)
   char *msg;
 
   if (tr->con.family != AF_INET) {
+#ifdef USE_GEOIP6
     if (gdata.geoip6database == NULL)
       return;
     country = check_geoip6(&(tr->con.remote.sin6.sin6_addr));
+#else
+    return;
+#endif /* USE_GEOIP6 */
   } else {
     country = check_geoip(tr->remoteip);
   }
@@ -215,6 +223,7 @@ unsigned int http_check_geoip(unsigned long remoteip)
   return http_check_country(country);
 }
 
+#ifdef USE_GEOIP6
 /* check a HTTP connection against the GeoIPv6 database */
 unsigned int http_check_geoip6(struct in6_addr *remoteip)
 {
@@ -226,6 +235,7 @@ unsigned int http_check_geoip6(struct in6_addr *remoteip)
   country = check_geoip6(remoteip);
   return http_check_country(country);
 }
+#endif /* USE_GEOIP6 */
 #endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP */
 
@@ -234,7 +244,9 @@ void geoip_shutdown(void)
 {
 #ifdef USE_GEOIP
   geoip_close(&geoip4);
+#ifdef USE_GEOIP6
   geoip_close(&geoip6);
+#endif /* USE_GEOIP6 */
 #endif /* USE_GEOIP */
 }
 

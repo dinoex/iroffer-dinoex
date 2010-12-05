@@ -51,10 +51,12 @@ static unsigned int is_in_badip6(struct in6_addr *remoteip)
   badip6 *b;
 
 #ifdef USE_GEOIP
+#ifdef USE_GEOIP6
 #ifndef WITHOUT_HTTP
   if (http_check_geoip6(remoteip))
     return 2; /* blocked by GeoIP */
 #endif /* WITHOUT_HTTP */
+#endif /* USE_GEOIP6 */
 #endif /* USE_GEOIP */
 
   for (b = irlist_get_head(&gdata.http_bad_ip6);
