@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+bugfix: local_vhost
+  Connect only to the matching address family of the vhost.
+
 353) expire_logfiles (inspired by UndErDarK, TheDeath)
   After the given number of days the old logfiles are deleted.
   This will only be checked after logrotate.

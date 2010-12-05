@@ -20,7 +20,7 @@ unsigned int bind_irc_vhost(int family, int clientsocket);
 unsigned int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, unsigned int port, unsigned int reuse, unsigned int search, const char *vhost);
 unsigned int irc_open_listen(ir_connection_t *con);
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
-void child_resolver(void);
+void child_resolver(int family);
 const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, unsigned int net);
 unsigned int connectirc2(res_addrinfo_t *remote);
 
