@@ -579,7 +579,9 @@ static config_string_typ config_parse_string[] = {
 {"download_completed_msg",  &gdata.download_completed_msg,  0 },
 {"enable_nick",             &gdata.enable_nick,             0 },
 #ifdef USE_GEOIP
+#ifdef USE_GEOIP6
 {"geoip6database",          &gdata.geoip6database,          0 },
+#endif /* USE_GEOIP6 */
 {"geoipdatabase",           &gdata.geoipdatabase,           0 },
 #endif /* USE_GEOIP */
 {"group_seperator",         &gdata.group_seperator,         0 },

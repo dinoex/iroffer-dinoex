@@ -1593,6 +1593,7 @@ if $OPT_GEOIP; then
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
+#include <GeoIP.h>
 int
 #ifdef __GNUC__
 __attribute__ ((noreturn))
@@ -1606,6 +1607,26 @@ main (int argc, char **argv) {exit(0);}
 		GEOLIB="-lGeoIP"
 		GEOINC="-I${LOCALBASE}/include"
 		GEOLDF="-L${LOCALBASE}/lib"
+		echo -n "Seeing if GeoIP has IPv6 support ... "
+		echo "
+#include \"src/iroffer_config.h\"
+#include \"src/iroffer_defines.h\"
+#include \"src/iroffer_headers.h\"
+#include \"src/iroffer_globals.h\"
+#include <GeoIP.h>
+int
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+main (int argc, char **argv) { struct in6_addr remoteip; GeoIP_country_code_by_ipnum_v6(NULL, remoteip); exit(0);}
+" > config.temp.c
+		if $cctype config.temp.c $libs $GEOLIB ${GEOINC} ${GEOLDF} -DUSE_GEOIP6 -o config.temp $WARNS $WERROR $CFLAGS $LDFLAGS $LIBS; then
+			echo "found"
+			echo "#define USE_GEOIP6" >> src/iroffer_config.h
+		else
+			echo "not found"
+			echo "***Disabled the GeoIP for IPv6. If u want to use this feature, please update liblGeoIP.***"
+		fi
 	else
 		echo "not found"
 		echo "***Disabled the GeoIP-check. If u want to use this feature, please install liblGeoIP.***"
