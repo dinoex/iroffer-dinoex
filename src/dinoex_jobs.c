@@ -2154,11 +2154,16 @@ void expire_logfiles(const char *logfile)
 
   updatecontext();
 
+  if (logfile[0] == 0)
+    return;
+
   thedir = mystrdup(logfile);
   tempstr = strrchr(thedir, '/');
   if (tempstr != NULL) {
     tempstr[0] = 0;
     base = tempstr + 1;
+    if (base[0] == 0)
+      return;
   } else {
     base = logfile;
     mydelete(thedir);
