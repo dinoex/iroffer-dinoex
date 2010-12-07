@@ -11,7 +11,6 @@ Known Problems (All Versions):
    161 7/2/00 Open specifying a user_nick too long causes confusion
    158 10/11/99 Open some servers dont allow multiple recipiants
    170 12/09/03 Open queue remaining times dont take into consideration maxtransfersperperson
-  1289 12/15/09 high cpu usage under windows 2003 web edition
 
 Short Term Features:
    165 02/03/01 Open specify more than one type of plist for a single channel with different times
