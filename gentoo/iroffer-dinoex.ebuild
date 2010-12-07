@@ -8,7 +8,7 @@ SRC_URI="http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz"
 KEYWORDS="~x86 ~amd64"
 LICENSE="GPL-2"
 SLOT="0"
-LANGUAGES="linguas_it linguas_de linguas_en"
+LANGUAGES="linguas_fr linguas_it linguas_de linguas_en"
 IUSE="geoip curl tls upnp ruby +blowfish +openssl +http +admin +telnet +memsave static ${LANGUAGES}"
 
 DEPEND="ruby? ( dev-lang/ruby )
@@ -83,6 +83,8 @@ src_compile() {
         ./Lang de
     elif use linguas_it ; then
         ./Lang it
+    elif use linguas_fr ; then
+        ./Lang fr
     fi
 
     emake || die "emake failed"
@@ -92,7 +94,9 @@ src_install() {
     dobin iroffer
 
     insinto /usr/share/iroffer-dinoex/
+    doins sample.config
     doins beispiel.config
+    doins exemple.config
     doins iroffer.cron
 
     if use ruby ; then
@@ -124,6 +128,10 @@ src_install() {
 
         if use linguas_it ; then
             dodoc help-admin-it.txt
+        fi
+
+        if use linguas_fr ; then
+            dodoc help-admin-fr.txt
         fi
     fi
    
