@@ -704,7 +704,7 @@
 740 "PRIVMSG"
 741 " :"
 743 "Auto ignore activé pour %s (%s) pendant %i%c%i%c"
-744 "Auto ignore activé pour %s (%s) pendant %i%c%i%c. De nouveaux messages vont augmenter la durée."
+744 ". De nouveaux messages vont augmenter la durée."
 745 "\1CLIENTINFO"
 747 "\1CLIENTINFO DCC PING VERSION XDCC UPTIME "
 748 " : Utiliser CTCP CLIENTINFO <COMMAND> pour obtenir des informations supplémentaires spécifiques.\1"

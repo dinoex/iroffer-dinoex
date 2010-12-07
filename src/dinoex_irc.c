@@ -689,7 +689,7 @@ unsigned int check_ignore(const char *nick, const char *hostmask)
           left < 3600 ? 's' : 'm');
 
   notice(nick,
-         "Auto-ignore activated for %s (%s) lasting %i%c%i%c. Further messages will increase duration.",
+         "Auto-ignore activated for %s (%s) lasting %i%c%i%c" ". Further messages will increase duration.",
          nick, hostmask,
          left < 3600 ? left/60 : left/60/60 ,
          left < 3600 ? 'm' : 'h',

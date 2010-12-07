@@ -704,7 +704,7 @@
 740 "PRIVMSG"
 741 ":"
 743 "Auto-ignore activated for %s (%s) lasting %i%c%i%c"
-744 "Auto-ignore activated for %s (%s) lasting %i%c%i%c. Further messages will increase duration."
+744 ". Further messages will increase duration."
 745 "\1CLIENTINFO"
 747 "\1CLIENTINFO DCC PING VERSION XDCC UPTIME "
 748 ":Use CTCP CLIENTINFO <COMMAND> to get more specific information\1"
