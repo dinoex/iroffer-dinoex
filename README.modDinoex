@@ -39,7 +39,7 @@ bugfix: geoipdatabase
   BATCH <nick> <g>,<s>,<n-m>         Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
   BATCH <nick> <g>,<s>,<n-m> <net>   Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
 
-348) French translation (contributed by Dan Davito)
+348) French translation (contributed by Dandevito)
   Activate with "./Lang fr" after "Configure"
   to switch back to English call "./Lang en"
 
