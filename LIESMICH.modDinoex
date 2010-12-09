@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+bugfix: BOTINFO (reported by dns777)
+  BOTINFO zeigte Müll als DCC-IP vor der ersten Verbindung zum Netz.
+
 bugfix: UNLIMITED
   versions affected: 3.23 - 3.24
   Bot crashte wenn kein Transfer gefunden wurde.
