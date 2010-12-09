@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.25:
 ----------------
 
+bugfix: UNLIMITED
+  versions affected: 3.23 - 3.24
+  Bot crashte wenn kein Transfer gefunden wurde.
+
 bugfix: local_vhost
   Vebinde nur zu der passenden Adress-Familie.
 
