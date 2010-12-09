@@ -492,13 +492,18 @@ unsigned int invalid_channel(const userinput * const u, const char *arg)
   return invalid_text(u, "Try Specifying a Channel", arg);
 }
 
+static void a_respond_badid(const userinput * const u, const char *cmd)
+{
+  a_respond(u, "Invalid ID number, Try \"%s\" for a list", cmd);
+}
+
 static transfer *get_transfer_by_number(const userinput * const u, unsigned int num)
 {
   transfer *tr;
 
   tr = does_tr_id_exist(num);
   if (tr == NULL) {
-    a_respond(u, "Invalid ID number, Try \"DCL\" for a list");
+    a_respond_badid(u, "DCL");
   }
   return tr;
 }
@@ -1516,6 +1521,32 @@ void a_listul(const userinput * const u)
   mydelete(tempstr);
 }
 
+void a_nomin(const userinput * const u)
+{
+  transfer *tr;
+
+  updatecontext();
+
+  tr = get_transfer_by_arg(u, u->arg1);
+  if (tr == NULL)
+    return;
+
+  tr->nomin = 1;
+}
+
+void a_nomax(const userinput * const u)
+{
+  transfer *tr;
+
+  updatecontext();
+
+  tr = get_transfer_by_arg(u, u->arg1);
+  if (tr == NULL)
+    return;
+
+  tr->nomax = 1;
+}
+
 void a_unlimited(const userinput * const u)
 {
   transfer *tr;
@@ -1523,6 +1554,9 @@ void a_unlimited(const userinput * const u)
   updatecontext();
 
   tr = get_transfer_by_arg(u, u->arg1);
+  if (tr == NULL)
+    return;
+
   tr->nomax = 1;
   tr->unlimited = 1;
 }
@@ -3877,7 +3911,7 @@ void a_closeu(const userinput * const u)
   num = atoi(u->arg1);
   ul = irlist_get_nth(&gdata.uploads, num);
   if (ul == NULL) {
-    a_respond(u, "Invalid ID number, Try \"DCL\" for a list");
+    a_respond_badid(u, "DCL");
     return;
   }
   l_closeconn(ul, "Owner Requested Close", 0);
@@ -4006,13 +4040,13 @@ static void a_rmq2(const userinput * const u, irlist_t *list)
 
   num = atoi(u->arg1);
   if (num == 0) {
-    a_respond(u, "Invalid ID number, Try \"QUL\" for a list");
+    a_respond_badid(u, "QUL");
     return;
   }
 
   pq = irlist_get_nth(list, num - 1);
   if (!pq) {
-     a_respond(u, "Invalid ID number, Try \"QUL\" for a list");
+    a_respond_badid(u, "QUL");
     return;
   }
 
@@ -4363,7 +4397,7 @@ void a_closec(const userinput * const u)
   num = atoi(u->arg1);
   chat = irlist_get_nth(&gdata.dccchats, num-1);
   if (chat == NULL) {
-    a_respond(u, "Invalid ID number, Try \"CHATL\" for a list");
+    a_respond_badid(u, "CHATL");
   }
   a_closec_sub(u, chat);
 }
