@@ -146,6 +146,7 @@ Long Term Features:
   1483  autoaddann pattern
   1490  delay the responce to the !new command
   1500  force to send a pack to someone who downloaded a certain pack
+  1521  hostmask or nick in exempt list for ignoreduplicate ip
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
