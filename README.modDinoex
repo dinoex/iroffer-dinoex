@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.25:
 ------------------
 
+bugfix: UNLIMITED
+  Bot could crash when paramater did not match a transfer.
+  versions affected: 3.23 - 3.24
+
 bugfix: local_vhost
   Connect only to the matching address family of the vhost.
 
