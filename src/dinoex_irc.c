@@ -537,8 +537,10 @@ const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, un
       ip = htonl(gdata.networks[net].ourip);
     else
       ip = sa->sin.sin_addr.s_addr;
+    buffer[0] = 0;
     return inet_ntop(sa->sa.sa_family, &(ip), buffer, len);
   }
+  buffer[0] = 0;
   return inet_ntop(sa->sa.sa_family, &(sa->sin6.sin6_addr), buffer, len);
 }
 
