@@ -39,8 +39,6 @@ static void u_xdl(const userinput * const u);
 static void u_xds(const userinput * const u);
 static void u_dcl(const userinput * const u);
 static void u_dcld(const userinput * const u);
-static void u_nomin(const userinput * const u);
-static void u_nomax(const userinput * const u);
 static void u_redraw(const userinput * const u);
 static void u_delhist(const userinput * const u);
 static void u_info(const userinput * const u);
@@ -109,8 +107,8 @@ static const userinput_parse_t userinput_parse[] = {
 {2,2,method_allow_all,a_get,           "CLOSEGET","net nick","Cancel Request for bot <nick>"},
 {2,2,method_allow_all,a_rmq,           "RMQ","[position]","Removes entry at <position> from main queue"},
 {2,2,method_allow_all,a_rmiq,          "RMIQ","[position]","Removes entry at <position> from idle queue"},
-{2,5,method_allow_all,u_nomin,         "NOMIN","id","Disables minspeed for transfer <id>"},
-{2,5,method_allow_all,u_nomax,         "NOMAX","id","Disables maxspeed for transfer <id>"},
+{2,5,method_allow_all,a_nomin,         "NOMIN","id","Disables minspeed for transfer <id>"},
+{2,5,method_allow_all,a_nomax,         "NOMAX","id","Disables maxspeed for transfer <id>"},
 {2,5,method_allow_all,a_unlimited,     "UNLIMITED","id","Disables bandwidth limits for transfer <id>"},
 {2,5,method_allow_all,a_maxspeed,      "MAXSPEED","id x","Set max bandwidth limit of <x> KB/s for transfer <id>"},
 {2,2,method_allow_all,a_send,          "SEND","nick n [net]","Sends pack <n> to <nick>"},
@@ -1215,46 +1213,6 @@ static void u_dcld(const userinput * const u)
 #endif /* USE_CURL */
   
   u_respond(u, " --------------------------------------------------------------------");
-}
-
-static void u_nomin(const userinput * const u)
-{
-  unsigned int num = 0;
-  transfer *tr;
-  
-  updatecontext();
-  
-  if (u->arg1) num = atoi(u->arg1);
-  
-  if ((num == 0) || !does_tr_id_exist(num))
-    {
-      u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
-    }
-  else
-    {
-      tr = does_tr_id_exist(num);
-      tr->nomin = 1;
-    }
-}
-
-static void u_nomax(const userinput * const u)
-{
-  unsigned int num = 0;
-  transfer *tr;
-  
-  updatecontext();
-  
-  if (u->arg1) num = atoi(u->arg1);
-  
-  if ((num < 0) || !does_tr_id_exist(num))
-    {
-      u_respond(u,"Invalid ID number, Try \"DCL\" for a list");
-    }
-  else
-    {
-      tr = does_tr_id_exist(num);
-      tr->nomax = 1;
-    }
 }
 
 static void u_info(const userinput * const u)

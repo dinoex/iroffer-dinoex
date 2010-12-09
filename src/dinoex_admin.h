@@ -47,6 +47,8 @@ void a_qul(const userinput * const u);
 void a_diskfree(const userinput * const u);
 void a_listul(const userinput * const u);
 
+void a_nomin(const userinput * const u);
+void a_nomax(const userinput * const u);
 void a_unlimited(const userinput * const u);
 void a_maxspeed(const userinput * const u);
 void a_slotsmax(const userinput * const u);
