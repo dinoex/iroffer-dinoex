@@ -13,10 +13,6 @@ else
  VERSIONLONG="$VERSION Beta"
 fi
 
-echo
-echo "Configure for iroffer-dinoex $VERSIONLONG"
-
-
 usage()
 {
   case "${LANG}" in
@@ -31,13 +27,13 @@ usage()
 	echo "   -curl        Benutze Curl Bibliothek (fuer the FETCH-Befehl)"
 	echo "   -tls         Benutze GNU TLS Bibliothek (anstelle von OpenSSL)"
 	echo "   -upnp        Benutze miniupnpc Bibliothek (fuer UPNP-NAT Routers)"
-	echo "   -ruby        Benutze RUBY Srkipt Erweiterung"
+	echo "   -ruby        Benutze RUBY Skript Erweiterung"
 	echo "   -no-blowfish Baue ohne Blowfish Verschlusselung"
 	echo "   -no-openssl  Baue ohne OpenSSL Bibliothek"
 	echo "   -no-http     Baue ohne HTTP Server"
 	echo "   -no-admin    Baue ohne HTTP Admin"
 	echo "   -no-telnet   Baue ohne Telnet Server"
-	echo "   -no-memsave  Baue ohne Spiecherschutz"
+	echo "   -no-memsave  Baue ohne Speicherschutz"
 	echo "   -no-libs     Baue ein statische Programm"
 	echo "   PREFIX=      Setze Installations-Pfad  (/usr/local)"
 	echo "   LOCALBASE=   Setze Pfad fuer Include-Dateien und Bibliotheken (/usr/local)"
@@ -75,14 +71,227 @@ usage()
 	echo "   RUBY=        Set ruby interpreter (ruby)"
 	;;
   esac
-exit 64
+  exit 64
 }
+
+case "${LANG}" in
+de*)
+	irt_start="Konfiguriere für"
+	irt_again="Bitte starte Configure zusätzlich mit dem Parameter '-error' für die Fehlermeldungen."
+	irt_noopenssl="WARNUNG: Bitte den Parameter '-no-openssl' benutzen"
+	irt_multinet="WARNUNG: Multinet ist immer aktiv, entfernde den Parameter -m"
+	irt_checkingos="Prüfe Betriebssystem... "
+	irt_checkfor="Prüfe auf"
+	irt_checkif="Prüfe ob"
+	irt_error="***FEHLER***:"
+	irt_notsupported="Das Betriebssystem ist nicht unterstützt"
+	irt_noedit="Automatisch erstellt, nicht ändern"
+	irt_showerror="Zeige Fehlermeldungen beim Konfigurieren"
+	irt_configure="Konfiguriere"
+	irt_debugging="debugging"
+	irt_extrawarnings="zusätzliche Warnungen"
+	irt_pedantic="pedantische Warnungen"
+	irt_profiling="profiling"
+	irt_with="mit"
+	irt_without="ohne"
+	irt_blowfish="blowfish Verschlüsselung"
+	irt_memory="memory protection"
+	irt_found="gefunden"
+	irt_notfound="nicht gefunden"
+	irt_noexec="Du kannst das Programm nicht ausführen"
+	irt_nomake="Kann weder 'make' noch 'gmake' finden"
+	irt_nocc="Kann weder 'gcc' noch 'cc' finden"
+	irt_seeingif="Prüfe ob"
+	irt_seeinghow="Prüfe wie"
+	irt_works="funktioniert"
+	irt_worksinstead="funtioniert anstelle"
+	irt_asexpected="wie erwartet"
+	irt_nowork="funktioniert offenbar nicht"
+	irt_yes="ja"
+	irt_no="nein"
+	irt_accepts="erkennt"
+	irt_unknown="Unbekannt"
+	irt_neither1="weder"
+	irt_neither2="noch"
+	irt_neither3="funktioniert"
+	irt_seeing16bit="Prüfe wie ein 16 Bit Integer definiert wird"
+	irt_seeing32bit="Prüfe wie ein 32 Bit Integer definiert wird"
+	irt_seeing64bit="Prüfe wie ein 64 Bit Integer definiert wird"
+	irt_isdefined="ist definiert"
+	irt_noipv6="Nein, IPv6 wird nicht funktionieren"
+	irt_compiling="das Übersetzen mit den Standard #include's"
+	irt_nocompiling="Kann nicht mit den Standard #include's übersetzen"
+	irt_large="groß"
+	irt_is="ist"
+	irt_boosting="Vergrößere auf"
+	irt_novalue="kann den Wert nicht ermitteln"
+	irt_endianness="Ermittle Byte-Reihenfolge"
+	irt_endianbig="Big-Endian"
+	irt_endianlittle="Little-Endian"
+	irt_largefile="Zugriff auf große Dateien"
+	irt_nolargefile="Nein.  Maximale Dategröße ist"
+	irt_signedness="Ermittle den Vorzeichentyp von"
+	irt_display_int64="die Ausgabe von 64bit definiert wird mit"
+	irt_display_time="die Ausgabe von time_t definiert wird mit"
+	irt_msssing1="fehlt"
+	irt_msssing2="benutze Ersatz"
+	irt_exists="existiert"
+	irt_isneeded="benötigt wird"
+	irt_notneeded="nicht benötigt"
+	irt_needed="wird benötigt"
+	irt_nocrypt="kann crypt() weder mit noch ohne crypt.h finden"
+	irt_nolcrypt="kannt weder mit noch ohne -lcrypt oder -lcrypto binden"
+	irt_neither4="Keines"
+	irt_for="für"
+	irt_nopassword="kann keine Passwörter verschlüsseln"
+	irt_nochroot="kann kein chroot() verwenden"
+	irt_nosetuid="kann kein setuid() verwenden"
+	irt_nogetgrouplist="Gruppen Rechte sind unvolstä#ndig bei setuid()"
+	irt_nosendfile="Kann sendfile() nicht benutzen"
+	irt_nommap="Kann mmap() nicht benutzen"
+	irt_creating="Erzeuge"
+	irt_done="fertig"
+	irt_fdlimit="Name von fd limit"
+	irt_nofdlimit="beide funktionieren nicht"
+	irt_nosignal="Benutze einfache signal handlers"
+	irt_values="Werte"
+	irt_nosi_code="Kann keinen 'si_code' ausgeben."
+	irt_nowait="kann keinen Status von wait() ausgeben"
+	irt_tos="TOS für IP sockets gesetzt werden kann"
+	irt_nogetaddrinfo="Benutze statt dessen gethostbyname()"
+	irt_nogethostbyname="Kann Fehler nicht ausgeben"
+	irt_nores_init="Kann res_init() nicht benutzen"
+	irt_seeingif_lib="Prüfe ob"
+	irt_lib_exists="Bibliothek existiert"
+	irt_geoip6="hat IPv6 Funktionen"
+	irt_nogeoip6="Benutze GeoIP nicht für IPv6. Für diese Funktion musst du eine neuer Version von 'liblGeoIP' installieren"
+	irt_nogeoip="Benutze GeoIP nicht. Für diese Funktion musst du 'liblGeoIP' installieren"
+	irt_noupnp="Benutze UPNP nicht. Für diese Funktion musst du 'liblminiupnpc' installieren"
+	irt_nocurl="Kein FETCH-Befehl. Für diese Funktion musst du 'libcurl' installieren"
+	irt_curlssl="Hinweis: Deine 'libcurl' benutzt"
+	irt_nossl="Benutze kein SSL. Für diese Funktion musst du 'OpenSSL' installieren"
+	irt_notls="Benutze kein SSL. Für diese Funktion musst du 'GNU TLS' installieren"
+	irt_badssl1="Deine 'libcurl' benutzt"
+	irt_badssl2="Bitte konfiguriere"
+	irt_noruby="Kann die RUBY-Erweiterung nicht benutzen. Für diese Funktion musst du 'libruby'installieren"
+	irt_make1="Zum Übersetzen jetzt"
+	irt_make2="eingeben"
+	irt_noerror="Keine Fehler oder Warnungen sollten beim Übersetzen auftreten. Falls doch ist das ein Fehler"
+	;;
+*)
+	irt_start="Configuring for"
+	irt_again="You should re-run Configure with the '-error' argument to see the details."
+	irt_noopenssl="WARNING: Please use '-no-openssl'"
+	irt_multinet="WARNING: Multinet is now default, remove '-m'"
+	irt_checkingos="Determining OS... "
+	irt_checkfor="Checking for"
+	irt_checkif="Checking if"
+	irt_error="***ERROR***:"
+	irt_notsupported="This OS is not supported"
+	irt_noedit="Automatically Generated, Do Not Edit"
+	irt_showerror="Printing Errors During Execution"
+	irt_configure="Configuring"
+	irt_debugging="debugging"
+	irt_extrawarnings="extra warnings"
+	irt_pedantic="pedantic warnings"
+	irt_profiling="profiling"
+	irt_with="with"
+	irt_without="without"
+	irt_blowfish="blowfish encryption"
+	irt_memory="memory protection"
+	irt_found="found"
+	irt_notfound="not found"
+	irt_noexec="You are not allowed to execute"
+	irt_nomake="Couldn't find 'make' or' gmake'"
+	irt_nocc="Couldn't find 'gcc' or' cc'"
+	irt_seeingif="Seeing if"
+	irt_seeinghow="Seeing how"
+	irt_works="works"
+	irt_worksinstead="works instead"
+	irt_asexpected="as expected"
+	irt_nowork="didn't seem to work"
+	irt_yes="yes"
+	irt_no="no"
+	irt_accepts="accepts"
+	irt_unknown="Unknown"
+	irt_neither1="neither"
+	irt_neither2="or"
+	irt_neither3="worked"
+	irt_seeing16bit="Seeing how to define a 16 bit integer"
+	irt_seeing32bit="Seeing how to define a 32 bit integer"
+	irt_seeing64bit="Seeing how to define a 64 bit integer"
+	irt_isdefined="is defined"
+	irt_noipv6="failed, IPv6 will not work"
+	irt_compiling="compiling with standard #include's"
+	irt_nocompiling="couldn't build with standard #include's"
+	irt_large="large"
+	irt_is="is"
+	irt_boosting="Boosting up to"
+	irt_novalue="couldn't determine it"
+	irt_endianness="Determining endianness"
+	irt_endianbig="Big-Endian"
+	irt_endianlittle="Little-Endian"
+	irt_largefile="large file support"
+	irt_nolargefile="No.  Max filesize will be"
+	irt_signedness="Determing the signedness of"
+	irt_display_int64="to display 64bit using"
+	irt_display_time="to display time_t using"
+	irt_msssing1="missing"
+	irt_msssing2="will emulate"
+	irt_exists="exists"
+	irt_isneeded="is needed"
+	irt_notneeded="not needed"
+	irt_needed="needed"
+	irt_nocrypt="couldn't find crypt() neither with or without crypt.h"
+	irt_nolcrypt="couldn't link with or without -lcrypt or -lcrypto"
+	irt_neither4="Neither"
+	irt_for="for"
+	irt_nopassword="will disable encrypted passwords"
+	irt_nochroot="will not be able to chroot()"
+	irt_nosetuid="will not be able to setuid()"
+	irt_nogetgrouplist="group list will be incorrect when setuid()-ing"
+	irt_nosendfile="won't use sendfile()"
+	irt_nommap="won't use mmap()"
+	irt_creating="Creating"
+	irt_done="Done"
+	irt_fdlimit="name of fd limit"
+	irt_nofdlimit="neither name work"
+	irt_nosignal="will use lame signal handlers"
+	irt_values="values"
+	irt_nosi_code="won't report 'si_code'"
+	irt_nowait="won't report wait() status codes"
+	irt_tos="TOS can be set for IP sockets"
+	irt_nogetaddrinfo="will use gethostbyname() instead"
+	irt_negetaddrinfo="utilisera gethostbyname à la place"
+	irt_nogethostbyname="won't report error codes"
+	irt_nores_init="won't use res_init()"
+	irt_seeingif_lib="Seeing if"
+	irt_lib_exists="library exists"
+	irt_geoip6="has IPv6 support"
+	irt_nogeoip6="Disabled the GeoIP for IPv6. If you want to use this feature, please update 'liblGeoIP'"
+	irt_nogeoip="Disabled the GeoIP-check. If you want to use this feature, please install 'liblGeoIP'"
+	irt_noupnp="Disabled the UPNP-feature. If you want to use this feature, please install 'liblminiupnpc'"
+	irt_nocurl="Disabled the FETCH-Command. If you want to use this feature, please install 'libcurl'"
+	irt_curlssl="Notice: Your 'libcurl' is linked with"
+	irt_nossl="Disabled the SSL Features. If you want to use this feature, please install 'OpenSSL'"
+	irt_notls="Disabled the SSL Features. If you want to use this feature, please install 'GNU TLS'"
+	irt_badssl1="Your 'libcurl' is linked with"
+	irt_badssl2="Please configure"
+	irt_noruby="Disable the RUBY-extension. If you want to use this feature, please install 'libruby'"
+	irt_make1="Type"
+	irt_make2="to compile"
+	irt_noerror="No errors or warnings should appear when compiling, if they do, something is wrong"
+	;;
+esac
+
+echo
+echo "${irt_start} iroffer-dinoex $VERSIONLONG"
 
 waserror()
 {
-echo "You should re-run Configure with the '-error' argument to see the details."
-echo
-exit 72
+  echo "${irt_again}"
+  echo
+  exit 72
 }
 
 FEATURES=""
@@ -126,7 +335,7 @@ do
   -p*) OPT_PROF=true ;;
   -g*) OPT_GEOIP=true ;;
   -c*) OPT_CURL=true ;;
-  -s*) echo "WARNING: Please use -no-openssl"; echo ""; OPT_SSL=false ;; # old
+  -s*) echo "${irt_noopenssl}"; echo ""; OPT_SSL=false ;; # old
   -t*) OPT_TLS=true; OPT_SSL=false ;;
   -u*) OPT_UPNP=true ;;
   -r*) OPT_RUBY=true;;
@@ -137,13 +346,13 @@ do
   -no-o*) OPT_SSL=false ;;
   -no-m*) OPT_NOMEMSAVE=true ;;
   -no-l*) OPT_STATIC=true ;;
-  -m) echo "WARNING: Multinet is now default, remove -m"; echo "" ;; # multinet
+  -m) echo "${irt_multinet}"; echo "" ;; # multinet
   *)  usage ;;
   esac
   shift
 done
 
-echo -n "Determining OS... "
+echo -n "${irt_checkingos}"
 uname
 ostype=`uname`
 installgroup="root"
@@ -181,7 +390,7 @@ case "$ostype" in
   exe=.exe
   
   # only 1.5.6 or later is supported
-  echo -n "Checking for cygwin >= 1.5.6... "
+  echo -n "${irt_checkfor} >= 1.5.6... "
   ver=`uname -r | cut -d '(' -f 1`
   VERSIONLONG="${VERSIONLONG} (Win32) $ver"
   ver_A=`echo $ver | cut -d '.' -f 1`
@@ -195,30 +404,30 @@ case "$ostype" in
      ]; then
    echo "OK, $ver"
   else
-   echo "***ERROR***: $ver < 1.5.6"
+   echo "${irt_error} $ver < 1.5.6"
    waserror
   fi
   ;;
  *)
-  echo "***ERROR***: This OS is not supported"
+  echo "${irt_error} ${irt_notsupported}"
   waserror
   ;;
 esac
 
-echo "/* Automatically Generated, Do Not Edit */" > src/iroffer_config.h
+echo "/* ${irt_noedit} */" > src/iroffer_config.h
 echo "" >> src/iroffer_config.h
 
 echo "#define VERSIONLONG \"$VERSIONLONG\"" >> src/iroffer_config.h
 echo "#define _OS_$ostype" >> src/iroffer_config.h
 
 if $OPT_ERRORS; then
- echo "Printing Errors During Execution..."
+ echo "${irt_showerror}"
 else
  exec 2>/dev/null
 fi
 
 if $OPT_DEBUG; then
-echo "Configuring for debugging."
+echo "${irt_start} ${irt_debugging}."
 echo "#define DEBUG" >> src/iroffer_config.h
 DEBUG="-g"
 case "${cctype}" in
@@ -281,7 +490,7 @@ DEBUG="-O2"
 fi
 
 if $OPT_WARN; then
-echo "Configuring for extra warnings."
+echo "${irt_start} ${irt_extrawarnings}."
 case "${cctype}" in
 *cparser*)
 	WARNS="-Wcast-qual
@@ -317,7 +526,7 @@ esac
 fi
 
 if $OPT_WARN2; then
-echo "Configuring for pedantic warnings."
+echo "${irt_start} ${irt_pedantic}."
 case "${cctype}" in
 *cparser*)
 	WARNS2="
@@ -346,7 +555,7 @@ gcc4*)
 -Wundef
 -Wunreachable-code
 "
-        ;;
+	;;
 *)
 	WARNS2="
 -Wconversion
@@ -366,105 +575,105 @@ esac
 fi
 
 if $OPT_PROF; then
-echo "Configuring for profiling."
+echo "${irt_start} ${irt_profiling}."
 PROF="-pg"
 fi
 
 if $OPT_GEOIP; then
-echo "Configuring for GeoIP."
+echo "${irt_start} GeoIP."
 fi
 
 if $OPT_CURL; then
-echo "Configuring for Curl."
+echo "${irt_start} Curl."
 fi
 
 if ! $OPT_SSL; then
-echo "Configuring without SSL."
+echo "${irt_configure} ${irt_without} SSL."
 fi
 
 if $OPT_TLS; then
-echo "Configuring for GNU TLS."
+echo "${irt_start} GNU TLS."
 OPT_SSL=false
 fi
 
 if $OPT_UPNP; then
-echo "Configuring for UPNP with lminiupnpc."
+echo "${irt_start} UPNP ${irt_with} lminiupnpc."
 fi
 
 if $OPT_NOHTTP; then
-echo "Configuring without HTTP Server."
+echo "${irt_configure} ${irt_without} HTTP Server."
 echo "#define WITHOUT_HTTP" >> src/iroffer_config.h
 fi
 
 if $OPT_NOADMIN; then
-echo "Configuring without HTTP Admin."
+echo "${irt_configure} ${irt_without} HTTP Admin."
 echo "#define WITHOUT_HTTP_ADMIN" >> src/iroffer_config.h
 fi
 
 if $OPT_NOTELNET; then
-echo "Configuring without Telnet Server."
+echo "${irt_configure} ${irt_without} Telnet Server."
 echo "#define WITHOUT_TELNET" >> src/iroffer_config.h
 fi
 
 if $OPT_NOBLOWFISH; then
-echo "Configuring without blowfish encryption."
+echo "${irt_configure} ${irt_without} ${irt_blowfish}."
 echo "#define WITHOUT_BLOWFISH" >> src/iroffer_config.h
 fi
 
 if $OPT_NOMEMSAVE; then
-echo "Configuring without memory protection."
+echo "${irt_configure} ${irt_without} ${irt_memory}."
 echo "#define WITHOUT_MEMSAVE" >> src/iroffer_config.h
 fi
 
-echo -n "Checking for make... "
+echo -n "${irt_checkfor} make... "
 if [ -f "`type make | awk '{print $NF}'`" ]; then
  maketype="make"
  if [ -x "`type $maketype | awk '{print $NF}'`" ]; then
-  echo "found $maketype"
+  echo "${irt_found} $maketype"
  else
-  echo "found $maketype. ***ERROR***: You are not allowed to execute $maketype"
+  echo "${irt_found} $maketype. ${irt_error} ${irt_noexec} $maketype"
   waserror
  fi
 elif [ -f "`type gmake | awk '{print $NF}'`" ]; then
  maketype="gmake"
  if [ -x "`type $maketype | awk '{print $NF}'`" ]; then
-  echo "found $maketype"
+  echo "${irt_found} $maketype"
  else
-  echo "found $maketype. ***ERROR***: You are not allowed to execute $maketype"
+  echo "${irt_found} $maketype. ${irt_error} ${irt_noexec} $maketype"
   waserror
  fi
 else
- echo "not found. ***ERROR***: Couldn't find make or gmake"
+ echo "${irt_notfound}. ${irt_error} ${irt_nomake}"
  maketype="make"
  waserror
 fi
 
-echo -n "Checking for gcc/cc... "
+echo -n "${irt_checkfor} gcc/cc... "
 ccrun=`type $cctype | awk '{print $NF}'`
 if [ -f "${ccrun}" ]; then
  if [ -x "${ccrun}" ]; then
-  echo "found $cctype"
+  echo "${irt_found} $cctype"
  else
-  echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
+  echo "${irt_found} $cctype. ${irt_error} ${irt_noexec} $cctype"
   waserror
  fi
 else
  cctype="cc"
  if [ -f "${ccrun}" ]; then
   if [ -x "${ccrun}" ]; then
-   echo "found $cctype"
+   echo "${irt_found} $cctype"
   else
-   echo "found $cctype. ***ERROR***: You are not allowed to execute $cctype"
+   echo "${irt_found} $cctype. ${irt_error} ${irt_noexec} $cctype"
    waserror
   fi
  else
-  echo "not found. ***ERROR***: Couldn't find gcc or cc"
+  echo "${irt_notfound}. ${irt_error} ${irt_nocc}"
   maketype="gcc"
   waserror
  fi
 fi
 
-echo -n "Seeing if $cctype works... "
+echo -n "${irt_seeingif} $cctype ${irt_works}... "
 echo "
 #include <stdlib.h>
 int
@@ -474,13 +683,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "yes"
+ echo "${irt_yes}"
 else
- echo " ***ERROR***: $cctype didn't seem to work."
+ echo " ${irt_error} $cctype ${irt_nowork}."
  waserror
 fi
 
-echo -n "Seeing if $cctype accepts '-Wall'... "
+echo -n "${irt_seeingif} $cctype ${irt_accepts} '-Wall'... "
 echo "
 #include <stdlib.h>
 int
@@ -490,13 +699,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp -Wall $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "yes"
+ echo "${irt_yes}"
  WARNS="-Wall $WARNS"
 else
- echo " no"
+ echo " ${irt_no}"
 fi
 
-echo -n "Seeing if $cctype accepts '-Werror'... "
+echo -n "${irt_seeingif} $cctype ${irt_accepts} '-Werror'... "
 echo "
 #include <stdlib.h>
 int
@@ -506,14 +715,14 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp -Werror $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "yes"
+ echo "${irt_yes}"
  WERROR="-Werror"
 else
- echo " no"
+ echo " ${irt_no}"
 fi
 
 
-echo -n "Seeing how to define a 16 bit integer... "
+echo -n "${irt_seeing16bit}... "
 echo "
 #include <stdlib.h>
 #include <stdio.h>
@@ -535,12 +744,12 @@ elif $cctype -o config.temp -DC_IR_INT16="int" $WARNS $WERROR $CFLAGS config.tem
  echo "typedef int ir_int16;" >> src/iroffer_config.h
  echo "typedef unsigned int ir_uint16;" >> src/iroffer_config.h
 else
- echo "Unknown. ***ERROR***: neither short or int worked."
+ echo "${irt_unknown}. ${irt_error} ${irt_neither1} 'short' ${irt_neither2} 'int' ${irt_neither3}."
  waserror
 fi
 
 
-echo -n "Seeing how to define a 32 bit integer... "
+echo -n "${irt_seeing32bit}... "
 echo "
 #include <stdlib.h>
 #include <stdio.h>
@@ -570,11 +779,11 @@ elif $cctype -o config.temp -DC_IR_INT32="short" $WARNS $WERROR $CFLAGS config.t
  echo "typedef short ir_int32;" >> src/iroffer_config.h
  echo "typedef unsigned short ir_uint32;" >> src/iroffer_config.h
 else
- echo "Unknown. ***ERROR***: neither short, int, long or long long worked."
+ echo "${irt_unknown}. ${irt_error} ${irt_neither1} 'short', 'int', 'long' ${irt_neither2} 'long long' ${irt_neither3}."
  waserror
 fi
 
-echo -n "Seeing how to define a 64 bit integer... "
+echo -n "${irt_seeing64bit}... "
 echo "
 #include <stdlib.h>
 #include <stdio.h>
@@ -604,12 +813,12 @@ elif $cctype -o config.temp -DC_IR_INT64="short" $WARNS $WERROR $CFLAGS config.t
  echo "typedef short ir_int64;" >> src/iroffer_config.h
  echo "typedef unsigned short ir_uint64;" >> src/iroffer_config.h
 else
- echo "Unknown. ***ERROR***: neither short, int, long or long long worked."
+ echo "${irt_unknown}. ${irt_error} ${irt_neither1} 'short', 'int', 'long' ${irt_neither2} 'long long' ${irt_neither3}."
  waserror
 fi
 
 if [ "$ostype" = CYGWIN ]; then
-  echo -n "Checking if AF_INET6 is defined ... "
+  echo -n "${irt_checkif} AF_INET6 ${irt_isdefined}... "
   echo "
 #include <stdlib.h>
 #include <stdio.h>
@@ -624,15 +833,15 @@ main (int argc, char **argv) {
  }
 " > config.temp.c
  if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-  echo "looks good"
+  echo "${irt_yes}"
  else
-  echo "failed, IPv6 will not work."
+  echo "${irt_noipv6}."
   echo "#define AF_INET6 23" >> src/iroffer_config.h
   CFLAGS="$CFLAGS -DUSE_IPV6=1"
  fi
 fi
 
-echo -n "Seeing if compiling with standard #include's works... "
+echo -n "${irt_seeingif} ${irt_compiling} ${irt_works}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -645,14 +854,14 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp -DSIGNEDSOCK=signed $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "looks good"
+ echo "${irt_yes}"
 else
- echo " ***ERROR***: couldn't build with standard #include's"
+ echo " ${irt_error} ${irt_nocompiling}."
  waserror
 fi
 
 
-echo -n "Seeing how large FD_SETSIZE is... "
+echo -n "${irt_seeinghow} ${irt_large} FD_SETSIZE ${irt_is}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -666,17 +875,17 @@ if $cctype -o config.temp.p -E $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $li
  echo -n " $setsize"
  
  if [ "$ostype" = CYGWIN -a $setsize -le 255 ]; then
-   echo ", Boosting up to 255"
+   echo ", ${irt_boosting} 255"
    echo "#define FD_SETSIZE 255" >> src/iroffer_config.h
  else
    echo
  fi
 else
- echo " ***ERROR***: couldn't determine it"
+ echo " ${irt_error} ${irt_novalue}."
  waserror
 fi
 
-echo -n "Determining endianness... "
+echo -n "${irt_endianness}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -692,18 +901,18 @@ main (int argc, char **argv) {
  }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "big" ]; then
- echo "big"
+ echo "${irt_endianbig}"
  echo "#define IR_ENDIAN_BIG" >> src/iroffer_config.h
 elif [ "`./config.temp`" = "little" ]; then
- echo "little"
+ echo "${irt_endianlittle}"
  echo "#define IR_ENDIAN_LITTLE" >> src/iroffer_config.h
 else
- echo "Unknown. ***ERROR***"
+ echo "${irt_unknown}. ${irt_error}."
  waserror
 fi
 
 
-echo -n "Seeing if large file support works... "
+echo -n "${irt_seeingif} ${irt_largefile} ${irt_works}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -723,14 +932,14 @@ main (int argc, char **argv) {
  }
 " > config.temp.c
 if $cctype -o config.temp -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "yes"
+ echo "${irt_yes}"
  echo "#define _FILE_OFFSET_BITS 64" >> src/iroffer_config.h
  echo "#define _LARGEFILE_SOURCE" >> src/iroffer_config.h
 else
- echo "No.  Max filesize will be 2GB."
+ echo "${irt_nolargefile}."
 fi
 
-echo -n "Determing the signedness of 'addrlen'... "
+echo -n "${irt_signedness} 'addrlen'... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -753,13 +962,13 @@ elif $cctype -o config.temp -DSIGNEDSOCK=unsigned $WARNS $WERROR $CFLAGS config.
  echo "unsigned"
  echo "#define SIGNEDSOCK unsigned" >> src/iroffer_config.h
 else
- echo "Unknown. ***ERROR***: neither signed or unsigned worked."
+ echo "${irt_unknown}. ${irt_error} ${irt_neither1} 'signed' ${irt_neither2} 'unsigned' ${irt_neither3}."
  echo "#define SIGNEDSOCK signed" >> src/iroffer_config.h
  waserror
 fi
 
 
-echo -n "Seeing how to display 64bit using printf... "
+echo -n "${irt_seeinghow} ${irt_display_int64} printf... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -787,13 +996,13 @@ elif $cctype -o config.temp -DLLPRINTFMT=\"l\" $WARNS $WERROR $CFLAGS config.tem
  echo "l"
  echo "#define LLPRINTFMT \"l\"" >> src/iroffer_config.h
 else
- echo "Unknown. ***ERROR***: neither ll, l, or L worked."
+ echo "${irt_unknown}. ${irt_error} ${irt_neither1} 'll', 'l', ${irt_neither2} 'L' ${irt_neither3}."
  echo "#define LLPRINTFMT \"L\"" >> src/iroffer_config.h
  waserror
 fi
 
 
-echo -n "Seeing how to display time_t using printf... "
+echo -n "${irt_seeinghow} ${irt_display_time} printf... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -824,13 +1033,13 @@ elif $cctype -o config.temp -DTTPRINTFMT=\"i\" $WARNS $WERROR $CFLAGS config.tem
  echo "i"
  echo "#define TTPRINTFMT \"i\"" >> src/iroffer_config.h
 else
- echo "Unknown. ***ERROR***: neither Li, lli, li or i worked."
+ echo "${irt_unknown}. ${irt_error} ${irt_neither1} 'Li', 'lli', 'li' ${irt_neither2} 'i' ${irt_neither3}."
  echo "#define TTPRINTFMT \"\"" >> src/iroffer_config.h
  waserror
 fi
 
 
-echo -n "Checking for snprintf()... "
+echo -n "${irt_checkfor} snprintf()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -843,13 +1052,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {char *s=0; snprintf(s,10,\"blah\"); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "found"
+ echo "${irt_found}"
 else
  echo "#define NO_SNPRINTF" >> src/iroffer_config.h
- echo "missing, will emulate"
+ echo "${irt_msssing1}, ${irt_msssing2}"
 fi
 
-echo -n "Checking for strcasecmp()... "
+echo -n "${irt_checkfor} strcasecmp()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -862,13 +1071,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {(void)strcasecmp(\"blah\",\"blah\"); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "found"
+ echo "${irt_found}"
 else
  echo "#define NO_STRCASECMP" >> src/iroffer_config.h
- echo "missing, will emulate"
+ echo "${irt_msssing1}, ${irt_msssing2}."
 fi
 
-echo -n "Checking for strcasestr()... "
+echo -n "${irt_checkfor} strcasestr()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -881,14 +1090,14 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {(void)strcasestr(\"blah\",\"blah\"); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "found"
+ echo "${irt_found}"
 else
  echo "#define NO_STRCASESTR" >> src/iroffer_config.h
  echo "#define strcasestr(a,b) strstr(a,b)" >> src/iroffer_config.h
- echo "missing, will emulate"
+ echo "${irt_msssing1}, ${irt_msssing2}."
 fi
 
-echo -n "Checking for strsignal()... "
+echo -n "${irt_checkfor} strsignal()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -901,13 +1110,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {strsignal(1); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "found"
+ echo "${irt_found}"
 else
  echo "#define NO_STRSIGNAL" >> src/iroffer_config.h
- echo "missing, will emulate"
+ echo "${irt_msssing1}, ${irt_msssing2}."
 fi
 
-echo -n "Seeing if 'sys/mman.h' exists... "
+echo -n "${irt_seeingif} 'sys/mman.h' ${irt_exists}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -921,12 +1130,12 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp.o -c -DHAS_SYS_MMAN_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  echo "#define HAS_SYS_MMAN_H" >> src/iroffer_config.h
- echo "found"
+ echo "${irt_found}"
 else
- echo "not found"
+ echo "${irt_notfound}"
 fi
 
-echo -n "Seeing if 'sys/sendfile.h' exists... "
+echo -n "${irt_seeingif} 'sys/sendfile.h' ${irt_exists}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -940,12 +1149,12 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp.o -c -DHAS_SYS_SENDFILE_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  echo "#define HAS_SYS_SENDFILE_H" >> src/iroffer_config.h
- echo "found"
+ echo "${irt_found}"
 else
- echo "not found"
+ echo "${irt_notfound}"
 fi
 
-echo -n "Seeing if 'sys/vfs.h' exists... "
+echo -n "${irt_seeingif} 'sys/vfs.h' ${irt_exists}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -959,12 +1168,12 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp.o -c -DHAS_SYS_VFS_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  echo "#define HAS_SYS_VFS_H" >> src/iroffer_config.h
- echo "found"
+ echo "${irt_found}"
 else
- echo "not found"
+ echo "${irt_notfound}"
 fi
 
-echo -n "Seeing if 'sys/statfs.h' exists... "
+echo -n "${irt_seeingif} 'sys/statfs.h' ${irt_exists}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -978,12 +1187,12 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp.o -c -DHAS_SYS_STATFS_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  echo "#define HAS_SYS_STATFS_H" >> src/iroffer_config.h
- echo "found"
+ echo "${irt_found}"
 else
- echo "not found"
+ echo "${irt_notfound}"
 fi
 
-echo -n "Seeing if 'sys/param.h' exists... "
+echo -n "${irt_seeingif} 'sys/param.h' ${irt_exists}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -997,12 +1206,12 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp.o -c -DHAS_SYS_PARAM_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  echo "#define HAS_SYS_PARAM_H" >> src/iroffer_config.h
- echo "found"
+ echo "${irt_found}"
 else
- echo "not found"
+ echo "${irt_notfound}"
 fi
 
-echo -n "Seeing if 'sys/mount.h' exists... "
+echo -n "${irt_seeingif} 'sys/mount.h' ${irt_exists}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1016,12 +1225,12 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp.o -c -DHAS_SYS_MOUNT_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  echo "#define HAS_SYS_MOUNT_H" >> src/iroffer_config.h
- echo "found"
+ echo "${irt_found}"
 else
- echo "not found"
+ echo "${irt_notfound}"
 fi
 
-echo -n "Seeing if 'sys/statvfs.h' exists... "
+echo -n "${irt_seeingif} 'sys/statvfs.h' ${irt_exists}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1035,12 +1244,12 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp.o -c -DHAS_SYS_STATVFS_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  echo "#define HAS_SYS_STATVFS_H" >> src/iroffer_config.h
- echo "found"
+ echo "${irt_found}"
 else
- echo "not found"
+ echo "${irt_notfound}"
 fi
 
-echo -n "Checking for statvfs()... "
+echo -n "${irt_checkfor} statvfs()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1053,13 +1262,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {struct statvfs stf; statvfs(\"\",&stf); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "found"
+ echo "${irt_found}"
 else
  echo "#define NO_STATVFS" >> src/iroffer_config.h
- echo "missing"
+ echo "${irt_msssing1}"
 fi
 
-echo -n "Checking for statfs()... "
+echo -n "${irt_checkfor} statfs()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1072,13 +1281,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {struct statfs stf; statfs(\"\",&stf); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "found"
+ echo "${irt_found}"
 else
  echo "#define NO_STATFS" >> src/iroffer_config.h
- echo "missing"
+ echo "${irt_msssing1}"
 fi
 
-echo -n "Seeing if 'crypt.h' is needed... "
+echo -n "${irt_seeingif} 'crypt.h' ${irt_isneeded}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1091,36 +1300,36 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {crypt(\"aaaaaaaa\",\"aa\"); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp.o -c $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
- echo "not needed"
+ echo "${irt_notneeded}"
 elif $cctype -o config.temp.o -c -DHAS_CRYPT_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  echo "#define HAS_CRYPT_H" >> src/iroffer_config.h
- echo "needed"
+ echo "${irt_needed}"
 else
- echo "Missing. ***ERROR***: couldn't find crypt() with or without crypt.h"
+ echo "${irt_msssing1}. ${irt_error} ${irt_nocrypt}."
  echo "#define HAS_CRYPT_H" >> src/iroffer_config.h
  waserror
 fi
 
-echo -n "Seeing if '-lcrypt' is needed... "
+echo -n "${irt_seeingif} '-lcrypt' ${irt_isneeded}... "
 if $cctype -o config.temp config.temp.o $WARNS $WERROR $CFLAGS $LDFLAGS $libs $LIBS; then
- echo "not needed"
+ echo "${irt_notneeded}"
 elif $cctype -o config.temp config.temp.o -lcrypt $WARNS $WERROR $CFLAGS $LDFLAGS $libs $LIBS; then
  libs="$libs -lcrypt"
- echo "needed"
+ echo "${irt_needed}"
 else
- echo "Neither!"
- echo -n "Seeing if '-lcrypto' works instead... "
+ echo "${irt_neither4}!"
+ echo -n "${irt_seeingif} '-lcrypto' ${irt_worksinstead}... "
  if $cctype -o config.temp config.temp.o -lcrypto $WARNS $WERROR $CFLAGS $LDFLAGS $libs $LIBS; then
   libs="$libs -lcrypto"
-  echo "yes"
+  echo "${irt_yes}"
  else
-  echo "Missing. ***ERROR***: couldn't link with or without -lcrypt or -lcrypto"
+  echo "${irt_msssing1}. ${irt_error} ${irt_nolcrypt}"
   libs="$libs -lcrypt"
   waserror
  fi
 fi
 
-echo -n "Seeing if crypt() works as expected... "
+echo -n "${irt_seeingif} crypt() ${irt_works} ${irt_asexpected}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1154,14 +1363,14 @@ main (int argc, char **argv)
   }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && ./config.temp; then
- echo "yes"
+ echo "${irt_yes}"
 else
- echo "no, will disable encrypted passwords"
+ echo "${irt_no}, ${irt_nopassword}."
  echo "#define NO_CRYPT" >> src/iroffer_config.h
 fi
 
 
-echo -n "Checking for chroot()... "
+echo -n "${irt_checkfor} chroot()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1174,13 +1383,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {chroot(\".\"); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 else
 echo "#define NO_CHROOT" >> src/iroffer_config.h
-echo "missing, will desactivate chroot()-ing"
+echo "${irt_msssing1}, ${irt_nochroot}."
 fi
 
-echo -n "Seeing if NSS libraries exist (for chroot)... "
+echo -n "${irt_seeingif_lib} NSS ${irt_lib_exists} (${irt_for} chroot)... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1195,13 +1404,13 @@ main (int argc, char **argv) {exit(0);}
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS -lnss_files -lnss_dns $libs $LIBS; then
 NSSLIBS="-lnss_files -lnss_dns"
 TARGETS="iroffer_chroot$exe"
-echo "found"
+echo "${irt_found}"
 else
 NSSLIBS=""
-echo "missing"
+echo "${irt_msssing1}"
 fi
 
-echo -n "Checking for setuid()... "
+echo -n "${irt_checkfor} setuid()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1214,13 +1423,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {setuid(0); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 else
 echo "#define NO_SETUID" >> src/iroffer_config.h
-echo "missing, will desactivate setuid()-ing"
+echo "${irt_msssing1}, ${irt_nosetuid}."
 fi
 
-echo -n "Checking for getgrouplist()... "
+echo -n "${irt_checkfor} getgrouplist()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1233,14 +1442,14 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {getgrouplist (NULL, 0, NULL, NULL); exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 else
 echo "#define NO_GETGROUPLIST" >> src/iroffer_config.h
-echo "missing, group list will be incorrect when setuid()-ing"
+echo "${irt_msssing1}, ${irt_nogetgrouplist}."
 fi
 
 if [ "x$ostype" = "xLinux" ]; then
-echo -n "Checking for Linux-style sendfile()... "
+echo -n "${irt_checkfor} Linux-style sendfile()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1263,14 +1472,14 @@ main (int argc, char **argv)
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 echo "#define HAVE_LINUX_SENDFILE" >> src/iroffer_config.h
-echo "found"
+echo "${irt_found}"
 else
-echo "missing, won't use sendfile()"
+echo "${irt_msssing1}, ${irt_nosendfile}."
 fi
 fi
 
 if [ "x$ostype" = "xFreeBSD" ]; then
-echo -n "Checking for FreeBSD-style sendfile()... "
+echo -n "${irt_checkfor} FreeBSD-style sendfile()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1297,13 +1506,13 @@ main (int argc, char **argv)
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 echo "#define HAVE_FREEBSD_SENDFILE" >> src/iroffer_config.h
-echo "found"
+echo "${irt_found}"
 else
-echo "missing, won't use sendfile()"
+echo "${irt_msssing1}, ${irt_nosendfile}."
 fi
 fi
 
-echo -n "Checking for mmap()/munmap()... "
+echo -n "${irt_checkfor} mmap()/munmap()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1322,13 +1531,13 @@ main (int argc, char **argv)
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 echo "#define HAVE_MMAP" >> src/iroffer_config.h
-echo "found"
+echo "${irt_found}"
 else
-echo "missing, won't use mmap()"
+echo "${irt_msssing1}, ${irt_nommap}."
 fi
 
 
-echo -n "Checking for name of fd limit... "
+echo -n "${irt_checkfor} ${irt_fdlimit}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1368,12 +1577,12 @@ if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $L
 echo "RLIMIT_OFILE"
 echo "#define USE_OFILE" >> src/iroffer_config.h
 else
-echo "neither work, thats not good"
+echo "${irt_unknown}. ${irt_error} ${irt_nofdlimit}."
 waserror
 fi
 fi
 
-echo -n "Checking for siginfo_t/sa_sigaction... "
+echo -n "${irt_checkfor} siginfo_t/sa_sigaction... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1395,13 +1604,13 @@ main (int argc, char **argv)
 }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 else
 echo "#define NO_SIGINFO" >> src/iroffer_config.h
-echo "missing, will use lame signal handlers"
+echo "${irt_msssing1}, ${irt_nosignal}."
 fi
 
-echo -n "Checking for si_code values... "
+echo -n "${irt_checkfor} 'si_code' ${irt_values}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1439,13 +1648,13 @@ main (int argc, char **argv) {
 }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 else
 echo "#define NO_SIGCODES" >> src/iroffer_config.h
-echo "missing, won't report si_codes"
+echo "${irt_msssing1}, ${irt_nosi_code}."
 fi
 
-echo -n "Checking for wait status values... "
+echo -n "${irt_checkfor} wait() status ${irt_values}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1468,14 +1677,14 @@ main (int argc, char **argv) {
 }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 else
 echo "#define NO_WSTATUS_CODES" >> src/iroffer_config.h
-echo "missing, won't report wait status codes"
+echo "${irt_msssing1}, ${irt_nowait}."
 fi
 
 
-echo -n "Seeing if TOS can be set for IP sockets... "
+echo -n "${irt_seeingif} ${irt_tos}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1493,13 +1702,13 @@ main (int argc, char **argv) {
 }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "yes"
+echo "${irt_yes}"
 else
 echo "#define CANT_SET_TOS" >> src/iroffer_config.h
-echo "no"
+echo "${irt_no}"
 fi
 
-echo -n "Checking for getaddrinfo ... "
+echo -n "${irt_checkfor} getaddrinfo()... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1522,13 +1731,13 @@ main (int argc, char **argv) {
 }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 else
 echo "#define NO_GETADDRINFO" >> src/iroffer_config.h
-echo "missing, will use gethostbyname instead"
+echo "${irt_msssing1}, ${irt_nogetaddrinfo}."
 fi
 
-echo -n "Checking for gethostbyname error values... "
+echo -n "${irt_checkfor} gethostbyname() error ${irt_values}... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1557,13 +1766,13 @@ main (int argc, char **argv) {
 }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 else
 echo "#define NO_HOSTCODES" >> src/iroffer_config.h
-echo "missing, won't report error codes"
+echo "${irt_msssing1}, ${irt_nogethostbyname}."
 fi
 
-echo -n "Checking for res_init() ... "
+echo -n "${irt_checkfor} res_init() ... "
 echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1580,14 +1789,14 @@ main (int argc, char **argv) {
 }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-echo "found"
+echo "${irt_found}"
 echo "#define WITH_RESINIT" >> src/iroffer_config.h
 else
-echo "missing, won't use res_init()"
+echo "${irt_msssing1}, ${irt_nores_init}."
 fi
 
 if $OPT_GEOIP; then
-	echo -n "Seeing if GeoIP libraries exist ... "
+	echo -n "${irt_seeingif_lib} GeoIP ${irt_lib_exists}... "
 	echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1601,13 +1810,13 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) { GeoIP_country_code_by_addr(NULL, NULL);; exit(0);}
 " > config.temp.c
 	if $cctype -o config.temp -DUSE_GEOIP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lGeoIP $LDFLAGS $libs $LIBS; then
-		echo "found"
+		echo "${irt_found}"
 		echo "#define USE_GEOIP" >> src/iroffer_config.h
 		FEATURES="${FEATURES},geoip"
 		GEOLIB="-lGeoIP"
 		GEOINC="-I${LOCALBASE}/include"
 		GEOLDF="-L${LOCALBASE}/lib"
-		echo -n "Seeing if GeoIP has IPv6 support ... "
+		echo -n "${irt_seeingif} ${irt_geoip6}... "
 		echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1622,20 +1831,20 @@ main (int argc, char **argv) { struct in6_addr remoteip; GeoIP_country_code_by_i
 " > config.temp.c
 		if $cctype -o config.temp -DUSE_GEOIP6 $WARNS $WERROR $CFLAGS ${GEOINC} config.temp.c ${GEOLDF} ${GEOLIB} $LDFLAGS $libs $LIBS; then
 			FEATURES="${FEATURES}6"
-			echo "found"
+			echo "${irt_found}"
 			echo "#define USE_GEOIP6" >> src/iroffer_config.h
 		else
-			echo "not found"
-			echo "***Disabled the GeoIP for IPv6. If u want to use this feature, please update liblGeoIP.***"
+			echo "${irt_notfound}"
+			echo "***${irt_nogeoip6}.***"
 		fi
 	else
-		echo "not found"
-		echo "***Disabled the GeoIP-check. If u want to use this feature, please install liblGeoIP.***"
+		echo "${irt_notfound}"
+		echo "***${irt_nogeoip}.***"
 	fi
 fi
 
 if $OPT_UPNP; then
-	echo -n "Seeing if miniupnpc libraries exist ... "
+	echo -n "${irt_seeingif_lib} miniupnpc ${irt_lib_exists}... "
 	echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1651,20 +1860,20 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) { upnpDiscover(2000, NULL, NULL, 0); exit(0);}
 " > config.temp.c
 	if $cctype -o config.temp -DUSE_UPNP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lminiupnpc $LDFLAGS $libs $LIBS; then
-		echo "found"
+		echo "${irt_found}"
 		echo "#define USE_UPNP" >> src/iroffer_config.h
 		FEATURES="${FEATURES},upnp"
 		UPNPLIB="-lminiupnpc"
 		UPNPINC="-I${LOCALBASE}/include"
 		UPNPLDF="-L${LOCALBASE}/lib"
 	else
-		echo "not found"
-		echo "***Disabled the UPNP-feature. If u want to use this feature, please install liblminiupnpc.***"
+		echo "${irt_notfound}"
+		echo "***${irt_noupnp}.***"
 	fi
 fi
 
 if $OPT_CURL; then
-	echo -n "Seeing if libcurl libraries exist (for the FETCH-Command)... "
+	echo -n "${irt_seeingif_lib} libcurl ${irt_lib_exists} (${irt_for} FETCH-Command)... "
 	echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1677,7 +1886,7 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype -o config.temp -DUSE_CURL $WARNS $CFLAGS `curl-config  --cflags` config.temp.c "-L${LOCALBASE}/lib" `curl-config  --libs` $LDFLAGS $libs $LIBS; then
-		echo "found"
+		echo "${irt_found}"
 		echo "#define USE_CURL" >> src/iroffer_config.h
 		FEATURES="${FEATURES},curl"
 		CURLLIB=`curl-config  --libs`
@@ -1685,21 +1894,21 @@ main (int argc, char **argv) {exit(0);}
 		CURLLDF="-L${LOCALBASE}/lib"
 		curlssl=`ldd config.temp | grep libssl`
 		if test "${curlssl}" != ""; then
-			echo "Notice: Your libcurl is linked with OpenSSL."
+			echo "${irt_curlssl} OpenSSL."
 		else
 			curltls=`ldd config.temp | grep libgnutls`
 			if test "${curltls}" != ""; then
-				echo "Notice: Your libcurl is linked with GNU TLS."
+				echo "${irt_curlssl} GNU TLS."
 			fi
 		fi
 	else
-		echo "not found"
-		echo "***Disabled the FETCH-Command. If u want to use this feature, please install libcurl.***"
+		echo "${irt_notfound}"
+		echo "***${irt_nocurl}.***"
 	fi
 fi
 
 if $OPT_SSL; then
-	echo -n "Seeing if OpenSSL libraries exist... "
+	echo -n "${irt_seeingif_lib} OpenSSL ${irt_lib_exists}... "
 	echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1712,26 +1921,26 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype -o config.temp -DUSE_OPENSSL $WARNS $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lssl -lcrypto $LDFLAGS $libs $LIBS; then
-		echo "found"
-		echo "Configuring for OpenSSL."
+		echo "${irt_found}"
+		echo "${irt_start} OpenSSL."
 		echo "#define USE_OPENSSL" >> src/iroffer_config.h
 		FEATURES="${FEATURES},openssl"
 		SSLLIB="-lssl -lcrypto"
 		SSLINC="-I${LOCALBASE}/include"
 		SSLLDF="-L${LOCALBASE}/lib"
 	else
-		echo "not found"
-		echo "***Disabled the SSL Features. If u want to use this feature, please install OpenSSL.***"
+		echo "${irt_notfound}"
+		echo "***${irt_nossl}."
 	fi
 	if test "${curltls}" != ""; then
-		echo "*** Your libcurl is linked with GNU TLS, Please configure GNU TLS."
+		echo "*** ${irt_badssl1} 'GNU TLS', ${irt_badssl2} 'GNU TLS'."
 		waserror
 	fi
 fi
 
 
 if $OPT_TLS; then
-	echo -n "Seeing if GNU TLS libraries exist... "
+	echo -n "${irt_seeingif_lib} GNU TLS ${irt_lib_exists}... "
 	echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
@@ -1744,18 +1953,18 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 	if $cctype -o config.temp -DUSE_GNUTLS $WARNS $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lgnutls $LDFLAGS $libs $LIBS; then
-		echo "found"
+		echo "${irt_found}"
 		echo "#define USE_GNUTLS" >> src/iroffer_config.h
 		FEATURES="${FEATURES},gnutls"
 		SSLLIB="-lgnutls"
 		SSLINC="-I${LOCALBASE}/include"
 		SSLLDF="-L${LOCALBASE}/lib"
 	else
-		echo "not found"
-		echo "***Disabled the SSL Features. If u want to use this feature, please install GNU TLS.***"
+		echo "${irt_notfound}"
+		echo "***${irt_notls}."
 	fi
 	if test "${curlssl}" != ""; then
-		echo "*** Your libcurl is linked with OpenSSL, Please configure OpenSSL."
+		echo "*** ${irt_badssl1} 'OpenSSL', ${irt_badssl2} 'OpenSSL'."
 		waserror
 	fi
 fi
@@ -1777,7 +1986,7 @@ if $OPT_RUBY; then
 	else
 		incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}" 
 	fi
-	echo -n "Seeing if libruby libraries exist (for the RUBY-Scripts)... "
+	echo -n "${irt_seeingif_lib} libruby ${irt_lib_exists} (${irt_for} RUBY-Scripts)... "
 	echo "
 #include \"ruby.h\"
 int
@@ -1787,8 +1996,8 @@ __attribute__ ((noreturn))
 main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 " > config.temp.c
 	if $cctype -o config.temp -DUSE_RUBY $WARNS $CFLAGS ${incruby} config.temp.c ${libruby} $LDFLAGS $libs $LIBS; then
-		echo "found"
-		echo "Configuring for Ruby."
+		echo "${irt_found}"
+		echo "${irt_start} Ruby."
 		echo "#define USE_RUBY" >> src/iroffer_config.h
 		echo "#define USE_RUBYVERSION ${rubyversion}" >> src/iroffer_config.h
 		FEATURES="${FEATURES},ruby"
@@ -1798,8 +2007,8 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 		RUBYLDF="-L${LOCALBASE}/lib"
 		WERROR2=""
 	else
-		echo "not found"
-		echo "***Disable the RUBY-extension. If u want to use this feature, please install libruby.***"
+		echo "${irt_notfound}"
+		echo "***${irt_noruby}.***"
 	fi
 fi
 if $OPT_STATIC; then
@@ -1812,13 +2021,13 @@ if test "${FEATURES}" != ""; then
 	FEATURES=" - ${FEATURES#,}"
 fi
 echo "#define FEATURES \"${FEATURES}\"" >> src/iroffer_config.h
-echo "Creating src/iroffer_config.h... Done"
+echo "${irt_creating} src/iroffer_config.h... ${irt_done}"
 
-echo -n "Creating Makefile... "
+echo -n "${irt_creating} Makefile... "
 
 cp /dev/null Makefile
 (
-echo "# Automatically Generated, Do Not Edit #"
+echo "# ${irt_noedit} #"
 echo
 echo VERSION=$VERSION
 echo CC=$cctype
@@ -1837,10 +2046,10 @@ echo
 cat Makefile.config 
 ) > Makefile
 
-echo Done
+echo "${irt_done}"
 echo
-echo "Type \"$maketype\" to compile"
-echo "No errors or warnings should appear when compiling, if they do, something is wrong"
+echo "${irt_make1} \"$maketype\" ${irt_make2}"
+echo "${irt_noerror}"
 echo
 
 # end
