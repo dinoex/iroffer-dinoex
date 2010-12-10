@@ -220,6 +220,7 @@ void l_transfersome (upload * const l) {
          mysize = 1;
          
       tempstr = mymalloc(maxtextlength);
+      tempstr[0] = 0;
       
       if (timetook > (60*60))
         {
