@@ -199,6 +199,7 @@ typedef struct {
   unsigned int restrictsend;
   unsigned int restrictlist;
   int need_level;
+  int idummy;
   how_e r_connectionmethod;
   userinput_method_e lag_method;
 
@@ -208,6 +209,7 @@ typedef struct {
   unsigned long r_ourip;
 
   ir_sockaddr_union_t myip;
+  int cdummy;
 } gnetwork_t;
 
 extern gnetwork_t *gnetwork;
