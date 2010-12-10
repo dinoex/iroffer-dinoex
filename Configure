@@ -267,7 +267,7 @@ de*)
 	irt_msssing2="benutze Ersatz"
 	irt_exists="existiert"
 	irt_isneeded="benötigt wird"
-	irt_notneeded="nicht benötigt"
+	irt_notneeded="wird nicht benötigt"
 	irt_needed="wird benötigt"
 	irt_nocrypt="kann crypt() weder mit noch ohne crypt.h finden"
 	irt_nolcrypt="kannt weder mit noch ohne -lcrypt oder -lcrypto binden"
