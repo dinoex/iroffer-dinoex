@@ -51,7 +51,7 @@ usage()
 	echo "   -profiling   Benutze 'profiling' Funktionen"
 	echo "   -warn        Aktiviere alle Warnungen beim Uebersetzen"
 	echo "   -geoip       Benutze GeoIP Bibliothek (fuer IP nach Land)"
-	echo "   -curl        Benutze Curl Bibliothek (fuer the FETCH-Befehl)"
+	echo "   -curl        Benutze Curl Bibliothek (fuer den FETCH-Befehl)"
 	echo "   -tls         Benutze GNU TLS Bibliothek (anstelle von OpenSSL)"
 	echo "   -upnp        Benutze miniupnpc Bibliothek (fuer UPNP-NAT Routers)"
 	echo "   -ruby        Benutze RUBY Skript Erweiterung"
