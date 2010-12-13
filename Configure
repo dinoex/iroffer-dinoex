@@ -2009,11 +2009,12 @@ if $OPT_CURL; then
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
 #include \"src/iroffer_globals.h\"
+#include <curl/curl.h>
 int
 #ifdef __GNUC__
 __attribute__ ((noreturn))
 #endif
-main (int argc, char **argv) {exit(0);}
+main (int argc, char **argv) {curl_global_cleanup(); exit(0);}
 " > config.temp.c
 	if $cctype -o config.temp -DUSE_CURL $WARNS $CFLAGS `curl-config  --cflags` config.temp.c "-L${LOCALBASE}/lib" `curl-config  --libs` $LDFLAGS $libs $LIBS; then
 		echo "${irt_found}"
