@@ -438,7 +438,6 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
 {
   const char *bad;
   char *end;
-  unsigned int num;
   unsigned int found;
   unsigned int first;
   unsigned int last;
@@ -452,6 +451,7 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
   /* range */
   if (*what == 0)
     return found;
+
   end = strchr(what, '-');
   first = packnumtonum(what);
   if (end == NULL) {
@@ -459,10 +459,10 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
     send_xdcc_file2(&bad, pi, first, NULL, pwd);
     return found;
   }
-  last = packnumtonum(end);
-  for (num = first; num <= last; ++num) {
+  last = packnumtonum(++end);
+  for (; first <= last; ++first) {
     ++found;
-    if (send_xdcc_file2(&bad, pi, num, NULL, pwd))
+    if (send_xdcc_file2(&bad, pi, first, NULL, pwd))
       return found;
   }
   return found;
