@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+bugfix: XDCC BATCH (reported by Aashiqmunda)
+  The end of a range was not checked.
+
 With Version 3.25:
 ------------------
 
