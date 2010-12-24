@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+bugfix: XDCC INFO
+  Zeige die Beschreibung nicht, wenn sie mit dem Dateinamen identisch ist.
+
 bugfix: XDCC BATCH
   Das Ende einen Bereiches wurde nicht geprüft.
 

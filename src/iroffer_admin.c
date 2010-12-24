@@ -1247,9 +1247,13 @@ static void u_info(const userinput * const u)
     {
   u_respond(u, " Filename       %s", sendnamestr);
     }
+
+  if (strcmp(xd->desc, sendnamestr) != 0) 
+    {
+  u_respond(u, " Description    %s", xd->desc);
+    }
   mydelete(sendnamestr);
 
-  u_respond(u, " Description    %s", xd->desc);
   if (xd->note && xd->note[0])
     {
       u_respond(u, " Note           %s", xd->note);
