@@ -605,15 +605,9 @@ static void http_access_log_add(const char *logfile, const char *line, size_t le
   int rc;
   int logfd;
 
-  logfd = open(logfile,
-               O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
-               CREAT_PERMISSIONS);
-  if (logfd < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Cant Access Log File '%s': %s",
-             logfile, strerror(errno));
+  logfd = open_append(logfile, "Access Log");
+  if (logfd < 0)
     return;
-  }
 
   http_access_log_write(logfd, logfile, line, len);
   rc = close(logfd);
