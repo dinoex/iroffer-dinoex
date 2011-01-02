@@ -694,28 +694,12 @@ unsigned int access_need_level(const char *nick, const char *text)
   return 0;
 }
 
-static void mylog_write(int logfd, const char *logfile, const char *msg, size_t len)
-{
-  ssize_t len2;
-
-  len2 = write(logfd, msg, len);
-  if (len2 > 0) {
-    if ((size_t)len2 == len)
-      return;
-  }
-
-  outerror(OUTERROR_TYPE_WARN_LOUD,
-           "Cant Write Log File '%s': %s",
-           logfile, strerror(errno));
-}
-
 /* write a line with timestamp to a logfile */
 void logfile_add(const char *logfile, const char *line)
 {
   char tempstr[maxtextlengthshort];
   char logline[maxtextlength];
   size_t len;
-  int rc;
   int logfd;
 
   if (logfile == NULL)
@@ -728,12 +712,7 @@ void logfile_add(const char *logfile, const char *line)
   getdatestr(tempstr, 0, maxtextlengthshort);
   len = snprintf(logline, maxtextlength, "** %s: %s\n", tempstr, line);
   mylog_write(logfd, logfile, logline, len);
-  rc = close(logfd);
-  if (rc != 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Cant Write Log File '%s': %s",
-             logfile, strerror(errno));
-  }
+  mylog_close(logfd, logfile);
 }
 
 /* clculate current bandwidth as text */

@@ -585,37 +585,16 @@ static const char *get_host(http * const h)
   return host;
 }
 
-static void http_access_log_write(int logfd, const char *logfile, const char *msg, size_t len)
-{
-  ssize_t len2;
-
-  len2 = write(logfd, msg, len);
-  if (len2 > 0) {
-    if ((size_t)len2 == len)
-      return;
-  }
-
-  outerror(OUTERROR_TYPE_WARN_LOUD,
-           "Cant Write Log File '%s': %s",
-           logfile, strerror(errno));
-}
-
 static void http_access_log_add(const char *logfile, const char *line, size_t len)
 {
-  int rc;
   int logfd;
 
   logfd = open_append(logfile, "Access Log");
   if (logfd < 0)
     return;
 
-  http_access_log_write(logfd, logfile, line, len);
-  rc = close(logfd);
-  if (rc != 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Cant Write Log File '%s': %s",
-             logfile, strerror(errno));
-  }
+  mylog_write(logfd, logfile, line, len);
+  mylog_close(logfd, logfile);
 }
 
 static void h_access_log(http * const h)

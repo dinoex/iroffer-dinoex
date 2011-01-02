@@ -1297,6 +1297,13 @@ static int file_not_exits(const char *path)
   return 1;
 }
 
+static void save_unlink_failed(const char *path, const char *dest)
+{
+   outerror(OUTERROR_TYPE_WARN_LOUD,
+            "Cant move file '%s' to '%s': %s",
+            path, dest, strerror(errno));
+}
+
 int save_unlink(const char *path)
 {
   const char *file;
@@ -1314,18 +1321,14 @@ int save_unlink(const char *path)
     while (file_not_exits(dest)) {
       snprintf(dest, len, "%s/%s.%03u", gdata.trashcan_dir, file, ++num);
       if (num >= 200) {
-         outerror(OUTERROR_TYPE_WARN_LOUD,
-                  "Cant move file '%s' to '%s': %s",
-                  path, dest, strerror(errno));
-         mydelete(dest);
-         return -1;
+	save_unlink_failed(path, dest);
+        mydelete(dest);
+        return -1;
       }
     }
     rc = rename(path, dest);
     if (rc != 0) {
-      outerror(OUTERROR_TYPE_WARN_LOUD,
-               "Cant move file '%s' to '%s': %s",
-               path, dest, strerror(errno));
+      save_unlink_failed(path, dest);
       mydelete(dest);
       return -1;
     }
