@@ -1938,11 +1938,14 @@ void createpassword(void) {
    pwout = crypt(pw1,salt);
    
    if (pwout && strlen(pwout) >= 13U)
+     {
+       if (add_password(pwout) != 0)
       printf("\n"
              "To use \"%s\" as your password use the following in your config file:\n"
              "adminpass %s\n"
              "\n"
              ,pw1,pwout);
+     }
    else
       printf("\n"
              "The crypt() function does not appear to be working correctly\n"

@@ -160,6 +160,29 @@ void command_options(int argc, char *const *argv)
   }
 }
 
+/* add the adminpassword to the configfile */
+int add_password(const char *hash)
+{
+  char *line;
+  size_t len;
+  int fd;
+
+  if (gdata.configfile[0] == NULL)
+    return 1;
+
+  fd = open_append(gdata.configfile[0], "Configfile");
+  if (fd < 0)
+    return 1;
+
+  line = mymalloc(maxtextlength);
+  len = snprintf(line, maxtextlength, "\n"
+           "%s %s\n" "\n", "adminpass", hash);
+  write(fd, line, len);
+  mydelete(line)
+  close(fd);
+  return 0;
+}
+
 static void outerror_sysname(const char *configured, const char *sysname)
 {
   if (strcmp(sysname, configured))

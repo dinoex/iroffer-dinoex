@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+354) iroffer mybot.config -c
+  If a configfile is given before -c option,
+  the encrypted password will not be printed,
+  but directly added to the end of the configfile.
+
 bugfix: XDCC INFO
   Don't show desc if it is identical with filename.
 
