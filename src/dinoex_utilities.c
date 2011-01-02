@@ -309,6 +309,36 @@ int open_append(const char *filename, const char *text)
   return fd;
 }
 
+static void mylog_write_failed(const char *filename)
+{
+  outerror(OUTERROR_TYPE_WARN_LOUD,
+           "Cant Write Log File '%s': %s",
+           filename, strerror(errno));
+}
+
+/* write data and warn if not all bytes has been written */
+void mylog_write(int fd, const char *filename, const char *msg, size_t len)
+{
+  ssize_t len2;
+
+  len2 = write(fd, msg, len);
+  if (len2 > 0) {
+    if ((size_t)len2 == len)
+      return;
+  }
+  mylog_write_failed(filename);
+}
+
+/* close logfile and warn if not all bytes has been written */
+void mylog_close(int fd, const char *filename)
+{
+  int rc;
+
+  rc = close(fd);
+  if (rc != 0)
+    mylog_write_failed(filename);
+}
+
 /* convert hostmask to fnmatch pattern */
 char *hostmask_to_fnmatch(const char *str)
 {

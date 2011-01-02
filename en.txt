@@ -2419,5 +2419,3 @@
 2754 "Log"
 2755 "Configfile"
 2756 "%s %s\n"
-2755 "Configfile"
-2756 "%s %s\n"
