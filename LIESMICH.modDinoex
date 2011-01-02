@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+354) iroffer mybot.config -c
+  Wenneinen Konfigurationsdatei vor der Option "-c" angegebn ist,
+  so wird das Passwort nicht ausgegeben,
+  sondern direkt an die Konfigurationsdatei angefügt.
+
 bugfix: XDCC INFO
   Zeige die Beschreibung nicht, wenn sie mit dem Dateinamen identisch ist.
 

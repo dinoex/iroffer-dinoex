@@ -15,6 +15,8 @@
 
 void command_options(int argc, char *const *argv);
 
+int add_password(const char *hash);
+
 void check_osname(const char *sysname);
 
 void

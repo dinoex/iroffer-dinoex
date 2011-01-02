@@ -2417,3 +2417,5 @@
 2752 "Admin Job Done"
 2753 "XDCC Remove"
 2754 "Log"
+2755 "Configfile"
+2756 "%s %s\n"
