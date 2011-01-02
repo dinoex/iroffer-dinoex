@@ -721,15 +721,9 @@ void logfile_add(const char *logfile, const char *line)
   if (logfile == NULL)
     return;
 
-  logfd = open(logfile,
-               O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
-               CREAT_PERMISSIONS);
-  if (logfd < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Cant Access Log File '%s': %s",
-             logfile, strerror(errno));
+  logfd = open_append(logfile, "Log");
+  if (logfd < 0)
     return;
-  }
 
   getdatestr(tempstr, 0, maxtextlengthshort);
   len = snprintf(logline, maxtextlength, "** %s: %s\n", tempstr, line);

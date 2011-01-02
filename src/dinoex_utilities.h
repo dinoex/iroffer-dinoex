@@ -37,6 +37,8 @@ void shutdown_close(int handle);
 int get_port(ir_sockaddr_union_t *listenaddr);
 int strcmp_null(const char *s1, const char *s2);
 unsigned int is_file_writeable(const char *f);
+int open_append(const char *filename, const char *text);
+
 char *grep_to_fnmatch(const char *grep);
 char *hostmask_to_fnmatch(const char *str);
 unsigned int verify_group_in_grouplist(const char *group, const char *grouplist);

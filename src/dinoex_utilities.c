@@ -293,6 +293,22 @@ unsigned int is_file_writeable(const char *f)
    return 1;
 }
 
+/* open file to append data */
+int open_append(const char *filename, const char *text)
+{
+  int fd;
+
+  fd = open(filename,
+            O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+            CREAT_PERMISSIONS);
+  if (fd < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD,
+             "Cant Create %s File '%s': %s",
+             text, filename, strerror(errno));
+  }
+  return fd;
+}
+
 /* convert hostmask to fnmatch pattern */
 char *hostmask_to_fnmatch(const char *str)
 {

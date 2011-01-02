@@ -535,14 +535,8 @@ static void admin_run(const char *cmd)
     return;
 
   done = mystrsuffix(job, ".done");
-  fd = open(done,
-            O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
-            CREAT_PERMISSIONS);
-  if (fd < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Cant Create Admin Job Done File '%s': %s",
-             done, strerror(errno));
-  } else {
+  fd = open_append(done, "Admin Job Done");
+  if (fd >= 0) {
     admin_line(fd, cmd);
     close(fd);
   }
@@ -879,16 +873,9 @@ void write_removed_xdcc(xdcc *xd)
   if (gdata.xdccremovefile == NULL)
     return;
 
-  fd = open(gdata.xdccremovefile,
-            O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
-            CREAT_PERMISSIONS);
-
-  if (fd < 0) {
-    outerror(OUTERROR_TYPE_WARN_LOUD,
-             "Cant Create XDCC Remove File '%s': %s",
-             gdata.xdccremovefile, strerror(errno));
+  fd = open_append(gdata.xdccremovefile, "XDCC Remove");
+  if (fd < 0)
     return;
-  }
 
   line = mymalloc(maxtextlength);
   len = snprintf(line, maxtextlength, "\n");
