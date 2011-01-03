@@ -25,14 +25,7 @@ rm -f a.zip
 # Construire la version traduite
 for lang in de it fr en
 do
-	case "${LANG}" in
-	*UTF-8*|*utf-8*)
-		./Lang "${lang}" utf-8
-		;;
-	*)
-		./Lang "${lang}"
-		;;
-	esac
+	./Lang "${lang}"
 	make clean
 	make
 	case "${lang}" in

@@ -1,8 +1,6 @@
 #!/bin/sh
 lang="${1-de}"
 lang="${lang%.txt}"
-charset="${2}"
-utf8="cat"
 if test "${lang}" = "en"
 then
 	for c in src/iroffer*.c src/dinoex*.c
@@ -16,6 +14,21 @@ then
 	done
 	exit 0
 fi
+if test -n "${2}"
+then
+	charset="${2}"
+else
+	# autodetect
+	case "${LANG}" in
+	*.ISO8859-*)
+		charset="latin1"
+		;;
+	*.UTF-8*|*.utf-8*)
+		charset="utf-8"
+		;;
+	esac
+fi
+utf8="cat"
 case "${charset}" in
 u*)
 	echo "utf-8 enabled ..."
