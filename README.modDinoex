@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+bugfix: logstats (reported by LazyTiger)
+  With logstats off, logroate was ignored.
+  With logstats on and no logfile defined, not stats where printed to DCC chat.
+
 bugfix: ./Lang ??
   Detect and use "utf-8" if $LANG is set in the enviroment.
 

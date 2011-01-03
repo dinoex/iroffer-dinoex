@@ -587,6 +587,7 @@ Ryu
 
 LazyTiger
 	reporting XDCC SEND -1 crash
+	reporting logstats bug
 
 Scorp
 	reporting GET hostmask problem
