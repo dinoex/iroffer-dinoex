@@ -1392,13 +1392,16 @@ static void mainloop (void) {
       
       updatecontext();
       /*----- log stats / remote admin stats ----- */
-      if ( gdata.logstats && changesec && gdata.logfile &&
+      if ( changesec &&
            ((unsigned)gdata.curtime >= (last2min + gdata.status_time_dcc_chat)))
         {
           last2min = gdata.curtime;
+          if (gdata.logstats)
+            {
           logstat();
           
-          chat_writestatus();
+               chat_writestatus();
+            }
           
           isrotatelog();
         }
