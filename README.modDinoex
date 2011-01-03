@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+bugfix: ./Lang ??
+  Detect and use "utf-8" if $LANG is set in the enviroment.
+
 354) iroffer mybot.config -c
   If a configfile is given before -c option,
   the encrypted password will not be printed,
