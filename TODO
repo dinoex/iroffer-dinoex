@@ -75,6 +75,7 @@ Short Term Features:
   1498  rss feed on the bot
   1516  allow batch syntax for XDCC SEND
   1517  more than one periodicmsg
+  1523  config Server Connection Timed Out
 
 Long Term Features:
   1013  notify adminnick when autoadd
@@ -147,6 +148,8 @@ Long Term Features:
   1490  delay the responce to the !new command
   1500  force to send a pack to someone who downloaded a certain pack
   1521  hostmask or nick in exempt list for ignoreduplicate ip
+  1522  strip extentions in announce
+  1526  variables in config file
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -211,4 +214,5 @@ Not going to happen anytime soon:
   1443  make ctrl+c disabled
   1452  zeroconf/mdns/avahi-support
   1495  support for plowshare
+  1525  user defined limits
 
