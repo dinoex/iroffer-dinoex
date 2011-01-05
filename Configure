@@ -2187,7 +2187,107 @@ echo CONFIG_TARGETS=$TARGETS
 echo INSTALL_GROUP=$installgroup
 echo INSDIR?=$PREFIX/bin
 echo
-cat Makefile.config 
+echo "IROFFER_OBJECTS= \\"
+for c in iroffer_admin iroffer_dccchat iroffer_display iroffer_main \
+ iroffer_misc iroffer_statefile iroffer_transfer iroffer_upload \
+ plumb_md5 dinoex_admin dinoex_main dinoex_misc dinoex_http \
+ dinoex_upload dinoex_transfer dinoex_geoip dinoex_ssl \
+ dinoex_curl dinoex_irc dinoex_queue dinoex_telnet dinoex_badip \
+ dinoex_jobs dinoex_ruby dinoex_user dinoex_chat dinoex_config \
+ crc32 upnp blowfish strnatcmp iroffer_utilities dinoex_utilities
+do
+ echo "	obj/${c}.o \\"
+done
+echo
+echo "HEADERS= \\"
+for h in src/*.h Makefile
+do
+ echo "	${h} \\"
+done
+echo '
+OBJDIR = obj/.mkdir
+
+LDLIBS    = $(CONFIG_LDLIBS)
+LDFLAGS   = $(CONFIG_LDFLAGS)
+CFLAGS    = $(CONFIG_CFLAGS)
+CPPFLAGS  = -Isrc $(CONFIG_CPPFLAGS)
+
+all: iroffer$(CONFIG_EXE) $(CONFIG_TARGETS)
+
+iroffer$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
+	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_SHARED) -o iroffer
+
+iroffer_chroot$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
+	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_SHARED) $(CONFIG_CHROOT) -o iroffer_chroot
+
+iroffer_static$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
+	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_STATIC) -o iroffer_static
+
+$(OBJDIR):
+	mkdir -p obj
+	touch $(OBJDIR)
+'
+for c in src/*.c
+do
+ o="${c%.c}.o"
+ o="obj/${o#src/}"
+ case ${c} in
+ src/dinoex_statefile.c)
+  ;;
+ src/iroffer_statefile.c)
+  echo "${o}: ${c} \$(HEADERS) \$(OBJDIR) src/dinoex_statefile.c"
+  echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} ${c}"
+  ;;
+ *)
+  echo "${o}: ${c} \$(HEADERS) \$(OBJDIR)"
+  echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} ${c}"
+  ;;
+ esac
+done
+echo "
+src-doc:
+	mkdir -p cxref
+	cxref \\"
+for c in src/*.c
+do
+ case ${c} in
+ src/dinoex_statefile.c)
+  ;;
+ *)
+  echo "	${c} \\"
+  ;;
+ esac
+done
+echo "		-block-comments -index-all -xref-all -Ocxref \\
+		-Niroffer \$(CPPFLAGS)
+	cxref \\"
+for c in src/*.c
+do
+ case ${c} in
+ src/dinoex_statefile.c)
+  ;;
+ *)
+  echo "	${c} \\"
+  ;;
+ esac
+done
+echo "		-block-comments -index-all -xref-all -Ocxref -html \\
+		-Niroffer \$(CPPFLAGS)"
+echo '
+
+clean:
+	rm -rf iroffer iroffer.exe iroffer_chroot iroffer_chroot.exe core obj src/*~ *~
+
+install: all
+	install -o root -g $(INSTALL_GROUP) -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+
+installuser: all
+	install -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+
+uninstall:
+	rm $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+
+# end'
 ) > Makefile
 
 ${msg} "${irt_done}"
