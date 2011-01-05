@@ -15,23 +15,23 @@ fi
 
 msg2()
 {
-	echo "${@}" | iconv -f latin1 -t utf-8
+ echo "${@}" | iconv -f latin1 -t utf-8
 }
 
 case "${LANG}" in
 *.utf-8*|*.UTF-8*)
-	msg="msg2"
-	;;
+ msg="msg2"
+ ;;
 *)
-	msg="echo"
-	;;
+ msg="echo"
+ ;;
 esac
 
 usage()
 {
-	case "${LANG}" in
-	fr*)
-		${msg} "Usage: Configure [ options ]
+ case "${LANG}" in
+ fr*)
+  ${msg} "Usage: Configure [ options ]
    -help        Cette Aide
    -error       Afficher les erreurs lors de l'exécution de Configure
    -debug       Compiler avec les symboles de débogage
@@ -56,9 +56,9 @@ usage()
    LDFLAGS=     Définit les liaisons des flags personnalisés
    LIBS=        Définit les libs personnalisés
    RUBY=        Définit l'interprète de ruby (ruby)"
-		;;
-	de*)
-		${msg} "Usage: Configure [ options ]
+  ;;
+ de*)
+  ${msg} "Usage: Configure [ options ]
    -help        Dise Hilfe
    -error       Zeige alle Fehlermeldungen des Compilers
    -debug       Aktiviere Diagnosefuntionen in iroffer
@@ -83,9 +83,9 @@ usage()
    LDFLAGS=     Setze Linker Optionen
    LIBS=        Setze weitere Bibliotheken
    RUBY=        Setze Ruby Interpreter (ruby)"
-		;;
-	*)
-		${msg} "Usage: Configure [ options ]
+  ;;
+ *)
+  ${msg} "Usage: Configure [ options ]
    -help        This help
    -error       Print errors while running Configure
    -debug       Compile with debug symbols
@@ -110,322 +110,322 @@ usage()
    LDFLAGS=     Set custom linker flags
    LIBS=        Set custom libs
    RUBY=        Set ruby interpreter (ruby)"
-		;;
-	esac
-	exit 64
+  ;;
+ esac
+ exit 64
 }
 
 case "${LANG}" in
 fr*)
-	irt_start="Configuration pour"
-	irt_again="Vous devriez relancer Configure avec l'argument '-error' pour voir les details."
-	irt_noopenssl="ATTENTION : SVP utilisez '-no-openssl'"
-	irt_multinet="ATTENTION : Multinet est maintenant par défaut, enlevez '-m'"
-	irt_checkingos="Determining OS... "
-	irt_checkfor="Vérification pour"
-	irt_checkif="Vérifie si"
-	irt_error="***ERREUR*** :"
-	irt_notsupported="Cet OS n'est pas supporté"
-	irt_noedit="Automatiquement Généré, Ne Pas Modifier"
-	irt_showerror="Affichage des erreurs lors de l'exécution"
-	irt_configure="Configuration"
-	irt_debugging="le débogage"
-	irt_extrawarnings="les messages d'avertissements"
-	irt_pedantic="les avertissements pédant"
-	irt_profiling="le profilage"
-	irt_with="avec"
-	irt_without="sans"
-	irt_blowfish="encodage blowfish"
-	irt_memory="protection mémoire"
-	irt_found="trouvé"
-	irt_notfound="Non trouvé"
-	irt_noexec="Vous n'êtes pas autorisé à exécuter"
-	irt_nomake="Impossible de trouver 'make' ou 'gmake'"
-	irt_nomake="Impossible de trouver 'gcc' ou 'cc'"
-	irt_seeingif="Vérifie si"
-	irt_seeinghow="Vérifie comment"
-	irt_works="fonctionne"
-	irt_worksinstead="travaille à la place"
-	irt_asexpected="comme prévu"
-	irt_nowork="ne semble pas fonctionner"
-	irt_yes="Oui"
-	irt_no="Non"
-	irt_accepts="accepte"
-	irt_unknown="Inconnu"
-	irt_neither1="Ni"
-	irt_neither2="ou"
-	irt_neither3="fonctionnent"
-	irt_seeing16bit="Vérifie comment définir un entier de 16 bits"
-	irt_seeing32bit="Vérifie comment définir un entier de 32 bits"
-	irt_seeing64bit="Vérifie comment définir un entier de 64 bits"
-	irt_isdefined="est défini"
-	irt_noipv6="échec, IPv6 ne marche pas"
-	irt_compiling="la compilation avec la norme #include's"
-	irt_nocompiling="n'a pas pu construire avec la norme #include's"
-	irt_large="large"
-	irt_is="est"
-	irt_boosting="Augmenter à"
-	irt_novalue="n'a pas pu le déterminer"
-	irt_endianness="Détermination endianness"
-	irt_endianbig="gros-boutiste"
-	irt_endianlittle="petit-boutiste"
-	irt_largefile="le support des gros fichiers"
-	irt_nolargefile="Non. La taille Max des fichiers sera de"
-	irt_signedness="Détermine le signedness de"
-	irt_display_int64="afficher 64 bits en utilisant"
-	irt_display_time="l'affichage de time_t en utilisant"
-	irt_msssing1="absent"
-	irt_msssing2="émulera"
-	irt_exists="existe"
-	irt_isneeded="est nécessaire"
-	irt_notneeded="pas nécessaire"
-	irt_needed="nécessaire"
-	irt_nocrypt="n'a pas pu trouver crypt() avec ou sans crypt.h"
-	irt_nolcrypt="Impossible à lier avec ou sans -lcrypt ou -lcrypto"
-	irt_neither4="Non plus"
-	irt_for="pour"
-	irt_nopassword="va désactiver les mots de passe cryptés"
-	irt_nochroot="va désactiver chroot()-ing"
-	irt_nosetuid="va désactiver setuid()-ing"
-	irt_nogetgrouplist="la liste des groupes seront incorrectes lorsque setuid()-ing"
-	irt_nosendfile="ne pas utiliser sendfile()"
-	irt_nommap="ne pas utiliser mmap()"
-	irt_creating="Création de"
-	irt_done="Fait"
-	irt_fdlimit="name of fd limit"
-	irt_nofdlimit="ne travaille pas, pas bon tout"
-	irt_nosignal="utilisera lame signal handlers"
-	irt_values="les valeurs"
-	irt_nosi_code="ne fera pas état de 'si_code'"
-	irt_nowait="ne fera pas état de wait() status codes"
-	irt_tos="TOS peut être définit pour IP sockets"
-	irt_nogetaddrinfo="utilisera gethostbyname à la place"
-	irt_nogethostbyname="ne fera pas état des codes d'erreur"
-	irt_nores_init="res_init() ne sera pas utilisé"
-	irt_seeingif_lib="Vérifie si les librairies"
-	irt_lib_exists="existent"
-	irt_geoip6="prend en charge IPv6"
-	irt_nogeoip6="Désactiver le GeoIP pour IPv6. Si vous voulez utilisez cette fonction, SVP mettez à jour 'liblGeoIP'"
-	irt_nogeoip="Désactiver le GeoIP-check. Si vous voulez utilisez cette fonction, SVP installez 'liblGeoIP'"
-	irt_noupnp="Désactiver la fonction UPNP. Si vous voulez utilisez cette fonction, SVP installez 'liblminiupnpc'"
-	irt_nocurl="Désactiver le FETCH-Command. Si vous voulez utiliser cette fonction, SVP installez 'libcurl'"
-	irt_curlssl="Notice: Votre libcurl est lié avec"
-	irt_nossl="Désactiver les fonctions SSL. Si vous voulez utiliser cette fonction, SVP installez 'OpenSSL'"
-	irt_notls="Désactiver les fonctions SSL. Si vous voulez utiliser cette fonction, SVP installez 'GNU TLS'"
-	irt_badssl1="Votre 'libcurl' est liée avec"
-	irt_badssl2="SVP configurez"
-	irt_noruby="Désactiver RUBY-extension. Si vous voulez utiliser cette fonction, SVP installez 'libruby'"
-	irt_make1="Type"
-	irt_make2="to compile"
-	irt_noerror="Aucune erreur ou avertissement ne doit apparaître lors de la compilation, si c'est le cas, quelque chose ne va pas"
-	;;
+ irt_start="Configuration pour"
+ irt_again="Vous devriez relancer Configure avec l'argument '-error' pour voir les details."
+ irt_noopenssl="ATTENTION : SVP utilisez '-no-openssl'"
+ irt_multinet="ATTENTION : Multinet est maintenant par défaut, enlevez '-m'"
+ irt_checkingos="Determining OS... "
+ irt_checkfor="Vérification pour"
+ irt_checkif="Vérifie si"
+ irt_error="***ERREUR*** :"
+ irt_notsupported="Cet OS n'est pas supporté"
+ irt_noedit="Automatiquement Généré, Ne Pas Modifier"
+ irt_showerror="Affichage des erreurs lors de l'exécution"
+ irt_configure="Configuration"
+ irt_debugging="le débogage"
+ irt_extrawarnings="les messages d'avertissements"
+ irt_pedantic="les avertissements pédant"
+ irt_profiling="le profilage"
+ irt_with="avec"
+ irt_without="sans"
+ irt_blowfish="encodage blowfish"
+ irt_memory="protection mémoire"
+ irt_found="trouvé"
+ irt_notfound="Non trouvé"
+ irt_noexec="Vous n'êtes pas autorisé à exécuter"
+ irt_nomake="Impossible de trouver 'make' ou 'gmake'"
+ irt_nomake="Impossible de trouver 'gcc' ou 'cc'"
+ irt_seeingif="Vérifie si"
+ irt_seeinghow="Vérifie comment"
+ irt_works="fonctionne"
+ irt_worksinstead="travaille à la place"
+ irt_asexpected="comme prévu"
+ irt_nowork="ne semble pas fonctionner"
+ irt_yes="Oui"
+ irt_no="Non"
+ irt_accepts="accepte"
+ irt_unknown="Inconnu"
+ irt_neither1="Ni"
+ irt_neither2="ou"
+ irt_neither3="fonctionnent"
+ irt_seeing16bit="Vérifie comment définir un entier de 16 bits"
+ irt_seeing32bit="Vérifie comment définir un entier de 32 bits"
+ irt_seeing64bit="Vérifie comment définir un entier de 64 bits"
+ irt_isdefined="est défini"
+ irt_noipv6="échec, IPv6 ne marche pas"
+ irt_compiling="la compilation avec la norme #include's"
+ irt_nocompiling="n'a pas pu construire avec la norme #include's"
+ irt_large="large"
+ irt_is="est"
+ irt_boosting="Augmenter à"
+ irt_novalue="n'a pas pu le déterminer"
+ irt_endianness="Détermination endianness"
+ irt_endianbig="gros-boutiste"
+ irt_endianlittle="petit-boutiste"
+ irt_largefile="le support des gros fichiers"
+ irt_nolargefile="Non. La taille Max des fichiers sera de"
+ irt_signedness="Détermine le signedness de"
+ irt_display_int64="afficher 64 bits en utilisant"
+ irt_display_time="l'affichage de time_t en utilisant"
+ irt_msssing1="absent"
+ irt_msssing2="émulera"
+ irt_exists="existe"
+ irt_isneeded="est nécessaire"
+ irt_notneeded="pas nécessaire"
+ irt_needed="nécessaire"
+ irt_nocrypt="n'a pas pu trouver crypt() avec ou sans crypt.h"
+ irt_nolcrypt="Impossible à lier avec ou sans -lcrypt ou -lcrypto"
+ irt_neither4="Non plus"
+ irt_for="pour"
+ irt_nopassword="va désactiver les mots de passe cryptés"
+ irt_nochroot="va désactiver chroot()-ing"
+ irt_nosetuid="va désactiver setuid()-ing"
+ irt_nogetgrouplist="la liste des groupes seront incorrectes lorsque setuid()-ing"
+ irt_nosendfile="ne pas utiliser sendfile()"
+ irt_nommap="ne pas utiliser mmap()"
+ irt_creating="Création de"
+ irt_done="Fait"
+ irt_fdlimit="name of fd limit"
+ irt_nofdlimit="ne travaille pas, pas bon tout"
+ irt_nosignal="utilisera lame signal handlers"
+ irt_values="les valeurs"
+ irt_nosi_code="ne fera pas état de 'si_code'"
+ irt_nowait="ne fera pas état de wait() status codes"
+ irt_tos="TOS peut être définit pour IP sockets"
+ irt_nogetaddrinfo="utilisera gethostbyname à la place"
+ irt_nogethostbyname="ne fera pas état des codes d'erreur"
+ irt_nores_init="res_init() ne sera pas utilisé"
+ irt_seeingif_lib="Vérifie si les librairies"
+ irt_lib_exists="existent"
+ irt_geoip6="prend en charge IPv6"
+ irt_nogeoip6="Désactiver le GeoIP pour IPv6. Si vous voulez utilisez cette fonction, SVP mettez à jour 'liblGeoIP'"
+ irt_nogeoip="Désactiver le GeoIP-check. Si vous voulez utilisez cette fonction, SVP installez 'liblGeoIP'"
+ irt_noupnp="Désactiver la fonction UPNP. Si vous voulez utilisez cette fonction, SVP installez 'liblminiupnpc'"
+ irt_nocurl="Désactiver le FETCH-Command. Si vous voulez utiliser cette fonction, SVP installez 'libcurl'"
+ irt_curlssl="Notice: Votre libcurl est lié avec"
+ irt_nossl="Désactiver les fonctions SSL. Si vous voulez utiliser cette fonction, SVP installez 'OpenSSL'"
+ irt_notls="Désactiver les fonctions SSL. Si vous voulez utiliser cette fonction, SVP installez 'GNU TLS'"
+ irt_badssl1="Votre 'libcurl' est liée avec"
+ irt_badssl2="SVP configurez"
+ irt_noruby="Désactiver RUBY-extension. Si vous voulez utiliser cette fonction, SVP installez 'libruby'"
+ irt_make1="Type"
+ irt_make2="to compile"
+ irt_noerror="Aucune erreur ou avertissement ne doit apparaître lors de la compilation, si c'est le cas, quelque chose ne va pas"
+ ;;
 de*)
-	irt_start="Konfiguriere für"
-	irt_again="Bitte starte Configure zusätzlich mit dem Parameter '-error' für die Fehlermeldungen."
-	irt_noopenssl="WARNUNG: Bitte den Parameter '-no-openssl' benutzen"
-	irt_multinet="WARNUNG: Multinet ist immer aktiv, entfernde den Parameter -m"
-	irt_checkingos="Prüfe Betriebssystem... "
-	irt_checkfor="Prüfe auf"
-	irt_checkif="Prüfe ob"
-	irt_error="***FEHLER***:"
-	irt_notsupported="Das Betriebssystem ist nicht unterstützt"
-	irt_noedit="Automatisch erstellt, nicht ändern"
-	irt_showerror="Zeige Fehlermeldungen beim Konfigurieren"
-	irt_configure="Konfiguriere"
-	irt_debugging="debugging"
-	irt_extrawarnings="zusätzliche Warnungen"
-	irt_pedantic="pedantische Warnungen"
-	irt_profiling="profiling"
-	irt_with="mit"
-	irt_without="ohne"
-	irt_blowfish="blowfish Verschlüsselung"
-	irt_memory="memory protection"
-	irt_found="gefunden"
-	irt_notfound="nicht gefunden"
-	irt_noexec="Du kannst das Programm nicht ausführen"
-	irt_nomake="Kann weder 'make' noch 'gmake' finden"
-	irt_nocc="Kann weder 'gcc' noch 'cc' finden"
-	irt_seeingif="Prüfe ob"
-	irt_seeinghow="Prüfe wie"
-	irt_works="funktioniert"
-	irt_worksinstead="funtioniert anstelle"
-	irt_asexpected="wie erwartet"
-	irt_nowork="funktioniert offenbar nicht"
-	irt_yes="ja"
-	irt_no="nein"
-	irt_accepts="erkennt"
-	irt_unknown="Unbekannt"
-	irt_neither1="weder"
-	irt_neither2="noch"
-	irt_neither3="funktioniert"
-	irt_seeing16bit="Prüfe wie ein 16 Bit Integer definiert wird"
-	irt_seeing32bit="Prüfe wie ein 32 Bit Integer definiert wird"
-	irt_seeing64bit="Prüfe wie ein 64 Bit Integer definiert wird"
-	irt_isdefined="ist definiert"
-	irt_noipv6="Nein, IPv6 wird nicht funktionieren"
-	irt_compiling="das Übersetzen mit den Standard #include's"
-	irt_nocompiling="Kann nicht mit den Standard #include's übersetzen"
-	irt_large="groß"
-	irt_is="ist"
-	irt_boosting="Vergrößere auf"
-	irt_novalue="kann den Wert nicht ermitteln"
-	irt_endianness="Ermittle Byte-Reihenfolge"
-	irt_endianbig="Big-Endian"
-	irt_endianlittle="Little-Endian"
-	irt_largefile="Zugriff auf große Dateien"
-	irt_nolargefile="Nein.  Maximale Dategröße ist"
-	irt_signedness="Ermittle den Vorzeichentyp von"
-	irt_display_int64="die Ausgabe von 64bit definiert wird mit"
-	irt_display_time="die Ausgabe von time_t definiert wird mit"
-	irt_msssing1="fehlt"
-	irt_msssing2="benutze Ersatz"
-	irt_exists="existiert"
-	irt_isneeded="benötigt wird"
-	irt_notneeded="wird nicht benötigt"
-	irt_needed="wird benötigt"
-	irt_nocrypt="kann crypt() weder mit noch ohne crypt.h finden"
-	irt_nolcrypt="kannt weder mit noch ohne -lcrypt oder -lcrypto binden"
-	irt_neither4="Keines"
-	irt_for="für"
-	irt_nopassword="kann keine Passwörter verschlüsseln"
-	irt_nochroot="kann kein chroot() verwenden"
-	irt_nosetuid="kann kein setuid() verwenden"
-	irt_nogetgrouplist="Gruppen Rechte sind unvolstä#ndig bei setuid()"
-	irt_nosendfile="Kann sendfile() nicht benutzen"
-	irt_nommap="Kann mmap() nicht benutzen"
-	irt_creating="Erzeuge"
-	irt_done="fertig"
-	irt_fdlimit="Name von fd limit"
-	irt_nofdlimit="beide funktionieren nicht"
-	irt_nosignal="Benutze einfache signal handlers"
-	irt_values="Werte"
-	irt_nosi_code="Kann keinen 'si_code' ausgeben."
-	irt_nowait="kann keinen Status von wait() ausgeben"
-	irt_tos="TOS für IP sockets gesetzt werden kann"
-	irt_nogetaddrinfo="Benutze statt dessen gethostbyname()"
-	irt_nogethostbyname="Kann Fehler nicht ausgeben"
-	irt_nores_init="Kann res_init() nicht benutzen"
-	irt_seeingif_lib="Prüfe ob"
-	irt_lib_exists="Bibliothek existiert"
-	irt_geoip6="hat IPv6 Funktionen"
-	irt_nogeoip6="Benutze GeoIP nicht für IPv6. Für diese Funktion musst du eine neuer Version von 'liblGeoIP' installieren"
-	irt_nogeoip="Benutze GeoIP nicht. Für diese Funktion musst du 'liblGeoIP' installieren"
-	irt_noupnp="Benutze UPNP nicht. Für diese Funktion musst du 'liblminiupnpc' installieren"
-	irt_nocurl="Kein FETCH-Befehl. Für diese Funktion musst du 'libcurl' installieren"
-	irt_curlssl="Hinweis: Deine 'libcurl' benutzt"
-	irt_nossl="Benutze kein SSL. Für diese Funktion musst du 'OpenSSL' installieren"
-	irt_notls="Benutze kein SSL. Für diese Funktion musst du 'GNU TLS' installieren"
-	irt_badssl1="Deine 'libcurl' benutzt"
-	irt_badssl2="Bitte konfiguriere"
-	irt_noruby="Kann die RUBY-Erweiterung nicht benutzen. Für diese Funktion musst du 'libruby'installieren"
-	irt_make1="Zum Übersetzen jetzt"
-	irt_make2="eingeben"
-	irt_noerror="Keine Fehler oder Warnungen sollten beim Übersetzen auftreten. Falls doch ist das ein Fehler"
-	;;
+ irt_start="Konfiguriere für"
+ irt_again="Bitte starte Configure zusätzlich mit dem Parameter '-error' für die Fehlermeldungen."
+ irt_noopenssl="WARNUNG: Bitte den Parameter '-no-openssl' benutzen"
+ irt_multinet="WARNUNG: Multinet ist immer aktiv, entfernde den Parameter -m"
+ irt_checkingos="Prüfe Betriebssystem... "
+ irt_checkfor="Prüfe auf"
+ irt_checkif="Prüfe ob"
+ irt_error="***FEHLER***:"
+ irt_notsupported="Das Betriebssystem ist nicht unterstützt"
+ irt_noedit="Automatisch erstellt, nicht ändern"
+ irt_showerror="Zeige Fehlermeldungen beim Konfigurieren"
+ irt_configure="Konfiguriere"
+ irt_debugging="debugging"
+ irt_extrawarnings="zusätzliche Warnungen"
+ irt_pedantic="pedantische Warnungen"
+ irt_profiling="profiling"
+ irt_with="mit"
+ irt_without="ohne"
+ irt_blowfish="blowfish Verschlüsselung"
+ irt_memory="memory protection"
+ irt_found="gefunden"
+ irt_notfound="nicht gefunden"
+ irt_noexec="Du kannst das Programm nicht ausführen"
+ irt_nomake="Kann weder 'make' noch 'gmake' finden"
+ irt_nocc="Kann weder 'gcc' noch 'cc' finden"
+ irt_seeingif="Prüfe ob"
+ irt_seeinghow="Prüfe wie"
+ irt_works="funktioniert"
+ irt_worksinstead="funtioniert anstelle"
+ irt_asexpected="wie erwartet"
+ irt_nowork="funktioniert offenbar nicht"
+ irt_yes="ja"
+ irt_no="nein"
+ irt_accepts="erkennt"
+ irt_unknown="Unbekannt"
+ irt_neither1="weder"
+ irt_neither2="noch"
+ irt_neither3="funktioniert"
+ irt_seeing16bit="Prüfe wie ein 16 Bit Integer definiert wird"
+ irt_seeing32bit="Prüfe wie ein 32 Bit Integer definiert wird"
+ irt_seeing64bit="Prüfe wie ein 64 Bit Integer definiert wird"
+ irt_isdefined="ist definiert"
+ irt_noipv6="Nein, IPv6 wird nicht funktionieren"
+ irt_compiling="das Übersetzen mit den Standard #include's"
+ irt_nocompiling="Kann nicht mit den Standard #include's übersetzen"
+ irt_large="groß"
+ irt_is="ist"
+ irt_boosting="Vergrößere auf"
+ irt_novalue="kann den Wert nicht ermitteln"
+ irt_endianness="Ermittle Byte-Reihenfolge"
+ irt_endianbig="Big-Endian"
+ irt_endianlittle="Little-Endian"
+ irt_largefile="Zugriff auf große Dateien"
+ irt_nolargefile="Nein.  Maximale Dategröße ist"
+ irt_signedness="Ermittle den Vorzeichentyp von"
+ irt_display_int64="die Ausgabe von 64bit definiert wird mit"
+ irt_display_time="die Ausgabe von time_t definiert wird mit"
+ irt_msssing1="fehlt"
+ irt_msssing2="benutze Ersatz"
+ irt_exists="existiert"
+ irt_isneeded="benötigt wird"
+ irt_notneeded="wird nicht benötigt"
+ irt_needed="wird benötigt"
+ irt_nocrypt="kann crypt() weder mit noch ohne crypt.h finden"
+ irt_nolcrypt="kannt weder mit noch ohne -lcrypt oder -lcrypto binden"
+ irt_neither4="Keines"
+ irt_for="für"
+ irt_nopassword="kann keine Passwörter verschlüsseln"
+ irt_nochroot="kann kein chroot() verwenden"
+ irt_nosetuid="kann kein setuid() verwenden"
+ irt_nogetgrouplist="Gruppen Rechte sind unvolstä#ndig bei setuid()"
+ irt_nosendfile="Kann sendfile() nicht benutzen"
+ irt_nommap="Kann mmap() nicht benutzen"
+ irt_creating="Erzeuge"
+ irt_done="fertig"
+ irt_fdlimit="Name von fd limit"
+ irt_nofdlimit="beide funktionieren nicht"
+ irt_nosignal="Benutze einfache signal handlers"
+ irt_values="Werte"
+ irt_nosi_code="Kann keinen 'si_code' ausgeben."
+ irt_nowait="kann keinen Status von wait() ausgeben"
+ irt_tos="TOS für IP sockets gesetzt werden kann"
+ irt_nogetaddrinfo="Benutze statt dessen gethostbyname()"
+ irt_nogethostbyname="Kann Fehler nicht ausgeben"
+ irt_nores_init="Kann res_init() nicht benutzen"
+ irt_seeingif_lib="Prüfe ob"
+ irt_lib_exists="Bibliothek existiert"
+ irt_geoip6="hat IPv6 Funktionen"
+ irt_nogeoip6="Benutze GeoIP nicht für IPv6. Für diese Funktion musst du eine neuer Version von 'liblGeoIP' installieren"
+ irt_nogeoip="Benutze GeoIP nicht. Für diese Funktion musst du 'liblGeoIP' installieren"
+ irt_noupnp="Benutze UPNP nicht. Für diese Funktion musst du 'liblminiupnpc' installieren"
+ irt_nocurl="Kein FETCH-Befehl. Für diese Funktion musst du 'libcurl' installieren"
+ irt_curlssl="Hinweis: Deine 'libcurl' benutzt"
+ irt_nossl="Benutze kein SSL. Für diese Funktion musst du 'OpenSSL' installieren"
+ irt_notls="Benutze kein SSL. Für diese Funktion musst du 'GNU TLS' installieren"
+ irt_badssl1="Deine 'libcurl' benutzt"
+ irt_badssl2="Bitte konfiguriere"
+ irt_noruby="Kann die RUBY-Erweiterung nicht benutzen. Für diese Funktion musst du 'libruby'installieren"
+ irt_make1="Zum Übersetzen jetzt"
+ irt_make2="eingeben"
+ irt_noerror="Keine Fehler oder Warnungen sollten beim Übersetzen auftreten. Falls doch ist das ein Fehler"
+ ;;
 *)
-	irt_start="Configuring for"
-	irt_again="You should re-run Configure with the '-error' argument to see the details."
-	irt_noopenssl="WARNING: Please use '-no-openssl'"
-	irt_multinet="WARNING: Multinet is now default, remove '-m'"
-	irt_checkingos="Determining OS... "
-	irt_checkfor="Checking for"
-	irt_checkif="Checking if"
-	irt_error="***ERROR***:"
-	irt_notsupported="This OS is not supported"
-	irt_noedit="Automatically Generated, Do Not Edit"
-	irt_showerror="Printing Errors During Execution"
-	irt_configure="Configuring"
-	irt_debugging="debugging"
-	irt_extrawarnings="extra warnings"
-	irt_pedantic="pedantic warnings"
-	irt_profiling="profiling"
-	irt_with="with"
-	irt_without="without"
-	irt_blowfish="blowfish encryption"
-	irt_memory="memory protection"
-	irt_found="found"
-	irt_notfound="not found"
-	irt_noexec="You are not allowed to execute"
-	irt_nomake="Couldn't find 'make' or' gmake'"
-	irt_nocc="Couldn't find 'gcc' or' cc'"
-	irt_seeingif="Seeing if"
-	irt_seeinghow="Seeing how"
-	irt_works="works"
-	irt_worksinstead="works instead"
-	irt_asexpected="as expected"
-	irt_nowork="didn't seem to work"
-	irt_yes="yes"
-	irt_no="no"
-	irt_accepts="accepts"
-	irt_unknown="Unknown"
-	irt_neither1="neither"
-	irt_neither2="or"
-	irt_neither3="worked"
-	irt_seeing16bit="Seeing how to define a 16 bit integer"
-	irt_seeing32bit="Seeing how to define a 32 bit integer"
-	irt_seeing64bit="Seeing how to define a 64 bit integer"
-	irt_isdefined="is defined"
-	irt_noipv6="failed, IPv6 will not work"
-	irt_compiling="compiling with standard #include's"
-	irt_nocompiling="couldn't build with standard #include's"
-	irt_large="large"
-	irt_is="is"
-	irt_boosting="Boosting up to"
-	irt_novalue="couldn't determine it"
-	irt_endianness="Determining endianness"
-	irt_endianbig="Big-Endian"
-	irt_endianlittle="Little-Endian"
-	irt_largefile="large file support"
-	irt_nolargefile="No.  Max filesize will be"
-	irt_signedness="Determing the signedness of"
-	irt_display_int64="to display 64bit using"
-	irt_display_time="to display time_t using"
-	irt_msssing1="missing"
-	irt_msssing2="will emulate"
-	irt_exists="exists"
-	irt_isneeded="is needed"
-	irt_notneeded="not needed"
-	irt_needed="needed"
-	irt_nocrypt="couldn't find crypt() neither with or without crypt.h"
-	irt_nolcrypt="couldn't link with or without -lcrypt or -lcrypto"
-	irt_neither4="Neither"
-	irt_for="for"
-	irt_nopassword="will disable encrypted passwords"
-	irt_nochroot="will not be able to chroot()"
-	irt_nosetuid="will not be able to setuid()"
-	irt_nogetgrouplist="group list will be incorrect when setuid()-ing"
-	irt_nosendfile="won't use sendfile()"
-	irt_nommap="won't use mmap()"
-	irt_creating="Creating"
-	irt_done="Done"
-	irt_fdlimit="name of fd limit"
-	irt_nofdlimit="neither name work"
-	irt_nosignal="will use lame signal handlers"
-	irt_values="values"
-	irt_nosi_code="won't report 'si_code'"
-	irt_nowait="won't report wait() status codes"
-	irt_tos="TOS can be set for IP sockets"
-	irt_nogetaddrinfo="will use gethostbyname() instead"
-	irt_negetaddrinfo="utilisera gethostbyname à la place"
-	irt_nogethostbyname="won't report error codes"
-	irt_nores_init="won't use res_init()"
-	irt_seeingif_lib="Seeing if"
-	irt_lib_exists="library exists"
-	irt_geoip6="has IPv6 support"
-	irt_nogeoip6="Disabled the GeoIP for IPv6. If you want to use this feature, please update 'liblGeoIP'"
-	irt_nogeoip="Disabled the GeoIP-check. If you want to use this feature, please install 'liblGeoIP'"
-	irt_noupnp="Disabled the UPNP-feature. If you want to use this feature, please install 'liblminiupnpc'"
-	irt_nocurl="Disabled the FETCH-Command. If you want to use this feature, please install 'libcurl'"
-	irt_curlssl="Notice: Your 'libcurl' is linked with"
-	irt_nossl="Disabled the SSL Features. If you want to use this feature, please install 'OpenSSL'"
-	irt_notls="Disabled the SSL Features. If you want to use this feature, please install 'GNU TLS'"
-	irt_badssl1="Your 'libcurl' is linked with"
-	irt_badssl2="Please configure"
-	irt_noruby="Disable the RUBY-extension. If you want to use this feature, please install 'libruby'"
-	irt_make1="Type"
-	irt_make2="to compile"
-	irt_noerror="No errors or warnings should appear when compiling, if they do, something is wrong"
-	;;
+ irt_start="Configuring for"
+ irt_again="You should re-run Configure with the '-error' argument to see the details."
+ irt_noopenssl="WARNING: Please use '-no-openssl'"
+ irt_multinet="WARNING: Multinet is now default, remove '-m'"
+ irt_checkingos="Determining OS... "
+ irt_checkfor="Checking for"
+ irt_checkif="Checking if"
+ irt_error="***ERROR***:"
+ irt_notsupported="This OS is not supported"
+ irt_noedit="Automatically Generated, Do Not Edit"
+ irt_showerror="Printing Errors During Execution"
+ irt_configure="Configuring"
+ irt_debugging="debugging"
+ irt_extrawarnings="extra warnings"
+ irt_pedantic="pedantic warnings"
+ irt_profiling="profiling"
+ irt_with="with"
+ irt_without="without"
+ irt_blowfish="blowfish encryption"
+ irt_memory="memory protection"
+ irt_found="found"
+ irt_notfound="not found"
+ irt_noexec="You are not allowed to execute"
+ irt_nomake="Couldn't find 'make' or' gmake'"
+ irt_nocc="Couldn't find 'gcc' or' cc'"
+ irt_seeingif="Seeing if"
+ irt_seeinghow="Seeing how"
+ irt_works="works"
+ irt_worksinstead="works instead"
+ irt_asexpected="as expected"
+ irt_nowork="didn't seem to work"
+ irt_yes="yes"
+ irt_no="no"
+ irt_accepts="accepts"
+ irt_unknown="Unknown"
+ irt_neither1="neither"
+ irt_neither2="or"
+ irt_neither3="worked"
+ irt_seeing16bit="Seeing how to define a 16 bit integer"
+ irt_seeing32bit="Seeing how to define a 32 bit integer"
+ irt_seeing64bit="Seeing how to define a 64 bit integer"
+ irt_isdefined="is defined"
+ irt_noipv6="failed, IPv6 will not work"
+ irt_compiling="compiling with standard #include's"
+ irt_nocompiling="couldn't build with standard #include's"
+ irt_large="large"
+ irt_is="is"
+ irt_boosting="Boosting up to"
+ irt_novalue="couldn't determine it"
+ irt_endianness="Determining endianness"
+ irt_endianbig="Big-Endian"
+ irt_endianlittle="Little-Endian"
+ irt_largefile="large file support"
+ irt_nolargefile="No.  Max filesize will be"
+ irt_signedness="Determing the signedness of"
+ irt_display_int64="to display 64bit using"
+ irt_display_time="to display time_t using"
+ irt_msssing1="missing"
+ irt_msssing2="will emulate"
+ irt_exists="exists"
+ irt_isneeded="is needed"
+ irt_notneeded="not needed"
+ irt_needed="needed"
+ irt_nocrypt="couldn't find crypt() neither with or without crypt.h"
+ irt_nolcrypt="couldn't link with or without -lcrypt or -lcrypto"
+ irt_neither4="Neither"
+ irt_for="for"
+ irt_nopassword="will disable encrypted passwords"
+ irt_nochroot="will not be able to chroot()"
+ irt_nosetuid="will not be able to setuid()"
+ irt_nogetgrouplist="group list will be incorrect when setuid()-ing"
+ irt_nosendfile="won't use sendfile()"
+ irt_nommap="won't use mmap()"
+ irt_creating="Creating"
+ irt_done="Done"
+ irt_fdlimit="name of fd limit"
+ irt_nofdlimit="neither name work"
+ irt_nosignal="will use lame signal handlers"
+ irt_values="values"
+ irt_nosi_code="won't report 'si_code'"
+ irt_nowait="won't report wait() status codes"
+ irt_tos="TOS can be set for IP sockets"
+ irt_nogetaddrinfo="will use gethostbyname() instead"
+ irt_negetaddrinfo="utilisera gethostbyname à la place"
+ irt_nogethostbyname="won't report error codes"
+ irt_nores_init="won't use res_init()"
+ irt_seeingif_lib="Seeing if"
+ irt_lib_exists="library exists"
+ irt_geoip6="has IPv6 support"
+ irt_nogeoip6="Disabled the GeoIP for IPv6. If you want to use this feature, please update 'liblGeoIP'"
+ irt_nogeoip="Disabled the GeoIP-check. If you want to use this feature, please install 'liblGeoIP'"
+ irt_noupnp="Disabled the UPNP-feature. If you want to use this feature, please install 'liblminiupnpc'"
+ irt_nocurl="Disabled the FETCH-Command. If you want to use this feature, please install 'libcurl'"
+ irt_curlssl="Notice: Your 'libcurl' is linked with"
+ irt_nossl="Disabled the SSL Features. If you want to use this feature, please install 'OpenSSL'"
+ irt_notls="Disabled the SSL Features. If you want to use this feature, please install 'GNU TLS'"
+ irt_badssl1="Your 'libcurl' is linked with"
+ irt_badssl2="Please configure"
+ irt_noruby="Disable the RUBY-extension. If you want to use this feature, please install 'libruby'"
+ irt_make1="Type"
+ irt_make2="to compile"
+ irt_noerror="No errors or warnings should appear when compiling, if they do, something is wrong"
+ ;;
 esac
 
 echo
@@ -433,9 +433,9 @@ ${msg} "${irt_start} iroffer-dinoex $VERSIONLONG"
 
 waserror()
 {
-	${msg} "${irt_again}"
-	echo
-	exit 72
+ ${msg} "${irt_again}"
+ echo
+ exit 72
 }
 
 FEATURES=""
@@ -463,42 +463,41 @@ LOCALBASE="/usr/local"
 
 while test "${1}" != ""
 do
-  case "${1}" in
-  -h*) usage ;;
-  CC=*) cctype="${1#CC=}" ;;
-  CFLAGS=*) CFLAGS="${1#CFLAGS=}" ;;
-  LDFLAGS=*) LDFLAGS="${1#LDFLAGS=}" ;;
-  LIBS=*) LIBS="${1#LIBS=}" ;;
-  LOCALBASE=*) LOCALBASE="${1#LOCALBASE=}" ;;
-  PREFIX=*) PREFIX="${1#PREFIX=}" ;;
-  RUBY=*) ruby="${1#RUBY=}" ;;
-  WARN=*) OPT_WARN2="${1#WARN=}" ;;
-  -e*) OPT_ERRORS=true ;;
-  -d*) OPT_DEBUG=true ;;
-  -w*) OPT_WARN=true ;;
-  -p*) OPT_PROF=true ;;
-  -g*) OPT_GEOIP=true ;;
-  -c*) OPT_CURL=true ;;
-  -s*) ${msg} "${irt_noopenssl}"; echo ""; OPT_SSL=false ;; # old
-  -t*) OPT_TLS=true; OPT_SSL=false ;;
-  -u*) OPT_UPNP=true ;;
-  -r*) OPT_RUBY=true;;
-  -no-a*) OPT_NOADMIN=true ;;
-  -no-b*) OPT_NOBLOWFISH=true ;;
-  -no-h*) OPT_NOHTTP=true ;;
-  -no-t*) OPT_NOTELNET=true ;;
-  -no-o*) OPT_SSL=false ;;
-  -no-m*) OPT_NOMEMSAVE=true ;;
-  -no-l*) OPT_STATIC=true ;;
-  -m) ${msg} "${irt_multinet}"; echo "" ;; # multinet
-  *)  usage ;;
-  esac
-  shift
+ case "${1}" in
+ -h*) usage ;;
+ CC=*) cctype="${1#CC=}" ;;
+ CFLAGS=*) CFLAGS="${1#CFLAGS=}" ;;
+ LDFLAGS=*) LDFLAGS="${1#LDFLAGS=}" ;;
+ LIBS=*) LIBS="${1#LIBS=}" ;;
+ LOCALBASE=*) LOCALBASE="${1#LOCALBASE=}" ;;
+ PREFIX=*) PREFIX="${1#PREFIX=}" ;;
+ RUBY=*) ruby="${1#RUBY=}" ;;
+ WARN=*) OPT_WARN2="${1#WARN=}" ;;
+ -e*) OPT_ERRORS=true ;;
+ -d*) OPT_DEBUG=true ;;
+ -w*) OPT_WARN=true ;;
+ -p*) OPT_PROF=true ;;
+ -g*) OPT_GEOIP=true ;;
+ -c*) OPT_CURL=true ;;
+ -s*) ${msg} "${irt_noopenssl}"; echo ""; OPT_SSL=false ;; # old
+ -t*) OPT_TLS=true; OPT_SSL=false ;;
+ -u*) OPT_UPNP=true ;;
+ -r*) OPT_RUBY=true;;
+ -no-a*) OPT_NOADMIN=true ;;
+ -no-b*) OPT_NOBLOWFISH=true ;;
+ -no-h*) OPT_NOHTTP=true ;;
+ -no-t*) OPT_NOTELNET=true ;;
+ -no-o*) OPT_SSL=false ;;
+ -no-m*) OPT_NOMEMSAVE=true ;;
+ -no-l*) OPT_STATIC=true ;;
+ -m) ${msg} "${irt_multinet}"; echo "" ;; # multinet
+ *)  usage ;;
+ esac
+ shift
 done
 
-${msg} -n "${irt_checkingos}"
-uname
 ostype=`uname`
+${msg} -n "${irt_checkingos}${ostype}"
 installgroup="root"
 libs=""
 rstatic=""
@@ -576,7 +575,7 @@ echo "#define DEBUG" >> src/iroffer_config.h
 DEBUG="-g"
 case "${cctype}" in
 *cparser*)
-	DEBUGFLAGS="
+ DEBUGFLAGS="
 -Waggregate-return
 -Wchar-subscripts
 -Wcomment
@@ -596,9 +595,9 @@ case "${cctype}" in
 -Wunused-value
 -Wunused-variable 
 "
-	;;
+ ;;
 *)
-	DEBUGFLAGS="
+ DEBUGFLAGS="
 -Waggregate-return
 -Wchar-subscripts
 -Wcomment
@@ -627,7 +626,7 @@ case "${cctype}" in
 -Wunused-value
 -Wunused-variable 
 "
-	;;
+ ;;
 esac
 else
 DEBUG="-O2"
@@ -637,7 +636,7 @@ if $OPT_WARN; then
 ${msg} "${irt_start} ${irt_extrawarnings}."
 case "${cctype}" in
 *cparser*)
-	WARNS="-Wcast-qual
+ WARNS="-Wcast-qual
 -Wformat
 -Wimplicit
 -Wmissing-declarations
@@ -649,9 +648,9 @@ case "${cctype}" in
 -Wsign-compare
 -Wstrict-prototypes
 -Wwrite-strings"
-	;;
+ ;;
 *)
-	WARNS="-Wbad-function-cast
+ WARNS="-Wbad-function-cast
 -Wcast-qual
 -Wcast-align
 -Wformat
@@ -665,7 +664,7 @@ case "${cctype}" in
 -Wsign-compare
 -Wstrict-prototypes
 -Wwrite-strings"
-	;;
+ ;;
 esac
 fi
 
@@ -673,7 +672,7 @@ if $OPT_WARN2; then
 ${msg} "${irt_start} ${irt_pedantic}."
 case "${cctype}" in
 *cparser*)
-	WARNS2="
+ WARNS2="
 -Wconversion
 -Wfloat-equal
 -Wpacked
@@ -685,7 +684,7 @@ case "${cctype}" in
 "
         ;;
 gcc4*)
-	WARNS2="
+ WARNS2="
 -Wconversion
 -Wc++-compat
 -Wformat-nonliteral
@@ -699,9 +698,9 @@ gcc4*)
 -Wundef
 -Wunreachable-code
 "
-	;;
+ ;;
 *)
-	WARNS2="
+ WARNS2="
 -Wconversion
 -Wformat-nonliteral
 -Wformat=2
@@ -714,59 +713,59 @@ gcc4*)
 -Wundef
 -Wunreachable-code
 "
-	;;
+ ;;
 esac
 fi
 
 if $OPT_PROF; then
-${msg} "${irt_start} ${irt_profiling}."
-PROF="-pg"
+ ${msg} "${irt_start} ${irt_profiling}."
+ PROF="-pg"
 fi
 
 if $OPT_GEOIP; then
-${msg} "${irt_start} GeoIP."
+ ${msg} "${irt_start} GeoIP."
 fi
 
 if $OPT_CURL; then
-${msg} "${irt_start} Curl."
+ ${msg} "${irt_start} Curl."
 fi
 
 if ! $OPT_SSL; then
-${msg} "${irt_configure} ${irt_without} SSL."
+ ${msg} "${irt_configure} ${irt_without} SSL."
 fi
 
 if $OPT_TLS; then
-${msg} "${irt_start} GNU TLS."
-OPT_SSL=false
+ ${msg} "${irt_start} GNU TLS."
+ OPT_SSL=false
 fi
 
 if $OPT_UPNP; then
-${msg} "${irt_start} UPNP ${irt_with} lminiupnpc."
+ ${msg} "${irt_start} UPNP ${irt_with} lminiupnpc."
 fi
 
 if $OPT_NOHTTP; then
-${msg} "${irt_configure} ${irt_without} HTTP Server."
-echo "#define WITHOUT_HTTP" >> src/iroffer_config.h
+ ${msg} "${irt_configure} ${irt_without} HTTP Server."
+ echo "#define WITHOUT_HTTP" >> src/iroffer_config.h
 fi
 
 if $OPT_NOADMIN; then
-${msg} "${irt_configure} ${irt_without} HTTP Admin."
-echo "#define WITHOUT_HTTP_ADMIN" >> src/iroffer_config.h
+ ${msg} "${irt_configure} ${irt_without} HTTP Admin."
+ echo "#define WITHOUT_HTTP_ADMIN" >> src/iroffer_config.h
 fi
 
 if $OPT_NOTELNET; then
-${msg} "${irt_configure} ${irt_without} Telnet Server."
-echo "#define WITHOUT_TELNET" >> src/iroffer_config.h
+ ${msg} "${irt_configure} ${irt_without} Telnet Server."
+ echo "#define WITHOUT_TELNET" >> src/iroffer_config.h
 fi
 
 if $OPT_NOBLOWFISH; then
-${msg} "${irt_configure} ${irt_without} ${irt_blowfish}."
-echo "#define WITHOUT_BLOWFISH" >> src/iroffer_config.h
+ ${msg} "${irt_configure} ${irt_without} ${irt_blowfish}."
+ echo "#define WITHOUT_BLOWFISH" >> src/iroffer_config.h
 fi
 
 if $OPT_NOMEMSAVE; then
-${msg} "${irt_configure} ${irt_without} ${irt_memory}."
-echo "#define WITHOUT_MEMSAVE" >> src/iroffer_config.h
+ ${msg} "${irt_configure} ${irt_without} ${irt_memory}."
+ echo "#define WITHOUT_MEMSAVE" >> src/iroffer_config.h
 fi
 
 ${msg} -n "${irt_checkfor} make... "
@@ -962,8 +961,8 @@ else
 fi
 
 if [ "$ostype" = CYGWIN ]; then
-  ${msg} -n "${irt_checkif} AF_INET6 ${irt_isdefined}... "
-  echo "
+ ${msg} -n "${irt_checkif} AF_INET6 ${irt_isdefined}... "
+ echo "
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -1940,8 +1939,8 @@ ${msg} "${irt_msssing1}, ${irt_nores_init}."
 fi
 
 if $OPT_GEOIP; then
-	${msg} -n "${irt_seeingif_lib} GeoIP ${irt_lib_exists}... "
-	echo "
+ ${msg} -n "${irt_seeingif_lib} GeoIP ${irt_lib_exists}... "
+ echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1953,15 +1952,15 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) { GeoIP_country_code_by_addr(NULL, NULL);; exit(0);}
 " > config.temp.c
-	if $cctype -o config.temp -DUSE_GEOIP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lGeoIP $LDFLAGS $libs $LIBS; then
-		${msg} "${irt_found}"
-		echo "#define USE_GEOIP" >> src/iroffer_config.h
-		FEATURES="${FEATURES},geoip"
-		GEOLIB="-lGeoIP"
-		GEOINC="-I${LOCALBASE}/include"
-		GEOLDF="-L${LOCALBASE}/lib"
-		${msg} -n "${irt_seeingif} ${irt_geoip6}... "
-		echo "
+ if $cctype -o config.temp -DUSE_GEOIP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lGeoIP $LDFLAGS $libs $LIBS; then
+  ${msg} "${irt_found}"
+  echo "#define USE_GEOIP" >> src/iroffer_config.h
+  FEATURES="${FEATURES},geoip"
+  GEOLIB="-lGeoIP"
+  GEOINC="-I${LOCALBASE}/include"
+  GEOLDF="-L${LOCALBASE}/lib"
+  ${msg} -n "${irt_seeingif} ${irt_geoip6}... "
+  echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -1973,23 +1972,23 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) { struct in6_addr remoteip; GeoIP_country_code_by_ipnum_v6(NULL, remoteip); exit(0);}
 " > config.temp.c
-		if $cctype -o config.temp -DUSE_GEOIP6 $WARNS $WERROR $CFLAGS ${GEOINC} config.temp.c ${GEOLDF} ${GEOLIB} $LDFLAGS $libs $LIBS; then
-			FEATURES="${FEATURES}6"
-			${msg} "${irt_found}"
-			echo "#define USE_GEOIP6" >> src/iroffer_config.h
-		else
-			${msg} "${irt_notfound}"
-			${msg} "***${irt_nogeoip6}.***"
-		fi
-	else
-		${msg} "${irt_notfound}"
-		${msg} "***${irt_nogeoip}.***"
-	fi
+  if $cctype -o config.temp -DUSE_GEOIP6 $WARNS $WERROR $CFLAGS ${GEOINC} config.temp.c ${GEOLDF} ${GEOLIB} $LDFLAGS $libs $LIBS; then
+   FEATURES="${FEATURES}6"
+   ${msg} "${irt_found}"
+   echo "#define USE_GEOIP6" >> src/iroffer_config.h
+  else
+   ${msg} "${irt_notfound}"
+   ${msg} "***${irt_nogeoip6}.***"
+  fi
+ else
+  ${msg} "${irt_notfound}"
+  ${msg} "***${irt_nogeoip}.***"
+ fi
 fi
 
 if $OPT_UPNP; then
-	${msg} -n "${irt_seeingif_lib} miniupnpc ${irt_lib_exists}... "
-	echo "
+ ${msg} -n "${irt_seeingif_lib} miniupnpc ${irt_lib_exists}... "
+ echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -2003,22 +2002,22 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) { upnpDiscover(2000, NULL, NULL, 0); exit(0);}
 " > config.temp.c
-	if $cctype -o config.temp -DUSE_UPNP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lminiupnpc $LDFLAGS $libs $LIBS; then
-		${msg} "${irt_found}"
-		echo "#define USE_UPNP" >> src/iroffer_config.h
-		FEATURES="${FEATURES},upnp"
-		UPNPLIB="-lminiupnpc"
-		UPNPINC="-I${LOCALBASE}/include"
-		UPNPLDF="-L${LOCALBASE}/lib"
-	else
-		${msg} "${irt_notfound}"
-		${msg} "***${irt_noupnp}.***"
-	fi
+ if $cctype -o config.temp -DUSE_UPNP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lminiupnpc $LDFLAGS $libs $LIBS; then
+  ${msg} "${irt_found}"
+  echo "#define USE_UPNP" >> src/iroffer_config.h
+  FEATURES="${FEATURES},upnp"
+  UPNPLIB="-lminiupnpc"
+  UPNPINC="-I${LOCALBASE}/include"
+  UPNPLDF="-L${LOCALBASE}/lib"
+ else
+  ${msg} "${irt_notfound}"
+  ${msg} "***${irt_noupnp}.***"
+ fi
 fi
 
 if $OPT_CURL; then
-	${msg} -n "${irt_seeingif_lib} libcurl ${irt_lib_exists} (${irt_for} FETCH-Command)... "
-	echo "
+ ${msg} -n "${irt_seeingif_lib} libcurl ${irt_lib_exists} (${irt_for} FETCH-Command)... "
+ echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -2030,31 +2029,31 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {curl_global_cleanup(); exit(0);}
 " > config.temp.c
-	if $cctype -o config.temp -DUSE_CURL $WARNS $CFLAGS `curl-config  --cflags` config.temp.c "-L${LOCALBASE}/lib" `curl-config  --libs` $LDFLAGS $libs $LIBS; then
-		${msg} "${irt_found}"
-		echo "#define USE_CURL" >> src/iroffer_config.h
-		FEATURES="${FEATURES},curl"
-		CURLLIB=`curl-config  --libs`
-		CURLINC=`curl-config  --cflags`
-		CURLLDF="-L${LOCALBASE}/lib"
-		curlssl=`ldd config.temp | grep libssl`
-		if test "${curlssl}" != ""; then
-			${msg} "${irt_curlssl} OpenSSL."
-		else
-			curltls=`ldd config.temp | grep libgnutls`
-			if test "${curltls}" != ""; then
-				${msg} "${irt_curlssl} GNU TLS."
-			fi
-		fi
-	else
-		${msg} "${irt_notfound}"
-		${msg} "***${irt_nocurl}.***"
-	fi
+ if $cctype -o config.temp -DUSE_CURL $WARNS $CFLAGS `curl-config  --cflags` config.temp.c "-L${LOCALBASE}/lib" `curl-config  --libs` $LDFLAGS $libs $LIBS; then
+  ${msg} "${irt_found}"
+  echo "#define USE_CURL" >> src/iroffer_config.h
+  FEATURES="${FEATURES},curl"
+  CURLLIB=`curl-config  --libs`
+  CURLINC=`curl-config  --cflags`
+  CURLLDF="-L${LOCALBASE}/lib"
+  curlssl=`ldd config.temp | grep libssl`
+  if test "${curlssl}" != ""; then
+   ${msg} "${irt_curlssl} OpenSSL."
+  else
+   curltls=`ldd config.temp | grep libgnutls`
+   if test "${curltls}" != ""; then
+    ${msg} "${irt_curlssl} GNU TLS."
+   fi
+  fi
+ else
+  ${msg} "${irt_notfound}"
+  ${msg} "***${irt_nocurl}.***"
+ fi
 fi
 
 if $OPT_SSL; then
-	${msg} -n "${irt_seeingif_lib} OpenSSL ${irt_lib_exists}... "
-	echo "
+ ${msg} -n "${irt_seeingif_lib} OpenSSL ${irt_lib_exists}... "
+ echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -2065,28 +2064,28 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype -o config.temp -DUSE_OPENSSL $WARNS $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lssl -lcrypto $LDFLAGS $libs $LIBS; then
-		${msg} "${irt_found}"
-		${msg} "${irt_start} OpenSSL."
-		echo "#define USE_OPENSSL" >> src/iroffer_config.h
-		FEATURES="${FEATURES},openssl"
-		SSLLIB="-lssl -lcrypto"
-		SSLINC="-I${LOCALBASE}/include"
-		SSLLDF="-L${LOCALBASE}/lib"
-	else
-		${msg} "${irt_notfound}"
-		${msg} "***${irt_nossl}."
-	fi
-	if test "${curltls}" != ""; then
-		${msg} "*** ${irt_badssl1} 'GNU TLS', ${irt_badssl2} 'GNU TLS'."
-		waserror
-	fi
+ if $cctype -o config.temp -DUSE_OPENSSL $WARNS $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lssl -lcrypto $LDFLAGS $libs $LIBS; then
+  ${msg} "${irt_found}"
+  ${msg} "${irt_start} OpenSSL."
+  echo "#define USE_OPENSSL" >> src/iroffer_config.h
+  FEATURES="${FEATURES},openssl"
+  SSLLIB="-lssl -lcrypto"
+  SSLINC="-I${LOCALBASE}/include"
+  SSLLDF="-L${LOCALBASE}/lib"
+ else
+  ${msg} "${irt_notfound}"
+  ${msg} "***${irt_nossl}."
+ fi
+ if test "${curltls}" != ""; then
+  ${msg} "*** ${irt_badssl1} 'GNU TLS', ${irt_badssl2} 'GNU TLS'."
+  waserror
+ fi
 fi
 
 
 if $OPT_TLS; then
-	${msg} -n "${irt_seeingif_lib} GNU TLS ${irt_lib_exists}... "
-	echo "
+ ${msg} -n "${irt_seeingif_lib} GNU TLS ${irt_lib_exists}... "
+ echo "
 #include \"src/iroffer_config.h\"
 #include \"src/iroffer_defines.h\"
 #include \"src/iroffer_headers.h\"
@@ -2097,21 +2096,21 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) {exit(0);}
 " > config.temp.c
-	if $cctype -o config.temp -DUSE_GNUTLS $WARNS $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lgnutls $LDFLAGS $libs $LIBS; then
-		${msg} "${irt_found}"
-		echo "#define USE_GNUTLS" >> src/iroffer_config.h
-		FEATURES="${FEATURES},gnutls"
-		SSLLIB="-lgnutls"
-		SSLINC="-I${LOCALBASE}/include"
-		SSLLDF="-L${LOCALBASE}/lib"
-	else
-		${msg} "${irt_notfound}"
-		${msg} "***${irt_notls}."
-	fi
-	if test "${curlssl}" != ""; then
-		${msg} "*** ${irt_badssl1} 'OpenSSL', ${irt_badssl2} 'OpenSSL'."
-		waserror
-	fi
+ if $cctype -o config.temp -DUSE_GNUTLS $WARNS $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lgnutls $LDFLAGS $libs $LIBS; then
+  ${msg} "${irt_found}"
+  echo "#define USE_GNUTLS" >> src/iroffer_config.h
+  FEATURES="${FEATURES},gnutls"
+  SSLLIB="-lgnutls"
+  SSLINC="-I${LOCALBASE}/include"
+  SSLLDF="-L${LOCALBASE}/lib"
+ else
+  ${msg} "${irt_notfound}"
+  ${msg} "***${irt_notls}."
+ fi
+ if test "${curlssl}" != ""; then
+  ${msg} "*** ${irt_badssl1} 'OpenSSL', ${irt_badssl2} 'OpenSSL'."
+  waserror
+ fi
 fi
 
 if $OPT_WARN; then
@@ -2119,20 +2118,20 @@ WERROR2=$WERROR
 fi
 
 if $OPT_RUBY; then
-	libruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBYARG_SHARED' ]"`
-	libsruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBYARG_STATIC' ]"`
-	archdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'archdir' ]"`
-	rubyhdrdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'rubyhdrdir' ]"`
-	sitearch=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'sitearch' ]"`
-	rubyversion=`${ruby} -e "print RUBY_VERSION.sub(/\.[0-9]*$/,'').sub(/\./,'')"`
-	if test "${rubyhdrdir}" = "nil"
-	then
-		incruby="-I${archdir}"
-	else
-		incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}" 
-	fi
-	${msg} -n "${irt_seeingif_lib} libruby ${irt_lib_exists} (${irt_for} RUBY-Scripts)... "
-	echo "
+ libruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBYARG_SHARED' ]"`
+ libsruby=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'LIBRUBYARG_STATIC' ]"`
+ archdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'archdir' ]"`
+ rubyhdrdir=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'rubyhdrdir' ]"`
+ sitearch=`${ruby} -r rbconfig -e "print Config::CONFIG[ 'sitearch' ]"`
+ rubyversion=`${ruby} -e "print RUBY_VERSION.sub(/\.[0-9]*$/,'').sub(/\./,'')"`
+ if test "${rubyhdrdir}" = "nil"
+ then
+  incruby="-I${archdir}"
+ else
+  incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}" 
+ fi
+ ${msg} -n "${irt_seeingif_lib} libruby ${irt_lib_exists} (${irt_for} RUBY-Scripts)... "
+ echo "
 #include \"ruby.h\"
 int
 #ifdef __GNUC__
@@ -2140,21 +2139,21 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
 " > config.temp.c
-	if $cctype -o config.temp -DUSE_RUBY $WARNS $CFLAGS ${incruby} config.temp.c ${libruby} $LDFLAGS $libs $LIBS; then
-		${msg} "${irt_found}"
-		${msg} "${irt_start} Ruby."
-		echo "#define USE_RUBY" >> src/iroffer_config.h
-		echo "#define USE_RUBYVERSION ${rubyversion}" >> src/iroffer_config.h
-		FEATURES="${FEATURES},ruby"
-		RUBYLIB="${libruby}"
-		RUBYSLIB="${libsruby} -lm $rstatic"
-		RUBYINC="${incruby}"
-		RUBYLDF="-L${LOCALBASE}/lib"
-		WERROR2=""
-	else
-		${msg} "${irt_notfound}"
-		${msg} "***${irt_noruby}.***"
-	fi
+ if $cctype -o config.temp -DUSE_RUBY $WARNS $CFLAGS ${incruby} config.temp.c ${libruby} $LDFLAGS $libs $LIBS; then
+  ${msg} "${irt_found}"
+  ${msg} "${irt_start} Ruby."
+  echo "#define USE_RUBY" >> src/iroffer_config.h
+  echo "#define USE_RUBYVERSION ${rubyversion}" >> src/iroffer_config.h
+  FEATURES="${FEATURES},ruby"
+  RUBYLIB="${libruby}"
+  RUBYSLIB="${libsruby} -lm $rstatic"
+  RUBYINC="${incruby}"
+  RUBYLDF="-L${LOCALBASE}/lib"
+  WERROR2=""
+ else
+  ${msg} "${irt_notfound}"
+  ${msg} "***${irt_noruby}.***"
+ fi
 fi
 if $OPT_STATIC; then
 TARGETS="$TARGETS iroffer_static$exe"
@@ -2163,7 +2162,7 @@ fi
 rm -f config.temp*
 
 if test "${FEATURES}" != ""; then
-	FEATURES=" - ${FEATURES#,}"
+ FEATURES=" - ${FEATURES#,}"
 fi
 echo "#define FEATURES \"${FEATURES}\"" >> src/iroffer_config.h
 ${msg} "${irt_creating} src/iroffer_config.h... ${irt_done}"
