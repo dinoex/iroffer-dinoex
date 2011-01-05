@@ -11,7 +11,7 @@ GNU General Public License for more details.
 src/iroffer*.[ch], README-iroffer.txt, dynip.sh, iroffer.cron
 are copyrighted by David Johnson (PMG) under GPL2 below.
 
-Configure, Makefile.config, sample.config are written by
+Configure, sample.config are written by
 David Johnson (PMG) and where extended by Dirk Meyer.
 These files are under GPL2 below.
 
