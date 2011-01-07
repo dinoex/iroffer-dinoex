@@ -2246,6 +2246,7 @@ do
 done
 echo "
 src-doc:
+	rm -rf cxref
 	mkdir -p cxref
 	cxref \\"
 for c in src/*.c
@@ -2258,7 +2259,7 @@ do
   ;;
  esac
 done
-echo "		-block-comments -index-all -xref-all -Ocxref \\
+echo "		-all-comments -index-all -xref-all -Ocxref \\
 		-Niroffer \$(CPPFLAGS)
 	cxref \\"
 for c in src/*.c
@@ -2271,8 +2272,9 @@ do
   ;;
  esac
 done
-echo "		-block-comments -index-all -xref-all -Ocxref -html \\
-		-Niroffer \$(CPPFLAGS)"
+echo "		-all-comments -index-all -xref-all -Ocxref -html \\
+		-Niroffer \$(CPPFLAGS)
+		ln -s iroffer.html cxref/index.html"
 echo '
 
 clean:
