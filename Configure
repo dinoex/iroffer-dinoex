@@ -2218,7 +2218,7 @@ LDFLAGS   = $(CONFIG_LDFLAGS)
 CFLAGS    = $(CONFIG_CFLAGS)
 CPPFLAGS  = -Isrc $(CONFIG_CPPFLAGS)
 
-all: iroffer$(CONFIG_EXE) $(CONFIG_TARGETS)
+all: iroffer$(CONFIG_EXE) $(CONFIG_TARGETS) $(OBJDIR)
 
 iroffer$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
 	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_SHARED) -o iroffer
@@ -2228,6 +2228,8 @@ iroffer_chroot$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
 
 iroffer_static$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
 	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_STATIC) -o iroffer_static
+
+obj: $(OBJDIR):
 
 $(OBJDIR):
 	mkdir -p obj
@@ -2307,6 +2309,7 @@ uninstall:
  echo '.PATH: src'
  make_linker
  echo '	ln -s ../src ${.CURDIR}/obj/'
+ echo '	make'
  echo
  for c in ${modules}
  do
