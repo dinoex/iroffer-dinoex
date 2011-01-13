@@ -2167,46 +2167,52 @@ fi
 echo "#define FEATURES \"${FEATURES}\"" >> src/iroffer_config.h
 ${msg} "${irt_creating} src/iroffer_config.h... ${irt_done}"
 
-${msg} -n "${irt_creating} Makefile... "
+${msg} -n "${irt_creating} Makefiles... "
 
-cp /dev/null Makefile
-(
-${msg} "# ${irt_noedit} #"
-echo
-echo VERSION=$VERSION
-echo CC=$cctype
-echo CONFIG_EXE=$exe
-echo CONFIG_LDLIBS=$GEOLIB $CURLLIB $UPNPLIB $SSLLIB $libs $LIBS
-echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF $RUBYLDF $LDFLAGS
-echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $WARNS2 $CFLAGS
-echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
-echo CONFIG_CHROOT=$NSSLIBS
-echo CONFIG_SHARED=$RUBYLIB
-echo CONFIG_STATIC=$RUBYSLIB -static
-echo CONFIG_TARGETS=$TARGETS
-echo INSTALL_GROUP=$installgroup
-echo INSDIR?=$PREFIX/bin
-echo
-echo "IROFFER_OBJECTS= \\"
-for c in iroffer_admin iroffer_dccchat iroffer_display iroffer_main \
+modules="iroffer_admin iroffer_dccchat iroffer_display iroffer_main \
  iroffer_misc iroffer_statefile iroffer_transfer iroffer_upload \
  plumb_md5 dinoex_admin dinoex_main dinoex_misc dinoex_http \
  dinoex_upload dinoex_transfer dinoex_geoip dinoex_ssl \
  dinoex_curl dinoex_irc dinoex_queue dinoex_telnet dinoex_badip \
  dinoex_jobs dinoex_ruby dinoex_user dinoex_chat dinoex_config \
- crc32 upnp blowfish strnatcmp iroffer_utilities dinoex_utilities
-do
- echo "	obj/${c}.o \\"
-done
-echo
-echo "HEADERS= \\"
-for h in src/*.h Makefile
-do
- echo "	${h} \\"
-done
-echo '
-OBJDIR = obj/.mkdir
+ crc32 upnp blowfish strnatcmp iroffer_utilities dinoex_utilities"
 
+make_head()
+{
+ ${msg} "# ${irt_noedit} #"
+ echo
+ echo VERSION=$VERSION
+ echo CC=$cctype
+ echo CONFIG_EXE=$exe
+ echo CONFIG_LDLIBS=$GEOLIB $CURLLIB $UPNPLIB $SSLLIB $libs $LIBS
+ echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF $RUBYLDF $LDFLAGS
+ echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $WARNS2 $CFLAGS
+ echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
+ echo CONFIG_CHROOT=$NSSLIBS
+ echo CONFIG_SHARED=$RUBYLIB
+ echo CONFIG_STATIC=$RUBYSLIB -static
+ echo CONFIG_TARGETS=$TARGETS
+ echo INSTALL_GROUP=$installgroup
+ echo INSDIR?=$PREFIX/bin
+ echo
+ echo
+ echo "IROFFER_OBJECTS= \\"
+}
+
+make_headers()
+{
+ echo
+ echo "HEADERS= \\"
+ for h in src/*.h Makefile
+ do
+  echo "	${h} \\"
+ done
+ echo
+}
+
+make_linker()
+{
+ echo '
 LDLIBS    = $(CONFIG_LDLIBS)
 LDFLAGS   = $(CONFIG_LDFLAGS)
 CFLAGS    = $(CONFIG_CFLAGS)
@@ -2225,60 +2231,111 @@ iroffer_static$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
 
 $(OBJDIR):
 	mkdir -p obj
-	touch $(OBJDIR)
-'
-for c in src/*.c
-do
- o="${c%.c}.o"
- o="obj/${o#src/}"
- case ${c} in
- src/dinoex_statefile.c)
-  ;;
- src/iroffer_statefile.c)
-  echo "${o}: ${c} \$(HEADERS) \$(OBJDIR) src/dinoex_statefile.c"
-  echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} ${c}"
-  ;;
- *)
-  echo "${o}: ${c} \$(HEADERS) \$(OBJDIR)"
-  echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} ${c}"
-  ;;
- esac
-done
-echo "
+	touch $(OBJDIR)'
+}
+
+make_srclist()
+{
+ for c in ${modules}
+ do
+  c="src/${c}.c"
+  echo "		${c} \\"
+ done
+ echo "		-all-comments -index-all -xref-all -Ocxref $1\\"
+ echo "		-Niroffer \$(CPPFLAGS)"
+}
+
+(
+ make_head
+ for c in ${modules}
+ do
+  echo "	obj/${c}.o \\"
+ done
+ make_headers
+ echo 'OBJDIR = obj/.mkdir'
+ make_linker
+ echo
+ for c in ${modules}
+ do
+  o="obj/${c}.o"
+  c="src/${c}.c"
+  case ${c} in
+  src/iroffer_statefile.c)
+   echo "${o}: ${c} \$(HEADERS) \$(OBJDIR) src/dinoex_statefile.c"
+   echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} ${c}"
+   ;;
+  *)
+   echo "${o}: ${c} \$(HEADERS) \$(OBJDIR)"
+   echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} ${c}"
+   ;;
+  esac
+ done
+ echo "
 src-doc:
 	rm -rf cxref
 	mkdir -p cxref
 	cxref \\"
-for c in src/*.c
-do
- case ${c} in
- src/dinoex_statefile.c)
-  ;;
- *)
-  echo "	${c} \\"
-  ;;
- esac
-done
-echo "		-all-comments -index-all -xref-all -Ocxref \\
-		-Niroffer \$(CPPFLAGS)
-	cxref \\"
-for c in src/*.c
-do
- case ${c} in
- src/dinoex_statefile.c)
-  ;;
- *)
-  echo "	${c} \\"
-  ;;
- esac
-done
-echo "		-all-comments -index-all -xref-all -Ocxref -html \\
-		-Niroffer \$(CPPFLAGS)
-		ln -s iroffer.html cxref/index.html"
-echo '
+ make_srclist
+ echo "	cxref \\"
+ make_srclist "-html "
+ echo "	ln -s iroffer.html cxref/index.html"
+ echo '
 
 clean:
-	rm -rf iroffer iroffer.exe iroffer_chroot iroffer_chroot.exe core obj src/*~ *~
+	rm -rf iroffer iroffer.exe iroffer_static iroffer_static.exe iroffer_chroot iroffer_chroot.exe core obj src/*~ *~
+
+install: all
+	install -o root -g $(INSTALL_GROUP) -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+
+installuser: all
+	install -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+
+uninstall:
+	rm $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+
+# end'
+) > GNUmakefile
+
+(
+ make_head
+ for c in ${modules}
+ do
+  echo "	${c}.o \\"
+ done
+ make_headers
+ echo 'OBJDIR = ${.CURDIR}/obj/.mkdir'
+ echo '.PATH: src'
+ make_linker
+ echo '	ln -s ../src ${.CURDIR}/obj/'
+ echo
+ for c in ${modules}
+ do
+  o="${c}.o"
+  c="${c}.c"
+  case ${c} in
+  iroffer_statefile.c)
+   echo "${o}: ${c} \$(HEADERS) \$(OBJDIR) dinoex_statefile.c"
+   echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} src/${c}"
+   ;;
+  *)
+   echo "${o}: ${c} \$(HEADERS) \$(OBJDIR)"
+   echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} src/${c}"
+   ;;
+  esac
+ done
+ echo "
+src-doc:
+	rm -rf \${.CURDIR}/cxref
+	mkdir -p \${.CURDIR}/cxref
+	cd \${.CURDIR} && cxref \\"
+ make_srclist
+ echo "	cd \${.CURDIR} && cxref \\"
+ make_srclist "-html "
+ echo "	ln -s iroffer.html \${.CURDIR}/cxref/index.html"
+ echo '
+
+clean:
+	cd ${.CURDIR} && rm -rf iroffer iroffer.exe iroffer_static iroffer_static.exe iroffer_chroot iroffer_chroot.exe core obj src/*~ *~
 
 install: all
 	install -o root -g $(INSTALL_GROUP) -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
