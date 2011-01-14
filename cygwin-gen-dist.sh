@@ -31,14 +31,16 @@ do
 	en)
 		dir="${name}-win32-${cygwin}"
 		bin="iroffer.exe"
+		src="iroffer.exe"
 		;;
 	*)
 		dir="${name}-win32-${cygwin}-${lang}"
 		bin="iroffer-${lang}.exe"
+		src="${lang}-iroffer.exe"
 		;;
 	esac
 	mkdir "${dir}"
-	mv iroffer.exe "${dir}/${bin}"
+	mv "${src}" "${dir}/${bin}"
 	rsync -av htdocs ${all} "${dir}/"
 	case "${lang}" in
 	en)
