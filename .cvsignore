@@ -9,7 +9,13 @@ copyrights.grep
 cxref
 d.sh
 de.sed
+de-iroffer
+de-iroffer_chroot
+de-iroffer_static
 fr.sed
+fr-iroffer
+fr-iroffer_chroot
+fr-iroffer_static
 h.sh
 help-admin-de.txt
 help-admin-en.txt
@@ -20,6 +26,9 @@ iroffer
 iroffer_chroot
 iroffer_static
 it.sed
+it-iroffer
+it-iroffer_chroot
+it-iroffer_static
 l.sh
 m.sh
 obj
