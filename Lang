@@ -51,22 +51,40 @@ ${utf8} |
 sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
 rm -f en.tmp "${lang}.tmp"
 echo "done"
+if test ! -d "src.${lang}"
+then
+	mkdir "src.${lang}"
+fi
 for c in src/iroffer*.c src/dinoex*.c
 do
-	if test ! -f "${c}.en"
+	l="src.${lang}/${c#src/}"
+	sed -f "${lang}.sed" "${c}" > "${l}.new"
+	if test -f "${l}"
 	then
-		echo \
-		cp -p "${c}" "${c}.en"
-		cp -p "${c}" "${c}.en"
-	fi
-	sed -f "${lang}.sed" "${c}".en > "${c}.new"
-	if diff -q "${c}" "${c}.new"
-	then
-		rm -f "${c}.new"
-		continue
+		if diff -q "${l}" "${l}.new"
+		then
+			rm -f "${l}.new"
+			continue
+		fi
 	fi
 	echo \
-	mv -f "${c}.new" "${c}"
-	mv -f "${c}.new" "${c}"
+	mv -f "${l}.new" "${l}"
+	mv -f "${l}.new" "${l}"
+done
+for c in src/*.h src/[bcpsu]*.c
+do
+	l="src.${lang}/${c#src/}"
+	cp -p "${c}" "${l}.new"
+	if test -f "${l}"
+	then
+		if diff -q "${l}" "${l}.new"
+		then
+			rm -f "${l}.new"
+			continue
+		fi
+	fi
+	echo \
+	mv -f "${l}.new" "${l}"
+	mv -f "${l}.new" "${l}"
 done
 # eof
