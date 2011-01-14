@@ -460,10 +460,20 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
     return found;
   }
   last = packnumtonum(++end);
-  for (; first <= last; ++first) {
-    ++found;
-    if (send_xdcc_file2(&bad, pi, first, NULL, pwd))
-      return found;
+  if (last < first) {
+    /* count backwards */
+    for (; first >= last; --first) {
+      ++found;
+      if (send_xdcc_file2(&bad, pi, first, NULL, pwd))
+        return found;
+    }
+  } else {
+    /* count forwards */
+    for (; first <= last; ++first) {
+      ++found;
+      if (send_xdcc_file2(&bad, pi, first, NULL, pwd))
+        return found;
+    }
   }
   return found;
 }
