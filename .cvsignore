@@ -23,9 +23,11 @@ it.sed
 l.sh
 m.sh
 obj
+o.*
 p.sh
 patch-dinoex-*
 r.sh
+src.*
 t.sh
 u.sh
 v.sh

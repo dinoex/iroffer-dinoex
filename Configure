@@ -1546,7 +1546,7 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS -lnss_files -lnss_dns $libs $LIBS; then
 NSSLIBS="-lnss_files -lnss_dns"
-TARGETS="iroffer_chroot$exe"
+TARGETR="iroffer_chroot$exe"
 ${msg} "${irt_found}"
 else
 NSSLIBS=""
@@ -2156,7 +2156,7 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
  fi
 fi
 if $OPT_STATIC; then
-TARGETS="$TARGETS iroffer_static$exe"
+TARGETS="iroffer_static$exe"
 fi
 
 rm -f config.temp*
@@ -2167,7 +2167,7 @@ fi
 echo "#define FEATURES \"${FEATURES}\"" >> src/iroffer_config.h
 ${msg} "${irt_creating} src/iroffer_config.h... ${irt_done}"
 
-${msg} -n "${irt_creating} Makefiles... "
+${msg} -n "${irt_creating} Makefile... "
 
 modules="iroffer_admin iroffer_dccchat iroffer_display iroffer_main \
  iroffer_misc iroffer_statefile iroffer_transfer iroffer_upload \
@@ -2177,7 +2177,18 @@ modules="iroffer_admin iroffer_dccchat iroffer_display iroffer_main \
  dinoex_jobs dinoex_ruby dinoex_user dinoex_chat dinoex_config \
  crc32 upnp blowfish strnatcmp iroffer_utilities dinoex_utilities"
 
-make_head()
+make_srclist()
+{
+ for c in ${modules}
+ do
+  c="src/${c}.c"
+  echo "		${c} \\"
+ done
+ echo "		-all-comments -index-all -xref-all -Ocxref $1\\"
+ echo "		-Niroffer \$(CPPFLAGS)"
+}
+
+make_makefile()
 {
  ${msg} "# ${irt_noedit} #"
  echo
@@ -2191,79 +2202,58 @@ make_head()
  echo CONFIG_CHROOT=$NSSLIBS
  echo CONFIG_SHARED=$RUBYLIB
  echo CONFIG_STATIC=$RUBYSLIB -static
- echo CONFIG_TARGETS=$TARGETS
+ echo CONFIG_TARGETS?=$TARGETS $TARGETR
  echo INSTALL_GROUP=$installgroup
  echo INSDIR?=$PREFIX/bin
- echo
+ echo IRLANG?=en
+ echo IRSRC?=src
+ echo IRNAME?=iroffer
+ echo 'OBJDIR = o.$(IRLANG)/.mkdir'
  echo
  echo "IROFFER_OBJECTS= \\"
-}
-
-make_headers()
-{
- echo
- echo "HEADERS= \\"
- for h in src/*.h Makefile
+ for c in ${modules}
  do
-  echo "	${h} \\"
+  echo "	o.\$(IRLANG)/${c}.o \\"
  done
  echo
-}
-
-make_linker()
-{
+ echo "HEADERS= \\"
+ for h in src/*.h
+ do
+  h="${h#src/}"
+  echo "	\$(IRSRC)/${h} \\"
+ done
+ echo "	Makefile"
+ echo
  echo '
 LDLIBS    = $(CONFIG_LDLIBS)
 LDFLAGS   = $(CONFIG_LDFLAGS)
 CFLAGS    = $(CONFIG_CFLAGS)
-CPPFLAGS  = -Isrc $(CONFIG_CPPFLAGS)
+CPPFLAGS  = -I$(IRSRC) $(CONFIG_CPPFLAGS)
 
-all: iroffer$(CONFIG_EXE) $(CONFIG_TARGETS) $(OBJDIR)
+all: $(IRNAME)$(CONFIG_EXE) $(CONFIG_TARGETS) $(OBJDIR)
 
-iroffer$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
-	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_SHARED) -o iroffer
+$(IRNAME)$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
+	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_SHARED) -o $(IRNAME)
 
-iroffer_chroot$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
-	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_SHARED) $(CONFIG_CHROOT) -o iroffer_chroot
+$(IRNAME)_chroot$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
+	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_SHARED) $(CONFIG_CHROOT) -o $(IRNAME)_chroot
 
-iroffer_static$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
-	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_STATIC) -o iroffer_static
+$(IRNAME)_static$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
+	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_STATIC) -o $(IRNAME)_static
 
 obj: $(OBJDIR)
 
 $(OBJDIR):
-	mkdir -p obj
-	touch $(OBJDIR)'
-}
-
-make_srclist()
-{
+	mkdir -p o.$(IRLANG)
+	touch $(OBJDIR)
+'
  for c in ${modules}
  do
-  c="src/${c}.c"
-  echo "		${c} \\"
- done
- echo "		-all-comments -index-all -xref-all -Ocxref $1\\"
- echo "		-Niroffer \$(CPPFLAGS)"
-}
-
-(
- make_head
- for c in ${modules}
- do
-  echo "	obj/${c}.o \\"
- done
- make_headers
- echo 'OBJDIR = obj/.mkdir'
- make_linker
- echo
- for c in ${modules}
- do
-  o="obj/${c}.o"
-  c="src/${c}.c"
+  o="o.\$(IRLANG)/${c}.o"
+  c="\$(IRSRC)/${c}.c"
   case ${c} in
-  src/iroffer_statefile.c)
-   echo "${o}: ${c} \$(HEADERS) \$(OBJDIR) src/dinoex_statefile.c"
+  */iroffer_statefile.c)
+   echo "${o}: ${c} \$(HEADERS) \$(OBJDIR) \$(IRSRC)/dinoex_statefile.c"
    echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} ${c}"
    ;;
   *)
@@ -2283,78 +2273,64 @@ src-doc:
  echo "	ln -s iroffer.html cxref/index.html"
  echo '
 
-clean:
-	rm -rf iroffer iroffer.exe iroffer_static iroffer_static.exe iroffer_chroot iroffer_chroot.exe core obj src/*~ *~
+cleanobj:
+	rm -rf o.* $(IRNAME) $(IRNAME).exe \
+		$(IRNAME)_static $(IRNAME)_static.exe \
+		$(IRNAME)_chroot $(IRNAME)_chroot.exe \
+
+clean: cleanobj
+	$(MAKE) IRNAME=de-iroffer cleanobj
+	$(MAKE) IRNAME=it-iroffer cleanobj
+	$(MAKE) IRNAME=fr-iroffer cleanobj
+
+clobber: clean
+	rm -rf src.* *.sed
 
 install: all
-	install -o root -g $(INSTALL_GROUP) -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+	install -o root -g $(INSTALL_GROUP) -m 0755 $(IRNAME)$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
 
 installuser: all
-	install -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+	install -m 0755 $(IRNAME)$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
 
 uninstall:
-	rm $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
+	rm $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
 
-# end'
-) > GNUmakefile
-
-(
- make_head
- for c in ${modules}
+en:	all
+'
+ for l in de it fr
  do
-  echo "	${c}.o \\"
+  echo "${l}:"
+  echo "	./Lang ${l}"
+  more=""
+  for i in $TARGETS $TARGETR
+  do
+    more="${more} ${l}-${i}"
+  done
+  echo "	\$(MAKE) IRLANG=${l} IRSRC=src.${l} IRNAME=${l}-iroffer all" $more
+  echo
  done
- make_headers
- echo 'OBJDIR = ${.CURDIR}/obj/.mkdir'
- echo '.PATH: src'
- make_linker
- echo '	ln -s ../src ${.CURDIR}/obj/'
- echo '	make'
- echo
- for c in ${modules}
- do
-  o="${c}.o"
-  c="${c}.c"
-  case ${c} in
-  iroffer_statefile.c)
-   echo "${o}: ${c} \$(HEADERS) \$(OBJDIR) dinoex_statefile.c"
-   echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} src/${c}"
-   ;;
-  *)
-   echo "${o}: ${c} \$(HEADERS) \$(OBJDIR)"
-   echo "	\$(CC) -c \$(CPPFLAGS) \$(CFLAGS) -o ${o} src/${c}"
-   ;;
-  esac
- done
- echo "
-src-doc:
-	rm -rf \${.CURDIR}/cxref
-	mkdir -p \${.CURDIR}/cxref
-	cd \${.CURDIR} && cxref \\"
- make_srclist
- echo "	cd \${.CURDIR} && cxref \\"
- make_srclist "-html "
- echo "	ln -s iroffer.html \${.CURDIR}/cxref/index.html"
  echo '
-
-clean:
-	cd ${.CURDIR} && rm -rf iroffer iroffer.exe iroffer_static iroffer_static.exe iroffer_chroot iroffer_chroot.exe core obj src/*~ *~
-
-install: all
-	install -o root -g $(INSTALL_GROUP) -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
-
-installuser: all
-	install -m 0755 iroffer$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
-
-uninstall:
-	rm $(DESTDIR)$(INSDIR)/iroffer$(CONFIG_EXE)
-
 # end'
-) > Makefile
+}
+
+make_makefile > Makefile
 
 ${msg} "${irt_done}"
 echo
-${msg} "${irt_make1} \"$maketype\" ${irt_make2}"
+case "${LANG}" in
+de*)
+ ${msg} "${irt_make1} \"$maketype de\" ${irt_make2}"
+  ;;
+fr*)
+ ${msg} "${irt_make1} \"$maketype fr\" ${irt_make2}"
+  ;;
+it*)
+ ${msg} "${irt_make1} \"$maketype it\" ${irt_make2}"
+  ;;
+*)
+ ${msg} "${irt_make1} \"$maketype\" ${irt_make2}"
+  ;;
+esac
 ${msg} "${irt_noerror}"
 echo
 

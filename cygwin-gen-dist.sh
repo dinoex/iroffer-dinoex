@@ -20,14 +20,13 @@ rm -f a.zip
 # Enable options
 # Activer les options
 ./Configure -tls -geoip -upnp -ruby -debug
+make clean
 #
 # Build translated versions
 # Construire la version traduite
 for lang in de it fr en
 do
-	./Lang "${lang}"
-	make clean
-	make
+	make ${lang}
 	case "${lang}" in
 	en)
 		dir="${name}-win32-${cygwin}"
