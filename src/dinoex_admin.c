@@ -4748,9 +4748,18 @@ static unsigned int a_iqueue_search(const userinput * const u, const char *what,
   }
   if (*(++end) == '#') ++end;
   last = atoi(end);
-  for (; first <= last; ++first) {
-    ++found;
-    a_iqueue_sub(u, NULL, first, net);
+  if (last < first) {
+    /* count backwards */
+    for (; first >= last; --first) {
+      ++found;
+      a_iqueue_sub(u, NULL, first, net);
+    }
+  } else {
+    /* count forwards */
+    for (; first >= last; ++first) {
+      ++found;
+      a_iqueue_sub(u, NULL, first, net);
+    }
   }
   return found;
 }

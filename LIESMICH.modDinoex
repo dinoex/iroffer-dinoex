@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+355) XDCC BATCH, BATCH
+  Erlaube auch Bereich von einer höheren Nummer zu einer niedrigeren Nummer.
+
 bugfix: logstats
   Mit logstats off wurde kein logroate durchgeführt.
   Mit logstats oon und ohne logfile, wurden auch keine Daten im DCC Chat ausgegeben.
