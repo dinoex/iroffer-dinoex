@@ -2295,6 +2295,8 @@ installuser: all
 uninstall:
 	rm $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
 
+all-lang:	en de it fr
+
 en:	all
 '
  for l in de it fr
