@@ -14,7 +14,7 @@ bugfix: ./Lang ??
   Erkenne und verwende "utf-8" wenn LANG so gesetzt ist.
 
 354) iroffer mybot.config -c
-  Wenneinen Konfigurationsdatei vor der Option "-c" angegebn ist,
+  Wenn eine Konfigurationsdatei vor der Option "-c" angegeben ist,
   so wird das Passwort nicht ausgegeben,
   sondern direkt an die Konfigurationsdatei angefügt.
 
@@ -35,7 +35,7 @@ bugfix: UNLIMITED
   Bot crashte wenn kein Transfer gefunden wurde.
 
 bugfix: local_vhost
-  Vebinde nur zu der passenden Adress-Familie.
+  Verbinde nur zu der passenden Adress-Familie.
 
 353) expire_logfiles
   Nach den angegebenen Tagen werden die alten Logdateien gelöscht.
@@ -49,12 +49,12 @@ bugfix: local_vhost
   Default: keine Prüfung bei IPv6.
 
 bugfix: geoipdatabase
-  Lade die Datenbak neu wenn die Datei geändert wurde.
+  Lade die Datenbank neu wenn die Datei geändert wurde.
 
 351) NOAUTOADD
 
   Neues Admin Kommando:
-  NOAUTOADD <x>                      Sperrrt AUTOADD für die nächsten <x> Minuten
+  NOAUTOADD <x>                      Sperrt AUTOADD für die nächsten <x> Minuten
 
 350) XDCC BATCH
   Erlaube mehrere Angaben in BATCH.
@@ -72,7 +72,7 @@ bugfix: geoipdatabase
 
 348) Französiche Texte
   Aktiviert werde diese durch "./Lang fr" nach dem "Configure"
-  Zurück zum Englischen gehts es mit "./Lang en"
+  Zurück zum Englischen geht es mit "./Lang en"
 
 347) XDCC INFO
   Zeige die CRC32 des Inhaltes einer kommrimierten Datei.
@@ -128,15 +128,15 @@ bugfix: xdccxmlfile
 338) AUTOCANCEL
 
   Neues Admin Kommando:
-  AUTOCANCEL                         Abbrechen aller laufendend ADD und REMOVE Befehle.
+  AUTOCANCEL                         Abbrechen aller laufenden ADD und REMOVE Befehle.
 
 337) adddir_min_size
-  Bei addir, adnew und autoadd werden Datein kleiner als die angegebene
+  Bei addir, adnew und autoadd werden Dateien kleiner als die angegebene
   Größe in KB übersprungen.
   Default: keine Prüfung
 
 - bugfix: getip_network
-  Bot stürtze ab wenn als Parameter kein gültiges Netzwerk angegeben wurde.
+  Bot stürzte ab wenn als Parameter kein gültiges Netzwerk angegeben wurde.
   versions affected: 3.23 - 3.24
 
 336) channel -plaintext
@@ -146,7 +146,7 @@ bugfix: xdccxmlfile
   Sende bei Announces in das Netzwerk keine Farben.
 
 - bugfix: console
-  Bot stürtze beim editieren der Befehlszeile ab.
+  Bot stürzte beim editieren der Befehlszeile ab.
   versions affected: 3.23 - 3.24
 
 - bugfix: BOTINFO
@@ -166,14 +166,14 @@ bugfix: xdccxmlfile
   Schreibweise des XML-Tags geändert bandwith -> bandwidth.
 
 bugfix: CLOSEU
-  Bot stürtze ab, wenn eine fehlerhafte Upload ID übergeben wurde.
+  Bot stürzte ab, wenn eine fehlerhafte Upload ID übergeben wurde.
   versions affected: 3.23
 
 bugfix: autoadd_dir
   Verzeichnisse mit Leerzeichen wurden nicht durchsucht.
 
 bugfix: GET
-  Bot stürtze ab, wenn "uplaoddir" nicht definiert ist.
+  Bot stürzte ab, wenn "uplaoddir" nicht definiert ist.
   versions affected: 3.21 - 3.23
 
 bugfix: autoaddann
@@ -254,7 +254,7 @@ bugfix: SHUTDOWN
 
 bugfix: AUTOADD
   versions affected: 3.22
-  Wenn die Dateinahmen doppelte Trennzeichen enthalten,
+  Wenn die Dateinamen doppelte Trennzeichen enthalten,
   z.B.: "//",  "/./" oder "/../", dann
   kann der Bot mit dem Fehler "To many open files" abbrechen.
 
@@ -266,7 +266,7 @@ bugfix: autosendpack, CHTRIGGER
   Bot crasht bei der Trigger Nachricht.
 
 330) AUTOADD
-  Wenn einen umbenante Datei gefunden wird, repariere das Pack mit dem neuen Dateinamen.
+  Wenn einen umbenannte Datei gefunden wird, repariere das Pack mit dem neuen Dateinamen.
 
 bugfix: Configure
   Erkennung funktioniert jetzt auch mit gcc46.
@@ -1158,7 +1158,7 @@ bugfix: autoadd_group_match
 
 237) Italienische Texte
   Aktiviert werde diese durch "./Lang it" nach dem "Configure"
-  Zurück zum Englischen gehts es mit "./Lang en"
+  Zurück zum Englischen geht es mit "./Lang en"
 
 bugfix: channel -fish key
   Bot konnte crashen, wenn Zeile mit bestimmter Länge ausgegeben wurden.
@@ -1939,7 +1939,7 @@ Ab Version mod 2.11:
 
 141) Deutsche Texte für User
   Aktiviert werde diese durch "./Lang de" nach dem "Configure"
-  Zurück zum Englischen gehts es mit "./Lang en"
+  Zurück zum Englischen geht es mit "./Lang en"
 
 140) SORT
   Neues Admin Kommando:
