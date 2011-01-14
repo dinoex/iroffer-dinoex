@@ -2229,7 +2229,7 @@ iroffer_chroot$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
 iroffer_static$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
 	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_STATIC) -o iroffer_static
 
-obj: $(OBJDIR):
+obj: $(OBJDIR)
 
 $(OBJDIR):
 	mkdir -p obj
