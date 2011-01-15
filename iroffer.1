@@ -14,6 +14,24 @@ iroffer \-\- DCC file server bot
 is a file server which uses the DCC feature of IRC to send requested
 files to other users. The name of a configuration file must be given
 on the command line for normal operation.
+.P
+iroffer is optimized for high transfer speed and efficiency.
+It supports multiple IRC networks concurrently,
+IPv6 connections to IRC server and users,
+SSL connections to IRC server,
+CertFP Authentification with SSL,
+passive DCC,
+a build in HTTP-server with ruby-cgi,
+a buid in Telnet-server,
+port forwarding with UPnP routers,
+XML packlist,
+FISH encryption,
+transfer of files larger than 4GB,
+batched transfers,
+custom ruby script
+and many more ...
+.IP
+See http://iroffer.dinoex.net/ for a full list.
 .SH OPTIONS
 .TP
 .B \-v
@@ -82,6 +100,22 @@ Optional Universal Plug and Play support to connect via NAT Routers, this requir
 Optional support for scripting plugins in Ruby.
 .SH RETURN VALUES
 The iroffer program exits 0 on successful termination, and >0 if an error occurs.
+.SH "SIGNALS"
+.TP
+.B SIGUSR1
+Jumps to another server, same as admin command "JUMP".
+.IP
+kill \-USR1 `mybot.pid`
+.TP 
+.B SIGUSR2
+Re-reads config file, same as admin command "REHASH"
+.IP
+kill \-USR2 `mybot.pid`
+.TP 
+.B SIGTERM
+Shuts down iroffer, same as admin command "SHUTDOWN NOW"
+.IP
+kill `mybot.pid`
 .SH "FILES"
 .TP
 .B mybot.pid
