@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-language" content="fr-fr">
+<link rel="stylesheet" type="text/css" href="dinoex.css">
+<link rel="icon" href="favicon.ico">
+<title>Install Iroffer Dinoex Linux VHosts</title>
+</head>
+<body>
+<h1>Installation de Iroffer mod Dinoex sous Linux avec virtual Hosts</h1>
+<div>
+<h2>Procédure d'installation</h2>
+<ol>
+	<li>L'utilisateur "bot" et le domaine "bot.domaine.fr" doivent avoir été créé avec plexx/confix.
+	</li><br />
+	<li>Nous allons dans le répertoire racine de l'utilisateur "bot".
+		<pre>		cd /var/www/vhosts/bot.domain.fr/</pre></li>
+	<li>Créez un répertoire supplémentaire pour iroffer.
+		<pre>		mkdir iroffer
+		cd iroffer/</pre></li>
+	<li>Récupèrez sur le Web les sources du programme.
+		<pre>		wget http ://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz</pre></li>
+	<li>Décompressez les sources.
+		<pre>		tar -xvzf iroffer-dinoex-snap.tar.gz</pre></li>
+	<li>Configurez les sources pour votre Linux.
+		<pre>		cd iroffer-dinoex-snap
+		./Configure -curl</pre></li>
+	<li>Si "Configure" affiche quelques erreurs, alors il manque encore des paquets.<br />
+suffisant sous Debian :
+		<pre>		aptitude install make
+		aptitude install gcc
+		aptitude install libc-dev
+		aptitude install libcurl4-openssl-dev
+		aptitude install libgeoip-dev
+		aptitude install libssl-dev
+		aptitude install ruby1.8-dev
+		aptitude install ruby1.8
+		aptitude install libruby-extras</pre></li>
+	<li>Nous voulons les textes en français.
+		<pre>		./Lang fr</pre></li>
+	<li>Nous construisons le programme.
+		<pre>		make</pre></li>
+	<li>On copie le programme au bon endroit.
+		<pre>		cp iroffer ..</pre></li>
+	<li>Nous commençons avec "exemple.config".
+		<pre>		cp exemple.config ../monbot.config
+		cd ..
+		chown bot monbot.config
+		chmod 600 monbot.config</pre></li>
+	<li>Seul le Bot doit avoir les droits d'écriture.
+		<pre>		cd ..
+		chown bot .
+		chmod 700 .</pre></li>
+	<li>Nous allons générer un Mot de passe pour l'Admin Chat.
+		<pre>		./iroffer -c</pre>
+Cette ligne "adminpass" est dans monbot.config à la section "adminpass".
+		<pre>		nano -w monbot.config
+		ou 
+		vim monbot.config</pre></li>
+	<li>Nous renseignons tous les répertoires dans le fichier de configuration "monbot.config".<br />
+"adminhost" doit être réglé de manière appropriée.<br />
+Les chemins pour "monbot.state" et "monbot.txt" sont modifiés pour les sites Web.<br />
+Le répertoire pour les fichiers peut être saisi.<br />
+monbot.config devrait contenir : 
+		<pre>		logfile /iroffer/monbot.log
+		pidfile /iroffer/monbot.pid
+		statefile /httpdocs/monbot.state
+		xdcclistfile /httpdocs/monbot.txt
+		filedir /files
+		uploaddir /files</pre></li>
+	<li>Nous allons créer le répertoire pour les fichiers.
+		<pre>		cd ..
+		mkdir files
+		chown bot files
+
+Il faudra se connecter par le XDCC ou via FTP pour uploader les fichiers.</pre></li>
+	<li>Téléchargement du listing Web externe.
+		<pre>		wget http ://iroffer.dinoex.net/iroffer-state216.zip
+		cd httpdocs
+		unzip ../iroffer-state216.zip
+		touch size.data
+		cp iroffer-sample.php index.php</pre></li>
+	<li>Configuration du listing Web externe.
+		<pre>		nano -w index.php
+		ou 
+		vim index.php</pre>
+Dans le index.php à 2) une ligne est a insérée : 
+		<pre>		# 2) Pour un Nick précis enregistré :
+		#$nick = 'XDCC|irofferbot';
+		$nick = 'XDCC|monbot';</pre></li>
+	<li>Créer un script de démarrage.
+		<pre>		cd ..
+	puis 
+		nano -w start-iroffer.sh
+	ou 
+		vim start-iroffer.sh</pre>
+		Nous écrivons le script
+		<pre>	#!/bin/sh
+	cd iroffer
+	./iroffer -b -u bot -t /var/www/vhosts/bot.domain.fr /iroffer/monbot.config</pre></li>
+	<li>On rend le script exécutable.
+		<pre>		chmod +x start-iroffer.sh</pre></li>
+	<li>Lancer.
+		<pre>		sh start-iroffer.sh</pre></li>
+		<pre>Le Bot devrait maintenant fonctionner.</pre>
+	<li>Si DNS ne fonctionne pas dans le chroot :
+		<pre>	mkdir /var/www/vhosts/bot.domain.fr/etc
+	cp -p /etc/resolv.conf /etc/nsswitch.conf /var/www/vhosts/bot.domain.fr/etc/
+	mkdir /var/www/vhosts/bot.domain.fr/lib
+	cp -p /lib/libnss_dns.so.2 /lib/libresolv.so.2 /var/www/vhosts/bot.domain.fr/lib/</pre>
+		<pre>Le robot ne doit pas être redémarré.</pre></li>
+</ol>
+</div>
+</body>
+</html>
