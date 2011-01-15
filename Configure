@@ -2286,6 +2286,15 @@ clean: cleanobj
 clobber: clean
 	rm -rf src.* *.sed
 
+man:
+	groff -t -man iroffer.1
+
+iroffer.1.txt:
+	groff -t -e -mandoc -Tascii iroffer.1 | col -bx > iroffer.1.txt
+
+iroffer.1.ps:
+	groff -t -e -mandoc -Tps iroffer.1 > iroffer.1.ps
+
 install: all
 	install -o root -g $(INSTALL_GROUP) -m 0755 $(IRNAME)$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
 
