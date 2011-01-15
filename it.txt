@@ -1691,7 +1691,6 @@
 1925 "Download in IRC con: "
 1926 "back"
 1927 "/?"
-1928 "(back)"
 1929 "<th class=\"head\">%s&nbsp;%s</th>\n"
 1930 "<th class=\"head\">[%s]&nbsp;%s</th>\n"
 1931 "<td class=\"right\">#%u</td>\n"
@@ -2419,3 +2418,4 @@
 2754 "Log"
 2755 "Configfile"
 2756 "%s %s\n"
+2757 "("

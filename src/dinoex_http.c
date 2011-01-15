@@ -1406,7 +1406,7 @@ static void h_html_file(http * const h)
   h_respond(h, "<th class=\"head\">%s</th>\n", "PACKs");
   h_respond(h, "<th class=\"head\">%s</th>\n", "DLs");
   h_respond(h, "<th class=\"head\">%s</th>\n", "Size");
-  tempstr = h_html_link_group(h, "back", "(back)", NULL);
+  tempstr = h_html_link_group(h, "back", "(" back" )", NULL);
   h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tempstr);
   mydelete(tempstr);
   h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
