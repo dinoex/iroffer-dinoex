@@ -14,22 +14,6 @@ iroffer \-\- DCC file server bot
 is a file server which uses the DCC feature of IRC to send requested
 files to other users. The name of a configuration file must be given
 on the command line for normal operation.
-.P
-iroffer is optimized for high transfer speed and efficiency.
-It supports multiple IRC networks concurrently,
-IPv6 connections to IRC server and users,
-SSL connections to IRC server,
-CertFP Authentification with SSL,
-passive DCC,
-a build in HTTP-server with ruby-cgi,
-a buid in Telnet-server,
-port forwarding with UPnP routers,
-XML packlist,
-FISH encryption,
-transfer of files larger than 4GB,
-batched transfers,
-custom ruby script
-and many more ...
 .SH OPTIONS
 .TP
 .B \-v
@@ -76,16 +60,25 @@ Supports connecting and transfers via IPv6
 .B DCC
 Supports transfers of files greater 4 GB.
 .TP
-.B HTTP
+.B passive DCC
+Supports passive DCC transfers and uploads.
+.TP
+.B HTTP server
 Supports internal HTTP server for status and pack list.
 .TP
-.B Telnet
+.B Telnet server
 Supports internal Telnet server for background administration.
+.TP
+.B FISH encrpytion
+Support for FISH encryption for mesasages and channel.
 .TP
 .B SSL encrpytion
 Optional support to connect via SSL to IRC-servers if OpenSSL or GnuTLS is availible.
 .TP
-.B GeoIP
+.B CertFP with SSL
+CertFP Authentification with SSL.
+.TP
+.B GeoIP and GeoIPv6
 Optional support to limit transfers to countrys with libGeoIP.
 .TP
 .B Curl
@@ -93,9 +86,17 @@ Optional support to fetch files via FTP/HTTP if libcurl is compiled in.
 .TP
 .B UPnP
 Optional Universal Plug and Play support to connect via NAT Routers, this requires lib miniupnpc present.
+Used to obtain public IP-Address and Set/Remove port forwardings for incomming connections.
 .TP
 .B Ruby
 Optional support for scripting plugins in Ruby.
+Support for CGI scripts with the internal HTTP server.
+.TP
+.B XML
+Support for XML Packlist allows integration with other websites.
+.TP
+.B Batch
+Allows batched transfers without delaying new users.
 .SH RETURN VALUES
 The iroffer program exits 0 on successful termination, and >0 if an error occurs.
 .SH "SIGNALS"
