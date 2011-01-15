@@ -73,19 +73,11 @@ sudo aptitude install libruby-extras
 </pre>
 </li>
 
-<li>Wir möchten deutsche Texte.<br>
+<li>Wir bauen das Programm mit deutsche Texten.<br>
  
 
 <pre>
-./Lang de
-</pre>
-</li>
-
-<li>Wir bauen das Programm.<br>
- 
-
-<pre>
-make
+make de
 </pre>
 </li>
 
@@ -93,7 +85,7 @@ make
  
 
 <pre>
-cp -p iroffer ..
+cp -p de-iroffer ..
 cp *.html ..
 cp -r htdocs ../
 </pre>
@@ -121,7 +113,7 @@ chmod 700 .
  
 
 <pre>
-./iroffer -c
+./de-iroffer -c
 </pre>
 
 Diese Zeile mit "adminpass" wird dan in "mybot.config" bei "adminpass" eingetragen. 
@@ -190,7 +182,7 @@ Dort tragen wir ein:
 <pre>
 #!/bin/sh
 cd /home/bot/iroffer/iroffer
-./iroffer -b /home/bot/iroffer/mybot.config
+./de-iroffer -b /home/bot/iroffer/mybot.config
 </pre>
 (Ersetze 'bot' durch deinen Login)<br>
 <br>
