@@ -23,6 +23,8 @@ help-admin-it.txt
 help-admin-fr.txt
 i.sh
 iroffer
+iroffer.1.txt
+iroffer.1.ps
 iroffer_chroot
 iroffer_static
 it.sed
