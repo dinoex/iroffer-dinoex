@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-language" content="en-en">
+<link rel="stylesheet" type="text/css" href="http://anime.dinoex.net/dinoex.css">
+<link rel="icon" href="/favicon.ico">
+<title>Installation of iroffer mod Dinoex under Linux as a User</title>
+</head>
+<body lang="en">
+<h1>Installation of iroffer mod Dinoex under Linux as a User</h1>
+
+<div>
+<h2>Installation Steps</h2>
+
+<ol>
+
+<li>We change into the users HOME directory.<br>
+ 
+
+<pre>
+cd
+</pre>
+</li>
+
+<li>We create and an extra directory for iroffer.<br>
+ 
+
+<pre>
+mkdir iroffer
+cd iroffer/
+</pre>
+</li>
+
+<li>Gettting the sources of the program.<br>
+ 
+
+<pre>
+wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
+</pre>
+</li>
+
+<li>Extract the sources.<br>
+ 
+
+<pre>
+tar -xvzf iroffer-dinoex-snap.tar.gz
+</pre>
+</li>
+
+<li>We configure the sources for our Linux version.<br>
+ 
+
+<pre>
+cd iroffer-dinoex-snap
+./Configure -curl -geoip -ruby
+</pre>
+</li>
+
+<li>Should "Configure" report some errors, we have to retry after installing the missing packages.<br>
+Sufficient under Debian: <br>
+<pre>
+sudo aptitude install make
+sudo aptitude install gcc
+sudo aptitude install libc-dev
+sudo aptitude install libcurl4-openssl-dev
+sudo aptitude install libgeoip-dev
+sudo aptitude install libssl-dev
+sudo aptitude install ruby1.8-dev
+sudo aptitude install ruby1.8
+sudo aptitude install libruby-extras
+</pre>
+</li>
+
+<li>We build the program.<br>
+ 
+
+<pre>
+make
+</pre>
+</li>
+
+<li>Now we copy the program to the right place.<br>
+ 
+
+<pre>
+cp -p iroffer ..
+cp *.html ..
+cp -r htdocs ../
+</pre>
+</li>
+
+<li>We start with the "example.config.<br>
+ 
+
+<pre>
+cp example.config ../mybot.config
+cd ..
+chmod 600 mybot.config
+</pre>
+</li>
+
+<li>Only the bot needs to have write permissions here.<br>
+ 
+
+<pre>
+chmod 700 .
+</pre>
+</li>
+
+<li>We create a password for the admin-chat.<br>
+ 
+
+<pre>
+./iroffer -c
+</pre>
+
+The line with "adminpass" has to be added to "mybot.config".
+
+<pre>
+nano -w mybot.config
+</pre>
+
+or 
+
+<pre>
+vim mybot.config
+</pre>
+</li>
+
+<li>We add the directories to the configuration file "mybot.config".<br>
+
+"adminhost" should be set to your hostmask. We acktivate the internal webserver.
+The directories for the files is added and we uses it also for uploads.<br>
+mybot.config should include: 
+
+<pre>
+http_port 8000
+http_dir htdocs
+filedir /home/bot/files
+uploaddir /home/bot/files
+</pre>
+(replace 'bot' with your own login)<br>
+<br>
+</li>
+
+<li>We create the directory for the files.<br>
+ 
+
+<pre>
+cd ..
+mkdir files
+</pre>
+
+Here we can upload the files with FTP or with XDCC later.<br>
+<br>
+</li>
+
+<li>We create a startup script.<br>
+ 
+
+<pre>
+cd ..
+</pre>
+
+then 
+
+<pre>
+nano -w start-iroffer.sh
+</pre>
+
+then 
+
+<pre>
+vim start-iroffer.sh
+</pre>
+
+Here we add:
+
+<pre>
+#!/bin/sh
+cd /home/bot/iroffer/iroffer
+./iroffer -b /home/bot/iroffer/mybot.config
+</pre>
+(replace 'bot' with your own login)<br>
+<br>
+</li>
+
+<li>Make the script executeable.<br>
+ 
+
+<pre>
+chmod +x start-iroffer.sh
+</pre>
+</li>
+
+<li>Start.<br>
+ 
+
+<pre>
+sh start-iroffer.sh
+</pre>
+
+Now the bot should run and connect.
+</li>
+
+</ol>
+</div>
+</body>
+</html>
+
