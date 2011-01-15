@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta name="generator" content="HTML Tidy, see www.w3.org">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-language" content="de-de">
 <link rel="stylesheet" type="text/css" href="http://anime.dinoex.net/dinoex.css">
 <link rel="icon" href="/favicon.ico">
 <title>Installation von iroffer mod Dinoex unter Linux mit virtual Hosts</title>
 </head>
 <body lang="de">
-<h1>Installation von iroffer mod Dinoex unter Linux mit virtual Hosts<h1>
+<h1>Installation von iroffer mod Dinoex unter Linux mit virtual Hosts</h1>
 
 <div>
 <h2>Installationsschritte</h2>
@@ -60,7 +60,7 @@ cd iroffer-dinoex-snap
 </pre>
 </li>
 
-<li>Sollte "Configure" Fehler melden, so fehlen noch Pakete.
+<li>Sollte "Configure" Fehler melden, so fehlen noch Pakete.<br>
 Diese sind zu installieren und dann "Configure" wiederholen.<br>
 unter Debian reicht:<br>
 <pre>
@@ -142,8 +142,9 @@ vim mybot.config
 </li>
 
 <li>Wir tragen die Verzeichnisse in die Konfigurationsdatei "mybot.config" ein.<br>
-"adminhost" sollte passend gesetzt werden. Die Pfade für "mybot.state" und "mybot.txt" werden für die Webliste
-geändert. Das Verzeichniss für die Pakete wird eingetragen.<br>
+"adminhost" sollte passend gesetzt werden.<br> 
+Die Pfade für "mybot.state" und "mybot.txt" werden für die Webliste geändert.<br>
+Das Verzeichniss für die Pakete wird eingetragen.<br>
 mybot.config sollte enthalten: 
 
 <pre>
@@ -246,9 +247,8 @@ chmod +x start-iroffer.sh
 sh start-iroffer.sh
 </pre>
 
-Nun sollte der Bot laufen.
-<pre>
-</pre>
+Nun sollte der Bot laufen.<br>
+<br>
 </li>
 
 
@@ -258,7 +258,6 @@ mkdir /var/www/vhosts/bot.domain.de/etc
 cp -p /etc/resolv.conf /etc/nsswitch.conf /var/www/vhosts/bot.domain.de/etc/
 mkdir /var/www/vhosts/bot.domain.de/lib
 cp -p /lib/libnss_dns.so.2 /lib/libresolv.so.2 /var/www/vhosts/bot.domain.de/lib/
-
 </pre>
 
 Der Bot braucht dabei nicht neu gestartet werden.
