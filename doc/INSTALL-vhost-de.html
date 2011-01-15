@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="http://anime.dinoex.net/dinoex.css">
+<link rel="icon" href="/favicon.ico">
+<title>Installation von iroffer mod Dinoex unter Linux mit virtual Hosts</title>
+</head>
+<body lang="de">
+<h1>Installation von iroffer mod Dinoex unter Linux mit virtual Hosts<h1>
+
+<div>
+<h2>Installationsschritte</h2>
+
+<ol>
+<li>Benutzer "bot" und Domain "bot.domain.de" werden mit plexx/confix angelegt.<br>
+<br>
+</li>
+
+<li>Wir gehen als root in das Verzeichnis des Benutzers "bot".<br>
+ 
+
+<pre>
+cd /var/www/vhosts/bot.domain.de/
+</pre>
+</li>
+
+<li>Wir legen ein extra Verzeichnis für iroffer an.<br>
+ 
+
+<pre>
+mkdir iroffer
+cd iroffer/
+</pre>
+</li>
+
+<li>Holen der Quellen für Programm und Webliste.<br>
+ 
+
+<pre>
+wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
+</pre>
+</li>
+
+<li>Auspacken der Quellen.<br>
+ 
+
+<pre>
+tar -xvzf iroffer-dinoex-snap.tar.gz
+</pre>
+</li>
+
+<li>Wir konfigurieren die Quellen für unser Linux.<br>
+ 
+
+<pre>
+cd iroffer-dinoex-snap
+./Configure -curl
+</pre>
+</li>
+
+<li>Sollte "Configure" einige Fehler melden, so fehlen noch Pakete.<br>
+unter Debian reicht:<br>
+<pre>
+aptitude install make
+aptitude install gcc
+aptitude install libc-dev
+aptitude install libcurl4-openssl-dev
+aptitude install libgeoip-dev
+aptitude install libssl-dev
+aptitude install ruby1.8-dev
+aptitude install ruby1.8
+aptitude install libruby-extras
+</pre>
+</li>
+
+<li>Wir möchten deutsche Texte.<br>
+ 
+
+<pre>
+./Lang de
+</pre>
+</li>
+
+<li>Wir bauen das Programm.<br>
+ 
+
+<pre>
+make
+</pre>
+</li>
+
+<li>Nun das Programm an die richtige Stelle kopieren.<br>
+ 
+
+<pre>
+cp -p iroffer ..
+</pre>
+</li>
+
+<li>Wir starten mir der "beispiel.config".<br>
+ 
+
+<pre>
+cp beispiel.config ../mybot.config
+cd ..
+chown bot mybot.config
+chmod 600 mybot.config
+</pre>
+</li>
+
+<li>Nur der Bot muss Schreibrechte besitzen<br>
+ 
+
+<pre>
+cd ..
+chown bot .
+chmod 700 .
+</pre>
+</li>
+
+<li>Wir erzeugen ein Paswort für den Admin-Chat.<br>
+ 
+
+<pre>
+./iroffer -c
+</pre>
+
+Diese Zeile mit "adminpass" wird dan in "mybot.config" bei "adminpass" eigetragen. 
+
+<pre>
+nano -w mybot.config
+</pre>
+
+oder 
+
+<pre>
+vim mybot.config
+</pre>
+</li>
+
+<li>Wir tragen die Verzeichnisse in die Konfigurationsdatei "mybot.config" ein.<br>
+"adminhost" sollte passend gesetzt werden. Die Pfade für "mybot.state" und "mybot.txt" werden für die Webliste
+geändert. Das Verzeichniss für die Pakete wird eingetragen.<br>
+mybot.config sollte enthalten: 
+
+<pre>
+logfile /iroffer/mybot.log
+pidfile /iroffer/mybot.pid
+statefile /httpdocs/mybot.state
+xdcclistfile /httpdocs/mybot.txt
+filedir /files
+uploaddir /files
+</pre>
+</li>
+
+<li>Wir legen das Verzeichnis für die Pakete an.<br>
+ 
+
+<pre>
+cd ..
+mkdir files
+chown bot files
+</pre>
+
+Dort könenn dann per XDCC oder FTP die Dateien hochgeladen werden.<br>
+<br>
+</li>
+
+<li>Auspacken der externen Webliste.<br>
+ 
+
+<pre>
+wget http://iroffer.dinoex.net/iroffer-state216.zip
+cd httpdocs
+unzip ../iroffer-state216.zip
+touch size.data
+cp iroffer-sample.php index.php
+</pre>
+</li>
+
+<li>Konfigurieren der extern Webliste.<br>
+ 
+
+<pre>
+nano -w index.php
+</pre>
+
+oder 
+
+<pre>
+vim index.php
+</pre>
+
+In der index.php wird unter 2) nur eine Zeile eingefügt: 
+
+<pre>
+# 2) Nick wird fest eingetragen:
+#$nick = 'XDCC|irofferbot';
+$nick = 'XDCC|mybot';
+</pre>
+</li>
+
+<li>Erstellen eines Start-Scriptes.<br>
+ 
+
+<pre>
+cd ..
+</pre>
+
+dann 
+
+<pre>
+nano -w start-iroffer.sh
+</pre>
+
+oder 
+
+<pre>
+vim start-iroffer.sh
+</pre>
+
+Dort tragen wir ein: 
+
+<pre>
+#!/bin/sh
+cd iroffer
+./iroffer -b -u bot -t /var/www/vhosts/bot.domain.de /iroffer/mybot.config
+</pre>
+</li>
+
+<li>Das Script ausführbar machen.<br>
+ 
+
+<pre>
+chmod +x start-iroffer.sh
+</pre>
+</li>
+
+<li>Starten.<br>
+ 
+
+<pre>
+sh start-iroffer.sh
+</pre>
+
+Nun sollte der Bot laufen.
+<pre>
+</pre>
+</li>
+
+
+<li>Falls DNS im chroot nicht funktioniert:<br>
+<pre>
+mkdir /var/www/vhosts/bot.domain.de/etc
+cp -p /etc/resolv.conf /etc/nsswitch.conf /var/www/vhosts/bot.domain.de/etc/
+mkdir /var/www/vhosts/bot.domain.de/lib
+cp -p /lib/libnss_dns.so.2 /lib/libresolv.so.2 /var/www/vhosts/bot.domain.de/lib/
+
+</pre>
+
+Der Bot braucht dabei nicht neu gestartet werden.
+</li>
+
+</ol>
+</div>
+</body>
+</html>
+
