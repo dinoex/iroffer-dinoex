@@ -87,11 +87,26 @@ usage(void)
   exit(64);
 }
 
+static unsigned int add_config_file(unsigned int fc, const char *cptr)
+{
+  char *newptr;
+
+  if (cptr == NULL)
+    return fc;
+
+  if (fc >= MAXCONFIG)
+    usage();
+
+  newptr = mystrdup(cptr);
+  convert_to_unix_slash(newptr);
+  gdata.configfile[ fc++ ] = newptr;
+  return fc;
+}
+
 /* parse command line options */
 void command_options(int argc, char *const *argv)
 {
   const char *cptr;
-  char *newptr;
   char ch;
   unsigned int fc = 0;
 
@@ -106,6 +121,7 @@ void command_options(int argc, char *const *argv)
         gdata.background = 1;
         break;
       case 'c': /* create password */
+        add_config_file(fc, argv[1]);
         createpassword();
         exit(0);
       case 'd': /* increase debug */
@@ -148,11 +164,7 @@ void command_options(int argc, char *const *argv)
       }
       continue;
     }
-    if (fc >= MAXCONFIG)
-      usage();
-    newptr = mystrdup(cptr);
-    convert_to_unix_slash(newptr);
-    gdata.configfile[ fc++ ] = newptr;
+    fc = add_config_file(fc, cptr);
   }
   if (fc == 0) {
     fprintf(stderr, "%s: no configuration file specified\n", argv[0]);

@@ -6,7 +6,7 @@ iroffer \-\- DCC file server bot
 .TP
 .B iroffer -v
 .TP
-.B iroffer [configfile] -c
+.B iroffer -c [configfile]
 .TP
 .B iroffer [-b] [-d] [-k] [-n] [-s] [-u user] [-t dir] [-i file] configfile [configfile ...]
 .SH DESCRIPTION
@@ -21,7 +21,7 @@ Display version information and exit.
 .TP
 .B \-c
 Generate an encrypted password and exit.
-If a configfile is given before -c option, the encrypted password will not be printed, but directly added to the end of the configfile.
+If a configfile is given, the encrypted password will not be printed, but directly added to the end of the configfile.
 .TP
 .B \-b
 Run in the background.

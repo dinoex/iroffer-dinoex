@@ -19,8 +19,8 @@ bugfix: logstats (reported by LazyTiger)
 bugfix: ./Lang ??
   Detect and use "utf-8" if $LANG is set in the enviroment.
 
-354) iroffer mybot.config -c
-  If a configfile is given before -c option,
+354) iroffer -c mybot.config 
+  If a configfile is given,
   the encrypted password will not be printed,
   but directly added to the end of the configfile.
 
