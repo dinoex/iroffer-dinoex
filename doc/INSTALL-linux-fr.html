@@ -67,24 +67,17 @@ sudo aptitude install libruby-extras
 </pre>
 </li>
 
-<li>Nous voulons les textes en français. 
+<li>Nous voulons les textes en français. Nous construisons le programme. 
 
 <pre>
-./Lang fr
-</pre>
-</li>
-
-<li>Nous construisons le programme. 
-
-<pre>
-make
+make fr
 </pre>
 </li>
 
 <li>Nous allons copier le programme au bon endroit. 
 
 <pre>
-cp iroffer ..
+cp fr-iroffer ..
 cp *.html ..
 cp -r htdocs ../
 </pre>
@@ -109,7 +102,7 @@ chmod 700 .
 <li>Nous allons générer un mot de passe pour l'admin chat. 
 
 <pre>
-./iroffer -c
+./fr-iroffer -c
 
 Cette ligne "adminpass" est dans mybot.config, à la ligne "adminpass" copier votre clé.
 
@@ -161,7 +154,7 @@ Nous écrivons le script
 <pre>
 #!/bin/sh
 cd /home/bot/iroffer/iroffer
-./iroffer -b /home/bot/iroffer/mybot.config
+./fr-iroffer -b /home/bot/iroffer/mybot.config
 </pre>
 (Remplacez 'bot' par votre login)
 </li>
