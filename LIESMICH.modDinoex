@@ -20,7 +20,7 @@ bugfix: ./Lang ??
   Erkenne und verwende "utf-8" wenn LANG so gesetzt ist.
 
 354) iroffer mybot.config -c
-  Wenn eine Konfigurationsdatei vor der Option "-c" angegeben ist,
+  Wenn eine Konfigurationsdatei angegeben ist,
   so wird das Passwort nicht ausgegeben,
   sondern direkt an die Konfigurationsdatei angefügt.
 
