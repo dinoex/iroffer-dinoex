@@ -2287,7 +2287,7 @@ clobber: clean
 	rm -rf src.* *.sed
 
 man:
-	groff -t -man iroffer.1
+	groff -t -e -mandoc -Tascii iroffer.1
 
 doc:	doc/iroffer.1.txt doc/iroffer.1.ps doc/iroffer.1.html
 
