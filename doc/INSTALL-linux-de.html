@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta name="generator" content="HTML Tidy, see www.w3.org">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-language" content="de-de">
 <link rel="stylesheet" type="text/css" href="http://anime.dinoex.net/dinoex.css">
 <link rel="icon" href="/favicon.ico">
 <title>Installation von iroffer mod Dinoex unter Linux als User</title>
 </head>
 <body lang="de">
-<h1>Installation von iroffer mod Dinoex unter Linux als User<h1>
+<h1>Installation von iroffer mod Dinoex unter Linux als User</h1>
 
 <div>
 <h2>Installationsschritte</h2>
@@ -57,9 +57,9 @@ cd iroffer-dinoex-snap
 </pre>
 </li>
 
-<li>Sollte "Configure" Fehler melden, so fehlen noch Pakete.
+<li>Sollte "Configure" Fehler melden, so fehlen noch Pakete.<br>
 Diese sind zu installieren und dann "Configure" wiederholen.<br>
-unter Debian reicht:<br>
+Unter Debian reicht:<br>
 <pre>
 sudo aptitude install make
 sudo aptitude install gcc
@@ -139,7 +139,8 @@ vim mybot.config
 
 <li>Wir tragen die Verzeichnisse in die Konfigurationsdatei "mybot.config" ein.<br>
 
-"adminhost" sollte passend gesetzt werden. Die die interne Webliste wird aktiviert. 
+"adminhost" sollte passend gesetzt werden.<br>
+Die die interne Webliste wird aktiviert.<br>
 Das Verzeichniss für die Pakete wird eingetragen.<br>
 mybot.config sollte enthalten: 
 
@@ -149,7 +150,8 @@ http_dir htdocs
 filedir /home/bot/files
 uploaddir /home/bot/files
 </pre>
-(Ersetze 'bot' durch deinen Login)
+(Ersetze 'bot' durch deinen Login)<br>
+<br>
 </li>
 
 <li>Wir legen das Verzeichnis für die Pakete an.<br>
@@ -189,8 +191,9 @@ Dort tragen wir ein:
 #!/bin/sh
 cd /home/bot/iroffer/iroffer
 ./iroffer -b /home/bot/iroffer/mybot.config
-(Ersetze 'bot' durch deinen Login)
 </pre>
+(Ersetze 'bot' durch deinen Login)<br>
+<br>
 </li>
 
 <li>Das Script ausführbar machen.<br>
@@ -209,8 +212,6 @@ sh start-iroffer.sh
 </pre>
 
 Nun sollte der Bot laufen.
-<pre>
-</pre>
 </li>
 
 </ol>
