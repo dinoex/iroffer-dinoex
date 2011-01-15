@@ -18,7 +18,7 @@
 <li>We change into the users HOME directory.<br>
  
 
-<pre>
+<pre class="indent">
 cd
 </pre>
 </li>
@@ -26,7 +26,7 @@ cd
 <li>We create and an extra directory for iroffer.<br>
  
 
-<pre>
+<pre class="indent">
 mkdir iroffer
 cd iroffer/
 </pre>
@@ -35,7 +35,7 @@ cd iroffer/
 <li>Gettting the sources of the program.<br>
  
 
-<pre>
+<pre class="indent">
 wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
 </pre>
 </li>
@@ -43,7 +43,7 @@ wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
 <li>Extract the sources.<br>
  
 
-<pre>
+<pre class="indent">
 tar -xvzf iroffer-dinoex-snap.tar.gz
 </pre>
 </li>
@@ -51,7 +51,7 @@ tar -xvzf iroffer-dinoex-snap.tar.gz
 <li>We configure the sources for our Linux version.<br>
  
 
-<pre>
+<pre class="indent">
 cd iroffer-dinoex-snap
 ./Configure -curl -geoip -ruby
 </pre>
@@ -59,7 +59,7 @@ cd iroffer-dinoex-snap
 
 <li>Should "Configure" report some errors, we have to retry after installing the missing packages.<br>
 Sufficient under Debian: <br>
-<pre>
+<pre class="indent">
 sudo aptitude install make
 sudo aptitude install gcc
 sudo aptitude install libc-dev
@@ -75,7 +75,7 @@ sudo aptitude install libruby-extras
 <li>We build the program.<br>
  
 
-<pre>
+<pre class="indent">
 make
 </pre>
 </li>
@@ -83,7 +83,7 @@ make
 <li>Now we copy the program to the right place.<br>
  
 
-<pre>
+<pre class="indent">
 cp -p iroffer ..
 cp *.html ..
 cp -r htdocs ../
@@ -93,7 +93,7 @@ cp -r htdocs ../
 <li>We start with the "example.config.<br>
  
 
-<pre>
+<pre class="indent">
 cp example.config ../mybot.config
 cd ..
 chmod 600 mybot.config
@@ -103,7 +103,7 @@ chmod 600 mybot.config
 <li>Only the bot needs to have write permissions here.<br>
  
 
-<pre>
+<pre class="indent">
 chmod 700 .
 </pre>
 </li>
@@ -111,7 +111,7 @@ chmod 700 .
 <li>We create a password for the admin-chat.<br>
  
 
-<pre>
+<pre class="indent">
 ./iroffer -c mybot.config
 </pre>
 
@@ -123,7 +123,7 @@ chmod 700 .
 The directories for the files is added and we uses it also for uploads.<br>
 mybot.config should include: 
 
-<pre>
+<pre class="indent">
 http_port 8000
 http_dir htdocs
 filedir /home/bot/files
@@ -136,7 +136,7 @@ uploaddir /home/bot/files
 <li>We create the directory for the files.<br>
  
 
-<pre>
+<pre class="indent">
 cd ..
 mkdir files
 </pre>
@@ -148,25 +148,25 @@ Here we can upload the files with FTP or with XDCC later.<br>
 <li>We create a startup script.<br>
  
 
-<pre>
+<pre class="indent">
 cd ..
 </pre>
 
 then 
 
-<pre>
+<pre class="indent">
 nano -w start-iroffer.sh
 </pre>
 
 then 
 
-<pre>
+<pre class="indent">
 vim start-iroffer.sh
 </pre>
 
 Here we add:
 
-<pre>
+<pre class="indent">
 #!/bin/sh
 cd /home/bot/iroffer/iroffer
 ./iroffer -b /home/bot/iroffer/mybot.config
@@ -178,7 +178,7 @@ cd /home/bot/iroffer/iroffer
 <li>Make the script executeable.<br>
  
 
-<pre>
+<pre class="indent">
 chmod +x start-iroffer.sh
 </pre>
 </li>
@@ -186,7 +186,7 @@ chmod +x start-iroffer.sh
 <li>Start.<br>
  
 
-<pre>
+<pre class="indent">
 sh start-iroffer.sh
 </pre>
 
