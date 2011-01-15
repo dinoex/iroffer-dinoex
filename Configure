@@ -2292,7 +2292,7 @@ man:
 doc:	doc/iroffer.1.txt doc/iroffer.1.ps doc/iroffer.1.html
 
 doc/iroffer.1.html: iroffer.1
-	groff -t -e -mandoc -Tascii iroffer.1 | man2html > doc/iroffer.1.html
+	groff -t -e -mandoc -Thtml iroffer.1 > doc/iroffer.1.html
 
 doc/iroffer.1.txt: iroffer.1
 	groff -t -e -mandoc -Tascii iroffer.1 | col -bx > doc/iroffer.1.txt
