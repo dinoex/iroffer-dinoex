@@ -1,101 +1,189 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta name="generator" content="HTML Tidy, see www.w3.org">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <meta http-equiv="content-language" content="fr-fr">
-<link rel="stylesheet" type="text/css" href="dinoex.css">
+<link rel="stylesheet" type="text/css" href="http://anime.dinoex.net/dinoex.css">
 <link rel="icon" href="favicon.ico">
 <title>Installation Iroffer Mod Dinoex sous Linux</title>
 </head>
-<body>
+<body lang="fr">
 <h1>Installation d'Iroffer Mod Dinoex sous Linux en tant qu'utilisateur</h1>
+
 <div>
 <h2>Procédure d'installation</h2>
+
 <ol>
-	<li>Nous allons en tant qu'utilisateur dans le répertoire HOME.
- 		<pre>		cd /home</pre></li>
-	<li>Nous allons créer un répertoire pour iroffer
-		<pre>		mkdir iroffer
-		cd iroffer/</pre></li>
-	<li>Obtenir les sources de programme.
- 		<pre>		wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz</pre></li>
-	<li>Décompressez les sources.
-		<pre> 		tar -xvzf iroffer-dinoex-snap.tar.gz</pre></li>
-	<li>Nous allons configurer les sources pour notre Linux.
-		<pre> 		cd iroffer-dinoex-snap
- 		./Configure -curl -geoip -ruby</pre></li>
-	<li>Devrait afficher quelques erreurs, il manque encore des paquets.<br/>
-Suffisant sous Debian :
-		<pre> 		sudo aptitude install make
- 		sudo aptitude install gcc
- 		sudo aptitude install libc-dev
- 		sudo aptitude install libcurl4-openssl-dev
- 		sudo aptitude install libgeoip-dev
- 		sudo aptitude install libssl-dev
- 		sudo aptitude install ruby1.8-dev
- 		sudo aptitude install ruby1.8
- 		sudo aptitude install libruby-extras</pre></li>
-	<li>Nous voulons les textes en français.
-		<pre>		./Lang fr</pre></li>
-	<li>Nous construisons le programme.
-		<pre>		make</pre></li>
-	<li>Nous allons copier le programme au bon endroit.
-		<pre>		cp iroffer ..
-		cp *.html ..
-		cp -r htdocs ../</pre></li>
-	<li>Nous commençons par copier notre configuration.
-		<pre>		cp exemple.config ../mybot.config
-		cd ..
-		chmod 600 mybot.config</pre></li>
-	<li>Seul le robot doit avoir les droits d'écriture
-		<pre>		chmod 700 .</pre></li>
-	<li>Nous allons générer un mot de passe pour l'admin chat.
-		<pre>		./iroffer -c
-		
+<li>Nous allons en tant qu'utilisateur dans le répertoire HOME. 
+
+<pre>
+cd /home
+</pre>
+</li>
+
+<li>Nous allons créer un répertoire pour iroffer 
+
+<pre>
+mkdir iroffer
+cd iroffer/
+</pre>
+</li>
+
+<li>Obtenir les sources de programme. 
+
+<pre>
+wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
+</pre>
+</li>
+
+<li>Décompressez les sources. 
+
+<pre>
+tar -xvzf iroffer-dinoex-snap.tar.gz
+</pre>
+</li>
+
+<li>Nous allons configurer les sources pour notre Linux. 
+
+<pre>
+cd iroffer-dinoex-snap
+./Configure -curl -geoip -ruby
+</pre>
+</li>
+
+<li>Devrait afficher quelques erreurs, il manque encore des paquets.<br>
+Suffisant sous Debian : 
+
+<pre>
+sudo aptitude install make
+sudo aptitude install gcc
+sudo aptitude install libc-dev
+sudo aptitude install libcurl4-openssl-dev
+sudo aptitude install libgeoip-dev
+sudo aptitude install libssl-dev
+sudo aptitude install ruby1.8-dev
+sudo aptitude install ruby1.8
+sudo aptitude install libruby-extras
+</pre>
+</li>
+
+<li>Nous voulons les textes en français. 
+
+<pre>
+./Lang fr
+</pre>
+</li>
+
+<li>Nous construisons le programme. 
+
+<pre>
+make
+</pre>
+</li>
+
+<li>Nous allons copier le programme au bon endroit. 
+
+<pre>
+cp iroffer ..
+cp *.html ..
+cp -r htdocs ../
+</pre>
+</li>
+
+<li>Nous commençons par copier notre configuration. 
+
+<pre>
+cp exemple.config ../mybot.config
+cd ..
+chmod 600 mybot.config
+</pre>
+</li>
+
+<li>Seul le robot doit avoir les droits d'écriture 
+
+<pre>
+chmod 700 .
+</pre>
+</li>
+
+<li>Nous allons générer un mot de passe pour l'admin chat. 
+
+<pre>
+./iroffer -c
+
 Cette ligne "adminpass" est dans mybot.config, à la ligne "adminpass" copier votre clé.
 
-		nano -w mybot.config
-	ou
-		vim mybot.config</pre></li>
-	<li>On renseigne tous les répertoires dans le fichier de configuration "mybot.config".
-	<br />"adminhost" doit être configuré de manière appropriée.
-	<br />Les fonctions Web interne sont activé.
-	<br />Le répertoire d'upload pour les fichiers peut être saisi.
-<br/>
+nano -w mybot.config
+ou
+vim mybot.config
+</pre>
+</li>
+
+<li>On renseigne tous les répertoires dans le fichier de configuration "mybot.config".<br>
+"adminhost" doit être configuré de manière appropriée.<br>
+Les fonctions Web interne sont activé.<br>
+Le répertoire d'upload pour les fichiers peut être saisi.<br>
 mybot.config devrait inclure : 
-		<pre>		http_port 8000
-		http_dir htdocs
-		filedir /home/bot/files
-		uploaddir /home/bot/files
 
-		(Remplacez 'bot' par votre login)</pre></li>
-	<li>Nous allons créer le répertoire pour les packages.
-		<pre>		cd ..
-		mkdir files</pre>
-		Puis on se connect au XDCC via FTP pour transférer les fichiers.
-	</li><br />
-	<li>Créer un script de démarrage.
-		<pre>		cd ..
-	puis 
-		nano -w start-iroffer.sh
-	ou 
-		vim start-iroffer.sh</pre>
-		Nous écrivons le script
-		<pre>
-		#!/bin/sh
-		cd /home/bot/iroffer/iroffer
-		./iroffer -b /home/bot/iroffer/mybot.config
+<pre>
+http_port 8000
+http_dir htdocs
+filedir /home/bot/files
+uploaddir /home/bot/files
+</pre>
+(Remplacez 'bot' par votre login)
+</li>
 
-		(Remplacez 'bot' par votre login)</pre></li>
-	<li>On rend le script exécutable.
-		<pre>
-		chmod +x start-iroffer.sh</pre></li>
-	<li>Lancer.
-		<pre>
-		sh start-iroffer.sh</pre>
-		Le bot devrait maintenant fonctionner.</li>
+<li>Nous allons créer le répertoire pour les packages. 
+
+<pre>
+cd ..
+mkdir files
+</pre>
+
+Puis on se connect au XDCC via FTP pour transférer les fichiers.</li>
+
+<li class="c1"><br>
+</li>
+
+<li>Créer un script de démarrage. 
+
+<pre>
+cd ..
+puis 
+nano -w start-iroffer.sh
+ou 
+vim start-iroffer.sh
+</pre>
+
+Nous écrivons le script 
+
+<pre>
+#!/bin/sh
+cd /home/bot/iroffer/iroffer
+./iroffer -b /home/bot/iroffer/mybot.config
+</pre>
+(Remplacez 'bot' par votre login)
+</li>
+
+<li>On rend le script exécutable. 
+
+<pre>
+chmod +x start-iroffer.sh
+</pre>
+</li>
+
+<li>Lancer. 
+
+<pre>
+sh start-iroffer.sh
+</pre>
+
+Le bot devrait maintenant fonctionner.
+</li>
+
 </ol>
 </div>
 </body>
 </html>
+
