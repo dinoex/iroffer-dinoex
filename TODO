@@ -76,6 +76,7 @@ Short Term Features:
   1516  allow batch syntax for XDCC SEND
   1517  more than one periodicmsg
   1523  config Server Connection Timed Out
+  1534  state the ip of the user in dcld and geoip
 
 Long Term Features:
   1013  notify adminnick when autoadd
@@ -150,6 +151,8 @@ Long Term Features:
   1521  hostmask or nick in exempt list for ignoreduplicate ip
   1522  strip extentions in announce
   1526  variables in config file
+  1529  XDCC-DELTA
+  1530  summary after find.
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
