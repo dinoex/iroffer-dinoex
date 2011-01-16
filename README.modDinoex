@@ -9,6 +9,9 @@ With Version 3.26:
     de-iroffer, fr-iroffer, it-iroffer
   Fix problem with leftover files from older versions.
 
+bugfix: bsdmake
+  Generated Makefile now supprts both gnumake and bsdmake.
+
 355) XDCC BATCH, BATCH (inspired by Aashiqmunda)
   Allow backwards ranges from <a> downto <b>.
 

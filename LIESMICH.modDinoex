@@ -9,6 +9,9 @@ Ab Version 3.26:
     de-iroffer, fr-iroffer, it-iroffer
   Fehler mit übrig gebliebenen Dateien von alten Versionen beim Update behoben.
 
+bugfix: bsdmake
+  Das erzeugte Makefile kann mit gnumake und bsdmake benutzt werden.
+
 355) XDCC BATCH, BATCH
   Erlaube auch Bereich von einer höheren Nummer zu einer niedrigeren Nummer.
 
