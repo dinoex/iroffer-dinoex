@@ -2003,7 +2003,7 @@ void notifybandwidth(void)
         {
           if (gnetwork->net != tr->net)
             continue;
-          notice_slow(tr->nick,"%s bandwidth limit: %2.1f of %2.1fKB/sec used. Your share: %2.1fKB/sec.",
+          notice_slow(tr->nick, "%s bandwidth limit: %2.1f of %2.1fkB/sec used. Your share: %2.1fkB/sec.",
                       get_user_nick(),
                       ((float)xdccsent)/XDCC_SENT_SIZE,
                       ((float)gdata.maxb)/4.0,
@@ -2037,7 +2037,7 @@ void notifybandwidthtrans(void)
         {
           /* send if over 90% */
           gnetwork = &(gdata.networks[tr->net]);
-          notice_slow(tr->nick,"Pack bandwidth limit: %2.1f of %2.1fKB/sec used.",
+          notice_slow(tr->nick, "Pack bandwidth limit: %2.1f of %2.1fkB/sec used.",
                       tr->lastspeed,
                       tr->maxspeed);
         }

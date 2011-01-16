@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -161,7 +161,7 @@ static void read_statefile_float(statefile_hdr_t *hdr, const char *tag, float *p
 
   if (gdata.debug > 0) {
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-            "  [%s %1.1fKB/s]", debug, *pval);
+            "  [%s %1.1fkB/s]", debug, *pval);
   }
 }
 
