@@ -110,7 +110,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,5,method_allow_all,a_nomin,         "NOMIN","id","Disables minspeed for transfer <id>"},
 {2,5,method_allow_all,a_nomax,         "NOMAX","id","Disables maxspeed for transfer <id>"},
 {2,5,method_allow_all,a_unlimited,     "UNLIMITED","id","Disables bandwidth limits for transfer <id>"},
-{2,5,method_allow_all,a_maxspeed,      "MAXSPEED","id x","Set max bandwidth limit of <x> KB/s for transfer <id>"},
+{2,5,method_allow_all,a_maxspeed,      "MAXSPEED","id x","Set max bandwidth limit of <x> kB/s for transfer <id>"},
 {2,2,method_allow_all,a_send,          "SEND","nick n [net]","Sends pack <n> to <nick>"},
 {2,2,method_allow_all,a_queue,         "QUEUE","nick n [net]","Queues pack <n> for <nick> into main queue"},
 {2,2,method_allow_all,a_iqueue,        "IQUEUE","nick n [net]","Queues pack <n> for <nick> into idle queue"},
@@ -142,8 +142,8 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_chdesc,        "CHDESC","n [msg]","Change description of pack <n> to <msg>"},
 {3,3,method_allow_all,u_chnote,        "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtime,        "CHTIME","n [msg]","Change add time of pack <n> to <msg>"},
-{3,3,method_allow_all,a_chmins,        "CHMINS","n [m] x","Change min speed to <x> KB/s for pack <n> to <m>"},
-{3,3,method_allow_all,a_chmaxs,        "CHMAXS","n [m] x","Change max speed to <x> KB/s for pack <n> to <m>"},
+{3,3,method_allow_all,a_chmins,        "CHMINS","n [m] x","Change min speed to <x> kB/s for pack <n> to <m>"},
+{3,3,method_allow_all,a_chmaxs,        "CHMAXS","n [m] x","Change max speed to <x> kB/s for pack <n> to <m>"},
 {3,3,method_allow_all,a_chlimit,       "CHLIMIT","n [m] x","Change download limit to <x> transfers per day for pack <n> to <m>"},
 {3,3,method_allow_all,a_chlimitinfo,   "CHLIMITINFO","n [msg]","Change over limit info of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtrigger,     "CHTRIGGER","n [msg]","Change trigger for pack <n> to <msg>"},
@@ -700,7 +700,7 @@ static void u_xdl_head(const userinput * const u) {
        if (gdata.transferminspeed > 0)
          {
            snprintf(tempstr + len, maxtextlength - len,
-                    ", Min: %1.1fKB/s",
+                    ", Min: %1.1fkB/s",
                     gdata.transferminspeed);
            len = strlen(tempstr);
          }
@@ -708,7 +708,7 @@ static void u_xdl_head(const userinput * const u) {
        if (gdata.transfermaxspeed > 0)
          {
            snprintf(tempstr + len, maxtextlength - len,
-                    ", Max: %1.1fKB/s",
+                    ", Max: %1.1fkB/s",
                     gdata.transfermaxspeed);
            len = strlen(tempstr);
          }
@@ -716,7 +716,7 @@ static void u_xdl_head(const userinput * const u) {
        if (gdata.record > 0.5)
          {
            snprintf(tempstr + len, maxtextlength - len,
-                    ", Record: %1.1fKB/s",
+                    ", Record: %1.1fkB/s",
                     gdata.record);
            len = strlen(tempstr);
          }
@@ -730,14 +730,14 @@ static void u_xdl_head(const userinput * const u) {
          }
        
        snprintf(tempstr, maxtextlength,
-                "\2**\2 Bandwidth Usage \2**\2 Current: %1.1fKB/s,",
+                "\2**\2 Bandwidth Usage \2**\2 Current: %1.1fkB/s,",
                 ((float)xdccsent) / XDCC_SENT_SIZE / 1024.0);
        len = strlen(tempstr);
        
        if (gdata.maxb)
          {
            snprintf(tempstr + len, maxtextlength - len,
-                    " Cap: %u.0KB/s,",
+                    " Cap: %u.0kB/s,",
                     gdata.maxb / 4);
            len = strlen(tempstr);
          }
@@ -745,7 +745,7 @@ static void u_xdl_head(const userinput * const u) {
        if (gdata.sentrecord > 0.5)
          {
            snprintf(tempstr + len, maxtextlength - len,
-                    " Record: %1.1fKB/s",
+                    " Record: %1.1fkB/s",
                     gdata.sentrecord);
            len = strlen(tempstr);
          }
@@ -1276,11 +1276,11 @@ static void u_info(const userinput * const u)
   u_respond(u, " Gets           %u", xd->gets);
   if (xd->minspeed)
     {
-      u_respond(u, " Minspeed       %1.1fKB/sec", xd->minspeed);
+      u_respond(u, " Minspeed       %1.1fkB/sec", xd->minspeed);
     }
   if (xd->maxspeed)
     {
-      u_respond(u, " Maxspeed       %1.1fKB/sec", xd->maxspeed);
+      u_respond(u, " Maxspeed       %1.1fkB/sec", xd->maxspeed);
     }
   
   if (xd->has_md5sum)

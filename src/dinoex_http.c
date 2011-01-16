@@ -1491,27 +1491,27 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
     }
     if (strcmp(key, "minspeed") == 0) {
       tempstr = mymalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transferminspeed);
+      snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s", gdata.transferminspeed);
       break;
     }
     if (strcmp(key, "maxspeed") == 0) {
       tempstr = mymalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transfermaxspeed);
+      snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s", gdata.transfermaxspeed);
       break;
     }
     if (strcmp(key, "cap") == 0) {
       tempstr = mymalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
+      snprintf(tempstr, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4);
       break;
     }
     if (strcmp(key, "record") == 0) {
       tempstr = mymalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.record);
+      snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s", gdata.record);
       break;
     }
     if (strcmp(key, "send") == 0) {
       tempstr = mymalloc(maxtextlengthshort);
-      snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.sentrecord);
+      snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s", gdata.sentrecord);
       break;
     }
     if (strcmp(key, "daily") == 0) {

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -407,7 +407,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
 
   tempstr = getsendname(ul->file);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "dKB)",
+          "DCC Send Accepted from %s on %s: %s (%" LLPRINTFMT "dkB)",
           nick, gnetwork->name, tempstr,
           (ul->totalsize / 1024));
   mydelete(tempstr);

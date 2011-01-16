@@ -218,7 +218,7 @@ static void command_dcc(privmsginput *pi)
       ul->resumed = 1;
       tempstr = getsendname(ul->file);
       ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-              "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "d of %" LLPRINTFMT "dKB left)",
+              "DCC Send Resumed from %s on %s: %s (%" LLPRINTFMT "d of %" LLPRINTFMT "dkB left)",
               pi->nick, gnetwork->name, tempstr,
               ((ul->totalsize - ul->resumesize) / 1024),
               (ul->totalsize / 1024));
@@ -1213,15 +1213,15 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
           len = strlen(tempstr);
         }
         if (gdata.transferminspeed > 0) {
-          snprintf(tempstr + len, maxtextlength - len, ", Min:%1.1fKB/s", gdata.transferminspeed);
+          snprintf(tempstr + len, maxtextlength - len, ", Min:%1.1fkB/s", gdata.transferminspeed);
           len = strlen(tempstr);
         }
         if (gdata.transfermaxspeed > 0) {
-          snprintf(tempstr + len, maxtextlength - len, ", Max:%1.1fKB/s", gdata.transfermaxspeed);
+          snprintf(tempstr + len, maxtextlength - len, ", Max:%1.1fkB/s", gdata.transfermaxspeed);
           len = strlen(tempstr);
         }
         if (gdata.maxb) {
-          snprintf(tempstr + len, maxtextlength - len, ", Cap:%u.0KB/s", gdata.maxb / 4);
+          snprintf(tempstr + len, maxtextlength - len, ", Cap:%u.0kB/s", gdata.maxb / 4);
           len = strlen(tempstr);
         }
         snprintf(tempstr + len, maxtextlength - len, " - /MSG %s XDCC SEND x -",
@@ -1502,7 +1502,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
            "%s"
            "Sends:\2(\2%u/%u\2)\2 "
            "Queues:\2(\2%u/%u\2)\2 "
-           "Record:\2(\2%1.1fKB/s\2)\2 "
+           "Record:\2(\2%1.1fkB/s\2)\2 "
            "%s%s%s\2=\2iroffer\2=\2",
            irlist_size(&gdata.xdccs),
            (rtclmsg ? rtclmsg : ""),

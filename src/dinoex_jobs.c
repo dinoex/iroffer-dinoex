@@ -1613,7 +1613,7 @@ static void xdcc_save_xml(void)
   write_asc_plain(xmlbuf, 4, "banduse", tempstr);
   mydelete(tempstr);
   tempstr = mymalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort, "%u.0KB/s", gdata.maxb / 4);
+  snprintf(tempstr, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4);
   write_asc_plain(xmlbuf, 4, "bandmax", tempstr);
   mydelete(tempstr);
   write_string(xmlbuf, "  </bandwidth>\n");
@@ -1640,11 +1640,11 @@ static void xdcc_save_xml(void)
 
   write_string(xmlbuf, "  <limits>\n");
   tempstr = mymalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transferminspeed);
+  snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s", gdata.transferminspeed);
   write_asc_plain(xmlbuf, 4, "minspeed", tempstr);
   mydelete(tempstr);
   tempstr = mymalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s", gdata.transfermaxspeed);
+  snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s", gdata.transfermaxspeed);
   write_asc_plain(xmlbuf, 4, "maxspeed", tempstr);
   mydelete(tempstr);
   write_string(xmlbuf, "  </limits>\n");

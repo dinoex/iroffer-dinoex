@@ -726,7 +726,7 @@ char *get_current_bandwidth(void)
     xdccsent += (ir_uint64)gdata.xdccsent[i];
   }
   tempstr = mymalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort, "%1.1fKB/s",
+  snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s",
            ((float)xdccsent) / XDCC_SENT_SIZE / 1024.0);
   return tempstr;
 }
