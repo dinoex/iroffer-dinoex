@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -117,6 +117,7 @@ void a_getl(const userinput * const u);
 void a_get(const userinput * const u);
 void a_rmq(const userinput * const u);
 void a_rmiq(const userinput * const u);
+void a_rmallq(const userinput * const u);
 void a_rmul(const userinput * const u);
 void a_raw(const userinput * const u);
 void a_rawnet(const userinput * const u);

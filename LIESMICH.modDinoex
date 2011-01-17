@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+357) RMALLQ
+
+  Neues Admin Kommando:
+  RMALLQ                             Löschen aller Einträge in beiden Warteschlangen
+
 356) Länderspezifische Texte
   Alle Übersetzungen können nun im gleichen Verzeichnis gebaut werden.
   Alle übersetzten Programme haben jetzt einen Prefix:
