@@ -4690,7 +4690,8 @@ static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned i
   gnetwork = &(gdata.networks[net]);
   tempstr = mymalloc(maxtextlength);
   addtoidlequeue(&msg, tempstr, u->arg1, NULL, xd, num, 0);
-  notice(u->arg1, "** %s", tempstr);
+  if (*tempstr != 0)
+    notice(u->arg1, "** %s", tempstr);
   mydelete(tempstr);
   gnetwork = backup;
   return 0;

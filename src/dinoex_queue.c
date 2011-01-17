@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -250,8 +250,10 @@ unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, c
 
   updatecontext();
   *msg = NULL;
-  if (gdata.idlequeuesize == 0)
+  if (gdata.idlequeuesize == 0) {
+    *tempstr = 0;
     return 0;
+  }
 
   if (hostname != NULL) {
     if (inq >= gdata.maxidlequeuedperperson) {
