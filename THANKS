@@ -636,6 +636,7 @@ Loke_AF
 	reporting "AUTOADD" problem with '//'.
 	suggesting "requeue_sends"
 	suggesting "ignore_duplicate_ip"
+	suggesting "RMALLQ"
 
 Nouhime
 	reporting "http_search" bug.

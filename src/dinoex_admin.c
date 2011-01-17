@@ -4069,6 +4069,12 @@ void a_rmiq(const userinput * const u)
   a_rmq2(u, &gdata.idlequeue);
 }
 
+void a_rmallq(const userinput * const u)
+{
+  a_rmq2(u, &gdata.idlequeue);
+  a_rmq2(u, &gdata.mainqueue);
+}
+
 void a_rmul(const userinput * const u)
 {
   char *tempstr;

@@ -2419,3 +2419,5 @@
 2755 "Configfile"
 2756 "%s %s\n"
 2757 "("
+2758 "RMALLQ"
+2759 "Removes entries from idle and main queue"

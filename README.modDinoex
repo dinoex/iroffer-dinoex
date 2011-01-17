@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+357) RMALLQ (inspired by Loke_AF)
+
+  new admin command:
+  RMALLQ                             Removes entries from idle and main queue
+
 356) translations
   All translation can be build from the same src
   All translaten binaries have a prefix by default:

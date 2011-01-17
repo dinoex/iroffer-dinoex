@@ -107,6 +107,7 @@ static const userinput_parse_t userinput_parse[] = {
 {2,2,method_allow_all,a_get,           "CLOSEGET","net nick","Cancel Request for bot <nick>"},
 {2,2,method_allow_all,a_rmq,           "RMQ","[position]","Removes entry at <position> from main queue"},
 {2,2,method_allow_all,a_rmiq,          "RMIQ","[position]","Removes entry at <position> from idle queue"},
+{2,2,method_allow_all,a_rmallq,        "RMALLQ","","Removes entries from idle and main queue"},
 {2,5,method_allow_all,a_nomin,         "NOMIN","id","Disables minspeed for transfer <id>"},
 {2,5,method_allow_all,a_nomax,         "NOMAX","id","Disables maxspeed for transfer <id>"},
 {2,5,method_allow_all,a_unlimited,     "UNLIMITED","id","Disables bandwidth limits for transfer <id>"},
