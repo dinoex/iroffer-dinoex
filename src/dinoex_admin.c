@@ -4756,7 +4756,7 @@ static unsigned int a_iqueue_search(const userinput * const u, const char *what,
     }
   } else {
     /* count forwards */
-    for (; first >= last; ++first) {
+    for (; first <= last; ++first) {
       ++found;
       a_iqueue_sub(u, NULL, first, net);
     }
