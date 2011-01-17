@@ -15,7 +15,7 @@ With Version 3.26:
   Fix problem with leftover files from older versions.
 
 bugfix: bsdmake
-  Generated Makefile now supprts both gnumake and bsdmake.
+  Generated Makefile now supports both gnumake and bsdmake.
 
 355) XDCC BATCH, BATCH (inspired by Aashiqmunda)
   Allow backwards ranges from <a> downto <b>.
