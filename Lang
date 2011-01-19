@@ -61,7 +61,7 @@ awk -F '	' '
 }
 ' |
 ${utf8} |
-sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' > "${lang}.sed"
+sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' -e 's|\&|\\&|g' > "${lang}.sed"
 rm -f en.tmp "${lang}.tmp"
 echo "done"
 if test ! -d "src.${lang}"
