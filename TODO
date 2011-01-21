@@ -76,6 +76,8 @@ Short Term Features:
   1517  more than one periodicmsg
   1523  config Server Connection Timed Out
   1534  state the ip of the user in dcld and geoip
+  1535  reduce queued message on batch
+  1536  silent add
 
 Long Term Features:
   1013  notify adminnick when autoadd
