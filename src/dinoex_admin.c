@@ -311,6 +311,34 @@ void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsign
   }
 }
 
+void a_xdl_foot(const userinput * const u)
+{
+  xdcc *xd;
+  char *sizestrstr;
+  char *totalstr;
+  off_t toffered;
+
+  if (gdata.creditline) {
+    a_respond(u, "\2**\2 %s \2**\2", gdata.creditline);
+  }
+
+  if (u->method != method_xdl_channel_min) {
+    toffered = 0;
+    for (xd = irlist_get_head(&gdata.xdccs);
+         xd;
+         xd = irlist_get_next(xd)) {
+      toffered += xd->st_size;
+    }
+
+    sizestrstr = sizestr(0, toffered);
+    totalstr = sizestr(0, gdata.totalsent);
+    a_respond(u, "Total Offered: %sB  Total Transferred: %sB",
+              sizestrstr, totalstr);
+    mydelete(totalstr);
+    mydelete(sizestrstr);
+  }
+}
+
 void a_xdl_full(const userinput * const u)
 {
   char *tempstr;
@@ -335,7 +363,7 @@ void a_xdl_full(const userinput * const u)
   }
   mydelete(tempstr);
 
-  u_xdl_foot(u);
+  a_xdl_foot(u);
 }
 
 void a_xdl_group(const userinput * const u)
@@ -384,7 +412,7 @@ void a_xdl_group(const userinput * const u)
   }
   mydelete(tempstr);
 
-  u_xdl_foot(u);
+  a_xdl_foot(u);
 
   if (k == 0) {
     a_respond(u, "Sorry, nothing was found, try a XDCC LIST");
