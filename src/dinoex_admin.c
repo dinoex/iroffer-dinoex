@@ -248,6 +248,69 @@ unsigned int a_xdl_left(void)
   return l;
 }
 
+void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd)
+{
+  char datestr[maxtextlengthshort];
+  const char *sep;
+  const char *groupstr;
+  char *sizestrstr;
+  char *colordesc;
+  unsigned int len;
+
+  sizestrstr = sizestr(1, xd->st_size);
+  datestr[0] = 0;
+  if (gdata.show_date_added) {
+    datestr[0] = ' ';
+    datestr[1] = 0;
+    user_getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
+  }
+  sep = "";
+  groupstr = "";
+  if (gdata.show_group_of_pack) {
+    if (xd->group != NULL) {
+      sep = gdata.group_seperator;
+      groupstr = xd->group;
+    }
+  }
+  colordesc = xd_color_description(xd);
+  len = snprintf(tempstr, maxtextlength,
+           "\2#%-*u\2 %*ux [%s]%s %s%s%s",
+           l,
+           i,
+           s, xd->gets,
+           sizestrstr,
+           datestr,
+           colordesc,
+           sep, groupstr);
+  if (colordesc != xd->desc)
+    mydelete(colordesc);
+  mydelete(sizestrstr);
+
+  if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed) {
+    len += snprintf(tempstr + len, maxtextlength - len,
+             " [%1.1fK Min]",
+             xd->minspeed);
+  }
+
+  if ((xd->maxspeed > 0) && (xd->maxspeed != gdata.transfermaxspeed)) {
+    len += snprintf(tempstr + len, maxtextlength - len,
+             " [%1.1fK Max]",
+             xd->maxspeed);
+  }
+
+  if (xd->dlimit_max != 0) {
+    len += snprintf(tempstr + len, maxtextlength - len,
+             " [%u of %u DL left]",
+             xd->dlimit_used - xd->gets, xd->dlimit_max);
+  }
+
+  a_respond(u, "%s", tempstr);
+
+  if (xd->note && xd->note[0]) {
+    a_respond(u, " \2^-\2%*s%s", s, "", xd->note);
+  }
+}
+
 unsigned int reorder_new_groupdesc(const char *group, const char *desc)
 {
   xdcc *xd;
@@ -1338,7 +1401,7 @@ void a_xdlock(const userinput * const u)
     if (xd->lock == NULL)
       continue;
 
-    u_xdl_pack(u, tempstr, i, l, s, xd);
+    a_xdl_pack(u, tempstr, i, l, s, xd);
     a_respond(u, " \2^-\2%*sPassword: %s", s, "", xd->lock);
   }
 
@@ -1370,7 +1433,7 @@ void a_xdtrigger(const userinput * const u)
     if (group_hidden(u, xd))
       continue;
 
-    u_xdl_pack(u, tempstr, i, l, s, xd);
+    a_xdl_pack(u, tempstr, i, l, s, xd);
     a_respond(u, " \2^-\2%*sTrigger: %s", s, "", xd->trigger);
   }
 
@@ -1408,7 +1471,7 @@ void a_find(const userinput * const u)
 
     if (fnmatch_xdcc(match, xd)) {
       ++k;
-      u_xdl_pack(u, tempstr, i, l, s, xd);
+      a_xdl_pack(u, tempstr, i, l, s, xd);
       /* limit matches */
       if ((gdata.max_find != 0) && (k >= gdata.max_find))
         break;

@@ -467,79 +467,6 @@ static void u_help(const userinput * const u)
   
 }
 
-void u_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd) {
-   char datestr[maxtextlengthshort];
-   const char *sep;
-   const char *groupstr;
-   char *sizestrstr;
-   char *colordesc;
-   unsigned int len;
-   
-   sizestrstr = sizestr(1, xd->st_size);
-   datestr[0] = 0;
-   if (gdata.show_date_added)
-     {
-       datestr[0] = ' ';
-       datestr[1] = 0;
-       user_getdatestr(datestr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
-     }
-   sep = "";
-   groupstr = "";
-   if (gdata.show_group_of_pack)
-     {
-       if (xd->group != NULL)
-         {
-           sep = gdata.group_seperator;
-           groupstr = xd->group;
-         }
-     }
-   colordesc = xd_color_description(xd);
-   snprintf(tempstr, maxtextlength,
-           "\2#%-*u\2 %*ux [%s]%s %s%s%s",
-            l,
-            i,
-            s, xd->gets,
-            sizestrstr,
-            datestr,
-            colordesc,
-            sep, groupstr);
-   len = strlen(tempstr);
-   if (colordesc != xd->desc)
-     mydelete(colordesc);
-   mydelete(sizestrstr);
-   
-   if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed)
-     {
-        snprintf(tempstr + len, maxtextlength - len,
-                 " [%1.1fK Min]",
-                 xd->minspeed);
-        len = strlen(tempstr);
-     }
-   
-   if (xd->maxspeed > 0 && xd->maxspeed != gdata.transfermaxspeed)
-     {
-        snprintf(tempstr + len, maxtextlength - len,
-                 " [%1.1fK Max]",
-                 xd->maxspeed);
-        len = strlen(tempstr);
-     }
-   
-   if (xd->dlimit_max != 0)
-     {
-        snprintf(tempstr + len, maxtextlength - len,
-                 " [%u of %u DL left]",
-                 xd->dlimit_used - xd->gets, xd->dlimit_max);
-        len = strlen(tempstr);
-     }
-   
-   a_respond(u, "%s", tempstr);
-   
-   if (xd->note && xd->note[0])
-     {
-       a_respond(u, " \2^-\2%*s%s", s, "", xd->note);
-     }
-}
-
 static void u_xdl_head(const userinput * const u) {
    char *tempstr;
    char *tempnick;
@@ -783,7 +710,7 @@ static void u_xdl_full(const userinput * const u) {
    while(xd)
      {
        if (hide_locked(u, xd) == 0)
-         u_xdl_pack(u, tempstr, i, l, s, xd);
+         a_xdl_pack(u, tempstr, i, l, s, xd);
        i++;
        xd = irlist_get_next(xd);
      }
@@ -838,7 +765,7 @@ static void u_xdl_group(const userinput * const u) {
          if (hide_locked(u, xd) != 0)
             continue;
 
-         u_xdl_pack(u, tempstr, i, l, s, xd);
+         a_xdl_pack(u, tempstr, i, l, s, xd);
          k++;
      }
          
@@ -879,7 +806,7 @@ static void u_xdl(const userinput * const u) {
        if (xd->group == NULL)
          {
            if (hide_locked(u, xd) == 0)
-             u_xdl_pack(u, tempstr, i, l, s, xd);
+             a_xdl_pack(u, tempstr, i, l, s, xd);
          }
        i++;
        xd = irlist_get_next(xd);
