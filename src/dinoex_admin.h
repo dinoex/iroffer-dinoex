@@ -25,6 +25,7 @@ unsigned int hide_locked(const userinput * const u, const xdcc *xd);
 int get_network(const char *arg1);
 unsigned int a_xdl_space(void);
 unsigned int a_xdl_left(void);
+void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd);
 unsigned int reorder_new_groupdesc(const char *group, const char *desc);
 unsigned int add_default_groupdesc(const char *group);
 
