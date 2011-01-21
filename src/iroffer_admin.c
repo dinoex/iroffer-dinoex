@@ -33,8 +33,6 @@
 
 /* local functions */
 static void u_help(const userinput * const u);
-static void u_xdl_full(const userinput * const u);
-static void u_xdl_group(const userinput * const u);
 static void u_xdl(const userinput * const u);
 static void u_dcl(const userinput * const u);
 static void u_dcld(const userinput * const u);
@@ -82,8 +80,8 @@ typedef struct
 /* local info */
 static const userinput_parse_t userinput_parse[] = {
 {1,1,method_allow_all,u_help,          "HELP",NULL,"Shows help"},
-{1,0,method_allow_all_xdl,u_xdl_full,  "XDLFULL",NULL,"Lists all offered packs"},
-{1,0,method_allow_all_xdl,u_xdl_group, "XDLGROUP","[group]","Show packs from <group>"},
+{1,0,method_allow_all_xdl,a_xdl_full,  "XDLFULL",NULL,"Lists all offered packs"},
+{1,0,method_allow_all_xdl,a_xdl_group, "XDLGROUP","[group]","Show packs from <group>"},
 {1,0,method_allow_all_xdl,u_xdl,       "XDL",NULL,"Lists offered groups and packs without group"},
 {1,1,method_allow_all,a_xdlock,        "XDLOCK",NULL,"Show all locked packs"},
 {1,1,method_allow_all,a_xdtrigger,     "XDTRIGGER",NULL,"Show all packs with dynamic triggers"},
@@ -466,7 +464,8 @@ static void u_help(const userinput * const u)
   
 }
 
-static void u_xdl_head(const userinput * const u) {
+void u_xdl_head(const userinput * const u)
+{
    char *tempstr;
    char *tempnick;
    char *chan;
@@ -660,7 +659,8 @@ static void u_xdl_head(const userinput * const u) {
    mydelete(tempstr);
 }
 
-static void u_xdl_foot(const userinput * const u) {
+void u_xdl_foot(const userinput * const u)
+{
    xdcc *xd;
    char *sizestrstr;
    char *totalstr;
@@ -687,94 +687,6 @@ static void u_xdl_foot(const userinput * const u) {
                  sizestrstr, totalstr);
        mydelete(totalstr);
        mydelete(sizestrstr);
-     }
-}
-
-static void u_xdl_full(const userinput * const u) {
-   char *tempstr;
-   xdcc *xd;
-   unsigned int i;
-   unsigned int l;
-   unsigned int s;
-   
-   updatecontext();
-   
-   u_xdl_head(u);
-   
-   tempstr = mymalloc(maxtextlength);
-   i = 1;
-   l = a_xdl_left();
-   s = a_xdl_space();
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       if (hide_locked(u, xd) == 0)
-         a_xdl_pack(u, tempstr, i, l, s, xd);
-       i++;
-       xd = irlist_get_next(xd);
-     }
-         
-   mydelete(tempstr);
-
-   u_xdl_foot(u);
-}
-
-static void u_xdl_group(const userinput * const u) {
-   char *tempstr;
-   char *msg3;
-   xdcc *xd;
-   unsigned int i;
-   unsigned int k;
-   unsigned int l;
-   unsigned int s;
-
-   updatecontext();
-
-   u_xdl_head(u);
-
-   msg3 = u->arg1;
-   tempstr = mymalloc(maxtextlength);
-   i = 1;
-   k = 0;
-   l = a_xdl_left();
-   s = a_xdl_space();
-   xd = irlist_get_head(&gdata.xdccs);
-   for (xd = irlist_get_head(&gdata.xdccs);
-        xd;
-        xd = irlist_get_next(xd), i++)
-     {
-       if (msg3 == NULL)
-         {
-            if (xd->group != NULL)
-               continue;
-         }
-       else
-         {
-            if (xd->group == NULL)
-               continue;
-
-            if (strcasecmp(xd->group, msg3) != 0 )
-               continue;
-
-            if (xd->group_desc != NULL)
-               {
-                  a_respond(u, "group: %s%s%s", msg3, gdata.group_seperator, xd->group_desc);
-               }
-         }
-         if (hide_locked(u, xd) != 0)
-            continue;
-
-         a_xdl_pack(u, tempstr, i, l, s, xd);
-         k++;
-     }
-         
-   mydelete(tempstr);
-   
-   u_xdl_foot(u);
-   
-   if (!k)
-     {
-       a_respond(u, "Sorry, nothing was found, try a XDCC LIST");
      }
 }
 
