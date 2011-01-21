@@ -4917,7 +4917,7 @@ void a_mannounce(const userinput * const u)
   a_announce_sub(u, u->arg1, u->arg2, u->arg3e);
 }
 
-static unsigned int a_new_announce(unsigned int max)
+static unsigned int a_new_announce(unsigned int max, const char *name)
 {
   irlist_t list;
   struct tm *localt = NULL;
@@ -4953,7 +4953,7 @@ static unsigned int a_new_announce(unsigned int max)
              tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
     if (colordesc != xd->desc)
       mydelete(colordesc);
-    a_announce_channels(tempstr3, NULL, xd->group);
+    a_announce_channels(tempstr3, name, xd->group);
     mydelete(tempstr3);
     mydelete(tempstr);
     ++i;
@@ -4966,6 +4966,7 @@ void a_newann(const userinput * const u)
   gnetwork_t *backup;
   unsigned int ss;
   unsigned int max = 0;
+  int net;
 
   updatecontext();
 
@@ -4973,11 +4974,21 @@ void a_newann(const userinput * const u)
   if (max == 0)
     return;
 
+  net = get_network_msg(u, u->arg3);
+  if (net < 0)
+    return;
+
   backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ++ss) {
-    gnetwork = &(gdata.networks[ss]);
+  if (u->arg3 == NULL) {
+    for (ss=0; ss<gdata.networks_online; ++ss) {
+      gnetwork = &(gdata.networks[ss]);
+      if (gnetwork->noannounce == 0)
+        a_new_announce(max, u->arg2);
+    }
+  } else {
+    gnetwork = &(gdata.networks[net]);
     if (gnetwork->noannounce == 0)
-      a_new_announce(max);
+      a_new_announce(max, u->arg2);
   }
   gnetwork = backup;
 }
