@@ -2108,7 +2108,7 @@ char *new_logfilename(const char *logfile)
 
 static int readdir_sub(const char *thedir, DIR *dirp, struct dirent *entry, struct dirent **result)
 {
-  int rc;
+  int rc = 0;
   unsigned int max = 3;
 
   for (max = 3; max > 0; --max) {
