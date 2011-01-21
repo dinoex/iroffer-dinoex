@@ -7,7 +7,7 @@ bugfix: NEWANN
   NEWANN caused the bot to crash.
   versions affected: 3.25
 
-358) NEWANN (inspired by CreeW)
+358) NEWANN (inspired by SellKony, CreeW)
 
   new admin commands:
   NEWANN <n> <channel> <net>         ANNOUNCE for the last <n> packs in channel <channel> on net <net>
