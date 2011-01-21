@@ -458,10 +458,10 @@ void a_xdl(const userinput * const u)
   }
 
   irlist_sort2(&grplist, irlist_sort_cmpfunc_string);
-  inlist = irlist_get_head(&grplist);
-  while (inlist) {
+  for (inlist = irlist_get_head(&grplist);
+       inlist;
+       inlist = irlist_delete(&grplist, inlist) ) {
     a_respond(u, "group: %s", inlist);
-    inlist = irlist_delete(&grplist, inlist);
   }
 
   a_xdl_foot(u);
