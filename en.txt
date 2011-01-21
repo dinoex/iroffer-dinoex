@@ -2421,3 +2421,4 @@
 2757 "("
 2758 "RMALLQ"
 2759 "Removes entries from idle and main queue"
+2760 "n [channel] [net]"
