@@ -286,73 +286,7 @@ static void u_fillwith_clean (userinput * const u)
   mydelete(u->arg3);
 }
 
-static void
-#ifdef __GNUC__
-__attribute__ ((format(printf, 2, 3)))
-#endif
-u_respond(const userinput * const u, const char *format, ...)
-{
-  va_list args;
-  channel_t *ch;
-  char *tempnick;
-  char *chan;
-
-  updatecontext();
-  
-  va_start(args, format);
-  
-  switch (u->method)
-    {
-    case method_console:
-      vioutput(OUT_S, COLOR_NO_COLOR, format, args);
-      break;
-    case method_dcc:
-      vwritedccchat(u->chat, 1, format, args);
-      break;
-    case method_out_all:
-      vioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, format, args);
-      break;
-    case method_fd:
-      voutput_fd(u->fd, format, args);
-      break;
-    case method_msg:
-      vprivmsg(u->snick, format, args);
-      break;
-    case method_xdl_channel:
-    case method_xdl_channel_min:
-    case method_xdl_channel_sum:
-      ch = NULL;
-      tempnick = mystrdup(u->snick);
-      for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
-        {
-          for (ch = irlist_get_head(&(gnetwork->channels));
-               ch;
-               ch = irlist_get_next(ch))
-            {
-              if (!strcasecmp(ch->name, chan))
-                {
-                  vprivmsg_chan(ch, format, args);
-                  va_end(args);
-                  va_start(args, format);
-                }
-            }
-        }
-      mydelete(tempnick);
-      break;
-    case method_xdl_user_privmsg:
-      vprivmsg_slow(u->snick, format, args);
-      break;
-    case method_xdl_user_notice:
-      vnotice_slow(u->snick, format, args);
-      break;
-    case method_allow_all:
-    case method_allow_all_xdl:
-    default:
-      break;
-    }
-  
-  va_end(args);
-}
+#define u_respond a_respond
 
 void u_parseit(userinput * const u) {
    int i,found = 0;
@@ -514,7 +448,7 @@ static void u_help(const userinput * const u)
                   spaces -= sstrlen(userinput_parse[i].command);
                   spaces = max2(0,spaces);
                   
-                  u_respond(u, "  %s %-*s : %s",
+                  a_respond(u, "  %s %-*s : %s",
                             userinput_parse[i].command,
                             spaces,
                             userinput_parse[i].args,
@@ -529,7 +463,7 @@ static void u_help(const userinput * const u)
             }
         }
     }
-  u_respond(u, "For additional help, see the documentation at " "http://iroffer.dinoex.net/");
+  a_respond(u, "For additional help, see the documentation at " "http://iroffer.dinoex.net/");
   
 }
 
@@ -598,11 +532,11 @@ void u_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsign
         len = strlen(tempstr);
      }
    
-   u_respond(u, "%s", tempstr);
+   a_respond(u, "%s", tempstr);
    
    if (xd->note && xd->note[0])
      {
-       u_respond(u, " \2^-\2%*s%s", s, "", xd->note);
+       a_respond(u, " \2^-\2%*s%s", s, "", xd->note);
      }
 }
 
@@ -647,7 +581,7 @@ static void u_xdl_head(const userinput * const u) {
                       
                       u2 = *u;
                       u2.snick = chan;
-                      u_respond(&u2, "\2**\2 %s \2**\2", ch->headline);
+                      a_respond(&u2, "\2**\2 %s \2**\2", ch->headline);
                       head ++;
                     }
                 }
@@ -658,7 +592,7 @@ static void u_xdl_head(const userinput * const u) {
       break;
     default:
       if (gdata.hide_list_stop == 0)
-        u_respond(u, "\2**\2 To stop this listing, type \"/MSG %s XDCC STOP\" \2**\2",
+        a_respond(u, "\2**\2 To stop this listing, type \"/MSG %s XDCC STOP\" \2**\2",
                   mynick);
       break;
     }
@@ -666,7 +600,7 @@ static void u_xdl_head(const userinput * const u) {
    if (gdata.headline)
      {
        if (head == 0)
-          u_respond(u, "\2**\2 %s \2**\2", gdata.headline);
+          a_respond(u, "\2**\2 %s \2**\2", gdata.headline);
      }
    
    if (!m && !m1)
@@ -753,11 +687,11 @@ static void u_xdl_head(const userinput * const u) {
        
        u_respond(u,"%s",tempstr);
        
-       u_respond(u, "\2**\2 To request a file, type \"/MSG %s XDCC SEND x\" \2**\2",
+       a_respond(u, "\2**\2 To request a file, type \"/MSG %s XDCC SEND x\" \2**\2",
                  mynick);
        
        if ((gdata.hide_list_info == 0) && (gdata.disablexdccinfo == 0))
-          u_respond(u, "\2**\2 To request details, type \"/MSG %s XDCC INFO x\" \2**\2",
+          a_respond(u, "\2**\2 To request details, type \"/MSG %s XDCC INFO x\" \2**\2",
                     mynick);
        
        i = 0;
@@ -774,11 +708,11 @@ static void u_xdl_head(const userinput * const u) {
          {
            if (gdata.xdcclist_grouponly)
              {
-               u_respond(u, "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
+               a_respond(u, "\2**\2 To list a group, type \"/MSG %s XDCC LIST group\" \2**\2",
                          mynick);
             
                if (!gdata.restrictprivlistfull)
-                 u_respond(u, "\2**\2 To list all packs, type \"/MSG %s XDCC LIST ALL\" \2**\2",
+                 a_respond(u, "\2**\2 To list all packs, type \"/MSG %s XDCC LIST ALL\" \2**\2",
                            mynick);
             }
          }
@@ -788,12 +722,12 @@ static void u_xdl_head(const userinput * const u) {
      {
        if (!gdata.restrictprivlist)
          {
-           u_respond(u, "\2**\2 For a listing type: \"/MSG %s XDCC LIST\" \2**\2",
+           a_respond(u, "\2**\2 For a listing type: \"/MSG %s XDCC LIST\" \2**\2",
                      mynick);
          }
        if (gdata.creditline)
          {
-           u_respond(u, "\2**\2 %s \2**\2", gdata.creditline);
+           u_respond(u,"\2**\2 %s \2**\2",gdata.creditline);
          }
      }
    
@@ -808,7 +742,7 @@ static void u_xdl_foot(const userinput * const u) {
 
    if (gdata.creditline)
      {
-       u_respond(u, "\2**\2 %s \2**\2", gdata.creditline);
+       a_respond(u, "\2**\2 %s \2**\2", gdata.creditline);
      }
    
    if (u->method != method_xdl_channel_min)
@@ -823,7 +757,7 @@ static void u_xdl_foot(const userinput * const u) {
    
        sizestrstr = sizestr(0, toffered);
        totalstr = sizestr(0, gdata.totalsent);
-       u_respond(u, "Total Offered: %sB  Total Transferred: %sB",
+       a_respond(u, "Total Offered: %sB  Total Transferred: %sB",
                  sizestrstr, totalstr);
        mydelete(totalstr);
        mydelete(sizestrstr);
@@ -898,7 +832,7 @@ static void u_xdl_group(const userinput * const u) {
 
             if (xd->group_desc != NULL)
                {
-                  u_respond(u, "group: %s%s%s", msg3, gdata.group_seperator, xd->group_desc);
+                  a_respond(u, "group: %s%s%s", msg3, gdata.group_seperator, xd->group_desc);
                }
          }
          if (hide_locked(u, xd) != 0)
@@ -914,7 +848,7 @@ static void u_xdl_group(const userinput * const u) {
    
    if (!k)
      {
-       u_respond(u, "Sorry, nothing was found, try a XDCC LIST");
+       a_respond(u, "Sorry, nothing was found, try a XDCC LIST");
      }
 }
 
@@ -968,7 +902,7 @@ static void u_xdl(const userinput * const u) {
      inlist = irlist_get_head(&grplist);
      while (inlist)
        {
-         u_respond(u, "group: %s", inlist);
+         a_respond(u, "group: %s", inlist);
          inlist = irlist_delete(&grplist, inlist);
        }
    
@@ -998,14 +932,14 @@ static void u_dcl(const userinput * const u)
   if (!irlist_size(&gdata.trans) && !irlist_size(&gdata.uploads))
 #endif /* USE_CURL */
     {
-      u_respond(u, "No active transfers");
+      a_respond(u, "No active transfers");
       return;
     }
   
   if (irlist_size(&gdata.trans))
     {
-      u_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "transfers" : "transfer");
-      u_respond(u, "   ID  User        Pack File                               Status");
+      a_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "transfers" : "transfer");
+      a_respond(u, "   ID  User        Pack File                               Status");
     }
   
   tr = irlist_get_head(&gdata.trans);
@@ -1015,13 +949,13 @@ static void u_dcl(const userinput * const u)
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
-          u_respond(u, "  %3i  %-9s   %-4d %-32s   %s %2.0f%%",
+          a_respond(u, "  %3i  %-9s   %-4d %-32s   %s %2.0f%%",
                     tr->id, tr->nick, number_of_pack(tr->xpack), getfilename(tr->xpack->file), y,
                     ((float)tr->bytessent)*100.0/((float)tr->xpack->st_size));
         }
       else
         {
-          u_respond(u, "  %3i  %-9s   %-4d %-32s   %s",
+          a_respond(u, "  %3i  %-9s   %-4d %-32s   %s",
                     tr->id, tr->nick, number_of_pack(tr->xpack), getfilename(tr->xpack->file), y);
         }
       tr = irlist_get_next(tr);
@@ -1033,7 +967,7 @@ static void u_dcl(const userinput * const u)
   if (irlist_size(&gdata.uploads))
 #endif /* USE_CURL */
     {
-      u_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "uploads" : "upload" );
+      a_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "uploads" : "upload" );
       u_respond(u,"   ID  User        File                               Status");
     }
   
@@ -1078,7 +1012,7 @@ static void u_dcld(const userinput * const u)
   if (!irlist_size(&gdata.trans) && !irlist_size(&gdata.uploads))
 #endif /* USE_CURL */
     {
-      u_respond(u, "No active transfers");
+      a_respond(u, "No active transfers");
       return;
     }
   
@@ -1088,8 +1022,8 @@ static void u_dcld(const userinput * const u)
    
    if (irlist_size(&gdata.trans))
      {
-       u_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "transfers" : "transfer");
-       u_respond(u, " ID  User        Pack File                               Status");
+       a_respond(u, "Current %s", irlist_size(&gdata.trans)!=1 ? "transfers" : "transfer");
+       a_respond(u, " ID  User        Pack File                               Status");
        u_respond(u,"  ^-    Speed    Current/    End   Start/Remain    Min/  Max  Resumed");
        u_respond(u," --------------------------------------------------------------------");
      }
@@ -1099,17 +1033,17 @@ static void u_dcld(const userinput * const u)
     {
       y = t_print_state(tr);
       
-      u_respond(u, "network: %u: %s", tr->net, gdata.networks[tr->net].name);
+      a_respond(u, "network: %u: %s", tr->net, gdata.networks[tr->net].name);
       
       if (tr->tr_status == TRANSFER_STATUS_SENDING)
         {
-          u_respond(u, "%3i  %-9s   %-4d %-32s   %s %2.0f%%",
+          a_respond(u, "%3i  %-9s   %-4d %-32s   %s %2.0f%%",
                     tr->id, tr->nick, number_of_pack(tr->xpack), getfilename(tr->xpack->file), y,
                     ((float)tr->bytessent)*100.0/((float)tr->xpack->st_size));
         }
       else
         {
-          u_respond(u, "%3i  %-9s   %-4d %-32s   %s",
+          a_respond(u, "%3i  %-9s   %-4d %-32s   %s",
                     tr->id, tr->nick, number_of_pack(tr->xpack), getfilename(tr->xpack->file), y);
         }
       
@@ -1154,7 +1088,7 @@ static void u_dcld(const userinput * const u)
   if (irlist_size(&gdata.uploads))
 #endif /* USE_CURL */
     {
-      u_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "uploads" : "upload");
+      a_respond(u, "Current %s", irlist_size(&gdata.uploads)!=1 ? "uploads" : "upload");
       u_respond(u," ID  User        File                               Status");
       u_respond(u,"  ^-    Speed    Current/    End   Start/Remain");
       u_respond(u," --------------------------------------------------------------");
@@ -1213,7 +1147,7 @@ static void u_dcld(const userinput * const u)
   dinoex_dcld(u);
 #endif /* USE_CURL */
   
-  u_respond(u, " --------------------------------------------------------------------");
+  a_respond(u, " --------------------------------------------------------------------");
 }
 
 static void u_info(const userinput * const u)
@@ -1235,23 +1169,23 @@ static void u_info(const userinput * const u)
   if (group_restricted(u, xd))
     return;
   
-  u_respond(u, "Pack Info for Pack #%u:", num);
+  a_respond(u, "Pack Info for Pack #%u:", num);
   
   sendnamestr = getsendname(xd->file);
   if (u->level > 0) 
     {
-  u_respond(u, " Filename       %s", xd->file);
+  a_respond(u, " Filename       %s", xd->file);
 
-  u_respond(u, " Sendname       %s", sendnamestr);
+  a_respond(u, " Sendname       %s", sendnamestr);
     }
   else
     {
-  u_respond(u, " Filename       %s", sendnamestr);
+  a_respond(u, " Filename       %s", sendnamestr);
     }
 
   if (strcmp(xd->desc, sendnamestr) != 0) 
     {
-  u_respond(u, " Description    %s", xd->desc);
+  a_respond(u, " Description    %s", xd->desc);
     }
   mydelete(sendnamestr);
 
@@ -1261,7 +1195,7 @@ static void u_info(const userinput * const u)
     }
   
   sizestrstr = sizestr(1, xd->st_size);
-  u_respond(u, " Filesize       %" LLPRINTFMT "d [%sB]",
+  a_respond(u, " Filesize       %" LLPRINTFMT "d [%sB]",
             xd->st_size, sizestrstr);
   mydelete(sizestrstr);
   
@@ -1270,18 +1204,18 @@ static void u_info(const userinput * const u)
   
   if (u->level > 0) 
     {
-  u_respond(u, " Device/Inode   %" LLPRINTFMT "u/%" LLPRINTFMT "u",
+  a_respond(u, " Device/Inode   %" LLPRINTFMT "u/%" LLPRINTFMT "u",
             (ir_uint64)xd->st_dev, (ir_uint64)xd->st_ino);
     }
   
-  u_respond(u, " Gets           %u", xd->gets);
+  a_respond(u, " Gets           %u", xd->gets);
   if (xd->minspeed)
     {
-      u_respond(u, " Minspeed       %1.1fkB/sec", xd->minspeed);
+      a_respond(u, " Minspeed       %1.1fkB/sec", xd->minspeed);
     }
   if (xd->maxspeed)
     {
-      u_respond(u, " Maxspeed       %1.1fkB/sec", xd->maxspeed);
+      a_respond(u, " Maxspeed       %1.1fkB/sec", xd->maxspeed);
     }
   
   if (xd->has_md5sum)
@@ -1290,21 +1224,21 @@ static void u_info(const userinput * const u)
     }
   if (xd->has_crc32)
     {
-      u_respond(u, " crc32          %.8lX", xd->crc32);
+      a_respond(u, " crc32          %.8lX", xd->crc32);
     }
   zipcrc32 = get_zip_crc32_pack(xd);
   if (zipcrc32 != 0)
     {
-      u_respond(u, " content crc32  %.8lX", zipcrc32);
+      a_respond(u, " content crc32  %.8lX", zipcrc32);
     }
   if ((u->level > 0) && (xd->xtime != 0))
     {
       user_getdatestr(tempstr, xd->xtime, maxtextlengthshort);
-      u_respond(u, " Pack Added     %s", tempstr);
+      a_respond(u, " Pack Added     %s", tempstr);
     }
   if (xd->lock)
     {
-      u_respond(u, " is protected by password");
+      a_respond(u, " is protected by password");
     }
 
   return;
@@ -1321,7 +1255,7 @@ static void u_delhist(const userinput * const u)
 {
   updatecontext();
   
-  u_respond(u, "Deleted all %u lines of console history",
+  a_respond(u, "Deleted all %u lines of console history",
             irlist_size(&gdata.console_history));
   
   irlist_delete_all(&gdata.console_history);
@@ -1404,7 +1338,7 @@ static void u_psend(const userinput * const u)
   nname = gnetwork->name;
   gnetwork = backup;
   
-  u_respond(u, "Sending PLIST with style %s to %s on network %s",
+  a_respond(u, "Sending PLIST with style %s to %s on network %s",
             u->arg2 ? u->arg2 : "full",
             u->arg1, nname);
   
@@ -1446,7 +1380,7 @@ static void u_chnote(const userinput * const u) {
    if (group_restricted(u, xd))
      return;
    
-   u_respond(u, "CHNOTE: [Pack %u] Old: %s New: %s",
+   a_respond(u, "CHNOTE: [Pack %u] Old: %s New: %s",
              num,xd->note,
              u->arg2 ? u->arg2e : "");
    
@@ -1500,7 +1434,7 @@ static void u_chatl(const userinput * const u)
           continue;
         }
       
-      u_respond(u, "DCC CHAT %u:", count);
+      a_respond(u, "DCC CHAT %u:", count);
       switch (chat->status)
         {
         case DCCCHAT_LISTENING:
@@ -1540,7 +1474,7 @@ static void u_chatl(const userinput * const u)
       
       mydelete(tempstr);
       
-      u_respond(u, "  Local: %s, Remote: %s",
+      a_respond(u, "  Local: %s, Remote: %s",
                 chat->con.localaddr,
                 chat->con.remoteaddr);
     }
@@ -1639,21 +1573,21 @@ static void u_rehash(const userinput * const u) {
    u_respond(u,"Checking for completeness of config file ...");
    
    if ( gdata.config_nick == NULL )
-     u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_nick");
+     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_nick");
    
    if ( gdata.user_realname == NULL )
-     u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_realname");
+     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_realname");
    
    if ( gdata.user_modes == NULL )
-     u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_modes");
+     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_modes");
    
    if ( gdata.slotsmax == 0 )
-     u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "slotsmax");
+     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "slotsmax");
    
    for (ss=0; ss<gdata.networks_online; ss++)
      {
        if ( !irlist_size(&gdata.networks[ss].servers) )
-         u_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "server");
+         a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "server");
 
      }
    
@@ -1693,7 +1627,7 @@ static void u_botinfo(const userinput * const u) {
    
    u_respond(u,"BotInfo:");
 
-   u_respond(u, "iroffer-dinoex " VERSIONLONG FEATURES ", " "http://iroffer.dinoex.net/" "%s%s",
+   a_respond(u, "iroffer-dinoex " VERSIONLONG FEATURES ", " "http://iroffer.dinoex.net/" "%s%s",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
 
@@ -1716,15 +1650,15 @@ static void u_botinfo(const userinput * const u) {
      {
        const char *how;
        char *msg;
-       u_respond(u, "network: %u: %s", ss + 1, gdata.networks[ss].name);
+       a_respond(u, "network: %u: %s", ss + 1, gdata.networks[ss].name);
        msg = mymalloc(maxtextlength);
        my_dcc_ip_show(msg, maxtextlength - 1, &(gdata.networks[ss].myip), ss);
-       u_respond(u, "DCC IP: %s NAT=%u", msg, gdata.networks[ss].usenatip);
+       a_respond(u, "DCC IP: %s NAT=%u", msg, gdata.networks[ss].usenatip);
        mydelete(msg);
        
        backup = gnetwork;
        gnetwork = &(gdata.networks[ss]);
-       u_respond(u, "configured nick: %s, actual nick: %s, realname: %s, modes: %s",
+       a_respond(u, "configured nick: %s, actual nick: %s, realname: %s, modes: %s",
                  get_config_nick(),
                  get_user_nick(),
                  gdata.user_realname,
@@ -1737,7 +1671,7 @@ static void u_botinfo(const userinput * const u) {
          case how_direct:
          case how_ssl:
              {
-                u_respond(u, "current server: %s:%u (%s)",
+                a_respond(u, "current server: %s:%u (%s)",
                           gdata.networks[ss].curserver.hostname,
                           gdata.networks[ss].curserver.port, how);
              }
@@ -1745,7 +1679,7 @@ static void u_botinfo(const userinput * const u) {
          case how_bnc:
            if (gdata.networks[ss].connectionmethod.vhost)
              {
-               u_respond(u, "current server: %s:%u (%s at %s:%i with %s)",
+               a_respond(u, "current server: %s:%u (%s at %s:%i with %s)",
                          gdata.networks[ss].curserver.hostname,
                          gdata.networks[ss].curserver.port, how,
                          gdata.networks[ss].connectionmethod.host,
@@ -1754,7 +1688,7 @@ static void u_botinfo(const userinput * const u) {
              }
            else
              {
-               u_respond(u, "current server: %s:%u (%s at %s:%i)",
+               a_respond(u, "current server: %s:%u (%s at %s:%i)",
                          gdata.networks[ss].curserver.hostname,
                          gdata.networks[ss].curserver.port, how,
                          gdata.networks[ss].connectionmethod.host,
@@ -1763,7 +1697,7 @@ static void u_botinfo(const userinput * const u) {
            break;
          case how_wingate:
          case how_custom:
-           u_respond(u, "current server: %s:%u (%s at %s:%i)",
+           a_respond(u, "current server: %s:%u (%s at %s:%i)",
                      gdata.networks[ss].curserver.hostname,
                      gdata.networks[ss].curserver.port, how,
                      gdata.networks[ss].connectionmethod.host,
@@ -1771,12 +1705,12 @@ static void u_botinfo(const userinput * const u) {
            break;
          }
        
-       u_respond(u, "current server actual name: %s ",
+       a_respond(u, "current server actual name: %s ",
                  gdata.networks[ss].curserveractualname ? gdata.networks[ss].curserveractualname : "<unknown>");
        if (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED)
          {
            getuptime(tempstr, 0, gdata.networks[ss].connecttime, maxtextlength - 1);
-           u_respond(u, "current server connected for: %s ", tempstr);
+           a_respond(u, "current server connected for: %s ", tempstr);
          }
        
        ch = irlist_get_head(&gdata.networks[ss].channels);
@@ -1817,7 +1751,7 @@ static void u_botinfo(const userinput * const u) {
                         text_pformat(ch->flags));
              }
            
-           u_respond(u, "%s", tempstr);
+           a_respond(u, "%s", tempstr);
            
            ch = irlist_get_next(ch);
          }
@@ -1828,7 +1762,7 @@ static void u_botinfo(const userinput * const u) {
    
    if (gdata.overallmaxspeed != gdata.overallmaxspeeddayspeed)
      {
-       u_respond(u, "           default max: %i, day max: %i ( %i:00 -> %i:00, days=\"%s%s%s%s%s%s%s\" )",
+       a_respond(u, "           default max: %i, day max: %i ( %i:00 -> %i:00, days=\"%s%s%s%s%s%s%s\" )",
                  gdata.overallmaxspeed/4,gdata.overallmaxspeeddayspeed/4,
                  gdata.overallmaxspeeddaytimestart, gdata.overallmaxspeeddaytimeend,
                  (gdata.overallmaxspeeddaydays & (1 << 1)) ? "M":"",
@@ -1873,7 +1807,7 @@ static void u_botinfo(const userinput * const u) {
              (gdata.statefile?gdata.statefile:"(none)"),
              (gdata.xdcclistfile?gdata.xdcclistfile:"(none)"));
    
-   u_respond(u, "config %s: %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+   a_respond(u, "config %s: %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
              gdata.configfile[1]?"files":"file",
              gdata.configfile[0],
              gdata.configfile[1]?", ":"",gdata.configfile[1]?gdata.configfile[1]:"",
@@ -1897,7 +1831,7 @@ static void u_botinfo(const userinput * const u) {
       }
    
    if (gdata.md5build.xpack) {
-      u_respond(u, "calculating MD5/CRC32 for pack %u",
+      a_respond(u, "calculating MD5/CRC32 for pack %u",
                 number_of_pack(gdata.md5build.xpack));
       }
 
@@ -2091,7 +2025,7 @@ static void u_nosave(const userinput * const u) {
    
    if (u->arg1) num = atoi(u->arg1);
    num = max_minutes_waits(&gdata.noautosave, num);
-   u_respond(u, "** XDCC AutoSave has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
+   a_respond(u, "** XDCC AutoSave has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -2109,7 +2043,7 @@ static void u_nosend(const userinput * const u) {
          gdata.nosendmsg=mystrdup(u->arg2e);
       }
    num = max_minutes_waits(&gdata.nonewcons, num);
-   u_respond(u, "** XDCC Send has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
+   a_respond(u, "** XDCC Send has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -2121,7 +2055,7 @@ static void u_nolist(const userinput * const u) {
    
    if (u->arg1) num = atoi(u->arg1);
    num = max_minutes_waits(&gdata.nolisting, num);
-   u_respond(u, "** XDCC List and PLIST have been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
+   a_respond(u, "** XDCC List and PLIST have been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
    
    }
 
@@ -2147,7 +2081,7 @@ static void u_msgread(const userinput * const u)
   mydelete(tempstr);
   
   count = irlist_size(&gdata.msglog);
-  u_respond(u, "msglog: %i %s in log%s%s",
+  a_respond(u, "msglog: %i %s in log%s%s",
             count,
             count != 1 ? "messages" : "message",
             count ? ", use MSGDEL to remove " : "",
@@ -2162,7 +2096,7 @@ static void u_msgdel(const userinput * const u)
   
   updatecontext();
   
-  u_respond(u, "msglog: deleted %u messages",
+  a_respond(u, "msglog: deleted %u messages",
             irlist_size(&gdata.msglog));
   
   while ((ml = irlist_get_head(&gdata.msglog)))
@@ -2202,7 +2136,7 @@ static void u_memstat(const userinput * const u)
             r.ru_inblock, r.ru_oublock, r.ru_msgsnd,
             r.ru_msgrcv, r.ru_nsignals, r.ru_nvcsw, r.ru_nivcsw);
   
-  u_respond(u, "gdata:  %ld bytes", (long)sizeof(gdata_t));
+  a_respond(u, "gdata:  %ld bytes", (long)sizeof(gdata_t));
   
   numcountrecent = sizecount = 0;
   for (i=0; i<(MEMINFOHASHSIZE * gdata.meminfo_depth); i++)
@@ -2256,7 +2190,7 @@ static void u_memstat(const userinput * const u)
         {
           if (meminfo[i].ptr != NULL)
             {
-              u_respond(u, "%3i %3i | 0x%8.8lX | %6iB | %7" TTPRINTFMT "s | %s:%d %s()",
+              a_respond(u, "%3i %3i | 0x%8.8lX | %6iB | %7" TTPRINTFMT "s | %s:%d %s()",
                         i / meminfo_depth,
                         i % meminfo_depth,
                         (long)meminfo[i].ptr,
@@ -2468,7 +2402,7 @@ static void u_trinfo(const userinput * const u)
   
   u_respond(u,"File: %s",getfilename(tr->xpack->file));
   
-  u_respond(u, "Start %" LLPRINTFMT "dK, Current %" LLPRINTFMT "dK, End %" LLPRINTFMT "dK (%2.0f%% File, %2.0f%% Xfer)",
+  a_respond(u, "Start %" LLPRINTFMT "dK, Current %" LLPRINTFMT "dK, End %" LLPRINTFMT "dK (%2.0f%% File, %2.0f%% Xfer)",
             (tr->startresume/1024),
             (tr->bytessent/1024),
             (tr->xpack->st_size/1024),
@@ -2481,7 +2415,7 @@ static void u_trinfo(const userinput * const u)
   snprintf(tempstr2, maxtextlengthshort, "%1.1fK/s", tr->xpack->minspeed);
   snprintf(tempstr3, maxtextlengthshort, "%1.1fK/s", tr->maxspeed);
   
-  u_respond(u, "Min %s, Current %1.1fK/s, Max %s, In Transit %" LLPRINTFMT "dK",
+  a_respond(u, "Min %s, Current %1.1fK/s, Max %s, In Transit %" LLPRINTFMT "dK",
             (tr->nomin || (tr->xpack->minspeed == 0.0)) ? "no" : tempstr2 ,
             tr->lastspeed,
             (tr->nomax || (tr->maxspeed == 0.0)) ? "no" : tempstr3 ,
@@ -2507,7 +2441,7 @@ static void u_trinfo(const userinput * const u)
             lcontact < 3600 ? lcontact%60 : (lcontact/60)%60 ,
             lcontact < 3600 ? 's' : 'm');
   
-  u_respond(u, "Local: %s, Remote: %s",
+  a_respond(u, "Local: %s, Remote: %s",
             tr->con.localaddr, tr->con.remoteaddr);
   
   u_respond(u,"Sockets: Listen %i, Transfer %i, File %i",
@@ -2545,7 +2479,7 @@ void u_listdir(const userinput * const u, const char *dir)
   
   if (!d)
     {
-      u_respond(u, "Can't Access Directory: %s %s", dir, strerror(errno));
+      a_respond(u, "Can't Access Directory: %s %s", dir, strerror(errno));
       return;
     }
   
@@ -2567,7 +2501,7 @@ void u_listdir(const userinput * const u, const char *dir)
     }
   else
     {
-      u_respond(u, "Listing '%s':", dir);
+      a_respond(u, "Listing '%s':", dir);
       
       thefile = irlist_get_head(&dirlist);
       while (thefile)
@@ -2765,7 +2699,7 @@ static void u_chanl(const userinput * const u)
           u_respond(u,"%s",tempstr);
         }
       
-      u_respond(u, "%s: %i %s", ch->name, j, j!=1 ? "users" : "user");
+      a_respond(u, "%s: %i %s", ch->name, j, j!=1 ? "users" : "user");
       
       ch = irlist_get_next(ch);
     }

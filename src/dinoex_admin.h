@@ -15,11 +15,6 @@
 
 void
 #ifdef __GNUC__
-__attribute__ ((format(printf, 2, 0)))
-#endif
-voutput_fd(int fd, const char *format, va_list args);
-void
-#ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
 a_respond(const userinput * const u, const char *format, ...);
