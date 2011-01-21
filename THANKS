@@ -553,6 +553,7 @@ CreeW
 	suggesting "autoadd_color"
 	reporting "CHCOLOR" bug
 	suggesting "CHMAXS" with range
+	suggesting "NEWANN" with params
 
 [M]-V
 	reporting ADDDIR spaces bug
@@ -575,6 +576,7 @@ Aashiqmunda
 
 SellKony
 	reporting CONFIG crash
+	suggesting "NEWANN" with params
 
 Blade121
 	suggesting "MAKEDIR"
