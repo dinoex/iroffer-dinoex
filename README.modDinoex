@@ -23,8 +23,8 @@ bugfix: XDCC STOP
 
 356) translations
   All translation can be build from the same src
-  All translaten binaries have a prefix by default:
-    de-iroffer, fr-iroffer, it-iroffer
+  All translaten binaries have a suffix by default:
+    iroffer-de, iroffer-fr, iroffer-it
   Fix problem with leftover files from older versions.
 
 bugfix: bsdmake

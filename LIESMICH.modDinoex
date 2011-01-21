@@ -23,8 +23,8 @@ bugfix: XDCC STOP
 
 356) Länderspezifische Texte
   Alle Übersetzungen können nun im gleichen Verzeichnis gebaut werden.
-  Alle übersetzten Programme haben jetzt einen Prefix:
-    de-iroffer, fr-iroffer, it-iroffer
+  Alle übersetzten Programme haben jetzt einen Suffix:
+    iroffer-de, iroffer-fr, iroffer-it
   Fehler mit übrig gebliebenen Dateien von alten Versionen beim Update behoben.
 
 bugfix: bsdmake
