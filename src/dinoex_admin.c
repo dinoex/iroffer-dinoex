@@ -214,11 +214,19 @@ static unsigned int hide_locked(const userinput * const u, const xdcc *xd)
   return 0;
 }
 
+static unsigned int a_xdl_len(unsigned int i)
+{
+  if (i < 10) return 1;
+  if (i < 100) return 2;
+  if (i < 1000) return 3;
+  if (i < 10000) return 4;
+  return 5;
+}
+
 static unsigned int a_xdl_space(void)
 {
-  unsigned int i;
-  unsigned int s;
   xdcc *xd;
+  unsigned int i;
 
   i = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
@@ -226,26 +234,15 @@ static unsigned int a_xdl_space(void)
        xd = irlist_get_next(xd)) {
     i = max2(i, xd->gets);
   }
-  s = 5;
-  if (i < 10000) s = 4;
-  if (i < 1000) s = 3;
-  if (i < 100) s = 2;
-  if (i < 10) s = 1;
-  return s;
+  return a_xdl_len(i);
 }
 
 static unsigned int a_xdl_left(void)
 {
   unsigned int n;
-  unsigned int l;
 
   n = irlist_size(&gdata.xdccs);
-  l = 5;
-  if (n < 10000) l = 4;
-  if (n < 1000) l = 3;
-  if (n < 100) l = 2;
-  if (n < 10) l = 1;
-  return l;
+  return a_xdl_len(n);
 }
 
 static void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd)
