@@ -471,8 +471,10 @@ static void t_check_duplicateip(transfer *const newtr)
 /* check a new transfer */
 void t_check_new_connection(transfer *const tr)
 {
+#ifdef USE_GEOIP
   updatecontext();
   geoip_new_connection(tr);
+#endif /* USE_GEOIP */
   updatecontext();
   t_check_duplicateip(tr);
 }
