@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+bugfix: NEWANN
+  NEWANN caused the bot to crash.
+  versions affected: 3.25
+
 358) NEWANN
 
   Neue Admin Kommandos:

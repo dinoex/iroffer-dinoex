@@ -4924,6 +4924,7 @@ static unsigned int a_new_announce(unsigned int max, const char *name)
   xdcc **best;
   xdcc *xd;
   const char *format;
+  const char *grouplist;
   char *tempstr;
   char *tempstr3;
   char *colordesc;
@@ -4933,9 +4934,10 @@ static unsigned int a_new_announce(unsigned int max, const char *name)
 
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
 
+  grouplist = get_grouplist_channel(name);
   memset(&list, 0, sizeof(irlist_t));
   for (i=0; i<max; ++i)
-    add_newest_xdcc(&list, NULL);
+    add_newest_xdcc(&list, grouplist);
 
   i = 0;
   for (best = irlist_get_head(&list);
@@ -4949,6 +4951,7 @@ static unsigned int a_new_announce(unsigned int max, const char *name)
     if (llen == 0)
       tempstr[0] = '\0';
     colordesc = xd_color_description(xd);
+    tempstr3 = mymalloc(maxtextlength);
     snprintf(tempstr3, maxtextlength - 1, "Added: %s \2%u\2%s%s",
              tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
     if (colordesc != xd->desc)
