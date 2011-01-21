@@ -2274,14 +2274,14 @@ src-doc:
  echo '
 
 cleanobj:
-	rm -rf o.* $(IRNAME) $(IRNAME).exe \
+	rm -rf obj o.* $(IRNAME) $(IRNAME).exe \
 		$(IRNAME)_static $(IRNAME)_static.exe \
 		$(IRNAME)_chroot $(IRNAME)_chroot.exe \
 
 clean: cleanobj
-	$(MAKE) IRNAME=de-iroffer cleanobj
-	$(MAKE) IRNAME=it-iroffer cleanobj
-	$(MAKE) IRNAME=fr-iroffer cleanobj
+	$(MAKE) IRNAME=iroffer-de cleanobj
+	$(MAKE) IRNAME=iroffer-it cleanobj
+	$(MAKE) IRNAME=iroffer-fr cleanobj
 
 clobber: clean
 	rm -rf src.* *.sed
@@ -2320,9 +2320,9 @@ en:	all
   more=""
   for i in $TARGETS $TARGETR
   do
-    more="${more} ${l}-${i}"
+    more="${more} iroffer-${l}${i#iroffer}"
   done
-  echo "	\$(MAKE) IRLANG=${l} IRSRC=src.${l} IRNAME=${l}-iroffer all" $more
+  echo "	\$(MAKE) IRLANG=${l} IRSRC=src.${l} IRNAME=iroffer-${l} all" $more
   echo
  done
  echo '

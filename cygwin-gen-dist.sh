@@ -36,7 +36,7 @@ do
 	*)
 		dir="${name}-win32-${cygwin}-${lang}"
 		bin="iroffer-${lang}.exe"
-		src="${lang}-iroffer.exe"
+		src="iroffer-${lang}.exe"
 		;;
 	esac
 	mkdir "${dir}"

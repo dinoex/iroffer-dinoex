@@ -27,6 +27,12 @@ iroffer.1.txt
 iroffer.1.ps
 iroffer_chroot
 iroffer_static
+iroffer-de
+iroffer-de_static
+iroffer-fr
+iroffer-fr_static
+iroffer-it
+iroffer-it_static
 it.sed
 it-iroffer
 it-iroffer_chroot
