@@ -311,6 +311,86 @@ void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsign
   }
 }
 
+void a_xdl_full(const userinput * const u)
+{
+  char *tempstr;
+  xdcc *xd;
+  unsigned int i;
+  unsigned int l;
+  unsigned int s;
+
+  updatecontext();
+
+  u_xdl_head(u);
+
+  tempstr = mymalloc(maxtextlength);
+  i = 1;
+  l = a_xdl_left();
+  s = a_xdl_space();
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd), i++) {
+    if (hide_locked(u, xd) == 0)
+      a_xdl_pack(u, tempstr, i, l, s, xd);
+  }
+  mydelete(tempstr);
+
+  u_xdl_foot(u);
+}
+
+void a_xdl_group(const userinput * const u)
+{
+  char *tempstr;
+  char *msg3;
+  xdcc *xd;
+  unsigned int i;
+  unsigned int k;
+  unsigned int l;
+  unsigned int s;
+
+  updatecontext();
+
+  u_xdl_head(u);
+
+  msg3 = u->arg1;
+  tempstr = mymalloc(maxtextlength);
+  i = 1;
+  k = 0;
+  l = a_xdl_left();
+  s = a_xdl_space();
+  xd = irlist_get_head(&gdata.xdccs);
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd), i++) {
+    if (msg3 == NULL) {
+      if (xd->group != NULL)
+        continue;
+    } else {
+      if (xd->group == NULL)
+        continue;
+
+      if (strcasecmp(xd->group, msg3) != 0 )
+        continue;
+
+      if (xd->group_desc != NULL) {
+        a_respond(u, "group: %s%s%s", msg3, gdata.group_seperator, xd->group_desc);
+      }
+    }
+    if (hide_locked(u, xd) != 0)
+      continue;
+
+    a_xdl_pack(u, tempstr, i, l, s, xd);
+    k++;
+  }
+  mydelete(tempstr);
+
+  u_xdl_foot(u);
+
+  if (k == 0) {
+    a_respond(u, "Sorry, nothing was found, try a XDCC LIST");
+  }
+}
+
 unsigned int reorder_new_groupdesc(const char *group, const char *desc)
 {
   xdcc *xd;
