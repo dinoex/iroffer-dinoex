@@ -1665,7 +1665,7 @@ static unsigned int is_system_dir(const char *name)
 
 static int a_readdir_sub(const userinput * const u, const char *thedir, DIR *dirp, struct dirent *entry, struct dirent **result)
 {
-  int rc;
+  int rc = 0;
   unsigned int max = 3;
 
   for (max = 3; max > 0; --max) {
