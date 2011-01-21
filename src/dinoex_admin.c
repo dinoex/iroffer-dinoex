@@ -1485,6 +1485,12 @@ void a_find(const userinput * const u)
   mydelete(tempstr);
 }
 
+void a_xds(const userinput * const UNUSED(u))
+{
+  updatecontext();
+  write_files();
+}
+
 static void a_qul2(const userinput * const u, irlist_t *list)
 {
   ir_pqueue *pq;

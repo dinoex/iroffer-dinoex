@@ -39,6 +39,7 @@ void a_add_delayed(const userinput * const u);
 void a_xdlock(const userinput * const u);
 void a_xdtrigger(const userinput * const u);
 void a_find(const userinput * const u);
+void a_xds(const userinput * const u);
 void a_qul(const userinput * const u);
 void a_diskfree(const userinput * const u);
 void a_listul(const userinput * const u);
