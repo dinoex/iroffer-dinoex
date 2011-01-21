@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+bugfix: XDCC STOP
+  Bot did not remove "XDCC LIST" when the output had not started yet.
+
 357) RMALLQ (inspired by Loke_AF)
 
   new admin command:

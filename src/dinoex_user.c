@@ -756,6 +756,26 @@ static int stoplist_announce(const char *nick)
   return stopped;
 }
 
+static int stoplist_xlistqueue(const char *nick)
+{
+  xlistqueue_t *user;
+  int k;
+
+  k = 0;
+  for (user = irlist_get_head(&(gnetwork->xlistqueue));
+       user; ) {
+    if (strcmp(user->nick, nick) != 0) {
+      user = irlist_get_next(user);
+      continue;
+    }
+    ++k;
+    mydelete(user->nick);
+    mydelete(user->msg);
+    user = irlist_delete(&(gnetwork->xlistqueue), user);
+  }
+  return k;
+}
+
 /* remove all queued lines for this user */
 static int stoplist(const char *nick)
 {
@@ -774,6 +794,7 @@ static int stoplist(const char *nick)
   stopped += stoplist_queue(nick, &(gnetwork->serverq_slow));
   stopped += stoplist_queue(nick, &(gnetwork->serverq_normal));
   stopped += stoplist_announce(nick);
+  stopped += stoplist_xlistqueue(nick);
   return stopped;
 }
 
