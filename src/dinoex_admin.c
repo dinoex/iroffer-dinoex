@@ -48,7 +48,11 @@ static void strip_trailing_path(char *str)
     str[len - 1] = '\0';
 }
 
-void voutput_fd(int fd, const char *format, va_list args)
+static void
+#ifdef __GNUC__
+__attribute__ ((format(printf, 2, 0)))
+#endif
+voutput_fd(int fd, const char *format, va_list args)
 {
   char *tempstr;
   ssize_t retval;
@@ -85,6 +89,9 @@ void a_respond(const userinput * const u, const char *format, ...)
 {
   va_list args;
   gnetwork_t *backup;
+  channel_t *ch;
+  char *tempnick;
+  char *chan;
 
   updatecontext();
 
@@ -109,6 +116,32 @@ void a_respond(const userinput * const u, const char *format, ...)
     case method_msg:
       vprivmsg(u->snick, format, args);
       break;
+    case method_xdl_channel:
+    case method_xdl_channel_min:
+    case method_xdl_channel_sum:
+      ch = NULL;
+      tempnick = mystrdup(u->snick);
+      for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") ) {
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          if (!strcasecmp(ch->name, chan)) {
+            vprivmsg_chan(ch, format, args);
+            va_end(args);
+            va_start(args, format);
+          }
+        }
+      }
+      mydelete(tempnick);
+      break;
+    case method_xdl_user_privmsg:
+      vprivmsg_slow(u->snick, format, args);
+      break;
+    case method_xdl_user_notice:
+      vnotice_slow(u->snick, format, args);
+      break;
+    case method_allow_all:
+    case method_allow_all_xdl:
     default:
       break;
     }
