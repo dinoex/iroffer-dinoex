@@ -194,7 +194,7 @@ int get_network(const char *arg1)
   return -1;
 }
 
-unsigned int hide_locked(const userinput * const u, const xdcc *xd)
+static unsigned int hide_locked(const userinput * const u, const xdcc *xd)
 {
   if (gdata.hidelockedpacks == 0)
     return 0;
@@ -214,7 +214,7 @@ unsigned int hide_locked(const userinput * const u, const xdcc *xd)
   return 0;
 }
 
-unsigned int a_xdl_space(void)
+static unsigned int a_xdl_space(void)
 {
   unsigned int i;
   unsigned int s;
@@ -234,7 +234,7 @@ unsigned int a_xdl_space(void)
   return s;
 }
 
-unsigned int a_xdl_left(void)
+static unsigned int a_xdl_left(void)
 {
   unsigned int n;
   unsigned int l;
@@ -248,7 +248,7 @@ unsigned int a_xdl_left(void)
   return l;
 }
 
-void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd)
+static void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd)
 {
   char datestr[maxtextlengthshort];
   const char *sep;
@@ -311,7 +311,7 @@ void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsign
   }
 }
 
-void a_xdl_foot(const userinput * const u)
+static void a_xdl_foot(const userinput * const u)
 {
   xdcc *xd;
   char *sizestrstr;
@@ -417,6 +417,59 @@ void a_xdl_group(const userinput * const u)
   if (k == 0) {
     a_respond(u, "Sorry, nothing was found, try a XDCC LIST");
   }
+}
+
+void a_xdl(const userinput * const u)
+{
+  char *tempstr;
+  char *inlist;
+  unsigned int i;
+  unsigned int l;
+  unsigned int s;
+  xdcc *xd;
+  irlist_t grplist = {0, 0};
+
+  updatecontext();
+
+  u_xdl_head(u);
+
+  if (u->method==method_xdl_channel_sum) return;
+
+  tempstr  = mymalloc(maxtextlength);
+  l = a_xdl_left();
+  s = a_xdl_space();
+  i = 1;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd), i++) {
+    /* skip is group is set */
+    if (xd->group == NULL) {
+      if (hide_locked(u, xd) == 0)
+        a_xdl_pack(u, tempstr, i, l, s, xd);
+    }
+  }
+
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    /* groupe entry and entry is visible */
+    if ((xd->group != NULL) && (xd->group_desc != NULL)) {
+      snprintf(tempstr, maxtextlength,
+               "%s%s%s", xd->group, gdata.group_seperator, xd->group_desc);
+      irlist_add_string(&grplist, tempstr);
+    }
+  }
+
+  irlist_sort2(&grplist, irlist_sort_cmpfunc_string);
+  inlist = irlist_get_head(&grplist);
+  while (inlist) {
+    a_respond(u, "group: %s", inlist);
+    inlist = irlist_delete(&grplist, inlist);
+  }
+
+  a_xdl_foot(u);
+
+  mydelete(tempstr);
 }
 
 unsigned int reorder_new_groupdesc(const char *group, const char *desc)

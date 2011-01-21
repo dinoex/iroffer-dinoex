@@ -33,7 +33,6 @@
 
 /* local functions */
 static void u_help(const userinput * const u);
-static void u_xdl(const userinput * const u);
 static void u_dcl(const userinput * const u);
 static void u_dcld(const userinput * const u);
 static void u_redraw(const userinput * const u);
@@ -82,7 +81,7 @@ static const userinput_parse_t userinput_parse[] = {
 {1,1,method_allow_all,u_help,          "HELP",NULL,"Shows help"},
 {1,0,method_allow_all_xdl,a_xdl_full,  "XDLFULL",NULL,"Lists all offered packs"},
 {1,0,method_allow_all_xdl,a_xdl_group, "XDLGROUP","[group]","Show packs from <group>"},
-{1,0,method_allow_all_xdl,u_xdl,       "XDL",NULL,"Lists offered groups and packs without group"},
+{1,0,method_allow_all_xdl,a_xdl,       "XDL",NULL,"Lists offered groups and packs without group"},
 {1,1,method_allow_all,a_xdlock,        "XDLOCK",NULL,"Show all locked packs"},
 {1,1,method_allow_all,a_xdtrigger,     "XDTRIGGER",NULL,"Show all packs with dynamic triggers"},
 {1,1,method_allow_all,a_find,          "FIND","pattern","List packs that matches <pattern>"},
@@ -655,65 +654,6 @@ void u_xdl_head(const userinput * const u)
            u_respond(u,"\2**\2 %s \2**\2",gdata.creditline);
          }
      }
-   
-   mydelete(tempstr);
-}
-
-static void u_xdl(const userinput * const u) {
-   char *tempstr;
-   char *inlist;
-   unsigned int i;
-   unsigned int l;
-   unsigned int s;
-   xdcc *xd;
-   irlist_t grplist = {0, 0};
-
-   updatecontext();
-   
-   u_xdl_head(u);
-
-   if (u->method==method_xdl_channel_sum) return;
-
-   tempstr  = mymalloc(maxtextlength);
-   
-   l = a_xdl_left();
-   s = a_xdl_space();
-   i = 1;
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       /* skip is group is set */
-       if (xd->group == NULL)
-         {
-           if (hide_locked(u, xd) == 0)
-             a_xdl_pack(u, tempstr, i, l, s, xd);
-         }
-       i++;
-       xd = irlist_get_next(xd);
-     }
-   
-   xd = irlist_get_head(&gdata.xdccs);
-   while(xd)
-     {
-       /* groupe entry and entry is visible */
-       if ((xd->group != NULL) && (xd->group_desc != NULL))
-          {
-            snprintf(tempstr, maxtextlength,
-                     "%s%s%s", xd->group, gdata.group_seperator, xd->group_desc);
-            irlist_add_string(&grplist, tempstr);
-          }
-       xd = irlist_get_next(xd);
-     }
-
-     irlist_sort2(&grplist, irlist_sort_cmpfunc_string);
-     inlist = irlist_get_head(&grplist);
-     while (inlist)
-       {
-         a_respond(u, "group: %s", inlist);
-         inlist = irlist_delete(&grplist, inlist);
-       }
-   
-   a_xdl_foot(u);
    
    mydelete(tempstr);
 }
