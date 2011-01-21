@@ -21,14 +21,10 @@ a_respond(const userinput * const u, const char *format, ...);
 
 void a_parse_inputline(userinput * const u, const char *line);
 
-unsigned int hide_locked(const userinput * const u, const xdcc *xd);
 int get_network(const char *arg1);
-unsigned int a_xdl_space(void);
-unsigned int a_xdl_left(void);
-void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i, unsigned int l, unsigned int s, const xdcc *xd);
-void a_xdl_foot(const userinput * const u);
 void a_xdl_full(const userinput * const u);
 void a_xdl_group(const userinput * const u);
+void a_xdl(const userinput * const u);
 unsigned int reorder_new_groupdesc(const char *group, const char *desc);
 unsigned int add_default_groupdesc(const char *group);
 
