@@ -436,7 +436,9 @@ void shutdown_dinoex(void)
 #ifndef WITHOUT_HTTP
   h_close_listen();
 #endif /* WITHOUT_HTTP */
+#ifdef USE_GEOIP
   geoip_shutdown();
+#endif /* USE_GEOIP */
 #ifdef USE_CURL
   curl_shutdown();
 #endif /* USE_CURL */
@@ -455,7 +457,9 @@ void rehash_dinoex(void)
   h_reash_listen();
 #endif /* WITHOUT_HTTP */
   global_defaults();
+#ifdef USE_GEOIP
   geoip_shutdown();
+#endif /* USE_GEOIP */
 #ifdef USE_RUBY
   rehash_myruby(0);
 #endif /* USE_RUBY */

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -130,12 +130,9 @@ static const char *check_geoip6(struct in6_addr *remoteip)
 }
 #endif /* USE_GEOIP6 */
 
-#endif /* USE_GEOIP */
-
 /* check an IRC download against the GeoIP database */
 void geoip_new_connection(transfer *const tr)
 {
-#ifdef USE_GEOIP
   const char *country;
   const char *group;
   char *msg;
@@ -191,10 +188,8 @@ void geoip_new_connection(transfer *const tr)
       }
     }
   }
-#endif /* USE_GEOIP */
 }
 
-#ifdef USE_GEOIP
 #ifndef WITHOUT_HTTP
 static unsigned int http_check_country(const char *country)
 {
@@ -237,17 +232,16 @@ unsigned int http_check_geoip6(struct in6_addr *remoteip)
 }
 #endif /* USE_GEOIP6 */
 #endif /* WITHOUT_HTTP */
-#endif /* USE_GEOIP */
 
 /* close GeoIP */
 void geoip_shutdown(void)
 {
-#ifdef USE_GEOIP
   geoip_close(&geoip4);
 #ifdef USE_GEOIP6
   geoip_close(&geoip6);
 #endif /* USE_GEOIP6 */
-#endif /* USE_GEOIP */
 }
+
+#endif /* USE_GEOIP */
 
 /* End of File */
