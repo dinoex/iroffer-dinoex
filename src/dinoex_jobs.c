@@ -1218,7 +1218,7 @@ void autotrigger_rebuild(void)
 void start_md5_hash(xdcc *xd, unsigned int packnum)
 {
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-          "[MD5 Pack %u]: Calculating", packnum);
+          "MD5: [Pack %u] Calculating", packnum);
 
   gdata.md5build.file_fd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (gdata.md5build.file_fd >= 0) {
@@ -1227,11 +1227,11 @@ void start_md5_hash(xdcc *xd, unsigned int packnum)
       crc32_init();
     MD5Init(&gdata.md5build.md5sum);
     if (set_socket_nonblocking(gdata.md5build.file_fd, 1) < 0) {
-      outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %u]: Couldn't Set Non-Blocking", packnum);
+      outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Couldn't Set Non-Blocking", packnum);
     }
   } else {
     outerror(OUTERROR_TYPE_WARN,
-             "[MD5 Pack %u]: Cant Access Offered File '%s': %s",
+             "MD5: [Pack %u] Cant Access Offered File '%s': %s",
              packnum, xd->file, strerror(errno));
              gdata.md5build.file_fd = FD_UNUSED;
              check_for_file_remove(packnum);
@@ -1241,7 +1241,7 @@ void start_md5_hash(xdcc *xd, unsigned int packnum)
 void cancel_md5_hash(xdcc *xd, const char *msg)
 {
   if (gdata.md5build.xpack == xd) {
-    outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %u]: Canceled (%s)", number_of_pack(xd), msg);
+    outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Canceled (%s)", number_of_pack(xd), msg);
 
     FD_CLR(gdata.md5build.file_fd, &gdata.readset);
     close(gdata.md5build.file_fd);

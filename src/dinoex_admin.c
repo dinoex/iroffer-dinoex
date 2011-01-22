@@ -1046,8 +1046,8 @@ static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned in
     if (tmpgroup != NULL)
       mydelete(tmpgroup);
   } else {
-    a_respond(u, "GROUP: [Pack %u] New: %s",
-              num, newgroup);
+    a_respond(u, "%s: [Pack %u] New: %s",
+              "GROUP", num, newgroup);
   }
 
   if (group != newgroup)
@@ -1504,7 +1504,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
     mydelete(xd->group);
   }
 
-  a_respond(u, "ADD PACK: [Pack %u] [File %s] Use CHDESC to change description",
+  a_respond(u, "Added: [Pack %u] [File %s] Use CHDESC to change description",
             n, xd->file);
 
   if (group != NULL) {
@@ -2872,12 +2872,12 @@ void a_chlimitinfo(const userinput * const u)
     return;
 
   if (!u->arg2 || (u->arg2[0] == 0)) {
-    a_respond(u, "DLIMIT: [Pack %u] descr removed", num);
+    a_respond(u, "%s: [Pack %u] removed", u->cmd, num);
     mydelete(xd->dlimit_desc);
     xd->dlimit_desc = NULL;
   } else {
     clean_quotes(u->arg2e);
-    a_respond(u, "DLIMIT: [Pack %u] descr: %s", num, u->arg2e);
+    a_respond(u, "%s: [Pack %u] set: %s", u->cmd, num, u->arg2e);
     xd->dlimit_desc = mystrdup(u->arg2e);
   }
 
@@ -2901,7 +2901,7 @@ void a_chtrigger(const userinput * const u)
 
   if (!u->arg2 || (u->arg2[0] == 0)) {
     mydelete(xd->trigger);
-    a_respond(u, "TRIGGER: [Pack %u] removed", num);
+    a_respond(u, "%s: [Pack %u] removed", u->cmd, num);
     autotrigger_rebuild();
   } else {
     clean_quotes(u->arg2e);
@@ -2913,7 +2913,7 @@ void a_chtrigger(const userinput * const u)
       xd->trigger = mystrdup(u->arg2e);
       autotrigger_add(xd);
     }
-    a_respond(u, "TRIGGER: [Pack %u] set: %s", num, u->arg2e);
+    a_respond(u, "%s: [Pack %u] set: %s", u->cmd, num, u->arg2e);
   }
 
   write_files();
@@ -2950,7 +2950,7 @@ void a_deltrigger(const userinput * const u)
 
     ++dirty;
     mydelete(xd->trigger);
-    a_respond(u, "TRIGGER: [Pack %u] removed", num1);
+    a_respond(u, "%s: [Pack %u] removed", "CHTRIGGER", num1);
   }
   if (dirty > 0)
     autotrigger_rebuild();
@@ -3048,7 +3048,7 @@ void a_chcolor(const userinput * const u)
       return;
 
     xd->color = color;
-    a_respond(u, "COLOR: [Pack %u] set: %u,%u,%u", num1, color_fg, color_bg, color_st);
+    a_respond(u, "%s: [Pack %u] set: %u,%u,%u", u->cmd, num1, color_fg, color_bg, color_st);
   }
 
   write_files();
@@ -3085,7 +3085,7 @@ void a_lock(const userinput * const u)
     if (group_restricted(u, xd))
       return;
 
-    a_respond(u, "LOCK: [Pack %u] Password: %s", num1, pass);
+    a_respond(u, "%s: [Pack %u] Password: %s", u->cmd, num1, pass);
     mydelete(xd->lock);
     xd->lock = mystrdup(pass);
   }
@@ -3114,7 +3114,7 @@ void a_unlock(const userinput * const u)
     if (group_restricted(u, xd))
       return;
 
-    a_respond(u, "UNLOCK: [Pack %u]", num1);
+    a_respond(u, "%s: [Pack %u]", u->cmd, num1);
 
     mydelete(xd->lock);
     xd->lock = NULL;
@@ -3147,7 +3147,7 @@ void a_lockgroup(const userinput * const u)
     if (strcasecmp(xd->group, u->arg1) != 0)
       continue;
 
-    a_respond(u, "LOCK: [Pack %u] Password: %s", n, u->arg2);
+    a_respond(u, "%s: [Pack %u] Password: %s", "LOCK", n, u->arg2);
     mydelete(xd->lock);
     xd->lock = mystrdup(u->arg2);
   }
@@ -3175,7 +3175,7 @@ void a_unlockgroup(const userinput * const u)
     if (strcasecmp(xd->group, u->arg1) != 0)
       continue;
 
-    a_respond(u, "UNLOCK: [Pack %u]", n);
+    a_respond(u, "%s: [Pack %u]", "UNLOCK", n);
     mydelete(xd->lock);
     xd->lock = NULL;
   }
@@ -3207,7 +3207,7 @@ void a_relock(const userinput * const u)
       continue;
 
     mydelete(xd->lock);
-    a_respond(u, "LOCK: [Pack %u] Password: %s", n, u->arg2);
+    a_respond(u, "%s: [Pack %u] Password: %s", "LOCK", n, u->arg2);
     xd->lock = mystrdup(u->arg2);
   }
   write_files();
@@ -3417,7 +3417,7 @@ void a_crc(const userinput * const u)
       a_respond(u, "Validating CRC for Pack #%u:", num);
       crcmsg = validate_crc32(xd, 0);
       if (crcmsg != NULL)
-        a_respond(u, "[CRC32 Pack %u]: File '%s' %s.", num, xd->file, crcmsg);
+        a_respond(u, "CRC32: [Pack %u] File '%s' %s.", num, xd->file, crcmsg);
     }
     return;
   }
@@ -3431,7 +3431,7 @@ void a_crc(const userinput * const u)
     ++num;
     crcmsg = validate_crc32(xd, 1);
     if (crcmsg != NULL)
-      a_respond(u, "[CRC32 Pack %u]: File '%s' %s.", num, xd->file, crcmsg);
+      a_respond(u, "CRC32: [Pack %u] File '%s' %s.", num, xd->file, crcmsg);
   }
 }
 
@@ -3587,7 +3587,7 @@ void a_newdir(const userinput * const u)
        xd = irlist_get_next(xd)) {
     found += a_newdir_check(u, u->arg1, u->arg2, xd);
   }
-  a_respond(u, "NEWDIR: %u Packs found", found);
+  a_respond(u, "%s: %u Packs found", u->cmd, found);
 
   if (found > 0)
     write_files();
