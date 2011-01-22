@@ -780,7 +780,6 @@ void u_parseit(userinput * const u);
 void u_xdl_head(const userinput * const u);
 void u_listdir(const userinput * const u, const char *dir);
 void u_diskinfo(const userinput * const u, const char *dir);
-void u_ignore(const userinput * const u);
 
 #endif
 

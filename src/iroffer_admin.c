@@ -48,9 +48,6 @@ static void u_rehash(const userinput * const u);
 static void u_botinfo(const userinput * const u);
 static void u_ignl(const userinput * const u);
 static void u_unignore(const userinput * const u);
-static void u_nosave(const userinput * const u);
-static void u_nosend(const userinput * const u);
-static void u_nolist(const userinput * const u);
 static void u_msgread(const userinput * const u);
 static void u_msgdel(const userinput * const u);
 static void u_memstat(const userinput * const u);
@@ -183,13 +180,13 @@ static const userinput_parse_t userinput_parse[] = {
 {5,2,method_allow_all,a_msgnet,        "MSGNET","net nick message","Send <message> to user or channel <nick>"},
 {5,2,method_allow_all,a_mesg,          "MESG","message","Sends <message> to all users who are transferring"},
 {5,2,method_allow_all,a_mesq,          "MESQ","message","Sends <message> to all users in a queue"},
-{5,2,method_allow_all,u_ignore,        "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
+{5,2,method_allow_all,a_ignore,        "IGNORE","x hostmask","Ignore <hostmask> (nick!user@host) for <x> minutes, wildcards allowed"},
 {5,2,method_allow_all,u_unignore,      "UNIGNORE","hostmask","Un-Ignore <hostmask>"},
 {5,2,method_allow_all,a_bannhost,      "BANNHOST","x hostmask","Stop transfers and ignore <hostmask> (nick!user@host) for <x> minutes"},
 {5,2,method_allow_all,a_bannnick,      "BANNNICK","nick [net]","Stop transfers and remove <nick> from queue"},
-{5,5,method_allow_all,u_nosave,        "NOSAVE","x","Disables autosave for next <x> minutes"},
-{5,2,method_allow_all,u_nosend,        "NOSEND","x [msg]","Disables XDCC SEND for next <x> minutes"},
-{5,2,method_allow_all,u_nolist,        "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
+{5,5,method_allow_all,a_nosave,        "NOSAVE","x","Disables autosave for next <x> minutes"},
+{5,2,method_allow_all,a_nosend,        "NOSEND","x [msg]","Disables XDCC SEND for next <x> minutes"},
+{5,2,method_allow_all,a_nolist,        "NOLIST","x","Disables XDCC LIST and plist for next <x> minutes"},
 {5,2,method_allow_all,a_nomd5,         "NOMD5","x","Disables MD5 and CRC calculation for next <x> minutes"},
 {5,3,method_allow_all,u_msgread,       "MSGREAD",NULL,"Show MSG log"},
 {5,5,method_allow_all,u_msgdel,        "MSGDEL",NULL,"Delete MSG log"},
@@ -1685,41 +1682,6 @@ static void u_ignl(const userinput * const u)
   return;
 }
 
-void u_ignore(const userinput * const u)
-{
-  unsigned int num=0;
-  igninfo *ignore;
-  
-  updatecontext();
-  
-  if (u->arg1) num = atoi(u->arg1);
-  
-  if (!u->arg1)
-    {
-      u_respond(u,"Try specifying an amount of time to ignore");        
-      return;
-    }
-  
-  if (!u->arg2 || strlen(u->arg2) < 4U)
-    {
-      u_respond(u,"Try specifying a hostmask longer than 4 characters");
-      return;
-    }
-  
-  ignore = get_ignore(u->arg2);
-  ignore->flags |= IGN_IGNORING;
-  ignore->flags |= IGN_MANUAL;
-  ignore->bucket = (num*60)/gdata.autoignore_threshold;
-  if (ignore->bucket < 0)
-    ignore->bucket = 0x7FFFFFF;
-  
-  u_respond(u, "Ignore activated for %s which will last %u min",
-            u->arg2,num);
-  write_statefile();
-  
-}
-
-
 static void u_unignore(const userinput * const u)
 {
   igninfo *ignore;
@@ -1758,48 +1720,6 @@ static void u_unignore(const userinput * const u)
   
   return;
 }
-
-static void u_nosave(const userinput * const u) {
-   unsigned int num = 0;
-   
-   updatecontext();
-   
-   if (u->arg1) num = atoi(u->arg1);
-   num = max_minutes_waits(&gdata.noautosave, num);
-   a_respond(u, "** XDCC AutoSave has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
-   
-   }
-
-
-static void u_nosend(const userinput * const u) {
-   unsigned int num = 0;
-   
-   updatecontext();
-   
-   if (u->arg1) num = atoi(u->arg1);
-   mydelete(gdata.nosendmsg);
-   if (u->arg2e)
-      {
-         clean_quotes(u->arg2e);
-         gdata.nosendmsg=mystrdup(u->arg2e);
-      }
-   num = max_minutes_waits(&gdata.nonewcons, num);
-   a_respond(u, "** XDCC Send has been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
-   
-   }
-
-
-static void u_nolist(const userinput * const u) {
-   unsigned int num = 0;
-   
-   updatecontext();
-   
-   if (u->arg1) num = atoi(u->arg1);
-   num = max_minutes_waits(&gdata.nolisting, num);
-   a_respond(u, "** XDCC List and PLIST have been disabled for the next %u %s", num, num!=1 ? "minutes" : "minute");
-   
-   }
-
 
 static void u_msgread(const userinput * const u)
 {
