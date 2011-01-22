@@ -5,7 +5,7 @@ Ab Version 3.26:
 
 359) ruby_script
   Erweiterte Methode "info_pack" un auf Daten einens Packs zuzugreifen.
-  Verfügbar: "group_desc"
+  Verfügbar: "group_desc", "bytes", "size"
   Erweitert der Zugriff auf einfache Netzwerk Variablen.
 
 bugfix: NEWANN

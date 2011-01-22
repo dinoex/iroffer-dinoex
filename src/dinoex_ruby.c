@@ -345,9 +345,16 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
       ival = xd->has_crc32;
       return UINT2NUM(ival);
     }
-    if (strcmp(key, "size") == 0) {
+    if (strcmp(key, "bytes") == 0) {
       oval = xd->st_size;
       return OFFT2NUM(oval);
+    }
+    if (strcmp(key, "size") == 0) {
+      tempstr = sizestr(0, xd->st_size);
+      len = strlen(tempstr);
+      rval = rb_str_new(tempstr, len);
+      mydelete(tempstr);
+      return rval;
     }
     if (strcmp(key, "mtime") == 0) {
       return rb_time_new(xd->mtime, 0);
