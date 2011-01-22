@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+359) ruby_script
+  Extend method "info_pack" to request fields of a pack.
+  Implemented: "group_desc"
+
 bugfix: NEWANN
   NEWANN caused the bot to crash.
   versions affected: 3.25

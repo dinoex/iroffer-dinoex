@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+359) ruby_script
+  Erweiterte Methode "info_pack" un auf Daten einens Packs zuzugreifen.
+  Verfügbar: "group_desc"
+
 bugfix: NEWANN
   NEWANN caused the bot to crash.
   versions affected: 3.25

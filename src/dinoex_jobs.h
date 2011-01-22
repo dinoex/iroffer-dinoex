@@ -52,6 +52,7 @@ void crc32_update(char *buf, unsigned long len);
 void crc32_final(xdcc *xd);
 void autoadd_all(void);
 void run_delayed_jobs(void);
+const char *find_groupdesc(const char *group);
 void write_removed_xdcc(xdcc *xd);
 void import_xdccfile(void);
 void autotrigger_add(xdcc *xd);

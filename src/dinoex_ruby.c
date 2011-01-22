@@ -265,8 +265,8 @@ static VALUE cie_config(VALUE UNUSED(module), VALUE rkey)
 static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
 {
   xdcc *xd;
-  char *key;
-  char *val;
+  const char *key;
+  const char *val;
   char *tempstr;
   unsigned int nr;
   unsigned int ival;
@@ -307,6 +307,10 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
     }
     if (strcmp(key, "group") == 0) {
       val = xd->group;
+      break;
+    }
+    if (strcmp(key, "group_desc") == 0) {
+      val = find_groupdesc(xd->group);
       break;
     }
     if (strcmp(key, "trigger") == 0) {
