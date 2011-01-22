@@ -1513,13 +1513,13 @@ static void mainloop (void) {
               
               if (gdata.debug > 4)
                 {
-                  ioutput(OUT_S, COLOR_YELLOW, "[MD5 Pack %u]: read %ld",
+                  ioutput(OUT_S, COLOR_YELLOW, "MD5: [Pack %u] read %ld",
                           number_of_pack(gdata.md5build.xpack), (long)howmuch);
                 }
               
               if ((howmuch < 0) && (errno != EAGAIN))
                 {
-                  outerror(OUTERROR_TYPE_WARN, "[MD5 Pack %u]: Can't read data from file '%s': %s",
+                  outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Can't read data from file '%s': %s",
                            number_of_pack(gdata.md5build.xpack),
                            gdata.md5build.xpack->file, strerror(errno));
                   
@@ -1542,12 +1542,12 @@ static void mainloop (void) {
                   gdata.md5build.xpack->has_md5sum = 1;
                   
                   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                          "[MD5 Pack %u]: is " MD5_PRINT_FMT,
+                          "MD5: [Pack %u] is " MD5_PRINT_FMT,
                           number_of_pack(gdata.md5build.xpack),
                           MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
                   if (!gdata.nocrc32)
                     ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                            "[CRC32 Pack %u]: is %.8lX",
+                            "CRC32: [Pack %u] is %.8lX",
                             number_of_pack(gdata.md5build.xpack), gdata.md5build.xpack->crc32);
                   
                   FD_CLR(gdata.md5build.file_fd, &gdata.readset);
@@ -1559,7 +1559,7 @@ static void mainloop (void) {
                       if (crcmsg != NULL)
                         {
                            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                                   "[CRC32 Pack %u]: File '%s' %s.",
+                                   "CRC32: [Pack %u] File '%s' %s.",
                                    number_of_pack(gdata.md5build.xpack),
                                    gdata.md5build.xpack->file, crcmsg);
                         }
