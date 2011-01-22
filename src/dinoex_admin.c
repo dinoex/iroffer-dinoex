@@ -4044,6 +4044,37 @@ void a_mesq(const userinput * const u)
   a_respond(u, "Sent message to %u %s", count, count!=1 ? "users" : "user");
 }
 
+void a_ignore(const userinput * const u)
+{
+  unsigned int num=0;
+  igninfo *ignore;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+
+  if (!u->arg1) {
+    a_respond(u, "Try specifying an amount of time to ignore");
+    return;
+  }
+
+  if (!u->arg2 || strlen(u->arg2) < 4U) {
+    a_respond(u, "Try specifying a hostmask longer than 4 characters");
+    return;
+  }
+
+  ignore = get_ignore(u->arg2);
+  ignore->flags |= IGN_IGNORING;
+  ignore->flags |= IGN_MANUAL;
+  ignore->bucket = (num*60)/gdata.autoignore_threshold;
+  if (ignore->bucket < 0)
+    ignore->bucket = 0x7FFFFFF;
+
+  a_respond(u, "Ignore activated for %s which will last %u min",
+            u->arg2,num);
+  write_statefile();
+}
+
 static void a_bann_hostmask(const userinput * const u, const char *arg)
 {
   transfer *tr;
@@ -4072,7 +4103,7 @@ static void a_bann_hostmask(const userinput * const u, const char *arg)
 
 void a_bannhost(const userinput * const u)
 {
-  u_ignore(u);
+  a_ignore(u);
 
   if (!u->arg1) return;
   if (!u->arg2 || strlen(u->arg2) < 4U) return;
@@ -4607,6 +4638,44 @@ void a_servqc(const userinput * const u)
 static void a_respond_disabled(const userinput * const u, const char *text, unsigned int num)
 {
   a_respond(u, "** %s disabled for the next %u %s", text, num, num!=1 ? "minutes" : "minute");
+}
+
+void a_nosave(const userinput * const u)
+{
+  unsigned int num = 0;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+  num = max_minutes_waits(&gdata.noautosave, num);
+  a_respond_disabled(u, "AutoSave has been", num);
+}
+
+void a_nosend(const userinput * const u)
+{
+  unsigned int num = 0;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+  mydelete(gdata.nosendmsg);
+  if (u->arg2e) {
+    clean_quotes(u->arg2e);
+    gdata.nosendmsg=mystrdup(u->arg2e);
+  }
+  num = max_minutes_waits(&gdata.nonewcons, num);
+  a_respond_disabled(u, "XDCC SEND has been", num);
+}
+
+void a_nolist(const userinput * const u)
+{
+  unsigned int num = 0;
+
+  updatecontext();
+
+  if (u->arg1) num = atoi(u->arg1);
+  num = max_minutes_waits(&gdata.nolisting, num);
+  a_respond_disabled(u, "XDCC LIST and PLIST have been", num);
 }
 
 void a_nomd5(const userinput * const u)
