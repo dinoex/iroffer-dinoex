@@ -65,6 +65,7 @@ class IrofferEvent
     group = info_pack(added_pack, "group" )
     desc = info_pack(added_pack, "desc" )
     bytes = info_pack(added_pack, "size" )
+    xtime = info_pack(added_pack, "xtime" )
     write_log( "group:",  group, "desc:", desc, "size:", bytes )
 
     # generate a trigger for each new pack.
