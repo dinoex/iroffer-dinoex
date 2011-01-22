@@ -64,6 +64,11 @@ typedef struct {
 
 typedef struct {
   const char *name;
+  char *(*fprint)(void);
+} config_fprint_typ;
+
+typedef struct {
+  const char *name;
   void (*fdump)(const char *key);
 } config_fdump_typ;
 
@@ -169,6 +174,15 @@ static void dump_config_list2(const char *name, const irlist_t *list)
   }
 }
 
+static char *print_config_long2(ir_int64 val)
+{
+  char *text;
+
+  text = mymalloc(maxtextlengthshort);
+  snprintf(text, maxtextlengthshort, "%" LLPRINTFMT "d", val);
+  return text;
+}
+
 static unsigned int config_sorted_check(config_name_t config_name_f)
 {
   const char *name1;
@@ -187,8 +201,28 @@ static unsigned int config_sorted_check(config_name_t config_name_f)
 
     outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
              name1, name2);
-  };
+  }
   return i + 1;
+}
+
+static int config_find_typ(config_name_t config_name_f, const char *key, int bin_high)
+{
+  int how_far;
+  int bin_mid;
+  int bin_low;
+
+  bin_low = 0;
+  while (bin_low <= bin_high) {
+    bin_mid = (bin_low + bin_high) / 2;
+    how_far = strcmp(config_name_f(bin_mid), key);
+    if (how_far == 0)
+      return bin_mid;
+    if (how_far < 0)
+      bin_low = bin_mid + 1;
+    else
+      bin_high = bin_mid - 1;
+  };
+  return -1;
 }
 
 
@@ -283,25 +317,9 @@ static const char *config_name_bool(unsigned int i)
 
 static int config_find_bool(const char *key)
 {
-  int how_far;
-  int bin_mid;
-  int bin_low;
-  int bin_high;
-
   if (config_bool_anzahl > 0) {
-    bin_low = 0;
-    bin_high = config_bool_anzahl - 1;
-    while (bin_low <= bin_high) {
-      bin_mid = (bin_low + bin_high) / 2;
-      how_far = strcmp(config_parse_bool[bin_mid].name, key);
-      if (how_far == 0)
-        return bin_mid;
-      if (how_far < 0)
-        bin_low = bin_mid + 1;
-      else
-        bin_high = bin_mid - 1;
-    }
-  };
+    return config_find_typ(config_name_bool, key, config_bool_anzahl - 1);
+  }
   return -1;
 }
 
@@ -433,25 +451,9 @@ static const char *config_name_int(unsigned int i)
 
 static int config_find_int(const char *key)
 {
-  int how_far;
-  int bin_mid;
-  int bin_low;
-  int bin_high;
-
   if (config_int_anzahl > 0L) {
-    bin_low = 0;
-    bin_high = config_int_anzahl - 1;
-    while (bin_low <= bin_high) {
-      bin_mid = (bin_low + bin_high) / 2;
-      how_far = strcmp(config_parse_int[bin_mid].name, key);
-      if (how_far == 0)
-        return bin_mid;
-      if (how_far < 0)
-        bin_low = bin_mid + 1;
-      else
-        bin_high = bin_mid - 1;
-    }
-  };
+    return config_find_typ(config_name_int, key, config_int_anzahl - 1);
+  }
   return -1;
 }
 
@@ -643,25 +645,9 @@ static const char *config_name_string(unsigned int i)
 
 static int config_find_string(const char *key)
 {
-  int how_far;
-  int bin_mid;
-  int bin_low;
-  int bin_high;
-
   if (config_string_anzahl > 0L) {
-    bin_low = 0;
-    bin_high = config_string_anzahl - 1;
-    while (bin_low <= bin_high) {
-      bin_mid = (bin_low + bin_high) / 2;
-      how_far = strcmp(config_parse_string[bin_mid].name, key);
-      if (how_far == 0)
-        return bin_mid;
-      if (how_far < 0)
-        bin_low = bin_mid + 1;
-      else
-        bin_high = bin_mid - 1;
-    }
-  };
+    return config_find_typ(config_name_string, key, config_string_anzahl - 1);
+  }
   return -1;
 }
 
@@ -787,25 +773,9 @@ static const char *config_name_list(unsigned int i)
 
 static int config_find_list(const char *key)
 {
-  int how_far;
-  int bin_mid;
-  int bin_low;
-  int bin_high;
-
   if (config_list_anzahl > 0L) {
-    bin_low = 0;
-    bin_high = config_list_anzahl - 1;
-    while (bin_low <= bin_high) {
-      bin_mid = (bin_low + bin_high) / 2;
-      how_far = strcmp(config_parse_list[bin_mid].name, key);
-      if (how_far == 0)
-        return bin_mid;
-      if (how_far < 0)
-        bin_low = bin_mid + 1;
-      else
-        bin_high = bin_mid - 1;
-    }
-  };
+    return config_find_typ(config_name_list, key, config_list_anzahl - 1);
+  }
   return -1;
 }
 
@@ -1101,6 +1071,11 @@ static void c_auth_name(const char * UNUSED(key), char *var)
   gdata.networks[current_network].auth_name = mystrdup(var);
 }
 
+static char *p_auth_name(void)
+{
+  return mystrdup(gnetwork->auth_name);
+}
+
 static void c_autoadd_group_match(const char *key, char *var)
 {
   char *split;
@@ -1275,6 +1250,11 @@ static void c_disk_quota(const char * UNUSED(key), char *var)
   gdata.disk_quota = atoull(var)*1024*1024;
 }
 
+static char *p_disk_quota(void)
+{
+  return print_config_long2(gdata.disk_quota);
+}
+
 static void d_disk_quota(const char *key)
 {
   dump_config_mega2(key, gdata.disk_quota);
@@ -1291,6 +1271,11 @@ static void c_getip_network(const char *key, char *var)
   } else {
     gdata.networks[current_network].getip_net = net;
   }
+}
+
+static char *p_getip_network(void)
+{
+  return print_config_long2(gnetwork->getip_net);
 }
 
 static void c_group_admin(const char *key, char *var)
@@ -1376,6 +1361,11 @@ static void c_ignoreduplicateip(const char * key, char *var)
   }
 }
 
+static char *p_ignoreduplicateip(void)
+{
+  return print_config_long2(gdata.ignore_duplicate_ip);
+}
+
 static void c_logrotate(const char * UNUSED(key), char *var)
 {
   unsigned int val;
@@ -1397,6 +1387,11 @@ static void c_logrotate(const char * UNUSED(key), char *var)
     gdata.logrotate = 30*24*60*60;
     return;
   }
+}
+
+static char *p_logrotate(void)
+{
+  return print_config_long2(gdata.logrotate);
 }
 
 static void d_logrotate(const char *key)
@@ -1422,10 +1417,20 @@ static void c_local_vhost(const char * UNUSED(key), char *var)
   gdata.networks[current_network].local_vhost = mystrdup(var);
 }
 
+static char *p_local_vhost(void)
+{
+  return mystrdup(gnetwork->local_vhost);
+}
+
 static void c_login_name(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].login_name);
   gdata.networks[current_network].login_name = mystrdup(var);
+}
+
+static char *p_login_name(void)
+{
+  return mystrdup(gnetwork->login_name);
 }
 
 static void c_mime_type(const char *key, char *var)
@@ -1463,6 +1468,11 @@ static void c_need_level(const char *key, char *var)
   if (check_range(key, var, &rawval, 0, 3) == 0) {
     gdata.networks[current_network].need_level = rawval;
   }
+}
+
+static char *p_need_level(void)
+{
+  return print_config_long2(gdata.need_level);
 }
 
 static void c_network(const char * UNUSED(key), char *var)
@@ -1521,6 +1531,11 @@ static void c_nickserv_pass(const char * UNUSED(key), char *var)
   gdata.networks[current_network].nickserv_pass = mystrdup(var);
 }
 
+static char *p_nickserv_pass(void)
+{
+  return mystrdup(gnetwork->nickserv_pass);
+}
+
 static void c_noannounce(const char *key, char *var)
 {
   int val;
@@ -1529,6 +1544,11 @@ static void c_noannounce(const char *key, char *var)
   if (val >= 0) {
     gdata.networks[current_network].noannounce = val;
   }
+}
+
+static char *p_noannounce(void)
+{
+  return print_config_long2(gnetwork->noannounce);
 }
 
 static void c_overallmaxspeeddaydays(const char * UNUSED(key), char *var)
@@ -1580,6 +1600,14 @@ static void get_weekdays(char *src)
     mask <<= 1;
   }
   *src = 0;
+}
+
+static char *p_overallmaxspeeddaydays(void)
+{
+  char val[8];
+
+  get_weekdays(val);
+  return mystrdup(val);
 }
 
 static void d_overallmaxspeeddaydays(const char *key)
@@ -1660,6 +1688,11 @@ static void c_plaintext(const char *key, char *var)
   }
 }
 
+static char *p_plaintext(void)
+{
+  return print_config_long2(gnetwork->plaintext);
+}
+
 static void c_proxyinfo(const char *key, char *var)
 {
   if (var == NULL) {
@@ -1680,6 +1713,11 @@ static void c_restrictlist(const char *key, char *var)
   }
 }
 
+static char *p_restrictlist(void)
+{
+  return print_config_long2(gnetwork->restrictlist);
+}
+
 static void c_restrictsend(const char *key, char *var)
 {
   int val;
@@ -1690,6 +1728,11 @@ static void c_restrictsend(const char *key, char *var)
   }
 }
 
+static char *p_restrictsend(void)
+{
+  return print_config_long2(gnetwork->restrictsend);
+}
+
 static void c_send_listfile(const char *key, char *var)
 {
   int rawval;
@@ -1698,6 +1741,11 @@ static void c_send_listfile(const char *key, char *var)
     return;
 
   gdata.send_listfile = rawval;
+}
+
+static char *p_send_listfile(void)
+{
+  return print_config_long2(gdata.send_listfile);
 }
 
 static void c_server(const char *key, char *var)
@@ -1757,6 +1805,11 @@ static void c_slotsmax(const char * UNUSED(key), char *var)
   }
 }
 
+static char *p_slotsmax(void)
+{
+  return print_config_long2(gdata.slotsmax);
+}
+
 static void d_slotsmax(const char *key)
 {
   dump_config_int3(key, gdata.slotsmax, 0);
@@ -1771,6 +1824,11 @@ static void c_slow_privmsg(const char *key, char *var)
   }
 }
 
+static char *p_slow_privmsg(void)
+{
+  return print_config_long2(gnetwork->slow_privmsg);
+}
+
 static void c_statefile(const char * UNUSED(key), char *var)
 {
   int i;
@@ -1783,6 +1841,11 @@ static void c_statefile(const char * UNUSED(key), char *var)
   i = open(gdata.statefile, O_RDWR | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS );
   if (i >= 0)
     close(i);
+}
+
+static char *p_statefile(void)
+{
+  return mystrdup(gdata.statefile);
 }
 
 static void d_statefile(const char *key)
@@ -1850,6 +1913,11 @@ static void c_uploadmaxsize(const char * UNUSED(key), char *var)
   gdata.uploadmaxsize = atoull(var)*1024*1024;
 }
 
+static char *p_uploadmaxsize(void)
+{
+  return print_config_long2(gdata.uploadmaxsize);
+}
+
 static void d_uploadmaxsize(const char *key)
 {
   dump_config_mega2(key, gdata.uploadmaxsize);
@@ -1858,6 +1926,11 @@ static void d_uploadmaxsize(const char *key)
 static void c_uploadminspace(const char * UNUSED(key), char *var)
 {
   gdata.uploadminspace = atoull(var)*1024*1024;
+}
+
+static char *p_uploadminspace(void)
+{
+  return print_config_long2(gdata.uploadminspace);
 }
 
 static void d_uploadminspace(const char *key)
@@ -1877,16 +1950,31 @@ static void c_usenatip(const char * UNUSED(key), char *var)
   gnetwork = backup;
 }
 
+static char *p_usenatip(void)
+{
+  return mystrdup(gnetwork->natip);
+}
+
 static void c_user_modes(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].user_modes);
   gdata.networks[current_network].user_modes = mystrdup(var);
 }
 
+static char *p_user_modes(void)
+{
+  return mystrdup(gnetwork->user_modes);
+}
+
 static void c_user_nick(const char * UNUSED(key), char *var)
 {
   mydelete(gdata.networks[current_network].config_nick);
   gdata.networks[current_network].config_nick = mystrdup(var);
+}
+
+static char *p_user_nick(void)
+{
+  return mystrdup(gnetwork->config_nick);
 }
 
 static void c_bracket_open(const char * UNUSED(key), char * UNUSED(var))
@@ -1952,25 +2040,9 @@ static const char *config_name_func(unsigned int i)
 
 static int config_find_func(const char *key)
 {
-  int how_far;
-  int bin_mid;
-  int bin_low;
-  int bin_high;
-
   if (config_func_anzahl > 0L) {
-    bin_low = 0;
-    bin_high = config_func_anzahl - 1;
-    while (bin_low <= bin_high) {
-      bin_mid = (bin_low + bin_high) / 2;
-      how_far = strcmp(config_parse_func[bin_mid].name, key);
-      if (how_far == 0)
-        return bin_mid;
-      if (how_far < 0)
-        bin_low = bin_mid + 1;
-      else
-        bin_high = bin_mid - 1;
-    }
-  };
+    return config_find_typ(config_name_func, key, config_func_anzahl - 1);
+  }
   return -1;
 }
 
@@ -1986,6 +2058,59 @@ static int set_config_func(const char *key, char *text)
 
   (*config_parse_func[i].func)(config_parse_func[i].name, text);
   return 0;
+}
+
+static int config_fprint_anzahl = 0;
+static config_fprint_typ config_parse_fprint[] = {
+{"auth_name",              p_auth_name },
+{"disk_quota",             p_disk_quota },
+{"getip_network",          p_getip_network },
+{"ignoreduplicateip",      p_ignoreduplicateip },
+{"local_vhost",            p_local_vhost },
+{"login_name",             p_login_name },
+{"logrotate",              p_logrotate },
+{"need_level",             p_need_level },
+{"nickserv_pass",          p_nickserv_pass },
+{"noannounce",             p_noannounce },
+{"overallmaxspeeddaydays", p_overallmaxspeeddaydays },
+{"plaintext",              p_plaintext },
+{"restrictlist",           p_restrictlist },
+{"restrictsend",           p_restrictsend },
+{"send_listfile",          p_send_listfile },
+{"slotsmax",               p_slotsmax },
+{"slow_privmsg",           p_slow_privmsg },
+{"statefile",              p_statefile },
+{"uploadmaxsize",          p_uploadmaxsize },
+{"uploadminspace",         p_uploadminspace },
+{"usenatip",               p_usenatip },
+{"user_modes",             p_user_modes },
+{"user_nick",              p_user_nick },
+{NULL, NULL }};
+
+static const char *config_name_fprint(unsigned int i)
+{
+  return config_parse_fprint[i].name;
+}
+
+static int config_find_fprint(const char *key)
+{
+  if (config_fprint_anzahl > 0L) {
+    return config_find_typ(config_name_fprint, key, config_fprint_anzahl - 1);
+  }
+  return -1;
+}
+
+static char *print_config_fprint(const char *key)
+{
+  int i;
+
+  updatecontext();
+
+  i = config_find_fprint(key);
+  if (i < 0)
+    return NULL;
+
+  return (*config_parse_fprint[i].fprint)();
 }
 
 
@@ -2295,6 +2420,10 @@ char *print_config_key(const char *key)
   if (val != NULL)
     return val;
 
+  val = print_config_fprint(key);
+  if (val != NULL)
+    return val;
+
   return NULL;
 }
 
@@ -2328,6 +2457,7 @@ void config_startup(void)
   config_string_anzahl = config_sorted_check(config_name_string);
   config_list_anzahl = config_sorted_check(config_name_list);
   config_func_anzahl = config_sorted_check(config_name_func);
+  config_fprint_anzahl = config_sorted_check(config_name_fprint);
   config_fdump_anzahl = config_sorted_check(config_name_fdump);
   current_config = "";
   current_line = 0;

@@ -6,6 +6,7 @@ With Version 3.26:
 359) ruby_script
   Extend method "info_pack" to request fields of a pack.
   Implemented: "group_desc"
+  Extend access to network config for simple variables.
 
 bugfix: NEWANN
   NEWANN caused the bot to crash.
