@@ -41,7 +41,6 @@ static void u_info(const userinput * const u);
 static void u_psend(const userinput * const u);
 static void u_quit(const userinput * const u);
 static void u_status(const userinput * const u);
-static void u_chnote(const userinput * const u);
 static void u_chatme(const userinput * const u);
 static void u_chatl(const userinput * const u);
 static void u_rehash(const userinput * const u);
@@ -134,7 +133,7 @@ static const userinput_parse_t userinput_parse[] = {
 {3,3,method_allow_all,a_chfile,        "CHFILE","n filename","Change file of pack <n> to <filename>"},
 {3,3,method_allow_all,a_newdir,        "NEWDIR","dirname newdir","rename pathnames of all matching packs"},
 {3,3,method_allow_all,a_chdesc,        "CHDESC","n [msg]","Change description of pack <n> to <msg>"},
-{3,3,method_allow_all,u_chnote,        "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
+{3,3,method_allow_all,a_chnote,        "CHNOTE","n [msg]","Change note of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chtime,        "CHTIME","n [msg]","Change add time of pack <n> to <msg>"},
 {3,3,method_allow_all,a_chmins,        "CHMINS","n [m] x","Change min speed to <x> kB/s for pack <n> to <m>"},
 {3,3,method_allow_all,a_chmaxs,        "CHMAXS","n [m] x","Change max speed to <x> kB/s for pack <n> to <m>"},
@@ -1102,39 +1101,6 @@ static void u_status(const userinput * const u) {
    u_respond(u,"%s",tempstr);
    
    mydelete(tempstr);
-   }
-
-static void u_chnote(const userinput * const u) {
-   unsigned int num;
-   xdcc *xd;
-   
-   updatecontext();
-   
-   num = get_pack_nr(u, u->arg1);
-   if (num <= 0)
-      return;
-
-   xd = irlist_get_nth(&gdata.xdccs, num-1);
-   if (group_restricted(u, xd))
-     return;
-   
-   a_respond(u, "CHNOTE: [Pack %u] Old: %s New: %s",
-             num,xd->note,
-             u->arg2 ? u->arg2e : "");
-   
-   mydelete(xd->note);
-   
-   if (!u->arg2e)
-     {
-       xd->note = NULL;
-     }
-   else
-     {
-       clean_quotes(u->arg2e);
-       xd->note = mystrdup(u->arg2e);
-     }
-   
-   write_files();
    }
 
 static void u_chatme(const userinput * const u) {

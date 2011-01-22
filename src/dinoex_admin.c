@@ -1012,6 +1012,11 @@ void a_remove_delayed(const userinput * const u)
   gnetwork = backup;
 }
 
+static void a_respond_old_new(const userinput * const u, const char *prefix, unsigned int num, const char *oldtext, const char *newtext)
+{
+  a_respond(u, "%s: [Pack %u] Old: %s New: %s", prefix, num, oldtext, newtext);
+}
+
 static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned int num, const char *group)
 {
   const char *newgroup;
@@ -1027,8 +1032,7 @@ static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned in
     newgroup = group;
 
   if (xd->group != NULL) {
-    a_respond(u, "GROUP: [Pack %u] Old: %s New: %s",
-              num, xd->group, newgroup);
+    a_respond_old_new(u, "GROUP", num, xd->group, newgroup);
     /* keep group info for later work */
     tmpgroup = xd->group;
     xd->group = NULL;
@@ -1329,8 +1333,7 @@ static unsigned int check_for_renamed_file(const userinput * const u, xdcc *xd, 
     return 0; /* ino differs */
 
   /* renamed */
-  a_respond(u, "CHFILE: [Pack %u] Old: %s New: %s",
-            number_of_pack(xd), xd->file, file);
+  a_respond_old_new(u, "CHFILE", number_of_pack(xd), xd->file, file);
   old = xd->file;
   xd->file = file;
   /* change default description */
@@ -1839,8 +1842,8 @@ void a_maxspeed(const userinput * const u)
     return;
 
   val = atof(u->arg2);
-  a_respond(u, "MAXSPEED: [Transfer %u] Old: %1.1f New: %1.1f",
-            num, tr->maxspeed, val);
+  a_respond(u, "%s: [Transfer %u] Old: %1.1f New: %1.1f",
+            u->cmd, num, tr->maxspeed, val);
   tr->maxspeed = val;
 }
 
@@ -2085,7 +2088,7 @@ void a_removedir(const userinput * const u)
   thedir = mystrdup(u->arg1);
   d = a_open_dir(&thedir);
   if (!d) {
-    a_respond(u, "Can't Access Directory: %s %s", u->arg1,  strerror(errno));
+    a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
     return;
   }
 
@@ -2648,11 +2651,37 @@ void a_chdesc(const userinput * const u)
     clean_quotes(u->arg2e);
   }
 
-  a_respond(u, "CHDESC: [Pack %u] Old: %s New: %s",
-            num, xd->desc, newdesc);
+  a_respond_old_new(u, u->cmd, num, xd->desc, newdesc);
 
   mydelete(xd->desc);
   xd->desc = mystrdup(newdesc);
+  write_files();
+}
+
+void a_chnote(const userinput * const u)
+{
+  unsigned int num;
+  xdcc *xd;
+
+  updatecontext();
+
+  num = get_pack_nr(u, u->arg1);
+  if (num <= 0)
+     return;
+
+  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  if (group_restricted(u, xd))
+    return;
+
+  a_respond_old_new(u, u->cmd, num, xd->note, u->arg2e ? u->arg2e : "");
+
+  mydelete(xd->note);
+  if (u->arg2e == NULL) {
+    xd->note = NULL;
+  } else {
+    clean_quotes(u->arg2e);
+    xd->note = mystrdup(u->arg2e);
+  }
   write_files();
 }
 
@@ -2693,8 +2722,7 @@ void a_chtime(const userinput * const u)
   user_getdatestr(newstr, val, maxtextlengthshort);
   oldstr = mymalloc(maxtextlengthshort);
   user_getdatestr(oldstr, xd->xtime, maxtextlengthshort);
-  a_respond(u, "CHTIME: [Pack %u] Old: %s New: %s",
-            num, oldstr, newstr);
+  a_respond_old_new(u, u->cmd, num, oldstr, newstr);
   mydelete(oldstr);
   mydelete(newstr);
   xd->xtime = val;
@@ -2734,8 +2762,8 @@ void a_chmins(const userinput * const u)
     xd->minspeed = gdata.transferminspeed;
     if ( atof(last) != gdata.transferminspeed )
       xd->minspeed = atof(last);
-    a_respond(u, "CHMINS: [Pack %u] Old: %1.1f New: %1.1f",
-              num1, xd->minspeed, atof(last));
+    a_respond(u, "%s: [Pack %u] Old: %1.1f New: %1.1f",
+              u->cmd, num1, xd->minspeed, atof(last));
   }
 
   write_files();
@@ -2774,8 +2802,8 @@ void a_chmaxs(const userinput * const u)
     xd->maxspeed = gdata.transfermaxspeed;
     if ( atof(last) != gdata.transfermaxspeed )
       xd->maxspeed = atof(last);
-    a_respond(u, "CHMAXS: [Pack %u] Old: %1.1f New: %1.1f",
-              num1, xd->maxspeed, atof(last));
+    a_respond(u, "%s: [Pack %u] Old: %1.1f New: %1.1f",
+              u->cmd, num1, xd->maxspeed, atof(last));
   }
 
   write_files();
@@ -2815,8 +2843,8 @@ void a_chlimit(const userinput * const u)
   val = atoi(last);
   for (; num1 <= num2; ++num1) {
 
-    a_respond(u, "CHLIMIT: [Pack %u] Old: %u New: %u",
-              num1, xd->dlimit_max, val);
+    a_respond(u, "%s: [Pack %u] Old: %u New: %u",
+              u->cmd, num1, xd->dlimit_max, val);
 
     xd->dlimit_max = val;
     if (val == 0)
@@ -2961,8 +2989,8 @@ void a_chgets(const userinput * const u)
     if (group_restricted(u, xd))
       return;
 
-    a_respond(u, "CHGETS: [Pack %u] Old: %u New: %u",
-              num1, xd->gets, val);
+    a_respond(u, "%s: [Pack %u] Old: %u New: %u",
+              u->cmd, num1, xd->gets, val);
     xd->gets = val;
   }
 
@@ -3313,7 +3341,7 @@ void a_regroup(const userinput * const u)
   if (k == 0)
     return;
 
-  a_respond(u, "GROUP: Old: %s New: %s", u->arg1, u->arg2);
+  a_respond(u, "%s: Old: %s New: %s", u->cmd, u->arg1, u->arg2);
   reorder_groupdesc(u->arg2);
   if (not_main) {
     if (strcasecmp(u->arg1, "main") == 0)
@@ -3438,8 +3466,7 @@ void a_chfile(const userinput * const u)
 
   a_cancel_transfers(xd, "Pack file changed");
 
-  a_respond(u, "CHFILE: [Pack %u] Old: %s New: %s",
-            num, xd->file, file);
+  a_respond_old_new(u, u->cmd, num, xd->file, file);
 
   old = xd->file;
   xd->file     = file;
@@ -3455,7 +3482,7 @@ void a_chfile(const userinput * const u)
   }
   mydelete(old);
 
-  cancel_md5_hash(xd, "CHFILE");
+  cancel_md5_hash(xd, u->cmd);
 
   write_files();
 }
@@ -3487,8 +3514,7 @@ static unsigned int a_newdir_check(const userinput * const u, const char *dir1, 
   if (a_access_fstat(u, xfiledescriptor, &tempstr, &st))
     return 0;
 
-  a_respond(u, "CHFILE: [Pack %u] Old: %s New: %s",
-            number_of_pack(xd), xd->file, tempstr);
+  a_respond_old_new(u, "CHFILE", number_of_pack(xd), xd->file, tempstr);
 
   a_cancel_transfers(xd, "Pack file changed");
 
@@ -4071,7 +4097,7 @@ void a_ignore(const userinput * const u)
     ignore->bucket = 0x7FFFFFF;
 
   a_respond(u, "Ignore activated for %s which will last %u min",
-            u->arg2,num);
+            u->arg2, num);
   write_statefile();
 }
 
