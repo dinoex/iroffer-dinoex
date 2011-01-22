@@ -2414,3 +2414,4 @@
 2758 "RMALLQ"
 2759 "Löschen aller Einträge in beiden Warteschlangen"
 2760 "n [channel] [netz]"
+2761 "group_desc"

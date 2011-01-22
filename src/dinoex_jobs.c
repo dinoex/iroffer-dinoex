@@ -841,7 +841,7 @@ void run_delayed_jobs(void)
   }
 }
 
-static const char *find_groupdesc(const char *group)
+const char *find_groupdesc(const char *group)
 {
   xdcc *xd;
 
