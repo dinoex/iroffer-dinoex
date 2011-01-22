@@ -28,6 +28,8 @@
 
 #include <ctype.h>
 
+typedef const char *(*config_name_t)(unsigned int i);
+
 typedef struct {
   const char *name;
   unsigned int *ivar;
@@ -58,9 +60,12 @@ typedef struct {
 typedef struct {
   const char *name;
   void (*func)(const char *key, char *var);
-  void (*fdump)(const char *key);
 } config_func_typ;
 
+typedef struct {
+  const char *name;
+  void (*fdump)(const char *key);
+} config_fdump_typ;
 
 const char *current_config;
 unsigned long current_line;
@@ -164,6 +169,28 @@ static void dump_config_list2(const char *name, const irlist_t *list)
   }
 }
 
+static unsigned int config_sorted_check(config_name_t config_name_f)
+{
+  const char *name1;
+  const char *name2;
+  unsigned int i;
+
+  for (i = 0; ; ++i) {
+    name2 = config_name_f(i + 1);
+    if (name2 == NULL)
+      break;
+    name1 = config_name_f(i);
+    if (name1 == NULL)
+      break;
+    if (strcmp(name1, name2) < 0)
+      continue;
+
+    outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
+             name1, name2);
+  };
+  return i + 1;
+}
+
 
 static unsigned int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
@@ -249,20 +276,9 @@ static config_bool_typ config_parse_bool[] = {
 {"xdcclistfileraw",        &gdata.xdcclistfileraw,         0 },
 {NULL, NULL, 0 }};
 
-static void config_sorted_bool(void)
+static const char *config_name_bool(unsigned int i)
 {
-  unsigned int i;
-
-  for (i = 0; config_parse_bool[i].name != NULL; ++i) {
-    if (config_parse_bool[i + 1].name == NULL)
-      break;
-    if (strcmp(config_parse_bool[i].name, config_parse_bool[i + 1].name) < 0)
-      continue;
-
-    outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
-             config_parse_bool[i].name, config_parse_bool[i + 1].name);
-  };
-  config_bool_anzahl = i + 1;
+  return config_parse_bool[i].name;
 }
 
 static int config_find_bool(const char *key)
@@ -410,20 +426,9 @@ static config_int_typ config_parse_int[] = {
 {"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1, 200 },
 {NULL, NULL, 0, 0, 0, 0 }};
 
-static void config_sorted_int(void)
+static const char *config_name_int(unsigned int i)
 {
-  unsigned int i;
-
-  for (i = 0; config_parse_int[i].name != NULL; ++i) {
-    if (config_parse_int[i + 1].name == NULL)
-      break;
-    if (strcmp(config_parse_int[i].name, config_parse_int[i + 1].name) < 0)
-      continue;
-
-    outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
-             config_parse_int[i].name, config_parse_int[i + 1].name);
-  };
-  config_int_anzahl = i + 1;
+  return config_parse_int[i].name;
 }
 
 static int config_find_int(const char *key)
@@ -631,20 +636,9 @@ static config_string_typ config_parse_string[] = {
 {"xdccxmlfile",             &gdata.xdccxmlfile,             1 },
 {NULL, NULL, 0 }};
 
-static void config_sorted_string(void)
+static const char *config_name_string(unsigned int i)
 {
-  unsigned int i;
-
-  for (i = 0; config_parse_string[i].name != NULL; ++i) {
-    if (config_parse_string[i + 1].name == NULL)
-      break;
-    if (strcmp(config_parse_string[i].name, config_parse_string[i + 1].name) < 0)
-      continue;
-
-    outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
-             config_parse_string[i].name, config_parse_string[i + 1].name);
-  };
-  config_string_anzahl = i + 1;
+  return config_parse_string[i].name;
 }
 
 static int config_find_string(const char *key)
@@ -786,20 +780,9 @@ static config_list_typ config_parse_list[] = {
 {"xdcc_deny",               &gdata.xdcc_deny,               5 },
 {NULL, NULL, 0 }};
 
-static void config_sorted_list(void)
+static const char *config_name_list(unsigned int i)
 {
-  unsigned int i;
-
-  for (i = 0; config_parse_list[i].name != NULL; ++i) {
-    if (config_parse_list[i + 1].name == NULL)
-      break;
-    if (strcmp(config_parse_list[i].name, config_parse_list[i + 1].name) < 0)
-      continue;
-
-    outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
-             config_parse_list[i].name, config_parse_list[i + 1].name);
-  };
-  config_list_anzahl = i + 1;
+  return config_parse_list[i].name;
 }
 
 static int config_find_list(const char *key)
@@ -1548,16 +1531,6 @@ static void c_noannounce(const char *key, char *var)
   }
 }
 
-static void c_plaintext(const char *key, char *var)
-{
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].plaintext = val;
-  }
-}
-
 static void c_overallmaxspeeddaydays(const char * UNUSED(key), char *var)
 {
   char *src;
@@ -1594,17 +1567,11 @@ static void c_overallmaxspeeddaydays(const char * UNUSED(key), char *var)
 
 static char d_weekdays[8] = { 'U', 'M', 'T', 'W', 'R', 'F', 'S', 0 };
 
-static void d_overallmaxspeeddaydays(const char *key)
+static void get_weekdays(char *src)
 {
-  char val[8];
-  char *src;
   unsigned int i;
   unsigned int mask;
 
-  if ((gdata.dump_all == 0) && (gdata.overallmaxspeeddaydays == 0x7F))
-    return;
-
-  src = val;
   mask = 1;
   for (i=0; (i<7); ++i) {
     if ((gdata.overallmaxspeeddaydays & mask) != 0) {
@@ -1613,6 +1580,16 @@ static void d_overallmaxspeeddaydays(const char *key)
     mask <<= 1;
   }
   *src = 0;
+}
+
+static void d_overallmaxspeeddaydays(const char *key)
+{
+  char val[8];
+
+  if ((gdata.dump_all == 0) && (gdata.overallmaxspeeddaydays == 0x7F))
+    return;
+
+  get_weekdays(val);
   dump_config_string2(key, val);
 }
 
@@ -1671,6 +1648,16 @@ static void d_periodicmsg(const char *key)
 
   dump_line("%s %s %u \"%s\"",
             key, gdata.periodicmsg_nick, gdata.periodicmsg_time, gdata.periodicmsg_msg);
+}
+
+static void c_plaintext(const char *key, char *var)
+{
+  int val;
+
+  val = parse_bool_val(key, var);
+  if (val >= 0) {
+    gdata.networks[current_network].plaintext = val;
+  }
 }
 
 static void c_proxyinfo(const char *key, char *var)
@@ -1914,64 +1901,53 @@ static void c_bracket_close(const char * UNUSED(key), char *UNUSED(var))
 
 static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
-{"auth_name",              c_auth_name,              NULL },
-{"autoadd_group_match",    c_autoadd_group_match,    d_autoadd_group_match },
-{"autosendpack",           c_autosendpack,           d_autosendpack },
-{"channel",                c_channel,                NULL },
-{"channel_join_raw",       c_channel_join_raw,       NULL },
-{"connectionmethod",       c_connectionmethod,       NULL },
-{"disk_quota",             c_disk_quota,             d_disk_quota },
-{"getip_network",          c_getip_network,          NULL },
-{"group_admin",            c_group_admin,            d_group_admin },
-{"ignoreduplicateip",      c_ignoreduplicateip,      NULL },
-{"local_vhost",            c_local_vhost,            NULL },
-{"login_name",             c_login_name,             NULL },
-{"logrotate",              c_logrotate,              d_logrotate },
-{"mime_type",              c_mime_type,              d_mime_type },
-{"need_level",             c_need_level,             NULL },
-{"network",                c_network,                NULL },
-{"nickserv_pass",          c_nickserv_pass,          NULL },
-{"noannounce",             c_noannounce,             NULL },
-{"overallmaxspeeddaydays", c_overallmaxspeeddaydays, d_overallmaxspeeddaydays },
-{"overallmaxspeeddaytime", c_overallmaxspeeddaytime, d_overallmaxspeeddaytime },
-{"periodicmsg",            c_periodicmsg,            d_periodicmsg },
-{"plaintext",              c_plaintext,              NULL },
-{"proxyinfo",              c_proxyinfo,              NULL },
-{"restrictlist",           c_restrictlist,           NULL },
-{"restrictsend",           c_restrictsend,           NULL },
-{"send_listfile",          c_send_listfile,          NULL },
-{"server",                 c_server,                 NULL },
-{"server_connected_raw",   c_server_connected_raw,   NULL },
-{"server_join_raw",        c_server_join_raw,        NULL },
-{"slotsmax",               c_slotsmax,               d_slotsmax },
-{"slow_privmsg",           c_slow_privmsg,           NULL },
-{"statefile",              c_statefile,              d_statefile },
-{"transferlimits",         c_transferlimits,         d_transferlimits },
-{"transfermaxspeed",       c_transfermaxspeed,       d_transfermaxspeed },
-{"transferminspeed",       c_transferminspeed,       d_transferminspeed },
-{"uploadmaxsize",          c_uploadmaxsize,          d_uploadmaxsize },
-{"uploadminspace",         c_uploadminspace,         d_uploadminspace },
-{"usenatip",               c_usenatip,               NULL },
-{"user_modes",             c_user_modes,             NULL },
-{"user_nick",              c_user_nick,              NULL },
-{"{",                      c_bracket_open,           NULL },
-{"}",                      c_bracket_close,          NULL },
+{"auth_name",              c_auth_name },
+{"autoadd_group_match",    c_autoadd_group_match },
+{"autosendpack",           c_autosendpack },
+{"channel",                c_channel },
+{"channel_join_raw",       c_channel_join_raw },
+{"connectionmethod",       c_connectionmethod },
+{"disk_quota",             c_disk_quota },
+{"getip_network",          c_getip_network },
+{"group_admin",            c_group_admin },
+{"ignoreduplicateip",      c_ignoreduplicateip },
+{"local_vhost",            c_local_vhost },
+{"login_name",             c_login_name },
+{"logrotate",              c_logrotate },
+{"mime_type",              c_mime_type },
+{"need_level",             c_need_level },
+{"network",                c_network },
+{"nickserv_pass",          c_nickserv_pass },
+{"noannounce",             c_noannounce },
+{"overallmaxspeeddaydays", c_overallmaxspeeddaydays },
+{"overallmaxspeeddaytime", c_overallmaxspeeddaytime },
+{"periodicmsg",            c_periodicmsg },
+{"plaintext",              c_plaintext },
+{"proxyinfo",              c_proxyinfo },
+{"restrictlist",           c_restrictlist },
+{"restrictsend",           c_restrictsend },
+{"send_listfile",          c_send_listfile },
+{"server",                 c_server },
+{"server_connected_raw",   c_server_connected_raw },
+{"server_join_raw",        c_server_join_raw },
+{"slotsmax",               c_slotsmax },
+{"slow_privmsg",           c_slow_privmsg },
+{"statefile",              c_statefile },
+{"transferlimits",         c_transferlimits },
+{"transfermaxspeed",       c_transfermaxspeed },
+{"transferminspeed",       c_transferminspeed },
+{"uploadmaxsize",          c_uploadmaxsize },
+{"uploadminspace",         c_uploadminspace },
+{"usenatip",               c_usenatip },
+{"user_modes",             c_user_modes },
+{"user_nick",              c_user_nick },
+{"{",                      c_bracket_open },
+{"}",                      c_bracket_close },
 {NULL, NULL }};
 
-static void config_sorted_func(void)
+static const char *config_name_func(unsigned int i)
 {
-  unsigned int i;
-
-  for (i = 0; config_parse_func[i].name != NULL; ++i) {
-    if (config_parse_func[i + 1].name == NULL)
-      break;
-    if (strcmp(config_parse_func[i].name, config_parse_func[i + 1].name) < 0)
-      continue;
-
-    outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
-             config_parse_func[i].name, config_parse_func[i + 1].name);
-  };
-  config_func_anzahl = i + 1;
+  return config_parse_func[i].name;
 }
 
 static int config_find_func(const char *key)
@@ -2012,6 +1988,32 @@ static int set_config_func(const char *key, char *text)
   return 0;
 }
 
+
+static int config_fdump_anzahl = 0;
+static config_fdump_typ config_parse_fdump[] = {
+{"autoadd_group_match",    d_autoadd_group_match },
+{"autosendpack",           d_autosendpack },
+{"disk_quota",             d_disk_quota },
+{"group_admin",            d_group_admin },
+{"logrotate",              d_logrotate },
+{"mime_type",              d_mime_type },
+{"overallmaxspeeddaydays", d_overallmaxspeeddaydays },
+{"overallmaxspeeddaytime", d_overallmaxspeeddaytime },
+{"periodicmsg",            d_periodicmsg },
+{"slotsmax",               d_slotsmax },
+{"statefile",              d_statefile },
+{"transferlimits",         d_transferlimits },
+{"transfermaxspeed",       d_transfermaxspeed },
+{"transferminspeed",       d_transferminspeed },
+{"uploadmaxsize",          d_uploadmaxsize },
+{"uploadminspace",         d_uploadminspace },
+{NULL, NULL }};
+
+static const char *config_name_fdump(unsigned int i)
+{
+  return config_parse_fdump[i].name;
+}
+
 static void dump_config_fdump(void)
 {
   server_t *ss;
@@ -2022,9 +2024,9 @@ static void dump_config_fdump(void)
   unsigned int si;
   unsigned int i;
 
-  for (i = 0; config_parse_func[i].name != NULL; ++i) {
-    if (config_parse_func[i].fdump != NULL)
-      (*config_parse_func[i].fdump)(config_parse_func[i].name);
+  for (i = 0; config_parse_fdump[i].name != NULL; ++i) {
+    if (config_parse_fdump[i].fdump != NULL)
+      (*config_parse_fdump[i].fdump)(config_parse_fdump[i].name);
   }
 
   for (si=0; si<gdata.networks_online; ++si) {
@@ -2321,11 +2323,12 @@ void config_reset(void)
 /* check all tables are sorted for fast access */
 void config_startup(void)
 {
-  config_sorted_bool();
-  config_sorted_int();
-  config_sorted_string();
-  config_sorted_list();
-  config_sorted_func();
+  config_bool_anzahl = config_sorted_check(config_name_bool);
+  config_int_anzahl = config_sorted_check(config_name_int);
+  config_string_anzahl = config_sorted_check(config_name_string);
+  config_list_anzahl = config_sorted_check(config_name_list);
+  config_func_anzahl = config_sorted_check(config_name_func);
+  config_fdump_anzahl = config_sorted_check(config_name_fdump);
   current_config = "";
   current_line = 0;
 }
