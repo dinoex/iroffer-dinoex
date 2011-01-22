@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+360) htdocs
+  Ermögliche Ruby CGI Skripte die nicht HTML MIME Daten generieren.
+  "name.txt.rb" erzeugt "text/plain" als Inhalt.
+
 359) ruby_script
   Erweiterte Methode "info_pack" un auf Daten einens Packs zuzugreifen.
   Verfügbar: "group_desc", "bytes", "size"
