@@ -3435,12 +3435,38 @@ void a_crc(const userinput * const u)
   }
 }
 
+static void a_chfile_sub(const userinput * const u, xdcc *xd, unsigned int num, char *file, struct stat *st)
+{
+  char *old;
+
+  updatecontext();
+
+  a_cancel_transfers(xd, "Pack file changed");
+
+  a_respond_old_new(u, "CHFILE", num, xd->file, file);
+
+  old = xd->file;
+  xd->file     = file;
+  xd->st_size  = st->st_size;
+  xd->st_dev   = st->st_dev;
+  xd->st_ino   = st->st_ino;
+  xd->mtime    = st->st_mtime;
+
+  /* change default description */
+  if (strcmp(xd->desc, getfilename(old)) == 0) {
+    mydelete(xd->desc);
+    xd->desc = mystrdup(getfilename(xd->file));
+  }
+  mydelete(old);
+
+  cancel_md5_hash(xd, "CHFILE");
+}
+
 void a_chfile(const userinput * const u)
 {
   struct stat st;
   xdcc *xd;
   char *file;
-  char *old;
   unsigned int num;
   int xfiledescriptor;
 
@@ -3464,26 +3490,7 @@ void a_chfile(const userinput * const u)
   if (group_restricted(u, xd))
     return;
 
-  a_cancel_transfers(xd, "Pack file changed");
-
-  a_respond_old_new(u, u->cmd, num, xd->file, file);
-
-  old = xd->file;
-  xd->file     = file;
-  xd->st_size  = st.st_size;
-  xd->st_dev   = st.st_dev;
-  xd->st_ino   = st.st_ino;
-  xd->mtime    = st.st_mtime;
-
-  /* change default description */
-  if (strcmp(xd->desc, getfilename(old)) == 0) {
-    mydelete(xd->desc);
-    xd->desc = mystrdup(getfilename(xd->file));
-  }
-  mydelete(old);
-
-  cancel_md5_hash(xd, u->cmd);
-
+  a_chfile_sub(u, xd, num, file, &st);
   write_files();
 }
 
@@ -3493,8 +3500,6 @@ static unsigned int a_newdir_check(const userinput * const u, const char *dir1, 
   const char *off2;
   char *tempstr;
   size_t len1;
-  size_t len2;
-  size_t max;
   int xfiledescriptor;
 
   updatecontext();
@@ -3504,28 +3509,13 @@ static unsigned int a_newdir_check(const userinput * const u, const char *dir1, 
     return 0;
 
   off2 = xd->file + len1;
-  len2 = strlen(off2);
-  max = strlen(dir2) + len2 + 1;
-  tempstr = mymalloc(max + 1);
-  snprintf(tempstr, max,
-           "%s%s", dir2, off2);
+  tempstr = mystrsuffix(dir2, off2);
 
   xfiledescriptor = open(tempstr, O_RDONLY | ADDED_OPEN_FLAGS);
   if (a_access_fstat(u, xfiledescriptor, &tempstr, &st))
     return 0;
 
-  a_respond_old_new(u, "CHFILE", number_of_pack(xd), xd->file, tempstr);
-
-  a_cancel_transfers(xd, "Pack file changed");
-
-  mydelete(xd->file);
-  xd->file = tempstr;
-  xd->st_size  = st.st_size;
-  xd->st_dev   = st.st_dev;
-  xd->st_ino   = st.st_ino;
-  xd->mtime    = st.st_mtime;
-
-  cancel_md5_hash(xd, "CHFILE");
+  a_chfile_sub(u, xd, number_of_pack(xd), tempstr, &st);
   return 1;
 }
 
