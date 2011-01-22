@@ -1385,7 +1385,7 @@
 1581 "** Rimosso dalla coda: Pack rimosso"
 1582 "Ho rimosso il Pack %u [%s]"
 1584 "MAIN"
-1585 "%s: [Pack %u] Vecchio: %s Nuovo: %s"
+1585 "%s: Vecchio: %s Nuovo: %s"
 1586 "%s: [Pack %u] Nuovo: %s"
 1587 "Nuovo GROUPDESC: %s"
 1588 "  Sto aggiungendo %s:"

@@ -1385,7 +1385,7 @@
 1581 "** Retiré de la file d'attente : Pack enlevé"
 1582 "Enlève Pack %u [%s]"
 1584 "MAIN"
-1585 "%s : [Pack %u] Ancien : %s Nouveau : %s"
+1585 "%s : Ancien : %s Nouveau : %s"
 1586 "%s : [Pack %u] Nouveau : %s"
 1587 "Nouveau GROUPDESC : %s"
 1588 "  Ajoute %s :"
