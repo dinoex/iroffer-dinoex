@@ -16,39 +16,76 @@ def get_post( cgi, name, fallback = '' )
   return val
 end
 
-first = get_post( cgi, 'pack', 1 ).to_i
-last = get_post( cgi, 'last', first.to_s ).to_i
-
-bot = IrofferEvent.new
-
-pack = first
-while true do
+def print_head( bot, pack, group = nil )
   bytes = bot.info_pack(pack, "bytes" )
   if bytes.nil?
-    break
+    return nil
+  end
+  if not group.nil?
+    if bot.info_pack(pack, "group" ) != group
+      return pack + 1
+    end
   end
   mtime = bot.info_pack(pack, "mtime" )
   file = bot.info_pack(pack, "file" )
   file.sub!( /^.*\//, '' )
   printf( ";%13u  %s %s\r\n", bytes, mtime, file )
-  pack += 1
-  if pack > last
-    break
-  end
+  return pack + 1
 end
 
-pack = first
-while true do
+def print_data( bot, pack, group = nil )
   file = bot.info_pack(pack, "file" )
   if file.nil?
-    break
+    return nil
+  end
+  if not group.nil?
+    if bot.info_pack(pack, "group" ) != group
+      return pack + 1
+    end
   end
   file.sub!( /^.*\//, '' )
   crc32 = bot.info_pack(pack, "crc32" )
   printf( "%s %s\r\n", file, crc32 )
-  pack += 1
-  if pack > last
-    break
+  return pack + 1
+end
+
+first = get_post( cgi, 'pack', 1 ).to_i
+last = get_post( cgi, 'last', first.to_s ).to_i
+group = get_post( cgi, 'group', nil )
+
+bot = IrofferEvent.new
+
+if not group.nil?
+  pack = 1
+  while true do
+    pack = print_head( bot, pack, group )
+    if pack.nil?
+      break
+    end
+  end
+
+  pack = 1
+  while true do
+    pack = print_data( bot, pack, group )
+    if pack.nil?
+      break
+    end
+  end
+else
+  pack = first
+  while pack <= last do
+    pack = print_head( bot, pack )
+    if pack.nil?
+      break
+    end
+  end
+
+  pack = first
+  while pack <= last do
+    pack = print_data( bot, pack )
+    if pack.nil?
+      break
+    end
   end
 end
 
