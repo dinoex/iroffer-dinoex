@@ -690,6 +690,7 @@ static unsigned int h_runruby(http * const h)
   const char *params;
   char *suffix;
   char *tmp;
+  char *base;
   unsigned int rc;
 
   suffix = strrchr(h->file, '.' );
@@ -707,7 +708,20 @@ static unsigned int h_runruby(http * const h)
   setenv("REQUEST_METHOD", "GET", 1);
   setenv("QUERY_STRING", params, 1);
 
-  tmp = mystrsuffix(h->file, ".html");
+  base = mystrdup(h->file);
+  suffix = strrchr(base, '.' );
+  if (suffix == NULL)
+    return 0;
+
+  *suffix = 0;
+  suffix = strrchr(base, '.' );
+  if (suffix != NULL) {
+    tmp = base;
+    base = NULL;
+  } else {
+    tmp = mystrsuffix(base, ".html");
+    mydelete(base);
+  }
   rc = http_ruby_script(h->file, tmp);
   mydelete(h->file);
   h->file = tmp;
