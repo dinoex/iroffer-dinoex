@@ -64,25 +64,32 @@ class IrofferEvent
 
     group = info_pack(added_pack, "group" )
     desc = info_pack(added_pack, "desc" )
-    bytes = info_pack(added_pack, "size" )
-    xtime = info_pack(added_pack, "xtime" )
+    bytes = info_pack(added_pack, "bytes" )
+    megabytes = info_pack(added_pack, "size" ) # human readable
+    crc = info_pack(added_pack, "crc32" )
+    md5 = info_pack(added_pack, "md5sum" )
+    xtime = info_pack(added_pack, "xtime" ) # added_time
     write_log( "group:",  group, "desc:", desc, "size:", bytes )
 
     # generate a trigger for each new pack.
     command2( "CHTRIGGER", added_pack.to_s, "#{group}#{added_pack}" )
 
-    # custom announce with size
-    megabytes = bytes/1024/1024
+    # custom announce
     text = "\"addded "
     text << "\00304" # color red
     text << desc
     text << "\003\017" # end color
     text << " - "
     text << megabytes.to_s
-    text << "MB - /MSG mybot XDCC SEND "
+    if not group.nil?
+      text << " in "
+      text << group
+    end
+    text << " CRC "
+    text << crc
+    text << " - /MSG mybot XDCC SEND "
     text << added_pack.to_s
     text << "\""
-    write_log( text )
     command2( "AMSG", text )
   end
 end
