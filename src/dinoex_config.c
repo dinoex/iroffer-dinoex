@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -58,7 +58,7 @@ typedef struct {
 typedef struct {
   const char *name;
   void (*func)(const char *key, char *var);
-  void (*fprint)(const char *key);
+  void (*fdump)(const char *key);
 } config_func_typ;
 
 
@@ -2012,7 +2012,7 @@ static int set_config_func(const char *key, char *text)
   return 0;
 }
 
-static void dump_config_func(void)
+static void dump_config_fdump(void)
 {
   server_t *ss;
   channel_t *ch;
@@ -2023,8 +2023,8 @@ static void dump_config_func(void)
   unsigned int i;
 
   for (i = 0; config_parse_func[i].name != NULL; ++i) {
-    if (config_parse_func[i].fprint != NULL)
-      (*config_parse_func[i].fprint)(config_parse_func[i].name);
+    if (config_parse_func[i].fdump != NULL)
+      (*config_parse_func[i].fdump)(config_parse_func[i].name);
   }
 
   for (si=0; si<gdata.networks_online; ++si) {
@@ -2304,7 +2304,7 @@ void config_dump(void)
   dump_config_int();
   dump_config_string();
   dump_config_list();
-  dump_config_func();
+  dump_config_fdump();
   dump_line("CONFIG DUMP END");
 }
 
