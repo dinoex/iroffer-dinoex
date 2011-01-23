@@ -3,6 +3,20 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+361) Exportiere the crc32/md5 as sumfile
+  htdocs/sfv.txt.rb: Exportiere CRC32 im SFV Format.
+    Paket:   "/sfv.txt.rb?pack=21"
+    Bereich: "/sfv.txt.rb?pack=21;last=29"
+    Gruppe:  "/sfv.txt.rb?group=ZZZ"
+  htdocs/md5.txt.rb: Exportiere md5 im MD5SUM Format
+    Paket:   "/md5.txt.rb?pack=21"
+    Bereich: "/md5.txt.rb?pack=21;last=29"
+    Gruppe:  "/md5.txt.rb?group=ZZZ"
+  htdocs/info.txt.rb: Exportiere Datei Information als Liste.
+    Paket:   "/info.txt.rb?pack=21"
+    Bereich: "/info.txt.rb?pack=21;last=29"
+    Gruppe:  "/info.txt.rb?group=ZZZ"
+
 360) htdocs
   Ermögliche Ruby CGI Skripte die nicht HTML MIME Daten generieren.
   "name.txt.rb" erzeugt "text/plain" als Inhalt.
