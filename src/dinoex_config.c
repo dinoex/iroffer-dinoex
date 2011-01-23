@@ -1977,6 +1977,11 @@ static char *p_user_nick(void)
   return mystrdup(gnetwork->config_nick);
 }
 
+static char *p_version(void)
+{
+  return mystrdup( "iroffer-dinoex " VERSIONLONG );
+}
+
 static void c_bracket_open(const char * UNUSED(key), char * UNUSED(var))
 {
   ++current_bracket;
@@ -2085,6 +2090,7 @@ static config_fprint_typ config_parse_fprint[] = {
 {"usenatip",               p_usenatip },
 {"user_modes",             p_user_modes },
 {"user_nick",              p_user_nick },
+{"version",                p_version },
 {NULL, NULL }};
 
 static const char *config_name_fprint(unsigned int i)
