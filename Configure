@@ -421,7 +421,7 @@ de*)
  irt_notls="Disabled the SSL Features. If you want to use this feature, please install 'GNU TLS'"
  irt_badssl1="Your 'libcurl' is linked with"
  irt_badssl2="Please configure"
- irt_noruby="Disable the RUBY-extension. If you want to use this feature, please install 'libruby'"
+ irt_noruby="Disabled the RUBY-extension. If you want to use this feature, please install 'libruby'"
  irt_make1="Type"
  irt_make2="to compile"
  irt_noerror="No errors or warnings should appear when compiling, if they do, something is wrong"
