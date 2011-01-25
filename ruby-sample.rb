@@ -74,6 +74,10 @@ class IrofferEvent
     # generate a trigger for each new pack.
     command2( "CHTRIGGER", added_pack.to_s, "#{group}#{added_pack}" )
 
+    # backup pack to a some other bots
+    command2( "SEND", "XDCC|Archiv1", added_pack.to_s )
+    command2( "SEND", "XDCC|Archiv2", added_pack.to_s )
+
     # custom announce
     text = "\"addded "
     text << "\00304" # color red
