@@ -411,6 +411,9 @@ static void global_defaults(void)
 /* initializes sub systems after config */
 void config_dinoex(void)
 {
+#ifdef USE_RUBY
+  startup_myruby();
+#endif /* USE_RUBY */
 #ifdef USE_UPNP
   if (gdata.upnp_router || gdata.getipfromupnp)
     init_upnp();
@@ -421,9 +424,6 @@ void config_dinoex(void)
 #ifndef WITHOUT_HTTP
   h_setup_listen();
 #endif /* WITHOUT_HTTP */
-#ifdef USE_RUBY
-  startup_myruby();
-#endif /* USE_RUBY */
   global_defaults();
 }
 
