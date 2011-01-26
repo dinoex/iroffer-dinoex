@@ -34,6 +34,10 @@
 #pragma GCC diagnostic ignored "-Wstrict-prototypes"
 #pragma GCC diagnostic ignored "-Wredundant-decls"
 #include "ruby.h"
+#if USE_RUBYVERSION < 19
+#else
+#include <ruby/encoding.h>
+#endif
 
 typedef struct protect_call_arg {
   VALUE recvobj;
@@ -42,7 +46,6 @@ typedef struct protect_call_arg {
   VALUE *argv;
 } protect_call_arg_t;
 
-int myruby_status;
 int myruby_loaded;
 time_t myruby_time;
 
@@ -522,6 +525,7 @@ static void Init_IrofferEvent(void) {
 static void load_script(const char *name)
 {
   struct stat st;
+  int rc;
 
   updatecontext();
 
@@ -535,19 +539,13 @@ static void load_script(const char *name)
              name, strerror(errno));
     return;
   }
-  myruby_time = st.st_mtime;
-  ruby_init_loadpath();
   ruby_script(name);
-#if USE_RUBYVERSION < 19
-  rb_load_file(name);
-  myruby_status = ruby_exec();
-#else
-  rb_load(rb_str_new(name, strlen(name)), 0);
-#endif
-  if (myruby_status != 0) {
+  myruby_time = st.st_mtime;
+  rb_load_protect(rb_str_new(name, strlen(name)), 0, &rc);
+  if (rc != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "ruby_exec failed with %d: %s",
-             myruby_status, strerror(errno));
+             rc, strerror(errno));
     myruby_loaded = 1;
     return;
   }
@@ -649,11 +647,20 @@ void rehash_myruby(int check)
 /* load the interpreter and the script */
 void startup_myruby(void)
 {
-  ruby_init();
-  // dumps the version info to stdout
-  ruby_show_version();
+  int rc;
 
-  myruby_status = 0;
+  RUBY_INIT_STACK;
+  ruby_init();
+  ruby_init_loadpath();
+  /* dumps the version info to stdout */
+  ruby_show_version();
+  /* set working dir for includes */
+  rb_eval_string_protect("$: << '.'", &rc);
+#if USE_RUBYVERSION < 19
+#else
+  rb_enc_find_index("encdb");
+#endif
+
   myruby_loaded = 0;
 
   //define that callback below
@@ -666,7 +673,9 @@ void startup_myruby(void)
 /* cleanup interpreter */
 void shutdown_myruby(void)
 {
-  myruby_status = ruby_cleanup(myruby_status);
+  int rc;
+
+  rc = ruby_cleanup(0);
 #if USE_RUBYVERSION < 19
   ruby_finalize();
 #else
@@ -693,26 +702,21 @@ unsigned int http_ruby_script(const char *name, const char *output)
              name, strerror(errno));
     return 1;
   }
-  ruby_init_loadpath();
   ruby_script(name);
   tempstr = mymalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "$stdout = File.new(\"%s\", \"w+\")", output);
   rb_eval_string_protect(tempstr, &rc);
   mydelete(tempstr);
-#if USE_RUBYVERSION < 19
-  rb_load_file(name);
-  rc = ruby_exec();
-#else
-  rb_load(rb_str_new(name, strlen(name)), 0);
-#endif
+  rb_load_protect(rb_str_new(name, strlen(name)), 0, &rc);
   if (rc != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "ruby_exec failed with %d: %s",
              rc, strerror(errno));
     iroffer_ruby_errro(rc);
-    return 1;
   }
   rb_eval_string_protect("$stdout.close", &rc);
+  if (rc != 0)
+    return 1;
   return 0;
 }
 #endif /* WITHOUT_HTTP */

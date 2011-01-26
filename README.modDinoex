@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+bugfix: ruby_script (reported by Zir0h)
+  Use new API for ruby 1.9.2
+
 361) Export the crc32/md5 as sumfile
   htdocs/sfv.txt.rb: export crc32 in sfv format.
     pack:  "/sfv.txt.rb?pack=21"
@@ -206,7 +209,7 @@ With Version 3.24:
 bugfix: fix small memory leaks
 
 bugfix: SHUTDOWN (reported by Zir0h)
-  Bot crashes on "SHUTDOWN" when build  with ruby 1.9.
+  Bot crashes on "SHUTDOWN" when build with ruby 1.9.
 
 extend debug and log information.
 

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+bugfix: ruby_script
+  Benutze das neue API für ruby 1.9.2
+
 361) Exportiere the crc32/md5 as sumfile
   htdocs/sfv.txt.rb: Exportiere CRC32 im SFV Format.
     Paket:   "/sfv.txt.rb?pack=21"
