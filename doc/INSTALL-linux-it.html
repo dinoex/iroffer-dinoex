@@ -1,0 +1,132 @@
+Installazione di iroffer mod Dinoex su Linux con accesso Utente.
+
+Questa è una guida SOMMARIA per l'utilizzo di questo iroffer. 
+Se avete necessità di supporto italiano contattatemi su irc.rizon.net #dinoex (CreeW)
+
+
+Passi fondamentali per l'installazione e l'avvio:
+
+
+	1.  Entriamo nella cartella HOME dell'utente. Nell'esempio l'utente sarà "pippo".
+
+		cd pippo
+
+	2.1 Creiamo una ulteriore cartella per iroffer. Nell'esempio la chiameremo "iroffer".
+
+		mkdir iroffer
+	
+	2.2 Entriamo nella cartella appena creata.
+
+		cd iroffer
+	
+	3.  Scarichiamo il pacchetto del programma con il comando "wget".
+
+		wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
+
+	4.  Estraiamo i dati dal pacchetto compresso appena scaricato con l'ausilio di "tar". Si creerà una nuova cartella.
+
+		tar -xvzf iroffer-dinoex-snap.tar.gz
+
+	5.  Avviamo la configurazione per il nostro sistema Linux dopo esserci posizionati nella cartella appena creata.
+
+		cd iroffer-dinoex-snap
+		./Configure -curl -geoip -ruby
+
+	6.  Se "Configure" dovesse generare qualche errore, dovremo ripetere l'operazione installando prima
+	    gli eventuali pacchetti mancanti nel sistema operativo. Per Debian sono sufficienti i seguenti:
+
+		sudo aptitude install make
+		sudo aptitude install gcc
+		sudo aptitude install libc-dev
+		sudo aptitude install libcurl4-openssl-dev
+		sudo aptitude install libgeoip-dev
+		sudo aptitude install libssl-dev
+		sudo aptitude install ruby1.8-dev
+		sudo aptitude install ruby1.8
+		sudo aptitude install libruby-extras
+
+	7.1 Configuriamo la lingua desiderata per l'installazione di iroffer con "Lang".
+		
+		./Lang it
+
+	7.2 Creeiamo il programma.
+
+		make
+	
+	8.  Ora copiamo il programma ed i files necessari al suo avvio nella giusta posizione.
+
+		cp -p iroffer ..
+		cp *.html ..
+		cp -r htdocs ../
+
+	9.  Copiamo, rinominiamo e diamo i giusti permessi al file example.config. Nell'esempio lo chiameremo mybot.config.
+
+		cp example.config ../mybot.config
+		cd ..
+		chmod 600 mybot.config
+
+	10. Assegnamo al bot i permessi di scrittura.
+
+		chmod 700 .
+
+	11. Possiamo quindi creare la password da admin del bot che servirà per le DCC-CHAT.
+
+		./iroffer -c mybot.config
+
+	12. Ora apriamo il file di configurazione "mybot.config" ed indichiamo:
+	    - Tutte le directory per i files (filedir, uploaddir, autoadd_dir)
+	     
+		filedir /home/pippo/files
+		uploaddir /home/pippo/files
+		autoadd_dir /home/pippo/files
+
+	    - Il campo "adminhost" che indica l'host-maschera o il nick dell'admin del bot:
+
+		adminhost CreeW!*@*.*  		<<< NICK ADMIN
+		adminhost *!*@pippo.admin.bot  	<<< HOST ADMIN
+		adminhost *!*@*.*		<<< ACCESSO A CHIUNQUE
+
+	    - Specifichiamo il nick del bot:
+		
+		user_nick XDCC|BOT|001
+
+	    - Specifichiamo il network, il server ed il canale in cui deve entrare il bot (supporto multiserver):
+
+		network RIZON
+		server irc.rizon.net 6667
+		channel #miocanale
+
+	13. Creiamo la cartella per i files nella quale li posizioneremo via FTP o XDCC.
+
+		cd ..
+		mkdir files
+	
+	14. Creiamo uno script di avvio.
+
+		cd ..
+	    then 
+		nano -w start-iroffer.sh
+	    then 
+		vim start-iroffer.sh
+
+	    - Gli aggiungiamo al suo interno:
+
+		#!/bin/sh
+		cd /home/pippo/iroffer/iroffer
+		./iroffer -b /home/pippo/iroffer/mybot.config
+
+	15. Rendiamo eseguibile lo script.
+
+		chmod +x start-iroffer.sh
+
+	16. Avviamo il bot.
+
+		sh start-iroffer.sh
+
+
+
+Ora il bot dovrebbe essere avviato e connesso al server preimpostato.
+
+
+
+		
