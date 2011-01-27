@@ -673,9 +673,7 @@ void startup_myruby(void)
 /* cleanup interpreter */
 void shutdown_myruby(void)
 {
-  int rc;
-
-  rc = ruby_cleanup(0);
+  ruby_cleanup(0);
 #if USE_RUBYVERSION < 19
   ruby_finalize();
 #else
