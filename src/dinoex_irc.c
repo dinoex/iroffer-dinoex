@@ -157,7 +157,7 @@ void update_natip(const char *var)
 
   oldip = gnetwork->ourip;
   gnetwork->ourip = ntohl(in.s_addr);
-  if (oldip != 0 ) {
+  if (oldip != gnetwork->ourip) {
     oldtxt = mystrdup(inet_ntoa(old));
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);

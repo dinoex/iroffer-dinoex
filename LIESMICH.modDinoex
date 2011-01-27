@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+bugfix: getip_network
+  DCC IP wwurde bei der ersten Verbindung nicht gesetzt.
+
 bugfix: ruby_script
   Benutze das neue API für ruby 1.9.2
 
