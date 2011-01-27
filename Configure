@@ -2309,9 +2309,10 @@ installuser: all
 uninstall:
 	rm $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
 
-all-lang:	en de it fr
-
 en:	all
+
+install-en: install
+
 '
  for l in de it fr
  do
@@ -2324,8 +2325,15 @@ en:	all
   done
   echo "	\$(MAKE) IRLANG=${l} IRSRC=src.${l} IRNAME=iroffer-${l} all" $more
   echo
+  echo "install-${l}: ${l}"
+  echo "	\$(MAKE) IRLANG=${l} IRSRC=src.${l} IRNAME=iroffer-${l} install"
+  echo
  done
  echo '
+all-lang:	en de it fr
+
+install-all-lang: install-en install-de install-fr install-it
+
 # end'
 }
 
