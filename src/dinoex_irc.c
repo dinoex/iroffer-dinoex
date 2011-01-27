@@ -122,7 +122,7 @@ void update_natip(const char *var)
   struct hostent *hp;
   struct in_addr old;
   struct in_addr in;
-  long oldip;
+  unsigned long oldip;
   char *oldtxt;
 
   updatecontext();
