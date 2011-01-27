@@ -5,6 +5,7 @@ With Version 3.26:
 
 bugfix: getip_network (reported by Gotanius)
   DCC IP was not set on startup.
+  versions affected: 3.23 - 3.25
 
 bugfix: ruby_script (reported by Zir0h)
   Use new API for ruby 1.9.2

@@ -5,6 +5,7 @@ Ab Version 3.26:
 
 bugfix: getip_network
   DCC IP wwurde bei der ersten Verbindung nicht gesetzt.
+  versions affected: 3.23 - 3.25
 
 bugfix: ruby_script
   Benutze das neue API für ruby 1.9.2
