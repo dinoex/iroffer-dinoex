@@ -4749,6 +4749,7 @@ void a_closec(const userinput * const u)
   chat = irlist_get_nth(&gdata.dccchats, num-1);
   if (chat == NULL) {
     a_respond_badid(u, "CHATL");
+    return;
   }
   a_closec_sub(u, chat);
 }
