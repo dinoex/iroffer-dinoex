@@ -1546,7 +1546,6 @@ main (int argc, char **argv) {exit(0);}
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS -lnss_files -lnss_dns $libs $LIBS; then
 NSSLIBS="-lnss_files -lnss_dns"
-TARGETR="iroffer_chroot$exe"
 ${msg} "${irt_found}"
 else
 NSSLIBS=""
@@ -2155,9 +2154,6 @@ main (int argc, char **argv) { ruby_init(); ruby_finalize(); exit(0);}
   ${msg} "***${irt_noruby}.***"
  fi
 fi
-if $OPT_STATIC; then
-TARGETS="iroffer_static$exe"
-fi
 
 rm -f config.temp*
 
@@ -2202,12 +2198,17 @@ make_makefile()
  echo CONFIG_CHROOT=$NSSLIBS
  echo CONFIG_SHARED=$RUBYLIB
  echo CONFIG_STATIC=$RUBYSLIB -static
- echo CONFIG_TARGETS?=$TARGETS $TARGETR
  echo INSTALL_GROUP=$installgroup
  echo INSDIR?=$PREFIX/bin
  echo IRLANG?=en
  echo IRSRC?=src
  echo IRNAME?=iroffer
+ if $OPT_STATIC; then
+   echo "TARGET_STATIC=\$(IRNAME)_static\$(CONFIG_EXE)"
+ fi
+ if test -n "$NSSLIBS"; then
+   echo "TARGET_CHROOT=\$(IRNAME)_chroot\$(CONFIG_EXE)"
+ fi
  echo 'OBJDIR = o.$(IRLANG)/.mkdir'
  echo
  echo "IROFFER_OBJECTS= \\"
@@ -2229,9 +2230,9 @@ LDLIBS    = $(CONFIG_LDLIBS)
 LDFLAGS   = $(CONFIG_LDFLAGS)
 CFLAGS    = $(CONFIG_CFLAGS)
 CPPFLAGS  = -I$(IRSRC) $(CONFIG_CPPFLAGS)
-
-all: $(IRNAME)$(CONFIG_EXE) $(CONFIG_TARGETS) $(OBJDIR)
-
+'
+ echo 'all: $(IRNAME)$(CONFIG_EXE) $(TARGET_STATIC) $(TARGET_CHROOT) $(OBJDIR)'
+ echo '
 $(IRNAME)$(CONFIG_EXE): $(OBJDIR) $(IROFFER_OBJECTS)
 	$(CC) $(LDFLAGS) $(IROFFER_OBJECTS) $(LOADLIBES) $(LDLIBS) $(CONFIG_SHARED) -o $(IRNAME)
 
@@ -2318,12 +2319,7 @@ install-en: install
  do
   echo "${l}:"
   echo "	./Lang ${l}"
-  more=""
-  for i in $TARGETS $TARGETR
-  do
-    more="${more} iroffer-${l}${i#iroffer}"
-  done
-  echo "	\$(MAKE) IRLANG=${l} IRSRC=src.${l} IRNAME=iroffer-${l} all" $more
+  echo "	\$(MAKE) IRLANG=${l} IRSRC=src.${l} IRNAME=iroffer-${l} all"
   echo
   echo "install-${l}: ${l}"
   echo "	\$(MAKE) IRLANG=${l} IRSRC=src.${l} IRNAME=iroffer-${l} install"
