@@ -201,7 +201,7 @@ void update_server_welcome(char *line)
       update_natip(tptr);
       return;
     }
-    if (gnetwork->getip_net != 0) {
+    if (gnetwork->getip_net != gnetwork->net) {
       /* copy IP from master */
       gnetwork->usenatip = 1;
       update_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
