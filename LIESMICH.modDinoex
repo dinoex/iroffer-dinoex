@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+bugfix: CLOSEC
+  Bot crashte wenn kein Chat gefunden wurde.
+  versions affected: 3.25
+
 bugfix: getip_network
   DCC IP wwurde bei der ersten Verbindung nicht gesetzt.
   versions affected: 3.23 - 3.25
