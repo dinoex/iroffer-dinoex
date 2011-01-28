@@ -1245,6 +1245,9 @@ void switchserver(int which)
         }
     }
   
+  if (gnetwork->offline)
+    return;
+  
   ss = irlist_get_nth(&(gnetwork->servers), (unsigned int)which);
   
   connectirc(ss);

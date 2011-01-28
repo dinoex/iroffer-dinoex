@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+362) offline
+ Disable connecting to this network.
+
 bugfix: CLOSEC (reported by unlogisch)
   Bot did crash when paramater did not match a chat.
   versions affected: 3.25

@@ -1551,6 +1551,21 @@ static char *p_noannounce(void)
   return print_config_long2(gnetwork->noannounce);
 }
 
+static void c_offline(const char *key, char *var)
+{
+  int val;
+
+  val = parse_bool_val(key, var);
+  if (val >= 0) {
+    gdata.networks[current_network].offline = val;
+  }
+}
+
+static char *p_offline(void)
+{
+  return print_config_long2(gnetwork->offline);
+}
+
 static void c_overallmaxspeeddaydays(const char * UNUSED(key), char *var)
 {
   char *src;
@@ -2012,6 +2027,7 @@ static config_func_typ config_parse_func[] = {
 {"network",                c_network },
 {"nickserv_pass",          c_nickserv_pass },
 {"noannounce",             c_noannounce },
+{"offline",                c_offline },
 {"overallmaxspeeddaydays", c_overallmaxspeeddaydays },
 {"overallmaxspeeddaytime", c_overallmaxspeeddaytime },
 {"periodicmsg",            c_periodicmsg },
@@ -2077,6 +2093,7 @@ static config_fprint_typ config_parse_fprint[] = {
 {"need_level",             p_need_level },
 {"nickserv_pass",          p_nickserv_pass },
 {"noannounce",             p_noannounce },
+{"offline",                p_offline },
 {"overallmaxspeeddaydays", p_overallmaxspeeddaydays },
 {"plaintext",              p_plaintext },
 {"restrictlist",           p_restrictlist },
@@ -2201,6 +2218,7 @@ static void dump_config_fdump(void)
     }
     dump_config_int3("getip_network", gdata.networks[si].getip_net, si);
     dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0);
+    dump_config_bool3("offline", gdata.networks[si].offline, 0);
     dump_config_bool3("plaintext", gdata.networks[si].plaintext, 0);
     dump_config_string3("nickserv_pass", gdata.networks[si].nickserv_pass);
     dump_config_string3("auth_name", gdata.networks[si].auth_name);

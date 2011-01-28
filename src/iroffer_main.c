@@ -1614,6 +1614,8 @@ static void mainloop (void) {
       updatecontext();
       for (ss=0; ss<gdata.networks_online; ss++) {
         gnetwork = &(gdata.networks[ss]);
+      if (gnetwork->offline)
+        continue;
       if (gnetwork->serverstatus == SERVERSTATUS_NEED_TO_CONNECT)
         {
           int timeout;

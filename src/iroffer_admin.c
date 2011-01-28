@@ -1376,7 +1376,7 @@ static void u_botinfo(const userinput * const u) {
          case how_ssl:
              {
                 a_respond(u, "current server: %s:%u (%s)",
-                          gdata.networks[ss].curserver.hostname,
+                          gdata.networks[ss].curserver.hostname ? gdata.networks[ss].curserver.hostname : "<unknown>",
                           gdata.networks[ss].curserver.port, how);
              }
            break;
