@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -193,6 +193,7 @@ typedef struct {
   unsigned int usenatip;
   unsigned int getip_net;
   unsigned int noannounce;
+  unsigned int offline;
   unsigned int plaintext;
   unsigned int slow_privmsg;
   unsigned int need_voice;
