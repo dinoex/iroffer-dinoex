@@ -474,17 +474,30 @@ static VALUE cie_mode(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
 
 static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
 {
-  char *msg;
+  char *msg = NULL;
   userinput *uxdl;
 
   if (NIL_P(rmsg))
     return Qnil;
 
-  msg = rb_obj_as_string_protected(rmsg);
+  switch (TYPE(rmsg)) {
+   case T_ARRAY:
+     rmsg = rb_ary_join(rmsg, rb_str_new2(" "));
+     /* process Array */
+     /* fallthrough */
+  case T_STRING:
+     /* process String */
+     msg = rb_obj_as_string_protected(rmsg);
+     break;
+   default:
+     /* ignore */
+     break;
+  }
   if (!msg)
     return Qnil;
 
   uxdl = mycalloc(sizeof(userinput));
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "RUBY %s", msg);
 
   a_fillwith_msg2(uxdl, NULL, msg);
   uxdl->method = method_console;
@@ -503,7 +516,7 @@ static void Init_IrofferEvent(void) {
   rb_define_method(cIrofferEvent, "privmsg", cie_privmsg, 2);
   rb_define_method(cIrofferEvent, "warning", cie_warning, 1);
   rb_define_method(cIrofferEvent, "mode", cie_mode, 2);
-  rb_define_method(cIrofferEvent, "command", cie_command, 1);
+  rb_define_method(cIrofferEvent, "command", cie_command, -2);
   /* hooks */
   rb_define_method(cIrofferEvent, "on_server", cie_null, 0);
   rb_define_method(cIrofferEvent, "on_notice", cie_null, 0);
