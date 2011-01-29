@@ -76,6 +76,7 @@ Short Term Features:
   1534  state the ip of the user in dcld and geoip
   1535  reduce queued message on batch
   1536  silent add
+  1539  RUBY command
 
 Long Term Features:
   1013  notify adminnick when autoadd
