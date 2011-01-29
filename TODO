@@ -65,7 +65,6 @@ Short Term Features:
   1379  different packlists for different groups
   1394  pack size included in the output of announce
   1438  more announce types for plist
-  1482  auto upload
   1486  autotrim input
   1488  offline or maintenance mode
   1494  send note to user when queuing
