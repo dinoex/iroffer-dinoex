@@ -39,6 +39,7 @@ bugfix: ruby_script (reported by Zir0h)
   Extend method "info_pack" to request fields of a pack.
   Implemented: "group_desc", "bytes", "size"
   Extend access to network config for simple variables.
+  Extend "command" to take any number of parameters.
 
 bugfix: NEWANN
   NEWANN caused the bot to crash.

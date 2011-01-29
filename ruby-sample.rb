@@ -14,11 +14,6 @@ end
 # Do not change the name of this class.
 class IrofferEvent
 
-  # for esay use of commands
-  def command2( *args )
-    command( args.join(' ') )
-  end
-
   # callend on each server line
   def on_server
     write_log( "SERVER on", network, inputline )
@@ -47,14 +42,14 @@ class IrofferEvent
     # trigger on text
     if /!autoadd/.match( message )
       # execute admin command
-      command2( "msg", config[ "owner_nick" ], "!autoadd was triggered" )
+      command( "msg", config[ "owner_nick" ], "!autoadd was triggered" )
       command( "autoadd" )
     end
 
     # trigger on text
     if /!hop/.match( message )
       # execute admin command
-      command2( "HOP", channel, network )
+      command( "HOP", channel, network )
     end
   end
 
@@ -72,11 +67,11 @@ class IrofferEvent
     write_log( "group:",  group, "desc:", desc, "size:", bytes )
 
     # generate a trigger for each new pack.
-    command2( "CHTRIGGER", added_pack.to_s, "#{group}#{added_pack}" )
+    command( "CHTRIGGER", added_pack.to_s, "#{group}#{added_pack}" )
 
     # backup pack to a some other bots
-    command2( "BATCH", "XDCC|Archiv1", added_pack.to_s )
-    command2( "BATCH", "XDCC|Archiv2", added_pack.to_s )
+    command( "BATCH", "XDCC|Archiv1", added_pack.to_s )
+    command( "BATCH", "XDCC|Archiv2", added_pack.to_s )
 
     # custom announce
     text = "\"addded "
@@ -94,7 +89,7 @@ class IrofferEvent
     text << " - /MSG mybot XDCC SEND "
     text << added_pack.to_s
     text << "\""
-    command2( "AMSG", text )
+    command( "AMSG", text )
   end
 end
 
