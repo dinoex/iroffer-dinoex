@@ -38,7 +38,7 @@
 
 /* local functions */
 static void mainloop(void);
-static void parseline(char *line);
+static void ir_parseline(char *line);
 
 /* main */
 int
@@ -442,7 +442,7 @@ static void mainloop (void) {
                          j--;
                        }
                      gnetwork->server_input_line[j] = '\0';
-                     parseline(gnetwork->server_input_line);
+                     ir_parseline(gnetwork->server_input_line);
                      j = 0;
                    }
                  else
@@ -1680,7 +1680,7 @@ static void mainloop (void) {
       
    }
 
-static void parseline(char *line) {
+static void ir_parseline(char *line) {
    char *part2, *part3, *part4, *part5;
    char *part3a;
    char *t;
