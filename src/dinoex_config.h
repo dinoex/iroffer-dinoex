@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -25,6 +25,7 @@ void getconfig_set(const char *line);
 
 void config_dump(void);
 void config_reset(void);
+int config_expand(char *buffer, size_t max, int print);
 void config_startup(void);
 
 extern const char *current_config;
