@@ -24,16 +24,13 @@ typedef enum
 
 typedef struct
 {
-  int filedescriptor;
   off_t bytesgot;
   off_t bytessent;
   off_t filepos;
   off_t totalsize;
   ir_connection_t con;
+  int filedescriptor;
   http_status_e status;
-  unsigned int support_groups;
-  unsigned int post;
-  unsigned int head;
   char *file;
   char *buffer_out;
   char *end;
@@ -50,6 +47,10 @@ typedef struct
   ssize_t left;
   unsigned int traffic;
   unsigned int status_code;
+  unsigned int support_groups;
+  unsigned int post;
+  unsigned int head;
+  unsigned int idummy;
 } http;
 
 typedef struct {

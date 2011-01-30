@@ -340,7 +340,7 @@ void u_parseit(userinput * const u) {
    }
 
 static const char *expand_args_shutdown[] = {
-  "now", "delayed", "cancel", NULL
+  "NOW", "DELAYED", "CANCEL", NULL
 };
 
 static size_t u_expand_list(char *buffer, size_t max, const char **list)
@@ -1757,7 +1757,7 @@ static void u_unignore(const userinput * const u)
 
 static void u_msgread(const userinput * const u)
 {
-  int count;
+  unsigned int count;
   char *tempstr;
   msglog_t *ml;
   
@@ -1813,7 +1813,7 @@ static void u_memstat(const userinput * const u)
   struct rusage r;
 #ifdef HAVE_MMAP
   xdcc *xd;
-  int mmap_count;
+  unsigned int mmap_count;
 #endif
   
   updatecontext();
@@ -1859,7 +1859,7 @@ static void u_memstat(const userinput * const u)
       mmap_count += irlist_size(&xd->mmaps);
     }
   
-  u_respond(u,"mmaps:  %i kbytes, %d file mappings",
+  u_respond(u,"mmaps:  %i kbytes, %u file mappings",
             mmap_count * IR_MMAP_SIZE / 1024, mmap_count);
 #endif
   
@@ -1867,7 +1867,7 @@ static void u_memstat(const userinput * const u)
     {
       meminfo_t *meminfo;
       meminfo_t *meminfo2 = NULL;
-      int meminfo_depth;
+      unsigned int meminfo_depth;
       
       /*
        * we need to copy the entire table so we dont walk it
@@ -1885,7 +1885,7 @@ static void u_memstat(const userinput * const u)
         {
           if (meminfo[i].ptr != NULL)
             {
-              a_respond(u, "%3i %3i | 0x%8.8lX | %6iB | %7" TTPRINTFMT "s | %s:%d %s()",
+              a_respond(u, "%3u %3u | 0x%8.8lX | %6iB | %7" TTPRINTFMT "s | %s:%d %s()",
                         i / meminfo_depth,
                         i % meminfo_depth,
                         (long)meminfo[i].ptr,
