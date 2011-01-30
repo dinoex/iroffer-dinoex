@@ -25,7 +25,7 @@ void getconfig_set(const char *line);
 
 void config_dump(void);
 void config_reset(void);
-int config_expand(char *buffer, size_t max, int print);
+size_t config_expand(char *buffer, size_t max, int print);
 void config_startup(void);
 
 extern const char *current_config;
