@@ -200,7 +200,6 @@ typedef struct {
   unsigned int restrictsend;
   unsigned int restrictlist;
   int need_level;
-  int idummy;
   how_e r_connectionmethod;
   userinput_method_e lag_method;
 
