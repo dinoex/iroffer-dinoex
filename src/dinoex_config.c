@@ -2216,13 +2216,11 @@ static void dump_config_fdump(void)
     if (gnetwork->usenatip != 0) {
       dump_config_string2("usenatip", gdata.networks[si].natip);
     }
-    dump_config_int3("getip_network", gdata.networks[si].getip_net, si);
-    dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0);
-    dump_config_bool3("offline", gdata.networks[si].offline, 0);
-    dump_config_bool3("plaintext", gdata.networks[si].plaintext, 0);
     dump_config_string3("nickserv_pass", gdata.networks[si].nickserv_pass);
     dump_config_string3("auth_name", gdata.networks[si].auth_name);
     dump_config_string3("login_name", gdata.networks[si].login_name);
+    dump_config_string3("user_nick", gdata.networks[si].config_nick);
+    dump_config_string3("user_modes", gdata.networks[si].user_modes);
 
     for (ss = irlist_get_head(&gdata.networks[si].servers);
          ss;
@@ -2279,13 +2277,15 @@ static void dump_config_fdump(void)
       mydelete(buffer);
     }
 
-    dump_config_string3("user_nick", gdata.networks[si].config_nick);
-    dump_config_string3("user_modes", gdata.networks[si].user_modes);
-    dump_config_bool3("restrictsend", gdata.networks[si].restrictsend, 0);
-    dump_config_bool3("restrictlist", gdata.networks[si].restrictlist, 0);
     dump_config_bool3("need_voice", gdata.networks[si].need_voice, 0);
     dump_config_int3("need_level", gdata.networks[si].need_level, 10);
+    dump_config_int3("getip_network", gdata.networks[si].getip_net, si);
     dump_config_int3("slow_privmsg", gdata.networks[si].slow_privmsg, 1);
+    dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0);
+    dump_config_bool3("offline", gdata.networks[si].offline, 0);
+    dump_config_bool3("plaintext", gdata.networks[si].plaintext, 0);
+    dump_config_bool3("restrictsend", gdata.networks[si].restrictsend, 0);
+    dump_config_bool3("restrictlist", gdata.networks[si].restrictlist, 0);
     dump_line("}");
   } /* networks */
 }
@@ -2323,12 +2323,15 @@ static void reset_config_func(void)
     irlist_delete_all(&gdata.networks[si].proxyinfo);
     gdata.networks[si].connectionmethod.how = how_direct;
     gdata.networks[si].usenatip = 0;
-    gdata.networks[si].getip_net = si;
-    gdata.networks[si].need_level = 10;
     gdata.networks[si].slow_privmsg = 1;
     gdata.networks[si].restrictsend = 2;
     gdata.networks[si].restrictlist = 2;
     gdata.networks[si].need_voice = 2;
+    gdata.networks[si].need_level = 10;
+    gdata.networks[si].getip_net = si;
+    gdata.networks[si].noannounce = 0;
+    gdata.networks[si].offline = 0;
+    gdata.networks[si].plaintext = 0;
   } /* networks */
   gdata.networks_online = 0;
   for (aq = irlist_get_head(&gdata.autoqueue);
