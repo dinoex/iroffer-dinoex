@@ -343,7 +343,7 @@ static const char *expand_args_shutdown[] = {
   "now", "delayed", "cancel", NULL
 };
 
-static int u_expand_list(char *buffer, size_t max, const char **list)
+static size_t u_expand_list(char *buffer, size_t max, const char **list)
 {
   const char *first = NULL;
   size_t found = 0;
@@ -377,7 +377,7 @@ static int u_expand_list(char *buffer, size_t max, const char **list)
   return 0;
 }
 
-static int u_expand_args(const char *args)
+static size_t u_expand_args(const char *args)
 {
   char *buffer;
   size_t max;

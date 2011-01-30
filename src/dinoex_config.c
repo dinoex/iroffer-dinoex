@@ -1275,7 +1275,7 @@ static void c_getip_network(const char *key, char *var)
 
 static char *p_getip_network(void)
 {
-  return print_config_long2(gnetwork->getip_net);
+  return print_config_long2((ir_int64)(gnetwork->getip_net));
 }
 
 static void c_group_admin(const char *key, char *var)
@@ -1363,7 +1363,7 @@ static void c_ignoreduplicateip(const char * key, char *var)
 
 static char *p_ignoreduplicateip(void)
 {
-  return print_config_long2(gdata.ignore_duplicate_ip);
+  return print_config_long2((ir_int64)(gdata.ignore_duplicate_ip));
 }
 
 static void c_logrotate(const char * UNUSED(key), char *var)
@@ -1391,7 +1391,7 @@ static void c_logrotate(const char * UNUSED(key), char *var)
 
 static char *p_logrotate(void)
 {
-  return print_config_long2(gdata.logrotate);
+  return print_config_long2((ir_int64)(gdata.logrotate));
 }
 
 static void d_logrotate(const char *key)
@@ -1472,7 +1472,7 @@ static void c_need_level(const char *key, char *var)
 
 static char *p_need_level(void)
 {
-  return print_config_long2(gdata.need_level);
+  return print_config_long2((ir_int64)(gdata.need_level));
 }
 
 static void c_network(const char * UNUSED(key), char *var)
@@ -1548,7 +1548,7 @@ static void c_noannounce(const char *key, char *var)
 
 static char *p_noannounce(void)
 {
-  return print_config_long2(gnetwork->noannounce);
+  return print_config_long2((ir_int64)(gnetwork->noannounce));
 }
 
 static void c_offline(const char *key, char *var)
@@ -1563,7 +1563,7 @@ static void c_offline(const char *key, char *var)
 
 static char *p_offline(void)
 {
-  return print_config_long2(gnetwork->offline);
+  return print_config_long2((ir_int64)(gnetwork->offline));
 }
 
 static void c_overallmaxspeeddaydays(const char * UNUSED(key), char *var)
@@ -1705,7 +1705,7 @@ static void c_plaintext(const char *key, char *var)
 
 static char *p_plaintext(void)
 {
-  return print_config_long2(gnetwork->plaintext);
+  return print_config_long2((ir_int64)(gnetwork->plaintext));
 }
 
 static void c_proxyinfo(const char *key, char *var)
@@ -1730,7 +1730,7 @@ static void c_restrictlist(const char *key, char *var)
 
 static char *p_restrictlist(void)
 {
-  return print_config_long2(gnetwork->restrictlist);
+  return print_config_long2((ir_int64)(gnetwork->restrictlist));
 }
 
 static void c_restrictsend(const char *key, char *var)
@@ -1745,7 +1745,7 @@ static void c_restrictsend(const char *key, char *var)
 
 static char *p_restrictsend(void)
 {
-  return print_config_long2(gnetwork->restrictsend);
+  return print_config_long2((ir_int64)(gnetwork->restrictsend));
 }
 
 static void c_send_listfile(const char *key, char *var)
@@ -1760,7 +1760,7 @@ static void c_send_listfile(const char *key, char *var)
 
 static char *p_send_listfile(void)
 {
-  return print_config_long2(gdata.send_listfile);
+  return print_config_long2((ir_int64)(gdata.send_listfile));
 }
 
 static void c_server(const char *key, char *var)
@@ -1822,7 +1822,7 @@ static void c_slotsmax(const char * UNUSED(key), char *var)
 
 static char *p_slotsmax(void)
 {
-  return print_config_long2(gdata.slotsmax);
+  return print_config_long2((ir_int64)(gdata.slotsmax));
 }
 
 static void d_slotsmax(const char *key)
@@ -1841,7 +1841,7 @@ static void c_slow_privmsg(const char *key, char *var)
 
 static char *p_slow_privmsg(void)
 {
-  return print_config_long2(gnetwork->slow_privmsg);
+  return print_config_long2((ir_int64)(gnetwork->slow_privmsg));
 }
 
 static void c_statefile(const char * UNUSED(key), char *var)
@@ -2476,7 +2476,7 @@ void config_reset(void)
   reset_config_func();
 }
 
-static int config_expand_search_typ(config_name_t config_name_f, const char *key, size_t len, const char **first)
+static size_t config_expand_search_typ(config_name_t config_name_f, const char *key, size_t len, const char **first)
 {
   const char *name;
   size_t found = 0;
@@ -2514,7 +2514,7 @@ static void config_expand_list_typ(config_name_t config_name_f, const char *key,
 }
 
 /* expand config keyword to commandline */
-int config_expand(char *buffer, size_t max, int print)
+size_t config_expand(char *buffer, size_t max, int print)
 {
   const char *first = NULL;
   size_t found = 0;
