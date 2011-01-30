@@ -339,14 +339,74 @@ void u_parseit(userinput * const u) {
    
    }
 
-size_t u_expand_command(void)
+static const char *expand_args_shutdown[] = {
+  "now", "delayed", "cancel", NULL
+};
+
+static int u_expand_list(char *buffer, size_t max, const char **list)
 {
-  char *cmd;
-  char *end;
+  const char *first = NULL;
+  size_t found = 0;
   size_t j;
   int i;
+
+  j = strlen(buffer);
+  for (i=0; list[i]; i++) {
+    if (strncmp(list[i], buffer, j))
+      continue;
+
+    found++;
+    if (first == NULL) first = list[i];
+  }
+  if (found == 0)
+    return 0;
+  if (found == 1) {
+    snprintf(buffer, max, "%s ", first);
+    return strlen(first) - j + 1;
+  }
+  tostdout("** Args:");
+  for (i=0; list[i]; i++) {
+    if (strncmp(list[i], buffer, j))
+      continue;
+
+    if (list[i] != first)
+      tostdout(",");
+    tostdout(" %s", list[i]);
+  }
+  tostdout("\n");
+  return 0;
+}
+
+static int u_expand_args(const char *args)
+{
+  char *buffer;
+  size_t max;
+
+  buffer = strchr(gdata.console_input_line, ' ');
+  if (buffer == NULL)
+    return 0;
+  ++buffer;
+  max = INPUT_BUFFER_LENGTH - strlen(buffer);
+  if (strcmp(args, "act") == 0) {
+    return u_expand_list(buffer, max, expand_args_shutdown);
+  }
+  if (strcmp(args, "key") == 0) {
+    return config_expand(buffer, max, 1);
+  }
+  if (strcmp(args, "key value") == 0) {
+    return config_expand(buffer, max, 0);
+  }
+  return 0;
+}
+
+size_t u_expand_command(void)
+{
+  const char *first = NULL;
+  char *cmd;
+  char *end;
   size_t found = 0;
-  int first = -1;
+  size_t j;
+  int i;
 
   cmd = mystrdup(gdata.console_input_line);
   end = strchr(cmd, ' ');
@@ -359,13 +419,21 @@ size_t u_expand_command(void)
       if ((userinput_parse[i].methods_allowed & method_console) == 0)
         continue;
 
+      if (userinput_parse[i].args) {
+        j = u_expand_args(userinput_parse[i].args);
+        if (j > 0) {
+          mydelete(cmd);
+          return j;
+        }
+      }
+
       tostdout("** Command: %s %s, %s\n",
                cmd, userinput_parse[i].args ? userinput_parse[i].args : "(no args)",
                userinput_parse[i].desc);
       break;
     }
     mydelete(cmd);
-    return found;
+    return 0;
   }
   caps(cmd);
   j = strlen(cmd);
@@ -377,7 +445,7 @@ size_t u_expand_command(void)
       continue;
 
     found++;
-    if (first < 0) first = i;
+    if (first == NULL) first = userinput_parse[i].command;
   }
   if (found == 0) {
     tostdout("** User Command Not Recognized, try \"HELP\"");
@@ -387,8 +455,8 @@ size_t u_expand_command(void)
   }
   if (found == 1) {
     mydelete(cmd);
-    strcpy(gdata.console_input_line, userinput_parse[first].command);
-    return strlen(userinput_parse[first].command) - j;
+    snprintf(gdata.console_input_line, INPUT_BUFFER_LENGTH, "%s ", first);
+    return strlen(first) - j + 1;
   }
   tostdout("** Commands:");
   for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
@@ -398,7 +466,7 @@ size_t u_expand_command(void)
     if ((userinput_parse[i].methods_allowed & method_console) == 0)
       continue;
 
-    if (i != first)
+    if (userinput_parse[i].command != first)
       tostdout(",");
     tostdout(" %s", userinput_parse[i].command);
   }

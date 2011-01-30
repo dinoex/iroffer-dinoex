@@ -2476,6 +2476,72 @@ void config_reset(void)
   reset_config_func();
 }
 
+static int config_expand_search_typ(config_name_t config_name_f, const char *key, size_t len, const char **first)
+{
+  const char *name;
+  size_t found = 0;
+  unsigned int i;
+
+  for (i = 0; ; ++i) {
+    name = config_name_f(i);
+    if (name == NULL)
+      break;
+    if (strncmp(name, key, len))
+      continue;
+
+    found++;
+    if (*first == NULL) *first = name;
+  }
+  return found;
+}
+
+static void config_expand_list_typ(config_name_t config_name_f, const char *key, size_t len, const char *first)
+{
+  const char *name;
+  unsigned int i;
+
+  for (i = 0; ; ++i) {
+    name = config_name_f(i);
+    if (name == NULL)
+      break;
+    if (strncmp(name, key, len))
+      continue;
+
+    if (first != name)
+      tostdout(",");
+    tostdout(" %s", name);
+  }
+}
+
+/* expand config keyword to commandline */
+int config_expand(char *buffer, size_t max, int print)
+{
+  const char *first = NULL;
+  size_t found = 0;
+  size_t j;
+
+  updatecontext();
+
+  j = strlen(buffer);
+  found = config_expand_search_typ(config_name_bool, buffer, j, &first);
+  found += config_expand_search_typ(config_name_int, buffer, j, &first);
+  found += config_expand_search_typ(config_name_string, buffer, j, &first);
+  found += config_expand_search_typ(print ? config_name_fprint : config_name_func, buffer, j, &first);
+  if (found == 0)
+    return 0;
+  if (found == 1) {
+    snprintf(buffer, max, "%s ", first);
+    return strlen(first) - j + 1;
+  }
+  tostdout("** Args:");
+  config_expand_list_typ(config_name_bool, buffer, j, first);
+  config_expand_list_typ(config_name_int, buffer, j, first);
+  config_expand_list_typ(config_name_string, buffer, j, first);
+  config_expand_list_typ(print ? config_name_fprint : config_name_func, buffer, j, first);
+  tostdout("\n");
+  return 0;
+}
+
 /* check all tables are sorted for fast access */
 void config_startup(void)
 {
