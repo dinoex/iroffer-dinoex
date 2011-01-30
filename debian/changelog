@@ -1,64 +1,106 @@
-iroffer-dinoex (3.26-1) unstable; urgency=low
+iroffer-dinoex (3.26~beta32-0~maverickfiras1) maverick; urgency=low
 
-  * Update to 3.26
+  * New upstream beta release.
 
-iroffer-dinoex (3.25-1) unstable; urgency=low
+ -- Firas Kraiem <firas@fkraiem.org>  Thu, 27 Jan 2011 22:43:00 +0100
 
-  * Update to 3.25
+iroffer-dinoex (3.26~beta31-0~maverickfiras1) maverick; urgency=low
 
-iroffer-dinoex (3.24-1) unstable; urgency=low
+  * New upstream beta release.
+  * Added README.Debian in English, French and German.
 
-  * Update to 3.24
+ -- Firas Kraiem <firas@fkraiem.org>  Thu, 27 Jan 2011 22:37:48 +0100
 
-iroffer-dinoex (3.23-1) unstable; urgency=low
+iroffer-dinoex (3.26~beta29-0~maverickfiras2) maverick; urgency=low
 
-  * Update to 3.23
+  * Fix iroffer-dinoex-LANG.install files.
 
-iroffer-dinoex (3.22-1) unstable; urgency=low
+ -- Firas Kraiem <firas@fkraiem.org>  Thu, 27 Jan 2011 20:08:21 +0100
 
-  * Update to 3.22
+iroffer-dinoex (3.26~beta29-0~maverickfiras1) maverick; urgency=low
 
-iroffer-dinoex (3.21-1) unstable; urgency=low
+  * New upstream beta release.
+  * Remove iroffer-dinoex meta package, it is now the real English
+    version package.
+  * debian/rules: use "make clobber" in lieu of "make clean".
 
-  * Update to 3.21
+ -- Firas Kraiem <firas@fkraiem.org>  Thu, 27 Jan 2011 18:51:13 +0100
 
-iroffer-dinoex (3.20-1) unstable; urgency=low
+iroffer-dinoex (3.26~beta28-0~maverickfiras2) maverick; urgency=low
 
-  * Update to 3.20
+  * debian/control:
+    - English version is now iroffer-dinoex-en.
+    - Added two metapackages:
+      . iroffer-dinoex: depends on iroffer-dinoex-en only.
+      . iroffer-dinoex-all: depends on all translations.
 
-iroffer-dinoex (3.19-1) unstable; urgency=low
+ -- Firas Kraiem <firas@fkraiem.org>  Thu, 27 Jan 2011 13:32:47 +0100
 
-  * Update to 3.19
+iroffer-dinoex (3.26~beta28-0~maverickfiras1) maverick; urgency=low
 
-iroffer-dinoex (3.18-1) unstable; urgency=low
+  * New upstream beta release.
+  * debian/control: create one binary package for each translation.
+  * debian/control: add build-dependency on libruby1.8-dev (for Ruby
+    scripting).
+  * debian/rules: build and install all translations.
+  * debian/rules: configure with -ruby.
 
-  * Update to 3.18
+ -- Firas Kraiem <firas@fkraiem.org>  Thu, 27 Jan 2011 10:31:10 +0100
 
-iroffer-dinoex (3.17-1) unstable; urgency=low
+iroffer-dinoex (3.25-0~maverickfiras1) maverick; urgency=low
 
-  * Update to 3.17
+  * New upstream release.
 
-iroffer-dinoex (3.16-1) unstable; urgency=low
+ -- Firas Kraiem <firas@fkraiem.org>  Sun, 12 Dec 2010 14:50:09 +0100
 
-  * Update to 3.16
+iroffer-dinoex (3.24-0~maverickfiras1) maverick; urgency=low
+
+  * New upstream release.
+  * debian/control: make iroffer-dinoex Replace iroffer.
+  * Some packaging changes to make lintian happy:
+    - debian/control: bumped Standards-Version to 3.9.1.
+    - debian/copyright: added a pointer to the text of the LGPL 2.1 in
+      /usr/share/common-licenses
+    - debian/iroffer-dinoex.docs: removed the LICENSE file.
+
+ -- Firas Kraiem <firas@fkraiem.org>  Thu, 21 Oct 2010 21:37:48 +0200
+
+iroffer-dinoex (3.23-0~firas1) lucid; urgency=low
+
+  * New upstream release.
+
+ -- Firas Kraiem <firas@fkraiem.org>  Sun, 08 Aug 2010 08:26:13 +0200
+
+iroffer-dinoex (3.22-0~firas2) lucid; urgency=low
+
+  * New upstream release.
+  * Various packaging changes to make lintian happy.
+
+ -- Firas Kraiem <firas@fkraiem.org>  Tue, 15 Jun 2010 17:29:46 +0200
+
+iroffer-dinoex (3.20-0~ppa1) karmic; urgency=low
+
+  * New upstream release.
+
+ -- Firas Kraiem <firas@fkraiem.org>  Sun, 28 Feb 2010 14:06:19 +0100
+
+iroffer-dinoex (3.17-0~ppa1) karmic; urgency=low
+
+  * New upstream release.
+
+ -- Firas Kraiem <firas@fkraiem.org>  Sun, 01 Nov 2009 19:16:52 +0100
+
+iroffer-dinoex (3.16-0~ppa1) karmic; urgency=low
+
+  * New upstream release.
+
+ -- Firas Kraiem <firas@fkraiem.org>  Sun, 01 Nov 2009 13:25:36 +0100
 
 iroffer-dinoex (3.15-3) jaunty; urgency=low
 
   * Initial Ubuntu package.
 
  -- Firas Kraiem <firas@fkraiem.org>  Sat, 22 Aug 2009 00:57:35 +0200
-
-iroffer-dinoex (3.15-1) unstable; urgency=low
-
-  * Update to 3.15
-
-iroffer-dinoex (3.14-1) unstable; urgency=low
-
-  * Update to 3.14
-
-iroffer-dinoex (3.13-1) unstable; urgency=low
-
-  * Update to 3.13
 
 iroffer-dinoex (3.10-1) unstable; urgency=low
 

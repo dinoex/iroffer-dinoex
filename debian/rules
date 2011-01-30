@@ -23,7 +23,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-	./Configure -curl -tls -geoip 
+	./Configure -curl -tls -geoip -ruby 
 	touch configure-stamp
 
 
@@ -33,8 +33,11 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE) CONFIG_CFLAGS="$(DEB_CFLAGS)" CONFIG_LDFLAGS=""
+	$(MAKE) CONFIG_CFLAGS="$(DEB_CFLAGS)" CONFIG_LDFLAGS="" all-lang
 	#docbook-to-man debian/iroffer-dinoex.sgml > iroffer-dinoex.1
+	ln iroffer.1 iroffer-de.1
+	ln iroffer.1 iroffer-fr.1
+	ln iroffer.1 iroffer-it.1
 
 	touch $@
 
@@ -44,10 +47,11 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	[ ! -f Makefile ] || $(MAKE) clean
+	[ ! -f Makefile ] || $(MAKE) clobber
 	rm -f convertxdccfile
 	rm -f Makefile
 	rm -f src/iroffer_config.h
+	rm -f iroffer-*.1
 
 
 	dh_clean 
@@ -58,8 +62,10 @@ install: build
 	dh_prep  
 	dh_installdirs
 
+	#mkdir -p debian/tmp/usr/bin
 	# Add here commands to install the package into debian/iroffer-dinoex.
-	$(MAKE) INSDIR=$(CURDIR)/debian/iroffer-dinoex/usr/bin install
+	#$(MAKE) INSDIR=$(CURDIR)/debian/tmp/usr/bin install-all-lang
+	dh_install
 
 
 # Build architecture-independent files here.
