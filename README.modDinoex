@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+bugfix: XDCC INFO
+  Fix byteorder of CRC32 of a compressed file.
+
 363) backup statefile
   Backup statefile when version of iroffer changes
   

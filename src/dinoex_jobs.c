@@ -2247,6 +2247,29 @@ static magic_crc_t magic_crc_table[] = {
   { 0x00, 0, { 0, 0, 0, 0, 0, 0, 0, 0 } },
 };
 
+typedef union {
+  ir_uint32 i;
+  unsigned char b[4];
+} u_uint32_bytes_t;
+
+static ir_uint32 byte4_swap(ir_uint32 in)
+{
+  u_uint32_bytes_t u;
+  unsigned char c;
+
+  u.i = in;
+
+  c = u.b[3];
+  u.b[3] = u.b[0];
+  u.b[0] = c;
+
+  c = u.b[2];
+  u.b[2] = u.b[1];
+  u.b[1] = c;
+
+  return u.i;
+}
+
 /* check for CRC32 in compressed buffer */
 static unsigned long get_zip_crc32_buffer(char *buffer)
 {
@@ -2259,6 +2282,7 @@ static unsigned long get_zip_crc32_buffer(char *buffer)
     zipcrc32 = 0;
     memcpy(&zipcrc32, buffer + magic_crc_table[i].offset, 4);
     zipcrc32 = ntohl(zipcrc32);
+    zipcrc32 = byte4_swap(zipcrc32);
     return zipcrc32;
   }
   return 0;
