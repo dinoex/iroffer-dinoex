@@ -457,6 +457,7 @@ void read_statefile(void)
           if (hdr->length > sizeof(statefile_hdr_t))
             {
               char *iroffer_version = (char*)(&hdr[1]);
+              char *iroffer_now;
               iroffer_version[hdr->length-sizeof(statefile_hdr_t)-1] = '\0';
               
               if (gdata.debug > 0)
@@ -464,6 +465,25 @@ void read_statefile(void)
                   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                           "  [Written by %s]", iroffer_version);
                 }
+              iroffer_now = mycalloc(maxtextlength);
+              snprintf(iroffer_now, maxtextlength, "iroffer-dinoex " VERSIONLONG ", %s", gdata.osstring);
+              if (strcmp(iroffer_version, iroffer_now) != 0)
+                {
+                  char *statefile_tmp;
+                  char *statefile_date;
+                  statefile_date = mycalloc(maxtextlengthshort);
+                  getdatestr(statefile_date, 0, maxtextlengthshort);
+                  statefile_tmp = mystrjoin(gdata.statefile, statefile_date, '.');
+                  mydelete(statefile_date);
+                  callval = rename(gdata.statefile, statefile_tmp);
+                  if (callval < 0)
+                    {
+                      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Save New State File '%s': %s",
+                               gdata.statefile, strerror(errno));
+                    }
+                  mydelete(statefile_tmp);
+                }
+              mydelete(iroffer_now);
             }
           else
             {
