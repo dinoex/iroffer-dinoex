@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+363) backup statefile
+  Sichere das alte "statefile", wenn sich die Version von Iroffer ändert.
+
 362) offline
   Verbine nicht zu diesem Netzwerk. 
 
