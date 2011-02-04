@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+bugfix: statefile
+  Ermögliche das Lesen eines 64bit 'statefile' auf 32bit Systemen.
+
 bugfix: XDCC INFO
   Repeariere die Byte-Reihenfolge der CRC32 in einer komprimierten Datei.
 

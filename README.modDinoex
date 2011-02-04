@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+bugfix: statefile
+  Allow loading a 64bit statefile on a 32bit system.
+
 bugfix: XDCC INFO
   Fix byteorder of CRC32 of a compressed file.
 
