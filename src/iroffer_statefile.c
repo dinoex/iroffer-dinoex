@@ -168,6 +168,16 @@ typedef struct
   MD5Digest md5sum;
 } statefile_item_md5sum_info32_t;
 
+typedef struct
+{
+  statefile_hdr_t hdr;
+  statefile_uint64_t st_size;
+  statefile_uint64_t st_dev;
+  statefile_uint64_t st_ino;
+  statefile_uint64_t mtime;
+  MD5Digest md5sum;
+} statefile_item_md5sum_info64_t;
+
 #include "dinoex_statefile.c"
 
 void write_statefile(void)
@@ -636,33 +646,7 @@ void read_statefile(void)
                     break;
                     
                   case STATEFILE_TAG_XDCCS_MD5SUM_INFO:
-                    if (ihdr->length == sizeof(statefile_item_md5sum_info_t))
-                      {
-                        statefile_item_md5sum_info_t *md5sum_info = (statefile_item_md5sum_info_t*)ihdr;
-                        xd->has_md5sum = 1;
-
-                        xd->st_size = (off_t)((((ir_uint64)ntohl(md5sum_info->st_size.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_size.lower)));
-                        xd->st_dev  = (dev_t)((((ir_uint64)ntohl(md5sum_info->st_dev.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_dev.lower)));
-                        xd->st_ino  = (ino_t)((((ir_uint64)ntohl(md5sum_info->st_ino.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_ino.lower)));
-                        xd->mtime   = ntohl(md5sum_info->mtime);
-                        memcpy(xd->md5sum, md5sum_info->md5sum, sizeof(MD5Digest));
-                        break;
-                      }
-                    if (ihdr->length == sizeof(statefile_item_md5sum_info32_t))
-                      {
-                        statefile_item_md5sum_info32_t *md5sum_info = (statefile_item_md5sum_info32_t*)ihdr;
-                        xd->has_md5sum = 1;
-
-                        xd->st_size = (off_t)((((ir_uint64)ntohl(md5sum_info->st_size.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_size.lower)));
-                        xd->st_dev  = (dev_t)((((ir_uint64)ntohl(md5sum_info->st_dev.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_dev.lower)));
-                        xd->st_ino  = (ino_t)((((ir_uint64)ntohl(md5sum_info->st_ino.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_ino.lower)));
-                        xd->mtime   = ntohl(md5sum_info->mtime);
-                        memcpy(xd->md5sum, md5sum_info->md5sum, sizeof(MD5Digest));
-                      }
-                    else
-                      {
-                        read_statefile_bad_tag(hdr, "XDCC md5sum");
-                      }
+                    read_statefile_md5info(ihdr, "XDCC md5sum", xd);
                     break;
                     
                   case STATEFILE_TAG_XDCCS_CRC32:
