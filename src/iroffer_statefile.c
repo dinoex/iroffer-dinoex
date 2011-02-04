@@ -121,12 +121,6 @@ typedef struct
 typedef struct
 {
   statefile_hdr_t hdr;
-  time_t g_time;
-} statefile_item_generic_time_t;
-
-typedef struct
-{
-  statefile_hdr_t hdr;
   ir_int32 g_int;
 } statefile_item_generic_int_t;
 
@@ -134,7 +128,7 @@ typedef struct
 {
   statefile_hdr_t hdr;
   ir_uint32 g_uint;
-} statefile_item_generic_uint_t;
+} statefile_item_generic_uint_t, statefile_item_generic_time_t;
 
 typedef struct
 {
@@ -147,16 +141,6 @@ typedef struct
   statefile_hdr_t hdr;
   float g_float;
 } statefile_item_generic_float_t;
-
-typedef struct
-{
-  statefile_hdr_t hdr;
-  statefile_uint64_t st_size;
-  statefile_uint64_t st_dev;
-  statefile_uint64_t st_ino;
-  time_t mtime;
-  MD5Digest md5sum;
-} statefile_item_md5sum_info_t;
 
 typedef struct
 {
@@ -719,7 +703,6 @@ void read_statefile(void)
                     memset(&st, 0, sizeof(st));
                     break;
                   }
-                
                 if (!xd->has_md5sum ||
                     (xd->st_ino   != st.st_ino) ||
                     (xd->mtime    != st.st_mtime) ||
