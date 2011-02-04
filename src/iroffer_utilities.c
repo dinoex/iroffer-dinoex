@@ -1115,6 +1115,10 @@ void dumpgdata(void)
   gdata_iter_print_string(desc);
   gdata_iter_print_string(note);
   gdata_iter_print_string(trigger);
+  gdata_iter_print_number_cast("%d", mtime, int);
+  gdata_iter_print_number_cast("%d", st_size, int);
+  gdata_iter_print_number_cast("%d", st_dev, int);
+  gdata_iter_print_number_cast("%d", st_ino, int);
   gdata_iter_print_number_cast("%d", xtime, int);
   dump_line("  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "d",
           iter,
