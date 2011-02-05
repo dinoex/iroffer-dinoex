@@ -205,8 +205,8 @@ typedef struct {
 
   time_t next_identify;
   time_t next_restrict;
-  unsigned long ourip;
-  unsigned long r_ourip;
+  ir_uint32 ourip;
+  ir_uint32 r_ourip;
 
   ir_sockaddr_union_t myip;
   int cdummy;

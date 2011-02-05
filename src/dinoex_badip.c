@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -22,7 +22,7 @@
 #include "dinoex_geoip.h"
 #include "dinoex_badip.h"
 
-static unsigned int is_in_badip4(unsigned long remoteip)
+static unsigned int is_in_badip4(ir_uint32 remoteip)
 {
   badip4 *b;
 
@@ -86,7 +86,7 @@ unsigned int is_in_badip(ir_sockaddr_union_t *sa)
   }
 }
 
-static void count_badip4(unsigned long remoteip)
+static void count_badip4(ir_uint32 remoteip)
 {
   badip4 *b;
 

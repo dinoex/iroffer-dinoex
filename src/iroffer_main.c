@@ -525,12 +525,8 @@ static void mainloop (void) {
                     gnetwork->ourip = ntohl(gnetwork->myip.sin.sin_addr.s_addr);
                     if (gdata.debug > 0)
                       {
-                        ioutput(OUT_S, COLOR_YELLOW, "ourip = %lu.%lu.%lu.%lu",
-                                (gnetwork->ourip >> 24) & 0xFF,
-                                (gnetwork->ourip >> 16) & 0xFF,
-                                (gnetwork->ourip >>  8) & 0xFF,
-                                (gnetwork->ourip      ) & 0xFF
-                                );
+                        ioutput(OUT_S, COLOR_YELLOW, "ourip = " IPV4_PRINT_FMT,
+                                IPV4_PRINT_DATA(gnetwork->ourip));
                       }
                   }
               }
@@ -1547,7 +1543,7 @@ static void mainloop (void) {
                           MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
                   if (!gdata.nocrc32)
                     ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                            "CRC32: [Pack %u] is %.8lX",
+                            "CRC32: [Pack %u] is " CRC32_PRINT_FMT,
                             number_of_pack(gdata.md5build.xpack), gdata.md5build.xpack->crc32);
                   
                   FD_CLR(gdata.md5build.file_fd, &gdata.readset);

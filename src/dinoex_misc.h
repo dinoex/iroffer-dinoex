@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -60,7 +60,7 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist);
 
 int select_starting_transfer(unsigned int max);
 
-char *color_text(char *desc, int color);
+char *color_text(char *desc, unsigned int color);
 char *xd_color_description(const xdcc *xd);
 
 group_admin_t *verifypass_group(const char *hostmask, const char *passwd);

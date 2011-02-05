@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -29,7 +29,11 @@
 #endif
 
 #define XDCC_SEND_LIST ((unsigned int)-1)
-#define MAX_XML_CHUNK		8192
+#define MAX_XML_CHUNK  8192
+
+#define IPV4_PRINT_FMT "%u.%u.%u.%u"
+#define IPV4_PRINT_DATA(x) (x >> 24) & 0xFF, (x >> 16) & 0xFF, (x >> 8) & 0xFF, (x) & 0xFF
+#define CRC32_PRINT_FMT "%.8X"
 
 /* terminal */
 #define IRVT_CURSOR_HOME0       "\x1b[H"

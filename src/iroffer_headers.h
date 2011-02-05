@@ -176,10 +176,11 @@ typedef struct {
    time_t xtime;
    unsigned int has_md5sum;
    unsigned int has_crc32;
-   unsigned long crc32;
    MD5Digest md5sum;
+   ir_uint32 crc32;
    int file_fd;
    unsigned int file_fd_count;
+   unsigned int dummy;
    off_t file_fd_location;
 #ifdef HAVE_MMAP
    irlist_t mmaps;
@@ -265,7 +266,8 @@ typedef struct
   long tx_bucket;
   time_t restrictsend_bad;
   ir_uint64 connecttimems;
-  unsigned long remoteip;
+  ir_uint32 remoteip;
+  ir_uint32 idummy;
   float lastspeed;
   float maxspeed;
   xdcc *xpack;
@@ -279,7 +281,7 @@ typedef struct
   char close_to_timeout;
   char overlimit;
   char unlimited;
-  short dummy;
+  short sdummy;
   transfer_status_e tr_status;
   unsigned int mirc_dcc64;
 } transfer;

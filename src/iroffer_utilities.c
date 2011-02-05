@@ -887,7 +887,7 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(http_bad_ip4, badip4);
-  dump_line("  : remoteip=0x%.8lX",
+  dump_line("  : remoteip=0x%.8X",
             iter->remoteip);
   dump_line("  : lastcontact=%ld connecttime=%ld",
             (long)iter->lastcontact,
@@ -930,7 +930,7 @@ void dumpgdata(void)
       gdata_print_string(networks[ss].user_nick);
       gdata_print_string(networks[ss].caps_nick);
       /* r_config_nick */
-      gdata_print_number("0x%.8lX", networks[ss].ourip);
+      gdata_print_number("0x%.8X", networks[ss].ourip);
       /* r_ourip */
       gdata_print_string(networks[ss].curserver.hostname);
       gdata_print_uint(networks[ss].curserver.port);
@@ -1135,7 +1135,7 @@ void dumpgdata(void)
   dump_line(
           "  : has_md5=%d md5sum=" MD5_PRINT_FMT,
           iter->has_md5sum, MD5_PRINT_DATA(iter->md5sum));
-  dump_line("  : crc32=%.8lX", iter->crc32);
+  dump_line("  : crc32=" CRC32_PRINT_FMT, iter->crc32);
   gdata_iter_print_string(group);
   gdata_iter_print_string(group_desc);
   gdata_iter_print_string(lock);

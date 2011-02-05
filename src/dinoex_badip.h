@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -17,8 +17,9 @@ typedef struct
 {
   time_t lastcontact;
   time_t connecttime;
-  unsigned long remoteip;
   unsigned long count;
+  ir_uint32 remoteip;
+  ir_uint32 dummy;
 } badip4;
 
 typedef struct

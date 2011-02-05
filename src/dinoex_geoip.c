@@ -101,7 +101,7 @@ static const char *geoip_return_reusult(ir_geoip *geoip, const char *result)
   return geoip->code;
 }
 
-static const char *check_geoip(unsigned long remoteip)
+static const char *check_geoip(ir_uint32 remoteip)
 {
   static char hostname[20];
   const char *result;
@@ -110,8 +110,8 @@ static const char *check_geoip(unsigned long remoteip)
   if (geoip4.gi == NULL)
     return geoip_return_null(&geoip4);
 
-  snprintf(hostname, sizeof(hostname), "%lu.%lu.%lu.%lu",
-            remoteip>>24, (remoteip>>16) & 0xFF, (remoteip>>8) & 0xFF, remoteip & 0xFF );
+  snprintf(hostname, sizeof(hostname), IPV4_PRINT_FMT,
+           IPV4_PRINT_DATA(remoteip));
   result = GeoIP_country_code_by_addr(geoip4.gi, hostname);
   return geoip_return_reusult(&geoip4, result);
 }
@@ -207,7 +207,7 @@ static unsigned int http_check_country(const char *country)
 }
 
 /* check a HTTP connection against the GeoIP database */
-unsigned int http_check_geoip(unsigned long remoteip)
+unsigned int http_check_geoip(ir_uint32 remoteip)
 {
   const char *country;
 

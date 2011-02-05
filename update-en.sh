@@ -47,6 +47,7 @@ then
 fi
 fgrep -h \" src/iroffer*.c src/dinoex*.c |
 grep -v "^#include" |
+fgrep -v "NOTRANSLATE" |
 sed -e 's|\\"|°|g' |
 awk -F \[\"\] '
 {
@@ -77,7 +78,8 @@ while read nr text
 do
 	text="${text#'}"
 	text="${text%'}"
-	if fgrep -q "${text}" src/*.c
+	grep=`fgrep "${text}" src/*.c | fgrep -v NOTRANSLATE`
+	if test "${grep}" != ""
 	then
 		continue
 	fi

@@ -41,12 +41,9 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa)
   return snprintf(buffer, len, "host=%s port=%s", hbuf, sbuf);
 #else /* NO_GETADDRINFO */
   const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
-  unsigned long to_ip = ntohl(remoteaddr->sin_addr.s_addr);
-  return snprintf(buffer, len, "%lu.%lu.%lu.%lu:%d",
-                  (to_ip >> 24) & 0xFF,
-                  (to_ip >> 16) & 0xFF,
-                  (to_ip >>  8) & 0xFF,
-                  (to_ip      ) & 0xFF,
+  ir_uint32 to_ip = ntohl(remoteaddr->sin_addr.s_addr);
+  return snprintf(buffer, len, IPV4_PRINT_FMT ":%d",
+                  IPV4_PRINT_DATA(to_ip),
                   ntohs(remoteaddr->sin_port));
 #endif /* NO_GETADDRINFO */
 }
@@ -55,7 +52,7 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
 {
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
-  unsigned long ip;
+  ir_uint32 ip;
   socklen_t salen;
 
   if (sa->sa.sa_family == AF_INET) {
@@ -63,7 +60,7 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
       ip = gnetwork->ourip;
     else
       ip = ntohl(sa->sin.sin_addr.s_addr);
-    return snprintf(buffer, len, "%lu %d",
+    return snprintf(buffer, len, "%u %d",
                     ip, ntohs(sa->sin.sin_port));
   }
   salen = (sa->sa.sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
@@ -73,18 +70,18 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
   }
   return snprintf(buffer, len, "%s %s", hbuf, sbuf);
 #else /* NO_GETADDRINFO */
-  unsigned long ip;
+  ir_uint32 ip;
 
   if (gnetwork->usenatip)
     ip = gnetwork->ourip;
   else
     ip = ntohl(sa->sin.sin_addr.s_addr);
-  return snprintf(buffer, len, "%lu %d",
+  return snprintf(buffer, len, "%u %d",
                   ip, ntohs(sa->sin.sin_port));
 #endif /* NO_GETADDRINFO */
 }
 
-static void update_getip_net(unsigned int net, unsigned long ourip)
+static void update_getip_net(unsigned int net, ir_uint32 ourip)
 {
   char *oldtxt;
   gnetwork_t *backup;
@@ -122,7 +119,7 @@ void update_natip(const char *var)
   struct hostent *hp;
   struct in_addr old;
   struct in_addr in;
-  unsigned long oldip;
+  ir_uint32 oldip;
   char *oldtxt;
 
   updatecontext();
@@ -168,9 +165,9 @@ void update_natip(const char *var)
   if (gdata.debug > 0) ioutput(OUT_S, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
 
   /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
-  if (((gnetwork->ourip & 0xFF000000UL) == 0x0A000000UL) ||
-      ((gnetwork->ourip & 0xFFF00000UL) == 0xAC100000UL) ||
-      ((gnetwork->ourip & 0xFFFF0000UL) == 0xC0A80000UL)) {
+  if (((gnetwork->ourip & 0xFF000000U) == 0x0A000000U) ||
+      ((gnetwork->ourip & 0xFFF00000U) == 0xAC100000U) ||
+      ((gnetwork->ourip & 0xFFFF0000U) == 0xC0A80000U)) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "usenatip of %s looks wrong, this is probably not what you want to do",
              inet_ntoa(in));
   }
@@ -292,15 +289,12 @@ static void my_get_upnp_data(const struct sockaddr *sa)
   }
 #else /* NO_GETADDRINFO */
   const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
-  unsigned long to_ip;
+  ir_uint32 to_ip;
   char hbuf[maxtextlengthshort], sbuf[maxtextlengthshort];
 
   to_ip = ntohl(remoteaddr->sin_addr.s_addr);
-  snprintf(hbuf, sizeof(hbuf), "%lu.%lu.%lu.%lu",
-           (to_ip >> 24) & 0xFF,
-           (to_ip >> 16) & 0xFF,
-           (to_ip >>  8) & 0xFF,
-           (to_ip      ) & 0xFF);
+  snprintf(hbuf, sizeof(hbuf), IPV4_PRINT_FMT,
+           IPV4_PRINT_DATA(to_ip));
   snprintf(sbuf, sizeof(sbuf), "%d", ntohs(remoteaddr->sin_port));
 #endif /* NO_GETADDRINFO */
   if (sa->sa_family != AF_INET)
@@ -530,7 +524,7 @@ void child_resolver(int family)
 /* returns a text with the external IP address of the bot */
 const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, unsigned int net)
 {
-  long ip;
+  ir_uint32 ip;
 
   if (sa->sa.sa_family == AF_INET) {
     if (gdata.networks[net].usenatip)

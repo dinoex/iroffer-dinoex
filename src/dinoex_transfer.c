@@ -194,9 +194,10 @@ unsigned int t_check_ip_access(transfer *const tr)
   return 0;
 }
 
-static void t_passive(transfer * const tr, unsigned short remoteport)
+static void t_passive(transfer * const tr, ir_uint16 remoteport)
 {
   char *msg;
+  ir_uint32 netval;
   SIGNEDSOCK int addrlen;
   int retval;
 
@@ -213,7 +214,8 @@ static void t_passive(transfer * const tr, unsigned short remoteport)
     addrlen = sizeof(struct sockaddr_in);
     tr->con.remote.sin.sin_family = AF_INET;
     tr->con.remote.sin.sin_port = htons(remoteport);
-    tr->con.remote.sin.sin_addr.s_addr = htonl(atoul(tr->con.remoteaddr));
+    netval = atoul(tr->con.remoteaddr);
+    tr->con.remote.sin.sin_addr.s_addr = htonl(netval);
   } else {
     addrlen = sizeof(struct sockaddr_in6);
     tr->con.remote.sin6.sin6_family = AF_INET6;

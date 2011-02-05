@@ -957,7 +957,7 @@ static void u_dcld(const userinput * const u)
 
 static void u_info(const userinput * const u)
 {
-  unsigned long zipcrc32;
+  ir_uint32 zipcrc32;
   xdcc *xd;
   char *sizestrstr;
   char *sendnamestr;
@@ -1029,12 +1029,12 @@ static void u_info(const userinput * const u)
     }
   if (xd->has_crc32)
     {
-      a_respond(u, " crc32          %.8lX", xd->crc32);
+      a_respond(u, " crc32          " CRC32_PRINT_FMT, xd->crc32);
     }
   zipcrc32 = get_zip_crc32_pack(xd);
   if (zipcrc32 != 0)
     {
-      a_respond(u, " content crc32  %.8lX", zipcrc32);
+      a_respond(u, " content crc32  " CRC32_PRINT_FMT, zipcrc32);
     }
   if ((u->level > 0) && (xd->xtime != 0))
     {
