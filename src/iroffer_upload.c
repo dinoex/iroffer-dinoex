@@ -195,10 +195,10 @@ void l_transfersome (upload * const l) {
      {
        if (l->mirc_dcc64)
          {
-           g = htonl((unsigned long)((l->bytesgot >> 32) & 0xFFFFFFFFL));
+           g = htonl((ir_uint32)((l->bytesgot >> 32) & 0xFFFFFFFFL));
            send(l->con.clientsocket, (unsigned char*)&g, 4, MSG_NOSIGNAL);
          }
-       g = htonl((unsigned long)(l->bytesgot & 0xFFFFFFFF));
+       g = htonl((ir_uint32)(l->bytesgot & 0xFFFFFFFF));
        send(l->con.clientsocket, (unsigned char*)&g, 4, MSG_NOSIGNAL);
      }
    
