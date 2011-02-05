@@ -2546,7 +2546,7 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
   if (d == NULL)
     d = opendir(thedir);
 
-  if (!d) {
+  if (d == NULL) {
     a_respond(u, "Can't Access Directory: %s %s", thedir, strerror(errno));
     return;
   }
@@ -2599,7 +2599,7 @@ static void a_newgroup_sub(const userinput * const u, const char *thedir, DIR *d
 
 void a_newgroup(const userinput * const u)
 {
-  DIR *d;
+  DIR *d = NULL;
   char *thedir;
 
   updatecontext();
@@ -2614,12 +2614,7 @@ void a_newgroup(const userinput * const u)
     caps(u->arg1);
 
   thedir = mystrdup(u->arg2);
-  d = a_open_dir(&thedir);
-  if (!d) {
-    a_respond(u, "Can't Access Directory: %s %s", u->arg2, strerror(errno));
-  } else {
-    a_newgroup_sub(u, thedir, d, u->arg1);
-  }
+  a_newgroup_sub(u, thedir, d, u->arg1);
   mydelete(thedir);
   return;
 }
@@ -2692,8 +2687,8 @@ void a_chtime(const userinput * const u)
   const char *format;
   char *oldstr;
   char *newstr;
+  time_t val = 0;
   unsigned int num;
-  unsigned long val = 0;
 
   updatecontext();
 
