@@ -36,11 +36,12 @@
 typedef struct {
   const char *hg_group;
   const char *hg_desc;
+  off_t hg_sizes;
+  off_t hg_traffic;
   unsigned int hg_packs;
   unsigned int hg_agets;
   float hg_rgets;
-  off_t hg_sizes;
-  off_t hg_traffic;
+  float hg_dummy;
 } html_group_t;
 
 static int http_listen[MAX_VHOSTS];
@@ -110,32 +111,33 @@ typedef struct {
 } http_magic_const_t;
 
 static const http_magic_const_t http_magic[] = {
-  { "txt", "text/plain" },
-  { "html", "text/html" },
-  { "htm", "text/html" },
-  { "ico", "image/x-icon" },
-  { "png", "image/png" },
-  { "jpg", "image/jpeg" },
-  { "jpeg", "image/jpeg" },
-  { "gif", "image/gif" },
-  { "css", "text/css" },
-  { "xml", "application/xml" },
-  { "js", "application/x-javascript" },
-  { NULL, "application/octet-stream" }
+  { "txt", "text/plain" }, /* NOTRANSLATE */
+  { "html", "text/html" }, /* NOTRANSLATE */
+  { "htm", "text/html" }, /* NOTRANSLATE */
+  { "ico", "image/x-icon" }, /* NOTRANSLATE */
+  { "png", "image/png" }, /* NOTRANSLATE */
+  { "jpg", "image/jpeg" }, /* NOTRANSLATE */
+  { "jpeg", "image/jpeg" }, /* NOTRANSLATE */
+  { "gif", "image/gif" }, /* NOTRANSLATE */
+  { "css", "text/css" }, /* NOTRANSLATE */
+  { "xml", "application/xml" }, /* NOTRANSLATE */
+  { "js", "application/x-javascript" }, /* NOTRANSLATE */
+  { NULL, "application/octet-stream" } /* NOTRANSLATE */
 };
 
 typedef struct {
-  char s_ch;
+  int s_ch;
+  int dummy;
   const char *s_html;
 } http_special_t;
 
 static const http_special_t http_special[] = {
-  { '&', "&amp;" },
-  { '<', "&lt;" },
-  { '>', "&gt;" },
-  { '"', "&quot;" },
-  { '\'', "&#39;" },
-  { 0, NULL },
+  { '&', 0, "&amp;" }, /* NOTRANSLATE */
+  { '<', 0, "&lt;" }, /* NOTRANSLATE */
+  { '>', 0, "&gt;" }, /* NOTRANSLATE */
+  { '"', 0, "&quot;" }, /* NOTRANSLATE */
+  { '\'', 0, "&#39;" }, /* NOTRANSLATE */
+  { 0, 0, NULL },
 };
 
 
@@ -888,11 +890,10 @@ static void h_accept(unsigned int i)
   h->con.remote = remoteaddr;
   if (http_family[i] != AF_INET) {
     h->con.family = remoteaddr.sin6.sin6_family;
-    h->con.remoteport = ntohs(remoteaddr.sin6.sin6_port);
   } else {
     h->con.family = remoteaddr.sin.sin_family;
-    h->con.remoteport = ntohs(remoteaddr.sin.sin_port);
   }
+  h->con.remoteport = get_port(&(remoteaddr));
   h->con.connecttime = gdata.curtime;
   h->con.lastcontact = gdata.curtime;
   h->status = HTTP_STATUS_GETTING;
@@ -1456,7 +1457,7 @@ static void h_html_file(http * const h)
     if (xd->has_md5sum)
       len += snprintf(tlabel + len, maxtextlength - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
     if (xd->has_crc32)
-      len += snprintf(tlabel + len, maxtextlength - len, "\ncrc32: %.8lX", xd->crc32);
+      len += snprintf(tlabel + len, maxtextlength - len, "\ncrc32: " CRC32_PRINT_FMT, xd->crc32);
     tempstr = mymalloc(maxtextlength);
     len = 0;
     if (gdata.show_date_added) {

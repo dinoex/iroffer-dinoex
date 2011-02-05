@@ -686,7 +686,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
   }
 
   newcrc = mymalloc(10);
-  snprintf(newcrc, 10, "%.8lX", xd->crc32);
+  snprintf(newcrc, 10, CRC32_PRINT_FMT, xd->crc32);
   line = mymalloc(strlen(xd->file)+1);
 
   /* ignore path */
@@ -738,7 +738,7 @@ static void crc32_init(void)
   gdata.crc32build.crc_total = ~0U;
 }
 
-void crc32_update(char *buf, unsigned long len)
+void crc32_update(char *buf, size_t len)
 {
   char *p;
   ir_uint32 crc = gdata.crc32build.crc;
@@ -2271,9 +2271,9 @@ static ir_uint32 byte4_swap(ir_uint32 in)
 }
 
 /* check for CRC32 in compressed buffer */
-static unsigned long get_zip_crc32_buffer(char *buffer)
+static ir_uint32 get_zip_crc32_buffer(char *buffer)
 {
-  unsigned long zipcrc32;
+  ir_uint32 zipcrc32;
   unsigned int i;
 
   for (i=0; magic_crc_table[i].len > 0; i++) {
@@ -2289,9 +2289,9 @@ static unsigned long get_zip_crc32_buffer(char *buffer)
 }
 
 /* check for CRC32 in compressed pack */
-unsigned long get_zip_crc32_pack(xdcc *xd)
+ir_uint32 get_zip_crc32_pack(xdcc *xd)
 {
-  unsigned long zipcrc32;
+  ir_uint32 zipcrc32;
   char *file;
   char *buffer;
   int xfiledescriptor;

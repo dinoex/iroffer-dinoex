@@ -160,6 +160,7 @@ void set_support_groups(void)
 typedef struct {
   transfer *tr;
   int left;
+  int dummy;
 } remaining_transfer_time;
 
 static irlist_t end_trans;
@@ -931,7 +932,7 @@ static const char *style_on[ 16 ] = {
 };
 
 /* colored text */
-char *color_text(char *desc, int color)
+char *color_text(char *desc, unsigned int color)
 {
    char *colordesc;
    unsigned int foreground;
@@ -1144,7 +1145,7 @@ static int find_pack_crc(const char *crc)
     if (xd->has_crc32 == 0)
       continue;
 
-    snprintf(crctext, sizeof(crctext), "%.8lX", xd->crc32);
+    snprintf(crctext, sizeof(crctext), CRC32_PRINT_FMT, xd->crc32);
     if (strncmp(crctext, crc, max) == 0)
       return num;
   }

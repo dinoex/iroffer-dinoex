@@ -16,7 +16,7 @@
 #ifdef USE_GEOIP
 void geoip_new_connection(transfer *const tr);
 #ifndef WITHOUT_HTTP
-unsigned int http_check_geoip(unsigned long remoteip);
+unsigned int http_check_geoip(ir_uint32 remoteip);
 unsigned int http_check_geoip6(struct in6_addr *remoteip);
 #endif /* WITHOUT_HTTP */
 void geoip_shutdown(void);

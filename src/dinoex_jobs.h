@@ -48,7 +48,7 @@ void admin_jobs(void);
 void look_for_file_remove(void);
 void reset_download_limits(void);
 const char *validate_crc32(xdcc *xd, int quiet);
-void crc32_update(char *buf, unsigned long len);
+void crc32_update(char *buf, size_t len);
 void crc32_final(xdcc *xd);
 void autoadd_all(void);
 void run_delayed_jobs(void);
@@ -78,6 +78,6 @@ char *new_logfilename(const char *logfile);
 void expire_logfiles(const char *logfile);
 int rotatelog(const char *logfile);
 
-unsigned long get_zip_crc32_pack(xdcc *xd);
+ir_uint32 get_zip_crc32_pack(xdcc *xd);
 
 /* End of File */

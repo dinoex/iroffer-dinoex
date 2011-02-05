@@ -253,12 +253,16 @@ void shutdown_close(int handle)
 }
 
 /* get the port number from a socket */
-int get_port(ir_sockaddr_union_t *listenaddr)
+ir_uint16 get_port(ir_sockaddr_union_t *listenaddr)
 {
-  if (listenaddr->sa.sa_family == AF_INET)
-    return ntohs(listenaddr->sin.sin_port);
+  ir_uint16 netval;
 
-  return ntohs(listenaddr->sin6.sin6_port);
+  if (listenaddr->sa.sa_family == AF_INET)
+    netval = listenaddr->sin.sin_port;
+  else
+    netval = listenaddr->sin6.sin6_port;
+
+  return ntohs(netval);
 }
 
 /* strcmp fail-safe */
@@ -432,7 +436,7 @@ static const char const size_units[] = { 'K', 'M', 'G', 'T', 'E', 0 };
 /* returns the size in a human readable form */
 char *sizestr(unsigned int spaces, off_t num)
 {
-#define SIZESTR_SIZE 5
+#define SIZESTR_SIZE 5L
   char *str = (char *)mymalloc(SIZESTR_SIZE);
   float val;
   unsigned int i;

@@ -40,10 +40,11 @@
 #endif
 
 typedef struct protect_call_arg {
+  VALUE *argv;
   VALUE recvobj;
   ID mid;
   int argc;
-  VALUE *argv;
+  int dummy;
 } protect_call_arg_t;
 
 int myruby_loaded;
@@ -91,12 +92,10 @@ static void iroffer_ruby_errro(int error)
   }
 }
 
-static VALUE protect_funcall0(VALUE arg)
+static VALUE protect_funcall0(VALUE val)
 {
-  return rb_funcall2(((protect_call_arg_t *) arg)->recvobj,
-                     ((protect_call_arg_t *) arg)->mid,
-                     ((protect_call_arg_t *) arg)->argc,
-                     ((protect_call_arg_t *) arg)->argv);
+  protect_call_arg_t *arg = (protect_call_arg_t *)val;
+  return rb_funcall2(arg->recvobj, arg->mid, arg->argc, arg->argv);
 }
 
 static VALUE rb_funcall_protected(VALUE recvobj, ID mid, int argc, ...)
@@ -367,7 +366,7 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
     }
     if (strcmp(key, "crc32") == 0) {
       tempstr = mymalloc(maxtextlengthshort);
-      len = snprintf(tempstr, maxtextlengthshort, "%.8lX", xd->crc32);
+      len = snprintf(tempstr, maxtextlengthshort, CRC32_PRINT_FMT, xd->crc32);
       rval = rb_str_new(tempstr, len);
       mydelete(tempstr);
       return rval;

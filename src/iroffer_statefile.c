@@ -307,7 +307,7 @@ static statefile_hdr_t* read_statefile_item(ir_uint32 **buffer, ir_uint32 *buffe
   
   all = (statefile_hdr_t*)*buffer;
   
-  all->tag = ntohl((unsigned long)(all->tag));
+  all->tag = ntohl(all->tag);
   all->length = ntohl(all->length);
   
   if (*buffer_len < all->length)
@@ -333,7 +333,8 @@ void read_statefile(void)
   MD5Digest digest;
   struct stat st;
   statefile_hdr_t *hdr;
-  ir_uint32 callval;
+  ir_uint32 calluval;
+  int callval;
   time_t timestamp = 0;
   
   updatecontext();
@@ -366,12 +367,12 @@ void read_statefile(void)
   buffer_len = st.st_size;
   buffer_begin = buffer = mycalloc(buffer_len);
   
-  callval = read(fd, buffer, buffer_len);
+  calluval = read(fd, buffer, buffer_len);
   close(fd);
-  if (callval != buffer_len)
+  if (calluval != buffer_len)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Read State File (%u != %u) %s",
-               callval, buffer_len, strerror(errno));
+               calluval, buffer_len, strerror(errno));
       goto error_out;
     }
   
@@ -405,7 +406,7 @@ void read_statefile(void)
   if (gdata.debug > 0)
     {
       ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-              "  [Version %lu State File]", (unsigned long)ntohl(*buffer));
+              "  [Version %u State File]", ntohl(*buffer));
     }
   buffer++;
   buffer_len -= sizeof(ir_uint32);
@@ -497,7 +498,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl((unsigned long)(ihdr->tag));
+                ihdr->tag = ntohl(ihdr->tag);
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -550,7 +551,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl((unsigned long)(ihdr->tag));
+                ihdr->tag = ntohl(ihdr->tag);
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -599,7 +600,7 @@ void read_statefile(void)
             
             while (hdr->length >= sizeof(*hdr))
               {
-                ihdr->tag = ntohl((unsigned long)(ihdr->tag));
+                ihdr->tag = ntohl(ihdr->tag);
                 ihdr->length = ntohl(ihdr->length);
                 switch (ihdr->tag)
                   {
@@ -634,7 +635,7 @@ void read_statefile(void)
                     break;
                     
                   case STATEFILE_TAG_XDCCS_CRC32:
-                    read_statefile_ulong(ihdr, "XDCC CRC32", &(xd->crc32));
+                    read_statefile_int(ihdr, "XDCC CRC32", &(xd->crc32));
                     xd->has_crc32 = 1;
                     break;
                     
