@@ -205,9 +205,7 @@ void l_setup_accept(upload * const l)
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC SEND connection received");
 
-  if (set_socket_nonblocking(l->con.clientsocket, 1) < 0 ) {
-    outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
-  }
+  ir_setsockopt(l->con.clientsocket);
 
   notice(l->nick, "DCC Send Accepted, Connecting...");
 

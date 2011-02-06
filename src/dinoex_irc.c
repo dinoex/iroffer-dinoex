@@ -424,7 +424,7 @@ void ir_setsockopt(int clientsocket)
 #if !defined(CANT_SET_TOS)
   /* Set TOS socket option to max throughput */
   tempc = 0x8; /* IPTOS_THROUGHPUT */
-  setsockopt(clientsocket, IPPROTO_IP, IP_TOS, &tempc1, sizeof(int));
+  setsockopt(clientsocket, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
 #endif
 
   if (set_socket_nonblocking(clientsocket, 1) < 0 )

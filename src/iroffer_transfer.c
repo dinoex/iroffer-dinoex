@@ -87,8 +87,6 @@ void t_setup_send(transfer * const t)
 {
    char *msg;
    SIGNEDSOCK int addrlen;
-   SIGNEDSOCK int tempi;
-   int tempc1;
    
    updatecontext();
    
