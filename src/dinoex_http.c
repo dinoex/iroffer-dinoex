@@ -1784,7 +1784,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char *UNUS
     return;
   }
 
-  if (strncasecmp(h->url, "/ddl/", 5) == 0) {
+  if (strncasecmp(h->url, "/ddl/", 5) == 0) { /* NOTRANSLATE */
     unsigned int pack = atoi(h->url + 5);
     xdcc *xd;
 
@@ -1800,7 +1800,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char *UNUS
 
   if (gdata.http_admin_dir) {
     tempstr = mymalloc(maxtextlength);
-    snprintf(tempstr, maxtextlength, "%s%s", gdata.http_admin_dir, h->url);
+    snprintf(tempstr, maxtextlength, "%s%s", gdata.http_admin_dir, h->url); /* NOTRANSLATE */
     tmp = strchr(tempstr, '?' );
     if (tmp != NULL)
       *tmp = 0;
@@ -1838,14 +1838,14 @@ static char *h_bad_request(http * const h)
   len = strlen(url) + 1;
   h->url = mymalloc(len);
   html_decode(h->url, len, url);
-  if (strcasecmp(request, "GET" ) == 0) {
+  if (strcasecmp(request, "GET" ) == 0) { /* NOTRANSLATE */
     return header;
   }
-  if (strcasecmp(request, "POST" ) == 0) {
+  if (strcasecmp(request, "POST" ) == 0) { /* NOTRANSLATE */
     h->post = 1;
     return header;
   }
-  if (strcasecmp(request, "HEAD" ) == 0) {
+  if (strcasecmp(request, "HEAD" ) == 0) { /* NOTRANSLATE */
     h->head = 1;
     return header;
   }
