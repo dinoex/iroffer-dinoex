@@ -437,6 +437,7 @@ static config_int_typ config_parse_int[] = {
 {"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024, 0 }, /* NOTRANSLATE */
 {"start_of_month",          &gdata.start_of_month,          1, 31, 1, 1 }, /* NOTRANSLATE */
 {"status_time_dcc_chat",    &gdata.status_time_dcc_chat,    10, 2000, 1, 120 }, /* NOTRANSLATE */
+{"tcp_buffer_size",         &gdata.tcp_buffer_size,         0, 1024*1024, 1024, 0 }, /* NOTRANSLATE */
 {"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1, 65535 }, /* NOTRANSLATE */
 {"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1, 0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_TELNET

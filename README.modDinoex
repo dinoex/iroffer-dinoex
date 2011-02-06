@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.26:
 ------------------
 
+364) tcp_buffer_size
+  Set the Networkbuffer for TCP connection to the given value in kByte.
+  Default: 0 = the operating system default.
+
 extend debug and log information.
 
 bugfix: statefile
