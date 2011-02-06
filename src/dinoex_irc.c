@@ -388,6 +388,49 @@ unsigned int irc_open_listen(ir_connection_t *con)
   return 0;
 }
 
+static void ir_setsockopt2(int clientsocket, int optint, const char *optname, int val)
+{
+  SIGNEDSOCK int tempi;
+  int tempc1;
+  int tempc2;
+  int tempc3;
+
+  tempi = sizeof(int);
+  getsockopt(clientsocket, SOL_SOCKET, optint, &tempc1, &tempi);
+
+  tempc2 = val;
+  setsockopt(clientsocket, SOL_SOCKET, optint, &tempc2, sizeof(int));
+
+  getsockopt(clientsocket, SOL_SOCKET, optint, &tempc3, &tempi);
+  if (gdata.debug > 0)
+    ioutput(OUT_S, COLOR_YELLOW, "%s a %i b %i c %i", optname, tempc1, tempc2, tempc3);
+}
+
+/* set all options for a transfer connection */
+void ir_setsockopt(int clientsocket)
+{
+#if !defined(CANT_SET_TOS)
+  int tempc;
+#endif
+
+  updatecontext();
+
+  ir_setsockopt2(clientsocket, SO_SNDBUF, "SO_SNDBUF", 131072); /* NOTRANSLATE */
+  ir_setsockopt2(clientsocket, SO_RCVBUF, "SO_RCVBUF", 131072); /* NOTRANSLATE */
+#if defined(_OS_BSD_ANY)
+  ir_setsockopt2(clientsocket, SO_SNDLOWAT, "SO_SNDLOWAT", 24577); /* NOTRANSLATE */
+#endif
+
+#if !defined(CANT_SET_TOS)
+  /* Set TOS socket option to max throughput */
+  tempc = 0x8; /* IPTOS_THROUGHPUT */
+  setsockopt(clientsocket, IPPROTO_IP, IP_TOS, &tempc1, sizeof(int));
+#endif
+
+  if (set_socket_nonblocking(clientsocket, 1) < 0 )
+    outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
+}
+
 /* returns the external IP address and port the bot as DCC argsments */
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
 {

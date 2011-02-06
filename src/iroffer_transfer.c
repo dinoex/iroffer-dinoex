@@ -89,8 +89,6 @@ void t_setup_send(transfer * const t)
    SIGNEDSOCK int addrlen;
    SIGNEDSOCK int tempi;
    int tempc1;
-   int tempc2;
-   int tempc3;
    
    updatecontext();
    
@@ -117,35 +115,7 @@ void t_setup_send(transfer * const t)
    
    t->bytessent = t->startresume;
    
-   tempi = sizeof(int);
-   getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc1, &tempi);
-   
-   tempc2 = 65535;
-   setsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc2, sizeof(int));
-
-   getsockopt(t->con.clientsocket, SOL_SOCKET, SO_SNDBUF, &tempc3, &tempi);
-   if (gdata.debug > 0) ioutput(OUT_S, COLOR_YELLOW, "SO_SNDBUF a %i b %i c %i", tempc1, tempc2, tempc3);
-   
-#if defined(_OS_BSD_ANY)
-   /* #define SO_SNDLOWAT     0x1003     */
-   getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc1, &tempi);
-   
-   tempc2 = 24577;
-   setsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc2, sizeof(int));
-   
-   getsockopt(t->con.clientsocket, SOL_SOCKET, 0x1003, &tempc3, &tempi);
-   if (gdata.debug > 0) ioutput(OUT_S, COLOR_YELLOW, "SO_SNDLOWAT a %i b %i c %i", tempc1, tempc2, tempc3);
-#endif
-   
-#if !defined(CANT_SET_TOS)
-   /* Set TOS socket option to max throughput */
-   tempc1 = 0x8; /* IPTOS_THROUGHPUT */
-   setsockopt(t->con.clientsocket, IPPROTO_IP, IP_TOS, &tempc1, sizeof(int));
-#endif
-   
-   if (set_socket_nonblocking(t->con.clientsocket, 1) < 0 )
-      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
-   
+   ir_setsockopt(t->con.clientsocket);
    
    t->con.lastcontact = gdata.curtime;
    t->con.connecttime = gdata.curtime;
