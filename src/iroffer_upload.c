@@ -93,10 +93,7 @@ void l_establishcon (upload * const l)
       return;
     }
   
-  if (set_socket_nonblocking(l->con.clientsocket, 1) < 0 )
-    {
-      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Non-Blocking");
-    }
+  ir_setsockopt(l->con.clientsocket);
   
   alarm(CTIMEOUT);
   retval = connect(l->con.clientsocket, &(l->con.remote.sa), addrlen);
