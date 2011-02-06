@@ -299,6 +299,10 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
       val = xd->file;
       break;
     }
+    if (strcmp(key, "name") == 0) { /* NOTRANSLATE */
+      val = getfilename(xd->file);
+      break;
+    }
     if (strcmp(key, "desc") == 0) { /* NOTRANSLATE */
       val = xd->desc;
       break;

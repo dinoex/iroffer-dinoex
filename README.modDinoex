@@ -53,7 +53,7 @@ bugfix: ruby_script (reported by Zir0h)
 
 359) ruby_script
   Extend method "info_pack" to request fields of a pack.
-  Implemented: "group_desc", "bytes", "size"
+  Implemented: "group_desc", "bytes", "size", "name"
   Extend access to network config for simple variables.
   Extend "command" to take any number of parameters.
 
