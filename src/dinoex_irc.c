@@ -415,11 +415,10 @@ void ir_setsockopt(int clientsocket)
 
   updatecontext();
 
-  ir_setsockopt2(clientsocket, SO_SNDBUF, "SO_SNDBUF", 131072); /* NOTRANSLATE */
-  ir_setsockopt2(clientsocket, SO_RCVBUF, "SO_RCVBUF", 131072); /* NOTRANSLATE */
-#if defined(_OS_BSD_ANY)
-  ir_setsockopt2(clientsocket, SO_SNDLOWAT, "SO_SNDLOWAT", 24577); /* NOTRANSLATE */
-#endif
+  if (gdata.tcp_buffer_size > 0) {
+    ir_setsockopt2(clientsocket, SO_SNDBUF, "SO_SNDBUF", gdata.tcp_buffer_size); /* NOTRANSLATE */
+    ir_setsockopt2(clientsocket, SO_RCVBUF, "SO_RCVBUF", gdata.tcp_buffer_size); /* NOTRANSLATE */
+  }
 
 #if !defined(CANT_SET_TOS)
   /* Set TOS socket option to max throughput */

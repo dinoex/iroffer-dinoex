@@ -167,6 +167,7 @@ unsigned int new_trigger;
 unsigned int adddir_min_size;
 unsigned int ignore_duplicate_ip;
 unsigned int expire_logfiles;
+unsigned int tcp_buffer_size;
 /* bool */
 unsigned int hideos;
 unsigned int lognotices;

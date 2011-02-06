@@ -187,7 +187,6 @@
     defined(_OS_BSDI)        || \
     defined(_OS_BSD_OS)      || \
     defined(_OS_Darwin)
-#define _OS_BSD_ANY
 
 /* sunos */
 #elif defined(_OS_SunOS)
