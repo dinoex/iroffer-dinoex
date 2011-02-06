@@ -53,7 +53,7 @@ bugfix: ruby_script
 
 359) ruby_script
   Erweiterte Methode "info_pack" un auf Daten einens Packs zuzugreifen.
-  Verfügbar: "group_desc", "bytes", "size"
+  Verfügbar: "group_desc", "bytes", "size", "name"
   Erweitert der Zugriff auf einfache Netzwerk Variablen.
   Der Befehl "command" in ruby erkennt nun beliebig viele Parameter.
 
