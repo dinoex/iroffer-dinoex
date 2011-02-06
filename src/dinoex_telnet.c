@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -153,8 +153,8 @@ static void telnet_accept(unsigned int i)
   ++(gdata.num_dccchats);
   chat->status = DCCCHAT_AUTHENTICATING;
   chat->net = 0;
-  chat->nick = mystrdup("telnet");
-  chat->hostmask = to_hostmask(chat->nick, "telnet");
+  chat->nick = mystrdup("telnet"); /* NOTRANSLATE */
+  chat->hostmask = to_hostmask(chat->nick, "telnet"); /* NOTRANSLATE */
   chat->con.localport = gdata.telnet_port;
   chat->con.connecttime = gdata.curtime;
   chat->con.lastcontact = gdata.curtime;

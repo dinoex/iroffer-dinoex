@@ -75,7 +75,7 @@ static void iroffer_ruby_errro(int error)
   if (error == 0)
     return;
 
-  lasterr = rb_gv_get("$!");
+  lasterr = rb_gv_get("$!"); /* NOTRANSLATE */
   inclass = rb_class_path(CLASS_OF(lasterr));
   message = rb_obj_as_string(lasterr);
   outerror(OUTERROR_TYPE_WARN_LOUD,
@@ -295,83 +295,83 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
     return Qnil;
 
   for (;;) {
-    if (strcmp(key, "file") == 0) {
+    if (strcmp(key, "file") == 0) { /* NOTRANSLATE */
       val = xd->file;
       break;
     }
-    if (strcmp(key, "desc") == 0) {
+    if (strcmp(key, "desc") == 0) { /* NOTRANSLATE */
       val = xd->desc;
       break;
     }
-    if (strcmp(key, "note") == 0) {
+    if (strcmp(key, "note") == 0) { /* NOTRANSLATE */
       val = xd->note;
       break;
     }
-    if (strcmp(key, "group") == 0) {
+    if (strcmp(key, "group") == 0) { /* NOTRANSLATE */
       val = xd->group;
       break;
     }
-    if (strcmp(key, "group_desc") == 0) {
+    if (strcmp(key, "group_desc") == 0) { /* NOTRANSLATE */
       val = find_groupdesc(xd->group);
       break;
     }
-    if (strcmp(key, "trigger") == 0) {
+    if (strcmp(key, "trigger") == 0) { /* NOTRANSLATE */
       val = xd->trigger;
       break;
     }
-    if (strcmp(key, "lock") == 0) {
+    if (strcmp(key, "lock") == 0) { /* NOTRANSLATE */
       val = xd->lock;
       break;
     }
-    if (strcmp(key, "gets") == 0) {
+    if (strcmp(key, "gets") == 0) { /* NOTRANSLATE */
       ival = xd->gets;
       return UINT2NUM(ival);
     }
-    if (strcmp(key, "color") == 0) {
+    if (strcmp(key, "color") == 0) { /* NOTRANSLATE */
       ival = xd->color;
       return UINT2NUM(ival);
     }
-    if (strcmp(key, "dlimit_max") == 0) {
+    if (strcmp(key, "dlimit_max") == 0) { /* NOTRANSLATE */
       ival = xd->dlimit_max;
       return UINT2NUM(ival);
     }
-    if (strcmp(key, "dlimit_used") == 0) {
+    if (strcmp(key, "dlimit_used") == 0) { /* NOTRANSLATE */
       ival = xd->dlimit_used;
       return UINT2NUM(ival);
     }
-    if (strcmp(key, "has_md5sum") == 0) {
+    if (strcmp(key, "has_md5sum") == 0) { /* NOTRANSLATE */
       ival = xd->has_md5sum;
       return UINT2NUM(ival);
     }
-    if (strcmp(key, "has_crc32") == 0) {
+    if (strcmp(key, "has_crc32") == 0) { /* NOTRANSLATE */
       ival = xd->has_crc32;
       return UINT2NUM(ival);
     }
-    if (strcmp(key, "bytes") == 0) {
+    if (strcmp(key, "bytes") == 0) { /* NOTRANSLATE */
       oval = xd->st_size;
       return OFFT2NUM(oval);
     }
-    if (strcmp(key, "size") == 0) {
+    if (strcmp(key, "size") == 0) { /* NOTRANSLATE */
       tempstr = sizestr(0, xd->st_size);
       len = strlen(tempstr);
       rval = rb_str_new(tempstr, len);
       mydelete(tempstr);
       return rval;
     }
-    if (strcmp(key, "mtime") == 0) {
+    if (strcmp(key, "mtime") == 0) { /* NOTRANSLATE */
       return rb_time_new(xd->mtime, 0);
     }
-    if (strcmp(key, "xtime") == 0) {
+    if (strcmp(key, "xtime") == 0) { /* NOTRANSLATE */
       return rb_time_new(xd->xtime, 0);
     }
-    if (strcmp(key, "crc32") == 0) {
+    if (strcmp(key, "crc32") == 0) { /* NOTRANSLATE */
       tempstr = mymalloc(maxtextlengthshort);
       len = snprintf(tempstr, maxtextlengthshort, CRC32_PRINT_FMT, xd->crc32);
       rval = rb_str_new(tempstr, len);
       mydelete(tempstr);
       return rval;
     }
-    if (strcmp(key, "md5sum") == 0) {
+    if (strcmp(key, "md5sum") == 0) { /* NOTRANSLATE */
       tempstr = mymalloc(maxtextlengthshort);
       len = snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
       rval = rb_str_new(tempstr, len);
@@ -407,7 +407,7 @@ static VALUE cie_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
     return Qfalse;
 
   if (name[0] != '#') {
-    privmsg_slow(name, "%s", msg);
+    privmsg_slow(name, "%s", msg); /* NOTRANSLATE */
     return Qtrue;
   }
 
@@ -415,7 +415,7 @@ static VALUE cie_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
        ch;
        ch = irlist_get_next(ch)) {
     if (strcasecmp(ch->name, name) == 0) {
-      privmsg_chan(ch, "%s", msg);
+      privmsg_chan(ch, "%s", msg); /* NOTRANSLATE */
       return Qtrue;
     }
   }
@@ -464,7 +464,7 @@ static VALUE cie_mode(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
        ch;
        ch = irlist_get_next(ch)) {
     if (strcasecmp(ch->name, name) == 0) {
-      writeserver(WRITESERVER_NORMAL, "MODE %s %s", name, msg);
+      writeserver(WRITESERVER_NORMAL, "MODE %s %s", name, msg); /* NOTRANSLATE */
       return Qtrue;
     }
   }
@@ -509,28 +509,28 @@ static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
 }
 
 static void Init_IrofferEvent(void) {
-  cIrofferEvent = rb_define_class("IrofferEvent", rb_cObject);
-  rb_define_singleton_method(cIrofferEvent, "new", cie_new, 0);
+  cIrofferEvent = rb_define_class("IrofferEvent", rb_cObject); /* NOTRANSLATE */
+  rb_define_singleton_method(cIrofferEvent, "new", cie_new, 0); /* NOTRANSLATE */
   /* action */
-  rb_define_method(cIrofferEvent, "privmsg", cie_privmsg, 2);
-  rb_define_method(cIrofferEvent, "warning", cie_warning, 1);
-  rb_define_method(cIrofferEvent, "mode", cie_mode, 2);
-  rb_define_method(cIrofferEvent, "command", cie_command, -2);
+  rb_define_method(cIrofferEvent, "privmsg", cie_privmsg, 2); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "warning", cie_warning, 1); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "mode", cie_mode, 2); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "command", cie_command, -2); /* NOTRANSLATE */
   /* hooks */
-  rb_define_method(cIrofferEvent, "on_server", cie_null, 0);
-  rb_define_method(cIrofferEvent, "on_notice", cie_null, 0);
-  rb_define_method(cIrofferEvent, "on_privmsg", cie_null, 0);
+  rb_define_method(cIrofferEvent, "on_server", cie_null, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "on_notice", cie_null, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "on_privmsg", cie_null, 0); /* NOTRANSLATE */
   /* accessors */
-  rb_define_method(cIrofferEvent, "network", cie_network, 0);
-  rb_define_method(cIrofferEvent, "inputline", cie_inputline, 0);
-  rb_define_method(cIrofferEvent, "hostmask", cie_hostmask, 0);
-  rb_define_method(cIrofferEvent, "nick", cie_nick, 0);
-  rb_define_method(cIrofferEvent, "channel", cie_channel, 0);
-  rb_define_method(cIrofferEvent, "message", cie_message, 0);
-  rb_define_method(cIrofferEvent, "config", cie_config, 1);
-  rb_define_method(cIrofferEvent, "added_file", cie_added_file, 0);
-  rb_define_method(cIrofferEvent, "added_pack", cie_added_pack, 0);
-  rb_define_method(cIrofferEvent, "info_pack", cie_info_pack, 2);
+  rb_define_method(cIrofferEvent, "network", cie_network, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "inputline", cie_inputline, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "hostmask", cie_hostmask, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "nick", cie_nick, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "channel", cie_channel, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "message", cie_message, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "config", cie_config, 1); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "added_file", cie_added_file, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "added_pack", cie_added_pack, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "info_pack", cie_info_pack, 2); /* NOTRANSLATE */
   rb_gc_register_address(&cIrofferEvent);
 }
 
@@ -564,7 +564,7 @@ static void load_script(const char *name)
 
   myruby_loaded = 1;
   oIrofferEvent = rb_class_new_instance(0, NULL, cIrofferEvent);
-  rb_define_variable("objIrofferEvent", &oIrofferEvent);
+  rb_define_variable("objIrofferEvent", &oIrofferEvent); /* NOTRANSLATE */
 }
 
 static void check_script(const char *name)
@@ -612,7 +612,7 @@ int do_myruby_server(char *line)
     return 0;
 
   cLine = line;
-  return do_on_event(oIrofferEvent, "on_server");
+  return do_on_event(oIrofferEvent, "on_server"); /* NOTRANSLATE */
 }
 
 /* push a notice to the ruby class */
@@ -622,7 +622,7 @@ int do_myruby_notice(char *line)
     return 0;
 
   cLine = line;
-  return do_on_event(oIrofferEvent, "on_notice");
+  return do_on_event(oIrofferEvent, "on_notice"); /* NOTRANSLATE */
 }
 
 /* push a privmsg to the ruby class */
@@ -632,7 +632,7 @@ int do_myruby_privmsg(char *line)
     return 0;
 
   cLine = line;
-  return do_on_event(oIrofferEvent, "on_privmsg");
+  return do_on_event(oIrofferEvent, "on_privmsg"); /* NOTRANSLATE */
 }
 
 /* call the ruby class after adding a pack */
@@ -643,7 +643,7 @@ int do_myruby_added(char *filename, unsigned int pack)
 
   cFile = filename;
   cPack = pack;
-  return do_on_event(oIrofferEvent, "on_added");
+  return do_on_event(oIrofferEvent, "on_added"); /* NOTRANSLATE */
 }
 
 /* reload the scrip on rehash */
@@ -667,17 +667,17 @@ void startup_myruby(void)
   /* dumps the version info to stdout */
   ruby_show_version();
   /* set working dir for includes */
-  rb_eval_string_protect("$: << '.'", &rc);
+  rb_eval_string_protect("$: << '.'", &rc); /* NOTRANSLATE */
 #if USE_RUBYVERSION < 19
 #else
-  rb_enc_find_index("encdb");
+  rb_enc_find_index("encdb"); /* NOTRANSLATE */
 #endif
 
   myruby_loaded = 0;
 
   //define that callback below
-  rb_define_global_function("iroffer_input", cie_inputline, 0);
-  rb_define_global_function("iroffer_privmsg", cie_privmsg, 2);
+  rb_define_global_function("iroffer_input", cie_inputline, 0); /* NOTRANSLATE */
+  rb_define_global_function("iroffer_privmsg", cie_privmsg, 2); /* NOTRANSLATE */
   Init_IrofferEvent();
   load_script(gdata.ruby_script);
 }
@@ -714,7 +714,7 @@ unsigned int http_ruby_script(const char *name, const char *output)
   }
   ruby_script(name);
   tempstr = mymalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength, "$stdout = File.new(\"%s\", \"w+\")", output);
+  snprintf(tempstr, maxtextlength, "$stdout = File.new(\"%s\", \"w+\")", output); /* NOTRANSLATE */
   rb_eval_string_protect(tempstr, &rc);
   mydelete(tempstr);
   rb_load_protect(rb_str_new(name, strlen(name)), 0, &rc);
@@ -724,7 +724,7 @@ unsigned int http_ruby_script(const char *name, const char *output)
              rc, strerror(errno));
     iroffer_ruby_errro(rc);
   }
-  rb_eval_string_protect("$stdout.close", &rc);
+  rb_eval_string_protect("$stdout.close", &rc); /* NOTRANSLATE */
   if (rc != 0)
     return 1;
   return 0;

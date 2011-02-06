@@ -53,7 +53,7 @@ char *mystrsuffix(const char *str, const char *suffix)
 #else /* WITHOUT_MEMSAVE */
   copy = mymalloc(max);
 #endif /* WITHOUT_MEMSAVE */
-  snprintf(copy, max, "%s%s", str, suffix);
+  snprintf(copy, max, "%s%s", str, suffix); /* NOTRANSLATE */
   return copy;
 }
 
@@ -79,9 +79,9 @@ char *mystrjoin(const char *str1, const char *str2, unsigned int delimiter)
   copy = mymalloc(max);
 #endif /* WITHOUT_MEMSAVE */
   if ((delimiter != 0 ) && (str1[len1 - 1] != (unsigned char)delimiter)) {
-    snprintf(copy, max, "%s%c%s", str1, delimiter, str2);
+    snprintf(copy, max, "%s%c%s", str1, delimiter, str2); /* NOTRANSLATE */
   } else {
-    snprintf(copy, max, "%s%s", str1, str2);
+    snprintf(copy, max, "%s%s", str1, str2); /* NOTRANSLATE */
   }
   return copy;
 }
@@ -116,7 +116,7 @@ const char *save_nick(const char * nick)
 {
   if (nick)
     return nick;
-  return "??";
+  return "??"; /* NOTRANSLATE */
 }
 
 /* verify a password against the stored hash */
@@ -442,11 +442,11 @@ char *sizestr(unsigned int spaces, off_t num)
   unsigned int i;
 
   if (num <= 0) {
-    snprintf(str, SIZESTR_SIZE, spaces ? "%4s" : "%s", "0");
+    snprintf(str, SIZESTR_SIZE, spaces ? "%4s" : "%s", "0"); /* NOTRANSLATE */
     return str;
   }
   if (num < 1024) {
-    snprintf(str, SIZESTR_SIZE, spaces ?  "%4s" : "%s", "<1K");
+    snprintf(str, SIZESTR_SIZE, spaces ?  "%4s" : "%s", "<1k"); /* NOTRANSLATE */
     return str;
   }
   /* KB */
@@ -454,17 +454,17 @@ char *sizestr(unsigned int spaces, off_t num)
   for (i = 0; size_units[i]; ++i) {
     val /= 1024.0;
     if ((i > 0) && (val < 9.5)) {
-      snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1f%c" : "%.1f%c", val, size_units[i]);
+      snprintf(str, SIZESTR_SIZE, spaces ?  "%2.1f%c" : "%.1f%c", val, size_units[i]); /* NOTRANSLATE */
       return str;
     }
     if (val < 999.5) {
-      snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0f%c" : "%.0f%c", val, size_units[i]);
+      snprintf(str, SIZESTR_SIZE, spaces ?  "%3.0f%c" : "%.0f%c", val, size_units[i]); /* NOTRANSLATE */
       return str;
     }
   }
   mydelete(str);
   str = (char *)mymalloc(SIZESTR_SIZE + SIZESTR_SIZE);
-  snprintf(str, SIZESTR_SIZE + SIZESTR_SIZE , "%.0fE", val);
+  snprintf(str, SIZESTR_SIZE + SIZESTR_SIZE , "%.0fE", val); /* NOTRANSLATE */
   return str;
 }
 
@@ -880,7 +880,7 @@ char *grep_to_fnmatch(const char *grep)
 
   len = strlen(grep) + 3;
   raw = mymalloc(len);
-  snprintf(raw, len, "*%s*", grep);
+  snprintf(raw, len, "*%s*", grep); /* NOTRANSLATE */
   match = hostmask_to_fnmatch(raw);
   mydelete(raw);
   return match;

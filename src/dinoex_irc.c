@@ -60,7 +60,7 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
       ip = gnetwork->ourip;
     else
       ip = ntohl(sa->sin.sin_addr.s_addr);
-    return snprintf(buffer, len, "%u %d",
+    return snprintf(buffer, len, "%u %d", /* NOTRANSLATE */
                     ip, ntohs(sa->sin.sin_port));
   }
   salen = (sa->sa.sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
@@ -68,7 +68,7 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     return snprintf(buffer, len, "(unknown)" );
   }
-  return snprintf(buffer, len, "%s %s", hbuf, sbuf);
+  return snprintf(buffer, len, "%s %s", hbuf, sbuf); /* NOTRANSLATE */
 #else /* NO_GETADDRINFO */
   ir_uint32 ip;
 
@@ -76,7 +76,7 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
     ip = gnetwork->ourip;
   else
     ip = ntohl(sa->sin.sin_addr.s_addr);
-  return snprintf(buffer, len, "%u %d",
+  return snprintf(buffer, len, "%u %d", /* NOTRANSLATE */
                   ip, ntohs(sa->sin.sin_port));
 #endif /* NO_GETADDRINFO */
 }
@@ -295,7 +295,7 @@ static void my_get_upnp_data(const struct sockaddr *sa)
   to_ip = ntohl(remoteaddr->sin_addr.s_addr);
   snprintf(hbuf, sizeof(hbuf), IPV4_PRINT_FMT,
            IPV4_PRINT_DATA(to_ip));
-  snprintf(sbuf, sizeof(sbuf), "%d", ntohs(remoteaddr->sin_port));
+  snprintf(sbuf, sizeof(sbuf), "%d", ntohs(remoteaddr->sin_port)); /* NOTRANSLATE */
 #endif /* NO_GETADDRINFO */
   if (sa->sa_family != AF_INET)
     return;
@@ -448,7 +448,7 @@ void child_resolver(int family)
     break;
   }
   hints.ai_socktype = SOCK_STREAM;
-  snprintf(portname, sizeof(portname), "%d",
+  snprintf(portname, sizeof(portname), "%d", /* NOTRANSLATE */
            gnetwork->serv_resolv.to_port);
   status = getaddrinfo(gnetwork->serv_resolv.to_ip, portname,
                        &hints, &results);
@@ -743,20 +743,20 @@ void identify_needed(unsigned int force)
   /* wait 1 sec before idetify again */
   gnetwork->next_identify = gdata.curtime + 1;
   if (gnetwork->auth_name != NULL) {
-    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :AUTH %s %s",
+    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :AUTH %s %s", /* NOTRANSLATE */
                 gnetwork->auth_name, save_nick(gnetwork->user_nick), pwd);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "AUTH send to %s on %s.", gnetwork->auth_name, gnetwork->name);
     return;
   }
   if (gnetwork->login_name != NULL) {
-    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :LOGIN %s %s",
+    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :LOGIN %s %s", /* NOTRANSLATE */
                 gnetwork->login_name, save_nick(gnetwork->user_nick), pwd);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
             "LOGIN send to %s on %s.", gnetwork->login_name, gnetwork->name);
     return;
   }
-  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd);
+  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd); /* NOTRANSLATE */
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "IDENTIFY send to nickserv on %s.", gnetwork->name);
 }
@@ -770,16 +770,16 @@ void identify_check(const char *line)
   if (pwd == NULL)
     return;
 
-  if (strstr(line, "Nickname is registered to someone else") != NULL) {
+  if (strstr(line, "Nickname is registered to someone else") != NULL) { /* NOTRANSLATE */
       identify_needed(0);
   }
-  if (strstr(line, "This nickname has been registered") != NULL) {
+  if (strstr(line, "This nickname has been registered") != NULL) { /* NOTRANSLATE */
       identify_needed(0);
   }
-  if (strstr(line, "This nickname is registered and protected") != NULL) {
+  if (strstr(line, "This nickname is registered and protected") != NULL) { /* NOTRANSLATE */
       identify_needed(0);
   }
-  if (strcasestr(line, "please choose a different nick") != NULL) {
+  if (strcasestr(line, "please choose a different nick") != NULL) { /* NOTRANSLATE */
       identify_needed(0);
   }
 }

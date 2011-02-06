@@ -212,7 +212,7 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 
   ces = curl_easy_setopt(ch, CURLOPT_ERRORBUFFER, ft->errorbuf);
   if (ces != 0) {
-    curl_respond( u, "ERRORBUFFER", ces);
+    curl_respond( u, "ERRORBUFFER", ces); /* NOTRANSLATE */
     return 1;
   }
 
@@ -234,49 +234,49 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 
   ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
   if (ces != 0) {
-    curl_respond( u, "NOPROGRESS", ces);
+    curl_respond( u, "NOPROGRESS", ces); /* NOTRANSLATE */
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_NOSIGNAL, 1);
   if (ces != 0) {
-    curl_respond( u, "NOSIGNAL", ces);
+    curl_respond( u, "NOSIGNAL", ces); /* NOTRANSLATE */
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_FAILONERROR, 1);
   if (ces != 0) {
-    curl_respond( u, "FAILONERROR", ces);
+    curl_respond( u, "FAILONERROR", ces); /* NOTRANSLATE */
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYHOST, 0);
   if (ces != 0) {
-    curl_respond( u, "SSL_VERIFYHOST", ces);
+    curl_respond( u, "SSL_VERIFYHOST", ces); /* NOTRANSLATE */
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 1);
   if (ces != 0) {
-    curl_respond( u, "FOLLOWLOCATION", ces);
+    curl_respond( u, "FOLLOWLOCATION", ces); /* NOTRANSLATE */
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
   if (ces != 0) {
-    curl_respond( u, "SSL_VERIFYPEER", ces);
+    curl_respond( u, "SSL_VERIFYPEER", ces); /* NOTRANSLATE */
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_URL, ft->url);
   if (ces != 0) {
-    curl_respond( u, "URL", ces);
+    curl_respond( u, "URL", ces); /* NOTRANSLATE */
     return 1;
   }
 
   ces = curl_easy_setopt(ch, CURLOPT_WRITEDATA, ft->writefd);
   if (ces != 0) {
-    curl_respond( u, "WRITEDATA", ces);
+    curl_respond( u, "WRITEDATA", ces); /* NOTRANSLATE */
     return 1;
   }
 
@@ -287,7 +287,7 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     ces = curl_easy_setopt(ch, CURLOPT_RESUME_FROM_LARGE, ft->resumesize);
 #endif
     if (ces != 0) {
-      curl_respond( u, "RESUME_FROM", ces);
+      curl_respond( u, "RESUME_FROM", ces); /* NOTRANSLATE */
       return 1;
     }
   }
@@ -319,7 +319,7 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
 
   resumesize = 0;
   fullfile = mystrjoin(uploaddir, name, '/');
-  writefd = fopen(fullfile, "w+");
+  writefd = fopen(fullfile, "w+"); /* NOTRANSLATE */
   if ((writefd == NULL) && (errno == EEXIST)) {
     retval = stat(fullfile, &s);
     if (retval < 0) {
@@ -330,7 +330,7 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
       return;
     }
     resumesize = s.st_size;
-    writefd = fopen(fullfile, "a");
+    writefd = fopen(fullfile, "a"); /* NOTRANSLATE */
   }
   if (writefd == NULL) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access Upload File '%s': %s",

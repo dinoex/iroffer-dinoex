@@ -48,61 +48,61 @@ static int http_listen[MAX_VHOSTS];
 static int http_family[MAX_VHOSTS];
 
 static const char *http_header_status =
-"HTTP/1.1 %u OK\r\n"
-"Date: %s\r\n"
-"Last-Modified: %s\r\n"
-"Server: iroffer-dinoex/" VERSIONLONG "\r\n"
-"Content-Type: %s\r\n"
-"Connection: close\r\n"
-"Content-Length: %" LLPRINTFMT "u\r\n"
-"\r\n";
+"HTTP/1.1 %u OK\r\n" /* NOTRANSLATE */
+"Date: %s\r\n" /* NOTRANSLATE */
+"Last-Modified: %s\r\n" /* NOTRANSLATE */
+"Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Content-Type: %s\r\n" /* NOTRANSLATE */
+"Connection: close\r\n" /* NOTRANSLATE */
+"Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */
+"\r\n"; /* NOTRANSLATE */
 
 static const char *http_header_attachment =
-"HTTP/1.1 %u OK\r\n"
-"Date: %s\r\n"
-"Last-Modified: %s\r\n"
-"Server: iroffer-dinoex/" VERSIONLONG "\r\n"
-"Content-Type: %s\r\n"
-"Connection: close\r\n"
-"Content-Length: %" LLPRINTFMT "u\r\n"
-"Content-Disposition: attachment; filename=\"%s\"\r\n"
-"\r\n";
+"HTTP/1.1 %u OK\r\n" /* NOTRANSLATE */
+"Date: %s\r\n" /* NOTRANSLATE */
+"Last-Modified: %s\r\n" /* NOTRANSLATE */
+"Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Content-Type: %s\r\n" /* NOTRANSLATE */
+"Connection: close\r\n" /* NOTRANSLATE */
+"Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */
+"Content-Disposition: attachment; filename=\"%s\"\r\n" /* NOTRANSLATE */
+"\r\n"; /* NOTRANSLATE */
 
 static const char *http_header_notfound =
-"HTTP/1.1 404 Not Found\r\n"
-"Date: %s\r\n"
-"Server: iroffer-dinoex/" VERSIONLONG "\r\n"
-"Content-Type: text/plain\r\n"
-"Connection: close\r\n"
-"Content-Length: 13\r\n"
-"\r\n"
+"HTTP/1.1 404 Not Found\r\n" /* NOTRANSLATE */
+"Date: %s\r\n" /* NOTRANSLATE */
+"Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Content-Type: text/plain\r\n" /* NOTRANSLATE */
+"Connection: close\r\n" /* NOTRANSLATE */
+"Content-Length: 13\r\n" /* NOTRANSLATE */
+"\r\n" /* NOTRANSLATE */
 "Not Found\r\n"
-"\r\n";
+"\r\n"; /* NOTRANSLATE */
 
 static const char *http_header_forbidden =
-"HTTP/1.1 403 Forbidden\r\n"
-"Date: %s\r\n"
-"Server: iroffer-dinoex/" VERSIONLONG "\r\n"
-"Content-Type: text/plain\r\n"
-"Connection: close\r\n"
-"Content-Length: 13\r\n"
-"\r\n"
+"HTTP/1.1 403 Forbidden\r\n" /* NOTRANSLATE */
+"Date: %s\r\n" /* NOTRANSLATE */
+"Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Content-Type: text/plain\r\n" /* NOTRANSLATE */
+"Connection: close\r\n" /* NOTRANSLATE */
+"Content-Length: 13\r\n" /* NOTRANSLATE */
+"\r\n" /* NOTRANSLATE */
 "Forbidden\r\n"
-"\r\n";
+"\r\n"; /* NOTRANSLATE */
 
 #ifndef WITHOUT_HTTP_ADMIN
 static const char *http_header_admin =
-"HTTP/1.1 401 Unauthorized\r\n"
-"Date: %s\r\n"
-"WWW-Authenticate: Basic realm=\"iroffer admin\"\r\n"
-"Content-Type: text/plain\r\n"
-"Connection: close\r\n"
-"Content-Length: 26\r\n"
-"\r\n"
+"HTTP/1.1 401 Unauthorized\r\n" /* NOTRANSLATE */
+"Date: %s\r\n" /* NOTRANSLATE */
+"WWW-Authenticate: Basic realm=\"iroffer admin\"\r\n" /* NOTRANSLATE */
+"Content-Type: text/plain\r\n" /* NOTRANSLATE */
+"Connection: close\r\n" /* NOTRANSLATE */
+"Content-Length: 26\r\n" /* NOTRANSLATE */
+"\r\n" /* NOTRANSLATE */
 "Authorization Required\r\n"
-"\r\n";
+"\r\n"; /* NOTRANSLATE */
 
-static const char *htpp_auth_key = "Basic ";
+static const char *htpp_auth_key = "Basic "; /* NOTRANSLATE */
 #endif /* WITHOUT_HTTP_ADMIN */
 
 typedef struct {
@@ -141,7 +141,7 @@ static const http_special_t http_special[] = {
 };
 
 
-static const unsigned char HEX_NIBBLE[] = "0123456789ABCDEF";
+static const unsigned char HEX_NIBBLE[] = "0123456789ABCDEF"; /* NOTRANSLATE */
 
 #ifndef WITHOUT_HTTP_ADMIN
 
@@ -152,7 +152,7 @@ static const unsigned char HEX_NIBBLE[] = "0123456789ABCDEF";
 	| octect1 | octect2 | octect3 |
 */
 
-static const unsigned char BASE64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const unsigned char BASE64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; /* NOTRANSLATE */
 
 static unsigned char base64decode[ 256 ];
 
@@ -580,7 +580,7 @@ static const char *get_host(http * const h)
 
   host = h->con.remoteaddr;
   if (host == NULL)
-    return "-";
+    return "-"; /* NOTRANSLATE */
 
   host = html_str_split(host, '=');
   html_str_split(host, ' ');
@@ -699,7 +699,7 @@ static unsigned int h_runruby(http * const h)
   if (suffix == NULL)
     return 0;
 
-  if (strcasecmp(suffix, ".rb") != 0)
+  if (strcasecmp(suffix, ".rb") != 0) /* NOTRANSLATE */
     return 0;
 
   params = strchr(h->url, '?');
@@ -707,8 +707,8 @@ static unsigned int h_runruby(http * const h)
     params = h->url;
   else
     ++params;
-  setenv("REQUEST_METHOD", "GET", 1);
-  setenv("QUERY_STRING", params, 1);
+  setenv("REQUEST_METHOD", "GET", 1); /* NOTRANSLATE */
+  setenv("QUERY_STRING", params, 1); /* NOTRANSLATE */
 
   base = mystrdup(h->file);
   suffix = strrchr(base, '.' );
@@ -721,7 +721,7 @@ static unsigned int h_runruby(http * const h)
     tmp = base;
     base = NULL;
   } else {
-    tmp = mystrsuffix(base, ".html");
+    tmp = mystrsuffix(base, ".html"); /* NOTRANSLATE */
     mydelete(base);
   }
   rc = http_ruby_script(h->file, tmp);
@@ -766,11 +766,11 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
   tempstr = mymalloc(maxtextlength);
   localt = gmtime(&gdata.curtime);
   date = mymalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
+  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); /* NOTRANSLATE */
   if (now && (h->status_code == 200)) {
     last = mymalloc(maxtextlengthshort);
     localt = gmtime(now);
-    strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
+    strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); /* NOTRANSLATE */
     if (h->modified) {
       if (strcmp(last, h->modified) == 0) {
         h->status_code = 304;
@@ -849,7 +849,7 @@ static void h_herror_403(http * const h, const char *msg)
   }
   h->url = mystrdup(gdata.http_forbidden);
   h->log_url = mymalloc(maxtextlength);
-  snprintf(h->log_url, maxtextlength, "GET %s HTTP/1.1", gdata.http_forbidden);
+  snprintf(h->log_url, maxtextlength, "GET %s HTTP/1.1", gdata.http_forbidden); /* NOTRANSLATE */
   tempstr = mymalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url);
   h_readfile(h, tempstr);
@@ -937,7 +937,7 @@ static void h_readbuffer(http * const h)
 
   h->bytessent = 0;
   h->totalsize = strlen(h->buffer_out);
-  h_write_status(h, "html", (h->search) ? NULL : &gdata.last_update);
+  h_write_status(h, "html", (h->search) ? NULL : &gdata.last_update); /* NOTRANSLATE */
   h_start_sending(h);
 }
 
@@ -1172,7 +1172,7 @@ static float gets_per_pack(unsigned int agets, unsigned int packs)
 
 static unsigned int html_filter_main(xdcc *xd, const char *group)
 {
-  if (strcmp(group, ".") == 0) {
+  if (strcmp(group, ".") == 0) { /* NOTRANSLATE */
     if (xd->group != NULL)
       return 1;
   } else {
@@ -1187,8 +1187,8 @@ static unsigned int html_filter_main(xdcc *xd, const char *group)
 static unsigned int h_html_filter_group(http * const h, xdcc *xd)
 {
   if (h->group != NULL) {
-    if (strcmp(h->group, "*") != 0) {
-      if (strcmp(h->group, ".") == 0) {
+    if (strcmp(h->group, "*") != 0) { /* NOTRANSLATE */
+      if (strcmp(h->group, ".") == 0) { /* NOTRANSLATE */
         if (xd->group != NULL)
           return 1;
       } else {
@@ -1252,7 +1252,7 @@ static void h_html_main(http * const h)
         snprintf(tempstr, maxtextlength,
                  "%s %s", ".", "no group");
         hg = irlist_add(&grplist, sizeof(html_group_t));
-        hg->hg_group = ".";
+        hg->hg_group = "."; /* NOTRANSLATE */
         hg->hg_desc = "no group";
       }
       continue;
@@ -1262,7 +1262,7 @@ static void h_html_main(http * const h)
     ++groups;
 
     snprintf(tempstr, maxtextlength,
-             "%s %s", xd->group, xd->group_desc);
+             "%s %s", xd->group, xd->group_desc); /* NOTRANSLATE */
     hg = irlist_add(&grplist, sizeof(html_group_t));
     hg->hg_group = xd->group;
     hg->hg_desc = xd->group_desc;
@@ -1566,12 +1566,12 @@ static void h_html_index(http * const h)
 
   if (gdata.support_groups == 0) {
     mydelete(h->group);
-    h->group = mystrdup("*");
+    h->group = mystrdup("*"); /* NOTRANSLATE */
   }
   if (h->search) {
     if (gdata.http_search) {
       mydelete(h->group);
-      h->group = mystrdup("*");
+      h->group = mystrdup("*"); /* NOTRANSLATE */
       len = strlen(h->search) + 1;
       clean = mymalloc(len);
       html_decode(clean, len, h->search);
@@ -1770,7 +1770,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char *UNUS
 
   updatecontext();
 
-  if (strcasecmp(h->url, "/") == 0) {
+  if (strcasecmp(h->url, "/") == 0) { /* NOTRANSLATE */
     guess = 2048;
     h_prepare_header(h, guess);
     h_respond(h, "<a class=\"credits\" href=\"/admin%s/\">%s</a>\n", "/help", "Help" );
@@ -1950,7 +1950,7 @@ static void h_parse(http * const h, char *body)
 
   updatecontext();
 
-  if (strcmp(h->url, "/") == 0) {
+  if (strcmp(h->url, "/") == 0) { /* NOTRANSLATE */
     if (gdata.http_index == NULL) {
       /* send text */
       h_readfile(h, gdata.xdcclistfile);
@@ -1960,26 +1960,26 @@ static void h_parse(http * const h, char *body)
     h->url = mystrdup(gdata.http_index);
   }
 
-  if (strncasecmp(h->url, "/?", 2) == 0) {
+  if (strncasecmp(h->url, "/?", 2) == 0) { /* NOTRANSLATE */
     /* send html */
     h_webliste(h, body);
     return;
   }
 
-  if (strcmp(h->url, "/txt") == 0) {
+  if (strcmp(h->url, "/txt") == 0) { /* NOTRANSLATE */
     /* send text */
     h_readfile(h, gdata.xdcclistfile);
     return;
   }
 
-  if (gdata.xdccxmlfile && (strcasecmp(h->url, "/xml") == 0)) {
+  if (gdata.xdccxmlfile && (strcasecmp(h->url, "/xml") == 0)) { /* NOTRANSLATE */
     /* send XML pack list */
     h_readfile(h, gdata.xdccxmlfile);
     return;
   }
 
 #ifndef WITHOUT_HTTP_ADMIN
-  if ((gdata.http_admin) && (strncasecmp(h->url, "/admin/", 7) == 0)) {
+  if ((gdata.http_admin) && (strncasecmp(h->url, "/admin/", 7) == 0)) { /* NOTRANSLATE */
     if (h_admin_auth(h, body)) {
       count_badip(&(h->con.remote));
       h->status_code = 401;
@@ -2028,12 +2028,12 @@ static void h_get(http * const h)
   }
 
   /* parse header */
-  for (data = strtok(header, "\n");
+  for (data = strtok(header, "\n"); /* NOTRANSLATE */
        data;
-       data = strtok(NULL, "\n")) {
+       data = strtok(NULL, "\n")) { /* NOTRANSLATE */
     html_str_split(data, '\r');
     if (data[0] == 0) {
-      data = strtok(NULL, "\n");
+      data = strtok(NULL, "\n"); /* NOTRANSLATE */
       break;
     }
     hval = html_str_split(data, ':');
@@ -2043,11 +2043,11 @@ static void h_get(http * const h)
     while (hval[0] == ' ')
       ++hval;
 
-    if (strcmp(data, "If-Modified-Since") == 0) {
+    if (strcmp(data, "If-Modified-Since") == 0) { /* NOTRANSLATE */
       h->modified = mystrdup(hval);
       continue;
     }
-    if (strcmp(data, "Authorization") == 0) {
+    if (strcmp(data, "Authorization") == 0) { /* NOTRANSLATE */
       h->authorization = mystrdup(hval);
       continue;
     }

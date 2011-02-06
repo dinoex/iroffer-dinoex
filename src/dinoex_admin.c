@@ -121,7 +121,7 @@ void a_respond(const userinput * const u, const char *format, ...)
     case method_xdl_channel_sum:
       ch = NULL;
       tempnick = mystrdup(u->snick);
-      for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") ) {
+      for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") ) { /* NOTRANSLATE */
         for (ch = irlist_get_head(&(gnetwork->channels));
              ch;
              ch = irlist_get_next(ch)) {
@@ -757,7 +757,7 @@ static transfer *get_transfer_by_number(const userinput * const u, unsigned int 
 
   tr = does_tr_id_exist(num);
   if (tr == NULL) {
-    a_respond_badid(u, "DCL");
+    a_respond_badid(u, "DCL"); /* NOTRANSLATE */
   }
   return tr;
 }
@@ -1027,12 +1027,12 @@ static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned in
   updatecontext();
 
   if (num == 0) num = number_of_pack(xd);
-  newgroup = "MAIN";
+  newgroup = "MAIN"; /* NOTRANSLATE */
   if (group && (group[0] != 0))
     newgroup = group;
 
   if (xd->group != NULL) {
-    a_respond_old_new(u, "GROUP", num, xd->group, newgroup);
+    a_respond_old_new(u, "GROUP", num, xd->group, newgroup); /* NOTRANSLATE */
     /* keep group info for later work */
     tmpgroup = xd->group;
     xd->group = NULL;
@@ -1047,7 +1047,7 @@ static unsigned int a_set_group(const userinput * const u, xdcc *xd, unsigned in
       mydelete(tmpgroup);
   } else {
     a_respond(u, "%s: [Pack %u] New: %s",
-              "GROUP", num, newgroup);
+              "GROUP", num, newgroup); /* NOTRANSLATE */
   }
 
   if (group != newgroup)
@@ -1221,7 +1221,7 @@ static void a_make_announce(const userinput * const u, const char *cmd, unsigned
 
   tempstr = mymalloc (maxtextlength);
   ui = mycalloc(sizeof(userinput));
-  snprintf(tempstr, maxtextlength, "%s %u", cmd, n);
+  snprintf(tempstr, maxtextlength, "%s %u", cmd, n); /* NOTRANSLATE */
   a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = u->net;
@@ -1333,7 +1333,7 @@ static unsigned int check_for_renamed_file(const userinput * const u, xdcc *xd, 
     return 0; /* ino differs */
 
   /* renamed */
-  a_respond_old_new(u, "CHFILE", number_of_pack(xd), xd->file, file);
+  a_respond_old_new(u, "CHFILE", number_of_pack(xd), xd->file, file); /* NOTRANSLATE */
   old = xd->file;
   xd->file = file;
   /* change default description */
@@ -1519,10 +1519,10 @@ static xdcc *a_add2(const userinput * const u, const char *group)
 #endif /* USE_RUBY */
 
   if (gdata.autoaddann_short)
-    a_make_announce(u, "SANNOUNCE", n);
+    a_make_announce(u, "SANNOUNCE", n); /* NOTRANSLATE */
 
   if (gdata.autoaddann)
-    a_make_announce(u, "ANNOUNCE", n);
+    a_make_announce(u, "ANNOUNCE", n); /* NOTRANSLATE */
 
   return xd;
 }
@@ -1743,10 +1743,10 @@ static unsigned int is_unsave_directory(const char *dir)
     return 1;
 
   line = mystrdup(dir);
-  for (word = strtok(line, "/");
+  for (word = strtok(line, "/"); /* NOTRANSLATE */
        word;
-       word = strtok(NULL, "/")) {
-    if (strcmp(word, "..") == 0) {
+       word = strtok(NULL, "/")) { /* NOTRANSLATE */
+    if (strcmp(word, "..") == 0) { /* NOTRANSLATE */
       ++bad;
       break;
     }
@@ -1919,9 +1919,9 @@ void a_reiqueue(const userinput * const u)
 
 static unsigned int is_system_dir(const char *name)
 {
-  if (strcmp(name, ".") == 0)
+  if (strcmp(name, ".") == 0) /* NOTRANSLATE */
     return 1;
-  if (strcmp(name, "..") == 0)
+  if (strcmp(name, "..") == 0) /* NOTRANSLATE */
     return 1;
   return 0;
 }
@@ -1996,7 +1996,7 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
     u2->method = u->method;
     u2->fd = u->fd;
     u2->chat = u->chat;
-    u2->cmd = mystrdup( "REMOVE" );
+    u2->cmd = mystrdup( "REMOVE" ); /* NOTRANSLATE */
     u2->net = gnetwork->net;
     u2->level = u->level;
 
@@ -2195,7 +2195,7 @@ void a_sort(const userinput * const u)
 {
   irlist_t old_list;
   xdcc *xdo;
-  const char *k = "filename";
+  const char *k = "filename"; /* NOTRANSLATE */
 
   updatecontext();
 
@@ -2450,7 +2450,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     u2->method = u->method;
     u2->fd = u->fd;
     u2->chat = u->chat;
-    u2->cmd = mystrdup( "ADD" );
+    u2->cmd = mystrdup( "ADD" ); /* NOTRANSLATE */
     u2->net = gnetwork->net;
     u2->level = u->level;
 
@@ -2945,7 +2945,8 @@ void a_deltrigger(const userinput * const u)
 
     ++dirty;
     mydelete(xd->trigger);
-    a_respond(u, "%s: [Pack %u] removed", "CHTRIGGER", num1);
+    a_respond(u, "%s: [Pack %u] removed",
+              "CHTRIGGER", num1); /* NOTRANSLATE */
   }
   if (dirty > 0)
     autotrigger_rebuild();
@@ -3142,7 +3143,8 @@ void a_lockgroup(const userinput * const u)
     if (strcasecmp(xd->group, u->arg1) != 0)
       continue;
 
-    a_respond(u, "%s: [Pack %u] Password: %s", "LOCK", n, u->arg2);
+    a_respond(u, "%s: [Pack %u] Password: %s",
+              "LOCK", n, u->arg2); /* NOTRANSLATE */
     mydelete(xd->lock);
     xd->lock = mystrdup(u->arg2);
   }
@@ -3315,7 +3317,7 @@ void a_regroup(const userinput * const u)
     caps(u->arg2);
   }
 
-  not_main = strcasecmp(u->arg2, "main");
+  not_main = strcasecmp(u->arg2, "MAIN"); /* NOTRANSLATE */
   k = 0;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
@@ -3323,7 +3325,7 @@ void a_regroup(const userinput * const u)
     if (xd->group != NULL)
       g = xd->group;
     else
-      g = "main";
+      g = "MAIN"; /* NOTRANSLATE */
     if (strcasecmp(g, u->arg1) == 0) {
       ++k;
       if (xd->group != NULL)
@@ -3339,7 +3341,7 @@ void a_regroup(const userinput * const u)
   a_respond(u, "%s: Old: %s New: %s", u->cmd, u->arg1, u->arg2);
   reorder_groupdesc(u->arg2);
   if (not_main) {
-    if (strcasecmp(u->arg1, "main") == 0)
+    if (strcasecmp(u->arg1, "MAIN") == 0) /* NOTRANSLATE */
       add_default_groupdesc(u->arg2);
   }
   write_files();
@@ -3438,7 +3440,7 @@ static void a_chfile_sub(const userinput * const u, xdcc *xd, unsigned int num, 
 
   a_cancel_transfers(xd, "Pack file changed");
 
-  a_respond_old_new(u, "CHFILE", num, xd->file, file);
+  a_respond_old_new(u, "CHFILE", num, xd->file, file); /* NOTRANSLATE */
 
   old = xd->file;
   xd->file     = file;
@@ -3454,7 +3456,7 @@ static void a_chfile_sub(const userinput * const u, xdcc *xd, unsigned int num, 
   }
   mydelete(old);
 
-  cancel_md5_hash(xd, "CHFILE");
+  cancel_md5_hash(xd, "CHFILE"); /* NOTRANSLATE */
 }
 
 void a_chfile(const userinput * const u)
@@ -3733,10 +3735,10 @@ void a_movegroupdir(const userinput * const u)
     if (xd->group != NULL)
       g = xd->group;
     else
-      g = "main";
+      g = "MAIN"; /* NOTRANSLATE */
     if (strcasecmp(g, u->arg1) == 0) {
       ++foundit;
-      snprintf(tempstr, maxtextlength - 2, "%s/%s", thedir, getfilename(xd->file));
+      snprintf(tempstr, maxtextlength - 2, "%s/%s", thedir, getfilename(xd->file)); /* NOTRANSLATE */
       if (strcmp(tempstr, xd->file) != 0) {
         if (a_movefile_sub(u, xd, tempstr))
           break;
@@ -3917,7 +3919,7 @@ static void a_announce_channels(const char *msg, const char *match, const char *
           continue;
       }
     }
-    privmsg_chan(ch, "%s", msg);
+    privmsg_chan(ch, "%s", msg); /* NOTRANSLATE */
   }
 }
 
@@ -3969,7 +3971,7 @@ static void a_msg_nick_or_chan(const userinput * const u, const char *name, cons
     return;
 
   if (name[0] != '#') {
-    privmsg_fast(name, "%s", msg);
+    privmsg_fast(name, "%s", msg); /* NOTRANSLATE */
     return;
   }
 
@@ -3977,7 +3979,7 @@ static void a_msg_nick_or_chan(const userinput * const u, const char *name, cons
   if (ch == NULL)
     return;
 
-  privmsg_chan(ch, "%s", msg);
+  privmsg_chan(ch, "%s", msg); /* NOTRANSLATE */
 }
 
 void a_msg(const userinput * const u)
@@ -4213,7 +4215,7 @@ void a_closeu(const userinput * const u)
   num = atoi(u->arg1);
   ul = irlist_get_nth(&gdata.uploads, num);
   if (ul == NULL) {
-    a_respond_badid(u, "DCL");
+    a_respond_badid(u, "DCL"); /* NOTRANSLATE */
     return;
   }
   l_closeconn(ul, "Owner Requested Close", 0);
@@ -4228,7 +4230,7 @@ void a_acceptu(const userinput * const u)
   updatecontext();
 
   if (u->arg1) min = atoi(u->arg1);
-  hostmask = u->arg2 ? u->arg2 : "*!*@*";
+  hostmask = u->arg2 ? u->arg2 : "*!*@*"; /* NOTRANSLATE */
   if (min > 0) {
     tu = irlist_add(&gdata.tuploadhost, sizeof(tupload_t));
     tu->u_host = mystrdup( hostmask );
@@ -4295,7 +4297,7 @@ void a_get(const userinput * const u)
     qu->q_net = net;
     qu->q_nick = mystrdup(u->arg2);
     qu->q_pack = mystrdup(u->arg3e);
-    qu->q_host = to_hostmask(qu->q_nick, "*");
+    qu->q_host = to_hostmask(qu->q_nick, "*"); /* NOTRANSLATE */
     qu->q_time = gdata.curtime;
     a_respond(u, "GET %s started for %s on %s",
               qu->q_pack, qu->q_nick, gdata.networks[ qu->q_net ].name);
@@ -4342,13 +4344,13 @@ static void a_rmq2(const userinput * const u, irlist_t *list)
 
   num = atoi(u->arg1);
   if (num == 0) {
-    a_respond_badid(u, "QUL");
+    a_respond_badid(u, "QUL"); /* NOTRANSLATE */
     return;
   }
 
   pq = irlist_get_nth(list, num - 1);
   if (!pq) {
-    a_respond_badid(u, "QUL");
+    a_respond_badid(u, "QUL"); /* NOTRANSLATE */
     return;
   }
 
@@ -4391,7 +4393,7 @@ void a_rmul(const userinput * const u)
   if (invalid_file(u, u->arg1) != 0)
     return;
 
-  if (strstr(u->arg1, "/")) {
+  if (strstr(u->arg1, "/")) { /* NOTRANSLATE */
     a_respond(u, "Filename contains invalid characters");
     return;
   }
@@ -4426,7 +4428,7 @@ void a_raw(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[0]);
-  writeserver(WRITESERVER_NOW, "%s", u->arg1e);
+  writeserver(WRITESERVER_NOW, "%s", u->arg1e); /* NOTRANSLATE */
   gnetwork = backup;
 }
 
@@ -4446,7 +4448,7 @@ void a_rawnet(const userinput * const u)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  writeserver(WRITESERVER_NOW, "%s", u->arg2e);
+  writeserver(WRITESERVER_NOW, "%s", u->arg2e); /* NOTRANSLATE */
   gnetwork = backup;
 }
 
@@ -4490,7 +4492,7 @@ static void a_hop_net(const userinput * const u, const char *name)
        ch = irlist_get_next(ch)) {
     if ((!name) || (!strcasecmp(name, ch->name))) {
       a_respond(u, "Hopping channel %s on %s", ch->name, gnetwork->name);
-      writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
+      writeserver(WRITESERVER_NORMAL, "PART %s", ch->name); /* NOTRANSLATE */
       clearmemberlist(ch);
       ch->flags &= ~CHAN_ONCHAN;
       ch->flags &= ~CHAN_KICKED;
@@ -4543,7 +4545,7 @@ void a_nochannel(const userinput * const u)
          ch;
          ch = irlist_get_next(ch)) {
       if ((!u->arg2) || (!strcasecmp(u->arg2, ch->name))) {
-        writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
+        writeserver(WRITESERVER_NORMAL, "PART %s", ch->name); /* NOTRANSLATE */
         clearmemberlist(ch);
         ch->flags &= ~CHAN_ONCHAN;
         ch->nextjoin = gdata.curtime + (val * 60);
@@ -4614,7 +4616,7 @@ void a_part(const userinput * const u)
     if (strcasecmp(u->arg1, ch->name) != 0)
       continue;
 
-    writeserver(WRITESERVER_NORMAL, "PART %s", ch->name);
+    writeserver(WRITESERVER_NORMAL, "PART %s", ch->name); /* NOTRANSLATE */
     clearmemberlist(ch);
     free_channel_data(ch);
     irlist_delete(&(gnetwork->channels), ch);
@@ -4743,7 +4745,7 @@ void a_closec(const userinput * const u)
   num = atoi(u->arg1);
   chat = irlist_get_nth(&gdata.dccchats, num-1);
   if (chat == NULL) {
-    a_respond_badid(u, "CHATL");
+    a_respond_badid(u, "CHATL"); /* NOTRANSLATE */
     return;
   }
   a_closec_sub(u, chat);
@@ -4761,7 +4763,7 @@ void a_config(const userinput * const u)
   if (invalid_text(u, "Try Specifying a Key", u->arg1e))
     return;
 
-  current_config = "ADMIN";
+  current_config = "ADMIN"; /* NOTRANSLATE */
   getconfig_set(u->arg1e);
 }
 
@@ -4956,7 +4958,7 @@ void a_send(const userinput * const u)
   a_respond(u, "Sending %s pack %u", u->arg1, num);
   gnetwork = &(gdata.networks[net]);
   look_for_file_changes(xd);
-  tr = create_transfer(xd, u->arg1, "man");
+  tr = create_transfer(xd, u->arg1, "man"); /* NOTRANSLATE */
   t_notice_transfer(tr, NULL, num, 0);
   t_unlmited(tr, NULL);
   t_setup_dcc(tr);
@@ -4965,7 +4967,7 @@ void a_send(const userinput * const u)
 
 static unsigned int a_queue_found(const userinput * const u, xdcc *xd, unsigned int num)
 {
-  const char *hostname = "man";
+  const char *hostname = "man"; /* NOTRANSLATE */
   unsigned int alreadytrans;
   unsigned int inq;
 
@@ -5121,9 +5123,9 @@ static unsigned int a_iqueue_words(const userinput * const u, const char *what, 
   copy = mystrdup(what);
   found = 0;
   /* parse list of packs */
-  for (data = strtok(copy, ",");
+  for (data = strtok(copy, ","); /* NOTRANSLATE */
        data;
-       data = strtok(NULL, ",")) {
+       data = strtok(NULL, ",")) { /* NOTRANSLATE */
     if (data[0] == 0)
       break;
     found += a_iqueue_search(u, data, net);
@@ -5184,7 +5186,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     dateprefix = mymalloc(maxtextlengthshort);
     datestr = mymalloc(maxtextlengthshort);
     user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
-    snprintf(dateprefix, maxtextlengthshort - 1, "%s%s%s",
+    snprintf(dateprefix, maxtextlengthshort - 1, "%s%s%s", /* NOTRANSLATE */
              gdata.announce_seperator, datestr, gdata.announce_seperator);
     mydelete(datestr);
   } else {
@@ -5208,7 +5210,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     snprintf(suffix, maxtextlength - 2, "/MSG %s XDCC SEND %u",
              get_user_nick(), num);
     color_suffix = color_text(suffix, color);
-    snprintf(message, maxtextlength - 2, "%s%s%s",
+    snprintf(message, maxtextlength - 2, "%s%s%s", /* NOTRANSLATE */
              prefix, gdata.announce_seperator, color_suffix);
     if (color_suffix != suffix)
       mydelete(color_suffix);
@@ -5411,7 +5413,7 @@ void a_addann(const userinput * const u)
   if (xd == NULL)
     return;
 
-  a_make_announce(u, "ANNOUNCE", number_of_pack(xd));
+  a_make_announce(u, "ANNOUNCE", number_of_pack(xd)); /* NOTRANSLATE */
 }
 
 void a_noannounce(const userinput * const u)

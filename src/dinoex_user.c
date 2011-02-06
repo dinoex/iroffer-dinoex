@@ -48,7 +48,7 @@ typedef struct
   char *msg7;
 } privmsginput;
 
-static const char *type_list[2] = { "NOTICE", "PRIVMSG" };
+static const char *type_list[2] = { "NOTICE", "PRIVMSG" }; /* NOTRANSLATE */
 
 static void strip_trailing_action(char *str)
 {
@@ -88,7 +88,7 @@ static void send_clientinfo(const char *nick, char *msg2)
           nick, gnetwork->name);
 
   if (!msg2) {
-    notice(nick, "\1CLIENTINFO DCC PING VERSION XDCC UPTIME "
+    notice(nick, "\1CLIENTINFO DCC PING VERSION XDCC UPTIME " /* NOTRANSLATE */
     ":Use CTCP CLIENTINFO <COMMAND> to get more specific information\1");
     return;
   }
@@ -133,7 +133,7 @@ static int verifyhost_group(const char *hostmask)
 
 static void command_dcc(privmsginput *pi)
 {
-  if (strcmp(pi->msg2, "RESUME") == 0) {
+  if (strcmp(pi->msg2, "RESUME") == 0) { /* NOTRANSLATE */
     if ((pi->msg3 == NULL) || (pi->msg4 == NULL) || (pi->msg5 == NULL))
       return;
 
@@ -143,7 +143,7 @@ static void command_dcc(privmsginput *pi)
     return;
   }
 
-  if (strcmp(pi->msg2, "CHAT") == 0) {
+  if (strcmp(pi->msg2, "CHAT") == 0) { /* NOTRANSLATE */
     if (verifyshell(&gdata.adminhost, pi->hostmask)) {
       ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
               "DCC CHAT attempt authorized from %s on %s",
@@ -172,7 +172,7 @@ static void command_dcc(privmsginput *pi)
     return;
   }
 
-  if (strcmp(pi->msg2, "SEND") == 0) {
+  if (strcmp(pi->msg2, "SEND") == 0) { /* NOTRANSLATE */
     unsigned int down = 0;
 
     if ((pi->msg3 == NULL) || (pi->msg4 == NULL) || (pi->msg5 == NULL) || (pi->msg6 == NULL))
@@ -190,7 +190,7 @@ static void command_dcc(privmsginput *pi)
     return;
   }
 
-  if (strcmp(pi->msg2, "ACCEPT") == 0) {
+  if (strcmp(pi->msg2, "ACCEPT") == 0) { /* NOTRANSLATE */
     upload *ul;
     char *tempstr;
     off_t len;
@@ -329,7 +329,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
 
   updatecontext();
 
-  xd = get_download_pack(bad, pi->nick, pi->hostmask, pack, "SEND", get_restrictsend());
+  xd = get_download_pack(bad, pi->nick, pi->hostmask, pack, "SEND", get_restrictsend()); /* NOTRANSLATE */
   if (xd == NULL)
     return 1;
 
@@ -487,9 +487,9 @@ static void send_batch(privmsginput *pi, const char *what, const char *pwd)
   copy = mystrdup(what);
   found = 0;
   /* parse list of packs */
-  for (data = strtok(copy, ",");
+  for (data = strtok(copy, ","); /* NOTRANSLATE */
        data;
-       data = strtok(NULL, ",")) {
+       data = strtok(NULL, ",")) { /* NOTRANSLATE */
     if (data[0] == 0)
       break;
     found += send_batch_search(pi, data, pwd);
@@ -555,7 +555,7 @@ static void send_xdcc_info(const char **bad, const char *nick, const char *hostm
   }
 
   pack = packnumtonum(arg);
-  xd = get_download_pack(bad, nick, hostmask, pack, "INFO", get_restrictlist());
+  xd = get_download_pack(bad, nick, hostmask, pack, "INFO", get_restrictlist()); /* NOTRANSLATE */
   if (xd == NULL)
     return;
 
@@ -591,7 +591,7 @@ static int parse_xdcc_list(const char *nick, char *msg3)
     restrictprivlistmsg(nick);
     return 2; /* deny */
   }
-  if (get_restrictlist() && access_need_level(nick, "LIST")) {
+  if (get_restrictlist() && access_need_level(nick, "LIST")) { /* NOTRANSLATE */
     return 2; /* deny */
   }
   for (user = irlist_get_head(&(gnetwork->xlistqueue));
@@ -613,7 +613,7 @@ static int parse_xdcc_list(const char *nick, char *msg3)
     user->nick = mystrdup(nick);
     return 3; /* queued */
   }
-  if (strcmp(caps(msg3), "ALL") == 0) {
+  if (strcmp(caps(msg3), "ALL") == 0) { /* NOTRANSLATE */
     if (gdata.restrictprivlistfull) {
       restrictprivlistmsg(nick);
       return 2; /* deny */
@@ -706,7 +706,7 @@ static int stoplist_queue(const char *nick, irlist_t *list)
       if (end != NULL) {
         *(end++) = 0;
         if (strcasecmp(inick, nick) == 0) {
-          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
+          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) { /* NOTRANSLATE */
             ++stopped;
             mydelete(copy);
             item = irlist_delete(list, item);
@@ -740,7 +740,7 @@ static int stoplist_announce(const char *nick)
       if (end != NULL) {
         *(end++) = 0;
         if (strcasecmp(inick, nick) == 0) {
-          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) {
+          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) { /* NOTRANSLATE */
             ++stopped;
             mydelete(copy);
             mydelete(item->msg);
@@ -841,10 +841,10 @@ static void command_xdcc(privmsginput *pi)
   strip_trailing_action(pi->msg3);
   caps(pi->msg2);
 
-  if (strcmp(pi->msg2, "LIST") == 0) {
+  if (strcmp(pi->msg2, "LIST") == 0) { /* NOTRANSLATE */
     unsigned int j;
     /* detect xdcc list group xxx */
-    if ((pi->msg3) && (pi->msg4) && (strcmp(caps(pi->msg3), "GROUP") == 0)) {
+    if ((pi->msg3) && (pi->msg4) && (strcmp(caps(pi->msg3), "GROUP") == 0)) { /* NOTRANSLATE */
       tmp = pi->msg3;
       pi->msg4 = pi->msg3;
       pi->msg3 = tmp;
@@ -854,38 +854,38 @@ static void command_xdcc(privmsginput *pi)
     return;
   }
 
-  if ((strcmp(pi->msg2, "GET") == 0) && pi->msg3) {
+  if ((strcmp(pi->msg2, "GET") == 0) && pi->msg3) { /* NOTRANSLATE */
     xdcc_send(pi);
     return;
   }
-  if ((strcmp(pi->msg2, "SEND") == 0) && pi->msg3) {
+  if ((strcmp(pi->msg2, "SEND") == 0) && pi->msg3) { /* NOTRANSLATE */
     xdcc_send(pi);
     return;
   }
 
-  if ((strcmp(pi->msg2, "INFO") == 0) && pi->msg3) {
+  if ((strcmp(pi->msg2, "INFO") == 0) && pi->msg3) { /* NOTRANSLATE */
     send_xdcc_info(&msg, pi->nick, pi->hostmask, pi->msg3);
     log_xdcc_request3(pi, msg);
     return;
   }
-  if (strcmp(pi->msg2, "QUEUE") == 0) {
+  if (strcmp(pi->msg2, "QUEUE") == 0) { /* NOTRANSLATE */
     log_xdcc_request1(pi);
     notifyqueued_nick(pi->nick);
     return;
   }
 
-  if (strcmp(pi->msg2, "STOP") == 0) {
+  if (strcmp(pi->msg2, "STOP") == 0) { /* NOTRANSLATE */
     xdcc_stop(pi);
     return;
   }
 
-  if (strcmp(pi->msg2, "CANCEL") == 0) {
+  if (strcmp(pi->msg2, "CANCEL") == 0) { /* NOTRANSLATE */
     log_xdcc_request1(pi);
     send_cancel(pi->nick);
     return;
   }
 
-  if (strcmp(pi->msg2, "REMOVE") == 0) {
+  if (strcmp(pi->msg2, "REMOVE") == 0) { /* NOTRANSLATE */
     unsigned int number = 0;
     if (pi->msg3) {
       number = atoi(pi->msg3);
@@ -897,20 +897,20 @@ static void command_xdcc(privmsginput *pi)
     return;
   }
 
-  if (strcmp(pi->msg2, "OWNER") == 0) {
+  if (strcmp(pi->msg2, "OWNER") == 0) { /* NOTRANSLATE */
     log_xdcc_request1(pi);
     send_owner(pi->nick);
     return;
   }
 
-  if (strcmp(pi->msg2, "HELP") == 0) {
+  if (strcmp(pi->msg2, "HELP") == 0) { /* NOTRANSLATE */
     log_xdcc_request1(pi);
     send_help(pi->nick);
     return;
   }
 
   if (gdata.send_batch) {
-    if ((strcmp(pi->msg2, "BATCH") == 0) && pi->msg3) {
+    if ((strcmp(pi->msg2, "BATCH") == 0) && pi->msg3) { /* NOTRANSLATE */
       strip_trailing_action(pi->msg3);
       strip_trailing_action(pi->msg4);
       send_batch(pi, pi->msg3, pi->msg4);
@@ -918,7 +918,7 @@ static void command_xdcc(privmsginput *pi)
     }
   }
 
-  if ((strcmp(pi->msg2, "SEARCH") == 0) && pi->msg3) {
+  if ((strcmp(pi->msg2, "SEARCH") == 0) && pi->msg3) { /* NOTRANSLATE */
     xdcc *xd;
     char *match;
     char *msg3e;
@@ -1065,7 +1065,7 @@ static int botonly_parse(int type, privmsginput *pi)
   char *tempstr2;
 
   /*----- CLIENTINFO ----- */
-  if (test_ctcp(pi->msg1, "\1CLIENTINFO")) {
+  if (test_ctcp(pi->msg1, "\1CLIENTINFO")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     send_clientinfo(pi->nick, pi->msg2);
@@ -1073,15 +1073,15 @@ static int botonly_parse(int type, privmsginput *pi)
   }
   if (type != 0) {
     /*----- PING ----- */
-    if (test_ctcp(pi->msg1, "\1PING")) {
+    if (test_ctcp(pi->msg1, "\1PING")) { /* NOTRANSLATE */
       if (check_ignore(pi->nick, pi->hostmask))
         return 0;
       strip_trailing_action(pi->msg2);
       strip_trailing_action(pi->msg3);
-      notice(pi->nick, "\1PING%s%s%s%s\1",
-             pi->msg2 ? " " : "",
+      notice(pi->nick, "\1PING%s%s%s%s\1", /* NOTRANSLATE */
+             pi->msg2 ? " " : "", /* NOTRANSLATE */
              pi->msg2 ? pi->msg2 : "",
-             pi->msg3 ? " " : "",
+             pi->msg3 ? " " : "", /* NOTRANSLATE */
              pi->msg3 ? pi->msg3 : "");
       ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "[CTCP] %s on %s: PING",
@@ -1090,11 +1090,11 @@ static int botonly_parse(int type, privmsginput *pi)
     }
   }
  /*----- VERSION ----- */
-  if (test_ctcp(pi->msg1, "\1VERSION")) {
+  if (test_ctcp(pi->msg1, "\1VERSION")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     notice(pi->nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s" FEATURES "\1",
-           gdata.hideos ? "" : " - ",
+           gdata.hideos ? "" : " - ", /* NOTRANSLATE */
            gdata.hideos ? "" : gdata.osstring);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "[CTCP] %s on %s: VERSION",
@@ -1102,12 +1102,12 @@ static int botonly_parse(int type, privmsginput *pi)
     return 0;
   }
  /*----- UPTIME ----- */
-  if (test_ctcp(pi->msg1, "\1UPTIME")) {
+  if (test_ctcp(pi->msg1, "\1UPTIME")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     tempstr2 = mymalloc(maxtextlength);
     tempstr2 = getuptime(tempstr2, 0, gdata.startuptime, maxtextlength);
-    notice(pi->nick, "\1UPTIME %s\1", tempstr2);
+    notice(pi->nick, "\1UPTIME %s\1", tempstr2); /* NOTRANSLATE */
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "[CTCP] %s on %s: UPTIME",
              pi->nick, gnetwork->name);
@@ -1115,12 +1115,12 @@ static int botonly_parse(int type, privmsginput *pi)
     return 0;
   }
   /*----- STATUS ----- */
-  if (test_ctcp(pi->msg1, "\1STATUS")) {
+  if (test_ctcp(pi->msg1, "\1STATUS")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     tempstr2 = mymalloc(maxtextlength);
     tempstr2 = getstatuslinenums(tempstr2, maxtextlength);
-    notice(pi->nick, "\1%s\1", tempstr2);
+    notice(pi->nick, "\1%s\1", tempstr2); /* NOTRANSLATE */
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                "[CTCP] %s on %s: STATUS",
                pi->nick, gnetwork->name);
@@ -1132,7 +1132,7 @@ static int botonly_parse(int type, privmsginput *pi)
     return 1;
 
   /*----- DCC SEND/CHAT/RESUME ----- */
-  if (test_ctcp(pi->msg1, "\1DCC")) {
+  if (test_ctcp(pi->msg1, "\1DCC")) { /* NOTRANSLATE */
     if (pi->msg2 == NULL)
       return 0; /* ignore */
     if (check_ignore(pi->nick, pi->hostmask))
@@ -1143,7 +1143,7 @@ static int botonly_parse(int type, privmsginput *pi)
   }
 
   /*----- ADMIN ----- */
-  if (strcmp(pi->msg1, "ADMIN") == 0) {
+  if (strcmp(pi->msg1, "ADMIN") == 0) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     admin_message(pi);
@@ -1248,7 +1248,7 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
         snprintf(tempstr + len, maxtextlength - len, " - /MSG %s XDCC SEND x -",
                  get_user_nick());
         len = strlen(tempstr);
-        if (!strcmp(match, "*"))
+        if (!strcmp(match, "*")) /* NOTRANSLATE */
           snprintf(tempstr + len, maxtextlength - len, " Packs:");
         else
           snprintf(tempstr + len, maxtextlength - len, " Found:");
@@ -1259,7 +1259,7 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
     snprintf(tempstr + len, maxtextlength - len, " #%u:%s,%s", i, colordesc, sizestrstr);
     if (strlen(tempstr) > get_channel_limit(dest)) {
       snprintf(tempstr + len, maxtextlength - len, " [...]");
-      notice_slow(nick, "%s", tempstr);
+      notice_slow(nick, "%s", tempstr); /* NOTRANSLATE */
       snprintf(tempstr, maxtextlength, "[...] #%u:%s,%s", i, colordesc, sizestrstr);
     }
     if (colordesc != xd->desc)
@@ -1276,7 +1276,7 @@ static int noticeresults(const char *nick, const char *pattern, const char *dest
   mydelete(match);
 
   if (k)
-    notice_slow(nick, "%s", tempstr);
+    notice_slow(nick, "%s", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   return k;
 }
@@ -1471,10 +1471,10 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
 
   caps(pi->hostmask);
   /*----- XDCC ----- */
-  if ((strcmp(pi->msg1, "XDCC") == 0) ||
-      (strcmp(pi->msg1, "\1XDCC") == 0) ||
-      (strcmp(pi->msg1, "CDCC") == 0) ||
-      (strcmp(pi->msg1, "\1CDCC") == 0)) {
+  if ((strcmp(pi->msg1, "XDCC") == 0) || /* NOTRANSLATE */
+      (strcmp(pi->msg1, "\1XDCC") == 0) || /* NOTRANSLATE */
+      (strcmp(pi->msg1, "CDCC") == 0) || /* NOTRANSLATE */
+      (strcmp(pi->msg1, "\1CDCC") == 0)) { /* NOTRANSLATE */
     if (!gdata.respondtochannelxdcc) {
       if (not_for_me(pi->dest))
         return; /* ignore */
@@ -1489,8 +1489,8 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
   }
 
   /*----- !LIST ----- */
-  if ((test_ctcp(pi->msg1, "\1!LIST")) ||
-      (strcmp(pi->msg1, "!LIST") == 0)) {
+  if ((test_ctcp(pi->msg1, "\1!LIST")) || /* NOTRANSLATE */
+      (strcmp(pi->msg1, "!LIST") == 0)) { /* NOTRANSLATE */
     const char *rtclmsg;
     char *tempstr2;
 
@@ -1543,12 +1543,12 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
 
   /* iroffer-lamm: @find */
   if (gdata.atfind && pi->msg2) {
-    if (strcmp(pi->msg1, "@FIND") == 0) {
+    if (strcmp(pi->msg1, "@FIND") == 0) { /* NOTRANSLATE */
       do_atfind( gdata.atfind, pi);
       return;
     }
     if (!gdata.no_find_trigger) {
-      if (strcmp(pi->msg1, "!FIND") == 0) {
+      if (strcmp(pi->msg1, "!FIND") == 0) { /* NOTRANSLATE */
         do_atfind( gdata.atfind, pi);
         return;
       }
@@ -1556,7 +1556,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
   }
 
   if (gdata.new_trigger) {
-    if (strcmp(pi->msg1, "!NEW") == 0) {
+    if (strcmp(pi->msg1, "!NEW") == 0) { /* NOTRANSLATE */
       const char *grouplist;
       unsigned int k;
 
@@ -1672,7 +1672,7 @@ void privmsgparse(int type, int decoded, char *line)
 
   caps(pi.dest);
   if (pi.msg1) {
-    caps(++(pi.msg1)); /* point past the ":" */
+    caps(++(pi.msg1)); /* point past the ':' */
   }
 
   line_len = sstrlen(pi.hostmask);
