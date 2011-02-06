@@ -321,7 +321,7 @@ unsigned int notifyqueued_nick(const char *nick)
   updatecontext();
 
   localt = localtime(&gdata.curtime);
-  strftime(ntime, sizeof(ntime) - 1, "%H:%M", localt);
+  strftime(ntime, sizeof(ntime) - 1, "%H:%M", localt); /* NOTRANSLATE */
 
   guess_end_transfers();
   found += notifyqueued_queue(&gdata.mainqueue, nick, ntime, 0);
@@ -393,9 +393,9 @@ static void global_defaults(void)
   unsigned int ss;
 
   if (!gdata.group_seperator)
-    gdata.group_seperator = mystrdup(" ");
+    gdata.group_seperator = mystrdup(" "); /* NOTRANSLATE */
   if (!gdata.announce_seperator)
-    gdata.announce_seperator = mystrdup(" ");
+    gdata.announce_seperator = mystrdup(" "); /* NOTRANSLATE */
 
   if (gdata.usenatip) {
     backup = gnetwork;
@@ -563,7 +563,7 @@ void update_hour_dinoex(unsigned int minute)
     if (xd == tr->xpack)
       return;
   }
-  if (send_xdcc_file(&xdcc_statefile, gdata.statefile, gdata.send_statefile, "man") == 0)
+  if (send_xdcc_file(&xdcc_statefile, gdata.statefile, gdata.send_statefile, "man") == 0) /* NOTRANSLATE */
     dinoex_nexthour = gdata.curtime + (60 * 30);
 }
 
@@ -673,11 +673,11 @@ static const char *access_need_text(void)
   case 0:
     return NULL;
   case 1:
-    return "voice";
+    return "voice"; /* NOTRANSLATE */
   case 2:
-    return "halfop";
+    return "halfop"; /* NOTRANSLATE */
   case 3:
-    return "op";
+    return "op"; /* NOTRANSLATE */
   default:
     return NULL;
   }
@@ -778,7 +778,7 @@ char *get_grouplist_access(const char *nick)
         return NULL;
       }
 
-      len += snprintf(tempstr + len, maxtextlength - len, " %s", ch->rgroup);
+      len += snprintf(tempstr + len, maxtextlength - len, " %s", ch->rgroup); /* NOTRANSLATE */
     }
   }
   return tempstr;
@@ -913,22 +913,22 @@ int select_starting_transfer(unsigned int max)
 }
 
 static const char *style_on[ 16 ] = {
-  /* 0 = none */ "",
-  /* 1 = bold */ "\x02",
-  /* 2 = underline */ "\x1F",
-  /* 3 = bold, underline */ "\x02\x1F",
-  /* 4 = italic */ "\x1D",
-  /* 5 = bold, italic */ "\x02\x1D",
-  /* 6 = underline, italic */ "\x1F\x1D",
-  /* 7 = bold, underline, italic */ "\x02\x1F\x1D",
-  /* 8 = inverse */ "\x16",
-  /* 9 = bold, inverse */ "\x02\x16",
-  /* 10 = underline, inverse */ "\x1F\x16",
-  /* 11 = bold, underline, inverse */ "\x02\x1F\x16",
-  /* 12 = italic, inverse */ "\x1D\x16",
-  /* 13 = bold, italic, inverse */ "\x02\x1D\x16",
-  /* 14 = underline, italic, inverse */ "\x1F\x1D\x16",
-  /* 15 = bold, underline, italic, inverse */ "\x02\x1F\x1D\x16",
+  /* 0 = none */ "", /* NOTRANSLATE */
+  /* 1 = bold */ "\x02", /* NOTRANSLATE */
+  /* 2 = underline */ "\x1F", /* NOTRANSLATE */
+  /* 3 = bold, underline */ "\x02\x1F", /* NOTRANSLATE */
+  /* 4 = italic */ "\x1D", /* NOTRANSLATE */
+  /* 5 = bold, italic */ "\x02\x1D", /* NOTRANSLATE */
+  /* 6 = underline, italic */ "\x1F\x1D", /* NOTRANSLATE */
+  /* 7 = bold, underline, italic */ "\x02\x1F\x1D", /* NOTRANSLATE */
+  /* 8 = inverse */ "\x16", /* NOTRANSLATE */
+  /* 9 = bold, inverse */ "\x02\x16", /* NOTRANSLATE */
+  /* 10 = underline, inverse */ "\x1F\x16", /* NOTRANSLATE */
+  /* 11 = bold, underline, inverse */ "\x02\x1F\x16", /* NOTRANSLATE */
+  /* 12 = italic, inverse */ "\x1D\x16", /* NOTRANSLATE */
+  /* 13 = bold, italic, inverse */ "\x02\x1D\x16", /* NOTRANSLATE */
+  /* 14 = underline, italic, inverse */ "\x1F\x1D\x16", /* NOTRANSLATE */
+  /* 15 = bold, underline, italic, inverse */ "\x02\x1F\x1D\x16", /* NOTRANSLATE */
 };
 
 /* colored text */
@@ -950,14 +950,14 @@ char *color_text(char *desc, unsigned int color)
    background = (color >> 8) & 0xFF;
    style = (color >> 16 ) & 0x0F;
    if (background != 0) {
-     snprintf(colordesc, maxtextlength, "%s\003%02u,%02u%s\003\017", style_on[ style ], foreground, background, desc);
+     snprintf(colordesc, maxtextlength, "%s\003%02u,%02u%s\003\017", style_on[ style ], foreground, background, desc); /* NOTRANSLATE */
      return colordesc;
    }
    if (foreground != 0) {
-     snprintf(colordesc, maxtextlength, "%s\003%02u%s\003\017", style_on[ style ], foreground, desc);
+     snprintf(colordesc, maxtextlength, "%s\003%02u%s\003\017", style_on[ style ], foreground, desc); /* NOTRANSLATE */
      return colordesc;
    }
-   snprintf(colordesc, maxtextlength, "%s%s\017", style_on[ style ], desc);
+   snprintf(colordesc, maxtextlength, "%s%s\017", style_on[ style ], desc); /* NOTRANSLATE */
    return colordesc;
 }
 
@@ -993,15 +993,15 @@ const char *text_connectionmethod(how_e how)
 {
   switch (how) {
   case how_direct:
-    return "direct";
+    return "direct"; /* NOTRANSLATE */
   case how_ssl:
-    return "ssl";
+    return "ssl"; /* NOTRANSLATE */
   case how_bnc:
-    return "bnc";
+    return "bnc"; /* NOTRANSLATE */
   case how_wingate:
-    return "wingate";
+    return "wingate"; /* NOTRANSLATE */
   case how_custom:
-    return "custom";
+    return "custom"; /* NOTRANSLATE */
   }
   return "unknown";
 }
@@ -1010,10 +1010,10 @@ const char *text_connectionmethod(how_e how)
 const char *text_pformat(unsigned int val)
 {
   if ((val & CHAN_MINIMAL) != 0)
-    return "minimal";
+    return "minimal"; /* NOTRANSLATE */
   if ((val & CHAN_SUMMARY) != 0)
-    return "summary";
-  return "full";
+    return "summary"; /* NOTRANSLATE */
+  return "full"; /* NOTRANSLATE */
 }
 
 /* drop all delayed actions */
@@ -1106,19 +1106,19 @@ void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, si
     len = 0;
     for (j=0; j<16; j++) {
       if (j >= max) {
-        len += snprintf(buffer + len, maxtextlength - len, "   ");
+        len += snprintf(buffer + len, maxtextlength - len, "   "); /* NOTRANSLATE */
       } else {
-        len += snprintf(buffer + len, maxtextlength - len, " %2.2X", ut[j]);
+        len += snprintf(buffer + len, maxtextlength - len, " %2.2X", ut[j]); /* NOTRANSLATE */
       }
     }
-    len += snprintf(buffer + len, maxtextlength - len, " \"");
+    len += snprintf(buffer + len, maxtextlength - len, " \""); /* NOTRANSLATE */
     for (j=0; j<16; j++) {
       if (j >= max)
         break;
-      len += snprintf(buffer + len, maxtextlength - len, "%c", onlyprintable(ut[j]));
+      len += snprintf(buffer + len, maxtextlength - len, "%c", onlyprintable(ut[j])); /* NOTRANSLATE */
     }
-    len += snprintf(buffer + len, maxtextlength - len, "\"");
-    ioutput(dest, color_flags, "%s%s", prefix, buffer);
+    len += snprintf(buffer + len, maxtextlength - len, "\""); /* NOTRANSLATE */
+    ioutput(dest, color_flags, "%s%s", prefix, buffer); /* NOTRANSLATE */
     if (max <= 16)
       break;
     j += 16;
@@ -1169,7 +1169,7 @@ int packnumtonum(const char *a)
     return atoi(a);
   }
   if (gdata.send_listfile) {
-    if (strcasecmp(a, "LIST") == 0)
+    if (strcasecmp(a, "LIST") == 0) /* NOTRANSLATE */
       return gdata.send_listfile;
   }
 

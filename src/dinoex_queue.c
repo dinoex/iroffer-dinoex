@@ -56,7 +56,7 @@ void queue_reverify_restrictsend(irlist_t *list)
       pq = irlist_get_next(pq);
       continue;
     }
-    if (strcmp(pq->hostname, "man") == 0) {
+    if (strcmp(pq->hostname, "man") == 0) { /* NOTRANSLATE */
       pq = irlist_get_next(pq);
       continue;
     }
@@ -104,7 +104,7 @@ void queue_pack_limit(irlist_t *list, xdcc *xd)
     backup = gnetwork;
     gnetwork = &(gdata.networks[pq->net]);
     notice_slow(pq->nick, "** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
-    notice_slow(pq->nick, "%s", xd->dlimit_desc);
+    notice_slow(pq->nick, "%s", xd->dlimit_desc); /* NOTRANSLATE */
     gnetwork = backup;
     mydelete(pq->nick);
     mydelete(pq->hostname);
@@ -212,7 +212,7 @@ void queue_all_remove(irlist_t *list, const char *message)
        pq;
        pq = irlist_delete(list, pq)) {
     gnetwork = &(gdata.networks[pq->net]);
-    notice_slow(pq->nick, "%s", message);
+    notice_slow(pq->nick, "%s", message); /* NOTRANSLATE */
     mydelete(pq->nick);
     mydelete(pq->hostname);
   }
@@ -273,7 +273,7 @@ unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, c
     }
     hostname2 = hostname;
   } else {
-    hostname2 = "man";
+    hostname2 = "man"; /* NOTRANSLATE */
   }
 
   tempq = irlist_add(&gdata.idlequeue, sizeof(ir_pqueue));
@@ -314,7 +314,7 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
     hostname2 = hostname;
     man = 0;
   } else {
-    hostname2 = "man";
+    hostname2 = "man"; /* NOTRANSLATE */
     man = 1;
   }
 

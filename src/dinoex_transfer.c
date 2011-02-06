@@ -36,12 +36,12 @@ void t_start_dcc_send(transfer *tr)
   dccdata = setup_dcc_local(&tr->con.local);
   if (gdata.passive_dcc) {
     bzero((char *) &(tr->con.local), sizeof(tr->con.local));
-    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %u\1",
+    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %u\1", /* NOTRANSLATE */
                  sendnamestr, dccdata,
                  tr->xpack->st_size,
                  tr->id);
   } else {
-    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d\1",
+    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d\1", /* NOTRANSLATE */
                  sendnamestr, dccdata,
                  tr->xpack->st_size);
 
@@ -363,9 +363,9 @@ unsigned int t_find_resume(const char *nick, const char *filename, const char *l
   t_setresume(tr, bytes);
   sendnamestr = getsendname(filename);
   if ((tr->tr_status == TRANSFER_STATUS_RESUME) && (token != NULL)) {
-    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", sendnamestr, localport, bytes, token);
+    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", sendnamestr, localport, bytes, token); /* NOTRANSLATE */
   } else {
-    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", sendnamestr, localport, bytes);
+    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", sendnamestr, localport, bytes); /* NOTRANSLATE */
   }
   mydelete(sendnamestr);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -434,7 +434,7 @@ static void t_check_duplicateip(transfer *const newtr)
       continue;
     if (tr->remoteip != newtr->remoteip)
       continue;
-    if (!strcmp(tr->hostname, "man"))
+    if (!strcmp(tr->hostname, "man")) /* NOTRANSLATE */
       continue;
 
     ++found;
@@ -451,11 +451,11 @@ static void t_check_duplicateip(transfer *const newtr)
       continue;
     if (tr->remoteip != newtr->remoteip)
       continue;
-    if (!strcmp(tr->hostname, "man"))
+    if (!strcmp(tr->hostname, "man")) /* NOTRANSLATE */
       continue;
 
     t_closeconn(tr, "You are being punished for parallel downloads", 0);
-    bhostmask = to_hostmask( "*", tr->hostname);
+    bhostmask = to_hostmask( "*", tr->hostname); /* NOTRANSLATE */
     ignore = get_ignore(bhostmask);
     ignore->flags |= IGN_IGNORING;
     ignore->flags |= IGN_MANUAL;

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -174,19 +174,19 @@ static void load_network_key(void)
 {
   char *tempstr;
 
-  tempstr = keyfile_present(".pem");
+  tempstr = keyfile_present(".pem"); /* NOTRANSLATE */
   if (tempstr != NULL) {
     load_ssl_cert(tempstr);
     load_ssl_key(tempstr);
     mydelete(tempstr);
     return;
   }
-  tempstr = keyfile_present(".crt");
+  tempstr = keyfile_present(".crt"); /* NOTRANSLATE */
   if (tempstr != NULL) {
     load_ssl_cert(tempstr);
     mydelete(tempstr);
   }
-  tempstr = keyfile_present(".key");
+  tempstr = keyfile_present(".key"); /* NOTRANSLATE */
   if (tempstr != NULL) {
     load_ssl_key(tempstr);
     mydelete(tempstr);
@@ -249,7 +249,7 @@ static int load_network_key(void)
   void *buffer;
   gnutls_datum_t datum;
 
-  tempstr = keyfile_present(".pem");
+  tempstr = keyfile_present(".pem"); /* NOTRANSLATE */
   if (tempstr != NULL) {
     buffer = keyfile_load(&datum, tempstr);
     mydelete(tempstr);
@@ -269,7 +269,7 @@ static int load_network_key(void)
     mydelete(buffer);
     return 1; /* loaded */
   }
-  tempstr = keyfile_present(".crt");
+  tempstr = keyfile_present(".crt"); /* NOTRANSLATE */
   if (tempstr != NULL) {
     buffer = keyfile_load(&datum, tempstr);
     mydelete(tempstr);
@@ -283,7 +283,7 @@ static int load_network_key(void)
     }
 
     mydelete(buffer);
-    tempstr = keyfile_present(".key");
+    tempstr = keyfile_present(".key"); /* NOTRANSLATE */
     if (tempstr == NULL) {
       return 0;
     }

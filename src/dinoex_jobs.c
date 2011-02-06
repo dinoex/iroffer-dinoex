@@ -46,7 +46,7 @@ typedef struct {
 
 #include "blowfish.h"
 
-static const unsigned char FISH64[] = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const unsigned char FISH64[] = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; /* NOTRANSLATE */
 
 static unsigned char fish64decode[ 256 ];
 
@@ -221,7 +221,7 @@ static char *privmsg_decrypt(const char *line, const char *channel, const char *
   *end = 0;
   len -= strlen(newline) - 1;
   *(end++) = ' ';
-  snprintf(end, len, "%s :%s", channel, newstr);
+  snprintf(end, len, "%s :%s", channel, newstr); /* NOTRANSLATE */
   mydelete(newstr);
   if (gdata.debug > 0) {
     ioutput(OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
@@ -262,7 +262,7 @@ char *test_fish_message(const char *line, const char *channel, const char *str, 
   if (!data)
     return NULL;
 
-  if (strcmp(str, ":+OK") != 0)
+  if (strcmp(str, ":+OK") != 0) /* NOTRANSLATE */
     return NULL;
 
   key = find_fish_key(channel);
@@ -367,13 +367,13 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
     }
     tempcrypt = encrypt_fish(tempstr, len, ch->fish);
     if (tempcrypt) {
-      writeserver_channel(ch->delay, "PRIVMSG %s :+OK %s", ch->name, tempcrypt);
+      writeserver_channel(ch->delay, "PRIVMSG %s :+OK %s", ch->name, tempcrypt); /* NOTRANSLATE */
       mydelete(tempcrypt);
       return;
     }
   }
 #endif /* WITHOUT_BLOWFISH */
-  writeserver_channel(ch->delay, "PRIVMSG %s :%s", ch->name, tempstr);
+  writeserver_channel(ch->delay, "PRIVMSG %s :%s", ch->name, tempstr); /* NOTRANSLATE */
 }
 
 void
@@ -419,13 +419,13 @@ void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char 
     }
     tempcrypt = encrypt_fish(message, len, fish);
     if (tempcrypt) {
-      writeserver(delay, "PRIVMSG %s :+OK %s", nick, tempcrypt);
+      writeserver(delay, "PRIVMSG %s :+OK %s", nick, tempcrypt); /* NOTRANSLATE */
       mydelete(tempcrypt);
       return;
     }
   }
 #endif /* WITHOUT_BLOWFISH */
-  writeserver(delay, "PRIVMSG %s :%s", nick, message);
+  writeserver(delay, "PRIVMSG %s :%s", nick, message); /* NOTRANSLATE */
 }
 
 void writeserver_notice(writeserver_type_e delay, const char *nick, const char *message, int len)
@@ -444,13 +444,13 @@ void writeserver_notice(writeserver_type_e delay, const char *nick, const char *
     }
     tempcrypt = encrypt_fish(message, len, fish);
     if (tempcrypt) {
-      writeserver(delay, "NOTICE %s :+OK %s", nick, tempcrypt);
+      writeserver(delay, "NOTICE %s :+OK %s", nick, tempcrypt); /* NOTRANSLATE */
       mydelete(tempcrypt);
       return;
     }
   }
 #endif /* WITHOUT_BLOWFISH */
-  writeserver(delay, "NOTICE %s :%s", nick, message);
+  writeserver(delay, "NOTICE %s :%s", nick, message); /* NOTRANSLATE */
 }
 
 static void cleanannounce(void)
@@ -575,7 +575,7 @@ void admin_jobs(void)
   if (job == NULL)
     return;
 
-  fin = fopen(job, "r" );
+  fin = fopen(job, "r" ); /* NOTRANSLATE */
   if (fin == NULL)
     return;
 
@@ -607,7 +607,7 @@ static int check_for_file_remove(unsigned int n)
 
   pubplist = mycalloc(sizeof(userinput));
   tempstr = mymalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength, "REMOVE %u", n);
+  snprintf(tempstr, maxtextlength, "REMOVE %u", n); /* NOTRANSLATE */
   u_fillwith_console(pubplist, tempstr);
   u_parseit(pubplist);
   mydelete(pubplist);
@@ -662,7 +662,7 @@ void reset_download_limits(void)
   }
 }
 
-static const char *badcrc = "badcrc";
+static const char *badcrc = "badcrc"; /* NOTRANSLATE */
 
 const char *validate_crc32(xdcc *xd, int quiet)
 {
@@ -774,9 +774,9 @@ static void autoadd_scan(const char *dir, const char *group)
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "autoadd scan %s", dir);
   line = mymalloc(maxtextlength);
   if (group != NULL)
-    snprintf(line, maxtextlength, "ADDGROUP %s \"%s\"", group, dir);
+    snprintf(line, maxtextlength, "ADDGROUP %s \"%s\"", group, dir); /* NOTRANSLATE */
   else
-    snprintf(line, maxtextlength, "ADDNEW \"%s\"", dir);
+    snprintf(line, maxtextlength, "ADDNEW \"%s\"", dir); /* NOTRANSLATE */
 
   uxdl = mycalloc(sizeof(userinput));
   a_fillwith_msg2(uxdl, NULL, line);
@@ -810,7 +810,7 @@ void run_delayed_jobs(void)
   char *job;
 
   for (u = irlist_get_head(&gdata.packs_delayed); u; ) {
-    if (strcmp(u->cmd, "REMOVE") == 0) {
+    if (strcmp(u->cmd, "REMOVE") == 0) { /* NOTRANSLATE */
       a_remove_delayed(u);
       mydelete(u->cmd);
       mydelete(u->arg1);
@@ -819,7 +819,7 @@ void run_delayed_jobs(void)
       /* process only one file */
       return;
     }
-    if (strcmp(u->cmd, "ADD") == 0) {
+    if (strcmp(u->cmd, "ADD") == 0) { /* NOTRANSLATE */
       a_add_delayed(u);
       mydelete(u->cmd);
       mydelete(u->arg1);
@@ -878,33 +878,33 @@ void write_removed_xdcc(xdcc *xd)
     return;
 
   line = mymalloc(maxtextlength);
-  len = snprintf(line, maxtextlength, "\n");
+  len = snprintf(line, maxtextlength, "\n"); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_file %s\n", xd->file);
+  len = snprintf(line, maxtextlength, "xx_file %s\n", xd->file); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_desc %s\n", xd->desc);
+  len = snprintf(line, maxtextlength, "xx_desc %s\n", xd->desc); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_note %s\n", xd->note ? xd->note : "");
+  len = snprintf(line, maxtextlength, "xx_note %s\n", xd->note ? xd->note : ""); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_size %" LLPRINTFMT "d\n", xd->st_size);
+  len = snprintf(line, maxtextlength, "xx_size %" LLPRINTFMT "d\n", xd->st_size); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_gets %u\n", xd->gets);
-  write(fd, line, len);
-  if (gdata.transferminspeed == xd->minspeed)
-    len = snprintf(line, maxtextlength, "xx_mins \n");
-  else
-    len = snprintf(line, maxtextlength, "xx_mins %f\n", xd->minspeed);
+  len = snprintf(line, maxtextlength, "xx_gets %u\n", xd->gets); /* NOTRANSLATE */
   write(fd, line, len);
   if (gdata.transferminspeed == xd->minspeed)
-    len = snprintf(line, maxtextlength, "xx_maxs \n");
+    len = snprintf(line, maxtextlength, "xx_mins \n"); /* NOTRANSLATE */
   else
-    len = snprintf(line, maxtextlength, "xx_maxs %f\n", xd->maxspeed);
+    len = snprintf(line, maxtextlength, "xx_mins %f\n", xd->minspeed); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_data %s\n", xd->group ? xd->group : "");
+  if (gdata.transferminspeed == xd->minspeed)
+    len = snprintf(line, maxtextlength, "xx_maxs \n"); /* NOTRANSLATE */
+  else
+    len = snprintf(line, maxtextlength, "xx_maxs %f\n", xd->maxspeed); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_trig \n");
+  len = snprintf(line, maxtextlength, "xx_data %s\n", xd->group ? xd->group : ""); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_trno %s\n", find_groupdesc(xd->group));
+  len = snprintf(line, maxtextlength, "xx_trig \n"); /* NOTRANSLATE */
+  write(fd, line, len);
+  len = snprintf(line, maxtextlength, "xx_trno %s\n", find_groupdesc(xd->group)); /* NOTRANSLATE */
   write(fd, line, len);
   mydelete(line)
 
@@ -1055,7 +1055,7 @@ void import_xdccfile(void)
   if (gdata.import == NULL)
     return;
 
-  fin = fopen(gdata.import, "r" );
+  fin = fopen(gdata.import, "r" ); /* NOTRANSLATE */
   if (fin == NULL) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access XDCC File '%s': %s", gdata.import, strerror(errno));
     return;
@@ -1071,9 +1071,9 @@ void import_xdccfile(void)
     admin_clean_input(templine);
     if (step == 1) {
       part = 0;
-      for (word = strtok(templine, " ");
+      for (word = strtok(templine, " "); /* NOTRANSLATE */
            word;
-           word = strtok(NULL, " ")) {
+           word = strtok(NULL, " ")) { /* NOTRANSLATE */
         ++part;
         switch (part) {
         case 6:
@@ -1112,13 +1112,13 @@ void import_xdccfile(void)
       }
       continue;
     }
-    word = strtok(templine, " ");
+    word = strtok(templine, " "); /* NOTRANSLATE */
     if (word == NULL) {
       ++err;
       break;
     }
-    data = strtok(NULL, "\n");
-    if (strcmp(word, "xx_file") == 0) {
+    data = strtok(NULL, "\n"); /* NOTRANSLATE */
+    if (strcmp(word, "xx_file") == 0) { /* NOTRANSLATE */
       if (data == NULL) {
         ++err;
         break;
@@ -1126,43 +1126,43 @@ void import_xdccfile(void)
       xx_file = mystrdup(data);
       continue;
     }
-    if (strcmp(word, "xx_desc") == 0) {
+    if (strcmp(word, "xx_desc") == 0) { /* NOTRANSLATE */
       if (data != NULL)
         xx_desc = mystrdup(data);
       continue;
     }
-    if (strcmp(word, "xx_note") == 0) {
+    if (strcmp(word, "xx_note") == 0) { /* NOTRANSLATE */
       if (data != NULL)
         xx_note = mystrdup(data);
       continue;
     }
-    if (strcmp(word, "xx_size") == 0) {
+    if (strcmp(word, "xx_size") == 0) { /* NOTRANSLATE */
       continue;
     }
-    if (strcmp(word, "xx_gets") == 0) {
+    if (strcmp(word, "xx_gets") == 0) { /* NOTRANSLATE */
       if (data != NULL)
         xx_gets = atoi(data);
       continue;
     }
-    if (strcmp(word, "xx_mins") == 0) {
+    if (strcmp(word, "xx_mins") == 0) { /* NOTRANSLATE */
       if (data != NULL)
         xx_mins = atof(data);
       continue;
     }
-    if (strcmp(word, "xx_maxs") == 0) {
+    if (strcmp(word, "xx_maxs") == 0) { /* NOTRANSLATE */
       if (data != NULL)
         xx_maxs = atof(data);
       continue;
     }
-    if (strcmp(word, "xx_data") == 0) {
+    if (strcmp(word, "xx_data") == 0) { /* NOTRANSLATE */
       if (data != NULL)
         xx_data = mystrdup(data);
       continue;
     }
-    if (strcmp(word, "xx_trig") == 0) {
+    if (strcmp(word, "xx_trig") == 0) { /* NOTRANSLATE */
       continue;
     }
-    if (strcmp(word, "xx_trno") == 0) {
+    if (strcmp(word, "xx_trno") == 0) { /* NOTRANSLATE */
       if (data != NULL)
         xx_trno = mystrdup(data);
       continue;
@@ -1268,7 +1268,7 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
   if (ch) {
     if (ch->pgroup) {
       line = mymalloc(maxtextlength);
-      snprintf(line, maxtextlength, "XDLGROUP %s", ch->pgroup);
+      snprintf(line, maxtextlength, "XDLGROUP %s", ch->pgroup); /* NOTRANSLATE */
       a_fillwith_msg2(manplist, name, line);
       mydelete(line);
       manplist->method = method;
@@ -1276,9 +1276,9 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
     }
   }
   if ((gdata.xdcclist_grouponly) || (method != method_xdl_channel)) {
-    a_fillwith_msg2(manplist, name, "XDL");
+    a_fillwith_msg2(manplist, name, "XDL"); /* NOTRANSLATE */
   } else {
-    a_fillwith_msg2(manplist, name, "XDLFULL");
+    a_fillwith_msg2(manplist, name, "XDLFULL"); /* NOTRANSLATE */
   }
   manplist->method = method;
 }
@@ -1316,10 +1316,10 @@ int save_unlink(const char *path)
     file = getfilename(path);
     len = strlen(gdata.trashcan_dir) + strlen(file) + 15;
     dest = mymalloc(len);
-    snprintf(dest, len, "%s/%s", gdata.trashcan_dir, file);
+    snprintf(dest, len, "%s/%s", gdata.trashcan_dir, file); /* NOTRANSLATE */
     num = 0;
     while (file_not_exits(dest)) {
-      snprintf(dest, len, "%s/%s.%03u", gdata.trashcan_dir, file, ++num);
+      snprintf(dest, len, "%s/%s.%03u", gdata.trashcan_dir, file, ++num); /* NOTRANSLATE */
       if (num >= 200) {
 	save_unlink_failed(path, dest);
         mydelete(dest);
@@ -1422,7 +1422,7 @@ static void write_asc_int(xml_buffer_t *xmlbuf, int spaces, const char *tag, uns
 
   xml_buffer_check(xmlbuf, maxtextlengthshort);
   len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag);
+                 "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1432,7 +1432,7 @@ static void write_asc_int64(xml_buffer_t *xmlbuf, int spaces, const char *tag, i
 
   xml_buffer_check(xmlbuf, maxtextlength);
   len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag);
+                 "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1442,7 +1442,7 @@ static void write_asc_hex(xml_buffer_t *xmlbuf, int spaces, const char *tag, uns
 
   xml_buffer_check(xmlbuf, maxtextlengthshort);
   len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag);
+                 "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1452,7 +1452,7 @@ static void write_asc_text(xml_buffer_t *xmlbuf, int spaces, const char *tag, co
 
   xml_buffer_check(xmlbuf, maxtextlength);
   len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag);
+                 "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1462,7 +1462,7 @@ static void write_asc_plain(xml_buffer_t *xmlbuf, int spaces, const char *tag, c
 
   xml_buffer_check(xmlbuf, maxtextlength);
   len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag);
+                 "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1487,8 +1487,8 @@ static void xdcc_save_xml(void)
   if (!gdata.xdccxmlfile)
     return;
 
-  filename_tmp = mystrsuffix(gdata.xdccxmlfile, ".tmp");
-  filename_bak = mystrsuffix(gdata.xdccxmlfile, "~");
+  filename_tmp = mystrsuffix(gdata.xdccxmlfile, ".tmp"); /* NOTRANSLATE */
+  filename_bak = mystrsuffix(gdata.xdccxmlfile, "~"); /* NOTRANSLATE */
 
   fd = open(filename_tmp,
             O_WRONLY | O_CREAT | O_TRUNC | ADDED_OPEN_FLAGS,
@@ -1507,16 +1507,16 @@ static void xdcc_save_xml(void)
   xmlbuf->filename = filename_tmp;
   xmlbuf->fd = fd;
 
-  write_string(xmlbuf, "<?xml version=\"1.0\" encoding=\"");
+  write_string(xmlbuf, "<?xml version=\"1.0\" encoding=\""); /* NOTRANSLATE */
   if (gdata.charset != NULL)
     write_string(xmlbuf, gdata.charset);
   else
-    write_string(xmlbuf, "UTF-8");
+    write_string(xmlbuf, "UTF-8"); /* NOTRANSLATE */
   write_string(xmlbuf, "\"?>\n"
-               "<!DOCTYPE " "iroffer" " PUBLIC \"-//iroffer.dinoex.net//DTD " "iroffer" " 1.0//EN\" \""
-               "http://iroffer.dinoex.net/" "dtd/iroffer-10.dtd\">\n" "<iroffer>\n");
+               "<!DOCTYPE " "iroffer" " PUBLIC \"-//iroffer.dinoex.net//DTD " "iroffer" " 1.0//EN\" \"" /* NOTRANSLATE */
+               "http://iroffer.dinoex.net/" "dtd/iroffer-10.dtd\">\n" "<iroffer>\n"); /* NOTRANSLATE */
   if (irlist_size(&gdata.xdccs) > 0)
-    write_string(xmlbuf, "<packlist>\n\n");
+    write_string(xmlbuf, "<packlist>\n\n"); /* NOTRANSLATE */
 
   groups = 0;
   toffered = 0;
@@ -1529,41 +1529,41 @@ static void xdcc_save_xml(void)
       continue;
 
     toffered += xd->st_size;
-    write_string(xmlbuf, "<pack>\n");
-    write_asc_int(xmlbuf, 2, "packnr", num);
+    write_string(xmlbuf, "<pack>\n"); /* NOTRANSLATE */
+    write_asc_int(xmlbuf, 2, "packnr", num); /* NOTRANSLATE */
     tempstr = mystrdup(xd->desc);
     removenonprintable(tempstr);
-    write_asc_text(xmlbuf, 2, "packname", tempstr);
+    write_asc_text(xmlbuf, 2, "packname", tempstr); /* NOTRANSLATE */
     mydelete(tempstr);
     tempstr = sizestr(0, xd->st_size);
-    write_asc_text(xmlbuf, 2, "packsize", tempstr);
+    write_asc_text(xmlbuf, 2, "packsize", tempstr); /* NOTRANSLATE */
     mydelete(tempstr);
-    write_asc_int64(xmlbuf, 2, "packbytes", xd->st_size);
-    write_asc_int(xmlbuf, 2, "packgets", xd->gets);
+    write_asc_int64(xmlbuf, 2, "packbytes", xd->st_size); /* NOTRANSLATE */
+    write_asc_int(xmlbuf, 2, "packgets", xd->gets); /* NOTRANSLATE */
     if (xd->color > 0) {
-      write_asc_int(xmlbuf, 2, "packcolor", xd->color);
+      write_asc_int(xmlbuf, 2, "packcolor", xd->color); /* NOTRANSLATE */
     }
-    write_asc_int(xmlbuf, 2, "adddate", xd->xtime ? xd->xtime : xd->mtime);
+    write_asc_int(xmlbuf, 2, "adddate", xd->xtime ? xd->xtime : xd->mtime); /* NOTRANSLATE */
     if (xd->group != NULL) {
       ++groups;
-      write_asc_text(xmlbuf, 2, "groupname", xd->group);
+      write_asc_text(xmlbuf, 2, "groupname", xd->group); /* NOTRANSLATE */
     }
     if (xd->has_md5sum) {
       tempstr = mymalloc(maxtextlengthshort);
       snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
-      write_asc_text(xmlbuf, 2, "md5sum", tempstr);
+      write_asc_text(xmlbuf, 2, "md5sum", tempstr); /* NOTRANSLATE */
       mydelete(tempstr);
     }
     if (xd->has_crc32) {
-      write_asc_hex(xmlbuf, 2, "crc32", xd->crc32);
+      write_asc_hex(xmlbuf, 2, "crc32", xd->crc32); /* NOTRANSLATE */
     }
-    write_string(xmlbuf, "</pack>\n\n");
+    write_string(xmlbuf, "</pack>\n\n"); /* NOTRANSLATE */
   }
   if (irlist_size(&gdata.xdccs) > 0)
-    write_string(xmlbuf, "</packlist>\n\n");
+    write_string(xmlbuf, "</packlist>\n\n"); /* NOTRANSLATE */
 
   if (groups > 0) {
-    write_string(xmlbuf, "<grouplist>\n");
+    write_string(xmlbuf, "<grouplist>\n"); /* NOTRANSLATE */
     for (xd = irlist_get_head(&gdata.xdccs);
          xd;
          xd = irlist_get_next(xd)) {
@@ -1573,117 +1573,117 @@ static void xdcc_save_xml(void)
       if (xd->group_desc == NULL)
         continue;
 
-      write_string(xmlbuf, "  <group>\n");
-      write_asc_text(xmlbuf, 4, "groupname", xd->group);
+      write_string(xmlbuf, "  <group>\n"); /* NOTRANSLATE */
+      write_asc_text(xmlbuf, 4, "groupname", xd->group); /* NOTRANSLATE */
       tempstr = mystrdup(xd->group_desc);
       removenonprintable(tempstr);
-      write_asc_text(xmlbuf, 4, "groupdesc", xd->group_desc);
+      write_asc_text(xmlbuf, 4, "groupdesc", xd->group_desc); /* NOTRANSLATE */
       mydelete(tempstr);
-      write_string(xmlbuf, "  </group>\n");
+      write_string(xmlbuf, "  </group>\n"); /* NOTRANSLATE */
     }
-    write_string(xmlbuf, "</grouplist>\n\n");
+    write_string(xmlbuf, "</grouplist>\n\n"); /* NOTRANSLATE */
   }
 
-  write_string(xmlbuf, "<sysinfo>\n"
-                   "  <slots>\n");
+  write_string(xmlbuf, "<sysinfo>\n" /* NOTRANSLATE */
+                   "  <slots>\n"); /* NOTRANSLATE */
   if (irlist_size(&gdata.trans) < gdata.slotsmax)
     slots = gdata.slotsmax - irlist_size(&gdata.trans);
   else
     slots = 0;
-  write_asc_int(xmlbuf, 4, "slotsfree", slots);
-  write_asc_int(xmlbuf, 4, "slotsmax", gdata.slotsmax);
-  write_string(xmlbuf, "  </slots>\n");
+  write_asc_int(xmlbuf, 4, "slotsfree", slots); /* NOTRANSLATE */
+  write_asc_int(xmlbuf, 4, "slotsmax", gdata.slotsmax); /* NOTRANSLATE */
+  write_string(xmlbuf, "  </slots>\n"); /* NOTRANSLATE */
 
   if (gdata.queuesize > 0) {
-    write_string(xmlbuf, "  <mainqueue>\n");
-    write_asc_int(xmlbuf, 4, "queueuse", irlist_size(&gdata.mainqueue));
-    write_asc_int(xmlbuf, 4, "queuemax", gdata.queuesize);
-    write_string(xmlbuf, "  </mainqueue>\n");
+    write_string(xmlbuf, "  <mainqueue>\n"); /* NOTRANSLATE */
+    write_asc_int(xmlbuf, 4, "queueuse", irlist_size(&gdata.mainqueue)); /* NOTRANSLATE */
+    write_asc_int(xmlbuf, 4, "queuemax", gdata.queuesize); /* NOTRANSLATE */
+    write_string(xmlbuf, "  </mainqueue>\n"); /* NOTRANSLATE */
   }
 
   if (gdata.idlequeuesize > 0) {
-    write_string(xmlbuf, "  <idlequeue>\n");
-    write_asc_int(xmlbuf, 4, "queueuse", irlist_size(&gdata.idlequeue));
-    write_asc_int(xmlbuf, 4, "queuemax", gdata.idlequeuesize);
-    write_string(xmlbuf, "  </idlequeue>\n");
+    write_string(xmlbuf, "  <idlequeue>\n"); /* NOTRANSLATE */
+    write_asc_int(xmlbuf, 4, "queueuse", irlist_size(&gdata.idlequeue)); /* NOTRANSLATE */
+    write_asc_int(xmlbuf, 4, "queuemax", gdata.idlequeuesize); /* NOTRANSLATE */
+    write_string(xmlbuf, "  </idlequeue>\n"); /* NOTRANSLATE */
   }
 
-  write_string(xmlbuf, "  <bandwidth>\n");
+  write_string(xmlbuf, "  <bandwidth>\n"); /* NOTRANSLATE */
   tempstr = get_current_bandwidth();
-  write_asc_plain(xmlbuf, 4, "banduse", tempstr);
+  write_asc_plain(xmlbuf, 4, "banduse", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = mymalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4);
-  write_asc_plain(xmlbuf, 4, "bandmax", tempstr);
+  snprintf(tempstr, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4); /* NOTRANSLATE */
+  write_asc_plain(xmlbuf, 4, "bandmax", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
-  write_string(xmlbuf, "  </bandwidth>\n");
+  write_string(xmlbuf, "  </bandwidth>\n"); /* NOTRANSLATE */
 
-  write_string(xmlbuf, "  <quota>\n");
-  write_asc_int(xmlbuf, 4, "packsum", num);
+  write_string(xmlbuf, "  <quota>\n"); /* NOTRANSLATE */
+  write_asc_int(xmlbuf, 4, "packsum", num); /* NOTRANSLATE */
   tempstr = sizestr(0, toffered);
-  write_asc_text(xmlbuf, 4, "diskspace", tempstr);
+  write_asc_text(xmlbuf, 4, "diskspace", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
-  write_asc_text(xmlbuf, 4, "transfereddaily", tempstr);
+  write_asc_text(xmlbuf, 4, "transfereddaily", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
-  write_asc_text(xmlbuf, 4, "transferedweekly", tempstr);
+  write_asc_text(xmlbuf, 4, "transferedweekly", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
-  write_asc_text(xmlbuf, 4, "transferedmonthly", tempstr);
+  write_asc_text(xmlbuf, 4, "transferedmonthly", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.totalsent);
-  write_asc_text(xmlbuf, 4, "transferedtotal", tempstr);
-  write_asc_int64(xmlbuf, 4, "transferedtotalbytes", gdata.totalsent);
+  write_asc_text(xmlbuf, 4, "transferedtotal", tempstr); /* NOTRANSLATE */
+  write_asc_int64(xmlbuf, 4, "transferedtotalbytes", gdata.totalsent); /* NOTRANSLATE */
   mydelete(tempstr);
-  write_string(xmlbuf, "  </quota>\n");
+  write_string(xmlbuf, "  </quota>\n"); /* NOTRANSLATE */
 
-  write_string(xmlbuf, "  <limits>\n");
+  write_string(xmlbuf, "  <limits>\n"); /* NOTRANSLATE */
   tempstr = mymalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s", gdata.transferminspeed);
-  write_asc_plain(xmlbuf, 4, "minspeed", tempstr);
+  write_asc_plain(xmlbuf, 4, "minspeed", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = mymalloc(maxtextlengthshort);
   snprintf(tempstr, maxtextlengthshort, "%1.1fkB/s", gdata.transfermaxspeed);
-  write_asc_plain(xmlbuf, 4, "maxspeed", tempstr);
+  write_asc_plain(xmlbuf, 4, "maxspeed", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
-  write_string(xmlbuf, "  </limits>\n");
+  write_string(xmlbuf, "  </limits>\n"); /* NOTRANSLATE */
 
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
-    write_string(xmlbuf, "  <network>\n");
-    write_asc_plain(xmlbuf, 4, "networkname", gdata.networks[ss].name);
+    write_string(xmlbuf, "  <network>\n"); /* NOTRANSLATE */
+    write_asc_plain(xmlbuf, 4, "networkname", gdata.networks[ss].name); /* NOTRANSLATE */
     gnetwork = &(gdata.networks[ss]);
-    write_asc_plain(xmlbuf, 4, "confignick", get_config_nick());
-    write_asc_plain(xmlbuf, 4, "currentnick", get_user_nick());
-    write_asc_plain(xmlbuf, 4, "servername", gdata.networks[ss].curserver.hostname);
+    write_asc_plain(xmlbuf, 4, "confignick", get_config_nick()); /* NOTRANSLATE */
+    write_asc_plain(xmlbuf, 4, "currentnick", get_user_nick()); /* NOTRANSLATE */
+    write_asc_plain(xmlbuf, 4, "servername", gdata.networks[ss].curserver.hostname); /* NOTRANSLATE */
     if (gdata.networks[ss].curserveractualname != NULL)
-      write_asc_plain(xmlbuf, 4, "currentservername", gdata.networks[ss].curserveractualname);
+      write_asc_plain(xmlbuf, 4, "currentservername", gdata.networks[ss].curserveractualname); /* NOTRANSLATE */
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;
          ch = irlist_get_next(ch)) {
       if ((ch->flags & CHAN_ONCHAN) == 0)
         continue;
-      write_asc_plain(xmlbuf, 4, "channel", ch->name);
+      write_asc_plain(xmlbuf, 4, "channel", ch->name); /* NOTRANSLATE */
     }
-    write_string(xmlbuf, "  </network>\n");
+    write_string(xmlbuf, "  </network>\n"); /* NOTRANSLATE */
   }
   gnetwork = backup;
 
-  write_string(xmlbuf, "  <stats>\n");
-  write_asc_plain(xmlbuf, 4, "version", "iroffer-dinoex " VERSIONLONG );
+  write_string(xmlbuf, "  <stats>\n"); /* NOTRANSLATE */
+  write_asc_plain(xmlbuf, 4, "version", "iroffer-dinoex " VERSIONLONG ); /* NOTRANSLATE */
   tempstr = mymalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
-  write_asc_plain(xmlbuf, 4, "uptime", tempstr);
+  write_asc_plain(xmlbuf, 4, "uptime", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = mymalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);
-  write_asc_plain(xmlbuf, 4, "totaluptime", tempstr);
+  write_asc_plain(xmlbuf, 4, "totaluptime", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
-  write_asc_int(xmlbuf, 4, "lastupdate", gdata.curtime);
-  write_string(xmlbuf, "  </stats>\n"
-                   "</sysinfo>\n\n"
-                   "</iroffer>\n");
+  write_asc_int(xmlbuf, 4, "lastupdate", gdata.curtime); /* NOTRANSLATE */
+  write_string(xmlbuf, "  </stats>\n" /* NOTRANSLATE */
+                   "</sysinfo>\n\n" /* NOTRANSLATE */
+                   "</iroffer>\n"); /* NOTRANSLATE */
 
   xml_buffer_flush(xmlbuf);
   mydelete(xmlbuf);
@@ -1729,7 +1729,7 @@ void start_qupload(void)
 
     backup = gnetwork;
     gnetwork = &(gdata.networks[qu->q_net]);
-    privmsg_fast(qu->q_nick, "XDCC GET %s", qu->q_pack);
+    privmsg_fast(qu->q_nick, "XDCC GET %s", qu->q_pack); /* NOTRANSLATE */
     gnetwork = backup;
     qu->q_state = 2;
     return;
@@ -1900,7 +1900,7 @@ void a_rehash_channels(void)
 
       if (!ch) {
         if (!gnetwork->r_needtojump && (rch->flags & CHAN_ONCHAN)) {
-          writeserver(WRITESERVER_NORMAL, "PART %s", rch->name);
+          writeserver(WRITESERVER_NORMAL, "PART %s", rch->name); /* NOTRANSLATE */
         }
         if (gdata.debug > 2) {
            ioutput(OUT_S, COLOR_NO_COLOR,
@@ -2004,7 +2004,7 @@ void a_rehash_cleanup(const userinput *u)
       new_nick = get_config_nick();
       if (strcmp(new_nick, old_nick)) {
         a_respond(u, "user_nick changed, renaming nick to %s", new_nick);
-        writeserver(WRITESERVER_NOW, "NICK %s", new_nick);
+        writeserver(WRITESERVER_NOW, "NICK %s", new_nick); /* NOTRANSLATE */
       }
       mydelete(gnetwork->r_config_nick);
       mydelete(gnetwork->r_local_vhost);
@@ -2089,7 +2089,7 @@ char *new_logfilename(const char *logfile)
   if (gdata.logrotate < 24*60*60) {
     max += 4;
     newname = mymalloc(max);
-    snprintf(newname, max, "%s.%04i-%02i-%02i-%02i",
+    snprintf(newname, max, "%s.%04i-%02i-%02i-%02i", /* NOTRANSLATE */
             logfile,
             lthen->tm_year+1900,
             lthen->tm_mon+1,
@@ -2097,7 +2097,7 @@ char *new_logfilename(const char *logfile)
             lthen->tm_hour);
   } else {
     newname = mymalloc(max);
-    snprintf(newname, max, "%s.%04i-%02i-%02i",
+    snprintf(newname, max, "%s.%04i-%02i-%02i", /* NOTRANSLATE */
             logfile,
             lthen->tm_year+1900,
             lthen->tm_mon+1,
@@ -2157,7 +2157,7 @@ void expire_logfiles(const char *logfile)
   } else {
     base = logfile;
     mydelete(thedir);
-    thedir = mystrdup(".");
+    thedir = mystrdup("."); /* NOTRANSLATE */
   }
   len = strlen(base);
   d = opendir(thedir);

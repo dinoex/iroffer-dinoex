@@ -188,7 +188,7 @@ int add_password(const char *hash)
 
   line = mymalloc(maxtextlength);
   len = snprintf(line, maxtextlength, "\n"
-           "%s %s\n" "\n", "adminpass", hash);
+           "%s %s\n" "\n", "adminpass", hash); /* NOTRANSLATE */
   write(fd, line, len);
   mydelete(line)
   close(fd);
@@ -207,35 +207,35 @@ void check_osname(const char *sysname)
 {
    /* verify we are who we were configured for, and set config */
 #if defined(_OS_Linux)
-   outerror_sysname("Linux", sysname);
+   outerror_sysname("Linux", sysname); /* NOTRANSLATE */
 #elif defined(_OS_FreeBSD)
-   outerror_sysname("FreeBSD", sysname);
+   outerror_sysname("FreeBSD", sysname); /* NOTRANSLATE */
 #elif defined(_OS_OpenBSD)
-   outerror_sysname("OpenBSD", sysname);
+   outerror_sysname("OpenBSD", sysname); /* NOTRANSLATE */
 #elif defined(_OS_NetBSD)
-   outerror_sysname("NetBSD", sysname);
+   outerror_sysname("NetBSD", sysname); /* NOTRANSLATE */
 #elif defined(_OS_BSDI)
-   outerror_sysname("BSD/OS", sysname);
+   outerror_sysname("BSD/OS", sysname); /* NOTRANSLATE */
 #elif defined(_OS_BSD_OS)
-   outerror_sysname("BSD/OS", sysname);
+   outerror_sysname("BSD/OS", sysname); /* NOTRANSLATE */
 #elif defined(_OS_SunOS)
-   outerror_sysname("SunOS", sysname);
+   outerror_sysname("SunOS", sysname); /* NOTRANSLATE */
 #elif defined(_OS_HPUX)
-   outerror_sysname("HP-UX", sysname);
+   outerror_sysname("HP-UX", sysname); /* NOTRANSLATE */
 #elif defined(_OS_IRIX)
-   outerror_sysname("IRIX", sysname);
+   outerror_sysname("IRIX", sysname); /* NOTRANSLATE */
 #elif defined(_OS_IRIX64)
-   outerror_sysname("IRIX64", sysname);
+   outerror_sysname("IRIX64", sysname); /* NOTRANSLATE */
 #elif defined(_OS_OSF1)
-   outerror_sysname("OSF1", sysname);
+   outerror_sysname("OSF1", sysname); /* NOTRANSLATE */
 #elif defined(_OS_Rhapsody)
-   outerror_sysname("Rhapsody", sysname);
+   outerror_sysname("Rhapsody", sysname); /* NOTRANSLATE */
 #elif defined(_OS_Darwin)
-   outerror_sysname("Darwin", sysname);
+   outerror_sysname("Darwin", sysname); /* NOTRANSLATE */
 #elif defined(_OS_AIX)
-   outerror_sysname("AIX", sysname);
+   outerror_sysname("AIX", sysname); /* NOTRANSLATE */
 #elif defined(_OS_CYGWIN)
-   if (strncmp(sysname, "CYGWIN", 6))
+   if (strncmp(sysname, "CYGWIN", 6)) /* NOTRANSLATE */
      outerror(OUTERROR_TYPE_WARN_LOUD, "Configured for %s but running on %s?!?", "CYGWIN", sysname);
    printf(", Good\n");
 #else

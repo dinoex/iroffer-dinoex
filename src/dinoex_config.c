@@ -132,14 +132,14 @@ static void dump_config_int3(const char *name, unsigned int val, unsigned int re
 static void dump_config_float2(const char *name, float val)
 {
   if ((gdata.dump_all != 0) || (val != 0.0))
-    dump_line("%s %.5f", name, val);
+    dump_line("%s %.5f", name, val); /* NOTRANSLATE */
 }
 
 /* dump an 64bit variable to logfile */
 static void dump_config_long2(const char *name, ir_int64 val)
 {
   if ((gdata.dump_all != 0) || (val != 0))
-    dump_line("%s %" LLPRINTFMT "d", name, val);
+    dump_line("%s %" LLPRINTFMT "d", name, val); /* NOTRANSLATE */
 }
 
 /* dump an megabyte variable to logfile */
@@ -152,7 +152,8 @@ static void dump_config_mega2(const char *name, ir_int64 val)
 /* dump a string variable to logfile */
 static void dump_config_string2(const char *name, const char *val)
 {
-  dump_line("%s \"%s\"", name, val ? val : "<undef>" );
+  dump_line("%s \"%s\"", /* NOTRANSLATE */
+            name, val ? val : "<undef>" );
 }
 
 /* dump a string variable to logfile skip if not defined */
@@ -179,7 +180,7 @@ static char *print_config_long2(ir_int64 val)
   char *text;
 
   text = mymalloc(maxtextlengthshort);
-  snprintf(text, maxtextlengthshort, "%" LLPRINTFMT "d", val);
+  snprintf(text, maxtextlengthshort, "%" LLPRINTFMT "d", val); /* NOTRANSLATE */
   return text;
 }
 
@@ -228,86 +229,86 @@ static int config_find_typ(config_name_t config_name_f, const char *key, int bin
 
 static unsigned int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
-{"auto_crc_check",         &gdata.auto_crc_check,          0 },
-{"auto_default_group",     &gdata.auto_default_group,      0 },
-{"auto_path_group",        &gdata.auto_path_group,         0 },
-{"autoaddann_short",       &gdata.autoaddann_short,        0 },
-{"balanced_queue",         &gdata.balanced_queue,          0 },
-{"direct_config_access",   &gdata.direct_config_access,    0 },
-{"direct_file_access",     &gdata.direct_file_access,      0 },
-{"disablexdccinfo",        &gdata.disablexdccinfo,         0 },
+{"auto_crc_check",         &gdata.auto_crc_check,          0 }, /* NOTRANSLATE */
+{"auto_default_group",     &gdata.auto_default_group,      0 }, /* NOTRANSLATE */
+{"auto_path_group",        &gdata.auto_path_group,         0 }, /* NOTRANSLATE */
+{"autoaddann_short",       &gdata.autoaddann_short,        0 }, /* NOTRANSLATE */
+{"balanced_queue",         &gdata.balanced_queue,          0 }, /* NOTRANSLATE */
+{"direct_config_access",   &gdata.direct_config_access,    0 }, /* NOTRANSLATE */
+{"direct_file_access",     &gdata.direct_file_access,      0 }, /* NOTRANSLATE */
+{"disablexdccinfo",        &gdata.disablexdccinfo,         0 }, /* NOTRANSLATE */
 #if defined(_OS_CYGWIN)
-{"dos_text_files",         &gdata.dos_text_files,          1 },
+{"dos_text_files",         &gdata.dos_text_files,          1 }, /* NOTRANSLATE */
 #else /* _OS_CYGWIN */
-{"dos_text_files",         &gdata.dos_text_files,          0 },
+{"dos_text_files",         &gdata.dos_text_files,          0 }, /* NOTRANSLATE */
 #endif /* _OS_CYGWIN */
-{"dump_all",               &gdata.dump_all,                0 },
-{"extend_status_line",     &gdata.extend_status_line,      0 },
+{"dump_all",               &gdata.dump_all,                0 }, /* NOTRANSLATE */
+{"extend_status_line",     &gdata.extend_status_line,      0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_BLOWFISH
-{"fish_only",              &gdata.fish_only,               0 },
+{"fish_only",              &gdata.fish_only,               0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
-{"getipfromserver",        &gdata.getipfromserver,         0 },
+{"getipfromserver",        &gdata.getipfromserver,         0 }, /* NOTRANSLATE */
 #ifdef USE_UPNP
-{"getipfromupnp",          &gdata.getipfromupnp,           0 },
+{"getipfromupnp",          &gdata.getipfromupnp,           0 }, /* NOTRANSLATE */
 #endif /* USE_UPNP */
-{"groupsincaps",           &gdata.groupsincaps,            0 },
-{"hide_list_info",         &gdata.hide_list_info,          0 },
-{"hide_list_stop",         &gdata.hide_list_stop,          0 },
-{"hidelockedpacks",        &gdata.hidelockedpacks,         0 },
-{"hideos",                 &gdata.hideos,                  0 },
-{"holdqueue",              &gdata.holdqueue,               0 },
+{"groupsincaps",           &gdata.groupsincaps,            0 }, /* NOTRANSLATE */
+{"hide_list_info",         &gdata.hide_list_info,          0 }, /* NOTRANSLATE */
+{"hide_list_stop",         &gdata.hide_list_stop,          0 }, /* NOTRANSLATE */
+{"hidelockedpacks",        &gdata.hidelockedpacks,         0 }, /* NOTRANSLATE */
+{"hideos",                 &gdata.hideos,                  0 }, /* NOTRANSLATE */
+{"holdqueue",              &gdata.holdqueue,               0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
-{"http_geoip",             &gdata.http_geoip,              0 },
-{"http_search",            &gdata.http_search,             0 },
+{"http_geoip",             &gdata.http_geoip,              0 }, /* NOTRANSLATE */
+{"http_search",            &gdata.http_search,             0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_HTTP */
-{"ignoreuploadbandwidth",  &gdata.ignoreuploadbandwidth,   0 },
-{"include_subdirs",        &gdata.include_subdirs,         0 },
-{"logmessages",            &gdata.logmessages,             0 },
-{"lognotices",             &gdata.lognotices,              0 },
-{"logstats",               &gdata.logstats,                1 },
-{"mirc_dcc64",             &gdata.mirc_dcc64,              0 },
-{"need_voice",             &gdata.need_voice,              0 },
-{"no_auto_rehash",         &gdata.no_auto_rehash,          0 },
-{"no_duplicate_filenames", &gdata.no_duplicate_filenames,  0 },
-{"no_find_trigger",        &gdata.no_find_trigger,         0 },
-{"no_minspeed_on_free",    &gdata.no_minspeed_on_free,     0 },
-{"no_natural_sort",        &gdata.no_natural_sort,         0 },
-{"no_status_chat",         &gdata.no_status_chat,          0 },
-{"no_status_log",          &gdata.no_status_log,           0 },
-{"noautorejoin",           &gdata.noautorejoin,            0 },
-{"nocrc32",                &gdata.nocrc32,                 0 },
-{"noduplicatefiles",       &gdata.noduplicatefiles,        0 },
-{"nomd5sum",               &gdata.nomd5sum,                0 },
-{"old_statefile",          &gdata.old_statefile,           0 },
-{"passive_dcc",            &gdata.passive_dcc,             0 },
-{"passive_dcc_chat",       &gdata.passive_dcc_chat,        0 },
+{"ignoreuploadbandwidth",  &gdata.ignoreuploadbandwidth,   0 }, /* NOTRANSLATE */
+{"include_subdirs",        &gdata.include_subdirs,         0 }, /* NOTRANSLATE */
+{"logmessages",            &gdata.logmessages,             0 }, /* NOTRANSLATE */
+{"lognotices",             &gdata.lognotices,              0 }, /* NOTRANSLATE */
+{"logstats",               &gdata.logstats,                1 }, /* NOTRANSLATE */
+{"mirc_dcc64",             &gdata.mirc_dcc64,              0 }, /* NOTRANSLATE */
+{"need_voice",             &gdata.need_voice,              0 }, /* NOTRANSLATE */
+{"no_auto_rehash",         &gdata.no_auto_rehash,          0 }, /* NOTRANSLATE */
+{"no_duplicate_filenames", &gdata.no_duplicate_filenames,  0 }, /* NOTRANSLATE */
+{"no_find_trigger",        &gdata.no_find_trigger,         0 }, /* NOTRANSLATE */
+{"no_minspeed_on_free",    &gdata.no_minspeed_on_free,     0 }, /* NOTRANSLATE */
+{"no_natural_sort",        &gdata.no_natural_sort,         0 }, /* NOTRANSLATE */
+{"no_status_chat",         &gdata.no_status_chat,          0 }, /* NOTRANSLATE */
+{"no_status_log",          &gdata.no_status_log,           0 }, /* NOTRANSLATE */
+{"noautorejoin",           &gdata.noautorejoin,            0 }, /* NOTRANSLATE */
+{"nocrc32",                &gdata.nocrc32,                 0 }, /* NOTRANSLATE */
+{"noduplicatefiles",       &gdata.noduplicatefiles,        0 }, /* NOTRANSLATE */
+{"nomd5sum",               &gdata.nomd5sum,                0 }, /* NOTRANSLATE */
+{"old_statefile",          &gdata.old_statefile,           0 }, /* NOTRANSLATE */
+{"passive_dcc",            &gdata.passive_dcc,             0 }, /* NOTRANSLATE */
+{"passive_dcc_chat",       &gdata.passive_dcc_chat,        0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_BLOWFISH
-{"privmsg_encrypt",        &gdata.privmsg_encrypt,         0 },
+{"privmsg_encrypt",        &gdata.privmsg_encrypt,         0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
-{"quietmode",              &gdata.quietmode,               0 },
-{"removelostfiles",        &gdata.removelostfiles,         0 },
-{"requeue_sends",          &gdata.requeue_sends,           0 },
-{"respondtochannellist",   &gdata.respondtochannellist,    0 },
-{"respondtochannelxdcc",   &gdata.respondtochannelxdcc,    0 },
-{"restrictlist",           &gdata.restrictlist,            0 },
-{"restrictprivlist",       &gdata.restrictprivlist,        0 },
-{"restrictprivlistfull",   &gdata.restrictprivlistfull,    0 },
-{"restrictprivlistmain",   &gdata.restrictprivlistmain,    0 },
-{"restrictsend",           &gdata.restrictsend,            0 },
-{"restrictsend_warning",   &gdata.restrictsend_warning,    0 },
-{"send_batch",             &gdata.send_batch,              0 },
-{"show_date_added",        &gdata.show_date_added,         0 },
-{"show_group_of_pack",     &gdata.show_group_of_pack,      0 },
-{"show_list_all",          &gdata.show_list_all,           0 },
-{"spaces_in_filenames",    &gdata.spaces_in_filenames,     0 },
-{"timestampconsole",       &gdata.timestampconsole,        0 },
+{"quietmode",              &gdata.quietmode,               0 }, /* NOTRANSLATE */
+{"removelostfiles",        &gdata.removelostfiles,         0 }, /* NOTRANSLATE */
+{"requeue_sends",          &gdata.requeue_sends,           0 }, /* NOTRANSLATE */
+{"respondtochannellist",   &gdata.respondtochannellist,    0 }, /* NOTRANSLATE */
+{"respondtochannelxdcc",   &gdata.respondtochannelxdcc,    0 }, /* NOTRANSLATE */
+{"restrictlist",           &gdata.restrictlist,            0 }, /* NOTRANSLATE */
+{"restrictprivlist",       &gdata.restrictprivlist,        0 }, /* NOTRANSLATE */
+{"restrictprivlistfull",   &gdata.restrictprivlistfull,    0 }, /* NOTRANSLATE */
+{"restrictprivlistmain",   &gdata.restrictprivlistmain,    0 }, /* NOTRANSLATE */
+{"restrictsend",           &gdata.restrictsend,            0 }, /* NOTRANSLATE */
+{"restrictsend_warning",   &gdata.restrictsend_warning,    0 }, /* NOTRANSLATE */
+{"send_batch",             &gdata.send_batch,              0 }, /* NOTRANSLATE */
+{"show_date_added",        &gdata.show_date_added,         0 }, /* NOTRANSLATE */
+{"show_group_of_pack",     &gdata.show_group_of_pack,      0 }, /* NOTRANSLATE */
+{"show_list_all",          &gdata.show_list_all,           0 }, /* NOTRANSLATE */
+{"spaces_in_filenames",    &gdata.spaces_in_filenames,     0 }, /* NOTRANSLATE */
+{"timestampconsole",       &gdata.timestampconsole,        0 }, /* NOTRANSLATE */
 #ifdef USE_UPNP
-{"upnp_router",            &gdata.upnp_router,             0 },
+{"upnp_router",            &gdata.upnp_router,             0 }, /* NOTRANSLATE */
 #endif /* USE_UPNP */
-{"verbose_crc32",          &gdata.verbose_crc32,           0 },
-{"xdcclist_by_privmsg",    &gdata.xdcclist_by_privmsg,     0 },
-{"xdcclist_grouponly",     &gdata.xdcclist_grouponly,      0 },
-{"xdcclistfileraw",        &gdata.xdcclistfileraw,         0 },
+{"verbose_crc32",          &gdata.verbose_crc32,           0 }, /* NOTRANSLATE */
+{"xdcclist_by_privmsg",    &gdata.xdcclist_by_privmsg,     0 }, /* NOTRANSLATE */
+{"xdcclist_grouponly",     &gdata.xdcclist_grouponly,      0 }, /* NOTRANSLATE */
+{"xdcclistfileraw",        &gdata.xdcclistfileraw,         0 }, /* NOTRANSLATE */
 {NULL, NULL, 0 }};
 
 static const char *config_name_bool(unsigned int i)
@@ -394,54 +395,54 @@ static void reset_config_bool(void)
 
 static unsigned int config_int_anzahl = 0;
 static config_int_typ config_parse_int[] = {
-{"adddir_min_size",         &gdata.adddir_min_size,         0, 1024, 65000, 0 },
-{"adminlevel",              &gdata.adminlevel,              1, 5, 1, ADMIN_LEVEL_FULL },
-{"atfind",                  &gdata.atfind,                  0, 10, 1, 0 },
-{"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1, 0 },
-{"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1, 0 },
-{"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1, 10 },
-{"debug",                   &gdata.debug,                   0, 65000, 1, XDCC_SEND_LIST },
-{"expire_logfiles",         &gdata.expire_logfiles,         0, 65000, 1, 0 },
-{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1, 0 },
-{"hadminlevel",             &gdata.hadminlevel,             1, 5, 1, ADMIN_LEVEL_HALF },
+{"adddir_min_size",         &gdata.adddir_min_size,         0, 1024, 65000, 0 }, /* NOTRANSLATE */
+{"adminlevel",              &gdata.adminlevel,              1, 5, 1, ADMIN_LEVEL_FULL }, /* NOTRANSLATE */
+{"atfind",                  &gdata.atfind,                  0, 10, 1, 0 }, /* NOTRANSLATE */
+{"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1, 0 }, /* NOTRANSLATE */
+{"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1, 0 }, /* NOTRANSLATE */
+{"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1, 10 }, /* NOTRANSLATE */
+{"debug",                   &gdata.debug,                   0, 65000, 1, XDCC_SEND_LIST }, /* NOTRANSLATE */
+{"expire_logfiles",         &gdata.expire_logfiles,         0, 65000, 1, 0 }, /* NOTRANSLATE */
+{"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1, 0 }, /* NOTRANSLATE */
+{"hadminlevel",             &gdata.hadminlevel,             1, 5, 1, ADMIN_LEVEL_HALF }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
-{"http_port",               &gdata.http_port,               0, 65535, 1, 0 },
+{"http_port",               &gdata.http_port,               0, 65535, 1, 0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_HTTP */
-{"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1, 0 },
-{"ignore_duplicate_ip",     &gdata.ignore_duplicate_ip,     0, 24*31, 1, 0 },
-{"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1, 0 },
-{"max_find",                &gdata.max_find,                0, 65000, 1, 0 },
-{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 65000 },
-{"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4, 65000 },
-{"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1, 1 },
-{"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1, 1 },
-{"maxtransfersperperson",   &gdata.maxtransfersperperson,   1, 1000000, 1, 1 },
+{"idlequeuesize",           &gdata.idlequeuesize,           0, 1000000, 1, 0 }, /* NOTRANSLATE */
+{"ignore_duplicate_ip",     &gdata.ignore_duplicate_ip,     0, 24*31, 1, 0 }, /* NOTRANSLATE */
+{"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1, 0 }, /* NOTRANSLATE */
+{"max_find",                &gdata.max_find,                0, 65000, 1, 0 }, /* NOTRANSLATE */
+{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 65000 }, /* NOTRANSLATE */
+{"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4, 65000 }, /* NOTRANSLATE */
+{"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1, 1 }, /* NOTRANSLATE */
+{"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1, 1 }, /* NOTRANSLATE */
+{"maxtransfersperperson",   &gdata.maxtransfersperperson,   1, 1000000, 1, 1 }, /* NOTRANSLATE */
 #if defined(_OS_CYGWIN)
-{"monitor_files",           &gdata.monitor_files,           1, 65000, 1, 5 },
+{"monitor_files",           &gdata.monitor_files,           1, 65000, 1, 5 }, /* NOTRANSLATE */
 #else /* _OS_CYGWIN */
-{"monitor_files",           &gdata.monitor_files,           1, 65000, 1, 20 },
+{"monitor_files",           &gdata.monitor_files,           1, 65000, 1, 20 }, /* NOTRANSLATE */
 #endif /* _OS_CYGWIN */
-{"need_level",              &gdata.need_level,              0, 3, 1, 0 },
-{"new_trigger",             &gdata.new_trigger,             0, 1000000, 1, 0 },
-{"notifytime",              &gdata.notifytime,              0, 1000000, 1, 5 },
-{"overallmaxspeed",         &gdata.overallmaxspeed,         0, 1000000, 4, 0 },
-{"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, 0, 1000000, 4, 0 },
-{"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1, 0 },
-{"queuesize",               &gdata.queuesize,               0, 1000000, 1, 0 },
-{"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1, 0 },
-{"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1, 0 },
-{"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1, 0 },
-{"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1, 300 },
-{"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1, 0 },
-{"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024, 0 },
-{"start_of_month",          &gdata.start_of_month,          1, 31, 1, 1 },
-{"status_time_dcc_chat",    &gdata.status_time_dcc_chat,    10, 2000, 1, 120 },
-{"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1, 65535 },
-{"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1, 0 },
+{"need_level",              &gdata.need_level,              0, 3, 1, 0 }, /* NOTRANSLATE */
+{"new_trigger",             &gdata.new_trigger,             0, 1000000, 1, 0 }, /* NOTRANSLATE */
+{"notifytime",              &gdata.notifytime,              0, 1000000, 1, 5 }, /* NOTRANSLATE */
+{"overallmaxspeed",         &gdata.overallmaxspeed,         0, 1000000, 4, 0 }, /* NOTRANSLATE */
+{"overallmaxspeeddayspeed", &gdata.overallmaxspeeddayspeed, 0, 1000000, 4, 0 }, /* NOTRANSLATE */
+{"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1, 0 }, /* NOTRANSLATE */
+{"queuesize",               &gdata.queuesize,               0, 1000000, 1, 0 }, /* NOTRANSLATE */
+{"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1, 0 }, /* NOTRANSLATE */
+{"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1, 0 }, /* NOTRANSLATE */
+{"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1, 0 }, /* NOTRANSLATE */
+{"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1, 300 }, /* NOTRANSLATE */
+{"send_statefile_minute",   &gdata.send_statefile_minute,   0, 60, 1, 0 }, /* NOTRANSLATE */
+{"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024, 0 }, /* NOTRANSLATE */
+{"start_of_month",          &gdata.start_of_month,          1, 31, 1, 1 }, /* NOTRANSLATE */
+{"status_time_dcc_chat",    &gdata.status_time_dcc_chat,    10, 2000, 1, 120 }, /* NOTRANSLATE */
+{"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1, 65535 }, /* NOTRANSLATE */
+{"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1, 0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_TELNET
-{"telnet_port",             &gdata.telnet_port,             0, 65535, 1, 0 },
+{"telnet_port",             &gdata.telnet_port,             0, 65535, 1, 0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_TELNET */
-{"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1, 200 },
+{"waitafterjoin",           &gdata.waitafterjoin,           0, 2000, 1, 200 }, /* NOTRANSLATE */
 {NULL, NULL, 0, 0, 0, 0 }};
 
 static const char *config_name_int(unsigned int i)
@@ -535,7 +536,7 @@ static char *print_config_int(const char *key)
     return NULL;
 
   val = mymalloc(maxtextlengthshort);
-  snprintf(val, maxtextlengthshort, "%u", *(config_parse_int[i].ivar));
+  snprintf(val, maxtextlengthshort, "%u", *(config_parse_int[i].ivar)); /* NOTRANSLATE */
   return val;
 }
 
@@ -573,69 +574,69 @@ static void reset_config_int(void)
 
 static unsigned int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
-{"admin_job_file",          &gdata.admin_job_file,          1 },
-{"adminpass",               &gdata.adminpass,               4 },
-{"announce_seperator",      &gdata.announce_seperator,      0 },
-{"announce_suffix_color",   &gdata.announce_suffix_color,   0 },
-{"autoadd_color",           &gdata.autoadd_color,           0 },
-{"autoadd_group",           &gdata.autoadd_group,           0 },
-{"autoadd_sort",            &gdata.autoadd_sort,            0 },
-{"autoaddann",              &gdata.autoaddann,              0 },
-{"charset",                 &gdata.charset,                 0 },
-{"creditline",              &gdata.creditline,              0 },
-{"download_completed_msg",  &gdata.download_completed_msg,  0 },
-{"enable_nick",             &gdata.enable_nick,             0 },
+{"admin_job_file",          &gdata.admin_job_file,          1 }, /* NOTRANSLATE */
+{"adminpass",               &gdata.adminpass,               4 }, /* NOTRANSLATE */
+{"announce_seperator",      &gdata.announce_seperator,      0 }, /* NOTRANSLATE */
+{"announce_suffix_color",   &gdata.announce_suffix_color,   0 }, /* NOTRANSLATE */
+{"autoadd_color",           &gdata.autoadd_color,           0 }, /* NOTRANSLATE */
+{"autoadd_group",           &gdata.autoadd_group,           0 }, /* NOTRANSLATE */
+{"autoadd_sort",            &gdata.autoadd_sort,            0 }, /* NOTRANSLATE */
+{"autoaddann",              &gdata.autoaddann,              0 }, /* NOTRANSLATE */
+{"charset",                 &gdata.charset,                 0 }, /* NOTRANSLATE */
+{"creditline",              &gdata.creditline,              0 }, /* NOTRANSLATE */
+{"download_completed_msg",  &gdata.download_completed_msg,  0 }, /* NOTRANSLATE */
+{"enable_nick",             &gdata.enable_nick,             0 }, /* NOTRANSLATE */
 #ifdef USE_GEOIP
 #ifdef USE_GEOIP6
-{"geoip6database",          &gdata.geoip6database,          0 },
+{"geoip6database",          &gdata.geoip6database,          0 }, /* NOTRANSLATE */
 #endif /* USE_GEOIP6 */
-{"geoipdatabase",           &gdata.geoipdatabase,           0 },
+{"geoipdatabase",           &gdata.geoipdatabase,           0 }, /* NOTRANSLATE */
 #endif /* USE_GEOIP */
-{"group_seperator",         &gdata.group_seperator,         0 },
-{"hadminpass",              &gdata.hadminpass,              4 },
-{"headline",                &gdata.headline,                0 },
+{"group_seperator",         &gdata.group_seperator,         0 }, /* NOTRANSLATE */
+{"hadminpass",              &gdata.hadminpass,              4 }, /* NOTRANSLATE */
+{"headline",                &gdata.headline,                0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
-{"http_access_log",         &gdata.http_access_log,         1 },
+{"http_access_log",         &gdata.http_access_log,         1 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP_ADMIN
-{"http_admin",              &gdata.http_admin,              0 },
-{"http_admin_dir",          &gdata.http_admin_dir,          1 },
+{"http_admin",              &gdata.http_admin,              0 }, /* NOTRANSLATE */
+{"http_admin_dir",          &gdata.http_admin_dir,          1 }, /* NOTRANSLATE */
 #endif /* WITHOUT_HTTP_ADMIN */
 #endif /* WITHOUT_HTTP */
-{"http_date",               &gdata.http_date,               0 },
+{"http_date",               &gdata.http_date,               0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
-{"http_dir",                &gdata.http_dir,                1 },
-{"http_forbidden",          &gdata.http_forbidden,          0 },
-{"http_index",              &gdata.http_index,              0 },
+{"http_dir",                &gdata.http_dir,                1 }, /* NOTRANSLATE */
+{"http_forbidden",          &gdata.http_forbidden,          0 }, /* NOTRANSLATE */
+{"http_index",              &gdata.http_index,              0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_HTTP */
-{"local_vhost",             &gdata.local_vhost,             0 },
-{"logfile",                 &gdata.logfile,                 1 },
+{"local_vhost",             &gdata.local_vhost,             0 }, /* NOTRANSLATE */
+{"logfile",                 &gdata.logfile,                 1 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
-{"logfile_httpd",           &gdata.logfile_httpd,           1 },
+{"logfile_httpd",           &gdata.logfile_httpd,           1 }, /* NOTRANSLATE */
 #endif /* WITHOUT_HTTP */
-{"logfile_messages",        &gdata.logfile_messages,        1 },
-{"logfile_notices",         &gdata.logfile_notices,         1 },
-{"loginname",               &gdata.loginname,               0 },
-{"nickserv_pass",           &gdata.nickserv_pass,           0 },
-{"owner_nick",              &gdata.owner_nick,              0 },
-{"pidfile",                 &gdata.pidfile,                 1 },
+{"logfile_messages",        &gdata.logfile_messages,        1 }, /* NOTRANSLATE */
+{"logfile_notices",         &gdata.logfile_notices,         1 }, /* NOTRANSLATE */
+{"loginname",               &gdata.loginname,               0 }, /* NOTRANSLATE */
+{"nickserv_pass",           &gdata.nickserv_pass,           0 }, /* NOTRANSLATE */
+{"owner_nick",              &gdata.owner_nick,              0 }, /* NOTRANSLATE */
+{"pidfile",                 &gdata.pidfile,                 1 }, /* NOTRANSLATE */
 #ifndef WITHOUT_BLOWFISH
-{"privmsg_fish",            &gdata.privmsg_fish,            0 },
+{"privmsg_fish",            &gdata.privmsg_fish,            0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
-{"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 },
-{"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 },
+{"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 }, /* NOTRANSLATE */
+{"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 }, /* NOTRANSLATE */
 #ifdef USE_RUBY
-{"ruby_script",             &gdata.ruby_script,             1 },
+{"ruby_script",             &gdata.ruby_script,             1 }, /* NOTRANSLATE */
 #endif /* USE_RUBY */
-{"send_statefile",          &gdata.send_statefile,          0 },
-{"trashcan_dir",            &gdata.trashcan_dir,            1 },
-{"uploaddir",               &gdata.uploaddir,               1 },
-{"usenatip",                &gdata.usenatip,                0 },
-{"user_modes",              &gdata.user_modes,              0 },
-{"user_nick",               &gdata.config_nick,             0 },
-{"user_realname",           &gdata.user_realname,           0 },
-{"xdcclistfile",            &gdata.xdcclistfile,            1 },
-{"xdccremovefile",          &gdata.xdccremovefile,          1 },
-{"xdccxmlfile",             &gdata.xdccxmlfile,             1 },
+{"send_statefile",          &gdata.send_statefile,          0 }, /* NOTRANSLATE */
+{"trashcan_dir",            &gdata.trashcan_dir,            1 }, /* NOTRANSLATE */
+{"uploaddir",               &gdata.uploaddir,               1 }, /* NOTRANSLATE */
+{"usenatip",                &gdata.usenatip,                0 }, /* NOTRANSLATE */
+{"user_modes",              &gdata.user_modes,              0 }, /* NOTRANSLATE */
+{"user_nick",               &gdata.config_nick,             0 }, /* NOTRANSLATE */
+{"user_realname",           &gdata.user_realname,           0 }, /* NOTRANSLATE */
+{"xdcclistfile",            &gdata.xdcclistfile,            1 }, /* NOTRANSLATE */
+{"xdccremovefile",          &gdata.xdccremovefile,          1 }, /* NOTRANSLATE */
+{"xdccxmlfile",             &gdata.xdccxmlfile,             1 }, /* NOTRANSLATE */
 {NULL, NULL, 0 }};
 
 static const char *config_name_string(unsigned int i)
@@ -729,41 +730,41 @@ static void reset_config_string(void)
 
 static int config_list_anzahl = 0;
 static config_list_typ config_parse_list[] = {
-{"adddir_exclude",          &gdata.adddir_exclude,          0 },
-{"adminhost",               &gdata.adminhost,               3 },
-{"autoadd_dir",             &gdata.autoadd_dirs,            0 },
-{"autocrc_exclude",         &gdata.autocrc_exclude,         0 },
-{"autoignore_exclude",      &gdata.autoignore_exclude,      2 },
-{"downloadhost",            &gdata.downloadhost,            2 },
-{"filedir",                 &gdata.filedir,                 1 },
+{"adddir_exclude",          &gdata.adddir_exclude,          0 }, /* NOTRANSLATE */
+{"adminhost",               &gdata.adminhost,               3 }, /* NOTRANSLATE */
+{"autoadd_dir",             &gdata.autoadd_dirs,            0 }, /* NOTRANSLATE */
+{"autocrc_exclude",         &gdata.autocrc_exclude,         0 }, /* NOTRANSLATE */
+{"autoignore_exclude",      &gdata.autoignore_exclude,      2 }, /* NOTRANSLATE */
+{"downloadhost",            &gdata.downloadhost,            2 }, /* NOTRANSLATE */
+{"filedir",                 &gdata.filedir,                 1 }, /* NOTRANSLATE */
 #ifndef WITHOUT_BLOWFISH
-{"fish_exclude_nick",       &gdata.fish_exclude_nick,       2 },
+{"fish_exclude_nick",       &gdata.fish_exclude_nick,       2 }, /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
 #ifdef USE_GEOIP
-{"geoipcountry",            &gdata.geoipcountry,            0 },
-{"geoipexcludegroup",       &gdata.geoipexcludegroup,       0 },
-{"geoipexcludenick",        &gdata.geoipexcludenick,        0 },
+{"geoipcountry",            &gdata.geoipcountry,            0 }, /* NOTRANSLATE */
+{"geoipexcludegroup",       &gdata.geoipexcludegroup,       0 }, /* NOTRANSLATE */
+{"geoipexcludenick",        &gdata.geoipexcludenick,        0 }, /* NOTRANSLATE */
 #endif /* USE_GEOIP */
-{"hadminhost",              &gdata.hadminhost,              3 },
+{"hadminhost",              &gdata.hadminhost,              3 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
-{"http_allow",              &gdata.http_allow,              5 },
-{"http_deny",               &gdata.http_deny,               5 },
-{"http_vhost",              &gdata.http_vhost,              0 },
+{"http_allow",              &gdata.http_allow,              5 }, /* NOTRANSLATE */
+{"http_deny",               &gdata.http_deny,               5 }, /* NOTRANSLATE */
+{"http_vhost",              &gdata.http_vhost,              0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_HTTP */
-{"log_exclude_host",        &gdata.log_exclude_host,        2 },
-{"log_exclude_text",        &gdata.log_exclude_text,        0 },
-{"nodownloadhost",          &gdata.nodownloadhost,          2 },
+{"log_exclude_host",        &gdata.log_exclude_host,        2 }, /* NOTRANSLATE */
+{"log_exclude_text",        &gdata.log_exclude_text,        0 }, /* NOTRANSLATE */
+{"nodownloadhost",          &gdata.nodownloadhost,          2 }, /* NOTRANSLATE */
 #ifdef USE_GEOIP
-{"nogeoipcountry",          &gdata.nogeoipcountry,          0 },
+{"nogeoipcountry",          &gdata.nogeoipcountry,          0 }, /* NOTRANSLATE */
 #endif /* USE_GEOIP */
 #ifndef WITHOUT_TELNET
-{"telnet_vhost",            &gdata.telnet_vhost,            0 },
+{"telnet_vhost",            &gdata.telnet_vhost,            0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_TELNET */
-{"unlimitedhost",           &gdata.unlimitedhost,           2 },
-{"uploadhost",              &gdata.uploadhost,              2 },
-{"weblist_info",            &gdata.weblist_info,            0 },
-{"xdcc_allow",              &gdata.xdcc_allow,              5 },
-{"xdcc_deny",               &gdata.xdcc_deny,               5 },
+{"unlimitedhost",           &gdata.unlimitedhost,           2 }, /* NOTRANSLATE */
+{"uploadhost",              &gdata.uploadhost,              2 }, /* NOTRANSLATE */
+{"weblist_info",            &gdata.weblist_info,            0 }, /* NOTRANSLATE */
+{"xdcc_allow",              &gdata.xdcc_allow,              5 }, /* NOTRANSLATE */
+{"xdcc_deny",               &gdata.xdcc_deny,               5 }, /* NOTRANSLATE */
 {NULL, NULL, 0 }};
 
 static const char *config_name_list(unsigned int i)
@@ -892,10 +893,10 @@ static void dump_config_list(void)
           netmask = 128;
         }
         if (cidr->netmask == netmask) {
-          dump_line("%s %s",
+          dump_line("%s %s", /* NOTRANSLATE */
                     config_parse_list[i].name, ip6);
         } else {
-          dump_line("%s %s/%u",
+          dump_line("%s %s/%u", /* NOTRANSLATE */
                     config_parse_list[i].name, ip6, cidr->netmask);
         }
       }
@@ -928,7 +929,7 @@ static void set_default_network_name(void)
   }
 
   var = mymalloc(10);
-  snprintf(var, 10, "%u", current_network + 1);
+  snprintf(var, 10, "%u", current_network + 1); /* NOTRANSLATE */
   gdata.networks[current_network].name = mystrdup(var);
   mydelete(var);
   return;
@@ -962,13 +963,13 @@ static int parse_channel_format(unsigned short *iptr, char *tptr2)
   if (!tptr2)
     return -1;
 
-  if (!strcmp(tptr2, "full"))
+  if (!strcmp(tptr2, "full")) /* NOTRANSLATE */
     return 1;
-  if (!strcmp(tptr2, "minimal")) {
+  if (!strcmp(tptr2, "minimal")) { /* NOTRANSLATE */
     *iptr |= CHAN_MINIMAL;
     return 1;
   }
-  if (!strcmp(tptr2, "summary")) {
+  if (!strcmp(tptr2, "summary")) { /* NOTRANSLATE */
     *iptr |= CHAN_SUMMARY;
     return 1;
   }
@@ -980,57 +981,57 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char **part, unsign
   char *tptr2;
   int j;
 
-  if (!strcmp(tptr, "-plist")) {
+  if (!strcmp(tptr, "-plist")) { /* NOTRANSLATE */
     return parse_channel_int(&(cptr->plisttime), part, i);
   }
-  if (!strcmp(tptr, "-plistoffset")) {
+  if (!strcmp(tptr, "-plistoffset")) { /* NOTRANSLATE */
     return parse_channel_int(&(cptr->plistoffset), part, i);
   }
-  if (!strcmp(tptr, "-delay")) {
+  if (!strcmp(tptr, "-delay")) { /* NOTRANSLATE */
     return parse_channel_int(&(cptr->delay), part, i);
   }
-  if (!strcmp(tptr, "-waitjoin")) {
+  if (!strcmp(tptr, "-waitjoin")) { /* NOTRANSLATE */
     return parse_channel_int(&(cptr->waitjoin), part, i);
   }
 
-  if (!strcmp(tptr, "-key")) {
+  if (!strcmp(tptr, "-key")) { /* NOTRANSLATE */
     return parse_channel_string(&(cptr->key), part, i);
   }
 #ifndef WITHOUT_BLOWFISH
-  if (!strcmp(tptr, "-fish")) {
+  if (!strcmp(tptr, "-fish")) { /* NOTRANSLATE */
     return parse_channel_string(&(cptr->fish), part, i);
   }
 #endif /* WITHOUT_BLOWFISH */
-  if (!strcmp(tptr, "-pgroup")) {
+  if (!strcmp(tptr, "-pgroup")) { /* NOTRANSLATE */
     return parse_channel_string(&(cptr->pgroup), part, i);
   }
-  if (!strcmp(tptr, "-joinmsg")) {
+  if (!strcmp(tptr, "-joinmsg")) { /* NOTRANSLATE */
     return parse_channel_string(&(cptr->joinmsg), part, i);
   }
-  if (!strcmp(tptr, "-headline")) {
+  if (!strcmp(tptr, "-headline")) { /* NOTRANSLATE */
     return parse_channel_string(&(cptr->headline), part, i);
   }
-  if (!strcmp(tptr, "-listmsg")) {
+  if (!strcmp(tptr, "-listmsg")) { /* NOTRANSLATE */
     return parse_channel_string(&(cptr->listmsg), part, i);
   }
-  if (!strcmp(tptr, "-rgroup")) {
+  if (!strcmp(tptr, "-rgroup")) { /* NOTRANSLATE */
     return parse_channel_string(&(cptr->rgroup), part, i);
   }
 
-  if (!strcmp(tptr, "-noannounce")) {
+  if (!strcmp(tptr, "-noannounce")) { /* NOTRANSLATE */
     cptr->noannounce = 1;
     return 0;
   }
-  if (!strcmp(tptr, "-notrigger")) {
+  if (!strcmp(tptr, "-notrigger")) { /* NOTRANSLATE */
     cptr->notrigger = 1;
     return 0;
   }
-  if (!strcmp(tptr, "-plaintext")) {
+  if (!strcmp(tptr, "-plaintext")) { /* NOTRANSLATE */
     cptr->plaintext = 1;
     return 0;
   }
 
-  if (!strcmp(tptr, "-pformat")) {
+  if (!strcmp(tptr, "-pformat")) { /* NOTRANSLATE */
     tptr2 = part[++i];
     j = parse_channel_format(&(cptr->flags), tptr2);
     mydelete(tptr2);
@@ -1100,7 +1101,7 @@ static void d_autoadd_group_match(const char *key)
   for (ag = irlist_get_head(&gdata.autoadd_group_match);
        ag;
        ag = irlist_get_next(ag)) {
-    dump_line("%s %s \"%s\"", key, ag->a_group, ag->a_pattern);
+    dump_line("%s %s \"%s\"", key, ag->a_group, ag->a_pattern); /* NOTRANSLATE */
   }
 }
 
@@ -1131,7 +1132,7 @@ static void d_autosendpack(const char *key)
   for (aq = irlist_get_head(&gdata.autoqueue);
        aq;
        aq = irlist_get_next(aq)) {
-    dump_line("%s %u %s \"%s\"", key, aq->pack, aq->word, aq->message);
+    dump_line("%s %u %s \"%s\"", key, aq->pack, aq->word, aq->message); /* NOTRANSLATE */
   }
 }
 
@@ -1214,9 +1215,9 @@ static void c_connectionmethod(const char * UNUSED(key), char *var)
     part[4] = NULL;
   }
   if (part[0] != NULL) {
-    if (!strcmp(part[0], "direct")) {
+    if (!strcmp(part[0], "direct")) { /* NOTRANSLATE */
       gdata.networks[current_network].connectionmethod.how = how_direct;
-    } else if (!strcmp(part[0], "ssl")) {
+    } else if (!strcmp(part[0], "ssl")) { /* NOTRANSLATE */
 #ifdef USE_SSL
       gdata.networks[current_network].connectionmethod.how = how_ssl;
 #else
@@ -1225,11 +1226,11 @@ static void c_connectionmethod(const char * UNUSED(key), char *var)
                "%s:%ld connectionmethod ssl not compiled, defaulting to direct",
                current_config, current_line);
 #endif /* USE_SSL */
-    } else if ((m >= 4) && !strcmp(part[0], "bnc")) {
+    } else if ((m >= 4) && !strcmp(part[0], "bnc")) { /* NOTRANSLATE */
       gdata.networks[current_network].connectionmethod.how = how_bnc;
-    } else if ((m == 2) && !strcmp(part[0], "wingate")) {
+    } else if ((m == 2) && !strcmp(part[0], "wingate")) { /* NOTRANSLATE */
       gdata.networks[current_network].connectionmethod.how = how_wingate;
-    } else if ((m == 2) && !strcmp(part[0], "custom")) {
+    } else if ((m == 2) && !strcmp(part[0], "custom")) { /* NOTRANSLATE */
       gdata.networks[current_network].connectionmethod.how = how_custom;
     } else {
       gdata.networks[current_network].connectionmethod.how = how_direct;
@@ -1286,9 +1287,9 @@ static void c_group_admin(const char *key, char *var)
   unsigned int drop = 0;
 
   ga = irlist_add(&(gdata.group_admin), sizeof(group_admin_t));
-  for (data = strtok(var, " ");
+  for (data = strtok(var, " "); /* NOTRANSLATE */
        data && (drop == 0);
-       data = strtok(NULL, " ")) {
+       data = strtok(NULL, " ")) { /* NOTRANSLATE */
     if (data[0] == 0)
       continue;
 
@@ -1337,10 +1338,10 @@ static void d_group_admin(const char *key)
        ga = irlist_get_next(ga)) {
 
     if (ga->g_uploaddir != NULL) {
-      dump_line("%s %u %s %s %s \"%s\"",
+      dump_line("%s %u %s %s %s \"%s\"", /* NOTRANSLATE */
                 key, ga->g_level, ga->g_host, ga->g_pass, ga->g_groups, ga->g_uploaddir);
     } else {
-      dump_line("%s %u %s %s %s",
+      dump_line("%s %u %s %s %s", /* NOTRANSLATE */
                 key, ga->g_level, ga->g_host, ga->g_pass, ga->g_groups);
     }
   }
@@ -1375,15 +1376,15 @@ static void c_logrotate(const char * UNUSED(key), char *var)
     gdata.logrotate = val*60*60;
     return;
   }
-  if (strcmp(var, "daily") == 0) {
+  if (strcmp(var, "daily") == 0) { /* NOTRANSLATE */
     gdata.logrotate =    24*60*60;
     return;
   }
-  if (strcmp(var, "weekly") == 0) {
+  if (strcmp(var, "weekly") == 0) { /* NOTRANSLATE */
     gdata.logrotate =  7*24*60*60;
     return;
   }
-  if (strcmp(var, "monthly") == 0) {
+  if (strcmp(var, "monthly") == 0) { /* NOTRANSLATE */
     gdata.logrotate = 30*24*60*60;
     return;
   }
@@ -1397,15 +1398,15 @@ static char *p_logrotate(void)
 static void d_logrotate(const char *key)
 {
   if (gdata.logrotate == 30*24*60*60) {
-    dump_config_string2(key, "monthly");
+    dump_config_string2(key, "monthly"); /* NOTRANSLATE */
     return;
   }
   if (gdata.logrotate ==  7*24*60*60) {
-    dump_config_string2(key, "weekly");
+    dump_config_string2(key, "weekly"); /* NOTRANSLATE */
     return;
   }
   if (gdata.logrotate ==    24*60*60) {
-    dump_config_string2(key, "daily");
+    dump_config_string2(key, "daily"); /* NOTRANSLATE */
     return;
   }
   dump_config_int3(key, gdata.logrotate, 0);
@@ -1457,7 +1458,7 @@ static void d_mime_type(const char *key)
   for (mime = irlist_get_head(&gdata.mime_type);
        mime;
        mime = irlist_get_next(mime)) {
-    dump_line("%s %s %s", key, mime->m_ext, mime->m_mime);
+    dump_line("%s %s %s", key, mime->m_ext, mime->m_mime); /* NOTRANSLATE */
   }
 }
 
@@ -1657,7 +1658,7 @@ static void d_overallmaxspeeddaytime(const char *key)
   if ((gdata.dump_all == 0) && (gdata.overallmaxspeeddaytimestart == 0) && (gdata.overallmaxspeeddaytimeend == 0))
     return;
 
-  dump_line("%s %u %u",
+  dump_line("%s %u %u", /* NOTRANSLATE */
             key, gdata.overallmaxspeeddaytimestart, gdata.overallmaxspeeddaytimeend);
 }
 
@@ -1689,7 +1690,7 @@ static void d_periodicmsg(const char *key)
   if ((gdata.dump_all == 0) && (gdata.periodicmsg_nick == NULL))
     return;
 
-  dump_line("%s %s %u \"%s\"",
+  dump_line("%s %s %u \"%s\"", /* NOTRANSLATE */
             key, gdata.periodicmsg_nick, gdata.periodicmsg_time, gdata.periodicmsg_msg);
 }
 
@@ -1896,7 +1897,7 @@ static void d_transferlimits(const char *key)
     val[ii] = gdata.transferlimits[ii].limit;
     val[ii] /= ( 1024 * 1024 );
   }
-  dump_line("%s %" LLPRINTFMT "u %" LLPRINTFMT "u %" LLPRINTFMT "u",
+  dump_line("%s %" LLPRINTFMT "u %" LLPRINTFMT "u %" LLPRINTFMT "u", /* NOTRANSLATE */
             key, val[TRANSFERLIMIT_DAILY], val[TRANSFERLIMIT_WEEKLY], val[TRANSFERLIMIT_MONTHLY]);
 }
 
@@ -1994,7 +1995,7 @@ static char *p_user_nick(void)
 
 static char *p_version(void)
 {
-  return mystrdup( "iroffer-dinoex " VERSIONLONG );
+  return mystrdup( "iroffer-dinoex " VERSIONLONG ); /* NOTRANSLATE */
 }
 
 static void c_bracket_open(const char * UNUSED(key), char * UNUSED(var))
@@ -2009,49 +2010,49 @@ static void c_bracket_close(const char * UNUSED(key), char *UNUSED(var))
 
 static int config_func_anzahl = 0;
 static config_func_typ config_parse_func[] = {
-{"auth_name",              c_auth_name },
-{"autoadd_group_match",    c_autoadd_group_match },
-{"autosendpack",           c_autosendpack },
-{"channel",                c_channel },
-{"channel_join_raw",       c_channel_join_raw },
-{"connectionmethod",       c_connectionmethod },
-{"disk_quota",             c_disk_quota },
-{"getip_network",          c_getip_network },
-{"group_admin",            c_group_admin },
-{"ignoreduplicateip",      c_ignoreduplicateip },
-{"local_vhost",            c_local_vhost },
-{"login_name",             c_login_name },
-{"logrotate",              c_logrotate },
-{"mime_type",              c_mime_type },
-{"need_level",             c_need_level },
-{"network",                c_network },
-{"nickserv_pass",          c_nickserv_pass },
-{"noannounce",             c_noannounce },
-{"offline",                c_offline },
-{"overallmaxspeeddaydays", c_overallmaxspeeddaydays },
-{"overallmaxspeeddaytime", c_overallmaxspeeddaytime },
-{"periodicmsg",            c_periodicmsg },
-{"plaintext",              c_plaintext },
-{"proxyinfo",              c_proxyinfo },
-{"restrictlist",           c_restrictlist },
-{"restrictsend",           c_restrictsend },
-{"send_listfile",          c_send_listfile },
-{"server",                 c_server },
-{"server_connected_raw",   c_server_connected_raw },
-{"server_join_raw",        c_server_join_raw },
-{"slotsmax",               c_slotsmax },
-{"slow_privmsg",           c_slow_privmsg },
-{"statefile",              c_statefile },
-{"transferlimits",         c_transferlimits },
-{"transfermaxspeed",       c_transfermaxspeed },
-{"transferminspeed",       c_transferminspeed },
-{"uploadmaxsize",          c_uploadmaxsize },
-{"uploadminspace",         c_uploadminspace },
-{"usenatip",               c_usenatip },
-{"user_modes",             c_user_modes },
-{"user_nick",              c_user_nick },
-{"{",                      c_bracket_open },
-{"}",                      c_bracket_close },
+{"auth_name",              c_auth_name }, /* NOTRANSLATE */
+{"autoadd_group_match",    c_autoadd_group_match }, /* NOTRANSLATE */
+{"autosendpack",           c_autosendpack }, /* NOTRANSLATE */
+{"channel",                c_channel }, /* NOTRANSLATE */
+{"channel_join_raw",       c_channel_join_raw }, /* NOTRANSLATE */
+{"connectionmethod",       c_connectionmethod }, /* NOTRANSLATE */
+{"disk_quota",             c_disk_quota }, /* NOTRANSLATE */
+{"getip_network",          c_getip_network }, /* NOTRANSLATE */
+{"group_admin",            c_group_admin }, /* NOTRANSLATE */
+{"ignoreduplicateip",      c_ignoreduplicateip }, /* NOTRANSLATE */
+{"local_vhost",            c_local_vhost }, /* NOTRANSLATE */
+{"login_name",             c_login_name }, /* NOTRANSLATE */
+{"logrotate",              c_logrotate }, /* NOTRANSLATE */
+{"mime_type",              c_mime_type }, /* NOTRANSLATE */
+{"need_level",             c_need_level }, /* NOTRANSLATE */
+{"network",                c_network }, /* NOTRANSLATE */
+{"nickserv_pass",          c_nickserv_pass }, /* NOTRANSLATE */
+{"noannounce",             c_noannounce }, /* NOTRANSLATE */
+{"offline",                c_offline }, /* NOTRANSLATE */
+{"overallmaxspeeddaydays", c_overallmaxspeeddaydays }, /* NOTRANSLATE */
+{"overallmaxspeeddaytime", c_overallmaxspeeddaytime }, /* NOTRANSLATE */
+{"periodicmsg",            c_periodicmsg }, /* NOTRANSLATE */
+{"plaintext",              c_plaintext }, /* NOTRANSLATE */
+{"proxyinfo",              c_proxyinfo }, /* NOTRANSLATE */
+{"restrictlist",           c_restrictlist }, /* NOTRANSLATE */
+{"restrictsend",           c_restrictsend }, /* NOTRANSLATE */
+{"send_listfile",          c_send_listfile }, /* NOTRANSLATE */
+{"server",                 c_server }, /* NOTRANSLATE */
+{"server_connected_raw",   c_server_connected_raw }, /* NOTRANSLATE */
+{"server_join_raw",        c_server_join_raw }, /* NOTRANSLATE */
+{"slotsmax",               c_slotsmax }, /* NOTRANSLATE */
+{"slow_privmsg",           c_slow_privmsg }, /* NOTRANSLATE */
+{"statefile",              c_statefile }, /* NOTRANSLATE */
+{"transferlimits",         c_transferlimits }, /* NOTRANSLATE */
+{"transfermaxspeed",       c_transfermaxspeed }, /* NOTRANSLATE */
+{"transferminspeed",       c_transferminspeed }, /* NOTRANSLATE */
+{"uploadmaxsize",          c_uploadmaxsize }, /* NOTRANSLATE */
+{"uploadminspace",         c_uploadminspace }, /* NOTRANSLATE */
+{"usenatip",               c_usenatip }, /* NOTRANSLATE */
+{"user_modes",             c_user_modes }, /* NOTRANSLATE */
+{"user_nick",              c_user_nick }, /* NOTRANSLATE */
+{"{",                      c_bracket_open }, /* NOTRANSLATE */
+{"}",                      c_bracket_close }, /* NOTRANSLATE */
 {NULL, NULL }};
 
 static const char *config_name_func(unsigned int i)
@@ -2083,31 +2084,31 @@ static int set_config_func(const char *key, char *text)
 
 static int config_fprint_anzahl = 0;
 static config_fprint_typ config_parse_fprint[] = {
-{"auth_name",              p_auth_name },
-{"disk_quota",             p_disk_quota },
-{"getip_network",          p_getip_network },
-{"ignoreduplicateip",      p_ignoreduplicateip },
-{"local_vhost",            p_local_vhost },
-{"login_name",             p_login_name },
-{"logrotate",              p_logrotate },
-{"need_level",             p_need_level },
-{"nickserv_pass",          p_nickserv_pass },
-{"noannounce",             p_noannounce },
-{"offline",                p_offline },
-{"overallmaxspeeddaydays", p_overallmaxspeeddaydays },
-{"plaintext",              p_plaintext },
-{"restrictlist",           p_restrictlist },
-{"restrictsend",           p_restrictsend },
-{"send_listfile",          p_send_listfile },
-{"slotsmax",               p_slotsmax },
-{"slow_privmsg",           p_slow_privmsg },
-{"statefile",              p_statefile },
-{"uploadmaxsize",          p_uploadmaxsize },
-{"uploadminspace",         p_uploadminspace },
-{"usenatip",               p_usenatip },
-{"user_modes",             p_user_modes },
-{"user_nick",              p_user_nick },
-{"version",                p_version },
+{"auth_name",              p_auth_name }, /* NOTRANSLATE */
+{"disk_quota",             p_disk_quota }, /* NOTRANSLATE */
+{"getip_network",          p_getip_network }, /* NOTRANSLATE */
+{"ignoreduplicateip",      p_ignoreduplicateip }, /* NOTRANSLATE */
+{"local_vhost",            p_local_vhost }, /* NOTRANSLATE */
+{"login_name",             p_login_name }, /* NOTRANSLATE */
+{"logrotate",              p_logrotate }, /* NOTRANSLATE */
+{"need_level",             p_need_level }, /* NOTRANSLATE */
+{"nickserv_pass",          p_nickserv_pass }, /* NOTRANSLATE */
+{"noannounce",             p_noannounce }, /* NOTRANSLATE */
+{"offline",                p_offline }, /* NOTRANSLATE */
+{"overallmaxspeeddaydays", p_overallmaxspeeddaydays }, /* NOTRANSLATE */
+{"plaintext",              p_plaintext }, /* NOTRANSLATE */
+{"restrictlist",           p_restrictlist }, /* NOTRANSLATE */
+{"restrictsend",           p_restrictsend }, /* NOTRANSLATE */
+{"send_listfile",          p_send_listfile }, /* NOTRANSLATE */
+{"slotsmax",               p_slotsmax }, /* NOTRANSLATE */
+{"slow_privmsg",           p_slow_privmsg }, /* NOTRANSLATE */
+{"statefile",              p_statefile }, /* NOTRANSLATE */
+{"uploadmaxsize",          p_uploadmaxsize }, /* NOTRANSLATE */
+{"uploadminspace",         p_uploadminspace }, /* NOTRANSLATE */
+{"usenatip",               p_usenatip }, /* NOTRANSLATE */
+{"user_modes",             p_user_modes }, /* NOTRANSLATE */
+{"user_nick",              p_user_nick }, /* NOTRANSLATE */
+{"version",                p_version }, /* NOTRANSLATE */
 {NULL, NULL }};
 
 static const char *config_name_fprint(unsigned int i)
@@ -2139,22 +2140,22 @@ static char *print_config_fprint(const char *key)
 
 static int config_fdump_anzahl = 0;
 static config_fdump_typ config_parse_fdump[] = {
-{"autoadd_group_match",    d_autoadd_group_match },
-{"autosendpack",           d_autosendpack },
-{"disk_quota",             d_disk_quota },
-{"group_admin",            d_group_admin },
-{"logrotate",              d_logrotate },
-{"mime_type",              d_mime_type },
-{"overallmaxspeeddaydays", d_overallmaxspeeddaydays },
-{"overallmaxspeeddaytime", d_overallmaxspeeddaytime },
-{"periodicmsg",            d_periodicmsg },
-{"slotsmax",               d_slotsmax },
-{"statefile",              d_statefile },
-{"transferlimits",         d_transferlimits },
-{"transfermaxspeed",       d_transfermaxspeed },
-{"transferminspeed",       d_transferminspeed },
-{"uploadmaxsize",          d_uploadmaxsize },
-{"uploadminspace",         d_uploadminspace },
+{"autoadd_group_match",    d_autoadd_group_match }, /* NOTRANSLATE */
+{"autosendpack",           d_autosendpack }, /* NOTRANSLATE */
+{"disk_quota",             d_disk_quota }, /* NOTRANSLATE */
+{"group_admin",            d_group_admin }, /* NOTRANSLATE */
+{"logrotate",              d_logrotate }, /* NOTRANSLATE */
+{"mime_type",              d_mime_type }, /* NOTRANSLATE */
+{"overallmaxspeeddaydays", d_overallmaxspeeddaydays }, /* NOTRANSLATE */
+{"overallmaxspeeddaytime", d_overallmaxspeeddaytime }, /* NOTRANSLATE */
+{"periodicmsg",            d_periodicmsg }, /* NOTRANSLATE */
+{"slotsmax",               d_slotsmax }, /* NOTRANSLATE */
+{"statefile",              d_statefile }, /* NOTRANSLATE */
+{"transferlimits",         d_transferlimits }, /* NOTRANSLATE */
+{"transfermaxspeed",       d_transfermaxspeed }, /* NOTRANSLATE */
+{"transferminspeed",       d_transferminspeed }, /* NOTRANSLATE */
+{"uploadmaxsize",          d_uploadmaxsize }, /* NOTRANSLATE */
+{"uploadminspace",         d_uploadminspace }, /* NOTRANSLATE */
 {NULL, NULL }};
 
 static const char *config_name_fdump(unsigned int i)
@@ -2178,13 +2179,13 @@ static void dump_config_fdump(void)
   }
 
   for (si=0; si<gdata.networks_online; ++si) {
-    dump_line("%s \"%s\"", "network", gdata.networks[si].name);
-    dump_line("{");
+    dump_line("%s \"%s\"", "network", gdata.networks[si].name); /* NOTRANSLATE */
+    dump_line("{"); /* NOTRANSLATE */
 
     how = text_connectionmethod(gdata.networks[si].connectionmethod.how);
     for (;;) {
       if (gdata.networks[si].connectionmethod.vhost) {
-        dump_line("%s %s %s %u \"%s\" %s", "connectionmethod", how,
+        dump_line("%s %s %s %u \"%s\" %s", "connectionmethod", how, /* NOTRANSLATE */
                   gdata.networks[si].connectionmethod.host,
                   gdata.networks[si].connectionmethod.port,
                   gdata.networks[si].connectionmethod.password,
@@ -2192,46 +2193,46 @@ static void dump_config_fdump(void)
         break;
       }
       if (gdata.networks[si].connectionmethod.password) {
-         dump_line("%s %s %s %u \"%s\"", "connectionmethod",  how,
+         dump_line("%s %s %s %u \"%s\"", "connectionmethod",  how, /* NOTRANSLATE */
                     gdata.networks[si].connectionmethod.host,
                     gdata.networks[si].connectionmethod.port,
                     gdata.networks[si].connectionmethod.password);
         break;
       }
       if (gdata.networks[si].connectionmethod.host) {
-        dump_line("%s %s %s %u", "connectionmethod", how,
+        dump_line("%s %s %s %u", "connectionmethod", how, /* NOTRANSLATE */
                   gdata.networks[si].connectionmethod.host,
                   gdata.networks[si].connectionmethod.port);
         break;
       }
-      dump_line("%s %s", "connectionmethod", how);
+      dump_line("%s %s", "connectionmethod", how); /* NOTRANSLATE */
       break;
     }
 
-    dump_config_list2("proxyinfo", &gdata.networks[si].proxyinfo);
-    dump_config_list2("server_join_raw", &gdata.networks[si].server_join_raw);
-    dump_config_list2("server_connected_raw", &gdata.networks[si].server_connected_raw);
-    dump_config_list2("channel_join_raw", &gdata.networks[si].channel_join_raw);
-    dump_config_string3("local_vhost", gdata.networks[si].local_vhost);
+    dump_config_list2("proxyinfo", &gdata.networks[si].proxyinfo); /* NOTRANSLATE */
+    dump_config_list2("server_join_raw", &gdata.networks[si].server_join_raw); /* NOTRANSLATE */
+    dump_config_list2("server_connected_raw", &gdata.networks[si].server_connected_raw); /* NOTRANSLATE */
+    dump_config_list2("channel_join_raw", &gdata.networks[si].channel_join_raw); /* NOTRANSLATE */
+    dump_config_string3("local_vhost", gdata.networks[si].local_vhost); /* NOTRANSLATE */
     if (gnetwork->usenatip != 0) {
-      dump_config_string2("usenatip", gdata.networks[si].natip);
+      dump_config_string2("usenatip", gdata.networks[si].natip); /* NOTRANSLATE */
     }
-    dump_config_string3("nickserv_pass", gdata.networks[si].nickserv_pass);
-    dump_config_string3("auth_name", gdata.networks[si].auth_name);
-    dump_config_string3("login_name", gdata.networks[si].login_name);
-    dump_config_string3("user_nick", gdata.networks[si].config_nick);
-    dump_config_string3("user_modes", gdata.networks[si].user_modes);
+    dump_config_string3("nickserv_pass", gdata.networks[si].nickserv_pass); /* NOTRANSLATE */
+    dump_config_string3("auth_name", gdata.networks[si].auth_name); /* NOTRANSLATE */
+    dump_config_string3("login_name", gdata.networks[si].login_name); /* NOTRANSLATE */
+    dump_config_string3("user_nick", gdata.networks[si].config_nick); /* NOTRANSLATE */
+    dump_config_string3("user_modes", gdata.networks[si].user_modes); /* NOTRANSLATE */
 
     for (ss = irlist_get_head(&gdata.networks[si].servers);
          ss;
          ss = irlist_get_next(ss)) {
       if (ss->password != NULL) {
-        dump_line("%s %s %u %s", "server", ss->hostname, ss->port, ss->password);
+        dump_line("%s %s %u %s", "server", ss->hostname, ss->port, ss->password); /* NOTRANSLATE */
       } else {
         if (ss->port != 6667) {
-          dump_line("%s %s %u", "server", ss->hostname, ss->port);
+          dump_line("%s %s %u", "server", ss->hostname, ss->port); /* NOTRANSLATE */
         } else {
-          dump_line("%s %s", "server", ss->hostname);
+          dump_line("%s %s", "server", ss->hostname); /* NOTRANSLATE */
         }
       }
     }
@@ -2240,53 +2241,53 @@ static void dump_config_fdump(void)
          ch;
          ch = irlist_get_next(ch)) {
       buffer = mymalloc(maxtextlength);
-      len = snprintf(buffer, maxtextlength, "%s", ch->name);
+      len = snprintf(buffer, maxtextlength, "%s", ch->name); /* NOTRANSLATE */
       if (ch->plisttime != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime);
+        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime); /* NOTRANSLATE */
       if (ch->plistoffset != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plistoffset", ch->plistoffset);
+        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plistoffset", ch->plistoffset); /* NOTRANSLATE */
       if (((ch->flags & (CHAN_SUMMARY|CHAN_MINIMAL)) != 0) || (ch->plisttime != 0))
-        len += snprintf(buffer + len, maxtextlength - len, " %s %s", "-pformat", text_pformat(ch->flags));
+        len += snprintf(buffer + len, maxtextlength - len, " %s %s", "-pformat", text_pformat(ch->flags)); /* NOTRANSLATE */
       if (ch->pgroup != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-pgroup", ch->pgroup);
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-pgroup", ch->pgroup); /* NOTRANSLATE */
       if (ch->key != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-key", ch->key);
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-key", ch->key); /* NOTRANSLATE */
       if (ch->delay != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-delay", ch->delay);
+        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-delay", ch->delay); /* NOTRANSLATE */
       if (ch->noannounce != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-noannounce");
+        len += snprintf(buffer + len, maxtextlength - len, " %s", "-noannounce"); /* NOTRANSLATE */
       if (ch->joinmsg != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-joinmsg", ch->joinmsg);
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-joinmsg", ch->joinmsg); /* NOTRANSLATE */
       if (ch->headline != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", ch->headline);
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", ch->headline); /* NOTRANSLATE */
 #ifndef WITHOUT_BLOWFISH
       if (ch->fish != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-fish", ch->fish);
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-fish", ch->fish); /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
       if (ch->listmsg != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-listmsg", ch->listmsg);
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-listmsg", ch->listmsg); /* NOTRANSLATE */
       if (ch->rgroup != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-rgroup", ch->rgroup);
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-rgroup", ch->rgroup); /* NOTRANSLATE */
       if (ch->notrigger != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-notrigger");
+        len += snprintf(buffer + len, maxtextlength - len, " %s", "-notrigger"); /* NOTRANSLATE */
       if (ch->plaintext != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-plaintext");
+        len += snprintf(buffer + len, maxtextlength - len, " %s", "-plaintext"); /* NOTRANSLATE */
       if (ch->waitjoin != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin);
-      dump_line("%s %s", "channel", buffer);
+        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin); /* NOTRANSLATE */
+      dump_line("%s %s", "channel", buffer); /* NOTRANSLATE */
       mydelete(buffer);
     }
 
-    dump_config_bool3("need_voice", gdata.networks[si].need_voice, 0);
-    dump_config_int3("need_level", gdata.networks[si].need_level, 10);
-    dump_config_int3("getip_network", gdata.networks[si].getip_net, si);
-    dump_config_int3("slow_privmsg", gdata.networks[si].slow_privmsg, 1);
-    dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0);
-    dump_config_bool3("offline", gdata.networks[si].offline, 0);
-    dump_config_bool3("plaintext", gdata.networks[si].plaintext, 0);
-    dump_config_bool3("restrictsend", gdata.networks[si].restrictsend, 0);
-    dump_config_bool3("restrictlist", gdata.networks[si].restrictlist, 0);
-    dump_line("}");
+    dump_config_bool3("need_voice", gdata.networks[si].need_voice, 0); /* NOTRANSLATE */
+    dump_config_int3("need_level", gdata.networks[si].need_level, 10); /* NOTRANSLATE */
+    dump_config_int3("getip_network", gdata.networks[si].getip_net, si); /* NOTRANSLATE */
+    dump_config_int3("slow_privmsg", gdata.networks[si].slow_privmsg, 1); /* NOTRANSLATE */
+    dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0); /* NOTRANSLATE */
+    dump_config_bool3("offline", gdata.networks[si].offline, 0); /* NOTRANSLATE */
+    dump_config_bool3("plaintext", gdata.networks[si].plaintext, 0); /* NOTRANSLATE */
+    dump_config_bool3("restrictsend", gdata.networks[si].restrictsend, 0); /* NOTRANSLATE */
+    dump_config_bool3("restrictlist", gdata.networks[si].restrictlist, 0); /* NOTRANSLATE */
+    dump_line("}"); /* NOTRANSLATE */
   } /* networks */
 }
 
