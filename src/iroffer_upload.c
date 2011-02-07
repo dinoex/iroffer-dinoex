@@ -194,9 +194,11 @@ void l_transfersome (upload * const l) {
          {
            g = htonl((ir_uint32)((l->bytesgot >> 32) & 0xFFFFFFFFL));
            send(l->con.clientsocket, (unsigned char*)&g, 4, MSG_NOSIGNAL);
+           l->bytessent += 4;
          }
        g = htonl((ir_uint32)(l->bytesgot & 0xFFFFFFFF));
        send(l->con.clientsocket, (unsigned char*)&g, 4, MSG_NOSIGNAL);
+       l->bytessent += 4;
      }
    
    if (l->bytesgot >= l->totalsize) {
@@ -246,6 +248,12 @@ void l_transfersome (upload * const l) {
              ((float)mysize)/1024.0/((float)timetook));
       
       mydelete(tempstr);
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+              "Upload: Nick %s" ", Network %s" ", Recv %" LLPRINTFMT "d kB" ", Sent %" LLPRINTFMT "d kB" ", File %s",
+              l->nick,
+              gdata.networks[ l->net ].name,
+              mysize/1024, l->bytessent/1024,
+              l->file);
    }
    
 }

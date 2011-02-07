@@ -300,6 +300,7 @@ typedef enum
 typedef struct
 {
   ir_connection_t con;
+  off_t bytessent;
   off_t bytesgot;
   off_t totalsize;
   off_t lastspeedamt;
