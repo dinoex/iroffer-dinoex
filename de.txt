@@ -414,7 +414,6 @@
 433 "current server actual name: %s "
 434 "<unknown>"
 435 "channel %10s: joined: %3s"
-436 "yes"
 438 ", key: %s"
 439 ", plist every %2i min (%s)"
 440 "bandwidth: lowsend: %i, minspeed: %1.1f, maxspeed: %1.1f, overallmaxspeed: %i"

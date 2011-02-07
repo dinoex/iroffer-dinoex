@@ -414,7 +414,6 @@
 433 "nom du serveur actuel : %s "
 434 "<inconnu>"
 435 "channel %10s : joint : %3s"
-436 "yes"
 438 ", clé : %s"
 439 ", plist toute les %2i minutes (%s)"
 440 "bande passante : vitesse faible : %i, vitesse mini : %1.1f, vitesse maxi : %1.1f, seuil vitesse maxi : %i"

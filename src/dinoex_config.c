@@ -96,13 +96,13 @@ static void dump_config_bool2(const char *name, unsigned int val)
 {
   const char *text;
 
-  text = "no";
+  text = "no"; /* NOTRANSLATE */
   for (;;) {
     if (val == 2)
       return;
     if (val == 0)
       break;
-    text = "yes";
+    text = "yes"; /* NOTRANSLATE */
     break;
   }
   dump_line("%s %s", name, text);
@@ -329,10 +329,10 @@ static int parse_bool_val(const char *key, const char *text)
   if (text == NULL) {
     return 1;
   }
-  if (!strcmp("yes", text)) {
+  if (!strcmp("yes", text)) { /* NOTRANSLATE */
     return 1;
   }
-  if (!strcmp("no", text)) {
+  if (!strcmp("no", text)) { /* NOTRANSLATE */
     return 0;
   }
   outerror(OUTERROR_TYPE_WARN,
@@ -370,7 +370,7 @@ static char *print_config_bool(const char *key)
   if (i < 0)
     return NULL;
 
-  val = (*(config_parse_bool[i].ivar) != 0) ? "yes" : "no";
+  val = (*(config_parse_bool[i].ivar) != 0) ? "yes" : "no"; /* NOTRANSLATE */
   return mystrdup(val);
 }
 
