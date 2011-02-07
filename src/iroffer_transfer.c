@@ -634,10 +634,11 @@ void t_flushed (transfer * const t)
           ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0));
   
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "Log: Pack %u, Nick %s, Network %s, File %s",
+          "Log: Pack %u, Nick %s" ", Network %s" ", Sent %" LLPRINTFMT "d kB" ", Recv %" LLPRINTFMT "d kB" ", File %s",
           number_of_pack(t->xpack),
           t->nick,
           gdata.networks[ t->net ].name,
+          (t->xpack->st_size-t->startresume)/1024, t->bytesgot/1024,
           t->xpack->desc );
   
   if (!gdata.quietmode)
