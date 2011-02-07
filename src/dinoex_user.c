@@ -574,13 +574,19 @@ static void send_xdcc_info(const char **bad, const char *nick, const char *hostm
   *bad = "requested";
 }
 
+static void restrictprivlistmsg2(const char *nick, const char *msg)
+{
+  notice(nick, "** XDCC LIST Denied. %s", msg);
+}
+
 static void restrictprivlistmsg(const char *nick)
 {
-  if (gdata.restrictprivlistmsg) {
-    notice(nick, "** XDCC LIST Denied. %s", gdata.restrictprivlistmsg);
-  } else {
-    notice(nick, "** XDCC LIST Denied. Wait for the public list in the channel.");
-  }
+  const char *msg;
+
+  msg = gdata.restrictprivlistmsg;
+  if (msg == NULL)
+    msg = "Wait for the public list in the channel.";
+  restrictprivlistmsg2(nick, msg);
 }
 
 static int parse_xdcc_list(const char *nick, char *msg3)
@@ -601,7 +607,7 @@ static int parse_xdcc_list(const char *nick, char *msg3)
       return 1; /* ignore */
   }
   if (irlist_size(&(gnetwork->xlistqueue)) >= MAXXLQUE) {
-    notice(nick, "** XDCC LIST Denied. I'm rather busy at the moment, try again later");
+    restrictprivlistmsg2(nick, "I'm rather busy at the moment, try again later");
     return 1; /* ignore */
   }
   if (!msg3) {
