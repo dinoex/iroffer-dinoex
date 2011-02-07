@@ -414,7 +414,6 @@
 433 "Nome del server attuale: %s "
 434 "<sconosciuto>"
 435 "Channel %10s: entrato: %3s"
-436 "si"
 438 ", chiave: %s"
 439 ", Plist ogni %2i minuti (%s)"
 440 "Banda: lowsend: %i, minspeed: %1.1f, maxspeed: %1.1f, overallmaxspeed: %i"
