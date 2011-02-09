@@ -1868,3 +1868,4 @@
 2773 ", Recv %"
 2774 ", Fichier %s"
 2775 "Upload: Nick %s"
+2776 "Couldn't Set TCP_NODELAY"
