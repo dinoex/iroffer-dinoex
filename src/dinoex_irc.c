@@ -26,6 +26,8 @@
 #include "upnp.h"
 #endif /* USE_UPNP */
 
+#include <netinet/tcp.h>
+
 /* writes IP address and port as text into the buffer */
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa)
 {
@@ -412,6 +414,8 @@ void ir_setsockopt(int clientsocket)
 #if !defined(CANT_SET_TOS)
   int tempc;
 #endif
+  int nodelay = 1;
+  int rc;
 
   updatecontext();
 
@@ -425,6 +429,10 @@ void ir_setsockopt(int clientsocket)
   tempc = 0x8; /* IPTOS_THROUGHPUT */
   setsockopt(clientsocket, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
 #endif
+
+  rc = setsockopt(clientsocket, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
+  if (rc < 0)
+    outerror(OUTERROR_TYPE_WARN, "Couldn't Set TCP_NODELAY");
 
   if (set_socket_nonblocking(clientsocket, 1) < 0 )
     outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
