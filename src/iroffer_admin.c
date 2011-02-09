@@ -399,16 +399,23 @@ static size_t u_expand_args(const char *args)
   return 0;
 }
 
-size_t u_expand_command(void)
+static void u_expand_help(int i)
+{
+  tostdout("** Command: %s %s, %s\n",
+           userinput_parse[i].command,
+           userinput_parse[i].args ? userinput_parse[i].args : "(no args)",
+           userinput_parse[i].desc);
+}
+
+static size_t u_expand_command2(char *cmd)
 {
   const char *first = NULL;
-  char *cmd;
   char *end;
   size_t found = 0;
   size_t j;
+  int firsti = 0;
   int i;
 
-  cmd = mystrdup(gdata.console_input_line);
   end = strchr(cmd, ' ');
   if (end != NULL) {
     *end = 0;
@@ -422,17 +429,13 @@ size_t u_expand_command(void)
       if (userinput_parse[i].args) {
         j = u_expand_args(userinput_parse[i].args);
         if (j > 0) {
-          mydelete(cmd);
           return j;
         }
       }
 
-      tostdout("** Command: %s %s, %s\n",
-               cmd, userinput_parse[i].args ? userinput_parse[i].args : "(no args)",
-               userinput_parse[i].desc);
+      u_expand_help(i);
       break;
     }
-    mydelete(cmd);
     return 0;
   }
   caps(cmd);
@@ -445,18 +448,23 @@ size_t u_expand_command(void)
       continue;
 
     found++;
-    if (first == NULL) first = userinput_parse[i].command;
+    if (first == NULL) {
+      first = userinput_parse[i].command;
+      firsti = i;
+    }
   }
   if (found == 0) {
     tostdout("** User Command Not Recognized, try \"HELP\"");
     tostdout("\n");
-    mydelete(cmd);
     return 0;
   }
   if (found == 1) {
-    mydelete(cmd);
-    snprintf(gdata.console_input_line, INPUT_BUFFER_LENGTH, "%s ", first);
-    return strlen(first) - j + 1;
+    if (strcmp(userinput_parse[firsti].command, cmd)) {
+      snprintf(gdata.console_input_line, INPUT_BUFFER_LENGTH, "%s ", first);
+      return strlen(first) - j + 1;
+    }
+    u_expand_help(firsti);
+    return 0;
   }
   tostdout("** Commands:");
   for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
@@ -471,8 +479,18 @@ size_t u_expand_command(void)
     tostdout(" %s", userinput_parse[i].command);
   }
   tostdout("\n");
-  mydelete(cmd);
   return 0;
+}
+
+size_t u_expand_command(void)
+{
+  char *cmd;
+  size_t found;
+
+  cmd = mystrdup(gdata.console_input_line);
+  found = u_expand_command2(cmd);
+  mydelete(cmd);
+  return found;
 }
 
 static void u_help(const userinput * const u)
