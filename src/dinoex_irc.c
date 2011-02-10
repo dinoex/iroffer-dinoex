@@ -430,9 +430,11 @@ void ir_setsockopt(int clientsocket)
   setsockopt(clientsocket, IPPROTO_IP, IP_TOS, &tempc, sizeof(int));
 #endif
 
-  rc = setsockopt(clientsocket, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
-  if (rc < 0)
-    outerror(OUTERROR_TYPE_WARN, "Couldn't Set TCP_NODELAY");
+  if (gdata.tcp_nodelay != 0) {
+    rc = setsockopt(clientsocket, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
+    if (rc < 0)
+      outerror(OUTERROR_TYPE_WARN, "Couldn't Set TCP_NODELAY");
+  }
 
   if (set_socket_nonblocking(clientsocket, 1) < 0 )
     outerror(OUTERROR_TYPE_WARN, "Couldn't Set Non-Blocking");
