@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.26:
 ----------------
 
+365) tcp_nodelay
+  Schalte das Nagle-Verfahren zur Optimierung der TCP Pakete aus.
+
 364) tcp_buffer_size
   Setzt den Netzwerkbuffer für TCP auf den angegebenen Wert in kByte.
   Default: 0 = das Betriebssystem optimiert.
