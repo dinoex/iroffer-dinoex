@@ -1,4 +1,3 @@
-
 /*
  * iroffer by David Johnson (PMG) 
  * Copyright (C) 1998-2005 David Johnson 
