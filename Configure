@@ -530,6 +530,7 @@ case "$ostype" in
  CYGWIN* )
   short_ostype=`uname | cut -d "_" -f 1`
   ostype=$short_ostype
+  rstatic="-static-libgcc"
   exe=.exe
   
   # only 1.5.6 or later is supported
