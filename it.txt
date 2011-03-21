@@ -1856,7 +1856,7 @@
 2755 "Configfile"
 2757 "("
 2758 "RMALLQ"
-2759 "Removes entries from idle and main queue"
+2759 "Rimuove tutte le voci dalla coda attiva e dalla coda inattiva"
 2760 "n [channel] [net]"
 2766 "RUBY %s"
 2767 "%s "
