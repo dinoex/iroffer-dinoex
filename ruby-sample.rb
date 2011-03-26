@@ -28,7 +28,7 @@ class IrofferEvent
   def on_privmsg
     write_log( "PRIVMSG from", hostmask, "in", channel, "on", network, message )
 
-    # trigger on text
+    # trigger on text somewhere in the message
     if /iroffer-dinoex/.match( message )
       msg = "Thanks for using iroffer."
       # send text to user
@@ -39,15 +39,15 @@ class IrofferEvent
       mode( channel, "+v " + nick )
     end
 
-    # trigger on text
-    if /!autoadd/.match( message )
+    # trigger on exact text
+    if message == '!autoadd'
       # execute admin command
       command( "msg", config[ "owner_nick" ], "!autoadd was triggered" )
       command( "autoadd" )
     end
 
-    # trigger on text
-    if /!hop/.match( message )
+    # trigger on exact text
+    if message == '!hop'
       # execute admin command
       command( "HOP", channel, network )
     end
