@@ -1138,6 +1138,20 @@ static void d_autosendpack(const char *key)
   }
 }
 
+static char *p_bandmax(void)
+{
+  char *text;
+
+  text = mymalloc(maxtextlengthshort);
+  snprintf(text, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4); /* NOTRANSLATE */
+  return text;
+}
+
+static char *p_banduse(void)
+{
+  return get_current_bandwidth();
+}
+
 static void c_channel(const char * UNUSED(key), char *var)
 {
   char *part[2];
@@ -2186,6 +2200,8 @@ static int set_config_func(const char *key, char *text)
 static int config_fprint_anzahl = 0;
 static config_fprint_typ config_parse_fprint[] = {
 {"auth_name",              p_auth_name }, /* NOTRANSLATE */
+{"bandmax",                p_bandmax }, /* NOTRANSLATE */
+{"banduse",                p_banduse }, /* NOTRANSLATE */
 {"disk_quota",             p_disk_quota }, /* NOTRANSLATE */
 {"disk_space",             p_disk_space }, /* NOTRANSLATE */
 {"disk_space_text",        p_disk_space_text }, /* NOTRANSLATE */
