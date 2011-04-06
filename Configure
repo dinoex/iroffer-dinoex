@@ -770,17 +770,19 @@ if $OPT_NOMEMSAVE; then
 fi
 
 ${msg} -n "${irt_checkfor} make... "
-if [ -f "`type make | awk '{print $NF}'`" ]; then
+makebin="`type make | awk '{print $NF}'`"
+gmakebin="`type gmake | awk '{print $NF}'`"
+if [ -f "${makebin}" ]; then
  maketype="make"
- if [ -x "`type $maketype | awk '{print $NF}'`" ]; then
+ if [ -x "${makebin}" ]; then
   ${msg} "${irt_found} $maketype"
  else
   ${msg} "${irt_found} $maketype. ${irt_error} ${irt_noexec} $maketype"
   waserror
  fi
-elif [ -f "`type gmake | awk '{print $NF}'`" ]; then
+elif [ -f "${gmakebin}" ]; then
  maketype="gmake"
- if [ -x "`type $maketype | awk '{print $NF}'`" ]; then
+ if [ -x "${gmakebin}" ]; then
   ${msg} "${irt_found} $maketype"
  else
   ${msg} "${irt_found} $maketype. ${irt_error} ${irt_noexec} $maketype"
