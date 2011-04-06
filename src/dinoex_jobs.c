@@ -1989,29 +1989,22 @@ void a_rehash_cleanup(const userinput *u)
 
   if (!gdata.config_nick) {
     a_respond(u, "user_nick missing! keeping old nick!");
-    gdata.config_nick = r_config_nick;
-    r_config_nick = NULL;
-    for (ss=0; ss<gdata.networks_online; ++ss) {
-      mydelete(gnetwork->config_nick);
-      gnetwork->config_nick = gnetwork->r_config_nick;
-      mydelete(gnetwork->r_local_vhost);
-    }
-  } else {
-    backup = gnetwork;
-    for (ss=0; ss<gdata.networks_online; ++ss) {
-      gnetwork = &(gdata.networks[ss]);
-      old_nick = (gnetwork->r_config_nick) ? gnetwork->r_config_nick : r_config_nick;
-      new_nick = get_config_nick();
-      if (strcmp(new_nick, old_nick)) {
-        a_respond(u, "user_nick changed, renaming nick to %s", new_nick);
-        writeserver(WRITESERVER_NOW, "NICK %s", new_nick); /* NOTRANSLATE */
-      }
-      mydelete(gnetwork->r_config_nick);
-      mydelete(gnetwork->r_local_vhost);
-    }
-    gnetwork = backup;
-    mydelete(r_config_nick);
+    gdata.config_nick = mystrdup(r_config_nick);
   }
+  backup = gnetwork;
+  for (ss=0; ss<gdata.networks_online; ++ss) {
+    gnetwork = &(gdata.networks[ss]);
+    old_nick = (gnetwork->r_config_nick) ? gnetwork->r_config_nick : r_config_nick;
+    new_nick = get_config_nick();
+    if (strcmp(new_nick, old_nick)) {
+      a_respond(u, "user_nick changed, renaming nick to %s", new_nick);
+      writeserver(WRITESERVER_NOW, "NICK %s", new_nick); /* NOTRANSLATE */
+    }
+    mydelete(gnetwork->r_config_nick);
+    mydelete(gnetwork->r_local_vhost);
+  }
+  gnetwork = backup;
+  mydelete(r_config_nick);
   mydelete(r_local_vhost);
   if (gdata.xdcclist_grouponly != gdata.r_xdcclist_grouponly)
     write_files();

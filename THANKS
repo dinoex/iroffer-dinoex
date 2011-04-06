@@ -101,6 +101,7 @@ TheDeath
 	suggesting HTTP 403 response
 	option "http_forbidden"
 	suggesting "expire_logfiles"
+	suggesting announce of "XDCC REMOVE <nr>"
 
 [GFE]Lunix
 	alias xdcc list group <group>
@@ -555,6 +556,7 @@ CreeW
 	reporting "CHCOLOR" bug
 	suggesting "CHMAXS" with range
 	suggesting "NEWANN" with params
+	reporting "REHASH" bug
 
 [M]-V
 	reporting ADDDIR spaces bug
