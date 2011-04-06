@@ -2,6 +2,9 @@
 Feature #38 xdcc command to export the crc32/md5 as sumfile
 Feature #70 command for saving the "running" config
 Feature #89 limit autoaddan to file that matches a given mask
+Feature #114: Support for compressing the rotated logfiles
+Feature #115: Announce only after sucessful crc32 verification
+Feature #116: Announce autoadd packages after sorting them complete
 
 [Iroffer.org]
 
@@ -76,6 +79,7 @@ Short Term Features:
   1535  reduce queued message on batch
   1536  silent add
   1539  RUBY command
+  1541  QSENDI for inactive Queue
 
 Long Term Features:
   1015  http admin
@@ -151,6 +155,13 @@ Long Term Features:
   1526  variables in config file
   1529  XDCC-DELTA
   1530  summary after find.
+  1542  Fix future date
+  1544  Warn if ssl connects do non-ssl port
+  1545  Supoort color codes in announce
+  1546  Auth telnet/chat with CERTFP
+  1547  Monitor diskload and reduce slots
+  1552  wildcards dirnames in autoadd_dir
+  1555  easier color for announce
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -215,4 +226,5 @@ Not going to happen anytime soon:
   1452  zeroconf/mdns/avahi-support
   1495  support for plowshare
   1525  user defined limits
+  1543  native windows build with MINGW
 
