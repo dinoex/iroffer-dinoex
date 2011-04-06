@@ -7,7 +7,8 @@ Ab Version 3.27:
   Neue Variablen "disk_space", "disk_space_text", "packsum",
   "idlequeueused", "mainqueueused", "slotsfree", "slotsused",
   "transfereddaily", "transferedweekly", "transferedmonthly",
-  "transferedtotal", "transferedtotalbytes", "uptime", "totaluptime"
+  "transferedtotal", "transferedtotalbytes", "uptime", "totaluptime",
+  "bandmax", "banduse"
 
 366) http_port 
   Benutze kurze URLs in der Webliste.
