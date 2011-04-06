@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+367) PRINT, ruby_script
+  Neue Variablen "disk_space", "disk_space_text", "packsum",
+  "idlequeueused", "mainqueueused", "slotsfree", "slotsused",
+  "transfereddaily", "transferedweekly", "transferedmonthly",
+  "transferedtotal", "transferedtotalbytes", "uptime", "totaluptime"
+
 366) http_port 
   Benutze kurze URLs in der Webliste.
 
