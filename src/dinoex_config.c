@@ -1258,6 +1258,33 @@ static char *p_disk_quota(void)
   return print_config_long2(gdata.disk_quota);
 }
 
+static off_t get_toffered(void)
+{
+  xdcc *xd;
+  off_t toffered;
+
+  toffered = 0;
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (hide_pack(xd))
+      continue;
+
+    toffered += xd->st_size;
+  }
+  return toffered;
+}
+
+static char *p_disk_space(void)
+{
+  return print_config_long2(get_toffered());
+}
+
+static char *p_disk_space_text(void)
+{
+  return sizestr(0, get_toffered());
+}
+
 static void d_disk_quota(const char *key)
 {
   dump_config_mega2(key, gdata.disk_quota);
@@ -1349,6 +1376,11 @@ static void d_group_admin(const char *key)
   }
 }
 
+static char *p_idlequeueused(void)
+{
+  return print_config_long2((ir_int64)(irlist_size(&gdata.idlequeue)));
+}
+
 static void c_ignoreduplicateip(const char * key, char *var)
 {
   int val;
@@ -1434,6 +1466,11 @@ static void c_login_name(const char * UNUSED(key), char *var)
 static char *p_login_name(void)
 {
   return mystrdup(gnetwork->login_name);
+}
+
+static char *p_mainqueueused(void)
+{
+  return print_config_long2((ir_int64)(irlist_size(&gdata.mainqueue)));
 }
 
 static void c_mime_type(const char *key, char *var)
@@ -1664,6 +1701,11 @@ static void d_overallmaxspeeddaytime(const char *key)
             key, gdata.overallmaxspeeddaytimestart, gdata.overallmaxspeeddaytimeend);
 }
 
+static char *p_packsum(void)
+{
+  return print_config_long2((ir_int64)(irlist_size(&gdata.xdccs)));
+}
+
 static void c_periodicmsg(const char *key, char *var)
 {
   char *part[4];
@@ -1810,6 +1852,17 @@ static void c_server_join_raw(const char *key, char *var)
   irlist_add_string(&gdata.networks[current_network].server_join_raw, var);
 }
 
+static char *p_slotsfree(void)
+{
+  unsigned int slots = 0;
+  unsigned int trans;
+
+  trans = irlist_size(&gdata.trans);
+  if (trans < gdata.slotsmax)
+    slots = gdata.slotsmax - trans;
+  return print_config_long2((ir_int64)slots);
+}
+
 static void c_slotsmax(const char * UNUSED(key), char *var)
 {
   unsigned int ival;
@@ -1831,6 +1884,11 @@ static char *p_slotsmax(void)
 static void d_slotsmax(const char *key)
 {
   dump_config_int3(key, gdata.slotsmax, 0);
+}
+
+static char *p_slotsused(void)
+{
+  return print_config_long2((ir_int64)(irlist_size(&gdata.trans)));
 }
 
 static void c_slow_privmsg(const char *key, char *var)
@@ -1869,6 +1927,14 @@ static char *p_statefile(void)
 static void d_statefile(const char *key)
 {
   dump_config_string3(key, gdata.statefile);
+}
+
+static char *p_totaluptime(void)
+{
+  char *text;
+
+  text = mymalloc(maxtextlengthshort);
+  return getuptime(text, 0, gdata.curtime-gdata.totaluptime, maxtextlengthshort);
 }
 
 static void c_transferlimits(const char * UNUSED(key), char *var)
@@ -1926,6 +1992,31 @@ static void d_transferminspeed(const char *key)
   dump_config_float2(key, gdata.transferminspeed);
 }
 
+static char *p_transfereddaily(void)
+{
+  return sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
+}
+
+static char *p_transferedweekly(void)
+{
+  return sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
+}
+
+static char *p_transferedmonthly(void)
+{
+  return sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
+}
+
+static char *p_transferedtotal(void)
+{
+  return sizestr(0, gdata.totalsent);
+}
+
+static char *p_transferedtotalbytes(void)
+{
+  return print_config_long2(gdata.totalsent);
+}
+
 static void c_uploadmaxsize(const char * UNUSED(key), char *var)
 {
   gdata.uploadmaxsize = atoull(var)*1024*1024;
@@ -1954,6 +2045,14 @@ static char *p_uploadminspace(void)
 static void d_uploadminspace(const char *key)
 {
   dump_config_mega2(key, gdata.uploadminspace);
+}
+
+static char *p_uptime(void)
+{
+  char *text;
+
+  text = mymalloc(maxtextlengthshort);
+  return getuptime(text, 1, gdata.startuptime, maxtextlengthshort);
 }
 
 static void c_usenatip(const char * UNUSED(key), char *var)
@@ -2088,25 +2187,39 @@ static int config_fprint_anzahl = 0;
 static config_fprint_typ config_parse_fprint[] = {
 {"auth_name",              p_auth_name }, /* NOTRANSLATE */
 {"disk_quota",             p_disk_quota }, /* NOTRANSLATE */
+{"disk_space",             p_disk_space }, /* NOTRANSLATE */
+{"disk_space_text",        p_disk_space_text }, /* NOTRANSLATE */
 {"getip_network",          p_getip_network }, /* NOTRANSLATE */
+{"idlequeueused",          p_idlequeueused }, /* NOTRANSLATE */
 {"ignoreduplicateip",      p_ignoreduplicateip }, /* NOTRANSLATE */
 {"local_vhost",            p_local_vhost }, /* NOTRANSLATE */
 {"login_name",             p_login_name }, /* NOTRANSLATE */
 {"logrotate",              p_logrotate }, /* NOTRANSLATE */
+{"mainqueueused",          p_mainqueueused }, /* NOTRANSLATE */
 {"need_level",             p_need_level }, /* NOTRANSLATE */
 {"nickserv_pass",          p_nickserv_pass }, /* NOTRANSLATE */
 {"noannounce",             p_noannounce }, /* NOTRANSLATE */
 {"offline",                p_offline }, /* NOTRANSLATE */
 {"overallmaxspeeddaydays", p_overallmaxspeeddaydays }, /* NOTRANSLATE */
+{"packsum",                p_packsum }, /* NOTRANSLATE */
 {"plaintext",              p_plaintext }, /* NOTRANSLATE */
 {"restrictlist",           p_restrictlist }, /* NOTRANSLATE */
 {"restrictsend",           p_restrictsend }, /* NOTRANSLATE */
 {"send_listfile",          p_send_listfile }, /* NOTRANSLATE */
+{"slotsfree",              p_slotsfree }, /* NOTRANSLATE */
 {"slotsmax",               p_slotsmax }, /* NOTRANSLATE */
+{"slotsused",              p_slotsused }, /* NOTRANSLATE */
 {"slow_privmsg",           p_slow_privmsg }, /* NOTRANSLATE */
 {"statefile",              p_statefile }, /* NOTRANSLATE */
+{"totaluptime",            p_totaluptime }, /* NOTRANSLATE */
+{"transfereddaily",        p_transfereddaily }, /* NOTRANSLATE */
+{"transferedmonthly",      p_transferedmonthly }, /* NOTRANSLATE */
+{"transferedtotal",        p_transferedtotal }, /* NOTRANSLATE */
+{"transferedtotalbytes",   p_transferedtotalbytes }, /* NOTRANSLATE */
+{"transferedweekly",       p_transferedweekly }, /* NOTRANSLATE */
 {"uploadmaxsize",          p_uploadmaxsize }, /* NOTRANSLATE */
 {"uploadminspace",         p_uploadminspace }, /* NOTRANSLATE */
+{"uptime",                 p_uptime }, /* NOTRANSLATE */
 {"usenatip",               p_usenatip }, /* NOTRANSLATE */
 {"user_modes",             p_user_modes }, /* NOTRANSLATE */
 {"user_nick",              p_user_nick }, /* NOTRANSLATE */
