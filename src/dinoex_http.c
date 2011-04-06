@@ -363,7 +363,7 @@ static size_t html_decode(char *buffer, size_t max, const char *src)
       break;
     case '%': /* html */
       hex = 32;
-      sscanf(src, "%2x", &hex);
+      sscanf(src, "%2x", &hex); /* NOTRANSLATE */
       *(dest++) = hex;
       ++src;
       ++src;
@@ -679,7 +679,7 @@ static void h_write_header(http * const h, const char *header)
   localt = gmtime(&gdata.curtime);
   tempstr = mymalloc(maxtextlength);
   date = mymalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt);
+  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); /* NOTRANSLATE */
   len = snprintf(tempstr, maxtextlength, header, date);
   mydelete(date);
   send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
@@ -838,12 +838,12 @@ static void h_herror_403(http * const h, const char *msg)
 {
   char *tempstr;
 
-  ioutput(OUT_S|OUT_H, COLOR_MAGENTA, "%s", msg);
+  ioutput(OUT_S|OUT_H, COLOR_MAGENTA, "%s", msg); /* NOTRANSLATE */
   h->filedescriptor = FD_UNUSED;
   h->status_code = 403;
   if (!gdata.http_forbidden) {
-    h->url = mystrdup("-");
-    h->log_url = mystrdup("-");
+    h->url = mystrdup("-"); /* NOTRANSLATE */
+    h->log_url = mystrdup("-"); /* NOTRANSLATE */
     h_error(h, http_header_forbidden);
     return;
   }
@@ -851,7 +851,7 @@ static void h_herror_403(http * const h, const char *msg)
   h->log_url = mymalloc(maxtextlength);
   snprintf(h->log_url, maxtextlength, "GET %s HTTP/1.1", gdata.http_forbidden); /* NOTRANSLATE */
   tempstr = mymalloc(maxtextlength);
-  snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url);
+  snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url); /* NOTRANSLATE */
   h_readfile(h, tempstr);
   mydelete(tempstr);
   return;
@@ -1102,11 +1102,11 @@ static int html_link_option(char *str, size_t size, const char *option, const ch
 
   size_t len = 0;
   if (html_link_start++ > 0) {
-    len = snprintf(str, size, ";");
+    len = snprintf(str, size, ";"); /* NOTRANSLATE */
   }
   tempstr = mymalloc(maxtextlength);
   url_encode(tempstr, maxtextlength, val);
-  len += snprintf(str + len, size - len, "%s=%s", option, tempstr);
+  len += snprintf(str + len, size - len, "%s=%s", option, tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   return len;
 }
@@ -1121,11 +1121,11 @@ static char *html_link_build(const char *css, const char *caption, const char *t
   len = snprintf(tempstr, maxtextlength, "<a%s title=\"%s\" href=\"/?", css, caption);
   html_link_start = 0;
   if (group)
-    len += html_link_option(tempstr + len, maxtextlength - len, "group", group);
+    len += html_link_option(tempstr + len, maxtextlength - len, "g", group); /* NOTRANSLATE */
   if (traffic)
-    len += html_link_option(tempstr + len, maxtextlength - len, "traffic", "1");
+    len += html_link_option(tempstr + len, maxtextlength - len, "t", "1"); /* NOTRANSLATE */
   if (order)
-    len += html_link_option(tempstr + len, maxtextlength - len, "order", order);
+    len += html_link_option(tempstr + len, maxtextlength - len, "o", order); /* NOTRANSLATE */
   len += snprintf(tempstr + len, maxtextlength - len, "\">%s</a>", text);
   return tempstr;
 }
@@ -1213,7 +1213,7 @@ static void h_html_search(http * const h)
 
   h_respond(h, "<form action=\"\" method=\"post\">\n");
   h_respond(h, "%s&nbsp;\n", "Search");
-  h_respond(h, "<input type=\"text\" name=\"search\" value=\"%s\" size=30>&nbsp;\n", (h->search) ? h->search : "");
+  h_respond(h, "<input type=\"text\" name=\"s\" value=\"%s\" size=30>&nbsp;\n", (h->search) ? h->search : "");
   h_respond(h, "<input type=\"submit\" name=\"submit\" value=\" %s \">\n", "Search");
   h_respond(h, "</form>\n" );
 }
@@ -1746,10 +1746,10 @@ static void h_webliste(http * const h, const char *body)
   updatecontext();
 
   if (body)
-    h->search = get_url_param(body, "search=");
-  h->group = get_url_param(h->log_url, "group=");
-  h->order = get_url_param(h->log_url, "order=");
-  h->traffic = get_url_number(h->log_url, "traffic=");
+    h->search = get_url_param(body, "s="); /* NOTRANSLATE */
+  h->group = get_url_param(h->log_url, "g="); /* NOTRANSLATE */
+  h->order = get_url_param(h->log_url, "o="); /* NOTRANSLATE */
+  h->traffic = get_url_number(h->log_url, "t="); /* NOTRANSLATE */
   guess = 2048;
   guess += h_guess_weblist(h);
   h_prepare_header(h, guess);
