@@ -285,10 +285,10 @@ unsigned int addtoidlequeue(const char **msg, char *tempstr, const char* nick, c
 
   snprintf(tempstr, maxtextlength,
            "Added you to the idle queue for pack %u (\"%s\") in position %u. To Remove yourself at "
-           "a later time type \"/MSG %s XDCC REMOVE\".",
+           "a later time type \"/MSG %s XDCC REMOVE %u\".",
            pack, xd->desc,
            irlist_size(&gdata.idlequeue),
-           get_user_nick());
+           get_user_nick(), pack);
   *msg = "Queued (idle slot)";
   return 0;
 }
@@ -367,10 +367,10 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
 
   snprintf(tempstr, maxtextlength,
            "Added you to the main queue for pack %u (\"%s\") in position %u. To Remove yourself at "
-           "a later time type \"/MSG %s XDCC REMOVE\".",
+           "a later time type \"/MSG %s XDCC REMOVE %u\".",
            pack, tempx->desc,
            irlist_size(&gdata.mainqueue),
-           save_nick(gnetwork->user_nick));
+           save_nick(gnetwork->user_nick), pack);
 
   *msg = "Queued (slot)";
   return 0;

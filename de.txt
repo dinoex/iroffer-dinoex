@@ -808,7 +808,7 @@
 910 "abgewiesen, die Warteschlange ist voll, max. %u Dateien, Versuche es später nochmal"
 911 "Queued (slot)"
 912 "Du bist jetzt in der Warteschlange für Datei %u (\"%s\") in Position %u. Wenn Du später Abbrechen "
-913 "willst schreibe \"/MSG %s XDCC REMOVE\"."
+913 "willst schreibe \"/MSG %s XDCC REMOVE %u\"."
 914 " (low bandwidth)"
 915 " (manual)"
 916 "QUEUED SEND%s: %s (%s on %s), Pack #%u"

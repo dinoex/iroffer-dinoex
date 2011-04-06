@@ -808,7 +808,7 @@
 910 "La file d'attente de %u items est pleine, Réessayez plus tard"
 911 "Mis en Attente (slot)"
 912 "Ajouté à la file d'attente pour le pack %u (\"%s\") en position %u. Pour annuler "
-913 "plus tard tapez \"/MSG %s XDCC REMOVE\"."
+913 "plus tard tapez \"/MSG %s XDCC REMOVE %u\"."
 914 " (Bande passante faible)"
 915 " (manuel)"
 916 "QUEUED SEND%s : %s (%s sur %s), Pack #%u"

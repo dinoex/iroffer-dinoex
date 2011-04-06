@@ -808,7 +808,7 @@
 910 "La coda principale di grandezza %u è piena. Riprova dopo"
 911 "Accodato (slot)"
 912 "Aggiunto alla coda principale per il pack %u (\"%s\") in posizione %u. Per rimuoverti dalla coda "
-913 "invia \"/MSG %s XDCC REMOVE\"."
+913 "invia \"/MSG %s XDCC REMOVE %u\"."
 914 " (low bandwidth)"
 915 " (manual)"
 916 "QUEUED SEND%s: %s (%s on %s), Pack #%u"
