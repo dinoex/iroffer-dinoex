@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+bugfix: REHASH
+  versions affected: 3.0 - 3.26
+  Bot crashte wenn "user_nick" nicht global definiert wurde.
+
 368) XDCC SEND
   Hinweis an den Benutzer einer Warteschlange "XDCC REMOVE <number>".
 

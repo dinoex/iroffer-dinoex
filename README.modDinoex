@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+bugfix: REHASH (reported by CreeW)
+  versions affected: 3.0 - 3.26
+  Bot crashed when no global "user_nick" was defined.
+
 368) XDCC SEND (inspired by TheDeath)
   Tell user to use "XDCC REMOVE <number>".
 
