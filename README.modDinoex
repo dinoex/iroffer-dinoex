@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+bugfix: mime_type
+  versions affected: 3.0 - 3.26
+  Extra mime_type definitions where only used once.
+
 With Version 3.26:
 ------------------
 
