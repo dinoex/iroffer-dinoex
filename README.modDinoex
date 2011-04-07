@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+369) RUBY
+
+  new admin commands:
+  RUBY <method> <args>               Call a method in the ruby_script with parameters <args>
+  RUBY <method>                      Call a method in the ruby_script with no parameters
+
 bugfix: REHASH (reported by CreeW)
   versions affected: 3.0 - 3.26
   Bot crashed when no global "user_nick" was defined.

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2007-2010 Dirk Meyer
+ * Copyright (C) 2007-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -18,6 +18,7 @@ int do_myruby_server(char *line);
 int do_myruby_notice(char *line);
 int do_myruby_privmsg(char *line);
 int do_myruby_added(char *filename, unsigned int pack);
+int do_myruby_ruby(const userinput * const u);
 void rehash_myruby(int check);
 void startup_myruby(void);
 void shutdown_myruby(void);

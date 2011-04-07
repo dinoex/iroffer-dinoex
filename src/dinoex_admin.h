@@ -137,6 +137,9 @@ void a_config(const userinput * const u);
 void a_print(const userinput * const u);
 void a_identify(const userinput * const u);
 void a_holdqueue(const userinput * const u);
+#ifdef USE_RUBY
+void a_ruby(const userinput * const u);
+#endif /* USE_RUBY */
 void a_dump(const userinput * const u);
 void a_backgroud(const userinput * const u);
 void a_autoadd(const userinput * const u);

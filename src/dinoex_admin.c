@@ -4831,6 +4831,20 @@ void a_holdqueue(const userinput * const u)
   start_sends();
 }
 
+#ifdef USE_RUBY
+void a_ruby(const userinput * const u)
+{
+  int rc;
+
+  if (invalid_text(u, "Try Specifying a ruby method", u->arg1))
+    return;
+
+  rc = do_myruby_ruby(u);
+  if (rc != 0)
+    a_respond(u, "ruby method failed.");
+}
+#endif /* USE_RUBY */
+
 void a_dump(const userinput * const u)
 {
   dumpgdata();

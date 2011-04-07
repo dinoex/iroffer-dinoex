@@ -220,6 +220,9 @@ static const userinput_parse_t userinput_parse[] = {
 {6,5,method_allow_all,a_print,         "PRINT","key","Print config variable <key>"},
 {6,1,method_allow_all,a_identify,      "IDENTIFY","[net]","Send stored password again to nickserv"},
 {6,2,method_allow_all,a_holdqueue,     "HOLDQUEUE","[x]","Change holdqueue flag, x=1 set, x=0 reset"},
+#ifdef USE_RUBY
+{6,5,method_allow_all,a_ruby,          "RUBY","method [args]","Call a method in the ruby_script with parameters <args>"},
+#endif /* USE_RUBY */
 {6,5,method_allow_all,u_shutdown,      "SHUTDOWN","act","Shutdown iroffer, <act> is \"now\", \"delayed\", or \"cancel\""},
 {6,5,method_console,  a_backgroud,     "BACKGROUND",NULL,"Switch to background mode"},
 {6,5,method_allow_all,a_dump,          "DUMP",NULL,"Write a dump into the logfile"},
