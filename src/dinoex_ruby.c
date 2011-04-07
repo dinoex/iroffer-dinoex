@@ -650,6 +650,54 @@ int do_myruby_added(char *filename, unsigned int pack)
   return do_on_event(oIrofferEvent, "on_added"); /* NOTRANSLATE */
 }
 
+#define MAX_RUBYCMD_PARTS 10
+
+/* call the ruby class from admin chat */
+int do_myruby_ruby(const userinput * const u)
+{
+  protect_call_arg_t arg;
+  char *part[MAX_RUBYCMD_PARTS];
+  VALUE *argv;
+  ID method;
+  VALUE userobject;
+  unsigned int argc;
+  unsigned int i;
+  int state = 0;
+
+  if (myruby_loaded == 0)
+    return 0;
+
+  userobject = oIrofferEvent;
+  if (NIL_P(userobject))
+    return 0;
+
+  method = rb_intern(u->arg1);
+  if (! rb_respond_to(userobject, method))
+    return 0;
+
+  if (u->arg2e != NULL) {
+    argc = get_argv(part, u->arg2e, MAX_RUBYCMD_PARTS);
+    argv = ALLOCA_N(VALUE, argc);
+    for (i = 0; i < argc; ++i) {
+      argv[i] = rb_str_new(part[i], strlen(part[i]));;
+      mydelete(part[i]);
+    }
+  } else {
+    argc = 0;
+    argv = 0;
+  }
+  arg.recvobj = userobject;
+  arg.mid = method;
+  arg.argc = argc;
+  arg.argv = argv;
+  rb_protect(protect_funcall0, (VALUE) &arg, &state);
+  if (state != 0) {
+    iroffer_ruby_errro(state);
+    return 1;
+  }
+  return 0;
+}
+
 /* reload the scrip on rehash */
 void rehash_myruby(int check)
 {

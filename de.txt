@@ -1857,3 +1857,8 @@
 2774 ", File %s"
 2775 "Upload: Nick %s"
 2776 "Couldn't Set TCP_NODELAY"
+2777 "RUBY"
+2778 "methode [args]"
+2779 "Rufe die Methode <methode> im Ruby-Script mit den Parametern <args> auf"
+2780 "Try Specifying a ruby method"
+2781 "ruby method failed."
