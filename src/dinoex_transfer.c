@@ -36,12 +36,12 @@ void t_start_dcc_send(transfer *tr)
   dccdata = setup_dcc_local(&tr->con.local);
   if (gdata.passive_dcc) {
     bzero((char *) &(tr->con.local), sizeof(tr->con.local));
-    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d %u\1", /* NOTRANSLATE */
+    privmsg_fast(tr->nick, IRC_CTCP "DCC SEND %s %s %" LLPRINTFMT "d %u" IRC_CTCP, /* NOTRANSLATE */
                  sendnamestr, dccdata,
                  tr->xpack->st_size,
                  tr->id);
   } else {
-    privmsg_fast(tr->nick, "\1DCC SEND %s %s %" LLPRINTFMT "d\1", /* NOTRANSLATE */
+    privmsg_fast(tr->nick, IRC_CTCP "DCC SEND %s %s %" LLPRINTFMT "d" IRC_CTCP, /* NOTRANSLATE */
                  sendnamestr, dccdata,
                  tr->xpack->st_size);
 
@@ -363,9 +363,9 @@ unsigned int t_find_resume(const char *nick, const char *filename, const char *l
   t_setresume(tr, bytes);
   sendnamestr = getsendname(filename);
   if ((tr->tr_status == TRANSFER_STATUS_RESUME) && (token != NULL)) {
-    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s %s\1", sendnamestr, localport, bytes, token); /* NOTRANSLATE */
+    privmsg_fast(nick, IRC_CTCP "DCC ACCEPT %s %s %s %s" IRC_CTCP, sendnamestr, localport, bytes, token); /* NOTRANSLATE */
   } else {
-    privmsg_fast(nick, "\1DCC ACCEPT %s %s %s\1", sendnamestr, localport, bytes); /* NOTRANSLATE */
+    privmsg_fast(nick, IRC_CTCP "DCC ACCEPT %s %s %s" IRC_CTCP, sendnamestr, localport, bytes); /* NOTRANSLATE */
   }
   mydelete(sendnamestr);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,

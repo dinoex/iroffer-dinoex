@@ -2212,7 +2212,7 @@ static void ir_parseline(char *line) {
                            char *nick = getpart(line, part++);
                            if (nick)
                              {
-                               if (nick[strlen(nick)-1] == '\1')
+                               if (nick[strlen(nick)-1] == IRCCTCP)
                                  {
                                    nick[strlen(nick)-1] = '\0';
                                  }
