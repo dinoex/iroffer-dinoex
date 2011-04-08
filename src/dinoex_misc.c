@@ -913,22 +913,22 @@ int select_starting_transfer(unsigned int max)
 }
 
 static const char *style_on[ 16 ] = {
-  /* 0 = none */ "", /* NOTRANSLATE */
-  /* 1 = bold */ "\x02", /* NOTRANSLATE */
-  /* 2 = underline */ "\x1F", /* NOTRANSLATE */
-  /* 3 = bold, underline */ "\x02\x1F", /* NOTRANSLATE */
-  /* 4 = italic */ "\x1D", /* NOTRANSLATE */
-  /* 5 = bold, italic */ "\x02\x1D", /* NOTRANSLATE */
-  /* 6 = underline, italic */ "\x1F\x1D", /* NOTRANSLATE */
-  /* 7 = bold, underline, italic */ "\x02\x1F\x1D", /* NOTRANSLATE */
-  /* 8 = inverse */ "\x16", /* NOTRANSLATE */
-  /* 9 = bold, inverse */ "\x02\x16", /* NOTRANSLATE */
-  /* 10 = underline, inverse */ "\x1F\x16", /* NOTRANSLATE */
-  /* 11 = bold, underline, inverse */ "\x02\x1F\x16", /* NOTRANSLATE */
-  /* 12 = italic, inverse */ "\x1D\x16", /* NOTRANSLATE */
-  /* 13 = bold, italic, inverse */ "\x02\x1D\x16", /* NOTRANSLATE */
-  /* 14 = underline, italic, inverse */ "\x1F\x1D\x16", /* NOTRANSLATE */
-  /* 15 = bold, underline, italic, inverse */ "\x02\x1F\x1D\x16", /* NOTRANSLATE */
+  /* 0 =*/ "", /* NOTRANSLATE */
+  /* 1 =*/ IRC_BOLD,
+  /* 2 =*/           IRC_UNDERLINE,
+  /* 3 =*/ IRC_BOLD  IRC_UNDERLINE,
+  /* 4 =*/                          IRC_ITALIC,
+  /* 5 =*/ IRC_BOLD                 IRC_ITALIC,
+  /* 6 =*/           IRC_UNDERLINE  IRC_ITALIC,
+  /* 7 =*/ IRC_BOLD  IRC_UNDERLINE  IRC_ITALIC,
+  /* 8 =*/                                      IRC_INVERSE,
+  /* 9 =*/ IRC_BOLD                             IRC_INVERSE,
+  /* 10 */           IRC_UNDERLINE              IRC_INVERSE,
+  /* 11 */ IRC_BOLD  IRC_UNDERLINE              IRC_INVERSE,
+  /* 12 */                          IRC_ITALIC  IRC_INVERSE,
+  /* 13 */ IRC_BOLD                 IRC_ITALIC  IRC_INVERSE,
+  /* 14 */           IRC_UNDERLINE  IRC_ITALIC  IRC_INVERSE,
+  /* 15 */ IRC_BOLD  IRC_UNDERLINE  IRC_ITALIC  IRC_INVERSE
 };
 
 /* colored text */

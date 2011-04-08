@@ -489,7 +489,7 @@ size_t removenonprintable(char *str)
 
   dest = (unsigned char *)str;
   for (copy=dest; *copy != 0; ++copy) {
-    if (*copy == 0x03U) { /* color */
+    if (*copy == IRCCOLOR) { /* color */
       if (!isdigit(copy[1])) continue;
       ++copy;
       if (!isdigit(copy[1])) continue;
@@ -503,11 +503,11 @@ size_t removenonprintable(char *str)
       continue;
     }
     switch (*copy) {
-    case 0x02U: /* bold */
-    case 0x0FU: /* end formatting */
-    case 0x16U: /* inverse */
-    case 0x1DU: /* italic */
-    case 0x1FU: /* underline */
+    case IRCBOLD: /* bold */
+    case IRCNORMAL: /* end formatting */
+    case IRCINVERSE: /* inverse */
+    case IRCITALIC: /* italic */
+    case IRCUNDERLINE: /* underline */
     case 0x7FU:
       break;
     default:
