@@ -17,11 +17,12 @@ bugfix: REHASH (reported by CreeW)
   Tell user to use "XDCC REMOVE <number>".
 
 367) PRINT, ruby_script
-  Neue variables "disk_space", "disk_space_text", "packsum",
+  New variables for irconfig() "disk_space", "disk_space_text", "packsum",
   "idlequeueused", "mainqueueused", "slotsfree", "slotsused",
   "transfereddaily", "transferedweekly", "transferedmonthly",
   "transferedtotal", "transferedtotalbytes", "uptime", "totaluptime",
   "bandmax", "banduse"
+  New variable "mynick"
 
 366) http_port
   Use short urls in weblist.

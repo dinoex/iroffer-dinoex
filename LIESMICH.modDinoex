@@ -17,11 +17,12 @@ bugfix: REHASH
   Hinweis an den Benutzer einer Warteschlange "XDCC REMOVE <number>".
 
 367) PRINT, ruby_script
-  Neue Variablen "disk_space", "disk_space_text", "packsum",
+  Neue Variablen für irconfig() "disk_space", "disk_space_text", "packsum",
   "idlequeueused", "mainqueueused", "slotsfree", "slotsused",
   "transfereddaily", "transferedweekly", "transferedmonthly",
   "transferedtotal", "transferedtotalbytes", "uptime", "totaluptime",
   "bandmax", "banduse"
+  Neue Variable "mynick"
 
 366) http_port 
   Benutze kurze URLs in der Webliste.
