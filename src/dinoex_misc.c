@@ -950,14 +950,14 @@ char *color_text(char *desc, unsigned int color)
    background = (color >> 8) & 0xFF;
    style = (color >> 16 ) & 0x0F;
    if (background != 0) {
-     snprintf(colordesc, maxtextlength, "%s\003%02u,%02u%s\003\017", style_on[ style ], foreground, background, desc); /* NOTRANSLATE */
+     snprintf(colordesc, maxtextlength, "%s" IRC_COLOR "%02u,%02u%s" IRC_COLOR IRC_NORMAL, style_on[ style ], foreground, background, desc); /* NOTRANSLATE */
      return colordesc;
    }
    if (foreground != 0) {
-     snprintf(colordesc, maxtextlength, "%s\003%02u%s\003\017", style_on[ style ], foreground, desc); /* NOTRANSLATE */
+     snprintf(colordesc, maxtextlength, "%s" IRC_COLOR "%02u%s" IRC_COLOR IRC_NORMAL, style_on[ style ], foreground, desc); /* NOTRANSLATE */
      return colordesc;
    }
-   snprintf(colordesc, maxtextlength, "%s%s\017", style_on[ style ], desc); /* NOTRANSLATE */
+   snprintf(colordesc, maxtextlength, "%s%s" IRC_NORMAL, style_on[ style ], desc); /* NOTRANSLATE */
    return colordesc;
 }
 
