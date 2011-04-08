@@ -49,6 +49,7 @@
 #define IRVT_COLOR_SET1         "\x1b[%u;%um"
 
 /* IRC text color chars */
+#define IRCCTCP		'\1'
 #define IRCBOLD		0x02
 #define IRCCOLOR	0x03
 #define IRCNORMAL	0x0F
@@ -57,6 +58,7 @@
 #define IRCUNDERLINE	0x1F
 
 /* IRC text color strings */
+#define IRC_CTCP	"\1"
 #define IRC_BOLD	"\x02"
 #define IRC_COLOR	"\x03"
 #define IRC_NORMAL	"\x0F"

@@ -51,7 +51,7 @@ void l_establishcon (upload * const l)
   if (retval == 2)
     {
       tempstr = getsendname(l->file);
-      privmsg_fast(l->nick, "\1DCC RESUME %s %d %" LLPRINTFMT "d\1",
+      privmsg_fast(l->nick, IRC_CTCP "DCC RESUME %s %d %" LLPRINTFMT "d" IRC_CTCP,
                    tempstr, l->con.remoteport, s.st_size);
       mydelete(tempstr);
       return;

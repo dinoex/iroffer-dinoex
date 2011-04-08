@@ -56,9 +56,9 @@ int setupdccchatout(const char *nick, const char *hostmask, const char *token)
   
   msg = setup_dcc_local(&(chat->con.local));
   if (token != NULL) {
-    privmsg_fast(nick, "\1DCC CHAT CHAT %s %s\1", msg, token);
+    privmsg_fast(nick, IRC_CTCP "DCC CHAT CHAT %s %s" IRC_CTCP, msg, token);
   } else {
-    privmsg_fast(nick, "\1DCC CHAT CHAT %s\1", msg);
+    privmsg_fast(nick, IRC_CTCP "DCC CHAT CHAT %s" IRC_CTCP, msg);
   }
   my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa));
   chat->con.localaddr = mystrdup(msg);

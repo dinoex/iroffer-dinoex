@@ -61,7 +61,7 @@ static void strip_trailing_action(char *str)
     return;
 
   len = strlen(str);
-  if (str[--len] != '\1')
+  if (str[--len] != IRCCTCP)
     return;
 
   str[len] = '\0';
@@ -75,7 +75,7 @@ static int test_ctcp(const char *msg1, const char *key)
   if (strncmp(msg1, key, len) != 0)
     return 0;
 
-  if ((key[len] == 0) || (key[len] == '\1'))
+  if ((key[len] == 0) || (key[len] == IRCCTCP))
     return 1;
 
   return 0;
@@ -88,29 +88,29 @@ static void send_clientinfo(const char *nick, char *msg2)
           nick, gnetwork->name);
 
   if (!msg2) {
-    notice(nick, "\1CLIENTINFO DCC PING VERSION XDCC UPTIME " /* NOTRANSLATE */
-    ":Use CTCP CLIENTINFO <COMMAND> to get more specific information\1");
+    notice(nick, IRC_CTCP "CLIENTINFO DCC PING VERSION XDCC UPTIME " /* NOTRANSLATE */
+    ":Use CTCP CLIENTINFO <COMMAND> to get more specific information" IRC_CTCP);
     return;
   }
   caps(msg2);
   if (strncmp(msg2, "PING", 4) == 0) {
-    notice(nick, "\1CLIENTINFO PING returns the arguments it receives\1");
+    notice(nick, IRC_CTCP "CLIENTINFO PING returns the arguments it receives" IRC_CTCP);
     return;
   }
   if (strncmp(msg2, "DCC", 3) == 0) {
-    notice(nick, "\1CLIENTINFO DCC requests a DCC for chatting or file transfer\1");
+    notice(nick, IRC_CTCP "CLIENTINFO DCC requests a DCC for chatting or file transfer" IRC_CTCP);
     return;
   }
   if (strncmp(msg2, "VERSION", 7) == 0) {
-    notice(nick, "\1CLIENTINFO VERSION shows information about this client's version\1");
+    notice(nick, IRC_CTCP "CLIENTINFO VERSION shows information about this client's version" IRC_CTCP);
     return;
   }
   if (strncmp(msg2, "XDCC", 4) == 0) {
-    notice(nick, "\1CLIENTINFO XDCC LIST|SEND list and DCC file(s) to you\1");
+    notice(nick, IRC_CTCP "CLIENTINFO XDCC LIST|SEND list and DCC file(s) to you" IRC_CTCP);
     return;
   }
   if (strncmp(msg2, "UPTIME", 6) == 0) {
-    notice(nick, "\1CLIENTINFO UPTIME shows how long this client has been running\1");
+    notice(nick, IRC_CTCP "CLIENTINFO UPTIME shows how long this client has been running" IRC_CTCP);
     return;
   }
 }
@@ -1071,7 +1071,7 @@ static int botonly_parse(int type, privmsginput *pi)
   char *tempstr2;
 
   /*----- CLIENTINFO ----- */
-  if (test_ctcp(pi->msg1, "\1CLIENTINFO")) { /* NOTRANSLATE */
+  if (test_ctcp(pi->msg1, IRC_CTCP "CLIENTINFO")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     send_clientinfo(pi->nick, pi->msg2);
@@ -1079,12 +1079,12 @@ static int botonly_parse(int type, privmsginput *pi)
   }
   if (type != 0) {
     /*----- PING ----- */
-    if (test_ctcp(pi->msg1, "\1PING")) { /* NOTRANSLATE */
+    if (test_ctcp(pi->msg1, IRC_CTCP "PING")) { /* NOTRANSLATE */
       if (check_ignore(pi->nick, pi->hostmask))
         return 0;
       strip_trailing_action(pi->msg2);
       strip_trailing_action(pi->msg3);
-      notice(pi->nick, "\1PING%s%s%s%s\1", /* NOTRANSLATE */
+      notice(pi->nick, IRC_CTCP "PING%s%s%s%s" IRC_CTCP, /* NOTRANSLATE */
              pi->msg2 ? " " : "", /* NOTRANSLATE */
              pi->msg2 ? pi->msg2 : "",
              pi->msg3 ? " " : "", /* NOTRANSLATE */
@@ -1096,10 +1096,10 @@ static int botonly_parse(int type, privmsginput *pi)
     }
   }
  /*----- VERSION ----- */
-  if (test_ctcp(pi->msg1, "\1VERSION")) { /* NOTRANSLATE */
+  if (test_ctcp(pi->msg1, IRC_CTCP "VERSION")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
-    notice(pi->nick, "\1VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s" FEATURES "\1",
+    notice(pi->nick, IRC_CTCP "VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s" FEATURES IRC_CTCP,
            gdata.hideos ? "" : " - ", /* NOTRANSLATE */
            gdata.hideos ? "" : gdata.osstring);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -1108,12 +1108,12 @@ static int botonly_parse(int type, privmsginput *pi)
     return 0;
   }
  /*----- UPTIME ----- */
-  if (test_ctcp(pi->msg1, "\1UPTIME")) { /* NOTRANSLATE */
+  if (test_ctcp(pi->msg1, IRC_CTCP "UPTIME")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     tempstr2 = mymalloc(maxtextlength);
     tempstr2 = getuptime(tempstr2, 0, gdata.startuptime, maxtextlength);
-    notice(pi->nick, "\1UPTIME %s\1", tempstr2); /* NOTRANSLATE */
+    notice(pi->nick, IRC_CTCP "UPTIME %s" IRC_CTCP, tempstr2); /* NOTRANSLATE */
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "[CTCP] %s on %s: UPTIME",
              pi->nick, gnetwork->name);
@@ -1121,12 +1121,12 @@ static int botonly_parse(int type, privmsginput *pi)
     return 0;
   }
   /*----- STATUS ----- */
-  if (test_ctcp(pi->msg1, "\1STATUS")) { /* NOTRANSLATE */
+  if (test_ctcp(pi->msg1, IRC_CTCP "STATUS")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     tempstr2 = mymalloc(maxtextlength);
     tempstr2 = getstatuslinenums(tempstr2, maxtextlength);
-    notice(pi->nick, "\1%s\1", tempstr2); /* NOTRANSLATE */
+    notice(pi->nick, IRC_CTCP "%s" IRC_CTCP, tempstr2); /* NOTRANSLATE */
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
                "[CTCP] %s on %s: STATUS",
                pi->nick, gnetwork->name);
@@ -1138,7 +1138,7 @@ static int botonly_parse(int type, privmsginput *pi)
     return 1;
 
   /*----- DCC SEND/CHAT/RESUME ----- */
-  if (test_ctcp(pi->msg1, "\1DCC")) { /* NOTRANSLATE */
+  if (test_ctcp(pi->msg1, IRC_CTCP "DCC")) { /* NOTRANSLATE */
     if (pi->msg2 == NULL)
       return 0; /* ignore */
     if (check_ignore(pi->nick, pi->hostmask))
@@ -1478,9 +1478,9 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
   caps(pi->hostmask);
   /*----- XDCC ----- */
   if ((strcmp(pi->msg1, "XDCC") == 0) || /* NOTRANSLATE */
-      (strcmp(pi->msg1, "\1XDCC") == 0) || /* NOTRANSLATE */
+      (strcmp(pi->msg1, IRC_CTCP "XDCC") == 0) || /* NOTRANSLATE */
       (strcmp(pi->msg1, "CDCC") == 0) || /* NOTRANSLATE */
-      (strcmp(pi->msg1, "\1CDCC") == 0)) { /* NOTRANSLATE */
+      (strcmp(pi->msg1, IRC_CTCP "CDCC") == 0)) { /* NOTRANSLATE */
     if (!gdata.respondtochannelxdcc) {
       if (not_for_me(pi->dest))
         return; /* ignore */
@@ -1495,7 +1495,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
   }
 
   /*----- !LIST ----- */
-  if ((test_ctcp(pi->msg1, "\1!LIST")) || /* NOTRANSLATE */
+  if ((test_ctcp(pi->msg1, IRC_CTCP "!LIST")) || /* NOTRANSLATE */
       (strcmp(pi->msg1, "!LIST") == 0)) { /* NOTRANSLATE */
     const char *rtclmsg;
     char *tempstr2;
