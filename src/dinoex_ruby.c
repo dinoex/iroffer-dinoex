@@ -193,6 +193,14 @@ static VALUE cie_hostmask(void)
   return copy;
 }
 
+static VALUE cie_mynick(void)
+{
+  const char *mynick;
+
+  mynick = get_user_nick();
+  return rb_str_new(mynick, strlen(mynick));
+}
+
 static VALUE cie_nick(void)
 {
   VALUE copy;
@@ -529,8 +537,10 @@ static void Init_IrofferEvent(void) {
   rb_define_method(cIrofferEvent, "inputline", cie_inputline, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "hostmask", cie_hostmask, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "nick", cie_nick, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "mynick", cie_mynick, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "channel", cie_channel, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "message", cie_message, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "irconfig", cie_config, 1); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "config", cie_config, 1); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "added_file", cie_added_file, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "added_pack", cie_added_pack, 0); /* NOTRANSLATE */
