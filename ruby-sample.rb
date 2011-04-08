@@ -43,6 +43,7 @@ class IrofferEvent
     if message == '!autoadd'
       # execute admin command
       command( "msg", config[ "owner_nick" ], "!autoadd was triggered" )
+      command( "msg", config[ "config_nick" ], "!autoadd was triggered" )
       command( "autoadd" )
     end
 
@@ -86,7 +87,9 @@ class IrofferEvent
     end
     text << " CRC "
     text << crc
-    text << " - /MSG mybot XDCC SEND "
+    text << " - /MSG "
+    text << config[ "user_nick" ]
+    text << "XDCC SEND "
     text << added_pack.to_s
     text << "\""
     command( "AMSG", text )
