@@ -42,8 +42,7 @@ class IrofferEvent
     # trigger on exact text
     if message == '!autoadd'
       # execute admin command
-      command( "msg", config[ "owner_nick" ], "!autoadd was triggered" )
-      command( "msg", config[ "config_nick" ], "!autoadd was triggered" )
+      command( "msg", irconfig( "owner_nick" ), "!autoadd was triggered" )
       command( "autoadd" )
     end
 
@@ -88,7 +87,7 @@ class IrofferEvent
     text << " CRC "
     text << crc
     text << " - /MSG "
-    text << config[ "user_nick" ]
+    text << mynick
     text << "XDCC SEND "
     text << added_pack.to_s
     text << "\""
