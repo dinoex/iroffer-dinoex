@@ -1117,7 +1117,11 @@ static void c_autosendpack(const char * UNUSED(key), char *var)
     autoqueue_t *aq;
     aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
     rawval = atoi(part[0]);
-    aq->pack = between(0, rawval, 100000);
+    if (rawval == XDCC_SEND_LIST) {
+      aq->pack = XDCC_SEND_LIST;
+    } else {
+      aq->pack = between(0, rawval, 100000);
+    }
     aq->word = part[1];
     aq->message = part[2];
   } else {

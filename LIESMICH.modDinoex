@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+bugfix: autosendpack
+  Erlaube "autosendpack" mit Paketnummer '-1'.
+
 369) RUBY
 
   Neue Admin Kommandos:
