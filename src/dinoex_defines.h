@@ -48,4 +48,20 @@
 #define IRVT_COLOR_YELLOW       "\x1b[1;33m"
 #define IRVT_COLOR_SET1         "\x1b[%u;%um"
 
+/* IRC text color chars */
+#define IRCBOLD		0x02
+#define IRCCOLOR	0x03
+#define IRCNORMAL	0x0F
+#define IRCINVERSE	0x16
+#define IRCITALIC	0x1D
+#define IRCUNDERLINE	0x1F
+
+/* IRC text color strings */
+#define IRC_BOLD	"\x02"
+#define IRC_COLOR	"\x03"
+#define IRC_NORMAL	"\x0F"
+#define IRC_INVERSE	"\x16"
+#define IRC_ITALIC	"\x1D"
+#define IRC_UNDERLINE	"\x1F"
+
 /* EOF */

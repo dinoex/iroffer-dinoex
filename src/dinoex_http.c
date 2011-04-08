@@ -259,7 +259,7 @@ static size_t html_encode(char *buffer, size_t max, const char *src)
     if (http_special[i].s_ch != 0)
       continue;
     switch (ch) {
-    case 0x03: /* color */
+    case IRCCOLOR: /* color */
       if (!isdigit(*src)) break;
       ++src;
       if (isdigit(*src)) ++src;
@@ -268,11 +268,11 @@ static size_t html_encode(char *buffer, size_t max, const char *src)
       if (isdigit(*src)) ++src;
       if (isdigit(*src)) ++src;
       break;
-    case 0x02: /* bold */
-    case 0x0F: /* end formatting */
-    case 0x16: /* inverse */
-    case 0x1D: /* italic */
-    case 0x1F: /* underline */
+    case IRCBOLD: /* bold */
+    case IRCNORMAL: /* end formatting */
+    case IRCINVERSE: /* inverse */
+    case IRCITALIC: /* italic */
+    case IRCUNDERLINE: /* underline */
       break;
     default:
       *(dest++) = ch;
@@ -305,7 +305,7 @@ static ssize_t html_encode_size(const char *src)
     if (http_special[i].s_ch != 0)
       continue;
     switch (ch) {
-    case 0x03: /* color */
+    case IRCCOLOR: /* color */
       if (!isdigit(*src)) break;
       ++src;
       if (isdigit(*src)) ++src;
@@ -314,11 +314,11 @@ static ssize_t html_encode_size(const char *src)
       if (isdigit(*src)) ++src;
       if (isdigit(*src)) ++src;
       break;
-    case 0x02: /* bold */
-    case 0x0F: /* end formatting */
-    case 0x16: /* inverse */
-    case 0x1D: /* italic */
-    case 0x1F: /* underline */
+    case IRCBOLD: /* bold */
+    case IRCNORMAL: /* end formatting */
+    case IRCINVERSE: /* inverse */
+    case IRCITALIC: /* italic */
+    case IRCUNDERLINE: /* underline */
       break;
     default:
       ++len;
@@ -392,7 +392,7 @@ static size_t url_encode(char *buffer, size_t max, const char *src)
     if (ch == 0)
       break;
     switch (ch) {
-    case 0x03: /* color */
+    case IRCCOLOR: /* color */
       if (!isdigit(*src)) break;
       ++src;
       if (isdigit(*src)) ++src;
@@ -401,11 +401,11 @@ static size_t url_encode(char *buffer, size_t max, const char *src)
       if (isdigit(*src)) ++src;
       if (isdigit(*src)) ++src;
       break;
-    case 0x02: /* bold */
-    case 0x0F: /* end formatting */
-    case 0x16: /* inverse */
-    case 0x1D: /* italic */
-    case 0x1F: /* underline */
+    case IRCBOLD: /* bold */
+    case IRCNORMAL: /* end formatting */
+    case IRCINVERSE: /* inverse */
+    case IRCITALIC: /* italic */
+    case IRCUNDERLINE: /* underline */
       break;
     case '%':
     case '&':
