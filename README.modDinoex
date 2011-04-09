@@ -61,7 +61,7 @@ bugfix: XDCC INFO
   Disable connecting to this network.
 
 bugfix: CLOSEC (reported by unlogisch)
-  Bot did crash when paramater did not match a chat.
+  Bot did crash when parameter did not match a chat.
   versions affected: 3.25
 
 bugfix: getip_network (reported by Gotanius)
