@@ -281,61 +281,75 @@ static void u_fillwith_clean (userinput * const u)
   mydelete(u->arg3);
 }
 
+static void u_runcmd(userinput * const u)
+{
+#ifdef DEBUG
+  struct timeval timestruct1;
+  struct timeval timestruct2;
+  ir_uint64 ms1;
+  ir_uint64 ms2;
+#endif /* DEBUG */
+  char *tempstr;
+  int i;
+
+#ifdef DEBUG
+  gettimeofday(&timestruct1, NULL);
+#endif /* DEBUG */
+  for (i=0; i < (int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
+    if (u->level < userinput_parse[i].level)
+      continue;
+    if ((userinput_parse[i].methods_allowed & u->method) == 0)
+      continue;
+    if (strcmp(userinput_parse[i].command, u->cmd) != 0)
+      continue;
+  
+    tempstr = mymalloc(maxtextlength);
+    tempstr[0] = 0;
+    if (u->method == method_console) {
+      snprintf(tempstr, maxtextlength - 1, "(console)");
+    }
+    if (u->method == method_dcc) {
+      snprintf(tempstr, maxtextlength - 1, "(DCC Chat: %s)" " (network: %s)",
+               save_nick(u->chat->nick), gnetwork->name);
+    }
+    if (u->method == method_msg) {
+      snprintf(tempstr, maxtextlength - 1, "(MSG: %s)" " (network: %s)",
+               u->snick, gnetwork->name);
+    }
+    if (tempstr[0] != 0) {
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested %s", u->cmd, tempstr);
+    }
+    mydelete(tempstr);
+    userinput_parse[i].handler(u);
+
+#ifdef DEBUG
+    gettimeofday(&timestruct2, NULL);
+    ms1 = timeval_to_ms(&timestruct1);
+    ms2 = timeval_to_ms(&timestruct2);
+    if (gdata.debug > 0)
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s running: %ld ms", u->cmd, (long)(ms2 - ms1));
+#endif /* DEBUG */
+    return;
+  }
+  a_respond(u, "** User Command Not Recognized, try \"HELP\"");
+}
+
 #define u_respond a_respond
 
 void u_parseit(userinput * const u) {
-   int i,found = 0;
    gnetwork_t *backup;
-#ifdef DEBUG
-   struct timeval timestruct1;
-   struct timeval timestruct2;
-   ir_uint64 ms1;
-   ir_uint64 ms2;
-#endif /* DEBUG */
    
    updatecontext();
    
-#ifdef DEBUG
-   gettimeofday(&timestruct1, NULL);
-#endif /* DEBUG */
    backup = gnetwork;
    if ( gnetwork == NULL )
      gnetwork = &(gdata.networks[0]);
    if (!u->cmd || !strlen(u->cmd)) {
       u_respond(u,"** Missing Command, try again");
-      u_fillwith_clean(u);
-      gnetwork = backup;
-      return;
       }
-   
-   for (i=0; !found && i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
-      if ( (!strcmp(userinput_parse[i].command,u->cmd)) &&
-           (userinput_parse[i].level <= u->level ) &&
-           (userinput_parse[i].methods_allowed & u->method) ) {
-         found=1;
-         userinput_parse[i].handler(u);
-         }
+   else {
+      u_runcmd(u);
       }
-   
-   if (!found)
-      u_respond(u,"** User Command Not Recognized, try \"HELP\"");
-   
-   if (found && u->method==method_console)
-      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (console)", u->cmd);
-   if (found && u->method==method_dcc)
-      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (DCC Chat: %s) (network: %s)",
-               u->cmd, save_nick(u->chat->nick), gnetwork->name);
-   if (found && u->method==method_msg)
-      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s requested (MSG: %s) (network: %s)",
-              u->cmd, u->snick, gnetwork->name);
-   
-#ifdef DEBUG
-   gettimeofday(&timestruct2, NULL);
-   ms1 = timeval_to_ms(&timestruct1);
-   ms2 = timeval_to_ms(&timestruct2);
-   if (gdata.debug > 0)
-     ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "COMMAND %s running: %ld ms", u->cmd, (long)(ms2 - ms1));
-#endif /* DEBUG */
    
    u_fillwith_clean(u);
    gnetwork = backup;
