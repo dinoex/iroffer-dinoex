@@ -622,7 +622,6 @@
 657 "Non riesco a determinare lo stato di connessione: %s on %s"
 658 "COnnessione al server fallita: %s on %s"
 659 "Connessione al server %s stabilita. Mi sto loggando"
-660 "Non posso settare il Blocking"
 661 "ourip = "
 662 "Impossibile recuperare ourip su %s"
 663 "Errore nel rintracciare il server %s su %s"
