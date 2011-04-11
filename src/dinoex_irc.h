@@ -23,7 +23,6 @@ void ir_setsockopt(int clientsocket);
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
 void child_resolver(int family);
 const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, unsigned int net);
-unsigned int connectirc2(res_addrinfo_t *remote);
 
 char *get_local_vhost(void);
 char *get_config_nick(void);
@@ -35,6 +34,7 @@ igninfo *get_ignore(const char *hostmask);
 unsigned int check_ignore(const char *nick, const char *hostmask);
 
 int irc_select(int highests);
+void irc_perform(int changesec);
 
 void identify_needed(unsigned int force);
 void identify_check(const char *line);

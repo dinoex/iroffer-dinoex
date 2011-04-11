@@ -38,7 +38,6 @@
 
 /* local functions */
 static void mainloop(void);
-static void ir_parseline(char *line);
 
 /* main */
 int
@@ -406,199 +405,9 @@ static void mainloop (void) {
       
       updatecontext();
       
-      for (ss=0; ss<gdata.networks_online; ss++)
-        {
-          gnetwork = &(gdata.networks[ss]);
-      /*----- see if gdata.ircserver is sending anything to us ----- */
-      if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED && FD_ISSET(gnetwork->ircserver, &gdata.readset)) {
-         char tempbuffa[INPUT_BUFFER_LENGTH];
-         gnetwork->lastservercontact = gdata.curtime;
-         gnetwork->servertime = 0;
-         memset(&tempbuffa, 0, INPUT_BUFFER_LENGTH);
-         length = readserver_ssl(&tempbuffa, INPUT_BUFFER_LENGTH);
-         
-         if (length < 1) {
-            if (errno != EAGAIN) {
-            ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
-                    "Closing Server Connection on %s: %s",
-                    gnetwork->name, (length<0) ? strerror(errno) : "Closed");
-            if (gdata.exiting)
-              {
-                gnetwork->recentsent = 0;
-              }
-            close_server();
-            mydelete(gnetwork->curserveractualname);
-            }
-            }
-         else
-           {
-             j=strlen(gnetwork->server_input_line);
-             for (i=0; i<(unsigned int)length; i++)
-               {
-                 if ((tempbuffa[i] == '\n') || (j == (INPUT_BUFFER_LENGTH-1)))
-                   {
-                     if (j && (gnetwork->server_input_line[j-1] == 0x0D))
-                       {
-                         j--;
-                       }
-                     gnetwork->server_input_line[j] = '\0';
-                     ir_parseline(gnetwork->server_input_line);
-                     j = 0;
-                   }
-                 else
-                   {
-                     gnetwork->server_input_line[j] = tempbuffa[i];
-                     j++;
-                   }
-               }
-             gnetwork->server_input_line[j] = '\0';
-           }
-        }
-      
-      if ((gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE) &&
-	((FD_ISSET(gnetwork->ircserver, &gdata.writeset)) || (FD_ISSET(gnetwork->ircserver, &gdata.readset))))
-        {
-          handshake_ssl();
-        }
-      
-      if (gnetwork->serverstatus == SERVERSTATUS_TRYING && FD_ISSET(gnetwork->ircserver, &gdata.writeset))
-        {
-          int callval_i;
-          int connect_error;
-          SIGNEDSOCK int connect_error_len = sizeof(connect_error);
-          
-          callval_i = getsockopt(gnetwork->ircserver,
-                                 SOL_SOCKET, SO_ERROR,
-                                 &connect_error, &connect_error_len);
-          
-          if (callval_i < 0)
-            {
-              outerror(OUTERROR_TYPE_WARN,
-                       "Couldn't determine connection status: %s on %s",
-                       strerror(errno), gnetwork->name);
-            }
-          else if (connect_error)
-            {
-              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                      "Server Connection Failed: %s on %s", strerror(connect_error), gnetwork->name);
-            }
-          
-          if ((callval_i < 0) || connect_error)
-            {
-              close_server();
-            }
-          else
-            {
-	    SIGNEDSOCK int addrlen; 
-          
-            ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                    "Server Connection to %s Established, Logging In",  gnetwork->name);
-            gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
-            gnetwork->connecttime = gdata.curtime;
-            gnetwork->botstatus = BOTSTATUS_LOGIN;
-            ch = irlist_get_head(&(gnetwork->channels));
-            if (ch == NULL)
-              {
-                gnetwork->botstatus = BOTSTATUS_JOINED;
-                start_sends();
-              }
-            FD_CLR(gnetwork->ircserver, &gdata.writeset);
-#if 0
-            if (set_socket_nonblocking(gnetwork->ircserver, 0) < 0 )
-	      outerror(OUTERROR_TYPE_WARN,"Couldn't Set Blocking");
-#endif
-	    
-            addrlen = sizeof(gnetwork->myip);
-            bzero((char *) &(gnetwork->myip), sizeof(gnetwork->myip));
-            if (getsockname(gnetwork->ircserver, &(gnetwork->myip.sa), &addrlen) >= 0)
-              {
-                if (gdata.debug > 0)
-                  {
-                    char *msg;
-                    msg = mymalloc(maxtextlength);
-                    my_getnameinfo(msg, maxtextlength -1, &(gnetwork->myip.sa));
-                    ioutput(OUT_S, COLOR_YELLOW, "using %s", msg);
-                    mydelete(msg);
-                  }
-                if (!gnetwork->usenatip)
-                  {
-                    gnetwork->ourip = ntohl(gnetwork->myip.sin.sin_addr.s_addr);
-                    if (gdata.debug > 0)
-                      {
-                        ioutput(OUT_S, COLOR_YELLOW, "ourip = " IPV4_PRINT_FMT,
-                                IPV4_PRINT_DATA(gnetwork->ourip));
-                      }
-                  }
-              }
-            else
-              outerror(OUTERROR_TYPE_WARN, "couldn't get ourip on %s", gnetwork->name);
-	    
-            handshake_ssl();
-            }
-         }
-      
-      if ((gnetwork->serverstatus == SERVERSTATUS_RESOLVING) &&
-          FD_ISSET(gnetwork->serv_resolv.sp_fd[0], &gdata.readset))
-        {
-          res_addrinfo_t remote;
-          length = read(gnetwork->serv_resolv.sp_fd[0],
-                        &remote, sizeof(res_addrinfo_t));
-          
-          kill(gnetwork->serv_resolv.child_pid, SIGKILL);
-          FD_CLR(gnetwork->serv_resolv.sp_fd[0], &gdata.readset);
-          
-          if (length != sizeof(res_addrinfo_t))
-            {
-              ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
-                      "Error resolving server %s on %s",
-                      gnetwork->curserver.hostname, gnetwork->name);
-              gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-            }
-          else
-            {
-              /* continue with connect */
-              if (connectirc2(&remote))
-                {
-                  /* failed */
-                  gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-                }
-            }
-        }
-      
-      if (changesec && gnetwork->serverstatus == SERVERSTATUS_RESOLVING)
-        {
-          int timeout;
-          timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
-          
-          if (gnetwork->lastservercontact + timeout < gdata.curtime)
-            {
-              kill(gnetwork->serv_resolv.child_pid, SIGKILL);
-              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                      "Server Resolve Timed Out (%u seconds) on %s", timeout, gnetwork->name);
-              gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-            }
-        }
-      
-      if (changesec && ((gnetwork->serverstatus == SERVERSTATUS_TRYING) || (gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE)))
-        {
-          int timeout;
-          timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
-          
-          if (gnetwork->lastservercontact + timeout < gdata.curtime)
-            {
-              ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                      "Server Connection Timed Out (%u seconds) on %s", timeout, gnetwork->name);
-              close_server();
-            }
-        }
-      
+      irc_perform(changesec);
       if (gdata.needsswitch)
-        {
-          gdata.needsswitch = 0;
-          switchserver(-1);
-        }
-        } /* networks */
-      gnetwork = NULL;
+        gdata.needsswitch = 0;
       
       updatecontext();
       
@@ -1608,28 +1417,6 @@ static void mainloop (void) {
          }
       
       updatecontext();
-      for (ss=0; ss<gdata.networks_online; ss++) {
-        gnetwork = &(gdata.networks[ss]);
-      if (gnetwork->offline)
-        continue;
-      if (gnetwork->serverstatus == SERVERSTATUS_NEED_TO_CONNECT)
-        {
-          int timeout;
-          timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
-          
-          if (gnetwork->lastservercontact + timeout < gdata.curtime)
-            {
-              if (gdata.debug > 0)
-                {
-                  ioutput(OUT_S, COLOR_YELLOW,
-                          "Reconnecting to server (%u seconds) on %s",
-                          timeout, gnetwork->name);
-                }
-              switchserver(-1);
-            }
-        }
-      } /* networks */
-      gnetwork = NULL;
       
       if (gdata.needsrehash) {
          gdata.needsrehash = 0;
@@ -1670,13 +1457,12 @@ static void mainloop (void) {
       /* END */
       updatecontext();
       if (gdata.needsclear) drawbot();
-      if (gdata.attop) gotobot();
       
       changehour=changemin=0;
       
    }
 
-static void ir_parseline(char *line) {
+void ir_parseline(char *line) {
    char *part2, *part3, *part4, *part5;
    char *part3a;
    char *t;
