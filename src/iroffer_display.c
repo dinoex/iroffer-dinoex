@@ -132,9 +132,10 @@ void checktermsize(void) {
    }
 
 void gototop (void) {
-   if (gdata.background == 2) return;
    gdata.attop = 1;
    if ( gdata.noscreen )
+      return;
+   if (gdata.background == 2)
       return;
    
    tostdout(IRVT_CURSOR_HOME1, gdata.termlines - 2);
@@ -213,9 +214,10 @@ void gotobot (void)
   unsigned int maxlen;
   unsigned int nicklen;
   
-  if (gdata.background == 2) return;
   gdata.attop = 0;
   if ( gdata.noscreen )
+    return;
+  if (gdata.background == 2)
     return;
   
   mynick = get_console_nick();

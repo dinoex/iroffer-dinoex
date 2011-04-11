@@ -19,6 +19,8 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_queue.h"
+#include "dinoex_ssl.h"
 #include "dinoex_misc.h"
 #include "dinoex_irc.h"
 
@@ -591,7 +593,7 @@ const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, un
 }
 
 /* complete the connection to the IRC server */
-unsigned int connectirc2(res_addrinfo_t *remote)
+static unsigned int connectirc2(res_addrinfo_t *remote)
 {
   int retval;
   int family;
@@ -777,6 +779,219 @@ int irc_select(int highests)
     }
   }
   return highests;
+}
+
+static int irc_server_is_timeout(void)
+{
+  int timeout;
+  timeout = CTIMEOUT + (gnetwork->serverconnectbackoff * CBKTIMEOUT);
+
+  if (gnetwork->lastservercontact + timeout < gdata.curtime)
+    return timeout;
+
+  return 0;
+}
+
+static void irc_server_timeout(void)
+{
+  int timeout;
+
+  timeout = irc_server_is_timeout();
+  if (timeout > 0) {
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            "Server Connection Timed Out (%u seconds) on %s", timeout, gnetwork->name);
+    close_server();
+  }
+}
+
+/* handle irc server connectipn */
+void irc_perform(int changesec)
+{
+  channel_t *ch;
+  unsigned int ss;
+  unsigned int i;
+  unsigned int j;
+  int length;
+  int timeout;
+
+  updatecontext();
+  for (ss=0; ss<gdata.networks_online; ss++) {
+    gnetwork = &(gdata.networks[ss]);
+
+    if (gnetwork->offline)
+      continue;
+
+    if (gdata.needsswitch) {
+      switchserver(-1);
+      continue;
+    }
+
+    if (gnetwork->serverstatus == SERVERSTATUS_NEED_TO_CONNECT) {
+      if (changesec) {
+        timeout = irc_server_is_timeout();
+        if (timeout > 0) {
+          if (gdata.debug > 0) {
+            ioutput(OUT_S, COLOR_YELLOW,
+                    "Reconnecting to server (%u seconds) on %s",
+                    timeout, gnetwork->name);
+          }
+          switchserver(-1);
+        }
+      }
+    } /* networks */
+
+    if (gnetwork->serverstatus == SERVERSTATUS_RESOLVING) {
+      if (FD_ISSET(gnetwork->serv_resolv.sp_fd[0], &gdata.readset)) {
+        res_addrinfo_t remote;
+        length = read(gnetwork->serv_resolv.sp_fd[0],
+                      &remote, sizeof(res_addrinfo_t));
+
+        kill(gnetwork->serv_resolv.child_pid, SIGKILL);
+        FD_CLR(gnetwork->serv_resolv.sp_fd[0], &gdata.readset);
+
+        if (length != sizeof(res_addrinfo_t)) {
+          ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
+                  "Error resolving server %s on %s",
+                  gnetwork->curserver.hostname, gnetwork->name);
+          gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+        } else {
+          /* continue with connect */
+          if (connectirc2(&remote)) {
+            /* failed */
+            gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+          }
+        }
+      }
+      if (changesec) {
+        timeout = irc_server_is_timeout();
+        if (timeout > 0) {
+          kill(gnetwork->serv_resolv.child_pid, SIGKILL);
+          ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                  "Server Resolve Timed Out (%u seconds) on %s", timeout, gnetwork->name);
+          gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
+        }
+      }
+      continue;
+    }
+
+    if (gnetwork->serverstatus == SERVERSTATUS_TRYING) {
+      if (FD_ISSET(gnetwork->ircserver, &gdata.writeset)) {
+        int callval_i;
+        int connect_error;
+        SIGNEDSOCK int connect_error_len = sizeof(connect_error);
+        SIGNEDSOCK int addrlen;
+
+        callval_i = getsockopt(gnetwork->ircserver,
+                               SOL_SOCKET, SO_ERROR,
+                               &connect_error, &connect_error_len);
+
+        if (callval_i < 0) {
+          outerror(OUTERROR_TYPE_WARN,
+                   "Couldn't determine connection status: %s on %s",
+                   strerror(errno), gnetwork->name);
+          close_server();
+          continue;
+        }
+        if (connect_error) {
+          ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                  "Server Connection Failed: %s on %s", strerror(connect_error), gnetwork->name);
+          close_server();
+          continue;
+        }
+
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                "Server Connection to %s Established, Logging In",  gnetwork->name);
+        gnetwork->serverstatus = SERVERSTATUS_CONNECTED;
+        gnetwork->connecttime = gdata.curtime;
+        gnetwork->botstatus = BOTSTATUS_LOGIN;
+        ch = irlist_get_head(&(gnetwork->channels));
+        if (ch == NULL) {
+          gnetwork->botstatus = BOTSTATUS_JOINED;
+          start_sends();
+        }
+        FD_CLR(gnetwork->ircserver, &gdata.writeset);
+
+        addrlen = sizeof(gnetwork->myip);
+        bzero((char *) &(gnetwork->myip), sizeof(gnetwork->myip));
+        if (getsockname(gnetwork->ircserver, &(gnetwork->myip.sa), &addrlen) >= 0) {
+          if (gdata.debug > 0) {
+            char *msg;
+            msg = mymalloc(maxtextlength);
+            my_getnameinfo(msg, maxtextlength -1, &(gnetwork->myip.sa));
+            ioutput(OUT_S, COLOR_YELLOW, "using %s", msg);
+            mydelete(msg);
+          }
+          if (!gnetwork->usenatip) {
+            gnetwork->ourip = ntohl(gnetwork->myip.sin.sin_addr.s_addr);
+            if (gdata.debug > 0) {
+              ioutput(OUT_S, COLOR_YELLOW, "ourip = " IPV4_PRINT_FMT,
+                      IPV4_PRINT_DATA(gnetwork->ourip));
+            }
+          }
+        } else {
+          outerror(OUTERROR_TYPE_WARN, "couldn't get ourip on %s", gnetwork->name);
+        }
+
+        handshake_ssl();
+      }
+      if (changesec)
+        irc_server_timeout();
+      continue;
+    }
+
+    if (gnetwork->serverstatus == SERVERSTATUS_SSL_HANDSHAKE) {
+      if ((FD_ISSET(gnetwork->ircserver, &gdata.writeset)) || (FD_ISSET(gnetwork->ircserver, &gdata.readset))) {
+        handshake_ssl();
+      }
+      if (changesec)
+        irc_server_timeout();
+      continue;
+    }
+
+    /*----- see if gdata.ircserver is sending anything to us ----- */
+    if (gnetwork->serverstatus == SERVERSTATUS_CONNECTED) {
+      if (FD_ISSET(gnetwork->ircserver, &gdata.readset)) {
+        char tempbuffa[INPUT_BUFFER_LENGTH];
+        gnetwork->lastservercontact = gdata.curtime;
+        gnetwork->servertime = 0;
+        memset(&tempbuffa, 0, INPUT_BUFFER_LENGTH);
+        length = readserver_ssl(&tempbuffa, INPUT_BUFFER_LENGTH);
+
+        if (length < 1) {
+          if (errno != EAGAIN) {
+            ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
+                    "Closing Server Connection on %s: %s",
+                    gnetwork->name, (length<0) ? strerror(errno) : "Closed");
+            if (gdata.exiting) {
+              gnetwork->recentsent = 0;
+            }
+            close_server();
+            mydelete(gnetwork->curserveractualname);
+          }
+          continue;
+        }
+
+        j = strlen(gnetwork->server_input_line);
+        for (i=0; i<(unsigned int)length; i++) {
+          if ((tempbuffa[i] == '\n') || (j == (INPUT_BUFFER_LENGTH-1))) {
+            if (j && (gnetwork->server_input_line[j-1] == 0x0D)) {
+              j--;
+            }
+            gnetwork->server_input_line[j] = '\0';
+            ir_parseline(gnetwork->server_input_line);
+            j = 0;
+          } else {
+            gnetwork->server_input_line[j] = tempbuffa[i];
+            j++;
+          }
+        }
+        gnetwork->server_input_line[j] = '\0';
+      }
+      continue;
+    }
+
+  } /* networks */
+  gnetwork = NULL;
 }
 
 /* try to identify at Nickserv */
