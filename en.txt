@@ -622,7 +622,6 @@
 657 "Couldn't determine connection status: %s on %s"
 658 "Server Connection Failed: %s on %s"
 659 "Server Connection to %s Established, Logging In"
-660 "Couldn't Set Blocking"
 661 "ourip = "
 662 "couldn't get ourip on %s"
 663 "Error resolving server %s on %s"
