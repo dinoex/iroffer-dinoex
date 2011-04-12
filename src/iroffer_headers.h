@@ -784,9 +784,6 @@ void u_xdl_head(const userinput * const u);
 void u_listdir(const userinput * const u, const char *dir);
 void u_diskinfo(const userinput * const u, const char *dir);
 
-/* main.c */
-void ir_parseline(char *line);
-
 #endif
 
 /* End of File */

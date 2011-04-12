@@ -21,6 +21,9 @@
 #include "dinoex_utilities.h"
 #include "dinoex_queue.h"
 #include "dinoex_ssl.h"
+#include "dinoex_ruby.h"
+#include "dinoex_jobs.h"
+#include "dinoex_user.h"
 #include "dinoex_misc.h"
 #include "dinoex_irc.h"
 
@@ -29,6 +32,13 @@
 #endif /* USE_UPNP */
 
 #include <netinet/tcp.h>
+
+#define MAX_IRCMSG_PARTS 6
+
+typedef struct {
+  char *line;
+  char *part[MAX_IRCMSG_PARTS];
+} ir_parseline_t;
 
 /* writes IP address and port as text into the buffer */
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa)
@@ -178,7 +188,7 @@ void update_natip(const char *var)
 }
 
 /* check the welcome message from the server for an IP address or hostname to set external DCC IP */
-void update_server_welcome(char *line)
+static void update_server_welcome(char *line)
 {
   const char *tptr;
 
@@ -864,6 +874,616 @@ static void irc_server_timeout(void)
   }
 }
 
+
+/* try to identify at Nickserv */
+void identify_needed(unsigned int force)
+{
+  char *pwd;
+
+  pwd = get_nickserv_pass();
+  if (pwd == NULL)
+    return;
+
+  if (force == 0) {
+    if ((gnetwork->next_identify > 0) && (gnetwork->next_identify >= gdata.curtime))
+      return;
+  }
+  /* wait 1 sec before idetify again */
+  gnetwork->next_identify = gdata.curtime + 1;
+  if (gnetwork->auth_name != NULL) {
+    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :AUTH %s %s", /* NOTRANSLATE */
+                gnetwork->auth_name, save_nick(gnetwork->user_nick), pwd);
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            "AUTH send to %s on %s.", gnetwork->auth_name, gnetwork->name);
+    return;
+  }
+  if (gnetwork->login_name != NULL) {
+    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :LOGIN %s %s", /* NOTRANSLATE */
+                gnetwork->login_name, save_nick(gnetwork->user_nick), pwd);
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+            "LOGIN send to %s on %s.", gnetwork->login_name, gnetwork->name);
+    return;
+  }
+  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd); /* NOTRANSLATE */
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          "IDENTIFY send to nickserv on %s.", gnetwork->name);
+}
+
+/* check line from server to see if the bots need to identify again */
+static void identify_check(const char *line)
+{
+  char *pwd;
+
+  pwd = get_nickserv_pass();
+  if (pwd == NULL)
+    return;
+
+  if (strstr(line, "Nickname is registered to someone else") != NULL) { /* NOTRANSLATE */
+      identify_needed(0);
+  }
+  if (strstr(line, "This nickname has been registered") != NULL) { /* NOTRANSLATE */
+      identify_needed(0);
+  }
+  if (strstr(line, "This nickname is registered and protected") != NULL) { /* NOTRANSLATE */
+      identify_needed(0);
+  }
+  if (strcasestr(line, "please choose a different nick") != NULL) { /* NOTRANSLATE */
+      identify_needed(0);
+  }
+}
+
+static void irc_001(ir_parseline_t *ipl)
+{
+  char *tptr;
+
+  ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "Server welcome: %s", ipl->line);
+  update_server_welcome(ipl->line);
+
+  /* update server name */
+  mydelete(gnetwork->curserveractualname);
+  gnetwork->curserveractualname = getpart(ipl->line + 1, 1);
+
+  /* update nick */
+  mydelete(gnetwork->user_nick);
+  mydelete(gnetwork->caps_nick);
+  gnetwork->user_nick = mystrdup(ipl->part[2]);
+  gnetwork->caps_nick = mystrdup(ipl->part[2]);
+  caps(gnetwork->caps_nick);
+  gnetwork->nick_number = 0;
+  gnetwork->next_restrict = gdata.curtime + gdata.restrictsend_delay;
+  gdata.needsclear = 1;
+
+  tptr = get_user_modes();
+  if (tptr && tptr[0]) {
+    writeserver(WRITESERVER_NOW, "MODE %s %s",
+                gnetwork->user_nick, tptr);
+  }
+
+  /* server connected raw command */
+  for (tptr = irlist_get_head(&(gnetwork->server_connected_raw));
+       tptr;
+       tptr = irlist_get_next(tptr)) {
+    writeserver(WRITESERVER_NORMAL, "%s", tptr);
+  }
+
+  /* nickserv */
+  identify_needed(0);
+}
+
+static void irc_005(ir_parseline_t *ipl)
+{
+  unsigned int ii = 4;
+  char *item;
+
+  while((item = getpart(ipl->line, ii++))) {
+    if (item[0] == ':') {
+      mydelete(item);
+      break;
+    }
+
+    if (!strncmp("PREFIX=(", item, 8)) {
+      char *ptr = item+8;
+      unsigned int pi;
+
+      memset(&(gnetwork->prefixes), 0, sizeof(gnetwork->prefixes));
+      for (pi = 0; (ptr[pi] && (ptr[pi] != ')') && (pi < MAX_PREFIX)); pi++) {
+        gnetwork->prefixes[pi].p_mode = ptr[pi];
+      }
+      if (ptr[pi] == ')') {
+        ptr += pi + 1;
+        for (pi = 0; (ptr[pi] && (pi < MAX_PREFIX)); pi++) {
+          gnetwork->prefixes[pi].p_symbol = ptr[pi];
+        }
+      }
+      for (pi = 0; pi < MAX_PREFIX; pi++) {
+        if ((gnetwork->prefixes[pi].p_mode && !gnetwork->prefixes[pi].p_symbol) ||
+           (!gnetwork->prefixes[pi].p_mode && gnetwork->prefixes[pi].p_symbol)) {
+          outerror(OUTERROR_TYPE_WARN,
+                   "Server prefix list on %s doesn't make sense, using defaults: %s",
+                   gnetwork->name, item);
+          initprefixes();
+        }
+      }
+    }
+
+    if (!strncmp("CHANMODES=", item, 10)) {
+      char *ptr = item+10;
+      unsigned int ci;
+      unsigned int cm;
+
+      memset(&(gnetwork->chanmodes), 0, sizeof(gnetwork->chanmodes));
+      for (ci = cm = 0; (ptr[ci] && (cm < MAX_CHANMODES)); ci++) {
+        if (ptr[ci+1] == ',')
+                     {
+                       /* we only care about ones with arguments */
+                       gnetwork->chanmodes[cm++] = ptr[ci++];
+                     }
+      }
+    }
+
+    mydelete(item);
+  }
+}
+
+static char *ir_get_nickarg(const char *line)
+{
+  char* nick;
+  int j;
+
+  nick = mymalloc(strlen(line)+1);
+  j=1;
+  while(line[j] != '!' && j<sstrlen(line)) {
+    nick[j-1] = line[j];
+    j++;
+  }
+  nick[j-1]='\0';
+  return nick;
+}
+
+static void ir_unknown_channel(const char *chname)
+{
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          "%s is not a known channel on %s!",
+          chname, gnetwork->name);
+}
+
+static void ir_parseline2(ir_parseline_t *ipl)
+{
+  channel_t *ch;
+  char *nick;
+  char *part3a;
+  char *t;
+  unsigned int i;
+
+  caps(ipl->part[1]);
+
+  /* NOTICE nick */
+  if (!strcmp(ipl->part[1], "NOTICE")) {
+    if (gnetwork->caps_nick && ipl->part[2]) {
+      if (!strcmp(caps(ipl->part[2]), gnetwork->caps_nick)) {
+        /* nickserv */
+        identify_check(ipl->line);
+#ifdef USE_RUBY
+        if (do_myruby_notice(ipl->line) == 0)
+#endif /* USE_RUBY */
+          privmsgparse(0, 0, ipl->line);
+      }
+    }
+  }
+
+  /* PRIVMSG */
+  if (!strcmp(ipl->part[1], "PRIVMSG")) {
+#ifndef WITHOUT_BLOWFISH
+    char *line2;
+
+    line2 = test_fish_message(ipl->line, ipl->part[2], ipl->part[3], ipl->part[4]);
+    if (line2) {
+#ifdef USE_RUBY
+      if (do_myruby_privmsg(line2) == 0)
+#endif /* USE_RUBY */
+        privmsgparse(1, 1, line2);
+      mydelete(line2);
+    } else {
+#endif /* WITHOUT_BLOWFISH */
+#ifdef USE_RUBY
+      if (do_myruby_privmsg(ipl->line) == 0)
+#endif /* USE_RUBY */
+        privmsgparse(1, 0, ipl->line);
+#ifndef WITHOUT_BLOWFISH
+    }
+#endif /* WITHOUT_BLOWFISH */
+  }
+
+  /* :server 001  xxxx :welcome.... */
+  if ( !strcmp(ipl->part[1], "001") ) {
+    irc_001(ipl);
+    return;
+  }
+
+  /* :server 005 xxxx aaa bbb=x ccc=y :are supported... */
+  if ( !strcmp(ipl->part[1], "005") ) {
+    irc_005(ipl);
+    return;
+  }
+
+  /* :server 401 botnick usernick :No such nick/channel */
+  if ( !strcmp(ipl->part[1], "401") ) {
+    if (ipl->part[2] && ipl->part[3]) {
+      if (!strcmp(ipl->part[2], "*")) {
+        lost_nick(ipl->part[3]);
+      }
+    }
+    return;
+  }
+
+  /* :server 433 old new :Nickname is already in use. */
+  if ( !strcmp(ipl->part[1], "433") ) {
+    if (ipl->part[2] && ipl->part[3]) {
+      if (!strcmp(ipl->part[2], "*")) {
+        ioutput(OUT_S, COLOR_NO_COLOR,
+                "Nickname %s already in use on %s, trying %s%u",
+                ipl->part[3],
+                gnetwork->name,
+                get_config_nick(),
+                gnetwork->nick_number);
+
+        /* generate new nick and retry */
+        writeserver(WRITESERVER_NORMAL, "NICK %s%u",
+                    get_config_nick(),
+                    gnetwork->nick_number++);
+      }
+    }
+    return;
+  }
+
+  /* :server 470 botnick #channel :(you are banned) transfering you to #newchannel */
+  if ( !strcmp(ipl->part[1], "470") ) {
+    if (ipl->part[2] && ipl->part[3]) {
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+               "channel on %s: %s", gnetwork->name, strstr(ipl->line, "470"));
+      for (ch = irlist_get_head(&(gnetwork->channels));
+           ch;
+           ch = irlist_get_next(ch)) {
+        if (strcmp(caps(ipl->part[2]), gnetwork->caps_nick))
+             continue;
+        if (strcmp(caps(ipl->part[3]), ch->name))
+             continue;
+        ch->flags |= CHAN_KICKED;
+      }
+    }
+    return;
+  }
+
+  /* names list for a channel */
+  /* :server 353 our_nick = #channel :nick @nick +nick nick */
+  if ( !strcmp(ipl->part[1], "353") ) {
+    if (ipl->part[2] && ipl->part[3] && ipl->part[5]) {
+      caps(ipl->part[4]);
+
+      for (ch = irlist_get_head(&(gnetwork->channels));
+           ch;
+           ch = irlist_get_next(ch)) {
+        if (strcmp(ipl->part[4], ch->name) != 0)
+          continue;
+        for (i=0; (t = getpart(ipl->line, 6+i)); i++) {
+          addtomemberlist(ch, i == 0 ? t+1 : t);
+          mydelete(t);
+        }
+        return;
+      }
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+              "Got name data for %s which is not a known channel on %s!",
+              ipl->part[4], gnetwork->name);
+      writeserver(WRITESERVER_NORMAL, "PART %s", ipl->part[4]);
+    }
+    return;
+  }
+
+  if (gnetwork->lastping != 0) {
+    if (strcmp(ipl->part[1], "PONG") == 0) {
+      lag_message();
+      return;
+    }
+  }
+
+#if PING_SRVR
+  /* server ping */
+  if (strcmp(ipl->part[1], "PING") == 0) {
+    if (gdata.debug > 0)
+      ioutput(OUT_S, COLOR_NO_COLOR,
+              "Server Ping on %s: %s",
+              gnetwork->name, ipl->line);
+    writeserver(WRITESERVER_NOW, "PO%s", ipl->line+2);
+    return;
+  }
+#endif
+
+  /* QUIT */
+  if (strcmp(ipl->part[1], "QUIT") == 0) {
+    if (gnetwork->caps_nick) {
+      nick = ir_get_nickarg(ipl->line);
+      if (!strcmp(caps(nick), gnetwork->caps_nick)) {
+        /* we quit? */
+        outerror(OUTERROR_TYPE_WARN_LOUD,
+                 "Forced quit on %s: %s", gnetwork->name, ipl->line);
+        close_server();
+        clean_send_buffers();
+        /* do not reconnect */
+        gnetwork->serverstatus = SERVERSTATUS_EXIT;
+      } else {
+        /* someone else quit */
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          removefrommemberlist(ch, nick);
+        }
+        reverify_restrictsend();
+      }
+      mydelete(nick);
+    }
+    return;
+  }
+
+  /* MODE #channel +x ... */
+  if (strcmp(ipl->part[1], "MODE") == 0) {
+    if (ipl->part[2] && ipl->part[3]) {
+      /* find channel */
+      for (ch = irlist_get_head(&(gnetwork->channels)); ch; ch = irlist_get_next(ch)) {
+        char *ptr;
+        unsigned int plus;
+        unsigned int part;
+        unsigned int ii;
+
+        if (strcasecmp(ch->name, ipl->part[2]) != 0)
+          continue;
+
+        plus = 0;
+        part = 5;
+        for (ptr = ipl->part[3]; *ptr; ptr++) {
+          if (*ptr == '+') {
+            plus = 1;
+          } else if (*ptr == '-') {
+            plus = 0;
+          } else {
+            for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_mode); ii++) {
+              if (*ptr == gnetwork->prefixes[ii].p_mode) {
+                /* found a nick mode */
+                nick = getpart(ipl->line, part++);
+                if (nick) {
+                  if (nick[strlen(nick)-1] == IRCCTCP) {
+                    nick[strlen(nick)-1] = '\0';
+                  }
+                  if (plus == 0) {
+                    if (strcasecmp(nick, get_config_nick()) == 0) {
+                      identify_needed(0);
+                    }
+                  }
+                  changeinmemberlist_mode(ch, nick,
+                                          gnetwork->prefixes[ii].p_symbol,
+                                          plus);
+                  mydelete(nick);
+                }
+                break;
+              }
+            }
+            for (ii = 0; (ii < MAX_CHANMODES && gnetwork->chanmodes[ii]); ii++) {
+              if (*ptr == gnetwork->chanmodes[ii]) {
+                /* found a channel mode that has an argument */
+                part++;
+                break;
+              }
+            }
+          }
+        }
+        return;
+      }
+      if (strcasecmp(ipl->part[2], get_config_nick()) == 0) {
+        if (ipl->part[3][0] == '-') {
+          identify_needed(0);
+        }
+      }
+    }
+    return;
+  }
+
+  if (ipl->part[2] && ipl->part[2][0] == ':') {
+    part3a = ipl->part[2] + 1;
+  } else {
+    part3a = ipl->part[2];
+  }
+
+  /* JOIN */
+  if (strcmp(ipl->part[1], "JOIN") == 0) {
+    if (gnetwork->caps_nick && part3a) {
+      caps(part3a);
+      nick = ir_get_nickarg(ipl->line);
+      if (!strcmp(caps(nick), gnetwork->caps_nick)) {
+        /* we joined */
+        /* clear now, we have succesfully logged in */
+        gnetwork->serverconnectbackoff = 0;
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+                "Joined %s on %s", part3a, gnetwork->name);
+
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          if (strcmp(part3a, ch->name) != 0)
+            continue;
+
+          ch->flags |= CHAN_ONCHAN;
+          ch->lastjoin = gdata.curtime;
+          ch->nextann = gdata.curtime + gdata.waitafterjoin;
+          if (ch->joinmsg) {
+            writeserver(WRITESERVER_NOW, "PRIVMSG %s :%s", ch->name, ch->joinmsg);
+          }
+          gnetwork->botstatus = BOTSTATUS_JOINED;
+          start_sends();
+          mydelete(nick);
+          return;
+        }
+      } else {
+        /* someone else joined */
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          if (strcmp(part3a, ch->name) != 0)
+            continue;
+
+          addtomemberlist(ch, nick);
+          mydelete(nick);
+          return;
+        }
+      }
+      ir_unknown_channel(part3a);
+      mydelete(nick);
+    }
+    return;
+  }
+
+  /* PART */
+  if (strcmp(ipl->part[1], "PART") == 0) {
+    if (gnetwork->caps_nick && part3a) {
+      nick = ir_get_nickarg(ipl->line);
+      if (!strcmp(caps(nick), gnetwork->caps_nick)) {
+        /* we left? */
+        mydelete(nick);
+        return;
+      } else {
+        /* someone else left */
+        caps(part3a);
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          if (strcmp(part3a, ch->name) != 0)
+            continue;
+
+          removefrommemberlist(ch, nick);
+          mydelete(nick);
+          reverify_restrictsend();
+          return;
+        }
+      }
+      ir_unknown_channel(part3a);
+      mydelete(nick);
+    }
+    return;
+  }
+
+  /* NICK */
+  if (strcmp(ipl->part[1], "NICK") == 0) {
+    if (gnetwork->caps_nick && part3a) {
+      nick = ir_get_nickarg(ipl->line);
+      if (!strcmp(caps(nick), gnetwork->caps_nick)) {
+        /* we changed, update nick */
+        mydelete(gnetwork->user_nick);
+        mydelete(gnetwork->caps_nick);
+        gnetwork->user_nick = mystrdup(part3a);
+        gnetwork->caps_nick = mystrdup(part3a);
+        caps(gnetwork->caps_nick);
+        gnetwork->nick_number = 0;
+        gdata.needsclear = 1;
+        identify_needed(0);
+      } else {
+        /* someone else has a new nick */
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          changeinmemberlist_nick(ch, nick, part3a);
+        }
+        user_changed_nick(nick, part3a);
+      }
+      mydelete(nick);
+    }
+    return;
+  }
+
+  /* KICK */
+  if (strcmp(ipl->part[1], "KICK") == 0) {
+    if (gnetwork->caps_nick && part3a && ipl->part[3]) {
+      caps(part3a);
+      if (!strcmp(caps(ipl->part[3]), gnetwork->caps_nick)) {
+        /* we were kicked */
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          if (strcmp(part3a, ch->name) != 0)
+            continue;
+
+          if (gdata.noautorejoin) {
+            outerror(OUTERROR_TYPE_WARN_LOUD,
+                     "Kicked on %s: %s", gnetwork->name, ipl->line);
+            ch->flags |= CHAN_KICKED;
+            clearmemberlist(ch);
+            reverify_restrictsend();
+          } else {
+            outerror(OUTERROR_TYPE_WARN_LOUD,
+                     "Kicked on %s, Rejoining: %s", gnetwork->name, ipl->line);
+            ch->flags &= ~CHAN_ONCHAN;
+            joinchannel(ch);
+          }
+        }
+      } else {
+        /* someone else was kicked */
+        for (ch = irlist_get_head(&(gnetwork->channels));
+             ch;
+             ch = irlist_get_next(ch)) {
+          if (strcmp(part3a, ch->name) != 0)
+            continue;
+
+          removefrommemberlist(ch, ipl->part[3]);
+          reverify_restrictsend();
+          return;
+        }
+      }
+    }
+    return;
+  }
+
+  /* ERROR :Closing Link */
+  if (strncmp(ipl->line, "ERROR :Closing Link", strlen("ERROR :Closing Link")) == 0) {
+    if (gdata.exiting) {
+      gnetwork->recentsent = 0;
+      return;
+    }
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
+            "Server Closed Connection on %s: %s",
+            gnetwork->name, ipl->line);
+    close_server();
+    return;
+  }
+}
+
+/* handle message from irc server */
+static void ir_parseline(char *line)
+{
+  ir_parseline_t ipl;
+  unsigned int m;
+
+  updatecontext();
+
+  removenonprintable(line);
+#ifdef USE_RUBY
+  if (do_myruby_server(line))
+    return;
+#endif /* USE_RUBY */
+
+  /* we only support lines upto maxtextlength, truncate line */
+  line[maxtextlength-1] = '\0';
+
+  if (gdata.debug > 0)
+    ioutput(OUT_S, COLOR_CYAN, ">IRC>: %u, %s", gnetwork->net + 1, line);
+
+  bzero((char *)&ipl, sizeof(ipl));
+  ipl.line = line;
+  m = get_argv(ipl.part, line, MAX_IRCMSG_PARTS);
+
+  if (ipl.part[1] != NULL)
+    ir_parseline2(&ipl);
+
+  for (m = 0; m < MAX_IRCMSG_PARTS; ++m)
+    mydelete(ipl.part[m]);
+}
+
 /* handle irc server connectipn */
 void irc_perform(int changesec)
 {
@@ -1053,63 +1673,6 @@ void irc_perform(int changesec)
 
   } /* networks */
   gnetwork = NULL;
-}
-
-/* try to identify at Nickserv */
-void identify_needed(unsigned int force)
-{
-  char *pwd;
-
-  pwd = get_nickserv_pass();
-  if (pwd == NULL)
-    return;
-
-  if (force == 0) {
-    if ((gnetwork->next_identify > 0) && (gnetwork->next_identify >= gdata.curtime))
-      return;
-  }
-  /* wait 1 sec before idetify again */
-  gnetwork->next_identify = gdata.curtime + 1;
-  if (gnetwork->auth_name != NULL) {
-    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :AUTH %s %s", /* NOTRANSLATE */
-                gnetwork->auth_name, save_nick(gnetwork->user_nick), pwd);
-    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-            "AUTH send to %s on %s.", gnetwork->auth_name, gnetwork->name);
-    return;
-  }
-  if (gnetwork->login_name != NULL) {
-    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :LOGIN %s %s", /* NOTRANSLATE */
-                gnetwork->login_name, save_nick(gnetwork->user_nick), pwd);
-    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-            "LOGIN send to %s on %s.", gnetwork->login_name, gnetwork->name);
-    return;
-  }
-  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :IDENTIFY %s", "nickserv", pwd); /* NOTRANSLATE */
-  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-          "IDENTIFY send to nickserv on %s.", gnetwork->name);
-}
-
-/* check line from server to see if the bots need to identify again */
-void identify_check(const char *line)
-{
-  char *pwd;
-
-  pwd = get_nickserv_pass();
-  if (pwd == NULL)
-    return;
-
-  if (strstr(line, "Nickname is registered to someone else") != NULL) { /* NOTRANSLATE */
-      identify_needed(0);
-  }
-  if (strstr(line, "This nickname has been registered") != NULL) { /* NOTRANSLATE */
-      identify_needed(0);
-  }
-  if (strstr(line, "This nickname is registered and protected") != NULL) { /* NOTRANSLATE */
-      identify_needed(0);
-  }
-  if (strcasestr(line, "please choose a different nick") != NULL) { /* NOTRANSLATE */
-      identify_needed(0);
-  }
 }
 
 /* End of File */

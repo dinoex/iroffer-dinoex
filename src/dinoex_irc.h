@@ -15,7 +15,6 @@
 
 int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa);
 void update_natip (const char *var);
-void update_server_welcome(char *line);
 unsigned int bind_irc_vhost(int family, int clientsocket);
 unsigned int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, unsigned int port, unsigned int reuse, unsigned int search, const char *vhost);
 unsigned int irc_open_listen(ir_connection_t *con);
@@ -38,6 +37,5 @@ int irc_select(int highests);
 void irc_perform(int changesec);
 
 void identify_needed(unsigned int force);
-void identify_check(const char *line);
 
 /* End of File */
