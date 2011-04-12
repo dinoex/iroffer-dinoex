@@ -595,7 +595,7 @@ void irc_resolved(void)
     for (ss=0; ss<gdata.networks_online; ss++) {
       if (child != gdata.networks[ss].serv_resolv.child_pid)
         continue;
- 
+
       if (gdata.networks[ss].serverstatus == SERVERSTATUS_RESOLVING) {
         /* lookup failed */
 #ifdef NO_WSTATUS_CODES
