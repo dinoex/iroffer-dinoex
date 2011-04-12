@@ -22,6 +22,7 @@
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
 #include "dinoex_curl.h"
+#include "dinoex_jobs.h"
 #include "dinoex_misc.h"
 
 /* search for a custom uploaddir of a group admin */
@@ -181,7 +182,7 @@ int l_setup_passive(upload * const l, char *token)
 }
 
 /* accept incoming connection */
-void l_setup_accept(upload * const l)
+static void l_setup_accept(upload * const l)
 {
   SIGNEDSOCK int addrlen;
   char *msg;
@@ -267,6 +268,83 @@ int l_select_fdset(int highests)
     }
   }
   return highests;
+}
+
+/* perfrom io for upload */
+void upload_perform(int changesec)
+{
+  upload *ul;
+
+  updatecontext();
+
+  ul = irlist_get_head(&gdata.uploads);
+  while(ul) {
+    gnetwork = &(gdata.networks[ul->net]);
+
+    /*----- see if uploads are sending anything to us ----- */
+    if (ul->ul_status == UPLOAD_STATUS_GETTING) {
+      if (FD_ISSET(ul->con.clientsocket, &gdata.readset)) {
+        l_transfersome(ul);
+      }
+    }
+
+    if (ul->ul_status == UPLOAD_STATUS_LISTENING) {
+      if (FD_ISSET(ul->con.listensocket, &gdata.readset)) {
+        l_setup_accept(ul);
+      }
+    }
+
+    if (ul->ul_status == UPLOAD_STATUS_CONNECTING) {
+      if (FD_ISSET(ul->con.clientsocket, &gdata.writeset)) {
+        int callval_i;
+        int connect_error;
+        SIGNEDSOCK int connect_error_len = sizeof(connect_error);
+
+        callval_i = getsockopt(ul->con.clientsocket,
+                               SOL_SOCKET, SO_ERROR,
+                               &connect_error, &connect_error_len);
+
+        if (callval_i < 0) {
+          int errno2 = errno;
+          outerror(OUTERROR_TYPE_WARN,
+                   "Couldn't determine upload connection status on %s: %s",
+                   gnetwork->name, strerror(errno));
+          l_closeconn(ul, "Upload Connection Failed status:", errno2);
+          continue;
+        }
+        if (connect_error) {
+          l_closeconn(ul, "Upload Connection Failed", connect_error);
+          continue;
+        }
+        ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+                          "Upload Connection Established on %s", gnetwork->name);
+        ul->ul_status = UPLOAD_STATUS_GETTING;
+        FD_CLR(ul->con.clientsocket, &gdata.writeset);
+        notice(ul->nick, "DCC Connection Established");
+        ul->con.connecttime = gdata.curtime;
+      }
+      if (changesec && ul->con.lastcontact + CTIMEOUT < gdata.curtime) {
+        l_closeconn(ul, "Upload Connection Timed Out", 0);
+      }
+    }
+
+    if (changesec) {
+      l_istimeout(ul);
+
+      if (ul->ul_status == UPLOAD_STATUS_DONE) {
+        close_qupload(ul->net, ul->nick);
+        mydelete(ul->nick);
+        mydelete(ul->hostname);
+        mydelete(ul->uploaddir);
+        mydelete(ul->file);
+        mydelete(ul->con.remoteaddr);
+        ul = irlist_delete(&gdata.uploads, ul);
+        continue;
+      }
+    }
+    ul = irlist_get_next(ul);
+  }
+  gnetwork = NULL;
 }
 
 /* check if a filename is already in a upload */
