@@ -22,6 +22,7 @@ unsigned int irc_open_listen(ir_connection_t *con);
 void ir_setsockopt(int clientsocket);
 char *setup_dcc_local(ir_sockaddr_union_t *listenaddr);
 void child_resolver(int family);
+void irc_resolved(void);
 const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, unsigned int net);
 
 char *get_local_vhost(void);

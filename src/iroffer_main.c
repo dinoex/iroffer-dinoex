@@ -221,84 +221,8 @@ static void mainloop (void) {
       
       if (gdata.needsreap)
         {
-          pid_t child;
-          int status;
-          
           gdata.needsreap = 0;
-          
-          while ((child = waitpid(-1, &status, WNOHANG)) > 0)
-            {
-              for (ss=0; ss<gdata.networks_online; ss++)
-                {
-                  if (gdata.networks[ss].serverstatus == SERVERSTATUS_RESOLVING)
-                    {
-                      if (child == gdata.networks[ss].serv_resolv.child_pid)
-                        {
-                      /* lookup failed */
-#ifdef NO_WSTATUS_CODES
-                      ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
-                              "Unable to resolve server %s (status=0x%.8X)",
-                              gdata.networks[ss].curserver.hostname,
-                              status);
-#else
-#ifndef NO_HOSTCODES
-                      if (WIFEXITED(status) &&
-                          (WEXITSTATUS(status) >= 20) &&
-                          (WEXITSTATUS(status) <= 23))
-                        {
-                          const char *errstr;
-                          switch (WEXITSTATUS(status))
-                            {
-                            case 20:
-                              errstr = "host not found";
-                              break;
-                              
-                            case 21:
-                              errstr = "no ip address";
-                              break;
-                              
-                            case 22:
-                              errstr = "non-recoverable name server";
-                              break;
-                              
-                            case 23:
-                              errstr = "try again later";
-                              break;
-                              
-                            default:
-                              errstr = "unknown";
-                              break;
-                            }
-                          ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
-                                  "Unable to resolve server %s (%s)",
-                                  gdata.networks[ss].curserver.hostname, errstr);
-                        }
-                      else
-#endif
-                        {
-                          ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
-                                  "Unable to resolve server %s (status=0x%.8X, %s: %d)",
-                                  gdata.networks[ss].curserver.hostname,
-                                  status,
-                                  WIFEXITED(status) ? "exit" : WIFSIGNALED(status) ? "signaled" : "??",
-                                  WIFEXITED(status) ? WEXITSTATUS(status) : WIFSIGNALED(status) ? WTERMSIG(status) : 0);
-                        }
-#endif
-                          gdata.networks[ss].serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-                        }
-                      /* else  this is an old child, ignore */
-                    }
-              
-                  if (child == gdata.networks[ss].serv_resolv.child_pid)
-                    {
-                  /* cleanup */
-                  close(gdata.networks[ss].serv_resolv.sp_fd[0]);
-                  FD_CLR(gdata.networks[ss].serv_resolv.sp_fd[0], &gdata.readset);
-                  gdata.networks[ss].serv_resolv.sp_fd[0] = 0;
-                  gdata.networks[ss].serv_resolv.child_pid = 0;
-                    }
-                } /* networks */
-            }
+          irc_resolved();
         }
       
       /*----- one second check ----- */
