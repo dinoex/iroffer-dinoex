@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -17,9 +17,9 @@ char *get_uploaddir(const char *hostmask);
 
 int l_setup_file(upload * const l, struct stat *stp);
 int l_setup_passive(upload * const l, char *token);
-void l_setup_accept(upload * const l);
 const char *l_print_state(upload * const l);
 int l_select_fdset(int highests);
+void upload_perform(int changesec);
 
 int file_uploading(const char *file);
 int invalid_upload(const char *nick, const char *hostmask, off_t len);
