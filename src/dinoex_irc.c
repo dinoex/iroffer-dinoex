@@ -575,6 +575,15 @@ void child_resolver(int family)
   }
 }
 
+#ifndef NO_HOSTCODES
+static  const char *irc_resolved_errormsg[] = {
+  "host not found",
+  "no ip address",
+  "non-recoverable name server",
+  "try again later",
+};
+#endif
+
 /* collect the the DNS resolution from the child process */
 void irc_resolved(void)
 {
@@ -595,32 +604,14 @@ void irc_resolved(void)
                 gdata.networks[ss].curserver.hostname, gdata.networks[ss].name,
                 status);
 #else
+        int hasexited = WIFEXITED(status);
+        int ecode = WEXITSTATUS(status);
 #ifndef NO_HOSTCODES
-        if (WIFEXITED(status) &&
-           (WEXITSTATUS(status) >= 20) &&
-           (WEXITSTATUS(status) <= 23)) {
-          const char *errstr;
-          switch (WEXITSTATUS(status)) {
-          case 20:
-            errstr = "host not found";
-            break;
-          case 21:
-            errstr = "no ip address";
-            break;
-          case 22:
-            errstr = "non-recoverable name server";
-            break;
-          case 23:
-            errstr = "try again later";
-            break;
-          default:
-            errstr = "unknown";
-            break;
-          }
+        if (hasexited && (ecode >= 20) && (ecode <= 23)) {
           ioutput(OUT_S|OUT_L|OUT_D, COLOR_RED,
                   "Unable to resolve server %s on %s " "(%s)",
                   gdata.networks[ss].curserver.hostname, gdata.networks[ss].name,
-                  errstr);
+                  irc_resolved_errormsg[ecode - 20]);
         } else
 #endif
         {
@@ -628,8 +619,8 @@ void irc_resolved(void)
                   "Unable to resolve server %s on %s " "(status=0x%.8X, %s: %d)",
                   gdata.networks[ss].curserver.hostname, gdata.networks[ss].name,
                   status,
-                  WIFEXITED(status) ? "exit" : WIFSIGNALED(status) ? "signaled" : "??",
-                  WIFEXITED(status) ? WEXITSTATUS(status) : WIFSIGNALED(status) ? WTERMSIG(status) : 0);
+                  hasexited ? "exit" : WIFSIGNALED(status) ? "signaled" : "??",
+                  hasexited ? ecode : WIFSIGNALED(status) ? WTERMSIG(status) : 0);
         }
 #endif
         gdata.networks[ss].serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
