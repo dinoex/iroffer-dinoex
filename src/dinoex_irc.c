@@ -1188,7 +1188,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
 
 #if PING_SRVR
   /* server ping */
-  if (strcmp(ipl->part[1], "PING") == 0) {
+  if (strncmp(ipl->line, "PING :", 6) == 0) {
     if (gdata.debug > 0)
       ioutput(OUT_S, COLOR_NO_COLOR,
               "Server Ping on %s: %s",
