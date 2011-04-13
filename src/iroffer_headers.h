@@ -180,7 +180,7 @@ typedef struct {
    ir_uint32 crc32;
    int file_fd;
    unsigned int file_fd_count;
-   unsigned int dummy;
+   unsigned int announce;
    off_t file_fd_location;
 #ifdef HAVE_MMAP
    irlist_t mmaps;

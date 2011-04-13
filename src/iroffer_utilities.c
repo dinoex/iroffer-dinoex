@@ -770,21 +770,8 @@ static void dump_config_int4(const char *name, unsigned int val)
 
 #define gdata_irlist_iter_end } }
 
-#define gdata_iter_as_print_number(format) \
-    dump_line("  : " format, iter);
-
-#define gdata_iter_as_print_number_cast(format,type) \
-    dump_line("  : " format, (type) iter);
-
 #define gdata_iter_as_print_string \
     dump_line("  : %s", gdata_string(iter));
-
-
-#define gdata_iter_as_print_int(name)   gdata_iter_as_print_number("%d", name)
-#define gdata_iter_as_print_uint(name)  gdata_iter_as_print_number("%u", name)
-#define gdata_iter_as_print_long(name)  gdata_iter_as_print_number("%ld", name)
-#define gdata_iter_as_print_ulong(name) gdata_iter_as_print_number("%lu", name)
-#define gdata_iter_as_print_float(name) gdata_iter_as_print_number("%.5f", name)
 
 
 #define gdata_iter_print_number(format,name) \
@@ -1135,6 +1122,7 @@ void dumpgdata(void)
           "  : has_md5=%d md5sum=" MD5_PRINT_FMT,
           iter->has_md5sum, MD5_PRINT_DATA(iter->md5sum));
   dump_line("  : crc32=" CRC32_PRINT_FMT, iter->crc32);
+  gdata_iter_print_uint(announce);
   gdata_iter_print_string(group);
   gdata_iter_print_string(group_desc);
   gdata_iter_print_string(lock);

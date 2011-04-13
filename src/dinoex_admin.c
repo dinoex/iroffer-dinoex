@@ -1214,7 +1214,7 @@ static void a_sort_insert(xdcc *xdo, const char *k)
   }
 }
 
-static void a_make_announce(const userinput * const u, const char *cmd, unsigned int n)
+static void a_make_announce(const char *cmd, unsigned int n)
 {
   userinput *ui;
   char *tempstr;
@@ -1224,8 +1224,8 @@ static void a_make_announce(const userinput * const u, const char *cmd, unsigned
   snprintf(tempstr, maxtextlength, "%s %u", cmd, n); /* NOTRANSLATE */
   a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
-  ui->net = u->net;
-  ui->level = u->level;
+  ui->net = 0;
+  ui->level = ADMIN_LEVEL_PUBLIC;
   u_parseit(ui);
   mydelete(ui);
   mydelete(tempstr);
@@ -1297,6 +1297,19 @@ static unsigned int a_get_color(const char *definition)
   color |= color_fg;
   mydelete(last);
   return color;
+}
+
+void a_autoaddann(xdcc *xd, unsigned int pack)
+{
+#ifdef USE_RUBY
+  do_myruby_added(xd->file, pack);
+#endif /* USE_RUBY */
+
+  if (gdata.autoaddann_short)
+    a_make_announce("SANNOUNCE", pack); /* NOTRANSLATE */
+
+  if (gdata.autoaddann)
+    a_make_announce("ANNOUNCE", pack); /* NOTRANSLATE */
 }
 
 static unsigned int check_for_renamed_file(const userinput * const u, xdcc *xd, struct stat *st, char *file)
@@ -1513,17 +1526,8 @@ static xdcc *a_add2(const userinput * const u, const char *group)
 
   set_support_groups();
   xd->color = a_get_color(gdata.autoadd_color);
+  xd->announce = 1;
   write_files();
-#ifdef USE_RUBY
-  do_myruby_added(xd->file, n);
-#endif /* USE_RUBY */
-
-  if (gdata.autoaddann_short)
-    a_make_announce(u, "SANNOUNCE", n); /* NOTRANSLATE */
-
-  if (gdata.autoaddann)
-    a_make_announce(u, "ANNOUNCE", n); /* NOTRANSLATE */
-
   return xd;
 }
 
@@ -5427,7 +5431,7 @@ void a_addann(const userinput * const u)
   if (xd == NULL)
     return;
 
-  a_make_announce(u, "ANNOUNCE", number_of_pack(xd)); /* NOTRANSLATE */
+  a_make_announce("ANNOUNCE", number_of_pack(xd)); /* NOTRANSLATE */
 }
 
 void a_noannounce(const userinput * const u)
