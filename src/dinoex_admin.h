@@ -34,6 +34,7 @@ int get_network_msg(const userinput * const u, const char *arg);
 unsigned int group_restricted(const userinput * const u, xdcc *xd);
 
 void a_remove_delayed(const userinput * const u);
+void a_autoaddann(xdcc *xd, unsigned int pack);
 void a_add_delayed(const userinput * const u);
 void a_xdlock(const userinput * const u);
 void a_xdtrigger(const userinput * const u);

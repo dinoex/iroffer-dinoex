@@ -2234,6 +2234,41 @@ int rotatelog(const char *logfile)
   return 1;
 }
 
+/* delayed_announce */
+void delayed_announce(void)
+{
+  xdcc *xd;
+  unsigned int packnum;
+
+  /* stop here if more to add/remove prending */
+  if (irlist_size(&gdata.packs_delayed) > 0)
+    return;
+
+  if (gdata.nomd5sum) {
+    if (gdata.md5build.xpack) {
+      /* checsum in progress */
+      return;
+    }
+  }
+
+  packnum = 1;
+  for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd), packnum++) {
+    if (xd->announce == 0)
+      continue;
+
+    if (gdata.nomd5sum) {
+      if (xd->has_md5sum == 0)
+        continue;
+    }
+    if (gdata.nocrc32) {
+      if (xd->has_crc32 == 0)
+        continue;
+    }
+    xd->announce = 0;
+    a_autoaddann(xd, packnum);
+  }
+}
+
 static magic_crc_t magic_crc_table[] = {
   { 0x24, 7, { 0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x00, 0} },
   { 0x0E, 4, { 0x50, 0x4b, 0x03, 0x04, 0, 0, 0, 0 } },
