@@ -2266,6 +2266,11 @@ void delayed_announce(void)
       if (xd->has_crc32 == 0)
         continue;
     }
+
+    /* wait for pack to be unlocked */
+    if (xd->lock != NULL)
+      continue;
+
     xd->announce = 0;
     a_autoaddann(xd, packnum);
   }

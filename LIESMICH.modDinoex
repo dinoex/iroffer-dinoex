@@ -6,6 +6,7 @@ Ab Version 3.27:
 370) delayed announce
   Warte mit dem Announce bis der AUTOADD fertig ist
   und die Prüfsumme der Dateien brechnet wurde.
+  Warte auch wenn die CRC nicht zur Datei passt.
 
 bugfix: autosendpack
   Erlaube "autosendpack" mit Paketnummer '-1'.
