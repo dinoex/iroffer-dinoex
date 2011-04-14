@@ -700,8 +700,8 @@ void t_perform(int changesec, int changequartersec)
         mydelete(trnick);
         continue;
       }
-      tr = irlist_get_next(tr);
     }
+    tr = irlist_get_next(tr);
   }
   gnetwork = NULL;
 }
