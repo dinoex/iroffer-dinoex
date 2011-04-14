@@ -34,7 +34,6 @@ void rehash_dinoex(void);
 
 unsigned int init_xdcc_file(xdcc *xd, char *file) ;
 void update_hour_dinoex(unsigned int minute);
-void check_new_connection(transfer *const tr);
 unsigned int fnmatch_xdcc(const char *match, xdcc *xd);
 
 unsigned int disk_full(const char *path);

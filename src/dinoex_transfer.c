@@ -22,6 +22,7 @@
 #include "dinoex_transfer.h"
 #include "dinoex_irc.h"
 #include "dinoex_geoip.h"
+#include "dinoex_queue.h"
 #include "dinoex_misc.h"
 
 /* send DCC command to start download */
@@ -471,8 +472,9 @@ static void t_check_duplicateip(transfer *const newtr)
 }
 
 /* check a new transfer */
-void t_check_new_connection(transfer *const tr)
+static void t_check_new_connection(transfer *const tr)
 {
+  t_establishcon(tr);
 #ifdef USE_GEOIP
   updatecontext();
   geoip_new_connection(tr);
@@ -590,6 +592,118 @@ int t_select_fdset(int highests, int changequartersec)
     }
   }
   return highests;
+}
+
+void t_perform(int changesec, int changequartersec)
+{
+  transfer *tr;
+  unsigned int i, j;
+
+  i = j = select_starting_transfer(irlist_size(&gdata.trans));
+
+  /* first: do from cur to end */
+  for (tr = irlist_get_nth(&gdata.trans, i);
+       tr;
+       tr = irlist_get_next(tr)) {
+    if (tr->tr_status != TRANSFER_STATUS_SENDING)
+      continue;
+
+    /*----- look for transfer some -----  send at least once a second, or more if necessary */
+    if (changequartersec || FD_ISSET(tr->con.clientsocket, &gdata.writeset)) {
+      gnetwork = &(gdata.networks[tr->net]);
+      t_transfersome(tr);
+    }
+  }
+
+  /* second: do from begin to cur-1 */
+  for (tr = irlist_get_head(&gdata.trans);
+       tr && j;
+       tr = irlist_get_next(tr), --j) {
+    if (tr->tr_status != TRANSFER_STATUS_SENDING)
+      continue;
+
+    /*----- look for transfer some -----  send at least once a second, or more if necessary */
+    if (changequartersec || FD_ISSET(tr->con.clientsocket, &gdata.writeset)) {
+      gnetwork = &(gdata.networks[tr->net]);
+      t_transfersome(tr);
+    }
+  }
+
+  tr = irlist_get_head(&gdata.trans);
+  while(tr) {
+    gnetwork = &(gdata.networks[tr->net]);
+
+    /*----- look for listen->connected ----- */
+    if (tr->tr_status == TRANSFER_STATUS_LISTENING) {
+      if (FD_ISSET(tr->con.listensocket, &gdata.readset)) {
+        t_check_new_connection(tr);
+        tr = irlist_get_next(tr);
+        continue;
+      }
+      /*----- look for listen reminders ----- */
+      if (changesec) {
+        if (tr->reminded == 0) {
+          if ((gdata.curtime - tr->con.lastcontact) >= 30)
+            t_remind(tr);
+        }
+        if (tr->reminded == 1) {
+          if ((gdata.curtime - tr->con.lastcontact) >= 90)
+            t_remind(tr);
+        }
+        if (tr->reminded == 2) {
+          if ((gdata.curtime - tr->con.lastcontact) >= 150)
+            t_remind(tr);
+        }
+      }
+    }
+
+    if (tr->tr_status == TRANSFER_STATUS_CONNECTING) {
+      if (FD_ISSET(tr->con.clientsocket, &gdata.writeset))
+        t_connected(tr);
+    }
+
+    /*----- look for junk to read ----- */
+    if ((tr->tr_status == TRANSFER_STATUS_SENDING) ||
+        (tr->tr_status == TRANSFER_STATUS_WAITING)) {
+      if (FD_ISSET(tr->con.clientsocket, &gdata.readset))
+        t_readjunk(tr);
+    }
+
+    /*----- look for done flushed status ----- */
+    if (tr->tr_status == TRANSFER_STATUS_WAITING) {
+      t_flushed(tr);
+    }
+
+    if (changesec) {
+      /*----- look for lost transfers ----- */
+      if (tr->tr_status != TRANSFER_STATUS_DONE) {
+        t_istimeout(tr);
+      }
+
+      /*----- look for finished transfers ----- */
+      if (tr->tr_status == TRANSFER_STATUS_DONE) {
+        char *trnick;
+
+        trnick = tr->nick;
+        mydelete(tr->caps_nick);
+        mydelete(tr->hostname);
+        mydelete(tr->con.localaddr);
+        mydelete(tr->con.remoteaddr);
+        tr = irlist_delete(&gdata.trans, tr);
+
+        if (!gdata.exiting &&
+            irlist_size(&gdata.mainqueue) &&
+            (irlist_size(&gdata.trans) < gdata.slotsmax)) {
+          check_idle_queue();
+          send_from_queue(0, 0, trnick);
+        }
+        mydelete(trnick);
+        continue;
+      }
+      tr = irlist_get_next(tr);
+    }
+  }
+  gnetwork = NULL;
 }
 
 /* End of File */

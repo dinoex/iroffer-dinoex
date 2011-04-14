@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -22,9 +22,9 @@ unsigned int t_check_ip_access(transfer *const tr);
 unsigned int t_find_transfer(const char *nick, const char *filename, const char *remoteip, const char *remoteport, const char *token);
 unsigned int t_find_resume(const char *nick, const char *filename, const char *localport, const char *bytes, char *token);
 void t_connected(transfer *tr);
-void t_check_new_connection(transfer *const tr);
 unsigned int verify_acknowlede(transfer *tr);
 const char *t_print_state(transfer *const tr);
 int t_select_fdset(int highests, int changequartersec);
+void t_perform(int changesec, int changequartersec);
 
 /* End of File */
