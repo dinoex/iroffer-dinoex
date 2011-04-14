@@ -1128,6 +1128,7 @@ static void mainloop (void) {
 #ifdef USE_RUBY
 	 rehash_myruby(1);
 #endif /* USE_RUBY */
+         delayed_announce();
          }
       
       updatecontext();
