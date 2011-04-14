@@ -32,7 +32,6 @@
 #include "dinoex_jobs.h"
 #include "dinoex_ruby.h"
 #include "dinoex_main.h"
-#include "dinoex_user.h"
 #include "dinoex_chat.h"
 #include "dinoex_misc.h"
 
