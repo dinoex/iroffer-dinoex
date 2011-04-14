@@ -2244,7 +2244,7 @@ void delayed_announce(void)
   if (irlist_size(&gdata.packs_delayed) > 0)
     return;
 
-  if (gdata.nomd5sum) {
+  if (gdata.nomd5sum == 0) {
     if (gdata.md5build.xpack) {
       /* checsum in progress */
       return;
@@ -2252,15 +2252,17 @@ void delayed_announce(void)
   }
 
   packnum = 1;
-  for (xd = irlist_get_head(&gdata.xdccs); xd; xd = irlist_get_next(xd), packnum++) {
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd), packnum++) {
     if (xd->announce == 0)
       continue;
 
-    if (gdata.nomd5sum) {
+    if (gdata.nomd5sum == 0) {
       if (xd->has_md5sum == 0)
         continue;
     }
-    if (gdata.nocrc32) {
+    if (gdata.nocrc32 == 0) {
       if (xd->has_crc32 == 0)
         continue;
     }
