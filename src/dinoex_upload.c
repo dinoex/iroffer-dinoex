@@ -271,7 +271,7 @@ int l_select_fdset(int highests)
 }
 
 /* perfrom io for upload */
-void upload_perform(int changesec)
+void l_perform(int changesec)
 {
   upload *ul;
 

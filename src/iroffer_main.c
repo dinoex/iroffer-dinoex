@@ -333,7 +333,7 @@ static void mainloop (void) {
       if (gdata.needsswitch)
         gdata.needsswitch = 0;
       
-      upload_perform(changesec);
+      l_perform(changesec);
       
       updatecontext();
       /*----- see if dccchat is sending anything to us ----- */
