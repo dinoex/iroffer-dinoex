@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+370) delayed announce
+  Delay announce till all files are added
+  and the checkums has been computed.
+
 bugfix: autosendpack (reported by Jikan)
   Allow "autosendpack" with packnumber '-1'.
 

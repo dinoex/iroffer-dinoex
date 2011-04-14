@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+370) delayed announce
+  Warte mit dem Announce bis der AUTOADD fertig ist
+  und die Prüfsumme der Dateien brechnet wurde.
+
 bugfix: autosendpack
   Erlaube "autosendpack" mit Paketnummer '-1'.
 
