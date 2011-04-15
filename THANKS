@@ -102,6 +102,7 @@ TheDeath
 	option "http_forbidden"
 	suggesting "expire_logfiles"
 	suggesting announce of "XDCC REMOVE <nr>"
+	suggesting delayed announce
 
 [GFE]Lunix
 	alias xdcc list group <group>
