@@ -5,7 +5,7 @@ With Version 3.27:
 
 bugfix: BATCH (reported by Aashiqmunda)
   versions affected: 3.23 - 3.26
-  Bot did crash when the range was exeeding the packs.
+  Bot did crash on admin command if the range was exeeding the last pack on the bot.
 
 370) delayed announce (inspired by TheDeath)
   Delay announce till all files are added
