@@ -5047,8 +5047,11 @@ static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned i
 
   updatecontext();
 
-  if (xd == NULL)
+  if (xd == NULL) {
     xd = irlist_get_nth(&gdata.xdccs, num - 1);
+    if (xd == NULL)
+      return 1;
+  }
 
   if (a_queue_found(u, xd, num))
     return 1;

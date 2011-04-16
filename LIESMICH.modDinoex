@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+bugfix: BATCH
+  versions affected: 3.23 - 3.26
+  Bot stürtze ab wenn der Bereich über das letze Paket hinaus ging.
+
 370) delayed announce
   Warte mit dem Announce bis der AUTOADD fertig ist
   und die Prüfsumme der Dateien brechnet wurde.
