@@ -577,6 +577,7 @@ Aashiqmunda
 	reporting "autaaddann" text problem
 	suggesting "announce_suffix_color"
 	reporting "XDCC BATCH" bug
+	reporting "BATCH" crash
 
 SellKony
 	reporting CONFIG crash
