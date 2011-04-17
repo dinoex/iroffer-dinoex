@@ -1225,7 +1225,7 @@ static void a_make_announce(const char *cmd, unsigned int n)
   a_fillwith_msg2(ui, NULL, tempstr);
   ui->method = method_out_all;  /* just OUT_S|OUT_L|OUT_D it */
   ui->net = 0;
-  ui->level = ADMIN_LEVEL_PUBLIC;
+  ui->level = ADMIN_LEVEL_AUTO;
   u_parseit(ui);
   mydelete(ui);
   mydelete(tempstr);
