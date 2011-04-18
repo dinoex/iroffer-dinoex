@@ -370,7 +370,7 @@
 389 "  Chat stabilita con %s. Sto aspettando la password."
 390 "  Chat stabilita con %s."
 391 "Stato della DCC CHAT insapettato %u"
-392 "  Connesso a %s"
+392 "  Connesso il %s"
 393 "  Ultimo contatto %s"
 394 "  Locale: %s, Remoto: %s"
 396 "Ti sto disconnettendo."
