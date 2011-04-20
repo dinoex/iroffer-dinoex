@@ -258,12 +258,19 @@ static void mainloop (void) {
       changesec = 0;
       if (gdata.curtime != lasttime) {
          
-         if (gdata.curtime < lasttime-3) {
+         if (gdata.curtime < lasttime - MAX_WAKEUP_WARN) {
             outerror(OUTERROR_TYPE_WARN,"System Time Changed Backwards %lim %lis!!\n",
                (long)(lasttime-gdata.curtime)/60,(long)(lasttime-gdata.curtime)%60);
             }
          
-         if (gdata.curtime > lasttime+10) {
+         if (gdata.debug > 0) {
+           if (gdata.curtime > lasttime + MAX_WAKEUP_WARN) {
+             outerror(OUTERROR_TYPE_WARN,"System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
+               (long)(gdata.curtime-lasttime)/60,(long)(gdata.curtime-lasttime)%60);
+             }
+           }
+
+         if (gdata.curtime > lasttime + MAX_WAKEUP_ERR) {
             outerror(OUTERROR_TYPE_WARN,"System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
                (long)(gdata.curtime-lasttime)/60,(long)(gdata.curtime-lasttime)%60);
             if (gdata.debug > 0)

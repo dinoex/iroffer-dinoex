@@ -19,6 +19,9 @@
 /*       max number of vhosts */
 #define  MAX_VHOSTS    2U
 
+#define  MAX_WAKEUP_WARN	2
+#define  MAX_WAKEUP_ERR		10
+
 #ifdef UNUSED
 #elif defined(__GNUC__)
 # define UNUSED(x) UNUSED_ ## x __attribute__((unused))
