@@ -285,14 +285,12 @@ void l_perform(int changesec)
     if (ul->ul_status == UPLOAD_STATUS_GETTING) {
       if (FD_ISSET(ul->con.clientsocket, &gdata.readset)) {
         l_transfersome(ul);
-        continue;
       }
     }
 
     if (ul->ul_status == UPLOAD_STATUS_LISTENING) {
       if (FD_ISSET(ul->con.listensocket, &gdata.readset)) {
         l_setup_accept(ul);
-        continue;
       }
     }
 
@@ -327,8 +325,8 @@ void l_perform(int changesec)
       }
       if (changesec && ul->con.lastcontact + CTIMEOUT < gdata.curtime) {
         l_closeconn(ul, "Upload Connection Timed Out", 0);
+        continue;
       }
-      continue;
     }
 
     if (changesec) {
