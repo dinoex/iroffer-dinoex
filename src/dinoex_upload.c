@@ -417,6 +417,7 @@ static int verify_uploadhost(const char *hostmask)
   return 1;
 }
 
+/* check for valid upload user and size */
 int invalid_upload(const char *nick, const char *hostmask, off_t len)
 {
   updatecontext();
