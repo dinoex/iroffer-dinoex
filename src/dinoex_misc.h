@@ -76,4 +76,6 @@ void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, si
 
 int packnumtonum(const char *a);
 
+void dump_slow_context(void);
+
 /* End of File */

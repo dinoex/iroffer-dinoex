@@ -121,6 +121,9 @@ static void mainloop (void) {
        FD_ZERO(&gdata.readset);
        FD_ZERO(&gdata.writeset);
        changehour=changemin=changesec=changequartersec=0;
+       gettimeofday(&timestruct, NULL);
+       gdata.curtimems = timeval_to_ms(&timestruct);
+       gdata.curtime = timestruct.tv_sec;
        lasttime=gdata.curtime;
        last250ms = ((ir_uint64)lasttime) * 1000;
        lastmin=(lasttime/60)-1;
@@ -177,9 +180,6 @@ static void mainloop (void) {
       
       updatecontext();
    
-      timestruct.tv_sec = 0;
-      timestruct.tv_usec = 250*1000;
-      
       if (gdata.debug > 3)
         {
           select_dump("try", highests);
@@ -189,6 +189,10 @@ static void mainloop (void) {
       
       tostdout_write();
       
+      gettimeofday(&timestruct, NULL);
+      gdata.selecttimems = timeval_to_ms(&timestruct);
+      timestruct.tv_sec = 0;
+      timestruct.tv_usec = 250*1000;
       if (select(highests+1, &gdata.readset, &gdata.writeset, NULL, &timestruct) < 0)
         {
           if (errno != EINTR)
@@ -203,25 +207,9 @@ static void mainloop (void) {
           FD_ZERO(&gdata.execset);
         }
       
-#ifdef USE_CURL
-      fetch_perform();
-#endif /* USE_CURL */
-      
       if (gdata.debug > 3)
         {
           select_dump("got", highests);
-        }
-      
-      if (gdata.needsshutdown)
-        {
-          gdata.needsshutdown = 0;
-          shutdowniroffer();
-        }
-      
-      if (gdata.needsreap)
-        {
-          gdata.needsreap = 0;
-          irc_resolved();
         }
       
       /*----- one second check ----- */
@@ -235,6 +223,9 @@ static void mainloop (void) {
       
       gdata.curtimems = timeval_to_ms(&timestruct);
       gdata.curtime = timestruct.tv_sec;
+      if (gdata.curtimems > gdata.selecttimems + 1000)
+        outerror(OUTERROR_TYPE_WARN, "Iroffer was blocked for %lims",
+                 (long)(gdata.curtimems - gdata.selecttimems));
       
       /* adjust for drift and cpu usage */
       if ((gdata.curtimems > (last250ms+1000)) ||
@@ -259,18 +250,21 @@ static void mainloop (void) {
       if (gdata.curtime != lasttime) {
          
          if (gdata.curtime < lasttime - MAX_WAKEUP_WARN) {
-            outerror(OUTERROR_TYPE_WARN,"System Time Changed Backwards %lim %lis!!\n",
-               (long)(lasttime-gdata.curtime)/60,(long)(lasttime-gdata.curtime)%60);
+            outerror(OUTERROR_TYPE_WARN, "System Time Changed Backwards %lim %lis!!\n",
+                     (long)(lasttime-gdata.curtime)/60, (long)(lasttime-gdata.curtime)%60);
             }
          
          if (gdata.curtime > lasttime + MAX_WAKEUP_WARN) {
-            outerror(OUTERROR_TYPE_WARN,"System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
-               (long)(gdata.curtime-lasttime)/60,(long)(gdata.curtime-lasttime)%60);
+            outerror(OUTERROR_TYPE_WARN, "System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
+                     (long)(gdata.curtime-lasttime)/60, (long)(gdata.curtime-lasttime)%60);
+              if (gdata.debug > 0) {
+                dump_slow_context();
+                }
             }
 
          if (gdata.curtime > lasttime + MAX_WAKEUP_ERR) {
-            outerror(OUTERROR_TYPE_WARN,"System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
-               (long)(gdata.curtime-lasttime)/60,(long)(gdata.curtime-lasttime)%60);
+            outerror(OUTERROR_TYPE_WARN, "System Time Changed Forward or Mainloop Skipped %lim %lis!!\n",
+               (long)(gdata.curtime-lasttime)/60, (long)(gdata.curtime-lasttime)%60);
             if (gdata.debug > 0)
               {
                 dumpcontext();
@@ -291,6 +285,22 @@ static void mainloop (void) {
          lastmin = lasttime/60;
          changemin = 1;
          }
+      
+      if (gdata.needsshutdown)
+        {
+          gdata.needsshutdown = 0;
+          shutdowniroffer();
+        }
+      
+      if (gdata.needsreap)
+        {
+          gdata.needsreap = 0;
+          irc_resolved();
+        }
+      
+#ifdef USE_CURL
+      fetch_perform();
+#endif /* USE_CURL */
       
       updatecontext();
       

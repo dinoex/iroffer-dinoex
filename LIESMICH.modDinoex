@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+Debugging und Logging verbessert.
+
 bugfix: BATCH
   versions affected: 3.23 - 3.26
   Bot stürtze beim Admin Kommando ab wenn der Bereich über das letze Paket hinaus ging.

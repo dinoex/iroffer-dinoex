@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+extend debug and log information.
+
 bugfix: BATCH (reported by Aashiqmunda)
   versions affected: 3.23 - 3.26
   Bot did crash on admin command if the range was exeeding the last pack on the bot.

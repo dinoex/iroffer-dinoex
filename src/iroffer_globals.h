@@ -252,6 +252,7 @@ time_t last_update;
 time_t curtime;
 long totaluptime;
 ir_uint64 curtimems;
+ir_uint64 selecttimems;
 ir_int64 totalsent;
 unsigned long xdccsent[XDCC_SENT_SIZE];
 unsigned long xdccrecv[XDCC_SENT_SIZE];
@@ -330,7 +331,6 @@ unsigned int cursendptr;
 unsigned int next_tr_id;
 unsigned int context_cur_ptr;
 unsigned int maxtrans;
-unsigned int udummy;
 
 int max_fds_from_rlimit;
 int logfd;

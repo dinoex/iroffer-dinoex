@@ -1188,4 +1188,42 @@ int packnumtonum(const char *a)
   return atoi(a);
 }
 
+/* dump slow functions */
+void dump_slow_context(void)
+{
+  char *lastline;
+  context_t *c;
+  context_t *last;
+  unsigned int i;
+  unsigned int show;
+
+  last = NULL;
+  lastline = mymalloc(maxtextlength);
+  lastline[0] = 0;
+  for (i=0; i<MAXCONTEXTS; i++) {
+    c = &gdata.context_log[(gdata.context_cur_ptr + 1 + i) % MAXCONTEXTS];
+    if (c->file == NULL)
+      continue;
+    show = 0;
+    if (last != NULL) {
+      if (c->tv.tv_sec - last->tv.tv_sec > 1) {
+        ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
+        show = 1;
+      }
+    }
+    snprintf(lastline, maxtextlength,
+            "Trace %3i  %-20s %-16s:%5i  %lu.%06lu",
+            i-MAXCONTEXTS+1,
+            c->func ? c->func : "UNKNOWN",
+            c->file ? c->file : "UNKNOWN",
+            c->line,
+            (unsigned long)c->tv.tv_sec,
+            (unsigned long)c->tv.tv_usec);
+    last = c;
+    if (show)
+      ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
+  }
+  mydelete(lastline);
+}
+
 /* End of File */
