@@ -376,7 +376,7 @@ unsigned int t_find_resume(const char *nick, const char *filename, const char *l
 }
 
 /* process successful connection */
-void t_connected(transfer *tr)
+static void t_connected(transfer *tr)
 {
   int callval_i;
   int connect_error;
@@ -594,6 +594,7 @@ int t_select_fdset(int highests, int changequartersec)
   return highests;
 }
 
+/* handle transfer ip events */
 void t_perform(int changesec, int changequartersec)
 {
   transfer *tr;
