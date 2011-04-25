@@ -702,6 +702,8 @@ void dumpcontext(void)
   for (i=0; i<MAXCONTEXTS; i++)
     {
       c = &gdata.context_log[(gdata.context_cur_ptr + 1 + i) % MAXCONTEXTS];
+      if (c->file == NULL)
+        continue;
       
       ioutput(OUT_S|OUT_L, COLOR_NO_COLOR,
               "Trace %3i  %-20s %-16s:%5i  %lu.%06lu",
