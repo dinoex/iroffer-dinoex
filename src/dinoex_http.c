@@ -1762,7 +1762,7 @@ static void h_webliste(http * const h, const char *body)
 }
 
 #ifndef WITHOUT_HTTP_ADMIN
-static void h_admin(http * const h, unsigned int UNUSED(level), const char *UNUSED(body))
+static void h_admin(http * const h, unsigned int UNUSED(level), const char * UNUSED(body))
 {
   char *tempstr;
   char *tmp;
