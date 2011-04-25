@@ -1501,6 +1501,7 @@ static void initchanmodes(void)
 
 void initvars(void)
 {
+  struct timeval timestruct;
   unsigned int ss;
 
   memset(&gdata, 0, sizeof(gdata_t));
@@ -1530,8 +1531,10 @@ void initvars(void)
   outerror(OUTERROR_TYPE_WARN, "max_file_size limited to 2GB");
 #endif
   
-  gdata.startuptime = gdata.curtime = time(NULL);
-  gdata.curtimems = ((ir_uint64)gdata.curtime) * 1000;
+  gettimeofday(&timestruct, NULL);
+  gdata.curtimems = timeval_to_ms(&timestruct);
+  gdata.curtime = timestruct.tv_sec;
+  gdata.startuptime = timestruct.tv_sec;
   
   gdata.sendbuff = mycalloc(BUFFERSIZE);
   gdata.console_input_line = mycalloc(INPUT_BUFFER_LENGTH);
