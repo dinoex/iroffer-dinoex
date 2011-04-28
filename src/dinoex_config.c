@@ -301,7 +301,11 @@ static config_bool_typ config_parse_bool[] = {
 {"show_group_of_pack",     &gdata.show_group_of_pack,      0 }, /* NOTRANSLATE */
 {"show_list_all",          &gdata.show_list_all,           0 }, /* NOTRANSLATE */
 {"spaces_in_filenames",    &gdata.spaces_in_filenames,     0 }, /* NOTRANSLATE */
+#if defined(_OS_CYGWIN)
+{"tcp_nodelay",            &gdata.tcp_nodelay,             1 }, /* NOTRANSLATE */
+#else /* _OS_CYGWIN */
 {"tcp_nodelay",            &gdata.tcp_nodelay,             0 }, /* NOTRANSLATE */
+#endif /* _OS_CYGWIN */
 {"timestampconsole",       &gdata.timestampconsole,        0 }, /* NOTRANSLATE */
 #ifdef USE_UPNP
 {"upnp_router",            &gdata.upnp_router,             0 }, /* NOTRANSLATE */
@@ -438,7 +442,11 @@ static config_int_typ config_parse_int[] = {
 {"smallfilebypass",         &gdata.smallfilebypass,         0, 1024*1024, 1024, 0 }, /* NOTRANSLATE */
 {"start_of_month",          &gdata.start_of_month,          1, 31, 1, 1 }, /* NOTRANSLATE */
 {"status_time_dcc_chat",    &gdata.status_time_dcc_chat,    10, 2000, 1, 120 }, /* NOTRANSLATE */
+#if defined(_OS_CYGWIN)
+{"tcp_buffer_size",         &gdata.tcp_buffer_size,         0, 1024*1024, 1024, 384*1024 }, /* NOTRANSLATE */
+#else /* _OS_CYGWIN */
 {"tcp_buffer_size",         &gdata.tcp_buffer_size,         0, 1024*1024, 1024, 0 }, /* NOTRANSLATE */
+#endif /* _OS_CYGWIN */
 {"tcprangelimit",           &gdata.tcprangelimit,           1024, 65535, 1, 65535 }, /* NOTRANSLATE */
 {"tcprangestart",           &gdata.tcprangestart,           1024, 65530, 1, 0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_TELNET
