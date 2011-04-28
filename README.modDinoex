@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+371) tcp_nodelay, tcp_buffer_size (inspired by Aashiqmunda)
+  Better defaults for Windows/CYGWIN builds.
+
 extend debug and log information.
 
 bugfix: BATCH (reported by Aashiqmunda)
