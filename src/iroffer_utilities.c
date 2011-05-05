@@ -652,6 +652,10 @@ void mydelete2(void *t) {
       gdata.meminfo_count--;
       }
    
+   /* we are crashing, do not shrink meminfo */
+   if (gdata.crashing)
+     return;
+   
    if ((gdata.meminfo_depth > 1) &&
        (gdata.meminfo_count < ((MEMINFOHASHSIZE * gdata.meminfo_depth) / 8)))
      {
