@@ -122,10 +122,13 @@ static void mainloop (void) {
        FD_ZERO(&gdata.writeset);
        changehour=changemin=changesec=changequartersec=0;
        gettimeofday(&timestruct, NULL);
+       last250ms = gdata.curtimems;
        gdata.curtimems = timeval_to_ms(&timestruct);
+       ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Startup"
+              " running: %ld ms", (long)(gdata.curtimems - last250ms));
        gdata.curtime = timestruct.tv_sec;
        lasttime=gdata.curtime;
-       last250ms = ((ir_uint64)lasttime) * 1000;
+       last250ms = gdata.curtimems;
        lastmin=(lasttime/60)-1;
        lasthour=(lasttime/60/60)-1;
        last4sec = last5sec = last20sec = last2min = last3min = lasttime;
