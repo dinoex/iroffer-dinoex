@@ -166,6 +166,10 @@ typedef struct
 
 void write_statefile(void)
 {
+#ifdef DEBUG
+  ir_uint64 ms1;
+  ir_uint64 ms2;
+#endif /* DEBUG */
   char *statefile_tmp, *statefile_bkup;
   int fd;
   int callval;
@@ -180,6 +184,9 @@ void write_statefile(void)
       return;
     }
   
+#ifdef DEBUG
+  ms1 = get_time_in_ms();
+#endif /* DEBUG */
   statefile_tmp = mystrsuffix(gdata.statefile, ".tmp");
   statefile_bkup = mystrsuffix(gdata.statefile, "~");
   
@@ -285,7 +292,13 @@ void write_statefile(void)
   
   if (gdata.debug > 0)
     {
+#ifdef DEBUG
+      ms2 = get_time_in_ms();
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Done"
+              " running: %ld ms", (long)(ms2 - ms1));
+#else
       ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Done");
+#endif /* DEBUG */
     }
   
  error_out:
