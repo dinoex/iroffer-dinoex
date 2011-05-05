@@ -1221,7 +1221,7 @@ static void h_html_search(http * const h)
 static void h_html_main(http * const h)
 {
   xdcc *xd;
-  irlist_t grplist = {0, 0};
+  irlist_t grplist = {0, 0, 0};
   char *tempstr;
   char *tlink;
   char *savegroup;

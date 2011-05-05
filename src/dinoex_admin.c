@@ -424,7 +424,7 @@ void a_xdl(const userinput * const u)
   unsigned int l;
   unsigned int s;
   xdcc *xd;
-  irlist_t grplist = {0, 0};
+  irlist_t grplist = {0, 0, 0};
 
   updatecontext();
 
@@ -2220,6 +2220,7 @@ void a_sort(const userinput * const u)
   /* clean start */
   gdata.xdccs.size = 0;
   gdata.xdccs.head = NULL;
+  gdata.xdccs.tail = NULL;
 
   while (irlist_size(&old_list) > 0) {
     xdo = irlist_get_head(&old_list);
@@ -2308,7 +2309,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
   struct stat st;
   struct stat *sta;
   char *thefile, *tempstr;
-  irlist_t dirlist = {0, 0};
+  irlist_t dirlist = {0, 0, 0};
 
   updatecontext();
 

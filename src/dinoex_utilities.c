@@ -899,7 +899,7 @@ char *grep_to_fnmatch(const char *grep)
 /* sort a linked list with selection sort */
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
 {
-  irlist_t newlist = {0, 0};
+  irlist_t newlist = {0, 0, 0};
   void *cur;
   void *ltry;
   void *last;
@@ -936,7 +936,7 @@ void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
 /* sort a linked list with merge sort */
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
 {
-  irlist_t newlist = {0, 0};
+  irlist_t newlist = {0, 0, 0};
   irlist_t *p;
   irlist_t *q;
   irlist_t *e;
