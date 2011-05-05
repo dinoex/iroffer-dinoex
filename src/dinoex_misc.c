@@ -1194,6 +1194,7 @@ void dump_slow_context(void)
   char *lastline;
   context_t *c;
   context_t *last;
+  ir_uint64 offset;
   unsigned int i;
   unsigned int show;
 
@@ -1206,7 +1207,10 @@ void dump_slow_context(void)
       continue;
     show = 0;
     if (last != NULL) {
-      if (c->tv.tv_sec - last->tv.tv_sec > 1) {
+      offset = c->tv.tv_sec - last->tv.tv_sec;
+      offset *= 1000000;
+      offset += c->tv.tv_usec - last->tv.tv_usec;
+      if (offset > 271000) {
         ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
         show = 1;
       }
