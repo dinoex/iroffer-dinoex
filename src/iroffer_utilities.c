@@ -595,7 +595,7 @@ void* mymalloc2(size_t len, int zero,
    
    if (gdata.meminfo_count >= ((MEMINFOHASHSIZE * gdata.meminfo_depth) / 2))
      {
-       meminfo_grow((int)(gdata.meminfo_depth/3 + 1));
+       meminfo_grow((int)(gdata.meminfo_depth + 1));
      }
    
    start = mycalloc_hash(t) * gdata.meminfo_depth;
@@ -659,7 +659,7 @@ void mydelete2(void *t) {
    if ((gdata.meminfo_depth > 1) &&
        (gdata.meminfo_count < ((MEMINFOHASHSIZE * gdata.meminfo_depth) / 8)))
      {
-       meminfo_grow(-1);
+       meminfo_grow(-((gdata.meminfo_depth+1)/2) - 0);
      }
    
    return;
