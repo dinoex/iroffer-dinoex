@@ -511,11 +511,13 @@ static void meminfo_grow(int grow)
   meminfo_t *newmeminfo;
   unsigned int cc;
   unsigned int dd;
+  unsigned int meminfo_depth_grow;
   size_t len;
   int i;
   int start;
 
-  len = MEMINFOHASHSIZE * sizeof(meminfo_t) * (gdata.meminfo_depth+grow);
+  meminfo_depth_grow = gdata.meminfo_depth+grow;
+  len = MEMINFOHASHSIZE * sizeof(meminfo_t) * (meminfo_depth_grow);
   newmeminfo = calloc(len,1);
   
   /* replace zero entry */
@@ -548,11 +550,11 @@ static void meminfo_grow(int grow)
           if (gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr)
             {
               /* find new location */
-              start = mycalloc_hash(gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr) * (gdata.meminfo_depth+grow);
+              start = mycalloc_hash(gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd].ptr) * (meminfo_depth_grow);
               
-              for (i=0; newmeminfo[(i+start)%(MEMINFOHASHSIZE * (gdata.meminfo_depth+grow))].ptr; i++) ;
+              for (i=0; newmeminfo[(i+start)%(MEMINFOHASHSIZE * (meminfo_depth_grow))].ptr; i++) ;
               
-              i = (i+start)%(MEMINFOHASHSIZE * (gdata.meminfo_depth+grow));
+              i = (i+start)%(MEMINFOHASHSIZE * (meminfo_depth_grow));
               
               newmeminfo[i] = gdata.meminfo[(cc*(gdata.meminfo_depth)) + dd];
             }
@@ -566,7 +568,7 @@ static void meminfo_grow(int grow)
     }
   
   gdata.meminfo = newmeminfo;
-  gdata.meminfo_depth += grow;
+  gdata.meminfo_depth = meminfo_depth_grow;
   
   if (gdata.debug > 0)
     {
