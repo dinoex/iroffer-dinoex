@@ -856,6 +856,15 @@ ir_uint64 timeval_to_ms(struct timeval *tv)
   return (((ir_uint64)(tv->tv_sec)) * 1000) + (((ir_uint64)(tv->tv_usec)) / 1000);
 }
 
+/* get current time in ms */
+ir_uint64 get_time_in_ms(void)
+{
+  struct timeval timestruct;
+
+  gettimeofday(&timestruct, NULL);
+  return timeval_to_ms(&timestruct);
+}
+
 /* get local date and time in ISO */
 char *user_getdatestr(char* str, time_t Tp, size_t len)
 {
