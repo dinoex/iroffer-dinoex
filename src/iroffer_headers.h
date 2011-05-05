@@ -715,7 +715,7 @@ void reverify_restrictsend(void);
 
 /* statefile.c */
 void write_statefile(void);
-void read_statefile(void);
+unsigned int read_statefile(void);
 
 /* dccchat.c */
 int setupdccchatout(const char *nick, const char *hostmask, const char *token);

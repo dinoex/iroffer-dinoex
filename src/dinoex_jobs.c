@@ -1030,7 +1030,7 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
   xd->mtime    = st.st_mtime;
 }
 
-void import_xdccfile(void)
+unsigned int import_xdccfile(void)
 {
   char *templine;
   char *word;
@@ -1043,8 +1043,9 @@ void import_xdccfile(void)
   char *xx_trno = NULL;
   FILE *fin;
   float val;
+  unsigned int found = 0;
   unsigned int part;
-  unsigned int err;
+  unsigned int err = 0;
   unsigned int step = 0;
   unsigned int xx_gets = 0;
   float xx_mins = 0.0;
@@ -1053,16 +1054,15 @@ void import_xdccfile(void)
   updatecontext();
 
   if (gdata.import == NULL)
-    return;
+    return found;
 
   fin = fopen(gdata.import, "r" ); /* NOTRANSLATE */
   if (fin == NULL) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access XDCC File '%s': %s", gdata.import, strerror(errno));
-    return;
+    return found;
   }
 
   templine = mymalloc(maxtextlength);
-  err = 0;
   while (!feof(fin)) {
     r = fgets(templine, maxtextlength - 1, fin);
     if (r == NULL )
@@ -1109,6 +1109,7 @@ void import_xdccfile(void)
         xx_gets = 0;
         xx_mins = 0.0;
         xx_maxs = 0.0;
+        ++found;
       }
       continue;
     }
@@ -1175,13 +1176,13 @@ void import_xdccfile(void)
   if (err > 0) {
     outerror(OUTERROR_TYPE_CRASH, "Error in XDCC File: %s", templine);
     mydelete(templine);
-    return;
+    return found;
   }
   mydelete(templine)
 
   if (step == 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Empty XDCC File");
-    return;
+    return found;
   }
   if (xx_file != NULL) {
     import_pack(xx_file, xx_desc, xx_note, xx_gets, xx_mins, xx_maxs, xx_data, xx_trno);
@@ -1190,7 +1191,9 @@ void import_xdccfile(void)
     mydelete(xx_note);
     mydelete(xx_data);
     mydelete(xx_trno);
+    ++found;
   }
+  return found;
 }
 
 void autotrigger_add(xdcc *xd)
