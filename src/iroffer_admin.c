@@ -284,8 +284,6 @@ static void u_fillwith_clean (userinput * const u)
 static void u_runcmd(userinput * const u)
 {
 #ifdef DEBUG
-  struct timeval timestruct1;
-  struct timeval timestruct2;
   ir_uint64 ms1;
   ir_uint64 ms2;
 #endif /* DEBUG */
@@ -293,7 +291,7 @@ static void u_runcmd(userinput * const u)
   int i;
 
 #ifdef DEBUG
-  gettimeofday(&timestruct1, NULL);
+  ms1 = get_time_in_ms();
 #endif /* DEBUG */
   for (i=0; i < (int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
     if (u->level < userinput_parse[i].level)
@@ -323,11 +321,10 @@ static void u_runcmd(userinput * const u)
     userinput_parse[i].handler(u);
 
 #ifdef DEBUG
-    gettimeofday(&timestruct2, NULL);
-    ms1 = timeval_to_ms(&timestruct1);
-    ms2 = timeval_to_ms(&timestruct2);
+    ms2 = get_time_in_ms();
     if (gdata.debug > 0)
-      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s running: %ld ms", u->cmd, (long)(ms2 - ms1));
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "ADMIN %s"
+              " running: %ld ms", u->cmd, (long)(ms2 - ms1));
 #endif /* DEBUG */
     return;
   }

@@ -67,6 +67,7 @@ char *getpart(const char *line, unsigned int howmany);
 char *getpart_eol(const char *line, unsigned int howmany);
 unsigned int convert_spaces_to_match(char *str);
 ir_uint64 timeval_to_ms(struct timeval *tv);
+ir_uint64 get_time_in_ms(void);
 char *user_getdatestr(char* str, time_t Tp, size_t len);
 
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b));
