@@ -337,7 +337,7 @@ static statefile_hdr_t* read_statefile_item(ir_uint32 **buffer, ir_uint32 *buffe
 }
 
 
-void read_statefile(void)
+unsigned int read_statefile(void)
 {
   int fd;
   ir_uint32 *buffer, *buffer_begin;
@@ -347,6 +347,7 @@ void read_statefile(void)
   struct stat st;
   statefile_hdr_t *hdr;
   ir_uint32 calluval;
+  unsigned int save = 0;
   int callval;
   time_t timestamp = 0;
   
@@ -354,7 +355,7 @@ void read_statefile(void)
   
   if (gdata.statefile == NULL)
     {
-      return;
+      return save;
     }
   
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Loading State File... ");
@@ -367,14 +368,14 @@ void read_statefile(void)
     {
       outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access State File '%s': %s",
                gdata.statefile, strerror(errno));
-      return;
+      return ++save;
     }
   
   if ((fstat(fd, &st) < 0) || (st.st_size < ((off_t)(sizeof(ir_uint32) * 2) + (off_t)(sizeof(MD5Digest)))))
     {
       ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "State File: Too small, Skipping");
       close(fd);
-      return;
+      return ++save;
     }
   
   buffer_len = st.st_size;
@@ -479,6 +480,7 @@ void read_statefile(void)
                 {
                   char *statefile_tmp;
                   char *statefile_date;
+                  ++save;
                   statefile_date = mycalloc(maxtextlengthshort);
                   getdatestr(statefile_date, 0, maxtextlengthshort);
                   statefile_tmp = mystrjoin(gdata.statefile, statefile_date, '.');
@@ -830,7 +832,7 @@ void read_statefile(void)
   
   mydelete(buffer_begin);
   
-  return;
+  return save;
 }
 
 

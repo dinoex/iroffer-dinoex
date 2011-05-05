@@ -1563,6 +1563,7 @@ void startupiroffer(void) {
    struct rlimit rlim;
    int callval;
    unsigned int ss;
+   unsigned int save;
    
    updatecontext();
    
@@ -1782,11 +1783,12 @@ void startupiroffer(void) {
    
    if (gdata.statefile)
      {
-       read_statefile();
-       start_main_queue();
-       import_xdccfile();
-       write_statefile();
+       save = read_statefile();
+       save += import_xdccfile();
+       if (save > 0)
+         write_statefile();
        autotrigger_rebuild();
+       start_main_queue();
      }
    
    /* fork to background if in background mode */
