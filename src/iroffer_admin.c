@@ -2195,7 +2195,7 @@ void u_listdir(const userinput * const u, const char *dir)
   DIR *d;
   struct dirent *f;
   char *thefile, *tempstr;
-  irlist_t dirlist = {0, 0};
+  irlist_t dirlist = {0, 0, 0};
   int thedirlen;
   
   updatecontext();

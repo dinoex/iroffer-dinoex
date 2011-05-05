@@ -1210,7 +1210,7 @@ void dump_slow_context(void)
       offset = c->tv.tv_sec - last->tv.tv_sec;
       offset *= 1000000;
       offset += c->tv.tv_usec - last->tv.tv_usec;
-      if (offset > 271000) {
+      if (offset > 171000) {
         ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
         show = 1;
       }

@@ -122,6 +122,7 @@ typedef struct irlist_item_t2
 typedef struct
 {
   irlist_item_t *head;
+  irlist_item_t *tail;
   unsigned int size;
   unsigned int dummy;
 } irlist_t;

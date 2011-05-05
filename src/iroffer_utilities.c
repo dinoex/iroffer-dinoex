@@ -1740,10 +1740,15 @@ void irlist_insert_head(irlist_t *list, void *item)
   if (!list->size)
     {
       assert(!list->head);
+      assert(!list->tail);
+      
+      list->tail = iitem;
     }
   else
     {
       assert(list->head);
+      assert(list->tail);
+      assert(!list->tail->next);
     }
   
   iitem->next = list->head;
@@ -1752,20 +1757,6 @@ void irlist_insert_head(irlist_t *list, void *item)
   list->size++;
   
   return;
-}
-
-static void *irlist_loop_tail(const irlist_t *list)
-{
-  irlist_item_t *tail;
-  irlist_item_t *test;
-
-  tail = NULL;
-  test = list->head;
-  while (test != NULL) {
-    tail = test;
-    test = tail->next;
-  }
-  return tail;
 }
 
 static void *irlist_loop_match(const irlist_t *list, irlist_item_t *match) 
@@ -1787,7 +1778,6 @@ static void *irlist_loop_match(const irlist_t *list, irlist_item_t *match)
 void irlist_insert_tail(irlist_t *list, void *item)
 {
   irlist_item_t *iitem = IRLIST_EXT_TO_INT(item);
-  irlist_item_t *tail;
   
   updatecontext();
   
@@ -1796,19 +1786,20 @@ void irlist_insert_tail(irlist_t *list, void *item)
   if (!list->size)
     {
       assert(!list->head);
+      assert(!list->tail);
       
       list->head = iitem;
     }
   else
     {
       assert(list->head);
-      tail = irlist_loop_tail(list);
-      assert(tail);
-      assert(!tail->next);
-      tail->next = iitem;
+      assert(list->tail);
+      assert(!list->tail->next);
+      list->tail->next = iitem;
     }
   
   iitem->next = NULL;
+  list->tail = iitem;
   
   list->size++;
   
@@ -1828,6 +1819,11 @@ void irlist_insert_after(irlist_t *list, void *item, void *after_this)
   if (iafter->next)
     {
       iitem->next = iafter->next;
+    }
+  else
+    {
+      assert(list->tail == iafter);
+      list->tail = iitem;
     }
   
   iafter->next = iitem;
@@ -1863,12 +1859,18 @@ void* irlist_remove(irlist_t *list, void *item)
   
   assert(list->size > 0);
   assert(list->head);
+  assert(list->tail);
   
   next = iitem->next;
   
   if (list->head == iitem)
     {
       list->head = iitem->next;
+      if (list->tail == iitem)
+        {
+          assert(!iitem->next);
+          list->tail = NULL;
+        }
     }
   else
     {
@@ -1876,6 +1878,11 @@ void* irlist_remove(irlist_t *list, void *item)
       assert(tail);
       assert(tail->next == iitem);
       tail->next = iitem->next;
+      if (list->tail == iitem)
+        {
+          assert(!iitem->next);
+          list->tail = tail;
+        }
     }
   
   iitem->next = NULL;
@@ -1904,6 +1911,7 @@ void irlist_delete_all(irlist_t *list)
   
   assert(list->size == 0);
   assert(!list->head);
+  assert(!list->tail);
   
   return;
 }
@@ -1927,19 +1935,18 @@ void* irlist_get_head(const irlist_t *list)
 
 void* irlist_get_tail(const irlist_t *list)
 {
-  irlist_item_t *tail;
-  
   updatecontext();
   
-  if (list->head)
+  if (list->tail)
     {
       assert(list->size > 0);
-      tail = irlist_loop_tail(list);
-      return IRLIST_INT_TO_EXT(tail);
+      assert(list->head);
+      return IRLIST_INT_TO_EXT(list->tail);
     }
   else
     {
       assert(list->size == 0);
+      assert(!list->head);
       return NULL;
     }
 }
