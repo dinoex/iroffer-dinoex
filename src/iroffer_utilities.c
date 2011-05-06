@@ -513,8 +513,8 @@ static void meminfo_grow(int grow)
   unsigned int dd;
   unsigned int meminfo_depth_grow;
   size_t len;
-  int i;
-  int start;
+  unsigned long i;
+  unsigned long start;
 
   meminfo_depth_grow = gdata.meminfo_depth+grow;
   len = MEMINFOHASHSIZE * sizeof(meminfo_t) * (meminfo_depth_grow);
@@ -620,7 +620,7 @@ void* mymalloc2(size_t len, int zero,
 
 void mydelete2(void *t) {
    unsigned char *ut = (unsigned char *)t;
-   unsigned int i;
+   unsigned long i;
    unsigned long start;
    
    updatecontext();
