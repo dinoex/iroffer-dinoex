@@ -487,7 +487,7 @@ void vnotice(const char *nick, const char *format, va_list ap)
 
 size_t sstrlen (const char *p) {
    if (!p) return 0;
-   return ((int)(strlen(p)));
+   return (strlen(p));
    }
 
 
