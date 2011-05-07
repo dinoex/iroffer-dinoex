@@ -638,10 +638,10 @@ const char *strsignal(int sig);
 /* permanently add/delete items (includes malloc/free) */
 #ifndef WITHOUT_MEMSAVE
 #define irlist_add(x,y) irlist_add2(x,y,__FUNCTION__,__FILE__,__LINE__)
-void* irlist_add2(irlist_t *list, unsigned int size,
+void* irlist_add2(irlist_t *list, size_t size,
                   const char *src_function, const char *src_file, unsigned int src_line);
 #else
-void* irlist_add(irlist_t *list, unsigned int size);
+void* irlist_add(irlist_t *list, size_t size);
 #endif
 void* irlist_delete(irlist_t *list, void *item);
 void irlist_delete_all(irlist_t *list);
