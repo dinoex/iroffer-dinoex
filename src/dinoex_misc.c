@@ -901,7 +901,7 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist)
 }
 
 /* select a transfer to start with */
-int select_starting_transfer(unsigned int max)
+unsigned int select_starting_transfer(unsigned int max)
 {
   unsigned int t;
 
