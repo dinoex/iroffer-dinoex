@@ -1028,13 +1028,13 @@ static void irc_005(ir_parseline_t *ipl)
 static char *ir_get_nickarg(const char *line)
 {
   char* nick;
-  int j;
+  size_t len;
+  unsigned int j;
 
-  nick = mymalloc(strlen(line)+1);
-  j=1;
-  while(line[j] != '!' && j<sstrlen(line)) {
+  len = strlen(line);
+  nick = mymalloc(len + 1);
+  for (j=1; line[j] != '!' && j<len; j++) {
     nick[j-1] = line[j];
-    j++;
   }
   nick[j-1]='\0';
   return nick;

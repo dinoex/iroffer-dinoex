@@ -485,8 +485,8 @@ void vnotice(const char *nick, const char *format, va_list ap)
   writeserver_notice(WRITESERVER_NORMAL, nick, tempstr, len);
 }
 
-int sstrlen (const char *p) {
-   if (!p) return -1;
+size_t sstrlen (const char *p) {
+   if (!p) return 0;
    return ((int)(strlen(p)));
    }
 
@@ -516,7 +516,8 @@ static void meminfo_grow(int grow)
   unsigned long i;
   unsigned long start;
 
-  meminfo_depth_grow = gdata.meminfo_depth+grow;
+  meminfo_depth_grow = gdata.meminfo_depth;
+  meminfo_depth_grow += grow;
   len = MEMINFOHASHSIZE * sizeof(meminfo_t) * (meminfo_depth_grow);
   newmeminfo = calloc(len,1);
   
@@ -661,7 +662,7 @@ void mydelete2(void *t) {
    if ((gdata.meminfo_depth > 1) &&
        (gdata.meminfo_count < ((MEMINFOHASHSIZE * gdata.meminfo_depth) / 8)))
      {
-       meminfo_grow(-((gdata.meminfo_depth+1)/2) - 0);
+       meminfo_grow(-((int)((gdata.meminfo_depth+1)/2)));
      }
    
    return;
