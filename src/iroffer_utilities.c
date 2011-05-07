@@ -1708,10 +1708,10 @@ char* convert_to_unix_slash(char *ss)
 #define IRLIST_EXT_TO_INT_CONST(p) ((const irlist_item_t *)p - 1)
 
 #ifndef WITHOUT_MEMSAVE
-void* irlist_add2(irlist_t *list, unsigned int size,
+void* irlist_add2(irlist_t *list, size_t size,
                   const char *src_function, const char *src_file, unsigned int src_line)
 #else /* WITHOUT_MEMSAVE */
-void* irlist_add(irlist_t *list, unsigned int size)
+void* irlist_add(irlist_t *list, size_t size)
 #endif /* WITHOUT_MEMSAVE */
 {
   irlist_item_t *iitem;
