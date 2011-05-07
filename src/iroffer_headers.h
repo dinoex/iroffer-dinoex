@@ -597,7 +597,7 @@ void
 __attribute__ ((format(printf, 2, 0)))
 #endif
 vnotice(const char *nick, const char *format, va_list ap);
-int sstrlen (const char *p);
+size_t sstrlen (const char *p);
 void joinchannel(channel_t *c);
 void updatecontext_f(const char *file, const char *func, unsigned int line);
 void dumpcontext(void);
