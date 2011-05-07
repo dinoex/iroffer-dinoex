@@ -331,6 +331,7 @@ unsigned int cursendptr;
 unsigned int next_tr_id;
 unsigned int context_cur_ptr;
 unsigned int maxtrans;
+unsigned int idummy;
 
 int max_fds_from_rlimit;
 int logfd;
