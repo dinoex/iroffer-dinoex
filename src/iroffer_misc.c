@@ -811,7 +811,7 @@ static void iroffer_signal_handler(int signo)
 #endif
 #endif
         
-        gdata.crashing = 1;
+        gdata.crashing += 1;
         
         ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                 "!!! iroffer has received a fatal signal. !!!");
@@ -982,10 +982,12 @@ static void iroffer_signal_handler(int signo)
         
         ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Context Trace:");
         
+        if ( gdata.crashing == 1 ) {
         dumpcontext();
         dumpgdata();
         
         ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR, "Crashing... Please report this problem to dinoex");
+        }
         
         tostdout_disable_buffering();
         
