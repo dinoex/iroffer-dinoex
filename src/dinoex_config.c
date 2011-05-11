@@ -2446,6 +2446,8 @@ static void reset_config_func(void)
   unsigned int si;
   unsigned int ii;
 
+  updatecontext();
+
   for (si=0; si<MAX_NETWORKS; ++si) {
     for (ss = irlist_get_head(&gdata.networks[si].servers);
          ss;
@@ -2613,11 +2615,13 @@ void config_dump(void)
 /* reset config to default values */
 void config_reset(void)
 {
+  updatecontext();
+
+  reset_config_func();
   reset_config_bool();
   reset_config_int();
   reset_config_string();
   reset_config_list();
-  reset_config_func();
 }
 
 static size_t config_expand_search_typ(config_name_t config_name_f, const char *key, size_t len, const char **first)

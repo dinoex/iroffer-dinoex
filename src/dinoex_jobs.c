@@ -1791,6 +1791,7 @@ static void irlist_move(irlist_t *dest, irlist_t *src)
   *dest = *src;
   src->size = 0;
   src->head = NULL;
+  src->tail = NULL;
 }
 
 void a_rehash_prepare(void)
