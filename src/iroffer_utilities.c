@@ -1754,7 +1754,6 @@ void irlist_insert_head(irlist_t *list, void *item)
   
   iitem->next = list->head;
   list->head = iitem;
-assert(!list->tail);
   
   list->size++;
   
