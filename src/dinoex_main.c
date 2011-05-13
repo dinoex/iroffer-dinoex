@@ -132,13 +132,13 @@ void command_options(int argc, char *const *argv)
         gdata.import = cptr;
         break;
       case 'k': /* adjust core */
-        gdata.adjustcore = 1;
+        ++(gdata.adjustcore);
         break;
       case 'n': /* no color */
-        gdata.nocolor = 1;
+        ++(gdata.nocolor);
         break;
       case 's': /* no screen */
-        gdata.noscreen = 1;
+        ++(gdata.noscreen); 
         break;
 #if !defined(NO_CHROOT)
       case 't': /* chroot dir */
@@ -410,7 +410,7 @@ static void debug_memory(void)
   unsigned int j;
   unsigned int leak = 0;
 
-  gdata.crashing = 1; /* stop traceback */
+  ++(gdata.crashing); /* stop traceback */
   signal(SIGSEGV, SIG_DFL);
   free_state();
   free_config();

@@ -1532,7 +1532,7 @@ static xdcc *a_add2(const userinput * const u, const char *group)
 
   set_support_groups();
   xd->color = a_get_color(gdata.autoadd_color);
-  xd->announce = 1;
+  ++(xd->announce);
   write_files();
   return xd;
 }
@@ -2405,7 +2405,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
            xd = irlist_get_next(xd)) {
         if ((xd->st_dev == st.st_dev) &&
             (xd->st_ino == st.st_ino)) {
-          foundit = 1;
+          ++(foundit);
           if (check_for_renamed_file(u, xd, &st, tempstr)) {
             tempstr = NULL;
             break;
@@ -2425,7 +2425,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         if ((strcmp(u2->cmd, "ADD") == 0) &&
             (sta->st_dev == st.st_dev) &&
             (sta->st_ino == st.st_ino)) {
-          foundit = 1;
+          ++(foundit);
           a_respond(u, "  Ignoring queued file: %s", tempstr);
           break;
         }
@@ -4312,7 +4312,7 @@ void a_get(const userinput * const u)
     qu->q_time = gdata.curtime;
     a_respond(u, "GET %s started for %s on %s",
               qu->q_pack, qu->q_nick, gdata.networks[ qu->q_net ].name);
-    qu->q_state = 1;
+    ++(qu->q_state);
     start_qupload();
     return;
   }
@@ -4596,8 +4596,8 @@ void a_join(const userinput * const u)
   ch = irlist_add(&(gnetwork->channels), sizeof(channel_t));
   caps(u->arg1);
   ch->name = mystrdup(u->arg1);
-  ch->noannounce = 1;
-  ch->notrigger = 1;
+  ++(ch->noannounce);
+  ++(ch->notrigger);
   ch->nextjoin = gdata.curtime;
   if (u->arg3)
     ch->key = mystrdup(u->arg3);
@@ -4874,7 +4874,7 @@ void a_backgroud(const userinput * const u)
   tostdout_disable_buffering();
   uninitscreen();
 
-  gdata.background = 1;
+  ++(gdata.background);
   gobackground();
 
   if (gdata.pidfile)
@@ -5457,7 +5457,8 @@ void a_noannounce(const userinput * const u)
 
 void a_restart(const userinput * const UNUSED(u))
 {
-  gdata.needrestart = 1;
+  ++(gdata.needsshutdown);
+  ++(gdata.needrestart);
 }
 
 /* End of File */

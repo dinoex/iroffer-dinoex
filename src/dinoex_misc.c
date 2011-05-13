@@ -151,7 +151,7 @@ void set_support_groups(void)
        xd;
        xd = irlist_get_next(xd)) {
     if (xd->group != NULL) {
-      gdata.support_groups = 1;
+      ++(gdata.support_groups);
       return;
     }
   }
@@ -1077,7 +1077,7 @@ void auto_rehash(void)
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "File '%s' has changed",
              gdata.configfile[h]);
-    gdata.needsrehash = 1;
+    ++(gdata.needsrehash);
   }
 }
 

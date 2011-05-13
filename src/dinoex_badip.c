@@ -104,7 +104,7 @@ static void count_badip4(ir_uint32 remoteip)
   b->remoteip = remoteip;
   b->connecttime = gdata.curtime;
   b->lastcontact = gdata.curtime;
-  b->count = 1;
+  ++(b->count);
 }
 
 static void count_badip6(struct in6_addr *remoteip)
@@ -125,7 +125,7 @@ static void count_badip6(struct in6_addr *remoteip)
   b->remoteip = *remoteip;
   b->connecttime = gdata.curtime;
   b->lastcontact = gdata.curtime;
-  b->count = 1;
+  ++(b->count);
 }
 
 /* update counters for abusive ips */

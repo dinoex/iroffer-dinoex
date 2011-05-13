@@ -1842,11 +1842,11 @@ static char *h_bad_request(http * const h)
     return header;
   }
   if (strcasecmp(request, "POST" ) == 0) { /* NOTRANSLATE */
-    h->post = 1;
+    ++(h->post);
     return header;
   }
   if (strcasecmp(request, "HEAD" ) == 0) { /* NOTRANSLATE */
-    h->head = 1;
+    ++(h->head);
     return header;
   }
   return NULL;

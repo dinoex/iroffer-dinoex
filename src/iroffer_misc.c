@@ -811,7 +811,7 @@ static void iroffer_signal_handler(int signo)
 #endif
 #endif
         
-        gdata.crashing += 1;
+        ++(gdata.crashing);
         
         ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                 "!!! iroffer has received a fatal signal. !!!");
