@@ -5458,7 +5458,6 @@ void a_noannounce(const userinput * const u)
 void a_restart(const userinput * const UNUSED(u))
 {
   gdata.needrestart = 1;
-  shutdowniroffer();
 }
 
 /* End of File */
