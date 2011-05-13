@@ -2004,7 +2004,7 @@ static void u_shutdown(const userinput * const u) {
       }
    
    if (!strcmp(u->arg1,"NOW")) {
-      shutdowniroffer();
+      gdata.needsshutdown = 1;
       }
    else if (!strcmp(u->arg1,"DELAYED")) {
       u_respond(u,"Delayed shutdown activated, iroffer will shutdown once there are no active transfers");

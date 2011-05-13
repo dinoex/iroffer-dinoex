@@ -289,6 +289,11 @@ static void mainloop (void) {
          changemin = 1;
          }
       
+      if (gdata.needrestart)
+        {
+          shutdowniroffer();
+        }
+      
       if (gdata.needsshutdown)
         {
           gdata.needsshutdown = 0;
