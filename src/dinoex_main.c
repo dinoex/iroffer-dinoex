@@ -138,7 +138,7 @@ void command_options(int argc, char *const *argv)
         ++(gdata.nocolor);
         break;
       case 's': /* no screen */
-        ++(gdata.noscreen); 
+        ++(gdata.noscreen);
         break;
 #if !defined(NO_CHROOT)
       case 't': /* chroot dir */
