@@ -602,7 +602,7 @@ void irc_resolved(void)
   int status;
 
   while ((child = waitpid(-1, &status, WNOHANG)) > 0) {
-    for (ss=0; ss<gdata.networks_online; ss++) {
+    for (ss=0; ss<gdata.networks_online; ++ss) {
       if (child != gdata.networks[ss].serv_resolv.child_pid)
         continue;
 
@@ -975,7 +975,7 @@ static void irc_005(ir_parseline_t *ipl)
   unsigned int ii = 4;
   char *item;
 
-  while((item = getpart(ipl->line, ii++))) {
+  while((item = getpart(ipl->line, ++ii))) {
     if (item[0] == ':') {
       mydelete(item);
       break;
@@ -986,16 +986,16 @@ static void irc_005(ir_parseline_t *ipl)
       unsigned int pi;
 
       memset(&(gnetwork->prefixes), 0, sizeof(gnetwork->prefixes));
-      for (pi = 0; (ptr[pi] && (ptr[pi] != ')') && (pi < MAX_PREFIX)); pi++) {
+      for (pi = 0; (ptr[pi] && (ptr[pi] != ')') && (pi < MAX_PREFIX)); ++pi) {
         gnetwork->prefixes[pi].p_mode = ptr[pi];
       }
       if (ptr[pi] == ')') {
         ptr += pi + 1;
-        for (pi = 0; (ptr[pi] && (pi < MAX_PREFIX)); pi++) {
+        for (pi = 0; (ptr[pi] && (pi < MAX_PREFIX)); ++pi) {
           gnetwork->prefixes[pi].p_symbol = ptr[pi];
         }
       }
-      for (pi = 0; pi < MAX_PREFIX; pi++) {
+      for (pi = 0; pi < MAX_PREFIX; ++pi) {
         if ((gnetwork->prefixes[pi].p_mode && !gnetwork->prefixes[pi].p_symbol) ||
            (!gnetwork->prefixes[pi].p_mode && gnetwork->prefixes[pi].p_symbol)) {
           outerror(OUTERROR_TYPE_WARN,
@@ -1012,7 +1012,7 @@ static void irc_005(ir_parseline_t *ipl)
       unsigned int cm;
 
       memset(&(gnetwork->chanmodes), 0, sizeof(gnetwork->chanmodes));
-      for (ci = cm = 0; (ptr[ci] && (cm < MAX_CHANMODES)); ci++) {
+      for (ci = cm = 0; (ptr[ci] && (cm < MAX_CHANMODES)); ++ci) {
         if (ptr[ci+1] == ',')
                      {
                        /* we only care about ones with arguments */
@@ -1033,7 +1033,7 @@ static char *ir_get_nickarg(const char *line)
 
   len = strlen(line);
   nick = mymalloc(len + 1);
-  for (j=1; line[j] != '!' && j<len; j++) {
+  for (j=1; line[j] != '!' && j<len; ++j) {
     nick[j-1] = line[j];
   }
   nick[j-1]='\0';
@@ -1130,7 +1130,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
         /* generate new nick and retry */
         writeserver(WRITESERVER_NORMAL, "NICK %s%u",
                     get_config_nick(),
-                    gnetwork->nick_number++);
+                    (gnetwork->nick_number)++);
       }
     }
     return;
@@ -1165,7 +1165,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
            ch = irlist_get_next(ch)) {
         if (strcmp(ipl->part[4], ch->name) != 0)
           continue;
-        for (i=0; (t = getpart(ipl->line, 6+i)); i++) {
+        for (i=0; (t = getpart(ipl->line, 6+i)); ++i) {
           addtomemberlist(ch, i == 0 ? t+1 : t);
           mydelete(t);
         }
@@ -1239,16 +1239,16 @@ static void ir_parseline2(ir_parseline_t *ipl)
 
         plus = 0;
         part = 5;
-        for (ptr = ipl->part[3]; *ptr; ptr++) {
+        for (ptr = ipl->part[3]; *ptr; ++ptr) {
           if (*ptr == '+') {
             plus = 1;
           } else if (*ptr == '-') {
             plus = 0;
           } else {
-            for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_mode); ii++) {
+            for (ii = 0; (ii < MAX_PREFIX && gnetwork->prefixes[ii].p_mode); ++ii) {
               if (*ptr == gnetwork->prefixes[ii].p_mode) {
                 /* found a nick mode */
-                nick = getpart(ipl->line, part++);
+                nick = getpart(ipl->line, ++part);
                 if (nick) {
                   if (nick[strlen(nick)-1] == IRCCTCP) {
                     nick[strlen(nick)-1] = '\0';
@@ -1266,10 +1266,10 @@ static void ir_parseline2(ir_parseline_t *ipl)
                 break;
               }
             }
-            for (ii = 0; (ii < MAX_CHANMODES && gnetwork->chanmodes[ii]); ii++) {
+            for (ii = 0; (ii < MAX_CHANMODES && gnetwork->chanmodes[ii]); ++ii) {
               if (*ptr == gnetwork->chanmodes[ii]) {
                 /* found a channel mode that has an argument */
-                part++;
+                ++part;
                 break;
               }
             }
@@ -1495,7 +1495,7 @@ void irc_perform(int changesec)
   int timeout;
 
   updatecontext();
-  for (ss=0; ss<gdata.networks_online; ss++) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
 
     if (gdata.needsswitch) {
@@ -1527,17 +1527,17 @@ void irc_perform(int changesec)
         }
 
         j = strlen(gnetwork->server_input_line);
-        for (i=0; i<(unsigned int)length; i++) {
+        for (i=0; i<(unsigned int)length; ++i) {
           if ((tempbuffa[i] == '\n') || (j == (INPUT_BUFFER_LENGTH-1))) {
             if (j && (gnetwork->server_input_line[j-1] == 0x0D)) {
-              j--;
+              --j;
             }
             gnetwork->server_input_line[j] = '\0';
             ir_parseline(gnetwork->server_input_line);
             j = 0;
           } else {
             gnetwork->server_input_line[j] = tempbuffa[i];
-            j++;
+            ++j;
           }
         }
         gnetwork->server_input_line[j] = '\0';

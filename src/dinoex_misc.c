@@ -1104,7 +1104,7 @@ void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, si
 
   for (;;) {
     len = 0;
-    for (j=0; j<16; j++) {
+    for (j=0; j<16; ++j) {
       if (j >= max) {
         len += snprintf(buffer + len, maxtextlength - len, "   "); /* NOTRANSLATE */
       } else {
@@ -1112,7 +1112,7 @@ void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, si
       }
     }
     len += snprintf(buffer + len, maxtextlength - len, " \""); /* NOTRANSLATE */
-    for (j=0; j<16; j++) {
+    for (j=0; j<16; ++j) {
       if (j >= max)
         break;
       len += snprintf(buffer + len, maxtextlength - len, "%c", onlyprintable(ut[j])); /* NOTRANSLATE */
@@ -1201,7 +1201,7 @@ void dump_slow_context(void)
   last = NULL;
   lastline = mymalloc(maxtextlength);
   lastline[0] = 0;
-  for (i=0; i<MAXCONTEXTS; i++) {
+  for (i=0; i<MAXCONTEXTS; ++i) {
     c = &gdata.context_log[(gdata.context_cur_ptr + 1 + i) % MAXCONTEXTS];
     if (c->file == NULL)
       continue;

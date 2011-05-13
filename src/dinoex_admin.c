@@ -354,7 +354,7 @@ void a_xdl_full(const userinput * const u)
   s = a_xdl_space();
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
-       xd = irlist_get_next(xd), i++) {
+       xd = irlist_get_next(xd), ++i) {
     if (hide_locked(u, xd) == 0)
       a_xdl_pack(u, tempstr, i, l, s, xd);
   }
@@ -386,7 +386,7 @@ void a_xdl_group(const userinput * const u)
   xd = irlist_get_head(&gdata.xdccs);
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
-       xd = irlist_get_next(xd), i++) {
+       xd = irlist_get_next(xd), ++i) {
     if (msg3 == NULL) {
       if (xd->group != NULL)
         continue;
@@ -405,7 +405,7 @@ void a_xdl_group(const userinput * const u)
       continue;
 
     a_xdl_pack(u, tempstr, i, l, s, xd);
-    k++;
+    ++k;
   }
   mydelete(tempstr);
 
@@ -438,7 +438,7 @@ void a_xdl(const userinput * const u)
   i = 1;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
-       xd = irlist_get_next(xd), i++) {
+       xd = irlist_get_next(xd), ++i) {
     /* skip is group is set */
     if (xd->group == NULL) {
       if (hide_locked(u, xd) == 0)
