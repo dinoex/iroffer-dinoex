@@ -310,12 +310,12 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
 
   tempx = get_xdcc_pack(pack);
 
+  man = 0;
   if (hostname != NULL) {
     hostname2 = hostname;
-    man = 0;
   } else {
     hostname2 = "man"; /* NOTRANSLATE */
-    man = 1;
+    ++man;
   }
 
   inq = 0;

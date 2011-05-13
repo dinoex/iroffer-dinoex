@@ -163,7 +163,7 @@ static void read_statefile_md5info(statefile_hdr_t *hdr, const char *tag, xdcc *
     statefile_item_md5sum_info32_t *md5sum_info = (statefile_item_md5sum_info32_t*)hdr;
     ir_uint32 netval = 0;
 
-    xd->has_md5sum = 1;
+    ++(xd->has_md5sum);
     xd->st_size = (off_t)((((ir_uint64)ntohl(md5sum_info->st_size.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_size.lower)));
     xd->st_dev  = (dev_t)((((ir_uint64)ntohl(md5sum_info->st_dev.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_dev.lower)));
     xd->st_ino  = (ino_t)((((ir_uint64)ntohl(md5sum_info->st_ino.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_ino.lower)));
@@ -175,7 +175,7 @@ static void read_statefile_md5info(statefile_hdr_t *hdr, const char *tag, xdcc *
   if (hdr->length == sizeof(statefile_item_md5sum_info64_t)) {
     statefile_item_md5sum_info64_t *md5sum_info = (statefile_item_md5sum_info64_t*)hdr;
 
-    xd->has_md5sum = 1;
+    ++(xd->has_md5sum);
     xd->st_size = (off_t)((((ir_uint64)ntohl(md5sum_info->st_size.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_size.lower)));
     xd->st_dev  = (dev_t)((((ir_uint64)ntohl(md5sum_info->st_dev.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_dev.lower)));
     xd->st_ino  = (ino_t)((((ir_uint64)ntohl(md5sum_info->st_ino.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_ino.lower)));

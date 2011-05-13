@@ -951,7 +951,7 @@ static void irc_001(ir_parseline_t *ipl)
   caps(gnetwork->caps_nick);
   gnetwork->nick_number = 0;
   gnetwork->next_restrict = gdata.curtime + gdata.restrictsend_delay;
-  gdata.needsclear = 1;
+  ++(gdata.needsclear);
 
   tptr = get_user_modes();
   if (tptr && tptr[0]) {
@@ -1381,7 +1381,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
         gnetwork->caps_nick = mystrdup(part3a);
         caps(gnetwork->caps_nick);
         gnetwork->nick_number = 0;
-        gdata.needsclear = 1;
+        ++(gdata.needsclear);
         identify_needed(0);
       } else {
         /* someone else has a new nick */

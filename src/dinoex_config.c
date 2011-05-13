@@ -1553,7 +1553,7 @@ static void c_network(const char * UNUSED(key), char *var)
     if (bracket != NULL) {
       *(bracket++) = 0;
       if (strchr(bracket, '{') != NULL)
-        current_bracket = 1;
+        ++(current_bracket);
     }
     /* check if the given network does exist */
     for (ss=0; ss < MAX_NETWORKS; ++ss) {
