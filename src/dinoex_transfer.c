@@ -158,9 +158,12 @@ void t_notice_transfer(transfer * const tr, const char *msg, unsigned int pack, 
   if (gdata.quietmode)
      return;
 
+  if (pack == XDCC_SEND_LIST)
+     return;
+
   if (msg != NULL) {
     notice_transfer(tr->nick, tr->xpack, msg);
-     return;
+    return;
   }
 
   tempstr = mymalloc(maxtextlength);
