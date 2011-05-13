@@ -955,12 +955,12 @@ void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
     nmerges = 0; /* count number of merges we do in this pass */
 
     while (p) {
-      nmerges++;  /* there exists a merge to be done */
+      ++nmerges;  /* there exists a merge to be done */
       /* step `insize' places along from p */
       q = p;
       psize = 0;
-      for (i = 0; i < insize; i++) {
-        psize++;
+      for (i = 0; i < insize; ++i) {
+        ++psize;
         q = irlist_get_next(q);
         if (!q) break;
       }

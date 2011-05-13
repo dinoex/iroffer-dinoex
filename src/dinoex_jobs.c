@@ -2258,7 +2258,7 @@ void delayed_announce(void)
   packnum = 1;
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
-       xd = irlist_get_next(xd), packnum++) {
+       xd = irlist_get_next(xd), ++packnum) {
     if (xd->announce == 0)
       continue;
 
@@ -2315,7 +2315,7 @@ static ir_uint32 get_zip_crc32_buffer(char *buffer)
   ir_uint32 zipcrc32;
   unsigned int i;
 
-  for (i=0; magic_crc_table[i].len > 0; i++) {
+  for (i=0; magic_crc_table[i].len > 0; ++i) {
     if (memcmp(buffer, magic_crc_table[i].magic, magic_crc_table[i].len) != 0)
       continue;
     zipcrc32 = 0;

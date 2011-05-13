@@ -2637,7 +2637,7 @@ static size_t config_expand_search_typ(config_name_t config_name_f, const char *
     if (strncmp(name, key, len))
       continue;
 
-    found++;
+    ++found;
     if (*first == NULL) *first = name;
   }
   return found;
