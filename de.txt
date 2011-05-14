@@ -1062,7 +1062,6 @@
 1385 "(%li Sekunden bis zum Abbruch)"
 1386 "Dein Download ist mit %2.1fK/sec ist zu langsam, mindestens %2.1fK/sec erforderlich"
 1387 "Du wirst wegen zu langsamen Download bestratft"
-1388 "** Du wurdest aus der Warteschlange entfernt: Strafe für zu langsame Übertragung"
 1390 "Punish-ignore activated for (%s on %s) (%s) %u minutes"
 1391 "Zur Strafe wirst du %s (%s) für %u Minuten ignoriert."
 1392 "Cant Stat Upload File '%s': %s"
@@ -1865,3 +1864,4 @@
 2792 "Iroffer was blocked for %lims"
 2793 " running: %ld ms"
 2794 "Startup"
+2795 "** Du wurdest aus der Warteschlange entfernt: %s"

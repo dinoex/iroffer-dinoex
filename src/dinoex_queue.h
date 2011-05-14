@@ -15,7 +15,7 @@
 
 void queue_update_nick(irlist_t *list, const char *oldnick, const char *newnick);
 void queue_reverify_restrictsend(irlist_t *list);
-void queue_punishslowusers(irlist_t *list, unsigned int network, const char *nick);
+void queue_punish_abuse(const char *msg, unsigned int network, const char *nick);
 unsigned int queue_xdcc_remove(irlist_t *list, unsigned int network, const char *nick, unsigned int number);
 void queue_pack_limit(irlist_t *list, xdcc *xd);
 void queue_pack_remove(irlist_t *list, xdcc *xd);

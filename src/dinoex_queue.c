@@ -112,8 +112,8 @@ void queue_pack_limit(irlist_t *list, xdcc *xd)
   }
 }
 
-/* remove all packs a user has because of his slowness */
-void queue_punishslowusers(irlist_t *list, unsigned int network, const char *nick)
+/* remove all packs a user has */
+static void queue_punish_user(irlist_t *list, const char *msg, unsigned int network, const char *nick)
 {
   gnetwork_t *backup;
   ir_pqueue *pq;
@@ -130,12 +130,19 @@ void queue_punishslowusers(irlist_t *list, unsigned int network, const char *nic
 
     backup = gnetwork;
     gnetwork = &(gdata.networks[pq->net]);
-    notice(nick, "** Removed From Queue: You are being punished for your slowness");
+    notice(nick, "** Removed From Queue: %s", msg );
     gnetwork = backup;
     mydelete(pq->nick);
     mydelete(pq->hostname);
     pq = irlist_delete(list, pq);
   }
+}
+
+/* remove all packs a user has because he has abused the bot */
+void queue_punish_abuse(const char *msg, unsigned int network, const char *nick)
+{
+  queue_punish_user(&gdata.mainqueue, msg, network, nick);
+  queue_punish_user(&gdata.idlequeue, msg, network, nick);
 }
 
 /* remove all packs a user has because he send us XDCC REMOVE */

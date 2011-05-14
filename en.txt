@@ -1062,7 +1062,6 @@
 1385 "(%li seconds remaining until timeout)"
 1386 "Under Min Speed Requirement, %2.1fK/sec is less than %2.1fK/sec"
 1387 "You are being punished for your slowness"
-1388 "** Removed From Queue: You are being punished for your slowness"
 1390 "Punish-ignore activated for (%s on %s) (%s) %u minutes"
 1391 "Punish-ignore activated for %s (%s) %u minutes"
 1392 "Cant Stat Upload File '%s': %s"
@@ -1865,3 +1864,4 @@
 2792 "Iroffer was blocked for %lims"
 2793 " running: %ld ms"
 2794 "Startup"
+2795 "** Removed From Queue: %s"
