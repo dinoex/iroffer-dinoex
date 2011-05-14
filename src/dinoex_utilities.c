@@ -71,14 +71,14 @@ char *mystrjoin(const char *str1, const char *str2, unsigned int delimiter)
 
   len1 = strlen(str1);
   max = len1 + strlen(str2) + 1;
-  if ((delimiter != 0 ) && (str1[len1] != (unsigned char)delimiter))
+  if ((delimiter != 0 ) && ((unsigned char)str1[len1] != (unsigned char)delimiter))
     ++max;
 #ifndef WITHOUT_MEMSAVE
   copy = (char *)mymalloc2(max, 0, src_function, src_file, src_line);
 #else /* WITHOUT_MEMSAVE */
   copy = mymalloc(max);
 #endif /* WITHOUT_MEMSAVE */
-  if ((delimiter != 0 ) && (str1[len1 - 1] != (unsigned char)delimiter)) {
+  if ((delimiter != 0 ) && ((unsigned char)str1[len1 - 1] != (unsigned char)delimiter)) {
     snprintf(copy, max, "%s%c%s", str1, delimiter, str2); /* NOTRANSLATE */
   } else {
     snprintf(copy, max, "%s%s", str1, str2); /* NOTRANSLATE */
