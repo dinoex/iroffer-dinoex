@@ -1062,7 +1062,6 @@
 1385 "(%li secondi rimanenti prima del timeout)"
 1386 "Sei al di sotto della Velocità Minima Richiesta, %2.1fK/sec è minore di %2.1fK/sec"
 1387 "Sei stato punito per la tua lentezza"
-1388 "** Rimosso Dalla Coda: Sei stato punito per la tua lentezza."
 1390 "Punish-ignore attivato per (%s on %s) (%s) %u minuti"
 1391 "Punish-ignore attivato per %s (%s) %u minuti"
 1392 "Impossibile verificare lo Stato del file di Upload '%s': %s"
@@ -1865,3 +1864,4 @@
 2792 "Iroffer was blocked for %lims"
 2793 " running: %ld ms"
 2794 "Startup"
+2795 "** Rimosso Dalla Coda: %s"

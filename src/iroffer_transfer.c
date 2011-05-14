@@ -858,8 +858,7 @@ void t_checkminspeed(transfer * const t) {
              }
          }
        
-       queue_punishslowusers(&gdata.mainqueue, t->net, t->nick);
-       queue_punishslowusers(&gdata.idlequeue, t->net, t->nick);
+       queue_punish_abuse("You are being punished for your slowness", t->net, t->nick);
        
        hostmask = to_hostmask( "*", t->hostname);
        ignore = get_ignore(hostmask);

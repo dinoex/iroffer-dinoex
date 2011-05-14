@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+bugfix: ignore_duplicate_ip
+  Remove user from queue too.
+
 372) statefile
   Startup and shutdown of the bot is now much faster.
 

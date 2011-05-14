@@ -1062,7 +1062,6 @@
 1385 "(%li secondes restantes jusqu'au TIMEOUT)"
 1386 "En dessous de la vitesse mini requise, %2.1fK/sec est inférieur à %2.1fK/sec"
 1387 "Vous allez être punis pour votre lenteur"
-1388 "** Enlevé de la file d'attente : Vous avez été puni pour votre lenteur **"
 1390 "Punish-ignore activé pour (%s sur %s) (%s) %u minutes"
 1391 "Punish-ignore activé pour %s (%s) %u minutes"
 1392 "Cant Stat Upload File '%s' : %s"
@@ -1865,3 +1864,4 @@
 2792 "Iroffer was blocked for %lims"
 2793 " exécutée : %ld ms"
 2794 "Startup"
+2795 "** Enlevé de la file d'attente : %s"

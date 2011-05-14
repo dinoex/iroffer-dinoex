@@ -459,6 +459,8 @@ static void t_check_duplicateip(transfer *const newtr)
       continue;
 
     t_closeconn(tr, "You are being punished for parallel downloads", 0);
+    queue_punish_abuse( "You are being punished for parallel downloads", tr->net, tr->nick);
+
     bhostmask = to_hostmask( "*", tr->hostname); /* NOTRANSLATE */
     ignore = get_ignore(bhostmask);
     ignore->flags |= IGN_IGNORING;
