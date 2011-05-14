@@ -987,7 +987,7 @@ ${msg} -n "${irt_seeinghow} ${irt_large} FD_SETSIZE ${irt_is}... "
 echo "${irheaders}
 FD_SETSIZE
 " > config.temp.c
-if $cctype -o config.temp.p -E $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+if $cctype -o config.temp.p -E $WARNS $WERROR $CFLAGS config.temp.c; then
  setsize=`tail -2 config.temp.p |grep -v "config.temp"`
  setsize="${setsize%U}"
  echo -n " $setsize"
