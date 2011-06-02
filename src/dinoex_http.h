@@ -44,6 +44,8 @@ typedef struct
   char *search;
   char *pattern;
   char *modified;
+  float maxspeed;
+  long tx_bucket;
   ssize_t left;
   unsigned int traffic;
   unsigned int status_code;
@@ -51,6 +53,8 @@ typedef struct
   unsigned int post;
   unsigned int head;
   unsigned int idummy;
+  char overlimit;
+  char unlimited;
 } http;
 
 typedef struct {
@@ -68,6 +72,6 @@ void h_close_listen(void);
 unsigned int h_setup_listen(void);
 void h_reash_listen(void);
 int h_select_fdset(int highests);
-void h_perform(int changesec);
+void h_perform(int changesec, int changequartersec);
 
 /* End of File */

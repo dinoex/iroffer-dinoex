@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+bugfix: http_dir
+  Count all files into maxspeed.
+
 bugfix: ignore_duplicate_ip
   Remove user from queue too.
 

@@ -1792,6 +1792,8 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char * UNU
       xd = get_xdcc_pack(pack);
       if (xd != NULL) {
         h->attachment = getfilename(xd->file);
+        ++(h->unlimited);
+        h->maxspeed = xd->maxspeed;
         h_readfile(h, xd->file);
         return;
       }
@@ -2077,13 +2079,37 @@ static void h_post(http * const h)
   h_parse(h, data);
 }
 
+static int h_bandwith(http * const h)
+{
+  unsigned int j;
+
+  /* max bandwidth start.... */
+  if (h->maxspeed > 0) {
+    if (h->tx_bucket < TXSIZE) {
+      h->overlimit = 1;
+      return 1; /* over transfer limit */
+    }
+  } else {
+    h->tx_bucket = TXSIZE * MAXTXPERLOOP;
+  }
+  j = gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE]
+    + gdata.xdccsent[(gdata.curtime-1)%XDCC_SENT_SIZE]
+    + gdata.xdccsent[(gdata.curtime-2)%XDCC_SENT_SIZE]
+    + gdata.xdccsent[(gdata.curtime-3)%XDCC_SENT_SIZE];
+  if ( gdata.maxb && (j >= gdata.maxb*1024)) {
+    if (h->unlimited == 0)
+      return 1; /* over overall limit */
+  }
+  h->overlimit = 0;
+  return 0;
+}
+
 static void h_send(http * const h)
 {
   off_t offset;
   char *data;
   size_t attempt;
   ssize_t howmuch, howmuch2;
-  long bucket;
   int errno2;
 
   updatecontext();
@@ -2095,9 +2121,11 @@ static void h_send(http * const h)
     }
   }
 
-  bucket = TXSIZE * MAXTXPERLOOP;
+  if (h_bandwith(h))
+    return;
+
   do {
-    attempt = min2(bucket - (bucket % TXSIZE), BUFFERSIZE);
+    attempt = min2(h->tx_bucket - (h->tx_bucket % TXSIZE), BUFFERSIZE);
     if (h->filedescriptor == FD_UNUSED) {
       howmuch = h->totalsize - h->bytessent;
       data = h->buffer_out + h->bytessent;
@@ -2139,11 +2167,11 @@ static void h_send(http * const h)
     }
 
     h->bytessent += howmuch2;
-    bucket -= howmuch2;
+    h->tx_bucket -= howmuch2;
     if (gdata.debug > 4)
       ioutput(OUT_S, COLOR_BLUE, "File %ld Write %ld", (long)howmuch, (long)howmuch2);
 
-  } while ((bucket >= TXSIZE) && (howmuch2 > 0));
+  } while ((h->tx_bucket >= TXSIZE) && (howmuch2 > 0));
 
   if (h->bytessent >= h->totalsize) {
     if (h->filedescriptor == FD_UNUSED) {
@@ -2166,7 +2194,7 @@ static void h_istimeout(http * const h)
 }
 
 /* process all HTTP connections */
-void h_perform(int changesec)
+void h_perform(int changesec, int changequartersec)
 {
   http *h;
   unsigned int i;
@@ -2176,6 +2204,16 @@ void h_perform(int changesec)
       if (FD_ISSET(http_listen[i], &gdata.readset)) {
         h_accept(i);
       }
+    }
+  }
+  if (changequartersec) {
+    for (h = irlist_get_head(&gdata.https);
+         h;
+         h = irlist_get_next(h)) {
+       if (h->maxspeed > 0) {
+         h->tx_bucket += h->maxspeed * (1024 / 4);
+         h->tx_bucket = min2(h->tx_bucket, MAX_TRANSFER_TX_BURST_SIZE * h->maxspeed * 1024);
+       }
     }
   }
   h = irlist_get_head(&gdata.https);
