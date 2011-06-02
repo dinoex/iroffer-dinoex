@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+bugfix: http_dir
+  Zähle alle Dateien bei der Berechnung des "maxspeed" mit.
+
 bugfix: ignore_duplicate_ip
   Entferne den Benutzer auch aus den Warteschlangen.
 

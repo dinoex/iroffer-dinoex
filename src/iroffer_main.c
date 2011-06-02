@@ -463,7 +463,7 @@ static void mainloop (void) {
       telnet_perform();
 #endif /* WITHOUT_TELNET */
 #ifndef WITHOUT_HTTP
-      h_perform(changesec);
+      h_perform(changesec, changequartersec);
 #endif /* WITHOUT_HTTP */
       
       /*----- time for a delayed shutdown? ----- */
