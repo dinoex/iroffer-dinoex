@@ -55,7 +55,7 @@ typedef struct
 
 typedef struct {
   char *m_ext;
-  const char *m_mime;
+  char *m_mime;
 } http_magic_t;
 
 #ifndef WITHOUT_HTTP
