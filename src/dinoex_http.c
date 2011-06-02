@@ -220,7 +220,7 @@ static const char *html_mime(const char *file)
   for (mime = irlist_get_head(&gdata.mime_type);
        mime;
        mime = irlist_get_next(mime)) {
-    if (strcasecmp(mime->m_ext, ext) != 0)
+    if (strcasecmp(mime->m_ext, ext) == 0)
       return mime->m_mime;
   }
 
