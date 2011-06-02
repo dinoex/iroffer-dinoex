@@ -1513,7 +1513,7 @@ static void c_mime_type(const char *key, char *var)
   *(split++) = 0;
   mime = irlist_add(&(gdata.mime_type), sizeof(http_magic_t));
   mime->m_ext = mystrdup(var);
-  mime->m_mime = split;
+  mime->m_mime = mystrdup(split);
 }
 
 static void d_mime_type(const char *key)
