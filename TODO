@@ -79,6 +79,7 @@ Short Term Features:
   1535  reduce queued message on batch
   1536  silent add
   1541  QSENDI for inactive Queue
+  1561  respondtochannellist per network/channel
 
 Long Term Features:
   1015  http admin
@@ -161,6 +162,9 @@ Long Term Features:
   1547  Monitor diskload and reduce slots
   1552  wildcards dirnames in autoadd_dir
   1555  easier color for announce
+  1558  suppress batch notices, suppress remove notices
+  1563  Restrict group admin access to DCLD and others
+  1567  Support netmap for line rate (14.88Mpps) on a 10GigE link 
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -226,4 +230,5 @@ Not going to happen anytime soon:
   1495  support for plowshare
   1525  user defined limits
   1543  native windows build with MINGW
+  1565  lock packs on fixed posion while sorting the rest
 
