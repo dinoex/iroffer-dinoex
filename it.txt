@@ -1798,7 +1798,6 @@
 2654 "Cancella le richieste al bot dal <Nick>"
 2655 "DELTRIGGER"
 2656 "Cancella il trigger per i pacchi da <n> a <m>"
-2661 "%d/%b/%Y:%T %Z"
 2662 "%s - - [%s] \"%s\" %u %ld\n"
 2663 "DISKFREE"
 2664 "Mostra lo spazio libero nella cartella upload"

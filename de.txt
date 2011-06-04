@@ -1798,7 +1798,6 @@
 2654 "Breche den Upload von Bot <nick> ab"
 2655 "DELTRIGGER"
 2656 "Entferne die Trigger von Paket <n> bis <m>"
-2661 "%d/%b/%Y:%T %Z"
 2662 "%s - - [%s] \"%s\" %u %ld\n"
 2663 "DISKFREE"
 2664 "Freien Paltz im Uploadverzeichnis anzeigen"

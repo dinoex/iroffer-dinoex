@@ -1798,7 +1798,6 @@
 2654 "Cancel Request for bot <nick>"
 2655 "DELTRIGGER"
 2656 "Delete trigger for pack <n> to <m>"
-2661 "%d/%b/%Y:%T %Z"
 2662 "%s - - [%s] \"%s\" %u %ld\n"
 2663 "DISKFREE"
 2664 "Shows free space in upload directory"

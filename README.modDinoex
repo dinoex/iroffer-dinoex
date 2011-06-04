@@ -3,7 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
-bugfix: http_dir
+bugfix: http_port
+  Force GMT to all Dates.
+
+273) http_dir
+  Support partial downloads and resume of files.
   Count all files into maxspeed.
 
 bugfix: ignore_duplicate_ip
