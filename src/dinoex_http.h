@@ -28,6 +28,8 @@ typedef struct
   off_t bytessent;
   off_t filepos;
   off_t totalsize;
+  off_t range_start;
+  off_t range_end;
   ir_connection_t con;
   int filedescriptor;
   http_status_e status;
@@ -44,6 +46,7 @@ typedef struct
   char *search;
   char *pattern;
   char *modified;
+  char *range;
   float maxspeed;
   long tx_bucket;
   ssize_t left;

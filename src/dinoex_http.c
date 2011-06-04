@@ -33,6 +33,8 @@
 
 #define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
 
+#define HTTP_DATE_LINE		"%a, %d %b %Y %T GMT"	/* NOTRANSLATE */
+
 typedef struct {
   const char *hg_group;
   const char *hg_desc;
@@ -54,19 +56,7 @@ static const char *http_header_status =
 "Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
 "Content-Type: %s\r\n" /* NOTRANSLATE */
 "Connection: close\r\n" /* NOTRANSLATE */
-"Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */
-"\r\n"; /* NOTRANSLATE */
-
-static const char *http_header_attachment =
-"HTTP/1.1 %u OK\r\n" /* NOTRANSLATE */
-"Date: %s\r\n" /* NOTRANSLATE */
-"Last-Modified: %s\r\n" /* NOTRANSLATE */
-"Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
-"Content-Type: %s\r\n" /* NOTRANSLATE */
-"Connection: close\r\n" /* NOTRANSLATE */
-"Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */
-"Content-Disposition: attachment; filename=\"%s\"\r\n" /* NOTRANSLATE */
-"\r\n"; /* NOTRANSLATE */
+"Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */;
 
 static const char *http_header_notfound =
 "HTTP/1.1 404 Not Found\r\n" /* NOTRANSLATE */
@@ -615,7 +605,7 @@ static void h_access_log(http * const h)
   localt = localtime(&gdata.curtime);
   tempstr = mymalloc(maxtextlength);
   date = mymalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, "%d/%b/%Y:%T %Z", localt);
+  strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt);
   bytes = h->bytesgot + h->bytessent;
   len = snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" %u %ld\n",
                  get_host(h), date, h->log_url, h->status_code, bytes);
@@ -664,6 +654,7 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   mydelete(h->search);
   mydelete(h->pattern);
   mydelete(h->modified);
+  mydelete(h->range);
   mydelete(h->buffer_out);
   mydelete(h->con.remoteaddr);
   h->status = HTTP_STATUS_DONE;
@@ -679,7 +670,7 @@ static void h_write_header(http * const h, const char *header)
   localt = gmtime(&gdata.curtime);
   tempstr = mymalloc(maxtextlength);
   date = mymalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); /* NOTRANSLATE */
+  strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt); /* NOTRANSLATE */
   len = snprintf(tempstr, maxtextlength, header, date);
   mydelete(date);
   send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
@@ -736,14 +727,14 @@ static void h_start_sending(http * const h)
   h->status = HTTP_STATUS_SENDING;
   if (gdata.debug > 1)
     ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
-            "HTTP '%s' response %ld bytes", h->url, (long)(h->totalsize));
+            "HTTP '%s' response %ld bytes", h->url, (long)(h->range_end - h->range_start));
 }
 
 static void h_error(http * const h, const char *header)
 {
   updatecontext();
 
-  h->totalsize = 0;
+  h->range_end = 0;
   h_write_header(h, header);
   h_start_sending(h);
 }
@@ -753,6 +744,43 @@ static void h_herror_404(http * const h)
   h->filedescriptor = FD_UNUSED;
   h->status_code = 404;
   h_error(h, http_header_notfound);
+}
+
+static int h_parse_range(http * const h)
+{
+  char *work;
+  char *base;
+
+  if (h->range == NULL)
+    return 0;
+
+  base = h->range;
+  work = strchr(base, '=');
+  if (work == NULL)
+    return 0;
+
+  *work = 0;
+  if (strcmp(h->range, "bytes") != 0 ) /* NOTRANSLATE */
+    return 0;
+
+  base = ++work;
+  work = strchr(base, '-');
+  if (work == NULL)
+    return 0;
+
+  *work = 0;
+  ++work;
+  h->range_start = atoull(base);
+  h->range_end = atoull(work);
+  if (h->range_end != 0) {
+    /* include last byte */
+    h->range_end += 1;
+    if (h->range_end >= h->totalsize)
+      h->range_end = h->totalsize;
+  } else { 
+    h->range_end = h->totalsize;
+  }
+  return 1;
 }
 
 static void h_write_status(http * const h, const char *mime, time_t *now)
@@ -766,28 +794,42 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
   tempstr = mymalloc(maxtextlength);
   localt = gmtime(&gdata.curtime);
   date = mymalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); /* NOTRANSLATE */
-  if (now && (h->status_code == 200)) {
-    last = mymalloc(maxtextlengthshort);
-    localt = gmtime(now);
-    strftime(last, maxtextlengthshort - 1, "%a, %d %b %Y %T %Z", localt); /* NOTRANSLATE */
-    if (h->modified) {
-      if (strcmp(last, h->modified) == 0) {
-        h->status_code = 304;
-        h->head = 1;
+  strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt); /* NOTRANSLATE */
+  if (h->status_code == 200) {
+    if (h_parse_range(h)) {
+      h->status_code = 206;
+    }
+    if (now) {
+      last = mymalloc(maxtextlengthshort);
+      localt = gmtime(now);
+      strftime(last, maxtextlengthshort - 1, HTTP_DATE_LINE, localt); /* NOTRANSLATE */
+      if (h->modified) {
+        if (strcmp(last, h->modified) == 0) {
+          h->status_code = 304;
+          h->head = 1;
+        }
       }
     }
   }
-  if (h->attachment)
-    len = snprintf(tempstr, maxtextlength, http_header_attachment, h->status_code, date, last ? last : date, html_mime(mime), h->totalsize, h->attachment);
-  else
-    len = snprintf(tempstr, maxtextlength, http_header_status, h->status_code, date, last ? last : date, html_mime(mime), h->totalsize);
+  len = snprintf(tempstr, maxtextlength, http_header_status, h->status_code, date, last ? last : date, html_mime(mime), h->range_end - h->range_start);
+  if (h->attachment) {
+    len += snprintf(tempstr + len, maxtextlength - len,
+                    "Content-Disposition: attachment; filename=\"%s\"\r\n", /* NOTRANSLATE */
+                    h->attachment);
+    len += snprintf(tempstr + len, maxtextlength - len,
+                    "Accept-Ranges: bytes\r\n" ); /* NOTRANSLATE */
+    if (h->range != NULL)
+      len += snprintf(tempstr + len, maxtextlength - len,
+                      "Content-Range: bytes %" LLPRINTFMT "u-%" LLPRINTFMT "u/%" LLPRINTFMT "u\r\n", /* NOTRANSLATE */
+                      h->range_start, h->range_end - 1, h->totalsize);
+  }
+  len += snprintf(tempstr + len, maxtextlength - len, "\r\n" ); /* NOTRANSLATE */
   mydelete(last);
   mydelete(date);
   send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
   mydelete(tempstr);
   if (h->head)
-    h->totalsize = 0;
+    h->range_end = 0;
 }
 
 static void h_readfile(http * const h, const char *file)
@@ -796,7 +838,6 @@ static void h_readfile(http * const h, const char *file)
 
   updatecontext();
 
-  h->bytessent = 0;
   if (file == NULL) {
     h_herror_404(h);
     return;
@@ -827,9 +868,11 @@ static void h_readfile(http * const h, const char *file)
     return;
   }
 
-  h->bytessent = 0;
+  h->range_start = 0;
   h->filepos = 0;
   h->totalsize = st.st_size;
+  h->range_end = h->totalsize;
+  h->attachment = getfilename(h->file);
   h_write_status(h, h->file, &st.st_mtime);
   h_start_sending(h);
 }
@@ -935,8 +978,8 @@ static void h_readbuffer(http * const h)
 {
   updatecontext();
 
-  h->bytessent = 0;
-  h->totalsize = strlen(h->buffer_out);
+  h->range_start = 0;
+  h->range_end = strlen(h->buffer_out);
   h_write_status(h, "html", (h->search) ? NULL : &gdata.last_update); /* NOTRANSLATE */
   h_start_sending(h);
 }
@@ -1862,6 +1905,7 @@ static char *h_read_http(http * const h)
   updatecontext();
 
   h->bytesgot = 0;
+  h->bytessent = 0;
   gdata.sendbuff[0] = 0;
   howmuch2 = BUFFERSIZE;
   for (i=0; i<MAXTXPERLOOP; ++i) {
@@ -2049,6 +2093,10 @@ static void h_get(http * const h)
       h->modified = mystrdup(hval);
       continue;
     }
+    if (strcmp(data, "Range") == 0) { /* NOTRANSLATE */
+      h->range = mystrdup(hval);
+      continue;
+    }
     if (strcmp(data, "Authorization") == 0) { /* NOTRANSLATE */
       h->authorization = mystrdup(hval);
       continue;
@@ -2121,25 +2169,36 @@ static void h_send(http * const h)
     }
   }
 
+  /* close on HTTP HEAD */
+  if (h->range_end == 0) {
+    if (h->filedescriptor == FD_UNUSED) {
+      mydelete(h->buffer_out);
+    } else {
+      close(h->filedescriptor);
+      h->filedescriptor = FD_UNUSED;
+    }
+    return;
+  }
+
   if (h_bandwith(h))
     return;
 
   do {
     attempt = min2(h->tx_bucket - (h->tx_bucket % TXSIZE), BUFFERSIZE);
     if (h->filedescriptor == FD_UNUSED) {
-      howmuch = h->totalsize - h->bytessent;
-      data = h->buffer_out + h->bytessent;
+      howmuch = h->range_end - h->range_start;
+      data = h->buffer_out + h->range_start;
     } else {
-      if (h->filepos != h->bytessent) {
-        offset = lseek(h->filedescriptor, h->bytessent, SEEK_SET);
-        if (offset != h->bytessent) {
+      if (h->filepos != h->range_start) {
+        offset = lseek(h->filedescriptor, h->range_start, SEEK_SET);
+        if (offset != h->range_start) {
           errno2 = errno;
           outerror(OUTERROR_TYPE_WARN, "Can't seek location in file '%s': %s",
                    h->file, strerror(errno));
           h_closeconn(h, "Unable to locate data in file", errno2);
           return;
         }
-        h->filepos = h->bytessent;
+        h->filepos = h->range_start;
       }
       howmuch = read(h->filedescriptor, gdata.sendbuff, attempt);
       data = (char *)gdata.sendbuff;
@@ -2167,13 +2226,14 @@ static void h_send(http * const h)
     }
 
     h->bytessent += howmuch2;
+    h->range_start += howmuch2;
     h->tx_bucket -= howmuch2;
     if (gdata.debug > 4)
       ioutput(OUT_S, COLOR_BLUE, "File %ld Write %ld", (long)howmuch, (long)howmuch2);
 
   } while ((h->tx_bucket >= TXSIZE) && (howmuch2 > 0));
 
-  if (h->bytessent >= h->totalsize) {
+  if (h->range_start >= h->range_end) {
     if (h->filedescriptor == FD_UNUSED) {
       mydelete(h->buffer_out);
     } else {

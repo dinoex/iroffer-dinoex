@@ -3,7 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
-bugfix: http_dir
+bugfix: http_port
+  Erzwinge Zeitzone 'GMT' in allen Datumsangaben.
+
+273) http_dir
+  Erlaube den teilweisen Download und das fortsetzen von Dateien.
   Zähle alle Dateien bei der Berechnung des "maxspeed" mit.
 
 bugfix: ignore_duplicate_ip
