@@ -2210,10 +2210,11 @@ void h_perform(int changesec, int changequartersec)
     for (h = irlist_get_head(&gdata.https);
          h;
          h = irlist_get_next(h)) {
-       if (h->maxspeed > 0) {
-         h->tx_bucket += h->maxspeed * (1024 / 4);
-         h->tx_bucket = min2(h->tx_bucket, MAX_TRANSFER_TX_BURST_SIZE * h->maxspeed * 1024);
-       }
+       if (h->maxspeed <= 0)
+         continue;
+
+       h->tx_bucket += h->maxspeed * (1024 / 4);
+       h->tx_bucket = min2(h->tx_bucket, MAX_TRANSFER_TX_BURST_SIZE * h->maxspeed * 1024);
     }
   }
   h = irlist_get_head(&gdata.https);

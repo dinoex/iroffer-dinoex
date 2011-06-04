@@ -322,21 +322,6 @@ static void mainloop (void) {
          run_delayed_jobs();
       }
 
-      if (changequartersec)
-        {
-          tr = irlist_get_head(&gdata.trans);
-          while(tr)
-            {
-              if ( !tr->nomax &&
-                   (tr->maxspeed > 0))
-                {
-                  tr->tx_bucket += tr->maxspeed * (1024 / 4);
-                  tr->tx_bucket = min2(tr->tx_bucket, MAX_TRANSFER_TX_BURST_SIZE * tr->maxspeed * 1024);
-                }
-              tr = irlist_get_next(tr);
-            }
-        }
-      
       updatecontext();
       
       /*----- see if anything waiting on console ----- */

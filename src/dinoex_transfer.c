@@ -605,6 +605,21 @@ void t_perform(int changesec, int changequartersec)
   transfer *tr;
   unsigned int i, j;
 
+  if (changequartersec) {
+    for (tr = irlist_get_head(&gdata.trans);
+         tr;
+         tr = irlist_get_next(tr)) {
+      if (tr->nomax)
+        continue;
+
+      if (tr->maxspeed <= 0)
+        continue;
+
+      tr->tx_bucket += tr->maxspeed * (1024 / 4);
+      tr->tx_bucket = min2(tr->tx_bucket, MAX_TRANSFER_TX_BURST_SIZE * tr->maxspeed * 1024);
+    }
+  }
+
   i = j = select_starting_transfer(irlist_size(&gdata.trans));
 
   /* first: do from cur to end */
