@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2010 Dirk Meyer
+ * Copyright (C) 2004-2011 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -132,7 +132,7 @@ void chat_perform(void)
           notice(chat->nick, "DCC Chat Connect Attempt Failed: %s", strerror(errno2));
           shutdowndccchat(chat, 0);
           continue;
-        } 
+        }
         if (connect_error) {
           ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                   "DCC Chat Connect Attempt Failed on %s: %s",
@@ -162,7 +162,7 @@ void chat_perform(void)
                   gnetwork->name,
                   (length<0) ? strerror(errno) : "Closed");
            notice(chat->nick, "DCC Chat Lost: %s", (length<0) ? strerror(errno) : "Closed");
-           shutdowndccchat(chat,0);
+           shutdowndccchat(chat, 0);
            /* deleted later */
            continue;
         }
