@@ -536,6 +536,8 @@ void h_reash_listen(void)
 int h_select_fdset(int highests)
 {
   http *h;
+  unsigned long sum;
+  unsigned int overlimit;
   unsigned int i;
 
   for (i=0; i<MAX_VHOSTS; ++i) {
@@ -545,6 +547,11 @@ int h_select_fdset(int highests)
     }
   }
 
+  sum = gdata.xdccsent[(gdata.curtime)%XDCC_SENT_SIZE]
+      + gdata.xdccsent[(gdata.curtime - 1)%XDCC_SENT_SIZE]
+      + gdata.xdccsent[(gdata.curtime - 2)%XDCC_SENT_SIZE]
+      + gdata.xdccsent[(gdata.curtime - 3)%XDCC_SENT_SIZE];
+  overlimit = (gdata.maxb && (sum >= gdata.maxb*1024));
   for (h = irlist_get_head(&gdata.https);
        h;
        h = irlist_get_next(h)) {
@@ -557,8 +564,10 @@ int h_select_fdset(int highests)
       highests = max2(highests, h->con.clientsocket);
     }
     if (h->status == HTTP_STATUS_SENDING) {
-      FD_SET(h->con.clientsocket, &gdata.writeset);
-      highests = max2(highests, h->con.clientsocket);
+      if (!overlimit && !h->overlimit) {
+        FD_SET(h->con.clientsocket, &gdata.writeset);
+        highests = max2(highests, h->con.clientsocket);
+      }
     }
   }
   return highests;
@@ -777,7 +786,7 @@ static int h_parse_range(http * const h)
     h->range_end += 1;
     if (h->range_end >= h->totalsize)
       h->range_end = h->totalsize;
-  } else { 
+  } else {
     h->range_end = h->totalsize;
   }
   return 1;
@@ -2227,6 +2236,9 @@ static void h_send(http * const h)
 
     h->bytessent += howmuch2;
     h->range_start += howmuch2;
+    gdata.xdccsum[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
+    if (h->unlimited == 0)
+      gdata.xdccsent[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
     h->tx_bucket -= howmuch2;
     if (gdata.debug > 4)
       ioutput(OUT_S, COLOR_BLUE, "File %ld Write %ld", (long)howmuch, (long)howmuch2);
