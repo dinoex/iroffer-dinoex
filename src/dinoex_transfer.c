@@ -605,6 +605,8 @@ void t_perform(int changesec, int changequartersec)
   transfer *tr;
   unsigned int i, j;
 
+  updatecontext();
+
   if (changequartersec) {
     for (tr = irlist_get_head(&gdata.trans);
          tr;
