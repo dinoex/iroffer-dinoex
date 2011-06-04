@@ -1495,6 +1495,7 @@ void irc_perform(int changesec)
   int timeout;
 
   updatecontext();
+
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
 
@@ -1673,6 +1674,10 @@ void irc_perform(int changesec)
 
   } /* networks */
   gnetwork = NULL;
+
+  /* reset after done on all networks */
+  if (gdata.needsswitch)
+    gdata.needsswitch = 0;
 }
 
 /* End of File */
