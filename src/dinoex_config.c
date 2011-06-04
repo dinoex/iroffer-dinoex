@@ -2510,6 +2510,7 @@ static void reset_config_func(void)
        mime;
        mime = irlist_delete(&gdata.mime_type, mime)) {
     mydelete(mime->m_ext);
+    mydelete(mime->m_mime);
   }
   for (ag = irlist_get_head(&gdata.autoadd_group_match);
        ag;
