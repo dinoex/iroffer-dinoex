@@ -332,8 +332,6 @@ static void mainloop (void) {
       updatecontext();
       
       irc_perform(changesec);
-      if (gdata.needsswitch)
-        gdata.needsswitch = 0;
       
       l_perform(changesec);
       
