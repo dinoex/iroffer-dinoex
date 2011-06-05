@@ -4842,6 +4842,51 @@ void a_holdqueue(const userinput * const u)
   start_sends();
 }
 
+static void a_offline_net(int net)
+{
+  gnetwork_t *backup;
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  quit_server();
+  gnetwork->offline = 1;
+  gnetwork = backup;
+}
+
+void a_offline(const userinput * const u)
+{
+  int val;
+  unsigned int ss;
+
+  updatecontext();
+
+  val = get_network(u->arg1);
+  if (val >= 0) {
+    a_offline_net((unsigned int)val);
+    return;
+  }
+  for (ss=0; ss<gdata.networks_online; ++ss) {
+    a_offline_net(ss);
+  }
+}
+
+void a_online(const userinput * const u)
+{
+  int val;
+  unsigned int ss;
+
+  updatecontext();
+
+  val = get_network(u->arg1);
+  if (val >= 0) {
+    gdata.networks[val].offline = 0;
+    return;
+  }
+  for (ss=0; ss<gdata.networks_online; ++ss) {
+    gdata.networks[ss].offline = 0;
+  }
+}
+
 #ifdef USE_RUBY
 void a_ruby(const userinput * const u)
 {

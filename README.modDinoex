@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+375) OFFLINE, ONLINE (inspired by isengaurd)
+
+  new admin commands:
+  OFFLINE                            Close all networks
+  OFFLINE <net>                      Close given network
+  ONLINE                             Resume all networks
+  ONLINE <net>                       Resume given network
+
 374) announce_size (inspired by vice)
   Print size of pack on announce.
   Default: no

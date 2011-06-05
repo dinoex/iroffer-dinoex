@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+375) OFFLINE, ONLINE
+
+  Neue Admin Kommandos:
+  OFFLINE                            Trenne Bot von allen Netzen
+  OFFLINE <net>                      Trenne Bot vom angegebenen Netz
+  ONLINE                             Verbine Bot zu allen Netzen
+  ONLINE <net>                       Verbine Bot zum angegebenen Netz
+
 374) announce_size
   Melde die Größe des Paks beim Announce.
   Default: no
