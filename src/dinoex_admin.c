@@ -5197,6 +5197,8 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   char *suffix;
   char *message;
   char *color_suffix;
+  char *sizestrstr;
+  size_t len;
   unsigned int ss;
   unsigned int color;
 
@@ -5225,7 +5227,12 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     if (msg == NULL)
       msg = "added";
   }
-  snprintf(prefix, maxtextlength - 2, "\2%s\2%s%s", msg, dateprefix, colordesc);
+  len = snprintf(prefix, maxtextlength - 2, "\2%s\2%s%s", msg, dateprefix, colordesc);
+  if (gdata.announce_size) {
+    sizestrstr = sizestr(1, xd->st_size);
+    snprintf(prefix + len, maxtextlength - 2 - len, "%s%s", gdata.announce_seperator, sizestrstr); /* NOTRANSLATE */
+    mydelete(sizestrstr);
+  }
   message = mymalloc(maxtextlength);
   color = a_get_color(gdata.announce_suffix_color);
 

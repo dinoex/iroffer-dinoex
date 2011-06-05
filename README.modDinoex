@@ -3,10 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+374) announce_size
+  Print size of pack on announce.
+  Default: no
+
 bugfix: http_port
   Force GMT to all Dates.
 
-273) http_dir
+373) http_dir
   Support partial downloads and resume of files.
   Count all files into maxspeed.
 
