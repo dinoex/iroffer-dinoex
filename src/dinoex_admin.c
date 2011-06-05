@@ -5275,7 +5275,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   len = snprintf(prefix, maxtextlength - 2, "\2%s\2%s%s", msg, dateprefix, colordesc);
   if (gdata.announce_size) {
     sizestrstr = sizestr(1, xd->st_size);
-    snprintf(prefix + len, maxtextlength - 2 - len, "%s%s", gdata.announce_seperator, sizestrstr); /* NOTRANSLATE */
+    snprintf(prefix + len, maxtextlength - 2 - len, "%s[%s]", gdata.announce_seperator, sizestrstr); /* NOTRANSLATE */
     mydelete(sizestrstr);
   }
   message = mymalloc(maxtextlength);
