@@ -1864,3 +1864,7 @@
 2793 " exécutée : %ld ms"
 2794 "Startup"
 2795 "** Enlevé de la file d'attente : %s"
+2796 "OFFLINE"
+2797 "Close given network or all networks"
+2798 "ONLINE"
+2799 "Connect to given network or to all networks"
