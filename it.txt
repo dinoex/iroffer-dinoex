@@ -1566,7 +1566,6 @@
 2154 "Sei stato aggiunto alla coda per il pack %u (\"%s\") in posizione %u. Per rimuoverti "
 2155 "Upload ancora in corso"
 2166 "%Y-%m-%d %H:%M"
-2167 "IP in DCC CHAT: %s NAT=%u"
 2168 "RELOCK"
 2169 "vecchia-password password"
 2170 "Riblocca tutti i packs con la <vecchia-password>, con la nuova <password>"
@@ -1868,3 +1867,5 @@
 2797 "Close given network or all networks"
 2798 "ONLINE"
 2799 "Connect to given network or to all networks"
+2800 "IP in DCC: %s NAT=%u OFFLINE=%u"
+2801 "NOTICE: HOLDQUEUE is on, no new transfers are started."

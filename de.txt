@@ -1566,7 +1566,6 @@
 2154 "Du bist jetzt in der 2. Warteschlange für Datei %u (\"%s\") in Position %u. Wenn Du später Abbrechen "
 2155 "Upload still running"
 2166 "%d.%m.%Y %H:%M"
-2167 "DCC IP: %s NAT=%u"
 2168 "RELOCK"
 2169 "altes-passwort passwort"
 2170 "Ändert alle Pakete mit <altes-password> zu <passwort>"
@@ -1868,3 +1867,5 @@
 2797 "Trenne Bot vom angegebenen Netz oder von allen Netzen"
 2798 "ONLINE"
 2799 "Verbine Bot zum angegebenen Netz oder zu allen Netzen"
+2800 "DCC IP: %s NAT=%u OFFLINE=%u"
+2801 "NOTICE: HOLDQUEUE is on, no new transfers are started."

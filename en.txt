@@ -1566,7 +1566,6 @@
 2154 "Added you to the idle queue for pack %u (\"%s\") in position %u. To Remove yourself at "
 2155 "Upload still running"
 2166 "%Y-%m-%d %H:%M"
-2167 "DCC IP: %s NAT=%u"
 2168 "RELOCK"
 2169 "old-password password"
 2170 "Lock all packs with <old-password> with <password>"
@@ -1868,3 +1867,5 @@
 2797 "Close given network or all networks"
 2798 "ONLINE"
 2799 "Connect to given network or to all networks"
+2800 "DCC IP: %s NAT=%u OFFLINE=%u"
+2801 "NOTICE: HOLDQUEUE is on, no new transfers are started."

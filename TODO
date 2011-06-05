@@ -3,8 +3,6 @@ Feature #38 xdcc command to export the crc32/md5 as sumfile
 Feature #70 command for saving the "running" config
 Feature #89 limit autoaddan to file that matches a given mask
 Feature #114: Support for compressing the rotated logfiles
-Feature #115: Announce only after sucessful crc32 verification
-Feature #116: Announce autoadd packages after sorting them complete
 
 [Iroffer.org]
 

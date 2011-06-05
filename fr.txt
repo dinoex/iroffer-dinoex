@@ -1566,7 +1566,6 @@
 2154 "Ajouté à la file d'attente d'inactivité du Pack %u (\"%s\") en position %u. Pour vous retirer à "
 2155 "Upload toujours en cours"
 2166 "%d-%m-%Y - %H:%M - Pack"
-2167 "Ip du DCC Chat : %s NAT=%u"
 2168 "RELOCK"
 2169 "ancien_password password"
 2170 "Bloque tous les packs avec <ancien_password> par <password>"
@@ -1868,3 +1867,5 @@
 2797 "Close given network or all networks"
 2798 "ONLINE"
 2799 "Connect to given network or to all networks"
+2800 "Ip du DCC : %s NAT=%u OFFLINE=%u"
+2801 "NOTICE: HOLDQUEUE is on, no new transfers are started."

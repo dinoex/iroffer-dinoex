@@ -1459,7 +1459,7 @@ static void u_botinfo(const userinput * const u) {
        a_respond(u, "network: %u: %s", ss + 1, gdata.networks[ss].name);
        msg = mymalloc(maxtextlength);
        my_dcc_ip_show(msg, maxtextlength - 1, &(gdata.networks[ss].myip), ss);
-       a_respond(u, "DCC IP: %s NAT=%u", msg, gdata.networks[ss].usenatip);
+       a_respond(u, "DCC IP: %s NAT=%u OFFLINE=%u", msg, gdata.networks[ss].usenatip, gdata.networks[ss].offline);
        mydelete(msg);
        
        backup = gnetwork;
@@ -1666,6 +1666,9 @@ static void u_botinfo(const userinput * const u) {
    if (gdata.delayedshutdown) {
       u_respond(u,"NOTICE: Delayed shutdown activated, iroffer will shutdown once there are no active transfers");
       u_respond(u,"NOTICE: To cancel the delayed shutdown, issue \"SHUTDOWN CANCEL\"");
+      }
+   if (gdata.holdqueue) {
+      u_respond(u, "NOTICE: HOLDQUEUE is on, no new transfers are started.");
       }
    
    mydelete(tempstr);
