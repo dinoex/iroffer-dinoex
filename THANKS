@@ -728,3 +728,6 @@ Gotanius
 Jikan
 	reporting "autosendpack" bug
 
+vice
+	suggestimg "announce_size"
+
