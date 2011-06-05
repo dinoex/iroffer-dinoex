@@ -229,6 +229,7 @@ static int config_find_typ(config_name_t config_name_f, const char *key, int bin
 
 static unsigned int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
+{"announce_size",          &gdata.announce_size,           0 }, /* NOTRANSLATE */
 {"auto_crc_check",         &gdata.auto_crc_check,          0 }, /* NOTRANSLATE */
 {"auto_default_group",     &gdata.auto_default_group,      0 }, /* NOTRANSLATE */
 {"auto_path_group",        &gdata.auto_path_group,         0 }, /* NOTRANSLATE */

@@ -3,10 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+374) announce_size
+  Melde die Größe des Paks beim Announce.
+  Default: no
+
 bugfix: http_port
   Erzwinge Zeitzone 'GMT' in allen Datumsangaben.
 
-273) http_dir
+373) http_dir
   Erlaube den teilweisen Download und das fortsetzen von Dateien.
   Zähle alle Dateien bei der Berechnung des "maxspeed" mit.
 
