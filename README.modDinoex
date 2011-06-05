@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
-374) announce_size
+374) announce_size (inspired by vice)
   Print size of pack on announce.
   Default: no
 
