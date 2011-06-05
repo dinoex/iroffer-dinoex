@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+bugfix: HOLDQUEUE
+  Show HOLDQUEUE in botinfo when active.
+
 375) OFFLINE, ONLINE (inspired by isengaurd)
 
   new admin commands:
