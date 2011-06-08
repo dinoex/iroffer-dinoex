@@ -1857,6 +1857,46 @@ void a_maxspeed(const userinput * const u)
   tr->maxspeed = val;
 }
 
+static int a_qsend_queue(const userinput * const u, irlist_t *list)
+{
+  if (irlist_size(list) == 0) {
+    a_respond(u, "No Users Queued");
+    return 1;
+  }
+
+  if (irlist_size(&gdata.trans) >= gdata.maxtrans) {
+    a_respond(u, "Too many transfers");
+    return 1;
+  }
+  return 0;
+}
+
+void a_qsend(const userinput * const u)
+{
+  unsigned int num = 0;
+
+  updatecontext();
+
+  if (a_qsend_queue(u, &gdata.mainqueue))
+    return;
+
+  if (u->arg1) num = atoi(u->arg1);
+  send_from_queue(2, num, NULL);
+}
+
+void a_iqsend(const userinput * const u)
+{
+  unsigned int num = 0;
+
+  updatecontext();
+
+  if (a_qsend_queue(u, &gdata.idlequeue))
+    return;
+
+  if (u->arg1) num = atoi(u->arg1);
+  check_idle_queue(num);
+}
+
 void a_slotsmax(const userinput * const u)
 {
   unsigned int val;

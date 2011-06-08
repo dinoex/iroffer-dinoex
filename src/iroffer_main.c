@@ -767,7 +767,7 @@ static void mainloop (void) {
              irlist_size(&gdata.mainqueue) &&
              (irlist_size(&gdata.trans) < gdata.maxtrans))
            {
-             check_idle_queue();
+             check_idle_queue(0);
              send_from_queue(1, 0, NULL);
            }
          write_files();
@@ -903,7 +903,7 @@ static void mainloop (void) {
         {
           reverify_restrictsend();
           update_hour_dinoex(lastmin);
-          check_idle_queue();
+          check_idle_queue(0);
           clean_uploadhost();
           auto_rehash();
         }

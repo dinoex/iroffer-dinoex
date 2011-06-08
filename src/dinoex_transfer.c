@@ -717,7 +717,7 @@ void t_perform(int changesec, int changequartersec)
         if (!gdata.exiting &&
             irlist_size(&gdata.mainqueue) &&
             (irlist_size(&gdata.trans) < gdata.slotsmax)) {
-          check_idle_queue();
+          check_idle_queue(0);
           send_from_queue(0, 0, trnick);
         }
         mydelete(trnick);

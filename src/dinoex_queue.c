@@ -383,17 +383,16 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
   return 0;
 }
 
-
 static const char *send_queue_msg[] = { "", " (low bandwidth)", " (manual)" };
 
 /* send the next item form the queue */
 void send_from_queue(unsigned int type, unsigned int pos, char *lastnick)
 {
-  unsigned int usertrans;
-  unsigned int pack;
   ir_pqueue *pq;
   transfer *tr;
   gnetwork_t *backup;
+  unsigned int usertrans;
+  unsigned int pack;
 
   updatecontext();
 
@@ -403,86 +402,86 @@ void send_from_queue(unsigned int type, unsigned int pos, char *lastnick)
   if (!gdata.balanced_queue)
     lastnick = NULL;
 
-  if (irlist_size(&gdata.mainqueue)) {
-    /*
-     * first determine what the first queue position is that is eligable
-     * for a transfer find the first person who has not already maxed out
-     * his sends if noone, do nothing and let execution continue to pack
-     * queue check
-     */
+  if (irlist_size(&gdata.mainqueue) == 0)
+    return;
 
-    if (pos > 0) {
-      /* get specific entry */
-      pq = irlist_get_nth(&gdata.mainqueue, pos - 1);
-    } else {
-      for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_get_next(pq)) {
-        if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
-          continue;
+  /*
+   * first determine what the first queue position is that is eligable
+   * for a transfer find the first person who has not already maxed out
+   * his sends if noone, do nothing and let execution continue to pack
+   * queue check
+   */
 
-        if (gdata.networks[pq->net].botstatus != BOTSTATUS_JOINED)
-          continue;
+  if (pos > 0) {
+    /* get specific entry */
+    pq = irlist_get_nth(&gdata.mainqueue, pos - 1);
+  } else {
+    for (pq = irlist_get_head(&gdata.mainqueue); pq; pq = irlist_get_next(pq)) {
+      if (gdata.networks[pq->net].serverstatus != SERVERSTATUS_CONNECTED)
+        continue;
 
-        /* timeout for restart must be less then Transfer Timeout 180s */
-        if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
-          continue;
+      if (gdata.networks[pq->net].botstatus != BOTSTATUS_JOINED)
+        continue;
 
-        usertrans = 0;
-        for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
-          if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
-            ++usertrans;
-          }
+      /* timeout for restart must be less then Transfer Timeout 180s */
+      if (gdata.curtime - gdata.networks[pq->net].lastservercontact > 150)
+        continue;
+
+      usertrans = 0;
+      for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
+        if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
+          ++usertrans;
         }
-
-       /* usertrans is the number of transfers a user has in progress */
-        if (usertrans >= gdata.maxtransfersperperson)
-          continue;
-
-        /* skip last trasfering user */
-        if (lastnick != NULL) {
-          if (!strcasecmp(pq->nick, lastnick))
-            continue;
-        }
-
-        /* found the person that will get the send */
-        break;
       }
-    }
 
-    if (!pq) {
+     /* usertrans is the number of transfers a user has in progress */
+      if (usertrans >= gdata.maxtransfersperperson)
+        continue;
+
+      /* skip last trasfering user */
       if (lastnick != NULL) {
-        /* try again */
-        send_from_queue(type, pos, NULL);
+        if (!strcasecmp(pq->nick, lastnick))
+          continue;
       }
-      return;
+
+      /* found the person that will get the send */
+      break;
     }
+  }
 
-    if (type > 2) type = 0;
-    pack = number_of_pack(pq->xpack);
-    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "QUEUED SEND%s: %s (%s on %s), Pack #%u",
-            send_queue_msg[ type ],
-            pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
-
-    if (pack == XDCC_SEND_LIST)
-      init_xdcc_file(pq->xpack, gdata.xdcclistfile);
-    look_for_file_changes(pq->xpack);
-
-    backup = gnetwork;
-    gnetwork = &(gdata.networks[pq->net]);
-
-    tr = create_transfer(pq->xpack, pq->nick, pq->hostname);
-    mydelete(pq->nick);
-    mydelete(pq->hostname);
-    irlist_delete(&gdata.mainqueue, pq);
-
-    t_notice_transfer(tr, NULL, pack, 1);
-    t_unlmited(tr, NULL);
-    t_setup_dcc(tr);
-
-    gnetwork = backup;
-    check_idle_queue();
+  if (!pq) {
+    if (lastnick != NULL) {
+      /* try again */
+      send_from_queue(type, pos, NULL);
+    }
     return;
   }
+
+  if (type > 2) type = 0;
+  pack = number_of_pack(pq->xpack);
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "QUEUED SEND%s: %s (%s on %s), Pack #%u",
+          send_queue_msg[ type ],
+          pq->nick, pq->hostname, gdata.networks[ pq->net ].name, pack);
+
+  if (pack == XDCC_SEND_LIST)
+    init_xdcc_file(pq->xpack, gdata.xdcclistfile);
+  look_for_file_changes(pq->xpack);
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[pq->net]);
+
+  tr = create_transfer(pq->xpack, pq->nick, pq->hostname);
+  mydelete(pq->nick);
+  mydelete(pq->hostname);
+  irlist_delete(&gdata.mainqueue, pq);
+
+  t_notice_transfer(tr, NULL, pack, 1);
+  t_unlmited(tr, NULL);
+  t_setup_dcc(tr);
+
+  gnetwork = backup;
+  check_idle_queue(0);
 }
 
 /* start sending one queued pack */
@@ -505,28 +504,13 @@ void start_sends(void)
   }
 }
 
-/* check idle queue and move one entry into the main queue */
-void check_idle_queue(void)
+static ir_pqueue *find_in_idle_queue(void)
 {
   ir_pqueue *pq;
   ir_pqueue *mq;
-  ir_pqueue *tempq;
   transfer *tr;
   unsigned int usertrans;
   unsigned int pass;
-
-  updatecontext();
-  if (gdata.exiting)
-    return;
-
-  if (gdata.holdqueue)
-    return;
-
-  if (irlist_size(&gdata.idlequeue) == 0)
-    return;
-
-  if (irlist_size(&gdata.mainqueue) >= gdata.queuesize)
-    return;
 
   pq = NULL;
   for (pass = 0; pass < 2; ++pass) {
@@ -572,6 +556,33 @@ void check_idle_queue(void)
       break; /* found the person that will get the send */
     }
   }
+  return pq;
+}
+
+/* check idle queue and move one entry into the main queue */
+void check_idle_queue(int pos)
+{
+  ir_pqueue *pq;
+  ir_pqueue *tempq;
+
+  updatecontext();
+  if (gdata.exiting)
+    return;
+
+  if (gdata.holdqueue)
+    return;
+
+  if (irlist_size(&gdata.idlequeue) == 0)
+    return;
+
+  if (irlist_size(&gdata.mainqueue) >= gdata.queuesize)
+    return;
+
+  if (pos == 0) {
+    pq = find_in_idle_queue();
+  } else {
+    pq = irlist_get_nth(&gdata.idlequeue, pos - 1);
+  }
   if (pq == NULL)
     return;
 
@@ -588,7 +599,7 @@ void start_main_queue(void)
   unsigned int i;
 
   for (i=0; i<gdata.queuesize; ++i) {
-    check_idle_queue();
+    check_idle_queue(0);
   }
 }
 

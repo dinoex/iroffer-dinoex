@@ -50,7 +50,6 @@ static void u_unignore(const userinput * const u);
 static void u_msgread(const userinput * const u);
 static void u_msgdel(const userinput * const u);
 static void u_memstat(const userinput * const u);
-static void u_qsend(const userinput * const u);
 static void u_shutdown(const userinput * const u);
 static void u_debug(const userinput * const u);
 static void u_jump(const userinput * const u);
@@ -109,7 +108,8 @@ static const userinput_parse_t userinput_parse[] = {
 {2,2,method_allow_all,a_iqueue,        "IQUEUE","nick n [net]","Queues pack <n> for <nick> into idle queue"},
 {2,2,method_allow_all,a_iqueue,        "BATCH","nick n-m [net]","Queues pack <n> to <m> for <nick> into idle queue"},
 {2,2,method_allow_all,u_psend,         "PSEND","channel style [net]","Sends <style> (full|minimal|summary) XDCC LIST to <channel>"},
-{2,2,method_allow_all,u_qsend,         "QSEND","[id]","Start an extra transfer from queue"},
+{2,2,method_allow_all,a_qsend,         "QSEND","[id]","Start an extra transfer from main queue"},
+{2,2,method_allow_all,a_iqsend,        "IQSEND","[id]","Push entry from idle queue into main queue"},
 {2,5,method_allow_all,a_slotsmax,      "SLOTSMAX","[slots]","temporary change slotsmax to <slots>"},
 {2,5,method_allow_all,a_queuesize,     "QUEUESIZE","[slots]","temporary change queuesize to <slots>"},
 {2,5,method_allow_all,a_requeue,       "REQUEUE","x y","Moves main queue entry from position <x> to <y>"},
@@ -1969,30 +1969,6 @@ static void u_memstat(const userinput * const u)
     {
       u_respond(u,"for a detailed listing use \"memstat list\"");
     }
-}
-
-
-static void u_qsend(const userinput * const u)
-{
-  unsigned int num = 0;
-  
-  updatecontext();
-  
-  if (!irlist_size(&gdata.mainqueue))
-    {
-      u_respond(u,"No Users Queued");
-      return;
-    }
-  
-  if (irlist_size(&gdata.trans) >= gdata.maxtrans)
-    {
-      u_respond(u,"Too many transfers");
-      return;
-    }
-  
-  if (u->arg1) num = atoi(u->arg1);
-  send_from_queue(2, num, NULL);
-  return;
 }
 
 static void u_shutdown(const userinput * const u) {

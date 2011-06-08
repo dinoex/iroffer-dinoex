@@ -48,6 +48,8 @@ void a_nomin(const userinput * const u);
 void a_nomax(const userinput * const u);
 void a_unlimited(const userinput * const u);
 void a_maxspeed(const userinput * const u);
+void a_qsend(const userinput * const u);
+void a_iqsend(const userinput * const u);
 void a_slotsmax(const userinput * const u);
 void a_queuesize(const userinput * const u);
 void a_requeue(const userinput * const u);
