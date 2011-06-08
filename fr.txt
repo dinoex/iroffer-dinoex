@@ -1869,3 +1869,5 @@
 2799 "Connect to given network or to all networks"
 2800 "Ip du DCC : %s NAT=%u OFFLINE=%u"
 2801 "NOTICE: HOLDQUEUE is on, no new transfers are started."
+2802 "IQSEND"
+2803 "Push entry from idle queue into main queue"

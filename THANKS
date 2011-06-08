@@ -558,6 +558,7 @@ CreeW
 	suggesting "CHMAXS" with range
 	suggesting "NEWANN" with params
 	reporting "REHASH" bug
+	suggesting "IQSEND"
 
 [M]-V
 	reporting ADDDIR spaces bug
