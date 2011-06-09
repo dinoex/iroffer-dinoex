@@ -24,20 +24,18 @@ typedef enum
 
 typedef struct
 {
+  ir_connection_t con;
   off_t bytesgot;
   off_t bytessent;
   off_t filepos;
   off_t totalsize;
   off_t range_start;
   off_t range_end;
-  ir_connection_t con;
-  int filedescriptor;
-  http_status_e status;
+  const char *nick;
+  const char *attachment;
   char *file;
   char *buffer_out;
   char *end;
-  const char *nick;
-  const char *attachment;
   char *log_url;
   char *url;
   char *authorization;
@@ -47,7 +45,6 @@ typedef struct
   char *pattern;
   char *modified;
   char *range;
-  float maxspeed;
   long tx_bucket;
   ssize_t left;
   unsigned int traffic;
@@ -56,8 +53,13 @@ typedef struct
   unsigned int post;
   unsigned int head;
   unsigned int idummy;
+  float maxspeed;
+  http_status_e status;
+  int filedescriptor;
   char overlimit;
   char unlimited;
+  char cdummy2;
+  char cdummy1;
 } http;
 
 typedef struct {
