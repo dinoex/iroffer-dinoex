@@ -1783,6 +1783,28 @@ void lag_message(void)
     mydelete(u);
 }
 
+void send_periodicmsg(void)
+{
+  periodicmsg_t *pm;
+
+  updatecontext();
+
+  for (pm = irlist_get_head(&gdata.periodicmsg);
+       pm;
+       pm = irlist_get_next(pm)) {
+    gnetwork = &(gdata.networks[pm->pm_net]);
+    if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
+      continue;
+
+    if ((unsigned)gdata.curtime <= pm->pm_next_time)
+      continue;
+
+    pm->pm_next_time = gdata.curtime + (pm->pm_time * 60);
+    privmsg(pm->pm_nick, "%s", pm->pm_msg);
+  }
+  gnetwork = NULL;
+}
+
 static char *r_local_vhost;
 static char *r_config_nick;
 

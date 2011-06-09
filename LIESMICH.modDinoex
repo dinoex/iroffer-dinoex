@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+377) periodicmsg
+  Nur per Netzwerk einstellbar. Mehrere Zeilen pro Netzwerk möglich.
+
 376) IQSEND
 
   Neue Admin Kommandos:

@@ -702,6 +702,7 @@ death_walker
 
 nanashiRei
 	reporting "xdccxmlfile" spelling of bandwidth
+	suggesting multiple "periodicmsg"
 
 paulhamm
 	reporting "getip_network" bug

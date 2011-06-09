@@ -61,6 +61,15 @@ typedef struct
   unsigned int dummy;
 } channel_announce_t;
 
+typedef struct
+{
+  char *pm_nick;
+  char *pm_msg;
+  time_t pm_next_time;
+  unsigned int pm_net;
+  unsigned int pm_time;
+} periodicmsg_t;
+
 typedef struct {
   char *nick;
   char *msg;

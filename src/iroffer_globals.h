@@ -70,6 +70,7 @@ irlist_t log_exclude_host;
 irlist_t log_exclude_text;
 irlist_t fish_exclude_nick;
 irlist_t group_admin;
+irlist_t periodicmsg;
 time_t configtime[MAXCONFIG];
 char *configfile[MAXCONFIG];
 char *osstring;
@@ -82,7 +83,6 @@ char *adminpass;
 char *hadminpass;
 char *statefile;
 char *xdcclistfile;
-char *periodicmsg_nick, *periodicmsg_msg;
 char *config_nick;
 char *user_realname, *user_modes, *loginname;
 char *restrictprivlistmsg;
@@ -306,7 +306,7 @@ unsigned int transferlimits_over;
 unsigned int maxb;
 unsigned int adjustcore;
 unsigned int overallmaxspeeddaytimestart, overallmaxspeeddaytimeend;
-unsigned int periodicmsg_time;
+unsigned int idummy2;
 int ignore;
 
 /* screen */

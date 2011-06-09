@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+377) periodicmsg (insprired by nanashiRei)
+  Setting now only per network. Multiple lines per net allowed.
+
 376) IQSEND (inspired by CreeW)
 
   new admin commands:

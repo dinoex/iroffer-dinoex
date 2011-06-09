@@ -95,7 +95,7 @@ static void mainloop (void) {
    static int changequartersec, changesec, changemin, changehour;
    static time_t lasttime, lastmin, lasthour, last4sec, last5sec, last20sec;
    static time_t lastautoadd;
-   static time_t last3min, last2min, lastignoredec, lastperiodicmsg;
+   static time_t last3min, last2min, lastignoredec;
    static int first_loop = 1;
    static ir_uint64 last250ms;
 
@@ -513,19 +513,9 @@ static void mainloop (void) {
         }
       
       /*----- periodicmsg_time seconds ----- */
-      if (changesec && ((unsigned)gdata.curtime > (lastperiodicmsg + gdata.periodicmsg_time*60))) {
-         lastperiodicmsg = gdata.curtime;
-         
-         for (ss=0; ss<gdata.networks_online; ss++) {
-            if (gdata.periodicmsg_nick && gdata.periodicmsg_msg
-            && (gdata.networks[ss].serverstatus == SERVERSTATUS_CONNECTED) ) {
-               gnetwork = &(gdata.networks[ss]);
-               privmsg(gdata.periodicmsg_nick, "%s", gdata.periodicmsg_msg);
-            }
+      if (changesec) {
+         send_periodicmsg();
          }
-         
-         }
-      gnetwork = NULL;
       
       updatecontext();
       
