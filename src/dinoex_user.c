@@ -1456,6 +1456,18 @@ static void add_msg_statefile(const  char *begin, int type, privmsginput *pi)
   write_statefile();
 }
 
+/* get respondtochannelxdccn for current network */
+static unsigned int get_respondtochannelxdcc(void)
+{
+  return (gnetwork->respondtochannelxdcc != 2) ? gnetwork->respondtochannelxdcc : gdata.respondtochannelxdcc;
+}
+
+/* get respondtochannellist for current network */
+static unsigned int get_respondtochannellist(void)
+{
+  return (gnetwork->respondtochannellist != 2) ? gnetwork->respondtochannellist : gdata.respondtochannellist;
+}
+
 static void privmsgparse2(int type, int decoded, privmsginput *pi)
 {
   char *begin;
@@ -1481,7 +1493,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
       (strcmp(pi->msg1, IRC_CTCP "XDCC") == 0) || /* NOTRANSLATE */
       (strcmp(pi->msg1, "CDCC") == 0) || /* NOTRANSLATE */
       (strcmp(pi->msg1, IRC_CTCP "CDCC") == 0)) { /* NOTRANSLATE */
-    if (!gdata.respondtochannelxdcc) {
+    if (get_respondtochannelxdcc() == 0) {
       if (not_for_me(pi->dest))
         return; /* ignore */
     }
@@ -1500,7 +1512,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
     const char *rtclmsg;
     char *tempstr2;
 
-    if (!gdata.respondtochannellist) {
+    if (get_respondtochannellist() == 0) {
       if (not_for_me(pi->dest))
         return; /* ignore */
     }
