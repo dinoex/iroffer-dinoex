@@ -66,6 +66,7 @@ void write_files(void);
 void start_qupload(void);
 int close_qupload(unsigned int net, const char *nick);
 void lag_message(void);
+void send_periodicmsg(void);
 
 void a_rehash_prepare(void);
 void a_rehash_needtojump(const userinput *u);

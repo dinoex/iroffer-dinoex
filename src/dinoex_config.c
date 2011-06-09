@@ -1736,33 +1736,41 @@ static char *p_packsum(void)
 static void c_periodicmsg(const char *key, char *var)
 {
   char *part[4];
-  unsigned int tnum;
+  periodicmsg_t *pm;
+  unsigned int rawval;
   unsigned int m;
 
-  mydelete(gdata.periodicmsg_nick);
-  mydelete(gdata.periodicmsg_msg);
   m = get_argv(part, var, 3);
-  if (m != 3) {
+  if (m >= 3) {
+    pm = irlist_add(&gdata.periodicmsg, sizeof(periodicmsg_t));
+    rawval = atoi(part[1]);
+    if (rawval < 1)
+      rawval = 1;
+    pm->pm_time = rawval;
+    pm->pm_time = atoi(part[1]);
+    pm->pm_net = current_network;
+    pm->pm_nick = part[0];
+    pm->pm_msg = part[2];
+  } else {
     invalid_args(key, var);
-    mydelete(part[0]);
-    mydelete(part[1]);
     mydelete(part[2]);
-    return;
+    mydelete(part[0]);
   }
-  gdata.periodicmsg_nick = part[0];
-  tnum = atoi(part[1]);
   mydelete(part[1]);
-  gdata.periodicmsg_msg = part[2];
-  gdata.periodicmsg_time = max2(1, tnum);
 }
 
-static void d_periodicmsg(const char *key)
+static void d_periodicmsg(const char *key, unsigned int net)
 {
-  if ((gdata.dump_all == 0) && (gdata.periodicmsg_nick == NULL))
-    return;
+  periodicmsg_t *pm;
 
-  dump_line("%s %s %u \"%s\"", /* NOTRANSLATE */
-            key, gdata.periodicmsg_nick, gdata.periodicmsg_time, gdata.periodicmsg_msg);
+  for (pm = irlist_get_head(&gdata.periodicmsg);
+       pm;
+       pm = irlist_get_next(pm)) {
+    if (pm->pm_net != net)
+      continue;
+    dump_line("%s %s %u \"%s\"", /* NOTRANSLATE */
+              key, pm->pm_nick, pm->pm_time, pm->pm_msg);
+  }
 }
 
 static void c_plaintext(const char *key, char *var)
@@ -2292,7 +2300,6 @@ static config_fdump_typ config_parse_fdump[] = {
 {"mime_type",              d_mime_type }, /* NOTRANSLATE */
 {"overallmaxspeeddaydays", d_overallmaxspeeddaydays }, /* NOTRANSLATE */
 {"overallmaxspeeddaytime", d_overallmaxspeeddaytime }, /* NOTRANSLATE */
-{"periodicmsg",            d_periodicmsg }, /* NOTRANSLATE */
 {"slotsmax",               d_slotsmax }, /* NOTRANSLATE */
 {"statefile",              d_statefile }, /* NOTRANSLATE */
 {"transferlimits",         d_transferlimits }, /* NOTRANSLATE */
@@ -2366,6 +2373,8 @@ static void dump_config_fdump(void)
     dump_config_string3("login_name", gdata.networks[si].login_name); /* NOTRANSLATE */
     dump_config_string3("user_nick", gdata.networks[si].config_nick); /* NOTRANSLATE */
     dump_config_string3("user_modes", gdata.networks[si].user_modes); /* NOTRANSLATE */
+
+    d_periodicmsg("periodicmsg", si); /* NOTRANSLATE */
 
     for (ss = irlist_get_head(&gdata.networks[si].servers);
          ss;
@@ -2443,6 +2452,7 @@ static void reset_config_func(void)
   group_admin_t *ga;
   http_magic_t *mime;
   autoadd_group_t *ag;
+  periodicmsg_t *pm;
   server_t *ss;
   unsigned int si;
   unsigned int ii;
@@ -2519,16 +2529,19 @@ static void reset_config_func(void)
     mydelete(ag->a_group);
     mydelete(ag->a_pattern);
   }
+  for (pm = irlist_get_head(&gdata.periodicmsg);
+       pm;
+       pm = irlist_delete(&gdata.periodicmsg, pm)) {
+    mydelete(pm->pm_nick);
+    mydelete(pm->pm_msg);
+  }
   for (ii=0; ii<NUMBER_TRANSFERLIMITS; ++ii) {
     gdata.transferlimits[ii].limit = 0;
   }
-  mydelete(gdata.periodicmsg_nick);
-  mydelete(gdata.periodicmsg_msg);
   mydelete(gdata.statefile);
   /* int */
   gdata.overallmaxspeeddaydays = 0x7F; /* all days */
   gdata.logrotate = 0;
-  gdata.periodicmsg_time = 0;
   gdata.slotsmax = 0;
   gdata.overallmaxspeeddaytimestart = 0;
   gdata.overallmaxspeeddaytimeend = 0;
