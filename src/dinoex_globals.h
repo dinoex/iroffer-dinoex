@@ -131,43 +131,31 @@ typedef enum {
 
 typedef struct {
   connectionmethod_t connectionmethod;
-  irlist_t proxyinfo;
 
-  /* raw on join */
+  irlist_t proxyinfo;
   irlist_t server_join_raw;
   irlist_t server_connected_raw;
+  irlist_t serverq_fast;
+  irlist_t serverq_normal;
+  irlist_t serverq_slow;
+  irlist_t serverq_channel;
+  irlist_t xlistqueue;
   irlist_t channel_join_raw;
-
-  /* channel */
   irlist_t channels;
   irlist_t r_channels;
-
-  /* server */
   irlist_t servers;
-  server_t curserver;
-  char *curserveractualname;
-  unsigned int nocon;
-  unsigned int servertime;
 
+  server_t curserver;
   serv_resolv_t serv_resolv;
-  serverstatus_e serverstatus;
-  botstatus_e botstatus;
 
   time_t connecttime;
   time_t lastservercontact;
   time_t lastnotify;
   time_t lastping;
   time_t lastslow;
-  unsigned long lag;
-  irlist_t serverq_fast;
-  irlist_t serverq_normal;
-  irlist_t serverq_slow;
-  irlist_t serverq_channel;
-  irlist_t xlistqueue;
-  int ircserver;
-  int serverbucket;
-  unsigned int serverconnectbackoff;
-  unsigned int dummy;
+  time_t next_identify;
+  time_t next_restrict;
+
 #ifdef USE_OPENSSL
   SSL_CTX *ssl_ctx;
   SSL *ssl;
@@ -182,6 +170,7 @@ typedef struct {
   char chanmodes[MAX_CHANMODES];
   char server_input_line[INPUT_BUFFER_LENGTH];
 
+  char *curserveractualname;
   char *user_nick;
   char *caps_nick;
   char *name;
@@ -194,7 +183,13 @@ typedef struct {
   char *r_local_vhost;
   char *user_modes;
   char *natip;
+
+  unsigned long lag;
+
   unsigned int net;
+  unsigned int serverconnectbackoff;
+  unsigned int nocon;
+  unsigned int servertime;
   unsigned int recentsent;
   unsigned int nick_number;
   unsigned int inamnt[INAMNT_SIZE];
@@ -208,12 +203,18 @@ typedef struct {
   unsigned int need_voice;
   unsigned int restrictsend;
   unsigned int restrictlist;
+  unsigned int respondtochannellist;
+  unsigned int respondtochannelxdcc;
+  unsigned int idummy;
+
+  int ircserver;
+  int serverbucket;
   int need_level;
+  serverstatus_e serverstatus;
+  botstatus_e botstatus;
   how_e r_connectionmethod;
   userinput_method_e lag_method;
 
-  time_t next_identify;
-  time_t next_restrict;
   ir_uint32 ourip;
   ir_uint32 r_ourip;
 

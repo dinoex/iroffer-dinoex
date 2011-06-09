@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+378) respondtochannellist, respondtochannelxdcc
+  Global oder je Netzwerk einstellbar.
+
 377) periodicmsg
   Nur per Netzwerk einstellbar. Mehrere Zeilen pro Netzwerk möglich.
 

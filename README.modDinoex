@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+378) respondtochannellist, respondtochannelxdcc (inspired by CreeW)
+  This setting can be global or per network.
+
 377) periodicmsg (insprired by nanashiRei)
   Setting now only per network. Multiple lines per net allowed.
 

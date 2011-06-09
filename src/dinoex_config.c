@@ -1798,6 +1798,36 @@ static void c_proxyinfo(const char *key, char *var)
   irlist_add_string(&gdata.networks[current_network].proxyinfo, var);
 }
 
+static void c_respondtochannellist(const char *key, char *var)
+{
+  int val;
+
+  val = parse_bool_val(key, var);
+  if (val >= 0) {
+    gdata.networks[current_network].respondtochannellist = val;
+  }
+}
+
+static char *p_respondtochannellist(void)
+{
+  return print_config_long2((ir_int64)(gnetwork->respondtochannellist));
+}
+
+static void c_respondtochannelxdcc(const char *key, char *var)
+{
+  int val;
+
+  val = parse_bool_val(key, var);
+  if (val >= 0) {
+    gdata.networks[current_network].respondtochannelxdcc = val;
+  }
+}
+
+static char *p_respondtochannelxdcc(void)
+{
+  return print_config_long2((ir_int64)(gnetwork->respondtochannelxdcc));
+}
+
 static void c_restrictlist(const char *key, char *var)
 {
   int val;
@@ -2170,6 +2200,8 @@ static config_func_typ config_parse_func[] = {
 {"periodicmsg",            c_periodicmsg }, /* NOTRANSLATE */
 {"plaintext",              c_plaintext }, /* NOTRANSLATE */
 {"proxyinfo",              c_proxyinfo }, /* NOTRANSLATE */
+{"respondtochannellist",   c_respondtochannellist }, /* NOTRANSLATE */
+{"respondtochannelxdcc",   c_respondtochannelxdcc }, /* NOTRANSLATE */
 {"restrictlist",           c_restrictlist }, /* NOTRANSLATE */
 {"restrictsend",           c_restrictsend }, /* NOTRANSLATE */
 {"send_listfile",          c_send_listfile }, /* NOTRANSLATE */
@@ -2240,6 +2272,8 @@ static config_fprint_typ config_parse_fprint[] = {
 {"overallmaxspeeddaydays", p_overallmaxspeeddaydays }, /* NOTRANSLATE */
 {"packsum",                p_packsum }, /* NOTRANSLATE */
 {"plaintext",              p_plaintext }, /* NOTRANSLATE */
+{"respondtochannellist",   p_respondtochannellist }, /* NOTRANSLATE */
+{"respondtochannelxdcc",   p_respondtochannelxdcc }, /* NOTRANSLATE */
 {"restrictlist",           p_restrictlist }, /* NOTRANSLATE */
 {"restrictsend",           p_restrictsend }, /* NOTRANSLATE */
 {"send_listfile",          p_send_listfile }, /* NOTRANSLATE */
@@ -2483,6 +2517,8 @@ static void reset_config_func(void)
     gdata.networks[si].slow_privmsg = 1;
     gdata.networks[si].restrictsend = 2;
     gdata.networks[si].restrictlist = 2;
+    gdata.networks[si].respondtochannellist = 2;
+    gdata.networks[si].respondtochannelxdcc = 2;
     gdata.networks[si].need_voice = 2;
     gdata.networks[si].need_level = 10;
     gdata.networks[si].getip_net = si;
