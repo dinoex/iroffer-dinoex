@@ -71,7 +71,6 @@ Short Term Features:
   1498  rss feed on the bot
   1516  allow batch syntax for XDCC SEND
   1523  config Server Connection Timed Out
-  1534  state the ip of the user in dcld and geoip
   1535  reduce queued message on batch
   1536  silent add
 

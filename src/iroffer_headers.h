@@ -273,6 +273,7 @@ typedef struct
   float maxspeed;
   xdcc *xpack;
   ir_connection_t con;
+  char *country;
   char *nick;
   char *caps_nick;
   char *hostname;

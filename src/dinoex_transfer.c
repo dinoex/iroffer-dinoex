@@ -712,6 +712,7 @@ void t_perform(int changesec, int changequartersec)
         mydelete(tr->hostname);
         mydelete(tr->con.localaddr);
         mydelete(tr->con.remoteaddr);
+        mydelete(tr->country);
         tr = irlist_delete(&gdata.trans, tr);
 
         if (!gdata.exiting &&

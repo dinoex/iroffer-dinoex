@@ -1871,3 +1871,4 @@
 2801 "NOTICE: HOLDQUEUE is on, no new transfers are started."
 2802 "IQSEND"
 2803 "Verschiebe einen Eintrag von der 2. Warteschlange in die 1. Warteschlange"
+2804 "  ^- [%s country=%s]"

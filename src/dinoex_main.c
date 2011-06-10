@@ -312,6 +312,7 @@ static void free_state(void)
      mydelete(tr->hostname);
      mydelete(tr->con.localaddr);
      mydelete(tr->con.remoteaddr);
+     mydelete(tr->country);
   }
 
   for (up = irlist_get_head(&gdata.uploads);

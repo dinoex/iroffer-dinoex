@@ -152,6 +152,7 @@ void geoip_new_connection(transfer *const tr)
             "GeoIP [%02i:%s on %s]: Info %s -> %s)",
             tr->id, tr->nick, gdata.networks[ tr->net ].name,
             tr->con.remoteaddr, country);
+  tr->country = strdup(country);
   if (irlist_size(&gdata.geoipexcludegroup)) {
     for (group = (char *)irlist_get_head(&gdata.geoipexcludegroup);
          group;
