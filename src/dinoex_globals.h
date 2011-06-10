@@ -205,7 +205,7 @@ typedef struct {
   unsigned int restrictlist;
   unsigned int respondtochannellist;
   unsigned int respondtochannelxdcc;
-  unsigned int idummy;
+  unsigned int server_connect_timeout;
 
   int ircserver;
   int serverbucket;

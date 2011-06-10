@@ -1897,6 +1897,15 @@ static void c_server(const char *key, char *var)
   }
 }
 
+static void c_server_connect_timeout(const char *key, char *var)
+{
+  int rawval;
+
+  if (check_range(key, var, &rawval, CTIMEOUT, 2000) == 0) {
+    gdata.networks[current_network].server_connect_timeout = rawval;
+  }
+}
+
 static void c_server_connected_raw(const char *key, char *var)
 {
   if (var == NULL) {
@@ -2206,6 +2215,7 @@ static config_func_typ config_parse_func[] = {
 {"restrictsend",           c_restrictsend }, /* NOTRANSLATE */
 {"send_listfile",          c_send_listfile }, /* NOTRANSLATE */
 {"server",                 c_server }, /* NOTRANSLATE */
+{"server_connect_timeout", c_server_connect_timeout }, /* NOTRANSLATE */
 {"server_connected_raw",   c_server_connected_raw }, /* NOTRANSLATE */
 {"server_join_raw",        c_server_join_raw }, /* NOTRANSLATE */
 {"slotsmax",               c_slotsmax }, /* NOTRANSLATE */
@@ -2469,6 +2479,7 @@ static void dump_config_fdump(void)
     dump_config_int3("need_level", gdata.networks[si].need_level, 10); /* NOTRANSLATE */
     dump_config_int3("getip_network", gdata.networks[si].getip_net, si); /* NOTRANSLATE */
     dump_config_int3("slow_privmsg", gdata.networks[si].slow_privmsg, 1); /* NOTRANSLATE */
+    dump_config_int3("server_connect_timeout", gdata.networks[si].server_connect_timeout, CTIMEOUT); /* NOTRANSLATE */
     dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0); /* NOTRANSLATE */
     dump_config_bool3("offline", gdata.networks[si].offline, 0); /* NOTRANSLATE */
     dump_config_bool3("plaintext", gdata.networks[si].plaintext, 0); /* NOTRANSLATE */
@@ -2522,6 +2533,7 @@ static void reset_config_func(void)
     gdata.networks[si].need_voice = 2;
     gdata.networks[si].need_level = 10;
     gdata.networks[si].getip_net = si;
+    gdata.networks[si].server_connect_timeout = CTIMEOUT;
     gdata.networks[si].noannounce = 0;
     gdata.networks[si].offline = 0;
     gdata.networks[si].plaintext = 0;

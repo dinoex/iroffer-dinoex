@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+380) server_connect_timeout (insprired by Thom)
+  Set the starting timeout in seconds on connect to the IRC-server.
+  This setting can only be set per network.
+  Default: 5
+
 379) DCLD (insprired by Aashiqmunda)
   Show IP and country with DCLD.
 
