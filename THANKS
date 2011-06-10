@@ -580,6 +580,7 @@ Aashiqmunda
 	suggesting "announce_suffix_color"
 	reporting "XDCC BATCH" bug
 	reporting "BATCH" crash
+	suggesting "DCLD" with IP/country
 
 SellKony
 	reporting CONFIG crash
