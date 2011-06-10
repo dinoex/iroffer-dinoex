@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+380) server_connect_timeout
+  Setze den Startwert für das Timeout in Sekunden für die Verbindung
+  zum IRC-Server.
+  Default: 5
+
 379) DCLD
   Zeige IP und Land bei dem Kommando "DCLD".
 
