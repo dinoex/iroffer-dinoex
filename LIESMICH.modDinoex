@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+379) DCLD
+  Zeige IP und Land bei dem Kommando "DCLD".
+
 378) respondtochannellist, respondtochannelxdcc
   Global oder je Netzwerk einstellbar.
 
