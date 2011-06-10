@@ -913,7 +913,7 @@ static void u_dcld(const userinput * const u)
                     (tr->nomin || (tr->xpack->minspeed == 0.0)) ? "no" : tempstr2 ,
                     (tr->nomax || (tr->maxspeed == 0.0)) ? "no" : tempstr4 ,
                     tr->startresume ? tempstr3 : "no");
-          u_respond(u, "  ^- [%s country=%s]", tr->con.remoteaddr, tr->country);
+          u_respond(u, "  ^- [%s country=%s]", tr->con.remoteaddr, tr->country ? tr->country : "??" );
         }
       else
         {
