@@ -1,80 +1,66 @@
-Welcome to iroffer 1.4.b03, by PMG (released December 12th 2005)
+ --- What is iroffer? ---
 
+iroffer is a software program that acts as a fileserver for IRC.
+It is similar to a FTP server or WEB server, but users can download
+files using the DCC protocol of IRC instead of a web browser.
 
- --- Info ---
+iroffer is a standalone executable written entirely in C.
+Designed for speed and efficency, iroffer can transfer over 95MByte/sec
+over a gigabit ethernet connection.
 
-iroffer by David Johnson (PMG)
-Copyright (C) 1998-2005 David Johnson
+See the file "README.modDinoex" for changelog and features.
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+ --- Website ---
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Visit the iroffer web site http://iroffer.dinoex.net/
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-or view it online at http://www.gnu.org/copyleft/gpl.html
-
-All files except src/iroffer_md5.[ch] are covered by the GPL.
-src/iroffer_md5.[ch] (written by Colin Plumb in 1993 and modified
-by Ian Jackson in 1995) are in the public domain.
-
- --- Website and Mailing List ---
-
-Visit the iroffer web site http://iroffer.org/
-
-Have you joined the iroffer mailing list? see the web site
+This is an improved version of iroffer
+ the unmodifed version can be found at http://iroffer.org/
 
  --- How to Contact the Author ---
 
-To obtain an up-to-date email address please goto http://iroffer.org/contact.html
-
- --- What is iroffer? ---
-
-iroffer is a software program that acts as a fileserver for IRC.  It
-is similar to a FTP server or WEB server, but users can download
-files using the DCC protocol of IRC instead of a web browser.
-
-Unlike similar programs, iroffer is not a script, it is a standalone
-executable written entirely in c from scratch with high transfer
-speed and effeciency in mind.  iroffer has been found to transfer
-over 50MByte/sec over a gigabit ethernet connection.
+Suggestions and feeback welcome, visit me on:
+ #dinoex on irc.euirc.net
+ #dinoex on irc.otakubox.at
+ #dinoex on irc.rizon.net
 
  --- Supported Platforms ---
 
 Linux
 FreeBSD, OpenBSD, BSD/OS, NetBSD
 Solaris/SunOS
-UP-UX
-IRIX
-Digital UNIX
 MacOS X Server
 MacOS X
-AIX
-Win95/98/NT/2000
+Win95/98/NT/2000/2003/2008/7
 
 All other platforms have not been tested, but will probabily work
 
+ --- License ---
+
+Please read the file "LICENSE"
+
+Due to restrictive license of the GPL you are not allowed to distribute
+binaries that are linked against OpenSSL. Please make sure if you
+distribute binaries, that "libcurl" is not linked with OpenSSL too.
+To get a full featured version you have to build it yourself.
+See http://iroffer.dinoex.net/LICENSE.txt for details.
+
+If you include other modules, check
+http://www.gnu.org/licenses/gpl-faq.html#AllCompatibility
 
  --- Documentation ---
 
-Documentation about iroffer is included on the website, http://iroffer.org/
+Please read the file "doc/iroffer.1.txt" and other Documentation.
 
+A sample config file with name "sample.conifg" is provided.
+
+More Documentation is online at http://iroffer.dinoex.de/wiki/iroffer
 
  --- To Compile ---
 
 Run the "Configure" script by typing "./Configure"
 then type "make".
 no errors or warnings should appear when compiling
-
-A sample config file is provided.
-
 
  --- Why use iroffer to offer? ---
 
@@ -109,7 +95,6 @@ A sample config file is provided.
  - support for direct, bnc, wingate, and custom proxy irc server connections
  - ignore list
 
-
  --- What files can I offer? ---
 
  - Your channel's rules or FAQ
@@ -121,16 +106,6 @@ A sample config file is provided.
    statement, distibution policy, and/or license agreement before
    offering any content you didn't create yourself
 
-
- --- How to let colors work while using screen ---
-
-create a file in your home directory named ".screenrc", and put the
-following lines in it:
-
-termcap  vt100 'AF=\E[3%dm:AB=\E[4%dm'
-terminfo vt100 'AF=\E[3%p1%dm:AB=\E[4%p1%dm'
-
-
  --- How To Use Cron ---
 
 Edit the iroffer.cron file's iroffer_dir, iroffer_exec, and
@@ -140,16 +115,4 @@ then crontab -e and place the following line in the editor
 
 */5 * * * * /full/path/to/iroffer/iroffer.cron
 
-
- --- Signal Handling ---
-
-iroffer will handle the following signal:
-
-SIGUSR1 (kill -USR1 xxxx)  jumps to another server (same as admin command "jump")
-SIGUSR2 (kill -USR2 xxxx)  re-reads config file    (same as admin command "rehash")
-SIGTERM (kill xxxx)        shuts down iroffer      (same as admin command "shutdown")
-
  --- End of README ---
-
-@(#) README 1.93@(#)
-pmg@wellington.i202.centerclick.org|README|20051213024432|46824
