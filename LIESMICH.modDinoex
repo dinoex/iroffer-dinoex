@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+bugfix: DUMP
+  Die Ausgabe von Werten mit Mutiplikationsfaktor ist jetzt richtig.
+
 380) server_connect_timeout
   Setze den Startwert für das Timeout in Sekunden für die Verbindung
   zum IRC-Server.
