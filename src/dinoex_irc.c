@@ -972,7 +972,7 @@ static void irc_001(ir_parseline_t *ipl)
 
 static void irc_005(ir_parseline_t *ipl)
 {
-  unsigned int ii = 4;
+  unsigned int ii = 3;
   char *item;
 
   while((item = getpart(ipl->line, ++ii))) {
@@ -1238,7 +1238,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
           continue;
 
         plus = 0;
-        part = 5;
+        part = 4;
         for (ptr = ipl->part[3]; *ptr; ++ptr) {
           if (*ptr == '+') {
             plus = 1;
