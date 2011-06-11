@@ -554,6 +554,7 @@ static char *print_config_int(const char *key)
 static void dump_config_int(void)
 {
   unsigned int i;
+  unsigned int rawval;
 
   for (i = 0; config_parse_int[i].name != NULL; ++i) {
     if (gdata.dump_all == 0) {
@@ -562,7 +563,8 @@ static void dump_config_int(void)
       if (*(config_parse_int[i].ivar) == config_parse_int[i].reset)
         continue;
     }
-    dump_config_int2(config_parse_int[i].name, *(config_parse_int[i].ivar));
+    rawval = *(config_parse_int[i].ivar) / config_parse_int[i].mult;
+    dump_config_int2(config_parse_int[i].name, rawval);
   }
 }
 

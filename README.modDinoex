@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+bugfix: DUMP
+  Fix output of values with mitiplier.
+
 380) server_connect_timeout (insprired by Thom)
   Set the starting timeout in seconds on connect to the IRC-server.
   This setting can only be set per network.
