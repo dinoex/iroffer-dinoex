@@ -39,15 +39,6 @@ All other platforms have not been tested, but will probabily work
 
 Please read the file "LICENSE"
 
-Due to restrictive license of the GPL you are not allowed to distribute
-binaries that are linked against OpenSSL. Please make sure if you
-distribute binaries, that "libcurl" is not linked with OpenSSL too.
-To get a full featured version you have to build it yourself.
-See http://iroffer.dinoex.net/LICENSE.txt for details.
-
-If you include other modules, check
-http://www.gnu.org/licenses/gpl-faq.html#AllCompatibility
-
  --- Documentation ---
 
 Please read the file "doc/iroffer.1.txt" and other Documentation.
@@ -56,11 +47,8 @@ A sample config file with name "sample.conifg" is provided.
 
 More Documentation is online at http://iroffer.dinoex.de/wiki/iroffer
 
- --- To Compile ---
-
-Run the "Configure" script by typing "./Configure"
-then type "make".
-no errors or warnings should appear when compiling
+Please view the file "doc/INSTALL-linux-en.html"
+or browse it online at http://iroffer.dinoex.net/INSTALL-linux-en.html
 
  --- Why use iroffer to offer? ---
 
