@@ -2145,6 +2145,8 @@ static void c_usenatip(const char * UNUSED(key), char *var)
 
 static char *p_usenatip(void)
 {
+  if (gnetwork->natip == NULL)
+    return NULL;
   return mystrdup(gnetwork->natip);
 }
 
@@ -2412,7 +2414,8 @@ static void dump_config_fdump(void)
     dump_config_list2("channel_join_raw", &gdata.networks[si].channel_join_raw); /* NOTRANSLATE */
     dump_config_string3("local_vhost", gdata.networks[si].local_vhost); /* NOTRANSLATE */
     if (gnetwork->usenatip != 0) {
-      dump_config_string2("usenatip", gdata.networks[si].natip); /* NOTRANSLATE */
+      if (gdata.networks[si].natip != NULL)
+        dump_config_string2("usenatip", gdata.networks[si].natip); /* NOTRANSLATE */
     }
     dump_config_string3("nickserv_pass", gdata.networks[si].nickserv_pass); /* NOTRANSLATE */
     dump_config_string3("auth_name", gdata.networks[si].auth_name); /* NOTRANSLATE */
