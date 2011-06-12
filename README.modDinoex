@@ -4,7 +4,7 @@ With Version 3.27:
 ------------------
 
 bugfix: DUMP
-  Fix output of values with mitiplier.
+  Fix output of values with multiplier.
 
 380) server_connect_timeout (insprired by Thom)
   Set the starting timeout in seconds on connect to the IRC-server.
