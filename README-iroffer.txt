@@ -53,43 +53,34 @@ or browse it online at http://iroffer.dinoex.net/INSTALL-linux-en.html
  --- Why use iroffer to offer? ---
 
  - extremely fast dcc transfers
- - extremely low cpu usage, and reasonable ram usage
- - its a program not a script that is slowed by a bulky irc program
- - only completed transfers are counted
- - supports dcc resume
- - set max amount of transfers per hostname
- - user friendly error messages for users (no "clamp timeout")
- - allows a pack to be designated as a "high demand" pack which can
-     have special limitations and its own separate queue
- - supports virtual hosts
- - auto-send feature, send a pack to someone when they say something
- - auto-saves xdcc information
+ - extremely low cpu usage, and low ram usage
+ - ajustable bandwidth and traffic limiting
+ - fair queueing of downloads
+ - very user friendly
  - remote administration via /msg or DCC CHAT
- - bandwidth monitoring, shows last 2 minutes bandwidth average
- - Allow sending of queued packs when using low amounts of bandwidth,
-     comes in handy when all slots are filled with people transferring
-     1k/sec, will keep sending out queued items while bandwidth usage
-     is under a specified amount
- - Background or Foreground mode. background mode does not require
-     screen and is cronable
- - Chroot support (run iroffer from inside a chroot'ed environment)
- - overall and pack minspeed
- - maximum bandwidth limiting, when set, iroffer will not use more than
-     the set amount of bandwidth (keeps your sysadmin happy)
- - can set different maximum bandwidth limits depending on time of day
-     and day of week (keeps your sysadmin very happy) 
- - logging
- - auto-ignores flooders
- - support for direct, bnc, wingate, and custom proxy irc server connections
- - ignore list
+ - configurable logfiles
+ - gentle to the IRC server
+ - groups of packs
+ - password protected packs
+ - multiple IRC networks
+ - IPv6 supported
+ - SSL with the IRC server supported
+ - Nickserv or CertFP authentification
+ - passive DCC
+ - build in HTTP-server
+ - buid in Telnet-server
+ - supports UPnP NAT-Routers
+ - XML Packlist
+ - FISH encryption
+ - transfer of files >4GB
+ - batched transfers
+ - extendable with ruby scripts, ruby-cgi
 
  --- What files can I offer? ---
 
  - Your channel's rules or FAQ
  - Pictures, Music, Programs, Shareware/Freeware, Programs you have
      written, etc... 
- - Help elevate overloaded ftp and http servers by mirroring content
-     for your channel's members
  - Note: Be sure to consult and follow the appropriate copyright
    statement, distibution policy, and/or license agreement before
    offering any content you didn't create yourself
