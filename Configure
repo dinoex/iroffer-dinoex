@@ -1844,10 +1844,26 @@ clean: cleanobj
 clobber: clean
 	rm -rf src.* *.sed
 
+'
+ for html in doc/INSTALL-*.html
+ do
+    txt="${html%.html}.txt"
+    echo "${txt}: ${html}
+	lynx -dump ${html} > ${txt}
+"
+ done
+ echo '
+
 man:
 	groff -t -e -mandoc -Tascii iroffer.1
 
-doc:	doc/iroffer.1.txt doc/iroffer.1.ps doc/iroffer.1.html
+doc:	doc/iroffer.1.txt doc/iroffer.1.ps doc/iroffer.1.html \'
+ for html in doc/INSTALL-*.html
+ do
+    txt="${html%.html}.txt"
+    echo "	${txt} \\"
+ done
+ echo '
 
 doc/iroffer.1.html: iroffer.1
 	groff -t -e -mandoc -Thtml iroffer.1 > doc/iroffer.1.html
