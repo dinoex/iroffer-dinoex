@@ -1,0 +1,97 @@
+ --- What is iroffer? ---
+
+iroffer is a software program that acts as a fileserver for IRC.
+It is similar to a FTP server or WEB server, but users can download
+files using the DCC protocol of IRC instead of a web browser.
+
+iroffer is a standalone executable written entirely in C.
+Designed for speed and efficency, iroffer can transfer over 95MByte/sec
+over a gigabit ethernet connection.
+
+See the file "README.modDinoex" for changelog and features.
+
+ --- Website ---
+
+Visit the iroffer web site http://iroffer.dinoex.net/
+
+This is an improved version of iroffer
+ the unmodifed version can be found at http://iroffer.org/
+
+ --- How to Contact the Author ---
+
+Suggestions and feeback welcome, visit me on:
+ #dinoex on irc.euirc.net
+ #dinoex on irc.otakubox.at
+ #dinoex on irc.rizon.net
+
+ --- Supported Platforms ---
+
+Linux
+FreeBSD, OpenBSD, BSD/OS, NetBSD
+Solaris/SunOS
+MacOS X Server
+MacOS X
+Win95/98/NT/2000/2003/2008/7
+
+All other platforms have not been tested, but will probabily work
+
+ --- License ---
+
+Please read the file "LICENSE"
+
+ --- Documentation ---
+
+Please read the file "doc/iroffer.1.txt" and other Documentation.
+
+A sample config file with name "sample.conifg" is provided.
+
+More Documentation is online at http://iroffer.dinoex.de/wiki/iroffer
+
+Please view the file "doc/INSTALL-linux-en.txt"
+or browse it online at http://iroffer.dinoex.net/INSTALL-linux-en.html
+
+ --- Why use iroffer to offer? ---
+
+ - extremely fast dcc transfers
+ - extremely low cpu usage, and low ram usage
+ - ajustable bandwidth and traffic limiting
+ - fair queueing of downloads
+ - very user friendly
+ - remote administration via /msg or DCC CHAT
+ - configurable logfiles
+ - gentle to the IRC server
+ - groups of packs
+ - password protected packs
+ - multiple IRC networks
+ - IPv6 supported
+ - SSL with the IRC server supported
+ - Nickserv or CertFP authentification
+ - passive DCC
+ - build in HTTP-server
+ - buid in Telnet-server
+ - supports UPnP NAT-Routers
+ - XML Packlist
+ - FISH encryption
+ - transfer of files >4GB
+ - batched transfers
+ - extendable with ruby scripts, ruby-cgi
+
+ --- What files can I offer? ---
+
+ - Your channel's rules or FAQ
+ - Pictures, Music, Programs, Shareware/Freeware, Programs you have
+     written, etc... 
+ - Note: Be sure to consult and follow the appropriate copyright
+   statement, distibution policy, and/or license agreement before
+   offering any content you didn't create yourself
+
+ --- How To Use Cron ---
+
+Edit the iroffer.cron file's iroffer_dir, iroffer_exec, and
+iroffer_pid variables
+
+then crontab -e and place the following line in the editor
+
+*/5 * * * * /full/path/to/iroffer/iroffer.cron
+
+ --- End of README ---
