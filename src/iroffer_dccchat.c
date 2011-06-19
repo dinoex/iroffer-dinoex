@@ -450,13 +450,7 @@ void shutdowndccchat(dccchat_t *chat, int flush)
       FD_CLR(chat->con.clientsocket, &gdata.readset);
       FD_CLR(chat->con.clientsocket, &gdata.writeset);
       usleep(100*1000);
-      /*
-       * cygwin close() is broke, if outstanding data is present
-       * it will block until the TCP connection is dead, sometimes
-       * upto 10-20 minutes, calling shutdown() first seems to help
-       */
-      shutdown(chat->con.clientsocket, SHUT_RDWR);
-      close(chat->con.clientsocket);
+      shutdown_close(chat->con.clientsocket);
       mydelete(chat->groups);
       mydelete(chat->hostmask);
       mydelete(chat->nick);
