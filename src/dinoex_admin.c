@@ -4771,11 +4771,10 @@ static void a_closec_sub(const userinput * const u, dccchat_t *chat)
 {
   if (chat == u->chat) {
     a_respond(u, "Disconnecting yourself.");
-    shutdowndccchat(chat, 1);
   } else {
     writedccchat(chat, 0, "Disconnected due to CLOSEC\n");
-    shutdowndccchat(chat, 1);
   }
+  shutdowndccchat(chat, 1);
 }
 
 void a_closec(const userinput * const u)
