@@ -841,7 +841,7 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
     h->range_end = 0;
 }
 
-static void h_readfile(http * const h, const char *file)
+static void h_readfile(http * const h, const char *file, int download)
 {
   struct stat st;
 
@@ -881,7 +881,8 @@ static void h_readfile(http * const h, const char *file)
   h->filepos = 0;
   h->totalsize = st.st_size;
   h->range_end = h->totalsize;
-  h->attachment = getfilename(h->file);
+  if (download)
+    h->attachment = getfilename(h->file);
   h_write_status(h, h->file, &st.st_mtime);
   h_start_sending(h);
 }
@@ -904,7 +905,7 @@ static void h_herror_403(http * const h, const char *msg)
   snprintf(h->log_url, maxtextlength, "GET %s HTTP/1.1", gdata.http_forbidden); /* NOTRANSLATE */
   tempstr = mymalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "%s%s", gdata.http_dir, h->url); /* NOTRANSLATE */
-  h_readfile(h, tempstr);
+  h_readfile(h, tempstr, 0);
   mydelete(tempstr);
   return;
 }
@@ -1832,7 +1833,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char * UNU
   }
   if (strcasecmp(h->url, "/help") == 0) {
     /* send hilfe */
-    h_readfile(h, "help-admin-en.txt");
+    h_readfile(h, "help-admin-en.txt", 0);
     return;
   }
 
@@ -1846,7 +1847,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char * UNU
         h->attachment = getfilename(xd->file);
         ++(h->unlimited);
         h->maxspeed = xd->maxspeed;
-        h_readfile(h, xd->file);
+        h_readfile(h, xd->file, 1);
         return;
       }
     }
@@ -1858,7 +1859,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char * UNU
     tmp = strchr(tempstr, '?' );
     if (tmp != NULL)
       *tmp = 0;
-    h_readfile(h, tempstr);
+    h_readfile(h, tempstr, 0);
     mydelete(tempstr);
     return;
   }
@@ -2008,7 +2009,7 @@ static void h_parse(http * const h, char *body)
   if (strcmp(h->url, "/") == 0) { /* NOTRANSLATE */
     if (gdata.http_index == NULL) {
       /* send text */
-      h_readfile(h, gdata.xdcclistfile);
+      h_readfile(h, gdata.xdcclistfile, 0);
       return;
     }
     mydelete(h->url);
@@ -2023,13 +2024,13 @@ static void h_parse(http * const h, char *body)
 
   if (strcmp(h->url, "/txt") == 0) { /* NOTRANSLATE */
     /* send text */
-    h_readfile(h, gdata.xdcclistfile);
+    h_readfile(h, gdata.xdcclistfile, 0);
     return;
   }
 
   if (gdata.xdccxmlfile && (strcasecmp(h->url, "/xml") == 0)) { /* NOTRANSLATE */
     /* send XML pack list */
-    h_readfile(h, gdata.xdccxmlfile);
+    h_readfile(h, gdata.xdccxmlfile, 0);
     return;
   }
 
@@ -2050,7 +2051,7 @@ static void h_parse(http * const h, char *body)
     tmp = strchr(tempstr, '?' );
     if (tmp != NULL)
       *tmp = 0;
-    h_readfile(h, tempstr);
+    h_readfile(h, tempstr, 0);
     mydelete(tempstr);
     return;
   }
