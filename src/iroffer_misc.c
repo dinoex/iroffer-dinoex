@@ -467,6 +467,9 @@ void sendserver(void)
       return;
     }
   
+  if ( !gdata.noscreen && !gdata.background)
+    gototop();
+
   sendannounce();
   gnetwork->serverbucket += EXCESS_BUCKET_ADD;
   gnetwork->serverbucket = min2(gnetwork->serverbucket, EXCESS_BUCKET_MAX);
