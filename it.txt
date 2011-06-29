@@ -1872,3 +1872,4 @@
 2802 "IQSEND"
 2803 "Sposta il prossimo invio dalla coda secondaria a quella primaria"
 2804 "  ^- [%s country=%s]"
+2805 "\2%s\2%s%s%s%s"
