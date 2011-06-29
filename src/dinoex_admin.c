@@ -5277,7 +5277,6 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   char *prefix;
   char *colordesc;
   char *datestr;
-  char *dateprefix;
   char *suffix;
   char *message;
   char *color_suffix;
@@ -5296,27 +5295,25 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   prefix = mymalloc(maxtextlength);
   suffix = mymalloc(maxtextlength);
   colordesc = xd_color_description(xd);
-  if (gdata.show_date_added) {
-    dateprefix = mymalloc(maxtextlengthshort);
-    datestr = mymalloc(maxtextlengthshort);
-    user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
-    snprintf(dateprefix, maxtextlengthshort - 1, "%s%s%s", /* NOTRANSLATE */
-             gdata.announce_seperator, datestr, gdata.announce_seperator);
-    mydelete(datestr);
-  } else {
-    dateprefix = mystrdup(gdata.announce_seperator);
-  }
   if (msg == NULL) {
     msg = gdata.autoaddann;
     if (msg == NULL)
       msg = "added";
   }
-  len = snprintf(prefix, maxtextlength - 2, "\2%s\2%s%s", msg, dateprefix, colordesc);
+  prefix[0] = 0;
+  len = 0;
+  if (gdata.show_date_added) {
+    datestr = mymalloc(maxtextlengthshort);
+    user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
+    len += snprintf(prefix + len, maxtextlength - 2 - len, "%s%s", gdata.announce_seperator, datestr); /* NOTRANSLATE */
+    mydelete(datestr);
+  }
   if (gdata.announce_size) {
     sizestrstr = sizestr(1, xd->st_size);
-    snprintf(prefix + len, maxtextlength - 2 - len, "%s[%s]", gdata.announce_seperator, sizestrstr); /* NOTRANSLATE */
+    len += snprintf(prefix + len, maxtextlength - 2 - len, "%s[%s]", gdata.announce_seperator, sizestrstr); /* NOTRANSLATE */
     mydelete(sizestrstr);
   }
+  snprintf(prefix + len, maxtextlength - 2 - len, "%s", gdata.announce_seperator); /* NOTRANSLATE */
   message = mymalloc(maxtextlength);
   color = a_get_color(gdata.announce_suffix_color);
 
@@ -5329,17 +5326,16 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     snprintf(suffix, maxtextlength - 2, "/MSG %s XDCC SEND %u",
              get_user_nick(), num);
     color_suffix = color_text(suffix, color);
-    snprintf(message, maxtextlength - 2, "%s%s%s", /* NOTRANSLATE */
-             prefix, gdata.announce_seperator, color_suffix);
+    snprintf(message, maxtextlength - 2, "\2%s\2%s%s%s%s",
+             msg, prefix, colordesc, gdata.announce_seperator, color_suffix);
     if (color_suffix != suffix)
       mydelete(color_suffix);
     a_announce_channels(message, match, xd->group);
     gnetwork = backup;
-    a_respond(u, "Announced %s%s%s%s%s", msg, dateprefix, xd->desc, gdata.announce_seperator, suffix);
+    a_respond(u, "Announced %s%s%s%s%s", msg, prefix, xd->desc, gdata.announce_seperator, suffix);
   }
   gnetwork = backup;
   mydelete(message);
-  mydelete(dateprefix);
   if (colordesc != xd->desc)
     mydelete(colordesc);
   mydelete(suffix);
