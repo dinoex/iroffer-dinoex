@@ -10,8 +10,10 @@
 # 
 # If your ip address changes, the file will be updated by this script
 # and iroffer rehashed to see the change
-
-
+#
+# Call this scrip when your IP changes or put in in your crontab.
+# Rin "crontab -e" and place the following line in the editor:
+# */5 * * * * /full/path/to/iroffer/dynip.sh
 
 URL="http://iroffer.org/myip.cgi"
 CONFIGFILE="dynip.conf"
