@@ -85,13 +85,4 @@ or browse it online at http://iroffer.dinoex.net/INSTALL-linux-en.html
    statement, distibution policy, and/or license agreement before
    offering any content you didn't create yourself
 
- --- How To Use Cron ---
-
-Edit the iroffer.cron file's iroffer_dir, iroffer_exec, and
-iroffer_pid variables
-
-then crontab -e and place the following line in the editor
-
-*/5 * * * * /full/path/to/iroffer/iroffer.cron
-
  --- End of README ---
