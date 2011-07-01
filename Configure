@@ -822,7 +822,9 @@ fi
 main1="
 int
 #ifdef __GNUC__
+#if !defined(__STDC_VERSION__) || __STDC_VERSION__ != 199901L
 __attribute__ ((noreturn))
+#endif
 #endif
 main (int argc, char **argv)
 {
@@ -975,7 +977,7 @@ irmain0="${irmain1}${main2}"
 
 ${msg} -n "${irt_seeingif} ${irt_compiling} ${irt_works}... "
 echo "${irmain0}" > config.temp.c
-if $cctype -o config.temp -DSIGNEDSOCK=signed $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+if $cctype -o config.temp $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  ${msg} "${irt_yes}"
 else
  ${msg} " ${irt_error} ${irt_nocompiling}."
@@ -1062,12 +1064,12 @@ ${main2}" > config.temp.c
 if $cctype -o config.temp -DLLPRINTFMT=\"L\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "L"
  echo "#define LLPRINTFMT \"L\"" >> src/iroffer_config.h
-elif $cctype -o config.temp -DLLPRINTFMT=\"ll\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" ]; then
- echo "ll"
- echo "#define LLPRINTFMT \"ll\"" >> src/iroffer_config.h
 elif $cctype -o config.temp -DLLPRINTFMT=\"l\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "l"
  echo "#define LLPRINTFMT \"l\"" >> src/iroffer_config.h
+elif $cctype -o config.temp -DLLPRINTFMT=\"ll\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" ]; then
+ echo "ll"
+ echo "#define LLPRINTFMT \"ll\"" >> src/iroffer_config.h
 else
  ${msg} "${irt_unknown}. ${irt_error} ${irt_neither1} 'll', 'l', ${irt_neither2} 'L' ${irt_neither3}."
  echo "#define LLPRINTFMT \"L\"" >> src/iroffer_config.h
@@ -1084,12 +1086,12 @@ ${main2}" > config.temp.c
 if $cctype -o config.temp -DTTPRINTFMT=\"Li\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" ]; then
  echo "Li"
  echo "#define TTPRINTFMT \"Li\"" >> src/iroffer_config.h
-elif $cctype -o config.temp -DTTPRINTFMT=\"lli\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" ]; then
- echo "lli"
- echo "#define TTPRINTFMT \"lli\"" >> src/iroffer_config.h
 elif $cctype -o config.temp -DTTPRINTFMT=\"li\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" -o "`./config.temp`" = "1410065408" ]; then
  echo "li"
  echo "#define TTPRINTFMT \"li\"" >> src/iroffer_config.h
+elif $cctype -o config.temp -DTTPRINTFMT=\"lli\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" ]; then
+ echo "lli"
+ echo "#define TTPRINTFMT \"lli\"" >> src/iroffer_config.h
 elif $cctype -o config.temp -DTTPRINTFMT=\"i\" $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "10000000000" -o "`./config.temp`" = "1410065408" ]; then
  echo "i"
  echo "#define TTPRINTFMT \"i\"" >> src/iroffer_config.h
