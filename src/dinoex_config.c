@@ -184,7 +184,7 @@ static char *print_config_long2(ir_int64 val)
   return text;
 }
 
-static unsigned int config_sorted_check(config_name_t config_name_f)
+static int config_sorted_check(config_name_t config_name_f)
 {
   const char *name1;
   const char *name2;
@@ -212,6 +212,10 @@ static int config_find_typ(config_name_t config_name_f, const char *key, int bin
   int bin_mid;
   int bin_low;
 
+  if (bin_high == 0) 
+    return -1;
+
+  bin_high -= 1;
   bin_low = 0;
   while (bin_low <= bin_high) {
     bin_mid = (bin_low + bin_high) / 2;
@@ -227,7 +231,7 @@ static int config_find_typ(config_name_t config_name_f, const char *key, int bin
 }
 
 
-static unsigned int config_bool_anzahl = 0;
+static int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
 {"announce_size",          &gdata.announce_size,           0 }, /* NOTRANSLATE */
 {"auto_crc_check",         &gdata.auto_crc_check,          0 }, /* NOTRANSLATE */
@@ -324,10 +328,7 @@ static const char *config_name_bool(unsigned int i)
 
 static int config_find_bool(const char *key)
 {
-  if (config_bool_anzahl > 0) {
-    return config_find_typ(config_name_bool, key, config_bool_anzahl - 1);
-  }
-  return -1;
+  return config_find_typ(config_name_bool, key, config_bool_anzahl);
 }
 
 static int parse_bool_val(const char *key, const char *text)
@@ -399,7 +400,7 @@ static void reset_config_bool(void)
 }
 
 
-static unsigned int config_int_anzahl = 0;
+static int config_int_anzahl = 0;
 static config_int_typ config_parse_int[] = {
 {"adddir_min_size",         &gdata.adddir_min_size,         0, 1024, 65000, 0 }, /* NOTRANSLATE */
 {"adminlevel",              &gdata.adminlevel,              1, 5, 1, ADMIN_LEVEL_FULL }, /* NOTRANSLATE */
@@ -463,10 +464,7 @@ static const char *config_name_int(unsigned int i)
 
 static int config_find_int(const char *key)
 {
-  if (config_int_anzahl > 0L) {
-    return config_find_typ(config_name_int, key, config_int_anzahl - 1);
-  }
-  return -1;
+  return config_find_typ(config_name_int, key, config_int_anzahl);
 }
 
 static unsigned int report_no_arg(const char *key, const char *text)
@@ -585,7 +583,7 @@ static void reset_config_int(void)
  4 -> adminpass
  */
 
-static unsigned int config_string_anzahl = 0;
+static int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
 {"admin_job_file",          &gdata.admin_job_file,          1 }, /* NOTRANSLATE */
 {"adminpass",               &gdata.adminpass,               4 }, /* NOTRANSLATE */
@@ -659,10 +657,7 @@ static const char *config_name_string(unsigned int i)
 
 static int config_find_string(const char *key)
 {
-  if (config_string_anzahl > 0L) {
-    return config_find_typ(config_name_string, key, config_string_anzahl - 1);
-  }
-  return -1;
+  return config_find_typ(config_name_string, key, config_string_anzahl);
 }
 
 static unsigned int set_config_string(const char *key, char *text)
@@ -787,10 +782,7 @@ static const char *config_name_list(unsigned int i)
 
 static int config_find_list(const char *key)
 {
-  if (config_list_anzahl > 0L) {
-    return config_find_typ(config_name_list, key, config_list_anzahl - 1);
-  }
-  return -1;
+  return config_find_typ(config_name_list, key, config_list_anzahl);
 }
 
 static int get_netmask(char *text, int init)
@@ -2244,10 +2236,7 @@ static const char *config_name_func(unsigned int i)
 
 static int config_find_func(const char *key)
 {
-  if (config_func_anzahl > 0L) {
-    return config_find_typ(config_name_func, key, config_func_anzahl - 1);
-  }
-  return -1;
+  return config_find_typ(config_name_func, key, config_func_anzahl);
 }
 
 static int set_config_func(const char *key, char *text)
@@ -2318,10 +2307,7 @@ static const char *config_name_fprint(unsigned int i)
 
 static int config_find_fprint(const char *key)
 {
-  if (config_fprint_anzahl > 0L) {
-    return config_find_typ(config_name_fprint, key, config_fprint_anzahl - 1);
-  }
-  return -1;
+  return config_find_typ(config_name_fprint, key, config_fprint_anzahl);
 }
 
 static char *print_config_fprint(const char *key)
