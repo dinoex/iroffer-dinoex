@@ -34,6 +34,7 @@ typedef struct {
   const char *name;
   unsigned int *ivar;
   unsigned int reset;
+  unsigned int dummy;
 } config_bool_typ;
 
 typedef struct {
@@ -49,12 +50,14 @@ typedef struct {
   const char *name;
   char **svar;
   unsigned int flags;
+  unsigned int dummy;
 } config_string_typ;
 
 typedef struct {
   const char *name;
   irlist_t *list;
   unsigned int flags;
+  unsigned int dummy;
 } config_list_typ;
 
 typedef struct {
