@@ -521,6 +521,7 @@ static void log_xdcc_request2(const char *msg, const char *arg, privmsginput *pi
 static void log_xdcc_request3(privmsginput *pi, const char *msg)
 {
   const char *sep;
+  const char *part3;
 
   if (msg == NULL) {
     msg = "";
@@ -528,6 +529,9 @@ static void log_xdcc_request3(privmsginput *pi, const char *msg)
   } else {
     sep = ": ";
   }
+  part3 = pi->msg3;
+  if (part3 == NULL)
+    part3 = "";
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC %s %s%s%s (%s %s on %s)",
           pi->msg2, pi->msg3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
