@@ -560,7 +560,7 @@ static ir_pqueue *find_in_idle_queue(void)
 }
 
 /* check idle queue and move one entry into the main queue */
-void check_idle_queue(int pos)
+void check_idle_queue(unsigned int pos)
 {
   ir_pqueue *pq;
   ir_pqueue *tempq;
