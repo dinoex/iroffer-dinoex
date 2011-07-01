@@ -391,7 +391,7 @@ void vwritedccchat(dccchat_t *chat, int add_return, const char *format, va_list 
   
   len = vsnprintf(tempstr, maxtextlength, format, ap);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
                "DCCCHAT: Output too large, ignoring!");

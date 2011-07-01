@@ -86,7 +86,7 @@ void outerror (outerror_type_e type, const char *format, ...) {
    len = vsnprintf(tempstr, maxtextlength, format, args);
    va_end(args);
    
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       snprintf(tempstr, maxtextlength, "OUTERROR-INT: Output too large, ignoring!");
     }
@@ -185,7 +185,7 @@ void mylog(const char *format, ...)
   len = vsnprintf(tempstr, maxtextlength, format, args);
   va_end(args);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
                "MYLOG-INT: Output too large, ignoring!");
@@ -247,7 +247,7 @@ void vioutput(int dest, unsigned int color_flags, const char *format, va_list ap
      {
        snprintf(tempstr, maxtextlength, "IOUTPUT-INT: Output too large, ignoring!");
      }
-   if (len >= maxtextlength)
+   if (len >= (int)maxtextlength)
      {
        tempstr[maxtextlength-1] = 0;
      }
@@ -338,7 +338,7 @@ void vprivmsg_slow(const char *nick, const char *format, va_list ap)
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"PRVMSG-SLOW: Output too large, ignoring!");
       return;
@@ -360,7 +360,7 @@ vprivmsg_fast(const char *nick, const char *format, va_list ap)
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"PRVMSG-FAST: Output too large, ignoring!");
       return;
@@ -386,7 +386,7 @@ void vprivmsg(const char *nick, const char *format, va_list ap)
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"PRVMSG: Output too large, ignoring!");
       return;
@@ -420,7 +420,7 @@ void vnotice_slow(const char *nick, const char *format, va_list ap)
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"NOTICE-SLOW: Output too large, ignoring!");
       return;
@@ -442,7 +442,7 @@ vnotice_fast(const char *nick, const char *format, va_list ap)
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"NOTICE-FAST: Output too large, ignoring!");
       return;
@@ -476,7 +476,7 @@ void vnotice(const char *nick, const char *format, va_list ap)
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"NOTICE: Output too large, ignoring!");
       return;

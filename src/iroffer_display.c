@@ -277,7 +277,7 @@ vtostdout(const char *format, va_list ap)
     {
       len = vsnprintf(tempstr,maxtextlength,format,ap);
       
-      if ((len < 0) || (len >= maxtextlength))
+      if ((len < 0) || (len >= (int)maxtextlength))
         {
           len = 0;
         }

@@ -113,8 +113,8 @@
 #define mycalloc(x) calloc(1, x)
 #endif
 
-#define  maxtextlengthshort 60
-#define  maxtextlength 512
+#define  maxtextlengthshort 60U
+#define  maxtextlength 512U
 #define INPUT_BUFFER_LENGTH 2048U
 
 #define LISTEN_PORT_REUSE_TIME (30*60) /* 30 minutes */

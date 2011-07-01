@@ -351,7 +351,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
   
   len = vsnprintf(msg,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= maxtextlength))
+  if ((len < 0) || (len >= (int)maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"WRITESERVER: Output too large, ignoring!");
       mydelete(msg);
