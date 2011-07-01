@@ -290,7 +290,7 @@ vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
 
   len = vsnprintf(msg, maxtextlength, format, ap);
 
-  if ((len < 0) || (len >= maxtextlength)) {
+  if ((len < 0) || (len >= (int)maxtextlength)) {
     outerror(OUTERROR_TYPE_WARN, "WRITESERVER: Output too large, ignoring!");
     mydelete(msg);
     return;
@@ -349,7 +349,7 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
 
   len = vsnprintf(tempstr, maxtextlength, format, ap);
 
-  if ((len < 0) || (len >= maxtextlength)) {
+  if ((len < 0) || (len >= (int)maxtextlength)) {
     outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
     return;
   }

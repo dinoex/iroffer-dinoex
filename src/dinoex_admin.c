@@ -62,7 +62,7 @@ voutput_fd(int fd, const char *format, va_list args)
   tempstr = mymalloc(maxtextlength);
 
   llen = vsnprintf(tempstr, maxtextlength - 3, format, args);
-  if ((llen < 0) || (llen >= maxtextlength - 3)) {
+  if ((llen < 0) || (llen >= (int)maxtextlength - 3)) {
     outerror(OUTERROR_TYPE_WARN, "string too long!");
     mydelete(tempstr);
     return;
@@ -4881,7 +4881,7 @@ void a_holdqueue(const userinput * const u)
   start_sends();
 }
 
-static void a_offline_net(int net)
+static void a_offline_net(unsigned int net)
 {
   gnetwork_t *backup;
 
