@@ -66,7 +66,6 @@ Page last modified: 09/01/04
 Short Term Features:
   1379  different packlists for different groups
   1438  more announce types for plist
-  1486  autotrim input from users " xdcc send"
   1494  send note to user when queuing
   1498  rss feed on the bot
   1516  allow batch syntax for XDCC SEND
@@ -140,6 +139,7 @@ Long Term Features:
   1459  transfer new files to another bot
   1477  batch announce
   1483  autoaddann pattern
+  1486  autotrim input from users " XDCC SEND"
   1490  delay the responce to the !new command
   1500  force to send a pack to someone who downloaded a certain pack
   1521  hostmask or nick in exempt list for ignoreduplicate ip
