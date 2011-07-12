@@ -1967,6 +1967,24 @@ void a_reiqueue(const userinput * const u)
   a_requeue2(u, &gdata.idlequeue);
 }
 
+static userinput *irlist_add_delayed(const userinput * const u, const char *cmd)
+{
+  userinput *u2;
+
+  u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
+  u2->method = u->method;
+  u2->fd = u->fd;
+  u2->chat = u->chat;
+  u2->cmd = mystrdup(cmd);
+  u2->net = u->net;
+  u2->level = u->level;
+
+  if (u->snick != NULL) {
+    u2->snick = mystrdup(u->snick);
+  }
+  return u2;
+}
+
 static unsigned int is_system_dir(const char *name)
 {
   if (strcmp(name, ".") == 0) /* NOTRANSLATE */
@@ -2042,20 +2060,10 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
       continue;
     }
 
-    u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
-    u2->method = u->method;
-    u2->fd = u->fd;
-    u2->chat = u->chat;
-    u2->cmd = mystrdup( "REMOVE" ); /* NOTRANSLATE */
-    u2->net = gnetwork->net;
-    u2->level = u->level;
+    u2 = irlist_add_delayed(u, "REMOVE"); /* NOTRANSLATE */
 
     u2->arg1 = tempstr;
     tempstr = NULL;
-
-    if (u->snick != NULL) {
-      u2->snick = mystrdup(u->snick);
-    }
 
     u2->arg2 = mycalloc(sizeof(struct stat));
     memcpy(u2->arg2, &st, sizeof(struct stat));
@@ -2401,7 +2409,18 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         if (gdata.debug > 0)
           a_respond(u, "  Ignoring directory: %s", tempstr);
       } else {
-        a_adddir_sub(u, tempstr, NULL, onlynew, setgroup, match);
+        if (gdata.subdirs_delayed == 0 ) {
+          a_adddir_sub(u, tempstr, NULL, onlynew, setgroup, match);
+        } else {
+          if (setgroup != NULL) {
+            u2 = irlist_add_delayed(u, "ADDGROUP"); /* NOTRANSLATE */
+            u2->arg1 = mystrdup(setgroup);
+            u2->arg2 = mystrdup(tempstr);
+          } else {
+            u2 = irlist_add_delayed(u, "ADDNEW"); /* NOTRANSLATE */
+            u2->arg1 = mystrdup(tempstr);
+          }
+        }
       }
       mydelete(tempstr);
       continue;
@@ -2497,17 +2516,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
 
   thefile = irlist_get_head(&dirlist);
   while (thefile) {
-    u2 = irlist_add(&gdata.packs_delayed, sizeof(userinput));
-    u2->method = u->method;
-    u2->fd = u->fd;
-    u2->chat = u->chat;
-    u2->cmd = mystrdup( "ADD" ); /* NOTRANSLATE */
-    u2->net = gnetwork->net;
-    u2->level = u->level;
-
-    if (u2->snick != NULL) {
-      u2->snick = mystrdup(u->snick);
-    }
+    u2 = irlist_add_delayed(u, "ADD"); /* NOTRANSLATE */
 
     u2->arg1 = mystrdup(thefile);
 

@@ -236,6 +236,8 @@ unsigned int show_group_of_pack;
 unsigned int dump_all;
 unsigned int tcp_nodelay;
 unsigned int announce_size;
+unsigned int subdirs_delayed;
+unsigned int idummy;
 
 context_t context_log[MAXCONTEXTS];
 ir_boutput_t stdout_buffer;
@@ -331,7 +333,7 @@ unsigned int cursendptr;
 unsigned int next_tr_id;
 unsigned int context_cur_ptr;
 unsigned int maxtrans;
-unsigned int idummy;
+unsigned int idummy3;
 
 int max_fds_from_rlimit;
 int logfd;
