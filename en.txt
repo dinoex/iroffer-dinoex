@@ -1807,7 +1807,6 @@
 2694 "DCC Send Denied, %s"
 2695 "DCC Send Denied (%s) from %s on %s"
 2696 "no uploaddir"
-2698 "\2%s\2%s%s"
 2699 "Announced %s%s%s%s%s"
 2700 "\2%u\2%s%s"
 2701 "Announced %u%s%s"
