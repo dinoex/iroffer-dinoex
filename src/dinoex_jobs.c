@@ -778,13 +778,11 @@ static void autoadd_scan(const char *dir, const char *group)
   else
     snprintf(line, maxtextlength, "ADDNEW \"%s\"", dir); /* NOTRANSLATE */
 
-  uxdl = mycalloc(sizeof(userinput));
+  uxdl = irlist_add(&gdata.packs_delayed, sizeof(userinput));
   a_fillwith_msg2(uxdl, NULL, line);
   uxdl->method = method_out_all;
   uxdl->net = 0;
   uxdl->level = ADMIN_LEVEL_AUTO;
-  u_parseit(uxdl);
-  mydelete(uxdl);
   mydelete(line);
 }
 
@@ -824,6 +822,20 @@ void run_delayed_jobs(void)
       mydelete(u->cmd);
       mydelete(u->arg1);
       mydelete(u->arg2);
+      u = irlist_delete(&gdata.packs_delayed, u);
+      /* process only one file */
+      return;
+    }
+    if (strcmp(u->cmd, "ADDGROUP") == 0) { /* NOTRANSLATE */
+      a_addgroup(u);
+      free_userinput(u);
+      u = irlist_delete(&gdata.packs_delayed, u);
+      /* process only one file */
+      return;
+    }
+    if (strcmp(u->cmd, "ADDNEW") == 0) { /* NOTRANSLATE */
+      a_addnew(u);
+      free_userinput(u);
       u = irlist_delete(&gdata.packs_delayed, u);
       /* process only one file */
       return;

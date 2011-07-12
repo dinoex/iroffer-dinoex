@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+381) subdirs_delayed
+  When configured, addir, addnew, and autoadd will scan subdirs later.
+  This keeps the bot responsive if you have a huge directory tree.
+  Default: off, subdirectories are scanned immediatly.
+
 bugfix: DUMP
   Fix output of values with multiplier.
 

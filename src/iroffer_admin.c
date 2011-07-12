@@ -269,18 +269,10 @@ static void u_fillwith_clean (userinput * const u)
   
   updatecontext();
   
-  mydelete(u->snick);
   u->chat = NULL;
   u->net = 0;
   u->level = ADMIN_LEVEL_PUBLIC;
-  mydelete(u->hostmask);
-  mydelete(u->cmd);
-  mydelete(u->arg1e);
-  mydelete(u->arg2e);
-  mydelete(u->arg3e);
-  mydelete(u->arg1);
-  mydelete(u->arg2);
-  mydelete(u->arg3);
+  free_userinput(u);
 }
 
 static void u_runcmd(userinput * const u)

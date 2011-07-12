@@ -1016,6 +1016,20 @@ const char *text_pformat(unsigned int val)
   return "full"; /* NOTRANSLATE */
 }
 
+/* free all strings from userinput*/
+void free_userinput(userinput * const u)
+{
+  mydelete(u->snick);
+  mydelete(u->hostmask);
+  mydelete(u->cmd);
+  mydelete(u->arg1e);
+  mydelete(u->arg2e);
+  mydelete(u->arg3e);
+  mydelete(u->arg1);
+  mydelete(u->arg2);
+  mydelete(u->arg3);
+}
+
 /* drop all delayed actions */
 void free_delayed(void)
 {
@@ -1024,9 +1038,7 @@ void free_delayed(void)
   for (u = irlist_get_head(&gdata.packs_delayed);
        u;
        u = irlist_delete(&gdata.packs_delayed, u)) {
-     mydelete(u->cmd);
-     mydelete(u->arg1);
-     mydelete(u->arg2);
+     free_userinput(u);
   }
 }
 

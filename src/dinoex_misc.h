@@ -67,6 +67,7 @@ group_admin_t *verifypass_group(const char *hostmask, const char *passwd);
 const char *text_connectionmethod(how_e how);
 const char *text_pformat(unsigned int val);
 
+void free_userinput(userinput * const u);
 void free_delayed(void);
 void free_channel_data(channel_t *ch);
 

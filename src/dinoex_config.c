@@ -309,6 +309,7 @@ static config_bool_typ config_parse_bool[] = {
 {"show_group_of_pack",     &gdata.show_group_of_pack,      0 }, /* NOTRANSLATE */
 {"show_list_all",          &gdata.show_list_all,           0 }, /* NOTRANSLATE */
 {"spaces_in_filenames",    &gdata.spaces_in_filenames,     0 }, /* NOTRANSLATE */
+{"subdirs_delayed",        &gdata.subdirs_delayed,         0 }, /* NOTRANSLATE */
 #if defined(_OS_CYGWIN)
 {"tcp_nodelay",            &gdata.tcp_nodelay,             1 }, /* NOTRANSLATE */
 #else /* _OS_CYGWIN */
