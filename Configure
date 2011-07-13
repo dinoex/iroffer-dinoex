@@ -691,7 +691,6 @@ gcc4*)
 -Wformat-nonliteral
 -Wformat=2
 -Wfloat-equal
--Wlarger-than-20000
 -Wpacked
 -Wpadded
 -Wswitch-default
@@ -706,7 +705,6 @@ gcc4*)
 -Wformat-nonliteral
 -Wformat=2
 -Wfloat-equal
--Wlarger-than-20000
 -Wpacked
 -Wpadded
 -Wswitch-default
