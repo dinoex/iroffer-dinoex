@@ -112,7 +112,7 @@ src_install() {
 
     dodoc LICENSE
     dodoc LIESMICH.modDinoex
-    dodoc README-iroffer.txt
+    dodoc README
     dodoc README.modDinoex
     dodoc THANKS
     dodoc TODO
