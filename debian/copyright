@@ -12,7 +12,8 @@ Copyright:
 	Copyright (C) 2004-2009 Dirk Meyer <dinoex@dinoex.net>
 	Copyright (C) 1997 by Paul Kocher
 	Copyright (C) 2000 Bryan Call <bc@fodder.org>
-	Copyright (c) 2005-2007, Thomas BERNARD
+	Copyright (C) 2005-2007, Thomas BERNARD
+	Copyright (C) 2000,2004 Martin Pool
 
 License:	
 
@@ -29,21 +30,24 @@ On Ubuntu systems, the full text of the GNU GPL, version 2, can
 be found at /usr/share/common-licenses/GPL-2
 
 
-src/iroffer*.[ch], README-iroffer.txt, dynip.sh, iroffer.cron
+src/iroffer*.[ch], dynip.sh, iroffer.cron
 are copyrighted by David Johnson (PMG) under GPL2 below.
 
-Configure, Makefile.config, sample.config are written by
+Configure, sample.config are written by
 David Johnson (PMG) and where extended by Dirk Meyer.
 These files are under GPL2 below.
 
 src/plumb_md5.[ch] was written by Colin Plumb in 1993 and modified
 by Ian Jackson in 1995, this files are in the public domain.
 
-src/crc32.c is copyrighted by Bryan Call under GPL2 or later.
+src/crc32.c is written by 1986 Gary S. Brown and in the public domain.
 
 src/blowfish.[ch] are copyrighted 1997 by Paul Kocher
 and released under LGPL 2.1. On Ubuntu systems, the full text
 of the LGPL 2.1 can be found at /usr/share/common-licenses/LGPL-2.1
+ 
+src/strnatcmp.[ch] are copyrighted 2000, 2004 by Martin Pool
+and released under MIT License.
 
 src/upnp.[ch] is writen by Thomas Bernard under BSD license.
 
