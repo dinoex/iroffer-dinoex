@@ -236,6 +236,9 @@ unsigned int queue_count_host(irlist_t *list, unsigned int *inq, unsigned int ma
   for (pq = irlist_get_head(list);
        pq;
        pq = irlist_get_next(pq)) {
+    if (pq->net != gnetwork->net)
+      continue;
+
     if (strcmp(pq->hostname, hostname))
       continue;
 
@@ -338,7 +341,7 @@ unsigned int addtomainqueue(const char **msg, char *tempstr, const char *nick, c
   }
 
   if (hostname != NULL) {
-    if (inq >= gdata.maxqueueditemsperperson) {
+    if ((inq >= gdata.maxqueueditemsperperson) || (inq2 > 0 )) {
       fatal = addtoidlequeue(msg, tempstr, nick, hostname, tempx, pack, inq2);
       if (*msg != NULL)
         return fatal;

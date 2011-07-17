@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+bugfix: XDCC SEND
+  Wenn ein Benutzer schon Pakete in der 2. Warteschlange hat,
+  werden alle weiteren Pakete ebenfalls dort eingetragen.
+
 381) subdirs_delayed
   Wenn aktiviert, iwerden bei addir, addnew und autoadd die Unter-
   Verzeichnisse sp‰ter durchsucht. Damit bleibt der Bot auch bei groﬂer
