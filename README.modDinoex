@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+bugfix: XDCC SEND
+  If user has already packs in the idlequeue, do not add new packs from him to the mainqueue.
+
 381) subdirs_delayed
   When configured, addir, addnew, and autoadd will scan subdirs later.
   This keeps the bot responsive if you have a huge directory tree.
