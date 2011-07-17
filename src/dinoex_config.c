@@ -449,7 +449,7 @@ static config_int_typ config_parse_int[] = {
 {"start_of_month",          &gdata.start_of_month,          1, 31, 1, 1 }, /* NOTRANSLATE */
 {"status_time_dcc_chat",    &gdata.status_time_dcc_chat,    10, 2000, 1, 120 }, /* NOTRANSLATE */
 #if defined(_OS_CYGWIN)
-{"tcp_buffer_size",         &gdata.tcp_buffer_size,         0, 1024*1024, 1024, 384*1024 }, /* NOTRANSLATE */
+{"tcp_buffer_size",         &gdata.tcp_buffer_size,         0, 1024*1024, 1024, 372*1024 }, /* NOTRANSLATE */
 #else /* _OS_CYGWIN */
 {"tcp_buffer_size",         &gdata.tcp_buffer_size,         0, 1024*1024, 1024, 0 }, /* NOTRANSLATE */
 #endif /* _OS_CYGWIN */
