@@ -35,9 +35,24 @@
 #pragma GCC diagnostic ignored "-Wredundant-decls"
 #include "ruby.h"
 #if USE_RUBYVERSION < 19
+#ifndef RSTRING_PTR
+#define RSTRING_PTR(s) (RSTRING(s)->ptr)
+#endif
+#ifndef RARRAY_LEN
+#define RARRAY_LEN(s) (RARRAY(s)->len)
+#endif
+#ifndef RARRAY_PTR
+#define RARRAY_PTR(s) (RARRAY(s)->ptr)
+#endif
+#ifndef RUBY_INIT_STACK
+#define RUBY_INIT_STACK \
+	VALUE variable_in_this_stack_frame; \
+	ruby_init_stack(&variable_in_this_stack_frame);
+#endif
 #else
 #include <ruby/encoding.h>
 #endif
+
 
 typedef struct protect_call_arg {
   VALUE *argv;
