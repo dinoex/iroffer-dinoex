@@ -45,9 +45,7 @@
 #define RARRAY_PTR(s) (RARRAY(s)->ptr)
 #endif
 #ifndef RUBY_INIT_STACK
-#define RUBY_INIT_STACK \
-	VALUE variable_in_this_stack_frame; \
-	ruby_init_stack(&variable_in_this_stack_frame);
+#define RUBY_INIT_STACK ;
 #endif
 #else
 #include <ruby/encoding.h>
