@@ -157,6 +157,7 @@ Long Term Features:
   1558  suppress batch notices, suppress remove notices
   1563  Restrict group admin access to DCLD and others
   1567  Support netmap for line rate (14.88Mpps) on a 10GigE link 
+  1578  multiple(batch) files announce
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -223,4 +224,5 @@ Not going to happen anytime soon:
   1525  user defined limits
   1543  native windows build with MINGW
   1565  lock packs on fixed posion while sorting the rest
+  1575  aspera transfer protocol
 
