@@ -187,6 +187,31 @@ static char *print_config_long2(ir_int64 val)
   return text;
 }
 
+/* validate config and warn if password is not encrypted */
+static void checkadminpass2(const char *masterpass)
+{
+#ifndef NO_CRYPT
+  unsigned int err=0;
+  unsigned int i;
+
+  updatecontext();
+
+  if (!masterpass || strlen(masterpass) < 13U) ++err;
+
+  for (i=0; !err && i<strlen(masterpass); ++i) {
+    if (!((masterpass[i] >= 'a' && masterpass[i] <= 'z') ||
+          (masterpass[i] >= 'A' && masterpass[i] <= 'Z') ||
+          (masterpass[i] >= '0' && masterpass[i] <= '9') ||
+          (masterpass[i] == '.') ||
+          (masterpass[i] == '$') ||
+          (masterpass[i] == '/')))
+      ++err;
+  }
+
+  if (err) outerror(OUTERROR_TYPE_CRASH, "adminpass is not encrypted!");
+#endif /* NO_CRYPT */
+}
+
 static int config_sorted_check(config_name_t config_name_f)
 {
   const char *name1;
