@@ -1121,7 +1121,6 @@
 1485 "Puntatore 0x%8.8lX non trovato nel database meminfo mentre si tentava di liberare!!"
 1486 "Perfavore riporta questo errore all'amministratore"
 1488 "Chiusura Programma! (il core file dovrebbe essere generato)"
-1489 "la password di admin non è criptata!"
 1490 "Trace %3i  %-20s %-16s:%5i  %lu.%06lu"
 1491 "UNKNOWN"
 1492 "<undef>"
@@ -1872,3 +1871,4 @@
 2803 "Sposta il prossimo invio dalla coda secondaria a quella primaria"
 2804 "  ^- [%s country=%s]"
 2805 "\2%s\2%s%s%s%s"
+2806 "%s:%ld %s la password non è criptata!"
