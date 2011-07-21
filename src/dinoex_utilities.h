@@ -29,7 +29,6 @@ void irlist_add_string(irlist_t *list, const char *str);
 unsigned int verifyshell(irlist_t *list, const char *file);
 const char *save_nick(const char * nick);
 unsigned int verifypass2(const char *masterpass, const char *testpass);
-void checkadminpass2(const char *masterpass);
 char *clean_quotes(char *str);
 char *to_hostmask(const char *nick, const char *hostname);
 const char *getfilename(const char *pathname);
