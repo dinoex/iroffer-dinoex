@@ -188,7 +188,7 @@ static char *print_config_long2(ir_int64 val)
 }
 
 /* validate config and warn if password is not encrypted */
-static void checkadminpass2(const char *masterpass)
+static void checkadminpass2(const char *key, const char *masterpass)
 {
 #ifndef NO_CRYPT
   unsigned int err=0;
@@ -208,7 +208,9 @@ static void checkadminpass2(const char *masterpass)
       ++err;
   }
 
-  if (err) outerror(OUTERROR_TYPE_CRASH, "adminpass is not encrypted!");
+  if (err) outerror(OUTERROR_TYPE_CRASH,
+                    "%s:%ld %s is not encrypted!",
+                    current_config, current_line, key);
 #endif /* NO_CRYPT */
 }
 
@@ -710,7 +712,7 @@ static unsigned int set_config_string(const char *key, char *text)
                 current_config, current_line, key, text);
        return 0;
      }
-     checkadminpass2(text);
+     checkadminpass2(key, text);
   case 1:
      convert_to_unix_slash(text);
      break;

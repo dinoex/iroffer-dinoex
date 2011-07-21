@@ -1121,7 +1121,6 @@
 1485 "Pointer 0x%8.8lX not found in meminfo database while trying to free!!"
 1486 "Please report this error to Dinoex dinoex@dinoex.net"
 1488 "Aborting Program! (core file should be generated)"
-1489 "adminpass is not encrypted!"
 1490 "Trace %3i  %-20s %-16s:%5i  %lu.%06lu"
 1491 "UNKNOWN"
 1492 "<undef>"
@@ -1872,3 +1871,4 @@
 2803 "Push entry from idle queue into main queue"
 2804 "  ^- [%s country=%s]"
 2805 "\2%s\2%s%s%s%s"
+2806 "%s:%ld %s is not encrypted!"
