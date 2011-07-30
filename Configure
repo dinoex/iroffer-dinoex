@@ -1344,6 +1344,7 @@ echo "${irmain1}
  size_t  count = 0;
  ssize_t ret_val;
  ret_val = sendfile(out_fd, in_fd, &offset, count);
+ ret_val++;
 ${main2}" > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 echo "#define HAVE_LINUX_SENDFILE" >> src/iroffer_config.h
