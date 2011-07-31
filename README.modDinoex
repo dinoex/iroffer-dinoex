@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+bugfix: Configure (reported by OmegaPhil)
+  Ensure detection of sendfile on Linux works with gcc46.
+
 bugfix: XDCC SEND
   If user has already packs in the idlequeue, do not add new packs from him to the mainqueue.
 

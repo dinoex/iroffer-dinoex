@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+bugfix: Configure
+  Erkennung von sendfile unter Linux funktioniert jetzt auch mit gcc46.
+
 bugfix: XDCC SEND
   Wenn ein Benutzer schon Pakete in der 2. Warteschlange hat,
   werden alle weiteren Pakete ebenfalls dort eingetragen.
