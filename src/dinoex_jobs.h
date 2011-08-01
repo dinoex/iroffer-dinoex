@@ -69,6 +69,7 @@ void lag_message(void);
 void send_periodicmsg(void);
 
 void a_rehash_prepare(void);
+void a_quit_network(void);
 void a_rehash_needtojump(const userinput *u);
 void a_rehash_channels(void);
 void a_rehash_jump(void);

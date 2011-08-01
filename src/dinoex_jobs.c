@@ -1859,12 +1859,27 @@ void a_rehash_prepare(void)
   }
 }
 
+void a_quit_network(void)
+{
+  channel_t *ch;
+
+  quit_server();
+  for (ch = irlist_get_head(&(gnetwork->channels));
+       ch;
+       ch = irlist_delete(&(gnetwork->channels), ch)) {
+    clearmemberlist(ch);
+    free_channel_data(ch);
+  }
+  mydelete(gnetwork->user_nick);
+  mydelete(gnetwork->caps_nick);
+  mydelete(gnetwork->name);
+}
+
 void a_rehash_needtojump(const userinput *u)
 {
   char *new_vhost;
   char *old_vhost;
   gnetwork_t *backup;
-  channel_t *ch;
   unsigned int ss;
 
   updatecontext();
@@ -1899,16 +1914,7 @@ void a_rehash_needtojump(const userinput *u)
     backup = gnetwork;
     for (ss=gdata.networks_online; ss<gdata.r_networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
-      quit_server();
-      for (ch = irlist_get_head(&(gnetwork->channels));
-           ch;
-           ch = irlist_delete(&(gnetwork->channels), ch)) {
-        clearmemberlist(ch);
-        free_channel_data(ch);
-      }
-      mydelete(gnetwork->user_nick);
-      mydelete(gnetwork->caps_nick);
-      mydelete(gnetwork->name);
+      a_quit_network();
     }
     gnetwork = backup;
   }
