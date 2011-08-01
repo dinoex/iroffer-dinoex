@@ -4896,7 +4896,7 @@ static void a_offline_net(unsigned int net)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[net]);
-  quit_server();
+  a_quit_network();
   gnetwork->offline = 1;
   gnetwork = backup;
 }
