@@ -2038,11 +2038,6 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
     if (f == NULL)
       break;
 
-    if (match != NULL) {
-      if (fnmatch(match, f->d_name, FNM_CASEFOLD))
-        continue;
-    }
-
     tempstr = mystrjoin(thedir, f->d_name, '/');
     if (stat(tempstr, &st) < 0) {
       a_respond(u, "cannot access '%s', ignoring: %s",
@@ -2063,6 +2058,13 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
     if (!S_ISREG(st.st_mode)) {
       mydelete(tempstr);
       continue;
+    }
+
+    if (match != NULL) {
+      if (fnmatch(match, f->d_name, FNM_CASEFOLD)) {
+        mydelete(tempstr);
+        continue;
+      }
     }
 
     u2 = irlist_add_delayed(u, "REMOVE"); /* NOTRANSLATE */
@@ -2423,11 +2425,6 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       continue;
     }
 
-    if (match != NULL) {
-      if (fnmatch(match, f->d_name, FNM_CASEFOLD))
-        continue;
-    }
-
     tempstr = mystrjoin(thedir, f->d_name, '/');
 
     if (stat(tempstr, &st) < 0) {
@@ -2465,6 +2462,13 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       mydelete(tempstr);
       continue;
     }
+    if (match != NULL) {
+      if (fnmatch(match, f->d_name, FNM_CASEFOLD)) {
+        mydelete(tempstr);
+        continue;
+      }
+    }
+
     if (check_bad_filename(f->d_name)) {
       a_respond(u, "  Ignoring bad filename: %s", tempstr);
       mydelete(tempstr);
