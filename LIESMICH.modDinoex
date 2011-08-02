@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.27:
 ----------------
 
+382) REMOVEMATCH
+  
+  Neues Admin Kommando:
+  REMOVEMATCH <muster>               Entfernt Packs deren Dateien auf <muster> passen.
+
 bugfix: Configure
   Erkennung von sendfile unter Linux funktioniert jetzt auch mit gcc46.
 

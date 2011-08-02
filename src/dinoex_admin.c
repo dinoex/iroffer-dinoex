@@ -2011,7 +2011,7 @@ static int a_readdir_sub(const userinput * const u, const char *thedir, DIR *dir
   return rc;
 }
 
-static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d)
+static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d, const char *match)
 {
   struct dirent f2;
   struct dirent *f;
@@ -2038,6 +2038,11 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
     if (f == NULL)
       break;
 
+    if (match != NULL) {
+      if (fnmatch(match, f->d_name, FNM_CASEFOLD))
+        continue;
+    }
+
     tempstr = mystrjoin(thedir, f->d_name, '/');
     if (stat(tempstr, &st) < 0) {
       a_respond(u, "cannot access '%s', ignoring: %s",
@@ -2051,7 +2056,7 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
         continue;
       }
       if (gdata.include_subdirs != 0)
-        a_removedir_sub(u, tempstr, NULL);
+        a_removedir_sub(u, tempstr, NULL, match);
       mydelete(tempstr);
       continue;
     }
@@ -2150,7 +2155,7 @@ void a_removedir(const userinput * const u)
     return;
   }
 
-  a_removedir_sub(u, thedir, d);
+  a_removedir_sub(u, thedir, d, NULL);
   mydelete(thedir);
   return;
 }
@@ -2181,6 +2186,37 @@ void a_removegroup(const userinput * const u)
     }
     xd = irlist_get_next(xd);
   }
+}
+
+void a_removematch(const userinput * const u)
+{
+  DIR *d;
+  char *thedir;
+  char *end;
+
+  updatecontext();
+
+  if (invalid_dir(u, u->arg1) != 0)
+    return;
+
+  thedir = mystrdup(u->arg1);
+  end = strrchr(thedir, '/' );
+  if (end == NULL) {
+    a_respond(u, "Try Specifying a Directory");
+    mydelete(thedir);
+    return;
+  }
+
+  *(end++) = 0;
+  d = a_open_dir(&thedir);
+  if (!d) {
+    a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
+    mydelete(thedir);
+    return;
+  }
+
+  a_removedir_sub(u, thedir, d, end);
+  mydelete(thedir);
 }
 
 static void a_renumber1(const userinput * const u, unsigned int oldp, unsigned int newp)
