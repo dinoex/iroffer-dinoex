@@ -178,8 +178,8 @@ int setupdccchat(const char *nick,
         {
           notice(nick, "DCC passive Chat denied, use \"/MSG %s ADMIN password CHATME\" instead.", get_user_nick());
           ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-                  "DCC CHAT attempt denied from %s on %s",
-                  hostmask, gnetwork->name);
+                  "DCC CHAT attempt denied from %s (%s on %s)",
+                  nick, hostmask, gnetwork->name);
         }
       return 1;
     }
