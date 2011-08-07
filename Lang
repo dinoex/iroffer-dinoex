@@ -27,6 +27,7 @@ then
 	done
 	exit 0
 fi
+utf8="cat"
 if test -n "${2}"
 then
 	charset="${2}"
@@ -44,8 +45,12 @@ fi
 utf8="cat"
 case "${charset}" in
 u*)
-	echo "utf-8 enabled ..."
-	utf8="iconv -f latin1 -t utf-8"
+	case "${lang}" in
+	de|fr|it)
+		echo "utf-8 conversion ..."
+		utf8="iconv -f latin1 -t utf-8"
+		;;
+	esac
 	;;
 esac
 echo -n "parsing ... "
