@@ -131,6 +131,13 @@ static int verifyhost_group(const char *hostmask)
   return 0;
 }
 
+static void log_chat_attempt(privmsginput *pi)
+{
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+         "DCC CHAT attempt authorized from %s (%s on %s)",
+          pi->nick, pi->hostmask, gnetwork->name);
+}
+
 static void command_dcc(privmsginput *pi)
 {
   if (strcmp(pi->msg2, "RESUME") == 0) { /* NOTRANSLATE */
@@ -145,30 +152,24 @@ static void command_dcc(privmsginput *pi)
 
   if (strcmp(pi->msg2, "CHAT") == 0) { /* NOTRANSLATE */
     if (verifyshell(&gdata.adminhost, pi->hostmask)) {
-      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "DCC CHAT attempt authorized from %s on %s",
-              pi->hostmask, gnetwork->name);
+      log_chat_attempt(pi);
       setupdccchat(pi->nick, pi->hostmask, pi->line);
       return;
     }
     if (verifyshell(&gdata.hadminhost, pi->hostmask)) {
-      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "DCC CHAT attempt authorized from %s on %s",
-              pi->hostmask, gnetwork->name);
+      log_chat_attempt(pi);
       setupdccchat(pi->nick, pi->hostmask, pi->line);
       return;
     }
     if (verifyhost_group(pi->hostmask)) {
-      ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-              "DCC CHAT attempt authorized from %s on %s",
-              pi->hostmask, gnetwork->name);
+      log_chat_attempt(pi);
       setupdccchat(pi->nick, pi->hostmask, pi->line);
       return;
     }
     notice(pi->nick, "DCC Chat denied from %s", pi->hostmask);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC CHAT attempt denied from %s on %s",
-            pi->hostmask, gnetwork->name);
+            "DCC CHAT attempt denied from %s (%s on %s)",
+            pi->nick, pi->hostmask, gnetwork->name);
     return;
   }
 
@@ -496,7 +497,7 @@ static void send_batch(privmsginput *pi, const char *what, const char *pwd)
   }
   mydelete(copy);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC BATCH %s: %u packs (%s %s on %s)",
+          "XDCC BATCH %s: %u packs %s (%s on %s)",
           what, found, pi->nick, pi->hostmask, gnetwork->name);
   if (found != 0)
     return;
@@ -507,14 +508,14 @@ static void send_batch(privmsginput *pi, const char *what, const char *pwd)
 static void log_xdcc_request1(privmsginput *pi)
 {
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC %s (%s %s on %s)",
+          "XDCC %s %s (%s on %s)",
           pi->msg2, pi->nick, pi->hostmask, gnetwork->name);
 }
 
 static void log_xdcc_request2(const char *msg, const char *arg, privmsginput *pi)
 {
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC %s %s (%s %s on %s)",
+          "XDCC %s %s %s (%s on %s)",
           msg, arg, pi->nick, pi->hostmask, gnetwork->name);
 }
 
@@ -533,7 +534,7 @@ static void log_xdcc_request3(privmsginput *pi, const char *msg)
   if (part3 == NULL)
     part3 = "";
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC %s %s%s%s (%s %s on %s)",
+          "XDCC %s %s%s%s %s (%s on %s)",
           pi->msg2, pi->msg3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
 }
 
@@ -815,7 +816,7 @@ static void xdcc_stop(privmsginput *pi)
 
   stopped = stoplist(pi->nick);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC STOP from (%s %s on %s) stopped %u",
+          "XDCC STOP from %s (%s on %s) stopped %u",
            pi->nick, pi->hostmask, gnetwork->name, stopped);
   notice(pi->nick, "LIST stopped (%u lines deleted)", stopped);
 }
