@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.27:
 ------------------
 
+Configure TRANSLATION=
+  Extend the Makefile with custom translations
+
 382) REMOVEMATCH
   
   new admin command:
