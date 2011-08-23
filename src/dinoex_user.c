@@ -535,7 +535,7 @@ static void log_xdcc_request3(privmsginput *pi, const char *msg)
     part3 = "";
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC %s %s%s%s %s (%s on %s)",
-          pi->msg2, pi->msg3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
+          pi->msg2, part3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
 }
 
 /* get restrictlist for current network */
