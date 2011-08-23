@@ -1872,7 +1872,6 @@ void a_quit_network(void)
   }
   mydelete(gnetwork->user_nick);
   mydelete(gnetwork->caps_nick);
-  mydelete(gnetwork->name);
 }
 
 void a_rehash_needtojump(const userinput *u)
@@ -1915,6 +1914,7 @@ void a_rehash_needtojump(const userinput *u)
     for (ss=gdata.networks_online; ss<gdata.r_networks_online; ++ss) {
       gnetwork = &(gdata.networks[ss]);
       a_quit_network();
+      mydelete(gnetwork->name);
     }
     gnetwork = backup;
   }
