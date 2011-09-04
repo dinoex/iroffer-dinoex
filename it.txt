@@ -1866,6 +1866,6 @@
 2805 "\2%s\2%s%s%s%s"
 2806 "%s:%ld %s la password non è criptata!"
 2807 "REMOVEMATCH"
-2808 "Remove every pack matching this pattern"
+2808 "Rimuove tutti i pacchi che corrispondono all'esempio"
 2809 "DCC CHAT accettata da %s (%s su %s)"
 2810 "DCC CHAT negata da %s (%s su %s)"
