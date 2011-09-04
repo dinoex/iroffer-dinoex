@@ -41,19 +41,24 @@ void getconfig (void) {
    printf("** Checking for completeness of config file ...\n");
    
    if ( !irlist_size(&gdata.networks[0].servers) )
-      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "server");
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s",
+               "server"); /* NOTRANSLATE */
 
    if ( gdata.config_nick == NULL )
-      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "user_nick");
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s",
+               "user_nick"); /* NOTRANSLATE */
 
    if ( gdata.user_realname == NULL )
-      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "user_realname");
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s",
+               "user_realname"); /* NOTRANSLATE */
 
    if ( gdata.user_modes == NULL )
-      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "user_modes");
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s",
+               "user_modes"); /* NOTRANSLATE */
 
    if ( gdata.slotsmax == 0 )
-      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s", "slotsmax");
+      outerror(OUTERROR_TYPE_CRASH, "Missing vital information: %s",
+               "slotsmax"); /* NOTRANSLATE */
 
    if ( irlist_size(&gdata.uploadhost) && ( gdata.uploaddir == NULL || strlen(gdata.uploaddir) < 2U ) )
       outerror(OUTERROR_TYPE_CRASH,"Config File Missing Upload Information");
