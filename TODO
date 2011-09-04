@@ -71,6 +71,7 @@ Short Term Features:
   1516  allow batch syntax for XDCC SEND
   1535  reduce queued message on batch
   1536  silent add
+  1581  admin group by file pattern
 
 Long Term Features:
   1015  http admin
