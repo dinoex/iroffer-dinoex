@@ -1794,7 +1794,7 @@
 2664 "Mostra lo spazio libero nella cartella upload"
 2684 "nick n-m [net]"
 2685 "Inserisce nella coda inattiva i packs da <n> a <m> per <nick>"
-2689 "Forbidden\r\n"
+2689 "Vietato\r\n"
 2693 "s | %s:%d %s()"
 2694 "DCC SEND negato, %s"
 2695 "DCC SEND negato (%s) da %s su %s"
