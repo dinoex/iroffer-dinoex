@@ -1373,21 +1373,26 @@ static void u_rehash(const userinput * const u) {
    u_respond(u,"Checking for completeness of config file ...");
    
    if ( gdata.config_nick == NULL )
-     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_nick");
+     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP",
+               "user_nick"); /* NOTRANSLATE */
    
    if ( gdata.user_realname == NULL )
-     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_realname");
+     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP",
+               "user_realname"); /* NOTRANSLATE */
    
    if ( gdata.user_modes == NULL )
-     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "user_modes");
+     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP",
+               "user_modes"); /* NOTRANSLATE */
    
    if ( gdata.slotsmax == 0 )
-     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "slotsmax");
+     a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP",
+               "slotsmax"); /* NOTRANSLATE */
    
    for (ss=0; ss<gdata.networks_online; ss++)
      {
        if ( !irlist_size(&gdata.networks[ss].servers) )
-         a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP", "server");
+         a_respond(u, "**WARNING** Missing vital information: %s, fix and re-rehash ASAP",
+                   "server"); /* NOTRANSLATE */
 
      }
    
