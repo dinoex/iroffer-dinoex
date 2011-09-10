@@ -50,6 +50,24 @@ More Documentation is online at http://iroffer.dinoex.de/wiki/iroffer
 Please view the file "doc/INSTALL-linux-en.txt"
 or browse it online at http://iroffer.dinoex.net/INSTALL-linux-en.html
 
+ --- Install ---
+
+To build a ull featured iroffer run:
+	./Configure -curl -geoip -upnp -ruby
+
+Then run:
+	make
+
+ --- Translation ---
+
+To build a language specific program:
+for German run
+	make de
+for Frensh run
+	make fr
+for Italian run
+	make it
+
  --- Why use iroffer to offer? ---
 
  - extremely fast dcc transfers
