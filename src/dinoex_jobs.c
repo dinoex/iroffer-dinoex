@@ -1495,7 +1495,6 @@ static void xdcc_save_xml(void)
   unsigned int num;
   unsigned int groups;
   unsigned int ss;
-  unsigned int slots;
 
   updatecontext();
 
@@ -1601,11 +1600,7 @@ static void xdcc_save_xml(void)
 
   write_string(xmlbuf, "<sysinfo>\n" /* NOTRANSLATE */
                    "  <slots>\n"); /* NOTRANSLATE */
-  if (irlist_size(&gdata.trans) < gdata.slotsmax)
-    slots = gdata.slotsmax - irlist_size(&gdata.trans);
-  else
-    slots = 0;
-  write_asc_int(xmlbuf, 4, "slotsfree", slots); /* NOTRANSLATE */
+  write_asc_int(xmlbuf, 4, "slotsfree", slotsfree()); /* NOTRANSLATE */
   write_asc_int(xmlbuf, 4, "slotsmax", gdata.slotsmax); /* NOTRANSLATE */
   write_string(xmlbuf, "  </slots>\n"); /* NOTRANSLATE */
 

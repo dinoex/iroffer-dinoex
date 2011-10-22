@@ -1611,7 +1611,6 @@ static void h_html_index(http * const h)
   char *clean;
   char *tlabel;
   size_t len;
-  unsigned int slots;
 
   updatecontext();
 
@@ -1667,13 +1666,9 @@ static void h_html_index(http * const h)
   h_respond(h, "</tr>\n");
   mydelete(tempstr);
 
-  if (gdata.slotsmax < irlist_size(&gdata.trans))
-    slots = gdata.slotsmax;
-  else
-    slots = irlist_size(&gdata.trans);
   h_respond(h, "<tr>\n");
   h_respond(h, "<td>%s</td>\n", "slots open");
-  h_respond(h, "<td>%u</td>\n", slots);
+  h_respond(h, "<td>%u</td>\n", slotsfree());
   h_respond(h, "</tr>\n");
 
   tempstr = get_current_bandwidth();

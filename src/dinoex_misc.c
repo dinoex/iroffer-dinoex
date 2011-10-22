@@ -141,6 +141,19 @@ unsigned int check_level(int prefix)
   return 0;
 }
 
+/* get coorent free slots */
+unsigned int slotsfree(void)
+{
+  unsigned int slots;
+  unsigned int trans;
+
+  slots = 0;
+  trans = irlist_size(&gdata.trans);
+  if (trans < gdata.slotsmax)
+    slots = gdata.slotsmax - trans;
+  return slots;
+}
+
 /* ckeck if we have any pack with a group */
 void set_support_groups(void)
 {
