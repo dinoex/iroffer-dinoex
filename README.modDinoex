@@ -3,7 +3,7 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
-bugfix: http_port
+bugfix: http_port (reported by sheppert)
   versions affected: 3.23 - 3.27
   In field 'slotsfree' of the weblist was the value of 'slotsused' displayed.
 
