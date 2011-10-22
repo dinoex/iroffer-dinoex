@@ -19,6 +19,7 @@ extern xdcc xdcc_listfile;
 unsigned int hide_pack(const xdcc *xd);
 unsigned int number_of_pack(xdcc *pack);
 unsigned int check_level(int prefix);
+unsigned int slotsfree(void);
 
 void set_support_groups(void);
 unsigned long get_next_transfer_time(void);

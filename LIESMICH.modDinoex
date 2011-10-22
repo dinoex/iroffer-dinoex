@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+bugfix: http_port
+  versions affected: 3.23 - 3.27
+  In der Webliste wurde anstelle von 'slotsfree' der wert von 'slotsused' angezeigt.
+
 Ab Version 3.27:
 ----------------
 
