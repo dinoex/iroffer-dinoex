@@ -58,8 +58,6 @@ unsigned int verify_cidr(irlist_t *list, const ir_sockaddr_union_t *remote);
 
 void add_newest_xdcc(irlist_t *list, const char *grouplist);
 
-unsigned int select_starting_transfer(unsigned int max);
-
 char *color_text(char *desc, unsigned int color);
 char *xd_color_description(const xdcc *xd);
 

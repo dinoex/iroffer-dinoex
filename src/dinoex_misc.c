@@ -913,18 +913,6 @@ void add_newest_xdcc(irlist_t *list, const char *grouplist)
   *best = old;
 }
 
-/* select a transfer to start with */
-unsigned int select_starting_transfer(unsigned int max)
-{
-  unsigned int t;
-
-  t = gdata.cursendptr;
-  if (++t > max)
-    t = 0;
-  gdata.cursendptr = t;
-  return t;
-}
-
 static const char *style_on[ 16 ] = {
   /* 0 =*/ "", /* NOTRANSLATE */
   /* 1 =*/ IRC_BOLD,

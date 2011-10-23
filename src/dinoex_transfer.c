@@ -599,6 +599,18 @@ int t_select_fdset(int highests, int changequartersec)
   return highests;
 }
 
+/* select a transfer to start with */
+static unsigned int select_starting_transfer(unsigned int max)
+{
+  unsigned int t;
+
+  t = gdata.cursendptr;
+  if (++t > max)
+    t = 0;
+  gdata.cursendptr = t;
+  return t;
+}
+
 /* handle transfer ip events */
 void t_perform(int changesec, int changequartersec)
 {
