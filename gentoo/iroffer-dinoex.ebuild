@@ -136,5 +136,6 @@ src_install() {
     fi
    
     doman iroffer.1
+    doman xdcc.7
 }
 

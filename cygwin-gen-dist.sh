@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-all="LICENSE README THANKS header.html footer.html doc/iroffer.1.txt"
+all="LICENSE README THANKS header.html footer.html doc/iroffer.1.txt doc/xdcc.7.txt"
 fen="README.modDinoex sample.config help-admin-en.txt"
 fde="LIESMICH.modDinoex beispiel.config help-admin-de.txt"
 fit="README.modDinoex sample.config help-admin-it.txt"
