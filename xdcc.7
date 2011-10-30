@@ -1,0 +1,118 @@
+.\" $Id$
+.TH XDCC 7 "October 2011" "All Posix OS" "User Manuals"
+.SH NAME
+XDCC usercommands
+.SH SYNOPSIS
+.TP
+.B XDCC < command > [ args ]
+.SH DESCRIPTION
+.B XDCC
+The user can inteact with the bot on the following commands.
+.SH COMMANDS
+.TP
+.B XDCC HELP
+.I /MSG mybot XDCC HELP
+.br
+Shows the supported user commands on the bot mybot
+.TP
+.B XDCC LIST
+.I /MSG mybot XDCC LIST
+.br
+.I /MSG mybot XDCC LIST group
+.br
+.I /MSG mybot XDCC LIST ALL
+.br
+Starts a listing of packs from the bot mybot.
+.TP
+.B XDCC STOP
+.I /MSG mybot XDCC STOP
+.br
+Stops the listing from bot mybot.
+.TP
+.B XDCC SEND LIST
+.I /MSG mybot XDCC SEND LIST
+.br
+.I /MSG mybot XDCC GET LIST
+.br
+Sends the list of all packages from the bot mybot via DCC filetransfer.
+.TP
+.B XDCC SEARCH
+.I /MSG mybot XDCC SEARCH pattern
+.br
+Prints out the first packs matching the pattern found on the bot mybot.
+.TP
+.B XDCC INFO
+.I /MSG mybot XDCC INFO pack
+.br
+Prints out details date of Pack number pack found on the bot mybot.
+.br
+Here you see the computed CRC32 and md5sum of this pack.
+.TP
+.B XDCC SEND
+.I /MSG mybot XDCC SEND pack
+.br
+.I /MSG mybot XDCC SEND pack password
+.br
+.I /MSG mybot XDCC GET pack
+.br
+.I /MSG mybot XDCC GET pack password
+.br
+Request a download of pack number pack on the bot mybot.
+.br
+If the pack is protected by password you have to add it here.
+.TP
+.B XDCC BACTH
+.I /MSG mybot XDCC BACTH group
+.br
+.I /MSG mybot XDCC BATCH group password
+.br
+Request a download of a series of packs matching group group on the bot mybot.
+.br
+
+.I /MSG mybot XDCC BATCH pack1-pack2
+.br
+.I /MSG mybot XDCC BATCH pack1-pack2 password
+.br
+Request a download of a series of packs from number pack1 to number pack2 on the bot mybot.
+.br
+
+.I /MSG mybot XDCC BATCH pack1,pack2
+.br
+.I /MSG mybot XDCC BATCH pack1,pack2 password
+.br
+Request a download of a list of individual packs pack1 and pack2 on the bot mybot.
+.br
+
+All this patterns can be used together.
+.br
+If the pack is protected by password you have to add it here.
+.TP
+.B XDCC QUEUE
+.I /MSG mybot XDCC QUEUE
+.br
+Shows the queued packs and the estimated time you have to wait.
+.TP
+.B XDCC REMOVE
+.I /MSG mybot XDCC REMOVE
+.br
+Remove all the queued packs requested on bot mybot.
+.br
+
+.I /MSG mybot XDCC REMOVE pack
+.br
+Remove the queued packs with pack number pack on bot mybot.
+.TP
+.B XDCC CANCEL
+.I /MSG mybot XDCC CANCEL
+.br
+Cancel a running transfer on bot mybot.
+.SH "SEE ALSO"
+.TP
+.B /usr/share/doc/iroffer
+Please look for more detailed information in this directory.
+.TP
+.B http://iroffer.dinoex.net/
+Downloads and Documentation.
+.TP
+.B http://iroffer.dinoex.de/projects/show/iroffer
+Projectpage with Tracker and RSS feed.

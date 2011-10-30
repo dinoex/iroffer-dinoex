@@ -1863,22 +1863,33 @@ clobber: clean
 man:
 	groff -t -e -mandoc -Tascii iroffer.1
 
-doc:	doc/iroffer.1.txt doc/iroffer.1.ps doc/iroffer.1.html \'
+doc:	\'
  for html in doc/INSTALL-*.html
  do
     txt="${html%.html}.txt"
     echo "	${txt} \\"
  done
+ for man in iroffer.1 xdcc.7
+ do
+    echo "	doc/${man}.txt \\"
+    echo "	doc/${man}.ps \\"
+    echo "	doc/${man}.html \\"
+ done
+ for man in iroffer.1 xdcc.7
+ do
+   echo "
+
+doc/${man}.html: ${man}
+	groff -t -e -mandoc -Thtml ${man} > doc/${man}.html
+
+doc/${man}.txt: ${man}
+	groff -t -e -mandoc -Tascii ${man} | col -bx > doc/${man}.txt
+
+doc/${man}.ps: ${man}
+	groff -t -e -mandoc -Tps ${man} > doc/${man}.ps
+"
+ done
  echo '
-
-doc/iroffer.1.html: iroffer.1
-	groff -t -e -mandoc -Thtml iroffer.1 > doc/iroffer.1.html
-
-doc/iroffer.1.txt: iroffer.1
-	groff -t -e -mandoc -Tascii iroffer.1 | col -bx > doc/iroffer.1.txt
-
-doc/iroffer.1.ps: iroffer.1
-	groff -t -e -mandoc -Tps iroffer.1 > doc/iroffer.1.ps
 
 install: all
 	install -o root -g $(INSTALL_GROUP) -m 0755 $(IRNAME)$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
