@@ -1,3 +1,36 @@
+# adding some default ignores from CVS
+# ------------------------------------
+*.a 
+*.olb 
+*.o 
+*.obj 
+*.so 
+*.Z 
+*~ 
+*.old 
+*.elc 
+*.ln 
+*.bak 
+*.BAK
+*.orig 
+*.rej 
+*.exe 
+*.dll 
+*.pdb 
+*.lib 
+*.ncb 
+*.ilk 
+*.exp 
+*.suo 
+*.lo 
+*.pch 
+*.idb 
+*.class 
+~*
+.make.state
+
+# imported from the original .cvsignore
+# -------------------------------------
 1.sh
 GNUmakefile
 Makefile
