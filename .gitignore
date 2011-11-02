@@ -83,3 +83,6 @@ u.sh
 v.sh
 w.sh
 z.sh
+
+## to hinder the import of a .cvsignore file
+.cvsignore
