@@ -545,6 +545,7 @@ static void Init_IrofferEvent(void) {
   rb_define_method(cIrofferEvent, "on_server", cie_null, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "on_notice", cie_null, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "on_privmsg", cie_null, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "on_added", cie_null, 0); /* NOTRANSLATE */
   /* accessors */
   rb_define_method(cIrofferEvent, "network", cie_network, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "inputline", cie_inputline, 0); /* NOTRANSLATE */
