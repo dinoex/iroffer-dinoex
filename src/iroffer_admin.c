@@ -429,7 +429,7 @@ static size_t u_expand_command2(char *cmd)
   if (end != NULL) {
     *end = 0;
     for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++) {
-      if (strcmp(userinput_parse[i].command, cmd))
+      if (strcasecmp(userinput_parse[i].command, cmd))
         continue;
 
       if ((userinput_parse[i].methods_allowed & method_console) == 0)
