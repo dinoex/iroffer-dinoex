@@ -71,7 +71,7 @@ void getconfig (void) {
       
    if (gdata.background) gdata.debug = 0;
    
-   if ( !gdata.noscreen && !gdata.background) {
+   if ( !gdata.background ) {
       gototop();
       }
    
@@ -472,7 +472,7 @@ void sendserver(void)
       return;
     }
   
-  if ( !gdata.noscreen && !gdata.background)
+  if ( !gdata.background )
     gototop();
 
   sendannounce();
