@@ -995,6 +995,7 @@ static void mainloop (void) {
                 }
               if (!xd->has_md5sum)
                 {
+                  if (!gdata.attop) gototop();
                   start_md5_hash(xd, packnum);
                   break;
                 }
