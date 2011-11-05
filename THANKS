@@ -649,6 +649,7 @@ Loke_AF
 	suggesting "requeue_sends"
 	suggesting "ignore_duplicate_ip"
 	suggesting "RMALLQ"
+	reporting uneven transfer bug
 
 Nouhime
 	reporting "http_search" bug.
