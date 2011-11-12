@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+383) INFO, QUEUE, IQUEUE, SEND
+  Erlaube -1 für das xdcclistfile.
+
 bugfix: telnet_port
   Im Log wurde immer nur das erste netzwerk gelmeldet.
 
