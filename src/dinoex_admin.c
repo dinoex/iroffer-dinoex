@@ -2764,7 +2764,7 @@ void a_chnote(const userinput * const u)
   if (num <= 0)
      return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -4842,7 +4842,7 @@ void a_closec(const userinput * const u)
     return;
   }
   num = atoi(u->arg1);
-  chat = irlist_get_nth(&gdata.dccchats, num-1);
+  chat = irlist_get_nth(&gdata.dccchats, num - 1);
   if (chat == NULL) {
     a_respond_badid(u, "CHATL"); /* NOTRANSLATE */
     return;
