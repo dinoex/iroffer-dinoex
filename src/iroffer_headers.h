@@ -325,6 +325,7 @@ typedef struct
 {
   ir_connection_t con;
   ir_boutput_t boutput;
+  const char *name;
   char *nick;
   char *hostmask;
   char *groups;

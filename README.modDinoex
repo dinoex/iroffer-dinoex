@@ -3,10 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+bugfix: telnet_port
+  Logging was reporting only the first network name.
+
 382) Export for XDCC parser
   htdocs/parser.txt.rb: export all packs in XDCC Parser notaion.
 
-bugfix: XDCC GET (reported by Loke_AF)
+bugfix: overallmaxspeed (reported by Loke_AF)
   fix distribution of load over mutiple transfers.
 
 bugfix: http_port (reported by sheppert)

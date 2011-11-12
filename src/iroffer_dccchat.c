@@ -40,6 +40,7 @@ int setupdccchatout(const char *nick, const char *hostmask, const char *token)
   updatecontext();
   
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
+  chat->name = gnetwork->name;
   chat->status = DCCCHAT_UNUSED;
   chat->con.family = gnetwork->myip.sa.sa_family;
 
@@ -66,7 +67,7 @@ int setupdccchatout(const char *nick, const char *hostmask, const char *token)
   mydelete(msg);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT sent to %s on %s, waiting for connection on %s",
-          nick, gnetwork->name, chat->con.localaddr);
+          nick, chat->name, chat->con.localaddr);
   return 0;
 }
 
@@ -179,12 +180,13 @@ int setupdccchat(const char *nick,
           notice(nick, "DCC passive Chat denied, use \"/MSG %s ADMIN password CHATME\" instead.", get_user_nick());
           ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
                   "DCC CHAT attempt denied from %s (%s on %s)",
-                  nick, hostmask, gnetwork->name);
+                  nick, hostmask, chat->name);
         }
       return 1;
     }
   
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
+  chat->name = gnetwork->name;
   
   bzero((char *) &(chat->con.remote), sizeof(chat->con.remote));
   
@@ -277,7 +279,7 @@ int setupdccchat(const char *nick,
   mydelete(msg);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
           "DCC CHAT received from %s on %s, attempting connection to %s",
-          nick, gnetwork->name, chat->con.remoteaddr);
+          nick, chat->name, chat->con.remoteaddr);
   return 0;
 }
 
