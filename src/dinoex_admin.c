@@ -787,6 +787,23 @@ unsigned int get_pack_nr(const userinput * const u, const char *arg)
     return 0;
 
   num = packnumtonum(arg);
+  if (num == XDCC_SEND_LIST) {
+    init_xdcc_file(&xdcc_listfile, gdata.xdcclistfile);
+    return num;
+  }
+  if (invalid_pack(u, num) != 0)
+    return 0;
+  return num;
+}
+
+static unsigned int get_pack_nr1(const userinput * const u, const char *arg)
+{
+  unsigned int num;
+
+  if (!arg || (arg[0] == 0))
+    return 0;
+
+  num = packnumtonum(arg);
   if (invalid_pack(u, num) != 0)
     return 0;
   return num;
@@ -797,7 +814,7 @@ static int get_pack_nr2(const userinput * const u, const char *arg, unsigned int
   unsigned int num2 = num1;
 
   if (arg) {
-    num2 = get_pack_nr(u, arg);
+    num2 = get_pack_nr1(u, arg);
     if (num2 == 0)
       return num2;
   }
@@ -2088,7 +2105,7 @@ void a_remove(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -2248,7 +2265,7 @@ void a_renumber3(const userinput * const u)
 
   updatecontext();
 
-  oldp = get_pack_nr(u, u->arg1);
+  oldp = get_pack_nr1(u, u->arg1);
   if (oldp == 0)
     return;
 
@@ -2257,10 +2274,10 @@ void a_renumber3(const userinput * const u)
     if (endp == 0)
       return;
 
-    newp = get_pack_nr(u, u->arg3);
+    newp = get_pack_nr1(u, u->arg3);
   } else {
     endp = oldp;
-    newp = get_pack_nr(u, u->arg2);
+    newp = get_pack_nr1(u, u->arg2);
   }
   if (newp == 0)
     return;
@@ -2727,7 +2744,7 @@ void a_chdesc(const userinput * const u)
 
   updatecontext();
 
-  num = get_pack_nr(u, u->arg1);
+  num = get_pack_nr1(u, u->arg1);
   if (num == 0)
     return;
 
@@ -2760,11 +2777,11 @@ void a_chnote(const userinput * const u)
 
   updatecontext();
 
-  num = get_pack_nr(u, u->arg1);
+  num = get_pack_nr1(u, u->arg1);
   if (num <= 0)
      return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
     return;
 
@@ -2792,7 +2809,7 @@ void a_chtime(const userinput * const u)
 
   updatecontext();
 
-  num = get_pack_nr(u, u->arg1);
+  num = get_pack_nr1(u, u->arg1);
   if (num == 0)
     return;
 
@@ -2833,7 +2850,7 @@ void a_chmins(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -2873,7 +2890,7 @@ void a_chmaxs(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -2914,7 +2931,7 @@ void a_chlimit(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -2958,7 +2975,7 @@ void a_chlimitinfo(const userinput * const u)
 
   updatecontext();
 
-  num = get_pack_nr(u, u->arg1);
+  num = get_pack_nr1(u, u->arg1);
   if (num == 0)
     return;
 
@@ -2986,7 +3003,7 @@ void a_chtrigger(const userinput * const u)
 
   updatecontext();
 
-  num = get_pack_nr(u, u->arg1);
+  num = get_pack_nr1(u, u->arg1);
   if (num == 0)
     return;
 
@@ -3026,7 +3043,7 @@ void a_deltrigger(const userinput * const u)
   if (disabled_config(u) != 0)
     return;
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -3062,7 +3079,7 @@ void a_chgets(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -3108,7 +3125,7 @@ void a_chcolor(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -3159,7 +3176,7 @@ void a_lock(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -3197,7 +3214,7 @@ void a_unlock(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -3341,7 +3358,7 @@ void a_group(const userinput * const u)
 
   updatecontext();
 
-  num = get_pack_nr(u, u->arg1);
+  num = get_pack_nr1(u, u->arg1);
   if (num == 0)
     return;
 
@@ -3373,7 +3390,7 @@ void a_movegroup(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -3465,7 +3482,7 @@ void a_md5(const userinput * const u)
   if (!(u->arg1))
     return;
 
-  von = get_pack_nr(u, u->arg1);
+  von = get_pack_nr1(u, u->arg1);
   if (von == 0)
     return;
 
@@ -3498,7 +3515,7 @@ void a_crc(const userinput * const u)
   updatecontext();
 
   if (u->arg1) {
-    von = get_pack_nr(u, u->arg1);
+    von = get_pack_nr1(u, u->arg1);
     if (von == 0)
       return;
 
@@ -3569,7 +3586,7 @@ void a_chfile(const userinput * const u)
 
   updatecontext();
 
-  num = get_pack_nr(u, u->arg1);
+  num = get_pack_nr1(u, u->arg1);
   if (num == 0)
     return;
 
@@ -3786,7 +3803,7 @@ void a_movefile(const userinput * const u)
   if (disabled_config(u) != 0)
     return;
 
-  num = get_pack_nr(u, u->arg1);
+  num = get_pack_nr1(u, u->arg1);
   if (num == 0)
     return;
 
@@ -3881,7 +3898,7 @@ void a_fileremove(const userinput * const u)
   if (disabled_config(u) != 0)
     return;
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 
@@ -4842,7 +4859,7 @@ void a_closec(const userinput * const u)
     return;
   }
   num = atoi(u->arg1);
-  chat = irlist_get_nth(&gdata.dccchats, num-1);
+  chat = irlist_get_nth(&gdata.dccchats, num - 1);
   if (chat == NULL) {
     a_respond_badid(u, "CHATL"); /* NOTRANSLATE */
     return;
@@ -5113,7 +5130,7 @@ void a_send(const userinput * const u)
     return;
 
   backup = gnetwork;
-  a_respond(u, "Sending %s pack %u", u->arg1, num);
+  a_respond(u, "Sending %s pack %d", u->arg1, (int)num);
   gnetwork = &(gdata.networks[net]);
   look_for_file_changes(xd);
   tr = create_transfer(xd, u->arg1, "man"); /* NOTRANSLATE */
@@ -5134,10 +5151,10 @@ static unsigned int a_queue_found(const userinput * const u, xdcc *xd, unsigned 
   alreadytrans = queue_count_host(&gdata.mainqueue, &inq, 1, u->arg1, hostname, xd);
   alreadytrans += queue_count_host(&gdata.idlequeue, &inq, 1, u->arg1, hostname, xd);
   if (alreadytrans > 0) {
-    a_respond(u, "Already Queued %s for Pack %u!", u->arg1, num);
+    a_respond(u, "Already Queued %s for Pack %d!", u->arg1, (int)num);
     return 1;
   }
-  a_respond(u, "Queuing %s for Pack %u", u->arg1, num);
+  a_respond(u, "Queuing %s for Pack %d", u->arg1, (int)num);
   return 0;
 }
 
@@ -5164,7 +5181,7 @@ void a_queue(const userinput * const u)
   if (num == 0)
     return;
 
-  xd = irlist_get_nth(&gdata.xdccs, num - 1);
+  xd = get_xdcc_pack(num);
   if (a_queue_found(u, xd, num))
     return;
 
@@ -5188,7 +5205,7 @@ static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned i
   updatecontext();
 
   if (xd == NULL) {
-    xd = irlist_get_nth(&gdata.xdccs, num - 1);
+    xd = get_xdcc_pack(num);
     if (xd == NULL)
       return 1;
   }
@@ -5250,11 +5267,23 @@ static unsigned int a_iqueue_search(const userinput * const u, const char *what,
   if (*what == 0)
     return found;
 
+  /* xdcclistfile */
+  if (*what == '-') {
+    first = atoi(what);
+    if (first == XDCC_SEND_LIST) {
+      ++found;
+      a_iqueue_sub(u, NULL, first, net);
+    }
+    return found;
+  }
+
   end = strchr(what, '-');
   first = atoi(what);
   if (end == NULL) {
-    ++found;
-    a_iqueue_sub(u, NULL, first, net);
+    if (first > 0) {
+      ++found;
+      a_iqueue_sub(u, NULL, first, net);
+    }
     return found;
   }
   if (*(++end) == '#') ++end;
@@ -5398,7 +5427,7 @@ static void a_announce_sub(const userinput * const u, const char *arg1, const ch
 
   updatecontext();
 
-  num1 = get_pack_nr(u, arg1);
+  num1 = get_pack_nr1(u, arg1);
   if (num1 == 0)
     return;
 
@@ -5512,7 +5541,7 @@ void a_cannounce(const userinput * const u)
   if (invalid_channel(u, u->arg1) != 0)
     return;
 
-  num = get_pack_nr(u, u->arg2);
+  num = get_pack_nr1(u, u->arg2);
   if (num == 0)
     return;
 
@@ -5531,7 +5560,7 @@ void a_sannounce(const userinput * const u)
 
   updatecontext();
 
-  num1 = get_pack_nr(u, u->arg1);
+  num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
 

@@ -124,6 +124,7 @@ static void telnet_accept(unsigned int i)
   updatecontext();
 
   chat = irlist_add(&gdata.dccchats, sizeof(dccchat_t));
+  chat->name = "telnet"; /* NOTRANSLATE */
   chat->status = DCCCHAT_UNUSED;
   chat->con.family = telnet_family[i];
   if (chat->con.family != AF_INET) {

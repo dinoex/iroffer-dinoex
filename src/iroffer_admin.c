@@ -998,7 +998,7 @@ static void u_info(const userinput * const u)
   if (num <= 0)
     return;
   
-  xd = irlist_get_nth(&gdata.xdccs, num-1);
+  xd = get_xdcc_pack(num);
   if (group_restricted(u, xd))
     return;
   

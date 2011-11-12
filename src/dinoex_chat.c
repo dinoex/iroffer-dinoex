@@ -128,7 +128,7 @@ void chat_perform(void)
           errno2 = errno;
           outerror(OUTERROR_TYPE_WARN,
                    "Couldn't determine dcc connection status on %s: %s",
-                   gnetwork->name, strerror(errno));
+                   chat->name, strerror(errno));
           notice(chat->nick, "DCC Chat Connect Attempt Failed: %s", strerror(errno2));
           shutdowndccchat(chat, 0);
           continue;
@@ -136,7 +136,7 @@ void chat_perform(void)
         if (connect_error) {
           ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                   "DCC Chat Connect Attempt Failed on %s: %s",
-                  gnetwork->name, strerror(connect_error));
+                  chat->name, strerror(connect_error));
           notice(chat->nick, "DCC Chat Connect Attempt Failed: %s", strerror(connect_error));
           shutdowndccchat(chat, 0);
           continue;
@@ -159,7 +159,7 @@ void chat_perform(void)
         if (length < 1) {
           ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
                   "DCC Chat Lost on %s: %s",
-                  gnetwork->name,
+                  chat->name,
                   (length<0) ? strerror(errno) : "Closed");
            notice(chat->nick, "DCC Chat Lost: %s", (length<0) ? strerror(errno) : "Closed");
            shutdowndccchat(chat, 0);

@@ -159,6 +159,11 @@ Long Term Features:
   1563  Restrict group admin access to DCLD and others
   1567  Support netmap for line rate (14.88Mpps) on a 10GigE link 
   1578  multiple(batch) files announce
+  1584  compressed log line for xdcc get
+  1585  autoghost nick if in use.
+  1592  old announce message
+  1593  announce pack-1
+  1595  vitual packs, relayed to an other bot
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

@@ -3,6 +3,18 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+383) INFO, QUEUE, IQUEUE, SEND
+  Erlaube -1 für das xdcclistfile.
+
+bugfix: telnet_port
+  Im Log wurde immer nur das erste netzwerk gelmeldet.
+
+382) Export for XDCC parser
+  htdocs/parser.txt.rb: exportiere alle Pakate im Format für XDCC Parser.
+
+bugfix: overallmaxspeed
+  Bandbreite wurde nicht gleichmäßig auf alle Transfers verteilt.
+
 bugfix: http_port
   versions affected: 3.23 - 3.27
   In der Webliste wurde anstelle von 'slotsfree' der wert von 'slotsused' angezeigt.
