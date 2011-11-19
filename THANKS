@@ -561,6 +561,7 @@ CreeW
 	reporting "REHASH" bug
 	suggesting "IQSEND"
 	suggesting "respondtochannellist" per network
+	suggesting "on_packlist"
 
 [M]-V
 	reporting ADDDIR spaces bug
