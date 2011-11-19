@@ -53,6 +53,11 @@ class IrofferEvent
     end
   end
 
+  # called on add / rename / remove
+  def on_packlist
+    command( "AMSG", "Packlist has been updated" )
+  end
+
   # called on each pack added
   def on_added
     write_log( "Added pack nr", added_pack, "with file", added_file )
