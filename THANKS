@@ -583,6 +583,7 @@ Aashiqmunda
 	reporting "XDCC BATCH" bug
 	reporting "BATCH" crash
 	suggesting "DCLD" with IP/country
+	suggesting "autoaddann_mask"
 
 SellKony
 	reporting CONFIG crash

@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+388) autoaddann_mask
+  Wenn aktiv, sende eine Nachricht bei jedem neuen Paket das auf dem Bot
+  der Dateiname auf eines der angegeben Muster passt.
+
 387) adddir_match
   Liste von Dateien oder Mustern die bei adddir, addnew und autoadd
   gefunden werden sollen.

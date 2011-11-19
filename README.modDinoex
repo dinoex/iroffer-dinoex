@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+388) autoaddann_mask (suggested by Aashiqmunda)
+  When configured, addir, adnew and autoadd will only announce files
+  that do match this patterns.
+
 387) adddir_match (suggested by TheDeath)
   When configured, addir, adnew and autoadd will skip all files that do
   not match this patterns.

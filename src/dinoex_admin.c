@@ -1336,6 +1336,12 @@ void a_autoaddann(xdcc * UNUSED(xd), unsigned int pack)
   do_myruby_added(xd->file, pack);
 #endif /* USE_RUBY */
 
+  if (irlist_size(&gdata.autoaddann_mask)) {
+    if (!verifyshell(&gdata.autoaddann_mask, getfilename(xd->file))) {
+       return;
+    }
+  }
+
   if (gdata.autoaddann_short)
     a_make_announce("SANNOUNCE", pack); /* NOTRANSLATE */
 
