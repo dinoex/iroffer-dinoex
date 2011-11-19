@@ -1336,6 +1336,9 @@ void a_autoaddann(xdcc * UNUSED(xd), unsigned int pack)
   do_myruby_added(xd->file, pack);
 #endif /* USE_RUBY */
 
+  if (no_verifyshell(&gdata.autoaddann_mask, getfilename(xd->file)))
+    return;
+
   if (gdata.autoaddann_short)
     a_make_announce("SANNOUNCE", pack); /* NOTRANSLATE */
 
@@ -2443,8 +2446,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     if (f == NULL)
       break;
 
-    if (verifyshell(&gdata.adddir_exclude, f->d_name))
-    {
+    if (verifyshell(&gdata.adddir_exclude, f->d_name)) {
       if (gdata.debug > 0)
         a_respond(u, "  Ignoring adddir_exclude file: %s", f->d_name);
       continue;
@@ -2494,15 +2496,13 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       }
     }
 
-    if (irlist_size(&gdata.adddir_match)) {
-      if (!verifyshell(&gdata.adddir_match, f->d_name)) {
-        if (gdata.debug > 0)
-          a_respond(u, "  Ignoring adddir_match file: %s", f->d_name);
-        mydelete(tempstr);
-        continue;
-      }
+    if (no_verifyshell(&gdata.adddir_match, f->d_name)) {
+      if (gdata.debug > 0)
+        a_respond(u, "  Ignoring adddir_match file: %s", f->d_name);
+      mydelete(tempstr);
+      continue;
     }
-  
+
     if (check_bad_filename(f->d_name)) {
       a_respond(u, "  Ignoring bad filename: %s", tempstr);
       mydelete(tempstr);

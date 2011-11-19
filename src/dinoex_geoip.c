@@ -130,12 +130,23 @@ static const char *check_geoip6(struct in6_addr *remoteip)
 }
 #endif /* USE_GEOIP6 */
 
+static void geoip_deny(transfer *const tr, const char *country)
+{
+  char *msg;
+
+  msg = mymalloc(maxtextlength);
+  snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
+  t_closeconn(tr, msg, 0);
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+           "IP from other country (%s) detected", country);
+  mydelete(msg);
+}
+
 /* check an IRC download against the GeoIP database */
 void geoip_new_connection(transfer *const tr)
 {
   const char *country;
   const char *group;
-  char *msg;
 
   if (tr->con.family != AF_INET) {
 #ifdef USE_GEOIP6
@@ -163,47 +174,29 @@ void geoip_new_connection(transfer *const tr)
         return;
     }
   }
-  if (irlist_size(&gdata.geoipcountry)) {
-    if (!verifyshell(&gdata.geoipcountry, country)) {
-      if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
-         msg = mymalloc(maxtextlength);
-         snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
-         t_closeconn(tr, msg, 0);
-         ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                 "IP from other country (%s) detected", country);
-         mydelete(msg);
-         return;
-      }
-    }
+
+  if (verifyshell(&gdata.geoipexcludenick, tr->nick))
+    return;
+
+  if (no_verifyshell(&gdata.geoipcountry, country)) {
+    geoip_deny(tr, country);
+    return;
   }
-  if (irlist_size(&gdata.nogeoipcountry)) {
-    if (verifyshell(&gdata.nogeoipcountry, country)) {
-      if (!verifyshell(&gdata.geoipexcludenick, tr->nick)) {
-         msg = mymalloc(maxtextlength);
-         snprintf(msg, maxtextlength, "Sorry, no downloads to your country = \"%s\", ask owner.", country);
-         t_closeconn(tr, msg, 0);
-         ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                 "IP from other country (%s) detected", country);
-         mydelete(msg);
-         return;
-      }
-    }
+  if (verifyshell(&gdata.nogeoipcountry, country)) {
+    geoip_deny(tr, country);
+    return;
   }
 }
 
 #ifndef WITHOUT_HTTP
 static unsigned int http_check_country(const char *country)
 {
-  if (irlist_size(&gdata.geoipcountry)) {
-    if (!verifyshell(&gdata.geoipcountry, country)) {
-      return 1;
-    }
-  }
-  if (irlist_size(&gdata.nogeoipcountry)) {
-    if (verifyshell(&gdata.nogeoipcountry, country)) {
-      return 1;
-    }
-  }
+  if (no_verifyshell(&gdata.geoipcountry, country))
+    return 1;
+
+  if (verifyshell(&gdata.nogeoipcountry, country))
+    return 1;
+
   return 0;
 }
 

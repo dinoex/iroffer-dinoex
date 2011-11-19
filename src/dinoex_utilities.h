@@ -27,6 +27,7 @@ char *mystrjoin(const char *str1, const char *str2, unsigned int delimiter);
 #endif
 void irlist_add_string(irlist_t *list, const char *str);
 unsigned int verifyshell(irlist_t *list, const char *file);
+unsigned int no_verifyshell(irlist_t *list, const char *file);
 const char *save_nick(const char * nick);
 unsigned int verifypass2(const char *masterpass, const char *testpass);
 char *clean_quotes(char *str);

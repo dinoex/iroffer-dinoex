@@ -111,6 +111,16 @@ unsigned int verifyshell(irlist_t *list, const char *file)
   return 0;
 }
 
+/* match a given file against a list of required patterns */
+unsigned int no_verifyshell(irlist_t *list, const char *file)
+{
+  if (irlist_size(list)) {
+    if (!verifyshell(list, file))
+      return 1;
+  }
+  return 0;
+}
+
 /* returns a nickname fail-safe */
 const char *save_nick(const char * nick)
 {
