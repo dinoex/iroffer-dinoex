@@ -1324,13 +1324,8 @@ static unsigned int a_get_color(const char *definition)
   return color;
 }
 
-#ifdef USE_RUBY
 /* perform delayed announce */
 void a_autoaddann(xdcc *xd, unsigned int pack)
-#else
-/* perform delayed announce */
-void a_autoaddann(xdcc * UNUSED(xd), unsigned int pack)
-#endif /* USE_RUBY */
 {
 #ifdef USE_RUBY
   do_myruby_added(xd->file, pack);
