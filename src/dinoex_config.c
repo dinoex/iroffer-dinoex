@@ -770,6 +770,7 @@ static void reset_config_string(void)
 static int config_list_anzahl = 0;
 static config_list_typ config_parse_list[] = {
 {"adddir_exclude",          &gdata.adddir_exclude,          0 }, /* NOTRANSLATE */
+{"adddir_match",            &gdata.adddir_match,            0 }, /* NOTRANSLATE */
 {"adminhost",               &gdata.adminhost,               3 }, /* NOTRANSLATE */
 {"autoadd_dir",             &gdata.autoadd_dirs,            0 }, /* NOTRANSLATE */
 {"autocrc_exclude",         &gdata.autocrc_exclude,         0 }, /* NOTRANSLATE */
