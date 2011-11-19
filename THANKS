@@ -650,6 +650,7 @@ Loke_AF
 	suggesting "ignore_duplicate_ip"
 	suggesting "RMALLQ"
 	reporting uneven transfer bug
+	suggesting "extend_status_line" with SrvQ
 
 Nouhime
 	reporting "http_search" bug.

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+384) extend_status_line (suggested by Loke_AF)
+  Print SrvQ of current network.
+
 383) INFO, QUEUE, IQUEUE, SEND (suggested by Loke_AF)
   Allow -1 for the xdcclistfile.
 

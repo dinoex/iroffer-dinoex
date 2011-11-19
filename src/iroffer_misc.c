@@ -1269,6 +1269,7 @@ void switchserver(int which)
 char* getstatusline(char *str, size_t len)
 {
   unsigned int i, srvq;
+  unsigned int netq;
   ir_uint64 xdccsent;
   ir_uint64 xdccrecv;
   ir_uint64 xdccsum;
@@ -1280,6 +1281,14 @@ char* getstatusline(char *str, size_t len)
   for (i=0; i<XDCC_SENT_SIZE; i++)
     {
       xdccsent += (ir_uint64)gdata.xdccsent[i];
+    }
+  
+  netq = 0;
+  if (gnetwork != NULL)
+    {
+  netq += irlist_size(&(gnetwork->serverq_fast))
+    + irlist_size(&(gnetwork->serverq_normal))
+    + irlist_size(&(gnetwork->serverq_slow));
     }
   
   srvq = 0;
@@ -1304,13 +1313,14 @@ char* getstatusline(char *str, size_t len)
          }
        
        i = snprintf(str, len,
-               "Stat: %u/%u Sls, %u/%u Q, %u/%u I, %u SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)",
+               "Stat: %u/%u Sls, %u/%u Q, %u/%u I, %u/%u SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
                irlist_size(&gdata.mainqueue),
                gdata.queuesize,
                irlist_size(&gdata.idlequeue),
                gdata.idlequeuesize,
+               netq,
                srvq,
                xdccsent/1024,
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
