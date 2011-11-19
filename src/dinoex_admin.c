@@ -2502,7 +2502,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         continue;
       }
     }
-  
+
     if (check_bad_filename(f->d_name)) {
       a_respond(u, "  Ignoring bad filename: %s", tempstr);
       mydelete(tempstr);
