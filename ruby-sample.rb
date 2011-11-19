@@ -98,6 +98,11 @@ class IrofferEvent
     text << "\""
     command( "AMSG", text )
   end
+
+  # Admin Command: RUBY action nick msg
+  def action( nick, msg )
+    command( "msg", nick, "\001ACTION #{msg}\001" )
+  end
 end
 
 # eof
