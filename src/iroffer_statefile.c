@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_jobs.h"
 #include "dinoex_misc.h"
 
 
@@ -348,7 +349,6 @@ unsigned int read_statefile(void)
   statefile_hdr_t *hdr;
   ir_uint32 calluval;
   unsigned int save = 0;
-  int callval;
   time_t timestamp = 0;
   
   updatecontext();
@@ -478,20 +478,8 @@ unsigned int read_statefile(void)
               snprintf(iroffer_now, maxtextlength, "iroffer-dinoex " VERSIONLONG ", %s", gdata.osstring);
               if (strcmp(iroffer_version, iroffer_now) != 0)
                 {
-                  char *statefile_tmp;
-                  char *statefile_date;
                   ++save;
-                  statefile_date = mycalloc(maxtextlengthshort);
-                  getdatestr(statefile_date, 0, maxtextlengthshort);
-                  statefile_tmp = mystrjoin(gdata.statefile, statefile_date, '.');
-                  mydelete(statefile_date);
-                  callval = rename(gdata.statefile, statefile_tmp);
-                  if (callval < 0)
-                    {
-                      outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Save New State File '%s': %s",
-                               gdata.statefile, strerror(errno));
-                    }
-                  mydelete(statefile_tmp);
+                  backup_statefile();
                 }
               mydelete(iroffer_now);
             }

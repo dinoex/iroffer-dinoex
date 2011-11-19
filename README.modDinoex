@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+386) CLEARRECORDS, CLEARGETS (suggested by Loke_AF)
+  Backup the statefile before clearing.
+
 385) ruby_script (suggested by CreeW)
   New method "on_packlist", called if the pack list has changed.
 

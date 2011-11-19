@@ -4831,6 +4831,8 @@ void a_cleargets(const userinput * const u)
 {
   xdcc *xd;
 
+  backup_statefile();
+
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {

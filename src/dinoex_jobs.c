@@ -2315,6 +2315,24 @@ void delayed_announce(void)
   }
 }
 
+void backup_statefile(void)
+{
+  char *statefile_tmp;
+  char *statefile_date;
+  int callval;
+
+  statefile_date = mycalloc(maxtextlengthshort);
+  getdatestr(statefile_date, 0, maxtextlengthshort);
+  statefile_tmp = mystrjoin(gdata.statefile, statefile_date, '.');
+  mydelete(statefile_date);
+  callval = rename(gdata.statefile, statefile_tmp);
+  if (callval < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Save New State File '%s': %s",
+             gdata.statefile, strerror(errno));
+  }
+  mydelete(statefile_tmp);
+}
+
 static magic_crc_t magic_crc_table[] = {
   { 0x24, 7, { 0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x00, 0} },
   { 0x0E, 4, { 0x50, 0x4b, 0x03, 0x04, 0, 0, 0, 0 } },
