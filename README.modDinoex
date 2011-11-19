@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+387) adddir_match (suggested by TheDeath)
+  When configured, addir, adnew and autoadd will skip all files that do
+  not match this patterns.
+
 386) CLEARRECORDS, CLEARGETS (suggested by Loke_AF)
   Backup the statefile before clearing.
 
