@@ -561,6 +561,7 @@ CreeW
 	reporting "REHASH" bug
 	suggesting "IQSEND"
 	suggesting "respondtochannellist" per network
+	suggesting "on_packlist"
 
 [M]-V
 	reporting ADDDIR spaces bug
@@ -650,6 +651,7 @@ Loke_AF
 	suggesting "ignore_duplicate_ip"
 	suggesting "RMALLQ"
 	reporting uneven transfer bug
+	suggesting "extend_status_line" with SrvQ
 
 Nouhime
 	reporting "http_search" bug.

@@ -1375,7 +1375,7 @@
 1834 "Moves idle queue entry from position <x> to <y>"
 1835 "Current Idle Queue:"
 1836 "listen on port %d for %s (%s on %s)"
-1837 "Stat: %u/%u Sls, %u/%u Q, %u/%u I, %u SrQ (Bdw: %"
+1837 "Stat: %u/%u Sls, %u/%u Q, %u/%u I, %u/%u SrQ (Bdw: %"
 1839 "%s:%ld ignored %s '%s' because it contains spaces"
 1840 "x [y] z"
 1843 "  : token=%d"

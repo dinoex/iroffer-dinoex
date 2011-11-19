@@ -2336,6 +2336,8 @@ static void u_clearrecords(const userinput * const u)
   int ii;
   updatecontext();
   
+  backup_statefile();
+  
   gdata.record = 0;
   gdata.sentrecord = 0;
   gdata.totalsent = 0;

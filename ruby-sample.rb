@@ -53,6 +53,11 @@ class IrofferEvent
     end
   end
 
+  # called on add / rename / remove
+  def on_packlist
+    command( "AMSG", "Packlist has been updated" )
+  end
+
   # called on each pack added
   def on_added
     write_log( "Added pack nr", added_pack, "with file", added_file )
@@ -92,6 +97,11 @@ class IrofferEvent
     text << added_pack.to_s
     text << "\""
     command( "AMSG", text )
+  end
+
+  # Admin Command: RUBY action nick msg
+  def action( nick, msg )
+    command( "msg", nick, "\001ACTION #{msg}\001" )
   end
 end
 

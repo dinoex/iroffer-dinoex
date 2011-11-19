@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+386) CLEARRECORDS, CLEARGETS
+  Erstelle ein Backup des "statefiles" vor dem Löschen.
+
+385) ruby_script
+  Neue Methode "on_packlist", wird aufgerufen wen der Inhalt der Paket-Liste sich geändert hat.
+
+384) extend_status_line
+  Gebe zusätzlich SrvQ des aktuellen Netzwerks in der Statuszeile aus.
+
 383) INFO, QUEUE, IQUEUE, SEND
   Erlaube -1 für das xdcclistfile.
 

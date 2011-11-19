@@ -164,6 +164,7 @@ Long Term Features:
   1592  old announce message
   1593  announce pack-1
   1595  vitual packs, relayed to an other bot
+  1597  status trigger instaled of CTCP
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

@@ -80,6 +80,7 @@ char *new_logfilename(const char *logfile);
 void expire_logfiles(const char *logfile);
 int rotatelog(const char *logfile);
 void delayed_announce(void);
+void backup_statefile(void);
 
 ir_uint32 get_zip_crc32_pack(xdcc *xd);
 
