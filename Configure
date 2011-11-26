@@ -205,6 +205,7 @@ fr*)
  irt_nogetaddrinfo="utilisera gethostbyname à la place"
  irt_nogethostbyname="ne fera pas état des codes d'erreur"
  irt_nores_init="res_init() ne sera pas utilisé"
+ irt_no_kqueue="kqueue() ne sera pas utilisé"
  irt_seeingif_lib="Vérifie si les librairies"
  irt_lib_exists="existent"
  irt_geoip6="prend en charge IPv6"
@@ -308,6 +309,7 @@ de*)
  irt_nogetaddrinfo="Benutze statt dessen gethostbyname()"
  irt_nogethostbyname="Kann Fehler nicht ausgeben"
  irt_nores_init="Kann res_init() nicht benutzen"
+ irt_no_kqueue="Kann kqueue() nicht benutzen"
  irt_seeingif_lib="Prüfe ob"
  irt_lib_exists="Bibliothek existiert"
  irt_geoip6="hat IPv6 Funktionen"
@@ -412,6 +414,7 @@ de*)
  irt_negetaddrinfo="utilisera gethostbyname à la place"
  irt_nogethostbyname="won't report error codes"
  irt_nores_init="won't use res_init()"
+ irt_no_kqueue="won't use kqueue()"
  irt_seeingif_lib="Seeing if"
  irt_lib_exists="library exists"
  irt_geoip6="has IPv6 support"
@@ -1551,6 +1554,20 @@ else
 ${msg} "${irt_msssing1}, ${irt_nores_init}."
 fi
 
+${msg} -n "${irt_checkfor} kqueue() ... "
+echo "${irheaders}
+#include <sys/event.h>
+int ir_kqueue_fd;
+${main1}
+  ir_kqueue_fd = kqueue ();
+${main2}" > config.temp.c
+if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+${msg} "${irt_found}"
+echo "#define USE_KQUEUE" >> src/iroffer_config.h
+else
+${msg} "${irt_msssing1}, ${irt_no_kqueue}."
+fi
+
 if $OPT_GEOIP; then
  ${msg} -n "${irt_seeingif_lib} GeoIP ${irt_lib_exists}... "
  echo "${irheaders}
@@ -1733,8 +1750,9 @@ modules="iroffer_admin iroffer_dccchat iroffer_display iroffer_main \
  plumb_md5 dinoex_admin dinoex_main dinoex_misc dinoex_http \
  dinoex_upload dinoex_transfer dinoex_geoip dinoex_ssl \
  dinoex_curl dinoex_irc dinoex_queue dinoex_telnet dinoex_badip \
- dinoex_jobs dinoex_ruby dinoex_user dinoex_chat dinoex_config \
- crc32 upnp blowfish strnatcmp iroffer_utilities dinoex_utilities"
+ dinoex_jobs dinoex_kqueue dinoex_ruby dinoex_user dinoex_chat \
+ dinoex_config crc32 upnp blowfish strnatcmp iroffer_utilities \
+ dinoex_utilities"
 
 make_srclist()
 {

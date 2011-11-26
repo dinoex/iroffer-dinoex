@@ -1870,3 +1870,4 @@
 2809 "DCC CHAT tentative autorisée à partir de %s (%s sur %s)"
 2810 "DCC CHAT tentative refusée de %s (%s sur %s)"
 2811 "  Ignore fichier adddir_match : %s"
+2812 "Failed to start kqueue()\n"

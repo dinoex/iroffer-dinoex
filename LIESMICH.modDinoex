@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+389) kqueue unter FreeBSD
+  Benutze "kqueue" um performanter mit dem Kernel zu reden.
+
 388) autoaddann_mask
   Wenn aktiv, sende eine Nachricht bei jedem neuen Paket das auf dem Bot
   der Dateiname auf eines der angegeben Muster passt.
