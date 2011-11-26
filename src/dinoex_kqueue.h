@@ -15,6 +15,7 @@
 
 #ifdef USE_KQUEUE
 void ir_kqueue_init(void);
+void ir_kqueue_exit(void);
 #endif /* USE_KQUEUE */
 
 int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds);

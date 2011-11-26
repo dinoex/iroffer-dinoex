@@ -72,6 +72,12 @@ void ir_kqueue_init(void)
   }
 }
 
+void ir_kqueue_exit(void)
+{
+   free(ir_kqueue_change_buffer);
+   free(ir_kqueue_event_buffer);
+}
+
 static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds)
 {
   int fd;
@@ -131,7 +137,7 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
   ts.tv_nsec = 250*1000;
   res = kevent(ir_kqueue_fd, ir_kqueue_change_buffer, ir_kqueue_change_size, ir_kqueue_event_buffer, ir_kqueue_event_max, &ts);
   if (res < 0) {
-    if (errno != EINTR) {
+    if (errno == EINTR) {
       return 0; /* again  with all changes */
     }
     return res;
