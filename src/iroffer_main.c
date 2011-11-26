@@ -33,6 +33,7 @@
 #include "dinoex_ruby.h"
 #include "dinoex_main.h"
 #include "dinoex_chat.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_misc.h"
 
 /* local functions */
@@ -48,6 +49,9 @@ __attribute__ ((noreturn))
 main(int argc, char *const *argv) {
    
    initvars();
+#ifdef USE_KQUEUE
+   ir_kqueue_init();
+#endif /* USE_KQUEUE */
    
    command_options(argc, argv);
    
@@ -195,9 +199,7 @@ static void mainloop (void) {
       
       gettimeofday(&timestruct, NULL);
       gdata.selecttimems = timeval_to_ms(&timestruct);
-      timestruct.tv_sec = 0;
-      timestruct.tv_usec = 250*1000;
-      if (select(highests+1, &gdata.readset, &gdata.writeset, NULL, &timestruct) < 0)
+      if (ir_kqueue_select(highests+1, &gdata.readset, &gdata.writeset, &gdata.execset) < 0)
         {
           if (errno != EINTR)
             {

@@ -33,6 +33,7 @@
 #include "dinoex_jobs.h"
 #endif
 #include "dinoex_main.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_misc.h"
 
 #define GET_NEXT_DATA(x)	{ ++argv; --argc; x = *argv; \
@@ -466,6 +467,10 @@ exit_iroffer(unsigned int gotsignal)
     updatecontext();
   }
 #endif /* DEBUG */
+
+#ifdef USE_KQUEUE
+  ir_kqueue_exit();
+#endif /* USE_KQUEUE */
 
   if (gdata.needrestart)
     execvp(gdata.argv[0], gdata.argv);

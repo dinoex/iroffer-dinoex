@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+389) kqueue support for FreeBSD
+  Use kqueue to interfaces with the kernel for better performance.
+
 388) autoaddann_mask (suggested by Aashiqmunda)
   When configured, addir, adnew and autoadd will only announce files
   that do match this patterns.

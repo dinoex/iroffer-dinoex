@@ -1869,3 +1869,5 @@
 2808 "Remove every pack matching this pattern"
 2809 "DCC CHAT attempt authorized from %s (%s on %s)"
 2810 "DCC CHAT attempt denied from %s (%s on %s)"
+2811 "  Ignoring adddir_match file: %s"
+2812 "Failed to start kqueue()\n"
