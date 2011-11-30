@@ -171,7 +171,7 @@ static void mainloop (void) {
       
       highests = chat_select_fdset(highests);
       highests = t_select_fdset(highests, changequartersec);
-      highests = l_select_fdset(highests);
+      highests = l_select_fdset(highests, changequartersec);
 #ifndef WITHOUT_TELNET
       highests = telnet_select_fdset(highests);
 #endif /* WITHOUT_TELNET */

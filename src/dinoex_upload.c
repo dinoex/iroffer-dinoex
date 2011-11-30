@@ -244,7 +244,7 @@ const char *l_print_state(upload * const l)
 }
 
 /* register active connections for select() */
-int l_select_fdset(int highests)
+int l_select_fdset(int highests, int changequartersec)
 {
   upload *ul;
 
@@ -252,8 +252,15 @@ int l_select_fdset(int highests)
        ul;
        ul = irlist_get_next(ul)) {
     if (ul->ul_status == UPLOAD_STATUS_GETTING) {
-      FD_SET(ul->con.clientsocket, &gdata.readset);
-      highests = max2(highests, ul->con.clientsocket);
+      if (!ul->overlimit) {
+        FD_SET(ul->con.clientsocket, &gdata.readset);
+        highests = max2(highests, ul->con.clientsocket);
+        continue;
+      }
+      if (changequartersec) {
+        FD_SET(ul->con.clientsocket, &gdata.readset);
+        highests = max2(highests, ul->con.clientsocket);
+      }
       continue;
     }
     if (ul->ul_status == UPLOAD_STATUS_CONNECTING) {

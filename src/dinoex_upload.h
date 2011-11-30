@@ -18,7 +18,7 @@ char *get_uploaddir(const char *hostmask);
 int l_setup_file(upload * const l, struct stat *stp);
 int l_setup_passive(upload * const l, char *token);
 const char *l_print_state(upload * const l);
-int l_select_fdset(int highests);
+int l_select_fdset(int highests, int changequartersec);
 void l_perform(int changesec);
 
 int file_uploading(const char *file);

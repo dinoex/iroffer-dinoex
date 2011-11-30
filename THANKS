@@ -653,6 +653,7 @@ Loke_AF
 	suggesting "RMALLQ"
 	reporting uneven transfer bug
 	suggesting "extend_status_line" with SrvQ
+	reporting "max_upspeed" bug
 
 Nouhime
 	reporting "http_search" bug.
