@@ -583,6 +583,7 @@ int t_select_fdset(int highests, int changequartersec)
       if (!overlimit && !tr->overlimit) {
         FD_SET(tr->con.clientsocket, &gdata.writeset);
         highests = max2(highests, tr->con.clientsocket);
+        continue;
       }
       if (changequartersec || ((tr->bytessent - tr->lastack) > 512*1024)) {
         FD_SET(tr->con.clientsocket, &gdata.readset);
