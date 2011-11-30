@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+bugfix: http_port
+  Reduce load when sending date over HTTP.
+
 bugfix: max_upspeed (reported by Loke_AF)
   The CPU load reached 100% when max_upspeed as limiting an upload.
 

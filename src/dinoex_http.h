@@ -76,7 +76,7 @@ void init_base64decode( void );
 void h_close_listen(void);
 unsigned int h_setup_listen(void);
 void h_reash_listen(void);
-int h_select_fdset(int highests);
+int h_select_fdset(int highests, int changequartersec);
 void h_perform(int changesec, int changequartersec);
 
 /* End of File */

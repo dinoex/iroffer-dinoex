@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+bugfix: http_port 
+  Reduziere die Last beim Senden über HTTP.
+
 bugfix: max_upspeed
   Wenn ein Upload "max_upspeed" erreichte, lief der Bot mit 100% CPU Last.
 
