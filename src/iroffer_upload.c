@@ -132,6 +132,7 @@ void l_transfersome (upload * const l) {
    for (i=0; i<MAXTXPERLOOP; i++) {
       if ((howmuch == BUFFERSIZE && howmuch2 > 0) && is_fd_readable(l->con.clientsocket)) {
          
+         l->overlimit = 0;
          if ( gdata.max_upspeed )
            {
              j = gdata.xdccrecv[(gdata.curtime)%XDCC_SENT_SIZE]
@@ -140,6 +141,7 @@ void l_transfersome (upload * const l) {
                + gdata.xdccrecv[(gdata.curtime-3)%XDCC_SENT_SIZE];
              if ( j >= gdata.max_upspeed*1024 )
                {
+                 l->overlimit = 1;
                  return;
                }
            }

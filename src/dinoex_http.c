@@ -533,7 +533,7 @@ void h_reash_listen(void)
 }
 
 /* register active connections for select() */
-int h_select_fdset(int highests)
+int h_select_fdset(int highests, int changequartersec)
 {
   http *h;
   unsigned long sum;
@@ -558,16 +558,24 @@ int h_select_fdset(int highests)
     if (h->status == HTTP_STATUS_GETTING) {
       FD_SET(h->con.clientsocket, &gdata.readset);
       highests = max2(highests, h->con.clientsocket);
+      continue;
     }
     if (h->status == HTTP_STATUS_POST) {
       FD_SET(h->con.clientsocket, &gdata.readset);
       highests = max2(highests, h->con.clientsocket);
+      continue;
     }
     if (h->status == HTTP_STATUS_SENDING) {
       if (!overlimit && !h->overlimit) {
         FD_SET(h->con.clientsocket, &gdata.writeset);
         highests = max2(highests, h->con.clientsocket);
+        continue;
       }
+      if (changequartersec) {
+        FD_SET(h->con.clientsocket, &gdata.writeset);
+        highests = max2(highests, h->con.clientsocket);
+      }
+      continue;
     }
   }
   return highests;

@@ -318,7 +318,7 @@ typedef struct
   unsigned int net;
   unsigned int token;
   unsigned int mirc_dcc64;
-  unsigned int dummy;
+  unsigned int overlimit;
 } upload;
 
 typedef struct
