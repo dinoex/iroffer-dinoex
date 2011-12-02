@@ -206,10 +206,10 @@ typedef struct {
   unsigned int respondtochannellist;
   unsigned int respondtochannelxdcc;
   unsigned int server_connect_timeout;
+  unsigned int need_level;
 
   int ircserver;
   int serverbucket;
-  int need_level;
   serverstatus_e serverstatus;
   botstatus_e botstatus;
   how_e r_connectionmethod;

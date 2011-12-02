@@ -699,7 +699,7 @@ static void send_help(const char *nick)
   notice_slow(nick, "\2**\2 Cancel download:   \"/MSG %s XDCC CANCEL\" \2**\2", mynick);
 }
 
-static int stoplist_queue(const char *nick, irlist_t *list)
+static unsigned int stoplist_queue(const char *nick, irlist_t *list)
 {
   char *item;
   char *copy;
@@ -732,7 +732,7 @@ static int stoplist_queue(const char *nick, irlist_t *list)
   return stopped;
 }
 
-static int stoplist_announce(const char *nick)
+static unsigned int stoplist_announce(const char *nick)
 {
   channel_announce_t *item;
   char *copy;
@@ -767,10 +767,10 @@ static int stoplist_announce(const char *nick)
   return stopped;
 }
 
-static int stoplist_xlistqueue(const char *nick)
+static unsigned int stoplist_xlistqueue(const char *nick)
 {
   xlistqueue_t *user;
-  int k;
+  unsigned int k;
 
   k = 0;
   for (user = irlist_get_head(&(gnetwork->xlistqueue));
@@ -788,7 +788,7 @@ static int stoplist_xlistqueue(const char *nick)
 }
 
 /* remove all queued lines for this user */
-static int stoplist(const char *nick)
+static unsigned int stoplist(const char *nick)
 {
   char *item;
   unsigned int stopped = 0;

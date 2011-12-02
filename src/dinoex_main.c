@@ -177,7 +177,7 @@ void command_options(int argc, char *const *argv)
 int add_password(const char *hash)
 {
   char *line;
-  size_t len;
+  ssize_t len;
   int fd;
 
   if (gdata.configfile[0] == NULL)
@@ -436,7 +436,7 @@ static void debug_memory(void)
   if (leak == 0)
     return;
 
-  *((int*)(0)) = 0;
+  *((volatile int*)(0)) = 0;
   free(gdata.meminfo);
   gdata.meminfo = NULL;
   return;

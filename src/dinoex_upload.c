@@ -114,7 +114,7 @@ static int l_setup_listen(upload * const l)
 {
   char *tempstr;
   char *msg;
-  int rc;
+  unsigned int rc;
 
   updatecontext();
 
@@ -356,7 +356,7 @@ void l_perform(int changesec)
 }
 
 /* check if a filename is already in a upload */
-int file_uploading(const char *file)
+unsigned int file_uploading(const char *file)
 {
   upload *ul;
 
@@ -425,7 +425,7 @@ static int verify_uploadhost(const char *hostmask)
 }
 
 /* check for valid upload user and size */
-int invalid_upload(const char *nick, const char *hostmask, off_t len)
+unsigned int invalid_upload(const char *nick, const char *hostmask, off_t len)
 {
   updatecontext();
 

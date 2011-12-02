@@ -56,7 +56,7 @@ voutput_fd(int fd, const char *format, va_list args)
 {
   char *tempstr;
   ssize_t retval;
-  int llen;
+  ssize_t llen;
 
   updatecontext();
   tempstr = mymalloc(maxtextlength);

@@ -105,12 +105,13 @@ void chat_perform(void)
 {
   dccchat_t *chat;
   char tempbuffa[INPUT_BUFFER_LENGTH];
-  int length;
+  ssize_t length;
   int callval_i;
   int connect_error;
   int errno2;
   SIGNEDSOCK int connect_error_len;
-  unsigned int i, j;
+  unsigned int i;
+  size_t j;
 
   updatecontext();
   /*----- see if dccchat is sending anything to us ----- */

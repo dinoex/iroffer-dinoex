@@ -61,8 +61,8 @@ static void u_chanl(const userinput * const u);
 
 typedef struct
 {
-  const short help_section;
-  const short level;
+  const unsigned short help_section;
+  const unsigned short level;
   const userinput_method_e methods_allowed;
   void (*handler)(const userinput * const);
   const char *command;
