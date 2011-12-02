@@ -233,7 +233,7 @@ static int config_sorted_check(config_name_t config_name_f)
     outerror(OUTERROR_TYPE_CRASH, "Config structure failed %s <-> %s",
              name1, name2);
   }
-  return i + 1;
+  return (int)(i + 1);
 }
 
 static int config_find_typ(config_name_t config_name_f, const char *key, int bin_high)
@@ -828,9 +828,9 @@ static int get_netmask(char *text, int init)
     *(work++) = 0;
     newmask = atoi(work);
     if (newmask < 0 )
-      return -1;
+      return init;
     if (newmask > init )
-      return -1;
+      return init;
     return newmask;
   }
   return init;
@@ -838,8 +838,8 @@ static int get_netmask(char *text, int init)
 
 static unsigned int set_config_list(const char *key, char *text)
 {
+  ssize_t j;
   int i;
-  int j;
   int e;
   char *mask;
   ir_cidr_t *cidr;
@@ -1098,7 +1098,7 @@ static int parse_channel_options(channel_t *cptr, char *var)
     mydelete(tptr);
     if (j < 0 )
       return -1;
-    i += j;
+    i += (unsigned int)j;
   }
   return 0;
 }
@@ -1560,7 +1560,7 @@ static void c_need_level(const char *key, char *var)
   int rawval;
 
   if (check_range(key, var, &rawval, 0, 3) == 0) {
-    gdata.networks[current_network].need_level = rawval;
+    gdata.networks[current_network].need_level = (unsigned int)rawval;
   }
 }
 

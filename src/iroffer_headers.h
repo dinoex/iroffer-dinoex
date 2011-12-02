@@ -338,8 +338,8 @@ typedef struct
       DCCCHAT_CONNECTED,
     } status;
   unsigned int net;
-  int level;
-  int dummy;
+  unsigned int level;
+  unsigned int dummy;
   char dcc_input_line[INPUT_BUFFER_LENGTH];
 } dccchat_t;
 
@@ -387,7 +387,7 @@ typedef struct
   userinput_method_e method;
   int fd;
   unsigned int net;
-  int level;
+  unsigned int level;
 } userinput;
 
 typedef struct {

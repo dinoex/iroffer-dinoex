@@ -1155,7 +1155,7 @@ static cmpfunc_t html_order_func(const char *order)
 
 static int html_link_start;
 
-static int html_link_option(char *str, size_t size, const char *option, const char *val)
+static size_t html_link_option(char *str, size_t size, const char *option, const char *val)
 {
   char *tempstr;
 

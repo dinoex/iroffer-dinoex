@@ -87,7 +87,7 @@ static unsigned long bytes_to_long( const char **str )
   return result;
 }
 
-static char *encrypt_fish( const char *str, int len, const char *key)
+static char *encrypt_fish( const char *str, size_t len, const char *key)
 {
   BLOWFISH_CTX ctx;
   char *dest;
@@ -143,7 +143,7 @@ static unsigned long base64_to_long( const char **str )
 }
 
 
-static char *decrypt_fish( const char *str, int len, const char *key)
+static char *decrypt_fish( const char *str, size_t len, const char *key)
 {
   BLOWFISH_CTX ctx;
   char *dest;
@@ -282,7 +282,7 @@ vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
 {
   char *msg;
   channel_announce_t *item;
-  int len;
+  ssize_t len;
 
   updatecontext();
 
@@ -290,7 +290,7 @@ vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
 
   len = vsnprintf(msg, maxtextlength, format, ap);
 
-  if ((len < 0) || (len >= (int)maxtextlength)) {
+  if ((len < 0) || (len >= maxtextlength)) {
     outerror(OUTERROR_TYPE_WARN, "WRITESERVER: Output too large, ignoring!");
     mydelete(msg);
     return;
@@ -342,14 +342,14 @@ __attribute__ ((format(printf, 2, 0)))
 vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
-  int len;
+  ssize_t len;
 
   if (ch == NULL) return;
   if (!ch->name) return;
 
   len = vsnprintf(tempstr, maxtextlength, format, ap);
 
-  if ((len < 0) || (len >= (int)maxtextlength)) {
+  if ((len < 0) || (len >= maxtextlength)) {
     outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
     return;
   }
@@ -403,7 +403,7 @@ static const char *check_fish_exclude(const char *nick)
 
 #endif /* WITHOUT_BLOWFISH */
 
-void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char *message, int len)
+void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char *message, size_t len)
 {
 #ifndef WITHOUT_BLOWFISH
   const char *fish;
@@ -428,7 +428,7 @@ void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char 
   writeserver(delay, "PRIVMSG %s :%s", nick, message); /* NOTRANSLATE */
 }
 
-void writeserver_notice(writeserver_type_e delay, const char *nick, const char *message, int len)
+void writeserver_notice(writeserver_type_e delay, const char *nick, const char *message, size_t len)
 {
 #ifndef WITHOUT_BLOWFISH
   const char *fish;

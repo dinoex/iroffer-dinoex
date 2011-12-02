@@ -165,7 +165,7 @@ char *clean_quotes(char *str)
 {
   char *src;
   char *dest;
-  unsigned int len;
+  size_t len;
 
   if (str[0] != '"')
     return str;
@@ -508,7 +508,7 @@ size_t removenonprintable(char *str)
 void removenonprintablefile(char *str)
 {
   unsigned char *copy;
-  char last = '/';
+  unsigned char last = '/';
 
   if (str == NULL)
     return;

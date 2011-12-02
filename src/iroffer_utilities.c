@@ -332,13 +332,13 @@ void privmsg_slow(const char *nick, const char *format, ...)
 void vprivmsg_slow(const char *nick, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
-  int len;
+  ssize_t len;
   
   if (!nick) return;
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= (int)maxtextlength))
+  if ((len < 0) || (len >= maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"PRVMSG-SLOW: Output too large, ignoring!");
       return;
@@ -354,13 +354,13 @@ __attribute__ ((format(printf, 2, 0)))
 vprivmsg_fast(const char *nick, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
-  int len;
+  ssize_t len;
   
   if (!nick) return;
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= (int)maxtextlength))
+  if ((len < 0) || (len >= maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"PRVMSG-FAST: Output too large, ignoring!");
       return;
@@ -380,13 +380,13 @@ void privmsg_fast(const char *nick, const char *format, ...)
 void vprivmsg(const char *nick, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
-  int len;
+  ssize_t len;
   
   if (!nick) return;
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= (int)maxtextlength))
+  if ((len < 0) || (len >= maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"PRVMSG: Output too large, ignoring!");
       return;
@@ -414,7 +414,7 @@ void notice_slow(const char *nick, const char *format, ...)
 void vnotice_slow(const char *nick, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
-  int len;
+  ssize_t len;
   
   if (!nick) return;
   
@@ -436,7 +436,7 @@ __attribute__ ((format(printf, 2, 0)))
 vnotice_fast(const char *nick, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
-  int len;
+  ssize_t len;
   
   if (!nick) return;
   
@@ -470,13 +470,13 @@ void notice(const char *nick, const char *format, ...)
 void vnotice(const char *nick, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
-  int len;
+  ssize_t len;
   
   if (!nick) return;
   
   len = vsnprintf(tempstr,maxtextlength,format,ap);
   
-  if ((len < 0) || (len >= (int)maxtextlength))
+  if ((len < 0) || (len >= maxtextlength))
     {
       outerror(OUTERROR_TYPE_WARN,"NOTICE: Output too large, ignoring!");
       return;
