@@ -21,6 +21,7 @@ rm -f a.zip
 # Activer les options
 ./Configure -tls -geoip -upnp -ruby -debug
 make clean
+make doc
 #
 # Build translated versions
 # Construire la version traduite
