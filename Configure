@@ -1609,7 +1609,11 @@ if $OPT_UPNP; then
 #include <miniupnpc/miniupnpc.h>
 #include <miniupnpc/upnpcommands.h>
 ${main1}
+#ifdef UPNPDISCOVER_SUCCESS
+ upnpDiscover(2000, NULL, NULL, 0, 0, NULL);
+#else
  upnpDiscover(2000, NULL, NULL, 0);
+#endif
 ${main2}" > config.temp.c
  if $cctype -o config.temp -DUSE_UPNP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lminiupnpc $LDFLAGS $libs $LIBS; then
   ${msg} "${irt_found}"

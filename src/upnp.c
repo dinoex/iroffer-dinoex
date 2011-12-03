@@ -60,7 +60,11 @@ void init_upnp (void)
 	tostdout_write();
 	memset(&urls, 0, sizeof(struct UPNPUrls));
 	memset(&data, 0, sizeof(struct IGDdatas));
+#ifdef UPNPDISCOVER_SUCCESS
+	devlist = upnpDiscover(2000, NULL, NULL, 0, 0, NULL);
+#else
 	devlist = upnpDiscover(2000, NULL, NULL, 0);
+#endif /* UPNPDISCOVER_SUCCESS */
 	if (devlist)
 	{
 		dev = devlist;
@@ -116,6 +120,10 @@ void upnp_add_redir (const char * addr, const char * port)
 		outerror(OUTERROR_TYPE_WARN_LOUD, "UPnP not found");
 		return;
 	}
+#ifdef UPNPDISCOVER_SUCCESS
+	r = UPNP_AddPortMapping(urls.controlURL, data.CIF.servicetype,
+	                        port, port, addr, NULL, "TCP", NULL, NULL);
+#else
 #ifdef UPNPCOMMAND_HTTP_ERROR
 	r = UPNP_AddPortMapping(urls.controlURL, data.CIF.servicetype,
 	                        port, port, addr, 0, "TCP", 0);
@@ -123,6 +131,7 @@ void upnp_add_redir (const char * addr, const char * port)
 	r = UPNP_AddPortMapping(urls.controlURL, data.servicetype,
 	                        port, port, addr, 0, "TCP", 0);
 #endif /* UPNPCOMMAND_HTTP_ERROR */
+#endif /* UPNPDISCOVER_SUCCESS */
 	if(r!=UPNPCOMMAND_SUCCESS)
 		ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
 			"AddPortMapping(%s, %s, %s) failed" , port, port, addr);

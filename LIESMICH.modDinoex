@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+bugfix: upnp_router
+  Update for libminiupnpc 1.6
+
 bugfix: http_port 
   Reduziere die Last beim Senden über HTTP.
 
