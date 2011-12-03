@@ -103,6 +103,31 @@ class IrofferEvent
   def action( nick, msg )
     command( "msg", nick, "\001ACTION #{msg}\001" )
   end
+
+  # Admin Command: RUBY rmdup [ test | remove ]
+  def rmdup( remove = nil )
+    seen = Hash.new
+    pack = 1
+    while true do
+      file = info_pack(pack, "file" )
+      if file.nil?
+        break
+      end
+      file.sub!( /^.*\//, '' )
+      if seen.has_key?( file )
+        warning("duplicate file in pack #{pack} first pack #{seen[ file ]}: #{file}" )
+        if  remove != "remove"
+          pack += 1
+          next
+        end
+        command( "remove", pack )
+        next
+      end
+      seen[ file ] = pack
+      pack += 1
+    end
+  end
+
 end
 
 # eof
