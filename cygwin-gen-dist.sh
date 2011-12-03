@@ -21,7 +21,10 @@ rm -f a.zip
 # Activer les options
 ./Configure -tls -geoip -upnp -ruby -debug
 make clean
-make doc
+if test ! -f doc/iroffer.1.txt
+then
+	make doc
+fi
 #
 # Build translated versions
 # Construire la version traduite
