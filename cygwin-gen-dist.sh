@@ -23,7 +23,9 @@ rm -f a.zip
 make clean
 if test ! -f doc/iroffer.1.txt
 then
+	# generate ASCII files
 	make doc
+	./update-en.sh
 fi
 #
 # Build translated versions
