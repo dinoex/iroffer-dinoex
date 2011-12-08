@@ -188,7 +188,7 @@ static void mainloop (void) {
       
       updatecontext();
    
-      if (gdata.debug > 3)
+      if (gdata.debug > 10)
         {
           select_dump("try", highests);
         }
@@ -213,7 +213,7 @@ static void mainloop (void) {
           FD_ZERO(&gdata.execset);
         }
       
-      if (gdata.debug > 3)
+      if (gdata.debug > 10)
         {
           select_dump("got", highests);
         }
