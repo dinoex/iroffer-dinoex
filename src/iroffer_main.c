@@ -945,41 +945,22 @@ static void mainloop (void) {
               else if (howmuch == 0)
                 {
                   /* EOF */
-                  MD5Final(gdata.md5build.xpack->md5sum, &gdata.md5build.md5sum);
-                  if (!gdata.nocrc32)
-                    crc32_final(gdata.md5build.xpack);
-                  gdata.md5build.xpack->has_md5sum = 1;
-                  
-                  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                          "MD5: [Pack %u] is " MD5_PRINT_FMT,
-                          number_of_pack(gdata.md5build.xpack),
-                          MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
-                  if (!gdata.nocrc32)
-                    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                            "CRC32: [Pack %u] is " CRC32_PRINT_FMT,
-                            number_of_pack(gdata.md5build.xpack), gdata.md5build.xpack->crc32);
-                  
-                  FD_CLR(gdata.md5build.file_fd, &gdata.readset);
-                  close(gdata.md5build.file_fd);
-                  gdata.md5build.file_fd = FD_UNUSED;
-                  if (!gdata.nocrc32 && gdata.auto_crc_check)
-                    {
-                      const char *crcmsg = validate_crc32(gdata.md5build.xpack, 2);
-                      if (crcmsg != NULL)
-                        {
-                           ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-                                   "CRC32: [Pack %u] File '%s' %s.",
-                                   number_of_pack(gdata.md5build.xpack),
-                                   gdata.md5build.xpack->file, crcmsg);
-                        }
-                    }
-                  gdata.md5build.xpack = NULL;
+                  outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Can't read data from file '%s': %s",
+                           number_of_pack(gdata.md5build.xpack),
+                           gdata.md5build.xpack->file, "truncated");
+                  start_md5_hash(gdata.md5build.xpack, number_of_pack(gdata.md5build.xpack));
                   break;
                 }
               /* else got data */
               MD5Update(&gdata.md5build.md5sum, gdata.sendbuff, howmuch);
               if (!gdata.nocrc32)
                 crc32_update((char *)gdata.sendbuff, howmuch);
+              gdata.md5build.bytes += howmuch;
+              if (gdata.md5build.bytes == gdata.md5build.xpack->st_size)
+                {
+                  complete_md5_hash();
+                  break;
+                }
             }
         }
       

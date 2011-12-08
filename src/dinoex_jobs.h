@@ -59,6 +59,7 @@ void autotrigger_add(xdcc *xd);
 void autotrigger_rebuild(void);
 void start_md5_hash(xdcc *xd, unsigned int packnum);
 void cancel_md5_hash(xdcc *xd, const char *msg);
+void complete_md5_hash(void);
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
 int save_unlink(const char *path);
 void rename_with_backup(const char *file, const char *backup, const char *tmp, const char *msg);

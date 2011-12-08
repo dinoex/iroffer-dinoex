@@ -278,6 +278,7 @@ fd_set readset, writeset, execset;
 struct
 {
   xdcc *xpack;
+  off_t bytes;
   struct MD5Context md5sum;
   int file_fd;
   int dummy;
