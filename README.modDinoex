@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+bugfix: md5
+  Warn if the file gets truncated while hashing.
+
 bugfix: upnp_router
   Update for libminiupnpc 1.6
 

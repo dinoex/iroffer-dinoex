@@ -1871,3 +1871,4 @@
 2810 "DCC CHAT attempt denied from %s (%s on %s)"
 2811 "  Ignoring adddir_match file: %s"
 2812 "Failed to start kqueue()\n"
+2813 "truncated"

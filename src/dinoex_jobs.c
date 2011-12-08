@@ -1235,6 +1235,7 @@ void start_md5_hash(xdcc *xd, unsigned int packnum)
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "MD5: [Pack %u] Calculating", packnum);
 
+  gdata.md5build.bytes = 0;
   gdata.md5build.file_fd = open(xd->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (gdata.md5build.file_fd >= 0) {
     gdata.md5build.xpack = xd;
@@ -1272,6 +1273,37 @@ void cancel_md5_hash(xdcc *xd, const char *msg)
 #ifdef HAVE_MMAP
   assert(!irlist_size(&xd->mmaps));
 #endif /* HAVE_MMAP */
+}
+
+void complete_md5_hash(void)
+{
+  MD5Final(gdata.md5build.xpack->md5sum, &gdata.md5build.md5sum);
+  if (!gdata.nocrc32)
+    crc32_final(gdata.md5build.xpack);
+  gdata.md5build.xpack->has_md5sum = 1;
+
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          "MD5: [Pack %u] is " MD5_PRINT_FMT,
+          number_of_pack(gdata.md5build.xpack),
+          MD5_PRINT_DATA(gdata.md5build.xpack->md5sum));
+  if (!gdata.nocrc32)
+     ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+             "CRC32: [Pack %u] is " CRC32_PRINT_FMT,
+             number_of_pack(gdata.md5build.xpack), gdata.md5build.xpack->crc32);
+
+  FD_CLR(gdata.md5build.file_fd, &gdata.readset);
+  close(gdata.md5build.file_fd);
+  gdata.md5build.file_fd = FD_UNUSED;
+  if (!gdata.nocrc32 && gdata.auto_crc_check) {
+    const char *crcmsg = validate_crc32(gdata.md5build.xpack, 2);
+    if (crcmsg != NULL) {
+      ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+              "CRC32: [Pack %u] File '%s' %s.",
+              number_of_pack(gdata.md5build.xpack),
+              gdata.md5build.xpack->file, crcmsg);
+    }
+  }
+  gdata.md5build.xpack = NULL;
 }
 
 void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch)
