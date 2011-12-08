@@ -42,6 +42,7 @@ usage()
    -tls         Compiler avec GNU TLS lib (au lieu de OpenSSL)
    -upnp        Compiler avec le support UPNP avec miniupnpc (pour les Routeurs NAT)
    -ruby        Compiler avec le support du script RUBY
+   -kqueue	Compiler avec le support kqueue()
    -no-blowfish Compiler sans encodage blowfish
    -no-openssl  Compiler sans OpenSSL lib
    -no-http     Compiler sans HTTP server
@@ -70,6 +71,7 @@ usage()
    -tls         Benutze GNU TLS Bibliothek (anstelle von OpenSSL)
    -upnp        Benutze miniupnpc Bibliothek (für UPNP-NAT Routers)
    -ruby        Benutze RUBY Skript Erweiterung
+   -kqueue	Benutze kqueue()
    -no-blowfish Baue ohne Blowfish Verschlusselung
    -no-openssl  Baue ohne OpenSSL Bibliothek
    -no-http     Baue ohne HTTP Server
@@ -98,6 +100,7 @@ usage()
    -tls         Compile with GNU TLS lib (instead of OpenSSL)
    -upnp        Compile with UPNP support with miniupnpc (for NAT Routers)
    -ruby        Compile with RUBY scripting support
+   -kqueue	Compile with kqueue() support
    -no-blowfish Compile without blowfish encryption
    -no-openssl  Compile without OpenSSL lib
    -no-http     Compile without HTTP server
@@ -451,6 +454,7 @@ OPT_DEBUG=false
 OPT_WARN=false
 OPT_PROF=false
 OPT_GEOIP=false
+OPT_KQUEUE=false
 OPT_CURL=false
 OPT_SSL=true
 OPT_TLS=false
@@ -486,6 +490,7 @@ do
  -w*) OPT_WARN=true ;;
  -p*) OPT_PROF=true ;;
  -g*) OPT_GEOIP=true ;;
+ -k*) OPT_KQUEUE=true ;;
  -c*) OPT_CURL=true ;;
  -s*) ${msg} "${irt_noopenssl}"; echo ""; OPT_SSL=false ;; # old
  -t*) OPT_TLS=true; OPT_SSL=false ;;
@@ -1554,18 +1559,20 @@ else
 ${msg} "${irt_msssing1}, ${irt_nores_init}."
 fi
 
-${msg} -n "${irt_checkfor} kqueue() ... "
-echo "${irheaders}
+if $OPT_KQUEUE; then
+ ${msg} -n "${irt_checkfor} kqueue() ... "
+ echo "${irheaders}
 #include <sys/event.h>
 int ir_kqueue_fd;
 ${main1}
-  ir_kqueue_fd = kqueue ();
+ ir_kqueue_fd = kqueue ();
 ${main2}" > config.temp.c
-if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
-${msg} "${irt_found}"
-echo "#define USE_KQUEUE" >> src/iroffer_config.h
-else
-${msg} "${irt_msssing1}, ${irt_no_kqueue}."
+ if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+  ${msg} "${irt_found}"
+  echo "#define NO_USE_KQUEUE" >> src/iroffer_config.h
+ else
+  ${msg} "${irt_msssing1}, ${irt_no_kqueue}."
+ fi
 fi
 
 if $OPT_GEOIP; then

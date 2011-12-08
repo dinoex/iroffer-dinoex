@@ -15,7 +15,7 @@ bugfix: http_port
 bugfix: max_upspeed
   Wenn ein Upload "max_upspeed" erreichte, lief der Bot mit 100% CPU Last.
 
-389) kqueue unter FreeBSD
+Configure -kqueue
   Benutze "kqueue" um performanter mit dem Kernel zu reden.
 
 388) autoaddann_mask
