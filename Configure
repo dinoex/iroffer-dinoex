@@ -1559,7 +1559,7 @@ else
 ${msg} "${irt_msssing1}, ${irt_nores_init}."
 fi
 
-if if $OPT_KQUEUE; then
+if $OPT_KQUEUE; then
  ${msg} -n "${irt_checkfor} kqueue() ... "
  echo "${irheaders}
 #include <sys/event.h>
