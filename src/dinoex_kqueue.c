@@ -164,13 +164,13 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
 
     if (fd >= gdata.max_fds_from_rlimit) {
       /* ignore for now */
-      fprintf(stderr, "erroro on fd %d\n", fd);
+      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d", fd);
       continue;
     }
 
     if (ir_kqueue_event_buffer[i].flags & EV_ERROR) {
       /* ignore for now */
-      fprintf(stderr, "erroro on fd %d\n", fd);
+      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d", fd);
       continue;
     }
 
