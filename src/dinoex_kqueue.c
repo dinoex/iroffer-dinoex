@@ -101,7 +101,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_READ, EV_DELETE, 0, 0, 0);
         FD_CLR(fd, &ir_kqueue_readset);
         if ( gdata.debug > 3 )
-          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del read %d", fd);
+          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del read %d", fd); /* NOTRANSLATE */
       }
     }
     if (writing) {
@@ -110,7 +110,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
         FD_CLR(fd, &ir_kqueue_writeset);
         if( gdata.debug > 3 )
-          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del write %d", fd);
+          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del write %d", fd); /* NOTRANSLATE */
       }
     }
 
@@ -120,7 +120,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_READ, EV_ADD | EV_ENABLE, NOTE_EOF, 0, 0);
         FD_SET(fd, &ir_kqueue_readset);
         if ( gdata.debug > 3 )
-          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue add read %d", fd);
+          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue add read %d", fd); /* NOTRANSLATE */
       }
     }
     if (writing == 0) {
@@ -129,7 +129,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, NOTE_EOF, 0, 0);
         FD_SET(fd, &ir_kqueue_writeset);
         if( gdata.debug > 3 )
-          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue add write %d", fd);
+          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue add write %d", fd); /* NOTRANSLATE */
       }
     }
   }
@@ -158,7 +158,7 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
   ts.tv_nsec = 250*1000;
   if( gdata.debug > 3 ) {
     if (ir_kqueue_change_size > 0)
-      ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kevent %d %d", ir_kqueue_change_size, ir_kqueue_event_max);
+      ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kevent %d %d", ir_kqueue_change_size, ir_kqueue_event_max); /* NOTRANSLATE */
   }
   res = kevent(ir_kqueue_fd, ir_kqueue_change_buffer, ir_kqueue_change_size, ir_kqueue_event_buffer, ir_kqueue_event_max, &ts);
   if (res < 0) {
@@ -174,13 +174,13 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
 
     if (fd >= gdata.max_fds_from_rlimit) {
       /* ignore for now */
-      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d: %s", fd, "FDMAX");
+      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d: %s", fd, "FDMAX"); /* NOTRANSLATE */
       continue;
     }
 
     if (ir_kqueue_event_buffer[i].flags & EV_ERROR) {
       int err = ir_kqueue_event_buffer[i].data;
-      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d: %s", fd, strerror(err));
+      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d: %s", fd, strerror(err)); /* NOTRANSLATE */
       /* report to caller */
       FD_SET(fd, readfds);
       FD_SET(fd, writefds);
