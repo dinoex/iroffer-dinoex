@@ -753,7 +753,7 @@ void crc32_update(char *buf, size_t len)
   gdata.crc32build.crc_total = crc_total;
 }
 
-void crc32_final(xdcc *xd)
+static void crc32_final(xdcc *xd)
 {
   xd->crc32 = ~gdata.crc32build.crc;
   xd->has_crc32 = 1;
