@@ -54,6 +54,7 @@ static void ir_kqueue_set_buffer(void)
   ir_kqueue_event_buffer = malloc( sizeof (struct kevent) * ir_kqueue_event_max);
 }
 
+/* setup buffers for kqueue */
 void ir_kqueue_init(void)
 {
   ir_kqueue_change_size = 0;
@@ -71,6 +72,7 @@ void ir_kqueue_init(void)
   }
 }
 
+/* release buffers for kqueue */
 void ir_kqueue_exit(void)
 {
    free(ir_kqueue_change_buffer);
@@ -81,6 +83,8 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
 {
   int fd;
   int max;
+  int reading;
+  int writing;
 
   max = nfds * 3;
   if (ir_kqueue_event_max > max) {
@@ -89,15 +93,28 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
   }
 
   for (fd = 0; fd < nfds; ++fd) {
-    if (FD_ISSET(fd, &ir_kqueue_readset)) {
-      if (!FD_ISSET(fd, readfds) == 0) {
+    reading = FD_ISSET(fd, &ir_kqueue_readset);
+    writing = FD_ISSET(fd, &ir_kqueue_writeset);
+    if (reading) {
+      if (FD_ISSET(fd, readfds) == 0) {
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_READ, EV_DELETE, 0, 0, 0);
         FD_CLR(fd, &ir_kqueue_readset);
         if ( gdata.debug > 3 )
           ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del read %d", fd);
       }
-    } else {
+    }
+    if (writing) {
+      if (FD_ISSET(fd, writefds) == 0) {
+        ++ir_kqueue_change_size;
+        EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
+        FD_CLR(fd, &ir_kqueue_writeset);
+        if( gdata.debug > 3 )
+          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del write %d", fd);
+      }
+    }
+
+    if (reading == 0) {
       if (FD_ISSET(fd, readfds)) {
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_READ, EV_ADD | EV_ENABLE, NOTE_EOF, 0, 0);
@@ -106,16 +123,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
           ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue add read %d", fd);
       }
     }
-
-    if (FD_ISSET(fd, &ir_kqueue_writeset)) {
-      if (!FD_ISSET(fd, writefds) == 0) {
-        ++ir_kqueue_change_size;
-        EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
-        FD_CLR(fd, &ir_kqueue_writeset);
-        if( gdata.debug > 3 )
-          ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del write %d", fd);
-      }
-    } else {
+    if (writing == 0) {
       if (FD_ISSET(fd, writefds)) {
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, NOTE_EOF, 0, 0);
@@ -130,6 +138,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
   FD_ZERO(exceptfds);
 }
 
+/* poll kqueue status */
 int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds)
 {
   struct timespec ts;
@@ -142,6 +151,7 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
   if (ir_kqueue_change_size > ir_kqueue_event_max) {
     ir_kqueue_event_max = ir_kqueue_change_size;
     ir_kqueue_set_buffer();
+
   }
 
   ts.tv_sec = 0;
@@ -170,8 +180,6 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
 
     if (ir_kqueue_event_buffer[i].flags & EV_ERROR) {
       int err = ir_kqueue_event_buffer[i].data;
-      if (err != ENOENT) {
-      }
       outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d: %s", fd, strerror(err));
       /* report to caller */
       FD_SET(fd, readfds);
@@ -185,9 +193,6 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
     if (ir_kqueue_event_buffer[i].filter == EVFILT_WRITE) {
       FD_SET(fd, writefds);
     }
-    if (ir_kqueue_event_buffer[i].filter == EVFILT_WRITE) {
-      FD_SET(fd, exceptfds);
-    }
   }
 
   if (res == ir_kqueue_event_max) {
@@ -197,17 +202,47 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
   return res;
 }
 
+static void ir_kqueue_close(int fd)
+{
+   FD_CLR(fd, &ir_kqueue_readset);
+   FD_CLR(fd, &ir_kqueue_writeset);
+}
+
 #else
 
+/* poll select status */
 int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds)
 {
     struct timeval timestruct;
-  
+
     timestruct.tv_sec = 0;
     timestruct.tv_usec = 250*1000;
     return select(nfds, readfds, writefds, exceptfds, &timestruct);
 }
 
 #endif /* USE_KQUEUE */
+
+/* close and drop events */
+void event_close(int handle)
+{
+  FD_CLR(handle, &gdata.readset);
+  FD_CLR(handle, &gdata.writeset);
+#ifdef USE_KQUEUE
+  ir_kqueue_close(handle);
+#endif /* USE_KQUEUE */
+  close(handle);
+}
+
+/* close an TCP connection safely */
+void shutdown_close(int handle)
+{
+  /*
+   * cygwin close() is broke, if outstanding data is present
+   * it will block until the TCP connection is dead, sometimes
+   * upto 10-20 minutes, calling shutdown() first seems to help
+   */
+  shutdown(handle, SHUT_RDWR);
+  event_close(handle);
+}
 
 /* End of File */

@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
 #include "dinoex_jobs.h"
@@ -101,8 +102,7 @@ void setupdccchataccept(dccchat_t *chat)
   if ((chat->con.clientsocket = accept(chat->con.listensocket, &(chat->con.remote.sa), &addrlen)) < 0)
     {
       outerror(OUTERROR_TYPE_WARN,"Accept Error, Aborting: %s",strerror(errno));
-      FD_CLR(chat->con.listensocket, &gdata.readset);
-      close(chat->con.listensocket);
+      event_close(chat->con.listensocket);
       chat->con.clientsocket = FD_UNUSED;
       chat->con.listensocket = FD_UNUSED;
       return;
@@ -110,8 +110,7 @@ void setupdccchataccept(dccchat_t *chat)
 
   ir_listen_port_connected(chat->con.localport);
 
-  FD_CLR(chat->con.listensocket, &gdata.readset);
-  close(chat->con.listensocket);
+  event_close(chat->con.listensocket);
   chat->con.listensocket = FD_UNUSED;
   
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
@@ -449,8 +448,6 @@ void shutdowndccchat(dccchat_t *chat, int flush)
           flushdccchat(chat);
         }
       
-      FD_CLR(chat->con.clientsocket, &gdata.readset);
-      FD_CLR(chat->con.clientsocket, &gdata.writeset);
       usleep(100*1000);
       shutdown_close(chat->con.clientsocket);
       mydelete(chat->groups);

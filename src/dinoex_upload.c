@@ -19,6 +19,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
 #include "dinoex_curl.h"
@@ -199,8 +200,7 @@ static void l_setup_accept(upload * const l)
 
   ir_listen_port_connected(l->con.localport);
 
-  FD_CLR(l->con.listensocket, &gdata.readset);
-  close(l->con.listensocket);
+  event_close(l->con.listensocket);
   l->con.listensocket = FD_UNUSED;
 
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,

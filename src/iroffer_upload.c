@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
 
@@ -271,7 +272,6 @@ void l_istimeout (upload * const l)
         {
           ioutput(OUT_S, COLOR_YELLOW, "clientsock = %d", l->con.clientsocket);
         }
-      FD_CLR(l->con.clientsocket, &gdata.readset);
       shutdown_close(l->con.clientsocket);
       close(l->filedescriptor);
       l->ul_status = UPLOAD_STATUS_DONE;
@@ -308,14 +308,11 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
   
   if (l->con.listensocket != FD_UNUSED && l->con.listensocket > 2)
     {
-      FD_CLR(l->con.listensocket, &gdata.readset);
-      close(l->con.listensocket);
+      event_close(l->con.listensocket);
     }
   
   if (l->con.clientsocket != FD_UNUSED && l->con.clientsocket > 2)
     {
-      FD_CLR(l->con.clientsocket, &gdata.writeset);
-      FD_CLR(l->con.clientsocket, &gdata.readset);
       shutdown_close(l->con.clientsocket);
     }
   

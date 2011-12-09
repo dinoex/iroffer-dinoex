@@ -19,6 +19,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
 #include "dinoex_telnet.h"
@@ -35,8 +36,7 @@ void telnet_close_listen(void)
 
   for (i=0; i<MAX_VHOSTS; ++i) {
     if (telnet_listen[i] != FD_UNUSED) {
-      FD_CLR(telnet_listen[i], &gdata.readset);
-      close(telnet_listen[i]);
+      event_close(telnet_listen[i]);
       telnet_listen[i] = FD_UNUSED;
     }
   }
@@ -146,7 +146,7 @@ static void telnet_accept(unsigned int i)
   addrlen = sizeof(chat->con.local);
   if (getsockname(chat->con.clientsocket, &(chat->con.local.sa), &addrlen) < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't get sock name: %s", strerror(errno));
-    close(chat->con.clientsocket);
+    shutdown_close(chat->con.clientsocket);
     chat->con.clientsocket = FD_UNUSED;
     return;
   }

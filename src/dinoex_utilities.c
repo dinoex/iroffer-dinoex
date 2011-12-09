@@ -225,18 +225,6 @@ const char *getfilename(const char *pathname)
   return ++work;
 }
 
-/* close an TCP connection safely */
-void shutdown_close(int handle)
-{
-  /*
-   * cygwin close() is broke, if outstanding data is present
-   * it will block until the TCP connection is dead, sometimes
-   * upto 10-20 minutes, calling shutdown() first seems to help
-   */
-  shutdown(handle, SHUT_RDWR);
-  close(handle);
-}
-
 /* get the port number from a socket */
 ir_uint16 get_port(ir_sockaddr_union_t *listenaddr)
 {

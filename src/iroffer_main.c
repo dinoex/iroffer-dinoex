@@ -932,8 +932,7 @@ static void mainloop (void) {
                            number_of_pack(gdata.md5build.xpack),
                            gdata.md5build.xpack->file, strerror(errno));
                   
-                  FD_CLR(gdata.md5build.file_fd, &gdata.readset);
-                  close(gdata.md5build.file_fd);
+                  event_close(gdata.md5build.file_fd);
                   gdata.md5build.file_fd = FD_UNUSED;
                   gdata.md5build.xpack = NULL;
                   break;

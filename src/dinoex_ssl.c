@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_ssl.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 
 #ifdef USE_OPENSSL
 #include <openssl/err.h>
@@ -133,7 +134,6 @@ void close_server(void)
     gnetwork->session = NULL;
   }
 #endif /* USE_GNUTLS */
-  FD_CLR(gnetwork->ircserver, &gdata.readset);
   shutdown_close(gnetwork->ircserver);
   gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
   /* do not reconnect immediatly */
