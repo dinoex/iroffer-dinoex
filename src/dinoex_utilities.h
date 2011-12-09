@@ -33,7 +33,6 @@ unsigned int verifypass2(const char *masterpass, const char *testpass);
 char *clean_quotes(char *str);
 char *to_hostmask(const char *nick, const char *hostname);
 const char *getfilename(const char *pathname);
-void shutdown_close(int handle);
 ir_uint16 get_port(ir_sockaddr_union_t *listenaddr);
 int strcmp_null(const char *s1, const char *s2);
 unsigned int is_file_writeable(const char *f);

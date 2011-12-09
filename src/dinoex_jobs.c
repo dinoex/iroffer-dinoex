@@ -19,6 +19,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_admin.h"
 #include "dinoex_irc.h"
 #include "dinoex_config.h"
@@ -752,7 +753,7 @@ void crc32_update(char *buf, size_t len)
   gdata.crc32build.crc_total = crc_total;
 }
 
-void crc32_final(xdcc *xd)
+static void crc32_final(xdcc *xd)
 {
   xd->crc32 = ~gdata.crc32build.crc;
   xd->has_crc32 = 1;
@@ -1259,8 +1260,7 @@ void cancel_md5_hash(xdcc *xd, const char *msg)
   if (gdata.md5build.xpack == xd) {
     outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Canceled (%s)", number_of_pack(xd), msg);
 
-    FD_CLR(gdata.md5build.file_fd, &gdata.readset);
-    close(gdata.md5build.file_fd);
+    event_close(gdata.md5build.file_fd);
     gdata.md5build.file_fd = FD_UNUSED;
     gdata.md5build.xpack = NULL;
   }
@@ -1291,8 +1291,7 @@ void complete_md5_hash(void)
              "CRC32: [Pack %u] is " CRC32_PRINT_FMT,
              number_of_pack(gdata.md5build.xpack), gdata.md5build.xpack->crc32);
 
-  FD_CLR(gdata.md5build.file_fd, &gdata.readset);
-  close(gdata.md5build.file_fd);
+  event_close(gdata.md5build.file_fd);
   gdata.md5build.file_fd = FD_UNUSED;
   if (!gdata.nocrc32 && gdata.auto_crc_check) {
     const char *crcmsg = validate_crc32(gdata.md5build.xpack, 2);

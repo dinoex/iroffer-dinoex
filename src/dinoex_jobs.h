@@ -49,7 +49,6 @@ void look_for_file_remove(void);
 void reset_download_limits(void);
 const char *validate_crc32(xdcc *xd, int quiet);
 void crc32_update(char *buf, size_t len);
-void crc32_final(xdcc *xd);
 void autoadd_all(void);
 void run_delayed_jobs(void);
 const char *find_groupdesc(const char *group);

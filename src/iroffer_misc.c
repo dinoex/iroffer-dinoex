@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_config.h"
 #include "dinoex_ssl.h"
 #include "dinoex_irc.h"
@@ -191,8 +192,7 @@ static int connectirc (server_t *tserver) {
    if (gnetwork->serv_resolv.child_pid)
      {
        /* old resolv still outstanding, cleanup */
-       close(gnetwork->serv_resolv.sp_fd[0]);
-       FD_CLR(gnetwork->serv_resolv.sp_fd[0], &gdata.readset);
+       event_close(gnetwork->serv_resolv.sp_fd[0]);
        gnetwork->serv_resolv.sp_fd[0] = 0;
        gnetwork->serv_resolv.child_pid = 0;
      }
@@ -222,7 +222,7 @@ static int connectirc (server_t *tserver) {
    
    /* parent */
    gnetwork->serv_resolv.child_pid = callval;
-   close(gnetwork->serv_resolv.sp_fd[1]);
+   event_close(gnetwork->serv_resolv.sp_fd[1]);
    gnetwork->serv_resolv.sp_fd[1] = 0;
    gnetwork->serv_resolv.next ++;
    
@@ -735,7 +735,7 @@ void gobackground(void) {
 /*   if ( r.rlim_max < 1 || s < 0) */
 /*      outerror(OUTERROR_TYPE_CRASH,"Couldn't get rlimit"); */
    
-   for (i=0; i<3; i++) close(i);
+   for (i=0; i<3; i++) event_close(i);
 /*   for (i=0; i< r.rlim_max; i++) close(i); */
    
    s = setsid();

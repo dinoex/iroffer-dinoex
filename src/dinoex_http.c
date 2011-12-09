@@ -19,6 +19,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
 #include "dinoex_misc.h"
@@ -468,8 +469,7 @@ void h_close_listen(void)
 
   for (i=0; i<MAX_VHOSTS; ++i) {
     if (http_listen[i] != FD_UNUSED) {
-      FD_CLR(http_listen[i], &gdata.readset);
-      close(http_listen[i]);
+      event_close(http_listen[i]);
       http_listen[i] = FD_UNUSED;
     }
   }
@@ -650,8 +650,6 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   }
 
   if (h->con.clientsocket != FD_UNUSED && h->con.clientsocket > 2) {
-    FD_CLR(h->con.clientsocket, &gdata.writeset);
-    FD_CLR(h->con.clientsocket, &gdata.readset);
     shutdown_close(h->con.clientsocket);
     h->con.clientsocket = FD_UNUSED;
   }

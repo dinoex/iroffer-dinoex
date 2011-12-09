@@ -1569,7 +1569,7 @@ ${main1}
 ${main2}" > config.temp.c
  if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
   ${msg} "${irt_found}"
-  echo "#define NO_USE_KQUEUE" >> src/iroffer_config.h
+  echo "#define USE_KQUEUE" >> src/iroffer_config.h
  else
   ${msg} "${irt_msssing1}, ${irt_no_kqueue}."
  fi

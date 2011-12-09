@@ -20,6 +20,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_irc.h"
 #include "dinoex_queue.h"
 #include "dinoex_transfer.h"
@@ -76,8 +77,7 @@ void t_establishcon (transfer * const t)
    
    ir_listen_port_connected(t->con.localport);
    
-   FD_CLR(t->con.listensocket, &gdata.readset);
-   close(t->con.listensocket);
+   event_close(t->con.listensocket);
    t->con.listensocket = FD_UNUSED;
 
    t_setup_send(t);
@@ -673,8 +673,6 @@ void t_flushed (transfer * const t)
     {
       ioutput(OUT_S, COLOR_YELLOW, "clientsock = %d", t->con.clientsocket);
     }
-  FD_CLR(t->con.clientsocket, &gdata.writeset);
-  FD_CLR(t->con.clientsocket, &gdata.readset);
   shutdown_close(t->con.clientsocket);
   t->xpack->file_fd_count--;
   if (!t->xpack->file_fd_count && (t->xpack->file_fd != FD_UNUSED))
@@ -750,14 +748,11 @@ void t_closeconn(transfer * const t, const char *msg, int errno1)
   
   if (t->con.listensocket != FD_UNUSED && t->con.listensocket > 2)
     {
-      FD_CLR(t->con.listensocket, &gdata.readset);
-      close (t->con.listensocket);
+      event_close(t->con.listensocket);
       t->con.listensocket = FD_UNUSED;
     }
   if (t->con.clientsocket != FD_UNUSED && t->con.clientsocket > 2)
     {
-      FD_CLR(t->con.clientsocket, &gdata.writeset);
-      FD_CLR(t->con.clientsocket, &gdata.readset);
       shutdown_close(t->con.clientsocket);
       t->con.clientsocket = FD_UNUSED;
     }

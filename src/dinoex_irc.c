@@ -19,6 +19,7 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
+#include "dinoex_kqueue.h"
 #include "dinoex_queue.h"
 #include "dinoex_ssl.h"
 #include "dinoex_ruby.h"
@@ -637,8 +638,7 @@ void irc_resolved(void)
       }
 
       /* cleanup */
-      close(gdata.networks[ss].serv_resolv.sp_fd[0]);
-      FD_CLR(gdata.networks[ss].serv_resolv.sp_fd[0], &gdata.readset);
+      event_close(gdata.networks[ss].serv_resolv.sp_fd[0]);
       gdata.networks[ss].serv_resolv.sp_fd[0] = 0;
       gdata.networks[ss].serv_resolv.child_pid = 0;
     }
@@ -688,7 +688,7 @@ static unsigned int connectirc2(res_addrinfo_t *remote)
 
   if (bind_irc_vhost(family, gnetwork->ircserver) != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Couldn't Bind To Virtual Host");
-    close(gnetwork->ircserver);
+    event_close(gnetwork->ircserver);
     return 1;
   }
 
@@ -700,7 +700,7 @@ static unsigned int connectirc2(res_addrinfo_t *remote)
   if ( (retval < 0) && !((errno == EINPROGRESS) || (errno == EAGAIN)) ) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Connection to Server Failed: %s", strerror(errno));
     alarm(0);
-    close(gnetwork->ircserver);
+    event_close(gnetwork->ircserver);
     return 1;
   }
   alarm(0);

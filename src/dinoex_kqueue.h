@@ -19,5 +19,7 @@ void ir_kqueue_exit(void);
 #endif /* USE_KQUEUE */
 
 int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds);
+void event_close(int handle);
+void shutdown_close(int handle);
 
 /* End of File */
