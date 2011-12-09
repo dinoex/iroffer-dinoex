@@ -90,7 +90,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
 
   for (fd = 0; fd < nfds; ++fd) {
     if (FD_ISSET(fd, &ir_kqueue_readset)) {
-      if (FD_ISSET(fd, readfds) == 0) {
+      if (!FD_ISSET(fd, readfds) == 0) {
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_READ, EV_DELETE, 0, 0, 0);
         FD_CLR(fd, &ir_kqueue_readset);
@@ -108,7 +108,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
     }
 
     if (FD_ISSET(fd, &ir_kqueue_writeset)) {
-      if (FD_ISSET(fd, writefds) == 0) {
+      if (!FD_ISSET(fd, writefds) == 0) {
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
         FD_CLR(fd, &ir_kqueue_writeset);
@@ -164,13 +164,18 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
 
     if (fd >= gdata.max_fds_from_rlimit) {
       /* ignore for now */
-      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d", fd);
+      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d: %s", fd, "FDMAX");
       continue;
     }
 
     if (ir_kqueue_event_buffer[i].flags & EV_ERROR) {
-      /* ignore for now */
-      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d", fd);
+      int err = ir_kqueue_event_buffer[i].data;
+      if (err != ENOENT) {
+      }
+      outerror(OUTERROR_TYPE_WARN, "kqueue error on fd %d: %s", fd, strerror(err));
+      /* report to caller */
+      FD_SET(fd, readfds);
+      FD_SET(fd, writefds);
       continue;
     }
 
