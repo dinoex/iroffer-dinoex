@@ -969,7 +969,7 @@
 1224 "adminpass %s\n"
 1225 "The crypt() function does not appear to be working correctly\n"
 1226 "iroffer was compiled without encrypted password support.  You do not need to encrypt your password.\n"
-1228 "Notifying %u Queued People on %s"
+1228 "Notifying %u Queued Packs on %s"
 1229 "En attente depuis %lih %lim pour \"%s\", en position %u sur %u. %lih %lim ou %s restant. (at %s)"
 1230 "plus"
 1231 "moins"
