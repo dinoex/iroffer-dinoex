@@ -305,6 +305,11 @@ static unsigned int notifyqueued_queue(irlist_t *list, const char *nick, const c
     }
 
     ++found;
+    if (idle) {
+      /* report only the first pack found */
+      if (found > 1)
+        continue;
+    }
     ioutput(OUT_S|OUT_D, COLOR_YELLOW,
             "Notifying Queued status to %s on %s",
             pq->nick, gnetwork->name);
@@ -318,8 +323,6 @@ static unsigned int notifyqueued_queue(irlist_t *list, const char *nick, const c
                 (rtime/60)%60,
                 (rtime >= 359999U) ? "more" : "less",
                 ntime);
-    if (idle)
-      break;
   }
   return found;
 }
@@ -361,7 +364,7 @@ void notifyqueued(void)
     return;
 
   ioutput(OUT_S|OUT_D, COLOR_YELLOW,
-          "Notifying %u Queued People on %s",
+          "Notifying %u Queued Packs on %s",
           found, gnetwork->name);
 }
 

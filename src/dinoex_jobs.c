@@ -2244,7 +2244,6 @@ void expire_logfiles(const char *logfile)
       mydelete(tempstr);
       continue;
     }
-    mydelete(tempstr);
     if (S_ISDIR(st.st_mode)) {
       mydelete(tempstr);
       continue;

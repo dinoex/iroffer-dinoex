@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+bugfix: expire_logfiles
+  versions affected: 3.26 - 3.27
+  Der Bot konnte die laten Files nicht löschen.
+
 bugfix: md5
   Warne wenn die Datei beim Hashen abgeschnitten wird.
 
