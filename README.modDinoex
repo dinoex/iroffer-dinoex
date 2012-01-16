@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+bugfix: DELTRIGGER
+  Allow DELTRIGGER when CHTRIGGER is enabled.
+
 bugfix: expire_logfiles (reported by Loke_AF)
   versions affected: 3.26 - 3.27
   Bot could not delete expired files.

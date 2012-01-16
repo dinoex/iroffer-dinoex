@@ -3052,9 +3052,6 @@ void a_deltrigger(const userinput * const u)
 
   updatecontext();
 
-  if (disabled_config(u) != 0)
-    return;
-
   num1 = get_pack_nr1(u, u->arg1);
   if (num1 == 0)
     return;
