@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+bugfix: ONLINE, OFFLINE, HOP, LAG
+  Without argument not all networks where affected.
+
 bugfix: DELTRIGGER
   Allow DELTRIGGER when CHTRIGGER is enabled.
 

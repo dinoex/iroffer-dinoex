@@ -4591,10 +4591,6 @@ void a_lag(const userinput * const u)
   int net;
   unsigned int ss;
 
-  net = get_network_msg(u, u->arg1);
-  if (net < 0)
-    return;
-
   backup = gnetwork;
   if (u->arg1 == NULL) {
     for (ss=0; ss<gdata.networks_online; ++ss) {
@@ -4602,6 +4598,10 @@ void a_lag(const userinput * const u)
       a_lag_net(u);
     }
   } else {
+    net = get_network_msg(u, u->arg1);
+    if (net < 0)
+      return;
+
     gnetwork = &(gdata.networks[net]);
     a_lag_net(u);
   }
@@ -4635,10 +4635,6 @@ void a_hop(const userinput * const u)
 
   updatecontext();
 
-  net = get_network_msg(u, u->arg2);
-  if (net < 0)
-    return;
-
   backup = gnetwork;
   if (u->arg2 == NULL) {
     for (ss=0; ss<gdata.networks_online; ++ss) {
@@ -4646,6 +4642,10 @@ void a_hop(const userinput * const u)
       a_hop_net(u, u->arg1);
     }
   } else {
+    net = get_network_msg(u, u->arg2);
+    if (net < 0)
+      return;
+
     gnetwork = &(gdata.networks[net]);
     a_hop_net(u, u->arg1);
   }
@@ -4976,8 +4976,11 @@ void a_offline(const userinput * const u)
 
   updatecontext();
 
-  val = get_network(u->arg1);
-  if (val >= 0) {
+  if (u->arg1 != NULL) {
+    val = get_network(u->arg1);
+    if (val < 0)
+      return;
+
     a_offline_net((unsigned int)val);
     return;
   }
@@ -4993,8 +4996,11 @@ void a_online(const userinput * const u)
 
   updatecontext();
 
-  val = get_network(u->arg1);
-  if (val >= 0) {
+  if (u->arg1 != NULL) {
+    val = get_network(u->arg1);
+    if (val < 0)
+      return;
+
     gdata.networks[val].offline = 0;
     return;
   }
