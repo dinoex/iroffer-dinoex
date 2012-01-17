@@ -22,7 +22,7 @@ bugfix: upnp_router
   Update for libminiupnpc 1.6
 
 bugfix: http_port
-  Reduce load when sending date over HTTP.
+  Reduce load when sending data over HTTP.
 
 bugfix: max_upspeed (reported by Loke_AF)
   The CPU load reached 100% when max_upspeed as limiting an upload.
