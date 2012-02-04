@@ -794,6 +794,7 @@ static config_list_typ config_parse_list[] = {
 #endif /* WITHOUT_HTTP */
 {"log_exclude_host",        &gdata.log_exclude_host,        2 }, /* NOTRANSLATE */
 {"log_exclude_text",        &gdata.log_exclude_text,        0 }, /* NOTRANSLATE */
+{"md5sum_exclude",          &gdata.md5sum_exclude,          0 }, /* NOTRANSLATE */
 {"nodownloadhost",          &gdata.nodownloadhost,          2 }, /* NOTRANSLATE */
 #ifdef USE_GEOIP
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 }, /* NOTRANSLATE */

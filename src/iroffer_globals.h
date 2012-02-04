@@ -73,6 +73,7 @@ irlist_t fish_exclude_nick;
 irlist_t group_admin;
 irlist_t periodicmsg;
 irlist_t autoaddann_mask;
+irlist_t md5sum_exclude;
 time_t configtime[MAXCONFIG];
 char *configfile[MAXCONFIG];
 char *osstring;

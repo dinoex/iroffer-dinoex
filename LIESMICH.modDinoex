@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+390) md5sum_exclude
+  Liste von Dateien oder Mustern die bei der Berechnung der MD5 und
+  CRC32 Prüfsummen übersprungen werden sollen.
+
 389) SERVQ
 
   Neues Admin Kommando:

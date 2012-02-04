@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+390) md5sum_exclude (suggested by Loke_AF)
+  configured, MD5 and CRC32 will be not computed for files matching
+  this patterns.
+
 389) SERVQ (suggested by Loke_AF)
 
   new admin command:
