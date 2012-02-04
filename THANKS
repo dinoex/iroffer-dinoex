@@ -654,6 +654,8 @@ Loke_AF
 	reporting uneven transfer bug
 	suggesting "extend_status_line" with SrvQ
 	reporting "max_upspeed" bug
+	suggesting "SERVQ" with network
+	suggesting "md5sum_exclude"
 
 Nouhime
 	reporting "http_search" bug.

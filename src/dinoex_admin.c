@@ -4753,24 +4753,40 @@ void a_part(const userinput * const u)
   gnetwork = backup;
 }
 
-void a_servqc(const userinput * const u)
+static void a_servqc2(const userinput * const u, unsigned int net)
 {
   gnetwork_t *backup;
+
+  a_respond(u, "Cleared server queue of %u lines",
+            irlist_size(&gdata.networks[net].serverq_channel) +
+            irlist_size(&gdata.networks[net].serverq_fast) +
+            irlist_size(&gdata.networks[net].serverq_normal) +
+            irlist_size(&gdata.networks[net].serverq_slow));
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[net]);
+  clean_send_buffers();
+  gnetwork = backup;
+}
+
+void a_servqc(const userinput * const u)
+{
   unsigned int ss;
+  int net;
 
   updatecontext();
 
-  backup = gnetwork;
-  for (ss=0; ss<gdata.networks_online; ++ss) {
-    a_respond(u, "Cleared server queue of %u lines",
-              irlist_size(&gdata.networks[ss].serverq_channel) +
-              irlist_size(&gdata.networks[ss].serverq_fast) +
-              irlist_size(&gdata.networks[ss].serverq_normal) +
-              irlist_size(&gdata.networks[ss].serverq_slow));
+  if(u->arg1 != NULL) {
+    net = get_network_msg(u, u->arg1);
+    if (net < 0)
+      return;
 
-    gnetwork = &(gdata.networks[ss]);
-    clean_send_buffers();
-    gnetwork = backup;
+    a_servqc2(u, net);
+    return;
+  }
+
+  for (ss=0; ss<gdata.networks_online; ++ss) {
+    a_servqc2(u, ss);
   }
 }
 
