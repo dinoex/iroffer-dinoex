@@ -72,6 +72,8 @@ Short Term Features:
   1581  admin group by file pattern
   1604  check_lostfiles <dir>
   1605  removelostfiles
+  1615  http_pass
+  1617  reverse the order of XDCC list
 
 Long Term Features:
   1015  http admin
@@ -170,6 +172,7 @@ Long Term Features:
   1610  respond on batch only with summary
   1611  Limit number of packs listed on xdcc queue (Mainqueue)
   1614  trigger to send latest pack
+  1616  user quotas für den speicherplatz
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
