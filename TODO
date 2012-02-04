@@ -70,6 +70,8 @@ Short Term Features:
   1535  reduce queued message on batch
   1536  silent add
   1581  admin group by file pattern
+  1604  check_lostfiles <dir>
+  1605  removelostfiles
 
 Long Term Features:
   1015  http admin
@@ -163,6 +165,8 @@ Long Term Features:
   1593  announce pack-1
   1595  vitual packs, relayed to an other bot
   1597  status trigger instaled of CTCP
+  1602  part form +M channels
+  1603  don't add duplicated files with duplicate crc
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

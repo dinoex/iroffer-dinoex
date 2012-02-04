@@ -201,7 +201,7 @@ static const userinput_parse_t userinput_parse[] = {
 {6,2,method_allow_all,a_join,          "JOIN","channel [net] [key]","join channel till rehash"},
 {6,2,method_allow_all,a_part,          "PART","channel [net]","part channel till rehash"},
 {6,2,method_allow_all,u_jump,          "JUMP","server [net]","Switches to a random server or server <server>"},
-{6,5,method_allow_all,a_servqc,        "SERVQC",NULL,"Clears the server send queue"},
+{6,5,method_allow_all,a_servqc,        "SERVQC","[net]","Clears the server send queue"},
 {6,2,method_allow_all,u_status,        "STATUS",NULL,"Show Useful Information"},
 {6,5,method_allow_all,u_rehash,        "REHASH",NULL,"Re-reads config file(s) and reconfigures"},
 {6,2,method_allow_all,u_botinfo,       "BOTINFO",NULL,"Show Information about the bot status"},

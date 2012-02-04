@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+389) SERVQ (suggested by Loke_AF)
+
+  new admin command:
+  SERVQ <net>                        Clears the server send queue
+
 bugfix: ONLINE, OFFLINE, HOP, LAG
   Without argument not all networks where affected.
 
@@ -70,7 +75,7 @@ Configure TRANSLATION=
   Extend the Makefile with custom translations
 
 382) REMOVEMATCH
-  
+
   new admin command:
   REMOVEMATCH <pattern>              Remove every pack matching this pattern
 
@@ -203,7 +208,7 @@ bugfix: XDCC INFO
 
 363) backup statefile
   Backup statefile when version of iroffer changes
-  
+
 362) offline
   Disable connecting to this network.
 
