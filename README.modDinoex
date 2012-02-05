@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+391) REMOVELOST (suggested by Loke_AF, Sakura`Kinomoto)
+
+  new admin commands:
+  REMOVELOST                         Remove all lost packs
+  REMOVELOST <pattern>               Remove lost packs matching this pattern
+
 390) md5sum_exclude (suggested by Loke_AF)
   configured, MD5 and CRC32 will be not computed for files matching
   this patterns.

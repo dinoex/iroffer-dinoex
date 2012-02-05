@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+391) REMOVELOST
+
+  Neue Admin Kommandos:
+  REMOVELOST                         Entfernt alle Packs deren Dateien nicht gefunden werden.
+  REMOVELOST <muster>                Entfernt Packs deren Dateien nicht gefunden werden.
+
 390) md5sum_exclude
   Liste von Dateien oder Mustern die bei der Berechnung der MD5 und
   CRC32 Prüfsummen übersprungen werden sollen.

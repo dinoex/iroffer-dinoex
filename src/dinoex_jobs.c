@@ -606,6 +606,9 @@ static int check_for_file_remove(unsigned int n)
   if (look_for_file_changes(xd) == 0)
     return 0;
 
+  if (gdata.removelostfiles == 0)
+    return 0;
+
   pubplist = mycalloc(sizeof(userinput));
   tempstr = mymalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "REMOVE %u", n); /* NOTRANSLATE */

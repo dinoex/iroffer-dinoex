@@ -962,7 +962,7 @@ static void write_files_changed(void)
 #endif /* USE_RUBY */
 }
 
-static unsigned int a_remove_pack(const userinput * const u, xdcc *xd, unsigned int num)
+static unsigned int a_remove_pack2(const userinput * const u, xdcc *xd, unsigned int num)
 {
   char *tmpdesc;
   char *tmpgroup;
@@ -1002,9 +1002,24 @@ static unsigned int a_remove_pack(const userinput * const u, xdcc *xd, unsigned 
   if (tmpgroup != NULL)
     mydelete(tmpgroup);
 
+  return 0;
+}
+
+static void a_remove_pack_final(void)
+{
   set_support_groups();
   autotrigger_rebuild();
   write_files_changed();
+}
+
+static unsigned int a_remove_pack(const userinput * const u, xdcc *xd, unsigned int num)
+{
+  updatecontext();
+
+  if (a_remove_pack2(u, xd, num))
+    return 1; /* failed */
+
+  a_remove_pack_final();
   return 0;
 }
 
@@ -1026,10 +1041,7 @@ void a_remove_delayed(const userinput * const u)
         (xd->st_ino == st->st_ino)) {
       gnetwork = &(gdata.networks[u->net]);
       if (a_remove_pack(u, xd, n) == 0) {
-        /* start over, the list has changed */
-        n = 0;
-        xd = irlist_get_head(&gdata.xdccs);
-        continue;
+        break;
       }
     }
     xd = irlist_get_next(xd);
@@ -2108,6 +2120,7 @@ void a_remove(const userinput * const u)
   xdcc *xd;
   unsigned int num1;
   unsigned int num2;
+  unsigned int found;
 
   updatecontext();
 
@@ -2119,13 +2132,17 @@ void a_remove(const userinput * const u)
   if (num2 == 0)
     return;
 
+  found = 0;
   for (; num2 >= num1; --num2) {
     xd = irlist_get_nth(&gdata.xdccs, num2 - 1);
     if (group_restricted(u, xd))
       return;
 
-    a_remove_pack(u, xd, num2);
+    a_remove_pack2(u, xd, num2);
+    ++found;
   }
+  if (found)
+    a_remove_pack_final();
 }
 
 static DIR *a_open_dir(char **dir)
@@ -2189,28 +2206,33 @@ void a_removegroup(const userinput * const u)
 {
   xdcc *xd;
   unsigned int n;
+  unsigned int found;
 
   updatecontext();
 
   if (invalid_group(u, u->arg1) != 0)
     return;
 
+  found = 0;
   n = 0;
   xd = irlist_get_head(&gdata.xdccs);
   while(xd) {
     ++n;
     if (xd->group != NULL) {
       if (strcasecmp(xd->group, u->arg1) == 0) {
-        if (a_remove_pack(u, xd, n) == 0) {
-          /* start over, the list has changed */
-          n = 0;
-          xd = irlist_get_head(&gdata.xdccs);
+        if (a_remove_pack2(u, xd, n) == 0) {
+          /* continue with new pack at same position */
+          ++found;
+          --n;
+          xd = irlist_get_nth(&gdata.xdccs, n);
           continue;
         }
       }
     }
     xd = irlist_get_next(xd);
   }
+  if (found)
+    a_remove_pack_final();
 }
 
 void a_removematch(const userinput * const u)
@@ -2242,6 +2264,41 @@ void a_removematch(const userinput * const u)
 
   a_removedir_sub(u, thedir, d, end);
   mydelete(thedir);
+}
+
+void a_removelost(const userinput * const u)
+{
+  xdcc *xd;
+  unsigned int n;
+  unsigned int found;
+
+  updatecontext();
+
+  found = 0;
+  n = 0;
+  xd = irlist_get_head(&gdata.xdccs);
+  while(xd) {
+    ++n;
+    if (u->arg1 != NULL) {
+      if (fnmatch(u->arg1, xd->file, FNM_CASEFOLD) != 0) {
+        /* no match */
+        xd = irlist_get_next(xd);
+        continue;
+      }
+    }
+    if (look_for_file_changes(xd) != 0) {
+      if (a_remove_pack2(u, xd, n) == 0) {
+        /* continue with new pack at same position */
+        ++found;
+        --n;
+        xd = irlist_get_nth(&gdata.xdccs, n);
+        continue;
+      }
+    }
+    xd = irlist_get_next(xd);
+  }
+  if (found)
+    a_remove_pack_final();
 }
 
 static void a_renumber1(const userinput * const u, unsigned int oldp, unsigned int newp)
@@ -3901,6 +3958,7 @@ void a_fileremove(const userinput * const u)
   char *filename;
   unsigned int num1;
   unsigned int num2;
+  unsigned int found;
 
   updatecontext();
 
@@ -3915,16 +3973,19 @@ void a_fileremove(const userinput * const u)
   if (num2 == 0)
     return;
 
+  found = 0;
   for (; num2 >= num1; --num2) {
     xd = irlist_get_nth(&gdata.xdccs, num2 - 1);
     if (group_restricted(u, xd))
       return;
 
     filename = mystrdup(xd->file);
-    if (a_remove_pack(u, xd, num2) == 0)
+    if (a_remove_pack2(u, xd, num2) == 0)
       a_filedel_disk(u, &filename);
     mydelete(filename);
   }
+  if (found)
+    a_remove_pack_final();
 }
 
 void a_showdir(const userinput * const u)
