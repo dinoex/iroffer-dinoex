@@ -2087,7 +2087,7 @@ int look_for_file_changes(xdcc *xpack)
                 xpack->file, strerror(errno));
       if (errno != ENOENT)
         return 0;
-      return gdata.removelostfiles;
+      return 1;
     }
   
   if (st.st_size == 0)

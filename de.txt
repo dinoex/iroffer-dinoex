@@ -1872,3 +1872,6 @@
 2811 "  Ignoring adddir_match file: %s"
 2812 "Failed to start kqueue()\n"
 2813 "truncated"
+2814 "REMOVELOST"
+2815 "[muster]"
+2816 "Entfernt Packs deren Dateien nicht gefunden werden."

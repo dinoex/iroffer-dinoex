@@ -70,8 +70,6 @@ Short Term Features:
   1535  reduce queued message on batch
   1536  silent add
   1581  admin group by file pattern
-  1604  check_lostfiles <dir>
-  1605  removelostfiles
   1615  http_pass
   1617  reverse the order of XDCC list
 

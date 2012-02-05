@@ -656,6 +656,7 @@ Loke_AF
 	reporting "max_upspeed" bug
 	suggesting "SERVQ" with network
 	suggesting "md5sum_exclude"
+	suggesting "REMOVELOST"
 
 Nouhime
 	reporting "http_search" bug.
@@ -749,4 +750,7 @@ Thom
 
 sheppert
 	reporting "slotsfree" bug
+
+Sakura`Kinomoto
+	suggesting "REMOVELOST"
 
