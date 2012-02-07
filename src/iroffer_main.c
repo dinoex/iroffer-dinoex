@@ -977,6 +977,8 @@ static void mainloop (void) {
                 }
               if (!xd->has_md5sum)
                 {
+                  if (verifyshell(&gdata.md5sum_exclude, xd->file))
+                    continue;
                   if (!gdata.attop) gototop();
                   start_md5_hash(xd, packnum);
                   break;

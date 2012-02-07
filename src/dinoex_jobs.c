@@ -1236,9 +1236,6 @@ void autotrigger_rebuild(void)
 
 void start_md5_hash(xdcc *xd, unsigned int packnum)
 {
-  if (!verifyshell(&gdata.md5sum_exclude, xd->file))
-    return;
-
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
           "MD5: [Pack %u] Calculating", packnum);
 
