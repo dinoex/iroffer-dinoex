@@ -535,7 +535,10 @@ static void admin_run(const char *cmd)
   if (job == NULL)
     return;
 
-  done = mystrsuffix(job, ".done");
+  if ( gdata.admin_job_done_file != NULL)
+    done = mystrdup(gdata.admin_job_done_file);
+  else
+    done = mystrsuffix(job, ".done");
   fd = open_append(done, "Admin Job Done");
   if (fd >= 0) {
     admin_line(fd, cmd);

@@ -94,6 +94,7 @@ char *nickserv_pass;
 char *enable_nick;
 char *owner_nick;
 char *admin_job_file;
+char *admin_job_done_file;
 char *autoaddann;
 char *autoadd_group;
 char *send_statefile;
