@@ -3,13 +3,15 @@
 # $Header$
 
 DESCRIPTION="An improved version of iroffer - an IRC XDCC bot."
-HOMEPAGE="http://iroffer.dinoex.net"
+HOMEPAGE="http://iroffer.dinoex.de/projects/show/iroffer"
 SRC_URI="http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz"
+
 KEYWORDS="~x86 ~amd64"
 LICENSE="GPL-2"
 SLOT="0"
 LANGUAGES="linguas_fr linguas_it linguas_de linguas_en"
-IUSE="geoip curl tls upnp ruby +blowfish +openssl +http +admin +telnet +memsave static ${LANGUAGES}"
+IUSE="geoip curl tls upnp ruby +blowfish +openssl +http +admin +telnet debug +memsave static ${LANGUAGES}"
+
 
 DEPEND="ruby? ( dev-lang/ruby )
     geoip? ( dev-libs/geoip )
@@ -68,6 +70,10 @@ src_compile() {
 
     if ! use memsave ; then
         configure_opts="${configure_opts} -no-memsave"
+    fi
+
+    if use debug ; then
+        configure_opts="${configure_opts} -debug"
     fi
 
     if use static ; then
