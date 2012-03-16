@@ -393,7 +393,7 @@ void t_transfersome (transfer * const t)
                         }
                       return;
                     }
-                  if (gdata.debug > 4)
+                  if (gdata.debug > 53)
                     {
                       ioutput(OUT_S, COLOR_BLUE,
                               "mmap() [%p] offset=0x%.8" LLPRINTFMT "X size=0x%.8" LLPRINTFMT "X",
@@ -456,7 +456,7 @@ void t_transfersome (transfer * const t)
           gdata.transferlimits[ii].used += (ir_uint64)howmuch2;
         }
       
-      if (gdata.debug > 4)
+      if (gdata.debug > 51)
         {
           ioutput(OUT_S, COLOR_BLUE, "File %ld Write %ld", (long)howmuch, (long)howmuch2);
         }
@@ -507,7 +507,7 @@ void t_readjunk (transfer * const t)
   
   i = recv(t->con.clientsocket, gdata.sendbuff, BUFFERSIZE, MSG_DONTWAIT);
   
-  if (gdata.debug > 4)
+  if (gdata.debug > 52)
     {
       ioutput(OUT_S, COLOR_BLUE, "Read %d:", i);
       hexdump(OUT_S, COLOR_BLUE, "", gdata.sendbuff, i);
@@ -550,7 +550,7 @@ void t_readjunk (transfer * const t)
               if (t->tr_status == TRANSFER_STATUS_WAITING)
                 show ++;
 
-              if ((gdata.debug > 2) && (show > 0))
+              if ((gdata.debug >54) && (show > 0))
                 {
                   ioutput(OUT_S, COLOR_BLUE,
                           "XDCC [%02i:%s on %s]: Acknowleged %" LLPRINTFMT "d Bytes",

@@ -1283,7 +1283,7 @@ void clearmemberlist(channel_t *c)
   member_t *member;
   
   /* clear members list */
-  if (gdata.debug > 2)
+  if (gdata.debug > 10)
     {
       ioutput(OUT_S, COLOR_NO_COLOR,
               "clearing %s",c->name);
@@ -1306,7 +1306,7 @@ int isinmemberlist(const char *nick)
   
   updatecontext();
 
-  if (gdata.debug > 2)
+  if (gdata.debug > 10)
     {
       ioutput(OUT_S, COLOR_NO_COLOR,
               "checking for %s",nick);
@@ -1340,7 +1340,7 @@ void addtomemberlist(channel_t *c, const char *nick)
   updatecontext();
 
   bzero(prefixes, sizeof(prefixes));
-  if (gdata.debug > 2)
+  if (gdata.debug > 10)
     {
       ioutput(OUT_S, COLOR_NO_COLOR,
               "adding %s to %s",nick,c->name);
@@ -1396,7 +1396,7 @@ void removefrommemberlist(channel_t *c, const char *nick)
   
   updatecontext();
   
-  if (gdata.debug > 2)
+  if (gdata.debug > 10)
     {
       ioutput(OUT_S, COLOR_NO_COLOR,
               "removing %s from %s",nick,c->name);
@@ -1429,7 +1429,7 @@ void changeinmemberlist_mode(channel_t *c, const char *nick, int mode, unsigned 
   
   updatecontext();
   
-  if (gdata.debug > 2)
+  if (gdata.debug > 10)
     {
       ioutput(OUT_S, COLOR_NO_COLOR,
               "%s prefix %c on %s in %s",
@@ -1488,7 +1488,7 @@ void changeinmemberlist_nick(channel_t *c, const char *oldnick, const char *newn
   
   updatecontext();
   
-  if (gdata.debug > 2)
+  if (gdata.debug > 10)
     {
       ioutput(OUT_S, COLOR_NO_COLOR,
               "changing %s to %s in %s",oldnick,newnick,c->name);

@@ -616,6 +616,7 @@ static void reset_config_int(void)
 
 static int config_string_anzahl = 0;
 static config_string_typ config_parse_string[] = {
+{"admin_job_done_file",     &gdata.admin_job_done_file,     1 }, /* NOTRANSLATE */
 {"admin_job_file",          &gdata.admin_job_file,          1 }, /* NOTRANSLATE */
 {"adminpass",               &gdata.adminpass,               4 }, /* NOTRANSLATE */
 {"announce_seperator",      &gdata.announce_seperator,      0 }, /* NOTRANSLATE */

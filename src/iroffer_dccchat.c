@@ -349,7 +349,7 @@ void parsedccchat(dccchat_t *chat,
       break;
       
     case DCCCHAT_CONNECTED:
-      if (gdata.debug > 0)
+      if (gdata.debug > 11)
         {
           ioutput(OUT_S, COLOR_CYAN, ">DCC>: %s", line);
         }
@@ -406,7 +406,7 @@ void vwritedccchat(dccchat_t *chat, int add_return, const char *format, va_list 
       ir_boutput_write(&chat->boutput, "\n", 1);
     }
   
-  if (gdata.debug > 0)
+  if (gdata.debug > 11)
     {
       if (tempstr[len-1] == '\n')
         {

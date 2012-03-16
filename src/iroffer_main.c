@@ -188,7 +188,7 @@ static void mainloop (void) {
       
       updatecontext();
    
-      if (gdata.debug > 10)
+      if (gdata.debug > 81)
         {
           select_dump("try", highests);
         }
@@ -213,7 +213,7 @@ static void mainloop (void) {
           FD_ZERO(&gdata.execset);
         }
       
-      if (gdata.debug > 10)
+      if (gdata.debug > 81)
         {
           select_dump("got", highests);
         }
@@ -920,7 +920,7 @@ static void mainloop (void) {
             {
               howmuch = read(gdata.md5build.file_fd, gdata.sendbuff, BUFFERSIZE);
               
-              if (gdata.debug > 4)
+              if (gdata.debug >30)
                 {
                   ioutput(OUT_S, COLOR_YELLOW, "MD5: [Pack %u] read %ld",
                           number_of_pack(gdata.md5build.xpack), (long)howmuch);

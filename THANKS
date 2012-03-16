@@ -657,6 +657,7 @@ Loke_AF
 	suggesting "SERVQ" with network
 	suggesting "md5sum_exclude"
 	suggesting "REMOVELOST"
+	suggesting "admin_job_done_file"
 
 Nouhime
 	reporting "http_search" bug.
