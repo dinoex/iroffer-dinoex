@@ -224,7 +224,7 @@ static char *privmsg_decrypt(const char *line, const char *channel, const char *
   *(end++) = ' ';
   snprintf(end, len, "%s :%s", channel, newstr); /* NOTRANSLATE */
   mydelete(newstr);
-  if (gdata.debug > 0) {
+  if (gdata.debug > 13) {
     ioutput(OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
   }
   return newline;
@@ -302,7 +302,7 @@ vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
     return;
   }
 
-  if (gdata.debug > 0) {
+  if (gdata.debug > 13) {
     ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
   }
 
@@ -363,7 +363,7 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
   if (ch->fish) {
     char *tempcrypt;
 
-    if (gdata.debug > 0) {
+    if (gdata.debug > 13) {
       ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
     }
     tempcrypt = encrypt_fish(tempstr, len, ch->fish);
@@ -415,7 +415,7 @@ void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char 
   if (fish != NULL) {
     char *tempcrypt;
 
-    if (gdata.debug > 0) {
+    if (gdata.debug > 13) {
       ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
     }
     tempcrypt = encrypt_fish(message, len, fish);
@@ -440,7 +440,7 @@ void writeserver_notice(writeserver_type_e delay, const char *nick, const char *
   if (fish != NULL) {
     char *tempcrypt;
 
-    if (gdata.debug > 0) {
+    if (gdata.debug > 13) {
       ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
     }
     tempcrypt = encrypt_fish(message, len, fish);
@@ -1978,7 +1978,7 @@ void a_rehash_channels(void)
         if (!gnetwork->r_needtojump && (rch->flags & CHAN_ONCHAN)) {
           writeserver(WRITESERVER_NORMAL, "PART %s", rch->name); /* NOTRANSLATE */
         }
-        if (gdata.debug > 2) {
+        if (gdata.debug > 0) {
            ioutput(OUT_S, COLOR_NO_COLOR,
                    "1 = %s parted", rch->name);
         }
@@ -1990,7 +1990,7 @@ void a_rehash_channels(void)
         ch->flags |= rch->flags & CHAN_ONCHAN;
         ch->lastjoin = rch->lastjoin;
         ch->nextann = rch->nextann;
-        if (gdata.debug > 2) {
+        if (gdata.debug > 0) {
           ioutput(OUT_S, COLOR_NO_COLOR,
                   "2 = %s common", ch->name);
         }
@@ -2014,7 +2014,7 @@ void a_rehash_channels(void)
         if (!gnetwork->r_needtojump) {
           joinchannel(ch);
         }
-        if (gdata.debug > 2) {
+        if (gdata.debug > 0) {
           ioutput(OUT_S, COLOR_NO_COLOR,
                   "3 = %s new", ch->name);
         }

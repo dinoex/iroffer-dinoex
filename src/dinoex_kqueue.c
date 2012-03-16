@@ -100,7 +100,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_READ, EV_DELETE, 0, 0, 0);
         FD_CLR(fd, &ir_kqueue_readset);
-        if ( gdata.debug > 3 )
+        if ( gdata.debug > 80 )
           ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del read %d", fd); /* NOTRANSLATE */
       }
     }
@@ -109,7 +109,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_WRITE, EV_DELETE, 0, 0, 0);
         FD_CLR(fd, &ir_kqueue_writeset);
-        if( gdata.debug > 3 )
+        if ( gdata.debug > 80 )
           ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue del write %d", fd); /* NOTRANSLATE */
       }
     }
@@ -119,7 +119,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_READ, EV_ADD | EV_ENABLE, NOTE_EOF, 0, 0);
         FD_SET(fd, &ir_kqueue_readset);
-        if ( gdata.debug > 3 )
+        if ( gdata.debug > 80 )
           ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue add read %d", fd); /* NOTRANSLATE */
       }
     }
@@ -128,7 +128,7 @@ static void ir_kqueue_update(int nfds, fd_set *readfds, fd_set *writefds, fd_set
         ++ir_kqueue_change_size;
         EV_SET(&ir_kqueue_change_buffer[ir_kqueue_change_size - 1], fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, NOTE_EOF, 0, 0);
         FD_SET(fd, &ir_kqueue_writeset);
-        if( gdata.debug > 3 )
+        if ( gdata.debug > 80 )
           ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kqueue add write %d", fd); /* NOTRANSLATE */
       }
     }
@@ -156,7 +156,7 @@ int ir_kqueue_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *except
 
   ts.tv_sec = 0;
   ts.tv_nsec = 250*1000;
-  if( gdata.debug > 3 ) {
+  if ( gdata.debug > 80 ) {
     if (ir_kqueue_change_size > 0)
       ioutput(OUT_S|OUT_D, COLOR_YELLOW, "kevent %d %d", ir_kqueue_change_size, ir_kqueue_event_max); /* NOTRANSLATE */
   }

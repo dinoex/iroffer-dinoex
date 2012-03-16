@@ -1470,7 +1470,7 @@ static void ir_parseline(char *line)
   /* we only support lines upto maxtextlength, truncate line */
   line[maxtextlength-1] = '\0';
 
-  if (gdata.debug > 0)
+  if (gdata.debug > 14)
     ioutput(OUT_S, COLOR_CYAN, ">IRC>: %u, %s", gnetwork->net + 1, line);
 
   bzero((char *)&ipl, sizeof(ipl));

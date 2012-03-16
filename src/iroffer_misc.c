@@ -366,7 +366,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
   if ((type == WRITESERVER_NOW) &&
       (gnetwork->serverstatus == SERVERSTATUS_CONNECTED))
     {
-      if (gdata.debug > 0)
+      if (gdata.debug > 14)
         {
           ioutput(OUT_S, COLOR_MAGENTA, "<SND<: %u: %s", gnetwork->net +1, msg);
         }
@@ -385,7 +385,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
     {
       if (type == WRITESERVER_FAST)
         {
-          if (gdata.debug > 0)
+          if (gdata.debug > 12)
             {
               ioutput(OUT_S, COLOR_MAGENTA, "<QUEF<: %s", msg);
             }
@@ -408,7 +408,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         }
       else if (type == WRITESERVER_NORMAL)
         {
-          if (gdata.debug > 0)
+          if (gdata.debug > 12)
             {
               ioutput(OUT_S, COLOR_MAGENTA, "<QUEN<: %s", msg);
             }
@@ -431,7 +431,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         }
       else if (type == WRITESERVER_SLOW)
         {
-          if (gdata.debug > 0)
+          if (gdata.debug > 12)
             {
               ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
             }
@@ -501,7 +501,7 @@ void sendserver(void)
   
   while (item && (((int)strlen(item)) < gnetwork->serverbucket))
     {
-      if (gdata.debug > 0)
+      if (gdata.debug > 14)
         {
           ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
@@ -523,7 +523,7 @@ void sendserver(void)
   
   while (item && (((int)strlen(item)) < gnetwork->serverbucket))
     {
-      if (gdata.debug > 0)
+      if (gdata.debug > 14)
         {
           ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
@@ -550,7 +550,7 @@ void sendserver(void)
   
   while (item && (((int)strlen(item)) < gnetwork->serverbucket))
     {
-      if (gdata.debug > 0)
+      if (gdata.debug > 14)
         {
           ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
@@ -1186,7 +1186,7 @@ void shutdowniroffer(void) {
        for (ss=0; ss<gdata.networks_online; ss++)
          {
            gnetwork = &(gdata.networks[ss]);
-           if (gdata.debug > 0)
+           if (gdata.debug > 14)
               {
                 ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, msg);
               }

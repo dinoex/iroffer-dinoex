@@ -2499,7 +2499,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       break;
 
     if (verifyshell(&gdata.adddir_exclude, f->d_name)) {
-      if (gdata.debug > 0)
+      if (gdata.debug > 21)
         a_respond(u, "  Ignoring adddir_exclude file: %s", f->d_name);
       continue;
     }
@@ -2518,7 +2518,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
         continue;
       }
       if (gdata.include_subdirs == 0) {
-        if (gdata.debug > 0)
+        if (gdata.debug > 20)
           a_respond(u, "  Ignoring directory: %s", tempstr);
       } else {
         if (gdata.subdirs_delayed == 0 ) {
@@ -2549,7 +2549,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     }
 
     if (no_verifyshell(&gdata.adddir_match, f->d_name)) {
-      if (gdata.debug > 0)
+      if (gdata.debug > 22)
         a_respond(u, "  Ignoring adddir_match file: %s", f->d_name);
       mydelete(tempstr);
       continue;
@@ -2595,7 +2595,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
             tempstr = NULL;
             break;
           }
-          if (gdata.debug > 2)
+          if (gdata.debug > 23)
             a_respond(u, "  Ignoring added file: %s", tempstr);
           break;
         }

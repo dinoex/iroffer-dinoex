@@ -182,7 +182,7 @@ void l_transfersome (upload * const l) {
              gdata.xdccsum[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
            }
          
-         if (gdata.debug > 4) {
+         if (gdata.debug > 50) {
             ioutput(OUT_S, COLOR_BLUE, "Read %d File %d", howmuch, howmuch2);
             }
          

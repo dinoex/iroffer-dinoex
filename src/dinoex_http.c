@@ -740,7 +740,7 @@ static unsigned int h_runruby(http * const h)
 static void h_start_sending(http * const h)
 {
   h->status = HTTP_STATUS_SENDING;
-  if (gdata.debug > 1)
+  if (gdata.debug > 41)
     ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
             "HTTP '%s' response %ld bytes", h->url, (long)(h->range_end - h->range_start));
 }
@@ -867,17 +867,15 @@ static void h_readfile(http * const h, const char *file)
 
   h->filedescriptor = open(h->file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (h->filedescriptor < 0) {
-    if (gdata.debug > 1)
+    if (gdata.debug > 40)
       ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "File not found: '%s'", file);
     h_herror_404(h);
     return;
   }
   if (fstat(h->filedescriptor, &st) < 0) {
-    if (gdata.debug > 1)
-      ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
-              "Unable to stat file '%s': %s",
-              file, strerror(errno));
+    outerror(OUTERROR_TYPE_WARN, "Unable to stat file '%s': %s",
+             file, strerror(errno));
     close(h->filedescriptor);
     h_herror_404(h);
     return;
@@ -1041,7 +1039,7 @@ static void h_include(http * const h, const char *file)
 
   fd = open(file, O_RDONLY | ADDED_OPEN_FLAGS);
   if (fd < 0) {
-    if (gdata.debug > 1)
+    if (gdata.debug > 40)
       ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "File not found: '%s'", file);
     return;
@@ -1865,7 +1863,7 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char * UNU
     return;
   }
 
-  if (gdata.debug > 1)
+  if (gdata.debug > 40)
     ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
             "HTTP not found: '%s'", h->url);
   h_herror_404(h);
@@ -1937,7 +1935,7 @@ static char *h_read_http(http * const h)
     h->bytesgot += howmuch;
     howmuch2 -= howmuch;
     gdata.sendbuff[h->bytesgot] = 0;
-    if (gdata.debug > 3) {
+    if (gdata.debug > 47) {
       ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
               "HTTP data received data=\n%s", gdata.sendbuff);
     }
@@ -2057,7 +2055,7 @@ static void h_parse(http * const h, char *body)
     return;
   }
 
-  if (gdata.debug > 1)
+  if (gdata.debug > 40)
     ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
             "HTTP not found: '%s'", h->url);
   h_herror_404(h);
@@ -2242,7 +2240,7 @@ static void h_send(http * const h)
     if (h->unlimited == 0)
       gdata.xdccsent[gdata.curtime%XDCC_SENT_SIZE] += howmuch2;
     h->tx_bucket -= howmuch2;
-    if (gdata.debug > 4)
+    if (gdata.debug > 46)
       ioutput(OUT_S, COLOR_BLUE, "File %ld Write %ld", (long)howmuch, (long)howmuch2);
 
   } while ((h->tx_bucket >= TXSIZE) && (howmuch2 > 0));
