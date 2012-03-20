@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+bugfix: send_listfile (reported by Bachstelze)
+  Default was not set on REHASH.
+
 392) admin_job_done_file (suggested by Loke_AF)
   Write the output from the commands in "admin_job_file" into this file.
   Default: <admin_job_file>.done
