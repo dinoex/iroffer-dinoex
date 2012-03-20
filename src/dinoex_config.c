@@ -2610,6 +2610,7 @@ static void reset_config_func(void)
   /* int */
   gdata.overallmaxspeeddaydays = 0x7F; /* all days */
   gdata.logrotate = 0;
+  gdata.send_listfile = 0;
   gdata.slotsmax = 0;
   gdata.overallmaxspeeddaytimestart = 0;
   gdata.overallmaxspeeddaytimeend = 0;
