@@ -5,6 +5,7 @@ With Version 3.28:
 
 bugfix: send_listfile (reported by Bachstelze)
   Default was not set on REHASH.
+  XDCC LIST SEND was not disabled.
 
 392) admin_job_done_file (suggested by Loke_AF)
   Write the output from the commands in "admin_job_file" into this file.

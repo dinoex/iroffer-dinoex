@@ -5,6 +5,7 @@ Ab Version 3.28:
 
 bugfix: send_listfile
   Der Wert wurde bim REHASH nicht zurückgesetzt.
+  XDCC LIST SEND war nicht deaktiviert.
 
 392) admin_job_done_file
   Die Ausgabe und Fehler der Befehle aus dem "admin_job_file" werden in

@@ -273,7 +273,7 @@ static xdcc *get_download_pack(const char **bad, const char* nick, const char* h
   }
 
   if (pack == XDCC_SEND_LIST) {
-    if (gdata.xdcclistfile) {
+    if ( (gdata.xdcclistfile) && (gdata.send_listfile != 0) ) {
       if (init_xdcc_file(&xdcc_listfile, gdata.xdcclistfile)) {
         *bad = "(Bad Pack Number)";
         return NULL;
