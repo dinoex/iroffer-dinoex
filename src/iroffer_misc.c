@@ -726,7 +726,7 @@ void gobackground(void) {
       outerror(OUTERROR_TYPE_CRASH, "Unable to Fork: %s", strerror(errno));
    else if (s > 0) {
       /* parent exits */
-      exit(69);
+      exit(0);
       }
 
 /*   struct rlimit r = { 0 }; */
@@ -748,7 +748,7 @@ void gobackground(void) {
       outerror(OUTERROR_TYPE_CRASH, "Unable to Fork: %s", strerror(errno));
    else if (s > 0)
       /* parent exits */
-      exit(69);
+      exit(0);
    
    
    /* background continues... */

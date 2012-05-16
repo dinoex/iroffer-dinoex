@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+bugfix: exit status
+  Der Exit Code im Hintergrund-Modus ist jetzt 0.
+
 bugfix: send_listfile
   Der Wert wurde bim REHASH nicht zurückgesetzt.
   XDCC LIST SEND war nicht deaktiviert.
