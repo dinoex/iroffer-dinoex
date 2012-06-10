@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+Configure -no-chroot (Sébastien Picavet)
+  Baue Bot ohne chroot() Unterstützung
+
 bugfix: exit status
   Der Exit Code im Hintergrund-Modus ist jetzt 0.
 

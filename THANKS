@@ -758,4 +758,5 @@ Sakura`Kinomoto
 
 Sébastien Picavet
 	exit status in background was not 0
+	Configure -no-chroot
 

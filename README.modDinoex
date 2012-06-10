@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+Configure -no-chroot (Sébastien Picavet)
+  Build without chroot() support
+
 bugfix: exit status (Sébastien Picavet)
   Exit staus in backgroung is now 0 on success.
 
