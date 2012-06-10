@@ -1933,6 +1933,7 @@ doc/${man}.ps: ${man}
  echo '
 
 install: all
+	if test ! -d $(DESTDIR)$(INSDIR) ; then mkdir -p $(DESTDIR)$(INSDIR); fi
 	install -o root -g $(INSTALL_GROUP) -m 0755 $(IRNAME)$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
 
 installuser: all
