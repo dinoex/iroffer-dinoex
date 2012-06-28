@@ -1,0 +1,61 @@
+#!/sbin/runscript
+# Copyright 1999-2012 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header$
+
+extra_commands="reload reconnect"
+
+description="Script to use iroffer-dinoex like a daemon. You have to make a symbolic link of this script: ln -s /etc/init.d/iroffer-dinoex /etc/init.d/iroffer-dinoex.MyBot. Create a config file: cp -p /etc/iroffer-dinoex/******.config /etc/iroffer-dinoex/MyBot.config and adapt it (take care of first variables pidfile, logfile, statefile and xdcclistfile)."
+description_reload="Reload the config file"
+description_reconnect="Force reconnection to an IRC server"
+
+
+depend(){
+	need net
+}
+
+start(){
+	ebegin "Starting $RC_SVCNAME"
+
+	BOT=${RC_SVCNAME#*.}
+
+	if [[ ! -d "${IROFFER_PID}" ]]
+	then
+		eerror "${IROFFER_PID} does not exist"
+	fi
+	if [[ ! -f "/etc/iroffer-dinoex/${BOT}.config" ]]
+	then
+		eerror "/etc/iroffer-dinoex/${BOT}.config not found"
+	fi
+
+	start-stop-daemon --start --quiet --user "iroffer-dinoex" --pidfile "${IROFFER_PID}/${BOT}.pid" --exec ${IROFFER_BIN} -- -b "/etc/iroffer-dinoex/${BOT}.config"
+
+	eend $?
+}
+
+stop(){
+	ebegin "Stop $RC_SVCNAME"
+
+	BOT=${RC_SVCNAME#*.}
+	start-stop-daemon --stop --retry 10 --pidfile "${IROFFER_PID}/${BOT}.pid"
+
+	eend $?
+}
+
+reload(){
+	ebegin "Reload $RC_SVCNAME"
+
+	BOT=${RC_SVCNAME#*.}
+	start-stop-daemon --signal SIGUSR2 --pidfile "${IROFFER_PID}/${BOT}.pid"
+
+	eend $?
+}
+
+reconnect(){
+	ebegin "Try to reconnect $RC_SVCNAME"
+
+	BOT=${RC_SVCNAME#*.}
+	start-stop-daemon --signal SIGUSR1 --pidfile "${IROFFER_PID}/${BOT}.pid"
+
+	eend $?
+}
