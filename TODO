@@ -72,6 +72,12 @@ Short Term Features:
   1581  admin group by file pattern
   1615  http_pass
   1617  reverse the order of XDCC list
+  1623  limit files a groupadmin can add
+  1633  ruby hook on_upload_complete
+  1630  GETLD
+  1634  request by search
+  1644  limit telnet connections by IP
+  1650  define how strict the flood protection
 
 Long Term Features:
   1015  http admin
@@ -171,6 +177,12 @@ Long Term Features:
   1611  Limit number of packs listed on xdcc queue (Mainqueue)
   1614  trigger to send latest pack
   1616  user quotas für den speicherplatz
+  1620  rebuild xdcclistfile when renamed
+  1624  variables in the respondtochannellistmsg 
+  1629  user request grouplist only
+  1642  SSL Chat
+  1644  download_completed_msg per network
+  1649  lock packs against deletion
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel

@@ -44,6 +44,7 @@ usage()
    -ruby        Compiler avec le support du script RUBY
    -kqueue	Compiler avec le support kqueue()
    -no-blowfish Compiler sans encodage blowfish
+   -no-chroot   Compiler sans support chroot()
    -no-openssl  Compiler sans OpenSSL lib
    -no-http     Compiler sans HTTP server
    -no-admin    Compiler sans HTTP Admin
@@ -73,6 +74,7 @@ usage()
    -ruby        Benutze RUBY Skript Erweiterung
    -kqueue	Benutze kqueue()
    -no-blowfish Baue ohne Blowfish Verschlusselung
+   -no-chroot   Baue ohne chroot()
    -no-openssl  Baue ohne OpenSSL Bibliothek
    -no-http     Baue ohne HTTP Server
    -no-admin    Baue ohne HTTP Admin
@@ -102,6 +104,7 @@ usage()
    -ruby        Compile with RUBY scripting support
    -kqueue	Compile with kqueue() support
    -no-blowfish Compile without blowfish encryption
+   -no-chroot   Compile without chroot() support
    -no-openssl  Compile without OpenSSL lib
    -no-http     Compile without HTTP server
    -no-admin    Compile without HTTP Admin
@@ -462,6 +465,7 @@ OPT_UPNP=false
 OPT_RUBY=false
 OPT_NOADMIN=false
 OPT_NOBLOWFISH=false
+OPT_NOCHROOT=false
 OPT_NOHTTP=false
 OPT_NOTELNET=false
 OPT_NOMEMSAVE=false
@@ -498,6 +502,7 @@ do
  -r*) OPT_RUBY=true;;
  -no-a*) OPT_NOADMIN=true ;;
  -no-b*) OPT_NOBLOWFISH=true ;;
+ -no-c*) OPT_NOCHROOT=true ;;
  -no-h*) OPT_NOHTTP=true ;;
  -no-t*) OPT_NOTELNET=true ;;
  -no-o*) OPT_SSL=false ;;
@@ -643,7 +648,13 @@ case "${cctype}" in
  ;;
 esac
 else
-DEBUG="-O2"
+case "$CFLAGS" in
+*-O*)
+	;;
+*)
+	DEBUG="-O2"
+	;;
+esac
 fi
 
 if $OPT_WARN; then
@@ -773,6 +784,11 @@ fi
 if $OPT_NOBLOWFISH; then
  ${msg} "${irt_configure} ${irt_without} ${irt_blowfish}."
  echo "#define WITHOUT_BLOWFISH" >> src/iroffer_config.h
+fi
+
+if $OPT_NOCHROOT; then
+ ${msg} "${irt_configure} ${irt_without} ${irt_nochroot}."
+ echo "#define NO_CHROOT" >> src/iroffer_config.h
 fi
 
 if $OPT_NOMEMSAVE; then
@@ -1304,16 +1320,18 @@ else
  echo "#define NO_CRYPT" >> src/iroffer_config.h
 fi
 
-
-${msg} -n "${irt_checkfor} chroot()... "
-echo "${irmain1}
+if $OPT_NOCHROOT; then
+else
+  ${msg} -n "${irt_checkfor} chroot()... "
+  echo "${irmain1}
  chroot(\".\");
 ${main2}" > config.temp.c
-if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+  if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 ${msg} "${irt_found}"
-else
-echo "#define NO_CHROOT" >> src/iroffer_config.h
-${msg} "${irt_msssing1}, ${irt_nochroot}."
+  else
+    echo "#define NO_CHROOT" >> src/iroffer_config.h
+    ${msg} "${irt_msssing1}, ${irt_nochroot}."
+  fi
 fi
 
 ${msg} -n "${irt_seeingif_lib} NSS ${irt_lib_exists} (${irt_for} chroot)... "
@@ -1785,7 +1803,7 @@ make_makefile()
  echo CONFIG_EXE=$exe
  echo CONFIG_LDLIBS=$GEOLIB $CURLLIB $UPNPLIB $SSLLIB $libs $LIBS
  echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF $RUBYLDF $LDFLAGS
- echo CONFIG_CFLAGS=$PROF $WARNS $DEBUG $DEBUGFLAGS $WERROR2 $WARNS2 $CFLAGS
+ echo CONFIG_CFLAGS=$PROF $DEBUG $DEBUGFLAGS $WERROR2 $WARNS $WARNS2 $CFLAGS
  echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
  echo CONFIG_CHROOT=$NSSLIBS
  echo CONFIG_SHARED=$RUBYLIB
@@ -1921,6 +1939,7 @@ doc/${man}.ps: ${man}
  echo '
 
 install: all
+	if test ! -d $(DESTDIR)$(INSDIR) ; then mkdir -p $(DESTDIR)$(INSDIR); fi
 	install -o root -g $(INSTALL_GROUP) -m 0755 $(IRNAME)$(CONFIG_EXE) $(DESTDIR)$(INSDIR)/$(IRNAME)$(CONFIG_EXE)
 
 installuser: all
