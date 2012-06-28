@@ -1,0 +1,96 @@
+#!/bin/sh
+#Init script for iroffer-dinoex
+
+# Binary file. You can change “iroffer” by “iroffer-de”, “iroffer-fr” or “iroffer-it” (depends on compiled languages)
+IROFFER_BIN="/usr/local/bin/iroffer-fr"
+
+# Default directories
+IROFFER_PID="/var/run/iroffer-dinoex"
+IROFFER_LOG="/var/log/iroffer-dinoex"
+IROFFER_STATE="/var/lib/iroffer-dinoex"
+
+# Do not change below this line
+NAME=`basename $0`
+BOT=${NAME#*.}
+
+# Main script
+case "$1" in
+	reload)
+		echo "Reload $0"
+		kill -USR2 `cat "${IROFFER_PID}/${BOT}.pid"` && echo "Signal send"
+
+		if [[ $? -ne 0 ]]
+		then
+			echo "Fail to reload"
+			exit 1
+		fi
+		;;
+	reconnect)
+		echo "Reconnect $0"
+		kill -USR1 `cat "${IROFFER_PID}/${BOT}.pid"` && echo "Signal send"
+
+		if [[ $? -ne 0 ]]
+		then
+			echo "Fail to reconnect"
+			exit 1
+		fi
+		;;
+	restart)
+		"$0" stop
+		sleep 5
+		"$0" start
+
+		exit $?
+		;;
+	start)
+		echo "Start $0"
+
+		# Controls
+		if [[ ! -d "${IROFFER_PID}" ]]
+		then
+			echo "${IROFFER_PID} does not exist"
+			exit 1
+		fi
+		if [[ ! -d "${IROFFER_LOG}" ]]
+		then
+			echo "${IROFFER_LOG} does not exist"
+			exit 1
+		fi
+		if [[ ! -d "${IROFFER_STATE}" ]]
+		then
+			echo "${IROFFER_STATE} does not exist"
+			exit 1
+		fi
+
+		if [[ ! -f "/etc/iroffer-dinoex/${BOT}.config" ]]
+		then
+			echo "/etc/iroffer-dinoex/${BOT}.config not found"
+			exit 1
+		fi
+
+		su iroffer-dinoex --shell /bin/sh --command "${IROFFER_BIN} -b /etc/iroffer-dinoex/${BOT}.config"
+
+		if [[ $? -ne 0 ]]
+		then
+			echo "Fail to start"
+			exit 1
+		fi
+		;;
+	stop)
+		echo "Stop $0"
+		kill -TERM `cat "${IROFFER_PID}/${BOT}.pid"` && echo "Signal send"
+
+		if [[ $? -ne 0 ]]
+		then
+			echo "Fail to stop"
+			exit 1
+		fi
+		;;
+	*)
+		echo "Usage:"
+		echo "$0 <command>"
+		echo "Command can be: start (start daemon), stop (stop daemon), restart (stop and start daemon), reload (read the configuration file) or reconnect (reconnect to IRC server)"
+		exit 1
+esac
+
+exit 0
