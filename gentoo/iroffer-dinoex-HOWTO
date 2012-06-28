@@ -1,0 +1,34 @@
+--------------
+Configuration:
+--------------
+Samples of configuration files are in /usr/share/doc/iroffer-dinoex-*"
+
+--------------
+Simple launch:
+--------------
+iroffer <MyBot.config>
+Or i18n version: iroffer-{de,fr,it} <MyBot.config>
+
+-------------------------------
+Remote administration (by IRC):
+-------------------------------
+If you want to administrate iroffer-dinoex on IRC, you have to generate an encrypt password:
+	launch iroffer -c (or translated versions iroffer-{de,fr,it})
+	change the variable adminpass of your file *.config with the given hash
+	specify the allowed hosts with adminhost
+
+You can find administration commands on help-admin-*.txt in /usr/share/doc/iroffer-dinoex-*
+
+-----------------
+Launch as daemon:
+-----------------
+To create a new daemon, you have to:
+	copy sample configuration file from /etc/iroffer-dinoex/: cp -p /etc/iroffer-dinoex/******.config /etc/iroffer-dinoex/YourBot.config
+	adapt YourBot.config (take care of variables pid, logfile and statefile, mybot become YourBot)
+	create a symbolic link: ln -s /etc/init.d/iroffer-dinoex /etc/init.d/iroffer-dinoex.YourBot
+	rc-update add iroffer-dinoex.YourBot default
+
+------------
+Advance use:
+------------
+See /usr/share/doc/iroffer-dinoex-* and man iroffer
