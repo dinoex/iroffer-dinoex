@@ -21,6 +21,7 @@
 #include "dinoex_utilities.h"
 #include "dinoex_curl.h"
 #include "dinoex_admin.h"
+#include "dinoex_ruby.h"
 
 #ifdef USE_CURL
 #include <curl/curl.h>
@@ -173,6 +174,9 @@ void fetch_perform(void)
           a_respond(&(ft->u), "fetch %s failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
         } else {
           a_respond(&(ft->u), "fetch %s completed", ft->name);
+#ifdef USE_RUBY
+          do_myruby_upload_done( ft->name );
+#endif /* USE_RUBY */
         }
         updatecontext();
         ++seen;

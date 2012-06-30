@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.28:
 ------------------
 
+
+393) ruby_script (suggested by kenoki)
+  New method "on_upload_completed" called for each file uploaded by XDCC or FETCH.
+
 Configure -no-chroot (Sébastien Picavet)
   Build without chroot() support
 

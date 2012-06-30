@@ -23,6 +23,7 @@
 #include "dinoex_kqueue.h"
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
+#include "dinoex_ruby.h"
 
 #ifdef USE_UPNP
 #include "upnp.h"
@@ -275,6 +276,9 @@ void l_istimeout (upload * const l)
       shutdown_close(l->con.clientsocket);
       close(l->filedescriptor);
       l->ul_status = UPLOAD_STATUS_DONE;
+#ifdef USE_RUBY
+      do_myruby_upload_done( l->file );
+#endif /* USE_RUBY */
     }
   
   if ((gdata.curtime - l->con.lastcontact) > 180)
