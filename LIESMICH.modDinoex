@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+393) ruby_script
+  Neue Methode "on_upload_completed", wird bei jedem neuen Datei
+  nach dem erfolgreichen Upload per XDCC oder FETCH aufgerufen.
+
 Configure -no-chroot (Sébastien Picavet)
   Baue Bot ohne chroot() Unterstützung
 

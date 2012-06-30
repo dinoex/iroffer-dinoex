@@ -546,6 +546,7 @@ static void Init_IrofferEvent(void) {
   rb_define_method(cIrofferEvent, "on_notice", cie_null, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "on_privmsg", cie_null, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "on_added", cie_null, 0); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "on_upload_completed", cie_null, 0); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "on_packlist", cie_null, 0); /* NOTRANSLATE */
   /* accessors */
   rb_define_method(cIrofferEvent, "network", cie_network, 0); /* NOTRANSLATE */
@@ -673,6 +674,16 @@ int do_myruby_added(char *filename, unsigned int pack)
   cFile = filename;
   cPack = pack;
   return do_on_event(oIrofferEvent, "on_added"); /* NOTRANSLATE */
+}
+
+/* call the ruby class after an upload was sucessful */
+int do_myruby_upload_done(char *filename)
+{
+  if (myruby_loaded == 0)
+    return 0;
+
+  cFile = filename;
+  return do_on_event(oIrofferEvent, "on_upload_completed"); /* NOTRANSLATE */
 }
 
 /* call the ruby class after adding/removing/changing a pack */

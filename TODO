@@ -73,7 +73,6 @@ Short Term Features:
   1615  http_pass
   1617  reverse the order of XDCC list
   1623  limit files a groupadmin can add
-  1633  ruby hook on_upload_complete
   1630  GETLD
   1634  request by search
   1644  limit telnet connections by IP
