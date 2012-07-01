@@ -1320,8 +1320,7 @@ else
  echo "#define NO_CRYPT" >> src/iroffer_config.h
 fi
 
-if $OPT_NOCHROOT; then
-else
+if ! $OPT_NOCHROOT; then
   ${msg} -n "${irt_checkfor} chroot()... "
   echo "${irmain1}
  chroot(\".\");
