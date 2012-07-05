@@ -29,6 +29,9 @@
 #ifdef USE_GNUTLS
 #include <gnutls/x509.h>
 
+static const char *iroffer_priority = "NORMAL";
+static gnutls_priority_t iroffer_priority_cache = NULL;
+
 int iroffer_protocol_priority[] = {
   GNUTLS_TLS1,
   GNUTLS_SSL3, 0 };
@@ -130,6 +133,10 @@ void close_server(void)
       gnetwork->nick_key = 0;
     }
     gnutls_bye(gnetwork->session, GNUTLS_SHUT_RDWR);
+    if (iroffer_priority_cache != NULL) {
+      gnutls_priority_deinit(iroffer_priority_cache); 
+      iroffer_priority_cache = NULL;
+    }
     gnutls_deinit(gnetwork->session);
     gnetwork->session = NULL;
   }
@@ -303,9 +310,9 @@ static int load_network_key(void)
 }
 
 static int cert_callback(gnutls_session_t session,
-                         const gnutls_datum_t * UNUSED(req_ca_rdni), int UNUSED(nreqs),
-                         const gnutls_pk_algorithm_t * UNUSED(sign_algos),
-                         int UNUSED(sign_algos_length), gnutls_retr_st * st)
+                         const gnutls_datum_t * UNUSED(req_ca_dn), int UNUSED(nreqs),
+                         const gnutls_pk_algorithm_t * UNUSED(pk_algos),
+                         int UNUSED(sign_algos_length), gnutls_retr2_st * st)
 {
   gnutls_certificate_type_t type;
 
@@ -313,7 +320,7 @@ static int cert_callback(gnutls_session_t session,
   if (type != GNUTLS_CRT_X509)
     return -1;
 
-  st->type = type;
+  st->cert_type = type;
   st->ncerts = 1;
   st->cert.x509 = &(gnetwork->nick_cert);
   st->key.x509 = gnetwork->nick_key;
@@ -391,6 +398,7 @@ static int setup_ssl(void)
   }
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
+  const char *bad;
   int ret;
 
   updatecontext();
@@ -401,31 +409,15 @@ static int setup_ssl(void)
     close_server();
     return 1;
   }
-  ret = gnutls_protocol_set_priority(gnetwork->session, iroffer_protocol_priority);
+  ret = gnutls_priority_init(&iroffer_priority_cache, iroffer_priority, &bad);
   if (ret < 0) {
     outerror_ssl(ret);
+    /* gnuTLS will dump core if deinit after error */
+    iroffer_priority_cache = NULL;
     close_server();
     return 1;
   }
-  ret = gnutls_cipher_set_priority(gnetwork->session, iroffer_cipher_priority);
-  if (ret < 0) {
-    outerror_ssl(ret);
-    close_server();
-    return 1;
-  }
-  ret = gnutls_compression_set_priority(gnetwork->session, iroffer_compression_priority);
-  if (ret < 0) {
-    outerror_ssl(ret);
-    close_server();
-    return 1;
-  }
-  ret = gnutls_kx_set_priority(gnetwork->session, iroffer_kx_priority);
-  if (ret < 0) {
-    outerror_ssl(ret);
-    close_server();
-    return 1;
-  }
-  ret = gnutls_mac_set_priority(gnetwork->session, iroffer_mac_priority);
+  ret = gnutls_priority_set(gnetwork->session, iroffer_priority_cache);
   if (ret < 0) {
     outerror_ssl(ret);
     close_server();
@@ -440,7 +432,7 @@ static int setup_ssl(void)
       gnutls_transport_set_ptr(gnetwork->session, (gnutls_transport_ptr_t) (long)(gnetwork->ircserver));
       return 1;
     }
-    gnutls_certificate_client_set_retrieve_function(gnetwork->user_cred, cert_callback);
+    gnutls_certificate_set_retrieve_function(gnetwork->user_cred, cert_callback);
     ret = gnutls_credentials_set(gnetwork->session, GNUTLS_CRD_CERTIFICATE, gnetwork->user_cred);
   } else {
     gnetwork->user_cred = 0;

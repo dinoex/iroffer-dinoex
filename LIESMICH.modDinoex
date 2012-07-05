@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.28:
 ----------------
 
+bugfix: gnutls_protocol_set_priority deprecated
+  Es wird jetzt das neue gnutls API 2.12.x verwendet.
+
 393) ruby_script
   Neue Methode "on_upload_completed", wird bei jedem neuen Datei
   nach dem erfolgreichen Upload per XDCC oder FETCH aufgerufen.
