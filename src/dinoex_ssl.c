@@ -134,7 +134,7 @@ void close_server(void)
     }
     gnutls_bye(gnetwork->session, GNUTLS_SHUT_RDWR);
     if (iroffer_priority_cache != NULL) {
-      gnutls_priority_deinit(iroffer_priority_cache); 
+      gnutls_priority_deinit(iroffer_priority_cache);
       iroffer_priority_cache = NULL;
     }
     gnutls_deinit(gnetwork->session);
