@@ -22,6 +22,7 @@
 #include "dinoex_kqueue.h"
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
+#include "dinoex_misc.h"
 #include "dinoex_telnet.h"
 
 #ifndef WITHOUT_TELNET
@@ -170,6 +171,18 @@ static void telnet_accept(unsigned int i)
   mydelete(msg);
 
   if (is_in_badip(&(chat->con.remote))) {
+    shutdowndccchat(chat, 0);
+    return;
+  }
+
+  if (irlist_size(&gdata.telnet_allow) > 0) {
+    if (!verify_cidr(&gdata.telnet_allow, &(chat->con.remote))) {
+      shutdowndccchat(chat, 0);
+      return;
+    }
+  }
+
+  if (verify_cidr(&gdata.telnet_deny, &(chat->con.remote))) {
     shutdowndccchat(chat, 0);
     return;
   }

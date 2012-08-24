@@ -801,6 +801,8 @@ static config_list_typ config_parse_list[] = {
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 }, /* NOTRANSLATE */
 #endif /* USE_GEOIP */
 #ifndef WITHOUT_TELNET
+{"telnet_allow",            &gdata.telnet_allow,            5 }, /* NOTRANSLATE */
+{"telnet_deny",             &gdata.telnet_deny,             5 }, /* NOTRANSLATE */
 {"telnet_vhost",            &gdata.telnet_vhost,            0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_TELNET */
 {"unlimitedhost",           &gdata.unlimitedhost,           2 }, /* NOTRANSLATE */

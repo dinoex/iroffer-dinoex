@@ -3,6 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+395) http_allow (suggested by Loke_AF)
+  Defines ip networks, which are allowed to access the the bot via telnet.
+  Multiple ip networks can be specified
+  Default: all.
+
+394) http_deny
+  Defines ip networks, that should not access the the bot via telnet.
+  Multiple ip networks can be specified
+  Default: none.
+
 bugfix: respondtochannelxdcc (reported by DoomyTheTrafficCone)
   No longer respond to unsupported comamnds in channels.
 
