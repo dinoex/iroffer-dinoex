@@ -659,6 +659,8 @@ Loke_AF
 	suggesting "md5sum_exclude"
 	suggesting "REMOVELOST"
 	suggesting "admin_job_done_file"
+	suggesting "telnet_allow"
+	suggesting "flood_protection_rate"
 
 Nouhime
 	reporting "http_search" bug.
@@ -763,4 +765,7 @@ Sébastien Picavet
 
 kenoki
 	suggesting "on_upload_completed"
+
+DoomyTheTrafficCone
+	reporting "respondtochannelxdcc" unsupported messages.
 

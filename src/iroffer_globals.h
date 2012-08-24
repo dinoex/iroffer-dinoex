@@ -37,6 +37,8 @@ irlist_t downloadhost;
 irlist_t nodownloadhost;
 irlist_t http_allow;
 irlist_t http_deny;
+irlist_t telnet_allow;
+irlist_t telnet_deny;
 irlist_t xdcc_allow;
 irlist_t xdcc_deny;
 irlist_t adminhost;
@@ -172,6 +174,8 @@ unsigned int adddir_min_size;
 unsigned int ignore_duplicate_ip;
 unsigned int expire_logfiles;
 unsigned int tcp_buffer_size;
+unsigned int flood_protection_rate;
+unsigned int autoignore_rate;
 /* bool */
 unsigned int hideos;
 unsigned int lognotices;

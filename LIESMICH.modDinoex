@@ -1,5 +1,32 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+Ab Version 3.29:
+----------------
+
+397) autoignore_rate
+  Einstellung ab wann der Bot den Benutzer ignoriert.
+  Der Wert legt die maximale Anzahl der Befehle pro Sekunde fest.
+  Default: 8
+
+296) flood_protection_rate
+  Einstellung ab wann der Bot die globale Flood-Protection aktiviert.
+  Der Wert legt die maximale Anzahl der erfolgreichen Befehle an den
+  Bot in letzen 10 Sekunden fest.
+  Default: 6
+
+395) http_allow
+  Hiermit kann eingeschränkt werden, wer per Telnet auf den Bot
+  zugreifen darf. Es können mehrere IP-Netze angegeben werden.
+  Default: alle.
+
+394) http_deny
+  Hier kann man angeben, wer per Telnet auf den Bot nicht zugreifen
+  darf. Es können mehrere IP-Netze angegeben werden.
+  Default: keiner.
+
+bugfix: respondtochannelxdcc
+  Ein unbekanntes XDCC Komanndo im Channel wird jetzt nicht mehr beantwortet.
+
 Ab Version 3.28:
 ----------------
 
@@ -56,7 +83,7 @@ bugfix: md5
 bugfix: upnp_router
   Update for libminiupnpc 1.6
 
-bugfix: http_port 
+bugfix: http_port
   Reduziere die Last beim Senden über HTTP.
 
 bugfix: max_upspeed
@@ -101,7 +128,7 @@ bugfix: http_port
 Ab Version 3.27:
 ----------------
 
-Configure TRANSLATION= 
+Configure TRANSLATION=
   Erweitere das Makefile um weitere Übersetzungen
 
 382) REMOVEMATCH
@@ -211,7 +238,7 @@ bugfix: REHASH
   "bandmax", "banduse"
   Neue Variable "mynick"
 
-366) http_port 
+366) http_port
   Benutze kurze URLs in der Webliste.
 
 bugfix: mime_type
@@ -241,7 +268,7 @@ bugfix: XDCC INFO
   Sichere das alte "statefile", wenn sich die Version von Iroffer ändert.
 
 362) offline
-  Verbine nicht zu diesem Netzwerk. 
+  Verbine nicht zu diesem Netzwerk.
 
 bugfix: CLOSEC
   Bot crashte wenn kein Chat gefunden wurde.
@@ -419,7 +446,7 @@ bugfix: ruby_script
 bugfix: autoaddann
   Die []-Klammern wurden auf dem Default-Text entfernt.
 
-339) show_group_of_pack 
+339) show_group_of_pack
   Zeige zu allen Paketen auch die Gruppe an.
   Default Ausgabe ohne die Gruppe
 
@@ -591,7 +618,7 @@ bugfix: server_connected_raw
   Default keine Farbe
   Format: <farbe>,<hintergrund>,<style>
 
-328) CHCOLOR 
+328) CHCOLOR
 
   Neue Admin Kommandos:
   CHCOLOR <n> <m> <x>,<b>,<s>        Setze für das Pack <n> bis <m> die Farbe <x>, den Hintergrund <b> und den Style <s>
@@ -682,7 +709,7 @@ bugfix: CHCOLOR
 Configure LOCALBASE= PREFIX=
   Setze die Verzeichnisse für benötigte Bibliotheken und die Installation.
 
-319) CHCOLOR 
+319) CHCOLOR
 
   Neue Admin Kommandos:
   CHCOLOR <n> <m> <x>,<b>            Setze für das Pack <n> bis <m> die Farbe <x> und den Hintergrund <b>
@@ -916,10 +943,10 @@ bugfix: XDCC upload
 bugfix: Speicherlecks behoben
 
 295) getipfromupnp
-  Hole die IP-Adresse vom UPnP-Router und verwende sie als Wert für 
+  Hole die IP-Adresse vom UPnP-Router und verwende sie als Wert für
   usenatip. Setze usenatip auf einen beliebigen Startwert (z.B.: 0.0.0.0)
   wenn diese Funktion benutzt werden soll. Sinnvoll für Bots die eine
-  dynamische IP haben. 
+  dynamische IP haben.
 
 Ab Version 3.15:
 ----------------
@@ -1027,10 +1054,10 @@ bugfix: channel
   versions affected: 3.12
   Keine Warnung mehr wenn der letze Parameter auf '"' endet.
 
-bugfix: ignore 
+bugfix: ignore
   Auch Uploads sind jetzt mit ignore geschützt.
 
-283) htdocs 
+283) htdocs
   Erlaube das Ausführen von ruby skripten (.rb) über HTTP.
 
 Configure -no-libs
@@ -1090,10 +1117,10 @@ bugfix: FILEDEL
 279) channel -notrigger
   Antworte auf keine Trigger in diesem Channel.
 
-278) send_batch, XDCC BATCH 
+278) send_batch, XDCC BATCH
   Erlaube XDCC BATCH. Die Pakete werden in die Warteschlangen eingefügt.
   default: nicht erlaubt
- 
+
   Neue User Kommandos:
   XDCC BATCH <gruppe>                Sende alle Pakete einer Gruppe
   XDCC BATCH <gruppe> <passwort>     Sende alle Pakete einer Gruppe mit Passwort
@@ -1128,7 +1155,7 @@ bugfix: DUMP
 
 Debugging und Logging verbessert.
 
-bugfix: CONTROL-C 
+bugfix: CONTROL-C
   versions affected: 2.15 - 3.11
   Bot hatte sich aufgehangen, wenn er mit zweimal CONTROL-C angehalten wurde.
 
@@ -1237,7 +1264,7 @@ bugfix: CLOSEC
 
 bugfix: REGROUP
   Nach REGROUP konnte es 2 Beschreibungen für eine Gruppe geben.
- 
+
 bugfix: ADDGROUP
   Einstellung autoadd_sort wurde bei ADDGROUP ignoriert.
 
@@ -1256,7 +1283,7 @@ bugfix: group_admin
 bugfix: group_admin
   Erlaube Gruppen Admins den Befehl "CHATME" zu nutzen.
 
-bugfix: BSD 
+bugfix: BSD
   Instaliere in Gruppe "wheel".
 
 bugfix: SunOS
@@ -1370,7 +1397,7 @@ bugfix: fish
 bugfix: http_port
   Erlaube das Cachen der HTML packliste.
 
-252) HOP 
+252) HOP
   Neues Admin Kommando:
   HOP <channel> <netz>        Channel <channel> auf <netz> verlassen und neu betreten
 
@@ -1388,7 +1415,7 @@ bugfix: new_trigger (contributed by dns777)
   Erlaube CTCP LIST.
 
 250) #channel -rgroup (contributed by dns777)
-  Users in diesen Channel können nur Packs aus den hier 
+  Users in diesen Channel können nur Packs aus den hier
   angegebenen Gruppen oder der Hauptgruppe anfordern.
 
 249) #channel -listmsg (contributed by dns777)
@@ -1419,7 +1446,7 @@ Debugging und Logging verbessert.
 
 Ab Version 3.8:
 ---------------
- 
+
 243) fish_exclude_nick
   Nachrichten an diese Nicks werden nicht verschlüsselt.
 

@@ -68,9 +68,6 @@
 /*       Max Server Send Queue Lines */
 #define  MAXSENDQ  10000U
 
-/*       threshhold for ignore, number of requests in bucket */
-#define  IGN_ON    8
-
 /*       weight for speed calcualtion in dcl initial */
 #define  DCL_SPDW_I  0.5
 /*       weight for speed calcualtion in dcl ongoing */

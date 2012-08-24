@@ -439,9 +439,11 @@ static config_int_typ config_parse_int[] = {
 {"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1, 10 }, /* NOTRANSLATE */
+{"autoignore_rate",         &gdata.autoignore_rate,         1, 100, 1, 10 }, /* NOTRANSLATE */
 {"debug",                   &gdata.debug,                   0, 65000, 1, XDCC_SEND_LIST }, /* NOTRANSLATE */
 {"expire_logfiles",         &gdata.expire_logfiles,         0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1, 0 }, /* NOTRANSLATE */
+{"flood_protection_rate",   &gdata.flood_protection_rate,   1, 100, 1, 6 }, /* NOTRANSLATE */
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1, ADMIN_LEVEL_HALF }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
 {"http_port",               &gdata.http_port,               0, 65535, 1, 0 }, /* NOTRANSLATE */
@@ -801,6 +803,8 @@ static config_list_typ config_parse_list[] = {
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 }, /* NOTRANSLATE */
 #endif /* USE_GEOIP */
 #ifndef WITHOUT_TELNET
+{"telnet_allow",            &gdata.telnet_allow,            5 }, /* NOTRANSLATE */
+{"telnet_deny",             &gdata.telnet_deny,             5 }, /* NOTRANSLATE */
 {"telnet_vhost",            &gdata.telnet_vhost,            0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_TELNET */
 {"unlimitedhost",           &gdata.unlimitedhost,           2 }, /* NOTRANSLATE */

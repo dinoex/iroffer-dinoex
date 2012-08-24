@@ -20,7 +20,6 @@ Short Term Features:
    189 12/09/03 Open configurable to disable all stats
    193 12/09/03 Open different lowbdwth for day and night speeds
    194 12/09/03 Open send note to user on get of file
-   201 1/19/04 Open configurable to set how aggressive auto-ignore is  
    204 2/2/04 Open configurable to cover both maxqueueditemsperperson and maxtransfersperperson
    207 4/02/04 Open md5sum uploads
    214 7/17/04 Open invite into channel using chanserv
@@ -75,8 +74,6 @@ Short Term Features:
   1623  limit files a groupadmin can add
   1630  GETLD
   1634  request by search
-  1644  limit telnet connections by IP
-  1650  define how strict the flood protection
 
 Long Term Features:
   1015  http admin
