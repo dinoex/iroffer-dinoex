@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+397) autoignore_rate
+  Einstellung ab wann der Bot den Benutzer ignoriert.
+  Der Wert legt die maximale Anzahl der Befehle pro Sekunde fest.
+  Default: 8
+
 296) flood_protection_rate
   Einstellung ab wann der Bot die globale Flood-Protection aktiviert.
   Der Wert legt die maximale Anzahl der erfolgreichen Befehle an den

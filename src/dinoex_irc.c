@@ -794,7 +794,7 @@ unsigned int check_ignore(const char *nick, const char *hostmask)
   if (ignore->flags & IGN_IGNORING)
     return 1;
 
-  if (ignore->bucket < IGN_ON)
+  if (ignore->bucket < gdata.autoignore_rate)
     return 0;
 
   left = gdata.autoignore_threshold * (ignore->bucket + 1);

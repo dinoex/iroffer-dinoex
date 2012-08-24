@@ -3,7 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
-296) flood_protection_rate (suggested by Loke_AF)
+397) autoignore_rate
+  How strict should the auto-ignore be? autoignore_rate is the maximum
+  number of requests per second from a user.
+  Default: 8
+
+Short Term Features:
+   201 1/19/04 Open configurable to set how aggressive auto-ignore is
+
+396) flood_protection_rate (suggested by Loke_AF)
   How strict should the bot activate its global flooding protection.
   Value is the maximum number successful executed commands in the last
   10 seconds.
