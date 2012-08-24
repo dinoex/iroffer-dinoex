@@ -977,6 +977,11 @@ static void command_xdcc(privmsginput *pi)
     mydelete(msg3e);
     return;
   }
+
+  /* don't respond to unsupported comamnds in channels */
+  if (pi->nick[0] == '#')
+    return;
+
   log_xdcc_request2("unsupported", pi->msg2, pi);
   notice(pi->nick, "Sorry, this command is unsupported" );
 }

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+bugfix: respondtochannelxdcc
+  Ein unbekanntes XDCC Komanndo im Channel wird jetzt nicht mehr beantwortet.
+
 Ab Version 3.28:
 ----------------
 

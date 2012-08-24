@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+bugfix: respondtochannelxdcc (reported by DoomyTheTrafficCone)
+  No longer respond to unsupported comamnds in channels.
+
 With Version 3.28:
 ------------------
 
