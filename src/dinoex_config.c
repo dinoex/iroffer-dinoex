@@ -442,6 +442,7 @@ static config_int_typ config_parse_int[] = {
 {"debug",                   &gdata.debug,                   0, 65000, 1, XDCC_SEND_LIST }, /* NOTRANSLATE */
 {"expire_logfiles",         &gdata.expire_logfiles,         0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1, 0 }, /* NOTRANSLATE */
+{"flood_protection_rate",   &gdata.flood_protection_rate,   1, 100, 1, 6 }, /* NOTRANSLATE */
 {"hadminlevel",             &gdata.hadminlevel,             1, 5, 1, ADMIN_LEVEL_HALF }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
 {"http_port",               &gdata.http_port,               0, 65535, 1, 0 }, /* NOTRANSLATE */

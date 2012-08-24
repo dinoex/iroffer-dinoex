@@ -3,6 +3,12 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+296) flood_protection_rate (suggested by Loke_AF)
+  How strict should the bot activate its global flooding protection.
+  Value is the maximum number successful executed commands in the last
+  10 seconds.
+  Default: 6
+
 395) http_allow (suggested by Loke_AF)
   Defines ip networks, which are allowed to access the the bot via telnet.
   Multiple ip networks can be specified
@@ -330,7 +336,7 @@ bugfix: logstats (reported by LazyTiger)
 bugfix: ./Lang ??
   Detect and use "utf-8" if $LANG is set in the enviroment.
 
-354) iroffer -c mybot.config 
+354) iroffer -c mybot.config
   If a configfile is given,
   the encrypted password will not be printed,
   but directly added to the end of the configfile.
@@ -458,7 +464,7 @@ bugfix: xdccxmlfile (report by Hikaru Shindo)
   Disable colors when announcing for this channel.
 
 335) plaintext
-  Disable colors when announcing on this network. 
+  Disable colors when announcing on this network.
 
 - bugfix: console
   Bot could crash when editing commandline.
@@ -1042,7 +1048,7 @@ bugfix: channel (reported by Vision)
   versions affected: 3.12
   Do not print error when last argument ends with '"'.
 
-bugfix: ignore 
+bugfix: ignore
   Upload are now protected with ignore.
 
 283) htdocs
@@ -1245,7 +1251,7 @@ With Version 3.10:
   References TODO:
 Short Term Features:
    199 12/12/03 Open dont enforce minspeed if there are free slots
- 
+
 bugfix: xdccxmlfile (reported by chibi)
   packinfo extended with added
 
@@ -1286,7 +1292,7 @@ bugfix: SunOS (reported by Tass)
   Defines ip masks, which are allowed to download from the server.
   Multiple ip masks can be specified
   Default: all.
- 
+
 263) xdcc_deny (inspired by Lamune)
   Defines ip masks, that should not download from the server.
   Multiple ip masks can be specified
@@ -1369,7 +1375,7 @@ bugfix: DCLD (reported by fred|krue)
 bugfix: fish (reported by Vision)
   Some values where not decoded cleanly.
 
-255) http_admin 
+255) http_admin
   Allow http_admin to download packs via HTTP.
 
 254) http_allow
@@ -1378,7 +1384,7 @@ bugfix: fish (reported by Vision)
    * = 0 or more characters,  ? = 1 character,  # = any positive integer
   Multiple ip masks can be specified
   Default: all.
- 
+
 253) http_deny
   Defines ip masks, that should not access the server.
   wild cards are:
@@ -1448,7 +1454,7 @@ bugfix: GROUPDESC (reported by RyoOhki)
 
 bugfix: FETCH (reported by Bohnenstange)
   Support resume for curl < 7.11.0
- 
+
 bugfix: CONFIG (reported by OmegaPhil, TheDeath)
   versions affected: 3.7
   Bot did crash when this command had no argument.

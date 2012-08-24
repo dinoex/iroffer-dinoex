@@ -1028,7 +1028,7 @@ void floodchk(void) {
       count += gnetwork->inamnt[i];
       }
 
-   if (count > 6)
+   if (count > gdata.flood_protection_rate)
       gdata.ignore = 1;
    else
       gdata.ignore = 0;

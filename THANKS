@@ -660,6 +660,7 @@ Loke_AF
 	suggesting "REMOVELOST"
 	suggesting "admin_job_done_file"
 	suggesting "telnet_allow"
+	suggesting "flood_protection_rate"
 
 Nouhime
 	reporting "http_search" bug.

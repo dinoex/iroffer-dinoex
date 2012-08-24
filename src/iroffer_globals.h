@@ -243,7 +243,7 @@ unsigned int dump_all;
 unsigned int tcp_nodelay;
 unsigned int announce_size;
 unsigned int subdirs_delayed;
-unsigned int idummy;
+unsigned int flood_protection_rate;
 
 context_t context_log[MAXCONTEXTS];
 ir_boutput_t stdout_buffer;
