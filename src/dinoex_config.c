@@ -438,8 +438,8 @@ static config_int_typ config_parse_int[] = {
 {"atfind",                  &gdata.atfind,                  0, 10, 1, 0 }, /* NOTRANSLATE */
 {"autoadd_delay",           &gdata.autoadd_delay,           0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"autoadd_time",            &gdata.autoadd_time,            0, 65000, 1, 0 }, /* NOTRANSLATE */
-{"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1, 10 }, /* NOTRANSLATE */
 {"autoignore_rate",         &gdata.autoignore_rate,         1, 100, 1, 10 }, /* NOTRANSLATE */
+{"autoignore_threshold",    &gdata.autoignore_threshold,    0, 600, 1, 10 }, /* NOTRANSLATE */
 {"debug",                   &gdata.debug,                   0, 65000, 1, XDCC_SEND_LIST }, /* NOTRANSLATE */
 {"expire_logfiles",         &gdata.expire_logfiles,         0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"fileremove_max_packs",    &gdata.fileremove_max_packs,    0, 1000000, 1, 0 }, /* NOTRANSLATE */
