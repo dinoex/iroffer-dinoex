@@ -957,6 +957,7 @@ static void a_cancel_transfers(xdcc *xd, const char *msg)
 static void write_files_changed(void)
 {
   write_files();
+  get_xdcc_pack(0);
 #ifdef USE_RUBY
   do_myruby_packlist();
 #endif /* USE_RUBY */

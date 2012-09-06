@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+Verbesserung der Geschwindigkeit in der ruby_script Methode "info_pack"
+wenn diese mehrfach aufgerufen wird.
+
 397) autoignore_rate
   Einstellung ab wann der Bot den Benutzer ignoriert.
   Der Wert legt die maximale Anzahl der Befehle pro Sekunde fest.
