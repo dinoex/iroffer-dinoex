@@ -3,6 +3,8 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+Improve ruby_script method "info_pack" if called for the same pack.
+
 397) autoignore_rate
   How strict should the auto-ignore be? autoignore_rate is the maximum
   number of requests per second from a user.

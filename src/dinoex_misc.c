@@ -668,13 +668,37 @@ unsigned int get_restrictsend(void)
   return (gnetwork->restrictsend != 2) ? gnetwork->restrictsend : gdata.restrictsend;
 }
 
+static unsigned int get_xdcc_oldpack = 0;
+static xdcc *get_xdcc_oldxdcc = NULL;
+
 /* get pack by number, pack -1 is the xdcc_listfile */
 xdcc *get_xdcc_pack(unsigned int pack)
 {
+  xdcc *xd;
+  unsigned int oldpack;
+  unsigned int minus;
+
+  oldpack = get_xdcc_oldpack;
+  if (pack == oldpack)
+    return get_xdcc_oldxdcc;
+
+  if (pack == 0) {
+    get_xdcc_oldpack = 0;
+    return NULL;
+  }
+
   if (pack == XDCC_SEND_LIST)
     return &xdcc_listfile;
 
-  return irlist_get_nth(&gdata.xdccs, pack - 1);
+  get_xdcc_oldpack = pack;
+  minus = pack - 1;
+  if ((minus == oldpack) && (oldpack > 0)) {
+    xd = irlist_get_next(get_xdcc_oldxdcc);
+  } else {
+    xd = irlist_get_nth(&gdata.xdccs, minus);
+  }
+  get_xdcc_oldxdcc = xd;
+  return xd;
 }
 
 static const char *access_need_text(void)
