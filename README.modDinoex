@@ -1,7 +1,10 @@
-Aktuelle Version auf: http://iroffer.dinoex.net/
+ktuelle Version auf: http://iroffer.dinoex.net/
 
 With Version 3.29:
 ------------------
+
+398) headline
+  You can now define mutiple headlines.
 
 Improve ruby_script method "info_pack" if called for the same pack.
 

@@ -639,7 +639,6 @@ static config_string_typ config_parse_string[] = {
 #endif /* USE_GEOIP */
 {"group_seperator",         &gdata.group_seperator,         0 }, /* NOTRANSLATE */
 {"hadminpass",              &gdata.hadminpass,              4 }, /* NOTRANSLATE */
-{"headline",                &gdata.headline,                0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
 {"http_access_log",         &gdata.http_access_log,         1 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP_ADMIN
@@ -790,6 +789,7 @@ static config_list_typ config_parse_list[] = {
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 }, /* NOTRANSLATE */
 #endif /* USE_GEOIP */
 {"hadminhost",              &gdata.hadminhost,              3 }, /* NOTRANSLATE */
+{"headline",                &gdata.headline,                0 }, /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP
 {"http_allow",              &gdata.http_allow,              5 }, /* NOTRANSLATE */
 {"http_deny",               &gdata.http_deny,               5 }, /* NOTRANSLATE */
