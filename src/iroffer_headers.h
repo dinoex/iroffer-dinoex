@@ -416,7 +416,6 @@ typedef struct
   char *name;
   char *key;
   char *fish;
-  char *headline;
   char *pgroup;
   char *joinmsg;
   char *listmsg;
@@ -433,6 +432,7 @@ typedef struct
   time_t nextjoin;
   time_t lastjoin;
   irlist_t members;
+  irlist_t headline;
 } channel_t;
 
 typedef enum {

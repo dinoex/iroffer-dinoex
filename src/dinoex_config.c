@@ -1002,6 +1002,18 @@ static int parse_channel_string(char **cptr, char **part, unsigned int i)
   return 1;
 }
 
+static int parse_channel_list(irlist_t *list, char **part, unsigned int i)
+{
+  char *tptr2;
+
+  tptr2 = part[++i];
+  if (!tptr2)
+    return -1;
+  irlist_add_string(list, tptr2);
+  mydelete(tptr2);
+  return 1;
+}
+
 static int parse_channel_format(unsigned short *iptr, char *tptr2)
 {
   if (!tptr2)
@@ -1053,7 +1065,7 @@ static int parse_channel_option(channel_t *cptr, char *tptr, char **part, unsign
     return parse_channel_string(&(cptr->joinmsg), part, i);
   }
   if (!strcmp(tptr, "-headline")) { /* NOTRANSLATE */
-    return parse_channel_string(&(cptr->headline), part, i);
+    return parse_channel_list(&(cptr->headline), part, i);
   }
   if (!strcmp(tptr, "-listmsg")) { /* NOTRANSLATE */
     return parse_channel_string(&(cptr->listmsg), part, i);
@@ -2387,6 +2399,7 @@ static void dump_config_fdump(void)
   channel_t *ch;
   const char *how;
   char *buffer;
+  char *line;
   size_t len;
   unsigned int si;
   unsigned int i;
@@ -2432,7 +2445,7 @@ static void dump_config_fdump(void)
     dump_config_list2("server_connected_raw", &gdata.networks[si].server_connected_raw); /* NOTRANSLATE */
     dump_config_list2("channel_join_raw", &gdata.networks[si].channel_join_raw); /* NOTRANSLATE */
     dump_config_string3("local_vhost", gdata.networks[si].local_vhost); /* NOTRANSLATE */
-    if (gnetwork->usenatip != 0) {
+    if (gdata.networks[si].usenatip != 0) {
       if (gdata.networks[si].natip != NULL)
         dump_config_string2("usenatip", gdata.networks[si].natip); /* NOTRANSLATE */
     }
@@ -2458,7 +2471,7 @@ static void dump_config_fdump(void)
       }
     }
 
-    for (ch = irlist_get_head(&(gnetwork->channels));
+    for (ch = irlist_get_head(&(gdata.networks[si].channels));
          ch;
          ch = irlist_get_next(ch)) {
       buffer = mymalloc(maxtextlength);
@@ -2479,8 +2492,11 @@ static void dump_config_fdump(void)
         len += snprintf(buffer + len, maxtextlength - len, " %s", "-noannounce"); /* NOTRANSLATE */
       if (ch->joinmsg != NULL)
         len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-joinmsg", ch->joinmsg); /* NOTRANSLATE */
-      if (ch->headline != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", ch->headline); /* NOTRANSLATE */
+      for (line = irlist_get_head(&(ch->headline));
+           line;
+           line = irlist_get_next(line)) {
+        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", line); /* NOTRANSLATE */
+      }
 #ifndef WITHOUT_BLOWFISH
       if (ch->fish != NULL)
         len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-fish", ch->fish); /* NOTRANSLATE */

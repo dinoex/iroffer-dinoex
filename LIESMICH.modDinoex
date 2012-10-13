@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
-398) headline
+bugfix: DUMP
+  Die Ausgabe von usenatip und der channles war fehlerhaft.
+
+398) headline, channel -headline
   Man kann jetzt mehrere Zeilen definieren.
 
 Verbesserung der Geschwindigkeit in der ruby_script Methode "info_pack"

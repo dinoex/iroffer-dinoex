@@ -587,7 +587,9 @@ void u_xdl_head(const userinput * const u)
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch)
         {
-          if (ch->headline != NULL )
+          for (line = irlist_get_head(&(ch->headline));
+               line;
+               line = irlist_get_next(line))
             {
               tempnick = mystrdup(u->snick);
               for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
@@ -598,7 +600,7 @@ void u_xdl_head(const userinput * const u)
                       
                       u2 = *u;
                       u2.snick = chan;
-                      a_respond(&u2, "\2**\2 %s \2**\2", ch->headline);
+                      a_respond(&u2, "\2**\2 %s \2**\2", line);
                       head ++;
                     }
                 }

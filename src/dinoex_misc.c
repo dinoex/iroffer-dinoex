@@ -1076,11 +1076,11 @@ void free_channel_data(channel_t *ch)
   mydelete(ch->name);
   mydelete(ch->key);
   mydelete(ch->fish);
-  mydelete(ch->headline);
   mydelete(ch->pgroup);
   mydelete(ch->joinmsg);
   mydelete(ch->listmsg);
   mydelete(ch->rgroup);
+  irlist_delete_all(&(ch->headline));
 }
 
 /* check if config files have changed and start a rehash */
