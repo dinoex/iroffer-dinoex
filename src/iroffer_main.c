@@ -707,7 +707,7 @@ static void mainloop (void) {
             
             if (tchans)
               {
-                if (gdata.restrictprivlist && !gdata.creditline && !gdata.headline)
+                if (gdata.restrictprivlist && !gdata.creditline && !irlist_size(&gdata.headline))
                   {
                     ioutput(OUT_S|OUT_D, COLOR_NO_COLOR,
                             "Can't send Summary Plist to %s (restrictprivlist is set and no creditline or headline, summary makes no sense!)", tchans);

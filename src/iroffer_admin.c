@@ -560,6 +560,7 @@ void u_xdl_head(const userinput * const u)
    char *tempstr;
    char *tempnick;
    char *chan;
+   char *line;
    const char *mynick;
    unsigned int i;
    unsigned int a;
@@ -586,7 +587,9 @@ void u_xdl_head(const userinput * const u)
       ch = irlist_get_head(&(gnetwork->channels));
       while(ch)
         {
-          if (ch->headline != NULL )
+          for (line = irlist_get_head(&(ch->headline));
+               line;
+               line = irlist_get_next(line))
             {
               tempnick = mystrdup(u->snick);
               for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
@@ -597,7 +600,7 @@ void u_xdl_head(const userinput * const u)
                       
                       u2 = *u;
                       u2.snick = chan;
-                      a_respond(&u2, "\2**\2 %s \2**\2", ch->headline);
+                      a_respond(&u2, "\2**\2 %s \2**\2", line);
                       head ++;
                     }
                 }
@@ -613,10 +616,12 @@ void u_xdl_head(const userinput * const u)
       break;
     }
    
-   if (gdata.headline)
+   if (head == 0)
      {
-       if (head == 0)
-          a_respond(u, "\2**\2 %s \2**\2", gdata.headline);
+        for (line = irlist_get_head(&gdata.headline);
+             line;
+             line = irlist_get_next(line))
+          a_respond(u, "\2**\2 %s \2**\2", line);
      }
    
    if (!m && !m1)
@@ -1133,7 +1138,7 @@ static void u_psend(const userinput * const u)
         }
       else if (strcmp(u->arg2,"summary") == 0)
         {
-          if (gdata.restrictprivlist && !gdata.creditline && !gdata.headline)
+          if (gdata.restrictprivlist && !gdata.creditline && !irlist_size(&gdata.headline))
             {
               u_respond(u,"Summary Plist makes no sense with restrictprivlist set and no creditline or headline");
               return;
