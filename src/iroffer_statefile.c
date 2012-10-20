@@ -594,6 +594,7 @@ unsigned int read_statefile(void)
             statefile_hdr_t *ihdr;
             
             xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
+            xd->file_fd = FD_UNUSED;
             
             xd->minspeed = gdata.transferminspeed;
             xd->maxspeed = gdata.transfermaxspeed;

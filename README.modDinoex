@@ -1,7 +1,10 @@
-ktuelle Version auf: http://iroffer.dinoex.net/
+Aktuelle Version auf: http://iroffer.dinoex.net/
 
 With Version 3.29:
 ------------------
+
+bugfix: md5sum (found by Trellmor)
+  When running in background, somtimes md5 could not be computed.
 
 bugfix: DUMP
   Fix output of usenatip and channels.

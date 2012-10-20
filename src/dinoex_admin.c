@@ -4843,7 +4843,7 @@ void a_servqc(const userinput * const u)
     if (net < 0)
       return;
 
-    a_servqc2(u, net);
+    a_servqc2(u, (unsigned)net);
     return;
   }
 
@@ -5090,7 +5090,7 @@ void a_online(const userinput * const u)
 #ifdef USE_RUBY
 void a_ruby(const userinput * const u)
 {
-  int rc;
+  unsigned int rc;
 
   if (invalid_text(u, "Try Specifying a ruby method", u->arg1))
     return;

@@ -636,7 +636,7 @@ static unsigned int do_on_event(VALUE userobject, const char *event)
 }
 
 /* push a server line to the ruby class */
-int do_myruby_server(char *line)
+unsigned int do_myruby_server(char *line)
 {
   if (myruby_loaded == 0)
     return 0;
@@ -646,7 +646,7 @@ int do_myruby_server(char *line)
 }
 
 /* push a notice to the ruby class */
-int do_myruby_notice(char *line)
+unsigned int do_myruby_notice(char *line)
 {
   if (myruby_loaded == 0)
     return 0;
@@ -656,7 +656,7 @@ int do_myruby_notice(char *line)
 }
 
 /* push a privmsg to the ruby class */
-int do_myruby_privmsg(char *line)
+unsigned int do_myruby_privmsg(char *line)
 {
   if (myruby_loaded == 0)
     return 0;
@@ -666,7 +666,7 @@ int do_myruby_privmsg(char *line)
 }
 
 /* call the ruby class after adding a pack */
-int do_myruby_added(char *filename, unsigned int pack)
+unsigned int do_myruby_added(char *filename, unsigned int pack)
 {
   if (myruby_loaded == 0)
     return 0;
@@ -677,7 +677,7 @@ int do_myruby_added(char *filename, unsigned int pack)
 }
 
 /* call the ruby class after an upload was sucessful */
-int do_myruby_upload_done(char *filename)
+unsigned int do_myruby_upload_done(char *filename)
 {
   if (myruby_loaded == 0)
     return 0;
@@ -687,7 +687,7 @@ int do_myruby_upload_done(char *filename)
 }
 
 /* call the ruby class after adding/removing/changing a pack */
-int do_myruby_packlist(void)
+unsigned int do_myruby_packlist(void)
 {
   if (myruby_loaded == 0)
     return 0;
@@ -698,7 +698,7 @@ int do_myruby_packlist(void)
 #define MAX_RUBYCMD_PARTS 10
 
 /* call the ruby class from admin chat */
-int do_myruby_ruby(const userinput * const u)
+unsigned int do_myruby_ruby(const userinput * const u)
 {
   protect_call_arg_t arg;
   char *part[MAX_RUBYCMD_PARTS];

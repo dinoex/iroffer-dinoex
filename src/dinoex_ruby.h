@@ -14,13 +14,13 @@
  */
 
 #ifdef USE_RUBY
-int do_myruby_server(char *line);
-int do_myruby_notice(char *line);
-int do_myruby_privmsg(char *line);
-int do_myruby_added(char *filename, unsigned int pack);
-int do_myruby_upload_done(char *filename);
-int do_myruby_packlist(void);
-int do_myruby_ruby(const userinput * const u);
+unsigned int do_myruby_server(char *line);
+unsigned int do_myruby_notice(char *line);
+unsigned int do_myruby_privmsg(char *line);
+unsigned int do_myruby_added(char *filename, unsigned int pack);
+unsigned int do_myruby_upload_done(char *filename);
+unsigned int do_myruby_packlist(void);
+unsigned int do_myruby_ruby(const userinput * const u);
 void rehash_myruby(int check);
 void startup_myruby(void);
 void shutdown_myruby(void);

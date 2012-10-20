@@ -157,7 +157,7 @@
 /* some os's (cygwin, cough, cough, ... ) require extra flags to open() */
 #define ADDED_OPEN_FLAGS 0
 
-#define FD_UNUSED 0
+#define FD_UNUSED -1
 
 #define MD5_PRINT_FMT "%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x"
 
