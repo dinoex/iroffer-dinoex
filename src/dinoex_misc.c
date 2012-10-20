@@ -389,6 +389,7 @@ void startup_dinoex(void)
   init_fish64decode();
 #endif /* WITHOUT_BLOWFISH */
   gdata.support_groups = 0;
+  gdata.md5build.file_fd = FD_UNUSED;
   config_startup();
   init_xdcc(&xdcc_statefile);
   init_xdcc(&xdcc_listfile);

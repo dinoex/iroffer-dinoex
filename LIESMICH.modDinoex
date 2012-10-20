@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+bugfix: md5sum
+  Im Background-Modus konnte die Berrechnung der md5 nicht fertig werden.
+
 bugfix: DUMP
   Die Ausgabe von usenatip und der channles war fehlerhaft.
 

@@ -790,6 +790,7 @@ static void autoadd_scan(const char *dir, const char *group)
   uxdl->method = method_out_all;
   uxdl->net = 0;
   uxdl->level = ADMIN_LEVEL_AUTO;
+  uxdl->fd = FD_UNUSED;
   mydelete(line);
 }
 
@@ -1015,6 +1016,7 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
 
   xd = irlist_add(&gdata.xdccs, sizeof(xdcc));
   xd->file = file;
+  xd->file_fd = FD_UNUSED;
 
   if (xx_desc != NULL)
     xd->desc = mystrdup(xx_desc);
