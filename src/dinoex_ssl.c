@@ -29,7 +29,7 @@
 #ifdef USE_GNUTLS
 #include <gnutls/x509.h>
 
-static const char *iroffer_priority = "NORMAL";
+static const char *iroffer_priority = "NORMAL"; /* NOTRANSLATE */
 static gnutls_priority_t iroffer_priority_cache = NULL;
 
 int iroffer_protocol_priority[] = {
