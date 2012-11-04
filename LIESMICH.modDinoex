@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+399) CLEARRECORDS, CLEARGETS
+  Geänderte Admin Kommandos:
+  CLEARRECORDS                       Löscht die Übertragungs-, Bandbreiten-, Gesamtübertragungsrekorde.
+  CLEARGETS                          Löscht den Downloadzähler in allen Paketen, Uptime und Übertragungsvolumen.
+
 bugfix: md5sum
   Im Background-Modus konnte die Berrechnung der md5 klemmen.
 

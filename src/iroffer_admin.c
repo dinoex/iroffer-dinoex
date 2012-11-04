@@ -55,7 +55,6 @@ static void u_debug(const userinput * const u);
 static void u_jump(const userinput * const u);
 static void u_servers(const userinput * const u);
 static void u_trinfo(const userinput * const u);
-static void u_clearrecords(const userinput * const u);
 static void u_crash(const userinput * const u);
 static void u_chanl(const userinput * const u);
 
@@ -207,8 +206,8 @@ static const userinput_parse_t userinput_parse[] = {
 {6,5,method_allow_all,u_rehash,        "REHASH",NULL,"Re-reads config file(s) and reconfigures"},
 {6,2,method_allow_all,u_botinfo,       "BOTINFO",NULL,"Show Information about the bot status"},
 {6,5,method_allow_all,u_memstat,       "MEMSTAT",NULL,"Show Information about memory usage"},
-{6,5,method_allow_all,u_clearrecords,  "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, total sent, and transfer limits"},
-{6,5,method_allow_all,a_cleargets,     "CLEARGETS",NULL,"Clears download counters for each pack"},
+{6,5,method_allow_all,a_clearrecords,  "CLEARRECORDS",NULL,"Clears transfer, bandwidth, uptime, and transfer limits",},
+{6,5,method_allow_all,a_cleargets,     "CLEARGETS",NULL,"Clears download counters for each pack and total sent and uptime"},
 {6,5,method_console,  u_redraw,        "REDRAW",NULL,"Redraws the Screen"},
 {6,5,method_console,  u_delhist,       "DELHIST",NULL,"Deletes console history"},
 {6,1,method_dcc,      u_quit,          "QUIT",NULL,"Close this DCC chat"},
@@ -2335,27 +2334,6 @@ void u_diskinfo(const userinput * const u, const char *dir)
   
   return;
   
-}
-
-static void u_clearrecords(const userinput * const u)
-{
-  int ii;
-  updatecontext();
-  
-  backup_statefile();
-  
-  gdata.record = 0;
-  gdata.sentrecord = 0;
-  gdata.totalsent = 0;
-  gdata.totaluptime = 0;
-  
-  for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
-    {
-      gdata.transferlimits[ii].ends = 0;
-    }
-  
-  u_respond(u,"Cleared transfer record, bandwidth record, total sent, total uptime, and transfer limits");
-  write_files();
 }
 
 static void u_crash(const userinput * const UNUSED(u)) {

@@ -3,6 +3,11 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+399) CLEARRECORDS, CLEARGETS
+  changed admin commands:
+  CLEARRECORDS                       Clears transfer, bandwidth, uptime, and transfer limits.
+  CLEARGETS                          Clears download counters for each pack and total sent and uptime.
+
 bugfix: md5sum (found by Trellmor)
   When running in background, somtimes md5 calculation could not be completed.
 
