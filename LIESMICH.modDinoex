@@ -4,10 +4,10 @@ Ab Version 3.29:
 ----------------
 
 bugfix: md5sum
-  Im Background-Modus konnte die Berrechnung der md5 nicht fertig werden.
+  Im Background-Modus konnte die Berrechnung der md5 klemmen.
 
 bugfix: DUMP
-  Die Ausgabe von usenatip und der channles war fehlerhaft.
+  Die Ausgabe von "usenatip" und der "channel" war fehlerhaft.
 
 398) headline, channel -headline
   Man kann jetzt mehrere Zeilen definieren.

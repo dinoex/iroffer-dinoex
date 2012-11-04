@@ -4,7 +4,7 @@ With Version 3.29:
 ------------------
 
 bugfix: md5sum (found by Trellmor)
-  When running in background, somtimes md5 could not be computed.
+  When running in background, somtimes md5 calculation could not be completed.
 
 bugfix: DUMP
   Fix output of usenatip and channels.
