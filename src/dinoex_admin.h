@@ -136,6 +136,7 @@ void a_nosave(const userinput * const u);
 void a_nosend(const userinput * const u);
 void a_nolist(const userinput * const u);
 void a_nomd5(const userinput * const u);
+void a_clearrecords(const userinput * const u);
 void a_cleargets(const userinput * const u);
 void a_closec(const userinput * const u);
 void a_config(const userinput * const u);

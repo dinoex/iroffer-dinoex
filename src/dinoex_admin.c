@@ -4906,6 +4906,24 @@ void a_nomd5(const userinput * const u)
   a_respond_disabled(u, "MD5 and CRC checksums have been", num);
 }
 
+void a_clearrecords(const userinput * const u)
+{
+  int ii;
+  updatecontext();
+
+  backup_statefile();
+
+  gdata.record = 0;
+  gdata.sentrecord = 0;
+
+  for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++) {
+      gdata.transferlimits[ii].ends = 0;
+  }
+
+  a_respond(u,"Cleared transfer record, bandwidth record and transfer limits");
+  write_files();
+}
+
 void a_cleargets(const userinput * const u)
 {
   xdcc *xd;
@@ -4918,7 +4936,9 @@ void a_cleargets(const userinput * const u)
     xd->gets = 0;
   }
 
-  a_respond(u, "Cleared download counter for each pack");
+  gdata.totalsent = 0;
+  gdata.totaluptime = 0;
+  a_respond(u, "Cleared download counter for each pack, total sent and total uptime");
   write_files();
 }
 
