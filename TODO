@@ -74,6 +74,7 @@ Short Term Features:
   1623  limit files a groupadmin can add
   1630  GETLD
   1634  request by search
+  1669  range stepping feature
 
 Long Term Features:
   1015  http admin
@@ -84,7 +85,7 @@ Long Term Features:
   1110  XDCC QUEUE compact output
   1113  trim spaces in config
   1114  service script for linux
-  1135  Compress output per nick.
+  1135  Compress QUEUE output per nick.
   1136  Save size even when nomd5
   1145  make autoadd reentrant
   1149  move after upload to dir
@@ -179,6 +180,8 @@ Long Term Features:
   1642  SSL Chat
   1644  download_completed_msg per network
   1649  lock packs against deletion
+  1661  secure log/status channel
+  1663  logging via syslog() or gelf-socket
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -246,4 +249,5 @@ Not going to happen anytime soon:
   1543  native windows build with MINGW
   1565  lock packs on fixed posion while sorting the rest
   1575  aspera transfer protocol
+  1666  packlist numbered per channel
 
