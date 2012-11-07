@@ -320,7 +320,7 @@ static int check_lock(const char* lockstr, const char* pwd)
   return strcmp(lockstr, pwd);
 }
 
-static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack, const char *msg, const char *pwd)
+static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack, const char *msg, const char *pwd, const char *filter)
 {
   xdcc *xd;
   transfer *tr;
@@ -333,6 +333,13 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
   xd = get_download_pack(bad, pi->nick, pi->hostmask, pack, "SEND", get_restrictsend()); /* NOTRANSLATE */
   if (xd == NULL)
     return 1;
+
+  if (filter != NULL) {
+    if (!fnmatch_xdcc(filter, xd)) {
+      *bad = "skipped";
+      return 0;
+    }
+  }
 
   if (check_lock(xd->lock, pwd) != 0) {
     notice(pi->nick, "** XDCC SEND denied, this pack is locked");
@@ -408,7 +415,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
   return 0;
 }
 
-static int send_batch_group(privmsginput *pi, const char *what, const char *pwd)
+static int send_batch_group(privmsginput *pi, const char *what, const char *pwd, const char *match)
 {
   xdcc *xd;
   const char *bad;
@@ -429,7 +436,7 @@ static int send_batch_group(privmsginput *pi, const char *what, const char *pwd)
       continue;
 
     ++found;
-    if (send_xdcc_file2(&bad, pi, num, NULL, pwd))
+    if (send_xdcc_file2(&bad, pi, num, NULL, pwd, match))
       return found;
   }
   return found;
@@ -439,43 +446,56 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
 {
   const char *bad;
   char *end;
-  unsigned int found;
+  char *pattern;
+  char *match = NULL;
+  unsigned int found = 0;
   unsigned int first;
   unsigned int last;
 
-  found = send_batch_group(pi, what, pwd);
+  if (*what == 0)
+    return found;
+
+  updatecontext();
+
+  pattern = strchr(what, '*');
+  if (pattern != NULL) {
+    *(pattern++) = 0; /* cut pattern */
+    match = grep_to_fnmatch(pattern);
+  }
+
+  found = send_batch_group(pi, what, pwd, match);
   if (found != 0)
     return found;
 
   updatecontext();
 
-  /* range */
-  if (*what == 0)
-    return found;
-
+  /* search range */
   end = strchr(what, '-');
-  first = packnumtonum(what);
   if (end == NULL) {
     ++found;
-    send_xdcc_file2(&bad, pi, first, NULL, pwd);
+    first = packnumtonum(what);
+    send_xdcc_file2(&bad, pi, first, NULL, pwd, NULL);
     return found;
   }
-  last = packnumtonum(++end);
+  *(end++) = 0; /* cut range */
+  first = packnumtonum(what);
+  last = packnumtonum(end);
   if (last < first) {
     /* count backwards */
     for (; first >= last; --first) {
       ++found;
-      if (send_xdcc_file2(&bad, pi, first, NULL, pwd))
-        return found;
+      if (send_xdcc_file2(&bad, pi, first, NULL, pwd, match))
+        break;
     }
   } else {
     /* count forwards */
     for (; first <= last; ++first) {
       ++found;
-      if (send_xdcc_file2(&bad, pi, first, NULL, pwd))
-        return found;
+      if (send_xdcc_file2(&bad, pi, first, NULL, pwd, match))
+        break;
     }
   }
+  mydelete(match);
   return found;
 }
 
@@ -829,7 +849,7 @@ static const char *send_xdcc_file(privmsginput *pi, const char *arg, const char 
   updatecontext();
 
   pack = packnumtonum(arg);
-  send_xdcc_file2(&bad, pi, pack, NULL, pwd);
+  send_xdcc_file2(&bad, pi, pack, NULL, pwd, NULL);
   return bad;
 }
 
@@ -1183,7 +1203,7 @@ static void autoqueuef(unsigned int pack, const char *message, privmsginput *pi)
     snprintf(tempstr, strlen(message) + strlen(format) - 1,
              format, message);
   }
-  send_xdcc_file2(&msg, pi, pack, tempstr, NULL);
+  send_xdcc_file2(&msg, pi, pack, tempstr, NULL, NULL);
   pi->msg2 = mystrdup("AutoSend");
   log_xdcc_request3(pi, msg);
   mydelete(pi->msg2);

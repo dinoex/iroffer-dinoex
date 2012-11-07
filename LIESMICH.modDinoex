@@ -3,6 +3,20 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+401) XDCC BATCH
+  Erlaube einschränkende Suchbegriffe für Bereiche und Gruppen in BATCH.
+
+  Neue User Kommandos:
+  XDCC BATCH <a>-<b>*<pattern>       Sende die Pakete von Nummer <a> bis Nummer <b> die auf <pattern> passen
+  XDCC BATCH <g>*<pattern>           Sende die Pakete von Gruppe <g> die auf <pattern> passen
+
+400) BATCH
+  Erlaube einschränkende Suchbegriffe für Bereiche und Gruppen in BATCH.
+
+  Neue Admin Kommandos:
+  BATCH <nick> <n>-<m>*<pattern> <net> Paket <n> bis <m> die auf <pattern> passen in die 2. Warteschlange für <nick> einfügen
+  BATCH <nick> <g>*<pattern> <net>     Pakete mit der Gruppe <g> die auf <pattern> passen in die 2. Warteschlange für <nick> einfügen
+
 399) CLEARRECORDS, CLEARGETS
   Geänderte Admin Kommandos:
   CLEARRECORDS                       Löscht die Übertragungs-, Bandbreiten-, Gesamtübertragungsrekorde.
@@ -413,8 +427,8 @@ bugfix: geoipdatabase
   Erlaube mehrere Angaben in BATCH.
 
   Neue Admin Kommandos:
-  BATCH <nick> <g>,<s>,<n-m>         Pakete mit der Gruppe <g>, Paket <s>, Paket <n> bis <m> in die 2. Warteschlange für <nick> einfügen
-  BATCH <nick> <g>,<s>,<n-m> <net>   Pakete mit der Gruppe <g> in die 2. Warteschlange für <nick> aus <netz> einfügen
+  BATCH <nick> <g>,<s>,<n>-<m>       Pakete mit der Gruppe <g>, Paket <s>, Paket <n> bis <m> in die 2. Warteschlange für <nick> einfügen
+  BATCH <nick> <g>,<s>,<n>-<m> <net> Pakete mit der Gruppe <g> in die 2. Warteschlange für <nick> aus <netz> einfügen
 
 348) Französiche Texte
   Aktiviert werde diese durch "./Lang fr" nach dem "Configure"
