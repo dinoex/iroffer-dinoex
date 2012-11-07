@@ -4920,7 +4920,7 @@ void a_clearrecords(const userinput * const u)
       gdata.transferlimits[ii].ends = 0;
   }
 
-  a_respond(u,"Cleared transfer record, bandwidth record and transfer limits");
+  a_respond(u, "Cleared transfer record, bandwidth record and transfer limits");
   write_files();
 }
 
