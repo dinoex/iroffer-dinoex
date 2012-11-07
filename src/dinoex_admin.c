@@ -809,7 +809,7 @@ static unsigned int get_pack_nr1(const userinput * const u, const char *arg)
   return num;
 }
 
-static int get_pack_nr2(const userinput * const u, const char *arg, unsigned int num1)
+static unsigned int get_pack_nr2(const userinput * const u, const char *arg, unsigned int num1)
 {
   unsigned int num2 = num1;
 

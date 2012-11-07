@@ -320,7 +320,7 @@ static int check_lock(const char* lockstr, const char* pwd)
   return strcmp(lockstr, pwd);
 }
 
-static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack, const char *msg, const char *pwd, const char *filter)
+static unsigned int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack, const char *msg, const char *pwd, const char *filter)
 {
   xdcc *xd;
   transfer *tr;
@@ -415,7 +415,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
   return 0;
 }
 
-static int send_batch_group(privmsginput *pi, const char *what, const char *pwd, const char *match)
+static unsigned int send_batch_group(privmsginput *pi, const char *what, const char *pwd, const char *match)
 {
   xdcc *xd;
   const char *bad;
@@ -444,7 +444,7 @@ static int send_batch_group(privmsginput *pi, const char *what, const char *pwd,
   return found;
 }
 
-static int send_batch_search(privmsginput *pi, const char *what, const char *pwd)
+static unsigned int send_batch_search(privmsginput *pi, const char *what, const char *pwd)
 {
   const char *bad;
   char *end;
@@ -1238,7 +1238,7 @@ static size_t get_channel_limit(const char *dest)
 }
 
 /* iroffer-lamm: @find and long !list */
-static int noticeresults(const char *nick, const char *pattern, const char *dest)
+static unsigned int noticeresults(const char *nick, const char *pattern, const char *dest)
 {
   unsigned int i, j, k;
   size_t len;
@@ -1348,7 +1348,7 @@ static void do_atfind(unsigned int min, privmsginput *pi)
   ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
 }
 
-static int run_new_trigger(const char *nick, const char *grouplist)
+static unsigned int run_new_trigger(const char *nick, const char *grouplist)
 {
   struct tm *localt = NULL;
   irlist_t list;
