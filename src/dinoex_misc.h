@@ -74,7 +74,7 @@ void auto_rehash(void);
 
 void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, size_t max);
 
-int packnumtonum(const char *a);
+unsigned int packnumtonum(const char *a);
 
 void dump_slow_context(void);
 
