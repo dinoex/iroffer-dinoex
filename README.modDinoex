@@ -3,6 +3,21 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+401) XDCC BATCH (inspired by mflatischler)
+  Allow limiting patterns to segments and groups in BATCH.
+
+  new user commands:
+  XDCC BATCH <a>-<b>*<pattern>       Try to send or queue packs from <a> to <b> matching <pattern>
+  XDCC BATCH <g>*<pattern>           Try to send or queue packs from group <g> matching <pattern>
+
+
+400) BATCH
+  Allow limiting patterns to segments and groups in BATCH.
+
+  new admin commands:
+  BATCH <nick> <n>-<m>*<pattern> <net> Queues packs <n> to <m> matching <pattern> for <nick> in idle queue
+  BATCH <nick> <g>*<pattern> <net>     Queues pack with group <g> matching <pattern> for <nick> in idle queue
+
 399) CLEARRECORDS, CLEARGETS
   changed admin commands:
   CLEARRECORDS                       Clears transfer, bandwidth, uptime, and transfer limits.
@@ -414,8 +429,8 @@ bugfix: geoipdatabase
   Allow mutiple segments and lists in BATCH.
 
   new admin commands:
-  BATCH <nick> <g>,<s>,<n-m>         Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
-  BATCH <nick> <g>,<s>,<n-m> <net>   Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
+  BATCH <nick> <g>,<s>,<n>-<m>       Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
+  BATCH <nick> <g>,<s>,<n>-<m> <net> Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
 
 348) French translation (contributed by Dandevito)
   Activate with "./Lang fr" after "Configure"

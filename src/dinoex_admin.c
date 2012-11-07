@@ -5311,7 +5311,7 @@ void a_queue(const userinput * const u)
   start_one_send();
 }
 
-static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned int num, unsigned int net)
+static int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned int num, unsigned int net, const char *filter)
 {
   gnetwork_t *backup;
   char *tempstr;
@@ -5323,6 +5323,12 @@ static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned i
     xd = get_xdcc_pack(num);
     if (xd == NULL)
       return 1;
+  }
+
+  if (filter != NULL) {
+    if (!fnmatch_xdcc(filter, xd)) {
+      return -1;
+    }
   }
 
   if (a_queue_found(u, xd, num))
@@ -5339,11 +5345,12 @@ static unsigned int a_iqueue_sub(const userinput * const u, xdcc *xd, unsigned i
   return 0;
 }
 
-static unsigned int a_iqueue_group(const userinput * const u, const char *what, unsigned int net)
+static unsigned int a_iqueue_group(const userinput * const u, const char *what, unsigned int net, const char *match)
 {
   xdcc *xd;
   unsigned int num;
   unsigned int found;
+  int queued;
 
   updatecontext();
 
@@ -5358,8 +5365,12 @@ static unsigned int a_iqueue_group(const userinput * const u, const char *what, 
     if (strcasecmp(what, xd->group) != 0)
       continue;
 
+    queued = a_iqueue_sub(u, xd, num, net, match);
+    if (queued > 0)
+      break;
+    if (queued < 0)
+      continue;
     ++found;
-    a_iqueue_sub(u, xd, num, net);
   }
   return found;
 }
@@ -5367,13 +5378,26 @@ static unsigned int a_iqueue_group(const userinput * const u, const char *what, 
 static unsigned int a_iqueue_search(const userinput * const u, const char *what, unsigned int net)
 {
   char *end;
+  char *pattern;
+  char *match = NULL;
   unsigned int found;
   unsigned int first;
   unsigned int last;
+  int queued;
 
-  found = a_iqueue_group(u, what, net);
-  if (found != 0)
+  updatecontext();
+
+  pattern = strchr(what, '*');
+  if (pattern != NULL) {
+    *(pattern++) = 0; /* cut pattern */
+    match = grep_to_fnmatch(pattern);
+  }
+
+  found = a_iqueue_group(u, what, net, match);
+  if (found != 0) {
+    mydelete(match);
     return found;
+  }
 
   updatecontext();
 
@@ -5384,38 +5408,52 @@ static unsigned int a_iqueue_search(const userinput * const u, const char *what,
 
   /* xdcclistfile */
   if (*what == '-') {
+    mydelete(match);
     first = atoi(what);
     if (first == XDCC_SEND_LIST) {
-      ++found;
-      a_iqueue_sub(u, NULL, first, net);
+      queued = a_iqueue_sub(u, NULL, first, net, NULL);
+      if (queued == 0)
+        ++found;
     }
     return found;
   }
 
   end = strchr(what, '-');
-  first = atoi(what);
   if (end == NULL) {
+    mydelete(match);
+    first = packnumtonum(what);
     if (first > 0) {
-      ++found;
-      a_iqueue_sub(u, NULL, first, net);
+      queued = a_iqueue_sub(u, NULL, first, net, NULL);
+      if (queued == 0)
+        ++found;
     }
     return found;
   }
-  if (*(++end) == '#') ++end;
-  last = atoi(end);
+  *(end++) = 0; /* cut range */
+  first = packnumtonum(what);
+  last = packnumtonum(end);
   if (last < first) {
     /* count backwards */
     for (; first >= last; --first) {
+      queued = a_iqueue_sub(u, NULL, first, net, match);
+      if (queued > 0)
+        break;
+      if (queued < 0)
+        continue;
       ++found;
-      a_iqueue_sub(u, NULL, first, net);
     }
   } else {
     /* count forwards */
     for (; first <= last; ++first) {
+      queued = a_iqueue_sub(u, NULL, first, net, match);
+      if (queued > 0)
+        break;
+      if (queued < 0)
+        continue;
       ++found;
-      a_iqueue_sub(u, NULL, first, net);
     }
   }
+  mydelete(match);
   return found;
 }
 
