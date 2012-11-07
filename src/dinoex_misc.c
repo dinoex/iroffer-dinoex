@@ -1169,7 +1169,7 @@ void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, si
 }
 
 /* find a pack by its CRC32 */
-static int find_pack_crc(const char *crc)
+static unsigned int find_pack_crc(const char *crc)
 {
   xdcc *xd;
   char crctext[32];
@@ -1194,7 +1194,7 @@ static int find_pack_crc(const char *crc)
 }
 
 /* find a pack by a number, #number or trigger */
-int packnumtonum(const char *a)
+unsigned int packnumtonum(const char *a)
 {
   autoqueue_t *aq;
   autotrigger_t *at;
@@ -1207,7 +1207,7 @@ int packnumtonum(const char *a)
   }
   if (a[0] == '#') {
     ++a;
-    return atoi(a);
+    return (unsigned)atoi(a);
   }
   if (gdata.send_listfile) {
     if (strcasecmp(a, "LIST") == 0) /* NOTRANSLATE */
@@ -1226,7 +1226,7 @@ int packnumtonum(const char *a)
     if (!strcasecmp(a, at->word))
       return number_of_pack(at->pack);
   }
-  return atoi(a);
+  return (unsigned)atoi(a);
 }
 
 /* dump slow functions */
