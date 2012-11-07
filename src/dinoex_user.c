@@ -336,7 +336,7 @@ static int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned int pack
 
   if (filter != NULL) {
     if (!fnmatch_xdcc(filter, xd)) {
-      *bad = "skipped";
+      *bad = NULL; /* skipped */
       return 0;
     }
   }
@@ -435,9 +435,11 @@ static int send_batch_group(privmsginput *pi, const char *what, const char *pwd,
     if (strcasecmp(what, xd->group) != 0)
       continue;
 
-    ++found;
     if (send_xdcc_file2(&bad, pi, num, NULL, pwd, match))
-      return found;
+      break;
+
+    if (bad != NULL)
+      ++found;
   }
   return found;
 }
@@ -472,10 +474,10 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
   /* search range */
   end = strchr(what, '-');
   if (end == NULL) {
-    ++found;
     first = packnumtonum(what);
-    send_xdcc_file2(&bad, pi, first, NULL, pwd, NULL);
-    return found;
+    if (send_xdcc_file2(&bad, pi, first, NULL, pwd, NULL))
+      return found;
+    return ++found;
   }
   *(end++) = 0; /* cut range */
   first = packnumtonum(what);
@@ -483,16 +485,18 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
   if (last < first) {
     /* count backwards */
     for (; first >= last; --first) {
-      ++found;
       if (send_xdcc_file2(&bad, pi, first, NULL, pwd, match))
         break;
+      if (bad != NULL)
+        ++found;
     }
   } else {
     /* count forwards */
     for (; first <= last; ++first) {
-      ++found;
       if (send_xdcc_file2(&bad, pi, first, NULL, pwd, match))
         break;
+      if (bad != NULL)
+        ++found;
     }
   }
   mydelete(match);
