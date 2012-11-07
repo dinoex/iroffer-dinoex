@@ -466,14 +466,17 @@ static int send_batch_search(privmsginput *pi, const char *what, const char *pwd
   }
 
   found = send_batch_group(pi, what, pwd, match);
-  if (found != 0)
+  if (found != 0) {
+    mydelete(match);
     return found;
+  }
 
   updatecontext();
 
   /* search range */
   end = strchr(what, '-');
   if (end == NULL) {
+    mydelete(match);
     first = packnumtonum(what);
     if (send_xdcc_file2(&bad, pi, first, NULL, pwd, NULL))
       return found;
