@@ -908,7 +908,7 @@ size_t
 __attribute__ ((format(printf, 3, 4)))
 #endif
 /* add a printf text to a string buffer */
-add_snprintf(char * restrict str, size_t size, const char * restrict format, ...)
+add_snprintf(char * str, size_t size, const char * format, ...)
 {
   va_list args;
   size_t len;
