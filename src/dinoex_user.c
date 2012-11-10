@@ -1353,13 +1353,10 @@ static unsigned int run_new_trigger(const char *nick, const char *grouplist)
   irlist_t list;
   xdcc **best;
   xdcc *xd;
-  const char *format;
   char *tempstr;
   char *colordesc;
   time_t now;
   unsigned int i;
-
-  format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
 
   memset(&list, 0, sizeof(irlist_t));
   for (i=0; i<gdata.new_trigger; ++i)
