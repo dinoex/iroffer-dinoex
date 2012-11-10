@@ -57,7 +57,7 @@ void init_fish64decode( void )
 
   memset(fish64decode, 0, sizeof(fish64decode));
   for ( i = 0; i < 64; ++i) {
-    fish64decode[ FISH64[ i ] ] = i;
+    fish64decode[ FISH64[ i ] ] = (unsigned char)i;
   }
 }
 
@@ -344,6 +344,7 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   ssize_t len;
+  size_t ulen;
 
   if (ch == NULL) return;
   if (!ch->name) return;
@@ -354,9 +355,9 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
     outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
     return;
   }
-
+  ulen = (size_t)len;
   if (gnetwork->plaintext || ch->plaintext) {
-    len = removenonprintable(tempstr);
+    ulen = removenonprintable(tempstr);
   }
 
 #ifndef WITHOUT_BLOWFISH
@@ -366,7 +367,7 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
     if (gdata.debug > 13) {
       ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
     }
-    tempcrypt = encrypt_fish(tempstr, len, ch->fish);
+    tempcrypt = encrypt_fish(tempstr, ulen, ch->fish);
     if (tempcrypt) {
       writeserver_channel(ch->delay, "PRIVMSG %s :+OK %s", ch->name, tempcrypt); /* NOTRANSLATE */
       mydelete(tempcrypt);
@@ -955,7 +956,7 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
   userinput u2;
   xdcc *xd;
   int xfiledescriptor;
-  int rc;
+  unsigned int rc;
 
   updatecontext();
 
@@ -1426,7 +1427,7 @@ static void xml_buffer_init(xml_buffer_t *xmlbuf)
 
 static void xml_buffer_flush(xml_buffer_t *xmlbuf)
 {
-  size_t len;
+  ssize_t len;
 
   if (xmlbuf->len == 0)
     return;
@@ -1435,7 +1436,7 @@ static void xml_buffer_flush(xml_buffer_t *xmlbuf)
     return;
 
   len = write(xmlbuf->fd, xmlbuf->buffer, xmlbuf->len);
-  if (len != xmlbuf->len)
+  if (len != (ssize_t)(xmlbuf->len))
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "Cant Write XDCC List File '%s': %s",
              xmlbuf->filename, strerror(errno));
