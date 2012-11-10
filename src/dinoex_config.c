@@ -1744,17 +1744,28 @@ static void d_overallmaxspeeddaydays(const char *key)
   dump_config_string2(key, val);
 }
 
+/* read an uint value from text with bounds */
+static unsigned int atoui_between(const char * restrict text, int min, int max )
+{
+  int val;
+
+  val = atoi(text);
+  if (val < min)
+    return (unsigned int)min;
+
+  if (val > max)
+    return (unsigned int)max;
+
+  return (unsigned int)val;
+}
+
 static void c_overallmaxspeeddaytime(const char * UNUSED(key), char *var)
 {
   char *part[2];
-  int a = 0;
-  int b = 0;
 
   if (get_argv(part, var, 2) == 2) {
-    a = atoi(part[0]);
-    b = atoi(part[1]);
-    gdata.overallmaxspeeddaytimestart = between(0, a, 23);
-    gdata.overallmaxspeeddaytimeend   = between(0, b, 23);
+    gdata.overallmaxspeeddaytimestart = atoui_between(part[0], 0, 23);
+    gdata.overallmaxspeeddaytimeend   = atoui_between(part[1], 0, 23);
   }
   mydelete(part[0]);
   mydelete(part[1]);
