@@ -42,7 +42,7 @@ typedef struct {
 } ir_parseline_t;
 
 /* writes IP address and port as text into the buffer */
-int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa)
+size_t my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa)
 {
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
@@ -51,19 +51,19 @@ int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa)
   salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
-    return snprintf(buffer, len, "(unknown)" );
+    return add_snprintf(buffer, len, "(unknown)" );
   }
-  return snprintf(buffer, len, "host=%s port=%s", hbuf, sbuf);
+  return add_snprintf(buffer, len, "host=%s port=%s", hbuf, sbuf);
 #else /* NO_GETADDRINFO */
   const struct sockaddr_in *remoteaddr = (const struct sockaddr_in *)sa;
   ir_uint32 to_ip = ntohl(remoteaddr->sin_addr.s_addr);
-  return snprintf(buffer, len, IPV4_PRINT_FMT ":%d",
-                  IPV4_PRINT_DATA(to_ip),
-                  ntohs(remoteaddr->sin_port));
+  return add_snprintf(buffer, len, IPV4_PRINT_FMT ":%d",
+                      IPV4_PRINT_DATA(to_ip),
+                      ntohs(remoteaddr->sin_port));
 #endif /* NO_GETADDRINFO */
 }
 
-static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
+static size_t my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
 {
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
@@ -75,15 +75,15 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
       ip = gnetwork->ourip;
     else
       ip = ntohl(sa->sin.sin_addr.s_addr);
-    return snprintf(buffer, len, "%u %d", /* NOTRANSLATE */
-                    ip, ntohs(sa->sin.sin_port));
+    return add_snprintf(buffer, len, "%u %d", /* NOTRANSLATE */
+                        ip, ntohs(sa->sin.sin_port));
   }
   salen = (sa->sa.sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
   if (getnameinfo(&(sa->sa), salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
-    return snprintf(buffer, len, "(unknown)" );
+    return add_snprintf(buffer, len, "(unknown)" );
   }
-  return snprintf(buffer, len, "%s %s", hbuf, sbuf); /* NOTRANSLATE */
+  return add_snprintf(buffer, len, "%s %s", hbuf, sbuf); /* NOTRANSLATE */
 #else /* NO_GETADDRINFO */
   ir_uint32 ip;
 
@@ -91,8 +91,8 @@ static int my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
     ip = gnetwork->ourip;
   else
     ip = ntohl(sa->sin.sin_addr.s_addr);
-  return snprintf(buffer, len, "%u %d", /* NOTRANSLATE */
-                  ip, ntohs(sa->sin.sin_port));
+  return add_snprintf(buffer, len, "%u %d", /* NOTRANSLATE */
+                      ip, ntohs(sa->sin.sin_port));
 #endif /* NO_GETADDRINFO */
 }
 

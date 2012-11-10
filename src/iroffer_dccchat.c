@@ -35,7 +35,7 @@ int setupdccchatout(const char *nick, const char *hostmask, const char *token)
 {
   char *msg;
   char *token2 = NULL;
-  int rc;
+  unsigned int rc;
   dccchat_t *chat;
   
   updatecontext();

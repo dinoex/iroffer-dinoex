@@ -57,7 +57,7 @@ void init_fish64decode( void )
 
   memset(fish64decode, 0, sizeof(fish64decode));
   for ( i = 0; i < 64; ++i) {
-    fish64decode[ FISH64[ i ] ] = i;
+    fish64decode[ FISH64[ i ] ] = (unsigned char)i;
   }
 }
 
@@ -344,6 +344,7 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   ssize_t len;
+  size_t ulen;
 
   if (ch == NULL) return;
   if (!ch->name) return;
@@ -354,9 +355,9 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
     outerror(OUTERROR_TYPE_WARN, "PRVMSG-CHAN: Output too large, ignoring!");
     return;
   }
-
+  ulen = (size_t)len;
   if (gnetwork->plaintext || ch->plaintext) {
-    len = removenonprintable(tempstr);
+    ulen = removenonprintable(tempstr);
   }
 
 #ifndef WITHOUT_BLOWFISH
@@ -366,7 +367,7 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
     if (gdata.debug > 13) {
       ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
     }
-    tempcrypt = encrypt_fish(tempstr, len, ch->fish);
+    tempcrypt = encrypt_fish(tempstr, ulen, ch->fish);
     if (tempcrypt) {
       writeserver_channel(ch->delay, "PRIVMSG %s :+OK %s", ch->name, tempcrypt); /* NOTRANSLATE */
       mydelete(tempcrypt);
@@ -868,19 +869,16 @@ const char *find_groupdesc(const char *group)
   if (group == NULL)
     return "";
 
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      if (xd->group != NULL)
-        {
-          if (strcasecmp(xd->group, group) == 0)
-            {
-              return xd->group_desc;
-            }
-        }
-      xd = irlist_get_next(xd);
-    }
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (xd->group == NULL)
+      continue;
 
+    if (strcasecmp(xd->group, group) == 0)
+      return xd->group_desc;
+
+  }
   return "";
 }
 
@@ -898,33 +896,33 @@ void write_removed_xdcc(xdcc *xd)
     return;
 
   line = mymalloc(maxtextlength);
-  len = snprintf(line, maxtextlength, "\n"); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "\n"); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_file %s\n", xd->file); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_file %s\n", xd->file); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_desc %s\n", xd->desc); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_desc %s\n", xd->desc); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_note %s\n", xd->note ? xd->note : ""); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_note %s\n", xd->note ? xd->note : ""); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_size %" LLPRINTFMT "d\n", xd->st_size); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_size %" LLPRINTFMT "d\n", xd->st_size); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_gets %u\n", xd->gets); /* NOTRANSLATE */
-  write(fd, line, len);
-  if (gdata.transferminspeed == xd->minspeed)
-    len = snprintf(line, maxtextlength, "xx_mins \n"); /* NOTRANSLATE */
-  else
-    len = snprintf(line, maxtextlength, "xx_mins %f\n", xd->minspeed); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_gets %u\n", xd->gets); /* NOTRANSLATE */
   write(fd, line, len);
   if (gdata.transferminspeed == xd->minspeed)
-    len = snprintf(line, maxtextlength, "xx_maxs \n"); /* NOTRANSLATE */
+    len = add_snprintf(line, maxtextlength, "xx_mins \n"); /* NOTRANSLATE */
   else
-    len = snprintf(line, maxtextlength, "xx_maxs %f\n", xd->maxspeed); /* NOTRANSLATE */
+    len = add_snprintf(line, maxtextlength, "xx_mins %f\n", xd->minspeed); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_data %s\n", xd->group ? xd->group : ""); /* NOTRANSLATE */
+  if (gdata.transferminspeed == xd->minspeed)
+    len = add_snprintf(line, maxtextlength, "xx_maxs \n"); /* NOTRANSLATE */
+  else
+    len = add_snprintf(line, maxtextlength, "xx_maxs %f\n", xd->maxspeed); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_trig \n"); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_data %s\n", xd->group ? xd->group : ""); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_trno %s\n", find_groupdesc(xd->group)); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_trig \n"); /* NOTRANSLATE */
+  write(fd, line, len);
+  len = add_snprintf(line, maxtextlength, "xx_trno %s\n", find_groupdesc(xd->group)); /* NOTRANSLATE */
   write(fd, line, len);
   mydelete(line)
 
@@ -958,7 +956,7 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
   userinput u2;
   xdcc *xd;
   int xfiledescriptor;
-  int rc;
+  unsigned int rc;
 
   updatecontext();
 
@@ -1231,11 +1229,11 @@ void autotrigger_rebuild(void)
   xdcc *xd;
 
   irlist_delete_all(&gdata.autotrigger);
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd) {
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
     if (xd->trigger != NULL)
       autotrigger_add(xd);
-    xd = irlist_get_next(xd);
   }
 }
 
@@ -1429,7 +1427,7 @@ static void xml_buffer_init(xml_buffer_t *xmlbuf)
 
 static void xml_buffer_flush(xml_buffer_t *xmlbuf)
 {
-  size_t len;
+  ssize_t len;
 
   if (xmlbuf->len == 0)
     return;
@@ -1438,7 +1436,7 @@ static void xml_buffer_flush(xml_buffer_t *xmlbuf)
     return;
 
   len = write(xmlbuf->fd, xmlbuf->buffer, xmlbuf->len);
-  if (len != xmlbuf->len)
+  if (len != (ssize_t)(xmlbuf->len))
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "Cant Write XDCC List File '%s': %s",
              xmlbuf->filename, strerror(errno));
@@ -1475,8 +1473,8 @@ static void write_asc_int(xml_buffer_t *xmlbuf, int spaces, const char *tag, uns
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlengthshort);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1485,8 +1483,8 @@ static void write_asc_int64(xml_buffer_t *xmlbuf, int spaces, const char *tag, i
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlength);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1495,8 +1493,8 @@ static void write_asc_hex(xml_buffer_t *xmlbuf, int spaces, const char *tag, uns
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlengthshort);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1505,8 +1503,8 @@ static void write_asc_text(xml_buffer_t *xmlbuf, int spaces, const char *tag, co
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlength);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1515,8 +1513,8 @@ static void write_asc_plain(xml_buffer_t *xmlbuf, int spaces, const char *tag, c
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlength);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1785,7 +1783,7 @@ void start_qupload(void)
   }
 }
 
-int close_qupload(unsigned int net, const char *nick)
+unsigned int close_qupload(unsigned int net, const char *nick)
 {
   qupload_t *qu;
 

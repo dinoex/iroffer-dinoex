@@ -555,7 +555,7 @@ unsigned int max_minutes_waits(time_t *endtime, unsigned int min)
   *endtime += (60 * min);
   if (*endtime < gdata.curtime) {
     *endtime = 0x7FFFFFFF;
-    min = (*endtime - gdata.curtime)/60;
+    min = (unsigned int)((*endtime - gdata.curtime) / 60);
   }
   --(*endtime);
   return min;
@@ -845,6 +845,8 @@ char *user_getdatestr(char* str, time_t Tp, size_t len)
   struct tm *localt = NULL;
   size_t llen;
 
+  if (Tp == 0)
+    Tp = gdata.curtime;
   localt = localtime(&Tp);
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
   llen = strftime(str, len, format, localt);
@@ -866,6 +868,55 @@ char *grep_to_fnmatch(const char *grep)
   match = hostmask_to_fnmatch(raw);
   mydelete(raw);
   return match;
+}
+
+/* get a random number between 0 and max, max excluded */
+unsigned int get_random_uint( unsigned int max )
+{
+  unsigned int val;
+
+  val = (unsigned int)( (((float)(max)) * rand() ) / (0.0 + RAND_MAX) );
+  if (val >= max)
+    val = max - 1;
+  return val;
+}
+
+static size_t
+#ifdef __GNUC__
+__attribute__ ((format(printf, 3, 0)))
+#endif
+/* add a printf text to a string buffer */
+add_vsnprintf(char * restrict str, size_t size, const char * restrict format, va_list ap)
+{
+  ssize_t slen;
+  size_t ulen;
+
+  slen = vsnprintf(str, size, format, ap);
+  if (slen < 0) {
+    *str = 0; /* terminating 0-byte */
+    return 0;
+  }
+  ulen = (size_t)slen;
+  --size; /* terminating 0-byte */
+  if (ulen > size)
+    return size;
+  return ulen;
+}
+
+size_t
+#ifdef __GNUC__
+__attribute__ ((format(printf, 3, 4)))
+#endif
+/* add a printf text to a string buffer */
+add_snprintf(char * restrict str, size_t size, const char * restrict format, ...)
+{
+  va_list args;
+  size_t len;
+
+  va_start(args, format);
+  len = add_vsnprintf(str, size, format, args);
+  va_end(args);
+  return len;
 }
 
 #ifndef USE_MERGESORT

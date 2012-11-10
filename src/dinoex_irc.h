@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2012 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -13,7 +13,7 @@
  *
  */
 
-int my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa);
+size_t my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa);
 void update_natip (const char *var);
 unsigned int bind_irc_vhost(int family, int clientsocket);
 unsigned int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *listen_socket, unsigned int port, unsigned int reuse, unsigned int search, const char *vhost);

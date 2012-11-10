@@ -580,21 +580,21 @@ char* getsendname(const char * const full)
 {
   char *copy;
   size_t i;
-  int lastslash;
-  int spaced;
+  size_t lastslash;
+  size_t spaced;
   size_t len;
   
   updatecontext();
   
   len = sstrlen(full);
-  lastslash = -1;
+  lastslash = 0;
   spaced = 0;
   for (i = 0 ; i < len ; i++)
     {
       switch (full[i]) {
       case '/':
       case '\\':
-        lastslash = i;
+        lastslash = i + 1;
         spaced = 0;
         break;
       case ' ':
@@ -603,13 +603,13 @@ char* getsendname(const char * const full)
       }
     }
   
-  len -= lastslash + 1;
+  len -= lastslash;
   copy = mymalloc(len + 1 + spaced);
   
   if ((spaced != 0) && (gdata.spaces_in_filenames != 0))
-    sprintf(copy, "\"%s\"", full + lastslash + 1);
+    sprintf(copy, "\"%s\"", full + lastslash);
   else
-    strcpy(copy, full + lastslash + 1);
+    strcpy(copy, full + lastslash);
   
   /* replace any evil characters in the filename with underscores */
   for (i = 0; i < len; i++)
@@ -1242,17 +1242,11 @@ void switchserver(int which)
    
   if (which < 0)
     {
-      int i;
+      unsigned int i;
       
       i = irlist_size(&(gnetwork->servers));
       
-      which = (int) (((float)i)*rand()/(RAND_MAX+0.0));
-      
-      while (which > i || which < 0)
-        {
-          if (which < 0) which += i;
-          if (which > i) which -= i;
-        }
+      which = (int) get_random_uint( i );
     }
   
   if (gnetwork->offline)
@@ -1268,7 +1262,8 @@ void switchserver(int which)
 
 char* getstatusline(char *str, size_t len)
 {
-  unsigned int i, srvq;
+  size_t i;
+  unsigned int srvq;
   unsigned int netq;
   ir_uint64 xdccsent;
   ir_uint64 xdccrecv;
@@ -1312,7 +1307,7 @@ char* getstatusline(char *str, size_t len)
            xdccsum += (ir_uint64)gdata.xdccsum[i];
          }
        
-       i = snprintf(str, len,
+       i = add_snprintf(str, len,
                "Stat: %u/%u Sls, %u/%u Q, %u/%u I, %u/%u SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
@@ -1329,7 +1324,7 @@ char* getstatusline(char *str, size_t len)
     }
   else
     {
-       i = snprintf(str, len,
+       i = add_snprintf(str, len,
                "Stat: %u/%u Sls, %u/%u Q, %1.1fK/s Rcd, %u SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Rcd)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
@@ -1351,7 +1346,8 @@ char* getstatusline(char *str, size_t len)
 
 char* getstatuslinenums(char *str, size_t len)
 {
-  unsigned int i, gcount, srvq;
+  size_t i;
+  unsigned int gcount, srvq;
   float scount,ocount;
   xdcc *xd;
   ir_uint64 xdccsent;
@@ -1384,7 +1380,7 @@ char* getstatuslinenums(char *str, size_t len)
       xd = irlist_get_next(xd);
     }
   
-  i = snprintf(str, len,
+  i = add_snprintf(str, len,
                "stat %u %1.0f %u %1.0f %u %u %u %u %u %u %1.1f %u %" LLPRINTFMT "u %1.1f %1.1f",
                irlist_size(&gdata.xdccs),
                ocount/1024/1024,
@@ -1728,7 +1724,7 @@ void startupiroffer(void) {
       printf("** Window Size: %ux%u\n", gdata.termcols, gdata.termlines);
    
    tempstr23 = mymalloc(maxtextlength);
-   printf("** Started on: %s\n",getdatestr(tempstr23,0,maxtextlength));
+   printf("** Started on: %s\n", user_getdatestr(tempstr23, 0, maxtextlength));
    mydelete(tempstr23);
    
    set_loginname();
@@ -1910,7 +1906,9 @@ void isrotatelog(void)
 void createpassword(void) {
 #ifndef NO_CRYPT
    char pw1[maxtextlengthshort], pw2[maxtextlengthshort];
-   int len, ok, saltnum;
+   int len;
+   unsigned int ok;
+   unsigned int saltnum;
    char salt[6], *pwout;
    
    printf("\niroffer-dinoex " VERSIONLONG "\n"
@@ -1949,7 +1947,7 @@ void createpassword(void) {
    
    
    srand((unsigned int)( (getpid()*5000) + (time(NULL)%5000) ));
-   saltnum = (int)(4096.0*rand()/(RAND_MAX+0.0));
+   saltnum = get_random_uint( 4096 );
 #if !defined(_OS_CYGWIN)
    salt[0] = '$';
    salt[1] = '1';

@@ -249,7 +249,7 @@ static int config_find_typ(config_name_t config_name_f, const char *key, int bin
   bin_low = 0;
   while (bin_low <= bin_high) {
     bin_mid = (bin_low + bin_high) / 2;
-    how_far = strcmp(config_name_f(bin_mid), key);
+    how_far = strcmp(config_name_f((unsigned int)bin_mid), key);
     if (how_far == 0)
       return bin_mid;
     if (how_far < 0)
@@ -379,10 +379,19 @@ static int parse_bool_val(const char *key, const char *text)
   return -1;
 }
 
+static void parse_bool_to_ptr(unsigned int *ptr, const char *key, const char *text)
+{
+  int val;
+
+  val = parse_bool_val(key, text);
+  if (val >= 0) {
+    *ptr = (unsigned int)val;
+  }
+}
+
 static unsigned int set_config_bool(const char *key, const char *text)
 {
   int i;
-  int val;
 
   updatecontext();
 
@@ -390,10 +399,7 @@ static unsigned int set_config_bool(const char *key, const char *text)
   if (i < 0)
     return 1;
 
-  val = parse_bool_val(key, text);
-  if (val >= 0 ) {
-    *(config_parse_bool[i].ivar) = val;
-  }
+  parse_bool_to_ptr(config_parse_bool[i].ivar, key, text);
   return 0;
 }
 
@@ -562,7 +568,7 @@ static unsigned int set_config_int(const char *key, const char *text)
     return 0;
 
   rawval *= config_parse_int[i].mult;
-  *(config_parse_int[i].ivar) = rawval;
+  *(config_parse_int[i].ivar) = (unsigned int)rawval;
   return 0;
 }
 
@@ -824,22 +830,24 @@ static int config_find_list(const char *key)
   return config_find_typ(config_name_list, key, config_list_anzahl);
 }
 
-static int get_netmask(char *text, int init)
+static unsigned int get_netmask(char *text, unsigned int init)
 {
   char *work;
   int newmask;
 
   work = strchr(text, '/');
-  if (work != NULL) {
-    *(work++) = 0;
-    newmask = atoi(work);
-    if (newmask < 0 )
-      return init;
-    if (newmask > init )
-      return init;
-    return newmask;
-  }
-  return init;
+  if (work == NULL)
+    return init;
+
+  *(work++) = 0;
+  newmask = atoi(work);
+  if (newmask < 0 )
+    return init;
+
+  if (newmask > (int)init )
+    return init;
+
+  return (unsigned int )newmask;
 }
 
 static unsigned int set_config_list(const char *key, char *text)
@@ -864,11 +872,11 @@ static unsigned int set_config_list(const char *key, char *text)
     cidr = irlist_add(config_parse_list[i].list, sizeof(ir_cidr_t));
     if (strchr(text, ':') == NULL) {
       cidr->family = AF_INET;
-      cidr->netmask = get_netmask(text, 32);
+      cidr->netmask = get_netmask(text, 32U);
       e = inet_pton(cidr->family, text, &(cidr->remote.sin.sin_addr));
     } else {
       cidr->family = AF_INET6;
-      cidr->netmask = get_netmask(text, 128);
+      cidr->netmask = get_netmask(text, 128U);
       e = inet_pton(cidr->family, text, &(cidr->remote.sin6.sin6_addr));
     }
     cidr->remote.sa.sa_family = cidr->family;
@@ -1365,13 +1373,14 @@ static void d_disk_quota(const char *key)
 static void c_getip_network(const char *key, char *var)
 {
   int net;
+
   net = get_network(var);
   if (net < 0) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has unknown args: '%s'",
              current_config, current_line, key, var);
   } else {
-    gdata.networks[current_network].getip_net = net;
+    gdata.networks[current_network].getip_net = (unsigned int)net;
   }
 }
 
@@ -1650,12 +1659,7 @@ static char *p_nickserv_pass(void)
 
 static void c_noannounce(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].noannounce = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].noannounce), key, var);
 }
 
 static char *p_noannounce(void)
@@ -1665,12 +1669,7 @@ static char *p_noannounce(void)
 
 static void c_offline(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].offline = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].offline), key, var);
 }
 
 static char *p_offline(void)
@@ -1748,17 +1747,28 @@ static void d_overallmaxspeeddaydays(const char *key)
   dump_config_string2(key, val);
 }
 
+/* read an uint value from text with bounds */
+static unsigned int atoui_between(const char * restrict text, int min, int max )
+{
+  int val;
+
+  val = atoi(text);
+  if (val < min)
+    return (unsigned int)min;
+
+  if (val > max)
+    return (unsigned int)max;
+
+  return (unsigned int)val;
+}
+
 static void c_overallmaxspeeddaytime(const char * UNUSED(key), char *var)
 {
   char *part[2];
-  int a = 0;
-  int b = 0;
 
   if (get_argv(part, var, 2) == 2) {
-    a = atoi(part[0]);
-    b = atoi(part[1]);
-    gdata.overallmaxspeeddaytimestart = between(0, a, 23);
-    gdata.overallmaxspeeddaytimeend   = between(0, b, 23);
+    gdata.overallmaxspeeddaytimestart = atoui_between(part[0], 0, 23);
+    gdata.overallmaxspeeddaytimeend   = atoui_between(part[1], 0, 23);
   }
   mydelete(part[0]);
   mydelete(part[1]);
@@ -1820,12 +1830,7 @@ static void d_periodicmsg(const char *key, unsigned int net)
 
 static void c_plaintext(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].plaintext = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].plaintext), key, var);
 }
 
 static char *p_plaintext(void)
@@ -1845,12 +1850,7 @@ static void c_proxyinfo(const char *key, char *var)
 
 static void c_respondtochannellist(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].respondtochannellist = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].respondtochannellist), key, var);
 }
 
 static char *p_respondtochannellist(void)
@@ -1860,12 +1860,7 @@ static char *p_respondtochannellist(void)
 
 static void c_respondtochannelxdcc(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].respondtochannelxdcc = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].respondtochannelxdcc), key, var);
 }
 
 static char *p_respondtochannelxdcc(void)
@@ -1875,12 +1870,7 @@ static char *p_respondtochannelxdcc(void)
 
 static void c_restrictlist(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].restrictlist = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].restrictlist), key, var);
 }
 
 static char *p_restrictlist(void)
@@ -1890,12 +1880,7 @@ static char *p_restrictlist(void)
 
 static void c_restrictsend(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].restrictsend = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].restrictsend), key, var);
 }
 
 static char *p_restrictsend(void)
@@ -1910,7 +1895,8 @@ static void c_send_listfile(const char *key, char *var)
   if (check_range(key, var, &rawval, -1, 1000000))
     return;
 
-  gdata.send_listfile = rawval;
+  /* -1 is converted to XDCC_SEND_LIST */
+  gdata.send_listfile = (unsigned int)rawval;
 }
 
 static char *p_send_listfile(void)
@@ -1947,7 +1933,7 @@ static void c_server_connect_timeout(const char *key, char *var)
   int rawval;
 
   if (check_range(key, var, &rawval, CTIMEOUT, 2000) == 0) {
-    gdata.networks[current_network].server_connect_timeout = rawval;
+    gdata.networks[current_network].server_connect_timeout = (unsigned int)rawval;
   }
 }
 
@@ -2009,7 +1995,7 @@ static void c_slow_privmsg(const char *key, char *var)
   int rawval;
 
   if (check_range(key, var, &rawval, 0, 120) == 0) {
-    gdata.networks[current_network].slow_privmsg = rawval;
+    gdata.networks[current_network].slow_privmsg = (unsigned int)rawval;
   }
 }
 
@@ -2475,42 +2461,42 @@ static void dump_config_fdump(void)
          ch;
          ch = irlist_get_next(ch)) {
       buffer = mymalloc(maxtextlength);
-      len = snprintf(buffer, maxtextlength, "%s", ch->name); /* NOTRANSLATE */
+      len = add_snprintf(buffer, maxtextlength, "%s", ch->name); /* NOTRANSLATE */
       if (ch->plisttime != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime); /* NOTRANSLATE */
       if (ch->plistoffset != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plistoffset", ch->plistoffset); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-plistoffset", ch->plistoffset); /* NOTRANSLATE */
       if (((ch->flags & (CHAN_SUMMARY|CHAN_MINIMAL)) != 0) || (ch->plisttime != 0))
-        len += snprintf(buffer + len, maxtextlength - len, " %s %s", "-pformat", text_pformat(ch->flags)); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %s", "-pformat", text_pformat(ch->flags)); /* NOTRANSLATE */
       if (ch->pgroup != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-pgroup", ch->pgroup); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-pgroup", ch->pgroup); /* NOTRANSLATE */
       if (ch->key != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-key", ch->key); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-key", ch->key); /* NOTRANSLATE */
       if (ch->delay != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-delay", ch->delay); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-delay", ch->delay); /* NOTRANSLATE */
       if (ch->noannounce != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-noannounce"); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s", "-noannounce"); /* NOTRANSLATE */
       if (ch->joinmsg != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-joinmsg", ch->joinmsg); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-joinmsg", ch->joinmsg); /* NOTRANSLATE */
       for (line = irlist_get_head(&(ch->headline));
            line;
            line = irlist_get_next(line)) {
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", line); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", line); /* NOTRANSLATE */
       }
 #ifndef WITHOUT_BLOWFISH
       if (ch->fish != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-fish", ch->fish); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-fish", ch->fish); /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
       if (ch->listmsg != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-listmsg", ch->listmsg); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-listmsg", ch->listmsg); /* NOTRANSLATE */
       if (ch->rgroup != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-rgroup", ch->rgroup); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-rgroup", ch->rgroup); /* NOTRANSLATE */
       if (ch->notrigger != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-notrigger"); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s", "-notrigger"); /* NOTRANSLATE */
       if (ch->plaintext != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-plaintext"); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s", "-plaintext"); /* NOTRANSLATE */
       if (ch->waitjoin != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin); /* NOTRANSLATE */
       dump_line("%s %s", "channel", buffer); /* NOTRANSLATE */
       mydelete(buffer);
     }

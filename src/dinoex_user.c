@@ -621,7 +621,7 @@ static void restrictprivlistmsg(const char *nick)
   restrictprivlistmsg2(nick, msg);
 }
 
-static int parse_xdcc_list(const char *nick, char *msg3)
+static unsigned int parse_xdcc_list(const char *nick, char *msg3)
 {
   xlistqueue_t *user;
 
@@ -1350,7 +1350,6 @@ static void do_atfind(unsigned int min, privmsginput *pi)
 
 static unsigned int run_new_trigger(const char *nick, const char *grouplist)
 {
-  struct tm *localt = NULL;
   irlist_t list;
   xdcc **best;
   xdcc *xd;
@@ -1358,7 +1357,6 @@ static unsigned int run_new_trigger(const char *nick, const char *grouplist)
   char *tempstr;
   char *colordesc;
   time_t now;
-  ssize_t llen;
   unsigned int i;
 
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
@@ -1373,12 +1371,8 @@ static unsigned int run_new_trigger(const char *nick, const char *grouplist)
        best = irlist_delete(&list, best)) {
     xd = *best;
     now = xd->xtime;
-    localt = localtime(&now);
     tempstr = mymalloc(maxtextlengthshort);
-    llen = strftime(tempstr, maxtextlengthshort - 1, format, localt);
-    if (llen == 0)
-      tempstr[0] = '\0';
-
+    user_getdatestr(tempstr, now, maxtextlengthshort);
     colordesc = xd_color_description(xd);
     notice_slow(nick, "Added: %s \2%u\2%s%s",
                 tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);

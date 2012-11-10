@@ -67,13 +67,12 @@ unsigned int number_of_pack(xdcc *pack)
     return XDCC_SEND_LIST;
 
   n = 0;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd) {
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
     ++n;
     if (xd == pack)
       return n;
-
-    xd = irlist_get_next(xd);
   }
 
   return 0;
@@ -756,7 +755,7 @@ void logfile_add(const char *logfile, const char *line)
     return;
 
   getdatestr(tempstr, 0, maxtextlengthshort);
-  len = snprintf(logline, maxtextlength, "** %s: %s\n", tempstr, line);
+  len = add_snprintf(logline, maxtextlength, "** %s: %s\n", tempstr, line);
   mylog_write(logfd, logfile, logline, len);
   mylog_close(logfd, logfile);
 }
@@ -783,7 +782,7 @@ char *transfer_limit_exceeded_msg(unsigned int ii)
    char *tempstr = mymalloc(maxtextlength);
    char *tempstr2 = mymalloc(maxtextlengthshort);
 
-   getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlengthshort);
+   user_getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlengthshort);
    snprintf(tempstr, maxtextlength,
             "Sorry, I have exceeded my %s transfer limit of %" LLPRINTFMT "uMB.  Try again after %s.",
             transferlimit_type_to_string(ii),
@@ -819,7 +818,7 @@ char *get_grouplist_access(const char *nick)
         return NULL;
       }
 
-      len += snprintf(tempstr + len, maxtextlength - len, " %s", ch->rgroup); /* NOTRANSLATE */
+      len += add_snprintf(tempstr + len, maxtextlength - len, " %s", ch->rgroup); /* NOTRANSLATE */
     }
   }
   return tempstr;
@@ -1147,18 +1146,18 @@ void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, si
     len = 0;
     for (j=0; j<16; ++j) {
       if (j >= max) {
-        len += snprintf(buffer + len, maxtextlength - len, "   "); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, "   "); /* NOTRANSLATE */
       } else {
-        len += snprintf(buffer + len, maxtextlength - len, " %2.2X", ut[j]); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %2.2X", ut[j]); /* NOTRANSLATE */
       }
     }
-    len += snprintf(buffer + len, maxtextlength - len, " \""); /* NOTRANSLATE */
+    len += add_snprintf(buffer + len, maxtextlength - len, " \""); /* NOTRANSLATE */
     for (j=0; j<16; ++j) {
       if (j >= max)
         break;
-      len += snprintf(buffer + len, maxtextlength - len, "%c", onlyprintable(ut[j])); /* NOTRANSLATE */
+      len += add_snprintf(buffer + len, maxtextlength - len, "%c", onlyprintable(ut[j])); /* NOTRANSLATE */
     }
-    len += snprintf(buffer + len, maxtextlength - len, "\""); /* NOTRANSLATE */
+    len += add_snprintf(buffer + len, maxtextlength - len, "\""); /* NOTRANSLATE */
     ioutput(dest, color_flags, "%s%s", prefix, buffer); /* NOTRANSLATE */
     if (max <= 16)
       break;
@@ -1257,13 +1256,13 @@ void dump_slow_context(void)
       }
     }
     snprintf(lastline, maxtextlength,
-            "Trace %3i  %-20s %-16s:%5i  %lu.%06lu",
-            i-MAXCONTEXTS+1,
-            c->func ? c->func : "UNKNOWN",
-            c->file ? c->file : "UNKNOWN",
-            c->line,
-            (unsigned long)c->tv.tv_sec,
-            (unsigned long)c->tv.tv_usec);
+             "Trace %3i  %-20s %-16s:%5i  %lu.%06lu",
+             i-MAXCONTEXTS+1,
+             c->func ? c->func : "UNKNOWN",
+             c->file ? c->file : "UNKNOWN",
+             c->line,
+             (unsigned long)c->tv.tv_sec,
+             (unsigned long)c->tv.tv_usec);
     last = c;
     if (show)
       ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);

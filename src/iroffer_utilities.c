@@ -142,7 +142,6 @@ char* getuptime(char *str, unsigned int type, time_t fromwhen, size_t len)
 {
   int days, hours, mins;
   long temp;
-  int llen;
   
   updatecontext();
   
@@ -153,19 +152,15 @@ char* getuptime(char *str, unsigned int type, time_t fromwhen, size_t len)
   
   if (type)
     {
-      llen = snprintf(str, len, "%dD %dH %dM",
-                      days, hours, mins);
+      add_snprintf(str, len, "%dD %dH %dM",
+                   days, hours, mins);
     }
   else
     {
-      llen = snprintf(str, len, "%d Days %d Hrs and %d Min",
-                      days, hours, mins);
+      add_snprintf(str, len, "%d Days %d Hrs and %d Min",
+                   days, hours, mins);
     }
   
-  if ((llen < 0) || ((size_t)llen >= len))
-    {
-      str[0] = '\0';
-    }
   return str;
 }
 
@@ -266,7 +261,7 @@ void vioutput(int dest, unsigned int color_flags, const char *format, va_list ap
           if (gdata.timestampconsole)
             {
               char tempstr2[maxtextlength];
-              getdatestr(tempstr2,0,maxtextlength);
+              user_getdatestr(tempstr2, 0, maxtextlength);
               tostdout("** %s: ",tempstr2);
             }
           else

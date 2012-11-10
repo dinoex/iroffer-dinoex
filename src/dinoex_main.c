@@ -177,7 +177,7 @@ void command_options(int argc, char *const *argv)
 int add_password(const char *hash)
 {
   char *line;
-  ssize_t len;
+  size_t len;
   int fd;
 
   if (gdata.configfile[0] == NULL)
@@ -188,8 +188,8 @@ int add_password(const char *hash)
     return 1;
 
   line = mymalloc(maxtextlength);
-  len = snprintf(line, maxtextlength, "\n"
-           "%s %s\n" "\n", "adminpass", hash); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "\n"
+                     "%s %s\n" "\n", "adminpass", hash); /* NOTRANSLATE */
   write(fd, line, len);
   mydelete(line)
   close(fd);
