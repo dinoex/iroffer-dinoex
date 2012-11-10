@@ -379,10 +379,19 @@ static int parse_bool_val(const char *key, const char *text)
   return -1;
 }
 
+static void parse_bool_to_ptr(unsigned int *ptr, const char *key, const char *text)
+{
+  int val;
+
+  val = parse_bool_val(key, text);
+  if (val >= 0) {
+    *ptr = (unsigned int)val;
+  }
+}
+
 static unsigned int set_config_bool(const char *key, const char *text)
 {
   int i;
-  int val;
 
   updatecontext();
 
@@ -390,10 +399,7 @@ static unsigned int set_config_bool(const char *key, const char *text)
   if (i < 0)
     return 1;
 
-  val = parse_bool_val(key, text);
-  if (val >= 0 ) {
-    *(config_parse_bool[i].ivar) = val;
-  }
+  parse_bool_to_ptr(config_parse_bool[i].ivar, key, text);
   return 0;
 }
 
@@ -1650,12 +1656,7 @@ static char *p_nickserv_pass(void)
 
 static void c_noannounce(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].noannounce = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].noannounce), key, var);
 }
 
 static char *p_noannounce(void)
@@ -1665,12 +1666,7 @@ static char *p_noannounce(void)
 
 static void c_offline(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].offline = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].offline), key, var);
 }
 
 static char *p_offline(void)
@@ -1820,12 +1816,7 @@ static void d_periodicmsg(const char *key, unsigned int net)
 
 static void c_plaintext(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].plaintext = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].plaintext), key, var);
 }
 
 static char *p_plaintext(void)
@@ -1845,12 +1836,7 @@ static void c_proxyinfo(const char *key, char *var)
 
 static void c_respondtochannellist(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].respondtochannellist = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].respondtochannellist), key, var);
 }
 
 static char *p_respondtochannellist(void)
@@ -1860,12 +1846,7 @@ static char *p_respondtochannellist(void)
 
 static void c_respondtochannelxdcc(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].respondtochannelxdcc = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].respondtochannelxdcc), key, var);
 }
 
 static char *p_respondtochannelxdcc(void)
@@ -1875,12 +1856,7 @@ static char *p_respondtochannelxdcc(void)
 
 static void c_restrictlist(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].restrictlist = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].restrictlist), key, var);
 }
 
 static char *p_restrictlist(void)
@@ -1890,12 +1866,7 @@ static char *p_restrictlist(void)
 
 static void c_restrictsend(const char *key, char *var)
 {
-  int val;
-
-  val = parse_bool_val(key, var);
-  if (val >= 0) {
-    gdata.networks[current_network].restrictsend = val;
-  }
+  parse_bool_to_ptr(&(gdata.networks[current_network].restrictsend), key, var);
 }
 
 static char *p_restrictsend(void)
@@ -1910,7 +1881,8 @@ static void c_send_listfile(const char *key, char *var)
   if (check_range(key, var, &rawval, -1, 1000000))
     return;
 
-  gdata.send_listfile = rawval;
+  /* -1 is converted to XDCC_SEND_LIST */
+  gdata.send_listfile = (unsigned int)rawval;
 }
 
 static char *p_send_listfile(void)
@@ -1947,7 +1919,7 @@ static void c_server_connect_timeout(const char *key, char *var)
   int rawval;
 
   if (check_range(key, var, &rawval, CTIMEOUT, 2000) == 0) {
-    gdata.networks[current_network].server_connect_timeout = rawval;
+    gdata.networks[current_network].server_connect_timeout = (unsigned int)rawval;
   }
 }
 
@@ -2009,7 +1981,7 @@ static void c_slow_privmsg(const char *key, char *var)
   int rawval;
 
   if (check_range(key, var, &rawval, 0, 120) == 0) {
-    gdata.networks[current_network].slow_privmsg = rawval;
+    gdata.networks[current_network].slow_privmsg = (unsigned int)rawval;
   }
 }
 

@@ -621,7 +621,7 @@ static void restrictprivlistmsg(const char *nick)
   restrictprivlistmsg2(nick, msg);
 }
 
-static int parse_xdcc_list(const char *nick, char *msg3)
+static unsigned int parse_xdcc_list(const char *nick, char *msg3)
 {
   xlistqueue_t *user;
 
