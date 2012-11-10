@@ -555,7 +555,7 @@ unsigned int max_minutes_waits(time_t *endtime, unsigned int min)
   *endtime += (60 * min);
   if (*endtime < gdata.curtime) {
     *endtime = 0x7FFFFFFF;
-    min = (*endtime - gdata.curtime)/60;
+    min = (unsigned int)((*endtime - gdata.curtime) / 60);
   }
   --(*endtime);
   return min;
