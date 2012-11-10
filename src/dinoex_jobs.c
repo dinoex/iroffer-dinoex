@@ -1783,7 +1783,7 @@ void start_qupload(void)
   }
 }
 
-int close_qupload(unsigned int net, const char *nick)
+unsigned int close_qupload(unsigned int net, const char *nick)
 {
   qupload_t *qu;
 

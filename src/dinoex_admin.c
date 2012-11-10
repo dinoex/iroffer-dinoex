@@ -57,26 +57,28 @@ voutput_fd(int fd, const char *format, va_list args)
   char *tempstr;
   ssize_t retval;
   ssize_t llen;
+  size_t ulen;
 
   updatecontext();
   tempstr = mymalloc(maxtextlength);
 
   llen = vsnprintf(tempstr, maxtextlength - 3, format, args);
-  if ((llen < 0) || (llen >= (int)maxtextlength - 3)) {
+  if ((llen < 0) || (llen >= ((ssize_t)maxtextlength - 3))) {
     outerror(OUTERROR_TYPE_WARN, "string too long!");
     mydelete(tempstr);
     return;
   }
+  ulen = (size_t)llen;
 
   if (!gdata.xdcclistfileraw) {
-    llen = removenonprintable(tempstr);
+    ulen = removenonprintable(tempstr);
   }
 
   if (gdata.dos_text_files)
-    tempstr[llen++] = '\r';
+    tempstr[ulen++] = '\r';
 
-  tempstr[llen++] = '\n';
-  tempstr[llen] = '\0';
+  tempstr[ulen++] = '\n';
+  tempstr[ulen] = '\0';
 
   retval = write(fd, tempstr, strlen(tempstr));
   if (retval < 0)
@@ -5618,7 +5620,7 @@ static unsigned int a_new_announce(unsigned int max, const char *name)
   char *tempstr3;
   char *colordesc;
   time_t now;
-  ssize_t llen;
+  size_t llen;
   unsigned int i;
 
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
