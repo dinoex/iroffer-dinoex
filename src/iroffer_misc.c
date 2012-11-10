@@ -580,21 +580,21 @@ char* getsendname(const char * const full)
 {
   char *copy;
   size_t i;
-  int lastslash;
-  int spaced;
+  size_t lastslash;
+  size_t spaced;
   size_t len;
   
   updatecontext();
   
   len = sstrlen(full);
-  lastslash = -1;
+  lastslash = 0;
   spaced = 0;
   for (i = 0 ; i < len ; i++)
     {
       switch (full[i]) {
       case '/':
       case '\\':
-        lastslash = i;
+        lastslash = i + 1;
         spaced = 0;
         break;
       case ' ':
@@ -603,13 +603,13 @@ char* getsendname(const char * const full)
       }
     }
   
-  len -= lastslash + 1;
+  len -= lastslash;
   copy = mymalloc(len + 1 + spaced);
   
   if ((spaced != 0) && (gdata.spaces_in_filenames != 0))
-    sprintf(copy, "\"%s\"", full + lastslash + 1);
+    sprintf(copy, "\"%s\"", full + lastslash);
   else
-    strcpy(copy, full + lastslash + 1);
+    strcpy(copy, full + lastslash);
   
   /* replace any evil characters in the filename with underscores */
   for (i = 0; i < len; i++)
