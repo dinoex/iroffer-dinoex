@@ -249,7 +249,7 @@ static int config_find_typ(config_name_t config_name_f, const char *key, int bin
   bin_low = 0;
   while (bin_low <= bin_high) {
     bin_mid = (bin_low + bin_high) / 2;
-    how_far = strcmp(config_name_f(bin_mid), key);
+    how_far = strcmp(config_name_f((unsigned int)bin_mid), key);
     if (how_far == 0)
       return bin_mid;
     if (how_far < 0)
@@ -568,7 +568,7 @@ static unsigned int set_config_int(const char *key, const char *text)
     return 0;
 
   rawval *= config_parse_int[i].mult;
-  *(config_parse_int[i].ivar) = rawval;
+  *(config_parse_int[i].ivar) = (unsigned int)rawval;
   return 0;
 }
 
@@ -830,22 +830,24 @@ static int config_find_list(const char *key)
   return config_find_typ(config_name_list, key, config_list_anzahl);
 }
 
-static int get_netmask(char *text, int init)
+static unsigned int get_netmask(char *text, unsigned int init)
 {
   char *work;
   int newmask;
 
   work = strchr(text, '/');
-  if (work != NULL) {
-    *(work++) = 0;
-    newmask = atoi(work);
-    if (newmask < 0 )
-      return init;
-    if (newmask > init )
-      return init;
-    return newmask;
-  }
-  return init;
+  if (work == NULL)
+    return init;
+
+  *(work++) = 0;
+  newmask = atoi(work);
+  if (newmask < 0 )
+    return init;
+
+  if (newmask > (int)init )
+    return init;
+
+  return (unsigned int )newmask;
 }
 
 static unsigned int set_config_list(const char *key, char *text)
@@ -870,11 +872,11 @@ static unsigned int set_config_list(const char *key, char *text)
     cidr = irlist_add(config_parse_list[i].list, sizeof(ir_cidr_t));
     if (strchr(text, ':') == NULL) {
       cidr->family = AF_INET;
-      cidr->netmask = get_netmask(text, 32);
+      cidr->netmask = get_netmask(text, 32U);
       e = inet_pton(cidr->family, text, &(cidr->remote.sin.sin_addr));
     } else {
       cidr->family = AF_INET6;
-      cidr->netmask = get_netmask(text, 128);
+      cidr->netmask = get_netmask(text, 128U);
       e = inet_pton(cidr->family, text, &(cidr->remote.sin6.sin6_addr));
     }
     cidr->remote.sa.sa_family = cidr->family;
@@ -1371,13 +1373,14 @@ static void d_disk_quota(const char *key)
 static void c_getip_network(const char *key, char *var)
 {
   int net;
+
   net = get_network(var);
   if (net < 0) {
     outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored '%s' because it has unknown args: '%s'",
              current_config, current_line, key, var);
   } else {
-    gdata.networks[current_network].getip_net = net;
+    gdata.networks[current_network].getip_net = (unsigned int)net;
   }
 }
 
