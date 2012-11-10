@@ -1037,7 +1037,7 @@ static void u_info(const userinput * const u)
             xd->st_size, sizestrstr);
   mydelete(sizestrstr);
   
-  getdatestr(tempstr, xd->mtime, maxtextlengthshort);
+  user_getdatestr(tempstr, xd->mtime, maxtextlengthshort);
   u_respond(u, " Last Modified  %s", tempstr);
   
   if (u->level > 0) 
@@ -1271,10 +1271,10 @@ static void u_chatl(const userinput * const u)
       
       tempstr = mymalloc(maxtextlengthshort);
       
-      getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
+      user_getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
       u_respond(u,"  Connected at %s",tempstr);
       
-      getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
+      user_getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
       u_respond(u,"  Last contact %s",tempstr);
       
       mydelete(tempstr);
@@ -1593,7 +1593,7 @@ static void u_botinfo(const userinput * const u) {
      {
        char *tempstr2 = mymalloc(maxtextlength);
        
-       getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlength);
+       user_getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlength);
        
        if (gdata.transferlimits[ii].limit)
          {
@@ -1808,7 +1808,7 @@ static void u_msgread(const userinput * const u)
    
   for (ml = irlist_get_head(&gdata.msglog); ml; ml = irlist_get_next(ml))
     {
-      getdatestr(tempstr, ml->when, maxtextlength);
+      user_getdatestr(tempstr, ml->when, maxtextlength);
       
       u_respond(u, "%s: %s", tempstr, ml->hostmask);
       u_respond(u, " ^- %s", ml->message);

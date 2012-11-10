@@ -1724,7 +1724,7 @@ void startupiroffer(void) {
       printf("** Window Size: %ux%u\n", gdata.termcols, gdata.termlines);
    
    tempstr23 = mymalloc(maxtextlength);
-   printf("** Started on: %s\n",getdatestr(tempstr23,0,maxtextlength));
+   printf("** Started on: %s\n", user_getdatestr(tempstr23, 0, maxtextlength));
    mydelete(tempstr23);
    
    set_loginname();

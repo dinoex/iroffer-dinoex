@@ -845,6 +845,8 @@ char *user_getdatestr(char* str, time_t Tp, size_t len)
   struct tm *localt = NULL;
   size_t llen;
 
+  if (Tp == 0)
+    Tp = gdata.curtime;
   localt = localtime(&Tp);
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
   llen = strftime(str, len, format, localt);

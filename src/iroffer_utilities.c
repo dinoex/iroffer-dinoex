@@ -261,7 +261,7 @@ void vioutput(int dest, unsigned int color_flags, const char *format, va_list ap
           if (gdata.timestampconsole)
             {
               char tempstr2[maxtextlength];
-              getdatestr(tempstr2,0,maxtextlength);
+              user_getdatestr(tempstr2, 0, maxtextlength);
               tostdout("** %s: ",tempstr2);
             }
           else

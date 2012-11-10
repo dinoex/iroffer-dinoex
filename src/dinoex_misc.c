@@ -782,7 +782,7 @@ char *transfer_limit_exceeded_msg(unsigned int ii)
    char *tempstr = mymalloc(maxtextlength);
    char *tempstr2 = mymalloc(maxtextlengthshort);
 
-   getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlengthshort);
+   user_getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlengthshort);
    snprintf(tempstr, maxtextlength,
             "Sorry, I have exceeded my %s transfer limit of %" LLPRINTFMT "uMB.  Try again after %s.",
             transferlimit_type_to_string(ii),
