@@ -685,7 +685,7 @@ static void h_write_header(http * const h, const char *header)
   localt = gmtime(&gdata.curtime);
   tempstr = mymalloc(maxtextlength);
   date = mymalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt); /* NOTRANSLATE */
+  strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt);
   len = add_snprintf(tempstr, maxtextlength, header, date);
   mydelete(date);
   send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
@@ -809,7 +809,7 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
   tempstr = mymalloc(maxtextlength);
   localt = gmtime(&gdata.curtime);
   date = mymalloc(maxtextlengthshort);
-  strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt); /* NOTRANSLATE */
+  strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt);
   if (h->status_code == 200) {
     if (h_parse_range(h)) {
       h->status_code = 206;
@@ -817,7 +817,7 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
     if (now) {
       last = mymalloc(maxtextlengthshort);
       localt = gmtime(now);
-      strftime(last, maxtextlengthshort - 1, HTTP_DATE_LINE, localt); /* NOTRANSLATE */
+      strftime(last, maxtextlengthshort - 1, HTTP_DATE_LINE, localt);
       if (h->modified) {
         if (strcmp(last, h->modified) == 0) {
           h->status_code = 304;
