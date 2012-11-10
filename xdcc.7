@@ -66,7 +66,14 @@ If the pack is protected by password you have to add it here.
 .br
 .I /MSG mybot XDCC BATCH group password
 .br
-Request a download of a series of packs matching group group on the bot mybot.
+Request a download of a series of packs matching group on the bot mybot.
+.br
+
+.I /MSG mybot XDCC BATCH group*pattern
+.br
+.I /MSG mybot XDCC BATCH group*pattern password
+.br
+Request a download of a series of packs matching group and file matching pattern on the bot mybot.
 .br
 
 .I /MSG mybot XDCC BATCH pack1-pack2
@@ -74,6 +81,15 @@ Request a download of a series of packs matching group group on the bot mybot.
 .I /MSG mybot XDCC BATCH pack1-pack2 password
 .br
 Request a download of a series of packs from number pack1 to number pack2 on the bot mybot.
+The order of packs can be reversed by giving the higher number first.
+.br
+
+.I /MSG mybot XDCC BATCH pack1-pack2*pattern
+.br
+.I /MSG mybot XDCC BATCH pack1-pack2*pattern password
+.br
+Request a download of a series of packs from number pack1 to number pack2 and file matching pattern on the bot mybot.
+The order of packs can be reversed by giving the higher number first.
 .br
 
 .I /MSG mybot XDCC BATCH pack1,pack2
