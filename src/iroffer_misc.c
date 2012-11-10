@@ -1242,17 +1242,11 @@ void switchserver(int which)
    
   if (which < 0)
     {
-      int i;
+      unsigned int i;
       
       i = irlist_size(&(gnetwork->servers));
       
-      which = (int) (((float)i)*rand()/(RAND_MAX+0.0));
-      
-      while (which > i || which < 0)
-        {
-          if (which < 0) which += i;
-          if (which > i) which -= i;
-        }
+      which = (int) get_random_uint( i );
     }
   
   if (gnetwork->offline)
@@ -1910,7 +1904,9 @@ void isrotatelog(void)
 void createpassword(void) {
 #ifndef NO_CRYPT
    char pw1[maxtextlengthshort], pw2[maxtextlengthshort];
-   int len, ok, saltnum;
+   int len;
+   unsigned int ok;
+   unsigned int saltnum;
    char salt[6], *pwout;
    
    printf("\niroffer-dinoex " VERSIONLONG "\n"
@@ -1949,7 +1945,7 @@ void createpassword(void) {
    
    
    srand((unsigned int)( (getpid()*5000) + (time(NULL)%5000) ));
-   saltnum = (int)(4096.0*rand()/(RAND_MAX+0.0));
+   saltnum = get_random_uint( 4096 );
 #if !defined(_OS_CYGWIN)
    salt[0] = '$';
    salt[1] = '1';

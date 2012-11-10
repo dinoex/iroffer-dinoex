@@ -868,6 +868,17 @@ char *grep_to_fnmatch(const char *grep)
   return match;
 }
 
+/* get a random number between 0 and max, max excluded */
+unsigned int get_random_uint( unsigned int max )
+{
+  unsigned int val;
+
+  val = (unsigned int)( (((float)(max)) * rand() ) / (0.0 + RAND_MAX) );
+  if (val >= max)
+    val = max - 1;
+  return val;
+}
+
 #ifndef USE_MERGESORT
 /* sort a linked list with selection sort */
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
