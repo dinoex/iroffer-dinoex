@@ -1350,7 +1350,6 @@ static void do_atfind(unsigned int min, privmsginput *pi)
 
 static unsigned int run_new_trigger(const char *nick, const char *grouplist)
 {
-  struct tm *localt = NULL;
   irlist_t list;
   xdcc **best;
   xdcc *xd;
