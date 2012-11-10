@@ -624,8 +624,8 @@ static void h_access_log(http * const h)
   date = mymalloc(maxtextlengthshort);
   strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt);
   bytes = h->bytesgot + h->bytessent;
-  len = snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" %u %ld\n",
-                 get_host(h), date, h->log_url, h->status_code, bytes);
+  len = add_snprintf(tempstr, maxtextlength, "%s - - [%s] \"%s\" %u %ld\n",
+                     get_host(h), date, h->log_url, h->status_code, bytes);
   mydelete(date);
   http_access_log_add(gdata.http_access_log, tempstr, len);
   mydelete(tempstr);
@@ -686,7 +686,7 @@ static void h_write_header(http * const h, const char *header)
   tempstr = mymalloc(maxtextlength);
   date = mymalloc(maxtextlengthshort);
   strftime(date, maxtextlengthshort - 1, HTTP_DATE_LINE, localt); /* NOTRANSLATE */
-  len = snprintf(tempstr, maxtextlength, header, date);
+  len = add_snprintf(tempstr, maxtextlength, header, date);
   mydelete(date);
   send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
   mydelete(tempstr);
@@ -826,19 +826,19 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
       }
     }
   }
-  len = snprintf(tempstr, maxtextlength, http_header_status, h->status_code, date, last ? last : date, html_mime(mime), h->range_end - h->range_start);
+  len = add_snprintf(tempstr, maxtextlength, http_header_status, h->status_code, date, last ? last : date, html_mime(mime), h->range_end - h->range_start);
   if (h->attachment) {
-    len += snprintf(tempstr + len, maxtextlength - len,
-                    "Content-Disposition: attachment; filename=\"%s\"\r\n", /* NOTRANSLATE */
-                    h->attachment);
-    len += snprintf(tempstr + len, maxtextlength - len,
-                    "Accept-Ranges: bytes\r\n" ); /* NOTRANSLATE */
+    len += add_snprintf(tempstr + len, maxtextlength - len,
+                        "Content-Disposition: attachment; filename=\"%s\"\r\n", /* NOTRANSLATE */
+                        h->attachment);
+    len += add_snprintf(tempstr + len, maxtextlength - len,
+                        "Accept-Ranges: bytes\r\n" ); /* NOTRANSLATE */
     if (h->range != NULL)
-      len += snprintf(tempstr + len, maxtextlength - len,
-                      "Content-Range: bytes %" LLPRINTFMT "u-%" LLPRINTFMT "u/%" LLPRINTFMT "u\r\n", /* NOTRANSLATE */
-                      h->range_start, h->range_end - 1, h->totalsize);
+      len += add_snprintf(tempstr + len, maxtextlength - len,
+                          "Content-Range: bytes %" LLPRINTFMT "u-%" LLPRINTFMT "u/%" LLPRINTFMT "u\r\n", /* NOTRANSLATE */
+                          h->range_start, h->range_end - 1, h->totalsize);
   }
-  len += snprintf(tempstr + len, maxtextlength - len, "\r\n" ); /* NOTRANSLATE */
+  len += add_snprintf(tempstr + len, maxtextlength - len, "\r\n" ); /* NOTRANSLATE */
   mydelete(last);
   mydelete(date);
   send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
@@ -1157,11 +1157,11 @@ static size_t html_link_option(char *str, size_t size, const char *option, const
 
   size_t len = 0;
   if (html_link_start++ > 0) {
-    len = snprintf(str, size, ";"); /* NOTRANSLATE */
+    len = add_snprintf(str, size, ";"); /* NOTRANSLATE */
   }
   tempstr = mymalloc(maxtextlength);
   url_encode(tempstr, maxtextlength, val);
-  len += snprintf(str + len, size - len, "%s=%s", option, tempstr); /* NOTRANSLATE */
+  len += add_snprintf(str + len, size - len, "%s=%s", option, tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   return len;
 }
@@ -1173,7 +1173,7 @@ static char *html_link_build(const char *css, const char *caption, const char *t
   size_t len;
 
   tempstr = mymalloc(maxtextlength);
-  len = snprintf(tempstr, maxtextlength, "<a%s title=\"%s\" href=\"/?", css, caption);
+  len = add_snprintf(tempstr, maxtextlength, "<a%s title=\"%s\" href=\"/?", css, caption);
   html_link_start = 0;
   if (group)
     len += html_link_option(tempstr + len, maxtextlength - len, "g", group); /* NOTRANSLATE */
@@ -1181,7 +1181,7 @@ static char *html_link_build(const char *css, const char *caption, const char *t
     len += html_link_option(tempstr + len, maxtextlength - len, "t", "1"); /* NOTRANSLATE */
   if (order)
     len += html_link_option(tempstr + len, maxtextlength - len, "o", order); /* NOTRANSLATE */
-  len += snprintf(tempstr + len, maxtextlength - len, "\">%s</a>", text);
+  len += add_snprintf(tempstr + len, maxtextlength - len, "\">%s</a>", text);
   return tempstr;
 }
 
@@ -1507,12 +1507,12 @@ static void h_html_file(http * const h)
     h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
     mydelete(tempstr);
     tlabel = mymalloc(maxtextlength);
-    len = snprintf(tlabel, maxtextlength, "%s\n/msg %s xdcc send %u",
+    len = add_snprintf(tlabel, maxtextlength, "%s\n/msg %s xdcc send %u",
                    "Download with:", h->nick, num);
     if (xd->has_md5sum)
-      len += snprintf(tlabel + len, maxtextlength - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
+      len += add_snprintf(tlabel + len, maxtextlength - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
     if (xd->has_crc32)
-      len += snprintf(tlabel + len, maxtextlength - len, "\ncrc32: " CRC32_PRINT_FMT, xd->crc32);
+      len += add_snprintf(tlabel + len, maxtextlength - len, "\ncrc32: " CRC32_PRINT_FMT, xd->crc32);
     tempstr = mymalloc(maxtextlength);
     len = 0;
     if (gdata.show_date_added) {
@@ -1523,15 +1523,15 @@ static void h_html_file(http * const h)
     }
     len += html_encode(tempstr + len, maxtextlength - len, xd->desc);
     if (xd->lock)
-      len += snprintf(tempstr + len, maxtextlength - len, " (%s)", "locked");
+      len += add_snprintf(tempstr + len, maxtextlength - len, " (%s)", "locked");
     if (xd->note != NULL) {
       if (xd->note[0]) {
-        len += snprintf(tempstr + len, maxtextlength - len, "<br>");
+        len += add_snprintf(tempstr + len, maxtextlength - len, "<br>");
         len += html_encode(tempstr + len, maxtextlength - len, xd->note);
       }
     }
     javalink = mymalloc(maxtextlength);
-    len = snprintf(javalink, maxtextlength,
+    len = add_snprintf(javalink, maxtextlength,
                    "<a href=\"javascript:ToClipboard('/msg %s xdcc send %u');\">%s</a>",
                    h->nick, num, tempstr);
     mydelete(tempstr);
@@ -1651,13 +1651,13 @@ static void h_html_index(http * const h)
 
   tlabel = mymalloc(maxtextlength);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
-  len  = snprintf(tlabel,       maxtextlength,       "%6s %s\n", tempstr, "Traffic today");
+  len  = add_snprintf(tlabel,       maxtextlength,       "%6s %s\n", tempstr, "Traffic today");
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_WEEKLY].used);
-  len += snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this week");
+  len += add_snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this week");
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
-  len += snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this month");
+  len += add_snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this month");
   mydelete(tempstr);
   h_respond(h, "<td title=\"%s\">%s</td>\n", tlabel, "iroffer-dinoex " VERSIONLONG);
   mydelete(tlabel);

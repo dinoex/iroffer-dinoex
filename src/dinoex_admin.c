@@ -252,7 +252,7 @@ static void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i,
   const char *groupstr;
   char *sizestrstr;
   char *colordesc;
-  unsigned int len;
+  size_t len;
 
   sizestrstr = sizestr(1, xd->st_size);
   datestr[0] = 0;
@@ -270,35 +270,35 @@ static void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i,
     }
   }
   colordesc = xd_color_description(xd);
-  len = snprintf(tempstr, maxtextlength,
-           "\2#%-*u\2 %*ux [%s]%s %s%s%s",
-           l,
-           i,
-           s, xd->gets,
-           sizestrstr,
-           datestr,
-           colordesc,
-           sep, groupstr);
+  len = add_snprintf(tempstr, maxtextlength,
+                     "\2#%-*u\2 %*ux [%s]%s %s%s%s",
+                     l,
+                     i,
+                     s, xd->gets,
+                     sizestrstr,
+                     datestr,
+                     colordesc,
+                     sep, groupstr);
   if (colordesc != xd->desc)
     mydelete(colordesc);
   mydelete(sizestrstr);
 
   if (xd->minspeed > 0 && xd->minspeed != gdata.transferminspeed) {
-    len += snprintf(tempstr + len, maxtextlength - len,
-             " [%1.1fK Min]",
-             xd->minspeed);
+    len += add_snprintf(tempstr + len, maxtextlength - len,
+                        " [%1.1fK Min]",
+                        xd->minspeed);
   }
 
   if ((xd->maxspeed > 0) && (xd->maxspeed != gdata.transfermaxspeed)) {
-    len += snprintf(tempstr + len, maxtextlength - len,
-             " [%1.1fK Max]",
-             xd->maxspeed);
+    len += add_snprintf(tempstr + len, maxtextlength - len,
+                        " [%1.1fK Max]",
+                        xd->maxspeed);
   }
 
   if (xd->dlimit_max != 0) {
-    len += snprintf(tempstr + len, maxtextlength - len,
-             " [%u of %u DL left]",
-             xd->dlimit_used - xd->gets, xd->dlimit_max);
+    len += add_snprintf(tempstr + len, maxtextlength - len,
+                        " [%u of %u DL left]",
+                        xd->dlimit_used - xd->gets, xd->dlimit_max);
   }
 
   a_respond(u, "%s", tempstr);
@@ -5536,15 +5536,15 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   if (gdata.show_date_added) {
     datestr = mymalloc(maxtextlengthshort);
     user_getdatestr(datestr, xd->xtime ? xd->xtime : xd->mtime, maxtextlengthshort - 1);
-    len += snprintf(prefix + len, maxtextlength - 2 - len, "%s%s", gdata.announce_seperator, datestr); /* NOTRANSLATE */
+    len += add_snprintf(prefix + len, maxtextlength - 2 - len, "%s%s", gdata.announce_seperator, datestr); /* NOTRANSLATE */
     mydelete(datestr);
   }
   if (gdata.announce_size) {
     sizestrstr = sizestr(1, xd->st_size);
-    len += snprintf(prefix + len, maxtextlength - 2 - len, "%s[%s]", gdata.announce_seperator, sizestrstr); /* NOTRANSLATE */
+    len += add_snprintf(prefix + len, maxtextlength - 2 - len, "%s[%s]", gdata.announce_seperator, sizestrstr); /* NOTRANSLATE */
     mydelete(sizestrstr);
   }
-  snprintf(prefix + len, maxtextlength - 2 - len, "%s", gdata.announce_seperator); /* NOTRANSLATE */
+  add_snprintf(prefix + len, maxtextlength - 2 - len, "%s", gdata.announce_seperator); /* NOTRANSLATE */
   message = mymalloc(maxtextlength);
   color = a_get_color(gdata.announce_suffix_color);
 
@@ -5554,11 +5554,11 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
     if (gnetwork->noannounce != 0)
      continue;
 
-    snprintf(suffix, maxtextlength - 2, "/MSG %s XDCC SEND %u",
-             get_user_nick(), num);
+    add_snprintf(suffix, maxtextlength - 2, "/MSG %s XDCC SEND %u",
+                 get_user_nick(), num);
     color_suffix = color_text(suffix, color);
-    snprintf(message, maxtextlength - 2, "\2%s\2%s%s%s%s",
-             msg, prefix, colordesc, gdata.announce_seperator, color_suffix);
+    add_snprintf(message, maxtextlength - 2, "\2%s\2%s%s%s%s",
+                 msg, prefix, colordesc, gdata.announce_seperator, color_suffix);
     if (color_suffix != suffix)
       mydelete(color_suffix);
     a_announce_channels(message, match, xd->group);
@@ -5641,8 +5641,8 @@ static unsigned int a_new_announce(unsigned int max, const char *name)
       tempstr[0] = '\0';
     colordesc = xd_color_description(xd);
     tempstr3 = mymalloc(maxtextlength);
-    snprintf(tempstr3, maxtextlength - 1, "Added: %s \2%u\2%s%s",
-             tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
+    add_snprintf(tempstr3, maxtextlength - 1, "Added: %s \2%u\2%s%s",
+                 tempstr, number_of_pack(xd), gdata.announce_seperator, colordesc);
     if (colordesc != xd->desc)
       mydelete(colordesc);
     a_announce_channels(tempstr3, name, xd->group);

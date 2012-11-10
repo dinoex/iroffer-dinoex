@@ -69,6 +69,11 @@ ir_uint64 timeval_to_ms(struct timeval *tv);
 ir_uint64 get_time_in_ms(void);
 char *user_getdatestr(char* str, time_t Tp, size_t len);
 unsigned int get_random_uint( unsigned int max );
+size_t
+#ifdef __GNUC__
+__attribute__ ((format(printf, 3, 4)))
+#endif
+add_snprintf(char * restrict str, size_t size, const char * restrict format, ...);
 
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b));
 

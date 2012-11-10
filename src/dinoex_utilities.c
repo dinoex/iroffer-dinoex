@@ -879,6 +879,44 @@ unsigned int get_random_uint( unsigned int max )
   return val;
 }
 
+static size_t
+#ifdef __GNUC__
+__attribute__ ((format(printf, 3, 0)))
+#endif
+/* add a printf text to a string buffer */
+add_vsnprintf(char * restrict str, size_t size, const char * restrict format, va_list ap)
+{
+  ssize_t slen;
+  size_t ulen;
+
+  slen = vsnprintf(str, size, format, ap);
+  if (slen < 0) {
+    *str = 0; /* terminating 0-byte */
+    return 0;
+  }
+  ulen = (size_t)slen;
+  --size; /* terminating 0-byte */
+  if (ulen > size)
+    return size;
+  return ulen;
+}
+
+size_t
+#ifdef __GNUC__
+__attribute__ ((format(printf, 3, 4)))
+#endif
+/* add a printf text to a string buffer */
+add_snprintf(char * restrict str, size_t size, const char * restrict format, ...)
+{
+  va_list args;
+  size_t len;
+
+  va_start(args, format);
+  len = add_vsnprintf(str, size, format, args);
+  va_end(args);
+  return len;
+}
+
 #ifndef USE_MERGESORT
 /* sort a linked list with selection sort */
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))

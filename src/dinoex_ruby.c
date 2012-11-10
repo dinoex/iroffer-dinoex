@@ -391,14 +391,14 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
     }
     if (strcmp(key, "crc32") == 0) { /* NOTRANSLATE */
       tempstr = mymalloc(maxtextlengthshort);
-      len = snprintf(tempstr, maxtextlengthshort, CRC32_PRINT_FMT, xd->crc32);
+      len = add_snprintf(tempstr, maxtextlengthshort, CRC32_PRINT_FMT, xd->crc32);
       rval = rb_str_new(tempstr, len);
       mydelete(tempstr);
       return rval;
     }
     if (strcmp(key, "md5sum") == 0) { /* NOTRANSLATE */
       tempstr = mymalloc(maxtextlengthshort);
-      len = snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
+      len = add_snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
       rval = rb_str_new(tempstr, len);
       mydelete(tempstr);
       return rval;

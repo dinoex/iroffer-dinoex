@@ -1262,7 +1262,8 @@ void switchserver(int which)
 
 char* getstatusline(char *str, size_t len)
 {
-  unsigned int i, srvq;
+  size_t i;
+  unsigned int srvq;
   unsigned int netq;
   ir_uint64 xdccsent;
   ir_uint64 xdccrecv;
@@ -1306,7 +1307,7 @@ char* getstatusline(char *str, size_t len)
            xdccsum += (ir_uint64)gdata.xdccsum[i];
          }
        
-       i = snprintf(str, len,
+       i = add_snprintf(str, len,
                "Stat: %u/%u Sls, %u/%u Q, %u/%u I, %u/%u SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Up, %1.1fK/s Down)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
@@ -1323,7 +1324,7 @@ char* getstatusline(char *str, size_t len)
     }
   else
     {
-       i = snprintf(str, len,
+       i = add_snprintf(str, len,
                "Stat: %u/%u Sls, %u/%u Q, %1.1fK/s Rcd, %u SrQ (Bdw: %" LLPRINTFMT "uK, %1.1fK/s, %1.1fK/s Rcd)",
                irlist_size(&gdata.trans),
                gdata.slotsmax,
@@ -1345,7 +1346,8 @@ char* getstatusline(char *str, size_t len)
 
 char* getstatuslinenums(char *str, size_t len)
 {
-  unsigned int i, gcount, srvq;
+  size_t i;
+  unsigned int gcount, srvq;
   float scount,ocount;
   xdcc *xd;
   ir_uint64 xdccsent;
@@ -1378,7 +1380,7 @@ char* getstatuslinenums(char *str, size_t len)
       xd = irlist_get_next(xd);
     }
   
-  i = snprintf(str, len,
+  i = add_snprintf(str, len,
                "stat %u %1.0f %u %1.0f %u %u %u %u %u %u %1.1f %u %" LLPRINTFMT "u %1.1f %1.1f",
                irlist_size(&gdata.xdccs),
                ocount/1024/1024,

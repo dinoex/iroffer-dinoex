@@ -226,19 +226,11 @@ void write_statefile(void)
     hdr = (statefile_hdr_t*)data;
     next = (unsigned char*)(&hdr[1]);
     
-    length = snprintf((char *)next, maxtextlength,
-                      "iroffer-dinoex " VERSIONLONG ", %s", gdata.osstring);
+    length = add_snprintf((char *)next, maxtextlength,
+                          "iroffer-dinoex " VERSIONLONG ", %s", gdata.osstring);
     
-    if ((length < 0) || (length >= maxtextlength))
-      {
-       outerror(OUTERROR_TYPE_WARN_LOUD, "Version too long! %d",
-                 (int)length);
-      }
-    else
-      {
         create_statefile_hdr(hdr, STATEFILE_TAG_IROFFER_VERSION, sizeof(statefile_hdr_t) + ceiling(length+1, 4));
         write_statefile_item(&bout, data);
-      }
     
     mydelete(data);
   }

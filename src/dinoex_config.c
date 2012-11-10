@@ -2475,42 +2475,42 @@ static void dump_config_fdump(void)
          ch;
          ch = irlist_get_next(ch)) {
       buffer = mymalloc(maxtextlength);
-      len = snprintf(buffer, maxtextlength, "%s", ch->name); /* NOTRANSLATE */
+      len = add_snprintf(buffer, maxtextlength, "%s", ch->name); /* NOTRANSLATE */
       if (ch->plisttime != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-plist", ch->plisttime); /* NOTRANSLATE */
       if (ch->plistoffset != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-plistoffset", ch->plistoffset); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-plistoffset", ch->plistoffset); /* NOTRANSLATE */
       if (((ch->flags & (CHAN_SUMMARY|CHAN_MINIMAL)) != 0) || (ch->plisttime != 0))
-        len += snprintf(buffer + len, maxtextlength - len, " %s %s", "-pformat", text_pformat(ch->flags)); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %s", "-pformat", text_pformat(ch->flags)); /* NOTRANSLATE */
       if (ch->pgroup != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-pgroup", ch->pgroup); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-pgroup", ch->pgroup); /* NOTRANSLATE */
       if (ch->key != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-key", ch->key); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-key", ch->key); /* NOTRANSLATE */
       if (ch->delay != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-delay", ch->delay); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-delay", ch->delay); /* NOTRANSLATE */
       if (ch->noannounce != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-noannounce"); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s", "-noannounce"); /* NOTRANSLATE */
       if (ch->joinmsg != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-joinmsg", ch->joinmsg); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-joinmsg", ch->joinmsg); /* NOTRANSLATE */
       for (line = irlist_get_head(&(ch->headline));
            line;
            line = irlist_get_next(line)) {
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", line); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-headline", line); /* NOTRANSLATE */
       }
 #ifndef WITHOUT_BLOWFISH
       if (ch->fish != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-fish", ch->fish); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-fish", ch->fish); /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
       if (ch->listmsg != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-listmsg", ch->listmsg); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-listmsg", ch->listmsg); /* NOTRANSLATE */
       if (ch->rgroup != NULL)
-        len += snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-rgroup", ch->rgroup); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s \"%s\"", "-rgroup", ch->rgroup); /* NOTRANSLATE */
       if (ch->notrigger != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-notrigger"); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s", "-notrigger"); /* NOTRANSLATE */
       if (ch->plaintext != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s", "-plaintext"); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s", "-plaintext"); /* NOTRANSLATE */
       if (ch->waitjoin != 0)
-        len += snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin); /* NOTRANSLATE */
+        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin); /* NOTRANSLATE */
       dump_line("%s %s", "channel", buffer); /* NOTRANSLATE */
       mydelete(buffer);
     }

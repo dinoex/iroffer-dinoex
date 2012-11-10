@@ -74,23 +74,23 @@ static void select_dump(const char *desc, int highests)
   int ii;
   
   len = 0;
-  len += snprintf(buffer + len, maxtextlength - len, "select %s: [read", desc);
+  len += add_snprintf(buffer + len, maxtextlength - len, "select %s: [read", desc);
   for (ii=0; ii<highests+1; ii++)
     {
       if (FD_ISSET(ii, &gdata.readset))
         {
-          len += snprintf(buffer + len, maxtextlength - len, " %d", ii);
+          len += add_snprintf(buffer + len, maxtextlength - len, " %d", ii);
         }
     }
-  len += snprintf(buffer + len, maxtextlength - len, "] [write");
+  len += add_snprintf(buffer + len, maxtextlength - len, "] [write");
   for (ii=0; ii<highests+1; ii++)
     {
       if (FD_ISSET(ii, &gdata.writeset))
         {
-          len += snprintf(buffer + len, maxtextlength - len, " %d", ii);
+          len += add_snprintf(buffer + len, maxtextlength - len, " %d", ii);
         }
     }
-  len += snprintf(buffer + len, maxtextlength - len, "]");
+  len += add_snprintf(buffer + len, maxtextlength - len, "]");
   ioutput(OUT_S, COLOR_CYAN, "%s", buffer);
   
 }

@@ -1548,7 +1548,7 @@ static void u_botinfo(const userinput * const u) {
            
            if (ch->fish)
              {
-               len += snprintf(tempstr + len, maxtextlength - len,
+               len += add_snprintf(tempstr + len, maxtextlength - len,
                                ", fish: %s",
                                ch->fish);
              }

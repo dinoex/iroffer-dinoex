@@ -895,33 +895,33 @@ void write_removed_xdcc(xdcc *xd)
     return;
 
   line = mymalloc(maxtextlength);
-  len = snprintf(line, maxtextlength, "\n"); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "\n"); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_file %s\n", xd->file); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_file %s\n", xd->file); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_desc %s\n", xd->desc); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_desc %s\n", xd->desc); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_note %s\n", xd->note ? xd->note : ""); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_note %s\n", xd->note ? xd->note : ""); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_size %" LLPRINTFMT "d\n", xd->st_size); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_size %" LLPRINTFMT "d\n", xd->st_size); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_gets %u\n", xd->gets); /* NOTRANSLATE */
-  write(fd, line, len);
-  if (gdata.transferminspeed == xd->minspeed)
-    len = snprintf(line, maxtextlength, "xx_mins \n"); /* NOTRANSLATE */
-  else
-    len = snprintf(line, maxtextlength, "xx_mins %f\n", xd->minspeed); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_gets %u\n", xd->gets); /* NOTRANSLATE */
   write(fd, line, len);
   if (gdata.transferminspeed == xd->minspeed)
-    len = snprintf(line, maxtextlength, "xx_maxs \n"); /* NOTRANSLATE */
+    len = add_snprintf(line, maxtextlength, "xx_mins \n"); /* NOTRANSLATE */
   else
-    len = snprintf(line, maxtextlength, "xx_maxs %f\n", xd->maxspeed); /* NOTRANSLATE */
+    len = add_snprintf(line, maxtextlength, "xx_mins %f\n", xd->minspeed); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_data %s\n", xd->group ? xd->group : ""); /* NOTRANSLATE */
+  if (gdata.transferminspeed == xd->minspeed)
+    len = add_snprintf(line, maxtextlength, "xx_maxs \n"); /* NOTRANSLATE */
+  else
+    len = add_snprintf(line, maxtextlength, "xx_maxs %f\n", xd->maxspeed); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_trig \n"); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_data %s\n", xd->group ? xd->group : ""); /* NOTRANSLATE */
   write(fd, line, len);
-  len = snprintf(line, maxtextlength, "xx_trno %s\n", find_groupdesc(xd->group)); /* NOTRANSLATE */
+  len = add_snprintf(line, maxtextlength, "xx_trig \n"); /* NOTRANSLATE */
+  write(fd, line, len);
+  len = add_snprintf(line, maxtextlength, "xx_trno %s\n", find_groupdesc(xd->group)); /* NOTRANSLATE */
   write(fd, line, len);
   mydelete(line)
 
@@ -1472,8 +1472,8 @@ static void write_asc_int(xml_buffer_t *xmlbuf, int spaces, const char *tag, uns
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlengthshort);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s>%u</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1482,8 +1482,8 @@ static void write_asc_int64(xml_buffer_t *xmlbuf, int spaces, const char *tag, i
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlength);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s>%" LLPRINTFMT "d</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1492,8 +1492,8 @@ static void write_asc_hex(xml_buffer_t *xmlbuf, int spaces, const char *tag, uns
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlengthshort);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s>%.8lX</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1502,8 +1502,8 @@ static void write_asc_text(xml_buffer_t *xmlbuf, int spaces, const char *tag, co
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlength);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s><![CDATA[%s]]></%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 
@@ -1512,8 +1512,8 @@ static void write_asc_plain(xml_buffer_t *xmlbuf, int spaces, const char *tag, c
   size_t len;
 
   xml_buffer_check(xmlbuf, maxtextlength);
-  len = snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
-                 "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
+  len = add_snprintf(xmlbuf->buffer + xmlbuf->len, MAX_XML_CHUNK - xmlbuf->len,
+                     "%*s<%s>%s</%s>\n", spaces, "", tag, val, tag); /* NOTRANSLATE */
   xmlbuf->len += len;
 }
 

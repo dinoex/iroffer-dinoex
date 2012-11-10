@@ -142,7 +142,6 @@ char* getuptime(char *str, unsigned int type, time_t fromwhen, size_t len)
 {
   int days, hours, mins;
   long temp;
-  int llen;
   
   updatecontext();
   
@@ -153,19 +152,15 @@ char* getuptime(char *str, unsigned int type, time_t fromwhen, size_t len)
   
   if (type)
     {
-      llen = snprintf(str, len, "%dD %dH %dM",
-                      days, hours, mins);
+      add_snprintf(str, len, "%dD %dH %dM",
+                   days, hours, mins);
     }
   else
     {
-      llen = snprintf(str, len, "%d Days %d Hrs and %d Min",
-                      days, hours, mins);
+      add_snprintf(str, len, "%d Days %d Hrs and %d Min",
+                   days, hours, mins);
     }
   
-  if ((llen < 0) || ((size_t)llen >= len))
-    {
-      str[0] = '\0';
-    }
   return str;
 }
 
