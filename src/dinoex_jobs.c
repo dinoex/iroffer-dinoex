@@ -868,19 +868,16 @@ const char *find_groupdesc(const char *group)
   if (group == NULL)
     return "";
 
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd)
-    {
-      if (xd->group != NULL)
-        {
-          if (strcasecmp(xd->group, group) == 0)
-            {
-              return xd->group_desc;
-            }
-        }
-      xd = irlist_get_next(xd);
-    }
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
+    if (xd->group == NULL)
+      continue;
 
+    if (strcasecmp(xd->group, group) == 0)
+      return xd->group_desc;
+
+  }
   return "";
 }
 
@@ -1231,11 +1228,11 @@ void autotrigger_rebuild(void)
   xdcc *xd;
 
   irlist_delete_all(&gdata.autotrigger);
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd) {
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
     if (xd->trigger != NULL)
       autotrigger_add(xd);
-    xd = irlist_get_next(xd);
   }
 }
 

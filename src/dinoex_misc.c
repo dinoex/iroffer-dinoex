@@ -67,13 +67,12 @@ unsigned int number_of_pack(xdcc *pack)
     return XDCC_SEND_LIST;
 
   n = 0;
-  xd = irlist_get_head(&gdata.xdccs);
-  while(xd) {
+  for (xd = irlist_get_head(&gdata.xdccs);
+       xd;
+       xd = irlist_get_next(xd)) {
     ++n;
     if (xd == pack)
       return n;
-
-    xd = irlist_get_next(xd);
   }
 
   return 0;
