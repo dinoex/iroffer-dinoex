@@ -1748,7 +1748,7 @@ static void d_overallmaxspeeddaydays(const char *key)
 }
 
 /* read an uint value from text with bounds */
-static unsigned int atoui_between(const char * restrict text, int min, int max )
+static unsigned int atoui_between(const char * text, int min, int max )
 {
   int val;
 
