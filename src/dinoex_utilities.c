@@ -886,7 +886,7 @@ static size_t
 __attribute__ ((format(printf, 3, 0)))
 #endif
 /* add a printf text to a string buffer */
-add_vsnprintf(char * restrict str, size_t size, const char * restrict format, va_list ap)
+add_vsnprintf(char * str, size_t size, const char * format, va_list ap)
 {
   ssize_t slen;
   size_t ulen;

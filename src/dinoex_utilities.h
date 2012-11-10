@@ -73,7 +73,7 @@ size_t
 #ifdef __GNUC__
 __attribute__ ((format(printf, 3, 4)))
 #endif
-add_snprintf(char * restrict str, size_t size, const char * restrict format, ...);
+add_snprintf(char * str, size_t size, const char * format, ...);
 
 void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b));
 
