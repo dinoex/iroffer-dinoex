@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+bugfix: conenctionmethod "bnc", "wingate", "custom"
+   versions affected: 3.12 - 3.28
+   Config was not accepted whithout extra parameters.
+
 401) XDCC BATCH (inspired by mflatischler)
   Allow limiting patterns to segments and groups in BATCH.
 

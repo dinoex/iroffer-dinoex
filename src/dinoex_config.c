@@ -1288,9 +1288,9 @@ static void c_connectionmethod(const char * UNUSED(key), char *var)
   if (part[2]) {
     gdata.networks[current_network].connectionmethod.port = atoi(part[2]);
   }
-  if (part[2]) {
+  if (part[3]) {
     gdata.networks[current_network].connectionmethod.password = part[3];
-    part[2] = NULL;
+    part[3] = NULL;
   }
   if (part[4]) {
     gdata.networks[current_network].connectionmethod.vhost = part[4];
@@ -1308,11 +1308,11 @@ static void c_connectionmethod(const char * UNUSED(key), char *var)
                "%s:%ld connectionmethod ssl not compiled, defaulting to direct",
                current_config, current_line);
 #endif /* USE_SSL */
-    } else if ((m >= 4) && !strcmp(part[0], "bnc")) { /* NOTRANSLATE */
+    } else if ((m >= 3) && !strcmp(part[0], "bnc")) { /* NOTRANSLATE */
       gdata.networks[current_network].connectionmethod.how = how_bnc;
-    } else if ((m == 2) && !strcmp(part[0], "wingate")) { /* NOTRANSLATE */
+    } else if ((m == 3) && !strcmp(part[0], "wingate")) { /* NOTRANSLATE */
       gdata.networks[current_network].connectionmethod.how = how_wingate;
-    } else if ((m == 2) && !strcmp(part[0], "custom")) { /* NOTRANSLATE */
+    } else if ((m == 3) && !strcmp(part[0], "custom")) { /* NOTRANSLATE */
       gdata.networks[current_network].connectionmethod.how = how_custom;
     } else {
       gdata.networks[current_network].connectionmethod.how = how_direct;

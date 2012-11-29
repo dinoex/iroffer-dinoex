@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+bugfix: conenctionmethod "bnc", "wingate", "custom"
+   versions affected: 3.12 - 3.28
+   Diese Konfiguration wurde ohne zusätzliche Parameter nicht angenommen.
+
 401) XDCC BATCH
   Erlaube einschränkende Suchbegriffe für Bereiche und Gruppen in BATCH.
 
