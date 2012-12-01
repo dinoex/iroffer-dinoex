@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+402) Export the packlist as json
+  htdocs/json.txt.rb: export packlist in json format.
+
 bugfix: conenctionmethod "bnc", "wingate", "custom"
    versions affected: 3.12 - 3.28
    Config was not accepted whithout extra parameters.
