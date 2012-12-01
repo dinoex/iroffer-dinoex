@@ -14,7 +14,6 @@ bugfix: conenctionmethod "bnc", "wingate", "custom"
   XDCC BATCH <a>-<b>*<pattern>       Try to send or queue packs from <a> to <b> matching <pattern>
   XDCC BATCH <g>*<pattern>           Try to send or queue packs from group <g> matching <pattern>
 
-
 400) BATCH
   Allow limiting patterns to segments and groups in BATCH.
 
