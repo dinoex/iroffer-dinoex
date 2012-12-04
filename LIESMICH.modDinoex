@@ -3,12 +3,16 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+bugfix: tcprangestart
+  versions affected: 3.0 - 3.28
+  Auf ausgelasteten Bots konnten die Downloads abbrechen wenn tcprangestart gesetzt war.
+
 402) Exportiere die Paketliste as Json.
   htdocs/json.txt.rb: Exportiere Paketliste im Json Format.
 
 bugfix: conenctionmethod "bnc", "wingate", "custom"
-   versions affected: 3.12 - 3.28
-   Diese Konfiguration wurde ohne zusätzliche Parameter nicht angenommen.
+  versions affected: 3.12 - 3.28
+  Diese Konfiguration wurde ohne zusätzliche Parameter nicht angenommen.
 
 401) XDCC BATCH
   Erlaube einschränkende Suchbegriffe für Bereiche und Gruppen in BATCH.

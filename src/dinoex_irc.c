@@ -393,7 +393,7 @@ unsigned int irc_open_listen(ir_connection_t *con)
 {
   unsigned int rc;
 
-  rc = open_listen(con->family, &(con->local), &(con->listensocket), 0, gdata.tcprangestart, 1, NULL);
+  rc = open_listen(con->family, &(con->local), &(con->listensocket), gdata.tcprangestart, 0, 1, get_local_vhost());
   if (rc != 0)
     return rc;
 
