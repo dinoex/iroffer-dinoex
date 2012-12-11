@@ -385,6 +385,7 @@ static void mainloop (void) {
                 && ( gdata.overallmaxspeeddaydays & (1 << (unsigned int)localt->tm_wday)) )
                gdata.maxb = gdata.overallmaxspeeddayspeed;
             }
+         isrotatelog();
          }
       
       /*----- see if we've hit a transferlimit or need to reset counters */
@@ -810,8 +811,6 @@ static void mainloop (void) {
           
                chat_writestatus();
             }
-          
-          isrotatelog();
         }
       
       updatecontext();
