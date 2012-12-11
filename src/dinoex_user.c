@@ -762,33 +762,16 @@ static unsigned int stoplist_queue(const char *nick, irlist_t *list)
 static unsigned int stoplist_announce(const char *nick)
 {
   channel_announce_t *item;
-  char *copy;
-  char *end;
-  char *inick;
   unsigned int stopped = 0;
 
   item = irlist_get_head(&(gnetwork->serverq_channel));
   while (item) {
-    inick = NULL;
-    copy = mystrdup(item->msg);
-    inick = strchr(copy, ' ');
-    if (inick != NULL) {
-      *(inick++) = 0;
-      end = strchr(inick, ' ');
-      if (end != NULL) {
-        *(end++) = 0;
-        if (strcasecmp(inick, nick) == 0) {
-          if ( (strcmp(copy, "PRIVMSG") == 0) || (strcmp(copy, "NOTICE") == 0) ) { /* NOTRANSLATE */
-            ++stopped;
-            mydelete(copy);
-            mydelete(item->msg);
-            item = irlist_delete(&(gnetwork->serverq_channel), item);
-            continue;
-          }
-        }
-      }
+    if (strcasecmp(item->channel, nick) == 0) {
+      mydelete(item->channel);
+      mydelete(item->msg);
+      item = irlist_delete(&(gnetwork->serverq_channel), item);
+      continue;
     }
-    mydelete(copy);
     item = irlist_get_next(item);
   }
   return stopped;

@@ -953,8 +953,9 @@ void dumpgdata(void)
       gdata_irlist_iter_end;
   
       gdata_irlist_iter_start(networks[ss].serverq_channel, channel_announce_t);
-      gdata_iter_print_int(delay);
+      gdata_iter_print_string(channel);
       gdata_iter_print_string(msg);
+      gdata_iter_print_long(c_time);
       gdata_irlist_iter_end;
   
       gdata_print_int(networks[ss].serverbucket);
@@ -1007,6 +1008,7 @@ void dumpgdata(void)
       gdata_irlist_iter_start(networks[ss].channels, channel_t);
       dump_line("  : name=%s flags=%x", iter->name, iter->flags);
       gdata_iter_print_time(nextann);
+      gdata_iter_print_time(nextmsg);
       gdata_iter_print_time(nextjoin);
       gdata_iter_print_time(lastjoin);
   /* members */

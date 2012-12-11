@@ -30,13 +30,13 @@ void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 0)))
 #endif
-vprivmsg_chan(const channel_t *ch, const char *format, va_list ap);
+vprivmsg_chan(channel_t * const ch, const char *format, va_list ap);
 
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
-privmsg_chan(const channel_t *ch, const char *format, ...);
+privmsg_chan(channel_t * const ch, const char *format, ...);
 
 void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char *message, size_t len);
 void writeserver_notice(writeserver_type_e delay, const char *nick, const char *message, size_t len);

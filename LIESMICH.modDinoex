@@ -3,9 +3,13 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+bugfix: channel -delay (reported by Loke_AF)
+  versions affected: 1.24 - 3.28
+  Die Wartezeit wurde bei verschiedenen Channels aufaddiert.
+
 bugfix: status_time_dcc_chat
   versions affected: 3.28
-  Zeige auch im Chat die aktuelle Warteschlange zum IRC-Server.
+  Zeige auch im Chat die SrvQ für das akteulle Netzwerk.
 
 403) logrotate
   logroate wird jetzt exakt auf der Grenze des Zeitbereiches ausgeführt.
