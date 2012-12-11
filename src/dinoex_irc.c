@@ -1313,6 +1313,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
           ch->flags |= CHAN_ONCHAN;
           ch->lastjoin = gdata.curtime;
           ch->nextann = gdata.curtime + gdata.waitafterjoin;
+          ch->nextmsg = gdata.curtime + gdata.waitafterjoin;
           if (ch->joinmsg) {
             writeserver(WRITESERVER_NOW, "PRIVMSG %s :%s", ch->name, ch->joinmsg);
           }

@@ -279,7 +279,7 @@ static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 0)))
 #endif
-vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
+vwriteserver_channel(channel_t * const ch, const char *format, va_list ap)
 {
   char *msg;
   channel_announce_t *item;
@@ -303,7 +303,7 @@ vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
   }
 
   if (gdata.debug > 13) {
-    ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
+    ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: PRIVMSG %s :%s", ch->name, msg);
   }
 
   if (len > EXCESS_BUCKET_MAX) {
@@ -314,7 +314,13 @@ vwriteserver_channel(unsigned int delay, const char *format, va_list ap)
 
   if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ) {
     item = irlist_add(&(gnetwork->serverq_channel), sizeof(channel_announce_t));
-    item->delay = delay;
+    if (ch->nextmsg < gdata.curtime) {
+      /* fast announce */
+      ch->nextmsg = gdata.curtime;
+    }
+    item->c_time = ch->nextmsg;
+    ch->nextmsg += ch->delay;
+    item->channel = mystrdup(ch->name);
     item->msg = msg;
   } else {
     outerror(OUTERROR_TYPE_WARN, "Server queue is very large. Dropping additional output.");
@@ -328,11 +334,11 @@ static void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
-writeserver_channel(unsigned int delay, const char *format, ... )
+writeserver_channel(channel_t * const ch, const char *format, ... )
 {
   va_list args;
   va_start(args, format);
-  vwriteserver_channel(delay, format, args);
+  vwriteserver_channel(ch, format, args);
   va_end(args);
 }
 
@@ -340,7 +346,7 @@ void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 0)))
 #endif
-vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
+vprivmsg_chan(channel_t * const ch, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   ssize_t len;
@@ -369,20 +375,20 @@ vprivmsg_chan(const channel_t *ch, const char *format, va_list ap)
     }
     tempcrypt = encrypt_fish(tempstr, ulen, ch->fish);
     if (tempcrypt) {
-      writeserver_channel(ch->delay, "PRIVMSG %s :+OK %s", ch->name, tempcrypt); /* NOTRANSLATE */
+      writeserver_channel(ch, "+OK %s", tempcrypt); /* NOTRANSLATE */
       mydelete(tempcrypt);
       return;
     }
   }
 #endif /* WITHOUT_BLOWFISH */
-  writeserver_channel(ch->delay, "PRIVMSG %s :%s", ch->name, tempstr); /* NOTRANSLATE */
+  writeserver_channel(ch, "%s", tempstr); /* NOTRANSLATE */
 }
 
 void
 #ifdef __GNUC__
 __attribute__ ((format(printf, 2, 3)))
 #endif
-privmsg_chan(const channel_t *ch, const char *format, ...)
+privmsg_chan(channel_t * const ch, const char *format, ...)
 {
   va_list args;
   va_start(args, format);
@@ -462,6 +468,7 @@ static void cleanannounce(void)
   for (item = irlist_get_head(&(gnetwork->serverq_channel));
        item;
        item = irlist_delete(&(gnetwork->serverq_channel), item)) {
+     mydelete(item->channel);
      mydelete(item->msg);
   }
 }
@@ -478,19 +485,18 @@ void sendannounce(void)
 {
   channel_announce_t *item;
 
-  item = irlist_get_head(&(gnetwork->serverq_channel));
-  if (!item)
-    return;
+  for (item = irlist_get_head(&(gnetwork->serverq_channel)); item;) {
+    if (gdata.curtime < item->c_time) {
+      item = irlist_get_next(item);
+      continue;
+    }
 
-  if (item->delay > 0 ) {
-    --(item->delay);
-    return;
+    if (gdata.noannounce_start <= gdata.curtime)
+      writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :%s", item->channel, item->msg); /* NOTRANSLATE */
+    mydelete(item->channel);
+    mydelete(item->msg);
+    item = irlist_delete(&(gnetwork->serverq_channel), item);
   }
-
-  if (gdata.noannounce_start <= gdata.curtime)
-    writeserver(WRITESERVER_NORMAL, "%s", item->msg);
-  mydelete(item->msg);
-  irlist_delete(&(gnetwork->serverq_channel), item);
 }
 
 void a_fillwith_msg2(userinput * const u, const char *nick, const char *line)
@@ -2188,7 +2194,7 @@ unsigned int compare_logrotate_time(void)
   if (lt_now.tm_hour == lt_last.tm_hour )
     return 0; /* same hour */
 
-  hrs = gdata.logrotate / ( 60*60 );
+  hrs = (int)( gdata.logrotate / ( 60*60 ) );
   if (lt_now.tm_hour < (lt_last.tm_hour + hrs))
     return 0; /* time not reached */
 

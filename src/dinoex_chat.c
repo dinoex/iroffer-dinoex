@@ -69,8 +69,10 @@ void chat_writestatus(void)
     if (chat->status != DCCCHAT_CONNECTED)
       continue;
 
+    gnetwork = &(gdata.networks[chat->net]);
     writestatus(chat);
   }
+  gnetwork = NULL;
 }
 
 /* register active connections for select() */

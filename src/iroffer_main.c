@@ -652,6 +652,7 @@ static void mainloop (void) {
                     ch->plisttime &&
                     (((gdata.curtime / 60) % ch->plisttime) == ch->plistoffset))
                   {
+                    ch->nextmsg = gdata.curtime + ch->delay;
                     if (ch->pgroup != NULL)
                       {
                         ioutput(OUT_S|OUT_D, COLOR_NO_COLOR, "Plist sent to %s (pgroup)", ch->name);

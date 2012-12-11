@@ -3,6 +3,14 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+bugfix: channel -delay (reported by Loke_AF)
+  versions affected: 1.24 - 3.28
+  Do not add up delays of different channels.
+
+bugfix: status_time_dcc_chat (reported by Loke_AF)
+  versions affected: 3.28
+  Show value for SrvQ of current network.
+
 403) logrotate (suggested by Loke_AF)
   logroate will now run exactly at the border of the time given.
 

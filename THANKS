@@ -662,6 +662,8 @@ Loke_AF
 	suggesting "telnet_allow"
 	suggesting "flood_protection_rate"
 	suggesting "logrotate" at fixed time
+	reporting "status_time_dcc_chat" bug
+	reporting "channel -delay" problem
 
 Nouhime
 	reporting "http_search" bug.

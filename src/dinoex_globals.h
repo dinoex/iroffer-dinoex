@@ -56,9 +56,9 @@ typedef struct
 
 typedef struct
 {
+  char *channel;
   char *msg;
-  unsigned int delay;
-  unsigned int dummy;
+  long c_time;
 } channel_announce_t;
 
 typedef struct

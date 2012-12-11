@@ -429,6 +429,7 @@ typedef struct
   unsigned short notrigger;
   unsigned short waitjoin;
   time_t nextann;
+  time_t nextmsg;
   time_t nextjoin;
   time_t lastjoin;
   irlist_t members;
