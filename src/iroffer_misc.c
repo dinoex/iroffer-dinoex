@@ -1849,16 +1849,17 @@ void isrotatelog(void)
   
   updatecontext();
   
-  if (!gdata.logrotate ||
-      !gdata.logfile ||
-      (gdata.last_logrotate + gdata.logrotate) > gdata.curtime)
-    {
-      return;
-    }
+  /* check time for logrotate */
+  if (compare_logrotate_time() == 0)
+    return;
   
+  gdata.last_logrotate = gdata.curtime;
+  write_statefile();
   rotatelog(gdata.logfile_httpd);
   rotatelog(gdata.http_access_log);
   newname = new_logfilename(gdata.logfile);
+  if (newname == NULL)
+    return;
   
   mylog("Rotating Log to '%s'", newname);
   call_val = link(gdata.logfile, newname);
@@ -1891,8 +1892,6 @@ void isrotatelog(void)
                    strerror(errno));
         }
       
-      gdata.last_logrotate = gdata.curtime;
-      write_statefile();
       mylog("Rotated Log to '%s'", newname);
     }
   

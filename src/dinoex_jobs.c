@@ -2141,6 +2141,60 @@ void a_read_config_files(const userinput *u)
   mydelete(templine);
 }
 
+/* compare time for logrotate */
+unsigned int compare_logrotate_time(void)
+{
+  struct tm lt_last;
+  struct tm lt_now;
+  int hrs;
+
+  if (gdata.logrotate == 0) /* never */
+    return 0;
+
+  lt_last = *localtime(&gdata.last_logrotate);
+  lt_now = *localtime(&gdata.curtime);
+
+  if (lt_now.tm_year != lt_last.tm_year )
+    return 1;
+
+  if (gdata.logrotate == 7*24*60*60) { /* weekly */
+    if (lt_now.tm_wday != 1) /* not monday */
+      return 0;
+
+    if (lt_now.tm_hour != 0) /* not 00:00 */
+      return 0;
+
+    if (lt_now.tm_mon != lt_last.tm_mon )
+      return 1; /* new month */
+
+    if (lt_now.tm_mday == lt_last.tm_mday )
+      return 0; /* same day */
+
+    return 1; /* new week */
+  }
+
+  if (lt_now.tm_mon != lt_last.tm_mon )
+    return 1;
+
+  if (gdata.logrotate == 30*24*60*60) /* monthly */
+    return 0; /* same month */
+
+  if (lt_now.tm_mday != lt_last.tm_mday )
+    return 1;
+
+  if (gdata.logrotate == 24*60*60) /* daily */
+    return 0; /* same day */
+
+  if (lt_now.tm_hour == lt_last.tm_hour )
+    return 0; /* same hour */
+
+  hrs = gdata.logrotate / ( 60*60 );
+  if (lt_now.tm_hour < (lt_last.tm_hour + hrs))
+    return 0; /* time not reached */
+
+  return 1;
+}
+
 /* get the new filename for a logfile */
 char *new_logfilename(const char *logfile)
 {
@@ -2287,7 +2341,7 @@ void expire_logfiles(const char *logfile)
   return;
 }
 
-/* rotae logfile */
+/* rotate a logfile */
 int rotatelog(const char *logfile)
 {
   char *newname;

@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+403) logrotate (suggested by Loke_AF)
+  logroate will now run exactly at the border of the time given.
+
 bugfix: tcprangestart (reported by HK)
   versions affected: 3.0 - 3.28
   On busy bots transfers could abort when tcprangestart was set.

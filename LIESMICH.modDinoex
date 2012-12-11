@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+403) logrotate
+  logroate wird jetzt exakt auf der Grenze des Zeitbereiches ausgeführt.
+
 bugfix: tcprangestart
   versions affected: 3.0 - 3.28
   Auf ausgelasteten Bots konnten die Downloads abbrechen wenn tcprangestart gesetzt war.

@@ -74,7 +74,7 @@ Short Term Features:
   1623  limit files a groupadmin can add
   1630  GETLD
   1634  request by search
-  1669  range stepping feature
+  1672  "XDCC SHUTUP"
 
 Long Term Features:
   1015  http admin
@@ -182,6 +182,7 @@ Long Term Features:
   1649  lock packs against deletion
   1661  secure log/status channel
   1663  logging via syslog() or gelf-socket
+  1672  autonumbering of nickname for mutiple bots
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
