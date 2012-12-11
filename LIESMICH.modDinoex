@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+bugfix: status_time_dcc_chat
+  versions affected: 3.28
+  Zeige auch im Chat die aktuelle Warteschlange zum IRC-Server.
+
 403) logrotate
   logroate wird jetzt exakt auf der Grenze des Zeitbereiches ausgeführt.
 

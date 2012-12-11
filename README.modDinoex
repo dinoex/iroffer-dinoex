@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+bugfix: status_time_dcc_chat (reported by Loke_AF)
+  versions affected: 3.28
+  Show value for current server queue.
+
 403) logrotate (suggested by Loke_AF)
   logroate will now run exactly at the border of the time given.
 
