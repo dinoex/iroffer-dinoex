@@ -303,7 +303,8 @@ vwriteserver_channel(channel_t * const ch, const char *format, va_list ap)
   }
 
   if (gdata.debug > 13) {
-    ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: PRIVMSG %s :%s", ch->name, msg);
+    ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s %s :%s",
+            ch->name, "PRIVMSG", msg); /* NOTRANSLATE */
   }
 
   if (len > EXCESS_BUCKET_MAX) {

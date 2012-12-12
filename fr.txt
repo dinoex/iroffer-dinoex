@@ -1875,3 +1875,4 @@
 2818 "Efface les compteurs de téléchargement pour chaque pack, temps de fonctionnement, et total envoyé"
 2819 "Efface les records de transfert, bande passante, et les limites de transferts"
 2820 "Efface le compteur de download de chaque pack, total envoyé, et temps de connexion"
+2821 "<QUES<: %s %s :%s"
