@@ -2164,6 +2164,9 @@ unsigned int compare_logrotate_time(void)
     return 1;
 
   if (gdata.logrotate == 7*24*60*60) { /* weekly */
+    if (lt_now.tm_yday >= (lt_last.tm_yday + 7))
+      return 1; /* time reached */
+
     if (lt_now.tm_wday != 1) /* not monday */
       return 0;
 
