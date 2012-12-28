@@ -1323,7 +1323,7 @@ fi
 if ! $OPT_NOCHROOT; then
   ${msg} -n "${irt_checkfor} chroot()... "
   echo "${irmain1}
- chroot(\".\");
+ (void)chroot(\".\");
 ${main2}" > config.temp.c
   if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 ${msg} "${irt_found}"
