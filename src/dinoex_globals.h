@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2012 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -75,6 +75,19 @@ typedef struct {
   char *msg;
 } xlistqueue_t;
 
+#define DCC_OPTION_IPV4     1U
+#define DCC_OPTION_IPV6     2U
+#define DCC_OPTION_ACTIVE   4U
+#define DCC_OPTION_PASSIVE  8U
+#define DCC_OPTION_QUIET   16U
+
+typedef struct {
+  char *nick;
+  time_t last_seen;
+  unsigned int options;
+  unsigned int idummy;
+} dcc_options_t;
+
 typedef struct {
   int ai_reset;
   int ai_family;
@@ -144,6 +157,7 @@ typedef struct {
   irlist_t channels;
   irlist_t r_channels;
   irlist_t servers;
+  irlist_t dcc_options;
 
   server_t curserver;
   serv_resolv_t serv_resolv;

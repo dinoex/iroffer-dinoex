@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2012 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -21,17 +21,6 @@
 #include "dinoex_utilities.h"
 #include "dinoex_http.h"
 #include "dinoex_config.h"
-#if 0
-#include "dinoex_transfer.h"
-#include "dinoex_geoip.h"
-#include "dinoex_ssl.h"
-#include "dinoex_curl.h"
-#include "dinoex_irc.h"
-#include "dinoex_telnet.h"
-#include "dinoex_queue.h"
-#include "dinoex_ruby.h"
-#include "dinoex_jobs.h"
-#endif
 #include "dinoex_main.h"
 #include "dinoex_kqueue.h"
 #include "dinoex_misc.h"
@@ -256,6 +245,7 @@ static void free_state(void)
   igninfo *i;
   msglog_t *ml;
   xlistqueue_t *user;
+  dcc_options_t *dcc_options;
   http *h;
   http_magic_t *mime;
   autoadd_group_t *ag;
@@ -287,13 +277,18 @@ static void free_state(void)
     mydelete(gnetwork->connectionmethod.host);
     mydelete(gnetwork->connectionmethod.password);
     mydelete(gnetwork->connectionmethod.vhost);
-    irlist_delete_all(&(gnetwork->xlistqueue));
 
     for (user = irlist_get_head(&(gnetwork->xlistqueue));
          user;
          user = irlist_delete(&(gnetwork->xlistqueue), user)) {
        mydelete(user->nick);
        mydelete(user->msg);
+    }
+
+    for (dcc_options = irlist_get_head(&(gnetwork->dcc_options));
+         dcc_options;
+         dcc_options = irlist_delete(&(gnetwork->dcc_options), dcc_options)) {
+       mydelete(dcc_options->nick);
     }
 
     for (ch = irlist_get_head(&(gnetwork->channels));

@@ -215,9 +215,9 @@ fr*)
  irt_seeingif_lib="Vérifie si les librairies"
  irt_lib_exists="existent"
  irt_geoip6="prend en charge IPv6"
- irt_nogeoip6="Désactiver le GeoIP pour IPv6. Si vous voulez utilisez cette fonction, SVP mettez à jour 'liblGeoIP'"
- irt_nogeoip="Désactiver le GeoIP-check. Si vous voulez utilisez cette fonction, SVP installez 'liblGeoIP'"
- irt_noupnp="Désactiver la fonction UPNP. Si vous voulez utilisez cette fonction, SVP installez 'liblminiupnpc'"
+ irt_nogeoip6="Désactiver le GeoIP pour IPv6. Si vous voulez utilisez cette fonction, SVP mettez à jour 'libGeoIP'"
+ irt_nogeoip="Désactiver le GeoIP-check. Si vous voulez utilisez cette fonction, SVP installez 'libGeoIP'"
+ irt_noupnp="Désactiver la fonction UPNP. Si vous voulez utilisez cette fonction, SVP installez 'libminiupnpc'"
  irt_nocurl="Désactiver le FETCH-Command. Si vous voulez utiliser cette fonction, SVP installez 'libcurl'"
  irt_curlssl="Notice: Votre libcurl est lié avec"
  irt_nossl="Désactiver les fonctions SSL. Si vous voulez utiliser cette fonction, SVP installez 'OpenSSL'"
@@ -319,9 +319,9 @@ de*)
  irt_seeingif_lib="Prüfe ob"
  irt_lib_exists="Bibliothek existiert"
  irt_geoip6="hat IPv6 Funktionen"
- irt_nogeoip6="Benutze GeoIP nicht für IPv6. Für diese Funktion musst du eine neuer Version von 'liblGeoIP' installieren"
- irt_nogeoip="Benutze GeoIP nicht. Für diese Funktion musst du 'liblGeoIP' installieren"
- irt_noupnp="Benutze UPNP nicht. Für diese Funktion musst du 'liblminiupnpc' installieren"
+ irt_nogeoip6="Benutze GeoIP nicht für IPv6. Für diese Funktion musst du eine neuer Version von 'libGeoIP' installieren"
+ irt_nogeoip="Benutze GeoIP nicht. Für diese Funktion musst du 'libGeoIP' installieren"
+ irt_noupnp="Benutze UPNP nicht. Für diese Funktion musst du 'libminiupnpc' installieren"
  irt_nocurl="Kein FETCH-Befehl. Für diese Funktion musst du 'libcurl' installieren"
  irt_curlssl="Hinweis: Deine 'libcurl' benutzt"
  irt_nossl="Benutze kein SSL. Für diese Funktion musst du 'OpenSSL' installieren"
@@ -424,9 +424,9 @@ de*)
  irt_seeingif_lib="Seeing if"
  irt_lib_exists="library exists"
  irt_geoip6="has IPv6 support"
- irt_nogeoip6="Disabled the GeoIP for IPv6. If you want to use this feature, please update 'liblGeoIP'"
- irt_nogeoip="Disabled the GeoIP-check. If you want to use this feature, please install 'liblGeoIP'"
- irt_noupnp="Disabled the UPNP-feature. If you want to use this feature, please install 'liblminiupnpc'"
+ irt_nogeoip6="Disabled the GeoIP for IPv6. If you want to use this feature, please update 'libGeoIP'"
+ irt_nogeoip="Disabled the GeoIP-check. If you want to use this feature, please install 'libGeoIP'"
+ irt_noupnp="Disabled the UPNP-feature. If you want to use this feature, please install 'libminiupnpc'"
  irt_nocurl="Disabled the FETCH-Command. If you want to use this feature, please install 'libcurl'"
  irt_curlssl="Notice: Your 'libcurl' is linked with"
  irt_nossl="Disabled the SSL Features. If you want to use this feature, please install 'OpenSSL'"
@@ -1323,7 +1323,7 @@ fi
 if ! $OPT_NOCHROOT; then
   ${msg} -n "${irt_checkfor} chroot()... "
   echo "${irmain1}
- chroot(\".\");
+ (void)chroot(\".\");
 ${main2}" > config.temp.c
   if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 ${msg} "${irt_found}"

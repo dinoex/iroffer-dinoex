@@ -286,6 +286,8 @@ typedef struct
   short sdummy;
   transfer_status_e tr_status;
   unsigned int mirc_dcc64;
+  unsigned int quietmode;
+  unsigned int passive_dcc;
 } transfer;
 
 typedef enum

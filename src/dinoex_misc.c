@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2012 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -1268,6 +1268,27 @@ void dump_slow_context(void)
       ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
   }
   mydelete(lastline);
+}
+
+/* get options field by user */
+dcc_options_t *get_options(const char *nick)
+{
+  dcc_options_t *dcc_options;
+
+  updatecontext();
+  if (gdata.debug > 10) {
+    ioutput(OUT_S, COLOR_NO_COLOR, "checking for %s", nick);
+  }
+
+  for (dcc_options = irlist_get_head(&(gnetwork->dcc_options));
+       dcc_options;
+       dcc_options = irlist_get_next(dcc_options)) {
+    if (strcasecmp(dcc_options->nick, nick) == 0) {
+      dcc_options->last_seen = gdata.curtime; /* note in use */
+      return dcc_options;
+    }
+  }
+  return NULL;
 }
 
 /* End of File */
