@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2012 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -2431,6 +2431,28 @@ void backup_statefile(void)
              gdata.statefile, strerror(errno));
   }
   mydelete(statefile_tmp);
+}
+
+/* get rid of unused options */
+void expire_options(void)
+{
+  dcc_options_t *dcc_options;
+  time_t too_old;
+  unsigned int ss;
+
+  too_old = gdata.curtime;
+  too_old -= 24*60*60; /* 24 hrs */
+  for (ss = gdata.networks_online; ss--; ) {
+    dcc_options = irlist_get_head(&gdata.networks[ss].dcc_options);
+    while(dcc_options) {
+      if (dcc_options->last_seen >= too_old) {
+        dcc_options = irlist_get_next(dcc_options);
+        continue;
+      }
+      mydelete(dcc_options->nick);
+      dcc_options = irlist_delete(&gdata.networks[ss].dcc_options, dcc_options);
+    }
+  }
 }
 
 static magic_crc_t magic_crc_table[] = {

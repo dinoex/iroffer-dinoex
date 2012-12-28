@@ -386,6 +386,7 @@ static void mainloop (void) {
                gdata.maxb = gdata.overallmaxspeeddayspeed;
             }
          isrotatelog();
+         expire_options();
          }
       
       /*----- see if we've hit a transferlimit or need to reset counters */

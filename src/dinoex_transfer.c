@@ -35,7 +35,7 @@ void t_start_dcc_send(transfer *tr)
 
   sendnamestr = getsendname(tr->xpack->file);
   dccdata = setup_dcc_local(&tr->con.local);
-  if (gdata.passive_dcc) {
+  if (tr->passive_dcc) {
     bzero((char *) &(tr->con.local), sizeof(tr->con.local));
     privmsg_fast(tr->nick, IRC_CTCP "DCC SEND %s %s %" LLPRINTFMT "d %u" IRC_CTCP, /* NOTRANSLATE */
                  sendnamestr, dccdata,
@@ -63,7 +63,7 @@ void t_setup_dcc(transfer *tr)
   updatecontext();
 
   vhost = get_local_vhost();
-  if (gdata.passive_dcc) {
+  if (tr->passive_dcc) {
     bzero((char *) &(tr->con.local), sizeof(tr->con.local));
     if (tr->con.family == AF_INET) {
       tr->con.local.sin.sin_family = AF_INET;
@@ -99,6 +99,7 @@ void t_setup_dcc(transfer *tr)
 transfer *create_transfer(xdcc *xd, const char *nick, const char *hostname)
 {
   transfer *tr;
+  dcc_options_t *dcc_options;
 
   ++(xd->file_fd_count);
   tr = irlist_add(&gdata.trans, sizeof(transfer));
@@ -111,6 +112,23 @@ transfer *create_transfer(xdcc *xd, const char *nick, const char *hostname)
   tr->xpack = xd;
   tr->maxspeed = xd->maxspeed;
   tr->net = gnetwork->net;
+  tr->quietmode = gdata.quietmode;
+  tr->passive_dcc = gdata.passive_dcc;
+  tr->con.family = gnetwork->myip.sa.sa_family;
+  tr->con.localport = 0;
+  dcc_options = get_options(tr->nick);
+  if (dcc_options != NULL) {
+    if ((dcc_options->options & DCC_OPTION_IPV4) != 0)
+      tr->con.family = AF_INET;
+    if ((dcc_options->options & DCC_OPTION_IPV6) != 0)
+      tr->con.family = AF_INET6;
+    if ((dcc_options->options & DCC_OPTION_ACTIVE) != 0)
+      tr->passive_dcc = 0;
+    if ((dcc_options->options & DCC_OPTION_PASSIVE) != 0)
+      tr->passive_dcc = 1;
+    if ((dcc_options->options & DCC_OPTION_QUIET) != 0)
+      tr->quietmode = 1;
+  }
   return tr;
 }
 
@@ -155,7 +173,7 @@ void t_notice_transfer(transfer * const tr, const char *msg, unsigned int pack, 
 {
   char *tempstr;
 
-  if (gdata.quietmode)
+  if (tr->quietmode)
      return;
 
   if (pack == XDCC_SEND_LIST)

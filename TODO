@@ -104,7 +104,6 @@ Long Term Features:
   1262  @find should report the newest files first
   1271  @find not found message
   1275  autoaddann
-  1279  single passive send
   1280  edit color messages
   1282  macros in config
   1286  show one level dir in description

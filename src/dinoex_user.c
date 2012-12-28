@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2012 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -48,7 +48,22 @@ typedef struct
   char *msg7;
 } privmsginput;
 
+typedef struct {
+  const char *name;
+  unsigned int setval;
+  unsigned int resetval;
+} option_list_t;
+
 static const char *type_list[2] = { "NOTICE", "PRIVMSG" }; /* NOTRANSLATE */
+
+const static const option_list_t xdcc_option_list[] = {
+  { "IPV4",    DCC_OPTION_IPV4,    ~DCC_OPTION_IPV4 }, /* NOTRANSLATE */
+  { "IPV6",    DCC_OPTION_IPV6,    ~DCC_OPTION_IPV6 }, /* NOTRANSLATE */
+  { "ACTIVE",  DCC_OPTION_ACTIVE , ~DCC_OPTION_ACTIVE }, /* NOTRANSLATE */
+  { "PASSIVE", DCC_OPTION_PASSIVE, ~DCC_OPTION_PASSIVE }, /* NOTRANSLATE */
+  { "QUIET",   DCC_OPTION_QUIET,   ~DCC_OPTION_QUIET }, /* NOTRANSLATE */
+  { NULL, 0, 0 },
+};
 
 static void strip_trailing_action(char *str)
 {
@@ -853,6 +868,38 @@ static void xdcc_send(privmsginput *pi)
   log_xdcc_request3(pi, msg);
 }
 
+static void xdcc_option(privmsginput *pi)
+{
+  dcc_options_t *dcc_options;
+  const char *option;
+  unsigned int ss;
+  char action;
+
+  dcc_options = get_options(pi->nick);
+  if (dcc_options == NULL) {
+    dcc_options = irlist_add(&(gnetwork->dcc_options), sizeof(dcc_options_t));
+    dcc_options->nick = mystrdup(pi->nick);
+    dcc_options->last_seen = gdata.curtime;
+    dcc_options->options = 0;
+  }
+
+  action = pi->msg3[0];
+  option = pi->msg3 + 1;
+  for (ss=0; xdcc_option_list[ss].name != NULL; ++ss) {
+    if (strcasecmp(option, xdcc_option_list[ss].name) == 0) {
+      if (action == '+') {
+        dcc_options->options |= xdcc_option_list[ss].setval;
+        return;
+      }
+      if (action == '-') {
+        dcc_options->options &= xdcc_option_list[ss].resetval;
+        return;
+      }
+      return;
+    }
+  }
+}
+
 static void command_xdcc(privmsginput *pi)
 {
   const char *msg;
@@ -881,6 +928,12 @@ static void command_xdcc(privmsginput *pi)
   }
   if ((strcmp(pi->msg2, "SEND") == 0) && pi->msg3) { /* NOTRANSLATE */
     xdcc_send(pi);
+    return;
+  }
+
+  if ((strcmp(pi->msg2, "OPTION") == 0) && pi->msg3) { /* NOTRANSLATE */
+    log_xdcc_request1(pi);
+    xdcc_option(pi);
     return;
   }
 

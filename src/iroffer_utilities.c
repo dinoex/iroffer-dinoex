@@ -1022,6 +1022,12 @@ void dumpgdata(void)
       gdata_iter_print_string(msg);
       gdata_irlist_iter_end;
       
+      gdata_irlist_iter_start(networks[ss].dcc_options, dcc_options_t);
+      gdata_iter_print_string(nick);
+      gdata_iter_print_time(last_seen);
+      gdata_iter_print_int(options);
+      gdata_irlist_iter_end;
+      
     }
   
   gdata_irlist_iter_start(msglog, msglog_t);

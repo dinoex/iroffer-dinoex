@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2012 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -77,5 +77,7 @@ void hexdump(int dest, unsigned int color_flags, const char *prefix, void *t, si
 unsigned int packnumtonum(const char *a);
 
 void dump_slow_context(void);
+
+dcc_options_t *get_options(const char *nick);
 
 /* End of File */

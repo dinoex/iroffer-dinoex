@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+404) XDCC OPTION
+
+  Neue Benutzer Kommandos:
+  XDCC OPTION +IPV4          Benutze nur IPv4 für den Transfer
+  XDCC OPTION +IPV6          Benutze nur IPv6 für den Transfer
+  XDCC OPTION +ACTIVE        Benutze den normalen DCC für den Transfer
+  XDCC OPTION +PASSIVE       Benutze den passiven DCC für den Transfer
+  XDCC OPTION +QUIET         Setze den Bot auf leise für den Transfer
+
 bugfix: channel -delay (reported by Loke_AF)
   versions affected: 1.24 - 3.28
   Die Wartezeit wurde bei verschiedenen Channels aufaddiert.
@@ -3047,15 +3056,13 @@ bugfix: ignore spaces in groupname
 
 40) XDCC QUEUE
 
-  Neue Admin Kommandos:
-   new user commands:
-   XDCC QUEUE                 poll current queue status
+  Neue Benutzer Kommandos:
+  XDCC QUEUE                 poll current queue status
 
 41) XDCC CANCEL
 
-  Neue Admin Kommandos:
-   new user commands:
-   XDCC CANCEL                abort pending DCC connection
+  Neue Benutzer Kommandos:
+  XDCC CANCEL                abort pending DCC connection
 
 42) ignoreduplicateip
 
@@ -3072,9 +3079,8 @@ bugfix: addnew
 
 44) XDCC STOP
 
-  Neue Admin Kommandos:
-   new user commands:
-   XDCC STOP                  aborts long XDCC LISTS
+  Neue Benutzer Kommandos:
+  XDCC STOP                  aborts long XDCC LISTS
 
 45) CLEARRECORDS (from PMG)
   Löscht jetzt auch Übertragungsvolumen für die 'transferlimits'

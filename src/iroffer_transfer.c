@@ -34,12 +34,10 @@ void t_initvalues (transfer * const t) {
 
    updatecontext();
 
-      t->con.family = gnetwork->myip.sa.sa_family;
       t->tr_status = TRANSFER_STATUS_UNUSED;
       t->con.listensocket = FD_UNUSED;
       t->con.clientsocket = FD_UNUSED;
       t->con.lastcontact = gdata.curtime;
-      t->con.localport = 0;
       t->id = 200;
       t->overlimit = 0;
    }
@@ -641,7 +639,7 @@ void t_flushed (transfer * const t)
           (t->xpack->st_size-t->startresume)/1024, t->bytesgot/1024,
           t->xpack->desc );
   
-  if (!gdata.quietmode)
+  if (t->quietmode == 0)
     {
       if (t->xpack->has_md5sum)
         {
