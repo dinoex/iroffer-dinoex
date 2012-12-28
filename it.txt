@@ -985,7 +985,6 @@
 1245 "Sto salvando il file di stato... "
 1246 "Non posso creare il file di stato '%s': %s"
 1247 ", %s"
-1248 "Versione troppo lunga! %d"
 1252 "Non posso rimuovere il vecchio file di stato '%s': %s"
 1253 "Non posso fare un backup del vecchio file di stato '%s' -> '%s': %s"
 1254 "Non posso salvare il nuovo file di stato '%s': %s"
