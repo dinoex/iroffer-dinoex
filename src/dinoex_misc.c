@@ -1283,9 +1283,10 @@ dcc_options_t *get_options(const char *nick)
   for (dcc_options = irlist_get_head(&(gnetwork->dcc_options));
        dcc_options;
        dcc_options = irlist_get_next(dcc_options)) {
-    if (strcasecmp(dcc_options->nick, nick) == 0)
+    if (strcasecmp(dcc_options->nick, nick) == 0) {
       dcc_options->last_seen = gdata.curtime; /* note in use */
       return dcc_options;
+    }
   }
   return NULL;
 }

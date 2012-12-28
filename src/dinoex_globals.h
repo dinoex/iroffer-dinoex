@@ -75,11 +75,11 @@ typedef struct {
   char *msg;
 } xlistqueue_t;
 
-#define DCC_OPTION_IPV4     1
-#define DCC_OPTION_IPV6     2
-#define DCC_OPTION_ACTIVE   4
-#define DCC_OPTION_PASSIVE  8
-#define DCC_OPTION_QUIET   16
+#define DCC_OPTION_IPV4     1U
+#define DCC_OPTION_IPV6     2U
+#define DCC_OPTION_ACTIVE   4U
+#define DCC_OPTION_PASSIVE  8U
+#define DCC_OPTION_QUIET   16U
 
 typedef struct {
   char *nick;

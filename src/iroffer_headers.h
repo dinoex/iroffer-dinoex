@@ -288,7 +288,6 @@ typedef struct
   unsigned int mirc_dcc64;
   unsigned int quietmode;
   unsigned int passive_dcc;
-  unsigned int family;
 } transfer;
 
 typedef enum
