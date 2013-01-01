@@ -5,7 +5,7 @@
 <meta http-equiv="content-language" content="fr-fr">
 <link rel="stylesheet" type="text/css" href="http://anime.dinoex.net/dinoex.css">
 <link rel="icon" href="favicon.ico">
-<title>Install Iroffer Dinoex Linux VHosts</title>
+<title>Installation de Iroffer mod Dinoex sous Linux avec virtual Hosts</title>
 </head>
 <body lang="fr">
 <h1>Installation de Iroffer mod Dinoex sous Linux avec virtual Hosts</h1>
@@ -14,18 +14,18 @@
 <h2>Procédure d'installation</h2>
 
 <ol>
-<li>L'utilisateur "bot" et le domaine "bot.domaine.fr" doivent avoir été créé avec plexx/confix.<br>
+<li>L'utilisateur « bot » et le domaine « bot.domaine.fr » doivent avoir été créé avec plexx/confix.<br>
 <br>
 </li>
 
-<li>Nous allons dans le répertoire racine de l'utilisateur "bot". 
+<li>Nous allons dans le répertoire racine de l'utilisateur « bot ».
 
 <pre class="indent">
 cd /var/www/vhosts/bot.domain.fr/
 </pre>
 </li>
 
-<li>Créez un répertoire supplémentaire pour iroffer. 
+<li>Créez un répertoire supplémentaire pour iroffer.
 
 <pre class="indent">
 mkdir iroffer
@@ -33,21 +33,21 @@ cd iroffer/
 </pre>
 </li>
 
-<li>Récupèrez sur le Web les sources du programme. 
+<li>Récupérez sur internet les sources du programme.
 
 <pre class="indent">
-wget http ://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
+wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
 </pre>
 </li>
 
-<li>Décompressez les sources. 
+<li>Décompressez les sources.
 
 <pre class="indent">
 tar -xvzf iroffer-dinoex-snap.tar.gz
 </pre>
 </li>
 
-<li>Configurez les sources pour votre Linux. 
+<li>Configurez les sources pour votre Linux.
 
 <pre class="indent">
 cd iroffer-dinoex-snap
@@ -55,8 +55,8 @@ cd iroffer-dinoex-snap
 </pre>
 </li>
 
-<li>Si "Configure" affiche quelques erreurs, alors il manque encore des paquets.<br>
-suffisant sous Debian : 
+<li>Si « Configure » affiche quelques erreurs, alors il manque encore des paquets.<br>
+Sous Debian :
 
 <pre class="indent">
 aptitude install make
@@ -71,21 +71,21 @@ aptitude install libruby-extras
 </pre>
 </li>
 
-<li>Nous voulons les textes en français. Nous construisons le programme. 
+<li>Nous compilons le programme avec les textes en français.
 
 <pre class="indent">
 make fr
 </pre>
 </li>
 
-<li>On copie le programme au bon endroit. 
+<li>Nous copions le programme au bon endroit.
 
 <pre class="indent">
 cp iroffer-fr ..
 </pre>
 </li>
 
-<li>Nous commençons avec "exemple.config". 
+<li>Nous préparons un fichier de configuration avec « exemple.config ».
 
 <pre class="indent">
 cp exemple.config ../monbot.config
@@ -95,7 +95,7 @@ chmod 600 monbot.config
 </pre>
 </li>
 
-<li>Seul le Bot doit avoir les droits d'écriture. 
+<li>Seul l'utilisateur « bot » doit avoir les droits d'écriture.
 
 <pre class="indent">
 cd ..
@@ -104,18 +104,18 @@ chmod 700 .
 </pre>
 </li>
 
-<li>Nous allons générer un Mot de passe pour l'Admin Chat. 
+<li>Nous allons générer un mot de passe pour l'administration.
 
 <pre class="indent">
 ./iroffer-fr -c monbot.config
 </pre>
 </li>
 
-<li>Nous renseignons tous les répertoires dans le fichier de configuration "monbot.config".<br>
-"adminhost" doit être réglé de manière appropriée.<br>
-Les chemins pour "monbot.state" et "monbot.txt" sont modifiés pour les sites Web.<br>
-Le répertoire pour les fichiers peut être saisi.<br>
-monbot.config devrait contenir : 
+<li>Nous renseignons tous les répertoires dans le fichier de configuration « monbot.config ».<br>
+« adminhost » doit être renseigné de manière appropriée.<br>
+Les chemins pour « monbot.state » et « monbot.txt » sont modifiés pour les sites puissent les lire.<br>
+Nous ajoutons un répertoire de base pour les fichiers et l'utilisons également pour les fichiers envoyés.<br>
+« monbot.config » devrait contenir :
 
 <pre class="indent">
 logfile /iroffer/monbot.log
@@ -127,18 +127,18 @@ uploaddir /files
 </pre>
 </li>
 
-<li>Nous allons créer le répertoire pour les fichiers. 
+<li>Nous allons créer le répertoire pour les fichiers.
 
 <pre class="indent">
 cd ..
 mkdir files
 chown bot files
 
-Il faudra se connecter par le XDCC ou via FTP pour uploader les fichiers.
+Nous enverrons les fichiers via XDCC ou via FTP ultérieurement.
 </pre>
 </li>
 
-<li>Téléchargement du listing Web externe. 
+<li>Téléchargement du programme de listage sur un site internet.
 
 <pre class="indent">
 wget http ://iroffer.dinoex.net/iroffer-state217.zip
@@ -149,15 +149,15 @@ cp iroffer-sample-fr.php index.php
 </pre>
 </li>
 
-<li>Configuration du listing Web externe. 
+<li>Configuration du programme.
 
 <pre class="indent">
 nano -w index.php
-ou 
+ou
 vim index.php
 </pre>
 
-Dans le index.php à 2) une ligne est a insérée : 
+Dans le index.php à 2) une ligne est a insérée :
 
 <pre class="indent">
 # 2) Pour un Nick précis enregistré :
@@ -166,17 +166,17 @@ $nick = 'XDCC|monbot';
 </pre>
 </li>
 
-<li>Créer un script de démarrage. 
+<li>Créer un script de démarrage.
 
 <pre class="indent">
 cd ..
-puis 
+puis
 nano -w start-iroffer.sh
-ou 
+ou
 vim start-iroffer.sh
 </pre>
 
-Nous écrivons le script 
+Nous écrivons le script :
 
 <pre class="indent">
 #!/bin/sh
@@ -185,25 +185,25 @@ cd iroffer
 </pre>
 </li>
 
-<li>On rend le script exécutable. 
+<li>On rend le script exécutable.
 
 <pre class="indent">
 chmod +x start-iroffer.sh
 </pre>
 </li>
 
-<li>Lancer. 
+<li>Lancer.
 
 <pre class="indent">
 sh start-iroffer.sh
 </pre>
 </li>
 
-Le Bot devrait maintenant fonctionner.<br>
+Le XDCC devrait maintenant fonctionner et se connecter.<br>
 <br>
 </li>
 
-<li>Si DNS ne fonctionne pas dans le chroot : 
+<li>Si la résolution de nom ne fonctionne pas dans un environnement chroot :
 
 <pre class="indent">
 mkdir /var/www/vhosts/bot.domain.fr/etc
@@ -212,7 +212,7 @@ mkdir /var/www/vhosts/bot.domain.fr/lib
 cp -p /lib/libnss_dns.so.2 /lib/libresolv.so.2 /var/www/vhosts/bot.domain.fr/lib/
 </pre>
 
-Le robot ne doit pas être redémarré.
+Le « bot » n'a pas à être redémarré pour prendre en compte les modifications.
 </li>
 
 </ol>
