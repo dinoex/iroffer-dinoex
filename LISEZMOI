@@ -1,0 +1,107 @@
+ --- Qu’est-ce que fait Iroffer ? ---
+
+Iroffer est un programme qui fait office de serveur de fichiers pour IRC.
+Le fonctionnement est identique à un serveur FTP ou HTTP,
+mais le téléchargement se fait via le protocole DCC.
+
+Iroffer est un exécutable autonome écrit entièrement en C.
+Conçu pour l’efficacité et la vitesse, Iroffer peut transférer des fichiers
+à plus de 95 Mio/s avec une connexion réseau à 1 Gb/s.
+
+Vous trouverez l’historique des versions et les évolutions
+dans le fichiers « README.modDinoex ».
+
+ --- Site internet ---
+
+Le site internet est d’Iroffer-dinoex est :
+« http://iroffer.dinoex.net/ ».
+
+Cette version est une amélioration d’Iroffer.
+Vous pouvez trouver l’original sur : « http://iroffer.org/ ».
+
+ --- Comment contacter l’auteur ? ---
+
+Pour les suggestions, retours et remerciement, vous pouvez visiter :
+#dinoex sur irc.euirc.net
+ #dinoex sur irc.otakubox.at
+ #dinoex sur irc.rizon.net
+
+ --- Plates-formes supportées ---
+
+Linux
+FreeBSD, OpenBSD, NetBSD, DragonflyBSD
+Solaris/SunOS
+MacOS X Server
+MacOS X
+Win95/98/NT/2000/2003/2008/7
+
+Les autres plates-formes n’ont pas été testées,
+mais elles fonctionneront probablement.
+
+ --- Licence ---
+
+Lisez le fichier « LICENSE ».
+
+ --- Documentation ---
+
+Vous pouvez lire les fichiers « iroffer.1 , « xdcc.7 »
+et le contenu du dossier « doc ».
+
+Vous trouvez un exemple de fichier de configuration appelé « exemple.config ».
+
+Il y a également une documentation en ligne sur :
+« http://iroffer.dinoex.de/projects/iroffer/wiki ».
+
+Pour l’installation, vous pouvez consulter « doc/INSTALL-linux-fr.html »
+ou la version en ligne sur : « http://iroffer.dinoex.net/INSTALL-linux-en.html ».
+
+ --- Installation ---
+
+
+Pour configurer Iroffer avec toutes les options, vous devez lancer :
+	./Configure -curl -geoip -upnp -ruby
+
+Ensuite, pour compiler en français :
+	make fr
+
+ --- Traductions ---
+
+Pour compiler le programme dans une autre langue, vous pouvez utiliser :
+	make de (pour l’allemand)
+	make en (pour l’anglais)
+	make it (pour l’italien)
+
+ --- Pourquoi utiliser Iroffer ? ---
+
+ - transferts DCC extrêmement rapides
+ - très faible consommation du processus et en mémoire
+ - limitation de bande-passante et quotas
+ - système de file d’attente équilibrée
+ - facile d’utilisateur
+ - administrable à distance via « /MSG » ou « DCC CHAT »
+ - journaux configurables
+ - sans effet sur le serveur IRC
+ - groupage des paquets
+ - protection par mot de passe pour télécharger
+ - connexion à de plusieurs serveurs IRC simultanément
+ - supporte l’IPv6
+ - connexion SSL acceptée
+ - identification par « NICKSERV » ou « CertFP »
+ - DCC passif
+ - incorpore un serveur HTTP
+ - inclus un serveur telnet
+ - supporte l’UPnP
+ - liste les paquets sous forme XML
+ - cryptage « FISH »
+ - transfert les fichiers d’une taille supérieur à 4 Gio
+ - génère des envois en masse
+ - possibilité d’ajouter des modules Ruby
+
+ --- Quels sont les fichiers que je peux offrir ? ---
+
+ - Images, musiques, programmes, vidéos…
+ - Note : Assurez-vous de suivre les lois sur le droit d’auteur, les licences,
+	les conditions de diffusion avant de mettre à disposition du contenu
+	que vous n’avez pas créer vous-même.
+
+ --- Fin du LISEZMOI ---
