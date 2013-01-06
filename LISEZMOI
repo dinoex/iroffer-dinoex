@@ -75,7 +75,7 @@ Pour compiler le programme dans une autre langue, vous pouvez utiliser :
 
  - transferts DCC extrêmement rapides
  - très faible consommation du processus et en mémoire
- - limitation de bande-passante et quotas
+ - limitation de bande passante et quotas
  - système de file d’attente équilibrée
  - facile d’utilisateur
  - administrable à distance via « /MSG » ou « DCC CHAT »
@@ -89,7 +89,7 @@ Pour compiler le programme dans une autre langue, vous pouvez utiliser :
  - identification par « NICKSERV » ou « CertFP »
  - DCC passif
  - incorpore un serveur HTTP
- - inclus un serveur telnet
+ - inclus un serveur Telnet
  - supporte l’UPnP
  - liste les paquets sous forme XML
  - cryptage « FISH »
