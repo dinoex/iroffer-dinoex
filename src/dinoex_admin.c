@@ -2440,7 +2440,7 @@ unsigned int a_access_fstat(const userinput * const u, int xfiledescriptor, char
     return 1;
 
   if ( st->st_size == 0 ) {
-    a_respond(u, "File %s has size of 0 bytes!", *file);
+    a_respond(u, "File %s has size of 0 byte!", *file);
     mydelete(*file);
     return 1;
   }

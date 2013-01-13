@@ -715,7 +715,7 @@ unsigned int read_statefile(void)
                 
                 if (xd->st_size == 0)
                   {
-                    outerror(OUTERROR_TYPE_WARN, "Pack %u: The file \"%s\" has size of 0 bytes!",
+                    outerror(OUTERROR_TYPE_WARN, "Pack %u: The file \"%s\" has size of 0 byte!",
                              number_of_pack(xd),
                              xd->file);
                   }
