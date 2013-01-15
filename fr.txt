@@ -1500,7 +1500,7 @@
 2027 "ajouté"
 2029 "Fichier %s a une taille de 0 octet !"
 2030 "Fichier %s est trop grand."
-2032 "allumé depuis"
+2032 "uptime"
 2033 "vitesse minimale"
 2034 "vitesse maximale"
 2035 "limite"
