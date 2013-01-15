@@ -31,34 +31,34 @@ usage()
 {
  case "${LANG}" in
  fr*)
-  ${msg} "Usage: Configure [ options ]
-   -help        Cette Aide
+  ${msg} "Utilisation : Configure [ options ]
+   -help        Afficher cette aide
    -error       Afficher les erreurs lors de l'exécution de Configure
-   -debug       Compiler avec les symboles de débogage
-   -profiling   Compiler avec les flag de profil
-   -warn        Compiler avec les flag d'alerte supplémentaire
-   -geoip       Compiler GeoIP lib (pour l'IP par pays)
-   -curl        Compiler Curl lib (pour la Commande FETCH)
-   -tls         Compiler avec GNU TLS lib (au lieu de OpenSSL)
-   -upnp        Compiler avec le support UPNP avec miniupnpc (pour les Routeurs NAT)
-   -ruby        Compiler avec le support du script RUBY
-   -kqueue	Compiler avec le support kqueue()
-   -no-blowfish Compiler sans encodage blowfish
-   -no-chroot   Compiler sans support chroot()
-   -no-openssl  Compiler sans OpenSSL lib
-   -no-http     Compiler sans HTTP server
-   -no-admin    Compiler sans HTTP Admin
-   -no-telnet   Compiler sans Telnet server
+   -debug       Compiler avec les informations de débogage
+   -profiling   Compiler avec les informations du profil
+   -warn        Compiler avec des alertes supplémentaires
+   -geoip       Compiler avec le support GeoIP (pour l'IP par pays)
+   -curl        Compiler avec le support Curl (pour la commande « FETCH »)
+   -tls         Compiler avec GnuTLS lib (au lieu de OpenSSL)
+   -upnp        Compiler avec le support UPnP avec miniupnpc (pour les routeurs NAT)
+   -ruby        Compiler avec le support pour les scripts Ruby
+   -kqueue      Compiler avec le support kqueue()
+   -no-blowfish Compiler sans le support Blowfish
+   -no-chroot   Compiler sans le support chroot()
+   -no-openssl  Compiler sans le support OpenSSL
+   -no-http     Compiler sans le serveur HTTP interne
+   -no-admin    Compiler sans le serveur HTTP d'administration (nécessite le serveur HTTP interne)
+   -no-telnet   Compiler sans le serveur Telnet
    -no-memsave  Compiler sans protection de mémoire
-   -no-libs     Compiler un binaire static
-   TRANSLATION=	Set custom translations
-   PREFIX=      Définit le chemin d'installation (/usr/local)
-   LOCALBASE=   Définit le chemin des includes et libs (/usr/local)
-   CC=gcc       Définit le Compiler (gcc)
-   CFLAGS=      Définit les options du compiler (flag)
-   LDFLAGS=     Définit les liaisons des flags personnalisés
-   LIBS=        Définit les libs personnalisés
-   RUBY=        Définit l'interprète de ruby (ruby)"
+   -no-libs     Compiler un binaire statique
+   TRANSLATION= Définir une traduction personnalisée
+   PREFIX=      Définir le chemin d'installation (par défaut « /usr/local »)
+   LOCALBASE=   Définir le chemin des « .h » et librairies (« /usr/local »)
+   CC=gcc       Définir le compilateur (« gcc »)
+   CFLAGS=      Définir les options du compilateur
+   LDFLAGS=     Définir les options du compilateur pour la liaison
+   LIBS=        Définir les librairies personnalisées
+   RUBY=        Définir l'interpréteur de Ruby (« ruby »)"
   ;;
  de*)
   ${msg} "Usage: Configure [ options ]
@@ -69,9 +69,9 @@ usage()
    -warn        Aktiviere alle Warnungen beim Uebersetzen
    -geoip       Benutze GeoIP Bibliothek (für IP nach Land)
    -curl        Benutze Curl Bibliothek (für den FETCH-Befehl)
-   -tls         Benutze GNU TLS Bibliothek (anstelle von OpenSSL)
+   -tls         Benutze GnuTLS Bibliothek (anstelle von OpenSSL)
    -upnp        Benutze miniupnpc Bibliothek (für UPNP-NAT Routers)
-   -ruby        Benutze RUBY Skript Erweiterung
+   -ruby        Benutze Ruby Skript Erweiterung
    -kqueue	Benutze kqueue()
    -no-blowfish Baue ohne Blowfish Verschlusselung
    -no-chroot   Baue ohne chroot()
@@ -99,11 +99,11 @@ usage()
    -warn        Compile with extra warning flags
    -geoip       Compile GeoIP lib (for IP to Country)
    -curl        Compile Curl lib (for the FETCH-Command)
-   -tls         Compile with GNU TLS lib (instead of OpenSSL)
-   -upnp        Compile with UPNP support with miniupnpc (for NAT Routers)
-   -ruby        Compile with RUBY scripting support
+   -tls         Compile with GnuTLS lib (instead of OpenSSL)
+   -upnp        Compile with UPnP support with miniupnpc (for NAT Routers)
+   -ruby        Compile with Ruby scripting support
    -kqueue	Compile with kqueue() support
-   -no-blowfish Compile without blowfish encryption
+   -no-blowfish Compile without Blowfish encryption
    -no-chroot   Compile without chroot() support
    -no-openssl  Compile without OpenSSL lib
    -no-http     Compile without HTTP server
@@ -550,7 +550,7 @@ case "$ostype" in
   ostype=$short_ostype
   rstatic="-static-libgcc"
   exe=.exe
-  
+
   # only 1.5.6 or later is supported
   ${msg} -n "${irt_checkfor} >= 1.5.6... "
   ver=`uname -r | cut -d '(' -f 1`
@@ -558,7 +558,7 @@ case "$ostype" in
   ver_A=`echo $ver | cut -d '.' -f 1`
   ver_B=`echo $ver | cut -d '.' -f 2`
   ver_C=`echo $ver | cut -d '.' -f 3`
-  
+
   # 2.x.x - 9.x.x, 1.6.x - 1.9.x, and 1.5.6 - 1.5.9 are ok
   if [ \( "$ver_A" -ge "2" \)                                         \
     -o \( "$ver_A" -eq "1" -a "$ver_B" -ge "6" \)                     \
@@ -605,14 +605,14 @@ case "${cctype}" in
 -Wparentheses
 -Wredundant-decls
 -Wreturn-type
--O 
+-O
 -Wunknown-pragmas
 -Wunused
 -Wunused-function
 -Wunused-label
 -Wunused-parameter
 -Wunused-value
--Wunused-variable 
+-Wunused-variable
 "
  ;;
 *)
@@ -636,14 +636,14 @@ case "${cctype}" in
 -Wswitch
 -Wsystem-headers
 -Wtrigraphs
--Wuninitialized -O 
+-Wuninitialized -O
 -Wunknown-pragmas
 -Wunused
 -Wunused-function
 -Wunused-label
 -Wunused-parameter
 -Wunused-value
--Wunused-variable 
+-Wunused-variable
 "
  ;;
 esac
@@ -1020,7 +1020,7 @@ if $cctype -o config.temp.p -E $WARNS $WERROR $CFLAGS config.temp.c; then
  setsize=`tail -2 config.temp.p |grep -v "config.temp"`
  setsize="${setsize%U}"
  echo -n " $setsize"
- 
+
  if [ "$ostype" = CYGWIN -a $setsize -le 255 ]; then
    ${msg} ", ${irt_boosting} 255"
    echo "#define FD_SETSIZE 255" >> src/iroffer_config.h
@@ -1738,7 +1738,7 @@ if $OPT_RUBY; then
  then
   incruby="-I${archdir}"
  else
-  incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}" 
+  incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}"
  fi
  ${msg} -n "${irt_seeingif_lib} libruby ${irt_lib_exists} (${irt_for} RUBY-Scripts)... "
  echo "
