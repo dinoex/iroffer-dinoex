@@ -989,7 +989,7 @@
 1253 "Impossible de sauvegarde l'ancien « statefile » « %s » -> '%s' : %s"
 1254 "Impossible de sauvegarder le nouveau « statefile » « %s » : %s"
 1255 "Mauvais en-tête dans « statefile » (%u < %u)"
-1256 "Charche le « statefile »..."
+1256 "Cherche le « statefile »..."
 1257 "Impossible d'accéder au « statefile » « %s » : %s"
 1258 "« statefile » trop petit, saute cette étape"
 1259 "Impossible de lire le « statefile » (%u != %u) %s"
