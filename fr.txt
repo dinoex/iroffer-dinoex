@@ -672,7 +672,7 @@
 725 "J'ai des informations pour %s qui n'est pas un salon connu sur %s !"
 726 "ERREUR : lien fermé"
 727 "Serveur ferme la connexion sur %s : %s"
-728 "PING :"
+728 "PING :"
 729 "PING sur %s : %s"
 730 "PO%s"
 731 "JOIN"
