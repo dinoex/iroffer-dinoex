@@ -31,34 +31,34 @@ usage()
 {
  case "${LANG}" in
  fr*)
-  ${msg} "Usage: Configure [ options ]
-   -help        Cette Aide
+  ${msg} "Utilisation : Configure [ options ]
+   -help        Afficher cette aide
    -error       Afficher les erreurs lors de l'exécution de Configure
-   -debug       Compiler avec les symboles de débogage
-   -profiling   Compiler avec les flag de profil
-   -warn        Compiler avec les flag d'alerte supplémentaire
-   -geoip       Compiler GeoIP lib (pour l'IP par pays)
-   -curl        Compiler Curl lib (pour la Commande FETCH)
-   -tls         Compiler avec GNU TLS lib (au lieu de OpenSSL)
-   -upnp        Compiler avec le support UPNP avec miniupnpc (pour les Routeurs NAT)
-   -ruby        Compiler avec le support du script RUBY
-   -kqueue	Compiler avec le support kqueue()
-   -no-blowfish Compiler sans encodage blowfish
-   -no-chroot   Compiler sans support chroot()
-   -no-openssl  Compiler sans OpenSSL lib
-   -no-http     Compiler sans HTTP server
-   -no-admin    Compiler sans HTTP Admin
-   -no-telnet   Compiler sans Telnet server
+   -debug       Compiler avec les informations de débogage
+   -profiling   Compiler avec les informations du profil
+   -warn        Compiler avec des alertes supplémentaires
+   -geoip       Compiler avec le support GeoIP (pour l'IP par pays)
+   -curl        Compiler avec le support Curl (pour la commande « FETCH »)
+   -tls         Compiler avec GnuTLS lib (au lieu de OpenSSL)
+   -upnp        Compiler avec le support UPnP avec miniupnpc (pour les routeurs NAT)
+   -ruby        Compiler avec le support pour les scripts Ruby
+   -kqueue      Compiler avec le support kqueue()
+   -no-blowfish Compiler sans le support Blowfish
+   -no-chroot   Compiler sans le support chroot()
+   -no-openssl  Compiler sans le support OpenSSL
+   -no-http     Compiler sans le serveur HTTP interne
+   -no-admin    Compiler sans le serveur HTTP d'administration (nécessite le serveur HTTP interne)
+   -no-telnet   Compiler sans le serveur Telnet
    -no-memsave  Compiler sans protection de mémoire
-   -no-libs     Compiler un binaire static
-   TRANSLATION=	Set custom translations
-   PREFIX=      Définit le chemin d'installation (/usr/local)
-   LOCALBASE=   Définit le chemin des includes et libs (/usr/local)
-   CC=gcc       Définit le Compiler (gcc)
-   CFLAGS=      Définit les options du compiler (flag)
-   LDFLAGS=     Définit les liaisons des flags personnalisés
-   LIBS=        Définit les libs personnalisés
-   RUBY=        Définit l'interprète de ruby (ruby)"
+   -no-libs     Compiler un binaire statique
+   TRANSLATION= Définir une traduction personnalisée
+   PREFIX=      Définir le chemin d'installation (par défaut « /usr/local »)
+   LOCALBASE=   Définir le chemin des « .h » et librairies (« /usr/local »)
+   CC=gcc       Définir le compilateur (« gcc »)
+   CFLAGS=      Définir les options du compilateur
+   LDFLAGS=     Définir les options du compilateur pour la liaison
+   LIBS=        Définir les librairies personnalisées
+   RUBY=        Définir l'interpréteur de Ruby (« ruby »)"
   ;;
  de*)
   ${msg} "Usage: Configure [ options ]
@@ -69,9 +69,9 @@ usage()
    -warn        Aktiviere alle Warnungen beim Uebersetzen
    -geoip       Benutze GeoIP Bibliothek (für IP nach Land)
    -curl        Benutze Curl Bibliothek (für den FETCH-Befehl)
-   -tls         Benutze GNU TLS Bibliothek (anstelle von OpenSSL)
+   -tls         Benutze GnuTLS Bibliothek (anstelle von OpenSSL)
    -upnp        Benutze miniupnpc Bibliothek (für UPNP-NAT Routers)
-   -ruby        Benutze RUBY Skript Erweiterung
+   -ruby        Benutze Ruby Skript Erweiterung
    -kqueue	Benutze kqueue()
    -no-blowfish Baue ohne Blowfish Verschlusselung
    -no-chroot   Baue ohne chroot()
@@ -99,11 +99,11 @@ usage()
    -warn        Compile with extra warning flags
    -geoip       Compile GeoIP lib (for IP to Country)
    -curl        Compile Curl lib (for the FETCH-Command)
-   -tls         Compile with GNU TLS lib (instead of OpenSSL)
-   -upnp        Compile with UPNP support with miniupnpc (for NAT Routers)
-   -ruby        Compile with RUBY scripting support
+   -tls         Compile with GnuTLS lib (instead of OpenSSL)
+   -upnp        Compile with UPnP support with miniupnpc (for NAT Routers)
+   -ruby        Compile with Ruby scripting support
    -kqueue	Compile with kqueue() support
-   -no-blowfish Compile without blowfish encryption
+   -no-blowfish Compile without Blowfish encryption
    -no-chroot   Compile without chroot() support
    -no-openssl  Compile without OpenSSL lib
    -no-http     Compile without HTTP server
@@ -127,106 +127,106 @@ usage()
 case "${LANG}" in
 fr*)
  irt_start="Configuration pour"
- irt_again="Vous devriez relancer Configure avec l'argument '-error' pour voir les details."
- irt_noopenssl="ATTENTION : SVP utilisez '-no-openssl'"
- irt_multinet="ATTENTION : Multinet est maintenant par défaut, enlevez '-m'"
- irt_checkingos="Determining OS... "
+ irt_again="Vous devriez relancer Configure avec le paramètre « -error » pour voir les détails."
+ irt_noopenssl="ATTENTION : Utilisez « -no-openssl »"
+ irt_multinet="ATTENTION : Multinet est maintenant par défaut, enlevez « -m »"
+ irt_checkingos="Détermine le système d'exploitation... "
  irt_checkfor="Vérification pour"
  irt_checkif="Vérifie si"
  irt_error="***ERREUR*** :"
- irt_notsupported="Cet OS n'est pas supporté"
- irt_noedit="Automatiquement Généré, Ne Pas Modifier"
+ irt_notsupported="Ce système d'exploitation n'est pas supporté"
+ irt_noedit="Ce fichier est automatiquement généré, ne pas modifier !"
  irt_showerror="Affichage des erreurs lors de l'exécution"
  irt_configure="Configuration"
  irt_debugging="le débogage"
  irt_extrawarnings="les messages d'avertissements"
- irt_pedantic="les avertissements pédant"
- irt_profiling="le profilage"
+ irt_pedantic="les avertissements détaillés"
+ irt_profiling="le profil"
  irt_with="avec"
  irt_without="sans"
- irt_blowfish="encodage blowfish"
- irt_memory="protection mémoire"
+ irt_blowfish="encodage Blowfish"
+ irt_memory="protection de la mémoire"
  irt_found="trouvé"
- irt_notfound="Non trouvé"
+ irt_notfound="non trouvé"
  irt_noexec="Vous n'êtes pas autorisé à exécuter"
- irt_nomake="Impossible de trouver 'make' ou 'gmake'"
- irt_nomake="Impossible de trouver 'gcc' ou 'cc'"
+ irt_nomake="Impossible de trouver « make » ou « gmake »"
+ irt_nomake="Impossible de trouver « gcc » ou « cc »"
  irt_seeingif="Vérifie si"
  irt_seeinghow="Vérifie comment"
  irt_works="fonctionne"
  irt_worksinstead="travaille à la place"
  irt_asexpected="comme prévu"
  irt_nowork="ne semble pas fonctionner"
- irt_yes="Oui"
- irt_no="Non"
+ irt_yes="oui"
+ irt_no="non"
  irt_accepts="accepte"
- irt_unknown="Inconnu"
- irt_neither1="Ni"
+ irt_unknown="inconnu"
+ irt_neither1="ni"
  irt_neither2="ou"
  irt_neither3="fonctionnent"
- irt_seeing16bit="Vérifie comment définir un entier de 16 bits"
- irt_seeing32bit="Vérifie comment définir un entier de 32 bits"
- irt_seeing64bit="Vérifie comment définir un entier de 64 bits"
+ irt_seeing16bit="Vérifie comment définir un entier de 16 bits"
+ irt_seeing32bit="Vérifie comment définir un entier de 32 bits"
+ irt_seeing64bit="Vérifie comment définir un entier de 64 bits"
  irt_isdefined="est défini"
- irt_noipv6="échec, IPv6 ne marche pas"
- irt_compiling="la compilation avec la norme #include's"
- irt_nocompiling="n'a pas pu construire avec la norme #include's"
+ irt_noipv6="échec, les IPv6 ne fonctionnent pas"
+ irt_compiling="la compilation avec la norme « #include »"
+ irt_nocompiling="n'a pas pu construire avec la norme « #include »"
  irt_large="large"
  irt_is="est"
- irt_boosting="Augmenter à"
+ irt_boosting="augmenter à"
  irt_novalue="n'a pas pu le déterminer"
- irt_endianness="Détermination endianness"
+ irt_endianness="Détermination « endianness »"
  irt_endianbig="gros-boutiste"
  irt_endianlittle="petit-boutiste"
  irt_largefile="le support des gros fichiers"
- irt_nolargefile="Non. La taille Max des fichiers sera de"
- irt_signedness="Détermine le signedness de"
- irt_display_int64="afficher 64 bits en utilisant"
- irt_display_time="l'affichage de time_t en utilisant"
+ irt_nolargefile="Non. La taille maximale des fichiers sera de"
+ irt_signedness="Détermine la version non signé de"
+ irt_display_int64="afficher 64 bits en utilisant"
+ irt_display_time="l'affichage « de time_t » en utilisant"
  irt_msssing1="absent"
- irt_msssing2="émulera"
+ irt_msssing2="simulera"
  irt_exists="existe"
  irt_isneeded="est nécessaire"
  irt_notneeded="pas nécessaire"
  irt_needed="nécessaire"
- irt_nocrypt="n'a pas pu trouver crypt() avec ou sans crypt.h"
- irt_nolcrypt="Impossible à lier avec ou sans -lcrypt ou -lcrypto"
+ irt_nocrypt="n'a pas pu trouver « crypt() » avec ou sans « crypt.h »"
+ irt_nolcrypt="Impossible à lier avec ou sans « -lcrypt » ou « -lcrypto »"
  irt_neither4="Non plus"
  irt_for="pour"
  irt_nopassword="va désactiver les mots de passe cryptés"
- irt_nochroot="va désactiver chroot()-ing"
- irt_nosetuid="va désactiver setuid()-ing"
- irt_nogetgrouplist="la liste des groupes seront incorrectes lorsque setuid()-ing"
- irt_nosendfile="ne pas utiliser sendfile()"
- irt_nommap="ne pas utiliser mmap()"
+ irt_nochroot="va désactiver « chroot() »"
+ irt_nosetuid="va désactiver « setuid() »"
+ irt_nogetgrouplist="la liste des groupes seront incorrectes avec « setuid() »"
+ irt_nosendfile="n'utilisera pas « sendfile() »"
+ irt_nommap="n'utilisera « mmap() »"
  irt_creating="Création de"
  irt_done="Fait"
- irt_fdlimit="name of fd limit"
- irt_nofdlimit="ne travaille pas, pas bon tout"
- irt_nosignal="utilisera lame signal handlers"
+ irt_fdlimit="nom de « fd limit »"
+ irt_nofdlimit="ne travaille pas"
+ irt_nosignal="utilisera une gestion des signaux boiteuse"
  irt_values="les valeurs"
- irt_nosi_code="ne fera pas état de 'si_code'"
- irt_nowait="ne fera pas état de wait() status codes"
- irt_tos="TOS peut être définit pour IP sockets"
- irt_nogetaddrinfo="utilisera gethostbyname à la place"
+ irt_nosi_code="ne fera pas état de « si_code »"
+ irt_nowait="ne fera pas état des codes de statuts de « wait() »"
+ irt_tos="TOS peut être défini pour les sockets IP"
+ irt_nogetaddrinfo="utilisera « gethostbyname() » à la place"
  irt_nogethostbyname="ne fera pas état des codes d'erreur"
- irt_nores_init="res_init() ne sera pas utilisé"
- irt_no_kqueue="kqueue() ne sera pas utilisé"
+ irt_nores_init="« res_init() » ne sera pas utilisé"
+ irt_no_kqueue="« kqueue() » ne sera pas utilisé"
  irt_seeingif_lib="Vérifie si les librairies"
  irt_lib_exists="existent"
- irt_geoip6="prend en charge IPv6"
- irt_nogeoip6="Désactiver le GeoIP pour IPv6. Si vous voulez utilisez cette fonction, SVP mettez à jour 'libGeoIP'"
- irt_nogeoip="Désactiver le GeoIP-check. Si vous voulez utilisez cette fonction, SVP installez 'libGeoIP'"
- irt_noupnp="Désactiver la fonction UPNP. Si vous voulez utilisez cette fonction, SVP installez 'libminiupnpc'"
- irt_nocurl="Désactiver le FETCH-Command. Si vous voulez utiliser cette fonction, SVP installez 'libcurl'"
- irt_curlssl="Notice: Votre libcurl est lié avec"
- irt_nossl="Désactiver les fonctions SSL. Si vous voulez utiliser cette fonction, SVP installez 'OpenSSL'"
- irt_notls="Désactiver les fonctions SSL. Si vous voulez utiliser cette fonction, SVP installez 'GNU TLS'"
- irt_badssl1="Votre 'libcurl' est liée avec"
- irt_badssl2="SVP configurez"
- irt_noruby="Désactiver RUBY-extension. Si vous voulez utiliser cette fonction, SVP installez 'libruby'"
+ irt_geoip6="prend en charge les IPv6"
+ irt_nogeoip6="Désactive GeoIP pour l'IPv6. Si vous voulez utilisez cette fonction, mettez à jour « libGeoIP »"
+ irt_nogeoip="Désactive la vérification GeoIP. Si vous voulez utilisez cette fonction, installez « libGeoIP »"
+ irt_noupnp="Désactive la fonction UPnP. Si vous voulez utilisez cette fonction, installez « libminiupnpc »"
+ irt_nocurl="Désactive la commande « FETCH ». Si vous voulez utiliser cette fonction, installez « libcurl »"
+ irt_curlssl="Note : Votre « libcurl » est lié avec"
+ irt_nossl="Désactive les fonctions SSL. Si vous voulez utiliser cette fonction, installez « OpenSSL »"
+ irt_notls="Désactive les fonctions SSL. Si vous voulez utiliser cette fonction, installez « GnuTLS »"
+ irt_badssl1="Votre « libcurl » est liée avec"
+ irt_badssl2="S'il vous plaît, configurez"
+ irt_noruby="Désactiver l'extension Ruby. Si vous voulez utiliser cette fonction, installez « libruby »"
  irt_make1="Type"
- irt_make2="to compile"
+ irt_make2="à compiler"
  irt_noerror="Aucune erreur ou avertissement ne doit apparaître lors de la compilation, si c'est le cas, quelque chose ne va pas"
  ;;
 de*)
