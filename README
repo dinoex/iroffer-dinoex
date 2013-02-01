@@ -41,7 +41,8 @@ Please read the file "LICENSE"
 
  --- Documentation ---
 
-Please read the files "iroffer.1", "xdcc.7" and the directory "doc"
+Please read the files "iroffer.1", "xdcc.7" and the files
+provided in the directory "doc".
 
 A sample config file with name "sample.config" is provided.
 
