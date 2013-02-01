@@ -2090,7 +2090,7 @@ int look_for_file_changes(xdcc *xpack)
   if (st.st_size == 0)
     {
       outerror(OUTERROR_TYPE_WARN,
-               "File '%s' has size of 0 bytes", xpack->file);
+               "File '%s' has size of 0 byte", xpack->file);
     }
   
   if ((st.st_size > gdata.max_file_size) || (st.st_size < 0))

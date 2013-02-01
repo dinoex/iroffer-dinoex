@@ -41,9 +41,10 @@ Please read the file "LICENSE"
 
  --- Documentation ---
 
-Please read the file "doc/iroffer.1.txt" and other Documentation.
+Please read the files "iroffer.1", "xdcc.7" and the files
+provided in the directory "doc".
 
-A sample config file with name "sample.conifg" is provided.
+A sample config file with name "sample.config" is provided.
 
 More Documentation is online at http://iroffer.dinoex.de/projects/iroffer/wiki
 
@@ -52,7 +53,7 @@ or browse it online at http://iroffer.dinoex.net/INSTALL-linux-en.html
 
  --- Install ---
 
-To build a ull featured iroffer run:
+To build a full featured iroffer run:
 	./Configure -curl -geoip -upnp -ruby
 
 Then run:
@@ -63,7 +64,7 @@ Then run:
 To build a language specific program:
 for German run
 	make de
-for Frensh run
+for French run
 	make fr
 for Italian run
 	make it
@@ -98,7 +99,7 @@ for Italian run
 
  - Your channel's rules or FAQ
  - Pictures, Music, Programs, Shareware/Freeware, Programs you have
-     written, etc... 
+     written, etc.
  - Note: Be sure to consult and follow the appropriate copyright
    statement, distibution policy, and/or license agreement before
    offering any content you didn't create yourself
