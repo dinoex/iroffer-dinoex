@@ -550,7 +550,7 @@ case "$ostype" in
   ostype=$short_ostype
   rstatic="-static-libgcc"
   exe=.exe
-  
+
   # only 1.5.6 or later is supported
   ${msg} -n "${irt_checkfor} >= 1.5.6... "
   ver=`uname -r | cut -d '(' -f 1`
@@ -558,7 +558,7 @@ case "$ostype" in
   ver_A=`echo $ver | cut -d '.' -f 1`
   ver_B=`echo $ver | cut -d '.' -f 2`
   ver_C=`echo $ver | cut -d '.' -f 3`
-  
+
   # 2.x.x - 9.x.x, 1.6.x - 1.9.x, and 1.5.6 - 1.5.9 are ok
   if [ \( "$ver_A" -ge "2" \)                                         \
     -o \( "$ver_A" -eq "1" -a "$ver_B" -ge "6" \)                     \
@@ -605,14 +605,14 @@ case "${cctype}" in
 -Wparentheses
 -Wredundant-decls
 -Wreturn-type
--O 
+-O
 -Wunknown-pragmas
 -Wunused
 -Wunused-function
 -Wunused-label
 -Wunused-parameter
 -Wunused-value
--Wunused-variable 
+-Wunused-variable
 "
  ;;
 *)
@@ -636,14 +636,14 @@ case "${cctype}" in
 -Wswitch
 -Wsystem-headers
 -Wtrigraphs
--Wuninitialized -O 
+-Wuninitialized -O
 -Wunknown-pragmas
 -Wunused
 -Wunused-function
 -Wunused-label
 -Wunused-parameter
 -Wunused-value
--Wunused-variable 
+-Wunused-variable
 "
  ;;
 esac
@@ -1020,7 +1020,7 @@ if $cctype -o config.temp.p -E $WARNS $WERROR $CFLAGS config.temp.c; then
  setsize=`tail -2 config.temp.p |grep -v "config.temp"`
  setsize="${setsize%U}"
  echo -n " $setsize"
- 
+
  if [ "$ostype" = CYGWIN -a $setsize -le 255 ]; then
    ${msg} ", ${irt_boosting} 255"
    echo "#define FD_SETSIZE 255" >> src/iroffer_config.h
@@ -1738,7 +1738,7 @@ if $OPT_RUBY; then
  then
   incruby="-I${archdir}"
  else
-  incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}" 
+  incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}"
  fi
  ${msg} -n "${irt_seeingif_lib} libruby ${irt_lib_exists} (${irt_for} RUBY-Scripts)... "
  echo "
