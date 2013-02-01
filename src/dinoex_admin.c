@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -2440,7 +2440,7 @@ unsigned int a_access_fstat(const userinput * const u, int xfiledescriptor, char
     return 1;
 
   if ( st->st_size == 0 ) {
-    a_respond(u, "File %s has size of 0 bytes!", *file);
+    a_respond(u, "File %s has size of 0 byte!", *file);
     mydelete(*file);
     return 1;
   }
