@@ -735,7 +735,7 @@ Zenquibo
 	suggesting "show_group_of_pack"
 
 Dandevito
-	French translation
+	initial French translation
 
 UndErDarK
 	suggesting "expire_logfiles"
@@ -765,6 +765,7 @@ Sébastien Picavet
 	exit status in background was not 0
 	Configure -no-chroot
 	iroffer-dinoex.init.standard
+	updated French translation
 
 kenoki
 	suggesting "on_upload_completed"

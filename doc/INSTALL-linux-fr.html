@@ -92,7 +92,7 @@ chmod 600 monrobot.config
 </pre>
 </li>
 
-<li>Seul le robot doit avoir les droits d'écriture.
+<li>Seul l'utilisateur « bot » doit avoir les droits d'écriture.
 
 <pre class="indent">
 chmod 700 .
@@ -125,10 +125,11 @@ uploaddir /home/bot/files
 <pre class="indent">
 cd ..
 mkdir files
-chown bot files
-
-Nous enverrons les fichiers via XDCC ou via FTP ultérieurement.
 </pre>
+
+Nous enverrons les fichiers via XDCC ou via FTP ultérieurement.</li>
+
+<li class="c1"><br>
 </li>
 
 <li>Créer un script de démarrage.
