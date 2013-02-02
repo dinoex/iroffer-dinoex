@@ -88,10 +88,10 @@ cp iroffer-fr ..
 <li>Nous préparons un fichier de configuration avec « exemple.config ».
 
 <pre class="indent">
-cp exemple.config ../monbot.config
+cp exemple.config ../monrobot.config
 cd ..
-chown bot monbot.config
-chmod 600 monbot.config
+chown bot monrobot.config
+chmod 600 monrobot.config
 </pre>
 </li>
 
@@ -107,21 +107,21 @@ chmod 700 .
 <li>Nous allons générer un mot de passe pour l'administration.
 
 <pre class="indent">
-./iroffer-fr -c monbot.config
+./iroffer-fr -c monrobot.config
 </pre>
 </li>
 
-<li>Nous renseignons tous les répertoires dans le fichier de configuration « monbot.config ».<br>
+<li>Nous renseignons tous les répertoires dans le fichier de configuration « monrobot.config ».<br>
 « adminhost » doit être renseigné de manière appropriée.<br>
-Les chemins pour « monbot.state » et « monbot.txt » sont modifiés pour les sites puissent les lire.<br>
+Les chemins pour « monrobot.state » et « monrobot.txt » sont modifiés pour les sites puissent les lire.<br>
 Nous ajoutons un répertoire de base pour les fichiers et l'utilisons également pour les fichiers envoyés.<br>
-« monbot.config » devrait contenir :
+« monrobot.config » devrait contenir :
 
 <pre class="indent">
-logfile /iroffer/monbot.log
-pidfile /iroffer/monbot.pid
-statefile /httpdocs/monbot.state
-xdcclistfile /httpdocs/monbot.txt
+logfile /iroffer/monrobot.log
+pidfile /iroffer/monrobot.pid
+statefile /httpdocs/monrobot.state
+xdcclistfile /httpdocs/monrobot.txt
 filedir /files
 uploaddir /files
 </pre>
@@ -162,7 +162,7 @@ Dans le index.php à 2) une ligne est a insérée :
 <pre class="indent">
 # 2) Pour un Nick précis enregistré :
 #$nick = 'XDCC|irofferbot';
-$nick = 'XDCC|monbot';
+$nick = 'monrobotDCC';
 </pre>
 </li>
 
@@ -181,7 +181,7 @@ Nous écrivons le script :
 <pre class="indent">
 #!/bin/sh
 cd iroffer
-./iroffer-fr -b -u bot -t /var/www/vhosts/bot.domain.fr /iroffer/monbot.config
+./iroffer-fr -b -u bot -t /var/www/vhosts/bot.domain.fr /iroffer/monrobot.config
 </pre>
 </li>
 
@@ -197,7 +197,6 @@ chmod +x start-iroffer.sh
 <pre class="indent">
 sh start-iroffer.sh
 </pre>
-</li>
 
 Le XDCC devrait maintenant fonctionner et se connecter.<br>
 <br>
