@@ -2,7 +2,7 @@
 Copyright (c) 2005-2007, Thomas BERNARD
 All rights reserved.
 
-Copyright (c) 2007-2010 Dirk Meyer
+Copyright (c) 2007-2013 Dirk Meyer
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -81,12 +81,20 @@ void init_upnp (void)
 			"UPnP device : desc: %s\n st: %s",
 			dev->descURL, dev->st);
 
+#if MINIUPNPC_API_VERSION >= 9
+		descXML = miniwget(dev->descURL, &descXMLsize, 0);
+#else
 		descXML = miniwget(dev->descURL, &descXMLsize);
+#endif
 		if (descXML)
 		{
 			parserootdesc (descXML, descXMLsize, &data);
 			free (descXML); descXML = 0;
+#if MINIUPNPC_API_VERSION >= 9
+			GetUPNPUrls (&urls, &data, dev->descURL, 0);
+#else
 			GetUPNPUrls (&urls, &data, dev->descURL);
+#endif
 		}
 		freeUPNPDevlist(devlist);
 	}

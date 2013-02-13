@@ -1333,14 +1333,16 @@ ${msg} "${irt_found}"
   fi
 fi
 
-${msg} -n "${irt_seeingif_lib} NSS ${irt_lib_exists} (${irt_for} chroot)... "
-echo "${irmain0}" > config.temp.c
-if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS -lnss_files -lnss_dns $libs $LIBS; then
-NSSLIBS="-lnss_files -lnss_dns"
-${msg} "${irt_found}"
-else
-NSSLIBS=""
-${msg} "${irt_msssing1}"
+if ! $OPT_NOCHROOT; then
+  ${msg} -n "${irt_seeingif_lib} NSS ${irt_lib_exists} (${irt_for} chroot)... "
+  echo "${irmain0}" > config.temp.c
+  if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS -lnss_files -lnss_dns $libs $LIBS; then
+    NSSLIBS="-lnss_files -lnss_dns"
+    ${msg} "${irt_found}"
+  else
+    NSSLIBS=""
+    ${msg} "${irt_msssing1}"
+  fi
 fi
 
 ${msg} -n "${irt_checkfor} setuid()... "

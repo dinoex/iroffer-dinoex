@@ -782,3 +782,6 @@ mflatischler
 HK
 	reporting "tcprangestart" bug
 
+Zlogene
+	reporting -no-chroot problem
+
