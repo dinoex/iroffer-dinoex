@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+bugfix: Configure -no-chroot (reported by Zlogene)
+  Build without nss library
+
 bugfix: upnp_router
   Update for libminiupnpc 1.8
 
