@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+bugfix: upnp_router
+  Update for libminiupnpc 1.8
+
 bugfix: French translation
   Updated by Sébastien Picavet
 
