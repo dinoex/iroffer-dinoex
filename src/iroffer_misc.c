@@ -621,6 +621,8 @@ char* getsendname(const char * const full)
           continue;
         }
       if (copy[i] == '|' || copy[i] == ':' || copy[i] == '*' ||
+          copy[i] == '/' || copy[i] == '\\' ||
+          copy[i] == '"' || copy[i] == '\'' || copy[i] == '`' ||
           copy[i] == '?' || copy[i] == '<' || copy[i] == '>')
         {
           copy[i] = '_';
