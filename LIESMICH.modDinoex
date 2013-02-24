@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.29:
 ----------------
 
+bugfix: XDCC SEND
+  Erkenne Dateinamen mit Quote-Zeichen.
+
 bugfix: Configure -no-chroot
   Baue Bot auch ohne die NSS Bibliotheken.
 

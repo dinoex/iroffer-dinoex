@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.29:
 ------------------
 
+bugfix: XDCC SEND (reported by cheeseboy)
+  Sanitize filenames with quotes.
+
 bugfix: Configure -no-chroot (reported by Zlogene)
   Build without nss library
 

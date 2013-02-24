@@ -520,6 +520,7 @@ void removenonprintablefile(char *str)
     case '?':
     case '*':
     case '<':
+    case '>':
     case '/':
     case '\\':
     case '"':
