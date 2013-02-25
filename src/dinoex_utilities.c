@@ -575,6 +575,7 @@ char *getsendname(const char * const full)
     case  ' ':
       if (gdata.spaces_in_filenames == 0)
         copy[i] = '_';
+      break;
     case '|':
     case ':':
     case '?':
@@ -588,6 +589,7 @@ char *getsendname(const char * const full)
     case '`':
     case 0x7FU:
       copy[i] = '_';
+      break;
     }
   }
   return copy;
