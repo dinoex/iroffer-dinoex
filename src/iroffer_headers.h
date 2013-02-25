@@ -695,7 +695,6 @@ __attribute__ ((format(printf, 2, 0)))
 vwriteserver(writeserver_type_e type, const char *format, va_list ap);
 
 void sendserver(void);
-char* getsendname(const char * const full);
 void pingserver(void);
 void xdccsavetext(void);
 void writepidfile (const char *filename);
