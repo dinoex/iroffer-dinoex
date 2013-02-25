@@ -575,62 +575,6 @@ void sendserver(void)
   return;
 }
 
-/* 'Sanitize' the filename in full, putting the sanitized copy into copy. */
-char* getsendname(const char * const full)
-{
-  char *copy;
-  size_t i;
-  size_t lastslash;
-  size_t spaced;
-  size_t len;
-  
-  updatecontext();
-  
-  len = sstrlen(full);
-  lastslash = 0;
-  spaced = 0;
-  for (i = 0 ; i < len ; i++)
-    {
-      switch (full[i]) {
-      case '/':
-      case '\\':
-        lastslash = i + 1;
-        spaced = 0;
-        break;
-      case ' ':
-        spaced = 1;
-        break;
-      }
-    }
-  
-  len -= lastslash;
-  copy = mymalloc(len + 1 + spaced + spaced);
-  
-  if ((spaced != 0) && (gdata.spaces_in_filenames != 0))
-    sprintf(copy, "\"%s\"", full + lastslash);
-  else
-    strcpy(copy, full + lastslash);
-  
-  /* replace any evil characters in the filename with underscores */
-  for (i = spaced; i < len; i++)
-    {
-     if (copy[i] == ' ')
-        {
-          if (gdata.spaces_in_filenames == 0)
-            copy[i] = '_';
-          continue;
-        }
-      if (copy[i] == '|' || copy[i] == ':' || copy[i] == '*' ||
-          copy[i] == '/' || copy[i] == '\\' ||
-          copy[i] == '"' || copy[i] == '\'' || copy[i] == '`' ||
-          copy[i] == '?' || copy[i] == '<' || copy[i] == '>')
-        {
-          copy[i] = '_';
-        }
-    }
-  return copy;
-}
-
 void pingserver(void) {
    updatecontext();
 

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -47,6 +47,7 @@ char *sizestr(unsigned int spaces, off_t num);
 unsigned int isprintable(unsigned int a);
 size_t removenonprintable(char *str);
 void removenonprintablefile(char *str);
+char *getsendname(const char * const full);
 char *caps(char *str);
 unsigned int max_minutes_waits(time_t *endtime, unsigned int min);
 
