@@ -708,7 +708,7 @@ void dumpcontext(void)
         continue;
       
       ioutput(OUT_S|OUT_L, COLOR_NO_COLOR,
-              "Trace %3i  %-20s %-16s:%5i  %lu.%06lu",
+              "Trace %3u  %-20s %-16s:%5u  %lu.%06lu",
               i-MAXCONTEXTS+1,
               c->func ? c->func : "UNKNOWN",
               c->file ? c->file : "UNKNOWN",

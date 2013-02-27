@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -176,8 +176,8 @@ typedef struct {
 } remaining_transfer_time;
 
 static irlist_t end_trans;
-remaining_transfer_time *end_remain;
-unsigned long end_lastrtime;
+static remaining_transfer_time *end_remain;
+static unsigned long end_lastrtime;
 
 /* calculate next transfer time */
 unsigned long get_next_transfer_time(void)
@@ -786,7 +786,7 @@ char *transfer_limit_exceeded_msg(unsigned int ii)
    snprintf(tempstr, maxtextlength,
             "Sorry, I have exceeded my %s transfer limit of %" LLPRINTFMT "uMB.  Try again after %s.",
             transferlimit_type_to_string(ii),
-            gdata.transferlimits[ii].limit / 1024 / 1024,
+            gdata.transferlimits[ii].limit / 1024U / 1024U,
             tempstr2);
    mydelete(tempstr2);
    return tempstr;
@@ -1256,7 +1256,7 @@ void dump_slow_context(void)
       }
     }
     snprintf(lastline, maxtextlength,
-             "Trace %3i  %-20s %-16s:%5i  %lu.%06lu",
+             "Trace %3u  %-20s %-16s:%5u  %lu.%06lu",
              i-MAXCONTEXTS+1,
              c->func ? c->func : "UNKNOWN",
              c->file ? c->file : "UNKNOWN",

@@ -1110,7 +1110,7 @@
 1485 "Pointer 0x%8.8lX not found in meminfo database while trying to free!!"
 1486 "Please report this error to Dinoex dinoex@dinoex.net"
 1488 "Aborting Program! (core file should be generated)"
-1490 "Trace %3i  %-20s %-16s:%5i  %lu.%06lu"
+1490 "Trace %3u  %-20s %-16s:%5u  %lu.%06lu"
 1491 "UNKNOWN"
 1492 "<undef>"
 1493 "GDATA * "
