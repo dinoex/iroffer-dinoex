@@ -1224,14 +1224,11 @@ static void a_sort_insert(xdcc *xdo, const char *k)
   xdcc *xdn;
   xdcc *xdl;
   char *tmpdesc;
-  unsigned int n;
 
-  n = 0;
   xdl = NULL;
   for (xdn = irlist_get_head(&gdata.xdccs);
        xdn;
        xdn = irlist_get_next(xdn)) {
-    ++n;
     if (a_sort_cmp(k, xdo, xdn) < 0)
       break;
     xdl = xdn;
@@ -2889,7 +2886,7 @@ void a_chtime(const userinput * const u)
     val = 0;
   } else {
     val = atoi(u->arg2e);
-    if (val < 5000U) {
+    if (val < 5000) {
       format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
       bzero((char *)&tmval, sizeof(tmval));
       clean_quotes(u->arg2e);

@@ -504,7 +504,8 @@ size_t u_expand_command(void)
 
 static void u_help(const userinput * const u)
 {
-  int i,which=0;
+  size_t i;
+  unsigned int which=0;
   
   updatecontext();
   
@@ -521,7 +522,7 @@ static void u_help(const userinput * const u)
                 which==5?"Misc":
                 which==6?"Bot":"<Unknown>");
       
-      for (i=0; i<(int)((sizeof(userinput_parse)/sizeof(userinput_parse_t))); i++)
+      for (i=0; i<(sizeof(userinput_parse)/sizeof(userinput_parse_t)); i++)
         {
           if (userinput_parse[i].methods_allowed & u->method &&
               (userinput_parse[i].level <= u->level ) &&

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -356,7 +356,7 @@ unsigned int t_find_resume(const char *nick, const char *filename, const char *l
       guess = tr;
     if (strcasestr(tr->xpack->file, filename))
       break;
-    if (tr->con.localport == atoi(localport))
+    if (tr->con.localport == (unsigned)atoi(localport))
       break;
   }
   if (tr == NULL) {

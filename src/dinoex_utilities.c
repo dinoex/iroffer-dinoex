@@ -562,7 +562,7 @@ char *getsendname(const char * const full)
   }
 
   len -= lastslash;
-  copy = mymalloc(len + 1 + spaced + spaced);
+  copy = (char *)mymalloc(len + 1 + spaced + spaced);
 
   if ((spaced != 0) && (gdata.spaces_in_filenames != 0))
     sprintf(copy, "\"%s\"", full + lastslash);

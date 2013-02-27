@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -60,15 +60,14 @@ typedef struct protect_call_arg {
   int dummy;
 } protect_call_arg_t;
 
-int myruby_loaded;
-time_t myruby_time;
+static int myruby_loaded;
+static time_t myruby_time;
 
-char *cLine;
-char *cFile;
-unsigned int cPack;
-VALUE cIrofferConfig;
-VALUE cIrofferEvent;
-VALUE oIrofferEvent = Qnil;
+static char *cLine;
+static char *cFile;
+static unsigned int cPack;
+static VALUE cIrofferEvent;
+static VALUE oIrofferEvent = Qnil;
 
 #if USE_RUBYVERSION < 19
 static VALUE rb_errinfo(void)
