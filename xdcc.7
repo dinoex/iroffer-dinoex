@@ -1,5 +1,5 @@
 .\" $Id$
-.TH XDCC 7 "October 2011" "All Posix OS" "User Manuals"
+.TH XDCC 7 "March 2013" "All Posix OS" "User Manuals"
 .SH NAME
 XDCC usercommands
 .SH SYNOPSIS
@@ -102,6 +102,31 @@ Request a download of a list of individual packs pack1 and pack2 on the bot mybo
 All this patterns can be used together.
 .br
 If the pack is protected by password you have to add it here.
+.TP
+.B XDCC OPTION
+.I /MSG mybot XDCC OPTION +IPV4
+.br
+Force IPv4 on next transfers.
+.br
+
+.I /MSG mybot XDCC OPTION +IPV6
+.br
+Force IPv6 on next transfers.
+.br
+
+.I /MSG mybot XDCC OPTION +ACTIVE
+.br
+Force active DCC mode on next transfers.
+.br
+
+.I /MSG mybot XDCC OPTION +PASSIVE
+.br
+Force passive DCC mode on next transfers.
+.br
+
+.I /MSG mybot XDCC OPTION +QUIET
+.br
+Set quietmode for next transfers.
 .TP
 .B XDCC QUEUE
 .I /MSG mybot XDCC QUEUE
