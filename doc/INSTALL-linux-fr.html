@@ -86,9 +86,9 @@ cp -r htdocs ../
 <li>Nous commençons par copier notre configuration.
 
 <pre class="indent">
-cp exemple.config ../monbot.config
+cp exemple.config ../monrobot.config
 cd ..
-chmod 600 monbot.config
+chmod 600 monrobot.config
 </pre>
 </li>
 
@@ -102,15 +102,15 @@ chmod 700 .
 <li>Nous allons générer un mot de passe pour l'administration.
 
 <pre class="indent">
-./iroffer-fr -c monbot.config
+./iroffer-fr -c monrobot.config
 </pre>
 </li>
 
-<li>Nous renseignons tous les répertoires dans le fichier de configuration « monbot.config ».<br>
+<li>Nous renseignons tous les répertoires dans le fichier de configuration « monrobot.config ».<br>
 « adminhost » doit être renseigné de manière appropriée.<br>
 Le site interne est activé.
 Nous ajoutons un répertoire de base pour les fichiers et l'utilisons également pour les fichiers envoyés.<br>
-« monbot.config » devrait contenir :
+« monrobot.config » devrait contenir :
 
 <pre class="indent">
 http_port 8000
@@ -118,7 +118,6 @@ http_dir htdocs
 filedir /home/bot/files
 uploaddir /home/bot/files
 </pre>
-(Remplacez 'bot' par votre login)
 </li>
 
 <li>Nous allons créer le répertoire pour les fichiers.
@@ -148,9 +147,9 @@ Nous écrivons le script :
 <pre class="indent">
 #!/bin/sh
 cd /home/bot/iroffer
-./iroffer-fr -b /home/bot/iroffer/monbot.config
+./iroffer-fr -b /home/bot/iroffer/monrobot.config
 </pre>
-(Remplacez 'bot' par votre login)
+
 </li>
 
 <li>On rend le script exécutable.
