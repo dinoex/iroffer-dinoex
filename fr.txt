@@ -589,7 +589,7 @@
 625 "        -v             montre la version et quitte.\n"
 626 "        -c             génère un mot de passe crypté et quitte.\n"
 627 "        -d             augmente le niveau de verbosité\n"
-628 "        -b             lacne en arrière-plan\n"
+628 "        -b             lance en arrière-plan\n"
 629 "        -k             teste les permissions pour les fichiers internes\n"
 630 "        -n             pas de couleurs en mode premier plan\n"
 631 "        -s             pas de manipulation d'écran en mode premier plan\n"
