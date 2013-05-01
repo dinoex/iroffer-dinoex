@@ -759,13 +759,10 @@ static void mainloop (void) {
             xdccsent += (ir_uint64)gdata.xdccsent[i];
          xdccsent /= XDCC_SENT_SIZE*1024;
          
-         if ((xdccsent < (unsigned)gdata.lowbdwth) &&
-             !gdata.exiting &&
-             irlist_size(&gdata.mainqueue) &&
-             (irlist_size(&gdata.trans) < gdata.maxtrans))
-           {
-             check_idle_queue(0);
-             send_from_queue(1, 0, NULL);
+         if ((xdccsent < (unsigned)gdata.lowbdwth)) {
+           if ( check_main_queue( gdata.maxtrans ) ) {
+               send_from_queue(1, 0, NULL);
+             }
            }
          write_files();
          }

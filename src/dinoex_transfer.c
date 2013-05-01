@@ -746,10 +746,7 @@ void t_perform(int changesec, int changequartersec)
         mydelete(tr->country);
         tr = irlist_delete(&gdata.trans, tr);
 
-        if (!gdata.exiting &&
-            irlist_size(&gdata.mainqueue) &&
-            (irlist_size(&gdata.trans) < gdata.slotsmax)) {
-          check_idle_queue(0);
+        if ( check_main_queue( gdata.slotsmax ) ) {
           send_from_queue(0, 0, trnick);
         }
         mydelete(trnick);
