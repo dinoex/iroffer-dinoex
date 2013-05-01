@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -594,6 +594,24 @@ void check_idle_queue(unsigned int pos)
   irlist_delete(&gdata.idlequeue, pq);
 
   start_one_send();
+}
+
+/* check idle queue and move one entry into the main queue */
+int check_main_queue(int max)
+{
+  if (gdata.exiting)
+    return 0;
+
+  /* update mainqueue from idlequeue */
+  check_idle_queue(0);
+
+  if (irlist_size(&gdata.mainqueue) == 0)
+    return 0;
+
+  if (irlist_size(&gdata.trans) >= max)
+    return 0;
+
+  return 1;
 }
 
 /* fill mainqueue with data from idle queue on start */
