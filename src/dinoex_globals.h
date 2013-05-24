@@ -167,6 +167,9 @@ typedef struct {
   time_t lastnotify;
   time_t lastping;
   time_t lastslow;
+  time_t lastnormal;
+  time_t lastfast;
+  time_t lastsend;
   time_t next_identify;
   time_t next_restrict;
 

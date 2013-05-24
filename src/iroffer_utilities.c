@@ -936,6 +936,9 @@ void dumpgdata(void)
       gdata_print_time(networks[ss].lastnotify);
       gdata_print_time(networks[ss].lastping);
       gdata_print_time(networks[ss].lastslow);
+      gdata_print_time(networks[ss].lastnormal);
+      gdata_print_time(networks[ss].lastfast);
+      gdata_print_time(networks[ss].lastsend);
       gdata_print_long(networks[ss].lag);
       gdata_print_time(networks[ss].next_identify);
       gdata_print_time(networks[ss].next_restrict);

@@ -475,6 +475,13 @@ void sendserver(void)
   if ( !gdata.background )
     gototop();
 
+  if ( gdata.curtime > gnetwork->lastsend )
+    {
+      if ( gnetwork->lastsend > 0 )
+        outerror(OUTERROR_TYPE_WARN,"Server queue jitter. %ld", (long)gdata.curtime - gnetwork->lastsend);
+    }
+  
+  gnetwork->lastsend = gdata.curtime + 1;
   sendannounce();
   gnetwork->serverbucket += EXCESS_BUCKET_ADD;
   gnetwork->serverbucket = min2(gnetwork->serverbucket, EXCESS_BUCKET_MAX);
@@ -510,6 +517,7 @@ void sendserver(void)
       
       gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
+      gnetwork->lastfast = gdata.curtime;
       
       item = irlist_delete(&(gnetwork->serverq_fast), item);
     }
@@ -532,6 +540,7 @@ void sendserver(void)
       
       gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
+      gnetwork->lastnormal = gdata.curtime;
       
       item = irlist_delete(&(gnetwork->serverq_normal), item);
     }
