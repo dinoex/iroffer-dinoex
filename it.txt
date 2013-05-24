@@ -1875,3 +1875,4 @@
 2819 "Cancellato dati dei trasferimenti, dati della banda, e limite trasferimenti"
 2820 "Il contatore download di ogni pack è stato azzerato, inviati in totale, uptime totale"
 2821 "<QUES<: %s %s :%s"
+2822 "Server queue jitter. %ld"
