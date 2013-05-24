@@ -597,7 +597,7 @@ void check_idle_queue(unsigned int pos)
 }
 
 /* check idle queue and move one entry into the main queue */
-int check_main_queue(int max)
+int check_main_queue(unsigned int max)
 {
   if (gdata.exiting)
     return 0;
