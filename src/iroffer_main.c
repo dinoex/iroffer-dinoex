@@ -548,7 +548,7 @@ static void mainloop (void) {
                   {
                     tempstr3[len-1] = '\0';
                     len--;
-                    ioutput(OUT_S, COLOR_MAGENTA, "<NORES<: %s", tempstr3);
+                    ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<NORES<: %s", tempstr3);
                   }
                 mydelete(tempstr3);
                 gnetwork->servertime++;

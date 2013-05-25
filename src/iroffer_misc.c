@@ -368,7 +368,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
     {
       if (gdata.debug > 14)
         {
-          ioutput(OUT_S, COLOR_MAGENTA, "<SND<: %u: %s", gnetwork->net +1, msg);
+          ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<SND<: %u: %s", gnetwork->net +1, msg);
         }
       msg[len] = '\n';
       len++;
@@ -387,7 +387,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 12)
             {
-              ioutput(OUT_S, COLOR_MAGENTA, "<QUEF<: %s", msg);
+              ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUEF<: %s", msg);
             }
           
           if (len > EXCESS_BUCKET_MAX)
@@ -410,7 +410,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 12)
             {
-              ioutput(OUT_S, COLOR_MAGENTA, "<QUEN<: %s", msg);
+              ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUEN<: %s", msg);
             }
           
           if (len > EXCESS_BUCKET_MAX)
@@ -433,7 +433,7 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 12)
             {
-              ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
+              ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUES<: %s", msg);
             }
           
           if (len > EXCESS_BUCKET_MAX)
@@ -510,7 +510,7 @@ void sendserver(void)
     {
       if (gdata.debug > 14)
         {
-          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -533,7 +533,7 @@ void sendserver(void)
     {
       if (gdata.debug > 14)
         {
-          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -561,7 +561,7 @@ void sendserver(void)
     {
       if (gdata.debug > 14)
         {
-          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -1072,9 +1072,9 @@ void shutdowniroffer(void) {
    
    if (gdata.exiting || has_closed_servers()) {
       if (gdata.exiting)
-         ioutput(OUT_S, COLOR_NO_COLOR, "Shutting Down (FORCED)");
+         ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "Shutting Down (FORCED)");
       else
-         ioutput(OUT_S, COLOR_NO_COLOR, "Shutting Down");
+         ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "Shutting Down");
       
       if ( SAVEQUIT )
          write_statefile();
@@ -1143,7 +1143,7 @@ void shutdowniroffer(void) {
            gnetwork = &(gdata.networks[ss]);
            if (gdata.debug > 14)
               {
-                ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, msg);
+                ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, msg);
               }
            writeserver_ssl(msg, strlen(msg));
            writeserver_ssl("\n", 1);

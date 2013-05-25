@@ -351,7 +351,7 @@ void parsedccchat(dccchat_t *chat,
     case DCCCHAT_CONNECTED:
       if (gdata.debug > 11)
         {
-          ioutput(OUT_S, COLOR_CYAN, ">DCC>: %s", line);
+          ioutput(OUT_S|OUT_L, COLOR_CYAN, ">DCC>: %s", line);
         }
       u_fillwith_dcc(&ui,chat,line);
       u_parseit(&ui);
@@ -412,7 +412,7 @@ void vwritedccchat(dccchat_t *chat, int add_return, const char *format, va_list 
         {
           tempstr[len-1] = '\0';
         }
-      ioutput(OUT_S, COLOR_CYAN, "<DCC<: %s", tempstr);
+      ioutput(OUT_S|OUT_L, COLOR_CYAN, "<DCC<: %s", tempstr);
     }
 }
 
