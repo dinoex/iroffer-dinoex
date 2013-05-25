@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -225,7 +225,7 @@ static char *privmsg_decrypt(const char *line, const char *channel, const char *
   snprintf(end, len, "%s :%s", channel, newstr); /* NOTRANSLATE */
   mydelete(newstr);
   if (gdata.debug > 13) {
-    ioutput(OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
+    ioutput(OUT_S|OUT_L, COLOR_MAGENTA, ">FISH>: %s", newline);
   }
   return newline;
 }
@@ -303,7 +303,7 @@ vwriteserver_channel(channel_t * const ch, const char *format, va_list ap)
   }
 
   if (gdata.debug > 13) {
-    ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s %s :%s",
+    ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUES<: %s %s :%s",
             ch->name, "PRIVMSG", msg); /* NOTRANSLATE */
   }
 
@@ -372,7 +372,7 @@ vprivmsg_chan(channel_t * const ch, const char *format, va_list ap)
     char *tempcrypt;
 
     if (gdata.debug > 13) {
-      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
+      ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<FISH<: %s", tempstr);
     }
     tempcrypt = encrypt_fish(tempstr, ulen, ch->fish);
     if (tempcrypt) {
@@ -424,7 +424,7 @@ void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char 
     char *tempcrypt;
 
     if (gdata.debug > 13) {
-      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
+      ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<FISH<: %s", message);
     }
     tempcrypt = encrypt_fish(message, len, fish);
     if (tempcrypt) {
@@ -449,7 +449,7 @@ void writeserver_notice(writeserver_type_e delay, const char *nick, const char *
     char *tempcrypt;
 
     if (gdata.debug > 13) {
-      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
+      ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<FISH<: %s", message);
     }
     tempcrypt = encrypt_fish(message, len, fish);
     if (tempcrypt) {
