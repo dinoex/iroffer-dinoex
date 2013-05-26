@@ -3,6 +3,10 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+405) reminder_send_retry
+  Defines how often the bot retries to start the XDDC SEND to the user.
+  The default is 2 retries.
+
 extend debug and log information.
 
 With Version 3.29:

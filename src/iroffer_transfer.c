@@ -808,7 +808,9 @@ void t_remind(transfer * const t) {
               (long)(t->con.lastcontact+180-gdata.curtime));
      }
    
-   t_start_dcc_send(t);
+   if ( gdata.reminder_send_retry > t->reminded ) {
+     t_start_dcc_send(t);
+     }
    gnetwork = backup;
    t->reminded++;
    }

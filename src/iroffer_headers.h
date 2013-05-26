@@ -279,7 +279,7 @@ typedef struct
   char *hostname;
   char nomin;
   char nomax;
-  char reminded;
+  unsigned char reminded;
   char close_to_timeout;
   char overlimit;
   char unlimited;
