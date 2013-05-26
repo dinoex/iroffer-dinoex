@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+405) reminder_send_retry
+  Bestimme wie oft der Bot erneut versucht einen Transfer mit XDCC SEND
+  zu starten. Default: 2 Wiederholungen.
+
 Debugging und Logging verbessert.
 
 Ab Version 3.29:

@@ -176,6 +176,7 @@ unsigned int expire_logfiles;
 unsigned int tcp_buffer_size;
 unsigned int flood_protection_rate;
 unsigned int autoignore_rate;
+unsigned int reminder_send_retry;
 /* bool */
 unsigned int hideos;
 unsigned int lognotices;
@@ -245,7 +246,6 @@ unsigned int dump_all;
 unsigned int tcp_nodelay;
 unsigned int announce_size;
 unsigned int subdirs_delayed;
-unsigned int idummy;
 
 context_t context_log[MAXCONTEXTS];
 ir_boutput_t stdout_buffer;

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -476,6 +476,7 @@ static config_int_typ config_parse_int[] = {
 {"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1, 0 }, /* NOTRANSLATE */
 {"queuesize",               &gdata.queuesize,               0, 1000000, 1, 0 }, /* NOTRANSLATE */
 {"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1, 0 }, /* NOTRANSLATE */
+{"reminder_send_retry",     &gdata.reminder_send_retry,     0, 2, 1, 1 }, /* NOTRANSLATE */
 {"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1, 0 }, /* NOTRANSLATE */
 {"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1, 0 }, /* NOTRANSLATE */
 {"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1, 300 }, /* NOTRANSLATE */
