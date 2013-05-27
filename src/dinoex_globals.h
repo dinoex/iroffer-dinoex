@@ -225,8 +225,10 @@ typedef struct {
   unsigned int server_connect_timeout;
   unsigned int need_level;
 
-  int ircserver;
+  int server_send_max;
+  int server_send_rate;
   int serverbucket;
+  int ircserver;
   serverstatus_e serverstatus;
   botstatus_e botstatus;
   how_e r_connectionmethod;

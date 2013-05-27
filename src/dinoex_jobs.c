@@ -307,10 +307,10 @@ vwriteserver_channel(channel_t * const ch, const char *format, va_list ap)
             ch->name, "PRIVMSG", msg); /* NOTRANSLATE */
   }
 
-  if (len > EXCESS_BUCKET_MAX) {
+  if (len > gnetwork->server_send_max) {
     outerror(OUTERROR_TYPE_WARN, "Message Truncated!");
-    msg[EXCESS_BUCKET_MAX] = '\0';
-    len = EXCESS_BUCKET_MAX;
+    msg[gnetwork->server_send_max] = '\0';
+    len = gnetwork->server_send_max;
   }
 
   if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ) {

@@ -3,6 +3,19 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+407) server_send_max
+  Restrict the size of the buffer the bot sends to the irc-server.
+  Otherwise the bot will be banned cause of excess flooding.
+  This setting is only per network.
+  Default: 600
+
+406) server_send_rate
+  Limit the median number of characters per second the bot sends
+  to the IRC server.
+  Otherwise the bot will be banned cause of excess flooding.
+  This setting is only per network.
+  Default: 25
+
 405) reminder_send_retry
   Defines how often the bot retries to start the XDDC SEND to the user.
   The default is 2 retries.
