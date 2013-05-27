@@ -88,7 +88,7 @@ static int connectirc (server_t *tserver) {
    
    updatecontext();
 
-   gnetwork->serverbucket = EXCESS_BUCKET_MAX;
+   gnetwork->serverbucket = gnetwork->server_send_max;
    
    if (!tserver) return 1;
    
@@ -390,11 +390,11 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
               ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUEF<: %s", msg);
             }
           
-          if (len > EXCESS_BUCKET_MAX)
+          if (len > gnetwork->server_send_max)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
-              msg[EXCESS_BUCKET_MAX] = '\0';
-              len = EXCESS_BUCKET_MAX;
+              msg[gnetwork->server_send_max] = '\0';
+              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_fast)) < MAXSENDQ)
@@ -413,11 +413,11 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
               ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUEN<: %s", msg);
             }
           
-          if (len > EXCESS_BUCKET_MAX)
+          if (len > gnetwork->server_send_max)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
-              msg[EXCESS_BUCKET_MAX] = '\0';
-              len = EXCESS_BUCKET_MAX;
+              msg[gnetwork->server_send_max] = '\0';
+              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_normal)) < MAXSENDQ)
@@ -436,11 +436,11 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
               ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUES<: %s", msg);
             }
           
-          if (len > EXCESS_BUCKET_MAX)
+          if (len > gnetwork->server_send_max)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
-              msg[EXCESS_BUCKET_MAX] = '\0';
-              len = EXCESS_BUCKET_MAX;
+              msg[gnetwork->server_send_max] = '\0';
+              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_slow)) < MAXSENDQ)
@@ -483,8 +483,9 @@ void sendserver(void)
   
   gnetwork->lastsend = gdata.curtime + 1;
   sendannounce();
-  gnetwork->serverbucket += EXCESS_BUCKET_ADD;
-  gnetwork->serverbucket = min2(gnetwork->serverbucket, EXCESS_BUCKET_MAX);
+  gnetwork->serverbucket += gnetwork->server_send_rate;
+  if (gnetwork->serverbucket > gnetwork->server_send_max)
+    gnetwork->serverbucket = gnetwork->server_send_max;
   
   clean = (irlist_size(&(gnetwork->serverq_fast)) +
            irlist_size(&(gnetwork->serverq_normal)) +

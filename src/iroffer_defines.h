@@ -87,10 +87,6 @@
 #define IR_MMAP_SIZE (512*1024)
 #endif
 
-/*       excess flood protection */
-#define  EXCESS_BUCKET_MAX    600    /* max burst size */
-#define  EXCESS_BUCKET_ADD     25    /* ave cps */
-
 /*       max transfer speed */
 #define  MAX_TRANSFER_TX_BURST_SIZE   5U    /* 5 seconds worth */
 

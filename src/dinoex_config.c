@@ -1958,6 +1958,36 @@ static void c_server_join_raw(const char *key, char *var)
   irlist_add_string(&gdata.networks[current_network].server_join_raw, var);
 }
 
+static void c_server_send_max(const char *key, char *var)
+{
+  int rawval;
+
+  if (check_range(key, var, &rawval, 300, 1200))
+    return;
+
+  gnetwork->server_send_max = rawval;
+}
+
+static char *p_server_send_max(void)
+{
+  return print_config_long2((ir_int64)(gnetwork->server_send_max));
+}
+
+static void c_server_send_rate(const char *key, char *var)
+{
+  int rawval;
+
+  if (check_range(key, var, &rawval, 10, 300))
+    return;
+
+  gnetwork->server_send_max = rawval;
+}
+
+static char *p_server_send_rate(void)
+{
+  return print_config_long2((ir_int64)(gnetwork->server_send_rate));
+}
+
 static char *p_slotsfree(void)
 {
   return print_config_long2((ir_int64)slotsfree());
@@ -2246,6 +2276,8 @@ static config_func_typ config_parse_func[] = {
 {"server_connect_timeout", c_server_connect_timeout }, /* NOTRANSLATE */
 {"server_connected_raw",   c_server_connected_raw }, /* NOTRANSLATE */
 {"server_join_raw",        c_server_join_raw }, /* NOTRANSLATE */
+{"server_send_max",        c_server_send_max }, /* NOTRANSLATE */
+{"server_send_rate",       c_server_send_rate }, /* NOTRANSLATE */
 {"slotsmax",               c_slotsmax }, /* NOTRANSLATE */
 {"slow_privmsg",           c_slow_privmsg }, /* NOTRANSLATE */
 {"statefile",              c_statefile }, /* NOTRANSLATE */
@@ -2312,6 +2344,8 @@ static config_fprint_typ config_parse_fprint[] = {
 {"restrictlist",           p_restrictlist }, /* NOTRANSLATE */
 {"restrictsend",           p_restrictsend }, /* NOTRANSLATE */
 {"send_listfile",          p_send_listfile }, /* NOTRANSLATE */
+{"server_send_max",        p_server_send_max }, /* NOTRANSLATE */
+{"server_send_rate",       p_server_send_rate }, /* NOTRANSLATE */
 {"slotsfree",              p_slotsfree }, /* NOTRANSLATE */
 {"slotsmax",               p_slotsmax }, /* NOTRANSLATE */
 {"slotsused",              p_slotsused }, /* NOTRANSLATE */
@@ -2506,6 +2540,8 @@ static void dump_config_fdump(void)
     dump_config_int3("need_level", gdata.networks[si].need_level, 10); /* NOTRANSLATE */
     dump_config_int3("getip_network", gdata.networks[si].getip_net, si); /* NOTRANSLATE */
     dump_config_int3("slow_privmsg", gdata.networks[si].slow_privmsg, 1); /* NOTRANSLATE */
+    dump_config_int3("server_send_max", gdata.networks[si].server_send_max, 600); /* NOTRANSLATE */
+    dump_config_int3("server_send_rate", gdata.networks[si].server_send_rate, 25); /* NOTRANSLATE */
     dump_config_int3("server_connect_timeout", gdata.networks[si].server_connect_timeout, CTIMEOUT); /* NOTRANSLATE */
     dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0); /* NOTRANSLATE */
     dump_config_bool3("offline", gdata.networks[si].offline, 0); /* NOTRANSLATE */
@@ -2564,6 +2600,8 @@ static void reset_config_func(void)
     gdata.networks[si].noannounce = 0;
     gdata.networks[si].offline = 0;
     gdata.networks[si].plaintext = 0;
+    gdata.networks[si].server_send_max = 600;
+    gdata.networks[si].server_send_rate = 25;
   } /* networks */
   gdata.networks_online = 0;
   for (aq = irlist_get_head(&gdata.autoqueue);
