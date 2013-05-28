@@ -1980,7 +1980,7 @@ static void c_server_send_rate(const char *key, char *var)
   if (check_range(key, var, &rawval, 10, 300))
     return;
 
-  gnetwork->server_send_max = rawval;
+  gnetwork->server_send_rate = rawval;
 }
 
 static char *p_server_send_rate(void)
