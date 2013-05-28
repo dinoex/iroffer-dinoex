@@ -2540,8 +2540,8 @@ static void dump_config_fdump(void)
     dump_config_int3("need_level", gdata.networks[si].need_level, 10); /* NOTRANSLATE */
     dump_config_int3("getip_network", gdata.networks[si].getip_net, si); /* NOTRANSLATE */
     dump_config_int3("slow_privmsg", gdata.networks[si].slow_privmsg, 1); /* NOTRANSLATE */
-    dump_config_int3("server_send_max", gdata.networks[si].server_send_max, 600); /* NOTRANSLATE */
-    dump_config_int3("server_send_rate", gdata.networks[si].server_send_rate, 25); /* NOTRANSLATE */
+    dump_config_int3("server_send_max", gdata.networks[si].server_send_max, EXCESS_BUCKET_MAX); /* NOTRANSLATE */
+    dump_config_int3("server_send_rate", gdata.networks[si].server_send_rate, EXCESS_BUCKET_ADD); /* NOTRANSLATE */
     dump_config_int3("server_connect_timeout", gdata.networks[si].server_connect_timeout, CTIMEOUT); /* NOTRANSLATE */
     dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0); /* NOTRANSLATE */
     dump_config_bool3("offline", gdata.networks[si].offline, 0); /* NOTRANSLATE */
@@ -2597,11 +2597,11 @@ static void reset_config_func(void)
     gdata.networks[si].need_level = 10;
     gdata.networks[si].getip_net = si;
     gdata.networks[si].server_connect_timeout = CTIMEOUT;
+    gdata.networks[si].server_send_max = EXCESS_BUCKET_MAX;
+    gdata.networks[si].server_send_rate = EXCESS_BUCKET_ADD;
     gdata.networks[si].noannounce = 0;
     gdata.networks[si].offline = 0;
     gdata.networks[si].plaintext = 0;
-    gdata.networks[si].server_send_max = 600;
-    gdata.networks[si].server_send_rate = 25;
   } /* networks */
   gdata.networks_online = 0;
   for (aq = irlist_get_head(&gdata.autoqueue);
