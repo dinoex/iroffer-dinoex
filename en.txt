@@ -1875,4 +1875,3 @@
 2819 "Cleared transfer record, bandwidth record and transfer limits"
 2820 "Cleared download counter for each pack, total sent and total uptime"
 2821 "<QUES<: %s %s :%s"
-2822 "Server queue jitter. %ld"

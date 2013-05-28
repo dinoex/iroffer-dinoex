@@ -1875,4 +1875,3 @@
 2819 "Efface les records de transfert et de bande passante, et les limites de transferts"
 2820 "Efface le compteur de téléchargements de chaque paquet, le total envoyé, et le temps de fonctionnement"
 2821 "<QUES<: %s %s :%s"
-2822 "Server queue jitter. %ld"
