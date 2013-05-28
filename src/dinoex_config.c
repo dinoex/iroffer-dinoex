@@ -1965,7 +1965,7 @@ static void c_server_send_max(const char *key, char *var)
   if (check_range(key, var, &rawval, 300, 1200))
     return;
 
-  gnetwork->server_send_max = rawval;
+  gdata.networks[current_network].server_send_max = rawval;
 }
 
 static char *p_server_send_max(void)
@@ -1980,7 +1980,7 @@ static void c_server_send_rate(const char *key, char *var)
   if (check_range(key, var, &rawval, 10, 300))
     return;
 
-  gnetwork->server_send_rate = rawval;
+  gdata.networks[current_network].server_send_rate = rawval;
 }
 
 static char *p_server_send_rate(void)
