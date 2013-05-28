@@ -474,12 +474,6 @@ void sendserver(void)
   
   if ( !gdata.background )
     gototop();
-
-  if ( gdata.curtime > gnetwork->lastsend )
-    {
-      if ( gnetwork->lastsend > 0 )
-        outerror(OUTERROR_TYPE_WARN,"Server queue jitter. %ld", (long)gdata.curtime - gnetwork->lastsend);
-    }
   
   gnetwork->lastsend = gdata.curtime + 1;
   sendannounce();
