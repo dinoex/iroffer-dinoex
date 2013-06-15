@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+408) DCC STATUS
+  Die Antwort zu "DCC STATUS" wurde um die Größe der "idle queue"
+  erweitert.
+
 407) server_send_max
   Begrenzt den Buffer der zum IRC-Server gesendet wird.
   Damit wird verhinder das der Bot wegen 'Excess Flood' gebannt wird.

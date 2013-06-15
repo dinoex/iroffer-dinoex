@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+408) DCC STATUS (suggested by OmegaPhil)
+  Report idle queue in DCC STATUS reply.
+
 407) server_send_max
   Restrict the size of the buffer the bot sends to the irc-server.
   Otherwise the bot will be banned cause of excess flooding.
