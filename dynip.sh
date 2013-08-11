@@ -22,7 +22,7 @@ PIDFILE="mybot.pid"
 set -e
 set -u
 
-lynx -source ${URL} \
+curl --silent ${URL} \
  |sed -e 's=^=usenatip =' \
  > ${CONFIGFILE}.tmp
 
