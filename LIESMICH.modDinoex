@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+bugfix: autoadd_time
+  Wenn "packs_delayed" nicht leer ist, lasse den "autoadd" aus.
+
 408) DCC STATUS
   Die Antwort zu "DCC STATUS" wurde um die Größe der "idle queue"
   erweitert.
