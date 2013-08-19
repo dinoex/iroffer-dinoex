@@ -3,6 +3,10 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+409) FETCH AUTO.*
+  Get the filename and date from remote HTTP-server.
+  On completed download to the bot the file is renamed.
+
 bugfix: autoadd_time
   Skip autoadd when packs_delayed is not empty.
 

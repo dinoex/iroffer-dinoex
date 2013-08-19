@@ -3,6 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+409) FETCH AUTO.*
+  Holde den Namen und das Datum der Datei vom HTTP-Server.
+  Nach erfolgreichem Download wird die Datei lokal umbenannt.
+
 bugfix: autoadd_time
   Wenn "packs_delayed" nicht leer ist, lasse den "autoadd" aus.
 

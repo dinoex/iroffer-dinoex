@@ -25,6 +25,7 @@
 
 #ifdef USE_CURL
 #include <curl/curl.h>
+#include <ctype.h>
 
 typedef struct
 {
@@ -33,6 +34,9 @@ typedef struct
   unsigned int net;
   char *name;
   char *url;
+  char *uploaddir;
+  char *fullname;
+  char *contentname;
   char *vhosttext;
   FILE *writefd;
   off_t resumesize;
@@ -88,13 +92,19 @@ void fetch_multi_fdset(fd_set *read_fd_set, fd_set *write_fd_set, fd_set *exc_fd
   }
 }
 
+/* free all transfer ressouces */
 static fetch_curl_t *clean_fetch(fetch_curl_t *ft)
 {
   updatecontext();
   if (ft->curlhandle != 0 )
     curl_easy_cleanup(ft->curlhandle);
-  fclose(ft->writefd);
+  if (ft->writefd != NULL)
+    fclose(ft->writefd);
   mydelete(ft->errorbuf);
+  if (ft->contentname != NULL)
+    mydelete(ft->contentname);
+  mydelete(ft->uploaddir);
+  mydelete(ft->fullname);
   mydelete(ft->name);
   mydelete(ft->url);
   if (ft->u.snick != NULL)
@@ -122,7 +132,7 @@ unsigned int fetch_cancel(unsigned int num)
         continue;
       }
     }
-    a_respond(&(ft->u), "fetch %s canceled", ft->name);
+    a_respond(&(ft->u), "fetch '%s' canceled", ft->name);
     cms = curl_multi_remove_handle(cm, ft->curlhandle);
     if ( cms != 0 ) {
       outerror(OUTERROR_TYPE_WARN_LOUD, "curl_multi_remove_handle() = %d", cms);
@@ -134,17 +144,83 @@ unsigned int fetch_cancel(unsigned int num)
   return 1;
 }
 
+/* set the modification time of a file */
+static void fetch_set_time(const char *filename, long seconds)
+{
+  struct timeval tv[2];
+  int rc;
+
+  if (seconds <= 0)
+    return;
+
+  tv[0].tv_sec = tv[1].tv_sec = seconds;
+  tv[0].tv_usec = tv[1].tv_usec = 0;
+  rc = utimes(filename, tv);
+  if (rc != 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "setting date of file failed with %d : %s",
+             rc, strerror(errno));
+  }
+}
+
+/* get the best filename for the uploaded file */
+static char *fetch_get_filename(fetch_curl_t *ft, const char *effective_url)
+{
+  if (ft->contentname != NULL)
+    return getsendname(ft->contentname);
+
+  if (effective_url != NULL)
+    return getsendname(effective_url);
+
+  return getsendname(ft->url);
+}
+
+/* rename file after upload */
+static void fetch_rename(fetch_curl_t *ft, const char *effective_url)
+{
+  char *name;
+  char *destname;
+  int rc;
+  int fd;
+
+  if (strncasecmp(ft->name, "AUTO", 4) != 0) /* NOTRANSLATE */
+    return;
+
+  name = fetch_get_filename(ft, effective_url);
+  if (name == NULL)
+    return;
+
+  destname = mystrjoin(ft->uploaddir, name, '/');
+  fd = open(destname, O_RDONLY | ADDED_OPEN_FLAGS);
+  if (fd >= 0) {
+    close(fd);
+    outerror(OUTERROR_TYPE_WARN_LOUD, "File %s could not be moved to %s: %s",
+             ft->name, name, strerror(EEXIST));
+  } else {
+    rc = rename(ft->fullname, destname);
+    if (rc < 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD, "File %s could not be moved to %s: %s",
+               ft->name, name, strerror(errno));
+    } else {
+      a_respond(&(ft->u), "fetched: '%s'", destname);
+    }
+  }
+  mydelete(destname);
+  mydelete(name);
+}
+
 /* process all running connections */
 void fetch_perform(void)
 {
   CURLMcode cms;
   CURLMsg *msg;
   CURL *ch;
+  fetch_curl_t *ft;
+  gnetwork_t *backup;
+  char *effective_url;
   int running;
   int msgs_in_queue;
   unsigned int seen = 0;
-  fetch_curl_t *ft;
-  gnetwork_t *backup;
+  long filetime = 0;
 
   do {
     cms = curl_multi_perform(cm, &running);
@@ -169,11 +245,26 @@ void fetch_perform(void)
       if (ft->curlhandle == ch) {
         gnetwork = &(gdata.networks[ft->net]);
         if (ft->errorbuf[0] != 0)
-          outerror(OUTERROR_TYPE_WARN_LOUD, "fetch %s failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
+          outerror(OUTERROR_TYPE_WARN_LOUD, "fetch '%s' failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
         if (msg->data.result != 0 ) {
-          a_respond(&(ft->u), "fetch %s failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
+          a_respond(&(ft->u), "fetch '%s' failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
         } else {
-          a_respond(&(ft->u), "fetch %s completed", ft->name);
+          a_respond(&(ft->u), "fetch '%s' completed", ft->name);
+          ioutput(OUT_L, COLOR_NO_COLOR, "fetch '%s' completed", ft->name);
+          curl_easy_getinfo(ft->curlhandle, CURLINFO_EFFECTIVE_URL, &effective_url);
+          a_respond(&(ft->u), "fetched effective url: '%s'", effective_url);
+          ioutput(OUT_L, COLOR_NO_COLOR, "fetched effective url: '%s'", effective_url);
+          curl_easy_getinfo(ft->curlhandle, CURLINFO_FILETIME, &filetime);
+          a_respond(&(ft->u), "fetched remote time: %ld", filetime);
+          ioutput(OUT_L, COLOR_NO_COLOR, "fetched remote time: %ld", filetime);
+          if (ft->contentname != NULL) {
+            a_respond(&(ft->u), "fetched content name: '%s'", ft->contentname);
+            ioutput(OUT_L, COLOR_NO_COLOR, "fetched content name: '%s'", ft->contentname);
+          }
+          fclose(ft->writefd); /* sync all data to disk */
+          ft->writefd = NULL;
+          fetch_set_time(ft->fullname, filetime);
+          fetch_rename(ft, effective_url);
 #ifdef USE_RUBY
           do_myruby_upload_done( ft->name );
 #endif /* USE_RUBY */
@@ -192,6 +283,71 @@ void fetch_perform(void)
     outerror(OUTERROR_TYPE_WARN_LOUD, "curlhandle not found %d/%d", running, fetch_started);
   fetch_started = running;
   gnetwork = backup;
+}
+
+/* callback for CURLOPT_HEADERFUNCTION */
+/* from curl tool_cb_hdr.c, Copyright (C) 1998 - 2011, Daniel Stenberg */
+static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userdata)
+{
+  const size_t cb = size * nmemb;
+  const size_t failure = (cb) ? 0 : 1;
+  fetch_curl_t *ft = userdata;
+  const char *end;
+  const char *p;
+  char *temp;
+  size_t len;
+
+#ifdef DEBUG
+  if(size * nmemb > (size_t)CURL_MAX_HTTP_HEADER) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Header data = %ld exceeds single call write limit!", size);
+    return failure;
+  }
+#endif
+  temp = mystrdup(ptr);
+  len = cb;
+  if (temp[len - 1] == '\n') {
+    --(len);
+    if (temp[len - 1] == '\r') {
+      --(len);
+    }
+  }
+  temp[len] = 0;
+  if ((gdata.debug > 0) && (cb > 2)) {
+    a_respond(&(ft->u), "FETCH header '%s'", temp);
+  }
+  if (cb < 20) {
+    mydelete(temp);
+    return cb;
+  }
+
+  if (strncasecmp("Content-disposition:", temp, 20) == 0) { /* NOTRANSLATE */
+    p = temp + 20;
+    end = temp + len;
+
+    /* look for the 'filename=' parameter
+       (encoded filenames (*=) are not supported) */
+    for (;;) {
+      while (*p && (p < end) && !isalpha(*p))
+        p++;
+      if (p > end - 9)
+        break;
+
+      if (strncmp(p, "filename=", 9)) { /* NOTRANSLATE */
+        /* no match, find next parameter */
+        while((p < end) && (*p != ';'))
+          p++;
+        continue;
+      }
+      p += 9;
+      ft->contentname = mystrdup(p);
+      clean_quotes(ft->contentname);
+      a_respond(&(ft->u), "FETCH filename '%s'", ft->contentname);
+      break;
+    }
+  }
+
+  mydelete(temp);
+  return cb;
 }
 
 static void curl_respond(const userinput *const u, const char *text, CURLcode ces)
@@ -272,6 +428,12 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     return 1;
   }
 
+  ces = curl_easy_setopt(ch, CURLOPT_FILETIME, 1);
+  if (ces != 0) {
+    curl_respond( u, "FILETIME", ces); /* NOTRANSLATE */
+    return 1;
+  }
+
   ces = curl_easy_setopt(ch, CURLOPT_URL, ft->url);
   if (ces != 0) {
     curl_respond( u, "URL", ces); /* NOTRANSLATE */
@@ -281,6 +443,17 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
   ces = curl_easy_setopt(ch, CURLOPT_WRITEDATA, ft->writefd);
   if (ces != 0) {
     curl_respond( u, "WRITEDATA", ces); /* NOTRANSLATE */
+    return 1;
+  }
+
+  ces = curl_easy_setopt(ch, CURLOPT_HEADERFUNCTION, fetch_header_cb);
+  if (ces != 0) {
+    curl_respond( u, "HEADERFUNCTION", ces); /* NOTRANSLATE */
+    return 1;
+  }
+  ces = curl_easy_setopt(ch, CURLOPT_HEADERDATA, ft);
+  if (ces != 0) {
+    curl_respond( u, "HEADERDATA", ces); /* NOTRANSLATE */
     return 1;
   }
 
@@ -345,7 +518,6 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
   }
 
   updatecontext();
-  mydelete(fullfile);
   ft = irlist_add(&fetch_trans, sizeof(fetch_curl_t));
   ft->u.method = u->method;
   if (u->snick != NULL) {
@@ -357,6 +529,9 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
   ft->net = gnetwork->net;
   ft->name = mystrdup(name);
   ft->url = mystrdup(url);
+  ft->uploaddir = mystrdup(uploaddir);
+  ft->fullname = fullfile;
+  fullfile = NULL;
   ft->writefd = writefd;
   ft->resumesize = resumesize;
   ft->errorbuf = mymalloc(CURL_ERROR_SIZE);
@@ -368,7 +543,7 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
     return;
   }
 
-  a_respond(u, "fetch %s started", ft->name);
+  a_respond(u, "fetch '%s' started", ft->name);
   ++fetch_started;
 }
 
@@ -398,6 +573,7 @@ void dinoex_dcl(const userinput *const u)
 void dinoex_dcld(const userinput *const u)
 {
   fetch_curl_t *ft;
+  char *effective_url;
   double dl_total;
   double dl_size;
   double dl_speed;
@@ -420,12 +596,15 @@ void dinoex_dcld(const userinput *const u)
     dl_time = 0.0;
     curl_easy_getinfo(ft->curlhandle, CURLINFO_TOTAL_TIME, &dl_time);
 
+    effective_url = NULL;
+    curl_easy_getinfo(ft->curlhandle, CURLINFO_EFFECTIVE_URL, &effective_url);
+
     started = min2(359999, gdata.curtime - ft->starttime);
     left = min2(359999, (dl_total - dl_size) /
                         ((int)(max2(dl_speed, 1))));
     progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
-    a_respond(u, "                   %s", ft->url);
+    a_respond(u, "                   %s", effective_url ? effective_url : ft->url);
     a_respond(u, "  ^- %5.1fK/s    %6" LLPRINTFMT "dK/%6" LLPRINTFMT "dK  %2i%c%02i%c/%2i%c%02i%c",
                 (float)(dl_speed/1024),
                 (ir_int64)(dl_size/1024),
