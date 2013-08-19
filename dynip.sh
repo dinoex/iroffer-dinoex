@@ -16,13 +16,13 @@
 # */5 * * * * /full/path/to/iroffer/dynip.sh
 
 URL="http://iroffer.org/myip.cgi"
-CONFIGFILE="dynip.conf"
+CONFIGFILE="dynip.config"
 PIDFILE="mybot.pid"
 
 set -e
 set -u
 
-links -source ${URL} \
+curl --silent ${URL} \
  |sed -e 's=^=usenatip =' \
  > ${CONFIGFILE}.tmp
 

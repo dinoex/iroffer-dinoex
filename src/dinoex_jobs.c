@@ -811,6 +811,10 @@ void autoadd_all(void)
   if (gdata.noautoadd > gdata.curtime)
     return;
 
+  /* stop here if we have already files to add/remove */
+  if (irlist_size(&gdata.packs_delayed) > 0)
+    return;
+
   for (dir = irlist_get_head(&gdata.autoadd_dirs);
        dir;
        dir = irlist_get_next(dir)) {
