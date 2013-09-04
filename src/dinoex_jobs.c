@@ -714,7 +714,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
     *w = 0;
 
   caps(line);
-  if (strstr(line, newcrc) != NULL) {
+  if (strcasestr(line, newcrc) != NULL) {
     if (quiet && (gdata.verbose_crc32 == 0))
       x = NULL;
     else
