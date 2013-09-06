@@ -292,9 +292,9 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
   const size_t cb = size * nmemb;
   const size_t failure = (cb) ? 0 : 1;
   fetch_curl_t *ft = userdata;
-  const char *end;
-  const char *p;
   char *temp;
+  char *work;
+  char *end;
   size_t len;
 
 #ifdef DEBUG
@@ -321,28 +321,19 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
   }
 
   if (strncasecmp("Content-disposition:", temp, 20) == 0) { /* NOTRANSLATE */
-    p = temp + 20;
-    end = temp + len;
-
     /* look for the 'filename=' parameter
        (encoded filenames (*=) are not supported) */
-    for (;;) {
-      while (*p && (p < end) && !isalpha(*p))
-        p++;
-      if (p > end - 9)
-        break;
+    work = strstr(temp + 20, "filename="); /* NOTRANSLATE */
+    if (work != NULL) {
+      work += 9;
+      /* stop at first ; */
+      end = strchr(work, ';');
+      if (work != NULL)
+        *end = 0;
 
-      if (strncmp(p, "filename=", 9)) { /* NOTRANSLATE */
-        /* no match, find next parameter */
-        while((p < end) && (*p != ';'))
-          p++;
-        continue;
-      }
-      p += 9;
-      ft->contentname = mystrdup(p);
+      ft->contentname = mystrdup(work);
       clean_quotes(ft->contentname);
       a_respond(&(ft->u), "FETCH filename '%s'", ft->contentname);
-      break;
     }
   }
 
