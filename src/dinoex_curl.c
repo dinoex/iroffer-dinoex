@@ -297,6 +297,7 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
   char *end;
   size_t len;
 
+  updatecontext();
   if (ft == NULL)
     return cb; /* ignore */
 
@@ -318,25 +319,22 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
   if ((gdata.debug > 0) && (cb > 2)) {
     a_respond(&(ft->u), "FETCH header '%s'", temp);
   }
-  if (cb < 20) {
-    mydelete(temp);
-    return cb;
-  }
+  if (cb >= 20) {
+    if (strncasecmp("Content-disposition:", temp, 20) == 0) { /* NOTRANSLATE */
+      /* look for the 'filename=' parameter
+         (encoded filenames (*=) are not supported) */
+      work = strstr(temp + 20, "filename="); /* NOTRANSLATE */
+      if (work != NULL) {
+        work += 9;
+        /* stop at first ; */
+        end = strchr(work, ';');
+        if (end != NULL)
+          *end = 0;
 
-  if (strncasecmp("Content-disposition:", temp, 20) == 0) { /* NOTRANSLATE */
-    /* look for the 'filename=' parameter
-       (encoded filenames (*=) are not supported) */
-    work = strstr(temp + 20, "filename="); /* NOTRANSLATE */
-    if (work != NULL) {
-      work += 9;
-      /* stop at first ; */
-      end = strchr(work, ';');
-      if (work != NULL)
-        *end = 0;
-
-      ft->contentname = mystrdup(work);
-      clean_quotes(ft->contentname);
-      a_respond(&(ft->u), "FETCH filename '%s'", ft->contentname);
+        ft->contentname = mystrdup(work);
+        clean_quotes(ft->contentname);
+        a_respond(&(ft->u), "FETCH filename '%s'", ft->contentname);
+      }
     }
   }
 
@@ -410,15 +408,27 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     return 1;
   }
 
+  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
+  if (ces != 0) {
+    curl_respond( u, "SSL_VERIFYPEER", ces); /* NOTRANSLATE */
+    return 1;
+  }
+
+  ces = curl_easy_setopt(ch, CURLOPT_REFERER, ft->url);
+  if (ces != 0) {
+    curl_respond( u, "REFERER", ces); /* NOTRANSLATE */
+    return 1;
+  }
+
   ces = curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 1);
   if (ces != 0) {
     curl_respond( u, "FOLLOWLOCATION", ces); /* NOTRANSLATE */
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
+  ces = curl_easy_setopt(ch, CURLOPT_AUTOREFERER, 1);
   if (ces != 0) {
-    curl_respond( u, "SSL_VERIFYPEER", ces); /* NOTRANSLATE */
+    curl_respond( u, "AUTOREFERER", ces); /* NOTRANSLATE */
     return 1;
   }
 
