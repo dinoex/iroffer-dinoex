@@ -297,6 +297,9 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
   char *end;
   size_t len;
 
+  if (ft == NULL)
+    return cb; /* ignore */
+
 #ifdef DEBUG
   if(size * nmemb > (size_t)CURL_MAX_HTTP_HEADER) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Header data = %ld exceeds single call write limit!", size);
