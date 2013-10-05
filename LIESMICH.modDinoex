@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+bugfix: FETCH
+  FETCH hat die Konfiguration "local_vhost" nicht benutzt.
+
 bugfix: max_uploads
   max_uploads zählt jetzt alle eingehenden Verbindungen.
 

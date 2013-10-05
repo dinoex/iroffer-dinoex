@@ -22,6 +22,7 @@
 #include "dinoex_admin.h"
 #include "dinoex_ruby.h"
 #include "dinoex_jobs.h"
+#include "dinoex_irc.h"
 #include "dinoex_curl.h"
 
 #ifdef USE_CURL
@@ -352,6 +353,7 @@ static void curl_respond(const userinput *const u, const char *text, CURLcode ce
 
 static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 {
+  char *vhost;
   CURL *ch;
   CURLcode ces;
   CURLcode cms;
@@ -371,21 +373,15 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     return 1;
   }
 
-#if 0
-  {
-    char *vhost;
-
-    vhost = get_local_vhost();
-    if (vhost) {
-      ft->vhosttext = mystrdup(vhost);
-      ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
-      if (ces != 0) {
-        a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
-        return 1;
-      }
+  vhost = get_local_vhost();
+  if (vhost) {
+    ft->vhosttext = mystrdup(vhost);
+    ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
+    if (ces != 0) {
+      a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
+      return 1;
     }
   }
-#endif
 
   ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
   if (ces != 0) {

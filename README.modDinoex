@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bugfix: FETCH
+  FETCH did not use the configured local_vhost.
+
 bugfix: max_uploads
   max_uploads will now count all incoming transfers.
 
