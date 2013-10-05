@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -19,9 +19,10 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
-#include "dinoex_curl.h"
 #include "dinoex_admin.h"
 #include "dinoex_ruby.h"
+#include "dinoex_jobs.h"
+#include "dinoex_curl.h"
 
 #ifdef USE_CURL
 #include <curl/curl.h>
@@ -139,6 +140,7 @@ unsigned int fetch_cancel(unsigned int num)
     }
     --fetch_started;
     ft = clean_fetch(ft);
+    start_qupload();
     return 0;
   }
   return 1;
@@ -266,13 +268,14 @@ void fetch_perform(void)
           fetch_set_time(ft->fullname, filetime);
           fetch_rename(ft, effective_url);
 #ifdef USE_RUBY
-          do_myruby_upload_done( ft->name );
+          do_myruby_upload_done( ft->fullname );
 #endif /* USE_RUBY */
         }
         updatecontext();
         ++seen;
         --fetch_started;
         ft = clean_fetch(ft);
+        start_qupload();
         continue;
       }
       ft = irlist_get_next(ft);
@@ -635,6 +638,12 @@ unsigned int fetch_is_running(const char *file)
       return 1;
   }
   return 0;
+}
+
+/* check if a file is already in transfer */
+unsigned int fetch_running(void)
+{
+  return irlist_size(&fetch_trans);
 }
 
 #endif /* USE_CURL */

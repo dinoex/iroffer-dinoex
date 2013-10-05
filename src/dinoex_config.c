@@ -458,7 +458,7 @@ static config_int_typ config_parse_int[] = {
 {"ignore_duplicate_ip",     &gdata.ignore_duplicate_ip,     0, 24*31, 1, 0 }, /* NOTRANSLATE */
 {"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1, 0 }, /* NOTRANSLATE */
 {"max_find",                &gdata.max_find,                0, 65000, 1, 0 }, /* NOTRANSLATE */
-{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 65000 }, /* NOTRANSLATE */
+{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4, 65000 }, /* NOTRANSLATE */
 {"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1, 1 }, /* NOTRANSLATE */
 {"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1, 1 }, /* NOTRANSLATE */

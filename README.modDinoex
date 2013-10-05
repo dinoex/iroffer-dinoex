@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bugfix: max_uploads
+  max_uploads will now count all incoming transfers.
+
 409) FETCH AUTO.*
   Get the filename and date from remote HTTP-server.
   On completed download to the bot the file is renamed.

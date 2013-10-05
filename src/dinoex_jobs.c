@@ -24,6 +24,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_config.h"
 #include "dinoex_misc.h"
+#include "dinoex_curl.h"
 #include "dinoex_jobs.h"
 #include "crc32.h"
 
@@ -1766,6 +1767,34 @@ void write_files(void)
   xdcc_save_xml();
 }
 
+/* check if max_uploads is reached */
+unsigned int max_uploads_reached( void )
+{
+  qupload_t *qu;
+  unsigned int uploads;
+
+  if ( gdata.max_uploads == 0 )
+    return 0; /* not limited */
+
+  uploads = irlist_size(&gdata.uploads);
+
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (qu->q_state == 2)
+      uploads += 1;
+  }
+
+#ifdef USE_CURL
+  uploads += fetch_running();
+#endif /* USE_CURL */
+
+  if ( uploads < gdata.max_uploads )
+    return 0; /* not limited */
+
+  return 1; /* limited */
+}
+
 void start_qupload(void)
 {
   gnetwork_t *backup;
@@ -1773,12 +1802,10 @@ void start_qupload(void)
 
   updatecontext();
 
-  for (qu = irlist_get_head(&gdata.quploadhost);
-       qu;
-       qu = irlist_get_next(qu)) {
-    if (qu->q_state == 2)
-      return; /* busy */
-  }
+  if (max_uploads_reached() != 0)
+    return; /* busy */
+
+  /* start next XDCC GET */
   for (qu = irlist_get_head(&gdata.quploadhost);
        qu;
        qu = irlist_get_next(qu)) {
@@ -1792,6 +1819,8 @@ void start_qupload(void)
     qu->q_state = 2;
     return;
   }
+
+  /* start next fetch */
 }
 
 unsigned int close_qupload(unsigned int net, const char *nick)

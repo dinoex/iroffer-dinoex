@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+bugfix: max_uploads
+  max_uploads zählt jetzt alle eingehenden Verbindungen.
+
 409) FETCH AUTO.*
   Holde den Namen und das Datum der Datei vom HTTP-Server.
   Nach erfolgreichem Download wird die Datei lokal umbenannt.
@@ -16,7 +19,7 @@ bugfix: autoadd_time
 
 407) server_send_max
   Begrenzt den Buffer der zum IRC-Server gesendet wird.
-  Damit wird verhinder das der Bot wegen 'Excess Flood' gebannt wird.
+  Damit wird verhindert, das der Bot wegen 'Excess Flood' gebannt wird.
   Nur per Netzwerk einstellbar.
   Default: 600
 

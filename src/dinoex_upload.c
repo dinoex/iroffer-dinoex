@@ -474,7 +474,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
     error_upload_start(nick, hostmask, "upload running", "I'm already getting this file");
     return;
   }
-  if (irlist_size(&gdata.uploads) >= gdata.max_uploads) {
+  if (max_uploads_reached() != 0) {
     error_upload_start(nick, hostmask, "too many uploads", "I'm already getting too many files");
     return;
   }
