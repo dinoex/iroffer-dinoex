@@ -4,6 +4,9 @@ Ab Version 3.30:
 ----------------
 
 bugfix: FETCH
+  Beim Resume wurde die gesamte Datei übertragen.
+
+bugfix: FETCH
   FETCH hat die Konfiguration "local_vhost" nicht benutzt.
 
 bugfix: max_uploads

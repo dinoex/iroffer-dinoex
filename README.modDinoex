@@ -4,6 +4,9 @@ With Version 3.30:
 ------------------
 
 bugfix: FETCH
+  When resuming a file the full content was fetched.
+
+bugfix: FETCH
   FETCH did not use the configured local_vhost.
 
 bugfix: max_uploads

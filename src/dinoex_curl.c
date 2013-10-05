@@ -499,7 +499,7 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
 
   resumesize = 0;
   fullfile = mystrjoin(uploaddir, name, '/');
-  writefd = fopen(fullfile, "w+"); /* NOTRANSLATE */
+  writefd = fopen(fullfile, "w+x"); /* NOTRANSLATE */
   if ((writefd == NULL) && (errno == EEXIST)) {
     retval = stat(fullfile, &s);
     if (retval < 0) {
@@ -510,7 +510,7 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
       return;
     }
     resumesize = s.st_size;
-    writefd = fopen(fullfile, "a"); /* NOTRANSLATE */
+    writefd = fopen(fullfile, "a+"); /* NOTRANSLATE */
   }
   if (writefd == NULL) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access Upload File '%s': %s",
