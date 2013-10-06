@@ -911,6 +911,12 @@ void dumpgdata(void)
   gdata_iter_print_int(q_net);
   gdata_iter_print_long(q_time);
   gdata_irlist_iter_end;
+  gdata_irlist_iter_start(fetch_queue, fetch_queue_t);
+  gdata_iter_print_int(net);
+  gdata_iter_print_string(name);
+  gdata_iter_print_string(url);
+  gdata_iter_print_string(uploaddir);
+  gdata_irlist_iter_end;
   
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)

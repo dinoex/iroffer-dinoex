@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+410) FETCH queue
+  FETCH Befehle gehen in eine Warteschlange wenn "max_uploads" erreicht ist.
+
 bugfix: FETCH
   Beim Resume wurde die gesamte Datei übertragen.
 

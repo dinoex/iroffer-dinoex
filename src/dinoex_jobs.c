@@ -1821,6 +1821,9 @@ void start_qupload(void)
   }
 
   /* start next fetch */
+#ifdef USE_CURL
+  fetch_next();
+#endif /* USE_CURL */
 }
 
 unsigned int close_qupload(unsigned int net, const char *nick)

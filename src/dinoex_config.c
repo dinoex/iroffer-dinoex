@@ -2557,6 +2557,7 @@ static void reset_config_func(void)
   autoqueue_t *aq;
   tupload_t *tu;
   qupload_t *qu;
+  fetch_queue_t *fq;
   group_admin_t *ga;
   http_magic_t *mime;
   autoadd_group_t *ag;
@@ -2621,6 +2622,14 @@ static void reset_config_func(void)
     mydelete(qu->q_host);
     mydelete(qu->q_nick);
     mydelete(qu->q_pack);
+  }
+  for (fq = irlist_get_head(&gdata.fetch_queue);
+       fq;
+       fq = irlist_delete(&gdata.fetch_queue, fq)) {
+    mydelete(fq->u.snick);
+    mydelete(fq->name);
+    mydelete(fq->url);
+    mydelete(fq->uploaddir);
   }
   for (ga = irlist_get_head(&gdata.group_admin);
        ga;

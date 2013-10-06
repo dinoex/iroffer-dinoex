@@ -36,6 +36,15 @@ typedef struct {
 } qupload_t;
 
 typedef struct {
+  userinput u;
+  unsigned int net;
+  unsigned int dummy;
+  char *name;
+  char *url;
+  char *uploaddir;
+} fetch_queue_t;
+
+typedef struct {
   char *a_group;
   char *a_pattern;
 } autoadd_group_t;

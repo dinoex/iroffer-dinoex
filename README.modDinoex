@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+410) FETCH queue
+  FETCH comands are now queued if max_uploads is reached.
+
 bugfix: FETCH
   When resuming a file the full content was fetched.
 

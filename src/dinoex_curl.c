@@ -276,7 +276,6 @@ void fetch_perform(void)
         ++seen;
         --fetch_started;
         ft = clean_fetch(ft);
-        start_qupload();
         continue;
       }
       ft = irlist_get_next(ft);
@@ -287,6 +286,7 @@ void fetch_perform(void)
     outerror(OUTERROR_TYPE_WARN_LOUD, "curlhandle not found %d/%d", running, fetch_started);
   fetch_started = running;
   gnetwork = backup;
+  start_qupload();
 }
 
 /* callback for CURLOPT_HEADERFUNCTION */
@@ -481,21 +481,35 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
   return 0;
 }
 
-/* start a transfer */
-void start_fetch_url(const userinput *const u, const char *uploaddir)
+/* start a transfer later */
+static void fetch_later(const userinput *const u, const char *uploaddir, char *name, char *url)
+{
+  fetch_queue_t *fq;
+
+  updatecontext();
+
+  fq = irlist_add(&gdata.fetch_queue, sizeof(fetch_queue_t));
+  fq->u.method = u->method;
+  if (u->snick != NULL) {
+    fq->u.snick = mystrdup(u->snick);
+  }
+  fq->u.fd = u->fd;
+  fq->u.chat = u->chat;
+  fq->net = gnetwork->net;
+  fq->name = mystrdup(name);
+  fq->url = mystrdup(url);
+  fq->uploaddir = mystrdup(uploaddir);
+}
+
+/* start a transfer now */
+static void fetch_now(const userinput *const u, const char *uploaddir, char *name, char *url)
 {
   off_t resumesize;
   fetch_curl_t *ft;
   char *fullfile;
-  char *name;
-  char *url;
   FILE *writefd;
   struct stat s;
   int retval;
-
-  name = u->arg1;
-  url = u->arg2e;
-  while (*url == ' ') ++url;
 
   resumesize = 0;
   fullfile = mystrjoin(uploaddir, name, '/');
@@ -550,10 +564,53 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
   ++fetch_started;
 }
 
+/* try to start a transfer */
+void start_fetch_url(const userinput *const u, const char *uploaddir)
+{
+  char *name;
+  char *url;
+
+  name = u->arg1;
+  url = u->arg2e;
+  while (*url == ' ') ++url;
+  if (max_uploads_reached() != 0) {
+    fetch_later(u, uploaddir, name, url);
+  } else {
+    fetch_now(u, uploaddir, name, url);
+  }
+}
+
+/* start next transfer */
+void fetch_next(void)
+{
+  gnetwork_t *backup;
+  fetch_queue_t *fq;
+
+  updatecontext();
+
+  if (irlist_size(&gdata.fetch_queue) == 0)
+    return;
+
+  fq = irlist_get_head(&gdata.fetch_queue);
+  if (fq == NULL)
+    return;
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[fq->net]);
+  fetch_now(&(fq->u), fq->uploaddir, fq->name, fq->url);
+  mydelete(fq->u.snick);
+  mydelete(fq->name);
+  mydelete(fq->url);
+  mydelete(fq->uploaddir);
+  irlist_delete(&gdata.fetch_queue, fq);
+  gnetwork = backup;
+}
+
 /* show running transfers */
 void dinoex_dcl(const userinput *const u)
 {
   fetch_curl_t *ft;
+  fetch_queue_t *fq;
   double dl_total;
   double dl_size;
   int progress;
@@ -570,12 +627,19 @@ void dinoex_dcl(const userinput *const u)
     progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
   }
+
+  updatecontext();
+  progress = 0;
+  for (fq = irlist_get_head(&gdata.fetch_queue); fq; fq = irlist_get_next(fq)) {
+    a_respond(u, "   %2i  fetch       %-32s   Waiting", ++progress, fq->name);
+  }
 }
 
 /* show running transfers in detail */
 void dinoex_dcld(const userinput *const u)
 {
   fetch_curl_t *ft;
+  fetch_queue_t *fq;
   char *effective_url;
   double dl_total;
   double dl_size;
@@ -620,6 +684,13 @@ void dinoex_dcld(const userinput *const u)
                 left < 3600 ? 'm' : 'h',
                 left < 3600 ? left%60 : (left/60)%60 ,
                 left < 3600 ? 's' : 'm');
+  }
+
+  updatecontext();
+  progress = 0;
+  for (fq = irlist_get_head(&gdata.fetch_queue); fq; fq = irlist_get_next(fq)) {
+    a_respond(u, "   %2i  fetch       %-32s   Waiting", ++progress, fq->name);
+    a_respond(u, "                   %s", fq->url);
   }
 }
 
