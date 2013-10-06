@@ -2421,7 +2421,7 @@ void delayed_announce(void)
 
   if (gdata.nomd5sum == 0) {
     if (gdata.md5build.xpack) {
-      /* checsum in progress */
+      /* checksum in progress */
       return;
     }
   }
