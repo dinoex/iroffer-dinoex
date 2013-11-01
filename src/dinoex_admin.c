@@ -4580,7 +4580,7 @@ void a_rmul(const userinput * const u)
   if (invalid_file(u, u->arg1) != 0)
     return;
 
-  if (strstr(u->arg1, "/")) { /* NOTRANSLATE */
+  if (strchr(u->arg1, '/')) {
     a_respond(u, "Filename contains invalid characters");
     return;
   }

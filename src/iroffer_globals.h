@@ -47,6 +47,7 @@ irlist_t filedir;
 irlist_t uploadhost;
 irlist_t tuploadhost;
 irlist_t quploadhost;
+irlist_t fetch_queue;
 irlist_t autoignore_exclude;
 irlist_t adddir_exclude;
 irlist_t adddir_match;

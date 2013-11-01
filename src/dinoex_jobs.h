@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -63,6 +63,7 @@ void a_fillwith_plist(userinput *manplist, const char *name, channel_t *ch);
 int save_unlink(const char *path);
 void rename_with_backup(const char *file, const char *backup, const char *tmp, const char *msg);
 void write_files(void);
+unsigned int max_uploads_reached(void);
 void start_qupload(void);
 unsigned int close_qupload(unsigned int net, const char *nick);
 void lag_message(void);

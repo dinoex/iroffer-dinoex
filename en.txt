@@ -1883,3 +1883,4 @@
 2827 "Header data = %ld exceeds single call write limit!"
 2828 "FETCH header '%s'"
 2829 "FETCH filename '%s'"
+2830 "   %2i  fetch       %-32s   Waiting"

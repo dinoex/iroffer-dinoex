@@ -413,6 +413,7 @@ static void mainloop (void) {
                   /* find our next end time */
                   localt = localtime(&gdata.curtime);
                   localt->tm_sec = localt->tm_min = localt->tm_hour = 0; /* midnight */
+                  localt->tm_isdst = -1; /* check for daylight saving time */
                   switch (ii)
                     {
                     case TRANSFERLIMIT_DAILY:

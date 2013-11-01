@@ -664,6 +664,7 @@ Loke_AF
 	suggesting "logrotate" at fixed time
 	reporting "status_time_dcc_chat" bug
 	reporting "channel -delay" problem
+	reporting "transferlimits" DST problem
 
 Nouhime
 	reporting "http_search" bug.

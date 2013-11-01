@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -19,9 +19,11 @@
 #include "iroffer_headers.h"
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
-#include "dinoex_curl.h"
 #include "dinoex_admin.h"
 #include "dinoex_ruby.h"
+#include "dinoex_jobs.h"
+#include "dinoex_irc.h"
+#include "dinoex_curl.h"
 
 #ifdef USE_CURL
 #include <curl/curl.h>
@@ -139,6 +141,7 @@ unsigned int fetch_cancel(unsigned int num)
     }
     --fetch_started;
     ft = clean_fetch(ft);
+    start_qupload();
     return 0;
   }
   return 1;
@@ -266,7 +269,7 @@ void fetch_perform(void)
           fetch_set_time(ft->fullname, filetime);
           fetch_rename(ft, effective_url);
 #ifdef USE_RUBY
-          do_myruby_upload_done( ft->name );
+          do_myruby_upload_done( ft->fullname );
 #endif /* USE_RUBY */
         }
         updatecontext();
@@ -283,6 +286,7 @@ void fetch_perform(void)
     outerror(OUTERROR_TYPE_WARN_LOUD, "curlhandle not found %d/%d", running, fetch_started);
   fetch_started = running;
   gnetwork = backup;
+  start_qupload();
 }
 
 /* callback for CURLOPT_HEADERFUNCTION */
@@ -292,10 +296,14 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
   const size_t cb = size * nmemb;
   const size_t failure = (cb) ? 0 : 1;
   fetch_curl_t *ft = userdata;
-  const char *end;
-  const char *p;
   char *temp;
+  char *work;
+  char *end;
   size_t len;
+
+  updatecontext();
+  if (ft == NULL)
+    return cb; /* ignore */
 
 #ifdef DEBUG
   if(size * nmemb > (size_t)CURL_MAX_HTTP_HEADER) {
@@ -315,34 +323,22 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
   if ((gdata.debug > 0) && (cb > 2)) {
     a_respond(&(ft->u), "FETCH header '%s'", temp);
   }
-  if (cb < 20) {
-    mydelete(temp);
-    return cb;
-  }
+  if (cb >= 20) {
+    if (strncasecmp("Content-disposition:", temp, 20) == 0) { /* NOTRANSLATE */
+      /* look for the 'filename=' parameter
+         (encoded filenames (*=) are not supported) */
+      work = strstr(temp + 20, "filename="); /* NOTRANSLATE */
+      if (work != NULL) {
+        work += 9;
+        /* stop at first ; */
+        end = strchr(work, ';');
+        if (end != NULL)
+          *end = 0;
 
-  if (strncasecmp("Content-disposition:", temp, 20) == 0) { /* NOTRANSLATE */
-    p = temp + 20;
-    end = temp + len;
-
-    /* look for the 'filename=' parameter
-       (encoded filenames (*=) are not supported) */
-    for (;;) {
-      while (*p && (p < end) && !isalpha(*p))
-        p++;
-      if (p > end - 9)
-        break;
-
-      if (strncmp(p, "filename=", 9)) { /* NOTRANSLATE */
-        /* no match, find next parameter */
-        while((p < end) && (*p != ';'))
-          p++;
-        continue;
+        ft->contentname = mystrdup(work);
+        clean_quotes(ft->contentname);
+        a_respond(&(ft->u), "FETCH filename '%s'", ft->contentname);
       }
-      p += 9;
-      ft->contentname = mystrdup(p);
-      clean_quotes(ft->contentname);
-      a_respond(&(ft->u), "FETCH filename '%s'", ft->contentname);
-      break;
     }
   }
 
@@ -357,6 +353,7 @@ static void curl_respond(const userinput *const u, const char *text, CURLcode ce
 
 static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
 {
+  char *vhost;
   CURL *ch;
   CURLcode ces;
   CURLcode cms;
@@ -376,21 +373,15 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     return 1;
   }
 
-#if 0
-  {
-    char *vhost;
-
-    vhost = get_local_vhost();
-    if (vhost) {
-      ft->vhosttext = mystrdup(vhost);
-      ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
-      if (ces != 0) {
-        a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
-        return 1;
-      }
+  vhost = get_local_vhost();
+  if (vhost) {
+    ft->vhosttext = mystrdup(vhost);
+    ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
+    if (ces != 0) {
+      a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
+      return 1;
     }
   }
-#endif
 
   ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
   if (ces != 0) {
@@ -416,15 +407,27 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     return 1;
   }
 
+  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
+  if (ces != 0) {
+    curl_respond( u, "SSL_VERIFYPEER", ces); /* NOTRANSLATE */
+    return 1;
+  }
+
+  ces = curl_easy_setopt(ch, CURLOPT_REFERER, ft->url);
+  if (ces != 0) {
+    curl_respond( u, "REFERER", ces); /* NOTRANSLATE */
+    return 1;
+  }
+
   ces = curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 1);
   if (ces != 0) {
     curl_respond( u, "FOLLOWLOCATION", ces); /* NOTRANSLATE */
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
+  ces = curl_easy_setopt(ch, CURLOPT_AUTOREFERER, 1);
   if (ces != 0) {
-    curl_respond( u, "SSL_VERIFYPEER", ces); /* NOTRANSLATE */
+    curl_respond( u, "AUTOREFERER", ces); /* NOTRANSLATE */
     return 1;
   }
 
@@ -478,25 +481,39 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
   return 0;
 }
 
-/* start a transfer */
-void start_fetch_url(const userinput *const u, const char *uploaddir)
+/* start a transfer later */
+static void fetch_later(const userinput *const u, const char *uploaddir, char *name, char *url)
+{
+  fetch_queue_t *fq;
+
+  updatecontext();
+
+  fq = irlist_add(&gdata.fetch_queue, sizeof(fetch_queue_t));
+  fq->u.method = u->method;
+  if (u->snick != NULL) {
+    fq->u.snick = mystrdup(u->snick);
+  }
+  fq->u.fd = u->fd;
+  fq->u.chat = u->chat;
+  fq->net = gnetwork->net;
+  fq->name = mystrdup(name);
+  fq->url = mystrdup(url);
+  fq->uploaddir = mystrdup(uploaddir);
+}
+
+/* start a transfer now */
+static void fetch_now(const userinput *const u, const char *uploaddir, char *name, char *url)
 {
   off_t resumesize;
   fetch_curl_t *ft;
   char *fullfile;
-  char *name;
-  char *url;
   FILE *writefd;
   struct stat s;
   int retval;
 
-  name = u->arg1;
-  url = u->arg2e;
-  while (*url == ' ') ++url;
-
   resumesize = 0;
   fullfile = mystrjoin(uploaddir, name, '/');
-  writefd = fopen(fullfile, "w+"); /* NOTRANSLATE */
+  writefd = fopen(fullfile, "w+x"); /* NOTRANSLATE */
   if ((writefd == NULL) && (errno == EEXIST)) {
     retval = stat(fullfile, &s);
     if (retval < 0) {
@@ -507,7 +524,7 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
       return;
     }
     resumesize = s.st_size;
-    writefd = fopen(fullfile, "a"); /* NOTRANSLATE */
+    writefd = fopen(fullfile, "a+"); /* NOTRANSLATE */
   }
   if (writefd == NULL) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Access Upload File '%s': %s",
@@ -547,10 +564,53 @@ void start_fetch_url(const userinput *const u, const char *uploaddir)
   ++fetch_started;
 }
 
+/* try to start a transfer */
+void start_fetch_url(const userinput *const u, const char *uploaddir)
+{
+  char *name;
+  char *url;
+
+  name = u->arg1;
+  url = u->arg2e;
+  while (*url == ' ') ++url;
+  if (max_uploads_reached() != 0) {
+    fetch_later(u, uploaddir, name, url);
+  } else {
+    fetch_now(u, uploaddir, name, url);
+  }
+}
+
+/* start next transfer */
+void fetch_next(void)
+{
+  gnetwork_t *backup;
+  fetch_queue_t *fq;
+
+  updatecontext();
+
+  if (irlist_size(&gdata.fetch_queue) == 0)
+    return;
+
+  fq = irlist_get_head(&gdata.fetch_queue);
+  if (fq == NULL)
+    return;
+
+  backup = gnetwork;
+  gnetwork = &(gdata.networks[fq->net]);
+  fetch_now(&(fq->u), fq->uploaddir, fq->name, fq->url);
+  mydelete(fq->u.snick);
+  mydelete(fq->name);
+  mydelete(fq->url);
+  mydelete(fq->uploaddir);
+  irlist_delete(&gdata.fetch_queue, fq);
+  gnetwork = backup;
+}
+
 /* show running transfers */
 void dinoex_dcl(const userinput *const u)
 {
   fetch_curl_t *ft;
+  fetch_queue_t *fq;
   double dl_total;
   double dl_size;
   int progress;
@@ -567,12 +627,19 @@ void dinoex_dcl(const userinput *const u)
     progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
   }
+
+  updatecontext();
+  progress = 0;
+  for (fq = irlist_get_head(&gdata.fetch_queue); fq; fq = irlist_get_next(fq)) {
+    a_respond(u, "   %2i  fetch       %-32s   Waiting", ++progress, fq->name);
+  }
 }
 
 /* show running transfers in detail */
 void dinoex_dcld(const userinput *const u)
 {
   fetch_curl_t *ft;
+  fetch_queue_t *fq;
   char *effective_url;
   double dl_total;
   double dl_size;
@@ -618,6 +685,13 @@ void dinoex_dcld(const userinput *const u)
                 left < 3600 ? left%60 : (left/60)%60 ,
                 left < 3600 ? 's' : 'm');
   }
+
+  updatecontext();
+  progress = 0;
+  for (fq = irlist_get_head(&gdata.fetch_queue); fq; fq = irlist_get_next(fq)) {
+    a_respond(u, "   %2i  fetch       %-32s   Waiting", ++progress, fq->name);
+    a_respond(u, "                   %s", fq->url);
+  }
 }
 
 /* check if a file is already in transfer */
@@ -631,6 +705,12 @@ unsigned int fetch_is_running(const char *file)
       return 1;
   }
   return 0;
+}
+
+/* check if a file is already in transfer */
+unsigned int fetch_running(void)
+{
+  return irlist_size(&fetch_trans);
 }
 
 #endif /* USE_CURL */

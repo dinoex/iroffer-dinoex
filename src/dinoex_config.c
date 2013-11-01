@@ -458,7 +458,7 @@ static config_int_typ config_parse_int[] = {
 {"ignore_duplicate_ip",     &gdata.ignore_duplicate_ip,     0, 24*31, 1, 0 }, /* NOTRANSLATE */
 {"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1, 0 }, /* NOTRANSLATE */
 {"max_find",                &gdata.max_find,                0, 65000, 1, 0 }, /* NOTRANSLATE */
-{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 65000 }, /* NOTRANSLATE */
+{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4, 65000 }, /* NOTRANSLATE */
 {"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1, 1 }, /* NOTRANSLATE */
 {"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1, 1 }, /* NOTRANSLATE */
@@ -2557,6 +2557,7 @@ static void reset_config_func(void)
   autoqueue_t *aq;
   tupload_t *tu;
   qupload_t *qu;
+  fetch_queue_t *fq;
   group_admin_t *ga;
   http_magic_t *mime;
   autoadd_group_t *ag;
@@ -2621,6 +2622,14 @@ static void reset_config_func(void)
     mydelete(qu->q_host);
     mydelete(qu->q_nick);
     mydelete(qu->q_pack);
+  }
+  for (fq = irlist_get_head(&gdata.fetch_queue);
+       fq;
+       fq = irlist_delete(&gdata.fetch_queue, fq)) {
+    mydelete(fq->u.snick);
+    mydelete(fq->name);
+    mydelete(fq->url);
+    mydelete(fq->uploaddir);
   }
   for (ga = irlist_get_head(&gdata.group_admin);
        ga;

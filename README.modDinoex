@@ -3,6 +3,21 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bugfix: transferlimits (reported by Loke_AF)
+  Handle change of Daylight Saving Time corectly.
+
+410) FETCH queue
+  FETCH comands are now queued if max_uploads is reached.
+
+bugfix: FETCH
+  When resuming a file the full content was fetched.
+
+bugfix: FETCH
+  FETCH did not use the configured local_vhost.
+
+bugfix: max_uploads
+  max_uploads will now count all incoming transfers.
+
 409) FETCH AUTO.*
   Get the filename and date from remote HTTP-server.
   On completed download to the bot the file is renamed.
