@@ -1846,9 +1846,6 @@ unsigned int close_qupload(unsigned int net, const char *nick)
     if (qu->q_net != net)
       continue;
 
-    if (qu->q_state != 2)
-      continue;
-
     if (strcasecmp(qu->q_nick, nick) != 0)
       continue;
 
