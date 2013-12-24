@@ -1781,7 +1781,7 @@ unsigned int max_uploads_reached( void )
   for (qu = irlist_get_head(&gdata.quploadhost);
        qu;
        qu = irlist_get_next(qu)) {
-    if (qu->q_state == 2)
+    if (qu->q_state == QUPLOAD_RUNNING)
       uploads += 1;
   }
 
@@ -1809,14 +1809,17 @@ void start_qupload(void)
   for (qu = irlist_get_head(&gdata.quploadhost);
        qu;
        qu = irlist_get_next(qu)) {
-    if (qu->q_state != 1)
+    if (qu->q_state == QUPLOAD_TRYING)
+      break;
+
+    if (qu->q_state != QUPLOAD_WAITING)
       continue;
 
     backup = gnetwork;
     gnetwork = &(gdata.networks[qu->q_net]);
     privmsg_fast(qu->q_nick, "XDCC GET %s", qu->q_pack); /* NOTRANSLATE */
     gnetwork = backup;
-    qu->q_state = 2;
+    qu->q_state = QUPLOAD_TRYING;
     return;
   }
 

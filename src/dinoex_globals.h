@@ -26,11 +26,18 @@ typedef struct {
   long u_time;
 } tupload_t;
 
+typedef enum {
+  QUPLOAD_IDLE,
+  QUPLOAD_TRYING,
+  QUPLOAD_RUNNING,
+  QUPLOAD_WAITING,
+} quploadstatus_e;
+
 typedef struct {
   char *q_host;
   char *q_nick;
   char *q_pack;
-  unsigned int q_state;
+  quploadstatus_e q_state;
   unsigned int q_net;
   unsigned long q_time;
 } qupload_t;

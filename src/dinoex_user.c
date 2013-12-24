@@ -827,6 +827,7 @@ static unsigned int stoplist(const char *nick)
     item = irlist_get_next(item);
   }
 
+  stopped += stoplist_queue(nick, &(gnetwork->serverq_fast));
   stopped += stoplist_queue(nick, &(gnetwork->serverq_slow));
   stopped += stoplist_queue(nick, &(gnetwork->serverq_normal));
   stopped += stoplist_announce(nick);

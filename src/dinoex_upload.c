@@ -447,6 +447,24 @@ unsigned int invalid_upload(const char *nick, const char *hostmask, off_t len)
   return 0;
 }
 
+static void qupload_started(const char *nick)
+{
+  qupload_t *qu;
+
+  /* start next XDCC GET */
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (qu->q_state != QUPLOAD_TRYING)
+      continue;
+
+    if (strcasecmp(qu->q_nick, nick) == 0) {
+      qu->q_state = QUPLOAD_RUNNING;
+      return;
+    }
+  }
+}
+
 /* check permissions and setup the upload transfer */
 void upload_start(const char *nick, const char *hostname, const char *hostmask,
                   const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token)
@@ -489,6 +507,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   ul->hostname = mystrdup(hostname);
   ul->uploaddir = mystrdup(uploaddir);
   ul->net = gnetwork->net;
+  qupload_started(nick);
 
   tempstr = getsendname(ul->file);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
