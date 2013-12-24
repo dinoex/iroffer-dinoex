@@ -340,12 +340,16 @@ void l_perform(int changesec)
       l_istimeout(ul);
 
       if (ul->ul_status == UPLOAD_STATUS_DONE) {
-        mydelete(ul->nick);
+        unsigned int net = ul->net;
+        char *nick = ul->nick;
+        ul->nick = NULL;
         mydelete(ul->hostname);
         mydelete(ul->uploaddir);
         mydelete(ul->file);
         mydelete(ul->con.remoteaddr);
         ul = irlist_delete(&gdata.uploads, ul);
+	close_qupload(net, nick);
+        mydelete(nick);
         continue;
       }
     }

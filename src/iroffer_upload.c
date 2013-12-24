@@ -277,7 +277,6 @@ void l_istimeout (upload * const l)
       shutdown_close(l->con.clientsocket);
       close(l->filedescriptor);
       l->ul_status = UPLOAD_STATUS_DONE;
-      close_qupload(l->net, l->nick);
 #ifdef USE_RUBY
       do_myruby_upload_done( l->file );
 #endif /* USE_RUBY */
@@ -335,7 +334,6 @@ void l_closeconn(upload * const l, const char *msg, int errno1)
     upnp_rem_redir(l->con.localport);
 #endif /* USE_UPNP */
   l->ul_status = UPLOAD_STATUS_DONE;
-  close_qupload(l->net, l->nick);
   
   backup = gnetwork;
   gnetwork = &(gdata.networks[l->net]);
