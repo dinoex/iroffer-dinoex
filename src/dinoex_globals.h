@@ -28,10 +28,9 @@ typedef struct {
 
 typedef enum {
   QUPLOAD_IDLE,
-  QUPLOAD_TRYING,
-  QUPLOAD_STARTED,
-  QUPLOAD_RUNNING,
   QUPLOAD_WAITING,
+  QUPLOAD_TRYING,
+  QUPLOAD_RUNNING,
 } quploadstatus_e;
 
 typedef struct {

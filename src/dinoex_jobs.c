@@ -1813,8 +1813,7 @@ void start_qupload(void)
     if (qu->q_state == QUPLOAD_TRYING)
       break;
 
-    if ((qu->q_state != QUPLOAD_STARTED) &&
-        (qu->q_state != QUPLOAD_WAITING))
+    if (qu->q_state != QUPLOAD_WAITING)
       continue;
 
     backup = gnetwork;
