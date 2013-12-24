@@ -4449,14 +4449,17 @@ void a_getl(const userinput * const u)
     a_respond(u, "GET %s started for %s on %s",
               qu->q_pack, qu->q_nick, gdata.networks[ qu->q_net ].name);
     switch (qu->q_state) {
+    case QUPLOAD_STARTED:
+      a_respond(u, "started");
+      break;
+    case QUPLOAD_TRYING:
+      a_respond(u, "trying");
+      break;
     case QUPLOAD_WAITING:
       a_respond(u, "queued");
       break;
     case QUPLOAD_RUNNING:
       a_respond(u, "running");
-      break;
-    case QUPLOAD_TRYING:
-      a_respond(u, "trying");
       break;
     case QUPLOAD_IDLE:
       break;
@@ -4493,7 +4496,7 @@ void a_get(const userinput * const u)
     qu->q_time = gdata.curtime;
     a_respond(u, "GET %s started for %s on %s",
               qu->q_pack, qu->q_nick, gdata.networks[ qu->q_net ].name);
-    qu->q_state = QUPLOAD_TRYING;
+    qu->q_state = QUPLOAD_STARTED;
     start_qupload();
     return;
   }

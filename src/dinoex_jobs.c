@@ -1809,10 +1809,12 @@ void start_qupload(void)
   for (qu = irlist_get_head(&gdata.quploadhost);
        qu;
        qu = irlist_get_next(qu)) {
+
     if (qu->q_state == QUPLOAD_TRYING)
       break;
 
-    if (qu->q_state != QUPLOAD_WAITING)
+    if ((qu->q_state != QUPLOAD_STARTED) && 
+        (qu->q_state != QUPLOAD_WAITING))
       continue;
 
     backup = gnetwork;

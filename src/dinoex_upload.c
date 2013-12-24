@@ -447,7 +447,7 @@ unsigned int invalid_upload(const char *nick, const char *hostmask, off_t len)
   return 0;
 }
 
-static void qupload_started(const char *nick)
+static void qupload_started(unsigned int net, const char *nick)
 {
   qupload_t *qu;
 
@@ -456,6 +456,9 @@ static void qupload_started(const char *nick)
        qu;
        qu = irlist_get_next(qu)) {
     if (qu->q_state != QUPLOAD_TRYING)
+      continue;
+
+    if (qu->q_net != net)
       continue;
 
     if (strcasecmp(qu->q_nick, nick) == 0) {
@@ -507,7 +510,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   ul->hostname = mystrdup(hostname);
   ul->uploaddir = mystrdup(uploaddir);
   ul->net = gnetwork->net;
-  qupload_started(nick);
+  qupload_started(gnetwork->net, nick);
 
   tempstr = getsendname(ul->file);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
