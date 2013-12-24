@@ -340,7 +340,6 @@ void l_perform(int changesec)
       l_istimeout(ul);
 
       if (ul->ul_status == UPLOAD_STATUS_DONE) {
-        close_qupload(ul->net, ul->nick);
         mydelete(ul->nick);
         mydelete(ul->hostname);
         mydelete(ul->uploaddir);
