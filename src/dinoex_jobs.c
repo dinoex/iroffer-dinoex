@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -751,21 +751,17 @@ const char *validate_crc32(xdcc *xd, int quiet)
 static void crc32_init(void)
 {
   gdata.crc32build.crc = ~0U;
-  gdata.crc32build.crc_total = ~0U;
 }
 
 void crc32_update(char *buf, size_t len)
 {
   char *p;
   ir_uint32 crc = gdata.crc32build.crc;
-  ir_uint32 crc_total = gdata.crc32build.crc_total;
 
   for (p = buf; len--; ++p) {
     crc = (crc >> 8) ^ crctable[(crc ^ *p) & 0xff];
-    crc_total = (crc >> 8) ^ crctable[(crc_total ^ *p) & 0xff];
   }
   gdata.crc32build.crc = crc;
-  gdata.crc32build.crc_total = crc_total;
 }
 
 static void crc32_final(xdcc *xd)
