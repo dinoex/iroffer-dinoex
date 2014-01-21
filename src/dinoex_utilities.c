@@ -404,7 +404,7 @@ unsigned int verify_group_in_grouplist(const char *group, const char *grouplist)
   return 0; /* token not found */
 }
 
-static const char const size_units[] = { 'K', 'M', 'G', 'T', 'E', 0 };
+static const char const size_units[] = { 'K', 'M', 'G', 'T', 'P', 0 };
 
 /* returns the size in a human readable form */
 char *sizestr(unsigned int spaces, off_t num)

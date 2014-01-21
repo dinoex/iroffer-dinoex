@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -751,21 +751,17 @@ const char *validate_crc32(xdcc *xd, int quiet)
 static void crc32_init(void)
 {
   gdata.crc32build.crc = ~0U;
-  gdata.crc32build.crc_total = ~0U;
 }
 
 void crc32_update(char *buf, size_t len)
 {
   char *p;
   ir_uint32 crc = gdata.crc32build.crc;
-  ir_uint32 crc_total = gdata.crc32build.crc_total;
 
   for (p = buf; len--; ++p) {
     crc = (crc >> 8) ^ crctable[(crc ^ *p) & 0xff];
-    crc_total = (crc >> 8) ^ crctable[(crc_total ^ *p) & 0xff];
   }
   gdata.crc32build.crc = crc;
-  gdata.crc32build.crc_total = crc_total;
 }
 
 static void crc32_final(xdcc *xd)
@@ -1781,7 +1777,7 @@ unsigned int max_uploads_reached( void )
   for (qu = irlist_get_head(&gdata.quploadhost);
        qu;
        qu = irlist_get_next(qu)) {
-    if (qu->q_state == 2)
+    if (qu->q_state == QUPLOAD_RUNNING)
       uploads += 1;
   }
 
@@ -1809,14 +1805,18 @@ void start_qupload(void)
   for (qu = irlist_get_head(&gdata.quploadhost);
        qu;
        qu = irlist_get_next(qu)) {
-    if (qu->q_state != 1)
+
+    if (qu->q_state == QUPLOAD_TRYING)
+      break;
+
+    if (qu->q_state != QUPLOAD_WAITING)
       continue;
 
     backup = gnetwork;
     gnetwork = &(gdata.networks[qu->q_net]);
     privmsg_fast(qu->q_nick, "XDCC GET %s", qu->q_pack); /* NOTRANSLATE */
     gnetwork = backup;
-    qu->q_state = 2;
+    qu->q_state = QUPLOAD_TRYING;
     return;
   }
 
@@ -1839,9 +1839,6 @@ unsigned int close_qupload(unsigned int net, const char *nick)
        qu;
        qu = irlist_get_next(qu)) {
     if (qu->q_net != net)
-      continue;
-
-    if (qu->q_state != 2)
       continue;
 
     if (strcasecmp(qu->q_nick, nick) != 0)

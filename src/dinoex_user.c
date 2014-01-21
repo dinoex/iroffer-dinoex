@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -827,6 +827,7 @@ static unsigned int stoplist(const char *nick)
     item = irlist_get_next(item);
   }
 
+  stopped += stoplist_queue(nick, &(gnetwork->serverq_fast));
   stopped += stoplist_queue(nick, &(gnetwork->serverq_slow));
   stopped += stoplist_queue(nick, &(gnetwork->serverq_normal));
   stopped += stoplist_announce(nick);

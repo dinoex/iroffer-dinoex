@@ -23,6 +23,7 @@
 #include "dinoex_kqueue.h"
 #include "dinoex_upload.h"
 #include "dinoex_irc.h"
+#include "dinoex_jobs.h"
 #include "dinoex_ruby.h"
 
 #ifdef USE_UPNP

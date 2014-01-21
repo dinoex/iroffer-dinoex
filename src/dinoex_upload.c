@@ -340,13 +340,16 @@ void l_perform(int changesec)
       l_istimeout(ul);
 
       if (ul->ul_status == UPLOAD_STATUS_DONE) {
-        close_qupload(ul->net, ul->nick);
-        mydelete(ul->nick);
+        unsigned int net = ul->net;
+        char *nick = ul->nick;
+        ul->nick = NULL;
         mydelete(ul->hostname);
         mydelete(ul->uploaddir);
         mydelete(ul->file);
         mydelete(ul->con.remoteaddr);
         ul = irlist_delete(&gdata.uploads, ul);
+	close_qupload(net, nick);
+        mydelete(nick);
         continue;
       }
     }
@@ -447,6 +450,27 @@ unsigned int invalid_upload(const char *nick, const char *hostmask, off_t len)
   return 0;
 }
 
+static void qupload_started(unsigned int net, const char *nick)
+{
+  qupload_t *qu;
+
+  /* start next XDCC GET */
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (qu->q_state != QUPLOAD_TRYING)
+      continue;
+
+    if (qu->q_net != net)
+      continue;
+
+    if (strcasecmp(qu->q_nick, nick) == 0) {
+      qu->q_state = QUPLOAD_RUNNING;
+      return;
+    }
+  }
+}
+
 /* check permissions and setup the upload transfer */
 void upload_start(const char *nick, const char *hostname, const char *hostmask,
                   const char *filename, const char *remoteip, const char *remoteport, const char *bytes, char *token)
@@ -489,6 +513,7 @@ void upload_start(const char *nick, const char *hostname, const char *hostmask,
   ul->hostname = mystrdup(hostname);
   ul->uploaddir = mystrdup(uploaddir);
   ul->net = gnetwork->net;
+  qupload_started(gnetwork->net, nick);
 
   tempstr = getsendname(ul->file);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
