@@ -665,6 +665,7 @@ Loke_AF
 	reporting "status_time_dcc_chat" bug
 	reporting "channel -delay" problem
 	reporting "transferlimits" DST problem
+	reporting petabyte bug
 
 Nouhime
 	reporting "http_search" bug.
