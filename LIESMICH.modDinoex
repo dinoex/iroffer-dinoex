@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+bugfix: statefile
+  Beim Starten des Bots wird eine geänderte FileSystemID sofort in das "statefile" übernommen.
+
 bugfix: transferlimits 
   Die Umschaltung von Sommer auf Winterzeit wird berücksichtigt.
 

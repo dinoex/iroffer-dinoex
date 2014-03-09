@@ -666,6 +666,7 @@ Loke_AF
 	reporting "channel -delay" problem
 	reporting "transferlimits" DST problem
 	reporting petabyte bug
+	reporting filesystem id bug
 
 Nouhime
 	reporting "http_search" bug.
