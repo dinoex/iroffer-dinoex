@@ -712,6 +712,11 @@ unsigned int read_statefile(void)
                     xd->has_md5sum  = 0;
                     memset(xd->md5sum, 0, sizeof(MD5Digest));
                   }
+                if (xd->st_dev != st.st_dev)
+                  {
+                    /* only mountpoint has changed */
+                    xd->st_dev = st.st_dev;
+                  }
                 
                 if (xd->st_size == 0)
                   {

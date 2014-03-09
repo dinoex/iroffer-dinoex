@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bugfix: statefile (reported by Loke_AF)
+  When the filesystem id has changed, the bot updates the satefile on startup.
+
 bugfix: transferlimits (reported by Loke_AF)
   Handle change of Daylight Saving Time corectly.
 
