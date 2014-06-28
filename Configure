@@ -224,6 +224,7 @@ fr*)
  irt_notls="Désactive les fonctions SSL. Si vous voulez utiliser cette fonction, installez « GnuTLS »"
  irt_badssl1="Votre « libcurl » est liée avec"
  irt_badssl2="S'il vous plaît, configurez"
+ irt_badssl3="S'il vous plaît, configurez exempt"
  irt_noruby="Désactiver l'extension Ruby. Si vous voulez utiliser cette fonction, installez « libruby »"
  irt_make1="Type"
  irt_make2="à compiler"
@@ -328,6 +329,7 @@ de*)
  irt_notls="Benutze kein SSL. Für diese Funktion musst du 'GNU TLS' installieren"
  irt_badssl1="Deine 'libcurl' benutzt"
  irt_badssl2="Bitte konfiguriere"
+ irt_badssl3="Bitte konfiguriere ohne"
  irt_noruby="Kann die RUBY-Erweiterung nicht benutzen. Für diese Funktion musst du 'libruby'installieren"
  irt_make1="Zum Übersetzen jetzt"
  irt_make2="eingeben"
@@ -433,6 +435,7 @@ de*)
  irt_notls="Disabled the SSL Features. If you want to use this feature, please install 'GNU TLS'"
  irt_badssl1="Your 'libcurl' is linked with"
  irt_badssl2="Please configure"
+ irt_badssl3="Please configure without"
  irt_noruby="Disabled the RUBY-extension. If you want to use this feature, please install 'libruby'"
  irt_make1="Type"
  irt_make2="to compile"
@@ -1699,7 +1702,7 @@ if $OPT_SSL; then
   ${msg} "***${irt_nossl}."
  fi
  if test "${curltls}" != ""; then
-  ${msg} "*** ${irt_badssl1} 'GNU TLS', ${irt_badssl2} 'GNU TLS'."
+  ${msg} "*** ${irt_badssl1} 'GNU TLS', ${irt_badssl2} '-tls'"
   waserror
  fi
 fi
@@ -1720,7 +1723,7 @@ if $OPT_TLS; then
   ${msg} "***${irt_notls}."
  fi
  if test "${curlssl}" != ""; then
-  ${msg} "*** ${irt_badssl1} 'OpenSSL', ${irt_badssl2} 'OpenSSL'."
+  ${msg} "*** ${irt_badssl1} 'OpenSSL', ${irt_badssl3} '-tls'."
   waserror
  fi
 fi
