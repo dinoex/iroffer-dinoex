@@ -4,7 +4,7 @@ With Version 3.30:
 ------------------
 
 bugfix: nomd5 (reported by [M]-V)
-  Announce stalled if nomd5 is set and nocrc is not set.
+  Announce stalled if nomd5 is set and nocrc32 is not set.
 
 bugfix: statefile (reported by Loke_AF)
   When the filesystem id has changed, the bot updates the satefile on startup.
