@@ -4,7 +4,7 @@ Ab Version 3.30:
 ----------------
 
 bugfix: nomd5
-  Announce klemmt wenn nomd5 gesetzt und nocrc nicht gesetzt war.
+  Announce klemmt wenn nomd5 gesetzt und nocrc32 nicht gesetzt war.
 
 bugfix: statefile
   Beim Starten des Bots wird eine geänderte FileSystemID sofort in das "statefile" übernommen.
