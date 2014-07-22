@@ -2433,10 +2433,11 @@ void delayed_announce(void)
     if (gdata.nomd5sum == 0) {
       if (xd->has_md5sum == 0)
         continue;
-    }
-    if (gdata.nocrc32 == 0) {
-      if (xd->has_crc32 == 0)
-        continue;
+
+      if (gdata.nocrc32 == 0) {
+        if (xd->has_crc32 == 0)
+          continue;
+      }
     }
 
     /* wait for pack to be unlocked */
