@@ -76,7 +76,7 @@ void outerror (outerror_type_e type, const char *format, ...) {
    /* can't log an error if the error was due to logging */
    if (type & OUTERROR_TYPE_NOLOG)
      {
-       ioutput_options &= ~OUTERROR_TYPE_NOLOG;
+       ioutput_options = OUT_S|OUT_D;
      }
    type &= ~OUTERROR_TYPE_NOLOG;
    

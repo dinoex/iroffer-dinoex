@@ -767,7 +767,7 @@ void logfile_add(const char *logfile, const char *line)
   if (logfile == NULL)
     return;
 
-  logfd = open_append(logfile, "Log");
+  logfd = open_append_log(logfile, "Log");
   if (logfd < 0)
     return;
 
