@@ -1005,6 +1005,7 @@ static void command_xdcc(privmsginput *pi)
     /* if restrictlist is enabled, visibility rules apply */
     grouplist = get_restrictlist() ? get_grouplist_access(pi->nick) : NULL;
     msg3e = getpart_eol(pi->line, 6);
+    strip_trailing_action(msg3e);
     log_xdcc_request2(pi->msg2, msg3e, pi);
     notice_slow(pi->nick, "Searching for \"%s\"...", msg3e);
     convert_spaces_to_match(msg3e);

@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bugfix: CTCP SEARCH (reported by Dagger)
+  The ending code 0x01 was not removed from search.
+
 bugfix: logfile (reported by OmegaPhil)
   Bot will crash if logfile is not writeable.
   versions affected: 1.1 - 3.29
