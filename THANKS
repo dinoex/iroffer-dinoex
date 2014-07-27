@@ -793,3 +793,6 @@ Zlogene
 cheeseboy
 	reporting filenames with quotes
 
+Dagger
+	reporting CTCP XDCC SEARCH bug
+

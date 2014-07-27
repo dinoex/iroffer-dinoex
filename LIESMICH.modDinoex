@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+bugfix: CTCP SEARCH
+  Das Steuerzeichen 0x01 am Ende wurde nicht ignoriert.
+
 bugfix: logfile
   Bot crashte wenn das Logfile nicht geschrieben werden kann.
   versions affected: 1.1 - 3.29
