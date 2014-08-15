@@ -1731,8 +1731,8 @@ void privmsgparse(int type, int decoded, char *line)
   bzero((char *)&pi, sizeof(pi));
   pi.line = line;
   m = get_argv(part, line, MAX_PRIVMSG_PARTS);
-  if ((part[2] != NULL) && (m >= 3)) {
-    if (part[2][0] == IRCCTCP) {
+  if ((part[3] != NULL) && (m >= 3)) {
+    if (part[3][1] == IRCCTCP) {
       /* remove action only on the last arg */
       strip_trailing_action(part[m - 1]);
     }
