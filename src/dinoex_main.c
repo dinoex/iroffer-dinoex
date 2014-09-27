@@ -143,7 +143,7 @@ void command_options(int argc, char *const *argv)
         break;
 #endif
       case 'v': /* show version */
-        printf("iroffer-dinoex " VERSIONLONG ", see " "http://iroffer.dinoex.net/" "\n");
+        printf("iroffer-dinoex " VERSIONLONG FEATURES ", see " "http://iroffer.dinoex.net/" "\n");
         exit(0);
       case 'w': /* workdir */
         GET_NEXT_DATA(cptr);
