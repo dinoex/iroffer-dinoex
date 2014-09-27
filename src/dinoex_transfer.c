@@ -391,8 +391,8 @@ unsigned int t_find_resume(const char *nick, const char *filename, const char *l
   }
   mydelete(sendnamestr);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "dK", tr->id,
-          tr->nick, gnetwork->name, tr->startresume/1024);
+          "XDCC [%02i:%s on %s]: Resumed at %" LLPRINTFMT "d, %" LLPRINTFMT "dK", tr->id,
+          tr->nick, gnetwork->name, tr->startresume, tr->startresume/1024);
   return 0;
 }
 
