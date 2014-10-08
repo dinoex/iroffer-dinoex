@@ -669,6 +669,7 @@ Loke_AF
 	reporting "transferlimits" DST problem
 	reporting petabyte bug
 	reporting filesystem id bug
+	reporting truncated file bug
 
 Nouhime
 	reporting "http_search" bug.

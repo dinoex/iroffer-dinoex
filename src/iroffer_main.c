@@ -946,7 +946,9 @@ static void mainloop (void) {
                   outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Can't read data from file '%s': %s",
                            number_of_pack(gdata.md5build.xpack),
                            gdata.md5build.xpack->file, "truncated");
-                  start_md5_hash(gdata.md5build.xpack, number_of_pack(gdata.md5build.xpack));
+                  event_close(gdata.md5build.file_fd);
+                  gdata.md5build.file_fd = FD_UNUSED;
+                  gdata.md5build.xpack = NULL;
                   break;
                 }
               /* else got data */
