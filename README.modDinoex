@@ -3,6 +3,10 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bugfix: md5sum (reported by Loke_AF)
+  Bot can crash when the current file is truncated.
+  versions affected: 3.28 - 3.29
+
 bugfix: CTCP SEARCH (reported by Dagger)
   The ending code 0x01 was not removed from search.
 
