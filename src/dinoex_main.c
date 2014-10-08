@@ -385,7 +385,9 @@ static void free_state(void)
 
 static void free_config(void)
 {
+#if 0
   channel_t *ch;
+#endif
   unsigned int si;
 
   updatecontext();
