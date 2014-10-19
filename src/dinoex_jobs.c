@@ -1756,7 +1756,7 @@ void write_files(void)
   gdata.last_update = gdata.curtime;
   write_statefile();
   /* stop here if more to add/remove */
-  if (irlist_size(&gdata.packs_delayed) > 0)
+  if (irlist_size(&gdata.packs_delayed) > 1)
     return;
 
   xdccsavetext();

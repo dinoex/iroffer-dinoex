@@ -670,6 +670,7 @@ Loke_AF
 	reporting petabyte bug
 	reporting filesystem id bug
 	reporting truncated file bug
+	reporting xddclistfile delay
 
 Nouhime
 	reporting "http_search" bug.
