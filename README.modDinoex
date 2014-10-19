@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bugfix: xddclistfile (reported by Loke_AF)
+  After "ADD" then xddclistfile was written too late.
+
 bugfix: md5sum (reported by Loke_AF)
   Bot can crash when the current file is truncated.
   versions affected: 3.28 - 3.29

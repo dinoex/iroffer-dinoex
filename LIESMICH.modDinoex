@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+bugfix: xddclistfile
+  Nach "ADD" wurde das "xddclistfile" später geschrieben.
+
 bugfix: md5sum
   Bot crashte wenn die aktuelle Datei überschrieben wurde.
   versions affected: 3.28 - 3.29
