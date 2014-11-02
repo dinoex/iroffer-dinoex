@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bigfix: openssl
+  Disable SSLv2 and SSLv3 and allow TLS1.0, TLS1.1 and TLS1.2 protocol
+
 bugfix: xddclistfile (reported by Loke_AF)
   After "ADD" then xddclistfile was written too late.
 
