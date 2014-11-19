@@ -765,6 +765,9 @@ static void mainloop (void) {
                send_from_queue(1, 0, NULL);
              }
            }
+         else {
+           start_one_send();
+           }
          write_files();
          }
       

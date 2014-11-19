@@ -432,8 +432,16 @@ void send_from_queue(unsigned int type, unsigned int pos, char *lastnick)
 
       usertrans = 0;
       for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
-        if ((!strcmp(tr->hostname, pq->hostname)) || (!strcasecmp(tr->nick, pq->nick))) {
-          ++usertrans;
+        if (!strcasecmp(tr->nick, pq->nick)) {
+          ++usertrans; /* same nick */
+          continue;
+        }
+        if (!strcmp(tr->hostname, "man")) /* NOTRANSLATE */
+          continue; /* do not check host when man transfers */
+
+        if (!strcmp(tr->hostname, pq->hostname)) {
+          ++usertrans; /* same host */
+          continue;
         }
       }
 

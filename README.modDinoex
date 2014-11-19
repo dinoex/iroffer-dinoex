@@ -3,7 +3,10 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
-bigfix: openssl
+bugfix: QUEUE (reported by Days)
+  Ignore Hostname check if admin has queued for different nicks.
+
+bugfix: openssl
   Disable SSLv2 and SSLv3 and allow TLS1.0, TLS1.1 and TLS1.2 protocol
 
 bugfix: xddclistfile (reported by Loke_AF)
@@ -905,7 +908,7 @@ extend debug and log information.
 Long Term Features:
    213 7/17/04 Open allow multiple uploaddirs>
 
-bigfix: ANNOUNCE (reported by Henrik Krohns)
+bugfix: ANNOUNCE (reported by Henrik Krohns)
   Give announces priority over XDCC LIST.
 
 bugfix: -plist (reported by Henrik Krohns)

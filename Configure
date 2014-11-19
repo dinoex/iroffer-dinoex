@@ -453,6 +453,29 @@ waserror()
  exit 72
 }
 
+cygwin_version()
+{
+  IFS='.-'
+  set -e
+  echo "${ver}" | (
+    read ver_A ver_B ver_C dummy
+    echo "${ver_A}"
+    echo "${ver_B}"
+    echo "${ver_C}"
+    # 2.x.x - 9.x.x, 1.6.x - 1.9.x, and 1.5.6 - 1.5.9 are ok
+    if [ \( "$ver_A" -ge "2" \)                                         \
+      -o \( "$ver_A" -eq "1" -a "$ver_B" -ge "6" \)                     \
+      -o \( "$ver_A" -eq "1" -a "$ver_B" -eq "5" -a "$ver_C" -ge "6" \) \
+       ]; then
+     ${msg} "OK, $ver"
+    else
+     ${msg} "${irt_error} $ver < 1.5.6"
+     waserror
+    fi
+  )
+  set +e
+}
+
 FEATURES=""
 OPT_WARN2=false
 OPT_ERRORS=false
@@ -549,29 +572,16 @@ case "$ostype" in
   ostype=HPUX
   ;;
  CYGWIN* )
-  short_ostype=`uname | cut -d "_" -f 1`
-  ostype=$short_ostype
+  ostype="${ostype%%_*}" # Strip Windows
   rstatic="-static-libgcc"
   exe=.exe
 
   # only 1.5.6 or later is supported
   ${msg} -n "${irt_checkfor} >= 1.5.6... "
-  ver=`uname -r | cut -d '(' -f 1`
+  ver=`uname -r`
+  ver="${ver%%(*}" # Strip
   VERSIONLONG="${VERSIONLONG} (Win32) $ver"
-  ver_A=`echo $ver | cut -d '.' -f 1`
-  ver_B=`echo $ver | cut -d '.' -f 2`
-  ver_C=`echo $ver | cut -d '.' -f 3`
-
-  # 2.x.x - 9.x.x, 1.6.x - 1.9.x, and 1.5.6 - 1.5.9 are ok
-  if [ \( "$ver_A" -ge "2" \)                                         \
-    -o \( "$ver_A" -eq "1" -a "$ver_B" -ge "6" \)                     \
-    -o \( "$ver_A" -eq "1" -a "$ver_B" -eq "5" -a "$ver_C" -ge "6" \) \
-     ]; then
-   ${msg} "OK, $ver"
-  else
-   ${msg} "${irt_error} $ver < 1.5.6"
-   waserror
-  fi
+  cygwin_version "${ver}"
   ;;
  *)
   ${msg} "${irt_error} ${irt_notsupported}"

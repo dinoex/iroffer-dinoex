@@ -3,7 +3,10 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
-bigfix: openssl
+bugfix: QSEND
+  Prüfe nicht die Hostmask wenn der Nick unterschiedlich ist.
+
+bugfix: openssl
   Protokolle SSLv2 und SSLv3 deaktiviert. Protokolle TLS1.0, TLS1.1 und TLS1.2 aktiviert.
 
 bugfix: xddclistfile
@@ -902,7 +905,7 @@ Debugging und Logging verbessert.
   Die hostmask gilt dann auch als  uploadhost.
   Erlaube LISTUL wenn das Uploadir angegeben ist.
 
-bigfix: ANNOUNCE
+bugfix: ANNOUNCE
   Announces haben jetzt Vorrang vor XDCC LIST.
 
 bugfix: -plist
