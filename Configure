@@ -474,6 +474,7 @@ cygwin_version()
     fi
   )
   set +e
+  unset IFS
 }
 
 FEATURES=""
