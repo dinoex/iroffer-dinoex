@@ -1682,6 +1682,7 @@ ${main2}" > config.temp.c
   CURLLIB=`curl-config  --libs`
   CURLINC=`curl-config  --cflags`
   CURLLDF="-L${LOCALBASE}/lib"
+  CURLSLIB=`curl-config --static-libs`
   curlssl=`ldd config.temp | grep libssl`
   if test "${curlssl}" != ""; then
    ${msg} "${irt_curlssl} OpenSSL."
@@ -1822,7 +1823,7 @@ make_makefile()
  echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
  echo CONFIG_CHROOT=$NSSLIBS
  echo CONFIG_SHARED=$RUBYLIB
- echo CONFIG_STATIC=$RUBYSLIB -static
+ echo CONFIG_STATIC=$RUBYSLIB $CURLSLIB -static
  echo INSTALL_GROUP=$installgroup
  echo INSDIR?=$PREFIX/bin
  echo IRLANG?=en
