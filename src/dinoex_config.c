@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -2231,6 +2231,11 @@ static char *p_version(void)
   return mystrdup( "iroffer-dinoex " VERSIONLONG ); /* NOTRANSLATE */
 }
 
+static char *p_features(void)
+{
+  return mystrdup( FEATURES );
+}
+
 static void c_bracket_open(const char * UNUSED(key), char * UNUSED(var))
 {
   ++current_bracket;
@@ -2325,6 +2330,7 @@ static config_fprint_typ config_parse_fprint[] = {
 {"disk_quota",             p_disk_quota }, /* NOTRANSLATE */
 {"disk_space",             p_disk_space }, /* NOTRANSLATE */
 {"disk_space_text",        p_disk_space_text }, /* NOTRANSLATE */
+{"features",               p_features }, /* NOTRANSLATE */
 {"getip_network",          p_getip_network }, /* NOTRANSLATE */
 {"idlequeueused",          p_idlequeueused }, /* NOTRANSLATE */
 {"ignoreduplicateip",      p_ignoreduplicateip }, /* NOTRANSLATE */

@@ -57,6 +57,7 @@ usage()
    CC=gcc       Définir le compilateur (« gcc »)
    CFLAGS=      Définir les options du compilateur
    LDFLAGS=     Définir les options du compilateur pour la liaison
+   SLDFLAGS=    Définir les options du compilateur pour la liaison («| static| »)
    LIBS=        Définir les librairies personnalisées
    RUBY=        Définir l'interpréteur de Ruby (« ruby »)"
   ;;
@@ -87,6 +88,7 @@ usage()
    CC=gcc       Setze Compiler (gcc)
    CFLAGS=      Setze Compiler Optionen
    LDFLAGS=     Setze Linker Optionen
+   SLDFLAGS=    Setze Linker Optionen für das statische binden
    LIBS=        Setze weitere Bibliotheken
    RUBY=        Setze Ruby Interpreter (ruby)"
   ;;
@@ -117,6 +119,7 @@ usage()
    CC=gcc       Set Compiler (gcc)
    CFLAGS=      Set custom compiler flags
    LDFLAGS=     Set custom linker flags
+   SLDFLAGS=    Set custom linker flags for static only
    LIBS=        Set custom libs
    RUBY=        Set ruby interpreter (ruby)"
   ;;
@@ -474,6 +477,7 @@ cygwin_version()
     fi
   )
   set +e
+  unset IFS
 }
 
 FEATURES=""
@@ -509,6 +513,7 @@ do
  CC=*) cctype="${1#CC=}" ;;
  CFLAGS=*) CFLAGS="${1#CFLAGS=}" ;;
  LDFLAGS=*) LDFLAGS="${1#LDFLAGS=}" ;;
+ SLDFLAGS=*) SLDFLAGS="${1#SLDFLAGS=}" ;;
  LIBS=*) LIBS="${1#LIBS=}" ;;
  LOCALBASE=*) LOCALBASE="${1#LOCALBASE=}" ;;
  PREFIX=*) PREFIX="${1#PREFIX=}" ;;
@@ -1681,6 +1686,7 @@ ${main2}" > config.temp.c
   CURLLIB=`curl-config  --libs`
   CURLINC=`curl-config  --cflags`
   CURLLDF="-L${LOCALBASE}/lib"
+  CURLSLIB=`curl-config --static-libs`
   curlssl=`ldd config.temp | grep libssl`
   if test "${curlssl}" != ""; then
    ${msg} "${irt_curlssl} OpenSSL."
@@ -1821,7 +1827,7 @@ make_makefile()
  echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
  echo CONFIG_CHROOT=$NSSLIBS
  echo CONFIG_SHARED=$RUBYLIB
- echo CONFIG_STATIC=$RUBYSLIB -static
+ echo CONFIG_STATIC=$RUBYSLIB $CURLSLIB $SLDFLAGS -static
  echo INSTALL_GROUP=$installgroup
  echo INSDIR?=$PREFIX/bin
  echo IRLANG?=en
