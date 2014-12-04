@@ -77,6 +77,7 @@ Short Term Features:
   1634  request by search
   1687  limit how many files get added per time
   1692  startup delay in config
+  1700  RMQ / RMIQ with ranges
 
 Long Term Features:
   1015  http admin
@@ -184,7 +185,11 @@ Long Term Features:
   1674  autonumbering of nickname for mutiple bots
   1682  send packs with " in name.
   1684  triggers for batch sends
+  1678  XDCC LIST with range
   1689  STARTTLS
+  1690  temp max speed on server for x minutes
+  1705  increasing removed files to 2 or more per sec
+  1706  user command for CRC
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -254,4 +259,5 @@ Not going to happen anytime soon:
   1575  aspera transfer protocol
   1666  packlist numbered per channel
   1675  send botinfo to user
+  1694  dcc proxy over mutiple bots
 
