@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -5129,6 +5129,15 @@ void a_dump(const userinput * const u)
 {
   dumpgdata();
   a_respond(u, "DUMP written into logfile.");
+}
+
+void a_version(const userinput * const u)
+{
+  char *text;
+
+  text = print_config_key("features"); /* NOTRANSLATE */
+  a_respond(u, "%s", text);
+  mydelete(text);
 }
 
 void a_backgroud(const userinput * const u)

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -1161,7 +1161,7 @@ static int botonly_parse(int type, privmsginput *pi)
   if (test_ctcp(pi->msg1, IRC_CTCP "VERSION")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
-    notice(pi->nick, IRC_CTCP "VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s" FEATURES IRC_CTCP,
+    notice(pi->nick, IRC_CTCP "VERSION iroffer-dinoex " VERSIONLONG FEATURES ", " "http://iroffer.dinoex.net/" "%s%s" IRC_CTCP,
            gdata.hideos ? "" : " - ", /* NOTRANSLATE */
            gdata.hideos ? "" : gdata.osstring);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
