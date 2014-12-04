@@ -671,6 +671,7 @@ Loke_AF
 	reporting filesystem id bug
 	reporting truncated file bug
 	reporting xddclistfile delay
+	suggesting "VERSION"
 
 Nouhime
 	reporting "http_search" bug.

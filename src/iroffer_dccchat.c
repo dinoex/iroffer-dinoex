@@ -81,7 +81,7 @@ void setup_chat_banner(dccchat_t *chat)
   
   writedccchat(chat, 0, "Welcome to %s\n",
                get_user_nick());
-  writedccchat(chat, 0, "iroffer-dinoex " VERSIONLONG "%s%s\n",
+  writedccchat(chat, 0, "iroffer-dinoex " VERSIONLONG FEATURES "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);
   writedccchat(chat, 0, "    running %s\n", tempstr);

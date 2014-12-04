@@ -3,6 +3,11 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+411) VERSION (suggested by Loke_AF)
+
+  new admin command:
+  VERSION                              Show version of iroffer
+
 bugfix: QUEUE (reported by Days)
   Ignore Hostname check if admin has queued for different nicks.
 

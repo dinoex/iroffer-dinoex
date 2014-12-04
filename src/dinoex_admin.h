@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -149,6 +149,7 @@ void a_online(const userinput * const u);
 void a_ruby(const userinput * const u);
 #endif /* USE_RUBY */
 void a_dump(const userinput * const u);
+void a_version(const userinput * const u);
 void a_backgroud(const userinput * const u);
 void a_autoadd(const userinput * const u);
 void a_autocancel(const userinput * const u);

@@ -799,8 +799,12 @@ void dumpgdata(void)
   unsigned int ii;
   unsigned int ss;
   char ip6[maxtextlengthshort];
+  char *text;
   
-  dump_line("iroffer-dinoex " VERSIONLONG FEATURES);
+  text = print_config_key("features"); /* NOTRANSLATE */
+  dump_line("%s", text);
+  mydelete(text);
+
   config_dump();
   dump_line("GDATA DUMP BEGIN");
   

@@ -2233,7 +2233,13 @@ static char *p_version(void)
 
 static char *p_features(void)
 {
-  return mystrdup( FEATURES );
+  char *text;
+
+  text = mymalloc(maxtextlength);
+  snprintf(text, maxtextlength, "iroffer-dinoex " VERSIONLONG FEATURES "%s%s",
+           gdata.hideos ? "" : " - ",
+           gdata.hideos ? "" : gdata.osstring);
+  return text;
 }
 
 static void c_bracket_open(const char * UNUSED(key), char * UNUSED(var))
