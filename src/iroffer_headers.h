@@ -323,6 +323,15 @@ typedef struct
   unsigned int overlimit;
 } upload;
 
+typedef enum
+{
+  DCCCHAT_UNUSED,
+  DCCCHAT_LISTENING,
+  DCCCHAT_CONNECTING,
+  DCCCHAT_AUTHENTICATING,
+  DCCCHAT_CONNECTED
+} dccchat_e;
+
 typedef struct
 {
   ir_connection_t con;
@@ -331,14 +340,7 @@ typedef struct
   char *nick;
   char *hostmask;
   char *groups;
-  enum
-    {
-      DCCCHAT_UNUSED,
-      DCCCHAT_LISTENING,
-      DCCCHAT_CONNECTING,
-      DCCCHAT_AUTHENTICATING,
-      DCCCHAT_CONNECTED,
-    } status;
+  dccchat_e status;
   unsigned int net;
   unsigned int level;
   unsigned int dummy;

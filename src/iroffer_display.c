@@ -414,7 +414,9 @@ void parseconsole(void)
                                 {
                                   count=1;
                                 }
-                              gdata.curcol = min2(linelength, gdata.curcol+count);
+                              gdata.curcol += count;
+                              if (gdata.curcol > linelength)
+                                gdata.curcol = linelength;
                             }
                           else if (console_escape_seq[esc_len-1] == 'D')
                             {
