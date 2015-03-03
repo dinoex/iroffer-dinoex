@@ -850,6 +850,7 @@ if [ -f "${ccrun}" ]; then
  fi
 else
  cctype="cc"
+ ccrun=`type $cctype | awk '{print $NF}'`
  if [ -f "${ccrun}" ]; then
   if [ -x "${ccrun}" ]; then
    ${msg} "${irt_found} $cctype"
@@ -1749,7 +1750,7 @@ WERROR2=$WERROR
 fi
 
 if $OPT_RUBY; then
- rubyldf="-L${LOCALBASE}/lib ${libruby}"
+ rubyldf=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'LIBS' ]"`
  libruby=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'LIBRUBYARG_SHARED' ]"`
  libsruby=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'LIBRUBYARG_STATIC' ]"`
  archdir=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'archdir' ]"`
@@ -1768,14 +1769,14 @@ if $OPT_RUBY; then
 ${main1}
  ruby_init(); ruby_finalize();
 ${main2}" > config.temp.c
- if $cctype -o config.temp -DUSE_RUBY $WARNS $CFLAGS ${incruby} config.temp.c ${rubyldf} ${libruby} $LDFLAGS $libs $LIBS; then
+ if $cctype -o config.temp -DUSE_RUBY $WARNS $CFLAGS ${incruby} config.temp.c ${libruby} ${rubyldf} $LDFLAGS $libs $LIBS; then
   ${msg} "${irt_found}"
   ${msg} "${irt_start} Ruby."
   echo "#define USE_RUBY" >> src/iroffer_config.h
   echo "#define USE_RUBYVERSION ${rubyversion}" >> src/iroffer_config.h
   FEATURES="${FEATURES},ruby"
-  RUBYLIB="${libruby}"
-  RUBYSLIB="${libsruby} -lm $rstatic"
+  RUBYLIB="${libruby} ${rubyldf}"
+  RUBYSLIB="${libsruby} ${rubyldf} $rstatic"
   RUBYINC="${incruby}"
   RUBYLDF="-L${LOCALBASE}/lib"
   WERROR2=""
