@@ -57,7 +57,7 @@ usage()
    CC=gcc       Définir le compilateur (« gcc »)
    CFLAGS=      Définir les options du compilateur
    LDFLAGS=     Définir les options du compilateur pour la liaison
-   SLDFLAGS=    Définir les options du compilateur pour la liaison («| static| »)
+   SLDFLAGS=    Définir les options du compilateur pour la liaison statique seulement
    LIBS=        Définir les librairies personnalisées
    RUBY=        Définir l'interpréteur de Ruby (« ruby »)"
   ;;
@@ -227,7 +227,7 @@ fr*)
  irt_notls="Désactive les fonctions SSL. Si vous voulez utiliser cette fonction, installez « GnuTLS »"
  irt_badssl1="Votre « libcurl » est liée avec"
  irt_badssl2="S'il vous plaît, configurez"
- irt_badssl3="S'il vous plaît, configurez exempt"
+ irt_badssl3="S'il vous plaît, configurez sans"
  irt_noruby="Désactiver l'extension Ruby. Si vous voulez utiliser cette fonction, installez « libruby »"
  irt_make1="Type"
  irt_make2="à compiler"
