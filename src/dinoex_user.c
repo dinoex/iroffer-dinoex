@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -159,8 +159,6 @@ static void command_dcc(privmsginput *pi)
     if ((pi->msg3 == NULL) || (pi->msg4 == NULL) || (pi->msg5 == NULL))
       return;
 
-    strip_trailing_action(pi->msg5);
-    strip_trailing_action(pi->msg6);
     t_find_resume(pi->nick, pi->msg3, pi->msg4, pi->msg5, pi->msg6);
     return;
   }
@@ -194,9 +192,7 @@ static void command_dcc(privmsginput *pi)
     if ((pi->msg3 == NULL) || (pi->msg4 == NULL) || (pi->msg5 == NULL) || (pi->msg6 == NULL))
       return;
 
-    strip_trailing_action(pi->msg6);
     if (pi->msg7) {
-      strip_trailing_action(pi->msg7);
       down = t_find_transfer(pi->nick, pi->msg3, pi->msg4, pi->msg5, pi->msg7);
     }
     if (!down) {
@@ -215,7 +211,6 @@ static void command_dcc(privmsginput *pi)
     if ((pi->msg3 == NULL) || (pi->msg4 == NULL) || (pi->msg5 == NULL))
       return;
 
-    strip_trailing_action(pi->msg5);
     len = atoull(pi->msg5);
     if (invalid_upload(pi->nick, pi->hostmask, len))
       return;
@@ -827,6 +822,7 @@ static unsigned int stoplist(const char *nick)
     item = irlist_get_next(item);
   }
 
+  stopped += stoplist_queue(nick, &(gnetwork->serverq_fast));
   stopped += stoplist_queue(nick, &(gnetwork->serverq_slow));
   stopped += stoplist_queue(nick, &(gnetwork->serverq_normal));
   stopped += stoplist_announce(nick);
@@ -862,8 +858,6 @@ static void xdcc_send(privmsginput *pi)
 {
   const char *msg;
 
-  strip_trailing_action(pi->msg3);
-  strip_trailing_action(pi->msg4);
   msg = send_xdcc_file(pi, pi->msg3, pi->msg4);
   log_xdcc_request3(pi, msg);
 }
@@ -905,8 +899,6 @@ static void command_xdcc(privmsginput *pi)
   const char *msg;
   char *tmp;
 
-  strip_trailing_action(pi->msg2);
-  strip_trailing_action(pi->msg3);
   caps(pi->msg2);
 
   if (strcmp(pi->msg2, "LIST") == 0) { /* NOTRANSLATE */
@@ -985,8 +977,6 @@ static void command_xdcc(privmsginput *pi)
 
   if (gdata.send_batch) {
     if ((strcmp(pi->msg2, "BATCH") == 0) && pi->msg3) { /* NOTRANSLATE */
-      strip_trailing_action(pi->msg3);
-      strip_trailing_action(pi->msg4);
       send_batch(pi, pi->msg3, pi->msg4);
       return;
     }
@@ -1004,6 +994,7 @@ static void command_xdcc(privmsginput *pi)
     /* if restrictlist is enabled, visibility rules apply */
     grouplist = get_restrictlist() ? get_grouplist_access(pi->nick) : NULL;
     msg3e = getpart_eol(pi->line, 6);
+    strip_trailing_action(msg3e);
     log_xdcc_request2(pi->msg2, msg3e, pi);
     notice_slow(pi->nick, "Searching for \"%s\"...", msg3e);
     convert_spaces_to_match(msg3e);
@@ -1155,8 +1146,6 @@ static int botonly_parse(int type, privmsginput *pi)
     if (test_ctcp(pi->msg1, IRC_CTCP "PING")) { /* NOTRANSLATE */
       if (check_ignore(pi->nick, pi->hostmask))
         return 0;
-      strip_trailing_action(pi->msg2);
-      strip_trailing_action(pi->msg3);
       notice(pi->nick, IRC_CTCP "PING%s%s%s%s" IRC_CTCP, /* NOTRANSLATE */
              pi->msg2 ? " " : "", /* NOTRANSLATE */
              pi->msg2 ? pi->msg2 : "",
@@ -1172,7 +1161,7 @@ static int botonly_parse(int type, privmsginput *pi)
   if (test_ctcp(pi->msg1, IRC_CTCP "VERSION")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
-    notice(pi->nick, IRC_CTCP "VERSION iroffer-dinoex " VERSIONLONG ", " "http://iroffer.dinoex.net/" "%s%s" FEATURES IRC_CTCP,
+    notice(pi->nick, IRC_CTCP "VERSION iroffer-dinoex " VERSIONLONG FEATURES ", " "http://iroffer.dinoex.net/" "%s%s" IRC_CTCP,
            gdata.hideos ? "" : " - ", /* NOTRANSLATE */
            gdata.hideos ? "" : gdata.osstring);
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -1582,7 +1571,6 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
     }
     if (pi->msg2 != NULL) {
       caps(pi->msg2);
-      strip_trailing_action(pi->msg2);
       if (not_for_me(pi->msg2))
         return; /* ignore */
     }
@@ -1731,6 +1719,7 @@ void privmsgparse(int type, int decoded, char *line)
   privmsginput pi;
   char *part[MAX_PRIVMSG_PARTS];
   unsigned int m;
+  unsigned int i;
   size_t line_len;
 
   updatecontext();
@@ -1740,8 +1729,14 @@ void privmsgparse(int type, int decoded, char *line)
     return;
 
   bzero((char *)&pi, sizeof(pi));
-  m = get_argv(part, line, MAX_PRIVMSG_PARTS);
   pi.line = line;
+  m = get_argv(part, line, MAX_PRIVMSG_PARTS);
+  if ((part[3] != NULL) && (m >= 3)) {
+    if (part[3][1] == IRCCTCP) {
+      /* remove action only on the last arg */
+      strip_trailing_action(part[m - 1]);
+    }
+  }
   pi.hostmask = part[0] + 1;
   pi.dest = part[2];
   pi.msg1 = part[3];
@@ -1765,8 +1760,8 @@ void privmsgparse(int type, int decoded, char *line)
     privmsgparse2(type, decoded, &pi);
   mydelete(pi.nick);
   mydelete(pi.hostname);
-  for (m = 0; m < MAX_PRIVMSG_PARTS; ++m)
-    mydelete(part[m]);
+  for (i = 0; i < m; ++i)
+    mydelete(part[i]);
 }
 
 /* remove user from queue after he left chammel or network */

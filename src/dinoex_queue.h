@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2011 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -27,6 +27,7 @@ void send_from_queue(unsigned int type, unsigned int pos, char *lastnick);
 void start_one_send(void);
 void start_sends(void);
 void check_idle_queue(unsigned int pos);
+int check_main_queue(unsigned int max);
 void start_main_queue(void);
 ir_pqueue *requeue(transfer *tr, ir_pqueue *old);
 

@@ -57,6 +57,7 @@ usage()
    CC=gcc       Définir le compilateur (« gcc »)
    CFLAGS=      Définir les options du compilateur
    LDFLAGS=     Définir les options du compilateur pour la liaison
+   SLDFLAGS=    Définir les options du compilateur pour la liaison («| static| »)
    LIBS=        Définir les librairies personnalisées
    RUBY=        Définir l'interpréteur de Ruby (« ruby »)"
   ;;
@@ -87,6 +88,7 @@ usage()
    CC=gcc       Setze Compiler (gcc)
    CFLAGS=      Setze Compiler Optionen
    LDFLAGS=     Setze Linker Optionen
+   SLDFLAGS=    Setze Linker Optionen für das statische binden
    LIBS=        Setze weitere Bibliotheken
    RUBY=        Setze Ruby Interpreter (ruby)"
   ;;
@@ -117,6 +119,7 @@ usage()
    CC=gcc       Set Compiler (gcc)
    CFLAGS=      Set custom compiler flags
    LDFLAGS=     Set custom linker flags
+   SLDFLAGS=    Set custom linker flags for static only
    LIBS=        Set custom libs
    RUBY=        Set ruby interpreter (ruby)"
   ;;
@@ -224,6 +227,7 @@ fr*)
  irt_notls="Désactive les fonctions SSL. Si vous voulez utiliser cette fonction, installez « GnuTLS »"
  irt_badssl1="Votre « libcurl » est liée avec"
  irt_badssl2="S'il vous plaît, configurez"
+ irt_badssl3="S'il vous plaît, configurez exempt"
  irt_noruby="Désactiver l'extension Ruby. Si vous voulez utiliser cette fonction, installez « libruby »"
  irt_make1="Type"
  irt_make2="à compiler"
@@ -328,6 +332,7 @@ de*)
  irt_notls="Benutze kein SSL. Für diese Funktion musst du 'GNU TLS' installieren"
  irt_badssl1="Deine 'libcurl' benutzt"
  irt_badssl2="Bitte konfiguriere"
+ irt_badssl3="Bitte konfiguriere ohne"
  irt_noruby="Kann die RUBY-Erweiterung nicht benutzen. Für diese Funktion musst du 'libruby'installieren"
  irt_make1="Zum Übersetzen jetzt"
  irt_make2="eingeben"
@@ -433,6 +438,7 @@ de*)
  irt_notls="Disabled the SSL Features. If you want to use this feature, please install 'GNU TLS'"
  irt_badssl1="Your 'libcurl' is linked with"
  irt_badssl2="Please configure"
+ irt_badssl3="Please configure without"
  irt_noruby="Disabled the RUBY-extension. If you want to use this feature, please install 'libruby'"
  irt_make1="Type"
  irt_make2="to compile"
@@ -448,6 +454,30 @@ waserror()
  ${msg} "${irt_again}"
  echo
  exit 72
+}
+
+cygwin_version()
+{
+  IFS='.-'
+  set -e
+  echo "${ver}" | (
+    read ver_A ver_B ver_C dummy
+    echo "${ver_A}"
+    echo "${ver_B}"
+    echo "${ver_C}"
+    # 2.x.x - 9.x.x, 1.6.x - 1.9.x, and 1.5.6 - 1.5.9 are ok
+    if [ \( "$ver_A" -ge "2" \)                                         \
+      -o \( "$ver_A" -eq "1" -a "$ver_B" -ge "6" \)                     \
+      -o \( "$ver_A" -eq "1" -a "$ver_B" -eq "5" -a "$ver_C" -ge "6" \) \
+       ]; then
+     ${msg} "OK, $ver"
+    else
+     ${msg} "${irt_error} $ver < 1.5.6"
+     waserror
+    fi
+  )
+  set +e
+  unset IFS
 }
 
 FEATURES=""
@@ -483,6 +513,7 @@ do
  CC=*) cctype="${1#CC=}" ;;
  CFLAGS=*) CFLAGS="${1#CFLAGS=}" ;;
  LDFLAGS=*) LDFLAGS="${1#LDFLAGS=}" ;;
+ SLDFLAGS=*) SLDFLAGS="${1#SLDFLAGS=}" ;;
  LIBS=*) LIBS="${1#LIBS=}" ;;
  LOCALBASE=*) LOCALBASE="${1#LOCALBASE=}" ;;
  PREFIX=*) PREFIX="${1#PREFIX=}" ;;
@@ -546,29 +577,16 @@ case "$ostype" in
   ostype=HPUX
   ;;
  CYGWIN* )
-  short_ostype=`uname | cut -d "_" -f 1`
-  ostype=$short_ostype
+  ostype="${ostype%%_*}" # Strip Windows
   rstatic="-static-libgcc"
   exe=.exe
 
   # only 1.5.6 or later is supported
   ${msg} -n "${irt_checkfor} >= 1.5.6... "
-  ver=`uname -r | cut -d '(' -f 1`
+  ver=`uname -r`
+  ver="${ver%%(*}" # Strip
   VERSIONLONG="${VERSIONLONG} (Win32) $ver"
-  ver_A=`echo $ver | cut -d '.' -f 1`
-  ver_B=`echo $ver | cut -d '.' -f 2`
-  ver_C=`echo $ver | cut -d '.' -f 3`
-
-  # 2.x.x - 9.x.x, 1.6.x - 1.9.x, and 1.5.6 - 1.5.9 are ok
-  if [ \( "$ver_A" -ge "2" \)                                         \
-    -o \( "$ver_A" -eq "1" -a "$ver_B" -ge "6" \)                     \
-    -o \( "$ver_A" -eq "1" -a "$ver_B" -eq "5" -a "$ver_C" -ge "6" \) \
-     ]; then
-   ${msg} "OK, $ver"
-  else
-   ${msg} "${irt_error} $ver < 1.5.6"
-   waserror
-  fi
+  cygwin_version "${ver}"
   ;;
  *)
   ${msg} "${irt_error} ${irt_notsupported}"
@@ -832,6 +850,7 @@ if [ -f "${ccrun}" ]; then
  fi
 else
  cctype="cc"
+ ccrun=`type $cctype | awk '{print $NF}'`
  if [ -f "${ccrun}" ]; then
   if [ -x "${ccrun}" ]; then
    ${msg} "${irt_found} $cctype"
@@ -1668,6 +1687,7 @@ ${main2}" > config.temp.c
   CURLLIB=`curl-config  --libs`
   CURLINC=`curl-config  --cflags`
   CURLLDF="-L${LOCALBASE}/lib"
+  CURLSLIB=`curl-config --static-libs`
   curlssl=`ldd config.temp | grep libssl`
   if test "${curlssl}" != ""; then
    ${msg} "${irt_curlssl} OpenSSL."
@@ -1699,7 +1719,7 @@ if $OPT_SSL; then
   ${msg} "***${irt_nossl}."
  fi
  if test "${curltls}" != ""; then
-  ${msg} "*** ${irt_badssl1} 'GNU TLS', ${irt_badssl2} 'GNU TLS'."
+  ${msg} "*** ${irt_badssl1} 'GNU TLS', ${irt_badssl2} '-tls'"
   waserror
  fi
 fi
@@ -1720,7 +1740,7 @@ if $OPT_TLS; then
   ${msg} "***${irt_notls}."
  fi
  if test "${curlssl}" != ""; then
-  ${msg} "*** ${irt_badssl1} 'OpenSSL', ${irt_badssl2} 'OpenSSL'."
+  ${msg} "*** ${irt_badssl1} 'OpenSSL', ${irt_badssl3} '-tls'."
   waserror
  fi
 fi
@@ -1730,6 +1750,7 @@ WERROR2=$WERROR
 fi
 
 if $OPT_RUBY; then
+ rubyldf=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'LIBS' ]"`
  libruby=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'LIBRUBYARG_SHARED' ]"`
  libsruby=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'LIBRUBYARG_STATIC' ]"`
  archdir=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'archdir' ]"`
@@ -1748,14 +1769,14 @@ if $OPT_RUBY; then
 ${main1}
  ruby_init(); ruby_finalize();
 ${main2}" > config.temp.c
- if $cctype -o config.temp -DUSE_RUBY $WARNS $CFLAGS ${incruby} config.temp.c ${libruby} $LDFLAGS $libs $LIBS; then
+ if $cctype -o config.temp -DUSE_RUBY $WARNS $CFLAGS ${incruby} config.temp.c ${libruby} ${rubyldf} $LDFLAGS $libs $LIBS; then
   ${msg} "${irt_found}"
   ${msg} "${irt_start} Ruby."
   echo "#define USE_RUBY" >> src/iroffer_config.h
   echo "#define USE_RUBYVERSION ${rubyversion}" >> src/iroffer_config.h
   FEATURES="${FEATURES},ruby"
-  RUBYLIB="${libruby}"
-  RUBYSLIB="${libsruby} -lm $rstatic"
+  RUBYLIB="${libruby} ${rubyldf}"
+  RUBYSLIB="${libsruby} ${rubyldf} $rstatic"
   RUBYINC="${incruby}"
   RUBYLDF="-L${LOCALBASE}/lib"
   WERROR2=""
@@ -1808,7 +1829,7 @@ make_makefile()
  echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC
  echo CONFIG_CHROOT=$NSSLIBS
  echo CONFIG_SHARED=$RUBYLIB
- echo CONFIG_STATIC=$RUBYSLIB -static
+ echo CONFIG_STATIC=$RUBYSLIB $CURLSLIB $SLDFLAGS -static
  echo INSTALL_GROUP=$installgroup
  echo INSDIR?=$PREFIX/bin
  echo IRLANG?=en

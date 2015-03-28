@@ -47,6 +47,7 @@ irlist_t filedir;
 irlist_t uploadhost;
 irlist_t tuploadhost;
 irlist_t quploadhost;
+irlist_t fetch_queue;
 irlist_t autoignore_exclude;
 irlist_t adddir_exclude;
 irlist_t adddir_match;
@@ -176,6 +177,7 @@ unsigned int expire_logfiles;
 unsigned int tcp_buffer_size;
 unsigned int flood_protection_rate;
 unsigned int autoignore_rate;
+unsigned int reminder_send_retry;
 /* bool */
 unsigned int hideos;
 unsigned int lognotices;
@@ -245,7 +247,6 @@ unsigned int dump_all;
 unsigned int tcp_nodelay;
 unsigned int announce_size;
 unsigned int subdirs_delayed;
-unsigned int idummy;
 
 context_t context_log[MAXCONTEXTS];
 ir_boutput_t stdout_buffer;

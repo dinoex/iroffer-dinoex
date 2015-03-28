@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2013 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -177,7 +177,7 @@ void update_natip(const char *var)
     update_getip_net(gnetwork->net, gnetwork->ourip);
   }
 
-  if (gdata.debug > 0) ioutput(OUT_S, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
+  if (gdata.debug > 0) ioutput(OUT_S|OUT_L, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
 
   /* check for 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 */
   if (((gnetwork->ourip & 0xFF000000U) == 0x0A000000U) ||
@@ -199,7 +199,7 @@ static void update_server_welcome(char *line)
   if (gdata.getipfromupnp) {
     tptr = upnp_get_dccip();
     if (tptr != NULL) {
-      ioutput(OUT_S, COLOR_NO_COLOR, "IP From UPnP = %s", tptr);
+      ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "IP From UPnP = %s", tptr);
       update_natip(tptr);
       return;
     }
@@ -209,7 +209,7 @@ static void update_server_welcome(char *line)
     tptr = strchr(line, '@');
     if (tptr != NULL) {
       ++tptr;
-      ioutput(OUT_S, COLOR_NO_COLOR, "IP From Server: %s", tptr);
+      ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "IP From Server: %s", tptr);
       update_natip(tptr);
       return;
     }
@@ -418,7 +418,7 @@ static void ir_setsockopt2(int clientsocket, int optint, const char *optname, in
 
   getsockopt(clientsocket, SOL_SOCKET, optint, &tempc3, &tempi);
   if (gdata.debug > 0)
-    ioutput(OUT_S, COLOR_YELLOW, "%s a %i b %i c %i", optname, tempc1, tempc2, tempc3);
+    ioutput(OUT_S|OUT_L, COLOR_YELLOW, "%s a %i b %i c %i", optname, tempc1, tempc2, tempc3);
 }
 
 /* set all options for a transfer connection */
@@ -1120,7 +1120,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   if ( !strcmp(ipl->part[1], "433") ) {
     if (ipl->part[2] && ipl->part[3]) {
       if (!strcmp(ipl->part[2], "*")) {
-        ioutput(OUT_S, COLOR_NO_COLOR,
+        ioutput(OUT_S|OUT_L, COLOR_NO_COLOR,
                 "Nickname %s already in use on %s, trying %s%u",
                 ipl->part[3],
                 gnetwork->name,
@@ -1472,7 +1472,7 @@ static void ir_parseline(char *line)
   line[maxtextlength-1] = '\0';
 
   if (gdata.debug > 14)
-    ioutput(OUT_S, COLOR_CYAN, ">IRC>: %u, %s", gnetwork->net + 1, line);
+    ioutput(OUT_S|OUT_L, COLOR_CYAN, ">IRC>: %u, %s", gnetwork->net + 1, line);
 
   bzero((char *)&ipl, sizeof(ipl));
   ipl.line = line;

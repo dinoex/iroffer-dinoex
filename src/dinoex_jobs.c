@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -24,6 +24,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_config.h"
 #include "dinoex_misc.h"
+#include "dinoex_curl.h"
 #include "dinoex_jobs.h"
 #include "crc32.h"
 
@@ -225,7 +226,7 @@ static char *privmsg_decrypt(const char *line, const char *channel, const char *
   snprintf(end, len, "%s :%s", channel, newstr); /* NOTRANSLATE */
   mydelete(newstr);
   if (gdata.debug > 13) {
-    ioutput(OUT_S, COLOR_MAGENTA, ">FISH>: %s", newline);
+    ioutput(OUT_S|OUT_L, COLOR_MAGENTA, ">FISH>: %s", newline);
   }
   return newline;
 }
@@ -303,14 +304,14 @@ vwriteserver_channel(channel_t * const ch, const char *format, va_list ap)
   }
 
   if (gdata.debug > 13) {
-    ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s %s :%s",
+    ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUES<: %s %s :%s",
             ch->name, "PRIVMSG", msg); /* NOTRANSLATE */
   }
 
-  if (len > EXCESS_BUCKET_MAX) {
+  if (len > gnetwork->server_send_max) {
     outerror(OUTERROR_TYPE_WARN, "Message Truncated!");
-    msg[EXCESS_BUCKET_MAX] = '\0';
-    len = EXCESS_BUCKET_MAX;
+    msg[gnetwork->server_send_max] = '\0';
+    len = gnetwork->server_send_max;
   }
 
   if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ) {
@@ -372,7 +373,7 @@ vprivmsg_chan(channel_t * const ch, const char *format, va_list ap)
     char *tempcrypt;
 
     if (gdata.debug > 13) {
-      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", tempstr);
+      ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<FISH<: %s", tempstr);
     }
     tempcrypt = encrypt_fish(tempstr, ulen, ch->fish);
     if (tempcrypt) {
@@ -424,7 +425,7 @@ void writeserver_privmsg(writeserver_type_e delay, const char *nick, const char 
     char *tempcrypt;
 
     if (gdata.debug > 13) {
-      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
+      ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<FISH<: %s", message);
     }
     tempcrypt = encrypt_fish(message, len, fish);
     if (tempcrypt) {
@@ -449,7 +450,7 @@ void writeserver_notice(writeserver_type_e delay, const char *nick, const char *
     char *tempcrypt;
 
     if (gdata.debug > 13) {
-      ioutput(OUT_S, COLOR_MAGENTA, "<FISH<: %s", message);
+      ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<FISH<: %s", message);
     }
     tempcrypt = encrypt_fish(message, len, fish);
     if (tempcrypt) {
@@ -714,7 +715,7 @@ const char *validate_crc32(xdcc *xd, int quiet)
     *w = 0;
 
   caps(line);
-  if (strstr(line, newcrc) != NULL) {
+  if (strcasestr(line, newcrc) != NULL) {
     if (quiet && (gdata.verbose_crc32 == 0))
       x = NULL;
     else
@@ -750,21 +751,17 @@ const char *validate_crc32(xdcc *xd, int quiet)
 static void crc32_init(void)
 {
   gdata.crc32build.crc = ~0U;
-  gdata.crc32build.crc_total = ~0U;
 }
 
 void crc32_update(char *buf, size_t len)
 {
   char *p;
   ir_uint32 crc = gdata.crc32build.crc;
-  ir_uint32 crc_total = gdata.crc32build.crc_total;
 
   for (p = buf; len--; ++p) {
     crc = (crc >> 8) ^ crctable[(crc ^ *p) & 0xff];
-    crc_total = (crc >> 8) ^ crctable[(crc_total ^ *p) & 0xff];
   }
   gdata.crc32build.crc = crc;
-  gdata.crc32build.crc_total = crc_total;
 }
 
 static void crc32_final(xdcc *xd)
@@ -809,6 +806,10 @@ void autoadd_all(void)
   updatecontext();
 
   if (gdata.noautoadd > gdata.curtime)
+    return;
+
+  /* stop here if we have already files to add/remove */
+  if (irlist_size(&gdata.packs_delayed) > 0)
     return;
 
   for (dir = irlist_get_head(&gdata.autoadd_dirs);
@@ -1755,11 +1756,39 @@ void write_files(void)
   gdata.last_update = gdata.curtime;
   write_statefile();
   /* stop here if more to add/remove */
-  if (irlist_size(&gdata.packs_delayed) > 0)
+  if (irlist_size(&gdata.packs_delayed) > 1)
     return;
 
   xdccsavetext();
   xdcc_save_xml();
+}
+
+/* check if max_uploads is reached */
+unsigned int max_uploads_reached( void )
+{
+  qupload_t *qu;
+  unsigned int uploads;
+
+  if ( gdata.max_uploads == 0 )
+    return 0; /* not limited */
+
+  uploads = irlist_size(&gdata.uploads);
+
+  for (qu = irlist_get_head(&gdata.quploadhost);
+       qu;
+       qu = irlist_get_next(qu)) {
+    if (qu->q_state == QUPLOAD_RUNNING)
+      uploads += 1;
+  }
+
+#ifdef USE_CURL
+  uploads += fetch_running();
+#endif /* USE_CURL */
+
+  if ( uploads < gdata.max_uploads )
+    return 0; /* not limited */
+
+  return 1; /* limited */
 }
 
 void start_qupload(void)
@@ -1769,25 +1798,32 @@ void start_qupload(void)
 
   updatecontext();
 
+  if (max_uploads_reached() != 0)
+    return; /* busy */
+
+  /* start next XDCC GET */
   for (qu = irlist_get_head(&gdata.quploadhost);
        qu;
        qu = irlist_get_next(qu)) {
-    if (qu->q_state == 2)
-      return; /* busy */
-  }
-  for (qu = irlist_get_head(&gdata.quploadhost);
-       qu;
-       qu = irlist_get_next(qu)) {
-    if (qu->q_state != 1)
+
+    if (qu->q_state == QUPLOAD_TRYING)
+      break;
+
+    if (qu->q_state != QUPLOAD_WAITING)
       continue;
 
     backup = gnetwork;
     gnetwork = &(gdata.networks[qu->q_net]);
     privmsg_fast(qu->q_nick, "XDCC GET %s", qu->q_pack); /* NOTRANSLATE */
     gnetwork = backup;
-    qu->q_state = 2;
+    qu->q_state = QUPLOAD_TRYING;
     return;
   }
+
+  /* start next fetch */
+#ifdef USE_CURL
+  fetch_next();
+#endif /* USE_CURL */
 }
 
 unsigned int close_qupload(unsigned int net, const char *nick)
@@ -1803,9 +1839,6 @@ unsigned int close_qupload(unsigned int net, const char *nick)
        qu;
        qu = irlist_get_next(qu)) {
     if (qu->q_net != net)
-      continue;
-
-    if (qu->q_state != 2)
       continue;
 
     if (strcasecmp(qu->q_nick, nick) != 0)
@@ -2385,7 +2418,7 @@ void delayed_announce(void)
 
   if (gdata.nomd5sum == 0) {
     if (gdata.md5build.xpack) {
-      /* checsum in progress */
+      /* checksum in progress */
       return;
     }
   }
@@ -2400,10 +2433,11 @@ void delayed_announce(void)
     if (gdata.nomd5sum == 0) {
       if (xd->has_md5sum == 0)
         continue;
-    }
-    if (gdata.nocrc32 == 0) {
-      if (xd->has_crc32 == 0)
-        continue;
+
+      if (gdata.nocrc32 == 0) {
+        if (xd->has_crc32 == 0)
+          continue;
+      }
     }
 
     /* wait for pack to be unlocked */

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -37,6 +37,7 @@ ir_uint16 get_port(ir_sockaddr_union_t *listenaddr);
 int strcmp_null(const char *s1, const char *s2);
 unsigned int is_file_writeable(const char *f);
 int open_append(const char *filename, const char *text);
+int open_append_log(const char *filename, const char *text);
 void mylog_write(int fd, const char *filename, const char *msg, size_t len);
 void mylog_close(int fd, const char *filename);
 

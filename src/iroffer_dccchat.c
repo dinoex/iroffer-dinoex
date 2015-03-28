@@ -81,7 +81,7 @@ void setup_chat_banner(dccchat_t *chat)
   
   writedccchat(chat, 0, "Welcome to %s\n",
                get_user_nick());
-  writedccchat(chat, 0, "iroffer-dinoex " VERSIONLONG "%s%s\n",
+  writedccchat(chat, 0, "iroffer-dinoex " VERSIONLONG FEATURES "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);
   writedccchat(chat, 0, "    running %s\n", tempstr);
@@ -351,7 +351,7 @@ void parsedccchat(dccchat_t *chat,
     case DCCCHAT_CONNECTED:
       if (gdata.debug > 11)
         {
-          ioutput(OUT_S, COLOR_CYAN, ">DCC>: %s", line);
+          ioutput(OUT_S|OUT_L, COLOR_CYAN, ">DCC>: %s", line);
         }
       u_fillwith_dcc(&ui,chat,line);
       u_parseit(&ui);
@@ -412,7 +412,7 @@ void vwritedccchat(dccchat_t *chat, int add_return, const char *format, va_list 
         {
           tempstr[len-1] = '\0';
         }
-      ioutput(OUT_S, COLOR_CYAN, "<DCC<: %s", tempstr);
+      ioutput(OUT_S|OUT_L, COLOR_CYAN, "<DCC<: %s", tempstr);
     }
 }
 

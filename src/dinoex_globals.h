@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -26,14 +26,30 @@ typedef struct {
   long u_time;
 } tupload_t;
 
+typedef enum {
+  QUPLOAD_IDLE,
+  QUPLOAD_WAITING,
+  QUPLOAD_TRYING,
+  QUPLOAD_RUNNING,
+} quploadstatus_e;
+
 typedef struct {
   char *q_host;
   char *q_nick;
   char *q_pack;
-  unsigned int q_state;
+  quploadstatus_e q_state;
   unsigned int q_net;
   unsigned long q_time;
 } qupload_t;
+
+typedef struct {
+  userinput u;
+  unsigned int net;
+  unsigned int dummy;
+  char *name;
+  char *url;
+  char *uploaddir;
+} fetch_queue_t;
 
 typedef struct {
   char *a_group;
@@ -100,7 +116,6 @@ typedef struct {
 
 typedef struct {
   ir_uint32 crc;
-  ir_uint32 crc_total;
 } crc32build_t;
 
 typedef struct {
@@ -167,6 +182,9 @@ typedef struct {
   time_t lastnotify;
   time_t lastping;
   time_t lastslow;
+  time_t lastnormal;
+  time_t lastfast;
+  time_t lastsend;
   time_t next_identify;
   time_t next_restrict;
 
@@ -222,8 +240,10 @@ typedef struct {
   unsigned int server_connect_timeout;
   unsigned int need_level;
 
-  int ircserver;
+  int server_send_max;
+  int server_send_rate;
   int serverbucket;
+  int ircserver;
   serverstatus_e serverstatus;
   botstatus_e botstatus;
   how_e r_connectionmethod;

@@ -88,7 +88,7 @@ static int connectirc (server_t *tserver) {
    
    updatecontext();
 
-   gnetwork->serverbucket = EXCESS_BUCKET_MAX;
+   gnetwork->serverbucket = gnetwork->server_send_max;
    
    if (!tserver) return 1;
    
@@ -368,13 +368,20 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
     {
       if (gdata.debug > 14)
         {
-          ioutput(OUT_S, COLOR_MAGENTA, "<SND<: %u: %s", gnetwork->net +1, msg);
+          ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<SND<: %u: %s", gnetwork->net +1, msg);
         }
       msg[len] = '\n';
       len++;
       msg[len] = '\0';
       writeserver_ssl(msg, len);
-      gnetwork->serverbucket -= len;
+      if ( len > gnetwork->serverbucket )
+        {
+          gnetwork->serverbucket = 0;
+        }
+      else
+        {
+          gnetwork->serverbucket -= len;
+        }
     }
   else if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
     {
@@ -387,14 +394,14 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 12)
             {
-              ioutput(OUT_S, COLOR_MAGENTA, "<QUEF<: %s", msg);
+              ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUEF<: %s", msg);
             }
           
-          if (len > EXCESS_BUCKET_MAX)
+          if (len > gnetwork->server_send_max)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
-              msg[EXCESS_BUCKET_MAX] = '\0';
-              len = EXCESS_BUCKET_MAX;
+              msg[gnetwork->server_send_max] = '\0';
+              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_fast)) < MAXSENDQ)
@@ -410,14 +417,14 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 12)
             {
-              ioutput(OUT_S, COLOR_MAGENTA, "<QUEN<: %s", msg);
+              ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUEN<: %s", msg);
             }
           
-          if (len > EXCESS_BUCKET_MAX)
+          if (len > gnetwork->server_send_max)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
-              msg[EXCESS_BUCKET_MAX] = '\0';
-              len = EXCESS_BUCKET_MAX;
+              msg[gnetwork->server_send_max] = '\0';
+              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_normal)) < MAXSENDQ)
@@ -433,14 +440,14 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
         {
           if (gdata.debug > 12)
             {
-              ioutput(OUT_S, COLOR_MAGENTA, "<QUES<: %s", msg);
+              ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<QUES<: %s", msg);
             }
           
-          if (len > EXCESS_BUCKET_MAX)
+          if (len > gnetwork->server_send_max)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
-              msg[EXCESS_BUCKET_MAX] = '\0';
-              len = EXCESS_BUCKET_MAX;
+              msg[gnetwork->server_send_max] = '\0';
+              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_slow)) < MAXSENDQ)
@@ -474,10 +481,12 @@ void sendserver(void)
   
   if ( !gdata.background )
     gototop();
-
+  
+  gnetwork->lastsend = gdata.curtime + 1;
   sendannounce();
-  gnetwork->serverbucket += EXCESS_BUCKET_ADD;
-  gnetwork->serverbucket = min2(gnetwork->serverbucket, EXCESS_BUCKET_MAX);
+  gnetwork->serverbucket += gnetwork->server_send_rate;
+  if (gnetwork->serverbucket > gnetwork->server_send_max)
+    gnetwork->serverbucket = gnetwork->server_send_max;
   
   clean = (irlist_size(&(gnetwork->serverq_fast)) +
            irlist_size(&(gnetwork->serverq_normal)) +
@@ -503,13 +512,14 @@ void sendserver(void)
     {
       if (gdata.debug > 14)
         {
-          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
       
       gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
+      gnetwork->lastfast = gdata.curtime;
       
       item = irlist_delete(&(gnetwork->serverq_fast), item);
     }
@@ -525,13 +535,14 @@ void sendserver(void)
     {
       if (gdata.debug > 14)
         {
-          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
       
       gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
+      gnetwork->lastnormal = gdata.curtime;
       
       item = irlist_delete(&(gnetwork->serverq_normal), item);
     }
@@ -552,7 +563,7 @@ void sendserver(void)
     {
       if (gdata.debug > 14)
         {
-          ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
+          ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, item);
         }
       writeserver_ssl(item, strlen(item));
       writeserver_ssl("\n", 1);
@@ -1063,9 +1074,9 @@ void shutdowniroffer(void) {
    
    if (gdata.exiting || has_closed_servers()) {
       if (gdata.exiting)
-         ioutput(OUT_S, COLOR_NO_COLOR, "Shutting Down (FORCED)");
+         ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "Shutting Down (FORCED)");
       else
-         ioutput(OUT_S, COLOR_NO_COLOR, "Shutting Down");
+         ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "Shutting Down");
       
       if ( SAVEQUIT )
          write_statefile();
@@ -1134,7 +1145,7 @@ void shutdowniroffer(void) {
            gnetwork = &(gdata.networks[ss]);
            if (gdata.debug > 14)
               {
-                ioutput(OUT_S, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, msg);
+                ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<IRC<: %u, %s", gnetwork->net + 1, msg);
               }
            writeserver_ssl(msg, strlen(msg));
            writeserver_ssl("\n", 1);
@@ -1336,7 +1347,8 @@ char* getstatuslinenums(char *str, size_t len)
                gdata.slotsmax,
                irlist_size(&gdata.mainqueue),
                gdata.queuesize,
-               0, 0,
+               irlist_size(&gdata.idlequeue),
+               gdata.idlequeuesize,
                gdata.record,
                srvq,
                xdccsent/1024,

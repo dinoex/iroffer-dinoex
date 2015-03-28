@@ -480,6 +480,7 @@ OmegaPhil
 	reporting CONFIG bug
 	suggesting status_time_dcc_chat
 	reporting Configure bug
+	reporting crash on readonly logfile
 
 Bohnenstange
 	reporting curl 7.10.x bug
@@ -569,6 +570,7 @@ CreeW
 	reporting CLOSEU bug
 	suggesting "AUTOCANCEL"
 	suggesting "NOAUTOADD"
+	reporting nomd5 annouce bug
 
 freijie
 	reporting @find bug
@@ -664,6 +666,12 @@ Loke_AF
 	suggesting "logrotate" at fixed time
 	reporting "status_time_dcc_chat" bug
 	reporting "channel -delay" problem
+	reporting "transferlimits" DST problem
+	reporting petabyte bug
+	reporting filesystem id bug
+	reporting truncated file bug
+	reporting xddclistfile delay
+	suggesting "VERSION"
 
 Nouhime
 	reporting "http_search" bug.
@@ -787,4 +795,10 @@ Zlogene
 
 cheeseboy
 	reporting filenames with quotes
+
+Dagger
+	reporting CTCP XDCC SEARCH bug
+
+Days
+	reporting man queue problem
 

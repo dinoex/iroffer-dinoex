@@ -76,7 +76,7 @@ void outerror (outerror_type_e type, const char *format, ...) {
    /* can't log an error if the error was due to logging */
    if (type & OUTERROR_TYPE_NOLOG)
      {
-       ioutput_options &= ~OUTERROR_TYPE_NOLOG;
+       ioutput_options = OUT_S|OUT_D;
      }
    type &= ~OUTERROR_TYPE_NOLOG;
    
@@ -799,8 +799,12 @@ void dumpgdata(void)
   unsigned int ii;
   unsigned int ss;
   char ip6[maxtextlengthshort];
+  char *text;
   
-  dump_line("iroffer-dinoex " VERSIONLONG FEATURES);
+  text = print_config_key("features"); /* NOTRANSLATE */
+  dump_line("%s", text);
+  mydelete(text);
+
   config_dump();
   dump_line("GDATA DUMP BEGIN");
   
@@ -911,6 +915,12 @@ void dumpgdata(void)
   gdata_iter_print_int(q_net);
   gdata_iter_print_long(q_time);
   gdata_irlist_iter_end;
+  gdata_irlist_iter_start(fetch_queue, fetch_queue_t);
+  gdata_iter_print_int(net);
+  gdata_iter_print_string(name);
+  gdata_iter_print_string(url);
+  gdata_iter_print_string(uploaddir);
+  gdata_irlist_iter_end;
   
   gdata_print_int(networks_online);
   for (ss=0; ss<gdata.networks_online; ss++)
@@ -936,6 +946,9 @@ void dumpgdata(void)
       gdata_print_time(networks[ss].lastnotify);
       gdata_print_time(networks[ss].lastping);
       gdata_print_time(networks[ss].lastslow);
+      gdata_print_time(networks[ss].lastnormal);
+      gdata_print_time(networks[ss].lastfast);
+      gdata_print_time(networks[ss].lastsend);
       gdata_print_long(networks[ss].lag);
       gdata_print_time(networks[ss].next_identify);
       gdata_print_time(networks[ss].next_restrict);

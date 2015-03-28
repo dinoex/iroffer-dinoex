@@ -413,6 +413,7 @@ static void mainloop (void) {
                   /* find our next end time */
                   localt = localtime(&gdata.curtime);
                   localt->tm_sec = localt->tm_min = localt->tm_hour = 0; /* midnight */
+                  localt->tm_isdst = -1; /* check for daylight saving time */
                   switch (ii)
                     {
                     case TRANSFERLIMIT_DAILY:
@@ -548,7 +549,7 @@ static void mainloop (void) {
                   {
                     tempstr3[len-1] = '\0';
                     len--;
-                    ioutput(OUT_S, COLOR_MAGENTA, "<NORES<: %s", tempstr3);
+                    ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "<NORES<: %s", tempstr3);
                   }
                 mydelete(tempstr3);
                 gnetwork->servertime++;
@@ -759,13 +760,13 @@ static void mainloop (void) {
             xdccsent += (ir_uint64)gdata.xdccsent[i];
          xdccsent /= XDCC_SENT_SIZE*1024;
          
-         if ((xdccsent < (unsigned)gdata.lowbdwth) &&
-             !gdata.exiting &&
-             irlist_size(&gdata.mainqueue) &&
-             (irlist_size(&gdata.trans) < gdata.maxtrans))
-           {
-             check_idle_queue(0);
-             send_from_queue(1, 0, NULL);
+         if ((xdccsent < (unsigned)gdata.lowbdwth)) {
+           if ( check_main_queue( gdata.maxtrans ) ) {
+               send_from_queue(1, 0, NULL);
+             }
+           }
+         else {
+           start_one_send();
            }
          write_files();
          }
@@ -948,7 +949,9 @@ static void mainloop (void) {
                   outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Can't read data from file '%s': %s",
                            number_of_pack(gdata.md5build.xpack),
                            gdata.md5build.xpack->file, "truncated");
-                  start_md5_hash(gdata.md5build.xpack, number_of_pack(gdata.md5build.xpack));
+                  event_close(gdata.md5build.file_fd);
+                  gdata.md5build.file_fd = FD_UNUSED;
+                  gdata.md5build.xpack = NULL;
                   break;
                 }
               /* else got data */

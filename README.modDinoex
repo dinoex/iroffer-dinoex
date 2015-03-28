@@ -3,6 +3,82 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+411) VERSION (suggested by Loke_AF)
+
+  new admin command:
+  VERSION                              Show version of iroffer
+
+bugfix: QUEUE (reported by Days)
+  Ignore Hostname check if admin has queued for different nicks.
+
+bugfix: openssl
+  Disable SSLv2 and SSLv3 and allow TLS1.0, TLS1.1 and TLS1.2 protocol
+
+bugfix: xddclistfile (reported by Loke_AF)
+  After "ADD" then xddclistfile was written too late.
+
+bugfix: md5sum (reported by Loke_AF)
+  Bot can crash when the current file is truncated.
+  versions affected: 3.28 - 3.29
+
+bugfix: CTCP SEARCH (reported by Dagger)
+  The ending code 0x01 was not removed from search.
+
+bugfix: logfile (reported by OmegaPhil)
+  Bot will crash if logfile is not writeable.
+  versions affected: 1.1 - 3.29
+
+bugfix: nomd5 (reported by [M]-V)
+  Announce stalled if nomd5 is set and nocrc32 is not set.
+  versions affected: 1.27 - 3.29
+
+bugfix: statefile (reported by Loke_AF)
+  When the filesystem id has changed, the bot updates the statefile on startup.
+
+bugfix: transferlimits (reported by Loke_AF)
+  Handle change of Daylight Saving Time corectly.
+
+410) FETCH queue
+  FETCH comands are now queued if max_uploads is reached.
+
+bugfix: FETCH
+  When resuming a file the full content was fetched.
+
+bugfix: FETCH
+  FETCH did not use the configured local_vhost.
+
+bugfix: max_uploads
+  max_uploads will now count all incoming transfers.
+
+409) FETCH AUTO.*
+  Get the filename and date from remote HTTP-server.
+  On completed download to the bot the file is renamed.
+
+bugfix: autoadd_time
+  Skip autoadd when packs_delayed is not empty.
+
+408) DCC STATUS (suggested by OmegaPhil)
+  Report idle queue in DCC STATUS reply.
+
+407) server_send_max
+  Restrict the size of the buffer the bot sends to the irc-server.
+  Otherwise the bot will be banned cause of excess flooding.
+  This setting is only per network.
+  Default: 600
+
+406) server_send_rate
+  Limit the median number of characters per second the bot sends
+  to the IRC server.
+  Otherwise the bot will be banned cause of excess flooding.
+  This setting is only per network.
+  Default: 25
+
+405) reminder_send_retry
+  Defines how often the bot retries to start the XDDC SEND to the user.
+  The default is 2 retries.
+
+extend debug and log information.
+
 With Version 3.29:
 ------------------
 
@@ -837,7 +913,7 @@ extend debug and log information.
 Long Term Features:
    213 7/17/04 Open allow multiple uploaddirs>
 
-bigfix: ANNOUNCE (reported by Henrik Krohns)
+bugfix: ANNOUNCE (reported by Henrik Krohns)
   Give announces priority over XDCC LIST.
 
 bugfix: -plist (reported by Henrik Krohns)

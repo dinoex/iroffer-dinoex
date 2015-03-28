@@ -3,6 +3,82 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.30:
 ----------------
 
+411) VERSION (suggested by Loke_AF)
+
+  Neues Admin Kommando:
+  VERSION                              Zeige die Version und die Features von Iroffer
+
+bugfix: QSEND
+  Prüfe nicht die Hostmask wenn der Nick unterschiedlich ist.
+
+bugfix: openssl
+  Protokolle SSLv2 und SSLv3 deaktiviert. Protokolle TLS1.0, TLS1.1 und TLS1.2 aktiviert.
+
+bugfix: xddclistfile
+  Nach "ADD" wurde das "xddclistfile" später geschrieben.
+
+bugfix: md5sum
+  Bot crashte wenn die aktuelle Datei überschrieben wurde.
+  versions affected: 3.28 - 3.29
+
+bugfix: CTCP SEARCH
+  Das Steuerzeichen 0x01 am Ende wurde nicht ignoriert.
+
+bugfix: logfile
+  Bot crashte wenn das Logfile nicht geschrieben werden kann.
+  versions affected: 1.1 - 3.29
+
+bugfix: nomd5
+  Announce klemmt wenn nomd5 gesetzt und nocrc32 nicht gesetzt war.
+
+bugfix: statefile
+  Beim Starten des Bots wird eine geänderte FileSystemID sofort in das "statefile" übernommen.
+
+bugfix: transferlimits 
+  Die Umschaltung von Sommer auf Winterzeit wird berücksichtigt.
+
+410) FETCH queue
+  FETCH Befehle gehen in eine Warteschlange wenn "max_uploads" erreicht ist.
+
+bugfix: FETCH
+  Beim Resume wurde die gesamte Datei übertragen.
+
+bugfix: FETCH
+  FETCH hat die Konfiguration "local_vhost" nicht benutzt.
+
+bugfix: max_uploads
+  max_uploads zählt jetzt alle eingehenden Verbindungen.
+
+409) FETCH AUTO.*
+  Holde den Namen und das Datum der Datei vom HTTP-Server.
+  Nach erfolgreichem Download wird die Datei lokal umbenannt.
+
+bugfix: autoadd_time
+  Wenn "packs_delayed" nicht leer ist, lasse den "autoadd" aus.
+
+408) DCC STATUS
+  Die Antwort zu "DCC STATUS" wurde um die Größe der "idle queue"
+  erweitert.
+
+407) server_send_max
+  Begrenzt den Buffer der zum IRC-Server gesendet wird.
+  Damit wird verhindert, das der Bot wegen 'Excess Flood' gebannt wird.
+  Nur per Netzwerk einstellbar.
+  Default: 600
+
+406) server_send_rate
+  Anzahl der Zeichen pro Sekunde, die der Bot im Mittel zum IRC-Server
+  sendet.
+  Damit wird verhinder das der Bot wegen 'Excess Flood' gebannt wird.
+  Nur per Netzwerk einstellbar.
+  Default: 25
+
+405) reminder_send_retry
+  Bestimme wie oft der Bot erneut versucht einen Transfer mit XDCC SEND
+  zu starten. Default: 2 Wiederholungen.
+
+Debugging und Logging verbessert.
+
 Ab Version 3.29:
 ----------------
 
@@ -834,7 +910,7 @@ Debugging und Logging verbessert.
   Die hostmask gilt dann auch als  uploadhost.
   Erlaube LISTUL wenn das Uploadir angegeben ist.
 
-bigfix: ANNOUNCE
+bugfix: ANNOUNCE
   Announces haben jetzt Vorrang vor XDCC LIST.
 
 bugfix: -plist

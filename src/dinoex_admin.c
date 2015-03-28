@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -4449,11 +4449,16 @@ void a_getl(const userinput * const u)
     a_respond(u, "GET %s started for %s on %s",
               qu->q_pack, qu->q_nick, gdata.networks[ qu->q_net ].name);
     switch (qu->q_state) {
-    case 1:
+    case QUPLOAD_TRYING:
+      a_respond(u, "trying");
+      break;
+    case QUPLOAD_WAITING:
       a_respond(u, "queued");
       break;
-    case 2:
+    case QUPLOAD_RUNNING:
       a_respond(u, "running");
+      break;
+    case QUPLOAD_IDLE:
       break;
     }
   }
@@ -4488,7 +4493,7 @@ void a_get(const userinput * const u)
     qu->q_time = gdata.curtime;
     a_respond(u, "GET %s started for %s on %s",
               qu->q_pack, qu->q_nick, gdata.networks[ qu->q_net ].name);
-    ++(qu->q_state);
+    qu->q_state = QUPLOAD_WAITING;
     start_qupload();
     return;
   }
@@ -4580,7 +4585,7 @@ void a_rmul(const userinput * const u)
   if (invalid_file(u, u->arg1) != 0)
     return;
 
-  if (strstr(u->arg1, "/")) { /* NOTRANSLATE */
+  if (strchr(u->arg1, '/')) {
     a_respond(u, "Filename contains invalid characters");
     return;
   }
@@ -5124,6 +5129,15 @@ void a_dump(const userinput * const u)
 {
   dumpgdata();
   a_respond(u, "DUMP written into logfile.");
+}
+
+void a_version(const userinput * const u)
+{
+  char *text;
+
+  text = print_config_key("features"); /* NOTRANSLATE */
+  a_respond(u, "%s", text);
+  mydelete(text);
 }
 
 void a_backgroud(const userinput * const u)

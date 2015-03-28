@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -458,7 +458,7 @@ static config_int_typ config_parse_int[] = {
 {"ignore_duplicate_ip",     &gdata.ignore_duplicate_ip,     0, 24*31, 1, 0 }, /* NOTRANSLATE */
 {"lowbdwth",                &gdata.lowbdwth,                0, 1000000, 1, 0 }, /* NOTRANSLATE */
 {"max_find",                &gdata.max_find,                0, 65000, 1, 0 }, /* NOTRANSLATE */
-{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 65000 }, /* NOTRANSLATE */
+{"max_uploads",             &gdata.max_uploads,             0, 65000, 1, 0 }, /* NOTRANSLATE */
 {"max_upspeed",             &gdata.max_upspeed,             0, 1000000, 4, 65000 }, /* NOTRANSLATE */
 {"maxidlequeuedperperson",  &gdata.maxidlequeuedperperson,  1, 1000000, 1, 1 }, /* NOTRANSLATE */
 {"maxqueueditemsperperson", &gdata.maxqueueditemsperperson, 1, 1000000, 1, 1 }, /* NOTRANSLATE */
@@ -476,6 +476,7 @@ static config_int_typ config_parse_int[] = {
 {"punishslowusers",         &gdata.punishslowusers,         0, 1000000, 1, 0 }, /* NOTRANSLATE */
 {"queuesize",               &gdata.queuesize,               0, 1000000, 1, 0 }, /* NOTRANSLATE */
 {"reconnect_delay",         &gdata.reconnect_delay,         0, 2000, 1, 0 }, /* NOTRANSLATE */
+{"reminder_send_retry",     &gdata.reminder_send_retry,     0, 2, 1, 1 }, /* NOTRANSLATE */
 {"remove_dead_users",       &gdata.remove_dead_users,       0, 2, 1, 0 }, /* NOTRANSLATE */
 {"restrictsend_delay",      &gdata.restrictsend_delay,      0, 2000, 1, 0 }, /* NOTRANSLATE */
 {"restrictsend_timeout",    &gdata.restrictsend_timeout,    0, 600, 1, 300 }, /* NOTRANSLATE */
@@ -1957,6 +1958,36 @@ static void c_server_join_raw(const char *key, char *var)
   irlist_add_string(&gdata.networks[current_network].server_join_raw, var);
 }
 
+static void c_server_send_max(const char *key, char *var)
+{
+  int rawval;
+
+  if (check_range(key, var, &rawval, 300, 1200))
+    return;
+
+  gdata.networks[current_network].server_send_max = rawval;
+}
+
+static char *p_server_send_max(void)
+{
+  return print_config_long2((ir_int64)(gnetwork->server_send_max));
+}
+
+static void c_server_send_rate(const char *key, char *var)
+{
+  int rawval;
+
+  if (check_range(key, var, &rawval, 10, 300))
+    return;
+
+  gdata.networks[current_network].server_send_rate = rawval;
+}
+
+static char *p_server_send_rate(void)
+{
+  return print_config_long2((ir_int64)(gnetwork->server_send_rate));
+}
+
 static char *p_slotsfree(void)
 {
   return print_config_long2((ir_int64)slotsfree());
@@ -2200,6 +2231,17 @@ static char *p_version(void)
   return mystrdup( "iroffer-dinoex " VERSIONLONG ); /* NOTRANSLATE */
 }
 
+static char *p_features(void)
+{
+  char *text;
+
+  text = mymalloc(maxtextlength);
+  snprintf(text, maxtextlength, "iroffer-dinoex " VERSIONLONG FEATURES "%s%s",
+           gdata.hideos ? "" : " - ",
+           gdata.hideos ? "" : gdata.osstring);
+  return text;
+}
+
 static void c_bracket_open(const char * UNUSED(key), char * UNUSED(var))
 {
   ++current_bracket;
@@ -2245,6 +2287,8 @@ static config_func_typ config_parse_func[] = {
 {"server_connect_timeout", c_server_connect_timeout }, /* NOTRANSLATE */
 {"server_connected_raw",   c_server_connected_raw }, /* NOTRANSLATE */
 {"server_join_raw",        c_server_join_raw }, /* NOTRANSLATE */
+{"server_send_max",        c_server_send_max }, /* NOTRANSLATE */
+{"server_send_rate",       c_server_send_rate }, /* NOTRANSLATE */
 {"slotsmax",               c_slotsmax }, /* NOTRANSLATE */
 {"slow_privmsg",           c_slow_privmsg }, /* NOTRANSLATE */
 {"statefile",              c_statefile }, /* NOTRANSLATE */
@@ -2292,6 +2336,7 @@ static config_fprint_typ config_parse_fprint[] = {
 {"disk_quota",             p_disk_quota }, /* NOTRANSLATE */
 {"disk_space",             p_disk_space }, /* NOTRANSLATE */
 {"disk_space_text",        p_disk_space_text }, /* NOTRANSLATE */
+{"features",               p_features }, /* NOTRANSLATE */
 {"getip_network",          p_getip_network }, /* NOTRANSLATE */
 {"idlequeueused",          p_idlequeueused }, /* NOTRANSLATE */
 {"ignoreduplicateip",      p_ignoreduplicateip }, /* NOTRANSLATE */
@@ -2311,6 +2356,8 @@ static config_fprint_typ config_parse_fprint[] = {
 {"restrictlist",           p_restrictlist }, /* NOTRANSLATE */
 {"restrictsend",           p_restrictsend }, /* NOTRANSLATE */
 {"send_listfile",          p_send_listfile }, /* NOTRANSLATE */
+{"server_send_max",        p_server_send_max }, /* NOTRANSLATE */
+{"server_send_rate",       p_server_send_rate }, /* NOTRANSLATE */
 {"slotsfree",              p_slotsfree }, /* NOTRANSLATE */
 {"slotsmax",               p_slotsmax }, /* NOTRANSLATE */
 {"slotsused",              p_slotsused }, /* NOTRANSLATE */
@@ -2505,6 +2552,8 @@ static void dump_config_fdump(void)
     dump_config_int3("need_level", gdata.networks[si].need_level, 10); /* NOTRANSLATE */
     dump_config_int3("getip_network", gdata.networks[si].getip_net, si); /* NOTRANSLATE */
     dump_config_int3("slow_privmsg", gdata.networks[si].slow_privmsg, 1); /* NOTRANSLATE */
+    dump_config_int3("server_send_max", gdata.networks[si].server_send_max, EXCESS_BUCKET_MAX); /* NOTRANSLATE */
+    dump_config_int3("server_send_rate", gdata.networks[si].server_send_rate, EXCESS_BUCKET_ADD); /* NOTRANSLATE */
     dump_config_int3("server_connect_timeout", gdata.networks[si].server_connect_timeout, CTIMEOUT); /* NOTRANSLATE */
     dump_config_bool3("noannounce", gdata.networks[si].noannounce, 0); /* NOTRANSLATE */
     dump_config_bool3("offline", gdata.networks[si].offline, 0); /* NOTRANSLATE */
@@ -2520,6 +2569,7 @@ static void reset_config_func(void)
   autoqueue_t *aq;
   tupload_t *tu;
   qupload_t *qu;
+  fetch_queue_t *fq;
   group_admin_t *ga;
   http_magic_t *mime;
   autoadd_group_t *ag;
@@ -2560,6 +2610,8 @@ static void reset_config_func(void)
     gdata.networks[si].need_level = 10;
     gdata.networks[si].getip_net = si;
     gdata.networks[si].server_connect_timeout = CTIMEOUT;
+    gdata.networks[si].server_send_max = EXCESS_BUCKET_MAX;
+    gdata.networks[si].server_send_rate = EXCESS_BUCKET_ADD;
     gdata.networks[si].noannounce = 0;
     gdata.networks[si].offline = 0;
     gdata.networks[si].plaintext = 0;
@@ -2582,6 +2634,14 @@ static void reset_config_func(void)
     mydelete(qu->q_host);
     mydelete(qu->q_nick);
     mydelete(qu->q_pack);
+  }
+  for (fq = irlist_get_head(&gdata.fetch_queue);
+       fq;
+       fq = irlist_delete(&gdata.fetch_queue, fq)) {
+    mydelete(fq->u.snick);
+    mydelete(fq->name);
+    mydelete(fq->url);
+    mydelete(fq->uploaddir);
   }
   for (ga = irlist_get_head(&gdata.group_admin);
        ga;

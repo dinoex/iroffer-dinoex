@@ -61,6 +61,7 @@ Page last modified: 09/01/04
 [Iroffer mod Dinoex]
 
 Short Term Features:
+  1160  trigger for latest pack
   1379  different packlists for different groups
   1438  more announce types for plist
   1494  send note to user when queuing
@@ -74,6 +75,9 @@ Short Term Features:
   1623  limit files a groupadmin can add
   1630  GETLD
   1634  request by search
+  1687  limit how many files get added per time
+  1692  startup delay in config
+  1700  RMQ / RMIQ with ranges
 
 Long Term Features:
   1015  http admin
@@ -82,9 +86,7 @@ Long Term Features:
   1068  restore tty console on fatal error
   1103  Silc Support
   1110  XDCC QUEUE compact output
-  1113  trim spaces in config
   1114  service script for linux
-  1135  Compress QUEUE output per nick.
   1136  Save size even when nomd5
   1145  make autoadd reentrant
   1149  move after upload to dir
@@ -181,6 +183,13 @@ Long Term Features:
   1661  secure log/status channel
   1663  logging via syslog() or gelf-socket
   1674  autonumbering of nickname for mutiple bots
+  1682  send packs with " in name.
+  1684  triggers for batch sends
+  1678  XDCC LIST with range
+  1689  STARTTLS
+  1690  temp max speed on server for x minutes
+  1705  increasing removed files to 2 or more per sec
+  1706  user command for CRC
 
 Not going to happen anytime soon:
   1001  need voice seperate for each channel
@@ -249,4 +258,6 @@ Not going to happen anytime soon:
   1565  lock packs on fixed posion while sorting the rest
   1575  aspera transfer protocol
   1666  packlist numbered per channel
+  1675  send botinfo to user
+  1694  dcc proxy over mutiple bots
 
