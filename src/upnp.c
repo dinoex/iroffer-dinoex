@@ -60,11 +60,15 @@ void init_upnp (void)
 	tostdout_write();
 	memset(&urls, 0, sizeof(struct UPNPUrls));
 	memset(&data, 0, sizeof(struct IGDdatas));
+#if MINIUPNPC_API_VERSION >= 14
+	devlist = upnpDiscover(2000, NULL, NULL, 0, 0, 2U, NULL);
+#else
 #ifdef UPNPDISCOVER_SUCCESS
 	devlist = upnpDiscover(2000, NULL, NULL, 0, 0, NULL);
 #else
 	devlist = upnpDiscover(2000, NULL, NULL, 0);
 #endif /* UPNPDISCOVER_SUCCESS */
+#endif
 	if (devlist)
 	{
 		dev = devlist;
