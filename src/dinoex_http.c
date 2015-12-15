@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2015 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -1762,8 +1762,10 @@ static void h_prepare_footer(http * const h)
 static size_t h_guess_weblist(http * const h)
 {
   xdcc *xd;
+  char *tempstr;
   size_t len;
   size_t nicklen;
+  unsigned int num;
 
   h->nick = save_nick(gdata.config_nick);
   nicklen = html_encode_size(h->nick);
@@ -1771,9 +1773,27 @@ static size_t h_guess_weblist(http * const h)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd)) {
-    len += 304;
+    len += 250;
+    tempstr = mymalloc(maxtextlengthshort);
+    num = number_of_pack(xd);
+    snprintf(tempstr, maxtextlengthshort, "#%u%u", num, xd->gets); /* NOTRANSLATE */
+    len += strlen(tempstr);
+    mydelete(tempstr);
+    tempstr = sizestr(0, xd->st_size);
+    mydelete(tempstr);
     len += nicklen;
     len += nicklen;
+    if (xd->has_md5sum)
+      len += 38;
+    if (xd->has_crc32)
+      len += 16;
+    if (gdata.show_date_added) {
+       tempstr = mymalloc(maxtextlengthshort);
+       user_getdatestr(tempstr, 0, maxtextlengthshort - 1);
+       len += strlen(tempstr);
+       len += 2;
+       mydelete(tempstr);
+    }
     len += html_encode_size(xd->desc);
     if (xd->lock) {
       len += strlen(" (%s)");

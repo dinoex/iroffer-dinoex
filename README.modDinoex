@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.30:
 ------------------
 
+bugfix: http_port
+  weblist could be truncated
+
 411) VERSION (suggested by Loke_AF)
 
   new admin command:
