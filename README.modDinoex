@@ -1,10 +1,19 @@
 Updated version on: http://iroffer.dinoex.net/
 
-With Version 3.30:
+With Version 3.31:
 ------------------
 
 bugfix: http_port
   weblist could be truncated
+
+bugfix: upnp_router
+  Update for libminiupnpc 1.9.20151008
+
+bugfix: Configure
+  use gcc when no other compiler is found
+
+With Version 3.30:
+------------------
 
 411) VERSION (suggested by Loke_AF)
 
