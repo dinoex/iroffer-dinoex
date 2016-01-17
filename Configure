@@ -243,7 +243,7 @@ de*)
  irt_checkif="Prüfe ob"
  irt_error="***FEHLER***:"
  irt_notsupported="Das Betriebssystem ist nicht unterstützt"
- irt_noedit="Automatisch erstellt, nicht ändern"
+ irt_noedit="Automatisch erstellt, nicht aendern"
  irt_showerror="Zeige Fehlermeldungen beim Konfigurieren"
  irt_configure="Konfiguriere"
  irt_debugging="debugging"
@@ -616,6 +616,8 @@ case "${cctype}" in
 -Waggregate-return
 -Wchar-subscripts
 -Wcomment
+-Wendif-labels
+-Wformat-security
 -Wimplicit-int
 -Wmain
 -Wnested-externs
@@ -623,7 +625,9 @@ case "${cctype}" in
 -Wparentheses
 -Wredundant-decls
 -Wreturn-type
--O
+-Wsystem
+-Wtrigraphs
+-Wuninitialized -O
 -Wunknown-pragmas
 -Wunused
 -Wunused-function
@@ -631,6 +635,8 @@ case "${cctype}" in
 -Wunused-parameter
 -Wunused-value
 -Wunused-variable
+-Wno-experimental
+-Wno-unused-parameter
 "
  ;;
 *)
@@ -682,7 +688,6 @@ case "${cctype}" in
  WARNS="-Wcast-qual
 -Wformat
 -Wimplicit
--Wmissing-declarations
 -Wmissing-prototypes
 -Wmissing-noreturn
 -Wpointer-arith
@@ -874,6 +879,8 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv)
 {
+	(void)argc;
+	(void)argv;
 "
 
 main2=" exit(0);
