@@ -1793,10 +1793,10 @@ void startupiroffer(void) {
      {
        gnetwork = &(gdata.networks[ss]);
        gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-       switchserver(-1);
      }
    gnetwork = NULL;
    config_dinoex();
+   gdata.needsswitch++;
    }
 
 
