@@ -625,7 +625,7 @@ case "${cctype}" in
 -Wparentheses
 -Wredundant-decls
 -Wreturn-type
--Wsystem
+-Wsystem-headers
 -Wtrigraphs
 -Wuninitialized -O
 -Wunknown-pragmas
@@ -635,8 +635,6 @@ case "${cctype}" in
 -Wunused-parameter
 -Wunused-value
 -Wunused-variable
--Wno-experimental
--Wno-unused-parameter
 "
  ;;
 *)
@@ -1079,7 +1077,9 @@ echo "${irmain1}
  int fd;
  int array[ ((int)sizeof(off_t)) - 7 ];
  fd=open(\"foo\", O_RDWR | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS);
- array[0] = array[0];
+ lseek(fd, 2L, SEEK_SET);
+ array[0] = 0;
+ (void)array;
  close(fd);
 ${main2}" > config.temp.c
 if $cctype -o config.temp -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
@@ -1402,7 +1402,7 @@ echo "${irmain1}
  size_t  count = 0;
  ssize_t ret_val;
  ret_val = sendfile(out_fd, in_fd, &offset, count);
- ret_val++;
+ (void)ret_val;
 ${main2}" > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 echo "#define HAVE_LINUX_SENDFILE" >> src/iroffer_config.h
@@ -1424,7 +1424,7 @@ echo "${irmain1}
  int ret_val;
  ret_val = sendfile(in_fd, out_fd, offset, count,
                     &hdr, &offset2, 0);
- ret_val++;
+ (void)ret_val;
 ${main2}" > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 echo "#define HAVE_FREEBSD_SENDFILE" >> src/iroffer_config.h
@@ -1524,7 +1524,7 @@ echo "${irmain1}
      WIFSIGNALED(status) ||
      WEXITSTATUS(status) ||
      WTERMSIG(status)) {
-  status++;
+  (void)status;
  }
 ${main2}" > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
@@ -1557,7 +1557,7 @@ echo "${irmain1}
  hints.ai_family = PF_UNSPEC;
  hints.ai_socktype = SOCK_STREAM;
  error = getaddrinfo(\"www.kame.net\", \"http\", &hints, &res0);
- error ++;
+ (void)error;
 ${main2}" > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
 ${msg} "${irt_found}"
