@@ -3,6 +3,12 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: ruby_script
+  fix build for debian jessie
+
+bugfix: Configure
+  fix build for cparser
+
 bugfix: http_port
   weblist could be truncated
 

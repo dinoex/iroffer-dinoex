@@ -1767,12 +1767,13 @@ if $OPT_RUBY; then
  archdir=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'archdir' ]"`
  rubyhdrdir=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'rubyhdrdir' ]"`
  sitearch=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'sitearch' ]"`
+ rubyarchhdrdir=`${ruby} -r rbconfig -e "print RbConfig::CONFIG[ 'rubyarchhdrdir' ]"`
  rubyversion=`${ruby} -e "print RUBY_VERSION.sub(/\.[0-9]*$/,'').sub(/\./,'')"`
  if test "${rubyhdrdir}" = "nil"
  then
   incruby="-I${archdir}"
  else
-  incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch}"
+  incruby="-I${rubyhdrdir} -I${rubyhdrdir}/${sitearch} -I${rubyarchhdrdir}"
  fi
  ${msg} -n "${irt_seeingif_lib} libruby ${irt_lib_exists} (${irt_for} RUBY-Scripts)... "
  echo "
