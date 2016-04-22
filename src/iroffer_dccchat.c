@@ -458,7 +458,11 @@ void shutdowndccchat(dccchat_t *chat, int flush)
       ir_boutput_delete(&chat->boutput);
 
       if (chat->status == DCCCHAT_LISTENING)
-        ir_listen_port_connected(chat->con.localport);
+        {
+          ir_listen_port_connected(chat->con.localport);
+          event_close(chat->con.listensocket);
+          chat->con.listensocket = FD_UNUSED;
+        }
 
 #ifdef USE_UPNP
       if (gdata.upnp_router && (chat->con.family == AF_INET))
@@ -466,6 +470,7 @@ void shutdowndccchat(dccchat_t *chat, int flush)
 #endif /* USE_UPNP */
 
       memset(chat, 0, sizeof(dccchat_t));
+
       chat->con.clientsocket = FD_UNUSED;
       chat->status = DCCCHAT_UNUSED;
       

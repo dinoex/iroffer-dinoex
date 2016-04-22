@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: ADMIN CHATME
+  esure that the listening port is closed
+
 bugfix: ruby_script
   fix build for debian jessie
 
