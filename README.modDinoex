@@ -3,8 +3,11 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: French translation
+  Updated by Sébastien Picavet
+
 bugfix: ADMIN CHATME
-  esure that the listening port is closed
+  If the CHAT was not successful, the port was never cleared.
 
 bugfix: ruby_script
   fix build for debian jessie
