@@ -1,7 +1,63 @@
 Updated version on: http://iroffer.dinoex.net/
 
+With Version 3.31:
+------------------
+
+bugfix: French translation
+  Updated by Sébastien Picavet
+
+bugfix: ADMIN CHATME
+  If the CHAT was not successful, the port was never cleared.
+
+bugfix: ruby_script
+  fix build for debian jessie
+
+bugfix: Configure
+  fix build for cparser
+
+bugfix: http_port
+  weblist could be truncated
+
+bugfix: upnp_router
+  Update for libminiupnpc 1.9.20151008
+
+bugfix: Configure
+  use gcc when no other compiler is found
+
 With Version 3.30:
 ------------------
+
+411) VERSION (suggested by Loke_AF)
+
+  new admin command:
+  VERSION                              Show version of iroffer
+
+bugfix: QUEUE (reported by Days)
+  Ignore Hostname check if admin has queued for different nicks.
+
+bugfix: openssl
+  Disable SSLv2 and SSLv3 and allow TLS1.0, TLS1.1 and TLS1.2 protocol
+
+bugfix: xddclistfile (reported by Loke_AF)
+  After "ADD" then xddclistfile was written too late.
+
+bugfix: md5sum (reported by Loke_AF)
+  Bot can crash when the current file is truncated.
+  versions affected: 3.28 - 3.29
+
+bugfix: CTCP SEARCH (reported by Dagger)
+  The ending code 0x01 was not removed from search.
+
+bugfix: logfile (reported by OmegaPhil)
+  Bot will crash if logfile is not writeable.
+  versions affected: 1.1 - 3.29
+
+bugfix: nomd5 (reported by [M]-V)
+  Announce stalled if nomd5 is set and nocrc32 is not set.
+  versions affected: 1.27 - 3.29
+
+bugfix: statefile (reported by Loke_AF)
+  When the filesystem id has changed, the bot updates the statefile on startup.
 
 bugfix: transferlimits (reported by Loke_AF)
   Handle change of Daylight Saving Time corectly.
@@ -881,7 +937,7 @@ extend debug and log information.
 Long Term Features:
    213 7/17/04 Open allow multiple uploaddirs>
 
-bigfix: ANNOUNCE (reported by Henrik Krohns)
+bugfix: ANNOUNCE (reported by Henrik Krohns)
   Give announces priority over XDCC LIST.
 
 bugfix: -plist (reported by Henrik Krohns)

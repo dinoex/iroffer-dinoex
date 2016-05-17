@@ -376,6 +376,23 @@ static void init_xdcc(xdcc *xd)
   xd->file_fd = FD_UNUSED;
 }
 
+#if defined(WITH_RESINIT)
+/* res_init with checks */
+static void res_init_dinoex(void)
+{
+  int rc;
+
+  rc = res_init();
+  if (rc == 0)
+    return;
+
+  outerror(OUTERROR_TYPE_WARN_LOUD,
+           "res_init() failed with %d: %s",
+           rc, strerror(errno));
+}
+#endif /* WITH_RESINIT */
+
+
 /* initializes sub systems prior config */
 void startup_dinoex(void)
 {
@@ -398,7 +415,7 @@ void startup_dinoex(void)
 #endif /* USE_CURL */
   ssl_startup();
 #if defined(WITH_RESINIT)
-  res_init();
+  res_init_dinoex();
 #endif /* WITH_RESINIT */
 }
 
@@ -481,7 +498,7 @@ void rehash_dinoex(void)
   rehash_myruby(0);
 #endif /* USE_RUBY */
 #if defined(WITH_RESINIT)
-  res_init();
+  res_init_dinoex();
 #endif /* WITH_RESINIT */
 }
 
@@ -750,7 +767,7 @@ void logfile_add(const char *logfile, const char *line)
   if (logfile == NULL)
     return;
 
-  logfd = open_append(logfile, "Log");
+  logfd = open_append_log(logfile, "Log");
   if (logfd < 0)
     return;
 

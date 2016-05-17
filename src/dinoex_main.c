@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -143,7 +143,7 @@ void command_options(int argc, char *const *argv)
         break;
 #endif
       case 'v': /* show version */
-        printf("iroffer-dinoex " VERSIONLONG ", see " "http://iroffer.dinoex.net/" "\n");
+        printf("iroffer-dinoex " VERSIONLONG FEATURES ", see " "http://iroffer.dinoex.net/" "\n");
         exit(0);
       case 'w': /* workdir */
         GET_NEXT_DATA(cptr);
@@ -256,14 +256,14 @@ static void free_state(void)
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_delete(&gdata.xdccs, xd)) {
-     mydelete(xd->file);
-     mydelete(xd->desc);
-     mydelete(xd->note);
-     mydelete(xd->group);
-     mydelete(xd->group_desc);
-     mydelete(xd->lock);
-     mydelete(xd->dlimit_desc);
-     mydelete(xd->trigger);
+    mydelete(xd->file);
+    mydelete(xd->desc);
+    mydelete(xd->note);
+    mydelete(xd->group);
+    mydelete(xd->group_desc);
+    mydelete(xd->lock);
+    mydelete(xd->dlimit_desc);
+    mydelete(xd->trigger);
   }
 
   for (ss = gdata.networks_online; ss--; ) {
@@ -281,21 +281,21 @@ static void free_state(void)
     for (user = irlist_get_head(&(gnetwork->xlistqueue));
          user;
          user = irlist_delete(&(gnetwork->xlistqueue), user)) {
-       mydelete(user->nick);
-       mydelete(user->msg);
+      mydelete(user->nick);
+      mydelete(user->msg);
     }
 
     for (dcc_options = irlist_get_head(&(gnetwork->dcc_options));
          dcc_options;
          dcc_options = irlist_delete(&(gnetwork->dcc_options), dcc_options)) {
-       mydelete(dcc_options->nick);
+      mydelete(dcc_options->nick);
     }
 
     for (ch = irlist_get_head(&(gnetwork->channels));
          ch;
          ch = irlist_delete(&(gnetwork->channels), ch)) {
-       clearmemberlist(ch);
-       free_channel_data(ch);
+      clearmemberlist(ch);
+      free_channel_data(ch);
     }
   }
   gnetwork = NULL;
@@ -303,72 +303,72 @@ static void free_state(void)
   for (tr = irlist_get_head(&gdata.trans);
        tr;
        tr = irlist_delete(&gdata.trans, tr)) {
-     mydelete(tr->nick);
-     mydelete(tr->caps_nick);
-     mydelete(tr->hostname);
-     mydelete(tr->con.localaddr);
-     mydelete(tr->con.remoteaddr);
-     mydelete(tr->country);
+    mydelete(tr->nick);
+    mydelete(tr->caps_nick);
+    mydelete(tr->hostname);
+    mydelete(tr->con.localaddr);
+    mydelete(tr->con.remoteaddr);
+    mydelete(tr->country);
   }
 
   for (up = irlist_get_head(&gdata.uploads);
        up;
        up = irlist_delete(&gdata.uploads, up)) {
-     mydelete(up->nick);
-     mydelete(up->hostname);
-     mydelete(up->file);
-     mydelete(tr->con.remoteaddr);
+    mydelete(up->nick);
+    mydelete(up->hostname);
+    mydelete(up->file);
+    mydelete(tr->con.remoteaddr);
   }
 
   for (pq = irlist_get_head(&gdata.mainqueue);
        pq;
        pq = irlist_delete(&gdata.mainqueue, pq)) {
-     mydelete(pq->nick);
-     mydelete(pq->hostname);
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
   }
   for (pq = irlist_get_head(&gdata.idlequeue);
        pq;
        pq = irlist_delete(&gdata.idlequeue, pq)) {
-     mydelete(pq->nick);
-     mydelete(pq->hostname);
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
   }
   free_delayed();
   for (i = irlist_get_head(&gdata.ignorelist);
        i;
        i = irlist_delete(&gdata.ignorelist, i)) {
-     mydelete(i->hostmask);
+    mydelete(i->hostmask);
   }
   for (ml = irlist_get_head(&gdata.msglog);
        ml;
        ml = irlist_delete(&gdata.msglog, ml)) {
-     mydelete(ml->hostmask);
-     mydelete(ml->message);
+    mydelete(ml->hostmask);
+    mydelete(ml->message);
   }
   for (h = irlist_get_head(&gdata.https);
        h;
        h = irlist_delete(&gdata.https, h)) {
-     mydelete(h->file);
-     mydelete(h->url);
-     mydelete(h->authorization);
-     mydelete(h->group);
-     mydelete(h->order);
-     mydelete(h->search);
-     mydelete(h->pattern);
-     mydelete(h->modified);
-     mydelete(h->buffer_out);
-     mydelete(h->con.remoteaddr);
+    mydelete(h->file);
+    mydelete(h->url);
+    mydelete(h->authorization);
+    mydelete(h->group);
+    mydelete(h->order);
+    mydelete(h->search);
+    mydelete(h->pattern);
+    mydelete(h->modified);
+    mydelete(h->buffer_out);
+    mydelete(h->con.remoteaddr);
   }
   for (mime = irlist_get_head(&gdata.mime_type);
        mime;
        mime = irlist_delete(&gdata.mime_type, mime)) {
-     mydelete(mime->m_ext);
-     mydelete(mime->m_mime);
+    mydelete(mime->m_ext);
+    mydelete(mime->m_mime);
   }
   for (ag = irlist_get_head(&gdata.autoadd_group_match);
        ag;
        ag = irlist_delete(&gdata.autoadd_group_match, ag)) {
-     mydelete(ag->a_group);
-     mydelete(ag->a_pattern);
+    mydelete(ag->a_group);
+    mydelete(ag->a_pattern);
   }
   irlist_delete_all(&gdata.autotrigger);
   irlist_delete_all(&gdata.console_history);
@@ -379,23 +379,37 @@ static void free_state(void)
   mydelete(gdata.console_input_line);
   mydelete(gdata.osstring);
 
-
   mydelete(xdcc_statefile.desc);
   mydelete(xdcc_listfile.desc);
 }
 
 static void free_config(void)
 {
+#if 0
+  channel_t *ch;
+#endif
   unsigned int si;
 
   updatecontext();
 
   mydelete(gdata.nosendmsg);
   mydelete(gdata.r_pidfile);
+
   for (si=0; si<MAX_NETWORKS; ++si) {
     mydelete(gdata.networks[si].curserver.hostname);
     mydelete(gdata.networks[si].curserver.password);
     mydelete(gdata.networks[si].curserveractualname);
+#if 0
+    mydelete(gdata.networks[si].r_config_nick);
+    mydelete(gdata.networks[si].r_local_vhost);
+
+    for (ch = irlist_get_head(&(gnetwork->r_channels));
+         ch;
+         ch = irlist_delete(&(gnetwork->r_channels), ch)) {
+      clearmemberlist(ch);
+      free_channel_data(ch);
+    }
+#endif
   } /* networks */
   for (si=0; si<MAXCONFIG; ++si)
     mydelete(gdata.configfile[si]);

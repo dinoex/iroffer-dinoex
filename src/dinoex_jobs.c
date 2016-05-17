@@ -1756,7 +1756,7 @@ void write_files(void)
   gdata.last_update = gdata.curtime;
   write_statefile();
   /* stop here if more to add/remove */
-  if (irlist_size(&gdata.packs_delayed) > 0)
+  if (irlist_size(&gdata.packs_delayed) > 1)
     return;
 
   xdccsavetext();
@@ -2433,10 +2433,11 @@ void delayed_announce(void)
     if (gdata.nomd5sum == 0) {
       if (xd->has_md5sum == 0)
         continue;
-    }
-    if (gdata.nocrc32 == 0) {
-      if (xd->has_crc32 == 0)
-        continue;
+
+      if (gdata.nocrc32 == 0) {
+        if (xd->has_crc32 == 0)
+          continue;
+      }
     }
 
     /* wait for pack to be unlocked */

@@ -765,6 +765,9 @@ static void mainloop (void) {
                send_from_queue(1, 0, NULL);
              }
            }
+         else {
+           start_one_send();
+           }
          write_files();
          }
       
@@ -946,7 +949,9 @@ static void mainloop (void) {
                   outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Can't read data from file '%s': %s",
                            number_of_pack(gdata.md5build.xpack),
                            gdata.md5build.xpack->file, "truncated");
-                  start_md5_hash(gdata.md5build.xpack, number_of_pack(gdata.md5build.xpack));
+                  event_close(gdata.md5build.file_fd);
+                  gdata.md5build.file_fd = FD_UNUSED;
+                  gdata.md5build.xpack = NULL;
                   break;
                 }
               /* else got data */

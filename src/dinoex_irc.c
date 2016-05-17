@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2016 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -519,6 +519,7 @@ void child_resolver(int family)
                        &hints, &results);
   if ((status) || results == NULL) {
 #else /* NO_GETADDRINFO */
+  (void)family;
   remotehost = gethostbyname(gnetwork->serv_resolv.to_ip);
   if (remotehost == NULL) {
 #endif /* NO_GETADDRINFO */

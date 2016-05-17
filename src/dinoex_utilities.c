@@ -286,9 +286,25 @@ int open_append(const char *filename, const char *text)
   return fd;
 }
 
+/* open log file to append data */
+int open_append_log(const char *filename, const char *text)
+{
+  int fd;
+
+  fd = open(filename,
+            O_WRONLY | O_CREAT | O_APPEND | ADDED_OPEN_FLAGS,
+            CREAT_PERMISSIONS);
+  if (fd < 0) {
+    outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
+             "Cant Create %s File '%s': %s",
+             text, filename, strerror(errno));
+  }
+  return fd;
+}
+
 static void mylog_write_failed(const char *filename)
 {
-  outerror(OUTERROR_TYPE_WARN_LOUD,
+  outerror(OUTERROR_TYPE_WARN_LOUD | OUTERROR_TYPE_NOLOG,
            "Cant Write Log File '%s': %s",
            filename, strerror(errno));
 }
@@ -404,7 +420,7 @@ unsigned int verify_group_in_grouplist(const char *group, const char *grouplist)
   return 0; /* token not found */
 }
 
-static const char const size_units[] = { 'K', 'M', 'G', 'T', 'P', 0 };
+static const char size_units[] = { 'K', 'M', 'G', 'T', 'P', 0 };
 
 /* returns the size in a human readable form */
 char *sizestr(unsigned int spaces, off_t num)

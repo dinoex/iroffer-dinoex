@@ -1,7 +1,41 @@
 Aktuelle Version auf: http://iroffer.dinoex.net/
 
+Ab Version 3.31:
+----------------
+
 Ab Version 3.30:
 ----------------
+
+411) VERSION (suggested by Loke_AF)
+
+  Neues Admin Kommando:
+  VERSION                              Zeige die Version und die Features von Iroffer
+
+bugfix: QSEND
+  Prüfe nicht die Hostmask wenn der Nick unterschiedlich ist.
+
+bugfix: openssl
+  Protokolle SSLv2 und SSLv3 deaktiviert. Protokolle TLS1.0, TLS1.1 und TLS1.2 aktiviert.
+
+bugfix: xddclistfile
+  Nach "ADD" wurde das "xddclistfile" später geschrieben.
+
+bugfix: md5sum
+  Bot crashte wenn die aktuelle Datei überschrieben wurde.
+  versions affected: 3.28 - 3.29
+
+bugfix: CTCP SEARCH
+  Das Steuerzeichen 0x01 am Ende wurde nicht ignoriert.
+
+bugfix: logfile
+  Bot crashte wenn das Logfile nicht geschrieben werden kann.
+  versions affected: 1.1 - 3.29
+
+bugfix: nomd5
+  Announce klemmt wenn nomd5 gesetzt und nocrc32 nicht gesetzt war.
+
+bugfix: statefile
+  Beim Starten des Bots wird eine geänderte FileSystemID sofort in das "statefile" übernommen.
 
 bugfix: transferlimits 
   Die Umschaltung von Sommer auf Winterzeit wird berücksichtigt.
@@ -879,7 +913,7 @@ Debugging und Logging verbessert.
   Die hostmask gilt dann auch als  uploadhost.
   Erlaube LISTUL wenn das Uploadir angegeben ist.
 
-bigfix: ANNOUNCE
+bugfix: ANNOUNCE
   Announces haben jetzt Vorrang vor XDCC LIST.
 
 bugfix: -plist

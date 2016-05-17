@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2014 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -375,7 +375,7 @@ static int setup_ssl(void)
   updatecontext();
 
   if (gnetwork->ssl_ctx == NULL) {
-    gnetwork->ssl_ctx = SSL_CTX_new( SSLv3_client_method() );
+    gnetwork->ssl_ctx = SSL_CTX_new( SSLv23_client_method() );
     if (gnetwork->ssl_ctx == NULL) {
       outerror_ssl();
       outerror(OUTERROR_TYPE_WARN_LOUD, "Cant Create SSL context");
@@ -384,6 +384,7 @@ static int setup_ssl(void)
     }
   }
   /* SSL_CTX_free() ist not called */
+  (void)SSL_CTX_set_options(gnetwork->ssl_ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
 
   /* load key per network */
   load_network_key();

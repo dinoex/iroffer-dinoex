@@ -374,7 +374,14 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
       len++;
       msg[len] = '\0';
       writeserver_ssl(msg, len);
-      gnetwork->serverbucket -= len;
+      if ( len > gnetwork->serverbucket )
+        {
+          gnetwork->serverbucket = 0;
+        }
+      else
+        {
+          gnetwork->serverbucket -= len;
+        }
     }
   else if (gdata.exiting || (gnetwork->serverstatus != SERVERSTATUS_CONNECTED))
     {
@@ -1786,10 +1793,10 @@ void startupiroffer(void) {
      {
        gnetwork = &(gdata.networks[ss]);
        gnetwork->serverstatus = SERVERSTATUS_NEED_TO_CONNECT;
-       switchserver(-1);
      }
    gnetwork = NULL;
    config_dinoex();
+   gdata.needsswitch++;
    }
 
 

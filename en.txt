@@ -1884,3 +1884,7 @@
 2828 "FETCH header '%s'"
 2829 "FETCH filename '%s'"
 2830 "   %2i  fetch       %-32s   Waiting"
+2831 "trying"
+2832 "res_init() failed with %d: %s"
+2833 "d, %"
+2834 "Show Information about iroffer version"
