@@ -301,6 +301,7 @@ static config_bool_typ config_parse_bool[] = {
 {"logmessages",            &gdata.logmessages,             0 }, /* NOTRANSLATE */
 {"lognotices",             &gdata.lognotices,              0 }, /* NOTRANSLATE */
 {"logstats",               &gdata.logstats,                1 }, /* NOTRANSLATE */
+{"min_sanitization",       &gdata.min_sanitization,        0 }, /* NOTRANSLATE */
 {"mirc_dcc64",             &gdata.mirc_dcc64,              0 }, /* NOTRANSLATE */
 {"need_voice",             &gdata.need_voice,              0 }, /* NOTRANSLATE */
 {"no_auto_rehash",         &gdata.no_auto_rehash,          0 }, /* NOTRANSLATE */

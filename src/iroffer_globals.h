@@ -213,6 +213,7 @@ unsigned int nocrc32;
 unsigned int direct_file_access;
 unsigned int autoaddann_short;
 unsigned int spaces_in_filenames;
+unsigned int min_sanitization;
 unsigned int restrictsend_warning;
 unsigned int extend_status_line;
 unsigned int include_subdirs;

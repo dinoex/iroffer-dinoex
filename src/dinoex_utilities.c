@@ -512,41 +512,51 @@ size_t removenonprintable(char *str)
 void removenonprintablefile(char *str)
 {
   unsigned char *copy;
-  unsigned char last = '/';
+  size_t pos = -1;
 
   if (str == NULL)
     return;
 
   for (copy = (unsigned char*)str; *copy != 0; ++copy) {
-    if (*copy < 0x20U) {
+    ++pos;
+    if (gdata.spaces_in_filenames == 0) {
+      if (*copy == ' ' ||
+          (*copy == '"' && pos == 0)) {
+        /* spaces disabled, remove them and don't start any name with '"' */
+        *copy = '_';
+        continue;
+      }
+    } else if (*copy == '"') {
+      /* spaces enabled, don't allow '"' anywhere */
       *copy = '_';
       continue;
     }
-    switch (*copy) {
-    case '.':
-      /* don't start any name with '.' */
-      if (last == '/')
+    if (gdata.min_sanitization == 0) {
+      if (*copy < 0x20U) {
         *copy = '_';
-      break;
-    case ' ':
-      if (gdata.spaces_in_filenames)
+        continue;
+      }
+      switch (*copy) {
+      case '.':
+        /* don't start any name with '.' */
+        if (pos != 0)
+          break;
+      case '|':
+      case ':':
+      case '?':
+      case '*':
+      case '<':
+      case '>':
+      case '/':
+      case '\\':
+      case '"':
+      case '\'':
+      case '`':
+      case 0x7FU:
+        *copy = '_';
         break;
-    case '|':
-    case ':':
-    case '?':
-    case '*':
-    case '<':
-    case '>':
-    case '/':
-    case '\\':
-    case '"':
-    case '\'':
-    case '`':
-    case 0x7FU:
-      *copy = '_';
-      break;
+      }
     }
-    last = *copy;
   }
 }
 
@@ -587,25 +597,43 @@ char *getsendname(const char * const full)
 
   /* replace any evil characters in the filename with underscores */
   for (i = spaced; i < len; i++) {
-    switch (copy[i]) {
-    case  ' ':
-      if (gdata.spaces_in_filenames == 0)
+    if (gdata.spaces_in_filenames == 0) {
+      if (copy[i] == ' ' ||
+          (copy[i] == '"' && i == spaced)) {
+        /* spaces disabled, remove them and don't start any name with '"' */
         copy[i] = '_';
-      break;
-    case '|':
-    case ':':
-    case '?':
-    case '*':
-    case '<':
-    case '>':
-    case '/':
-    case '\\':
-    case '"':
-    case '\'':
-    case '`':
-    case 0x7FU:
+        continue;
+      }
+    } else if (copy[i] == '"') {
+      /* spaces enabled, don't allow '"' anywhere */
       copy[i] = '_';
-      break;
+      continue;
+    }
+    if (gdata.min_sanitization == 0) {
+      if (copy[i] < 0x20U) {
+        copy[i] = '_';
+        continue;
+      }
+      switch (copy[i]) {
+      case '.':
+        /* don't start any name with '.' */
+        if (i != spaced)
+          break;
+      case '|':
+      case ':':
+      case '?':
+      case '*':
+      case '<':
+      case '>':
+      case '/':
+      case '\\':
+      case '"':
+      case '\'':
+      case '`':
+      case 0x7FU:
+        copy[i] = '_';
+        break;
+      }
     }
   }
   return copy;
