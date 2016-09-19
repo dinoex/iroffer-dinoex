@@ -674,6 +674,7 @@ static config_string_typ config_parse_string[] = {
 #ifndef WITHOUT_BLOWFISH
 {"privmsg_fish",            &gdata.privmsg_fish,            0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
+{"quit_msg",                &gdata.quit_msg,                0 }, /* NOTRANSLATE */
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 }, /* NOTRANSLATE */
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 }, /* NOTRANSLATE */
 #ifdef USE_RUBY

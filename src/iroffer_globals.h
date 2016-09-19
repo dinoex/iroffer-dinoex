@@ -91,6 +91,7 @@ char *statefile;
 char *xdcclistfile;
 char *config_nick;
 char *user_realname, *user_modes, *loginname;
+char *quit_msg;
 char *restrictprivlistmsg;
 char *uploaddir;
 char *nickserv_pass;
