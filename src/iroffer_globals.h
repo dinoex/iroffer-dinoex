@@ -181,6 +181,7 @@ unsigned int autoignore_rate;
 unsigned int reminder_send_retry;
 /* bool */
 unsigned int hideos;
+unsigned int no_ctcp;
 unsigned int lognotices;
 unsigned int logmessages;
 unsigned int timestampconsole;

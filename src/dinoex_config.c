@@ -305,6 +305,7 @@ static config_bool_typ config_parse_bool[] = {
 {"mirc_dcc64",             &gdata.mirc_dcc64,              0 }, /* NOTRANSLATE */
 {"need_voice",             &gdata.need_voice,              0 }, /* NOTRANSLATE */
 {"no_auto_rehash",         &gdata.no_auto_rehash,          0 }, /* NOTRANSLATE */
+{"no_ctcp",                &gdata.no_ctcp,                 0 }, /* NOTRANSLATE */
 {"no_duplicate_filenames", &gdata.no_duplicate_filenames,  0 }, /* NOTRANSLATE */
 {"no_find_trigger",        &gdata.no_find_trigger,         0 }, /* NOTRANSLATE */
 {"no_minspeed_on_free",    &gdata.no_minspeed_on_free,     0 }, /* NOTRANSLATE */
