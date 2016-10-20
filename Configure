@@ -556,7 +556,6 @@ case "$ostype" in
   installgroup="wheel"
   ;;
  Darwin)
-  libs="$libs -lresolv"
   rstatic="-lpthread -ldl -lz"
   ;;
  Linux | IRIX | IRIX64 | OSF1 | Rhapsody | AIX )
