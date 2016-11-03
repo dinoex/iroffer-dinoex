@@ -10,23 +10,23 @@ diff -ru iroffer-dinoex-3.27/beispiel.config iroffer-dinoex-3.27.NEW/beispiel.co
  
  ##############################################################################
  ###                             - log file -                               ###
- ### logfile gibt die Logdatei für den Bot an.                              ###
+ ### logfile gibt die Logdatei fÃ¼r den Bot an.                              ###
 -logfile mybot.log
 +logfile /var/log/iroffer-dinoex/mybot.log
  
  ##############################################################################
  ###                            - log rotate -                              ###
  ### logrotate gibt den Zeitraum vor, nach dem die Logdatei gewechselt      ###
- ### wird, mögliche Werte "none" (nie), "monthly" (monatlich),              ###
- ### "weekly" (wöchentlich), "daily" (täglich) und 1-24 (stündlich).        ###
+ ### wird, mÃ¶gliche Werte "none" (nie), "monthly" (monatlich),              ###
+ ### "weekly" (wÃ¶chentlich), "daily" (tÃ¤glich) und 1-24 (stÃ¼ndlich).        ###
 -logrotate weekly
 +#logrotate weekly
  
  ##############################################################################
  ###                         - expire logfiles -                            ###
 @@ -48,7 +48,7 @@
- ### Diese Datei dient als allgemeines Datenlager für die bereitgestellten  ###
- ### Dateien und die dazugehörigen statistische Daten. Hier werden auch die ###
+ ### Diese Datei dient als allgemeines Datenlager fÃ¼r die bereitgestellten  ###
+ ### Dateien und die dazugehÃ¶rigen statistische Daten. Hier werden auch die ###
  ### Beschreibungen der Pakete gespeichert.                                 ###
 -statefile mybot.state
 +statefile /var/state/iroffer-dinoex/mybot.state
@@ -34,7 +34,7 @@ diff -ru iroffer-dinoex-3.27/beispiel.config iroffer-dinoex-3.27.NEW/beispiel.co
  ##############################################################################
  ###                          - old state file -                            ###
 @@ -74,7 +74,7 @@
- ### als Packliste auf einer Webseite zu dienen, oder für andere Zwecke.    ###
+ ### als Packliste auf einer Webseite zu dienen, oder fÃ¼r andere Zwecke.    ###
  ### Wenn xdcclistfileraw gesetzt ist, werden die IRC-Farbcode auch mit     ###
  ### ausgegeben.                                                            ###
 -xdcclistfile mybot.txt
@@ -54,7 +54,7 @@ diff -ru iroffer-dinoex-3.27/exemple.config iroffer-dinoex-3.27.NEW/exemple.conf
  
  ##############################################################################
  ###                             - log file -                               ###
- ### Écrit les informations du bot dans ce fichier.                         ###
+ ### Ã‰crit les informations du bot dans ce fichier.                         ###
 -logfile monbot.log
 +logfile /var/log/iroffer-dinoex/monbot.log
  
@@ -70,16 +70,16 @@ diff -ru iroffer-dinoex-3.27/exemple.config iroffer-dinoex-3.27.NEW/exemple.conf
 @@ -44,7 +44,7 @@
  ##############################################################################
  ###                             - state file -                             ###
- ### fichier temporaire de stockage des informations d'état d'iroffer.      ###
+ ### fichier temporaire de stockage des informations d'Ã©tat d'iroffer.      ###
 -statefile monbot.state
 +statefile /var/state/iroffer-dinoex/monbot.state
  
  ##############################################################################
  ###                          - old state file -                            ###
 @@ -70,7 +70,7 @@
- ### 'xdcclistfile' et iroffer écrira la liste xdcc dès que nécessaire.     ###
- ### Si xdcclistfileraw est définit, le fichier sera écrit avec les         ###
- ### caractères spéciaux IRC (couleur, format, etc...).                     ###
+ ### 'xdcclistfile' et iroffer Ã©crira la liste xdcc dÃ¨s que nÃ©cessaire.     ###
+ ### Si xdcclistfileraw est dÃ©finit, le fichier sera Ã©crit avec les         ###
+ ### caractÃ¨res spÃ©ciaux IRC (couleur, format, etc...).                     ###
 -xdcclistfile monbot.txt
 +xdcclistfile /var/state/iroffer-dinoex/monbot.txt
  #xdcclistfileraw

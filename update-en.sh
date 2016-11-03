@@ -48,7 +48,7 @@ fi
 fgrep -h \" src/iroffer*.c src/dinoex*.c |
 grep -v "^#include" |
 fgrep -v "NOTRANSLATE" |
-sed -e 's|\\"|°|g' |
+sed -e 's|\\"|Â°|g' |
 awk -F \[\"\] '
 {
 	for ( I = 2; I < NF ; I ++ ) {
@@ -59,7 +59,7 @@ awk -F \[\"\] '
 	}
 }
 ' |
-sed -e 's|°|\\\\"|g' |
+sed -e 's|Â°|\\\\"|g' |
 while read text
 do
 	if fgrep -q "${text}" en.txt
