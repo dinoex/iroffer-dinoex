@@ -548,7 +548,7 @@ do
 done
 
 ostype=`uname`
-${msg} -n "${irt_checkingos}${ostype}"
+${msg} "${irt_checkingos}${ostype}"
 installgroup="root"
 libs=""
 rstatic=""
