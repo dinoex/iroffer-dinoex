@@ -85,10 +85,14 @@ void init_upnp (void)
 			"UPnP device : desc: %s\n st: %s",
 			dev->descURL, dev->st);
 
+#if MINIUPNPC_API_VERSION >= 16
+		descXML = miniwget(dev->descURL, &descXMLsize, 0, 0);
+#else
 #if MINIUPNPC_API_VERSION >= 9
 		descXML = miniwget(dev->descURL, &descXMLsize, 0);
 #else
 		descXML = miniwget(dev->descURL, &descXMLsize);
+#endif
 #endif
 		if (descXML)
 		{

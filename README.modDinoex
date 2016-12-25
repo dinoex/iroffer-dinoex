@@ -3,6 +3,14 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: upnp_router
+  Update for libminiupnpc 2.0.20161216
+
+Convert charset for all files to UTF-8.
+
+bugfix: Configure
+  fix build on MacOS Capitan
+
 bugfix: French translation
   Updated by Sébastien Picavet
 
