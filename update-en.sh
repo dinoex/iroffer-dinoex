@@ -10,6 +10,7 @@ copy_if_differ() {
 }
 
 LANG="C"
+LANG="en_EN.UTF-8"
 utf8="cat"
 sh ./Lang en
 awk -f ./admin.awk src/iroffer_admin.c > help-admin-en.neu
