@@ -124,6 +124,7 @@ char *charset;
 char *http_admin_dir;
 char *http_index;
 char *download_completed_msg;
+char *quit_msg;
 char *http_access_log;
 char *autoadd_color;
 char *http_forbidden;
