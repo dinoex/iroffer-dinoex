@@ -1132,14 +1132,24 @@ void shutdowniroffer(void) {
    if (has_closed_servers() == 0)
      {
        msg = mymalloc(maxtextlength);
-       tempstr2 = mymalloc(maxtextlengthshort);
-       getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
-       snprintf(msg, maxtextlength,
-                "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
-                gdata.hideos ? "" : " - ",
-                gdata.hideos ? "" : gdata.osstring,
-                tempstr2);
-       mydelete(tempstr2);
+       if (gdata.quit_msg == NULL)
+         {
+           tempstr2 = mymalloc(maxtextlengthshort);
+           getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
+           snprintf(msg, maxtextlength,
+                    "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
+                    gdata.hideos ? "" : " - ",
+                    gdata.hideos ? "" : gdata.osstring,
+                    tempstr2);
+           mydelete(tempstr2);
+         }
+       else
+         {
+           if (strcmp(gdata.quit_msg, "none") != 0) /* NOTRANSLATE */
+	     snprintf(msg, maxtextlength, "QUIT :%s", gdata.quit_msg); /* NOTRANSLATE */
+           else
+	     snprintf(msg, maxtextlength, "QUIT"); /* NOTRANSLATE */
+         }
        for (ss=0; ss<gdata.networks_online; ss++)
          {
            gnetwork = &(gdata.networks[ss]);

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2014 Dirk Meyer
+ * Copyright (C) 2004-2016 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -673,6 +673,7 @@ static config_string_typ config_parse_string[] = {
 #ifndef WITHOUT_BLOWFISH
 {"privmsg_fish",            &gdata.privmsg_fish,            0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
+{"quit_msg",                &gdata.quit_msg,                0 }, /* NOTRANSLATE */
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 }, /* NOTRANSLATE */
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 }, /* NOTRANSLATE */
 #ifdef USE_RUBY

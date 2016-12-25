@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+412) quit_msg (by lovesyk)
+  Custom quit message to display or "none" if no message is desired.
+
 bugfix: upnp_router
   Update for libminiupnpc 2.0.20161216
 
