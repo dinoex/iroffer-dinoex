@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -210,7 +210,6 @@ void add_new_transfer_time(xdcc *xd)
   if (gdata.transfermaxspeed > 0) {
     if (nolimit != 0) {
       speed = gdata.transfermaxspeed;
-      nolimit = 0;
     } else {
       speed = min2(speed, gdata.transfermaxspeed);
     }

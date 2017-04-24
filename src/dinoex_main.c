@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2014 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -317,7 +317,7 @@ static void free_state(void)
     mydelete(up->nick);
     mydelete(up->hostname);
     mydelete(up->file);
-    mydelete(tr->con.remoteaddr);
+    mydelete(up->con.remoteaddr);
   }
 
   for (pq = irlist_get_head(&gdata.mainqueue);
@@ -424,6 +424,7 @@ static void debug_memory(void)
 
   ++(gdata.crashing); /* stop traceback */
   signal(SIGSEGV, SIG_DFL);
+  signal(SIGABRT, SIG_DFL);
   free_state();
   free_config();
   config_reset();
@@ -445,10 +446,7 @@ static void debug_memory(void)
   if (leak == 0)
     return;
 
-  *((volatile int*)(0)) = 0;
-  free(gdata.meminfo);
-  gdata.meminfo = NULL;
-  return;
+  abort();
 }
 #endif /* DEBUG */
 

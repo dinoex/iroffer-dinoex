@@ -401,7 +401,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_fast)) < MAXSENDQ)
@@ -424,7 +423,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_normal)) < MAXSENDQ)
@@ -447,7 +445,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_slow)) < MAXSENDQ)
@@ -1304,7 +1301,7 @@ char* getstatusline(char *str, size_t len)
                gdata.sentrecord);
     }
   
-  if ((i < 0) || ((size_t)i >= len))
+  if ((size_t)i >= len)
     {
       str[0] = '\0';
     }
@@ -1364,7 +1361,7 @@ char* getstatuslinenums(char *str, size_t len)
                xdccsent/1024,
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
                gdata.sentrecord);
-   if ((i < 0) || ((size_t)i >= len))
+   if ((size_t)i >= len)
     {
       str[0] = '\0';
     }

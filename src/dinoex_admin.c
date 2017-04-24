@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2014 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -385,7 +385,6 @@ void a_xdl_group(const userinput * const u)
   k = 0;
   l = a_xdl_left();
   s = a_xdl_space();
-  xd = irlist_get_head(&gdata.xdccs);
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
        xd = irlist_get_next(xd), ++i) {
@@ -1164,7 +1163,7 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
       xd3 = xd1;
       xd4 = xd2;
       ++k;
-      break;
+      continue;
     case 'D':
     case 'd':
       rc = a_sort_type(xd3->desc, xd4->desc);
@@ -1707,7 +1706,6 @@ static void a_qul2(const userinput * const u, irlist_t *list)
 
   a_respond(u, "    #  User        Pack File                              Waiting     Left");
   i = 0;
-  pq = irlist_get_head(list);
   for (pq = irlist_get_head(list);
        pq;
        pq = irlist_get_next(pq)) {

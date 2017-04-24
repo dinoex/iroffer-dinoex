@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2014 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -116,6 +116,7 @@ typedef struct {
 
 typedef struct {
   ir_uint32 crc;
+  ir_uint32 dummy;
 } crc32build_t;
 
 typedef struct {
