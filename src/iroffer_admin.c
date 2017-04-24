@@ -2099,15 +2099,14 @@ static void u_trinfo(const userinput * const u)
   
   if (u->arg1) num = atoi(u->arg1);
   
-  if ((num < 0) || !does_tr_id_exist(num))
+  tr = does_tr_id_exist(num);
+  if (tr == NULL)
     {
       u_respond(u,"Try Specifying a Valid Transfer Number");
       return;
     }
   
   u_respond(u,"Transfer Info for ID %i:",num);
-  
-  tr = does_tr_id_exist(num);
   
   y = t_print_state(tr);
   

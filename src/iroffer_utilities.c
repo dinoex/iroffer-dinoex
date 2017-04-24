@@ -169,7 +169,7 @@ void mylog(const char *format, ...)
 {
   char tempstr[maxtextlength];
   va_list args;
-  size_t len;
+  ssize_t len;
   
   if (gdata.logfile == NULL)
     {

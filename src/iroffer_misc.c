@@ -1301,7 +1301,7 @@ char* getstatusline(char *str, size_t len)
                gdata.sentrecord);
     }
   
-  if ((i < 0) || ((size_t)i >= len))
+  if ((size_t)i >= len)
     {
       str[0] = '\0';
     }
@@ -1361,7 +1361,7 @@ char* getstatuslinenums(char *str, size_t len)
                xdccsent/1024,
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
                gdata.sentrecord);
-   if ((i < 0) || ((size_t)i >= len))
+   if ((size_t)i >= len)
     {
       str[0] = '\0';
     }

@@ -56,7 +56,7 @@ typedef struct {
 
 static const char *type_list[2] = { "NOTICE", "PRIVMSG" }; /* NOTRANSLATE */
 
-const static const option_list_t xdcc_option_list[] = {
+const static option_list_t xdcc_option_list[] = {
   { "IPV4",    DCC_OPTION_IPV4,    ~DCC_OPTION_IPV4 }, /* NOTRANSLATE */
   { "IPV6",    DCC_OPTION_IPV6,    ~DCC_OPTION_IPV6 }, /* NOTRANSLATE */
   { "ACTIVE",  DCC_OPTION_ACTIVE , ~DCC_OPTION_ACTIVE }, /* NOTRANSLATE */
