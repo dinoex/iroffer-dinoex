@@ -2338,11 +2338,15 @@ void u_diskinfo(const userinput * const u, const char *dir)
   
 }
 
-static void u_crash(const userinput * const UNUSED(u)) {
+static void
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+u_crash(const userinput * const UNUSED(u)) {
    
    updatecontext();
    
-   *((int*)(0)) = 0;
+   abort();
    
 }
 

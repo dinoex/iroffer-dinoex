@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: CRASH
+  Use system call to trap with new compilers.
+
 412) quit_msg (by lovesyk)
   Custom quit message to display or "none" if no message is desired.
 
