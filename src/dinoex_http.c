@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2015 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -1011,7 +1011,6 @@ h_respond(http * const h, const char *format, ...)
     len = vsnprintf(h->end, (size_t)(h->left), format, args);
     if (len < 0) {
       h->end[0] = 0;
-      len = 0;
     } else {
       h->end += len;
       h->left -= len;
@@ -1181,7 +1180,7 @@ static char *html_link_build(const char *css, const char *caption, const char *t
     len += html_link_option(tempstr + len, maxtextlength - len, "t", "1"); /* NOTRANSLATE */
   if (order)
     len += html_link_option(tempstr + len, maxtextlength - len, "o", order); /* NOTRANSLATE */
-  len += add_snprintf(tempstr + len, maxtextlength - len, "\">%s</a>", text);
+  (void)add_snprintf(tempstr + len, maxtextlength - len, "\">%s</a>", text);
   return tempstr;
 }
 
@@ -1531,7 +1530,7 @@ static void h_html_file(http * const h)
       }
     }
     javalink = mymalloc(maxtextlength);
-    len = add_snprintf(javalink, maxtextlength,
+    (void)add_snprintf(javalink, maxtextlength,
                    "<a href=\"javascript:ToClipboard('/msg %s xdcc send %u');\">%s</a>",
                    h->nick, num, tempstr);
     mydelete(tempstr);
@@ -1657,7 +1656,7 @@ static void h_html_index(http * const h)
   len += add_snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this week");
   mydelete(tempstr);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
-  len += add_snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this month");
+  (void)add_snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this month");
   mydelete(tempstr);
   h_respond(h, "<td title=\"%s\">%s</td>\n", tlabel, "iroffer-dinoex " VERSIONLONG);
   mydelete(tlabel);

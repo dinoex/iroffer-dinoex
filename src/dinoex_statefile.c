@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -515,7 +515,6 @@ static void write_statefile_ignore(ir_moutput_t *bout)
   size_t length;
 
   updatecontext();
-  ignore = irlist_get_head(&gdata.ignorelist);
 
   for (ignore = irlist_get_head(&gdata.ignorelist);
        ignore;
@@ -558,7 +557,6 @@ static void write_statefile_msglog(ir_moutput_t *bout)
   size_t length;
 
   updatecontext();
-  msglog = irlist_get_head(&gdata.msglog);
 
   for (msglog = irlist_get_head(&gdata.msglog);
        msglog;

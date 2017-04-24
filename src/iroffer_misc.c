@@ -401,7 +401,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_fast)) < MAXSENDQ)
@@ -424,7 +423,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_normal)) < MAXSENDQ)
@@ -447,7 +445,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_slow)) < MAXSENDQ)

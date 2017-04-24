@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2014 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -311,7 +311,6 @@ vwriteserver_channel(channel_t * const ch, const char *format, va_list ap)
   if (len > gnetwork->server_send_max) {
     outerror(OUTERROR_TYPE_WARN, "Message Truncated!");
     msg[gnetwork->server_send_max] = '\0';
-    len = gnetwork->server_send_max;
   }
 
   if (irlist_size(&(gnetwork->serverq_channel)) < MAXSENDQ) {
@@ -830,7 +829,7 @@ void run_delayed_jobs(void)
       mydelete(u->cmd);
       mydelete(u->arg1);
       mydelete(u->arg2);
-      u = irlist_delete(&gdata.packs_delayed, u);
+      (void)irlist_delete(&gdata.packs_delayed, u);
       /* process only one file */
       return;
     }
@@ -839,21 +838,21 @@ void run_delayed_jobs(void)
       mydelete(u->cmd);
       mydelete(u->arg1);
       mydelete(u->arg2);
-      u = irlist_delete(&gdata.packs_delayed, u);
+      (void)irlist_delete(&gdata.packs_delayed, u);
       /* process only one file */
       return;
     }
     if (strcmp(u->cmd, "ADDGROUP") == 0) { /* NOTRANSLATE */
       a_addgroup(u);
       free_userinput(u);
-      u = irlist_delete(&gdata.packs_delayed, u);
+      (void)irlist_delete(&gdata.packs_delayed, u);
       /* process only one file */
       return;
     }
     if (strcmp(u->cmd, "ADDNEW") == 0) { /* NOTRANSLATE */
       a_addnew(u);
       free_userinput(u);
-      u = irlist_delete(&gdata.packs_delayed, u);
+      (void)irlist_delete(&gdata.packs_delayed, u);
       /* process only one file */
       return;
     }
@@ -864,7 +863,7 @@ void run_delayed_jobs(void)
 
   for (job = irlist_get_head(&gdata.jobs_delayed); job; ) {
     admin_run(job);
-    job = irlist_delete(&gdata.jobs_delayed, job);
+    (void)irlist_delete(&gdata.jobs_delayed, job);
     /* process only one job */
     return;
   }
@@ -1015,7 +1014,6 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
     if (usedbytes >= gdata.disk_quota) {
       a_respond(&u2, "File '%s' not added, you reached your quoata", xx_file);
       mydelete(file);
-      xd->gets += xx_gets;
       return;
     }
   }
