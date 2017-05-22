@@ -1,5 +1,5 @@
 #!/bin/sh
-ver="${1-1.9.20151008}"
+ver="${1-2.0.20170509}"
 name="miniupnpc-${ver}"
 curl -o "${name}.tar.gz" "http://miniupnp.free.fr/files/${name}.tar.gz"
 tar -xvzf "${name}.tar.gz"
