@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2014 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -675,6 +675,7 @@ static config_string_typ config_parse_string[] = {
 #ifndef WITHOUT_BLOWFISH
 {"privmsg_fish",            &gdata.privmsg_fish,            0 }, /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
+{"quit_msg",                &gdata.quit_msg,                0 }, /* NOTRANSLATE */
 {"respondtochannellistmsg", &gdata.respondtochannellistmsg, 0 }, /* NOTRANSLATE */
 {"restrictprivlistmsg",     &gdata.restrictprivlistmsg,     0 }, /* NOTRANSLATE */
 #ifdef USE_RUBY
@@ -1438,7 +1439,7 @@ static void c_group_admin(const char *key, char *var)
     mydelete(ga->g_pass);
     mydelete(ga->g_groups);
     mydelete(ga->g_uploaddir);
-    ga = irlist_delete(&gdata.group_admin, ga);
+    (void)irlist_delete(&gdata.group_admin, ga);
   }
 }
 
@@ -2545,7 +2546,7 @@ static void dump_config_fdump(void)
       if (ch->plaintext != 0)
         len += add_snprintf(buffer + len, maxtextlength - len, " %s", "-plaintext"); /* NOTRANSLATE */
       if (ch->waitjoin != 0)
-        len += add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin); /* NOTRANSLATE */
+        (void)add_snprintf(buffer + len, maxtextlength - len, " %s %u", "-waitjoin", ch->waitjoin); /* NOTRANSLATE */
       dump_line("%s %s", "channel", buffer); /* NOTRANSLATE */
       mydelete(buffer);
     }

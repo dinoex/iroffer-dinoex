@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="content-language" content="it-it">
 <link rel="stylesheet" type="text/css" href="http://anime.dinoex.net/dinoex.css">
 <link rel="icon" href="/favicon.ico">
@@ -11,8 +11,8 @@
 <h1>Installazione di iroffer mod Dinoex su Linux con accesso Utente</h1>
 
 <p>
-Questa è una guida SOMMARIA per l'utilizzo di questo iroffer.<br>
-Se avete necessità di supporto italiano contattatemi su irc.rizon.net #dinoex (CreeW)
+Questa Ã¨ una guida SOMMARIA per l'utilizzo di questo iroffer.<br>
+Se avete necessitÃ  di supporto italiano contattatemi su irc.rizon.net #dinoex (CreeW)
 </p>
 
 <div>
@@ -46,7 +46,7 @@ wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
 </pre>
 </li>
 
-<li>Estraiamo i dati dal pacchetto compresso appena scaricato con l'ausilio di "tar". Si creerà una nuova cartella.<br>
+<li>Estraiamo i dati dal pacchetto compresso appena scaricato con l'ausilio di "tar". Si creerÃ  una nuova cartella.<br>
 
 
 <pre class="indent">
@@ -67,15 +67,14 @@ cd iroffer-dinoex-snap
 gli eventuali pacchetti mancanti nel sistema operativo.<br>
 Per Debian sono sufficienti i seguenti:<br>
 <pre class="indent">
-sudo aptitude install make
-sudo aptitude install gcc
-sudo aptitude install libc-dev
-sudo aptitude install libcurl4-openssl-dev
-sudo aptitude install libgeoip-dev
-sudo aptitude install libssl-dev
-sudo aptitude install ruby1.9.1-dev
-sudo aptitude install ruby1.9
-sudo aptitude install libruby-extras
+sudo apt-get install make
+sudo apt-get install gcc
+sudo apt-get install libc-dev
+sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install libgeoip-dev
+sudo apt-get install libssl-dev
+sudo apt-get install ruby-dev
+sudo apt-get install ruby
 </pre>
 </li>
 
@@ -115,7 +114,7 @@ chmod 700 .
 </pre>
 </li>
 
-<li>Possiamo quindi creare la password da admin del bot che servirà per le DCC-CHAT.<br>
+<li>Possiamo quindi creare la password da admin del bot che servirÃ  per le DCC-CHAT.<br>
  
 
 <pre class="indent">
@@ -142,7 +141,7 @@ adminhost *!*@pippo.admin.bot
 # ACCESSO A CHIUNQUE
 adminhost *!*@*.*
 </pre>
-(Nell'esempio l'utente sarà "pippo")<br>
+(Nell'esempio l'utente sarÃ  "pippo")<br>
 <br>
 </li>
 
@@ -182,7 +181,7 @@ Gli aggiungiamo al suo interno:
 cd /home/pippo/iroffer
 ./iroffer-it -b /home/pippo/iroffer/mybot.config
 </pre>
-(Nell'esempio l'utente sarà "pippo")<br>
+(Nell'esempio l'utente sarÃ  "pippo")<br>
 <br>
 </li>
 

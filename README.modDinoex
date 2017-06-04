@@ -3,8 +3,22 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: CRASH
+  Use system call to trap with new compilers.
+
+412) quit_msg (by lovesyk)
+  Custom quit message to display or "none" if no message is desired.
+
+bugfix: upnp_router
+  Update for libminiupnpc 2.0.20161216
+
+Convert charset for all files to UTF-8.
+
+bugfix: Configure
+  fix build on MacOS Capitan
+
 bugfix: French translation
-  Updated by Sébastien Picavet
+  Updated by SÃ©bastien Picavet
 
 bugfix: ADMIN CHATME
   If the CHAT was not successful, the port was never cleared.
@@ -116,7 +130,7 @@ bugfix: upnp_router
   Update for libminiupnpc 1.8
 
 bugfix: French translation
-  Updated by Sébastien Picavet
+  Updated by SÃ©bastien Picavet
 
 404) XDCC OPTION
 
@@ -215,10 +229,10 @@ bugfix: gnutls_protocol_set_priority deprecated
 393) ruby_script (suggested by kenoki)
   New method "on_upload_completed" called for each file uploaded by XDCC or FETCH.
 
-Configure -no-chroot (Sébastien Picavet)
+Configure -no-chroot (SÃ©bastien Picavet)
   Build without chroot() support
 
-bugfix: exit status (Sébastien Picavet)
+bugfix: exit status (SÃ©bastien Picavet)
   Exit staus in backgroung is now 0 on success.
 
 bugfix: send_listfile (reported by Bachstelze)
@@ -736,7 +750,7 @@ bugfix: CHCOLOR
 
 332) no_natural_sort (inspired by lailoken)
   Wenn konfiguriert, werden alle Texte nach ASCII sortiert.
-  Default: natürlliche Sortierenung.
+  Default: natÃ¼rlliche Sortierenung.
 
 bugfix: http_port (reported by Nouhime)
   Allow groups with "&" in weblist.

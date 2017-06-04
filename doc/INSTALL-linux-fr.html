@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="content-language" content="fr-fr">
 <link rel="stylesheet" type="text/css" href="http://anime.dinoex.net/dinoex.css">
 <link rel="icon" href="favicon.ico">
@@ -11,17 +11,17 @@
 <h1>Installation d'Iroffer mod Dinoex sous Linux en tant qu'utilisateur</h1>
 
 <div>
-<h2>Procédure d'installation</h2>
+<h2>ProcÃ©dure d'installation</h2>
 
 <ol>
-<li>Nous allons en tant qu'utilisateur dans le répertoire « /home ».
+<li>Nous allons en tant qu'utilisateur dans le rÃ©pertoire Â«Â /homeÂ Â».
 
 <pre class="indent">
 cd /home
 </pre>
 </li>
 
-<li>Créez un répertoire supplémentaire pour iroffer.
+<li>CrÃ©ez un rÃ©pertoire supplÃ©mentaire pour iroffer.
 
 <pre class="indent">
 mkdir iroffer
@@ -29,14 +29,14 @@ cd iroffer/
 </pre>
 </li>
 
-<li>Récupérez sur internet les sources du programme.
+<li>RÃ©cupÃ©rez sur internet les sources du programme.
 
 <pre class="indent">
 wget http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz
 </pre>
 </li>
 
-<li>Décompressez les sources.
+<li>DÃ©compressez les sources.
 
 <pre class="indent">
 tar -xvzf iroffer-dinoex-snap.tar.gz
@@ -51,23 +51,22 @@ cd iroffer-dinoex-snap
 </pre>
 </li>
 
-<li>Si « Configure » affiche quelques erreurs, alors il manque encore des paquets.<br>
-Sous Debian :
+<li>Si Â«Â ConfigureÂ Â» affiche quelques erreurs, alors il manque encore des paquets.<br>
+Sous DebianÂ :
 
 <pre class="indent">
-sudo aptitude install make
-sudo aptitude install gcc
-sudo aptitude install libc-dev
-sudo aptitude install libcurl4-openssl-dev
-sudo aptitude install libgeoip-dev
-sudo aptitude install libssl-dev
-sudo aptitude install ruby1.9.1-dev
-sudo aptitude install ruby1.9
-sudo aptitude install libruby-extras
+sudo apt-get install make
+sudo apt-get install gcc
+sudo apt-get install libc-dev
+sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install libgeoip-dev
+sudo apt-get install libssl-dev
+sudo apt-get install ruby-dev
+sudo apt-get install ruby
 </pre>
 </li>
 
-<li>Nous compilons le programme avec les textes en français.
+<li>Nous compilons le programme avec les textes en franÃ§ais.
 
 <pre class="indent">
 make fr
@@ -83,7 +82,7 @@ cp -r htdocs ../
 </pre>
 </li>
 
-<li>Nous commençons par copier notre configuration.
+<li>Nous commenÃ§ons par copier notre configuration.
 
 <pre class="indent">
 cp exemple.config ../monbot.config
@@ -92,25 +91,25 @@ chmod 600 monbot.config
 </pre>
 </li>
 
-<li>Seul l'utilisateur « bot » doit avoir les droits d'écriture.
+<li>Seul l'utilisateur Â«Â botÂ Â» doit avoir les droits d'Ã©criture.
 
 <pre class="indent">
 chmod 700 .
 </pre>
 </li>
 
-<li>Nous allons générer un mot de passe pour l'administration.
+<li>Nous allons gÃ©nÃ©rer un mot de passe pour l'administration.
 
 <pre class="indent">
 ./iroffer-fr -c monbot.config
 </pre>
 </li>
 
-<li>Nous renseignons tous les répertoires dans le fichier de configuration « monbot.config ».<br>
-« adminhost » doit être renseigné de manière appropriée.<br>
-Le site interne est activé.
-Nous ajoutons un répertoire de base pour les fichiers et l'utilisons également pour les fichiers envoyés.<br>
-« monbot.config » devrait contenir :
+<li>Nous renseignons tous les rÃ©pertoires dans le fichier de configuration Â«Â monbot.configÂ Â».<br>
+Â«Â adminhostÂ Â» doit Ãªtre renseignÃ© de maniÃ¨re appropriÃ©e.<br>
+Le site interne est activÃ©.
+Nous ajoutons un rÃ©pertoire de base pour les fichiers et l'utilisons Ã©galement pour les fichiers envoyÃ©s.<br>
+Â«Â monbot.configÂ Â» devrait contenirÂ :
 
 <pre class="indent">
 http_port 8000
@@ -121,19 +120,19 @@ uploaddir /home/bot/files
 (Remplacez 'bot' par votre login)
 </li>
 
-<li>Nous allons créer le répertoire pour les fichiers.
+<li>Nous allons crÃ©er le rÃ©pertoire pour les fichiers.
 
 <pre class="indent">
 cd ..
 mkdir files
 </pre>
 
-Nous enverrons les fichiers via XDCC ou via FTP ultérieurement.</li>
+Nous enverrons les fichiers via XDCC ou via FTP ultÃ©rieurement.</li>
 
 <li class="c1"><br>
 </li>
 
-<li>Créer un script de démarrage.
+<li>CrÃ©er un script de dÃ©marrage.
 
 <pre class="indent">
 cd ..
@@ -143,7 +142,7 @@ ou
 vim start-iroffer.sh
 </pre>
 
-Nous écrivons le script :
+Nous Ã©crivons le scriptÂ :
 
 <pre class="indent">
 #!/bin/sh
@@ -153,7 +152,7 @@ cd /home/bot/iroffer
 (Remplacez 'bot' par votre login)
 </li>
 
-<li>On rend le script exécutable.
+<li>On rend le script exÃ©cutable.
 
 <pre class="indent">
 chmod +x start-iroffer.sh

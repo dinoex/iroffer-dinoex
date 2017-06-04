@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2014 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -56,7 +56,7 @@ typedef struct {
 
 static const char *type_list[2] = { "NOTICE", "PRIVMSG" }; /* NOTRANSLATE */
 
-const static const option_list_t xdcc_option_list[] = {
+const static option_list_t xdcc_option_list[] = {
   { "IPV4",    DCC_OPTION_IPV4,    ~DCC_OPTION_IPV4 }, /* NOTRANSLATE */
   { "IPV6",    DCC_OPTION_IPV6,    ~DCC_OPTION_IPV6 }, /* NOTRANSLATE */
   { "ACTIVE",  DCC_OPTION_ACTIVE , ~DCC_OPTION_ACTIVE }, /* NOTRANSLATE */
@@ -1689,7 +1689,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
 
 static int get_nick_hostname(char *nick, char *hostname, const char *line)
 {
-  if (line && *line == ':')
+  if (*line == ':')
     ++line;
   for (; *line && *line != '!'; ++line)
     *(nick++) = *line;

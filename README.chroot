@@ -1,0 +1,134 @@
+
+### How to run iroffer with chroot under Debian GNU/Linux
+
+This guide assumes you already installed and tested iroffer and it's working without chroot. Now when you start iroffer with chroot (-t flag), out-of-the box it won't be able to connect to a network.
+
+Let's assume you have your iroffer binary in /home/ircbot/iroffer/ and you start it with a shellscript "start.sh" that you made which looks like this:
+
+  #!/bin/sh
+  ./iroffer -u ircbot -t /home/ircbot/iroffer/ mybot.config
+
+Connecting to a network doesn't work because some files are missing in the chroot jail. If you're interested how you can debug what happens yourself, see "using strace" below.
+
+## required files
+
+When you chroot to /home/ircbot/iroffer/ the software can neither find libraries in /usr/lib etc. nor configuration files in /etc/ nor devices in /dev/.
+
+The following files are required:
+- /etc/resolv.conf
+- libnss_dns.so.2 which can be in several places
+- /dev/random and /dev/urandom for openssl
+
+The following additional files are needed, but iroffer probably runs without them:
+- /etc/localtime
+- /etc/hosts
+- /etc/host.conf
+
+The following files are opened, but iroffer runs fine if it can't find them:
+- /etc/ld.so.cache
+- /etc/ld.so.nohwcap
+- /etc/gai.conf (this can be missing according to Linux documentation [1])
+
+
+## bind usage
+
+So how do you link those files? Symlinks that go outside the chroot jail won't work, and hardlinks are not allowed to go across filesystem boundaries (and hardlinking directories is a bad idea anyway). The usual answer for this is to use mount with the --bind option. While you could mount the whole /etc/ directory inside your chroot jail, this would kinda defeat the purpose of using chroot. Fortunately, mount --bind can mount individual files.
+
+So for example for /etc/hosts you use
+
+  mount --bind /etc/hosts etc/hosts
+
+Which won't work now, because the file etc/hosts doesn't exist yet. You have to create the directories and files that need to be mounted first.
+
+Another problem is that the required files might be symlinks themselves, so they still won't work if you just bind-mount them. For example if you have resolvconf installed, /etc/resolv.conf is actually a symlink to /etc/resolvconf/run/resolv.conf (depending on your operating system).
+
+So you need the following steps, eg. resolv.conf:
+
+1. make sure you are in the chroot directory before running those commands, eg. in /home/ircbot/iroffer/. If you're not:
+     cd /home/ircbot/iroffer/
+
+2. check whether the file is a symlink
+     ls -l /etc/resolv.conf
+     lrwxrwxrwx [...] /etc/resolv.conf -> /etc/resolvconf/run/resolv.conf
+   This indicates it is a symlink to the file /etc/resolvconf/run/resolv.conf
+
+3. replicate the directory structure the real file is in in your chroot directory
+     mkdir -p etc/resolvconf/run/
+
+4. create the file
+     touch etc/resolvconf/run/resolv.conf
+
+5. IF SYMLINK: create your own symlink at the correct place and link to the correct file (preferredly with relative filenames so the symlink works without and with chroot)
+     cd etc/
+     ln -s resolvconf/run/resolv.conf .
+     cd ..
+
+Repeat this for every file mentioned above, for libnss_dns.so.2 see below. Eg. for /dev/urandom and /dev/random:
+  mkdir dev
+  touch dev/urandom
+  touch dev/random
+
+# libnss_dns
+
+The library can be in different places depending on your distribution. First you have to locate it. Use the following commands until you get a path:
+   find /lib -name "libnss_dns.so.2"
+   find /usr/lib -name "libnss_dns.so.2"
+   find / -name "libnss_dns.so.2"
+If you don't get a path, make sure you have installed it!
+
+iroffer looks in many different locations for the library. Look at the strace part if you want to optimize the mount location or if iroffer can't find the library.
+
+Assuming you found libnss_dns in /lib/x86_64-linux-gnu/tls/libnss_dns.so.2 and it is again a symlink, which points to libnss_dns-2.19.so use the following commands:
+  mkdir -p lib/x86_64-linux-gnu/tls/
+  touch lib/x86_64-linux-gnu/tls/libnss_dns-2.19.so
+  cd lib/x86_64-linux-gnu/tls/
+  ln -s libnss_dns-2.19.so libnss_dns.so.2
+  cd ../../..
+
+By the way, if you have your files on another harddisk or partition that you already mounted (eg. in /media/files), you can easily mount it with --bind a second time inside your chroot jail.
+
+
+## modifying your startscript
+
+Put mount commands into your startscript to make sure the real files are available before you start iroffer, and umount commands afterwards.
+
+Example script:
+
+  #!/bin/sh
+  # mount files needed after chroot()
+  mount --bind /etc/localtime etc/localtime
+  mount --bind /etc/hosts etc/hosts
+  mount --bind /etc/host.conf etc/host.conf
+  mount --bind /dev/urandom dev/urandom
+  mount --bind /dev/random dev/random
+  mount --bind /etc/resolvconf/run/resolv.conf etc/resolvconf/run/resolv.conf
+  mount --bind /lib/x86_64-linux-gnu/tls/libnss_dns-2.19.so lib/x86_64-linux-gnu/tls/libnss_dns-2.19.so
+  # start iroffer
+  ./iroffer -u ircbot -t /home/ircbot/iroffer/ mybot.config
+  # unmount mounted files
+  umount etc/localtime
+  umount etc/hosts
+  umount etc/host.conf
+  umount dev/urandom
+  umount dev/random
+  umount etc/resolvconf/run/resolv.conf
+  umount lib/x86_64-linux-gnu/tls/libnss_dns-2.19.so
+
+
+## using strace
+
+With strace you can see the syscalls of a program. iroffer spawns a child process, so you need to start it with -ff to collect logs from both parent and child.
+
+Prefix your iroffer start line like this in your start script (don't forget to remove the strace part again after you collected the traces):
+  strace -o strace_output -ff ./iroffer -u ircbot -t /home/ircbot/iroffer/ mybot.config
+
+Start iroffer, wait until it finished connecting and joining a channel or until a problem occurs, then stop it again.
+
+Now you should have two files "strace_output.<pid>" in the current folder. If you look at them, you might see lines like
+
+open("/etc/gai.conf", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+
+So you see iroffer tries to open /etc/gai.conf but fails.
+
+[1] http://www.tldp.org/HOWTO/Linux+IPv6-HOWTO/resolver.html
+

@@ -401,7 +401,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_fast)) < MAXSENDQ)
@@ -424,7 +423,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_normal)) < MAXSENDQ)
@@ -447,7 +445,6 @@ void vwriteserver(writeserver_type_e type, const char *format, va_list ap)
             {
               outerror(OUTERROR_TYPE_WARN,"Message Truncated!");
               msg[gnetwork->server_send_max] = '\0';
-              len = gnetwork->server_send_max;
             }
           
           if (irlist_size(&(gnetwork->serverq_slow)) < MAXSENDQ)
@@ -1132,14 +1129,24 @@ void shutdowniroffer(void) {
    if (has_closed_servers() == 0)
      {
        msg = mymalloc(maxtextlength);
-       tempstr2 = mymalloc(maxtextlengthshort);
-       getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
-       snprintf(msg, maxtextlength,
-                "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
-                gdata.hideos ? "" : " - ",
-                gdata.hideos ? "" : gdata.osstring,
-                tempstr2);
-       mydelete(tempstr2);
+       if (gdata.quit_msg == NULL)
+         {
+           tempstr2 = mymalloc(maxtextlengthshort);
+           getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
+           snprintf(msg, maxtextlength,
+                    "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
+                    gdata.hideos ? "" : " - ",
+                    gdata.hideos ? "" : gdata.osstring,
+                    tempstr2);
+           mydelete(tempstr2);
+         }
+       else
+         {
+           if (strcmp(gdata.quit_msg, "none") != 0) /* NOTRANSLATE */
+	     snprintf(msg, maxtextlength, "QUIT :%s", gdata.quit_msg); /* NOTRANSLATE */
+           else
+	     snprintf(msg, maxtextlength, "QUIT"); /* NOTRANSLATE */
+         }
        for (ss=0; ss<gdata.networks_online; ss++)
          {
            gnetwork = &(gdata.networks[ss]);
@@ -1294,7 +1301,7 @@ char* getstatusline(char *str, size_t len)
                gdata.sentrecord);
     }
   
-  if ((i < 0) || ((size_t)i >= len))
+  if ((size_t)i >= len)
     {
       str[0] = '\0';
     }
@@ -1354,7 +1361,7 @@ char* getstatuslinenums(char *str, size_t len)
                xdccsent/1024,
                ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
                gdata.sentrecord);
-   if ((i < 0) || ((size_t)i >= len))
+   if ((size_t)i >= len)
     {
       str[0] = '\0';
     }

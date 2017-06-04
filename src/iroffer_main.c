@@ -90,7 +90,7 @@ static void select_dump(const char *desc, int highests)
           len += add_snprintf(buffer + len, maxtextlength - len, " %d", ii);
         }
     }
-  len += add_snprintf(buffer + len, maxtextlength - len, "]");
+  (void)add_snprintf(buffer + len, maxtextlength - len, "]");
   ioutput(OUT_S, COLOR_CYAN, "%s", buffer);
   
 }

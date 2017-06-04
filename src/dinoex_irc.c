@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2016 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -1477,7 +1477,7 @@ static void ir_parseline(char *line)
 
   bzero((char *)&ipl, sizeof(ipl));
   ipl.line = line;
-  m = get_argv(ipl.part, line, MAX_IRCMSG_PARTS);
+  (void)get_argv(ipl.part, line, MAX_IRCMSG_PARTS);
 
   if (ipl.part[1] != NULL)
     ir_parseline2(&ipl);

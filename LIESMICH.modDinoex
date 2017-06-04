@@ -12,16 +12,16 @@ Ab Version 3.30:
   VERSION                              Zeige die Version und die Features von Iroffer
 
 bugfix: QSEND
-  Prüfe nicht die Hostmask wenn der Nick unterschiedlich ist.
+  PrÃ¼fe nicht die Hostmask wenn der Nick unterschiedlich ist.
 
 bugfix: openssl
   Protokolle SSLv2 und SSLv3 deaktiviert. Protokolle TLS1.0, TLS1.1 und TLS1.2 aktiviert.
 
 bugfix: xddclistfile
-  Nach "ADD" wurde das "xddclistfile" später geschrieben.
+  Nach "ADD" wurde das "xddclistfile" spÃ¤ter geschrieben.
 
 bugfix: md5sum
-  Bot crashte wenn die aktuelle Datei überschrieben wurde.
+  Bot crashte wenn die aktuelle Datei Ã¼berschrieben wurde.
   versions affected: 3.28 - 3.29
 
 bugfix: CTCP SEARCH
@@ -35,22 +35,22 @@ bugfix: nomd5
   Announce klemmt wenn nomd5 gesetzt und nocrc32 nicht gesetzt war.
 
 bugfix: statefile
-  Beim Starten des Bots wird eine geänderte FileSystemID sofort in das "statefile" übernommen.
+  Beim Starten des Bots wird eine geÃ¤nderte FileSystemID sofort in das "statefile" Ã¼bernommen.
 
 bugfix: transferlimits 
-  Die Umschaltung von Sommer auf Winterzeit wird berücksichtigt.
+  Die Umschaltung von Sommer auf Winterzeit wird berÃ¼cksichtigt.
 
 410) FETCH queue
   FETCH Befehle gehen in eine Warteschlange wenn "max_uploads" erreicht ist.
 
 bugfix: FETCH
-  Beim Resume wurde die gesamte Datei übertragen.
+  Beim Resume wurde die gesamte Datei Ã¼bertragen.
 
 bugfix: FETCH
   FETCH hat die Konfiguration "local_vhost" nicht benutzt.
 
 bugfix: max_uploads
-  max_uploads zählt jetzt alle eingehenden Verbindungen.
+  max_uploads zÃ¤hlt jetzt alle eingehenden Verbindungen.
 
 409) FETCH AUTO.*
   Holde den Namen und das Datum der Datei vom HTTP-Server.
@@ -60,7 +60,7 @@ bugfix: autoadd_time
   Wenn "packs_delayed" nicht leer ist, lasse den "autoadd" aus.
 
 408) DCC STATUS
-  Die Antwort zu "DCC STATUS" wurde um die Größe der "idle queue"
+  Die Antwort zu "DCC STATUS" wurde um die GrÃ¶ÃŸe der "idle queue"
   erweitert.
 
 407) server_send_max
@@ -95,16 +95,16 @@ bugfix: upnp_router
   Update for libminiupnpc 1.8
 
 bugfix: French translation
-  Erstellt von Sébastien Picavet
+  Erstellt von SÃ©bastien Picavet
 
 404) XDCC OPTION
 
   Neue Benutzer Kommandos:
-  XDCC OPTION +IPV4          Benutze nur IPv4 für den Transfer
-  XDCC OPTION +IPV6          Benutze nur IPv6 für den Transfer
-  XDCC OPTION +ACTIVE        Benutze den normalen DCC für den Transfer
-  XDCC OPTION +PASSIVE       Benutze den passiven DCC für den Transfer
-  XDCC OPTION +QUIET         Setze den Bot auf leise für den Transfer
+  XDCC OPTION +IPV4          Benutze nur IPv4 fÃ¼r den Transfer
+  XDCC OPTION +IPV6          Benutze nur IPv6 fÃ¼r den Transfer
+  XDCC OPTION +ACTIVE        Benutze den normalen DCC fÃ¼r den Transfer
+  XDCC OPTION +PASSIVE       Benutze den passiven DCC fÃ¼r den Transfer
+  XDCC OPTION +QUIET         Setze den Bot auf leise fÃ¼r den Transfer
 
 bugfix: channel -delay (reported by Loke_AF)
   versions affected: 1.24 - 3.28
@@ -112,10 +112,10 @@ bugfix: channel -delay (reported by Loke_AF)
 
 bugfix: status_time_dcc_chat
   versions affected: 3.28
-  Zeige auch im Chat die SrvQ für das akteulle Netzwerk.
+  Zeige auch im Chat die SrvQ fÃ¼r das akteulle Netzwerk.
 
 403) logrotate
-  logroate wird jetzt exakt auf der Grenze des Zeitbereiches ausgeführt.
+  logroate wird jetzt exakt auf der Grenze des Zeitbereiches ausgefÃ¼hrt.
 
 bugfix: tcprangestart
   versions affected: 3.0 - 3.28
@@ -126,26 +126,26 @@ bugfix: tcprangestart
 
 bugfix: conenctionmethod "bnc", "wingate", "custom"
   versions affected: 3.12 - 3.28
-  Diese Konfiguration wurde ohne zusätzliche Parameter nicht angenommen.
+  Diese Konfiguration wurde ohne zusÃ¤tzliche Parameter nicht angenommen.
 
 401) XDCC BATCH
-  Erlaube einschränkende Suchbegriffe für Bereiche und Gruppen in BATCH.
+  Erlaube einschrÃ¤nkende Suchbegriffe fÃ¼r Bereiche und Gruppen in BATCH.
 
   Neue User Kommandos:
   XDCC BATCH <a>-<b>*<pattern>       Sende die Pakete von Nummer <a> bis Nummer <b> die auf <pattern> passen
   XDCC BATCH <g>*<pattern>           Sende die Pakete von Gruppe <g> die auf <pattern> passen
 
 400) BATCH
-  Erlaube einschränkende Suchbegriffe für Bereiche und Gruppen in BATCH.
+  Erlaube einschrÃ¤nkende Suchbegriffe fÃ¼r Bereiche und Gruppen in BATCH.
 
   Neue Admin Kommandos:
-  BATCH <nick> <n>-<m>*<pattern> <net> Paket <n> bis <m> die auf <pattern> passen in die 2. Warteschlange für <nick> einfügen
-  BATCH <nick> <g>*<pattern> <net>     Pakete mit der Gruppe <g> die auf <pattern> passen in die 2. Warteschlange für <nick> einfügen
+  BATCH <nick> <n>-<m>*<pattern> <net> Paket <n> bis <m> die auf <pattern> passen in die 2. Warteschlange fÃ¼r <nick> einfÃ¼gen
+  BATCH <nick> <g>*<pattern> <net>     Pakete mit der Gruppe <g> die auf <pattern> passen in die 2. Warteschlange fÃ¼r <nick> einfÃ¼gen
 
 399) CLEARRECORDS, CLEARGETS
-  Geänderte Admin Kommandos:
-  CLEARRECORDS                       Löscht die Übertragungs-, Bandbreiten-, Gesamtübertragungsrekorde.
-  CLEARGETS                          Löscht den Downloadzähler in allen Paketen, Uptime und Übertragungsvolumen.
+  GeÃ¤nderte Admin Kommandos:
+  CLEARRECORDS                       LÃ¶scht die Ãœbertragungs-, Bandbreiten-, GesamtÃ¼bertragungsrekorde.
+  CLEARGETS                          LÃ¶scht den DownloadzÃ¤hler in allen Paketen, Uptime und Ãœbertragungsvolumen.
 
 bugfix: md5sum
   Im Background-Modus konnte die Berrechnung der md5 klemmen.
@@ -171,13 +171,13 @@ wenn diese mehrfach aufgerufen wird.
   Default: 6
 
 395) http_allow
-  Hiermit kann eingeschränkt werden, wer per Telnet auf den Bot
-  zugreifen darf. Es können mehrere IP-Netze angegeben werden.
+  Hiermit kann eingeschrÃ¤nkt werden, wer per Telnet auf den Bot
+  zugreifen darf. Es kÃ¶nnen mehrere IP-Netze angegeben werden.
   Default: alle.
 
 394) http_deny
   Hier kann man angeben, wer per Telnet auf den Bot nicht zugreifen
-  darf. Es können mehrere IP-Netze angegeben werden.
+  darf. Es kÃ¶nnen mehrere IP-Netze angegeben werden.
   Default: keiner.
 
 bugfix: respondtochannelxdcc
@@ -193,14 +193,14 @@ bugfix: gnutls_protocol_set_priority deprecated
   Neue Methode "on_upload_completed", wird bei jedem neuen Datei
   nach dem erfolgreichen Upload per XDCC oder FETCH aufgerufen.
 
-Configure -no-chroot (Sébastien Picavet)
-  Baue Bot ohne chroot() Unterstützung
+Configure -no-chroot (SÃ©bastien Picavet)
+  Baue Bot ohne chroot() UnterstÃ¼tzung
 
 bugfix: exit status
   Der Exit Code im Hintergrund-Modus ist jetzt 0.
 
 bugfix: send_listfile
-  Der Wert wurde bim REHASH nicht zurückgesetzt.
+  Der Wert wurde bim REHASH nicht zurÃ¼ckgesetzt.
   XDCC LIST SEND war nicht deaktiviert.
 
 392) admin_job_done_file
@@ -216,22 +216,22 @@ bugfix: send_listfile
 
 390) md5sum_exclude
   Liste von Dateien oder Mustern die bei der Berechnung der MD5 und
-  CRC32 Prüfsummen übersprungen werden sollen.
+  CRC32 PrÃ¼fsummen Ã¼bersprungen werden sollen.
 
 389) SERVQ
 
   Neues Admin Kommando:
-  SERVQ <netz>                       Löscht die Serversendwarteschlange
+  SERVQ <netz>                       LÃ¶scht die Serversendwarteschlange
 
 bugfix: ONLINE, OFFLINE, HOP, LAG
   Ohne Argument wurden nicht alle Netzwerke behandelt.
 
 bugfix: DELTRIGGER
-  Erlaube DELTRIGGER wenn CHTRIGGER möglich ist.
+  Erlaube DELTRIGGER wenn CHTRIGGER mÃ¶glich ist.
 
 bugfix: expire_logfiles
   versions affected: 3.26 - 3.27
-  Der Bot konnte die laten Files nicht löschen.
+  Der Bot konnte die laten Files nicht lÃ¶schen.
 
 bugfix: md5
   Warne wenn die Datei beim Hashen abgeschnitten wird.
@@ -240,7 +240,7 @@ bugfix: upnp_router
   Update for libminiupnpc 1.6
 
 bugfix: http_port
-  Reduziere die Last beim Senden über HTTP.
+  Reduziere die Last beim Senden Ã¼ber HTTP.
 
 bugfix: max_upspeed
   Wenn ein Upload "max_upspeed" erreichte, lief der Bot mit 100% CPU Last.
@@ -257,25 +257,25 @@ Configure -kqueue
   gefunden werden sollen.
 
 386) CLEARRECORDS, CLEARGETS
-  Erstelle ein Backup des "statefiles" vor dem Löschen.
+  Erstelle ein Backup des "statefiles" vor dem LÃ¶schen.
 
 385) ruby_script
-  Neue Methode "on_packlist", wird aufgerufen wen der Inhalt der Paket-Liste sich geändert hat.
+  Neue Methode "on_packlist", wird aufgerufen wen der Inhalt der Paket-Liste sich geÃ¤ndert hat.
 
 384) extend_status_line
-  Gebe zusätzlich SrvQ des aktuellen Netzwerks in der Statuszeile aus.
+  Gebe zusÃ¤tzlich SrvQ des aktuellen Netzwerks in der Statuszeile aus.
 
 383) INFO, QUEUE, IQUEUE, SEND
-  Erlaube -1 für das xdcclistfile.
+  Erlaube -1 fÃ¼r das xdcclistfile.
 
 bugfix: telnet_port
   Im Log wurde immer nur das erste netzwerk gelmeldet.
 
 382) Export for XDCC parser
-  htdocs/parser.txt.rb: exportiere alle Pakate im Format für XDCC Parser.
+  htdocs/parser.txt.rb: exportiere alle Pakate im Format fÃ¼r XDCC Parser.
 
 bugfix: overallmaxspeed
-  Bandbreite wurde nicht gleichmäßig auf alle Transfers verteilt.
+  Bandbreite wurde nicht gleichmÃ¤ÃŸig auf alle Transfers verteilt.
 
 bugfix: http_port
   versions affected: 3.23 - 3.27
@@ -285,7 +285,7 @@ Ab Version 3.27:
 ----------------
 
 Configure TRANSLATION=
-  Erweitere das Makefile um weitere Übersetzungen
+  Erweitere das Makefile um weitere Ãœbersetzungen
 
 382) REMOVEMATCH
 
@@ -301,7 +301,7 @@ bugfix: XDCC SEND
 
 381) subdirs_delayed
   Wenn aktiviert, iwerden bei addir, addnew und autoadd die Unter-
-  Verzeichnisse später durchsucht. Damit bleibt der Bot auch bei großer
+  Verzeichnisse spÃ¤ter durchsucht. Damit bleibt der Bot auch bei groÃŸer
   Anzahl von Unter-Verzeichnissen reaktionsschnell.
   Default: aus, Verzeichnisse werden sofort durchsucht.
 
@@ -309,7 +309,7 @@ bugfix: DUMP
   Die Ausgabe von Werten mit Mutiplikationsfaktor ist jetzt richtig.
 
 380) server_connect_timeout
-  Setze den Startwert für das Timeout in Sekunden für die Verbindung
+  Setze den Startwert fÃ¼r das Timeout in Sekunden fÃ¼r die Verbindung
   zum IRC-Server.
   Default: 5
 
@@ -320,7 +320,7 @@ bugfix: DUMP
   Global oder je Netzwerk einstellbar.
 
 377) periodicmsg
-  Nur per Netzwerk einstellbar. Mehrere Zeilen pro Netzwerk möglich.
+  Nur per Netzwerk einstellbar. Mehrere Zeilen pro Netzwerk mÃ¶glich.
 
 376) IQSEND
 
@@ -340,7 +340,7 @@ bugfix: HOLDQUEUE
   ONLINE <net>                       Verbine Bot zum angegebenen Netz
 
 374) announce_size
-  Melde die Größe des Paks beim Announce.
+  Melde die GrÃ¶ÃŸe des Paks beim Announce.
   Default: no
 
 bugfix: http_port
@@ -348,7 +348,7 @@ bugfix: http_port
 
 373) http_dir
   Erlaube den teilweisen Download und das fortsetzen von Dateien.
-  Zähle alle Dateien bei der Berechnung des "maxspeed" mit.
+  ZÃ¤hle alle Dateien bei der Berechnung des "maxspeed" mit.
 
 bugfix: ignore_duplicate_ip
   Entferne den Benutzer auch aus den Warteschlangen.
@@ -363,11 +363,11 @@ Debugging und Logging verbessert.
 
 bugfix: BATCH
   versions affected: 3.23 - 3.26
-  Bot stürtze beim Admin Kommando ab wenn der Bereich über das letze Paket hinaus ging.
+  Bot stÃ¼rtze beim Admin Kommando ab wenn der Bereich Ã¼ber das letze Paket hinaus ging.
 
 370) delayed announce
   Warte mit dem Announce bis der AUTOADD fertig ist
-  und die Prüfsumme der Dateien brechnet wurde.
+  und die PrÃ¼fsumme der Dateien brechnet wurde.
   Warte auch wenn die CRC nicht zur Datei passt.
 
 bugfix: autosendpack
@@ -387,7 +387,7 @@ bugfix: REHASH
   Hinweis an den Benutzer einer Warteschlange "XDCC REMOVE <number>".
 
 367) PRINT, ruby_script
-  Neue Variablen für irconfig() "disk_space", "disk_space_text", "packsum",
+  Neue Variablen fÃ¼r irconfig() "disk_space", "disk_space_text", "packsum",
   "idlequeueused", "mainqueueused", "slotsfree", "slotsused",
   "transfereddaily", "transferedweekly", "transferedmonthly",
   "transferedtotal", "transferedtotalbytes", "uptime", "totaluptime",
@@ -399,7 +399,7 @@ bugfix: REHASH
 
 bugfix: mime_type
   versions affected: 3.0 - 3.26
-  Zusätzliche mime_type Zeilen wurden nur ein einziges mal verwendet.
+  ZusÃ¤tzliche mime_type Zeilen wurden nur ein einziges mal verwendet.
 
 Ab Version 3.26:
 ----------------
@@ -408,20 +408,20 @@ Ab Version 3.26:
   Schalte das Nagle-Verfahren zur Optimierung der TCP Pakete aus.
 
 364) tcp_buffer_size
-  Setzt den Netzwerkbuffer für TCP auf den angegebenen Wert in kByte.
+  Setzt den Netzwerkbuffer fÃ¼r TCP auf den angegebenen Wert in kByte.
   Default: 0 = das Betriebssystem optimiert.
 
 Debugging und Logging verbessert.
 
 bugfix: statefile
-  Ermögliche das Lesen eines 64bit 'statefile' auf 32bit Systemen.
-  Format ist nun unabhängig von time_t des Systems.
+  ErmÃ¶gliche das Lesen eines 64bit 'statefile' auf 32bit Systemen.
+  Format ist nun unabhÃ¤ngig von time_t des Systems.
 
 bugfix: XDCC INFO
   Repeariere die Byte-Reihenfolge der CRC32 in einer komprimierten Datei.
 
 363) backup statefile
-  Sichere das alte "statefile", wenn sich die Version von Iroffer ändert.
+  Sichere das alte "statefile", wenn sich die Version von Iroffer Ã¤ndert.
 
 362) offline
   Verbine nicht zu diesem Netzwerk.
@@ -435,7 +435,7 @@ bugfix: getip_network
   versions affected: 3.23 - 3.25
 
 bugfix: ruby_script
-  Benutze das neue API für ruby 1.9.2
+  Benutze das neue API fÃ¼r ruby 1.9.2
 
 361) Exportiere the crc32/md5 as sumfile
   htdocs/sfv.txt.rb: Exportiere CRC32 im SFV Format.
@@ -452,12 +452,12 @@ bugfix: ruby_script
     Gruppe:  "/info.txt.rb?group=ZZZ"
 
 360) htdocs
-  Ermögliche Ruby CGI Skripte die nicht HTML MIME Daten generieren.
+  ErmÃ¶gliche Ruby CGI Skripte die nicht HTML MIME Daten generieren.
   "name.txt.rb" erzeugt "text/plain" als Inhalt.
 
 359) ruby_script
   Erweiterte Methode "info_pack" un auf Daten einens Packs zuzugreifen.
-  Verfügbar: "group_desc", "bytes", "size", "name"
+  VerfÃ¼gbar: "group_desc", "bytes", "size", "name"
   Erweitert der Zugriff auf einfache Netzwerk Variablen.
   Der Befehl "command" in ruby erkennt nun beliebig viele Parameter.
 
@@ -468,8 +468,8 @@ bugfix: NEWANN
 358) NEWANN
 
   Neue Admin Kommandos:
-  NEWANN <n> <channel>               ANNOUNCE für die letzen <n> Pakete in allen Channels
-  NEWANN <n> <channel> <netz>        ANNOUNCE für die letzen <n> Pakete in Channel <channel> in Netz <netz>
+  NEWANN <n> <channel>               ANNOUNCE fÃ¼r die letzen <n> Pakete in allen Channels
+  NEWANN <n> <channel> <netz>        ANNOUNCE fÃ¼r die letzen <n> Pakete in Channel <channel> in Netz <netz>
 
 bugfix: XDCC STOP
   Der Bot entnferte nicht "XDCC LIST" wenn die Ausgabe noch nicht angefangen hatte.
@@ -477,22 +477,22 @@ bugfix: XDCC STOP
 357) RMALLQ
 
   Neues Admin Kommando:
-  RMALLQ                             Löschen aller Einträge in beiden Warteschlangen
+  RMALLQ                             LÃ¶schen aller EintrÃ¤ge in beiden Warteschlangen
 
-356) Länderspezifische Texte
-  Alle Übersetzungen können nun im gleichen Verzeichnis gebaut werden.
-  Alle übersetzten Programme haben jetzt einen Suffix:
+356) LÃ¤nderspezifische Texte
+  Alle Ãœbersetzungen kÃ¶nnen nun im gleichen Verzeichnis gebaut werden.
+  Alle Ã¼bersetzten Programme haben jetzt einen Suffix:
     iroffer-de, iroffer-fr, iroffer-it
-  Fehler mit übrig gebliebenen Dateien von alten Versionen beim Update behoben.
+  Fehler mit Ã¼brig gebliebenen Dateien von alten Versionen beim Update behoben.
 
 bugfix: bsdmake
   Das erzeugte Makefile kann mit gnumake und bsdmake benutzt werden.
 
 355) XDCC BATCH, BATCH
-  Erlaube auch Bereich von einer höheren Nummer zu einer niedrigeren Nummer.
+  Erlaube auch Bereich von einer hÃ¶heren Nummer zu einer niedrigeren Nummer.
 
 bugfix: logstats
-  Mit logstats off wurde kein logroate durchgeführt.
+  Mit logstats off wurde kein logroate durchgefÃ¼hrt.
   Mit logstats oon und ohne logfile, wurden auch keine Daten im DCC Chat ausgegeben.
 
 bugfix: ./Lang ??
@@ -501,19 +501,19 @@ bugfix: ./Lang ??
 354) iroffer mybot.config -c
   Wenn eine Konfigurationsdatei angegeben ist,
   so wird das Passwort nicht ausgegeben,
-  sondern direkt an die Konfigurationsdatei angefügt.
+  sondern direkt an die Konfigurationsdatei angefÃ¼gt.
 
 bugfix: XDCC INFO
   Zeige die Beschreibung nicht, wenn sie mit dem Dateinamen identisch ist.
 
 bugfix: XDCC BATCH
-  Das Ende einen Bereiches wurde nicht geprüft.
+  Das Ende einen Bereiches wurde nicht geprÃ¼ft.
 
 Ab Version 3.25:
 ----------------
 
 bugfix: BOTINFO (reported by dns777)
-  BOTINFO zeigte Müll als DCC-IP vor der ersten Verbindung zum Netz.
+  BOTINFO zeigte MÃ¼ll als DCC-IP vor der ersten Verbindung zum Netz.
 
 bugfix: UNLIMITED
   versions affected: 3.23 - 3.24
@@ -523,23 +523,23 @@ bugfix: local_vhost
   Verbinde nur zu der passenden Adress-Familie.
 
 353) expire_logfiles
-  Nach den angegebenen Tagen werden die alten Logdateien gelöscht.
-  Es wir nur nach dem Logroate geprüft.
-  Default: Es werden keine Logdateien gelöscht.
+  Nach den angegebenen Tagen werden die alten Logdateien gelÃ¶scht.
+  Es wir nur nach dem Logroate geprÃ¼ft.
+  Default: Es werden keine Logdateien gelÃ¶scht.
 
 352) geoip6database
-  Definiere die Datenbankdatei für IPv6.
+  Definiere die Datenbankdatei fÃ¼r IPv6.
   Wenn du keine Datenbank hast kannst, du dieses hier herunterladen:
   http://www.maxmind.com/app/geolitecountry
-  Default: keine Prüfung bei IPv6.
+  Default: keine PrÃ¼fung bei IPv6.
 
 bugfix: geoipdatabase
-  Lade die Datenbank neu wenn die Datei geändert wurde.
+  Lade die Datenbank neu wenn die Datei geÃ¤ndert wurde.
 
 351) NOAUTOADD
 
   Neues Admin Kommando:
-  NOAUTOADD <x>                      Sperrt AUTOADD für die nächsten <x> Minuten
+  NOAUTOADD <x>                      Sperrt AUTOADD fÃ¼r die nÃ¤chsten <x> Minuten
 
 350) XDCC BATCH
   Erlaube mehrere Angaben in BATCH.
@@ -552,22 +552,22 @@ bugfix: geoipdatabase
   Erlaube mehrere Angaben in BATCH.
 
   Neue Admin Kommandos:
-  BATCH <nick> <g>,<s>,<n>-<m>       Pakete mit der Gruppe <g>, Paket <s>, Paket <n> bis <m> in die 2. Warteschlange für <nick> einfügen
-  BATCH <nick> <g>,<s>,<n>-<m> <net> Pakete mit der Gruppe <g> in die 2. Warteschlange für <nick> aus <netz> einfügen
+  BATCH <nick> <g>,<s>,<n>-<m>       Pakete mit der Gruppe <g>, Paket <s>, Paket <n> bis <m> in die 2. Warteschlange fÃ¼r <nick> einfÃ¼gen
+  BATCH <nick> <g>,<s>,<n>-<m> <net> Pakete mit der Gruppe <g> in die 2. Warteschlange fÃ¼r <nick> aus <netz> einfÃ¼gen
 
-348) Französiche Texte
+348) FranzÃ¶siche Texte
   Aktiviert werde diese durch "./Lang fr" nach dem "Configure"
-  Zurück zum Englischen geht es mit "./Lang en"
+  ZurÃ¼ck zum Englischen geht es mit "./Lang en"
 
 347) XDCC INFO
   Zeige die CRC32 des Inhaltes einer kommrimierten Datei.
 
 346) ignore_duplicate_ip
-  Erkennt gefälschte Hostmasken und unterbindet damit das mehr Über-
+  Erkennt gefÃ¤lschte Hostmasken und unterbindet damit das mehr Ãœber-
   tragungen als erlaubt zum selben Host stattfinden. Beim Feststellen
-  werden alle Transfers und Warteschlangeneinträge dieses Nicks
-  abgebrochen/gelöscht und ein Ignore für <n> Std. aktiviert.
-  Default: 0 == keine Prüfung.
+  werden alle Transfers und WarteschlangeneintrÃ¤ge dieses Nicks
+  abgebrochen/gelÃ¶scht und ein Ignore fÃ¼r <n> Std. aktiviert.
+  Default: 0 == keine PrÃ¼fung.
 
 bugfix: ruby_script
   Bot konnte micht mit Ruby 1.9.1 gebaut werden.
@@ -580,24 +580,24 @@ bugfix: ruby_script
 
 343) dump_all
   Wenn definiert werden alle Konfigurations-Varaiablen beim DUMP ausgegeben.
-  Default werden nur die geänderten Werte ausgegeben.
+  Default werden nur die geÃ¤nderten Werte ausgegeben.
 
 342) announce_suffix_color
-  Setze Farbe für die Downloadhilfe in der Announce-Nachricht.
+  Setze Farbe fÃ¼r die Downloadhilfe in der Announce-Nachricht.
   Damit wird der Text "/MSG <botname> XDCC GET <nr>" in Farbe angezeigt.
   Default keine Farbe.
 
 341) CHLIMIT, CHGETS
 
   Neue Admin Kommandos:
-  CHLIMIT <n> <m> <x>                Ändert das tägliche Downloadlimit von Pack <n> bis <m> auf <x> Übertragungen (0 für aus)
-  CHGETS <n> <m> <x>                 Verändert den Downloadzähler von Pack <n> bis <m> zu Wert <x>
+  CHLIMIT <n> <m> <x>                Ã„ndert das tÃ¤gliche Downloadlimit von Pack <n> bis <m> auf <x> Ãœbertragungen (0 fÃ¼r aus)
+  CHGETS <n> <m> <x>                 VerÃ¤ndert den DownloadzÃ¤hler von Pack <n> bis <m> zu Wert <x>
 
 340) CHMINS, CHMAXS
 
   Neue Admin Kommandos:
-  CHMINS <n> <m> <x>                 Ändert die Minimalgeschwindigkeit von Pack <n> bis <m> auf <x> KB (0 für aus)
-  CHMAXS <n> <m> <x>                 Ändert die Maximalgeschwindigkeit von Pack <n> bis <m> auf <x> KB (0 für aus)
+  CHMINS <n> <m> <x>                 Ã„ndert die Minimalgeschwindigkeit von Pack <n> bis <m> auf <x> KB (0 fÃ¼r aus)
+  CHMAXS <n> <m> <x>                 Ã„ndert die Maximalgeschwindigkeit von Pack <n> bis <m> auf <x> KB (0 fÃ¼r aus)
 
 bugfix: autoaddann
   Die []-Klammern wurden auf dem Default-Text entfernt.
@@ -608,7 +608,7 @@ bugfix: autoaddann
 
 bugfix: xdccxmlfile
   Erweitere die Struktur der XML-Datei, damit diese besser gelsen werden kann.
-  Erstelle und veröffentliche eine XML DTD Datei.
+  Erstelle und verÃ¶ffentliche eine XML DTD Datei.
 
 338) AUTOCANCEL
 
@@ -617,11 +617,11 @@ bugfix: xdccxmlfile
 
 337) adddir_min_size
   Bei addir, adnew und autoadd werden Dateien kleiner als die angegebene
-  Größe in KB übersprungen.
-  Default: keine Prüfung
+  GrÃ¶ÃŸe in KB Ã¼bersprungen.
+  Default: keine PrÃ¼fung
 
 - bugfix: getip_network
-  Bot stürzte ab wenn als Parameter kein gültiges Netzwerk angegeben wurde.
+  Bot stÃ¼rzte ab wenn als Parameter kein gÃ¼ltiges Netzwerk angegeben wurde.
   versions affected: 3.23 - 3.24
 
 336) channel -plaintext
@@ -631,7 +631,7 @@ bugfix: xdccxmlfile
   Sende bei Announces in das Netzwerk keine Farben.
 
 - bugfix: console
-  Bot stürzte beim editieren der Befehlszeile ab.
+  Bot stÃ¼rzte beim editieren der Befehlszeile ab.
   versions affected: 3.23 - 3.24
 
 - bugfix: BOTINFO
@@ -643,22 +643,22 @@ Ab Version 3.24:
 bugfix: Speicherlecks behoben
 
 bugfix: SHUTDOWN
-  Bot stürtzt beim "SHUTDOWN" ab, wenn mit ruby 1.9 gebaut.
+  Bot stÃ¼rtzt beim "SHUTDOWN" ab, wenn mit ruby 1.9 gebaut.
 
 Debugging und Logging verbessert.
 
 bugfix: xdccxmlfile
-  Schreibweise des XML-Tags geändert bandwith -> bandwidth.
+  Schreibweise des XML-Tags geÃ¤ndert bandwith -> bandwidth.
 
 bugfix: CLOSEU
-  Bot stürzte ab, wenn eine fehlerhafte Upload ID übergeben wurde.
+  Bot stÃ¼rzte ab, wenn eine fehlerhafte Upload ID Ã¼bergeben wurde.
   versions affected: 3.23
 
 bugfix: autoadd_dir
   Verzeichnisse mit Leerzeichen wurden nicht durchsucht.
 
 bugfix: GET
-  Bot stürzte ab, wenn "uplaoddir" nicht definiert ist.
+  Bot stÃ¼rzte ab, wenn "uplaoddir" nicht definiert ist.
   versions affected: 3.21 - 3.23
 
 bugfix: autoaddann
@@ -674,12 +674,12 @@ bugfix: transfermethod "freebsd-sendfile"
   Benutze normales Lesen/Screiben wenn sendfile nicht startet.
 
 bugfix: xdccxmlfile
-  Das XML war nicht sauber, transfereddaily and änliche Werte können Sonderzeichen haben.
+  Das XML war nicht sauber, transfereddaily and Ã¤nliche Werte kÃ¶nnen Sonderzeichen haben.
 
 335) requeue_sends
   Beim "shutdown" des Bots werden laufenden Transfers abgebrochen. Ist
   diese Option aktivuert, werden die Transfers in die Queue gesichert.
-  Damit können die Transfers beim Neustart des Bots weitergehen.
+  Damit kÃ¶nnen die Transfers beim Neustart des Bots weitergehen.
 
 bugfix: CHCOLOR
   xdcclistfileraw wurde ignoriert.
@@ -696,10 +696,10 @@ bugfix: xdcclist_grouponly
 334) RMQ, RMIQ (inspired by [M]-V)
 
   Neue Admin Kommandos:
-  CLOSE                              Abbrechen aller Übertagungen
+  CLOSE                              Abbrechen aller Ãœbertagungen
   CLOSEU                             Abbrechen aller Uploads
-  RMQ                                Löschen aller Einträge in der Warteschlange
-  RMIQ                               Löschen aller Einträge in der 2. Warteschlange
+  RMQ                                LÃ¶schen aller EintrÃ¤ge in der Warteschlange
+  RMIQ                               LÃ¶schen aller EintrÃ¤ge in der 2. Warteschlange
   FETCHCANCEL                        Bricht alle Downloads ab
   CLOSEC                             Beende alle DCC-Chats
 
@@ -709,7 +709,7 @@ bugfix: xdcclist_grouponly
   Default: Sender nur die HTTP Fehlermeldung.
 
 bugfix: http_geoip
-  Die Prüfung konnte nicht abgeschaltet werden.
+  Die PrÃ¼fung konnte nicht abgeschaltet werden.
   Antworte jetzt mit HTTP 403 Forbidden.
 
 bugfix: CHCOLOR
@@ -727,10 +727,10 @@ Debugging und Logging verbessert.
 331) BATCH
 
   Neue Admin Kommandos:
-  BATCH <nick> <g>                   Pakete mit der Gruppe <g> in die 2. Warteschlange für <nick> einfügen
-  BATCH <nick> <g> <netz>            Pakete mit der Gruppe <g> in die 2. Warteschlange für <nick> aus <netz> einfügen
-  BATCH <nick> <n>-<m>               Paket <n> bis <m> in die 2. Warteschlange für <nick> einfügen
-  BATCH <nick> <n>-<m> <netz>        Paket <n> bis <m> in die 2. Warteschlange für <nick> aus <netz> einfügen
+  BATCH <nick> <g>                   Pakete mit der Gruppe <g> in die 2. Warteschlange fÃ¼r <nick> einfÃ¼gen
+  BATCH <nick> <g> <netz>            Pakete mit der Gruppe <g> in die 2. Warteschlange fÃ¼r <nick> aus <netz> einfÃ¼gen
+  BATCH <nick> <n>-<m>               Paket <n> bis <m> in die 2. Warteschlange fÃ¼r <nick> einfÃ¼gen
+  BATCH <nick> <n>-<m> <netz>        Paket <n> bis <m> in die 2. Warteschlange fÃ¼r <nick> aus <netz> einfÃ¼gen
 
 bugfix: SHUTDOWN
   versions affected: 1.0 - 3.22
@@ -757,7 +757,7 @@ bugfix: Configure
   Erkennung funktioniert jetzt auch mit gcc46.
 
 bugfix: upnp_router
-  Update für libminiupnpc 1.4.20100609
+  Update fÃ¼r libminiupnpc 1.4.20100609
 
 Weniger Meldungen bei AUTOADD.
 
@@ -767,39 +767,39 @@ bugfix: CTCP PING
 
 bugfix: server_connected_raw
   versions affected: 3.12 - 3.21
-  Bot konnte bei ungültigen Zeilen in der Config crashen.
+  Bot konnte bei ungÃ¼ltigen Zeilen in der Config crashen.
 
 329) autoadd_color
-  Setze Farbe für Pakete auf dem Verzeichnis autoadd_dir.
+  Setze Farbe fÃ¼r Pakete auf dem Verzeichnis autoadd_dir.
   Default keine Farbe
   Format: <farbe>,<hintergrund>,<style>
 
 328) CHCOLOR
 
   Neue Admin Kommandos:
-  CHCOLOR <n> <m> <x>,<b>,<s>        Setze für das Pack <n> bis <m> die Farbe <x>, den Hintergrund <b> und den Style <s>
-  CHCOLOR <n> <x>,<b>,<s>            Setze für das Pack <n> die Farbe <x>, den Hintergrund <b> und den Style <s>
+  CHCOLOR <n> <m> <x>,<b>,<s>        Setze fÃ¼r das Pack <n> bis <m> die Farbe <x>, den Hintergrund <b> und den Style <s>
+  CHCOLOR <n> <x>,<b>,<s>            Setze fÃ¼r das Pack <n> die Farbe <x>, den Hintergrund <b> und den Style <s>
 
-  Werte für Farbe, Hintergrund:
+  Werte fÃ¼r Farbe, Hintergrund:
      0 keine Farbe
      1 Schwarz
      2 Blau
-     3 Grün
+     3 GrÃ¼n
      4 Rot
      5 Braun
      6 Violett
      7 Orange
      8 Gelb
-     9 Hellgrün
+     9 HellgrÃ¼n
     10 Cyan
     11 Hellcyan
     12 Hellblau
     13 Purpur
     14 Grau
     15 Hellgrau
-    16 Weiß
+    16 WeiÃŸ
 
-  Werte für Style:
+  Werte fÃ¼r Style:
      0 = kein
      1 = Fett
      2 = Unterstichen
@@ -840,7 +840,7 @@ bugfix: SSL
   CLOSEGET <net> <nick>            Breche den Upload von Bot <nick> ab
 
 321) status_time_dcc_chat
- Zeit in Sekunden bis zur nächsten Ausgabe der Status-Zeile im DCC Chat.
+ Zeit in Sekunden bis zur nÃ¤chsten Ausgabe der Status-Zeile im DCC Chat.
  Default: 120
 
 Debugging und Logging verbessert.
@@ -863,13 +863,13 @@ bugfix: CHCOLOR
   zur Konfiguration eines Netzes.
 
 Configure LOCALBASE= PREFIX=
-  Setze die Verzeichnisse für benötigte Bibliotheken und die Installation.
+  Setze die Verzeichnisse fÃ¼r benÃ¶tigte Bibliotheken und die Installation.
 
 319) CHCOLOR
 
   Neue Admin Kommandos:
-  CHCOLOR <n> <m> <x>,<b>            Setze für das Pack <n> bis <m> die Farbe <x> und den Hintergrund <b>
-  CHCOLOR <n> <x>,<b>                Setze für das Pack <n> die Farbe <x> und den Hintergrund <b>
+  CHCOLOR <n> <m> <x>,<b>            Setze fÃ¼r das Pack <n> bis <m> die Farbe <x> und den Hintergrund <b>
+  CHCOLOR <n> <x>,<b>                Setze fÃ¼r das Pack <n> die Farbe <x> und den Hintergrund <b>
 
 bugfix: CTCP
   versions affected: 3.13 - 3.20
@@ -894,11 +894,11 @@ bugfix: viele gleichzeitige Transfers
   Bot konnte bei der auswahl eines Transfers crashen.
 
 317) restrictsend, restrictlist
-  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+  Kann jetzt fÃ¼r jedes Netzwerk einzeln gesetzt werden.
 
 316) ruby_script
   Erweiterte Methode "info_pack" un auf Daten einens Packs zuzugreifen.
-  Verfügbar: "lock", "dlimit_max", "dlimit_used", "has_md5sum", "has_crc32", "mtime", "xtime", "crc32", "md5sum"
+  VerfÃ¼gbar: "lock", "dlimit_max", "dlimit_used", "has_md5sum", "has_crc32", "mtime", "xtime", "crc32", "md5sum"
 
 315) logrotate
   Die Datei logfile_httpd wird auch rotiert.
@@ -945,10 +945,10 @@ Ab Version 3.19:
 311) Authentifizierung mit SSL + CertFP
   Authentifizierung mit einem selbst erzeugten SSL Zertifikat.
   Der Bot sucht nach der Datei "<networkname>.pem", in der
-  das Zertifikat und der Schlüssel sein müssen. Wenn diese
+  das Zertifikat und der SchlÃ¼ssel sein mÃ¼ssen. Wenn diese
   Datei nicht existiert, sucht er nach den Dateien
    "<networkname>.crt" "<networkname>.key".
-  Das Zertifikat wird beim Verbindem mit dem Server übertragen.
+  Das Zertifikat wird beim Verbindem mit dem Server Ã¼bertragen.
 
 310) XDCC REMOVE
 
@@ -958,7 +958,7 @@ Ab Version 3.19:
 
 309) passive_dcc_chat
   Erlaube allen Admins auch passiven DCC Chat zu verwenden.
-  Default: Aus. Admins müssen den Chat vom Bot über den Befehl:
+  Default: Aus. Admins mÃ¼ssen den Chat vom Bot Ã¼ber den Befehl:
   "/MSG bot ADMIN password CHATME" anfordern.
 
 bugfix: autoadd
@@ -970,10 +970,10 @@ bugfix: mirc_dcc64
 
 bugfix: need_level
   versions affected: 2.0 - 3.18
-  Melde dem Benutzer welchen Status er benötigt.
+  Melde dem Benutzer welchen Status er benÃ¶tigt.
 
 308) http_admin_dir
-  Ein geschützttes Verrzeichnis mit weiteren Dateien für den Webserver.
+  Ein geschÃ¼tzttes Verrzeichnis mit weiteren Dateien fÃ¼r den Webserver.
   Nur der http_admin Benutzer kann daruaf zugreifen.
   Default: keins.
 
@@ -984,7 +984,7 @@ bugfix: need_level
 306) NOANNOUNCE
 
   Neues Admin Kommando:
-  NOANNOUNCE <x>                     Sperrt alle ANNOUNCE für die nächsten <x> Minuten
+  NOANNOUNCE <x>                     Sperrt alle ANNOUNCE fÃ¼r die nÃ¤chsten <x> Minuten
 
 bugfix: http_search
   versions affected: 3.16 - 3.18
@@ -994,23 +994,23 @@ Ab Version 3.18:
 ----------------
 
 bugfix: statefile
-  Benutze 64bit Zeiten wenn verfügbar.
+  Benutze 64bit Zeiten wenn verfÃ¼gbar.
   Lese 32bit statefile auf 64bit Systemen.
 
 305) slow_privmsg
   Begrenze PRIVMSG auf 1 Zeile alle n Sekunden. Damit verhindert man das
-  der Bot ein Flooding auslöst.
+  der Bot ein Flooding auslÃ¶st.
   Nur per Netzwerk einstellbar.
 
 304) Optimierung
   Benutze freie CRC32 Tabellen.
-  Es wird weniger Speicher benötigt.
+  Es wird weniger Speicher benÃ¶tigt.
   Beschleunigtes Schreiben der Datei statefile.
 
 303) XDCC SEND
   Sende "DCC SEND" Nachricht nochmal, wenn der Benutzer nicht verbindet.
 
-bugfix: keine Limit für die Ausgabe auf der Konsole.
+bugfix: keine Limit fÃ¼r die Ausgabe auf der Konsole.
 
 bugfix: old_statefile
   Lese auch alte 32bit Zeitdaten.
@@ -1029,9 +1029,9 @@ bugfix: statefile
 302) CHCOLOR
 
   Neue Admin Kommandos:
-  CHCOLOR <n> <m> <x>                Setze für das Pack <n> bis <m> die Farbe <x>
-  CHCOLOR <n> <x>                    Setze für das Pack <n> die Farbe <x>
-  CHCOLOR <n>                        Lösche die Farbe für das Pack <n>
+  CHCOLOR <n> <m> <x>                Setze fÃ¼r das Pack <n> bis <m> die Farbe <x>
+  CHCOLOR <n> <x>                    Setze fÃ¼r das Pack <n> die Farbe <x>
+  CHCOLOR <n>                        LÃ¶sche die Farbe fÃ¼r das Pack <n>
 
 Ab Version 3.17:
 ----------------
@@ -1043,7 +1043,7 @@ Ab Version 3.16:
 ----------------
 
 301) xdccxmlfile
-  Neue Tags für Warteschangen "mainqueue" and "idlequeue".
+  Neue Tags fÃ¼r Warteschangen "mainqueue" and "idlequeue".
 
 bugfix: http_port
   Verwende ';' anstelle von '&' in der Navigation.
@@ -1055,13 +1055,13 @@ bugfix: CHDESC
 301) ruby_script
   Neue Methode "on_added", wird bei jedem neuen Pack aufgerufen.
   Neue Methode "info_pack" un auf Daten einens Packs zuzugreifen.
-  Verfügbar: "file", "desc", "note", "group", "trigger", "gets", "size"
+  VerfÃ¼gbar: "file", "desc", "note", "group", "trigger", "gets", "size"
 
 bugfix: transfermethod "linux-sendfile"
   Benutze normales Lesen/Screiben wenn sendfile nicht startet.
 
 300) xdccxmlfile
-  Neue Tags für Netzwerk und Nicknamen.
+  Neue Tags fÃ¼r Netzwerk und Nicknamen.
 
 bugfix: removelostfiles
   Entferne alle Packs in einem Lauf.
@@ -1080,10 +1080,10 @@ bugfix: removelostfiles
   Neues Tag "transferedtotalbytes".
   Tag "added" ist umbenannt in "adddate".
 
-opensolaris: Setze Buffer für Netzwerk
+opensolaris: Setze Buffer fÃ¼r Netzwerk
 
 bugfix: xdcclistfile
-  Größe wurde ogne Einheit angezeit wenn die bytes auf 10.0 aufgerundet wurden.
+  GrÃ¶ÃŸe wurde ogne Einheit angezeit wenn die bytes auf 10.0 aufgerundet wurden.
 
 bugfix: Speicherlecks behoben
 
@@ -1094,14 +1094,14 @@ bugfix: connectionmethod ssl
 
 bugfix: XDCC upload
   Bei einigen Versionen von mIRC kam beim passiven upload
-  die Fehlermeldung "Datei zu groß".
+  die Fehlermeldung "Datei zu groÃŸ".
 
 bugfix: Speicherlecks behoben
 
 295) getipfromupnp
-  Hole die IP-Adresse vom UPnP-Router und verwende sie als Wert für
+  Hole die IP-Adresse vom UPnP-Router und verwende sie als Wert fÃ¼r
   usenatip. Setze usenatip auf einen beliebigen Startwert (z.B.: 0.0.0.0)
-  wenn diese Funktion benutzt werden soll. Sinnvoll für Bots die eine
+  wenn diese Funktion benutzt werden soll. Sinnvoll fÃ¼r Bots die eine
   dynamische IP haben.
 
 Ab Version 3.15:
@@ -1114,11 +1114,11 @@ bugfix: Darwin
   Iroffer kann wieder auf Darwin/MacOS 10.x genaut weden.
 
 bugfix: upnp_router
-  Update für libminiupnpc 1.3
+  Update fÃ¼r libminiupnpc 1.3
 
 294) http_geoip
-  Aktiviert die Prüfung des Landes mit der GeoIP Datenbank für HTTP.
-  Default: keine Prüfung
+  Aktiviert die PrÃ¼fung des Landes mit der GeoIP Datenbank fÃ¼r HTTP.
+  Default: keine PrÃ¼fung
 
 293) vital information
   Melde den Admin welche Variable fehlt.
@@ -1126,10 +1126,10 @@ bugfix: upnp_router
 292) NEWANN
 
   Neues Admin Kommando:
-  NEWANN <n>                         ANNOUNCE für die letzen <n> Pakete in allen Channels
+  NEWANN <n>                         ANNOUNCE fÃ¼r die letzen <n> Pakete in allen Channels
 
 291) geoipexcludegroup
-  Erlaube den Download für Packs in dieser Gruppe, auch wenn geoip ein
+  Erlaube den Download fÃ¼r Packs in dieser Gruppe, auch wenn geoip ein
   falsches Land ausgibt.
 
 290) XDLGROUP
@@ -1141,7 +1141,7 @@ bugfix: upnp_router
   Erlaube HTML Weiterleitung bei FETCH.
 
 bugfix: GET
-  Die Hostmask funktionierte nicht wenn der der Nick die Zeichen "[]" einthält.
+  Die Hostmask funktionierte nicht wenn der der Nick die Zeichen "[]" einthÃ¤lt.
 
 288) logfile_httpd
   Wenn aktiviert, zeichnet Iroffer alle Meldungen zum HTPP Server in dem
@@ -1156,10 +1156,10 @@ Ab Version 3.14:
   RESTART                            Beende den Bot und starte ihn neu
 
 287) Chats und Uploads
-  Keine harten Grenzen für Chats und Uploads.
+  Keine harten Grenzen fÃ¼r Chats und Uploads.
 
 bugfix: XDCC SEND LIST
-  Bot stützt ab wenn xdcclistfile nicht definiert ist.
+  Bot stÃ¼tzt ab wenn xdcclistfile nicht definiert ist.
 
 bugfix: Speicherlecks behoben
 
@@ -1188,7 +1188,7 @@ bugfix: autoadd_group_match
 
 bugfix: DCLD
   versions affected: 3.13
-  Zeige die Nicks in urpsrünglicher Schreibweise.
+  Zeige die Nicks in urpsrÃ¼nglicher Schreibweise.
 
 Ab Version 3.13:
 ----------------
@@ -1211,10 +1211,10 @@ bugfix: channel
   Keine Warnung mehr wenn der letze Parameter auf '"' endet.
 
 bugfix: ignore
-  Auch Uploads sind jetzt mit ignore geschützt.
+  Auch Uploads sind jetzt mit ignore geschÃ¼tzt.
 
 283) htdocs
-  Erlaube das Ausführen von ruby skripten (.rb) über HTTP.
+  Erlaube das AusfÃ¼hren von ruby skripten (.rb) Ã¼ber HTTP.
 
 Configure -no-libs
   Baue eine statische version des Bots.
@@ -1223,7 +1223,7 @@ bugfix: CONFIG
   Bot crashte wenn kein Argument angegeben wurde.
 
 bugfix: xdcclist_grouponly
-  Falls beim REHASH geändert, wird das xdcclistfile neu erzeugt.
+  Falls beim REHASH geÃ¤ndert, wird das xdcclistfile neu erzeugt.
 
 282) QUL
   Berechne die Wartezeit genauer.
@@ -1251,7 +1251,7 @@ bugfix: ADDDIR
   versions affected: 3.12
   Feherbehebung bei Verzeichnissen und Dateien mit Leerzeichen.
 
-Erweiterte italienische Übersezung.
+Erweiterte italienische Ãœbersezung.
 
 bugfix: weblist_info
   Zeige " im Namen nicht an.
@@ -1260,21 +1260,21 @@ Ab Version 3.12:
 ----------------
 
 bugfix: FETCHCANCEL
-  Erlaube Übertragungen mit Id größer 1 abzubrechen.
-  Die Id ist jetzt für die Dauer der Übertragung fest.
+  Erlaube Ãœbertragungen mit Id grÃ¶ÃŸer 1 abzubrechen.
+  Die Id ist jetzt fÃ¼r die Dauer der Ãœbertragung fest.
 
 bugfix: trashcan_dir
-  Entferne Dateien nicht, wenn das verschieben fehlschlägt.
+  Entferne Dateien nicht, wenn das verschieben fehlschlÃ¤gt.
 
 bugfix: FILEDEL
   versions affected: 3.0 - 3.11
-  Bot stürzte bei relativen Pfaden ab.
+  Bot stÃ¼rzte bei relativen Pfaden ab.
 
 279) channel -notrigger
   Antworte auf keine Trigger in diesem Channel.
 
 278) send_batch, XDCC BATCH
-  Erlaube XDCC BATCH. Die Pakete werden in die Warteschlangen eingefügt.
+  Erlaube XDCC BATCH. Die Pakete werden in die Warteschlangen eingefÃ¼gt.
   default: nicht erlaubt
 
   Neue User Kommandos:
@@ -1284,12 +1284,12 @@ bugfix: FILEDEL
   XDCC BATCH <von>-<bis> <passwort>  Sende die Pakete von Nummer <von> bis Nummer <bis> mit Passwort
 
 277) ruby_script
-  Reload wenn sich das ruby_script geändert wird.
+  Reload wenn sich das ruby_script geÃ¤ndert wird.
   Fehlerbehandlung bei Problemen im Skript.
   Skript ist jetzt Event orientiert,
   Bitte alle alten Skripte neu schreiben.
-  Autovoice ist jetzt möglich.
-  Admin Kommandos sind jetzt möglich.
+  Autovoice ist jetzt mÃ¶glich.
+  Admin Kommandos sind jetzt mÃ¶glich.
 
 bugfix: XDCC upload
   versions affected: 3.2 - 3.11
@@ -1299,15 +1299,15 @@ bugfix: DUMP
   Schreibe den DUMP nicht mehr in Chat oder Konsole.
 
 276) no_auto_rehash
-  Wenn aktivert, wird der Bot bei einer Änderung an einer Konfiguraions-
-  datei automatsich einen REHASH durchführen.
+  Wenn aktivert, wird der Bot bei einer Ã„nderung an einer Konfiguraions-
+  datei automatsich einen REHASH durchfÃ¼hren.
   Default: automatsicher REHASH.
 
 275) XDCC SEARCH
-  Nutze alle Argumente für die Suche.
+  Nutze alle Argumente fÃ¼r die Suche.
 
 274) group_admin
-  Erlaube group_admin deb Bot über "/msg ADMIN" zu steuern.
+  Erlaube group_admin deb Bot Ã¼ber "/msg ADMIN" zu steuern.
 
 Debugging und Logging verbessert.
 
@@ -1319,12 +1319,12 @@ Ab Version 3.11:
 ----------------
 
 bugfix: FETCH
-  Prüfe nicht den Namen der SSL Zertifikate.
+  PrÃ¼fe nicht den Namen der SSL Zertifikate.
 
 Debugging und Logging verbessert.
 
 bugfix: NOSEND, NOLIST, NOSAVE, NOMD5
-  Im Falle eines Überlaufes werden die Minuten begrentzt.
+  Im Falle eines Ãœberlaufes werden die Minuten begrentzt.
 
 bugfix: DCC CHAT
   versions affected: 3.0 - 3.10
@@ -1333,7 +1333,7 @@ bugfix: DCC CHAT
 bugfix: Speicherlecks behoben
 
 bugfix: XDCC SEND
-  Lasse neue XDCC SEND direkt zum Ende des trasnfers nicht die Warteschlange überspringen.
+  Lasse neue XDCC SEND direkt zum Ende des trasnfers nicht die Warteschlange Ã¼berspringen.
 
 bugfix: XDCC SEND
   Setzte neue XDCC SEND beim Start des Bots in die 2. Warteschlange.
@@ -1349,9 +1349,9 @@ bugfix: AUTOGROUP
 
 272) ANNOUNCE
   Neue Admin Kommandos:
-  ANNOUNCE n                      ANNOUNCE <autoaddann> für Paket <n> in allen Channels
-  MANNOUNCE <n> <m>               ANNOUNCE <autoaddann> für Paket <n> bis <m> in allen Channels
-  CANNOUNCE <channnel> <n>        ANNOUNCE <autoaddann> für Paket <n> in Channel <channnel>
+  ANNOUNCE n                      ANNOUNCE <autoaddann> fÃ¼r Paket <n> in allen Channels
+  MANNOUNCE <n> <m>               ANNOUNCE <autoaddann> fÃ¼r Paket <n> bis <m> in allen Channels
+  CANNOUNCE <channnel> <n>        ANNOUNCE <autoaddann> fÃ¼r Paket <n> in Channel <channnel>
 
 271) no_status_chat
   Wenn aktivert, meldet der Bot keine Status-Zeile im Chat.
@@ -1365,43 +1365,43 @@ bugfix: AUTOGROUP
   JOIN <channel> <net> <key> Betrete den Channel <channel> mit Kennwort <key> bis zum REHASH
 
 bugfix: REGROUP
-  Das umbenennen in die Gruppe "MAIN" ist möglich.
+  Das umbenennen in die Gruppe "MAIN" ist mÃ¶glich.
 
 268) charset
-  Hier muss der Zeichensatz für die Dateinamen angegeben werden.
+  Hier muss der Zeichensatz fÃ¼r die Dateinamen angegeben werden.
   Den Zeichnensatz auch in "header.html" anpassen.
 
 bugfix: DCC CHAT
-  Beschränke das Passwort des Admins auf den adminhost.
+  BeschrÃ¤nke das Passwort des Admins auf den adminhost.
 
 bugfix: /etc/auth.conf
   Configure erkennt md5 und blf.
 
 bugfix: xdccxmlfile
-  Ausgabe von Dateinamen in UTF-8 möglich.
+  Ausgabe von Dateinamen in UTF-8 mÃ¶glich.
 
 267) support setlocale()
 
 bugfix: XDCC SEND LIST
-  Bot stürtzt ab wenn zu viele XDCC SEND LIST mit Nummer -1
+  Bot stÃ¼rtzt ab wenn zu viele XDCC SEND LIST mit Nummer -1
 
 bugfix: REHASH pidfile
   versions affected: 3.0 - 3.10
-  Wenn bei REHASH sich das pidfile ändert, lösche das Alte und erzeuge ein Neues.
+  Wenn bei REHASH sich das pidfile Ã¤ndert, lÃ¶sche das Alte und erzeuge ein Neues.
 
 Debugging und Logging verbessert.
 
 bugfix: XDCC STOP
-  Lösche den User von beiden Wartenschlangen.
+  LÃ¶sche den User von beiden Wartenschlangen.
 
 bugfix: send_listfile
-  Unterdrücke die Warnung wenn das send_xdccfile sich ändert.
+  UnterdrÃ¼cke die Warnung wenn das send_xdccfile sich Ã¤ndert.
 
 266) -i mybot.xdcc
   Importiere alte "mybot.xdcc" Datei beim Start.
 
 bugfix: XDCC LIST
-  Zeige Transfervolumen auch an wenn größer 10TB.
+  Zeige Transfervolumen auch an wenn grÃ¶ÃŸer 10TB.
 
 Ab Version 3.10:
 ----------------
@@ -1413,13 +1413,13 @@ bugfix: xdccxmlfile
   Packinfo erweitert um added
 
 bugfix: upnp_router
-  Update für libminiupnpc 1.2
+  Update fÃ¼r libminiupnpc 1.2
 
 bugfix: CLOSEC
   Gebe Port und UPNP Daten frei.
 
 bugfix: REGROUP
-  Nach REGROUP konnte es 2 Beschreibungen für eine Gruppe geben.
+  Nach REGROUP konnte es 2 Beschreibungen fÃ¼r eine Gruppe geben.
 
 bugfix: ADDGROUP
   Einstellung autoadd_sort wurde bei ADDGROUP ignoriert.
@@ -1431,7 +1431,7 @@ bugfix: FETCH, SSL
   Verbesserte Erkennung der SSL Funktionen unter Debian.
 
 bugfix: CHTRIGGER
-  Wenn der Trigger geänder wird, wird der alte entfernt.
+  Wenn der Trigger geÃ¤nder wird, wird der alte entfernt.
 
 bugfix: group_admin
   Bot frierte ein, wenn REMOVEDIR nicht alle Packs entfernen darf.
@@ -1446,31 +1446,31 @@ bugfix: SunOS
   Bot baut wieder auf SunOS.
 
 264) xdcc_allow
-  Hiermit kann eingeschränkt werden, wer per DCC vom Bot laden darf.
-  Es können mehrere Masken angegeben werden.
+  Hiermit kann eingeschrÃ¤nkt werden, wer per DCC vom Bot laden darf.
+  Es kÃ¶nnen mehrere Masken angegeben werden.
   Default: alle.
 
 263) xdcc_deny
   Hier kann man angeben, wer nicht per DCC vom Bot laden darf.
-  Es können mehrere Masken angegeben werden.
+  Es kÃ¶nnen mehrere Masken angegeben werden.
   Default: keiner.
 
 bugfix: http_deny, http_allow
-  Geändert in CIDR Syntax.
+  GeÃ¤ndert in CIDR Syntax.
 
 bugfix: IGNORE
-  Wenn der Wert zu groß ist, wird das Maximum benutzt.
+  Wenn der Wert zu groÃŸ ist, wird das Maximum benutzt.
 
 bugfix: IGNORE
-  Prüfe die Liste auch bei Trigger, "!list", "@find" and "!new"
+  PrÃ¼fe die Liste auch bei Trigger, "!list", "@find" and "!new"
 
 bugfix: UNIGNORE
-  Finde hostmask egal ob Groß- oder Kleinschreibung.
+  Finde hostmask egal ob GroÃŸ- oder Kleinschreibung.
 
 bugfix: Speicherlecks behoben
 
 262) mirc_dcc64
-  Alle Übertragungen größer 4GB werden als mIRC 64bit DCC gestartet.
+  Alle Ãœbertragungen grÃ¶ÃŸer 4GB werden als mIRC 64bit DCC gestartet.
   HINWEIS: Damit funktioniert nur noch mIRC Version 6.33.
   HINWEIS: XChat, Irssi funktionieren nur mit 32bit DCC.
   Default: 32bit DCC
@@ -1488,16 +1488,16 @@ bugfix: CANNOUNCE
 
   Neue Admin Kommandos:
   LOCK <n> <m> <passwort>    Sichert Pack <n> bis <m> mit Passwort <passwort>
-  UNLOCK <n> <m>             Entfernt das Passwort für Pack <n> bis <m>
+  UNLOCK <n> <m>             Entfernt das Passwort fÃ¼r Pack <n> bis <m>
 
 259) group_admin
-  Die Gruppen Befehle können nur von jemanden ausgeführt werden, dessen
-  hostmaske auf die Vorgabe passt, und der das nötige Kennwort kennt.
-  Seine Rechte sind außerdem über den Level eingeschränkt.
+  Die Gruppen Befehle kÃ¶nnen nur von jemanden ausgefÃ¼hrt werden, dessen
+  hostmaske auf die Vorgabe passt, und der das nÃ¶tige Kennwort kennt.
+  Seine Rechte sind auÃŸerdem Ã¼ber den Level eingeschrÃ¤nkt.
   group_admin <level> <hostmask> <encrypted_password> <grouplist>
 
 bugfix: upnp_router
-  Update für libminiupnpc 1.1
+  Update fÃ¼r libminiupnpc 1.1
 
 Ab Version 3.9:
 ---------------
@@ -1525,10 +1525,10 @@ bugfix: Speicherlecks behoben
   mehrfach als Pack eingetragen wird.
 
 bugfix: DCC RESUME
-  Erkenne vollständigen Download bei Resume > 4 GB.
+  Erkenne vollstÃ¤ndigen Download bei Resume > 4 GB.
 
 bugfix: DCLD
-  Zeige resumesize für Dateien > 4GB richtig an.
+  Zeige resumesize fÃ¼r Dateien > 4GB richtig an.
 
 bugfix: fish
   Einige Werte wurden nicht richtig dekodiert.
@@ -1537,15 +1537,15 @@ bugfix: fish
   Erlaube dem http_admin den Download der Packs via HTTP.
 
 254) http_allow
-  Hiermit kann eingeschränkt werden, wer per HTTP auf den Bot zugreifen
-  darf. Es können mehrere Masken angegeben werden.
+  Hiermit kann eingeschrÃ¤nkt werden, wer per HTTP auf den Bot zugreifen
+  darf. Es kÃ¶nnen mehrere Masken angegeben werden.
   Jokerzeichen sind:
    * = 0 oder mehr Zeichen,  ? = 1 Zeichen,  # = jede positive Zahl
   Default: alle.
 
 253) http_deny
   Hier kann man angeben, wer per HTTP auf den Bot nicht zugreifen darf.
-  Es können mehrere Masken angegeben werden.
+  Es kÃ¶nnen mehrere Masken angegeben werden.
   Jokerzeichen sind:
    * = 0 oder mehr Zeichen,  ? = 1 Zeichen,  # = jede positive Zahl
   Default: keiner.
@@ -1559,7 +1559,7 @@ bugfix: http_port
 
 bugfix: restrictsend
   versions affected: 1.2 - 3.8
-  restrictsend wurde nicht geprüft, stattdessen wurde restrictlist benutzt.
+  restrictsend wurde nicht geprÃ¼ft, stattdessen wurde restrictlist benutzt.
 
 bugfix: autoadd_sort
   Das sortieren nach Gruppe funktioniert jetzt.
@@ -1571,7 +1571,7 @@ bugfix: new_trigger (contributed by dns777)
   Erlaube CTCP LIST.
 
 250) #channel -rgroup (contributed by dns777)
-  Users in diesen Channel können nur Packs aus den hier
+  Users in diesen Channel kÃ¶nnen nur Packs aus den hier
   angegebenen Gruppen oder der Hauptgruppe anfordern.
 
 249) #channel -listmsg (contributed by dns777)
@@ -1588,15 +1588,15 @@ bugfix: BOTINFO
   bekommt.
 
 246) need_voice, need_level
-  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+  Kann jetzt fÃ¼r jedes Netzwerk einzeln gesetzt werden.
 
 245) MD5/CRC
-  Zeige die Nummer des Packs bei den Nachrichten über den MS5/CRC Status an.
+  Zeige die Nummer des Packs bei den Nachrichten Ã¼ber den MS5/CRC Status an.
 
 244) verbose_crc32
-  Standardmässig meldet iroffer beim Hinzufügen von Paketen nur Fehler
+  StandardmÃ¤ssig meldet iroffer beim HinzufÃ¼gen von Paketen nur Fehler
   beim Vergleichen der Checksumme. Wenn diese Option gesetzt isst, so
-  meldet iroffer die Prüfsumme bei allen Dateien.
+  meldet iroffer die PrÃ¼fsumme bei allen Dateien.
 
 Debugging und Logging verbessert.
 
@@ -1604,22 +1604,22 @@ Ab Version 3.8:
 ---------------
 
 243) fish_exclude_nick
-  Nachrichten an diese Nicks werden nicht verschlüsselt.
+  Nachrichten an diese Nicks werden nicht verschlÃ¼sselt.
 
 bugfix: http_port
   Bot kann beim shutdown crashen, wenn das xdcclistfile per HTTP angefordert wird.
 
 bugfix: GROUPDESC
-  Erlaube Text in Anführungszeichen.
+  Erlaube Text in AnfÃ¼hrungszeichen.
 
 bugfix: FETCH
-  Resume mit curl < 7.11.0 jetzt möglich.
+  Resume mit curl < 7.11.0 jetzt mÃ¶glich.
 
 bugfix: CONFIG
   Bot crashte wenn admin CONFIG ohne Parameter eingibt.
 
 242) privmsg_encrypt
-  Wenn gesetzt, werden alle NOTICE and PRIVMSG verschlüsselt.
+  Wenn gesetzt, werden alle NOTICE and PRIVMSG verschlÃ¼sselt.
 
 241) dos_text_files
   Schreibe das xdcclistfile als DOS Text, mit CRLF als Zeilenumbruch.
@@ -1636,17 +1636,17 @@ bugfix: CONFIG
   geschrieben oder im Bot gespeichert.
 
 238) privmsg_fish
-  Wenn gesetzt, werden alle Nachrichten mit diesem Schlüssel dekodiert.
+  Wenn gesetzt, werden alle Nachrichten mit diesem SchlÃ¼ssel dekodiert.
 
 bugfix: autoadd_group_match
   Wenn die Gruppe nicht existierte, wurde keine Beschreibung angelegt.
 
 237) Italienische Texte
   Aktiviert werde diese durch "./Lang it" nach dem "Configure"
-  Zurück zum Englischen geht es mit "./Lang en"
+  ZurÃ¼ck zum Englischen geht es mit "./Lang en"
 
 bugfix: channel -fish key
-  Bot konnte crashen, wenn Zeile mit bestimmter Länge ausgegeben wurden.
+  Bot konnte crashen, wenn Zeile mit bestimmter LÃ¤nge ausgegeben wurden.
 
 bugfix: new_trigger
   Bot crashte, wenn "!new" auf einem Bot ohne Pakete rennt.
@@ -1655,15 +1655,15 @@ bugfix: xdccxmlfile
   Ausgabe "packsize" von sehr kleien Dateien war fehlerhaft.
 
 bugfix: FETCHCANCEL
-  Bot meldete ständig "curlhandle not found"
+  Bot meldete stÃ¤ndig "curlhandle not found"
 
 Debugging und Logging verbessert.
 
 bugfix: Speicherlecks behoben
 
 236) fish_only
-  Wenn gesetzt, werden unverschlüsselte Trigger in channels mit FISH
-  Verschlüsselung ignoriert.
+  Wenn gesetzt, werden unverschlÃ¼sselte Trigger in channels mit FISH
+  VerschlÃ¼sselung ignoriert.
 
 bugfix: autoadd_group_match
   autoadd_group_match geht jetzt auch ohne auto_default_group.
@@ -1675,21 +1675,21 @@ Ab Version 3.7:
   Suche auch nach dem Datum, falls konfiguriert.
 
 234) reconnect_delay
-  Nach Verbindungsverlust, warte noch für n Sekunden.
+  Nach Verbindungsverlust, warte noch fÃ¼r n Sekunden.
 
 bugfix: reconnect
   Bei Verbindunsverlust wird nicht sofort wiederverbunden.
 
 233) SORT
   Neue Admin Kommandos:
-  SORT ADDED                       Sortiere alle Pakete nach dem Datum des Hinzufügens
-  SORT -ADDED                      Sortiere alle Pakete rückwärts nach dem Datum des Hinzufügens
+  SORT ADDED                       Sortiere alle Pakete nach dem Datum des HinzufÃ¼gens
+  SORT -ADDED                      Sortiere alle Pakete rÃ¼ckwÃ¤rts nach dem Datum des HinzufÃ¼gens
 
 232) show_date_added
-  Zeige das Datum, an dem das Paket hinzugefügt wurde, bei XDCC LIST an.
+  Zeige das Datum, an dem das Paket hinzugefÃ¼gt wurde, bei XDCC LIST an.
 
 bugfix: -no-memsave
-  Bot kann beim Start abstürzen
+  Bot kann beim Start abstÃ¼rzen
 
 231) BOTINFO
   Erweitere BOTINFO um die Zeit wie lang der bot auf dem Server und im Channel ist.
@@ -1699,7 +1699,7 @@ bugfix: connectionmethod ssl
   Bot konnte Probleme beim beim erneuten verbinden haben.
 
 230) <TAB>
-  Befehlesergänzung mit der Takste <TAB> in der Konsole.
+  BefehlesergÃ¤nzung mit der Takste <TAB> in der Konsole.
 
 Debugging und Logging verbessert.
 
@@ -1709,36 +1709,36 @@ bugfix: PSEND
 
 229) new_trigger
   Antwortet auf den Befehl "!new" im Channel geschrieben.
-  Als Antwort gibe es die <n> zuletzt hinzugefügten Pakete.
+  Als Antwort gibe es die <n> zuletzt hinzugefÃ¼gten Pakete.
   Bei n = 0 ist diese Funktion abgeschaltet.
 
 228) direct_config_access, CONFIG
-  Erlaube dem Admin die Konfiguration zu ändern.
+  Erlaube dem Admin die Konfiguration zu Ã¤ndern.
 
   Neues Admin Kommando:
   CONFIG <key> <value>
 
 227) disk_quota
-  Prüfe den genutzten Platz auf der Disk (MBytes). Neue Pakete werden
-  nicht hinzugefügt, wenn diese Summe erreicht wird.
+  PrÃ¼fe den genutzten Platz auf der Disk (MBytes). Neue Pakete werden
+  nicht hinzugefÃ¼gt, wenn diese Summe erreicht wird.
 
 bugfix: Speicherlecks behoben
 
 226) fileremove_max_packs
-  Maximale Zahl der Pakete auf diesem Bot. Wenn mehr Pakete hinzugefügt
-  werden, so werden die ältesten von der Festplatte gelöscht.
+  Maximale Zahl der Pakete auf diesem Bot. Wenn mehr Pakete hinzugefÃ¼gt
+  werden, so werden die Ã¤ltesten von der Festplatte gelÃ¶scht.
   Default: 0 = keine Aktion.
 
 226) channel -fish key
-  Verschlüsselung der Announces und Trigger mit blowfish.
+  VerschlÃ¼sselung der Announces und Trigger mit blowfish.
 
 bugfix: restrictsend
   versions affected: 3.5 - 3.6
-  restrictsend wurde nicht geprüft, stattdessen wurde restrictlist benutzt.
+  restrictsend wurde nicht geprÃ¼ft, stattdessen wurde restrictlist benutzt.
 
 bugfix: channel -pformat full -pgroup
   pgroup Announces immer einzeln je channel.
-  Andere Announces können zusammengefasst werden.
+  Andere Announces kÃ¶nnen zusammengefasst werden.
 
 225) IRC 470
   Betrete den Channel nicht mehr, wenn ein Bann den bot in anderen anderen Channel schubst.
@@ -1753,31 +1753,31 @@ bugfix: autoadd
   Ignoriere Datein die grade als Upload laufen.
 
 224) transferlimits
-  melde welches transferlimit überschritten wurde.
+  melde welches transferlimit Ã¼berschritten wurde.
 
 bugfix: http_port
   versions affected: 3.5
-  Webliste konnte unvollständig ausgegeben werden.
+  Webliste konnte unvollstÃ¤ndig ausgegeben werden.
 
 bugfix: FETCH
   Erlaube extra Leerzeichen am Anfang der URL
 
 bugfix: DCC RESUME
   versions affected: 2.10 - 3.5
-  Sonderbehandlung für Clients die den Dateinames escapen.
+  Sonderbehandlung fÃ¼r Clients die den Dateinames escapen.
 
 223) CHTIME
   Neue Admin Kommandos:
-  CHTIME <n>                       Löscht das Datum für das Paket <n>.
-  CHTIME <n> <datum>               Setzt das Datum für das Paket <n>.
+  CHTIME <n>                       LÃ¶scht das Datum fÃ¼r das Paket <n>.
+  CHTIME <n> <datum>               Setzt das Datum fÃ¼r das Paket <n>.
 
 Debugging und Logging verbessert.
 
 222) old_statefile
-  Kein Speicheren von unnötigen Daten im statefile im default.
+  Kein Speicheren von unnÃ¶tigen Daten im statefile im default.
   Diese Option schreibt ein zu alten Versionen passendes statefile.
 
-WARNUNG: Erforderlich für die PHP Webliste iroffer-state.php Version 2.10 and kleiner.
+WARNUNG: Erforderlich fÃ¼r die PHP Webliste iroffer-state.php Version 2.10 and kleiner.
 
 221) XDCC SEARCH, FIND
   Die Zeichen *,?,# sind Sonderfunktionen.
@@ -1787,12 +1787,12 @@ bugfix: atfind
 
 220) NOSEND
   Neues Admin Kommando:
-  NOSEND <x> <msg>                 Verhindert das Versenden von Dateien in den nächsten <x> Minuten
-                                   Die Antwort an den Benutzer enthält <msg>.
+  NOSEND <x> <msg>                 Verhindert das Versenden von Dateien in den nÃ¤chsten <x> Minuten
+                                   Die Antwort an den Benutzer enthÃ¤lt <msg>.
 
 bugfix: http_admin
   versions affected: 3.0 - 3.5
-  Crash wenn ungültige Daten in URL.
+  Crash wenn ungÃ¼ltige Daten in URL.
 
 Configure -no-admin
   Baue Bot ohne HTTP Admin
@@ -1831,10 +1831,10 @@ Ab Version 3.5:
 
 bugfix: ADD
   versions affected: 3.0 - 3.4
-  Bot crasht wenn man einen Pfad hinzufügt der keine Datei ist.
+  Bot crasht wenn man einen Pfad hinzufÃ¼gt der keine Datei ist.
 
 bugfix: XDCC LIST
-  Text geändert, damit keine Befehle bei einem anderen Bot ausgelöst werden.
+  Text geÃ¤ndert, damit keine Befehle bei einem anderen Bot ausgelÃ¶st werden.
 
 216) http_port
   Javascript eingebaut um in die Zwischenablage zu kopieren.
@@ -1847,22 +1847,22 @@ bugfix: weblist_info uptime
 
 214) MANNOUNCE
   Neue Admin Kommandos:
-  MANNOUNCE <n> <m> <msg>         ANNOUNCE <msg> für Paket <n> bis <m> in allen Channels
-  SANNOUNCE <n> <m>               Kurzes ANNOUNCE für Paket <n> bis <m> in allen Channels
+  MANNOUNCE <n> <m> <msg>         ANNOUNCE <msg> fÃ¼r Paket <n> bis <m> in allen Channels
+  SANNOUNCE <n> <m>               Kurzes ANNOUNCE fÃ¼r Paket <n> bis <m> in allen Channels
 
-bugfix: großes Speicherleck behoben
+bugfix: groÃŸes Speicherleck behoben
   versions affected: 3.3 - 3.4
 
 bugfix: connectionmethod ssl
   versions affected: 3.0 - 3.4
-  Bot crasht wenn beim REHASH connectionmethod auf ssl geändert wird und as netwerk verbunden ist.
+  Bot crasht wenn beim REHASH connectionmethod auf ssl geÃ¤ndert wird und as netwerk verbunden ist.
 
 Ab Version 3.4:
 ---------------
 
 bugfix: punishslowusers
   versions affected: 3.3
-  Bot stürtzt ab wenn ein User über punishslowusers auslöst.
+  Bot stÃ¼rtzt ab wenn ein User Ã¼ber punishslowusers auslÃ¶st.
 
 bugfix: XDCC LIST GROUP
   versions affected: 3.0 - 3.3
@@ -1888,25 +1888,25 @@ bugfix: http_port
   Leck an Filehandles behoben.
 
 bugfix: IQUEUE
-  Immer in 2. Warteschlange einfügen, auch wenn 1. leer ist.
+  Immer in 2. Warteschlange einfÃ¼gen, auch wenn 1. leer ist.
 
 bugfix: DCC RESUME
-  Erkenne RESUME auch wenn ein NAT Router die Portnummer ändert.
+  Erkenne RESUME auch wenn ein NAT Router die Portnummer Ã¤ndert.
 
 bugfix: DCC RESUME
   versions affected: 2.10 - 3.2
-  Sonderbehandlung für Clients die den Dateinames escapen.
+  Sonderbehandlung fÃ¼r Clients die den Dateinames escapen.
 
 bugfix: connectionmethod ssl
   versions affected: 3.0 - 3.2
-  Bot crasht wenn beim REHASH connectionmethod auf ssl geändert wird.
+  Bot crasht wenn beim REHASH connectionmethod auf ssl geÃ¤ndert wird.
 
 213) autoadd_group_match
-  Gruppen für Pakete auf dem Verzeichnis autoadd_dir abhängig vom dem
+  Gruppen fÃ¼r Pakete auf dem Verzeichnis autoadd_dir abhÃ¤ngig vom dem
   Namen der Datei wird das Paket der Gruppe zugewiesen.
 
 bugfix: channel -headline
-  Syntax geändert, Text muß mit " eingeschlossen werden.
+  Syntax geÃ¤ndert, Text muÃŸ mit " eingeschlossen werden.
 
 212) announce_seperator
   Zeichen zwischen Pack Nummer und Name beim Announce.
@@ -1927,8 +1927,8 @@ bugfix: DCL
 
 211) ACCEPTU
   Neue Admin Kommandos:
-  ACCEPTU <min>                   Erlaube Uploads von jedem für <x> Minuten
-  ACCEPTU <min> <hostmask>        Erlaube Uploads von <hostmask> für <x> Minuten
+  ACCEPTU <min>                   Erlaube Uploads von jedem fÃ¼r <x> Minuten
+  ACCEPTU <min> <hostmask>        Erlaube Uploads von <hostmask> fÃ¼r <x> Minuten
   ACCEPTU 0                       Entferne jeden von der Liste der erlaubten Uploads
   ACCEPTU 0 <hostmask>            Entferne <hostmask> von der Liste der erlaubten Uploads
 
@@ -1963,14 +1963,14 @@ Ab Version 3.2:
 
 210) RELOCK
   Neues Admin Kommando:
-  RELOCK <altes-passwort> <passwort> Ändert alle Packet mit <altes-password> zu <passwort>
+  RELOCK <altes-passwort> <passwort> Ã„ndert alle Packet mit <altes-password> zu <passwort>
 
 209) BOTINFO
   Zeige DCC IP bei BOTINFO.
 
 bug_fix: usenatip
   versions affected: 3.0 - 3.1
-  usenatip wurde nur für das erste Netzwerk gesetzt.
+  usenatip wurde nur fÃ¼r das erste Netzwerk gesetzt.
   usenatip musste immer global aktiviert sein.
 
 bug_fix: getipfromserver
@@ -2005,33 +2005,33 @@ bugfix: connectionmethod ssl
 
 bugfix: window resize
   versions affected: 3.0
-  Unter CYGWIN funktiniert das Ändern der Festergröße nicht richtig.
+  Unter CYGWIN funktiniert das Ã„ndern der FestergrÃ¶ÃŸe nicht richtig.
 
 bugfix: FETCH
-  Ignoriere Dateien die über FETCH auf den Bot geladen werden.
+  Ignoriere Dateien die Ã¼ber FETCH auf den Bot geladen werden.
 
 bugfix: sentrecord
   versions affected: 2.4 - 3.0
   Wert wurde nicht aktualisiert.
 
 bugfix: http_search
-  Kurze Suchwörter funktionierten nicht.
+  Kurze SuchwÃ¶rter funktionierten nicht.
 
 bugfix: http_search
-  In der deutschen Übersetzung fehlte ein Parameter.
+  In der deutschen Ãœbersetzung fehlte ein Parameter.
 
 Ab Version 3.0:
 ---------------
 
 bufix: ignore
   versions affected: 2.4 - 2.16
-  Ignore wurder zu schnell gelöscht.
+  Ignore wurder zu schnell gelÃ¶scht.
 
 206) XDCC upload
-  Erkenne wen der Admin zweimal die gleiche Datei hochlädt.
+  Erkenne wen der Admin zweimal die gleiche Datei hochlÃ¤dt.
 
 205) mime_type
-  Lege zusätzliche Mime-Typen für die HTML Seiten fest.
+  Lege zusÃ¤tzliche Mime-Typen fÃ¼r die HTML Seiten fest.
   Beispiel: mime_type torrent application/x-bittorrent
 
 204) send_listfile
@@ -2039,19 +2039,19 @@ bufix: ignore
   XDCC SEND LIST.
 
 203) XDCC HELP
-  Hilfe für die Benutzer
+  Hilfe fÃ¼r die Benutzer
 
 202) user_modes
-  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+  Kann jetzt fÃ¼r jedes Netzwerk einzeln gesetzt werden.
 
 201) nogeoipcountry
-  Verhindere Downloads zu hier angegebenen Ländern.
-  Wenn konfiguriert ist der Zugriff für alle anderen Länder erlaubt,
+  Verhindere Downloads zu hier angegebenen LÃ¤ndern.
+  Wenn konfiguriert ist der Zugriff fÃ¼r alle anderen LÃ¤nder erlaubt,
   und geoipcountry ist nicht nutzbar.
 
 200) getip_network
   Hole die IP-Adresse von einem anderen Netzwerk.
-  Nützlich ween ein Netzwerk nicht die IP Addresse liefert.
+  NÃ¼tzlich ween ein Netzwerk nicht die IP Addresse liefert.
 
 bugfix: XDCC LIST GROUP
   Unter Last konnte die Gruppe verlorengehen.
@@ -2066,13 +2066,13 @@ bugfix: XDCC SEND
   Gebe '%' im Pack Beschreibung richtig aus.
 
 198) DCC SEND, XDCC upload
-  Unterstützung für Dateien >4GB
+  UnterstÃ¼tzung fÃ¼r Dateien >4GB
 
 197) xdccxmlfile
   Exportiert die Packliste als einfache XML Datei.
 
 196) trashcan_dir
-  Dateien werden nicht gelöscht, sondern in dieses Verzeichnis verschoben.
+  Dateien werden nicht gelÃ¶scht, sondern in dieses Verzeichnis verschoben.
 
 195) logfile_notices, logfile_messages
   Wenn aktiviert, zeichnet Iroffer alle Notices und/oder Messages im dem
@@ -2082,19 +2082,19 @@ bugfix: XDCC SEND
   UPnP Support
 
   Dies Funktion braucht "miniupnpc",
-  zum Aktivieren muß der Bot mit "./Configure -u" gebaut werden.
+  zum Aktivieren muÃŸ der Bot mit "./Configure -u" gebaut werden.
 
 193) local_vhost, usenatip
-  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+  Kann jetzt fÃ¼r jedes Netzwerk einzeln gesetzt werden.
 
 bugfix: REHASH
-  Weicher restart wenn ein Netzwerk gelöscht wird.
+  Weicher restart wenn ein Netzwerk gelÃ¶scht wird.
 
 192) nickserv_pass, user_nick
-  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+  Kann jetzt fÃ¼r jedes Netzwerk einzeln gesetzt werden.
 
 191) weblist_info
-  Zeige zusätliche Information auf den HTML Seiten.
+  Zeige zusÃ¤tliche Information auf den HTML Seiten.
   weblist_info uptime "Online"
   weblist_info minspeed "Mindest-Rate"
   weblist_info maxspeed "Maximale-Rate"
@@ -2106,7 +2106,7 @@ bugfix: REHASH
   weblist_info monthly "Traffic diesem Monat"
 
 190) window resize
-  Änderung der Fenstergröße führt nicht mehr zum Löschen des Fensterinhaltes.
+  Ã„nderung der FenstergrÃ¶ÃŸe fÃ¼hrt nicht mehr zum LÃ¶schen des Fensterinhaltes.
 
 189) XDCC SEND LIST
   Neues User Kommando:
@@ -2121,14 +2121,14 @@ bugfix: MAXSPEED
 
 187) ADDMATCH
   Neues Admin Kommando:
-  ADDMATCH <muster>                Fügt neue Dateien hinzu die auf <muster> passen
+  ADDMATCH <muster>                FÃ¼gt neue Dateien hinzu die auf <muster> passen
 
 186) DCC CHAT
   Sperre den entfernten Rechnern nach zahlreichen fehlhaften Passworten.
 
 185) remove_dead_users
   Wenn der Bot einen Nick nicht mehr erreichen kann:
-  Wert ungleich 0, weitere Nachrichten and den Nick werden gelöscht.
+  Wert ungleich 0, weitere Nachrichten and den Nick werden gelÃ¶scht.
   Wert gleich 2, alle Packs in den Warteschalngen werden entfernt.
   Default: 0, keine Aktion.
 
@@ -2136,20 +2136,20 @@ bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG
   Gebe '%' im Announce-Text richtig aus.
 
 184) local_vhost
-  Auch für IPV6 Adressen möglich.
+  Auch fÃ¼r IPV6 Adressen mÃ¶glich.
 
 183) telnet_vhost
   Liste von bis zu zwei lokale IP-Adressen die der Telnet Server nutzen soll.
-  z.B.: "::" oder "0.0.0.0" für alle IP-Adressen.
+  z.B.: "::" oder "0.0.0.0" fÃ¼r alle IP-Adressen.
   z.B. "::1" oder "127.0.0.1" um auf den Rechner zu begrenzen.
 
 182) http_vhost
   Liste von bis zu zwei lokale IP-Adressen die der Webserver nutzen soll.
-  z.B.: "::" oder "0.0.0.0" für alle IP-Adressen.
+  z.B.: "::" oder "0.0.0.0" fÃ¼r alle IP-Adressen.
   z.B. "::1" oder "127.0.0.1" um auf den Rechner zu begrenzen.
 
 181) telnet_port
-  Port für den eingebauten Telnet Server.
+  Port fÃ¼r den eingebauten Telnet Server.
 
 180) JOIN, PART
   Neue Admin Kommandos:
@@ -2159,7 +2159,7 @@ bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG
   PART <channel> <netz>            Verlasse den Channel <channel> bis zum REHASH
 
 bugfix; DCC SEND
-  Erkenne Dateinamen in Anführungszeichen beim Upload via DCC
+  Erkenne Dateinamen in AnfÃ¼hrungszeichen beim Upload via DCC
 
 bugfix; spaces_in_filenames
   Erlaube Leerzeichnen beim Upload via DCC
@@ -2169,22 +2169,22 @@ bugfix: AUTOADD
 
 179) AUTOGROUP
   Neues Admin Kommando:
-  AUTOGROUP                        Erstelle ein Gruppe für jedes Verzeichnis mit Paketen
+  AUTOGROUP                        Erstelle ein Gruppe fÃ¼r jedes Verzeichnis mit Paketen
 
 178) passive_dcc
-  Unterstützung für passives DCC SEND und RESUME für Downloads.
+  UnterstÃ¼tzung fÃ¼r passives DCC SEND und RESUME fÃ¼r Downloads.
 
 177) connectionmethod ssl
   SSL Verbindungen zum IRC Server.
 
   Dies Funktion braucht "OpenSSL" oder "GNU TLS",
-  zum Aktivieren von "GNU TLS" muß der Bot mit "./Configure -t" gebaut werden.
+  zum Aktivieren von "GNU TLS" muÃŸ der Bot mit "./Configure -t" gebaut werden.
 
 176) connectionmethod, proxyinfo
-  Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
+  Kann jetzt fÃ¼r jedes Netzwerk einzeln gesetzt werden.
 
 bugfix: CANNOUNCE
-  CANNOUNCE darf für Channels mit "-noannounce" ausgeführt werden.
+  CANNOUNCE darf fÃ¼r Channels mit "-noannounce" ausgefÃ¼hrt werden.
 
 175) XDCC SEND, XDCC INFO
   Neue User Kommandos:
@@ -2193,8 +2193,8 @@ bugfix: CANNOUNCE
 
 174) CRC, MD5
   Neue Admin Kommandos:
-  CRC <n> <m>                      Zeigt das Ergebnis der CRC Prüfung von Paket <n> bis <m> an
-  MD5 <n> <m>                      Berrechne die MD5 und die CRC Prüfsummen des Pakets <n> bis <m>
+  CRC <n> <m>                      Zeigt das Ergebnis der CRC PrÃ¼fung von Paket <n> bis <m> an
+  MD5 <n> <m>                      Berrechne die MD5 und die CRC PrÃ¼fsummen des Pakets <n> bis <m>
 
 173) BACKGROUND
   Neues Admin Kommando:
@@ -2207,31 +2207,31 @@ bugfix: CANNOUNCE
 
 170) CHDESC
   Neues Admin Kommando:
-  CHDESC <n>                       Ändert die Beschreibung von Paket <n> auf den Dateinamen
+  CHDESC <n>                       Ã„ndert die Beschreibung von Paket <n> auf den Dateinamen
 
 entfernt: convertxdccfile
 
 169) http_dir
-  Ein Verrzeichnis mit weiteren Dateien für den Webserver.
-  Zum Beispiel für: robots.txt favicon.ico
+  Ein Verrzeichnis mit weiteren Dateien fÃ¼r den Webserver.
+  Zum Beispiel fÃ¼r: robots.txt favicon.ico
 
 168) http_admin
-  Erlaube Verwaltung über den eingebauten Webserver.
+  Erlaube Verwaltung Ã¼ber den eingebauten Webserver.
 
 167) http_port
-  Port für den eingebauten Webserver.
+  Port fÃ¼r den eingebauten Webserver.
   (xddclistfile und webliste)
 
 166) DCC SEND
-  Unterstützung für passives DCC SEND und RESUME für Uploads.
+  UnterstÃ¼tzung fÃ¼r passives DCC SEND und RESUME fÃ¼r Uploads.
 
 bugfix: DCC SEND, DCC CHAT
   Speicherleck behoben, falls Verbindung im Zustand LISTEN abbricht.
 
 165) balanced_queue
-  Wenn ein User einen Transfer beendet, so wird der nächste Transfer
+  Wenn ein User einen Transfer beendet, so wird der nÃ¤chste Transfer
   von einem anderen User in der Warteschlange bevorzugt. Damit wird
-  die vorhandene Bandbreite gelichmäiger verteilt.
+  die vorhandene Bandbreite gelichmÃ¤iger verteilt.
 
 bugfix: Notify message auf Console/Chat
   versions affected: 2.16
@@ -2239,8 +2239,8 @@ bugfix: Notify message auf Console/Chat
 
 bugfix: Idle Queue
   versions affected: 2.16
-  Wenn ein Request von der Idle in die MainQ fällt,
-  start gegebenfalls den nächsten Transfer.
+  Wenn ein Request von der Idle in die MainQ fÃ¤llt,
+  start gegebenfalls den nÃ¤chsten Transfer.
   Bevorzuge User ohne Transfer
 
 Ab Version mod 2.16:
@@ -2249,8 +2249,8 @@ Ab Version mod 2.16:
 bugfix: aktiviere TOS on BSD
 
 164) autoadd_sort
-  Wenn konfiguriert, werden alle neuen Pakete sortiert einggefügt.
-  Die existierende Pakete müssen bereits passend sortiert sein.
+  Wenn konfiguriert, werden alle neuen Pakete sortiert einggefÃ¼gt.
+  Die existierende Pakete mÃ¼ssen bereits passend sortiert sein.
   Die Reihenfolge kann durch mehrerer Argumente fetgelegt werden.
 
 163) RENUMBER
@@ -2275,15 +2275,15 @@ bugfix: NEWDIR
 160) Idle Queue
 
   Option: idlequeuesize
-  Größe der Idle Warteschlange, 0 bedeutet keine Warteschlange.
+  GrÃ¶ÃŸe der Idle Warteschlange, 0 bedeutet keine Warteschlange.
 
   Option: maxidlequeuedperperson
-  Maximale Anzahl gleichzeitiger Warteschlangeneinträge in der Idle Queue
+  Maximale Anzahl gleichzeitiger WarteschlangeneintrÃ¤ge in der Idle Queue
 
   Neue Admin Kommandos:
-  RMIQ <position>                  Löschen von <position> in der 2. Warteschlange
-  IQUEUE <nick> <n>                Paket <n> in die 2. Warteschlange für <nick> einfügen
-  IQUEUE <nick> <n> <netz>         Paket <n> in die 2. Warteschlange für <nick> aus <netz> einfügen
+  RMIQ <position>                  LÃ¶schen von <position> in der 2. Warteschlange
+  IQUEUE <nick> <n>                Paket <n> in die 2. Warteschlange fÃ¼r <nick> einfÃ¼gen
+  IQUEUE <nick> <n> <netz>         Paket <n> in die 2. Warteschlange fÃ¼r <nick> aus <netz> einfÃ¼gen
   REIQUEUE <x> <y>                 Verschiebe Eintrag in der 2. Warteschlange von Position <x> nach <y>
 
 bugfix: weiteres Speicher-Lecks behoben
@@ -2293,7 +2293,7 @@ Ab Version mod 2.15:
 
 159) MAXSPEED
   Neues Admin Kommando:
-  MAXSPEED <id> <x>                Setzen einer Bandbreitengrenze von <x> KB/s für Transfer <id>
+  MAXSPEED <id> <x>                Setzen einer Bandbreitengrenze von <x> KB/s fÃ¼r Transfer <id>
 
 bugfix: weiteres Speicher-Lecks behoben
 
@@ -2301,7 +2301,7 @@ bugfix: CANNOUNCE
   Die Packnummer nicht dopplet ausgeben.
 
 bugfix: REHASH
-  Verlasse ein gelöschtes Netzwerk.
+  Verlasse ein gelÃ¶schtes Netzwerk.
 
 158) HELP
   Gesperrte Kommandos werden nicht angezeigt.
@@ -2314,7 +2314,7 @@ Ab Version mod 2.14:
 
 156) QSEND
   Neues Admin Kommando:
-  QSEND <id>                       Starte einen neue Transfer für das Paket <id> in der Warteschlange
+  QSEND <id>                       Starte einen neue Transfer fÃ¼r das Paket <id> in der Warteschlange
 
 155) channel -pformat full -pgroup name
   Sendet die Liste der Gruppe <name> im Channel
@@ -2329,7 +2329,7 @@ bugfix: Configure und make mit gcc-4.2.x
 
 153) NOMD5
   Neues Admin Kommando:
-  NOMD5 <x>                        Sperrt die Berechnung von MD5 und CRC32 für die nächsten <x> Minuten
+  NOMD5 <x>                        Sperrt die Berechnung von MD5 und CRC32 fÃ¼r die nÃ¤chsten <x> Minuten
 
 152) FIND
   Neues Admin Kommando:
@@ -2352,7 +2352,7 @@ bugfix: SERVQC
 148) MD5
   Neues Admin Kommando:
   MD5                              Zeige den Status der MD5 Berechnung
-  MD5 <n>                          Berrechne die MD5 und die CRC Prüfsummen des Pakets <n>
+  MD5 <n>                          Berrechne die MD5 und die CRC PrÃ¼fsummen des Pakets <n>
 
 Ab Version mod 2.13:
 --------------------
@@ -2362,16 +2362,16 @@ bugfix: XDCC INFO
 
 147) CHTRIGGER
   Neue Admin Kommandos:
-  CHTRIGGER <n>                    Entferne Trigger für Paket <n>
-  CHTRIGGER <n> <msg>              Setze Trigger für Paket <n> auf <msg>
+  CHTRIGGER <n>                    Entferne Trigger fÃ¼r Paket <n>
+  CHTRIGGER <n> <msg>              Setze Trigger fÃ¼r Paket <n> auf <msg>
 
 146) CANNOUNCE
   Neues Admin Kommando:
-  CANNOUNCE <channnel> <n> <msg>   ANNOUNCE <msg> für Paket <n> in Channel <channnel>
+  CANNOUNCE <channnel> <n> <msg>   ANNOUNCE <msg> fÃ¼r Paket <n> in Channel <channnel>
 
 145) BANNHOST, DROPNICK
   Neue Admin Kommandos:
-  BANNHOST <x> <hostmask>          Breche die Transfers ab und ignoriere <hostmask> für <x> Minuten
+  BANNHOST <x> <hostmask>          Breche die Transfers ab und ignoriere <hostmask> fÃ¼r <x> Minuten
   BANNNICK <nick>                  Breche die Transfers ab und entferne <nick> aus der Warteschange
   BANNNICK <nick> <netz>           Breche die Transfers ab und entferne <nick> aus der Warteschange
 
@@ -2396,14 +2396,14 @@ bugfix: DCC upload
   SORT DESC                        Sortiere alle Pakete nach dem Beschreibung
   SORT GROUP                       Sortiere alle Pakete nach der Gruppe
   SORT PATH                        Sortiere alle Pakete nach dem Verzeichnis
-  SORT SIZE                        Sortiere alle Pakete nach der Größe in Bytes
+  SORT SIZE                        Sortiere alle Pakete nach der GrÃ¶ÃŸe in Bytes
   SORT TIME                        Sortiere alle Pakete nach dem Datum der Datei
-  SORT -NAME                       Sortiere alle Pakete rückwärts nach der Dateinamen
-  SORT -DESC                       Sortiere alle Pakete rückwärts nach dem Beschreibung
-  SORT -GROUP                      Sortiere alle Pakete rückwärts nach der Gruppe
-  SORT -PATH                       Sortiere alle Pakete rückwärts nach dem Verzeichnis
-  SORT -SIZE                       Sortiere alle Pakete rückwärts nach der Größe in Bytes
-  SORT -TIME                       Sortiere alle Pakete rückwärts nach dem Datum der Datei
+  SORT -NAME                       Sortiere alle Pakete rÃ¼ckwÃ¤rts nach der Dateinamen
+  SORT -DESC                       Sortiere alle Pakete rÃ¼ckwÃ¤rts nach dem Beschreibung
+  SORT -GROUP                      Sortiere alle Pakete rÃ¼ckwÃ¤rts nach der Gruppe
+  SORT -PATH                       Sortiere alle Pakete rÃ¼ckwÃ¤rts nach dem Verzeichnis
+  SORT -SIZE                       Sortiere alle Pakete rÃ¼ckwÃ¤rts nach der GrÃ¶ÃŸe in Bytes
+  SORT -TIME                       Sortiere alle Pakete rÃ¼ckwÃ¤rts nach dem Datum der Datei
   SORT GROUP NAME                  Sortiere alle Pakete nach der Gruppe und dem Dateinamen
   SORT GROUP TIME                  Sortiere alle Pakete nach der Gruppe und dem Datum
 
@@ -2422,9 +2422,9 @@ bugfix: MSG, MSGNET, PSEND
 Ab Version mod 2.11:
 --------------------
 
-141) Deutsche Texte für User
+141) Deutsche Texte fÃ¼r User
   Aktiviert werde diese durch "./Lang de" nach dem "Configure"
-  Zurück zum Englischen geht es mit "./Lang en"
+  ZurÃ¼ck zum Englischen geht es mit "./Lang en"
 
 140) SORT
   Neues Admin Kommando:
@@ -2436,34 +2436,34 @@ bugfix: SORT
   Reihenfolge der Packs nach Sortierung jetz eindeutig.
 
 bugfix: spaces_in_filenames
-  Iroffer vor 2.9 können diese Dateien nicht empfangen.
+  Iroffer vor 2.9 kÃ¶nnen diese Dateien nicht empfangen.
   Jetzt als konfigurierbare Option in der Konfigurationsdatei.
 
 bugfix: autoaddann
   versions affected: 2.9 - 2.10
-  autoaddann wurde nicht ausgeführt bei ADDDIR, ADDNEW, AUTOADD
+  autoaddann wurde nicht ausgefÃ¼hrt bei ADDDIR, ADDNEW, AUTOADD
 
 Ab Version mod 2.10:
 --------------------
 
 bugfix: FILEREMOVE
-  Mit nur einem Parameter wurde die Datei nicht gelöscht.
+  Mit nur einem Parameter wurde die Datei nicht gelÃ¶scht.
 
 139) filedir
   fildir darf jetzt Merhfach in der Konfigurationsdatei stehen.
 
 bugfix: xdccremovefile
-  Bot kann crashen wenn einen Datei ohne Gruppe gelöscht wird.
+  Bot kann crashen wenn einen Datei ohne Gruppe gelÃ¶scht wird.
 
 138) esacpe_quotes
   Admin kann jetzt Dateinamen mit Leerzeichen angeben.
 
 bugfix: NEWDIR
   versions affected: 2.5 - 2.9
-  Die Pakete wurden nicht verändert.
+  Die Pakete wurden nicht verÃ¤ndert.
 
 MULTINET: channel_join_raw
-  jetzz für jedes Netzwerk anzugeben.
+  jetzz fÃ¼r jedes Netzwerk anzugeben.
 
 Warnung bei PSEND, wenn Bot nicht im Channel.
 
@@ -2480,21 +2480,21 @@ Ab Version mod 2.9:
 -------------------
 
 137) monitor_files
-  Begrenzt die Prüfungen auf geänderte oder gelöschte Dateien.
+  Begrenzt die PrÃ¼fungen auf geÃ¤nderte oder gelÃ¶schte Dateien.
 
 136) autoaddann_short
-  Macht für neue Packs eine "SANNOUNCE"
+  Macht fÃ¼r neue Packs eine "SANNOUNCE"
 
 135) SANNOUNCE
   Neues Admin Kommando:
-  SANNOUNCE <n>              Kurzes ANNOUNCE für Paket <n> in allen Channels
+  SANNOUNCE <n>              Kurzes ANNOUNCE fÃ¼r Paket <n> in allen Channels
 
 134) ignore_volumeid
-  Bei Starten von Iroffer wird die Volume ID nicht mher geprüft.
+  Bei Starten von Iroffer wird die Volume ID nicht mher geprÃ¼ft.
   Oft wurden Netzwerklaufwerke bei jedem Start neu berechnet.
 
 133) xdccremovefile
-  Sicher der Download Daten wenn ein Paket geöscht wird.
+  Sicher der Download Daten wenn ein Paket geÃ¶scht wird.
 
 132) adminlevel, hadminlevel
 
@@ -2502,9 +2502,9 @@ Ab Version mod 2.9:
   Begrenze die ADmin Befehle auf:
   1 = Nur Information und Statistken
   2 = Sperren und Freigeben von Packs
-  3 = Hinzufügen und Ändern von Packs
-  4 = Löschen von Packs
-  5 = Vollzugriff, auch Umbenennen und Löschen von Dateien
+  3 = HinzufÃ¼gen und Ã„ndern von Packs
+  4 = LÃ¶schen von Packs
+  5 = Vollzugriff, auch Umbenennen und LÃ¶schen von Dateien
 
 bugfix: IDENTIFY
   versions affected: 2.4 - 2.8
@@ -2527,12 +2527,12 @@ Ab Version mod 2.8:
 -------------------
 
 bugfix: need_level
-  need_level konnte man über die config nicht setzen
+  need_level konnte man Ã¼ber die config nicht setzen
 
 128) NOCHANNEL
   Neues Admin Kommando:
-  NOCHANNEL x <channel>            Verlasse den Channel <channel> für <x> Minuten
-  NOCHANNEL x                      Verlasse alle Channel für <x> Minuten
+  NOCHANNEL x <channel>            Verlasse den Channel <channel> fÃ¼r <x> Minuten
+  NOCHANNEL x                      Verlasse alle Channel fÃ¼r <x> Minuten
 
 bugfix: REHASH
   versions affected: 1.20 to 2.7
@@ -2557,10 +2557,10 @@ Ab Version mod 2.7:
 
 bugfix: MULTINET
   versionen: 1.26 bis 2.6
-  Notice der User in Warteschlange oder in Transfer ging über ein falsches Netzwerk.
+  Notice der User in Warteschlange oder in Transfer ging Ã¼ber ein falsches Netzwerk.
 
 126) autocrc_exclude
-  Ignoriere .torrent oder .xdelta Dateien bei der CRC-Prüfung.
+  Ignoriere .torrent oder .xdelta Dateien bei der CRC-PrÃ¼fung.
 
 125) AUTOADD
   Neues Admin Kommando:
@@ -2578,7 +2578,7 @@ Ab Version mod 2.6:
 
 123) MOVEFILE
   Neues Admin Kommando:
-  MOVEFILE <n> <filename>          Umbenennen der Datei die zu Paket <n> gehört
+  MOVEFILE <n> <filename>          Umbenennen der Datei die zu Paket <n> gehÃ¶rt
 
 122) NEWGROUP
   Neues Admin Kommando:
@@ -2586,8 +2586,8 @@ Ab Version mod 2.6:
 
 121) FILEREMOVE
   Neues Admin Kommando:
-  FILEREMOVE <n> <m>               Löschen der Pakete <n> bis <m> und der zugehörigen Dateien
-  FILEREMOVE <n>                   Löschen des Pakets <n> und der zugehörigen Datei
+  FILEREMOVE <n> <m>               LÃ¶schen der Pakete <n> bis <m> und der zugehÃ¶rigen Dateien
+  FILEREMOVE <n>                   LÃ¶schen des Pakets <n> und der zugehÃ¶rigen Datei
 
 bugfix: hidlockepacks
   xdcclistfile wertet jetz den Schalter hidlockepacks auch aus.
@@ -2607,14 +2607,14 @@ Ab Version mod 2.5:
 
 119) NEWDIR
   Neues Admin Kommando:
-  NEWDIR <dirname> <neu>           Ändert das Verzeichnis in allen zutreffenden Paketen
+  NEWDIR <dirname> <neu>           Ã„ndert das Verzeichnis in allen zutreffenden Paketen
 
 118) debug
   Debug geht jetzt auch in der Konfigurationsdatei.
 
 bugfix: admin_job_file
-  Massenhaftes hinzufügen von Dateien per Job
-  hält den Bot nicht mehr an.
+  Massenhaftes hinzufÃ¼gen von Dateien per Job
+  hÃ¤lt den Bot nicht mehr an.
 
 117) DUMP
   Neues Admin Kommando:
@@ -2692,12 +2692,12 @@ Erweiterte Ausgabe von Uploads via FETCH
   und ohne das sein Transfer abgebrochen wird.
 
 112) Log:
-  Schreibe für jeden Transfer eine weitere Zeile ins Logfile.
-  Das soll bessere Statistiken ermöglichen.
+  Schreibe fÃ¼r jeden Transfer eine weitere Zeile ins Logfile.
+  Das soll bessere Statistiken ermÃ¶glichen.
 
 bugfix: XDCC REMOVE, XDCC CANCEL
-  User kann jetzt alle seine Einträge abbrechen.
-  Bisher ging das nicht für DL die vom Admin gestartet wurden.
+  User kann jetzt alle seine EintrÃ¤ge abbrechen.
+  Bisher ging das nicht fÃ¼r DL die vom Admin gestartet wurden.
 
 111) (patch by Cork)
   Mehr Text wenn User in die Warteschlange kommt.
@@ -2706,7 +2706,7 @@ bugfix: XDCC REMOVE, XDCC CANCEL
   Extra Text der beim "list" im Channel and den User gesendet wird.
 
 109) geoipdatabase
-  Pfadname für die GEOIP Datenbank
+  Pfadname fÃ¼r die GEOIP Datenbank
 
 108) EXIT, LOGOUT
   Neue Admin Kommandos:
@@ -2718,7 +2718,7 @@ bugfix: XDCC REMOVE, XDCC CANCEL
 
 106) include_subdirs
   ADDDIR, ADDNEW, ADDGROUP and REMOVDIR
-  können auch unterzeichnisse durchsuchen.
+  kÃ¶nnen auch unterzeichnisse durchsuchen.
   Viele neue Dateien halten den Bot nicht mehr an.
 
 105) max_find
@@ -2735,7 +2735,7 @@ bugfix: XDCC REMOVE, XDCC CANCEL
   Ansprechpartner, Nick, Kontakt wenn der Bot Probleme hat/macht.
 
 101) need_level
-  Bot ist nur für Voiced/Halfops/Ops
+  Bot ist nur fÃ¼r Voiced/Halfops/Ops
 
 Debugging und Logging verbessert.
 
@@ -2744,14 +2744,14 @@ Debugging und Logging verbessert.
 
 bugfix: -plist
   version: 1.24 - 1.32
-  Bot stürzt ab wenn Plist in zu viele channels gleichzeitig.
+  Bot stÃ¼rzt ab wenn Plist in zu viele channels gleichzeitig.
 
 
 Ab Version mod 1.32:
 --------------------
 
 96) max_upspeed
-  Die Maximale Bandbreite für XDCC uploads.
+  Die Maximale Bandbreite fÃ¼r XDCC uploads.
 
 95) max_uploads
   Maximal n gleichzeitige XDCC uploads.
@@ -2763,18 +2763,18 @@ Ab Version mod 1.32:
   Sinnvoll wenn das Paket bereits im Bot mit "ADD"
   oder "autoadddir" eingebunden wurde.
 
-  CRC ist während den Uploads fehlerhaft,
+  CRC ist wÃ¤hrend den Uploads fehlerhaft,
   das Pack ist gesperrt.
 
-  CRC wird beim Upload regelmäßig neu berechnet,
-  da sich die Datei ja ständig ändert.
+  CRC wird beim Upload regelmÃ¤ÃŸig neu berechnet,
+  da sich die Datei ja stÃ¤ndig Ã¤ndert.
 
-  Wenn die Datei vollständig ist und die CRC ok ist,
+  Wenn die Datei vollstÃ¤ndig ist und die CRC ok ist,
   wird das Paket automatisch freigeben.
 
 93) CLEARGETS
   Neues Admin Kommando:
-  CLEARGETS                        Alle Donloadzähler auf 0 setzen (Löschen).
+  CLEARGETS                        Alle DonloadzÃ¤hler auf 0 setzen (LÃ¶schen).
 
   Anderungen:
   channel xxx -plist full
@@ -2782,7 +2782,7 @@ Ab Version mod 1.32:
 
 MULITNET
   Nickname wurde nicht in allen Netzen nach Umbenennung durch Nickserv wiedererlangt.
-  FloodProtecting für jedes Netz einzeln.
+  FloodProtecting fÃ¼r jedes Netz einzeln.
 
 FETCH
   Absturz bei fehlerhaften URLs
@@ -2793,7 +2793,7 @@ Ab Version mod 1.31:
 --------------------
 
 90) uploadminspace
-  verhindert das duch Uploads die Platte voll läuft.
+  verhindert das duch Uploads die Platte voll lÃ¤uft.
 
 91) AMSG
   Neues Admin Kommando:
@@ -2806,14 +2806,14 @@ bugfix: unlimitedhost
   Wenn unlimitedhost zutrifft, schreibe das auch ins Logfile
 
 bugfix: HOLDQUEUE
-  Nach dem Deaktivieren von HOLDQUEUE, sende sofort das nächste Pack aus der Warteschlange.
+  Nach dem Deaktivieren von HOLDQUEUE, sende sofort das nÃ¤chste Pack aus der Warteschlange.
 
 
 Ab Version mod 1.30:
 --------------------
 
 80) restrictsend_warning
-  Sende einen Hinweis, wenn der User den Channel verlässt,
+  Sende einen Hinweis, wenn der User den Channel verlÃ¤sst,
   falls er einen Transfer oder in der Warteschlange steht.
 
 81) restrictsend_timeout
@@ -2822,16 +2822,16 @@ Ab Version mod 1.30:
 
 82) MOVEGROUP
   Neues Admin Kommando:
-  MOVEGROUP <n> <m> <gruppe>          Ändert die Gruppenzugehörigkeit von Pack <n> bis <m> auf <gruppe>
+  MOVEGROUP <n> <m> <gruppe>          Ã„ndert die GruppenzugehÃ¶rigkeit von Pack <n> bis <m> auf <gruppe>
 
 83) SLOTSMAX
   Neues Admin Kommando:
-  SLOTSMAX <slots>                    Ändere zeitweise den Wert von 'slotsmax' auf <slots>
+  SLOTSMAX <slots>                    Ã„ndere zeitweise den Wert von 'slotsmax' auf <slots>
   SLOTSMAX                            Zeige den momentanen Wert von 'slotsmax' an
 
 84) QUEUESIZE
   Neues Admin Kommando:
-  QUEUESIZE <slots>                   Ändere zeitweise den Wert von 'queuesize' auf <slots>
+  QUEUESIZE <slots>                   Ã„ndere zeitweise den Wert von 'queuesize' auf <slots>
   QUEUESIZE                           Zeige den momentanen Wert von 'queuesize' an
 
 85) FETCH
@@ -2841,7 +2841,7 @@ Ab Version mod 1.30:
   FETCH <filename> <url>           Startet einen Download von <url> und speichert im Uploadverzeichnis
 
   Dies Funktion braucht "libcurl",
-  zum Aktivieren muß der Bot mit "./Configure -c" gebaut werden.
+  zum Aktivieren muÃŸ der Bot mit "./Configure -c" gebaut werden.
 
 86) auto_path_group
   Neue files werde nach den Unterverzeichnissen auf dem Server
@@ -2860,7 +2860,7 @@ bugfix: CRC
   crc auf 64bit Linux wurde falsch berechnet.
 
 bugfix: CRC
-  Melde "CRC missing" statt "CRC failed" für einige Sonderfälle.
+  Melde "CRC missing" statt "CRC failed" fÃ¼r einige SonderfÃ¤lle.
 
 bugfix: Test ob Bot im Channel wurde verbessert.
 
@@ -2868,10 +2868,10 @@ bugfix: Test ob Bot im Channel wurde verbessert.
 Ab Version mod 1.29:
 --------------------
 
-79) Erweitere die Trigger für automatisches IDENTIFY an "nicserv".
+79) Erweitere die Trigger fÃ¼r automatisches IDENTIFY an "nicserv".
 
 78) DCLD, BOTINFO
-  Erweitete Ausgabe für MULTINET
+  Erweitete Ausgabe fÃ¼r MULTINET
 
 77) Das Zeichen '#' in den Texten an die User entfernt.
   Damit die User die das im Channel falsh eintippen nicht als Spammer
@@ -2893,25 +2893,25 @@ Ab Version mod 1.28:
 
   Neue Admin Kommandos:
   FILEMOVE <filename> <neu>            Umbenennen einer Datei
-  FILEDEL <filename>                   Löschen der Datei auf der Festplatte
+  FILEDEL <filename>                   LÃ¶schen der Datei auf der Festplatte
   SHOWDIR <dir>                        Das Verzeichnis auf der Festplatte anzeigen
 
 76) autoadd_dir
 
   autoadd_time:
-  Zeit in Sekunden in der der Bot prüft ob neue Dateien im 'autoadd_dir' sind.
-  Default: 0 = nicht prüfen
+  Zeit in Sekunden in der der Bot prÃ¼ft ob neue Dateien im 'autoadd_dir' sind.
+  Default: 0 = nicht prÃ¼fen
 
   autoadd_dir:
   Verzeichnis das der Bot nach neuen Dateien durchsucht.
 
   autoadd_group:
-  Gruppe für Dateien die der Bot automatisch hinzufügt.
+  Gruppe fÃ¼r Dateien die der Bot automatisch hinzufÃ¼gt.
   Default: "MAIN"
 
 bugfix: XDCC LIST
   versions affected: 1.27
-  Ausgabe der Fußzeile bei allen GCC Versionen.
+  Ausgabe der FuÃŸzeile bei allen GCC Versionen.
 
 bugfix: CRC
   Gebe bei Warnungen die Paketnummer aus.
@@ -2922,7 +2922,7 @@ bugfix: CRC
 Ab Version mod 1.27:
 --------------------
 
-69) iroffer verlässt unbekannte Channel
+69) iroffer verlÃ¤sst unbekannte Channel
   Ohne dies ist es im Eurirc schwer ein Bann loszuwerden.
 
 70) noautorejoin
@@ -2938,8 +2938,8 @@ Ab Version mod 1.27:
 
 73) CRC
   Neue Admin Kommandos:
-  CRC <n>              Zeigt das Ergebnis der CRC Prüfung von Paket <n> an
-  CRC                  Zeigt das Ergebnis der CRC Prüfung von allen Paketen an
+  CRC <n>              Zeigt das Ergebnis der CRC PrÃ¼fung von Paket <n> an
+  CRC                  Zeigt das Ergebnis der CRC PrÃ¼fung von allen Paketen an
 
 bugfix: MULTINET
   versions affected: 1.26 Multinet
@@ -2949,23 +2949,23 @@ Ab Version mod 1.26:
 --------------------
 
 66) network (MULTINET)
-  Unterstützung um den Bot in mehreren IRC-Netzen zu betreiben.
+  UnterstÃ¼tzung um den Bot in mehreren IRC-Netzen zu betreiben.
   Grenzen und Warteschlange sind allen Netzen gemeinsam.
 
-  Zum Aktivieren muß der Bot mit "./Configure -m" gebaut werden.
+  Zum Aktivieren muÃŸ der Bot mit "./Configure -m" gebaut werden.
 
   Neue Admin Kommandos:
   MSGNET <netz> <nick> <message>  Sendet Mitteilung <message> an Nick <nick>
   RAWNET <netz> <command>         Sendet <command> zum Server (RAW IRC)
   SERVERS <netz>                  Zeigt die Serverliste des Bots an
-  JUMP server <netz>              Wechselt zu einem zufälligen Server oder zu <server>
-  IDENTIFY <netz>                 Sende das Passwort für 'nickserv' erneut
+  JUMP server <netz>              Wechselt zu einem zufÃ¤lligen Server oder zu <server>
+  IDENTIFY <netz>                 Sende das Passwort fÃ¼r 'nickserv' erneut
 
 67) waitafterjoin
   Nicht sofort nach dem Betrenen eine Channels die PLIST senden.
 
 68) nodownloadhost
-  Hostmaks für Systeme die nicht vom Bot Pakete holen dürfen.
+  Hostmaks fÃ¼r Systeme die nicht vom Bot Pakete holen dÃ¼rfen.
 
 Ab Version mod 1.30:
 --------------------
@@ -2991,31 +2991,31 @@ channel #chan04 -plist 14 -pformat summary -delay 60
 59) sync with iroffer1.4.b03 (from PMG)
 
 bugfix: XDCC SEARCH
-  Die Namen der Verzeichnisse werden in der Suche nicht mehr berücksichtig.
+  Die Namen der Verzeichnisse werden in der Suche nicht mehr berÃ¼cksichtig.
 
 bugfix: ignoreduplicateip
   versions affected: 1.18 - 1.23
-  Dies Funktion ignoriert jetzt Übertragungen die vom Admin gestartet worden sind.
+  Dies Funktion ignoriert jetzt Ãœbertragungen die vom Admin gestartet worden sind.
 
 bugfix: queue
   Erlaube das gleiche Paket and mehrere Nicks
 
 bugfix: send
-  Erlaube mehrere Übertragungen an den gleichen Nick
+  Erlaube mehrere Ãœbertragungen an den gleichen Nick
 
 60) unlimitedhost
   Definiert Nicks und Hostmaks die nicht in der Bandbreite begrenzt werden.
 
 61) UNLIMITED
   Neues Admin Kommando:
-  UNLIMITED id       Aufheben aller Bandbreitengrenzen für Transfer <id>
+  UNLIMITED id       Aufheben aller Bandbreitengrenzen fÃ¼r Transfer <id>
 
-62) Unterstützung für Abfragen der GeoIP Datenbank
+62) UnterstÃ¼tzung fÃ¼r Abfragen der GeoIP Datenbank
   Beschreibung auf http://www.maxmind.com/geoip/
-  zum Aktivieren muß der Bot mit "./Configure -g" gebaut werden.
+  zum Aktivieren muÃŸ der Bot mit "./Configure -g" gebaut werden.
 
 63) geoipcountry
-  Legt fest welche Länder downloaden dürfen.
+  Legt fest welche LÃ¤nder downloaden dÃ¼rfen.
 
 Ab Version mod 1.23:
 --------------------
@@ -3079,8 +3079,8 @@ bugfix: HELP
 
 52) ANNOUNCE, ADDANN
   Neues Admin Kommando:
-  ANNOUNCE <n> <msg>          ANNOUNCE <msg> für Paket <n> in allen Channels
-  ADDANN <filename>           Fügt Datei <filename> als neues Paket hinzu und sendet ein ANNOUNCE
+  ANNOUNCE <n> <msg>          ANNOUNCE <msg> fÃ¼r Paket <n> in allen Channels
+  ADDANN <filename>           FÃ¼gt Datei <filename> als neues Paket hinzu und sendet ein ANNOUNCE
 
 53) autoaddann
 
@@ -3165,7 +3165,7 @@ bugfix: ignore spaces in groupname
 43) LOCKGROUP, UNLOCKGROUP
   Neues Admin Kommando:
   LOCKGROUP <gruppe> <password> Sichert alle Packet in der <gruppe> mit Passwort <password>
-  UNLOCKGROUP <gruppe>          Entfernt das Passwort für alle Packet in der <gruppe>
+  UNLOCKGROUP <gruppe>          Entfernt das Passwort fÃ¼r alle Packet in der <gruppe>
 
 bugfix: addnew
    check filestate instead of name in addnew and noduplicatefiles
@@ -3177,7 +3177,7 @@ bugfix: addnew
   XDCC STOP                  aborts long XDCC LISTS
 
 45) CLEARRECORDS (from PMG)
-  Löscht jetzt auch Übertragungsvolumen für die 'transferlimits'
+  LÃ¶scht jetzt auch Ãœbertragungsvolumen fÃ¼r die 'transferlimits'
 
 Ab Version mod 1.17:
 --------------------
@@ -3192,11 +3192,11 @@ bugfix: channel -headline
 
 36) chlimit
   Neues Admin Kommando:
-  CHLIMIT <n> <x>             Ändert das tägliche Downloadlimit von Pack <n> auf <x> Übertragungen (0 für aus)
+  CHLIMIT <n> <x>             Ã„ndert das tÃ¤gliche Downloadlimit von Pack <n> auf <x> Ãœbertragungen (0 fÃ¼r aus)
 
 37) chlimitinfo
   Neues Admin Kommando:
-  CHLIMITINFO <n> <msg>       Ändert die Mitteilung bei Überschreitung des Downloadlimits von Pack <n> auf <msg>
+  CHLIMITINFO <n> <msg>       Ã„ndert die Mitteilung bei Ãœberschreitung des Downloadlimits von Pack <n> auf <msg>
 
 Ab Version mod 1.16:
 --------------------
@@ -3357,7 +3357,7 @@ With Version mod 1.8:
 
 15) queue
   Neues Admin Kommando:
-  QUEUE nick n [netz]        Paket <n> in die Warteschlange für <nick> einfügen
+  QUEUE nick n [netz]        Paket <n> in die Warteschlange fÃ¼r <nick> einfÃ¼gen
 
 16 ) start_of_month
 
@@ -3374,7 +3374,7 @@ With Version mod 1.7:
 
 14) ADDGROUP
   Neues Admin Kommando:
-  ADDGROUP <gruppe> <dir>     Fügt jede Datei aus Verzeichnis <dir> zu <gruppe> hinzu
+  ADDGROUP <gruppe> <dir>     FÃ¼gt jede Datei aus Verzeichnis <dir> zu <gruppe> hinzu
 
 Ab Version mod 1.6:
 -------------------
@@ -3414,7 +3414,7 @@ With Version mod 1.4:
 
   Neue Admin Kommandos:
   LOCK <n> <password>       Sichert Pack <n> mit Passwort <password>
-  UNLOCK <n>                Entfernt das Passwort für Pack <n>
+  UNLOCK <n>                Entfernt das Passwort fÃ¼r Pack <n>
 
   Neues User Kommando:
   XDCC SEND #<pack> <password>
@@ -3473,17 +3473,17 @@ With Version mod 1.1:
   Neue Admin Kommandos:
    XDLFULL                    Anzeigen aller auf dem Bot befindlichen Pakete
    XDLGROUP <gruppe>          Anzeigen der Pakete in <gruppe>
-   GROUPDESC <gruppe> <msg>   Ändert die Beschreibung von <gruppe> auf <msg>
-   GROUP <n> <gruppe>         Ändert die Gruppenzugehörigkeit von Pack <n> auf <gruppe>
+   GROUPDESC <gruppe> <msg>   Ã„ndert die Beschreibung von <gruppe> auf <msg>
+   GROUP <n> <gruppe>         Ã„ndert die GruppenzugehÃ¶rigkeit von Pack <n> auf <gruppe>
    REGROUP <gruppe> <neu>     Verschiebt alle Packs von <gruppe> in die Gruppe <neu>
 
-  Geändertes Admin Kommando:
+  GeÃ¤ndertes Admin Kommando:
    XDL                        Liste der Gruppen und der Pakete ohne Gruppe
 
   Neues User Kommando:
    XDCC LIST <gruppe>         Anzeigen der Pakete in <gruppe>
 
-  Geändertes User Kommando:
+  GeÃ¤ndertes User Kommando:
    XDCC LIST                  Liste der Gruppen und der Pakete ohne Gruppe
                               and list all groups that have a description.
 

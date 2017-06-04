@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2013 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -140,7 +140,7 @@ unsigned int fetch_cancel(unsigned int num)
       outerror(OUTERROR_TYPE_WARN_LOUD, "curl_multi_remove_handle() = %d", cms);
     }
     --fetch_started;
-    ft = clean_fetch(ft);
+    (void)clean_fetch(ft);
     start_qupload();
     return 0;
   }
@@ -623,7 +623,6 @@ void dinoex_dcl(const userinput *const u)
     dl_total = 0.0;
     curl_easy_getinfo(ft->curlhandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &dl_total);
 
-    progress = 0;
     progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
   }
