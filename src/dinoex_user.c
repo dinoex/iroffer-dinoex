@@ -1527,7 +1527,7 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
   unsigned int exclude;
 
   /*----- CTCP ----- */
-  if (botonly_parse(type, pi) == 0) {
+  if (!gdata.no_ctcp && botonly_parse(type, pi) == 0) {
     ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
     return;
   }
