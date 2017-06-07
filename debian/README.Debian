@@ -1,0 +1,5 @@
+iroffer-dinoex for Debian
+------------------------
+Patched to support CPPFLAGS in Makefile
+
+ -- Weilu Jia <optix2000@teitoku.net>  Fri, 20 May 2016 04:40:05 +0000

@@ -3,6 +3,12 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: xdcc.7 (by optix2000)
+  make debian whatis happy
+
+bugfix: Configure (by optix2000)
+  preserve external $CPPFLAGS
+
 bugfix: CRASH
   Use system call to trap with new compilers.
 
@@ -24,7 +30,7 @@ bugfix: ADMIN CHATME
   If the CHAT was not successful, the port was never cleared.
 
 bugfix: ruby_script
-  fix build for debian jessie
+  fix build for Debian jessie
 
 bugfix: Configure
   fix build for cparser
