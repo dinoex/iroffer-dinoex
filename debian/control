@@ -1,21 +1,20 @@
 Source: iroffer-dinoex
 Section: net
-Priority: extra
-Maintainer: Firas Kraiem <firas@fkraiem.org>
-Build-Depends: debhelper (>= 7),
-               libcurl4-gnutls-dev,
-               libgeoip-dev,
-               ruby1.8-dev
-Standards-Version: 3.9.1
+Priority: optional
+Maintainer: Weilu Jia <optix2000@teitoku.net>
+Build-Depends: debhelper (>=9),
+ libcurl4-gnutls-dev,
+ gnutls-dev,
+ ruby-dev
+Standards-Version: 3.9.8
 Homepage: http://iroffer.dinoex.net/
 
 Package: iroffer-dinoex
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: iroffer-dinoex-doc
 Conflicts: iroffer
 Replaces: iroffer
-Description: IRC file distribution bot, English version
+Description: IRC file distribution bot
  iroffer is a fileserver for IRC (commonly referred to as a DCC bot).
  It uses the DCC feature of IRC to send files to other users. iroffer
  will connect to an IRC server and let people request files from it.
@@ -24,124 +23,10 @@ Description: IRC file distribution bot, English version
  speed and efficiency in mind. iroffer has been known to reach
  6MByte/sec or higher bandwidth usage when multiple transfers are
  occurring at the same time.
- iroffer-dinoex is a fork of iroffer developed and maintained by
- Dirk Meyer <dinoex@dinoex.net>. It offers a lot of enhancements
- and new features, and is backwards-compatible with the original
- iroffer.
  .
- This is the English version of iroffer-dinoex.
-
-Package: iroffer-dinoex-all
-Architecture: all
-Depends: iroffer-dinoex,
-         iroffer-dinoex-de,
-         iroffer-dinoex-fr,
-         iroffer-dinoex-it, ${misc:Depends}
-Description: IRC file distribution bot, all versions
- iroffer is a fileserver for IRC (commonly referred to as a DCC bot).
- It uses the DCC feature of IRC to send files to other users. iroffer
- will connect to an IRC server and let people request files from it.
- Unlike similar programs, iroffer is not a script; it is a standalone
- executable written entirely in C, from scratch, with high transfer
- speed and efficiency in mind. iroffer has been known to reach
- 6MByte/sec or higher bandwidth usage when multiple transfers are
- occurring at the same time.
  iroffer-dinoex is a fork of iroffer developed and maintained by
- Dirk Meyer <dinoex@dinoex.net>. It offers a lot of enhancements
- and new features, and is backwards-compatible with the original
- iroffer.
- .
- This is a metapackage that installs all translations of
- iroffer-dinoex. Currently, the available translations are English,
- French, German, and Italian.
-
-Package: iroffer-dinoex-doc
-Section: doc
-Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: IRC file distribution bot, documentation
- iroffer is a fileserver for IRC (commonly referred to as a DCC bot).
- It uses the DCC feature of IRC to send files to other users. iroffer
- will connect to an IRC server and let people request files from it.
- Unlike similar programs, iroffer is not a script; it is a standalone
- executable written entirely in C, from scratch, with high transfer
- speed and efficiency in mind. iroffer has been known to reach
- 6MByte/sec or higher bandwidth usage when multiple transfers are
- occurring at the same time.
- iroffer-dinoex is a fork of iroffer developed and maintained by
- Dirk Meyer <dinoex@dinoex.net>. It offers a lot of enhancements
- and new features, and is backwards-compatible with the original
- iroffer.
- .
- This package contains documentation for extra features of
- iroffer-dinoex.
-
-Package: iroffer-dinoex-de
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: iroffer-dinoex-doc
-Conflicts: iroffer
-Replaces: iroffer
-Provides: iroffer-dinoex
-Description: IRC file distribution bot, German version
- iroffer is a fileserver for IRC (commonly referred to as a DCC bot).
- It uses the DCC feature of IRC to send files to other users. iroffer
- will connect to an IRC server and let people request files from it.
- Unlike similar programs, iroffer is not a script; it is a standalone
- executable written entirely in C, from scratch, with high transfer
- speed and efficiency in mind. iroffer has been known to reach
- 6MByte/sec or higher bandwidth usage when multiple transfers are
- occurring at the same time.
- iroffer-dinoex is a fork of iroffer developed and maintained by
- Dirk Meyer <dinoex@dinoex.net>. It offers a lot of enhancements
- and new features, and is backwards-compatible with the original
- iroffer.
- .
- This is the German version of iroffer-dinoex.
-
-Package: iroffer-dinoex-fr
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: iroffer-dinoex-doc
-Conflicts: iroffer
-Replaces: iroffer
-Provides: iroffer-dinoex
-Description: IRC file distribution bot, French version
- iroffer is a fileserver for IRC (commonly referred to as a DCC bot).
- It uses the DCC feature of IRC to send files to other users. iroffer
- will connect to an IRC server and let people request files from it.
- Unlike similar programs, iroffer is not a script; it is a standalone
- executable written entirely in C, from scratch, with high transfer
- speed and efficiency in mind. iroffer has been known to reach
- 6MByte/sec or higher bandwidth usage when multiple transfers are
- occurring at the same time.
- iroffer-dinoex is a fork of iroffer developed and maintained by
- Dirk Meyer <dinoex@dinoex.net>. It offers a lot of enhancements
- and new features, and is backwards-compatible with the original
- iroffer.
- .
- This is the French version of iroffer-dinoex.
-
-Package: iroffer-dinoex-it
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Suggests: iroffer-dinoex-doc
-Conflicts: iroffer
-Replaces: iroffer
-Provides: iroffer-dinoex
-Description: IRC file distribution bot, Italian version
- iroffer is a fileserver for IRC (commonly referred to as a DCC bot).
- It uses the DCC feature of IRC to send files to other users. iroffer
- will connect to an IRC server and let people request files from it.
- Unlike similar programs, iroffer is not a script; it is a standalone
- executable written entirely in C, from scratch, with high transfer
- speed and efficiency in mind. iroffer has been known to reach
- 6MByte/sec or higher bandwidth usage when multiple transfers are
- occurring at the same time.
- iroffer-dinoex is a fork of iroffer developed and maintained by
- Dirk Meyer <dinoex@dinoex.net>. It offers a lot of enhancements
- and new features, and is backwards-compatible with the original
- iroffer.
- .
- This is the Italian version of iroffer-dinoex.
-
+ Dirk Meyer. It offers a lot of enhancements and new features,
+ and is backwards-compatible with the original iroffer. New features
+ offered by iroffer-dinoex include support for IPv6, SSL (either via
+ OpenSSL or GNU TLS), passive DCC, large (> 4 GB) files, UPnP, and
+ the ability to extend it via a Ruby scripting engine.
