@@ -1965,7 +1965,7 @@ doc/${man}.html: ${man}
 	groff -t -e -mandoc -Thtml ${man} > doc/${man}.html
 
 doc/${man}.txt: ${man}
-	groff -t -e -mandoc -Tascii ${man} | col -bx > doc/${man}.txt
+	groff -t -e -mandoc -Tascii ${man} > doc/${man}.txt
 
 doc/${man}.ps: ${man}
 	groff -t -e -mandoc -Tps ${man} > doc/${man}.ps
