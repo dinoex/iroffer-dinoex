@@ -2455,6 +2455,7 @@ void backup_statefile(void)
 
   statefile_date = mycalloc(maxtextlengthshort);
   getdatestr(statefile_date, 0, maxtextlengthshort);
+  removenonprintablefile(statefile_date);
   statefile_tmp = mystrjoin(gdata.statefile, statefile_date, '.');
   mydelete(statefile_date);
   callval = rename(gdata.statefile, statefile_tmp);

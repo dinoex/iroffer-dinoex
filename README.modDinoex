@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: statefile (reported by lovesyk)
+  backup statefile filename is now cleaned.
+
 bugfix: xdcc.7 (by optix2000)
   make debian whatis happy
 
