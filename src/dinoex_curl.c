@@ -290,7 +290,7 @@ void fetch_perform(void)
 }
 
 /* callback for CURLOPT_HEADERFUNCTION */
-/* from curl tool_cb_hdr.c, Copyright (C) 1998 - 2011, Daniel Stenberg */
+/* inspired from curl 7.24.0, tool_cb_hdr.c, Copyright (C) 1998 - 2011, Daniel Stenberg */
 static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
   const size_t cb = size * nmemb;
