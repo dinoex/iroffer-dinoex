@@ -56,7 +56,7 @@ void init_fish64decode( void )
 {
   unsigned int i;
 
-  memset(fish64decode, 0, sizeof(fish64decode));
+  bzero(fish64decode, sizeof(fish64decode));
   for ( i = 0; i < 64; ++i) {
     fish64decode[ FISH64[ i ] ] = (unsigned char)i;
   }
@@ -126,7 +126,7 @@ static char *encrypt_fish( const char *str, size_t len, const char *key)
     }
   }
   *dest = 0;
-  memset(&ctx, 0, sizeof(BLOWFISH_CTX));
+  bzero(&ctx, sizeof(BLOWFISH_CTX));
   return msg;
 }
 
@@ -187,7 +187,7 @@ static char *decrypt_fish( const char *str, size_t len, const char *key)
     }
   }
   *dest = 0;
-  memset(&ctx, 0, sizeof(BLOWFISH_CTX));
+  bzero(&ctx, sizeof(BLOWFISH_CTX));
   return msg;
 }
 
@@ -1263,7 +1263,7 @@ void cancel_md5_hash(xdcc *xd, const char *msg)
   }
   xd->has_md5sum = 0;
   xd->has_crc32 = 0;
-  memset(xd->md5sum, 0, sizeof(MD5Digest));
+  bzero(xd->md5sum, sizeof(MD5Digest));
 
   assert(xd->file_fd == FD_UNUSED);
   assert(xd->file_fd_count == 0);

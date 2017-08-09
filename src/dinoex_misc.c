@@ -237,8 +237,8 @@ void guess_end_transfers(void)
   updatecontext();
 
   /* make sortd list of all transfers */
-  memset(&end_trans, 0, sizeof(irlist_t));
-  memset(&list2, 0, sizeof(irlist_t));
+  bzero(&end_trans, sizeof(irlist_t));
+  bzero(&list2, sizeof(irlist_t));
   for (tr = irlist_get_head(&gdata.trans); tr; tr = irlist_get_next(tr)) {
     left = min2(359999, (tr->xpack->st_size-tr->bytessent)/((int)(max2(tr->lastspeed, 0.001)*1024)));
     remain = irlist_add(&list2, sizeof(remaining_transfer_time));

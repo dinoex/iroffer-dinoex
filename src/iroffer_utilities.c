@@ -2300,7 +2300,7 @@ int ir_boutput_attempt_flush(ir_boutput_t *bout)
 
 void ir_boutput_init(ir_boutput_t *bout, int fd, unsigned int flags)
 {
-  memset(bout, 0, sizeof(*bout));
+  bzero(bout, sizeof(*bout));
   bout->fd = fd;
   bout->flags = flags;
   return;
@@ -2309,7 +2309,7 @@ void ir_boutput_init(ir_boutput_t *bout, int fd, unsigned int flags)
 void ir_boutput_delete(ir_boutput_t *bout)
 {
   irlist_delete_all(&bout->segments);
-  memset(bout, 0, sizeof(*bout));
+  bzero(bout, sizeof(*bout));
   return;
 }
 

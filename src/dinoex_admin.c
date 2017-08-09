@@ -5635,7 +5635,7 @@ static unsigned int a_new_announce(unsigned int max, const char *name)
   format = gdata.http_date ? gdata.http_date : "%Y-%m-%d %H:%M";
 
   grouplist = get_grouplist_channel(name);
-  memset(&list, 0, sizeof(irlist_t));
+  bzero(&list, sizeof(irlist_t));
   for (i=0; i<max; ++i)
     add_newest_xdcc(&list, grouplist);
 

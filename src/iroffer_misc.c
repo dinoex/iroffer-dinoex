@@ -1465,7 +1465,7 @@ void sendxdlqueue (void)
 
 void initprefixes(void)
 {
-  memset(&(gnetwork->prefixes), 0, sizeof(gnetwork->prefixes));
+  bzero(&(gnetwork->prefixes), sizeof(gnetwork->prefixes));
   gnetwork->prefixes[0].p_mode   = 'o';
   gnetwork->prefixes[0].p_symbol = '@';
   gnetwork->prefixes[1].p_mode   = 'v';
@@ -1474,7 +1474,7 @@ void initprefixes(void)
 
 static void initchanmodes(void)
 {
-  memset(&(gnetwork->chanmodes), 0, sizeof(gnetwork->chanmodes));
+  bzero(&(gnetwork->chanmodes), sizeof(gnetwork->chanmodes));
   gnetwork->chanmodes[0] = 'b';
   gnetwork->chanmodes[1] = 'k';
   gnetwork->chanmodes[1] = 'l';
@@ -1485,7 +1485,7 @@ void initvars(void)
   struct timeval timestruct;
   unsigned int ss;
 
-  memset(&gdata, 0, sizeof(gdata_t));
+  bzero(&gdata, sizeof(gdata_t));
   
   config_reset();
   
@@ -1564,7 +1564,7 @@ void startupiroffer(void) {
    printf("\n");
    
    /* signal handling */
-   memset(&sa, 0, sizeof(sa));
+   bzero(&sa, sizeof(sa));
    
 #if !defined(NO_SIGINFO)
    sa.sa_sigaction = iroffer_signal_handler;

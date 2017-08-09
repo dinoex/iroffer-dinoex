@@ -152,7 +152,7 @@ void init_base64decode( void )
 {
   unsigned int i;
 
-  memset(base64decode, 0, sizeof(base64decode));
+  bzero(base64decode, sizeof(base64decode));
   for (i = 0; i < 64; ++i) {
     base64decode[ BASE64[ i ] ] = i;
   }
