@@ -313,7 +313,7 @@ void parseconsole(void)
   bzero(console_escape_seq, sizeof(console_escape_seq));
   if (is_fd_readable(fileno(stdin)))
     {
-      memset(tempbuffa, 0, INPUT_BUFFER_LENGTH);
+      bzero(tempbuffa, INPUT_BUFFER_LENGTH);
       length = read (fileno(stdin), &tempbuffa, INPUT_BUFFER_LENGTH);
       
       if (length < 1)
@@ -393,7 +393,7 @@ void parseconsole(void)
                                     }
                                   else
                                     {
-                                      memset(gdata.console_input_line, 0,
+                                      bzero(gdata.console_input_line,
                                              INPUT_BUFFER_LENGTH);
                                       linelength = 0;
                                       gdata.curcol = 0;
@@ -437,13 +437,13 @@ void parseconsole(void)
                         }
                       /* else ignore */
                       
-                      memset(console_escape_seq, 0, maxtextlengthshort);
+                      bzero(console_escape_seq, maxtextlengthshort);
                     }
                 }
               else
                 {
                   /* sequence is too long, ignore */
-                  memset(console_escape_seq, 0, maxtextlengthshort);
+                  bzero(console_escape_seq, maxtextlengthshort);
                 }
             }
           else if (tempbuffa[i] == '\x1b')
@@ -482,7 +482,7 @@ void parseconsole(void)
               u_parseit(&ui);
               
               gdata.curcol=0;
-              memset(gdata.console_input_line, 0, INPUT_BUFFER_LENGTH);
+              bzero(gdata.console_input_line, INPUT_BUFFER_LENGTH);
             }
           else if (isprintable(tempbuffa[i]))
             {

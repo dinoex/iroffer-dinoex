@@ -1383,7 +1383,7 @@ static unsigned int run_new_trigger(const char *nick, const char *grouplist)
   time_t now;
   unsigned int i;
 
-  memset(&list, 0, sizeof(irlist_t));
+  bzero(&list, sizeof(irlist_t));
   for (i=0; i<gdata.new_trigger; ++i)
     add_newest_xdcc(&list, grouplist);
 

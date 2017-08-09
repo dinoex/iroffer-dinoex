@@ -495,12 +495,12 @@ void child_resolver(int family)
     }
   }
 
-  memset(&rbuffer, 0, sizeof(res_addrinfo_t));
+  bzero(&rbuffer, sizeof(res_addrinfo_t));
   /* enable logfile */
   gdata.logfd = FD_UNUSED;
 
 #if !defined(NO_GETADDRINFO)
-  memset(&hints, 0, sizeof(hints));
+  bzero(&hints, sizeof(hints));
   switch (family) {
   case 0:
     hints.ai_family = PF_UNSPEC;
@@ -544,7 +544,10 @@ void child_resolver(int family)
 #endif /* NO_HOSTCODES */
   }
 
-  remoteaddr = (struct sockaddr_in *)(&(rbuffer.ai_addr));
+  bzero(&remoteaddr, sizeof(struct sockaddr_in));
+  remoteaddr->sin_len = rbuffer.ai_addr.sa_len;
+  remoteaddr->sin_family = rbuffer.ai_addr.sa_family;
+  memcpy(&(remoteaddr->sin_addr), &(rbuffer.ai_addr.sa_data), rbuffer.ai_addrlen);
   rbuffer.ai_reset = 0;
 #if !defined(NO_GETADDRINFO)
   found = -1;
@@ -986,7 +989,7 @@ static void irc_005(ir_parseline_t *ipl)
       char *ptr = item+8;
       unsigned int pi;
 
-      memset(&(gnetwork->prefixes), 0, sizeof(gnetwork->prefixes));
+      bzero(&(gnetwork->prefixes), sizeof(gnetwork->prefixes));
       for (pi = 0; (ptr[pi] && (ptr[pi] != ')') && (pi < MAX_PREFIX)); ++pi) {
         gnetwork->prefixes[pi].p_mode = ptr[pi];
       }
@@ -1012,7 +1015,7 @@ static void irc_005(ir_parseline_t *ipl)
       unsigned int ci;
       unsigned int cm;
 
-      memset(&(gnetwork->chanmodes), 0, sizeof(gnetwork->chanmodes));
+      bzero(&(gnetwork->chanmodes), sizeof(gnetwork->chanmodes));
       for (ci = cm = 0; (ptr[ci] && (cm < MAX_CHANMODES)); ++ci) {
         if (ptr[ci+1] == ',')
                      {
@@ -1512,7 +1515,7 @@ void irc_perform(int changesec)
         char tempbuffa[INPUT_BUFFER_LENGTH];
         gnetwork->lastservercontact = gdata.curtime;
         gnetwork->servertime = 0;
-        memset(&tempbuffa, 0, INPUT_BUFFER_LENGTH);
+        bzero(&tempbuffa, INPUT_BUFFER_LENGTH);
         length = readserver_ssl(&tempbuffa, INPUT_BUFFER_LENGTH);
 
         if (length < 1) {

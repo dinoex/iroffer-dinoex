@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: geoip6database
+  fix GeoIP IPv6 detection.
+
 bugfix: statefile (reported by lovesyk)
   backup statefile filename is now cleaned.
 

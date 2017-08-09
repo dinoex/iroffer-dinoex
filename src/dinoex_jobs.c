@@ -56,7 +56,7 @@ void init_fish64decode( void )
 {
   unsigned int i;
 
-  memset(fish64decode, 0, sizeof(fish64decode));
+  bzero(fish64decode, sizeof(fish64decode));
   for ( i = 0; i < 64; ++i) {
     fish64decode[ FISH64[ i ] ] = (unsigned char)i;
   }
@@ -126,7 +126,7 @@ static char *encrypt_fish( const char *str, size_t len, const char *key)
     }
   }
   *dest = 0;
-  memset(&ctx, 0, sizeof(BLOWFISH_CTX));
+  bzero(&ctx, sizeof(BLOWFISH_CTX));
   return msg;
 }
 
@@ -187,7 +187,7 @@ static char *decrypt_fish( const char *str, size_t len, const char *key)
     }
   }
   *dest = 0;
-  memset(&ctx, 0, sizeof(BLOWFISH_CTX));
+  bzero(&ctx, sizeof(BLOWFISH_CTX));
   return msg;
 }
 
@@ -608,7 +608,7 @@ void admin_jobs(void)
 static int check_for_file_remove(unsigned int n)
 {
   xdcc *xd;
-  userinput *pubplist;
+  userinput *u2;
   char *tempstr;
 
   updatecontext();
@@ -620,12 +620,12 @@ static int check_for_file_remove(unsigned int n)
   if (gdata.removelostfiles == 0)
     return 0;
 
-  pubplist = mycalloc(sizeof(userinput));
+  u2 = mycalloc(sizeof(userinput));
   tempstr = mymalloc(maxtextlength);
   snprintf(tempstr, maxtextlength, "REMOVE %u", n); /* NOTRANSLATE */
-  u_fillwith_console(pubplist, tempstr);
-  u_parseit(pubplist);
-  mydelete(pubplist);
+  u_fillwith_console(u2, tempstr);
+  u_parseit(u2);
+  mydelete(u2);
   mydelete(tempstr);
   return 1;
 }
@@ -826,18 +826,14 @@ void run_delayed_jobs(void)
   for (u = irlist_get_head(&gdata.packs_delayed); u; ) {
     if (strcmp(u->cmd, "REMOVE") == 0) { /* NOTRANSLATE */
       a_remove_delayed(u);
-      mydelete(u->cmd);
-      mydelete(u->arg1);
-      mydelete(u->arg2);
+      free_userinput(u);
       (void)irlist_delete(&gdata.packs_delayed, u);
       /* process only one file */
       return;
     }
     if (strcmp(u->cmd, "ADD") == 0) { /* NOTRANSLATE */
       a_add_delayed(u);
-      mydelete(u->cmd);
-      mydelete(u->arg1);
-      mydelete(u->arg2);
+      free_userinput(u);
       (void)irlist_delete(&gdata.packs_delayed, u);
       /* process only one file */
       return;
@@ -938,19 +934,9 @@ void write_removed_xdcc(xdcc *xd)
 
 static void u_fillwith_console2(userinput * const u)
 {
+  bzero((char *)u, sizeof(userinput));
   u->method = method_console;
-  u->snick = NULL;
-  u->chat = NULL;
-  u->net = 0;
   u->level = ADMIN_LEVEL_CONSOLE;
-  u->hostmask = NULL;
-  u->cmd = NULL;
-  u->arg1 = NULL;
-  u->arg2 = NULL;
-  u->arg3 = NULL;
-  u->arg1e = NULL;
-  u->arg2e = NULL;
-  u->arg3e = NULL;
 }
 
 static void import_pack(const char *xx_file, const char *xx_desc, const char *xx_note,
@@ -967,7 +953,6 @@ static void import_pack(const char *xx_file, const char *xx_desc, const char *xx
 
   updatecontext();
 
-  bzero((char *)&u2, sizeof(userinput));
   u_fillwith_console2(&u2);
   file = mystrdup(xx_file);
   convert_to_unix_slash(file);
@@ -1278,7 +1263,7 @@ void cancel_md5_hash(xdcc *xd, const char *msg)
   }
   xd->has_md5sum = 0;
   xd->has_crc32 = 0;
-  memset(xd->md5sum, 0, sizeof(MD5Digest));
+  bzero(xd->md5sum, sizeof(MD5Digest));
 
   assert(xd->file_fd == FD_UNUSED);
   assert(xd->file_fd_count == 0);

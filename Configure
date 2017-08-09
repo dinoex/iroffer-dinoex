@@ -1639,7 +1639,7 @@ ${main2}" > config.temp.c
   echo "${irheaders}
 #include <GeoIP.h>
 ${main1}
- struct in6_addr remoteip; GeoIP_country_code_by_ipnum_v6(NULL, remoteip);
+ struct in6_addr remoteip; inet_pton(AF_INET6, 0, &remoteip); GeoIP_country_code_by_ipnum_v6(NULL, remoteip);
 ${main2}" > config.temp.c
   if $cctype -o config.temp -DUSE_GEOIP6 $WARNS $WERROR $CFLAGS ${GEOINC} config.temp.c ${GEOLDF} ${GEOLIB} $LDFLAGS $libs $LIBS; then
    FEATURES="${FEATURES}6"

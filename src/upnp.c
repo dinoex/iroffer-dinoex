@@ -2,7 +2,7 @@
 Copyright (c) 2005-2007, Thomas BERNARD
 All rights reserved.
 
-Copyright (c) 2007-2016 Dirk Meyer
+Copyright (c) 2007-2017 Dirk Meyer
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -58,8 +58,8 @@ void init_upnp (void)
 
 	ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW, "UPnP discover" );
 	tostdout_write();
-	memset(&urls, 0, sizeof(struct UPNPUrls));
-	memset(&data, 0, sizeof(struct IGDdatas));
+	bzero(&urls, sizeof(struct UPNPUrls));
+	bzero(&data, sizeof(struct IGDdatas));
 #if MINIUPNPC_API_VERSION >= 14
 	devlist = upnpDiscover(2000, NULL, NULL, 0, 0, 2U, NULL);
 #else

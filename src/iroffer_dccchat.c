@@ -469,7 +469,7 @@ void shutdowndccchat(dccchat_t *chat, int flush)
         upnp_rem_redir(chat->con.localport);
 #endif /* USE_UPNP */
 
-      memset(chat, 0, sizeof(dccchat_t));
+      bzero(chat, sizeof(dccchat_t));
 
       chat->con.clientsocket = FD_UNUSED;
       chat->status = DCCCHAT_UNUSED;

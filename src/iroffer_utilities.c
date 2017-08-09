@@ -841,7 +841,7 @@ void dumpgdata(void)
   gdata_iter_print_string(snick);
   gdata_iter_print_string(cmd);
   gdata_iter_print_string(arg1);
-  /* ppointer stat arg2 */
+  gdata_iter_print_string(arg2);
   gdata_iter_print_string(arg3);
   gdata_iter_print_int(fd);
   gdata_iter_print_int(net);
@@ -2300,7 +2300,7 @@ int ir_boutput_attempt_flush(ir_boutput_t *bout)
 
 void ir_boutput_init(ir_boutput_t *bout, int fd, unsigned int flags)
 {
-  memset(bout, 0, sizeof(*bout));
+  bzero(bout, sizeof(*bout));
   bout->fd = fd;
   bout->flags = flags;
   return;
@@ -2309,7 +2309,7 @@ void ir_boutput_init(ir_boutput_t *bout, int fd, unsigned int flags)
 void ir_boutput_delete(ir_boutput_t *bout)
 {
   irlist_delete_all(&bout->segments);
-  memset(bout, 0, sizeof(*bout));
+  bzero(bout, sizeof(*bout));
   return;
 }
 

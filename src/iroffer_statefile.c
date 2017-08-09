@@ -697,7 +697,7 @@ unsigned int read_statefile(void)
                     outerror(OUTERROR_TYPE_WARN, "Pack %u: Cant Access Offered File '%s': %s",
                              number_of_pack(xd),
                              xd->file, strerror(errno));
-                    memset(&st, 0, sizeof(st));
+                    bzero(&st, sizeof(st));
                     break;
                   }
                 if (!xd->has_md5sum ||
@@ -710,7 +710,7 @@ unsigned int read_statefile(void)
                     xd->st_ino      = st.st_ino;
                     xd->mtime       = st.st_mtime;
                     xd->has_md5sum  = 0;
-                    memset(xd->md5sum, 0, sizeof(MD5Digest));
+                    bzero(xd->md5sum, sizeof(MD5Digest));
                   }
                 if (xd->st_dev != st.st_dev)
                   {

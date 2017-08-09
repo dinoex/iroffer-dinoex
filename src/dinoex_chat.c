@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -157,7 +157,7 @@ void chat_perform(void)
     if ((chat->status == DCCCHAT_AUTHENTICATING) ||
         (chat->status == DCCCHAT_CONNECTED)) {
       if (FD_ISSET(chat->con.clientsocket, &gdata.readset))  {
-        memset(tempbuffa, 0, INPUT_BUFFER_LENGTH);
+        bzero(tempbuffa, INPUT_BUFFER_LENGTH);
         length = recv(chat->con.clientsocket, &tempbuffa, INPUT_BUFFER_LENGTH, MSG_DONTWAIT);
         if (length < 1) {
           ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
