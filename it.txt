@@ -1880,7 +1880,6 @@
 2824 "url reale del file scaricato: '%s'"
 2825 "ora remota del file scaricato: %ld"
 2826 "nome del contenuto scaricato: '%s'"
-2827 "Dati header = %ld supera il limite di scrittura della singola cella !"
 2828 "FETCH header '%s'"
 2829 "FETCH filename '%s'"
 2830 "   %2i  fetch       %-32s   Attesa"

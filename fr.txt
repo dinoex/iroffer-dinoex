@@ -1880,7 +1880,6 @@
 2824 "URL récupérée : « %s »"
 2825 "durée de la récupération : %ld"
 2826 "nom du contenu récupéré : « %s »"
-2827 "les données d?en-tête = %ld dépassent la limite pour un seul appel !"
 2828 "en-tête FETCH « %s »"
 2829 "nom de fichier FETCH « %s »"
 2830 "   FETCH %2i  %-32s   restant"
