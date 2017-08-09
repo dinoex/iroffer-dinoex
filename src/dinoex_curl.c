@@ -290,11 +290,9 @@ void fetch_perform(void)
 }
 
 /* callback for CURLOPT_HEADERFUNCTION */
-/* inspired from curl 7.24.0, tool_cb_hdr.c, Copyright (C) 1998 - 2011, Daniel Stenberg */
 static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userdata)
 {
   const size_t cb = size * nmemb;
-  const size_t failure = (cb) ? 0 : 1;
   fetch_curl_t *ft = userdata;
   char *temp;
   char *work;
@@ -303,14 +301,8 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
 
   updatecontext();
   if (ft == NULL)
-    return cb; /* ignore */
+    return cb;
 
-#ifdef DEBUG
-  if(size * nmemb > (size_t)CURL_MAX_HTTP_HEADER) {
-    outerror(OUTERROR_TYPE_WARN_LOUD, "Header data = %ld exceeds single call write limit!", size);
-    return failure;
-  }
-#endif
   temp = mystrdup(ptr);
   len = cb;
   if (temp[len - 1] == '\n') {
@@ -320,6 +312,7 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
     }
   }
   temp[len] = 0;
+
   if ((gdata.debug > 0) && (cb > 2)) {
     a_respond(&(ft->u), "FETCH header '%s'", temp);
   }
@@ -556,7 +549,7 @@ static void fetch_now(const userinput *const u, const char *uploaddir, char *nam
   ft->starttime = gdata.curtime;
 
   if (curl_fetch(u, ft)) {
-    clean_fetch(ft);
+        clean_fetch(ft);
     return;
   }
 
