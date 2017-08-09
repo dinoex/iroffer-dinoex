@@ -241,12 +241,9 @@ void u_fillwith_console (userinput * const u, char *line)
   
   updatecontext();
   
+  bzero((char *)u, sizeof(userinput));
   u->method = method_console;
-  u->snick = NULL;
-  u->chat = NULL;
-  u->net = 0;
   u->level = ADMIN_LEVEL_CONSOLE;
-  u->hostmask = NULL;
   
   a_parse_inputline(u, line);
 }
@@ -256,8 +253,8 @@ void u_fillwith_dcc (userinput * const u, dccchat_t *chat, char *line)
   
   updatecontext();
   
+  bzero((char *)u, sizeof(userinput));
   u->method = method_dcc;
-  u->snick = NULL;
   u->chat = chat;
   u->net = chat->net;
   u->level = chat->level;

@@ -841,7 +841,7 @@ void dumpgdata(void)
   gdata_iter_print_string(snick);
   gdata_iter_print_string(cmd);
   gdata_iter_print_string(arg1);
-  /* ppointer stat arg2 */
+  gdata_iter_print_string(arg2);
   gdata_iter_print_string(arg3);
   gdata_iter_print_int(fd);
   gdata_iter_print_int(net);

@@ -386,6 +386,7 @@ typedef struct
   dccchat_t *chat;
   char *hostmask;
   char *snick, *cmd;
+  struct stat *st;
   char *arg1, *arg2, *arg3;
   char *arg1e, *arg2e, *arg3e;
   userinput_method_e method;

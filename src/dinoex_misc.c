@@ -1066,6 +1066,7 @@ void free_userinput(userinput * const u)
   mydelete(u->snick);
   mydelete(u->hostmask);
   mydelete(u->cmd);
+  mydelete(u->st);
   mydelete(u->arg1e);
   mydelete(u->arg2e);
   mydelete(u->arg3e);

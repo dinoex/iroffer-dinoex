@@ -1035,7 +1035,7 @@ void a_remove_delayed(const userinput * const u)
   updatecontext();
 
   backup = gnetwork;
-  st = (struct stat *)(u->arg2);
+  st = u->st;
   n = 0;
   for (xd = irlist_get_head(&gdata.xdccs); xd; ) {
     ++n;
@@ -2105,8 +2105,8 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
     u2->arg1 = tempstr;
     tempstr = NULL;
 
-    u2->arg2 = mycalloc(sizeof(struct stat));
-    memcpy(u2->arg2, &st, sizeof(struct stat));
+    u2->st = mycalloc(sizeof(struct stat));
+    memcpy(u2->st, &st, sizeof(struct stat));
   }
 
   closedir(d);
@@ -2604,7 +2604,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
       for (u2 = irlist_get_head(&gdata.packs_delayed);
            u2;
            u2 = irlist_get_next(u2)) {
-        sta = (struct stat *)(u2->arg2);
+        sta = u2->st;
         if ((strcmp(u2->cmd, "ADD") == 0) &&
             (sta->st_dev == st.st_dev) &&
             (sta->st_ino == st.st_ino)) {
@@ -2645,8 +2645,8 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     u2->arg1 = mystrdup(thefile);
 
     if (stat(thefile, &st) == 0) {
-      u2->arg2 = mycalloc(sizeof(struct stat));
-      memcpy(u2->arg2, &st, sizeof(struct stat));
+      u2->st = mycalloc(sizeof(struct stat));
+      memcpy(u2->st, &st, sizeof(struct stat));
     }
 
     if (setgroup != NULL) {
