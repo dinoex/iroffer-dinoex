@@ -1631,7 +1631,7 @@ void startupiroffer(void) {
    if ((geteuid() == 0) && (gdata.chrootdir)) {
       printf( "** Changing root filesystem to '%s'\n", gdata.chrootdir );
       if( chroot( gdata.chrootdir ) < 0 ) {
-		   outerror( OUTERROR_TYPE_CRASH, "Can't chroot: %s", strerror(errno));
+        outerror( OUTERROR_TYPE_CRASH, "Can't chroot: %s", strerror(errno));
       }
       if( chdir("/") < 0 ) {
         outerror( OUTERROR_TYPE_CRASH, "Can't chdir: %s", strerror(errno) );
