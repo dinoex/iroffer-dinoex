@@ -3,6 +3,56 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.31:
 ----------------
 
+bugfix: geoip6database
+  Erkenne GeoIP IPv6 auch mit neuen Compilern.
+
+bugfix: statefile
+  Der Dateiname ist jetzt ohne Sonderzeichen.
+
+bugfix: xdcc.7
+  Formatierung für "debian" angepasst.
+
+bugfix: Configure
+  Support für CPPFLAGS
+
+bugfix: CRASH
+  Benutze Systemfunktion zum Abbruch.
+
+412) quit_msg
+  Nachricht beim Beenden des Bots and die Channels.
+  Bei Wert "none" wird keine Nachricht gesendet.
+  Default: Melde Bot Version und gegebenen falls das Betriebssystem.
+
+bugfix: upnp_router
+  Update auf libminiupnpc 2.0.20161216
+
+Convert charset for all files to UTF-8.
+  
+bugfix: Configure
+  Support für MacOS "Capitan"
+
+bugfix: French translation
+  Aktualisierung von Sébastien Picavet
+
+bugfix: ADMIN CHATME
+  If the CHAT was not successful, the port was never cleared.
+
+bugfix: ruby_script
+  Support für Debian "jessie"
+
+bugfix: Configure
+  Support für Compiler "cparser"
+
+bugfix: http_port
+  Die Webliste konnte abgeschnitten werden.
+
+bugfix: upnp_router
+  Update auf libminiupnpc 1.9.20151008
+
+bugfix: Configure
+  Benutze gcc falls kein anderer Compiler gefunden wurde.
+
+
 Ab Version 3.30:
 ----------------
 
