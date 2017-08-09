@@ -544,10 +544,7 @@ void child_resolver(int family)
 #endif /* NO_HOSTCODES */
   }
 
-  bzero(remoteaddr, sizeof(struct sockaddr_in));
-  remoteaddr->sin_len = rbuffer.ai_addr.sa_len;
-  remoteaddr->sin_family = rbuffer.ai_addr.sa_family;
-  memcpy(&(remoteaddr->sin_addr), &(rbuffer.ai_addr.sa_data), rbuffer.ai_addrlen);
+  remoteaddr = (struct sockaddr_in *)(&(rbuffer.ai_addr));
   rbuffer.ai_reset = 0;
 #if !defined(NO_GETADDRINFO)
   found = -1;
