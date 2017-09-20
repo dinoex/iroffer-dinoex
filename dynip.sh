@@ -15,15 +15,14 @@
 # Rin "crontab -e" and place the following line in the editor:
 # */5 * * * * /full/path/to/iroffer/dynip.sh
 
-URL="http://iroffer.org/myip.cgi"
+URL="http://v4.ident.me/"
 CONFIGFILE="dynip.config"
 PIDFILE="mybot.pid"
 
 set -e
 set -u
 
-curl --silent ${URL} \
- |sed -e 's=^=usenatip =' \
+echo 'usenatip '`curl --silent ${URL}` \
  > ${CONFIGFILE}.tmp
 
 test -f ${CONFIGFILE} || touch ${CONFIGFILE}
