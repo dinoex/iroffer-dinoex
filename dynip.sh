@@ -22,8 +22,7 @@ PIDFILE="mybot.pid"
 set -e
 set -u
 
-curl --silent ${URL} \
- |sed -e 's=^=usenatip =' \
+echo 'usenatip '`curl --silent ${URL}` \
  > ${CONFIGFILE}.tmp
 
 test -f ${CONFIGFILE} || touch ${CONFIGFILE}
