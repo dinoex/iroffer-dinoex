@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: http_port
+  Use simpler JavaScript code for portability.
+
 bugfix: http_port, show_date_added
   In the Weblist the date had bad characters.
 
