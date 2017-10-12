@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.31:
 ----------------
 
+bugfix: http_port, show_date_added
+  In der Webliste wurde vor dem Datum ein fehlerhafte Zeichen ausgegeben.
+
 bugfix: geoip6database
   Erkenne GeoIP IPv6 auch mit neuen Compilern.
 

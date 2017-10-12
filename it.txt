@@ -1845,7 +1845,6 @@
 2832 "res_init() fallito con %d: %s"
 2833 "d, %"
 2834 "Mostra le informazioni sulla versione di iroffer"
-2835 "Paste this into your IRC client:"
 2836 "/msg %s xdcc send numero"
 2837 "/msg %s xdcc send %u"
 2838 "Version"

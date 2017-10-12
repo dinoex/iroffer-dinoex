@@ -1532,7 +1532,7 @@ static void h_html_file(http * const h)
     tempstr = mymalloc(maxtextlength);
     len = 0;
     if (gdata.show_date_added) {
-       user_getdatestr(tempstr + 1, xd->xtime ? xd->xtime : xd->mtime, maxtextlength - 1);
+       user_getdatestr(tempstr, xd->xtime ? xd->xtime : xd->mtime, maxtextlength - 1);
        len = strlen(tempstr);
        tempstr[len++] = ' ';
        tempstr[len] = 0;
