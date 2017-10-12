@@ -1172,7 +1172,8 @@ static char *html_link_build(const char *css, const char *caption, const char *t
   size_t len;
 
   tempstr = mymalloc(maxtextlength);
-  len = add_snprintf(tempstr, maxtextlength, "<a%s title=\"%s\" href=\"/?", css, caption);
+  len = add_snprintf(tempstr, maxtextlength, "<a%s title=\"%s\" href=\"/?", /* NOTRANSLATE */
+                     css, caption);
   html_link_start = 0;
   if (group)
     len += html_link_option(tempstr + len, maxtextlength - len, "g", group); /* NOTRANSLATE */
@@ -1180,7 +1181,7 @@ static char *html_link_build(const char *css, const char *caption, const char *t
     len += html_link_option(tempstr + len, maxtextlength - len, "t", "1"); /* NOTRANSLATE */
   if (order)
     len += html_link_option(tempstr + len, maxtextlength - len, "o", order); /* NOTRANSLATE */
-  (void)add_snprintf(tempstr + len, maxtextlength - len, "\">%s</a>", text);
+  (void)add_snprintf(tempstr + len, maxtextlength - len, "\">%s</a>", text); /* NOTRANSLATE */
   return tempstr;
 }
 
@@ -1265,11 +1266,14 @@ static void h_html_search(http * const h)
   if (!gdata.http_search)
     return;
 
-  h_respond(h, "<form action=\"\" method=\"post\">\n");
-  h_respond(h, "%s&nbsp;\n", "Search");
-  h_respond(h, "<input type=\"text\" name=\"s\" value=\"%s\" size=30>&nbsp;\n", (h->search) ? h->search : "");
-  h_respond(h, "<input type=\"submit\" name=\"submit\" value=\" %s \">\n", "Search");
-  h_respond(h, "</form>\n" );
+  h_respond(h, "<form action=\"\" method=\"post\">\n"); /* NOTRANSLATE */
+  h_respond(h, "%s&nbsp;\n", /* NOTRANSLATE */
+            "Search");
+  h_respond(h, "<input type=\"text\" name=\"s\" value=\"%s\" size=30>&nbsp;\n", /* NOTRANSLATE */
+            (h->search) ? h->search : "");
+  h_respond(h, "<input type=\"submit\" name=\"submit\" value=\" %s \">\n", /* NOTRANSLATE */
+            "Search");
+  h_respond(h, "</form>\n" ); /* NOTRANSLATE */
 }
 
 static void h_html_main(http * const h)
@@ -1351,88 +1355,92 @@ static void h_html_main(http * const h)
   order_func = html_order_func(h->order);
   irlist_sort2(&grplist, order_func);
 
-  h_respond(h, "<h1>%s %s</h1>\n", h->nick, "Group list" );
+  h_respond(h, "<h1>%s %s</h1>\n", /* NOTRANSLATE */
+            h->nick, "Group list" );
   h_html_search(h);
   if (gdata.http_search)
-    h_respond(h, "<br>\n");
-  h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
+    h_respond(h, "<br>\n"); /* NOTRANSLATE */
+  h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n"); /* NOTRANSLATE */
   tempstr = h_html_link_order(h, "sort by pack-Nr.", "PACKs", "pack");
-  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = h_html_link_order(h, "sort by downloads", "DLs", "gets");
-  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   if (h->traffic) {
     tempstr = h_html_link_order(h, "sort by downloads per file", "DLs/Pack", "rget");
-    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr); /* NOTRANSLATE */
     mydelete(tempstr);
   }
   tempstr = h_html_link_order(h, "sort by size of file", "Size", "size");
-  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   if (h->traffic) {
     tempstr = h_html_link_order(h, "sort by traffic", "Traffic", "tvol");
-    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr); /* NOTRANSLATE */
     mydelete(tempstr);
   }
   tempstr = h_html_link_order(h, "sort by group", "GROUP", NULL);
-  h_respond(h, "<th class=\"head\">%s</th>\n", tempstr);
+  h_respond(h, "<th class=\"head\">%s</th>\n", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   if (h->traffic)
     tlink = h_html_link_more(h, "hide traffic", "(less)");
   else
     tlink = h_html_link_more(h, "show traffic", "(more)");
-  h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tlink);
+  h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", /* NOTRANSLATE */
+            "DESCRIPTION", tlink);
   mydelete(tlink);
-  h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
+  h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n"); /* NOTRANSLATE */
 
-  h_respond(h, "<th class=\"right\">%u</th>\n", packs);
-  h_respond(h, "<th class=\"right\">%u</th>\n", agets);
+  h_respond(h, "<th class=\"right\">%u</th>\n", packs); /* NOTRANSLATE */
+  h_respond(h, "<th class=\"right\">%u</th>\n", agets); /* NOTRANSLATE */
   if (h->traffic)
-    h_respond(h, "<th class=\"right\">%.1f</th>\n", gets_per_pack(agets, packs));
+    h_respond(h, "<th class=\"right\">%.1f</th>\n", /* NOTRANSLATE */
+              gets_per_pack(agets, packs));
   tempstr = sizestr(0, sizes);
-  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   if (h->traffic) {
     tempstr = sizestr(0, traffic);
-    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+    h_respond(h, "<th class=\"right\">%s</th>\n", tempstr); /* NOTRANSLATE */
     mydelete(tempstr);
   }
-  h_respond(h, "<th class=\"head\">%u</th>\n", groups);
+  h_respond(h, "<th class=\"head\">%u</th>\n", groups); /* NOTRANSLATE */
   tlink = h_html_link_group(h, "show all packs in one list", "all packs", "*");
   tempstr = sizestr(0, traffic);
-  h_respond(h, "<th class=\"head\">%s [%s]&nbsp;%s</th>\n", tlink, tempstr, "complete downloaded" );
+  h_respond(h, "<th class=\"head\">%s [%s]&nbsp;%s</th>\n", /* NOTRANSLATE */
+            tlink, tempstr, "complete downloaded" );
   mydelete(tempstr);
   mydelete(tlink);
-  h_respond(h, "</tr>\n</tfoot>\n<tbody>\n");
+  h_respond(h, "</tr>\n</tfoot>\n<tbody>\n"); /* NOTRANSLATE */
 
   updatecontext();
   hg = irlist_get_head(&grplist);
   while (hg) {
-    h_respond(h, "<tr>\n");
-    h_respond(h, "<td class=\"right\">%u</td>\n", hg->hg_packs);
-    h_respond(h, "<td class=\"right\">%u</td>\n", hg->hg_agets);
+    h_respond(h, "<tr>\n"); /* NOTRANSLATE */
+    h_respond(h, "<td class=\"right\">%u</td>\n", hg->hg_packs); /* NOTRANSLATE */
+    h_respond(h, "<td class=\"right\">%u</td>\n", hg->hg_agets); /* NOTRANSLATE */
     if (h->traffic)
-      h_respond(h, "<td class=\"right\">%.1f</td>\n", hg->hg_rgets);
+      h_respond(h, "<td class=\"right\">%.1f</td>\n", hg->hg_rgets); /* NOTRANSLATE */
     tempstr = sizestr(0, hg->hg_sizes);
-    h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
+    h_respond(h, "<td class=\"right\">%s</td>\n", tempstr); /* NOTRANSLATE */
     mydelete(tempstr);
     if (h->traffic) {
       tempstr = sizestr(0, hg->hg_traffic);
-      h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
+      h_respond(h, "<td class=\"right\">%s</td>\n", tempstr); /* NOTRANSLATE */
       mydelete(tempstr);
     }
     savegroup = mymalloc(maxtextlength);
     html_encode(savegroup, maxtextlength, hg->hg_group);
-    h_respond(h, "<td class=\"content\">%s</td>\n", savegroup);
+    h_respond(h, "<td class=\"content\">%s</td>\n", savegroup); /* NOTRANSLATE */
     mydelete(savegroup);
     savedesc = mymalloc(maxtextlength);
     html_encode(savedesc, maxtextlength, hg->hg_desc);
     tlink = h_html_link_group(h, "show list of packs", savedesc, hg->hg_group);
     mydelete(savedesc);
-    h_respond(h, "<td class=\"content\">%s</td>\n", tlink);
+    h_respond(h, "<td class=\"content\">%s</td>\n", tlink); /* NOTRANSLATE */
     mydelete(tlink);
-    h_respond(h, "</tr>\n");
+    h_respond(h, "</tr>\n"); /* NOTRANSLATE */
     hg = irlist_delete(&grplist, hg);
   }
 }
@@ -1467,27 +1475,35 @@ static void h_html_file(http * const h)
     traffic += xd->gets * xd->st_size;
   }
 
-  h_respond(h, "<h1>%s %s</h1>\n", h->nick, "File list" );
+  h_respond(h, "<h1>%s %s</h1>\n", /* NOTRANSLATE */
+            h->nick, "File list" );
   h_html_search(h);
-  h_respond(h, "<p>%s<span class=\"cmd\">/msg %s xdcc send number</span></p>\n",
+  h_respond(h, "<p>%s<span class=\"cmd\">" /* NOTRANSLATE */
+            "/msg %s xdcc send number"
+            "</span></p>\n", /* NOTRANSLATE */
             "Download in IRC with: ", h->nick);
-  h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n");
-  h_respond(h, "<th class=\"head\">%s</th>\n", "PACKs");
-  h_respond(h, "<th class=\"head\">%s</th>\n", "DLs");
-  h_respond(h, "<th class=\"head\">%s</th>\n", "Size");
+  h_respond(h, "<table cellpadding=\"2\" cellspacing=\"0\" summary=\"list\">\n<thead>\n<tr>\n"); /* NOTRANSLATE */
+  h_respond(h, "<th class=\"head\">%s</th>\n", /* NOTRANSLATE */
+            "PACKs");
+  h_respond(h, "<th class=\"head\">%s</th>\n", /* NOTRANSLATE */
+            "DLs");
+  h_respond(h, "<th class=\"head\">%s</th>\n", /* NOTRANSLATE */
+            "Size");
   tempstr = h_html_link_group(h, "back", "(" "back" ")", NULL);
-  h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", "DESCRIPTION", tempstr);
+  h_respond(h, "<th class=\"head\">%s&nbsp;%s</th>\n", /* NOTRANSLATE */
+            "DESCRIPTION", tempstr);
   mydelete(tempstr);
-  h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n");
-  h_respond(h, "<th class=\"right\">%u</th>\n", packs);
-  h_respond(h, "<th class=\"right\">%u</th>\n", agets);
+  h_respond(h, "</tr>\n</thead>\n<tfoot>\n<tr>\n"); /* NOTRANSLATE */
+  h_respond(h, "<th class=\"right\">%u</th>\n", packs); /* NOTRANSLATE */
+  h_respond(h, "<th class=\"right\">%u</th>\n", agets); /* NOTRANSLATE */
   tempstr = sizestr(0, sizes);
-  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr);
+  h_respond(h, "<th class=\"right\">%s</th>\n", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = sizestr(0, traffic);
-  h_respond(h, "<th class=\"head\">[%s]&nbsp;%s</th>\n", tempstr, "complete downloaded" );
+  h_respond(h, "<th class=\"head\">[%s]&nbsp;%s</th>\n", /* NOTRANSLATE */
+            tempstr, "complete downloaded" );
   mydelete(tempstr);
-  h_respond(h, "</tr>\n</tfoot>\n<tbody>\n");
+  h_respond(h, "</tr>\n</tfoot>\n<tbody>\n"); /* NOTRANSLATE */
 
   for (xd = irlist_get_head(&gdata.xdccs);
        xd;
@@ -1499,15 +1515,16 @@ static void h_html_file(http * const h)
       continue;
 
     num = number_of_pack(xd);
-    h_respond(h, "<tr>\n");
-    h_respond(h, "<td class=\"right\">#%u</td>\n", num);
-    h_respond(h, "<td class=\"right\">%u</td>\n", xd->gets);
+    h_respond(h, "<tr>\n"); /* NOTRANSLATE */
+    h_respond(h, "<td class=\"right\">#%u</td>\n", num); /* NOTRANSLATE */
+    h_respond(h, "<td class=\"right\">%u</td>\n", xd->gets); /* NOTRANSLATE */
     tempstr = sizestr(0, xd->st_size);
-    h_respond(h, "<td class=\"right\">%s</td>\n", tempstr);
+    h_respond(h, "<td class=\"right\">%s</td>\n", tempstr); /* NOTRANSLATE */
     mydelete(tempstr);
     tlabel = mymalloc(maxtextlength);
-    len = add_snprintf(tlabel, maxtextlength, "%s\n/msg %s xdcc send %u",
-                   "Download with:", h->nick, num);
+    len = add_snprintf(tlabel, maxtextlength, "%s\n" /* NOTRANSLATE */
+                       "/msg %s xdcc send %u",
+                       "Download with:", h->nick, num);
     if (xd->has_md5sum)
       len += add_snprintf(tlabel + len, maxtextlength - len, "\nmd5: " MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
     if (xd->has_crc32)
@@ -1522,22 +1539,26 @@ static void h_html_file(http * const h)
     }
     len += html_encode(tempstr + len, maxtextlength - len, xd->desc);
     if (xd->lock)
-      len += add_snprintf(tempstr + len, maxtextlength - len, " (%s)", "locked");
+      len += add_snprintf(tempstr + len, maxtextlength - len, " (%s)", /* NOTRANSLATE */
+                          "locked");
     if (xd->note != NULL) {
       if (xd->note[0]) {
-        len += add_snprintf(tempstr + len, maxtextlength - len, "<br>");
+        len += add_snprintf(tempstr + len, maxtextlength - len, "<br>"); /* NOTRANSLATE */
         len += html_encode(tempstr + len, maxtextlength - len, xd->note);
       }
     }
     javalink = mymalloc(maxtextlength);
     (void)add_snprintf(javalink, maxtextlength,
-                   "<a href=\"javascript:ToClipboard('/msg %s xdcc send %u');\">%s</a>",
-                   h->nick, num, tempstr);
+                       "<a href=\"javascript:ToClipboard('" /* NOTRANSLATE */
+                       "/msg %s xdcc send %u"
+                       "');\">%s</a>", /* NOTRANSLATE */
+                       h->nick, num, tempstr);
     mydelete(tempstr);
-    h_respond(h, "<td class=\"content\"  title=\"%s\">%s</td>\n", tlabel, javalink);
+    h_respond(h, "<td class=\"content\"  title=\"%s\">%s</td>\n", /* NOTRANSLATE */
+              tlabel, javalink);
     mydelete(javalink);
     mydelete(tlabel);
-    h_respond(h, "</tr>\n");
+    h_respond(h, "</tr>\n"); /* NOTRANSLATE */
   }
 }
 
@@ -1598,10 +1619,10 @@ static void h_html_weblist_info(http * const h, char *key, char *text)
     outerror(OUTERROR_TYPE_WARN, "Unknown weblist_info: %s", key);
     return;
   }
-  h_respond(h, "<tr>\n");
-  h_respond(h, "<td>%s</td>\n", text);
-  h_respond(h, "<td>%s</td>\n", tempstr);
-  h_respond(h, "</tr>\n");
+  h_respond(h, "<tr>\n"); /* NOTRANSLATE */
+  h_respond(h, "<td>%s</td>\n", text); /* NOTRANSLATE */
+  h_respond(h, "<td>%s</td>\n", tempstr); /* NOTRANSLATE */
+  h_respond(h, "</tr>\n"); /* NOTRANSLATE */
   mydelete(tempstr);
 }
 
@@ -1646,7 +1667,9 @@ static void h_html_index(http * const h)
     h_html_main(h);
   }
 
-  h_respond(h, "</tbody>\n</table>\n<table class=\"status\">\n<tbody>\n<tr><td>Version</td>\n");
+  h_respond(h, "</tbody>\n</table>\n<table class=\"status\">\n<tbody>\n<tr><td>" /* NOTRANSLATE */
+            "Version"
+            "</td>\n"); /* NOTRANSLATE */
 
   tlabel = mymalloc(maxtextlength);
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_DAILY].used);
@@ -1658,27 +1681,31 @@ static void h_html_index(http * const h)
   tempstr = sizestr(0, gdata.transferlimits[TRANSFERLIMIT_MONTHLY].used);
   (void)add_snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this month");
   mydelete(tempstr);
-  h_respond(h, "<td title=\"%s\">%s</td>\n", tlabel, "iroffer-dinoex " VERSIONLONG);
+  h_respond(h, "<td title=\"%s\">%s</td>\n", /* NOTRANSLATE */
+            tlabel, "iroffer-dinoex " VERSIONLONG);
   mydelete(tlabel);
 
   tempstr = mymalloc(maxtextlength);
   user_getdatestr(tempstr, gdata.curtime, maxtextlength - 1);
-  h_respond(h, "<tr>\n");
-  h_respond(h, "<td>%s</td>\n", "last update");
-  h_respond(h, "<td>%s</td>\n", tempstr);
-  h_respond(h, "</tr>\n");
+  h_respond(h, "<tr>\n"); /* NOTRANSLATE */
+  h_respond(h, "<td>%s</td>\n", /* NOTRANSLATE */
+            "last update");
+  h_respond(h, "<td>%s</td>\n", tempstr); /* NOTRANSLATE */
+  h_respond(h, "</tr>\n"); /* NOTRANSLATE */
   mydelete(tempstr);
 
-  h_respond(h, "<tr>\n");
-  h_respond(h, "<td>%s</td>\n", "slots open");
-  h_respond(h, "<td>%u</td>\n", slotsfree());
-  h_respond(h, "</tr>\n");
+  h_respond(h, "<tr>\n"); /* NOTRANSLATE */
+  h_respond(h, "<td>%s</td>\n", /* NOTRANSLATE */
+            "slots open");
+  h_respond(h, "<td>%u</td>\n", slotsfree()); /* NOTRANSLATE */
+  h_respond(h, "</tr>\n"); /* NOTRANSLATE */
 
   tempstr = get_current_bandwidth();
-  h_respond(h, "<tr>\n");
-  h_respond(h, "<td>%s</td>\n", "Current Bandwidth");
-  h_respond(h, "<td>%s</td>\n", tempstr);
-  h_respond(h, "</tr>\n");
+  h_respond(h, "<tr>\n"); /* NOTRANSLATE */
+  h_respond(h, "<td>%s</td>\n", /* NOTRANSLATE */
+            "Current Bandwidth");
+  h_respond(h, "<td>%s</td>\n", tempstr); /* NOTRANSLATE */
+  h_respond(h, "</tr>\n"); /* NOTRANSLATE */
   mydelete(tempstr);
 
   for (info = irlist_get_head(&gdata.weblist_info);
@@ -1696,8 +1723,11 @@ static void h_html_index(http * const h)
     mydelete(buffer);
   }
 
-  h_respond(h, "</tbody>\n</table>\n<br>\n");
-  h_respond(h, "<a class=\"credits\" href=\"" "http://iroffer.dinoex.net/" "\">%s</a>\n", "Sourcecode" );
+  h_respond(h, "</tbody>\n</table>\n<br>\n"); /* NOTRANSLATE */
+  h_respond(h, "<a class=\"credits\" href=\"" /* NOTRANSLATE */
+               "http://iroffer.dinoex.net/"
+               "\">%s</a>\n", /* NOTRANSLATE */
+               "Sourcecode" );
 }
 
 static char *get_url_param(const char *url, const char *key)
@@ -1800,7 +1830,7 @@ static size_t h_guess_weblist(http * const h)
     }
     if (xd->note != NULL) {
       if (xd->note[0]) {
-        len += strlen("<br>");
+        len += strlen("<br>"); /* NOTRANSLATE */
         len += html_encode_size(xd->note);
       }
     }
@@ -1842,8 +1872,10 @@ static void h_admin(http * const h, unsigned int UNUSED(level), const char * UNU
   if (strcasecmp(h->url, "/") == 0) { /* NOTRANSLATE */
     guess = 2048;
     h_prepare_header(h, guess);
-    h_respond(h, "<a class=\"credits\" href=\"/admin%s/\">%s</a>\n", "/help", "Help" );
-    h_respond(h, "</form>\n" );
+    h_respond(h, "<a class=\"credits\" href=\"/admin%s/\">%s</a>\n", /* NOTRANSLATE */
+                 "/help",
+                 "Help" );
+    h_respond(h, "</form>\n" ); /* NOTRANSLATE */
     h_prepare_footer(h);
     return;
   }
