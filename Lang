@@ -44,11 +44,13 @@ else
 fi
 utf8="cat"
 case "${charset}" in
-u*)
+utf-8)
+	;;
+*)
 	case "${lang}" in
 	de|fr|it)
-		echo "utf-8 conversion ..."
-		utf8="iconv -f latin1 -t utf-8"
+		echo "latin1 conversion ..."
+		utf8="iconv -f utf-8 -t latin1"
 		;;
 	esac
 	;;

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2012 Dirk Meyer
+ * Copyright (C) 2004-2017 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -162,12 +162,12 @@ static void telnet_accept(unsigned int i)
   chat->con.lastcontact = gdata.curtime;
 
   msg = mymalloc(maxtextlength);
-  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa));
-  chat->con.localaddr = mystrdup(msg);
   my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa));
+  chat->con.localaddr = mystrdup(msg);
+  my_getnameinfo(msg, maxtextlength -1, &(chat->con.remote.sa));
   chat->con.remoteaddr = mystrdup(msg);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "Telnet connection received from %s",  msg);
+          "Telnet connection received from %s", msg);
   mydelete(msg);
 
   if (is_in_badip(&(chat->con.remote))) {
