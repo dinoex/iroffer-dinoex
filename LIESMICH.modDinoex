@@ -3,6 +3,15 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.31:
 ----------------
 
+bugfix: commandline -s (reported by AnTiZ)
+  Save und Exit wenn die Eingabe EOF meldet.
+
+bugfix: logfile
+  Erlaube Zeilen mit max Länge im logfile.
+
+bugfix: IRC 001
+  Erkenne wenn die Welcome Message vom Server ohne Nick ist.
+
 bugfix: http_port
   Benutze einfacheres JavaScript.
 
