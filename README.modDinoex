@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: logfile (reported by AnTiZ)
+  Allow max lines in logfile.
+
 bugfix: IRC 001 (reported by AnTiZ)
   Detect if the server welcome has no nickname.
 

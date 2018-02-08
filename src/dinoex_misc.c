@@ -759,7 +759,7 @@ unsigned int access_need_level(const char *nick, const char *text)
 void logfile_add(const char *logfile, const char *line)
 {
   char tempstr[maxtextlengthshort];
-  char logline[maxtextlength];
+  char logline[maxtextlength + maxtextlengthshort];
   size_t len;
   int logfd;
 
@@ -771,7 +771,7 @@ void logfile_add(const char *logfile, const char *line)
     return;
 
   getdatestr(tempstr, 0, maxtextlengthshort);
-  len = add_snprintf(logline, maxtextlength, "** %s: %s\n", tempstr, line);
+  len = add_snprintf(logline, maxtextlength + maxtextlengthshort, "** %s: %s\n", tempstr, line);
   mylog_write(logfd, logfile, logline, len);
   mylog_close(logfd, logfile);
 }
