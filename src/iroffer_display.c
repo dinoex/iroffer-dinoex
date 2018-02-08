@@ -318,7 +318,9 @@ void parseconsole(void)
       
       if (length < 1)
         {
-          outerror(OUTERROR_TYPE_CRASH,"read from stdin failed: %s",(length<0) ? strerror(errno) : "EOF!");
+          outerror(OUTERROR_TYPE_WARN_LOUD,"read from stdin failed: %s",(length<0) ? strerror(errno) : "EOF!");
+          shutdowniroffer();
+          return;
         }
       
       linelength = strlen(gdata.console_input_line);

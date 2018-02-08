@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: commandline -s (reported by AnTiZ)
+  Save and exit when EOF is reached.
+
 bugfix: logfile (reported by AnTiZ)
   Allow max lines in logfile.
 
