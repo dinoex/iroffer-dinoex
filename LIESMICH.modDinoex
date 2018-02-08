@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.31:
 ----------------
 
+bugfix: irc_001()
+  Erkenne wenn die Welcome Message vom Server ohne Nick ist.
+
 bugfix: http_port
   Benutze einfacheres JavaScript.
 

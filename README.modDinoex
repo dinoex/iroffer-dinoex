@@ -3,6 +3,9 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+bugfix: IRC 001 (reported by AnTiZ)
+  Detect if the server welcome has no nickname.
+
 bugfix: http_port
   Use simpler JavaScript code for portability.
 

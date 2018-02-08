@@ -944,11 +944,16 @@ static void irc_001(ir_parseline_t *ipl)
   mydelete(gnetwork->curserveractualname);
   gnetwork->curserveractualname = getpart(ipl->line + 1, 1);
 
-  /* update nick */
+  /* update nick from server */
   mydelete(gnetwork->user_nick);
   mydelete(gnetwork->caps_nick);
-  gnetwork->user_nick = mystrdup(ipl->part[2]);
-  gnetwork->caps_nick = mystrdup(ipl->part[2]);
+  if (ipl->part[2]) {
+    gnetwork->user_nick = mystrdup(ipl->part[2]);
+    gnetwork->caps_nick = mystrdup(ipl->part[2]);
+  } else {
+    gnetwork->user_nick = mystrdup(get_config_nick());
+    gnetwork->caps_nick = mystrdup(get_config_nick());
+  }
   caps(gnetwork->caps_nick);
   gnetwork->nick_number = 0;
   gnetwork->next_restrict = gdata.curtime + gdata.restrictsend_delay;
