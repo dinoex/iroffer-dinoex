@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2017 Dirk Meyer
+ * Copyright (C) 2004-2018 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -2255,28 +2255,31 @@ char *new_logfilename(const char *logfile)
   return newname;
 }
 
-static int readdir_sub(const char *thedir, DIR *dirp, struct dirent *entry, struct dirent **result)
+static struct dirent *readdir_sub(const char *thedir, DIR *dirp)
 {
-  int rc = 0;
+  struct dirent *result = NULL;
   unsigned int max = 3;
 
   for (max = 3; max > 0; --max) {
-    rc = readdir_r(dirp, entry, result);
-    if (rc == 0)
+    result = readdir(dirp);
+    if (result != NULL)
+      break;
+
+    if (errno == 0) /* end of dir */
       break;
 
     outerror(OUTERROR_TYPE_WARN_LOUD, "Error Reading Directory %s: %s", thedir, strerror(errno));
-    if (rc != EAGAIN)
+    if (errno != EAGAIN)
       break;
   }
-  return rc;
+
+  return result;
 }
 
 /* expire old logfiles */
 void expire_logfiles(const char *logfile)
 {
   struct stat st;
-  struct dirent f2;
   struct dirent *f;
   DIR *d;
   const char *base;
@@ -2318,9 +2321,7 @@ void expire_logfiles(const char *logfile)
   expire_seconds = gdata.expire_logfiles;
   expire_seconds *= 24*60*60;
   for (;;) {
-    if (readdir_sub(thedir, d, &f2, &f) != 0)
-      break;
-
+    f = readdir_sub(thedir, d);
     if (f == NULL)
       break;
 

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2017 Dirk Meyer
+ * Copyright (C) 2004-2018 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -2027,26 +2027,30 @@ static unsigned int is_system_dir(const char *name)
   return 0;
 }
 
-static int a_readdir_sub(const userinput * const u, const char *thedir, DIR *dirp, struct dirent *entry, struct dirent **result)
+static struct dirent *a_readdir_sub(const userinput * const u, const char *thedir, DIR *dirp)
 {
-  int rc = 0;
+  struct dirent *result = NULL;
   unsigned int max = 3;
 
+  errno = 0;
   for (max = 3; max > 0; --max) {
-    rc = readdir_r(dirp, entry, result);
-    if (rc == 0)
+    result = readdir(dirp);
+    if (result != NULL)
+      break;
+
+    if (errno == 0) /* end of dir */
       break;
 
     a_respond(u, "Error Reading Directory %s: %s", thedir, strerror(errno));
-    if (rc != EAGAIN)
+    if (errno != EAGAIN)
       break;
   }
-  return rc;
+
+  return result;
 }
 
 static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *d, const char *match)
 {
-  struct dirent f2;
   struct dirent *f;
   char *tempstr;
   userinput *u2;
@@ -2064,10 +2068,7 @@ static void a_removedir_sub(const userinput * const u, const char *thedir, DIR *
   for (;;) {
     struct stat st;
 
-    if (a_readdir_sub(u, thedir, d, &f2, &f) != 0) {
-       break;
-    }
-
+    f = a_readdir_sub(u, thedir, d);
     if (f == NULL)
       break;
 
@@ -2468,7 +2469,6 @@ static unsigned int check_bad_filename(const char *filename)
 static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, unsigned int onlynew, const char *setgroup, const char *match)
 {
   userinput *u2;
-  struct dirent f2;
   struct dirent *f;
   struct stat st;
   struct stat *sta;
@@ -2489,10 +2489,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
     xdcc *xd;
     unsigned int foundit;
 
-    if (a_readdir_sub(u, thedir, d, &f2, &f) != 0) {
-       break;
-    }
-
+    f = a_readdir_sub(u, thedir, d);
     if (f == NULL)
       break;
 
