@@ -88,8 +88,13 @@ static void outerror_ssl(long err)
 void ssl_startup(void)
 {
 #ifdef USE_OPENSSL
+#if !defined(OPENSSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER < 0x10100001L
   SSL_library_init();
   SSL_load_error_strings();
+#else
+  OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS |
+                   OPENSSL_INIT_LOAD_CRYPTO_STRINGS, NULL);
+#endif /* OPENSSL_VERSION_NUMBER */
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
   int ret;
