@@ -2279,12 +2279,14 @@ static struct dirent *readdir_sub(const char *thedir, DIR *dirp)
 /* expire old logfiles */
 void expire_logfiles(const char *logfile)
 {
+  irlist_t files_delayed;
   struct stat st;
   struct dirent *f;
   DIR *d;
   const char *base;
   char *thedir;
   char *tempstr;
+  char *oldfile;
   size_t len;
   long expire_seconds;
 
@@ -2299,6 +2301,7 @@ void expire_logfiles(const char *logfile)
   if (logfile[0] == 0)
     return;
 
+  bzero(&files_delayed, sizeof(irlist_t));
   thedir = mystrdup(logfile);
   tempstr = strrchr(thedir, '/');
   if (tempstr != NULL) {
@@ -2354,17 +2357,21 @@ void expire_logfiles(const char *logfile)
       mydelete(tempstr);
       continue;
     }
-    /* remove old log */
-    if (unlink(tempstr) < 0) {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "File %s could not be deleted: %s", tempstr, strerror(errno));
-    }
-
-    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,  "File %s was deleted.", tempstr);
-    mydelete(tempstr);
+    /* remove old log later, as readdir is not safe  */
+    irlist_add_string(&files_delayed, tempstr);
   }
 
   closedir(d);
   mydelete(thedir);
+
+  for (oldfile = irlist_get_head(&files_delayed);
+       oldfile;
+       oldfile = irlist_delete(&files_delayed, oldfile)) {
+    if (unlink(oldfile) < 0) {
+      outerror(OUTERROR_TYPE_WARN_LOUD, "File %s could not be deleted: %s", oldfile, strerror(errno));
+    }
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,  "File %s was deleted.", oldfile);
+  }
   return;
 }
 
