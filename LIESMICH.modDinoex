@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.dinoex.net/
 Ab Version 3.31:
 ----------------
 
+413) usenatip
+  Support für IPv6
+
 bugfix: commandline -s (reported by AnTiZ)
   Save und Exit wenn die Eingabe EOF meldet.
 

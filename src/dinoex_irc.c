@@ -48,7 +48,7 @@ size_t my_getnameinfo(char *buffer, size_t len, const struct sockaddr *sa)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
   socklen_t salen;
 
-  salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+  salen = (sa->sa_family != AF_INET6) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in);
   if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     return add_snprintf(buffer, len, "(unknown)" );
@@ -67,18 +67,21 @@ static size_t my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
 {
 #if !defined(NO_GETADDRINFO)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
-  ir_uint32 ip;
   socklen_t salen;
 
-  if (sa->sa.sa_family == AF_INET) {
-    if (gnetwork->usenatip)
-      ip = gnetwork->ourip;
-    else
-      ip = ntohl(sa->sin.sin_addr.s_addr);
+  if (gnetwork->usenatip) {
+    if (strchr(gnetwork->natip, ':')) {
+      return add_snprintf(buffer, len, "%s %d", /* NOTRANSLATE */
+                          gnetwork->natip, ntohs(sa->sin6.sin6_port));
+    }
     return add_snprintf(buffer, len, "%u %d", /* NOTRANSLATE */
-                        ip, ntohs(sa->sin.sin_port));
+                        gnetwork->ourip, ntohs(sa->sin.sin_port));
   }
-  salen = (sa->sa.sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+  if (sa->sa.sa_family != AF_INET6) {
+    return add_snprintf(buffer, len, "%u %d", /* NOTRANSLATE */
+                        ntohl(sa->sin.sin_addr.s_addr), ntohs(sa->sin.sin_port));
+  }
+  salen = (sa->sa.sa_family == AF_INET6) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in);
   if (getnameinfo(&(sa->sa), salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     return add_snprintf(buffer, len, "(unknown)" );
@@ -96,15 +99,65 @@ static size_t my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
 #endif /* NO_GETADDRINFO */
 }
 
-static void update_getip_net(unsigned int net, ir_uint32 ourip)
+static void update_dcc_ip6(const char *ourip6)
+{
+  updatecontext();
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+          "DCC IP changed from %s to %s on %s", gnetwork->natip, ourip6, gnetwork->name);
+  mydelete(gnetwork->natip);
+  gnetwork->natip = mystrdup(ourip6);
+}
+
+/* check that the given text is an IP address or hostname and store it as external DCC IP */
+static void update_natip6(const char *var)
+{
+  ir_sockaddr_union_t listenaddr;
+  int e;
+
+  updatecontext();
+
+  if (var == NULL)
+    return;
+
+  gnetwork->usenatip = 1;
+  e = inet_pton(AF_INET6, var, &(listenaddr.sin6.sin6_addr));
+  if (e != 1) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", var);
+    return;
+  }
+
+  if (strcasecmp(gnetwork->natip, var) == 0)
+    return;
+
+  update_dcc_ip6(var);
+  if (gdata.debug > 0) ioutput(OUT_S|OUT_L, COLOR_YELLOW, "ip=%s\n", var);
+}
+
+static void update_dcc_ip(ir_uint32 ourip)
 {
   char *oldtxt;
-  gnetwork_t *backup;
   struct in_addr old;
   struct in_addr in;
+
+  updatecontext();
+
+  if (gnetwork->net < gdata.networks_online) {
+    /* not on startup */
+    in.s_addr = htonl(ourip);
+    old.s_addr = htonl(gnetwork->ourip);
+    oldtxt = mystrdup(inet_ntoa(old));
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
+    mydelete(oldtxt);
+  }
+  gnetwork->ourip = ourip;
+}
+
+static void update_getip_net(unsigned int net, ir_uint32 ourip)
+{
+  gnetwork_t *backup;
   unsigned int ss;
 
-  in.s_addr = htonl(ourip);
   backup = gnetwork;
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
@@ -117,13 +170,8 @@ static void update_getip_net(unsigned int net, ir_uint32 ourip)
     if (gnetwork->ourip == ourip)
       continue;
 
-    gnetwork->usenatip = 1;
-    old.s_addr = htonl(gnetwork->ourip);
-    oldtxt = mystrdup(inet_ntoa(old));
-    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
-    mydelete(oldtxt);
-    gnetwork->ourip = ourip;
+    gnetwork[ss].usenatip = 1;
+    update_dcc_ip(ourip);
   }
   gnetwork = backup;
 }
@@ -131,51 +179,40 @@ static void update_getip_net(unsigned int net, ir_uint32 ourip)
 /* check that the given text is an IP address or hostname and store it as external DCC IP */
 void update_natip(const char *var)
 {
-  struct hostent *hp;
+  ir_sockaddr_union_t listenaddr;
   struct in_addr old;
   struct in_addr in;
-  ir_uint32 oldip;
-  char *oldtxt;
+  int e;
 
   updatecontext();
 
   if (var == NULL)
     return;
 
-  gnetwork->usenatip = 1;
-  if (gnetwork->myip.sa.sa_family != AF_INET)
+  if (strchr(var, ':')) {
+    update_natip6(var);
     return;
+  }
 
+  gnetwork->usenatip = 1;
   if (gnetwork->r_ourip != 0)
     return;
 
   bzero((char *)&in, sizeof(in));
-  if (inet_aton(var, &in) == 0) {
-    hp = gethostbyname(var);
-    if (hp == NULL) {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid NAT Host, Ignoring: %s", hstrerror(h_errno));
-      return;
-    }
-    if ((unsigned)hp->h_length > sizeof(in) || hp->h_length < 0) {
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid DNS response, Ignoring: %s", hstrerror(h_errno));
-      return;
-    }
-    memcpy(&in, hp->h_addr_list[0], sizeof(in));
+  e = inet_pton(AF_INET, var, &(listenaddr.sin.sin_addr));
+  if (e != 1) {
+    outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", var);
+    return;
   }
+  memcpy(&in, &(listenaddr.sin.sin_addr), sizeof(in));
 
   old.s_addr = htonl(gnetwork->ourip);
   if (old.s_addr == in.s_addr)
     return;
 
-  oldip = gnetwork->ourip;
-  gnetwork->ourip = ntohl(in.s_addr);
-  if (oldip != gnetwork->ourip) {
-    oldtxt = mystrdup(inet_ntoa(old));
-    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "DCC IP changed from %s to %s on %s", oldtxt, inet_ntoa(in), gnetwork->name);
-    mydelete(oldtxt);
-    update_getip_net(gnetwork->net, gnetwork->ourip);
-  }
+  mydelete(gnetwork->natip);
+  gnetwork->natip = mystrdup(var);
+  update_dcc_ip(ntohl(in.s_addr));
 
   if (gdata.debug > 0) ioutput(OUT_S|OUT_L, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
 
@@ -224,9 +261,14 @@ static void update_server_welcome(char *line)
     update_natip(gnetwork->natip);
     return;
   }
-  if (gdata.usenatip) {
-    /* use global */
-    update_natip(gdata.usenatip);
+}
+
+/* check the IPv6 address to set external DCC IP */
+static void update_server_welcome6(void)
+{
+  if (gnetwork->natip) {
+    update_natip6(gnetwork->natip);
+    return;
   }
 }
 
@@ -237,7 +279,7 @@ static unsigned int bind_vhost(ir_sockaddr_union_t *listenaddr, int family, cons
   if (vhost == NULL)
     return 0;
 
-  if (family == AF_INET) {
+  if (family != AF_INET6) {
     listenaddr->sin.sin_family = AF_INET;
     e = inet_pton(family, vhost, &(listenaddr->sin.sin_addr));
   } else {
@@ -266,7 +308,7 @@ unsigned int bind_irc_vhost(int family, int clientsocket)
     return 0;
 
   bzero((char*)&localaddr, sizeof(ir_sockaddr_union_t));
-  if (family == AF_INET ) {
+  if (family != AF_INET6 ) {
     addrlen = sizeof(struct sockaddr_in);
     localaddr.sin.sin_family = AF_INET;
     localaddr.sin.sin_port = 0;
@@ -296,7 +338,7 @@ static void my_get_upnp_data(const struct sockaddr *sa)
   char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
   socklen_t salen;
 
-  salen = (sa->sa_family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
+  salen = (sa->sa_family == AF_INET6) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in);
   if (getnameinfo(sa, salen, hbuf, sizeof(hbuf), sbuf,
                   sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV)) {
     outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", "upnp_router");
@@ -346,7 +388,7 @@ unsigned int open_listen(int family, ir_sockaddr_union_t *listenaddr, int *liste
   }
 
   bzero((char *) listenaddr, sizeof(ir_sockaddr_union_t));
-  if (family == AF_INET) {
+  if (family != AF_INET6) {
     addrlen = sizeof(struct sockaddr_in);
     listenaddr->sin.sin_family = AF_INET;
     listenaddr->sin.sin_addr.s_addr = INADDR_ANY;
@@ -458,7 +500,7 @@ char *setup_dcc_local(ir_sockaddr_union_t *listenaddr)
 {
   char *msg;
 
-  if (listenaddr->sa.sa_family == AF_INET)
+  if (listenaddr->sa.sa_family != AF_INET6)
     listenaddr->sin.sin_addr = gnetwork->myip.sin.sin_addr;
   else
     listenaddr->sin6.sin6_addr = gnetwork->myip.sin6.sin6_addr;
@@ -647,20 +689,27 @@ void irc_resolved(void)
 }
 
 /* returns a text with the external IP address of the bot */
-const char *my_dcc_ip_show(char *buffer, size_t len, ir_sockaddr_union_t *sa, unsigned int net)
+int my_dcc_ip_show(char *buffer, size_t len, unsigned int net)
 {
-  ir_uint32 ip;
+  ir_sockaddr_union_t *sa;
 
-  if (sa->sa.sa_family == AF_INET) {
-    if (gdata.networks[net].usenatip)
-      ip = htonl(gdata.networks[net].ourip);
-    else
-      ip = sa->sin.sin_addr.s_addr;
-    buffer[0] = 0;
-    return inet_ntop(sa->sa.sa_family, &(ip), buffer, len);
-  }
   buffer[0] = 0;
-  return inet_ntop(sa->sa.sa_family, &(sa->sin6.sin6_addr), buffer, len);
+  if (gdata.networks[net].usenatip) {
+    if (strchr(gdata.networks[net].natip, ':')) {
+      add_snprintf(buffer, len, "%s", /* NOTRANSLATE */
+                   gdata.networks[net].natip);
+    } else {
+      (void)inet_ntop(AF_INET, &(gdata.networks[net].ourip), buffer, len);
+    }
+  } else {
+    sa = &(gdata.networks[net].myip);
+    if (sa->sa.sa_family != AF_INET6) {
+      (void)inet_ntop(sa->sa.sa_family, &(sa->sin.sin_addr.s_addr), buffer, len);
+    } else {
+      (void)inet_ntop(sa->sa.sa_family, &(sa->sin6.sin6_addr), buffer, len);
+    }
+  }
+  return gdata.networks[net].usenatip;
 }
 
 /* complete the connection to the IRC server */
@@ -683,7 +732,7 @@ static unsigned int connectirc2(res_addrinfo_t *remote)
     char *msg;
     msg = mymalloc(maxtextlength);
     my_getnameinfo(msg, maxtextlength -1, &(remote->ai_addr));
-    ioutput(OUT_S, COLOR_YELLOW, "Connecting to %s", msg);
+    ioutput(OUT_S|OUT_L, COLOR_YELLOW, "Connecting to %s", msg);
     mydelete(msg);
   }
 
@@ -939,6 +988,7 @@ static void irc_001(ir_parseline_t *ipl)
 
   ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "Server welcome: %s", ipl->line);
   update_server_welcome(ipl->line);
+  update_server_welcome6();
 
   /* update server name */
   mydelete(gnetwork->curserveractualname);
@@ -1608,15 +1658,8 @@ void irc_perform(int changesec)
             char *msg;
             msg = mymalloc(maxtextlength);
             my_getnameinfo(msg, maxtextlength -1, &(gnetwork->myip.sa));
-            ioutput(OUT_S, COLOR_YELLOW, "using %s", msg);
+            ioutput(OUT_S|OUT_L, COLOR_YELLOW, "using %s", msg);
             mydelete(msg);
-          }
-          if (!gnetwork->usenatip) {
-            gnetwork->ourip = ntohl(gnetwork->myip.sin.sin_addr.s_addr);
-            if (gdata.debug > 0) {
-              ioutput(OUT_S, COLOR_YELLOW, "ourip = " IPV4_PRINT_FMT,
-                      IPV4_PRINT_DATA(gnetwork->ourip));
-            }
           }
         } else {
           outerror(OUTERROR_TYPE_WARN, "couldn't get ourip on %s", gnetwork->name);
@@ -1671,7 +1714,7 @@ void irc_perform(int changesec)
         timeout = irc_server_is_timeout();
         if (timeout > 0) {
           if (gdata.debug > 0) {
-            ioutput(OUT_S, COLOR_YELLOW,
+            ioutput(OUT_S|OUT_L, COLOR_YELLOW,
                     "Reconnecting to server (%u seconds) on %s",
                     timeout, gnetwork->name);
           }

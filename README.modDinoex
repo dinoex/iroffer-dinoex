@@ -3,6 +3,13 @@ Updated version on: http://iroffer.dinoex.net/
 With Version 3.31:
 ------------------
 
+413) usenatip (by Majin3)
+  Support for IPv6
+
+bugfix: expire_logfiles (reported by Loke_AF)
+  versions affected: 3.31 beta
+  Fix problems with unsafe readdir.
+
 bugfix: commandline -s (reported by AnTiZ)
   Save and exit when EOF is reached.
 

@@ -1459,10 +1459,11 @@ static void u_botinfo(const userinput * const u) {
      {
        const char *how;
        char *msg;
+       int nat;
        a_respond(u, "network: %u: %s", ss + 1, gdata.networks[ss].name);
        msg = mymalloc(maxtextlength);
-       my_dcc_ip_show(msg, maxtextlength - 1, &(gdata.networks[ss].myip), ss);
-       a_respond(u, "DCC IP: %s NAT=%u OFFLINE=%u", msg, gdata.networks[ss].usenatip, gdata.networks[ss].offline);
+       nat = my_dcc_ip_show(msg, maxtextlength - 1, ss);
+       a_respond(u, "DCC IP: %s NAT=%u OFFLINE=%u", msg, nat, gdata.networks[ss].offline);
        mydelete(msg);
        
        backup = gnetwork;
