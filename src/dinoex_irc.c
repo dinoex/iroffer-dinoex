@@ -130,7 +130,7 @@ static void update_natip6(const char *var)
     return;
 
   update_dcc_ip6(var);
-  if (gdata.debug > 0) ioutput(OUT_S|OUT_L, COLOR_YELLOW, "ip6=%s\n", var);
+  if (gdata.debug > 0) ioutput(OUT_S|OUT_L, COLOR_YELLOW, "ip=%s\n", var);
 }
 
 static void update_dcc_ip(ir_uint32 ourip)
@@ -151,13 +151,6 @@ static void update_dcc_ip(ir_uint32 ourip)
     mydelete(oldtxt);
   }
   gnetwork->ourip = ourip;
-
-char * msg;
-msg = mymalloc(maxtextlength);
-my_dcc_ip_show(msg, maxtextlength -1, gnetwork->net);
-ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-"%s", msg );
-mydelete(msg);
 }
 
 static void update_getip_net(unsigned int net, ir_uint32 ourip)
@@ -215,12 +208,8 @@ void update_natip(const char *var)
 
   old.s_addr = htonl(gnetwork->ourip);
   if (old.s_addr == in.s_addr)
-{
-  outerror(OUTERROR_TYPE_WARN_LOUD, "NATIP SAME: %s", var);
     return;
-}
 
-  outerror(OUTERROR_TYPE_WARN_LOUD, "NATIP OK: %s, %u", var, ntohl(in.s_addr));
   mydelete(gnetwork->natip);
   gnetwork->natip = mystrdup(var);
   update_dcc_ip(ntohl(in.s_addr));
