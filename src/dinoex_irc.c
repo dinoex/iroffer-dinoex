@@ -131,8 +131,10 @@ static void update_natip6(const char *var)
   }
 
   gnetwork->usenatip = 1;
-  if (strcasecmp(gnetwork->natip, var) == 0)
-    return;
+  if (gnetwork->natip != NULL) {
+    if (strcasecmp(gnetwork->natip, var) == 0)
+      return;
+  }
 
   update_dcc_ip6(var);
   if (gdata.debug > 0) ioutput(OUT_S|OUT_L, COLOR_YELLOW, "ip=%s\n", var);
@@ -228,7 +230,7 @@ void update_natip(const char *var)
   }
 }
 
-void update_natip_dns(const char *var)
+static void update_natip_dns(const char *var)
 {
   struct hostent *hp;
   struct in_addr in;
