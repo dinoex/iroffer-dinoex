@@ -107,8 +107,11 @@ static size_t my_dcc_ip_port(char *buffer, size_t len, ir_sockaddr_union_t *sa)
 static void update_dcc_ip6(const char *ourip6)
 {
   updatecontext();
-  ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-          "DCC IP changed from %s to %s on %s", gnetwork->natip, ourip6, gnetwork->name);
+  if (gnetwork->net < gdata.networks_online) {
+    /* not on startup */
+    ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
+            "DCC IP changed from %s to %s on %s", gnetwork->natip, ourip6, gnetwork->name);
+  }
   mydelete(gnetwork->natip);
   gnetwork->natip = mystrdup(ourip6);
 }
