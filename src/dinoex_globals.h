@@ -216,6 +216,7 @@ typedef struct {
   char *r_local_vhost;
   char *user_modes;
   char *natip;
+  char *r_natip;
 
   unsigned long lag;
 
