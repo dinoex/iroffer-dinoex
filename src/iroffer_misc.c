@@ -470,6 +470,7 @@ void sendserver(void)
 {
   char *item;
   unsigned int clean;
+  unsigned int sending = 0;
   
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
     {
@@ -517,13 +518,9 @@ void sendserver(void)
       gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
       gnetwork->lastfast = gdata.curtime;
+      sending = 1;
       
       item = irlist_delete(&(gnetwork->serverq_fast), item);
-    }
-  
-  if (item)
-    {
-      return;
     }
   
   item = irlist_get_head(&(gnetwork->serverq_normal));
@@ -540,13 +537,9 @@ void sendserver(void)
       gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
       gnetwork->lastnormal = gdata.curtime;
+      sending = 1;
       
       item = irlist_delete(&(gnetwork->serverq_normal), item);
-    }
-  
-  if (item)
-    {
-      return;
     }
   
   if ((unsigned)gdata.curtime <= (gnetwork->lastslow + gnetwork->slow_privmsg))
@@ -568,13 +561,14 @@ void sendserver(void)
       gnetwork->recentsent = 0;
       gnetwork->serverbucket -= strlen(item);
       gnetwork->lastslow = gdata.curtime;
+      sending = 1;
       
       item = irlist_delete(&(gnetwork->serverq_slow), item);
       if (gnetwork->slow_privmsg)
-        break;
+        return;
     }
   
-  if (item)
+  if (sending != 0)
     {
       return;
     }

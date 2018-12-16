@@ -180,7 +180,7 @@ static void update_getip_net(unsigned int net, ir_uint32 ourip)
     if (gnetwork->ourip == ourip)
       continue;
 
-    gnetwork[ss].usenatip = 1;
+    gnetwork->usenatip = 1;
     update_dcc_ip(ourip);
   }
   gnetwork = backup;
@@ -203,9 +203,6 @@ void update_natip(const char *var)
     return;
   }
 
-  if (gnetwork->r_ourip != 0)
-    return;
-
   bzero((char *)&in, sizeof(in));
   e = inet_pton(AF_INET, var, &(in));
   if (e != 1) {
@@ -213,13 +210,17 @@ void update_natip(const char *var)
     return;
   }
 
+  gnetwork->usenatip = 1;
+  mydelete(gnetwork->natip);
+  gnetwork->natip = mystrdup(var);
+
+  if (gnetwork->r_ourip != 0)
+    return;
+
   old.s_addr = htonl(gnetwork->ourip);
   if (old.s_addr == in.s_addr)
     return;
 
-  gnetwork->usenatip = 1;
-  mydelete(gnetwork->natip);
-  gnetwork->natip = mystrdup(var);
   update_dcc_ip(ntohl(in.s_addr));
 
   if (gdata.debug > 0) ioutput(OUT_S|OUT_L, COLOR_YELLOW, "ip=%s\n", inet_ntoa(in));
@@ -733,21 +734,27 @@ int my_dcc_ip_show(char *buffer, size_t len, unsigned int net)
 
   buffer[0] = 0;
   if (gdata.networks[net].usenatip) {
-    if (gdata.networks[net].natip == NULL)
-      return add_snprintf(buffer, len, "(unknown)" );
-    if (strchr(gdata.networks[net].natip, ':')) {
-      add_snprintf(buffer, len, "%s", /* NOTRANSLATE */
-                   gdata.networks[net].natip);
+    if (gdata.networks[net].natip == NULL) {
+      (void)add_snprintf(buffer, len, "(unknown)" );
     } else {
-      ip = htonl(gdata.networks[net].ourip);
-      (void)inet_ntop(AF_INET, &ip, buffer, len);
+      if (strchr(gdata.networks[net].natip, ':')) {
+        add_snprintf(buffer, len, "%s", /* NOTRANSLATE */
+                     gdata.networks[net].natip);
+      } else {
+        ip = htonl(gdata.networks[net].ourip);
+        (void)inet_ntop(AF_INET, &ip, buffer, len);
+      }
     }
   } else {
     sa = &(gdata.networks[net].myip);
-    if (sa->sa.sa_family != AF_INET6) {
-      (void)inet_ntop(sa->sa.sa_family, &(sa->sin.sin_addr.s_addr), buffer, len);
+    if (sa->sa.sa_family == 0) {
+      (void)add_snprintf(buffer, len, "(unknown)" );
     } else {
-      (void)inet_ntop(sa->sa.sa_family, &(sa->sin6.sin6_addr), buffer, len);
+      if (sa->sa.sa_family != AF_INET6) {
+        (void)inet_ntop(sa->sa.sa_family, &(sa->sin.sin_addr.s_addr), buffer, len);
+      } else {
+        (void)inet_ntop(sa->sa.sa_family, &(sa->sin6.sin6_addr), buffer, len);
+      }
     }
   }
   return gdata.networks[net].usenatip;

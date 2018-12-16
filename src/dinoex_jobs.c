@@ -1910,6 +1910,9 @@ void a_rehash_prepare(void)
     gdata.networks[ss].r_local_vhost = NULL;
     if (gdata.networks[ss].local_vhost)
       gdata.networks[ss].r_local_vhost = mystrdup(gdata.networks[ss].local_vhost);
+    gdata.networks[ss].r_natip = NULL;
+    if (gdata.networks[ss].natip)
+      gdata.networks[ss].r_natip = mystrdup(gdata.networks[ss].natip);
     irlist_move(&(gdata.networks[ss].r_channels), &(gdata.networks[ss].channels));
   }
 }
@@ -1944,7 +1947,9 @@ void a_rehash_needtojump(const userinput *u)
     gnetwork = &(gdata.networks[ss]);
     /* keep dynamic IP */
     if (gdata.getipfromserver || gdata.getipfromupnp) {
-      gnetwork->ourip = gnetwork->r_ourip;
+      if (gnetwork->r_ourip != 0) {
+        gnetwork->ourip = gnetwork->r_ourip;
+      }
       gnetwork->usenatip = 1;
     }
     gnetwork->r_ourip = 0;
@@ -2101,6 +2106,7 @@ void a_rehash_cleanup(const userinput *u)
     }
     mydelete(gnetwork->r_config_nick);
     mydelete(gnetwork->r_local_vhost);
+    mydelete(gnetwork->r_natip);
   }
   gnetwork = backup;
   mydelete(r_config_nick);

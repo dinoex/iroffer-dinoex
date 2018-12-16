@@ -930,6 +930,8 @@ void dumpgdata(void)
       gdata_print_string(networks[ss].user_nick);
       gdata_print_string(networks[ss].caps_nick);
       /* r_config_nick */
+      gdata_print_int(networks[ss].usenatip);
+      gdata_print_string(networks[ss].natip);
       gdata_print_number("0x%.8X", networks[ss].ourip);
       /* r_ourip */
       gdata_print_string(networks[ss].curserver.hostname);
