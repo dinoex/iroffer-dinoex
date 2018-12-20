@@ -1914,9 +1914,9 @@ $(OBJDIR):
 src-doc:
 	rm -rf cxref
 	mkdir -p cxref
-	cxref \\"
+	cxref -CPP \${CC} \\"
  make_srclist
- echo "	cxref \\"
+ echo "	cxref -CPP \${CC} \\"
  make_srclist "-html "
  echo "	ln -s iroffer.html cxref/index.html"
  echo '
