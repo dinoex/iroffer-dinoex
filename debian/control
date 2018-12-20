@@ -7,7 +7,7 @@ Build-Depends: debhelper (>=9),
  gnutls-dev,
  ruby-dev
 Standards-Version: 3.9.8
-Homepage: http://iroffer.dinoex.net/
+Homepage: http://iroffer.net/
 
 Package: iroffer-dinoex
 Architecture: any

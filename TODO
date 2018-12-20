@@ -1,4 +1,4 @@
-[Iroffer.dinoex.de]
+[project.iroffer.net]
 Feature #38 xdcc command to export the crc32/md5 as sumfile
 Feature #70 command for saving the "running" config
 Feature #114: Support for compressing the rotated logfiles

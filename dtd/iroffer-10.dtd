@@ -1,12 +1,12 @@
 <!--
 Iroffer Packlist Markup Language version 1.0
 
-Namespace = http://iroffer.dinoex.net/apps/iroffer-1
+Namespace = http://iroffer.net/apps/iroffer-1
 
 This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-PUBLIC "-//roffer.dinoex.net//DTD iroffer 1.0//EN"
-SYSTEM "http://roffer.dinoex.net/dtd/iroffer-10.dtd"
+PUBLIC "-//roffer.net//DTD iroffer 1.0//EN"
+SYSTEM "http://roffer.net/dtd/iroffer-10.dtd"
 
 Copyright (c) 2004 Dirk Meyer
 All rights reserved.
@@ -40,7 +40,7 @@ SUCH DAMAGE.
 >
 %xhtml-datatypes.mod;
 
-<!ENTITY % iroffer.xmlns "http://iroffer.dinoex.net/apps/iroffer-1" >
+<!ENTITY % iroffer.xmlns "http://iroffer.net/apps/iroffer-1" >
 <!ENTITY % NS.prefixed "IGNORE" >
 <!ENTITY % iroffer.prefixed "%NS.prefixed;" >
 
@@ -61,8 +61,8 @@ SUCH DAMAGE.
 <!ENTITY % XHTML.xmlns.extra.attrib "%iroffer.xmlns.extra.attrib;" >
 
 <!ENTITY % xhtml-model.mod
-        PUBLIC "-//iroffer.dinoex.net//ELEMENTS iroffer 1.0 Document Model//EN"
-        "http://iroffer.dinoex.net/dtd/iroffer-model-10.mod"
+        PUBLIC "-//iroffer.net//ELEMENTS iroffer 1.0 Document Model//EN"
+        "http://iroffer.net/dtd/iroffer-model-10.mod"
 >
 
 <!ENTITY % xhtml-basic PUBLIC "-//W3C//DTD XHTML Basic 1.0//EN"

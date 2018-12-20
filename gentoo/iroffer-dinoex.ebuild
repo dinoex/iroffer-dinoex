@@ -3,8 +3,8 @@
 # $Header$
 
 DESCRIPTION="An improved version of iroffer - an IRC XDCC bot."
-HOMEPAGE="http://iroffer.dinoex.de/projects/show/iroffer"
-SRC_URI="http://iroffer.dinoex.net/iroffer-dinoex-snap.tar.gz"
+HOMEPAGE="https://project.iroffer.net/projects/show/iroffer"
+SRC_URI="https://iroffer.net/iroffer-dinoex-snap.tar.gz"
 
 KEYWORDS="~x86 ~amd64"
 LICENSE="GPL-2"
