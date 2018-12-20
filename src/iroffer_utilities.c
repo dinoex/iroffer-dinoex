@@ -630,7 +630,7 @@ void mydelete2(void *t) {
    if (i == (MEMINFOHASHSIZE * gdata.meminfo_depth)) {
       gdata.crashing = 1; /* stop trackback here */
       outerror(OUTERROR_TYPE_WARN_LOUD,"Pointer 0x%8.8lX not found in meminfo database while trying to free!!",(long)t);
-      outerror(OUTERROR_TYPE_WARN_LOUD, "Please report this error to Dinoex dinoex@dinoex.net");
+      outerror(OUTERROR_TYPE_WARN_LOUD, "Please report this error to Dinoex dinoex@iroffer.net");
       hexdump(OUT_S|OUT_L|OUT_D, COLOR_RED|COLOR_BOLD, "WARNING:" , ut, 8*16);
       outerror(OUTERROR_TYPE_WARN_LOUD,"Aborting Program! (core file should be generated)");
       abort(); /* getting a core file will help greatly */

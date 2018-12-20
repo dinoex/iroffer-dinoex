@@ -4,7 +4,7 @@ BEGIN {
 	LAST = 0
 }
 END {
-	print "** For additional help, see the documentation at http://iroffer.dinoex.net/"
+	print "** For additional help, see the documentation at http://iroffer.net/"
 }
 /^{[0-9]/{
 	LEVEL = substr( $0, 2, 1 )

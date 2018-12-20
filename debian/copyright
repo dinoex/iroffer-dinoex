@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: iroffer-dinoex
-Source: http://iroffer.dinoex.net
+Source: http://iroffer.net
 
 Files: src/iroffer* dynip.sh iroffer.cron Configure sample.config
 Copyright: 2000-2016 Dirk Meyer
@@ -28,7 +28,7 @@ License: public-domain
  - Ian Jackson <ian@chiark.greenend.org.uk>.
  Still in the public domain. 
  .
- Taken from http://iroffer.dinoex.net/cxref/src/plumb_md5.c.html
+ Taken from http://iroffer.net/cxref/src/plumb_md5.c.html
 
 Files: src/crc32.c
 Copyright: 1986 Gary S. Brown

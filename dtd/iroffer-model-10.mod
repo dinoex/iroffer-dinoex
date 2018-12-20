@@ -1,12 +1,12 @@
 <!--
 Iroffer Packlist Markup Language version 1.0
 
-Namespace = http://iroffer.dinoex.net/apps/iroffer-1
+Namespace = http://iroffer.net/apps/iroffer-1
 
 This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-PUBLIC "-//iroffer.dinoex.net//ELEMENTS iroffer 1.0 Document Model//EN"
-SYSTEM "http://iroffer.dinoex.net/dtd/iroffer-model-10.mod"
+PUBLIC "-//iroffer.net//ELEMENTS iroffer 1.0 Document Model//EN"
+SYSTEM "http://iroffer.net/dtd/iroffer-model-10.mod"
 
 Copyright (c) 2010 Dirk Meyer
 All rights reserved.
