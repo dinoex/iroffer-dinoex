@@ -12,10 +12,11 @@ See the file "README.modDinoex" for changelog and features.
 
  --- Website ---
 
-Visit the iroffer web site http://iroffer.net/
+Visit the iroffer web site https://iroffer.net/
 
 This is an improved version of iroffer
- the unmodifed version can be found at http://iroffer.org/
+ the unmodifed version can be found at
+ https://web.archive.org/web/20161003214603/http://iroffer.org/
 
  --- How to Contact the Author ---
 
@@ -49,7 +50,7 @@ A sample config file with name "sample.config" is provided.
 More Documentation is online at https://project/iroffer.net/projects/iroffer/wiki
 
 Please view the file "doc/INSTALL-linux-en.txt"
-or browse it online at http://iroffer.net/INSTALL-linux-en.html
+or browse it online at https://iroffer.net/INSTALL-linux-en.html
 
  --- Install ---
 
