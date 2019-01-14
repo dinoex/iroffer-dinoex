@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2019 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -557,7 +557,6 @@ void child_resolver(int family)
 #else /* NO_GETADDRINFO */
   struct hostent *remotehost;
 #endif /* NO_GETADDRINFO */
-  struct sockaddr_in *remoteaddr;
   res_addrinfo_t rbuffer;
   ssize_t bytes;
   int i;
@@ -624,7 +623,6 @@ void child_resolver(int family)
 #endif /* NO_HOSTCODES */
   }
 
-  remoteaddr = (struct sockaddr_in *)(&(rbuffer.ai_addr));
   rbuffer.ai_reset = 0;
 #if !defined(NO_GETADDRINFO)
   found = -1;
@@ -646,15 +644,15 @@ void child_resolver(int family)
   rbuffer.ai_protocol = res->ai_protocol;
   rbuffer.ai_addrlen = res->ai_addrlen;
   rbuffer.ai_addr = *(res->ai_addr);
-  memcpy(remoteaddr, res->ai_addr, res->ai_addrlen);
+  memcpy(&(rbuffer.ai_addr), res->ai_addr, res->ai_addrlen);
 #else /* NO_GETADDRINFO */
   rbuffer.ai_family = AF_INET;
   rbuffer.ai_socktype = SOCK_STREAM;
   rbuffer.ai_protocol = 0;
   rbuffer.ai_addrlen = sizeof(struct sockaddr_in);
   rbuffer.ai_addr.sa_family = remotehost->h_addrtype;
-  remoteaddr->sin_port = htons(gnetwork->serv_resolv.to_port);
-  memcpy(&(remoteaddr->sin_addr), remotehost->h_addr_list[0], sizeof(struct in_addr));
+  rbuffer.ai_port = htons(gnetwork->serv_resolv.to_port);
+  memcpy(&(rbuffer.ai_addr), remotehost->h_addr_list[0], sizeof(struct in_addr));
 #endif /* NO_GETADDRINFO */
   bytes = write(gnetwork->serv_resolv.sp_fd[1],
                 &rbuffer,
