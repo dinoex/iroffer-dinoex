@@ -1,5 +1,11 @@
 Aktuelle Version auf: http://iroffer.net/
 
+Ab Version 3.32:
+----------------
+
+bugfix: http_port, charset
+  Setze den Zeichensatz im HTTP-Header wenn konfiguriert.
+
 Ab Version 3.31:
 ----------------
 
