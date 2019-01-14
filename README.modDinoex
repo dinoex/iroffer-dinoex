@@ -3,6 +3,9 @@ Updated version on: http://iroffer.net/
 With Version 3.32:
 ------------------
 
+bugfix: http_port, charset
+  Add charset in the HTTP-Header if configured.
+
 With Version 3.31:
 ------------------
 

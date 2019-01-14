@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2019 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -55,7 +55,7 @@ static const char *http_header_status =
 "Date: %s\r\n" /* NOTRANSLATE */
 "Last-Modified: %s\r\n" /* NOTRANSLATE */
 "Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
-"Content-Type: %s\r\n" /* NOTRANSLATE */
+"Content-Type: %s%s\r\n" /* NOTRANSLATE */
 "Connection: close\r\n" /* NOTRANSLATE */
 "Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */;
 
@@ -802,6 +802,7 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
 {
   char *tempstr;
   char *date;
+  char *charset;
   char *last = NULL;
   struct tm *localt;
   size_t len;
@@ -826,7 +827,16 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
       }
     }
   }
-  len = add_snprintf(tempstr, maxtextlength, http_header_status, h->status_code, date, last ? last : date, html_mime(mime), h->range_end - h->range_start);
+  if (gdata.charset != NULL) {
+    charset = mymalloc(maxtextlengthshort);
+    snprintf(charset, maxtextlengthshort, "; %s", gdata.charset); /* NOTRANSLATE */
+  } else {
+    charset = mystrdup(""); /* NOTRANSLATE */
+  }
+  len = add_snprintf(tempstr, maxtextlength, http_header_status,
+                     h->status_code, date, last ? last : date,
+                     html_mime(mime), charset,
+                     h->range_end - h->range_start);
   if (h->attachment) {
     len += add_snprintf(tempstr + len, maxtextlength - len,
                         "Content-Disposition: attachment; filename=\"%s\"\r\n", /* NOTRANSLATE */
@@ -839,6 +849,7 @@ static void h_write_status(http * const h, const char *mime, time_t *now)
                           h->range_start, h->range_end - 1, h->totalsize);
   }
   len += add_snprintf(tempstr + len, maxtextlength - len, "\r\n" ); /* NOTRANSLATE */
+  mydelete(charset);
   mydelete(last);
   mydelete(date);
   send(h->con.clientsocket, tempstr, len, MSG_NOSIGNAL);
