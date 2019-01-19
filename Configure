@@ -1624,6 +1624,23 @@ ${main2}" > config.temp.c
 fi
 
 if $OPT_GEOIP; then
+ ${msg} -n "${irt_seeingif_lib} GeoIP2 ${irt_lib_exists}... "
+ echo "${irheaders}
+#include <maxminddb.h>
+${main1}
+ MMDB_open(NULL, MMDB_MODE_MMAP, NULL);
+${main2}" > config.temp.c
+ if $cctype -o config.temp -DUSE_MAXMINDDB $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lmaxminddb $LDFLAGS $libs $LIBS; then
+  ${msg} "${irt_found}"
+  echo "#define USE_MAXMINDDB" >> src/iroffer_config.h
+  FEATURES="${FEATURES},geoip2"
+  MAXMINDDBLIB="-lmaxminddb"
+  MAXMINDDBINC="-I${LOCALBASE}/include"
+  MAXMINDDBLDF="-L${LOCALBASE}/lib"
+ fi
+fi
+
+if $OPT_GEOIP; then
  ${msg} -n "${irt_seeingif_lib} GeoIP ${irt_lib_exists}... "
  echo "${irheaders}
 #include <GeoIP.h>
@@ -1814,7 +1831,7 @@ ${msg} -n "${irt_creating} Makefile... "
 modules="iroffer_admin iroffer_dccchat iroffer_display iroffer_main \
  iroffer_misc iroffer_statefile iroffer_transfer iroffer_upload \
  plumb_md5 dinoex_admin dinoex_main dinoex_misc dinoex_http \
- dinoex_upload dinoex_transfer dinoex_geoip dinoex_ssl \
+ dinoex_upload dinoex_transfer dinoex_geoip dinoex_maxminddb dinoex_ssl \
  dinoex_curl dinoex_irc dinoex_queue dinoex_telnet dinoex_badip \
  dinoex_jobs dinoex_kqueue dinoex_ruby dinoex_user dinoex_chat \
  dinoex_config crc32 upnp blowfish strnatcmp iroffer_utilities \
@@ -1838,10 +1855,10 @@ make_makefile()
  echo VERSION=$VERSION
  echo CC=$cctype
  echo CONFIG_EXE=$exe
- echo CONFIG_LDLIBS=$GEOLIB $CURLLIB $UPNPLIB $SSLLIB $libs $LIBS
- echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $CURLLDF $UPNPLDF $RUBYLDF $LDFLAGS
+ echo CONFIG_LDLIBS=$GEOLIB $MAXMINDDBLIB $CURLLIB $UPNPLIB $SSLLIB $libs $LIBS
+ echo CONFIG_LDFLAGS=$PROF $DEBUG $SSLLDF $GEOLDF $MAXMINDDBLDF $CURLLDF $UPNPLDF $RUBYLDF $LDFLAGS
  echo CONFIG_CFLAGS=$PROF $DEBUG $DEBUGFLAGS $WERROR2 $WARNS $WARNS2 $CFLAGS
- echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $CURLINC $UPNPINC $RUBYINC $CPPFLAGS
+ echo CONFIG_CPPFLAGS=$SSLINC $GEOINC $MAXMINDDBINC $CURLINC $UPNPINC $RUBYINC $CPPFLAGS
  echo CONFIG_CHROOT=$NSSLIBS
  echo CONFIG_SHARED=$RUBYLIB
  echo CONFIG_STATIC=$RUBYSLIB $CURLSLIB $SLDFLAGS -static

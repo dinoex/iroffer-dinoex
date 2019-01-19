@@ -103,6 +103,7 @@ char *autoadd_group;
 char *send_statefile;
 char *geoipdatabase;
 char *geoip6database;
+char *maxminddb;
 char *respondtochannellistmsg;
 char *xdccremovefile;
 char *autoadd_sort;

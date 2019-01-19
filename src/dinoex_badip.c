@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2019 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -20,6 +20,7 @@
 #include "iroffer_globals.h"
 #include "dinoex_utilities.h"
 #include "dinoex_geoip.h"
+#include "dinoex_maxminddb.h"
 #include "dinoex_badip.h"
 
 static unsigned int is_in_badip4(ir_uint32 remoteip)
@@ -27,10 +28,8 @@ static unsigned int is_in_badip4(ir_uint32 remoteip)
   badip4 *b;
 
 #ifdef USE_GEOIP
-#ifndef WITHOUT_HTTP
   if (http_check_geoip(remoteip))
     return 2; /* blocked by GeoIP */
-#endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP */
 
   for (b = irlist_get_head(&gdata.http_bad_ip4);
@@ -52,10 +51,8 @@ static unsigned int is_in_badip6(struct in6_addr *remoteip)
 
 #ifdef USE_GEOIP
 #ifdef USE_GEOIP6
-#ifndef WITHOUT_HTTP
   if (http_check_geoip6(remoteip))
     return 2; /* blocked by GeoIP */
-#endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP6 */
 #endif /* USE_GEOIP */
 
@@ -79,6 +76,11 @@ return: -1 = blocked by GeoIP
 */
 unsigned int is_in_badip(ir_sockaddr_union_t *sa)
 {
+#ifdef USE_MAXMINDDB
+  if (http_check_maxminddb(&(sa->sa), "HTTP")) /* NOTRANSLATE */
+    return 2; /* blocked by GeoIP */
+#endif /* USE_MAXMINDDB */
+
   if (sa->sa.sa_family == AF_INET) {
     return is_in_badip4(ntohl(sa->sin.sin_addr.s_addr));
   } else {

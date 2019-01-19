@@ -1847,3 +1847,8 @@
 2836 "/msg %s xdcc send number"
 2837 "/msg %s xdcc send %u"
 2838 "Version"
+2839 "error reading '%s'"
+2840 "error libmaxminddb '%s': %s"
+2841 "no libmaxminddb entry for '%s'"
+2842 "error entry libmaxminddb '%s': %s"
+2843 "empty entry libmaxminddb '%s'"
