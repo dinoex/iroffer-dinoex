@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2019 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -22,6 +22,7 @@
 #include "dinoex_transfer.h"
 #include "dinoex_irc.h"
 #include "dinoex_geoip.h"
+#include "dinoex_maxminddb.h"
 #include "dinoex_queue.h"
 #include "dinoex_misc.h"
 
@@ -502,6 +503,10 @@ static void t_check_new_connection(transfer *const tr)
   updatecontext();
   geoip_new_connection(tr);
 #endif /* USE_GEOIP */
+#ifdef USE_MAXMINDDB
+  updatecontext();
+  maxminddb_new_connection(tr);
+#endif /* USE_MAXMINDDB */
   updatecontext();
   t_check_duplicateip(tr);
 }

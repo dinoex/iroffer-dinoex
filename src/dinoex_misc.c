@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2019 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -23,6 +23,7 @@
 #include "dinoex_config.h"
 #include "dinoex_transfer.h"
 #include "dinoex_geoip.h"
+#include "dinoex_maxminddb.h"
 #include "dinoex_ssl.h"
 #include "dinoex_curl.h"
 #include "dinoex_irc.h"
@@ -472,6 +473,9 @@ void shutdown_dinoex(void)
 #ifdef USE_GEOIP
   geoip_shutdown();
 #endif /* USE_GEOIP */
+#ifdef USE_MAXMINDDB
+  maxminddb_shutdown();
+#endif /* USE_MAXMINDDB */
 #ifdef USE_CURL
   curl_shutdown();
 #endif /* USE_CURL */

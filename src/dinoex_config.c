@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2019 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -667,6 +667,9 @@ static config_string_typ config_parse_string[] = {
 {"logfile_messages",        &gdata.logfile_messages,        1 }, /* NOTRANSLATE */
 {"logfile_notices",         &gdata.logfile_notices,         1 }, /* NOTRANSLATE */
 {"loginname",               &gdata.loginname,               0 }, /* NOTRANSLATE */
+#ifdef USE_MAXMINDDB
+{"maxminddb",               &gdata.maxminddb,               0 }, /* NOTRANSLATE */
+#endif /* USE_MAXMINDDB */
 {"nickserv_pass",           &gdata.nickserv_pass,           0 }, /* NOTRANSLATE */
 {"owner_nick",              &gdata.owner_nick,              0 }, /* NOTRANSLATE */
 {"pidfile",                 &gdata.pidfile,                 1 }, /* NOTRANSLATE */

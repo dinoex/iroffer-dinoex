@@ -3,6 +3,9 @@ Aktuelle Version auf: http://iroffer.net/
 Ab Version 3.32:
 ----------------
 
+414) maxminddb
+  Unterstützung für Abfragen der GeoIP2 Datenbank (maxminddb).
+
 bugfix: http_port, charset
   Setze den Zeichensatz im HTTP-Header wenn konfiguriert.
 
