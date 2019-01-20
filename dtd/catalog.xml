@@ -4,7 +4,7 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
   <group prefer="public" xml:base="./">
     <rewriteSystem
-      systemIdStartString="http://iroffer.net/dtd/iroffer-10"
+      systemIdStartString="https://iroffer.net/dtd/iroffer-10"
       rewritePrefix="./" />
     <public
       publicId="-//iroffer.net//DTD iroffer 1.0//EN"

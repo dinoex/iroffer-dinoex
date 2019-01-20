@@ -1552,7 +1552,7 @@ void startupiroffer(void) {
    
    printf("\n");
    if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_YELLOW);
-   printf("Welcome to iroffer-dinoex - " "http://iroffer.net/" FEATURES "\n"
+   printf("Welcome to iroffer-dinoex - " "https://iroffer.net/" FEATURES "\n"
           "Version " VERSIONLONG "\n");
    if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_RESET);
    printf("\n");

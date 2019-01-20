@@ -7,7 +7,7 @@
  * available in the LICENSE file.
  *
  * If you received this file without documentation, it can be
- * downloaded from http://iroffer.net/
+ * downloaded from https://iroffer.net/
  *
  * $Id$
  *

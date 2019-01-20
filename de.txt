@@ -396,7 +396,7 @@
 418 "Done."
 419 "BotInfo:"
 420 "iroffer-dinoex "
-421 "http://iroffer.net/"
+421 "https://iroffer.net/"
 422 " - "
 423 "iroffer started up %s ago"
 424 "total running time of %s"

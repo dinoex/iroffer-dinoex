@@ -1,13 +1,13 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2019 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
  * available in the LICENSE file.
  *
  * If you received this file without documentation, it can be
- * downloaded from http://iroffer.net/
+ * downloaded from https://iroffer.net/
  *
  * $Id$
  *
@@ -1556,7 +1556,7 @@ static void xdcc_save_xml(void)
     write_string(xmlbuf, "UTF-8"); /* NOTRANSLATE */
   write_string(xmlbuf, "\"?>\n" /* NOTRANSLATE */
                "<!DOCTYPE " "iroffer" " PUBLIC \"-//iroffer.net//DTD " "iroffer" " 1.0//EN\" \"" /* NOTRANSLATE */
-               "http://iroffer.net/" "dtd/iroffer-10.dtd\">\n" "<iroffer>\n"); /* NOTRANSLATE */
+               "https://iroffer.net/" "dtd/iroffer-10.dtd\">\n" "<iroffer>\n"); /* NOTRANSLATE */
   if (irlist_size(&gdata.xdccs) > 0)
     write_string(xmlbuf, "<packlist>\n\n"); /* NOTRANSLATE */
 
