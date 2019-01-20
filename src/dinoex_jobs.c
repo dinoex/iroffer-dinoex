@@ -1556,7 +1556,7 @@ static void xdcc_save_xml(void)
     write_string(xmlbuf, "UTF-8"); /* NOTRANSLATE */
   write_string(xmlbuf, "\"?>\n" /* NOTRANSLATE */
                "<!DOCTYPE " "iroffer" " PUBLIC \"-//iroffer.net//DTD " "iroffer" " 1.0//EN\" \"" /* NOTRANSLATE */
-               "https://iroffer.net/" "dtd/iroffer-10.dtd\">\n" "<iroffer>\n"); /* NOTRANSLATE */
+               "http://iroffer.net/" "dtd/iroffer-10.dtd\">\n" "<iroffer>\n"); /* NOTRANSLATE */
   if (irlist_size(&gdata.xdccs) > 0)
     write_string(xmlbuf, "<packlist>\n\n"); /* NOTRANSLATE */
 
