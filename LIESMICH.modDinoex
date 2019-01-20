@@ -3,6 +3,8 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.32:
 ----------------
 
+bugfix: Speicherlecks behoben
+
 414) maxminddb
   Unterstützung für Abfragen der GeoIP2 Datenbank (maxminddb).
   Unterstützung für Abfragen der GeoIP2 Datenbank.
