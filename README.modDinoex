@@ -3,6 +3,8 @@ Updated version on: https://iroffer.net/
 With Version 3.32:
 ------------------
 
+bugfix: fix small memory leaks
+
 414) maxminddb
   Support for GeoIP2 Database lookups.
   Set the path to the database file for IPv4 and IPv6.
