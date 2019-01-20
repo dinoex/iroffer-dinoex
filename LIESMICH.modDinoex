@@ -1,10 +1,15 @@
-Aktuelle Version auf: http://iroffer.net/
+Aktuelle Version auf: https://iroffer.net/
 
 Ab Version 3.32:
 ----------------
 
 414) maxminddb
   Unterstützung für Abfragen der GeoIP2 Datenbank (maxminddb).
+  Unterstützung für Abfragen der GeoIP2 Datenbank.
+  Definiere die Datenbankdatei für IPv4 und IPv6.
+  Wenn du keine Datenbank hast, kannst du diese hier herunterladen:
+  https://dev.maxmind.com/geoip/geoip2/geolite2/
+  Default: keine Prüfung
 
 bugfix: http_port, charset
   Setze den Zeichensatz im HTTP-Header wenn konfiguriert.

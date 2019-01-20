@@ -1,10 +1,14 @@
-Updated version on: http://iroffer.net/
+Updated version on: https://iroffer.net/
 
 With Version 3.32:
 ------------------
 
 414) maxminddb
-  Support for GeoIP2 Database lookups (maxminddb).
+  Support for GeoIP2 Database lookups.
+  Set the path to the database file for IPv4 and IPv6.
+  If you don't have a database you can download it from:
+  https://dev.maxmind.com/geoip/geoip2/geolite2/
+  Default: no lookups
 
 bugfix: http_port, charset
   Add charset in the HTTP-Header if configured.
