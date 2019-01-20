@@ -7,7 +7,7 @@
  * available in the LICENSE file.
  *
  * If you received this file without documentation, it can be
- * downloaded from http://iroffer.net/
+ * downloaded from https://iroffer.net/
  *
  * $Id$
  *
@@ -1736,7 +1736,7 @@ static void h_html_index(http * const h)
 
   h_respond(h, "</tbody>\n</table>\n<br>\n"); /* NOTRANSLATE */
   h_respond(h, "<a class=\"credits\" href=\"" /* NOTRANSLATE */
-               "http://iroffer.net/"
+               "https://iroffer.net/"
                "\">%s</a>\n", /* NOTRANSLATE */
                "Sourcecode" );
 }

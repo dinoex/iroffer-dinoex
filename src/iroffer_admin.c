@@ -549,7 +549,7 @@ static void u_help(const userinput * const u)
             }
         }
     }
-  a_respond(u, "For additional help, see the documentation at " "http://iroffer.net/");
+  a_respond(u, "For additional help, see the documentation at " "https://iroffer.net/");
   
 }
 
@@ -1436,7 +1436,7 @@ static void u_botinfo(const userinput * const u) {
    
    u_respond(u,"BotInfo:");
 
-   a_respond(u, "iroffer-dinoex " VERSIONLONG FEATURES ", " "http://iroffer.net/" "%s%s",
+   a_respond(u, "iroffer-dinoex " VERSIONLONG FEATURES ", " "https://iroffer.net/" "%s%s",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
 

@@ -130,5 +130,5 @@ open("/etc/gai.conf", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory
 
 So you see iroffer tries to open /etc/gai.conf but fails.
 
-[1] http://www.tldp.org/HOWTO/Linux+IPv6-HOWTO/resolver.html
+[1] https://www.tldp.org/HOWTO/Linux+IPv6-HOWTO/ch13.html
 
