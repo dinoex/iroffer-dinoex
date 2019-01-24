@@ -154,6 +154,9 @@ void maxminddb_new_connection(transfer *const tr)
   const char *country;
   const char *group;
 
+  if (gdata.maxminddb == NULL)
+    return;
+
   country = check_maxminddb_socket(&(tr->con.remote.sa), tr->con.remoteaddr);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "GeoIP [%02i:%s on %s]: Info %s -> %s)",
