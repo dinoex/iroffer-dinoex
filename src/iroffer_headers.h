@@ -101,6 +101,12 @@
 #endif
 #endif
 
+#if defined(_OS_CYGWIN)
+#ifndef FNM_CASEFOLD
+#define	FNM_CASEFOLD 	16 /* hidden by GNU_VISIBLE */
+#endif
+#endif
+
 #ifdef USE_OPENSSL
 #include <openssl/ssl.h>
 #define USE_SSL
