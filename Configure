@@ -614,7 +614,6 @@ DEBUG="-g"
 case "${cctype}" in
 *cparser*)
  DEBUGFLAGS="
--Waggregate-return
 -Wchar-subscripts
 -Wcomment
 -Wendif-labels
@@ -640,7 +639,6 @@ case "${cctype}" in
  ;;
 *)
  DEBUGFLAGS="
--Waggregate-return
 -Wchar-subscripts
 -Wcomment
 -Wendif-labels
@@ -699,7 +697,6 @@ case "${cctype}" in
 *)
  WARNS="-Wbad-function-cast
 -Wcast-qual
--Wcast-align
 -Wformat
 -Wimplicit
 -Wmissing-declarations
