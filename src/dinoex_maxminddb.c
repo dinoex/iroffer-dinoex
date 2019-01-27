@@ -162,6 +162,7 @@ void maxminddb_new_connection(transfer *const tr)
             "GeoIP [%02i:%s on %s]: Info %s -> %s)",
             tr->id, tr->nick, gdata.networks[ tr->net ].name,
             tr->con.remoteaddr, country);
+  mydelete(tr->country);
   tr->country = mystrdup(country);
   if (irlist_size(&gdata.geoipexcludegroup)) {
     for (group = (char *)irlist_get_head(&gdata.geoipexcludegroup);
