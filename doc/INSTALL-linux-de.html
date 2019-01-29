@@ -16,7 +16,7 @@
 <ol>
 
 <li>Wir gehen als User in das HOME Verzeichnis.<br>
- 
+
 
 <pre class="indent">
 cd
@@ -24,7 +24,7 @@ cd
 </li>
 
 <li>Wir legen ein extra Verzeichnis für iroffer an.<br>
- 
+
 
 <pre class="indent">
 mkdir iroffer
@@ -33,7 +33,7 @@ cd iroffer/
 </li>
 
 <li>Holen der Quellen für Programm.<br>
- 
+
 
 <pre class="indent">
 wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
@@ -41,7 +41,7 @@ wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
 </li>
 
 <li>Auspacken der Quellen.<br>
- 
+
 
 <pre class="indent">
 tar -xvzf iroffer-dinoex-snap.tar.gz
@@ -49,7 +49,7 @@ tar -xvzf iroffer-dinoex-snap.tar.gz
 </li>
 
 <li>Wir konfigurieren die Quellen für unser Linux.<br>
- 
+
 
 <pre class="indent">
 cd iroffer-dinoex-snap
@@ -74,7 +74,7 @@ sudo apt-get install ruby
 </li>
 
 <li>Wir bauen das Programm mit deutsche Texten.<br>
- 
+
 
 <pre class="indent">
 make de
@@ -82,7 +82,7 @@ make de
 </li>
 
 <li>Nun das Programm an die richtige Stelle kopieren.<br>
- 
+
 
 <pre class="indent">
 cp -p iroffer-de ..
@@ -92,7 +92,7 @@ cp -r htdocs ../
 </li>
 
 <li>Wir starten mit der "beispiel.config".<br>
- 
+
 
 <pre class="indent">
 cp beispiel.config ../mybot.config
@@ -102,7 +102,7 @@ chmod 600 mybot.config
 </li>
 
 <li>Nur der Bot muss Schreibrechte besitzen.<br>
- 
+
 
 <pre class="indent">
 chmod 700 .
@@ -110,7 +110,7 @@ chmod 700 .
 </li>
 
 <li>Wir erzeugen ein Passwort für den Admin-Chat.<br>
- 
+
 
 <pre class="indent">
 ./iroffer-de -c mybot.config
@@ -123,7 +123,7 @@ chmod 700 .
 "adminhost" sollte passend gesetzt werden.<br>
 Die die interne Webliste wird aktiviert.<br>
 Das Verzeichniss für die Pakete wird eingetragen.<br>
-mybot.config sollte enthalten: 
+mybot.config sollte enthalten:
 
 <pre class="indent">
 http_port 8000
@@ -136,7 +136,7 @@ uploaddir /home/bot/files
 </li>
 
 <li>Wir legen das Verzeichnis für die Pakete an.<br>
- 
+
 
 <pre class="indent">
 cd ..
@@ -148,25 +148,25 @@ Dort können dann per XDCC oder FTP die Dateien hochgeladen werden.<br>
 </li>
 
 <li>Erstellen eines Start-Scriptes.<br>
- 
+
 
 <pre class="indent">
 cd ..
 </pre>
 
-dann 
+dann
 
 <pre class="indent">
 nano -w start-iroffer.sh
 </pre>
 
-oder 
+oder
 
 <pre class="indent">
 vim start-iroffer.sh
 </pre>
 
-Dort tragen wir ein: 
+Dort tragen wir ein:
 
 <pre class="indent">
 #!/bin/sh
@@ -178,7 +178,7 @@ cd /home/bot/iroffer
 </li>
 
 <li>Das Script ausführbar machen.<br>
- 
+
 
 <pre class="indent">
 chmod +x start-iroffer.sh
@@ -186,7 +186,7 @@ chmod +x start-iroffer.sh
 </li>
 
 <li>Starten.<br>
- 
+
 
 <pre class="indent">
 sh start-iroffer.sh
