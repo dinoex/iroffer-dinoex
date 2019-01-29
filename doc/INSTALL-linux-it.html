@@ -21,7 +21,7 @@ Se avete necessità di supporto italiano contattatemi su irc.rizon.net #dinoex (
 <ol>
 
 <li>Entriamo nella cartella HOME dell'utente.<br>
- 
+
 
 <pre class="indent">
 cd
@@ -39,7 +39,7 @@ cd iroffer/
 </li>
 
 <li>Scarichiamo il pacchetto del programma con il comando "wget".<br>
- 
+
 
 <pre class="indent">
 wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
@@ -55,7 +55,7 @@ tar -xvzf iroffer-dinoex-snap.tar.gz
 </li>
 
 <li>Avviamo la configurazione per il nostro sistema Linux dopo esserci posizionati nella cartella appena creata.<br>
- 
+
 
 <pre class="indent">
 cd iroffer-dinoex-snap
@@ -79,7 +79,7 @@ sudo apt-get install ruby
 </li>
 
 <li>Creeiamo il programma in lingua italiana.<br>
- 
+
 
 <pre class="indent">
 make it
@@ -87,7 +87,7 @@ make it
 </li>
 
 <li>Ora copiamo il programma ed i files necessari al suo avvio nella giusta posizione.<br>
- 
+
 
 <pre class="indent">
 cp -p iroffer-it ..
@@ -97,7 +97,7 @@ cp -r htdocs ../
 </li>
 
 <li>Copiamo, rinominiamo e diamo i giusti permessi al file "sample.config". Nell'esempio lo chiameremo "mybot.config".<br>
- 
+
 
 <pre class="indent">
 cp sample.config ../mybot.config
@@ -107,7 +107,7 @@ chmod 600 mybot.config
 </li>
 
 <li>Assegnamo al bot i permessi di scrittura.<br>
- 
+
 
 <pre class="indent">
 chmod 700 .
@@ -115,7 +115,7 @@ chmod 700 .
 </li>
 
 <li>Possiamo quindi creare la password da admin del bot che servirà per le DCC-CHAT.<br>
- 
+
 
 <pre class="indent">
 ./iroffer-it -c mybot.config
@@ -146,7 +146,7 @@ adminhost *!*@*.*
 </li>
 
 <li>Creiamo la cartella per i files nella quale li posizioneremo via FTP o XDCC.<br>
- 
+
 
 <pre class="indent">
 cd ..
@@ -156,13 +156,13 @@ mkdir files
 </li>
 
 <li>Creiamo uno script di avvio.<br>
- 
+
 
 <pre class="indent">
 cd ..
 </pre>
 
-(then) 
+(then)
 
 <pre class="indent">
 nano -w start-iroffer.sh
@@ -186,7 +186,7 @@ cd /home/pippo/iroffer
 </li>
 
 <li>Rendiamo eseguibile lo script.<br>
- 
+
 
 <pre class="indent">
 chmod +x start-iroffer.sh
@@ -194,7 +194,7 @@ chmod +x start-iroffer.sh
 </li>
 
 <li>Avviamo il bot.<br>
- 
+
 
 <pre class="indent">
 sh start-iroffer.sh

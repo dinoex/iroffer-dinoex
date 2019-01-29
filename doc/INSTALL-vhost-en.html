@@ -19,7 +19,7 @@
 </li>
 
 <li>As root, change into the directory of the user "bot".<br>
- 
+
 
 <pre class="indent">
 cd /var/www/vhosts/bot.domain.net/
@@ -27,7 +27,7 @@ cd /var/www/vhosts/bot.domain.net/
 </li>
 
 <li>Create a new directoty only for iroffer.<br>
- 
+
 
 <pre class="indent">
 mkdir iroffer
@@ -36,7 +36,7 @@ cd iroffer/
 </li>
 
 <li>Get the sources for the program.<br>
- 
+
 
 <pre class="indent">
 wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
@@ -44,7 +44,7 @@ wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
 </li>
 
 <li>Extract the sources.<br>
- 
+
 
 <pre class="indent">
 tar -xvzf iroffer-dinoex-snap.tar.gz
@@ -52,7 +52,7 @@ tar -xvzf iroffer-dinoex-snap.tar.gz
 </li>
 
 <li>We configure the sources for our Linux version.<br>
- 
+
 
 <pre class="indent">
 cd iroffer-dinoex-snap
@@ -76,7 +76,7 @@ apt-get install ruby
 </li>
 
 <li>We build the program.<br>
- 
+
 
 <pre class="indent">
 make
@@ -84,7 +84,7 @@ make
 </li>
 
 <li>Now we copy the program to the right place.<br>
- 
+
 
 <pre class="indent">
 cp -p iroffer ..
@@ -92,7 +92,7 @@ cp -p iroffer ..
 </li>
 
 <li>We start with the "sample.config.<br>
- 
+
 
 <pre class="indent">
 cp sample.config ../mybot.config
@@ -104,7 +104,7 @@ chmod 600 mybot.config
 
 
 <li>Only the bot needs to have write permissions here.<br>
- 
+
 
 <pre class="indent">
 cd ..
@@ -114,7 +114,7 @@ chmod 700 .
 </li>
 
 <li>We create a password for the admin-chat.<br>
- 
+
 
 <pre class="indent">
 ./iroffer -c mybot.config
@@ -139,7 +139,7 @@ uploaddir /files
 </li>
 
 <li>We create the directory for the files.<br>
- 
+
 
 <pre class="indent">
 cd ..
@@ -152,7 +152,7 @@ Here we can upload the files with FTP or with XDCC later.<br>
 </li>
 
 <li>Download the source of the weblist.<br>
- 
+
 
 <pre class="indent">
 wget https://iroffer.net/iroffer-state219.zip
@@ -164,19 +164,19 @@ cp iroffer-sample.php index.php
 </li>
 
 <li>Edit the configuration of the weblist.<br>
- 
+
 
 <pre class="indent">
 nano -w index.php
 </pre>
 
-or 
+or
 
 <pre class="indent">
 vim index.php
 </pre>
 
-In the file index.php you define und 2) one line with the nickname of your bot: 
+In the file index.php you define und 2) one line with the nickname of your bot:
 
 <pre class="indent">
 # 2) Set nickname by hand
@@ -186,7 +186,7 @@ $nick = 'XDCC|mybot';
 </li>
 
 <li>We create a startup script.<br>
- 
+
 
 <pre class="indent">
 cd ..
@@ -198,7 +198,7 @@ then
 nano -w start-iroffer.sh
 </pre>
 
-or 
+or
 
 <pre class="indent">
 vim start-iroffer.sh
@@ -214,7 +214,7 @@ cd iroffer
 </li>
 
 <li>Make the script executeable.<br>
- 
+
 
 <pre class="indent">
 chmod +x start-iroffer.sh
@@ -222,7 +222,7 @@ chmod +x start-iroffer.sh
 </li>
 
 <li>Start.<br>
- 
+
 
 <pre class="indent">
 sh start-iroffer.sh

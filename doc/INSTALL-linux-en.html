@@ -16,7 +16,7 @@
 <ol>
 
 <li>We change into the users HOME directory.<br>
- 
+
 
 <pre class="indent">
 cd
@@ -24,7 +24,7 @@ cd
 </li>
 
 <li>We create and an extra directory for iroffer.<br>
- 
+
 
 <pre class="indent">
 mkdir iroffer
@@ -33,7 +33,7 @@ cd iroffer/
 </li>
 
 <li>Gettting the sources of the program.<br>
- 
+
 
 <pre class="indent">
 wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
@@ -41,7 +41,7 @@ wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
 </li>
 
 <li>Extract the sources.<br>
- 
+
 
 <pre class="indent">
 tar -xvzf iroffer-dinoex-snap.tar.gz
@@ -49,7 +49,7 @@ tar -xvzf iroffer-dinoex-snap.tar.gz
 </li>
 
 <li>We configure the sources for our Linux version.<br>
- 
+
 
 <pre class="indent">
 cd iroffer-dinoex-snap
@@ -73,7 +73,7 @@ sudo apt-get install ruby
 </li>
 
 <li>We build the program.<br>
- 
+
 
 <pre class="indent">
 make
@@ -81,7 +81,7 @@ make
 </li>
 
 <li>Now we copy the program to the right place.<br>
- 
+
 
 <pre class="indent">
 cp -p iroffer ..
@@ -91,7 +91,7 @@ cp -r htdocs ../
 </li>
 
 <li>We start with the "sample.config.<br>
- 
+
 
 <pre class="indent">
 cp sample.config ../mybot.config
@@ -101,7 +101,7 @@ chmod 600 mybot.config
 </li>
 
 <li>Only the bot needs to have write permissions here.<br>
- 
+
 
 <pre class="indent">
 chmod 700 .
@@ -109,7 +109,7 @@ chmod 700 .
 </li>
 
 <li>We create a password for the admin-chat.<br>
- 
+
 
 <pre class="indent">
 ./iroffer -c mybot.config
@@ -121,7 +121,7 @@ chmod 700 .
 
 "adminhost" should be set to your hostmask. We activate the internal webserver.
 The directories for the files is added and we uses it also for uploads.<br>
-mybot.config should include: 
+mybot.config should include:
 
 <pre class="indent">
 http_port 8000
@@ -134,7 +134,7 @@ uploaddir /home/bot/files
 </li>
 
 <li>We create the directory for the files.<br>
- 
+
 
 <pre class="indent">
 cd ..
@@ -146,19 +146,19 @@ Here we can upload the files with FTP or with XDCC later.<br>
 </li>
 
 <li>We create a startup script.<br>
- 
+
 
 <pre class="indent">
 cd ..
 </pre>
 
-then 
+then
 
 <pre class="indent">
 nano -w start-iroffer.sh
 </pre>
 
-then 
+then
 
 <pre class="indent">
 vim start-iroffer.sh
@@ -176,7 +176,7 @@ cd /home/bot/iroffer
 </li>
 
 <li>Make the script executeable.<br>
- 
+
 
 <pre class="indent">
 chmod +x start-iroffer.sh
@@ -184,7 +184,7 @@ chmod +x start-iroffer.sh
 </li>
 
 <li>Start.<br>
- 
+
 
 <pre class="indent">
 sh start-iroffer.sh
