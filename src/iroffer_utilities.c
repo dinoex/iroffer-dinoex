@@ -51,11 +51,10 @@ void getos (void) {
    /* verify we are who we were configured for, and set config */
 #if defined(_OS_CYGWIN)
    {
-     int count;
      int v1=0;
      int v2=0;
      int v3=0;
-     count = sscanf(u1.release,"%d.%d.%d",&v1,&v2,&v3);
+     (void)sscanf(u1.release,"%d.%d.%d",&v1,&v2,&v3);
      if (
 	 (v1 < 1) ||
 	 ((v1 == 1) && (v2 < 5)) ||
