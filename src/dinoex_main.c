@@ -185,12 +185,14 @@ int add_password(const char *hash)
   return 0;
 }
 
+#if !defined(_OS_CYGWIN)
 static void outerror_sysname(const char *configured, const char *sysname)
 {
   if (strcmp(sysname, configured))
     outerror(OUTERROR_TYPE_WARN_LOUD, "Configured for %s but running on %s?!?", configured, sysname);
   printf(", Good\n");
 }
+#endif /* _OS_CYGWIN */
 
 /* report and check operation system name */
 void check_osname(const char *sysname)
