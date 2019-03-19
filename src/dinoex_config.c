@@ -794,7 +794,7 @@ static config_list_typ config_parse_list[] = {
 #ifndef WITHOUT_BLOWFISH
 {"fish_exclude_nick",       &gdata.fish_exclude_nick,       2 }, /* NOTRANSLATE */
 #endif /* WITHOUT_BLOWFISH */
-#ifdef USE_GEOIP
+#if defined(USE_GEOIP) || defined(USE_MAXMINDDB)
 {"geoipcountry",            &gdata.geoipcountry,            0 }, /* NOTRANSLATE */
 {"geoipexcludegroup",       &gdata.geoipexcludegroup,       0 }, /* NOTRANSLATE */
 {"geoipexcludenick",        &gdata.geoipexcludenick,        0 }, /* NOTRANSLATE */
@@ -810,7 +810,7 @@ static config_list_typ config_parse_list[] = {
 {"log_exclude_text",        &gdata.log_exclude_text,        0 }, /* NOTRANSLATE */
 {"md5sum_exclude",          &gdata.md5sum_exclude,          0 }, /* NOTRANSLATE */
 {"nodownloadhost",          &gdata.nodownloadhost,          2 }, /* NOTRANSLATE */
-#ifdef USE_GEOIP
+#if defined(USE_GEOIP) || defined(USE_MAXMINDDB)
 {"nogeoipcountry",          &gdata.nogeoipcountry,          0 }, /* NOTRANSLATE */
 #endif /* USE_GEOIP */
 #ifndef WITHOUT_TELNET
