@@ -973,7 +973,7 @@ static void h_accept(unsigned int i)
           "HTTP connection received from %s",  h->con.remoteaddr);
 
   blocked = is_in_badip(&(h->con.remote));
-#ifdef USE_GEOIP
+#if defined(USE_GEOIP) || defined(USE_MAXMINDDB)
   if (blocked == 2) {
     h_herror_403(h, "HTTP connection country blocked");
     return;
