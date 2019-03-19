@@ -6,7 +6,6 @@ Ab Version 3.32:
 bugfix: Speicherlecks behoben
 
 414) maxminddb
-  Unterstützung für Abfragen der GeoIP2 Datenbank (maxminddb).
   Unterstützung für Abfragen der GeoIP2 Datenbank.
   Definiere die Datenbankdatei für IPv4 und IPv6.
   Wenn du keine Datenbank hast, kannst du diese hier herunterladen:
