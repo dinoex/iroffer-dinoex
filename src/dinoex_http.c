@@ -2274,7 +2274,7 @@ static void h_send(http * const h)
       howmuch = read(h->filedescriptor, gdata.sendbuff, attempt);
       data = (char *)gdata.sendbuff;
     }
-    if (howmuch < 0 && errno != EAGAIN) {
+    if ((howmuch < 0) && (errno != EAGAIN) && (errno != EINTR)) {
       errno2 = errno;
       outerror(OUTERROR_TYPE_WARN, "Can't read data from file '%s': %s",
               h->file, strerror(errno));
@@ -2286,7 +2286,7 @@ static void h_send(http * const h)
 
     h->filepos += howmuch;
     howmuch2 = send(h->con.clientsocket, data, howmuch, MSG_NOSIGNAL);
-    if (howmuch2 < 0 && errno != EAGAIN) {
+    if ((howmuch2 < 0) && (errno != EAGAIN) && (errno != EINTR)) {
       h_closeconn(h, "Connection Lost", errno);
       return;
     }

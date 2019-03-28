@@ -930,7 +930,7 @@ static void mainloop (void) {
                           number_of_pack(gdata.md5build.xpack), (long)howmuch);
                 }
               
-              if ((howmuch < 0) && (errno != EAGAIN))
+              if ((howmuch < 0) && (errno != EAGAIN) && (errno != EINTR))
                 {
                   outerror(OUTERROR_TYPE_WARN, "MD5: [Pack %u] Can't read data from file '%s': %s",
                            number_of_pack(gdata.md5build.xpack),

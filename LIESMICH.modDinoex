@@ -1,5 +1,11 @@
 Aktuelle Version auf: https://iroffer.net/
 
+Ab Version 3.33:
+----------------
+
+bugfix:
+  Verhindere den Abbruch eines Transfers bei "Interrupted system call"
+
 Ab Version 3.32:
 ----------------
 
