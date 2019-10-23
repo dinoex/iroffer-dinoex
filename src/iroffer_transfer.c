@@ -215,7 +215,7 @@ void t_transfersome (transfer * const t)
               gdata.transfermethod++;
               return;
             }
-          else if (howmuch < 0 && errno != EAGAIN)
+          else if ((howmuch < 0) && (errno != EAGAIN) && (errno != EINTR))
             {
               t_closeconn(t,"Unable to transfer data",errno);
               return;
@@ -250,7 +250,7 @@ void t_transfersome (transfer * const t)
               gdata.transfermethod++;
               return;
             }
-          else if ((jj < 0) && (errno != EAGAIN))
+          else if ((jj < 0) && (errno != EAGAIN) && (errno != EINTR))
             {
               t_closeconn(t,"Unable to transfer data",errno);
               return;
@@ -289,7 +289,7 @@ void t_transfersome (transfer * const t)
           
           howmuch = read(t->xpack->file_fd, dataptr, attempt);
           
-          if (howmuch < 0 && errno != EAGAIN)
+          if ((howmuch < 0) && (errno != EAGAIN) && (errno != EINTR))
             {
               int errno2 = errno;
               outerror(OUTERROR_TYPE_WARN,"Can't read data from file '%s': %s",
@@ -306,7 +306,7 @@ void t_transfersome (transfer * const t)
           
           howmuch2 = send(t->con.clientsocket, dataptr, howmuch, MSG_NOSIGNAL);
           
-          if (howmuch2 < 0 && errno != EAGAIN)
+          if ((howmuch2 < 0) && (errno != EAGAIN) && (errno != EINTR))
             {
               t_closeconn(t,"Connection Lost",errno);
               return;
@@ -421,7 +421,7 @@ void t_transfersome (transfer * const t)
           
           howmuch2 = send(t->con.clientsocket, dataptr, howmuch, MSG_NOSIGNAL);
           
-          if (howmuch2 < 0 && errno != EAGAIN)
+          if ((howmuch2 < 0) && (errno != EAGAIN) && (errno != EINTR))
             {
               t_closeconn(t,"Connection Lost",errno);
               return;

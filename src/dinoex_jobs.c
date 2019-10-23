@@ -68,22 +68,22 @@ static unsigned long bytes_to_long( const char **str )
   unsigned char ch;
 
   ch = *(*str);
-  result = ch << 24;
+  result = (unsigned long)ch << 24;
   if (ch == 0) return result;
 
   ++(*str);
   ch = *(*str);
-  result |= ch << 16;
+  result |= (unsigned long)ch << 16;
   if (ch == 0) return result;
 
   ++(*str);
   ch = *(*str);
-  result |= ch << 8;
+  result |= (unsigned long)ch << 8;
   if (ch == 0) return result;
 
   ++(*str);
   ch = *(*str);
-  result |= ch;
+  result |= (unsigned long)ch;
   if (ch != 0)
     ++(*str);
   return result;
@@ -139,7 +139,7 @@ static unsigned long base64_to_long( const char **str )
   result = 0L;
   for (i = 0; i < 6; ++i) {
     ch = (unsigned char)(*(*str)++);
-    result |= fish64decode[ ch ] << (i * 6);
+    result |= (unsigned long)fish64decode[ ch ] << (i * 6);
   }
   return result;
 }

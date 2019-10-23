@@ -1,5 +1,11 @@
 Updated version on: https://iroffer.net/
 
+With Version 3.33:
+------------------
+
+bugfix:
+  recover transfers on "Interrupted system call"
+
 With Version 3.32:
 ------------------
 
