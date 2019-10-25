@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: IRC PING
+  fix problem with oragono server.
+
 bugfix: json.txt.rb (reported by lailoken)
   convert javascript code to JSON data
 
