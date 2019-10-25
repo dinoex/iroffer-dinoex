@@ -28,8 +28,11 @@ class IrofferEvent
   def on_privmsg
     write_log( "PRIVMSG from", hostmask, "in", channel, "on", network, message )
 
+    # ignore !find or @find directly
+    return true if /^.find/ =~ message
+
     # trigger on text somewhere in the message
-    if /iroffer-dinoex/.match( message )
+    if /iroffer-dinoex/ =~ message
       msg = "Thanks for using iroffer."
       # send text to user
       privmsg( nick, msg )
