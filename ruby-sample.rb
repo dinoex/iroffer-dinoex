@@ -61,6 +61,11 @@ class IrofferEvent
     command( "AMSG", "Packlist has been updated" )
   end
 
+  # called on a completed upload
+  def on_upload_completed
+    command( "msg", irconfig( "owner_nick" ), "upload is finished" )
+  end
+
   # called on each pack added
   def on_added
     write_log( "Added pack nr", added_pack, "with file", added_file )
