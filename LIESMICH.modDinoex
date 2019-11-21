@@ -3,6 +3,12 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: IRC PING
+  Problem mit Oragono IRC server behoben.
+
+bugfix: json.txt.rb
+  Ausgabe von Javascript code nach JSON konvertiert.
+
 bugfix:
   Verhindere den Abbruch eines Transfers bei "Interrupted system call"
 
