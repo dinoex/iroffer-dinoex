@@ -28,6 +28,9 @@ and released under MIT License.
 
 src/upnp.[ch] is writen by Thomas Bernard under BSD license.
 
+The ruby files *.rb and htdocs/*.rb are under RUBY license.
+https://www.ruby-lang.org/en/about/license.txt
+
 All other files are written by Dirk Meyer, and are under GPL2,
 In addition, as a special exception, Dirk Meyer gives
 permission to link the code of portions of this program with the

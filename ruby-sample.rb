@@ -1,5 +1,9 @@
 #!/usr/local/bin/ruby -w
 
+# Author::    Dirk Meyer
+# Copyright:: Copyright (c) 2008 - 2019 Dirk Meyer
+# License::   Distributes under the same terms as Ruby
+
 # Write something in a logfile with date and time.
 def write_log( *args )
   f = File.open( "ruby-dump.txt", "a+" )

@@ -1,5 +1,9 @@
 # htdocs/json.txt.rb: export file info as list.
 
+# Author::    Dirk Meyer
+# Copyright:: Copyright (c) 2012 - 2019 Dirk Meyer
+# License::   Distributes under the same terms as Ruby
+
 require 'json'
 
 bot = IrofferEvent.new

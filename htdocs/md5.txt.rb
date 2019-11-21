@@ -4,6 +4,10 @@
 #   range: "/md5.txt.rb?pack=21;last=29"
 #   group: "/md5.txt.rb?group=ZZZ"
 
+# Author::    Dirk Meyer
+# Copyright:: Copyright (c) 2011 - 2019 Dirk Meyer
+# License::   Distributes under the same terms as Ruby
+
 now = Time.now.to_s
 
 bot = IrofferEvent.new
