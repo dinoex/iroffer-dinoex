@@ -4,6 +4,10 @@
 #   range: "/info.txt.rb?pack=21;last=29"
 #   group: "/info.txt.rb?group=ZZZ"
 
+# Author::    Dirk Meyer
+# Copyright:: Copyright (c) 2008 - 2019 Dirk Meyer
+# License::   Distributes under the same terms as Ruby
+
 now = Time.now.to_s
 
 bot = IrofferEvent.new

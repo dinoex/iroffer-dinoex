@@ -1,9 +1,13 @@
 
-# htdocs/sfv.txt.rb: export crc32 in sfv formatA
+# htdocs/sfv.txt.rb: export crc32 in sfv format
 # parameters:
 #   pack:  "/sfv.txt.rb?pack=21"
 #   range: "/sfv.txt.rb?pack=21;last=29"
 #   group: "/sfv.txt.rb?group=ZZZ"
+
+# Author::    Dirk Meyer
+# Copyright:: Copyright (c) 2011 - 2019 Dirk Meyer
+# License::   Distributes under the same terms as Ruby
 
 now = Time.now.to_s
 
