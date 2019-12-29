@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: Lang
+  Bei leeren Enviroment verwende utf-8.
+
 bugfix: IRC PING
   Problem mit Oragono IRC server behoben.
 

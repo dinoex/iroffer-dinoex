@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: Lang
+  Defaults to utf-8 on empty enviroment.
+
 bugfix: IRC PING
   fix problem with oragono server.
 
