@@ -3,17 +3,20 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: Configure
+  Fix "noreturn" warnings on Debian 10.
+
 bugfix: Lang
   Defaults to utf-8 on empty enviroment.
 
 bugfix: IRC PING
-  fix problem with oragono server.
+  Fix problem with oragono server.
 
 bugfix: json.txt.rb (reported by lailoken)
-  convert javascript code to JSON data
+  Convert javascript code to JSON data.
 
 bugfix:
-  recover transfers on "Interrupted system call"
+  Recover transfers on "Interrupted system call".
 
 With Version 3.32:
 ------------------

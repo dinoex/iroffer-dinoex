@@ -42,10 +42,8 @@ static void mainloop(void);
 /* main */
 int
 #ifdef __GNUC__
-#if !defined(__STDC_VERSION__) || __STDC_VERSION__ != 199901L
-#if !defined(__STDC_VERSION__) || __STDC_VERSION__ != 201112L
+#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 199901L
 __attribute__ ((noreturn))
-#endif
 #endif
 #endif
 main(int argc, char *const *argv) {

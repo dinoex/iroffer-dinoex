@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2019 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -905,7 +905,8 @@ unsigned int check_ignore(const char *nick, const char *hostmask)
           left < 3600 ? 's' : 'm');
 
   notice(nick,
-         "Auto-ignore activated for %s (%s) lasting %i%c%i%c" ". Further messages will increase duration.",
+         "Auto-ignore activated for %s (%s) lasting %i%c%i%c"
+         ". Further messages will increase duration.",
          nick, hostmask,
          left < 3600 ? left/60 : left/60/60 ,
          left < 3600 ? 'm' : 'h',
