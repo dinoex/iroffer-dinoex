@@ -27,6 +27,7 @@
 #include "iroffer_config.h"
 
 #include <string.h>		/* for memcpy() */
+#include <strings.h>		/* for bzero() */
 #include <sys/types.h>		/* for stupid systems */
 #include <netinet/in.h>		/* for ntohl() */
 
