@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2019 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -1455,7 +1455,7 @@ static void write_string(xml_buffer_t *xmlbuf, const char *line)
 
   len = strlen(line);
   xml_buffer_check(xmlbuf, len);
-  strncpy(xmlbuf->buffer+ xmlbuf->len, line, len);
+  strncpy(xmlbuf->buffer + xmlbuf->len, line, len);
   xmlbuf->len += len;
 }
 
