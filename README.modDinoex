@@ -3,6 +3,8 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: fix small memory leaks
+
 bugfix: Configure
   Fix "noreturn" warnings on Debian 10.
 
