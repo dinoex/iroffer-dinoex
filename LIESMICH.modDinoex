@@ -3,6 +3,8 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: Speicherlecks behoben
+
 bugfix: Configure
   Behebe "noreturn" Warnungen unter Debian 10.
 

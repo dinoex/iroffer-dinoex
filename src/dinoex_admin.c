@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2019 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -2144,7 +2144,7 @@ void a_remove(const userinput * const u)
     a_remove_pack_final();
 }
 
-static DIR *a_open_dir(char **dir)
+static DIR *a_open_filedir(char **dir)
 {
   DIR *d;
   char *adir;
@@ -2154,22 +2154,23 @@ static DIR *a_open_dir(char **dir)
   strip_trailing_path(*dir);
 
   d = opendir(*dir);
-  if ((d != NULL) || (errno != ENOENT))
+  if (d != NULL) /* found */
     return d;
 
-  if (errno != ENOENT)
-    return d;
+  if (errno != ENOENT) /* other error */
+    return NULL;
 
   n = irlist_size(&gdata.filedir);
   if (n == 0)
     return NULL;
 
+  /* prefix each filedir */
   for (adir = irlist_get_head(&gdata.filedir);
        adir;
        adir = irlist_get_next(adir)) {
     path = mystrjoin(adir, *dir, '/');
     d = opendir(path);
-    if ((d != NULL) || (errno != ENOENT)) {
+    if (d != NULL) {
       mydelete(*dir);
       *dir = path;
       return d;
@@ -2177,6 +2178,17 @@ static DIR *a_open_dir(char **dir)
     mydelete(path);
   }
   return NULL;
+}
+
+static DIR *a_open_dir_error(const userinput * const u, char **dir)
+{
+  DIR *d;
+
+  d = a_open_filedir(dir);
+  if (d == NULL) {
+    a_respond(u, "Can't Access Directory: %s %s", *dir, strerror(errno));
+  }
+  return d;
 }
 
 void a_removedir(const userinput * const u)
@@ -2190,15 +2202,11 @@ void a_removedir(const userinput * const u)
    return;
 
   thedir = mystrdup(u->arg1);
-  d = a_open_dir(&thedir);
-  if (!d) {
-    a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
-    return;
+  d = a_open_dir_error(u, &thedir);
+  if (d != NULL) {
+    a_removedir_sub(u, thedir, d, NULL);
   }
-
-  a_removedir_sub(u, thedir, d, NULL);
   mydelete(thedir);
-  return;
 }
 
 void a_removegroup(const userinput * const u)
@@ -2254,14 +2262,10 @@ void a_removematch(const userinput * const u)
   }
 
   *(end++) = 0;
-  d = a_open_dir(&thedir);
-  if (!d) {
-    a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
-    mydelete(thedir);
-    return;
+  d = a_open_dir_error(u, &thedir);
+  if (d != NULL) {
+    a_removedir_sub(u, thedir, d, end);
   }
-
-  a_removedir_sub(u, thedir, d, end);
   mydelete(thedir);
 }
 
@@ -2673,14 +2677,10 @@ void a_addgroup(const userinput * const u)
     caps(u->arg1);
 
   thedir = mystrdup(u->arg2);
-  d = a_open_dir(&thedir);
-  if (!d) {
-    a_respond(u, "Can't Access Directory: %s %s", u->arg2, strerror(errno));
-    mydelete(thedir);
-    return;
+  d = a_open_dir_error(u, &thedir);
+  if (d != NULL) {
+    a_adddir_sub(u, thedir, d, 1, u->arg1, NULL);
   }
-
-  a_adddir_sub(u, thedir, d, 1, u->arg1, NULL);
   mydelete(thedir);
 }
 
@@ -2704,14 +2704,11 @@ void a_addmatch(const userinput * const u)
   }
 
   *(end++) = 0;
-  d = a_open_dir(&thedir);
-  if (!d) {
-    a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
-    mydelete(thedir);
-    return;
+  d = a_open_dir_error(u, &thedir);
+  if (d != NULL) {
+    a_adddir_sub(u, thedir, d, 1, NULL, end);
   }
 
-  a_adddir_sub(u, thedir, d, 1, NULL, end);
   mydelete(thedir);
 }
 
@@ -3706,17 +3703,11 @@ void a_adddir(const userinput * const u)
     return;
 
   thedir = mystrdup(u->arg1);
-  d = a_open_dir(&thedir);
-  if (!d)
-    {
-      a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
-      mydelete(thedir);
-      return;
-    }
-
-  a_adddir_sub(u, thedir, d, 0, NULL, NULL);
+  d = a_open_dir_error(u, &thedir);
+  if (d != NULL) {
+    a_adddir_sub(u, thedir, d, 0, NULL, NULL);
+  }
   mydelete(thedir);
-  return;
 }
 
 void a_addnew(const userinput * const u)
@@ -3730,16 +3721,11 @@ void a_addnew(const userinput * const u)
     return;
 
   thedir = mystrdup(u->arg1);
-  d = a_open_dir(&thedir);
-  if (!d) {
-    a_respond(u, "Can't Access Directory: %s %s", u->arg1, strerror(errno));
-    mydelete(thedir);
-    return;
+  d = a_open_dir_error(u, &thedir);
+  if (d != NULL) {
+    a_adddir_sub(u, thedir, d, 1, NULL, NULL);
   }
-
-  a_adddir_sub(u, thedir, d, 1, NULL, NULL);
   mydelete(thedir);
-  return;
 }
 
 void a_newdir(const userinput * const u)
@@ -3900,11 +3886,9 @@ void a_movegroupdir(const userinput * const u)
     caps(u->arg1);
 
   thedir = mystrdup(u->arg2);
-  d = a_open_dir(&thedir);
-  if (!d) {
-    a_respond(u, "Can't Access Directory: %s %s", u->arg2, strerror(errno));
+  d = a_open_dir_error(u, &thedir);
+  if (d == NULL)
     return;
-  }
 
   foundit = 0;
   tempstr = mymalloc(maxtextlength);
