@@ -48,7 +48,7 @@ void t_start_dcc_send(transfer *tr)
                  tr->xpack->st_size);
 
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
-            "listen on port %d for [%d,%s] (%s on %s)",
+            "listen on port %d for [%d:%s] (%s on %s)",
             tr->con.localport, tr->id, tr->nick, tr->hostname, gnetwork->name);
   }
   mydelete(dccdata);
