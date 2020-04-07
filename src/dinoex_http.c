@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2019 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -54,7 +54,7 @@ static const char *http_header_status =
 "HTTP/1.1 %u OK\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
 "Last-Modified: %s\r\n" /* NOTRANSLATE */
-"Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Server: " "iroffer-dinoex" "/" VERSIONLONG "\r\n" /* NOTRANSLATE */
 "Content-Type: %s%s\r\n" /* NOTRANSLATE */
 "Connection: close\r\n" /* NOTRANSLATE */
 "Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */;
@@ -62,7 +62,7 @@ static const char *http_header_status =
 static const char *http_header_notfound =
 "HTTP/1.1 404 Not Found\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
-"Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Server: " "iroffer-dinoex" "/" VERSIONLONG "\r\n" /* NOTRANSLATE */
 "Content-Type: text/plain\r\n" /* NOTRANSLATE */
 "Connection: close\r\n" /* NOTRANSLATE */
 "Content-Length: 13\r\n" /* NOTRANSLATE */
@@ -73,7 +73,7 @@ static const char *http_header_notfound =
 static const char *http_header_forbidden =
 "HTTP/1.1 403 Forbidden\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
-"Server: iroffer-dinoex/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Server: " "iroffer-dinoex" "/" VERSIONLONG "\r\n" /* NOTRANSLATE */
 "Content-Type: text/plain\r\n" /* NOTRANSLATE */
 "Connection: close\r\n" /* NOTRANSLATE */
 "Content-Length: 13\r\n" /* NOTRANSLATE */
@@ -1319,7 +1319,8 @@ static void h_html_main(http * const h)
         ++nogroup;
         ++groups;
         snprintf(tempstr, maxtextlength,
-                 "%s %s", ".", "no group");
+                 "%s %s", ".", /* NOTRANSLATE */
+                 "no group");
         hg = irlist_add(&grplist, sizeof(html_group_t));
         hg->hg_group = "."; /* NOTRANSLATE */
         hg->hg_desc = "no group";
@@ -1417,7 +1418,8 @@ static void h_html_main(http * const h)
     mydelete(tempstr);
   }
   h_respond(h, "<th class=\"head\">%u</th>\n", groups); /* NOTRANSLATE */
-  tlink = h_html_link_group(h, "show all packs in one list", "all packs", "*");
+  tlink = h_html_link_group(h, "show all packs in one list", "all packs",
+                            "*"); /* NOTRANSLATE */
   tempstr = sizestr(0, traffic);
   h_respond(h, "<th class=\"head\">%s [%s]&nbsp;%s</th>\n", /* NOTRANSLATE */
             tlink, tempstr, "complete downloaded" );
@@ -1693,7 +1695,7 @@ static void h_html_index(http * const h)
   (void)add_snprintf(tlabel + len, maxtextlength - len, "%6s %s\n", tempstr, "Traffic this month");
   mydelete(tempstr);
   h_respond(h, "<td title=\"%s\">%s</td>\n", /* NOTRANSLATE */
-            tlabel, "iroffer-dinoex " VERSIONLONG);
+            tlabel, "iroffer-dinoex" " " VERSIONLONG);
   mydelete(tlabel);
 
   tempstr = mymalloc(maxtextlength);

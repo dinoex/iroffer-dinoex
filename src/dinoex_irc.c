@@ -1054,7 +1054,7 @@ static void irc_001(ir_parseline_t *ipl)
 
   tptr = get_user_modes();
   if (tptr && tptr[0]) {
-    writeserver(WRITESERVER_NOW, "MODE %s %s",
+    writeserver(WRITESERVER_NOW, "MODE %s %s", /* NOTRANSLATE */
                 gnetwork->user_nick, tptr);
   }
 
@@ -1080,7 +1080,7 @@ static void irc_005(ir_parseline_t *ipl)
       break;
     }
 
-    if (!strncmp("PREFIX=(", item, 8)) {
+    if (!strncmp("PREFIX=(", item, 8)) { /* NOTRANSLATE */
       char *ptr = item+8;
       unsigned int pi;
 
@@ -1105,7 +1105,7 @@ static void irc_005(ir_parseline_t *ipl)
       }
     }
 
-    if (!strncmp("CHANMODES=", item, 10)) {
+    if (!strncmp("CHANMODES=", item, 10)) { /* NOTRANSLATE */
       char *ptr = item+10;
       unsigned int ci;
       unsigned int cm;
@@ -1157,7 +1157,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   caps(ipl->part[1]);
 
   /* NOTICE nick */
-  if (!strcmp(ipl->part[1], "NOTICE")) {
+  if (!strcmp(ipl->part[1], "NOTICE")) { /* NOTRANSLATE */
     if (gnetwork->caps_nick && ipl->part[2]) {
       if (!strcmp(caps(ipl->part[2]), gnetwork->caps_nick)) {
         /* nickserv */
@@ -1171,7 +1171,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* PRIVMSG */
-  if (!strcmp(ipl->part[1], "PRIVMSG")) {
+  if (!strcmp(ipl->part[1], "PRIVMSG")) { /* NOTRANSLATE */
 #ifndef WITHOUT_BLOWFISH
     char *line2;
 
@@ -1194,21 +1194,21 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* :server 001  xxxx :welcome.... */
-  if ( !strcmp(ipl->part[1], "001") ) {
+  if ( !strcmp(ipl->part[1], "001") ) { /* NOTRANSLATE */
     irc_001(ipl);
     return;
   }
 
   /* :server 005 xxxx aaa bbb=x ccc=y :are supported... */
-  if ( !strcmp(ipl->part[1], "005") ) {
+  if ( !strcmp(ipl->part[1], "005") ) { /* NOTRANSLATE */
     irc_005(ipl);
     return;
   }
 
   /* :server 401 botnick usernick :No such nick/channel */
-  if ( !strcmp(ipl->part[1], "401") ) {
+  if ( !strcmp(ipl->part[1], "401") ) { /* NOTRANSLATE */
     if (ipl->part[2] && ipl->part[3]) {
-      if (!strcmp(ipl->part[2], "*")) {
+      if (!strcmp(ipl->part[2], "*")) { /* NOTRANSLATE */
         lost_nick(ipl->part[3]);
       }
     }
@@ -1216,9 +1216,9 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* :server 433 old new :Nickname is already in use. */
-  if ( !strcmp(ipl->part[1], "433") ) {
+  if ( !strcmp(ipl->part[1], "433") ) { /* NOTRANSLATE */
     if (ipl->part[2] && ipl->part[3]) {
-      if (!strcmp(ipl->part[2], "*")) {
+      if (!strcmp(ipl->part[2], "*")) { /* NOTRANSLATE */
         ioutput(OUT_S|OUT_L, COLOR_NO_COLOR,
                 "Nickname %s already in use on %s, trying %s%u",
                 ipl->part[3],
@@ -1227,7 +1227,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
                 gnetwork->nick_number);
 
         /* generate new nick and retry */
-        writeserver(WRITESERVER_NORMAL, "NICK %s%u",
+        writeserver(WRITESERVER_NORMAL, "NICK %s%u", /* NOTRANSLATE */
                     get_config_nick(),
                     (gnetwork->nick_number)++);
       }
@@ -1236,7 +1236,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* :server 470 botnick #channel :(you are banned) transfering you to #newchannel */
-  if ( !strcmp(ipl->part[1], "470") ) {
+  if ( !strcmp(ipl->part[1], "470") ) { /* NOTRANSLATE */
     if (ipl->part[2] && ipl->part[3]) {
       outerror(OUTERROR_TYPE_WARN_LOUD,
                "channel on %s: %s", gnetwork->name, strstr(ipl->line, "470"));
@@ -1255,7 +1255,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
 
   /* names list for a channel */
   /* :server 353 our_nick = #channel :nick @nick +nick nick */
-  if ( !strcmp(ipl->part[1], "353") ) {
+  if ( !strcmp(ipl->part[1], "353") ) { /* NOTRANSLATE */
     if (ipl->part[2] && ipl->part[3] && ipl->part[5]) {
       caps(ipl->part[4]);
 
@@ -1273,13 +1273,13 @@ static void ir_parseline2(ir_parseline_t *ipl)
       ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
               "Got name data for %s which is not a known channel on %s!",
               ipl->part[4], gnetwork->name);
-      writeserver(WRITESERVER_NORMAL, "PART %s", ipl->part[4]);
+      writeserver(WRITESERVER_NORMAL, "PART %s", ipl->part[4]); /* NOTRANSLATE */
     }
     return;
   }
 
   if (gnetwork->lastping != 0) {
-    if (strcmp(ipl->part[1], "PONG") == 0) {
+    if (strcmp(ipl->part[1], "PONG") == 0) { /* NOTRANSLATE */
       lag_message();
       return;
     }
@@ -1287,18 +1287,18 @@ static void ir_parseline2(ir_parseline_t *ipl)
 
 #if PING_SRVR
   /* server ping */
-  if (strncmp(ipl->line, "PING ", 5) == 0) {
+  if (strncmp(ipl->line, "PING ", 5) == 0) { /* NOTRANSLATE */
     if (gdata.debug > 0)
       ioutput(OUT_S, COLOR_NO_COLOR,
               "Server Ping on %s: %s",
               gnetwork->name, ipl->line);
-    writeserver(WRITESERVER_NOW, "PO%s", ipl->line+2);
+    writeserver(WRITESERVER_NOW, "PO%s", ipl->line+2); /* NOTRANSLATE */
     return;
   }
 #endif
 
   /* QUIT */
-  if (strcmp(ipl->part[1], "QUIT") == 0) {
+  if (strcmp(ipl->part[1], "QUIT") == 0) { /* NOTRANSLATE */
     if (gnetwork->caps_nick) {
       nick = ir_get_nickarg(ipl->line);
       if (!strcmp(caps(nick), gnetwork->caps_nick)) {
@@ -1324,7 +1324,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* MODE #channel +x ... */
-  if (strcmp(ipl->part[1], "MODE") == 0) {
+  if (strcmp(ipl->part[1], "MODE") == 0) { /* NOTRANSLATE */
     if (ipl->part[2] && ipl->part[3]) {
       /* find channel */
       for (ch = irlist_get_head(&(gnetwork->channels)); ch; ch = irlist_get_next(ch)) {
@@ -1392,7 +1392,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* JOIN */
-  if (strcmp(ipl->part[1], "JOIN") == 0) {
+  if (strcmp(ipl->part[1], "JOIN") == 0) { /* NOTRANSLATE */
     if (gnetwork->caps_nick && part3a) {
       caps(part3a);
       nick = ir_get_nickarg(ipl->line);
@@ -1414,7 +1414,8 @@ static void ir_parseline2(ir_parseline_t *ipl)
           ch->nextann = gdata.curtime + gdata.waitafterjoin;
           ch->nextmsg = gdata.curtime + gdata.waitafterjoin;
           if (ch->joinmsg) {
-            writeserver(WRITESERVER_NOW, "PRIVMSG %s :%s", ch->name, ch->joinmsg);
+            writeserver(WRITESERVER_NOW, "PRIVMSG %s :%s", /* NOTRANSLATE */
+	                ch->name, ch->joinmsg);
           }
           gnetwork->botstatus = BOTSTATUS_JOINED;
           start_sends();
@@ -1441,7 +1442,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* PART */
-  if (strcmp(ipl->part[1], "PART") == 0) {
+  if (strcmp(ipl->part[1], "PART") == 0) { /* NOTRANSLATE */
     if (gnetwork->caps_nick && part3a) {
       nick = ir_get_nickarg(ipl->line);
       if (!strcmp(caps(nick), gnetwork->caps_nick)) {
@@ -1470,7 +1471,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* NICK */
-  if (strcmp(ipl->part[1], "NICK") == 0) {
+  if (strcmp(ipl->part[1], "NICK") == 0) { /* NOTRANSLATE */
     if (gnetwork->caps_nick && part3a) {
       nick = ir_get_nickarg(ipl->line);
       if (!strcmp(caps(nick), gnetwork->caps_nick)) {
@@ -1498,7 +1499,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
   }
 
   /* KICK */
-  if (strcmp(ipl->part[1], "KICK") == 0) {
+  if (strcmp(ipl->part[1], "KICK") == 0) { /* NOTRANSLATE */
     if (gnetwork->caps_nick && part3a && ipl->part[3]) {
       caps(part3a);
       if (!strcmp(caps(ipl->part[3]), gnetwork->caps_nick)) {

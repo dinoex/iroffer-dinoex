@@ -543,7 +543,7 @@ static void mainloop (void) {
                 const char *servname = gnetwork->curserveractualname ? gnetwork->curserveractualname : gnetwork->curserver.hostname;
                 size_t     len       = 6 + strlen(servname);
                 char       *tempstr3 = mymalloc(len + 1);
-                snprintf(tempstr3, len + 1, "PING %s\n", servname);
+                snprintf(tempstr3, len + 1, "PING %s\n", servname); /* NOTRANSLATE */
                 writeserver_ssl(tempstr3, len);
                 if (gdata.debug > 0)
                   {
@@ -862,7 +862,7 @@ static void mainloop (void) {
            /* try to regain nick */
            if (!gnetwork->user_nick || strcmp(get_config_nick(), gnetwork->user_nick))
              {
-               writeserver(WRITESERVER_NORMAL, "NICK %s", get_config_nick());
+               writeserver(WRITESERVER_NORMAL, "NICK %s", get_config_nick()); /* NOTRANSLATE */
              }
            } /* networks */
          gnetwork = NULL;

@@ -20,6 +20,8 @@ bugfix: json.txt.rb (reported by lailoken)
 bugfix:
   Recover transfers on "Interrupted system call".
 
+extend debug and log information.
+
 With Version 3.32:
 ------------------
 

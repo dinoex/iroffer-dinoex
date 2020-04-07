@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2019 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -108,19 +108,19 @@ static void send_clientinfo(const char *nick, char *msg2)
     return;
   }
   caps(msg2);
-  if (strncmp(msg2, "PING", 4) == 0) {
+  if (strncmp(msg2, "PING", 4) == 0) { /* NOTRANSLATE */
     notice(nick, IRC_CTCP "CLIENTINFO PING returns the arguments it receives" IRC_CTCP);
     return;
   }
-  if (strncmp(msg2, "DCC", 3) == 0) {
+  if (strncmp(msg2, "DCC", 3) == 0) { /* NOTRANSLATE */
     notice(nick, IRC_CTCP "CLIENTINFO DCC requests a DCC for chatting or file transfer" IRC_CTCP);
     return;
   }
-  if (strncmp(msg2, "VERSION", 7) == 0) {
+  if (strncmp(msg2, "VERSION", 7) == 0) { /* NOTRANSLATE */
     notice(nick, IRC_CTCP "CLIENTINFO VERSION shows information about this client's version" IRC_CTCP);
     return;
   }
-  if (strncmp(msg2, "XDCC", 4) == 0) {
+  if (strncmp(msg2, "XDCC", 4) == 0) { /* NOTRANSLATE */
     notice(nick, IRC_CTCP "CLIENTINFO XDCC LIST|SEND list and DCC file(s) to you" IRC_CTCP);
     return;
   }
@@ -374,8 +374,8 @@ static unsigned int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned
   if (gdata.nonewcons > gdata.curtime) {
     notice(pi->nick, "** The Owner Has Requested That No New Connections Are Made In The Next %li Minutes%s%s",
            (long)((gdata.nonewcons - gdata.curtime + 1)/60),
-           gdata.nosendmsg ? ", " : "",
-           gdata.nosendmsg ? gdata.nosendmsg : "");
+           gdata.nosendmsg ? ", " : "", /* NOTRANSLATE */
+           gdata.nosendmsg ? gdata.nosendmsg : ""); /* NOTRANSLATE */
     *bad = "(No New Cons)";
     return 1;
   }
@@ -562,14 +562,14 @@ static void log_xdcc_request3(privmsginput *pi, const char *msg)
   const char *part3;
 
   if (msg == NULL) {
-    msg = "";
-    sep = "";
+    msg = ""; /* NOTRANSLATE */
+    sep = ""; /* NOTRANSLATE */
   } else {
     sep = ": ";
   }
   part3 = pi->msg3;
   if (part3 == NULL)
-    part3 = "";
+    part3 = ""; /* NOTRANSLATE */
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
           "XDCC %s %s%s%s %s (%s on %s)",
           pi->msg2, part3, sep, msg, pi->nick, pi->hostmask, gnetwork->name);
@@ -1148,9 +1148,9 @@ static int botonly_parse(int type, privmsginput *pi)
         return 0;
       notice(pi->nick, IRC_CTCP "PING%s%s%s%s" IRC_CTCP, /* NOTRANSLATE */
              pi->msg2 ? " " : "", /* NOTRANSLATE */
-             pi->msg2 ? pi->msg2 : "",
+             pi->msg2 ? pi->msg2 : "", /* NOTRANSLATE */
              pi->msg3 ? " " : "", /* NOTRANSLATE */
-             pi->msg3 ? pi->msg3 : "");
+             pi->msg3 ? pi->msg3 : ""); /* NOTRANSLATE */
       ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
               "[CTCP] %s on %s: PING",
               pi->nick, gnetwork->name);
@@ -1161,9 +1161,10 @@ static int botonly_parse(int type, privmsginput *pi)
   if (test_ctcp(pi->msg1, IRC_CTCP "VERSION")) { /* NOTRANSLATE */
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
-    notice(pi->nick, IRC_CTCP "VERSION iroffer-dinoex " VERSIONLONG FEATURES ", " "https://iroffer.net/" "%s%s" IRC_CTCP,
+    notice(pi->nick, IRC_CTCP "VERSION" /* NOTRANSLATE */
+           "iroffer-dinoex" " " VERSIONLONG FEATURES ", " "https://iroffer.net/" "%s%s" IRC_CTCP,
            gdata.hideos ? "" : " - ", /* NOTRANSLATE */
-           gdata.hideos ? "" : gdata.osstring);
+           gdata.hideos ? "" : gdata.osstring); /* NOTRANSLATE */
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
             "[CTCP] %s on %s: VERSION",
             pi->nick, gnetwork->name);
@@ -1596,14 +1597,14 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
            "Record:\2(\2%1.1fkB/s\2)\2 "
            "%s%s%s\2=\2iroffer\2=\2",
            irlist_size(&gdata.xdccs),
-           (rtclmsg ? rtclmsg : ""),
-           (rtclmsg ? " " : ""),
+           (rtclmsg ? rtclmsg : ""), /* NOTRANSLATE */
+           (rtclmsg ? " " : ""), /* NOTRANSLATE */
            tempstr2,
            irlist_size(&gdata.trans), gdata.slotsmax,
            irlist_size(&gdata.mainqueue), gdata.queuesize,
            gdata.record,
            gdata.creditline ? "Note:\2(\2" : "",
-           gdata.creditline ? gdata.creditline : "",
+           gdata.creditline ? gdata.creditline : "", /* NOTRANSLATE */
            gdata.creditline ? "\2)\2 " : "");
 
     mydelete(tempstr2);

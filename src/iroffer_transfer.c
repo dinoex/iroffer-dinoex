@@ -855,7 +855,7 @@ void t_checkminspeed(transfer * const t) {
        
        queue_punish_abuse("You are being punished for your slowness", t->net, t->nick);
        
-       hostmask = to_hostmask( "*", t->hostname);
+       hostmask = to_hostmask( "*", t->hostname); /* NOTRANSLATE */
        ignore = get_ignore(hostmask);
        mydelete(hostmask);
        ignore->flags |= IGN_IGNORING;
