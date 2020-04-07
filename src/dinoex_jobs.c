@@ -1709,7 +1709,7 @@ static void xdcc_save_xml(void)
   gnetwork = backup;
 
   write_string(xmlbuf, "  <stats>\n"); /* NOTRANSLATE */
-  write_asc_plain(xmlbuf, 4, "version", "iroffer-dinoex " VERSIONLONG ); /* NOTRANSLATE */
+  write_asc_plain(xmlbuf, 4, "version", "iroffer-dinoex" " " VERSIONLONG ); /* NOTRANSLATE */
   tempstr = mymalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
   write_asc_plain(xmlbuf, 4, "uptime", tempstr); /* NOTRANSLATE */

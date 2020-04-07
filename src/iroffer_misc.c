@@ -285,7 +285,7 @@ void initirc(void)
             }
         }
       tempstr[j] = '\0';
-      writeserver(WRITESERVER_NOW, "%s", tempstr);
+      writeserver(WRITESERVER_NOW, "%s", tempstr); /* NOTRANSLATE */
       
       mydelete(tempstr);
       
@@ -293,26 +293,26 @@ void initirc(void)
     }
       
    if (gnetwork->connectionmethod.how == how_wingate) {
-      writeserver(WRITESERVER_NOW, "%s %u",
+      writeserver(WRITESERVER_NOW, "%s %u", /* NOTRANSLATE */
                   gnetwork->curserver.hostname, gnetwork->curserver.port);
       }
 
    if (gnetwork->curserver.password)
      {
-       writeserver(WRITESERVER_NOW, "PASS %s", gnetwork->curserver.password);
+       writeserver(WRITESERVER_NOW, "PASS %s", gnetwork->curserver.password); /* NOTRANSLATE */
      }
-   writeserver(WRITESERVER_NOW, "NICK %s", get_config_nick());
-   writeserver(WRITESERVER_NOW, "USER %s 32 . :%s",
+   writeserver(WRITESERVER_NOW, "NICK %s", get_config_nick()); /* NOTRANSLATE */
+   writeserver(WRITESERVER_NOW, "USER %s 32 . :%s", /* NOTRANSLATE */
                gdata.loginname, gdata.user_realname);
    
    if (gnetwork->connectionmethod.how == how_bnc) {
-      writeserver(WRITESERVER_NOW, "PASS %s",
+      writeserver(WRITESERVER_NOW, "PASS %s", /* NOTRANSLATE */
                   gnetwork->connectionmethod.password);
       if (gnetwork->connectionmethod.vhost) {
-         writeserver(WRITESERVER_NOW, "VIP %s",
+         writeserver(WRITESERVER_NOW, "VIP %s", /* NOTRANSLATE */
                      gnetwork->connectionmethod.vhost);
          }
-      writeserver(WRITESERVER_NOW, "CONN %s %d",
+      writeserver(WRITESERVER_NOW, "CONN %s %d", /* NOTRANSLATE */
                   gnetwork->curserver.hostname, gnetwork->curserver.port);
       }
    
@@ -320,7 +320,7 @@ void initirc(void)
   tptr = irlist_get_head(&(gnetwork->server_join_raw));
   while(tptr)
     {
-      writeserver(WRITESERVER_NORMAL, "%s", tptr);
+      writeserver(WRITESERVER_NORMAL, "%s", tptr); /* NOTRANSLATE */
       tptr = irlist_get_next(tptr);
     }
    
@@ -580,7 +580,7 @@ void sendserver(void)
 void pingserver(void) {
    updatecontext();
 
-   writeserver(WRITESERVER_NOW, "PING %s",
+   writeserver(WRITESERVER_NOW, "PING %s", /* NOTRANSLATE */
                gnetwork->curserveractualname ? gnetwork->curserveractualname : gnetwork->curserver.hostname);
    }
 
@@ -702,7 +702,7 @@ void gobackground(void) {
    /* background continues... */
    
 /*   umask(0); */
-   s = open("/dev/null", O_RDWR); /* stdin */
+   s = open("/dev/null", O_RDWR); /* stdin */ /* NOTRANSLATE */
    dup(s);                        /* stdout */
    dup(s);                        /* stderr */
    
@@ -1031,17 +1031,17 @@ void joinchannel(channel_t *c)
 
   if (c->key)
     {
-      writeserver(WRITESERVER_NORMAL, "JOIN %s %s", c->name, c->key);
+      writeserver(WRITESERVER_NORMAL, "JOIN %s %s", c->name, c->key); /* NOTRANSLATE */
     }
   else
     {
-      writeserver(WRITESERVER_NORMAL, "JOIN %s", c->name);
+      writeserver(WRITESERVER_NORMAL, "JOIN %s", c->name); /* NOTRANSLATE */
     }
   
   tptr = irlist_get_head(&(gnetwork->channel_join_raw));
   while(tptr)
     {
-      writeserver(WRITESERVER_NORMAL, "%s", tptr);
+      writeserver(WRITESERVER_NORMAL, "%s", tptr); /* NOTRANSLATE */
       tptr = irlist_get_next(tptr);
     }
   
@@ -1128,7 +1128,9 @@ void shutdowniroffer(void) {
            tempstr2 = mymalloc(maxtextlengthshort);
            getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
            snprintf(msg, maxtextlength,
-                    "QUIT :iroffer-dinoex " VERSIONLONG "%s%s - running %s",
+                    "QUIT :%s" /* NOTRANSLATE */
+		    "%s%s - running %s",
+		    "iroffer-dinoex" " " VERSIONLONG,
                     gdata.hideos ? "" : " - ",
                     gdata.hideos ? "" : gdata.osstring,
                     tempstr2);
@@ -1552,7 +1554,7 @@ void startupiroffer(void) {
    
    printf("\n");
    if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_YELLOW);
-   printf("Welcome to iroffer-dinoex - " "https://iroffer.net/" FEATURES "\n"
+   printf("Welcome to " "iroffer-dinoex" " - " "https://iroffer.net/" FEATURES "\n"
           "Version " VERSIONLONG "\n");
    if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_RESET);
    printf("\n");
@@ -1585,7 +1587,7 @@ void startupiroffer(void) {
    signal(SIGHUP,SIG_IGN);
    signal(SIGTSTP,SIG_IGN);
    
-   printf("** iroffer-dinoex is distributed under the GNU General Public License.\n"
+   printf("** " "iroffer-dinoex" " is distributed under the GNU General Public License.\n"
           "**    please see the LICENSE for more information.\n");
 
    printf("\n** Starting up...\n");
@@ -1627,7 +1629,7 @@ void startupiroffer(void) {
       if( chroot( gdata.chrootdir ) < 0 ) {
         outerror( OUTERROR_TYPE_CRASH, "Can't chroot: %s", strerror(errno));
       }
-      if( chdir("/") < 0 ) {
+      if( chdir("/") < 0 ) { /* NOTRANSLATE */
         outerror( OUTERROR_TYPE_CRASH, "Can't chdir: %s", strerror(errno) );
       }
    }
@@ -1752,7 +1754,7 @@ void startupiroffer(void) {
    
    getconfig();
    
-   mylog("iroffer-dinoex started " VERSIONLONG FEATURES);
+   mylog("iroffer-dinoex" " started " VERSIONLONG FEATURES);
 
    getos();
    
@@ -1869,7 +1871,7 @@ void createpassword(void) {
    unsigned int saltnum;
    char salt[6], *pwout;
    
-   printf("\niroffer-dinoex " VERSIONLONG "\n"
+   printf("\n" "iroffer-dinoex" " " VERSIONLONG "\n"
           "  Configuration File Password Generator\n"
           "\n"
           "This will take a password of your choosing and encrypt it.\n"

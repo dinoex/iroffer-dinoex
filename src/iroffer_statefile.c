@@ -227,7 +227,7 @@ void write_statefile(void)
     next = (unsigned char*)(&hdr[1]);
     
     length = add_snprintf((char *)next, maxtextlength,
-                          "iroffer-dinoex " VERSIONLONG ", %s", gdata.osstring);
+                          "iroffer-dinoex" " " VERSIONLONG ", %s", gdata.osstring);
     
         create_statefile_hdr(hdr, STATEFILE_TAG_IROFFER_VERSION, sizeof(statefile_hdr_t) + ceiling(length+1, 4));
         write_statefile_item(&bout, data);
@@ -422,15 +422,15 @@ unsigned int read_statefile(void)
       switch (hdr->tag)
         {
         case STATEFILE_TAG_TIMESTAMP:
-          read_statefile_time(hdr, "Timestamp", &timestamp, "Written on");
+          read_statefile_time(hdr, "Written on", &timestamp, "Written on");
           break;
           
         case STATEFILE_TAG_XFR_RECORD:
-          read_statefile_float(hdr, "xfr Record", &(gdata.record), "Record");
+          read_statefile_float(hdr, "xfr Record", &(gdata.record), "xfr Record");
           break;
           
         case STATEFILE_TAG_SENT_RECORD:
-          read_statefile_float(hdr, "sent Record", &(gdata.sentrecord), "Bandwidth Record");
+          read_statefile_float(hdr, "Bandwidth Record", &(gdata.sentrecord), "Bandwidth Record");
           break;
           
         case STATEFILE_TAG_TOTAL_SENT:
@@ -467,7 +467,7 @@ unsigned int read_statefile(void)
                           "  [Written by %s]", iroffer_version);
                 }
               iroffer_now = mycalloc(maxtextlength);
-              snprintf(iroffer_now, maxtextlength, "iroffer-dinoex " VERSIONLONG ", %s", gdata.osstring);
+              snprintf(iroffer_now, maxtextlength, "iroffer-dinoex" " " VERSIONLONG ", %s", gdata.osstring);
               if (strcmp(iroffer_version, iroffer_now) != 0)
                 {
                   ++save;
@@ -672,7 +672,7 @@ unsigned int read_statefile(void)
                     break;
                     
                   default:
-                    read_statefile_unknown_tag(ihdr, "XDCC" );
+                    read_statefile_unknown_tag(ihdr, "XDCCS" );
                   }
                 hdr->length -= ceiling(ihdr->length, 4);
                 ihdr = (statefile_hdr_t*)(((char*)ihdr) + ceiling(ihdr->length, 4));
@@ -680,7 +680,7 @@ unsigned int read_statefile(void)
             
             if ((!xd->file) || (!xd->desc))
               {
-                read_statefile_incomplete_tag("XDCC" );
+                read_statefile_incomplete_tag("XDCCS" );
                 mydelete(xd->file);
                 mydelete(xd->desc);
                 mydelete(xd->note);

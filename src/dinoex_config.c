@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2019 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -2232,7 +2232,7 @@ static char *p_user_nick(void)
 
 static char *p_version(void)
 {
-  return mystrdup( "iroffer-dinoex " VERSIONLONG ); /* NOTRANSLATE */
+  return mystrdup( "iroffer-dinoex" " " VERSIONLONG ); /* NOTRANSLATE */
 }
 
 static char *p_features(void)
@@ -2240,7 +2240,7 @@ static char *p_features(void)
   char *text;
 
   text = mymalloc(maxtextlength);
-  snprintf(text, maxtextlength, "iroffer-dinoex " VERSIONLONG FEATURES "%s%s",
+  snprintf(text, maxtextlength, "iroffer-dinoex" " " VERSIONLONG FEATURES "%s%s",
            gdata.hideos ? "" : " - ",
            gdata.hideos ? "" : gdata.osstring);
   return text;

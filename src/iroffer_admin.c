@@ -347,7 +347,7 @@ void u_parseit(userinput * const u) {
    }
 
 static const char *expand_args_shutdown[] = {
-  "NOW", "DELAYED", "CANCEL", NULL
+  "NOW", "DELAYED", "CANCEL", NULL /* NOTRANSLATE */
 };
 
 static size_t u_expand_list(char *buffer, size_t max, const char **list)
@@ -380,7 +380,7 @@ static size_t u_expand_list(char *buffer, size_t max, const char **list)
       tostdout(",");
     tostdout(" %s", list[i]);
   }
-  tostdout("\n");
+  tostdout("\n"); /* NOTRANSLATE */
   return 0;
 }
 
@@ -462,7 +462,7 @@ static size_t u_expand_command2(char *cmd)
   }
   if (found == 0) {
     tostdout("** User Command Not Recognized, try \"HELP\"");
-    tostdout("\n");
+    tostdout("\n"); /* NOTRANSLATE */
     return 0;
   }
   if (found == 1) {
@@ -485,7 +485,7 @@ static size_t u_expand_command2(char *cmd)
       tostdout(",");
     tostdout(" %s", userinput_parse[i].command);
   }
-  tostdout("\n");
+  tostdout("\n"); /* NOTRANSLATE */
   return 0;
 }
 
@@ -675,7 +675,7 @@ void u_xdl_head(const userinput * const u)
            len = strlen(tempstr);
          }
        
-       u_respond(u,"%s",tempstr);
+       u_respond(u, "%s", tempstr); /* NOTRANSLATE */
        
        
        for (i=0,xdccsent=0; i<XDCC_SENT_SIZE; i++)
@@ -704,7 +704,7 @@ void u_xdl_head(const userinput * const u)
            len = strlen(tempstr);
          }
        
-       u_respond(u,"%s",tempstr);
+       u_respond(u, "%s", tempstr); /* NOTRANSLATE */
        
        a_respond(u, "\2**\2 To request a file, type \"/MSG %s XDCC SEND x\" \2**\2",
                  mynick);
@@ -1198,7 +1198,7 @@ static void u_status(const userinput * const u) {
    updatecontext();
    
    getstatusline(tempstr,maxtextlength);
-   u_respond(u,"%s",tempstr);
+   u_respond(u, "%s", tempstr); /* NOTRANSLATE */
    
    mydelete(tempstr);
    }
@@ -1436,7 +1436,7 @@ static void u_botinfo(const userinput * const u) {
    
    u_respond(u,"BotInfo:");
 
-   a_respond(u, "iroffer-dinoex " VERSIONLONG FEATURES ", " "https://iroffer.net/" "%s%s",
+   a_respond(u, "iroffer-dinoex" " " VERSIONLONG FEATURES ", " "https://iroffer.net/" "%s%s",
              gdata.hideos ? "" : " - ",
              gdata.hideos ? "" : gdata.osstring);
 
@@ -1561,7 +1561,7 @@ static void u_botinfo(const userinput * const u) {
                         text_pformat(ch->flags));
              }
            
-           a_respond(u, "%s", tempstr);
+           a_respond(u, "%s", tempstr); /* NOTRANSLATE */
            
            ch = irlist_get_next(ch);
          }
@@ -1983,20 +1983,20 @@ static void u_shutdown(const userinput * const u) {
        caps(u->arg1);
      }
    
-   if (!u->arg1 || (strcmp(u->arg1,"NOW") && strcmp(u->arg1,"DELAYED") && strcmp(u->arg1,"CANCEL")) ) {
+   if (!u->arg1 || (strcmp(u->arg1, "NOW") && strcmp(u->arg1, "DELAYED") && strcmp(u->arg1, "CANCEL")) ) { /* NOTRANSLATE */
       u_respond(u,"Usage: SHUTDOWN <now|delayed|cancel>");
       return;
       }
    
-   if (!strcmp(u->arg1,"NOW")) {
+   if (!strcmp(u->arg1, "NOW")) { /* NOTRANSLATE */
       gdata.needsshutdown = 1;
       }
-   else if (!strcmp(u->arg1,"DELAYED")) {
+   else if (!strcmp(u->arg1, "DELAYED")) { /* NOTRANSLATE */
       u_respond(u,"Delayed shutdown activated, iroffer will shutdown once there are no active transfers");
       u_respond(u,"To cancel the delayed shutdown, issue \"SHUTDOWN CANCEL\"");
       gdata.delayedshutdown=1;
       }
-   else if (!strcmp(u->arg1,"CANCEL")) {
+   else if (!strcmp(u->arg1, "CANCEL")) { /* NOTRANSLATE */
       u_respond(u,"Delayed shutdown canceled");
       gdata.delayedshutdown=0;
       }
@@ -2196,7 +2196,7 @@ void u_listdir(const userinput * const u, const char *dir)
   
   while ((f = readdir(d)))
     {
-      if (strcmp(f->d_name,".") && strcmp(f->d_name,".."))
+      if (strcmp(f->d_name, ".") && strcmp(f->d_name, "..")) /* NOTRANSLATE */
         {
           irlist_add_string(&dirlist, f->d_name);
         }
@@ -2382,7 +2382,7 @@ static void u_chanl(const userinput * const u)
                    "%s%s ", member->prefixes, member->nick);
           if (!((j+1)%USERS_PER_CHAN_LINE))
             {
-              u_respond(u,"%s",tempstr);
+              u_respond(u, "%s", tempstr); /* NOTRANSLATE */
               tempstr[0] = '\0';
             }
           
@@ -2392,7 +2392,7 @@ static void u_chanl(const userinput * const u)
       
       if (j%USERS_PER_CHAN_LINE)
         {
-          u_respond(u,"%s",tempstr);
+          u_respond(u, "%s", tempstr); /* NOTRANSLATE */
         }
       
       a_respond(u, "%s: %i %s", ch->name, j, j!=1 ? "users" : "user");

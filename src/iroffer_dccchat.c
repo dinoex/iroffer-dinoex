@@ -58,9 +58,9 @@ int setupdccchatout(const char *nick, const char *hostmask, const char *token)
   
   msg = setup_dcc_local(&(chat->con.local));
   if (token != NULL) {
-    privmsg_fast(nick, IRC_CTCP "DCC CHAT CHAT %s %s" IRC_CTCP, msg, token);
+    privmsg_fast(nick, IRC_CTCP "DCC CHAT CHAT %s %s" IRC_CTCP, msg, token); /* NOTRANSLATE */
   } else {
-    privmsg_fast(nick, IRC_CTCP "DCC CHAT CHAT %s" IRC_CTCP, msg);
+    privmsg_fast(nick, IRC_CTCP "DCC CHAT CHAT %s" IRC_CTCP, msg); /* NOTRANSLATE */
   }
   my_getnameinfo(msg, maxtextlength -1, &(chat->con.local.sa));
   chat->con.localaddr = mystrdup(msg);
@@ -81,7 +81,7 @@ void setup_chat_banner(dccchat_t *chat)
   
   writedccchat(chat, 0, "Welcome to %s\n",
                get_user_nick());
-  writedccchat(chat, 0, "iroffer-dinoex " VERSIONLONG FEATURES "%s%s\n",
+  writedccchat(chat, 0, "iroffer-dinoex" " " VERSIONLONG FEATURES "%s%s\n",
                gdata.hideos ? "" : " - ",
                gdata.hideos ? "" : gdata.osstring);
   writedccchat(chat, 0, "    running %s\n", tempstr);
