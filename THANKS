@@ -672,6 +672,7 @@ Loke_AF
 	reporting truncated file bug
 	reporting xddclistfile delay
 	suggesting "VERSION"
+	suggesting verbose "listen on" message
 
 Nouhime
 	reporting "http_search" bug.

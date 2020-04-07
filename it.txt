@@ -1368,7 +1368,7 @@
 1833 "REIQUEUE"
 1834 "Muove la voce della coda inattiva dalla posizione <x> a <y>"
 1835 "Coda inattiva attuale:"
-1836 "In ascolto sulla porta %d per %s (%s in %s)"
+1836 "In ascolto sulla porta %d per [%d:%s] (%s in %s)"
 1837 "Stat: %u/%u Sls, %u/%u Q, %u/%u I, %u/%u SrQ (Bdw: %"
 1839 "%s:%ld ignorato %s '%s' perchè contiene spazi"
 1840 "x [y] z"

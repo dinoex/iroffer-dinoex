@@ -20,6 +20,8 @@ bugfix: json.txt.rb
 bugfix:
   Verhindere den Abbruch eines Transfers bei "Interrupted system call".
 
+Debugging und Logging verbessert.
+
 Ab Version 3.32:
 ----------------
 
