@@ -110,9 +110,11 @@ static const http_magic_const_t http_magic[] = {
   { "jpg", "image/jpeg" }, /* NOTRANSLATE */
   { "jpeg", "image/jpeg" }, /* NOTRANSLATE */
   { "gif", "image/gif" }, /* NOTRANSLATE */
+  { "svg", "image/svg+xml" }, /* NOTRANSLATE */
   { "css", "text/css" }, /* NOTRANSLATE */
   { "xml", "application/xml" }, /* NOTRANSLATE */
-  { "js", "application/x-javascript" }, /* NOTRANSLATE */
+  { "js", "application/javascript" }, /* NOTRANSLATE */
+  { "json", "application/json" }, /* NOTRANSLATE */
   { NULL, "application/octet-stream" } /* NOTRANSLATE */
 };
 
