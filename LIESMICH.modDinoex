@@ -3,6 +3,10 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: http_port
+ Neuer Mime-type für .svg and .json
+ Richtiger Mime-type für .js
+
 bugfix: Speicherlecks behoben
 
 bugfix: Configure
