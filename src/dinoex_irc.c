@@ -971,6 +971,32 @@ static void irc_server_timeout(void)
   }
 }
 
+static void send_auth_name(const char *auth_name, const char *username, const char *pwd)
+{
+  writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :AUTH %s %s", /* NOTRANSLATE */
+              auth_name, username, pwd);
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
+          "AUTH send to %s on %s.", gnetwork->auth_name, gnetwork->name);
+}
+
+static void parse_auth_name(const char *pwd)
+{
+  char *work;
+  char *user;
+
+  if (strchr(gnetwork->auth_name, ' ') == NULL) {
+    send_auth_name(gnetwork->auth_name, save_nick(gnetwork->user_nick), pwd );
+    return;
+  }
+
+  work = mystrdup(gnetwork->auth_name);
+  user = strchr(work, ' ');
+  if (user != NULL) {
+    *(user++) = 0;
+  }
+  send_auth_name(work, user, pwd );
+  mydelete(work);
+}
 
 /* try to identify at Nickserv */
 void identify_needed(unsigned int force)
@@ -988,10 +1014,7 @@ void identify_needed(unsigned int force)
   /* wait 1 sec before idetify again */
   gnetwork->next_identify = gdata.curtime + 1;
   if (gnetwork->auth_name != NULL) {
-    writeserver(WRITESERVER_NORMAL, "PRIVMSG %s :AUTH %s %s", /* NOTRANSLATE */
-                gnetwork->auth_name, save_nick(gnetwork->user_nick), pwd);
-    ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-            "AUTH send to %s on %s.", gnetwork->auth_name, gnetwork->name);
+    parse_auth_name(pwd);
     return;
   }
   if (gnetwork->login_name != NULL) {

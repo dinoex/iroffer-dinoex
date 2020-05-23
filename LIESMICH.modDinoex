@@ -3,6 +3,11 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+416) auth_name
+  Statt des Nicks kann hier ein Username
+  fuer den AUTH Befehl angegeben werden.
+  Dies ist nur je Netzwerk einstellbar.
+
 415) ruby_script
   Neue Aktion: "usenatip", "ip"
 
