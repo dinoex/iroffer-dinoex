@@ -3,9 +3,12 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+415) ruby_script
+  New action: "usenatip", "ip"
+
 bugfix: http_port
- Add mime-type for .svg and .json
- Fix mime-type for .js
+  Add mime-type for .svg and .json
+  Fix mime-type for .js
 
 bugfix: fix small memory leaks
 
