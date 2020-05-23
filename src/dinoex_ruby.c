@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2019 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -495,6 +495,24 @@ static VALUE cie_mode(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
   return Qfalse;
 }
 
+static VALUE cie_usenatip(VALUE UNUSED(module), VALUE rval)
+{
+  char *val;
+
+  if (NIL_P(rval))
+    return Qnil;
+
+  val = rb_obj_as_string_protected(rval);
+  if (!val)
+    return Qnil;
+
+  if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
+    return Qfalse;
+
+  update_natip(val);
+  return Qtrue;
+}
+
 static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
 {
   char *msg = NULL;
@@ -539,6 +557,7 @@ static void Init_IrofferEvent(void) {
   rb_define_method(cIrofferEvent, "privmsg", cie_privmsg, 2); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "warning", cie_warning, 1); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "mode", cie_mode, 2); /* NOTRANSLATE */
+  rb_define_method(cIrofferEvent, "usenatip", cie_usenatip, 1); /* NOTRANSLATE */
   rb_define_method(cIrofferEvent, "command", cie_command, -2); /* NOTRANSLATE */
   /* hooks */
   rb_define_method(cIrofferEvent, "on_server", cie_null, 0); /* NOTRANSLATE */

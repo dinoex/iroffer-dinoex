@@ -4,6 +4,8 @@
 # Copyright:: Copyright (c) 2008 - 2019 Dirk Meyer
 # License::   Distributes under the same terms as Ruby
 
+require 'resolv'
+
 # Write something in a logfile with date and time.
 def write_log( *args )
   f = File.open( "ruby-dump.txt", "a+" )
@@ -15,12 +17,43 @@ def write_log( *args )
   f.close
 end
 
+# Get the first IPv4 for a nameserver
+def getipv4server( hostname )
+  dns = Resolv::DNS.new
+  dns.each_address(hostname) do |address|
+    text = address.to_s
+    next if text.include?( ":" )
+    return text
+  end
+  nil
+end
+
+# Get my own IPv4 from then nameserver
+def getipfromdns( nameserver, hostname )
+  dns = Resolv::DNS.new(
+    :nameserver => [ getipv4server( nameserver ) ],
+    :search => [''],
+    :ndots => 1
+  )
+  dns.getaddress( hostname ).to_s
+end
+
 # Do not change the name of this class.
 class IrofferEvent
 
   # callend on each server line
   def on_server
     write_log( "SERVER on", network, inputline )
+    input = inputline.split( ' ' )
+    case input[1]
+    when '001' # welcome
+      # pick one of the services:
+      # @dnsserver = [ 'ns1-1.akamaitech.net', 'whoami.akamai.net' ]
+      @dnsserver = [ 'resolver1.opendns.com', 'myip.opendns.com' ]
+      new = getipfromdns( *@dnsserver )
+      write_log( "getipfromdns", new )
+      usenatip( new )
+    end
   end
 
   # called on each notice
@@ -79,8 +112,8 @@ class IrofferEvent
     bytes = info_pack(added_pack, "bytes" )
     megabytes = info_pack(added_pack, "size" ) # human readable
     crc = info_pack(added_pack, "crc32" )
-    md5 = info_pack(added_pack, "md5sum" )
-    xtime = info_pack(added_pack, "xtime" ) # added_time
+    # md5 = info_pack(added_pack, "md5sum" )
+    # xtime = info_pack(added_pack, "xtime" ) # added_time
     write_log( "group:",  group, "desc:", desc, "size:", bytes )
 
     # generate a trigger for each new pack.
