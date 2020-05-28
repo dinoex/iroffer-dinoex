@@ -3,7 +3,7 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
-416) auth_name (suggested by fred|krue)
+416) auth_name (suggested by fred)
   If you would like to register with the AUTH command
   you can define an username instead of the nickname.
   This setting can only be set per network.

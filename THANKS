@@ -453,7 +453,6 @@ fred|krue
 	reporting DCC RESUME bug
 	suggesting "hide_list_stop"
 	reporting voice needed mesaage
-	suggesting "auth_name" with username
 
 dns777
 	reporting "xdccxmlfile" packsize bug
@@ -824,4 +823,7 @@ Majin3
 
 slingamn
 	reporting PING problem with oragono server
+
+fred
+	suggesting "auth_name" with username
 
