@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: extend_status_line
+  Reihenfolge der Bandbreiten war nicht korrekt.
+
 416) auth_name
   Statt des Nicks kann hier ein Username
   fuer den AUTH Befehl angegeben werden.
