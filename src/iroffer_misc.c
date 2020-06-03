@@ -1278,9 +1278,9 @@ char* getstatusline(char *str, size_t len)
                netq,
                srvq,
                xdccsent/1024,
-               ((float)xdccsent)/XDCC_SENT_SIZE/1024.0,
+               ((float)xdccsum)/XDCC_SENT_SIZE/1024.0,
                ((float)xdccrecv)/XDCC_SENT_SIZE/1024.0,
-               ((float)xdccsum)/XDCC_SENT_SIZE/1024.0);
+               ((float)xdccsent)/XDCC_SENT_SIZE/1024.0);
     }
   else
     {
