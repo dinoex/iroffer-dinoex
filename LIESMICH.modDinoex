@@ -8,7 +8,7 @@ bugfix: extend_status_line
 
 416) auth_name
   Statt des Nicks kann hier ein Username
-  fuer den AUTH Befehl angegeben werden.
+  für den AUTH Befehl angegeben werden.
   Dies ist nur je Netzwerk einstellbar.
 
 415) ruby_script
@@ -27,10 +27,10 @@ bugfix: Lang
   Bei leeren Enviroment verwende utf-8.
 
 bugfix: IRC PING
-  Problem mit Oragono IRC server behoben.
+  Problem mit Oragono IRC Server behoben.
 
 bugfix: json.txt.rb
-  Ausgabe von Javascript code nach JSON konvertiert.
+  Ausgabe von Javascript Code nach JSON konvertiert.
 
 bugfix:
   Verhindere den Abbruch eines Transfers bei "Interrupted system call".
@@ -487,7 +487,7 @@ bugfix: BATCH
 
 370) delayed announce
   Warte mit dem Announce bis der AUTOADD fertig ist
-  und die Prüfsumme der Dateien brechnet wurde.
+  und die Prüfsumme der Dateien berechnet wurde.
   Warte auch wenn die CRC nicht zur Datei passt.
 
 bugfix: autosendpack
@@ -576,7 +576,7 @@ bugfix: ruby_script
   "name.txt.rb" erzeugt "text/plain" als Inhalt.
 
 359) ruby_script
-  Erweiterte Methode "info_pack" un auf Daten einens Packs zuzugreifen.
+  Erweiterte Methode "info_pack" um auf Daten eines Packs zuzugreifen.
   Verfügbar: "group_desc", "bytes", "size", "name"
   Erweitert der Zugriff auf einfache Netzwerk Variablen.
   Der Befehl "command" in ruby erkennt nun beliebig viele Parameter.
@@ -592,7 +592,7 @@ bugfix: NEWANN
   NEWANN <n> <channel> <netz>        ANNOUNCE für die letzen <n> Pakete in Channel <channel> in Netz <netz>
 
 bugfix: XDCC STOP
-  Der Bot entnferte nicht "XDCC LIST" wenn die Ausgabe noch nicht angefangen hatte.
+  Der Bot entfernte nicht "XDCC LIST" wenn die Ausgabe noch nicht angefangen hatte.
 
 357) RMALLQ
 
@@ -791,7 +791,7 @@ bugfix: ruby_script
   Methode "on_added" erzeugte keinen Announces mit true.
 
 bugfix: transfermethod "freebsd-sendfile"
-  Benutze normales Lesen/Screiben wenn sendfile nicht startet.
+  Benutze normales Lesen/Schreiben wenn sendfile nicht startet.
 
 bugfix: xdccxmlfile
   Das XML war nicht sauber, transfereddaily and änliche Werte können Sonderzeichen haben.
@@ -836,8 +836,8 @@ bugfix: CHCOLOR
   Problem behoben, wenn der Dateiname mit einer Zffer beginnt.
 
 332) no_natural_sort
-  If configurend, all text is sorted by plain ASCII.
-  Default: use natural sort order.
+  Wenn konfiguriert, werden alle Texte nach ASCII sortiert.
+  Default: natürlliche Sortierung.
 
 bugfix: http_port
   Erlaube Gruppen mit "&" im Namen.
@@ -854,8 +854,8 @@ Debugging und Logging verbessert.
 
 bugfix: SHUTDOWN
   versions affected: 1.0 - 3.22
-  Not all messages where send out on shutdown
-  Uploads and Transfers where not cleanup up fully.
+  Nicht alle Nachrichten wurden an der Server gesendet.
+  Laufende Uploads und Downloads wurden nicht sauber beendet.
 
 bugfix: AUTOADD
   versions affected: 3.22
@@ -1194,7 +1194,7 @@ bugfix: removelostfiles
   Mit diesem Schalter wird der Bot "!find" nicht beachten.
 
 297) admin_job_file
-  Erlaube Kommentarezeilen in Der Datei "admin_job_file".
+  Erlaube Kommentarzeilen in Der Datei "admin_job_file".
 
 296) xdccxmlfile
   Neues Tag "transferedtotalbytes".
@@ -1324,7 +1324,7 @@ bugfix: xdccxmlfile
 Debugging und Logging verbessert.
 
 284) atfind
-  Neuer Trigger "!FIND", gleiche funktion wie "@FIND".
+  Neuer Trigger "!FIND", gleiche Funktion wie "@FIND".
 
 bugfix: channel
   versions affected: 3.12
@@ -1361,7 +1361,7 @@ bugfix: autoadd_group_match
 
 280) ruby_script
   Breche die Bearbeitung ab, wenn das event mit 'true' bendet wird.
-  Lesen von Varaiblen der Konfiguration.
+  Lesen von Variablen der Konfiguration.
 
 bugfix: atfind
   versions affected: 3.12
@@ -1419,9 +1419,9 @@ bugfix: DUMP
   Schreibe den DUMP nicht mehr in Chat oder Konsole.
 
 276) no_auto_rehash
-  Wenn aktivert, wird der Bot bei einer Änderung an einer Konfiguraions-
-  datei automatsich einen REHASH durchführen.
-  Default: automatsicher REHASH.
+  Wenn aktiviert, wird der Bot bei einer Änderung an einer Konfiguraions-
+  datei automatisch einen REHASH durchführen.
+  Default: automatischer REHASH.
 
 275) XDCC SEARCH
   Nutze alle Argumente für die Suche.
@@ -1459,7 +1459,7 @@ bugfix: XDCC SEND
   Setzte neue XDCC SEND beim Start des Bots in die 2. Warteschlange.
 
 bugfix: REGROUP
-  Erlaube das Umbennenen von Gruppen mit Leerzeichen.
+  Erlaube das Umbenennen von Gruppen mit Leerzeichen.
 
 bugfix: AUTOGROUP
   Erzeuge keine Gruppen mit Leerzeichen.
@@ -1474,10 +1474,10 @@ bugfix: AUTOGROUP
   CANNOUNCE <channnel> <n>        ANNOUNCE <autoaddann> für Paket <n> in Channel <channnel>
 
 271) no_status_chat
-  Wenn aktivert, meldet der Bot keine Status-Zeile im Chat.
+  Wenn aktiviert, meldet der Bot keine Status-Zeile im Chat.
 
 270) no_status_log
-  Wenn aktivert, meldet der Bot keine Status-Zeile in der Log-Datei.
+  Wenn aktiviert, meldet der Bot keine Status-Zeile in der Log-Datei.
 
 269) JOIN
 
@@ -1503,7 +1503,7 @@ bugfix: xdccxmlfile
 267) support setlocale()
 
 bugfix: XDCC SEND LIST
-  Bot stürtzt ab wenn zu viele XDCC SEND LIST mit Nummer -1
+  Bot stürzt ab wenn zu viele XDCC SEND LIST mit Nummer -1
 
 bugfix: REHASH pidfile
   versions affected: 3.0 - 3.10
@@ -1527,7 +1527,7 @@ Ab Version 3.10:
 ----------------
 
 265) no_minspeed_on_free
-  Ignoriere minspeed solang noch Solts frei sind.
+  Ignoriere minspeed solang noch Slots frei sind.
 
 bugfix: xdccxmlfile
   Packinfo erweitert um added
@@ -1798,7 +1798,7 @@ Ab Version 3.7:
   Nach Verbindungsverlust, warte noch für n Sekunden.
 
 bugfix: reconnect
-  Bei Verbindunsverlust wird nicht sofort wiederverbunden.
+  Bei Verbindungsverlust wird nicht sofort wieder verbunden.
 
 233) SORT
   Neue Admin Kommandos:
@@ -1870,7 +1870,7 @@ bugfix: RMUL
   Erlaube RMUL auch wenn kein uploadhost konfiguriert ist.
 
 bugfix: autoadd
-  Ignoriere Datein die grade als Upload laufen.
+  Ignoriere Dateien die gerade als Upload laufen.
 
 224) transferlimits
   melde welches transferlimit überschritten wurde.
@@ -1894,7 +1894,7 @@ bugfix: DCC RESUME
 Debugging und Logging verbessert.
 
 222) old_statefile
-  Kein Speicheren von unnötigen Daten im statefile im default.
+  Kein Speichern von unnötigen Daten im statefile im default.
   Diese Option schreibt ein zu alten Versionen passendes statefile.
 
 WARNUNG: Erforderlich für die PHP Webliste iroffer-state.php Version 2.10 and kleiner.
@@ -2052,7 +2052,7 @@ bugfix: DCL
   ACCEPTU 0                       Entferne jeden von der Liste der erlaubten Uploads
   ACCEPTU 0 <hostmask>            Entferne <hostmask> von der Liste der erlaubten Uploads
 
-bugfix: XDCC SEARCH (submitted by xtr)
+bugfix: XDCC SEARCH
   Melde den Benutzer wenn die Suche abgebrochen wurde.
 
 bugfix: XDCC QUEUE
@@ -2071,7 +2071,7 @@ bugfix: autoignore
   versions affected: 2.13 - 3.2
   Es wurden keine Benutzer ignoriert.
 
-bugfix: hostmasks with "|" on some linux builds
+bugfix: hostmasks mit "|" unter einigen Linux Versionen
   Statt regexp wird jetzt fnmatch benutzt.
 
 bugfix: Configure
@@ -2145,7 +2145,7 @@ Ab Version 3.0:
 
 bufix: ignore
   versions affected: 2.4 - 2.16
-  Ignore wurder zu schnell gelöscht.
+  Ignore wurde zu schnell gelöscht.
 
 206) XDCC upload
   Erkenne wen der Admin zweimal die gleiche Datei hochlädt.
@@ -2171,7 +2171,7 @@ bufix: ignore
 
 200) getip_network
   Hole die IP-Adresse von einem anderen Netzwerk.
-  Nützlich ween ein Netzwerk nicht die IP Addresse liefert.
+  Nützlich wenn ein Netzwerk nicht die IP Adresse liefert.
 
 bugfix: XDCC LIST GROUP
   Unter Last konnte die Gruppe verlorengehen.
@@ -2248,8 +2248,8 @@ bugfix: MAXSPEED
 
 185) remove_dead_users
   Wenn der Bot einen Nick nicht mehr erreichen kann:
-  Wert ungleich 0, weitere Nachrichten and den Nick werden gelöscht.
-  Wert gleich 2, alle Packs in den Warteschalngen werden entfernt.
+  Wert ungleich 0, weitere Nachrichten an den Nick werden gelöscht.
+  Wert gleich 2, alle Packs in den Warteschlangen werden entfernt.
   Default: 0, keine Aktion.
 
 bugfix: ANNOUNCE, SANNOUNCE, CANNOUNCE, MSG
@@ -2298,7 +2298,7 @@ bugfix: AUTOADD
   SSL Verbindungen zum IRC Server.
 
   Dies Funktion braucht "OpenSSL" oder "GNU TLS",
-  zum Aktivieren von "GNU TLS" muß der Bot mit "./Configure -t" gebaut werden.
+  zum Aktivieren von "GNU TLS" muss der Bot mit "./Configure -t" gebaut werden.
 
 176) connectionmethod, proxyinfo
   Kann jetzt für jedes Netzwerk einzeln gesetzt werden.
@@ -2318,7 +2318,7 @@ bugfix: CANNOUNCE
 
 173) BACKGROUND
   Neues Admin Kommando:
-  BACKGROUND                       Bot im Hintergund weiterlaufen lassen.
+  BACKGROUND                       Bot im Hintergrund weiterlaufen lassen.
 
 172) group_seperator
   Zeichen zwischen Gruppe und der Beschreibung der Gruppe.
@@ -2360,7 +2360,7 @@ bugfix: Notify message auf Console/Chat
 bugfix: Idle Queue
   versions affected: 2.16
   Wenn ein Request von der Idle in die MainQ fällt,
-  start gegebenfalls den nächsten Transfer.
+  statt gegeben falls den nächsten Transfer.
   Bevorzuge User ohne Transfer
 
 Ab Version mod 2.16:
@@ -2369,9 +2369,9 @@ Ab Version mod 2.16:
 bugfix: aktiviere TOS on BSD
 
 164) autoadd_sort
-  Wenn konfiguriert, werden alle neuen Pakete sortiert einggefügt.
+  Wenn konfiguriert, werden alle neuen Pakete sortiert eingefügt.
   Die existierende Pakete müssen bereits passend sortiert sein.
-  Die Reihenfolge kann durch mehrerer Argumente fetgelegt werden.
+  Die Reihenfolge kann durch mehrerer Argumente festgelegt werden.
 
 163) RENUMBER
   Neues Admin Kommando:
@@ -2418,7 +2418,7 @@ Ab Version mod 2.15:
 bugfix: weiteres Speicher-Lecks behoben
 
 bugfix: CANNOUNCE
-  Die Packnummer nicht dopplet ausgeben.
+  Die Packnummer nicht doppelt ausgeben.
 
 bugfix: REHASH
   Verlasse ein gelöschtes Netzwerk.
@@ -2499,7 +2499,7 @@ bugfix: ignoreduplicateip
   ein weiteres Speicher-Leck behoben
 
 bugfix: SORT
-  akzetiere auch klein "name"
+  akzeptiere auch klein "name"
   weitere Felder auswerten
 
 Ab Version mod 2.12:
@@ -2570,7 +2570,7 @@ bugfix: FILEREMOVE
   Mit nur einem Parameter wurde die Datei nicht gelöscht.
 
 139) filedir
-  fildir darf jetzt Merhfach in der Konfigurationsdatei stehen.
+  filedir darf jetzt Mehrfach in der Konfigurationsdatei stehen.
 
 bugfix: xdccremovefile
   Bot kann crashen wenn einen Datei ohne Gruppe gelöscht wird.
@@ -2583,7 +2583,7 @@ bugfix: NEWDIR
   Die Pakete wurden nicht verändert.
 
 MULTINET: channel_join_raw
-  jetzz für jedes Netzwerk anzugeben.
+  jetzt für jedes Netzwerk anzugeben.
 
 Warnung bei PSEND, wenn Bot nicht im Channel.
 
@@ -2610,7 +2610,7 @@ Ab Version mod 2.9:
   SANNOUNCE <n>              Kurzes ANNOUNCE für Paket <n> in allen Channels
 
 134) ignore_volumeid
-  Bei Starten von Iroffer wird die Volume ID nicht mher geprüft.
+  Bei Starten von Iroffer wird die Volume ID nicht mehr geprüft.
   Oft wurden Netzwerklaufwerke bei jedem Start neu berechnet.
 
 133) xdccremovefile
@@ -2662,7 +2662,7 @@ bugfix: REHASH
   keine weiteren Announces in diesen channel
 
 bugfix: hidelockedpacks
-  Verstecke die Datein auch bei @find und XDCC SEARCH
+  Verstecke die Dateien auch bei @find und XDCC SEARCH
 
 bugfix: XDCC STOP
   versions affected: 1.18 to 2.7
@@ -2838,7 +2838,7 @@ bugfix: XDCC REMOVE, XDCC CANCEL
 
 106) include_subdirs
   ADDDIR, ADDNEW, ADDGROUP and REMOVDIR
-  können auch unterzeichnisse durchsuchen.
+  können auch Unterverzeichnisse durchsuchen.
   Viele neue Dateien halten den Bot nicht mehr an.
 
 105) max_find
@@ -2849,7 +2849,7 @@ bugfix: XDCC REMOVE, XDCC CANCEL
   REMOVE <n> <m>                   Enfernt Paket <n> bis <m>
 
 103) XDCC #1
-  Sende fehlermedung bei nicht erkannten XDCC Befehlen.
+  Sende Fehlermeldung bei nicht erkannten XDCC Befehlen.
 
 102) XDCC OWNER
   Ansprechpartner, Nick, Kontakt wenn der Bot Probleme hat/macht.
@@ -2864,7 +2864,7 @@ Debugging und Logging verbessert.
 
 bugfix: -plist
   version: 1.24 - 1.32
-  Bot stürzt ab wenn Plist in zu viele channels gleichzeitig.
+  Bot stürzt ab wenn plist in zu viele channels gleichzeitig.
 
 
 Ab Version mod 1.32:
@@ -2896,7 +2896,7 @@ Ab Version mod 1.32:
   Neues Admin Kommando:
   CLEARGETS                        Alle Donloadzähler auf 0 setzen (Löschen).
 
-  Anderungen:
+  Änderungen:
   channel xxx -plist full
   xdcclist_grouponly wird ausgewertet.
 
@@ -2938,7 +2938,7 @@ Ab Version mod 1.30:
 
 81) restrictsend_timeout
   Zeit in Sekunden nach der ein Tranfer abgebrochen wird,
-  wenn der USer nicht mehr im Channel ist.
+  wenn der User nicht mehr im Channel ist.
 
 82) MOVEGROUP
   Neues Admin Kommando:
@@ -2991,7 +2991,7 @@ Ab Version mod 1.29:
 79) Erweitere die Trigger für automatisches IDENTIFY an "nicserv".
 
 78) DCLD, BOTINFO
-  Erweitete Ausgabe für MULTINET
+  Erweiterte Ausgabe für MULTINET
 
 77) Das Zeichen '#' in den Texten an die User entfernt.
   Damit die User die das im Channel falsh eintippen nicht als Spammer
@@ -3097,7 +3097,7 @@ Ab Version mod 1.30:
   ignoriere Antwort auf CPTP PING
 
 bugfix:
-  geoipcountry funktinuerte nur wenn ignoreduplicateip ein war
+  geoipcountry funktionierte nur wenn ignoreduplicateip ein war
 
 Ab Version mod 1.24:
 --------------------
@@ -3139,8 +3139,6 @@ bugfix: send
 
 Ab Version mod 1.23:
 --------------------
-With Version mod 1.23:
-----------------------
 
 bugfix: Speicherleck behoben
 
@@ -3155,8 +3153,6 @@ bugfix: Speicherleck behoben
 
 Ab Version mod 1.22:
 --------------------
-With Version mod 1.22:
-----------------------
 
 URLs updated.
 
@@ -3178,8 +3174,6 @@ bugfix: CHLIMIT
 
 Ab Version mod 1.21:
 --------------------
-With Version mod 1.21:
-----------------------
 
 bugfix: XDCC STOP
    log more information
@@ -3208,8 +3202,6 @@ bugfix: HELP
 
 Ab Version mod 1.20:
 --------------------
-With Version mod 1.20:
-----------------------
 
 46) admin command: queue
 
@@ -3249,8 +3241,6 @@ bugfix: XDCC LIST <group>
 
 Ab Version mod 1.19:
 --------------------
-With Version mod 1.19:
-----------------------
 
 bugfix: ignoreduplicateip
    versions affected: 1.18
@@ -3258,8 +3248,6 @@ bugfix: ignoreduplicateip
 
 Ab Version mod 1.18:
 --------------------
-With Version mod 1.18:
-----------------------
 
 38) identify
    IDENTIFY                   send stored password again to nickserv
@@ -3301,8 +3289,6 @@ bugfix: addnew
 
 Ab Version mod 1.17:
 --------------------
-With Version mod 1.17:
-----------------------
 
 35) set groupname as default group description
    for an invisible group you have to remove the description by hand.
@@ -3320,8 +3306,6 @@ bugfix: channel -headline
 
 Ab Version mod 1.16:
 --------------------
-With Version mod 1.16:
-----------------------
 
 bugfix: holdqueue
    enforce holdqueue when new requests are coming in
@@ -3337,8 +3321,6 @@ bugfix: removelostfiles
 
 Ab Version mod 1.15:
 --------------------
-With Version mod 1.15:
-----------------------
 
 30) logmessages (from PMG)
 
@@ -3360,8 +3342,6 @@ bugfix: xdcclistfile
 
 Ab Version mod 1.14:
 --------------------
-With Version mod 1.14:
-----------------------
 
 28) holdqueue
 
@@ -3380,8 +3360,6 @@ With Version mod 1.14:
 
 Ab Version mod 1.13:
 --------------------
-With Version mod 1.13:
-----------------------
 
 bugfix: channel -headline
    if channel headline is set, drop global headline
@@ -3392,8 +3370,6 @@ bugfix: channel -headline
 
 Ab Version mod 1.12:
 --------------------
-With Version mod 1.12:
-----------------------
 
 25) ignoreuploadbandwidth
    don't count uploads traffic into transferlimits.
@@ -3408,8 +3384,6 @@ channel #chan04 -plist 14 -pformat summary -headline "moving soon"
 
 Ab Version mod 1.11:
 --------------------
-With Version mod 1.11:
-----------------------
 
 24) groupsincaps
    If set, all groups names changed will be folded to  uppercase.
@@ -3424,8 +3398,6 @@ bugfix: remove <pack>
 
 Ab Version mod 1.10:
 --------------------
-With Version mod 1.10:
-----------------------
 
 bugfix: remove
    keep group description when first pack of a group is removed.
@@ -3457,8 +3429,6 @@ If set, "xdcc list all" will be rejected.
 
 Ab Version mod 1.9:
 -------------------
-With Version mod 1.9:
----------------------
 
 17) failsave when server or link goes down
    Don't send packs when we are no longer connected.
@@ -3472,8 +3442,6 @@ With Version mod 1.9:
 
 Ab Version mod 1.8:
 -------------------
-With Version mod 1.8:
----------------------
 
 15) queue
   Neues Admin Kommando:
@@ -3485,8 +3453,6 @@ day of month when to reset the monthly traffic limit, default 1
 
 Ab Version mod 1.7:
 -------------------
-With Version mod 1.7:
----------------------
 
 13) auto_default_group
 
@@ -3498,8 +3464,6 @@ With Version mod 1.7:
 
 Ab Version mod 1.6:
 -------------------
-With Version mod 1.6:
----------------------
 
 10) hide_list_info
 
@@ -3517,8 +3481,6 @@ With Version mod 1.6:
 
 Ab Version mod 1.5:
 -------------------
-With Version mod 1.5:
----------------------
 
 9) need_voice
 
@@ -3527,8 +3489,6 @@ With Version mod 1.5:
 
 Ab Version mod 1.4:
 -------------------
-With Version mod 1.4:
----------------------
 
 5) locking/password:
 
@@ -3557,8 +3517,6 @@ With Version mod 1.4:
 
 Ab Version mod 1.3:
 -------------------
-With Version mod 1.3:
----------------------
 
 4) getipfromserver
 
@@ -3572,8 +3530,6 @@ With Version mod 1.3:
 
 Ab Version mod 1.2:
 -------------------
-With Version mod 1.2:
----------------------
 
 3) save queue
    Save download queue on exit or crash.  and read it back on start.
@@ -3581,8 +3537,6 @@ With Version mod 1.2:
 
 Ab Version mod 1.1:
 -------------------
-With Version mod 1.1:
----------------------
 
 1) grouped lists
 

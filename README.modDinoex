@@ -4,7 +4,7 @@ With Version 3.33:
 ------------------
 
 bugfix: extend_status_line
-  Fix order of Bandwith
+  Fix order of bandwidth
 
 416) auth_name (suggested by fred)
   If you would like to register with the AUTH command
@@ -27,7 +27,7 @@ bugfix: Lang
   Defaults to utf-8 on empty enviroment.
 
 bugfix: IRC PING
-  Fix problem with oragono server.
+  Fix problem with Oragono server.
 
 bugfix: json.txt.rb (reported by lailoken)
   Convert javascript code to JSON data.
@@ -247,7 +247,7 @@ bugfix: tcprangestart (reported by HK)
 
 bugfix: conenctionmethod "bnc", "wingate", "custom"
   versions affected: 3.12 - 3.28
-  Config was not accepted whithout extra parameters.
+  Config was not accepted without extra parameters.
 
 401) XDCC BATCH (inspired by mflatischler)
   Allow limiting patterns to segments and groups in BATCH.
@@ -304,7 +304,7 @@ Short Term Features:
   Default: none.
 
 bugfix: respondtochannelxdcc (reported by DoomyTheTrafficCone)
-  No longer respond to unsupported comamnds in channels.
+  No longer respond to unsupported commands in channels.
 
 With Version 3.28:
 ------------------
@@ -319,7 +319,7 @@ Configure -no-chroot (Sébastien Picavet)
   Build without chroot() support
 
 bugfix: exit status (Sébastien Picavet)
-  Exit staus in backgroung is now 0 on success.
+  Exit status in background is now 0 on success.
 
 bugfix: send_listfile (reported by Bachstelze)
   Default was not set on REHASH.
@@ -424,7 +424,7 @@ bugfix: XDCC SEND
 381) subdirs_delayed
   When configured, addir, addnew, and autoadd will scan subdirs later.
   This keeps the bot responsive if you have a huge directory tree.
-  Default: off, subdirectories are scanned immediatly.
+  Default: off, subdirectories are scanned immediately.
 
 bugfix: DUMP
   Fix output of values with multiplier.
@@ -664,14 +664,14 @@ bugfix: geoipdatabase
   NOAUTOADD <x>                      Disables AUTOADD for next <x> minutes
 
 350) XDCC BATCH (inspired by Aashiqmunda)
-  Allow mutiple segments and lists in BATCH.
+  Allow multiple segments and lists in BATCH.
 
   new user commands:
   XDCC BATCH <a>,<b>,<c>             try to send or queue packs <a>, <b> and <c>
   XDCC BATCH <a>-<b>,<n>-<m>         try to send or queue packs from <a> to <b> and <n> to <m>
 
 349) BATCH (inspired by Aashiqmunda)
-  Allow mutiple segments and lists in BATCH.
+  Allow multiple segments and lists in BATCH.
 
   new admin commands:
   BATCH <nick> <g>,<s>,<n>-<m>       Queues pack with group <g>, pack <s> and pack <n> to <m> for <nick> in idle queue
@@ -751,7 +751,7 @@ bugfix: xdccxmlfile (report by Hikaru Shindo)
   Disable colors when announcing on this network.
 
 - bugfix: console
-  Bot could crash when editing commandline.
+  Bot could crash when editing command line.
   versions affected: 3.23 - 3.24
 
 - bugfix: BOTINFO
@@ -835,8 +835,8 @@ bugfix: CHCOLOR
   Fix problem when filename starts with a number.
 
 332) no_natural_sort (inspired by lailoken)
-  Wenn konfiguriert, werden alle Texte nach ASCII sortiert.
-  Default: natürlliche Sortierenung.
+  If configured, all text is sorted by plain ASCII.
+  Default: use natural sort order.
 
 bugfix: http_port (reported by Nouhime)
   Allow groups with "&" in weblist.
@@ -851,8 +851,8 @@ bugfix: http_port (reported by Nouhime)
 
 bugfix: SHUTDOWN
   versions affected: 1.0 - 3.22
-  Nicht alle Nachricten wurden gesendet.
-  Laufende Uploads un Downloads wurden nicht sauber beendet.
+  Not all messages where send out on shutdown.
+  Uploads and Transfers where not cleanup up fully.
 
 bugfix: AUTOADD
   versions affected: 3.22
@@ -1127,7 +1127,7 @@ bugfix: statefile
   Speed up writing of statefile.
 
 303) XDCC SEND
-  Resend "DCC SEND" mesaage again, if user doesn't connect.
+  Resend "DCC SEND" message again, if user doesn't connect.
 
   References TODO:
 Short Term Features:
@@ -1140,7 +1140,7 @@ bugfix: old_statefile (reported by Loke_AF)
 
 bugfix: include_subdirs (reported by super89)
   versions affected: 2.0 - 3.17
-  On linux autoadd with include_subdirs could skip files.
+  On Linux autoadd with include_subdirs could skip files.
 
 extend debug and log information.
 
@@ -1619,7 +1619,7 @@ bugfix: CANNOUNCE (reported by spielefreak)
 
 259) group_admin (inspired by Thunder)
   Remote commands can only be issued by a nick with a matching hostmask
-  and knows the coresponding password. Access is limit to the groups
+  and knows the corresponding password. Access is limit to the groups
   listed in the same line and by the given level.
   group_admin <level> <hostmask> <encrypted_password> <grouplist>
 
@@ -1683,7 +1683,7 @@ bugfix: http_port
    new admin command:
    HOP <channel> <net>        leave and rejoin a channel to get status in a network
 
-bugfix: restrichsend, restrictlist
+bugfix: restrictsend, restrictlist
   versions affected: 1.2 - 3.8
   restrictsend was not checked, restrictlist was used.
 

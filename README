@@ -5,7 +5,7 @@ It is similar to a FTP server or WEB server, but users can download
 files using the DCC protocol of IRC instead of a web browser.
 
 iroffer is a standalone executable written entirely in C.
-Designed for speed and efficency, iroffer can transfer over 95MByte/sec
+Designed for speed and efficiency, iroffer can transfer over 95MByte/sec
 over a gigabit ethernet connection.
 
 See the file "README.modDinoex" for changelog and features.
@@ -15,7 +15,7 @@ See the file "README.modDinoex" for changelog and features.
 Visit the iroffer web site https://iroffer.net/
 
 This is an improved version of iroffer
- the unmodifed version can be found at
+ the unmodified version can be found at
  https://web.archive.org/web/20161003214603/http://iroffer.org/
 
  --- How to Contact the Author ---
@@ -73,8 +73,8 @@ for Italian run
 
  - extremely fast dcc transfers
  - extremely low cpu usage, and low ram usage
- - ajustable bandwidth and traffic limiting
- - fair queueing of downloads
+ - adjustable bandwidth and traffic limiting
+ - fair queuing of downloads
  - very user friendly
  - remote administration via /msg or DCC CHAT
  - configurable logfiles
@@ -87,7 +87,7 @@ for Italian run
  - Nickserv or CertFP authentification
  - passive DCC
  - build in HTTP-server
- - buid in Telnet-server
+ - build in Telnet-server
  - supports UPnP NAT-Routers
  - XML Packlist
  - FISH encryption
