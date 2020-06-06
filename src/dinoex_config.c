@@ -1011,6 +1011,8 @@ static int parse_channel_string(char **cptr, char **part, unsigned int i)
   tptr2 = part[++i];
   if (!tptr2)
     return -1;
+  if (*cptr)
+    return -1;
   *cptr = tptr2;
   return 1;
 }
@@ -1235,6 +1237,7 @@ static void c_channel(const char * UNUSED(key), char *var)
   if (part[0] == NULL)
     return;
 
+  caps(part[0]);
   for (rch = irlist_get_head(&gdata.networks[current_network].channels);
        rch;
        rch = irlist_get_next(rch)) {
@@ -1248,7 +1251,6 @@ static void c_channel(const char * UNUSED(key), char *var)
 
   cptr = irlist_add(&gdata.networks[current_network].channels, sizeof(channel_t));
   cptr->name = part[0];
-  caps(cptr->name);
   if (parse_channel_options(cptr, part[1]) < 0) {
      outerror(OUTERROR_TYPE_WARN,
              "%s:%ld ignored channel '%s' on %s because it has invalid args: '%s'",
