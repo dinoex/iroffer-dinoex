@@ -3,6 +3,10 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: channel
+  Die Warnung, dass ein #channel doppelt definiert wurde, kam nicht.
+  Fehler wenn eine Channel Option mehr als einmal angegeben ist.
+
 bugfix: extend_status_line
   Reihenfolge der Bandbreiten war nicht korrekt.
 
