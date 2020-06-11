@@ -1592,22 +1592,27 @@ static void u_botinfo(const userinput * const u) {
    for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
      {
        char *tempstr2 = mymalloc(maxtextlength);
+       char *used;
+       char *limit;
        
        user_getdatestr(tempstr2, gdata.transferlimits[ii].ends, maxtextlength);
+       used = sizestr(0, gdata.transferlimits[ii].used);
        
        if (gdata.transferlimits[ii].limit)
          {
-           u_respond(u, "transferlimit: %7s (ends %s): used %" LLPRINTFMT "uMB, limit %" LLPRINTFMT "uMB",
+           limit = sizestr(0, gdata.transferlimits[ii].limit);
+           u_respond(u, "transferlimit: %7s (ends %s): used %s, " "limit %s",
                      transferlimit_type_to_string(ii), tempstr2,
-                     gdata.transferlimits[ii].used / 1024 / 1024,
-                     gdata.transferlimits[ii].limit / 1024 / 1024);
+                     used, limit);
+           mydelete(limit);
          }
        else
          {
-           u_respond(u, "transferlimit: %7s (ends %s): used %" LLPRINTFMT "uMB, limit unlimited",
-                     transferlimit_type_to_string(ii),tempstr2 ,
-                     gdata.transferlimits[ii].used / 1024 / 1024);
+           u_respond(u, "transferlimit: %7s (ends %s): used %s, " "unlimited",
+                     transferlimit_type_to_string(ii), tempstr2 ,
+                     used);
          }
+       mydelete(used);
        mydelete(tempstr2);
      }
    

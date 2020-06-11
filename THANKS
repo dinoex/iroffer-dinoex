@@ -415,7 +415,7 @@ Lamune
 	reporting autosendpack bug
 
 DevelDoll
-	report transferlimits to user
+	report transferlimit to user
 
 DrX
 	report "pgroup" bug
@@ -637,20 +637,20 @@ PastisD
 	suggesting "xdccxmlfile" with nicknames
 
 Bachstelze
-	reporting gnutls bug.
+	reporting gnutls bug
 	Ubuntu package
-	patch for "PRINT" bug.
+	patch for "PRINT" bug
 	reporting " send_listfile" bug
 
 super89
 	reporting "include_subdirs" bug
 
 Loke_AF
-	reporting timestamp problem with old statefiles.
-	reporting "AUTOADD" problem with '\'.
+	reporting timestamp problem with old statefiles
+	reporting "AUTOADD" problem with '\'
 	reporting crash with concurrent transfers
 	reporting "XDCC BATCH" bug
-	reporting "AUTOADD" problem with '//'.
+	reporting "AUTOADD" problem with '//'
 	suggesting "requeue_sends"
 	suggesting "ignore_duplicate_ip"
 	suggesting "RMALLQ"
@@ -675,19 +675,19 @@ Loke_AF
 	suggesting verbose "listen on" message
 
 Nouhime
-	reporting "http_search" bug.
-	reporting "http_port" groups with "&".
+	reporting "http_search" bug
+	reporting "http_port" groups with "&"
 
 Eomyn
 	suggesting "http_index"
 
 Henrik Krohns
-	reporting "QUIT" bug.
-	reporting "-plist" bug.
+	reporting "QUIT" bug
+	reporting "-plist" bug
 	reporting "ANNOUNCE" priority
 
 torque
-	reporting "restrictsend" bug.
+	reporting "restrictsend" bug
 
 Rilly
 	reporting "PRINT" bug
@@ -770,6 +770,7 @@ sheppert
 
 Sakura`Kinomoto
 	suggesting "REMOVELOST"
+	suggesting flexible units for transferlimits
 
 Sébastien Picavet
 	exit status in background was not 0
@@ -781,7 +782,7 @@ kenoki
 	suggesting "on_upload_completed"
 
 DoomyTheTrafficCone
-	reporting "respondtochannelxdcc" unsupported messages.
+	reporting "respondtochannelxdcc" unsupported messages
 
 Trellmor
 	finding md5 caclulation problem
