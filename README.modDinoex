@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+417) transferlimits (suggested by Sakura`Kinomoto)
+  printing flexible units for transferlimits.
+
 bugfix: channel
   Warning about duplicate channels was not printed.
   Ignore line when a channal option is set more than once.

@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+417) transferlimits
+  Zeige die "transferlimits" in variablen Einheiten.
+
 bugfix: channel
   Die Warnung, dass ein #channel doppelt definiert wurde, kam nicht.
   Fehler wenn eine Channel Option mehr als einmal angegeben ist.
