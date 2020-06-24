@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -29,7 +29,7 @@ void irlist_add_string(irlist_t *list, const char *str);
 unsigned int verifyshell(irlist_t *list, const char *file);
 unsigned int no_verifyshell(irlist_t *list, const char *file);
 const char *save_nick(const char * nick);
-unsigned int verifypass2(const char *masterpass, const char *testpass);
+unsigned int verifypass2(const char *adminpass, const char *testpass);
 char *clean_quotes(char *str);
 char *to_hostmask(const char *nick, const char *hostname);
 const char *getfilename(const char *pathname);

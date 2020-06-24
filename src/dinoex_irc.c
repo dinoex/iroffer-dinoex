@@ -295,7 +295,7 @@ static void update_server_welcome(char *line)
       return;
     }
     if (gnetwork->getip_net != gnetwork->net) {
-      /* copy IP from master */
+      /* copy IP from primary network */
       gnetwork->usenatip = 1;
       update_getip_net(gnetwork->getip_net, gdata.networks[gnetwork->getip_net].ourip);
       return;

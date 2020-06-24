@@ -188,7 +188,7 @@ static char *print_config_long2(ir_int64 val)
 }
 
 /* validate config and warn if password is not encrypted */
-static void checkadminpass2(const char *key, const char *masterpass)
+static void checkadminpass2(const char *key, const char *adminpass)
 {
 #ifndef NO_CRYPT
   unsigned int err=0;
@@ -196,15 +196,15 @@ static void checkadminpass2(const char *key, const char *masterpass)
 
   updatecontext();
 
-  if (!masterpass || strlen(masterpass) < 13U) ++err;
+  if (!adminpass || strlen(adminpass) < 13U) ++err;
 
-  for (i=0; !err && i<strlen(masterpass); ++i) {
-    if (!((masterpass[i] >= 'a' && masterpass[i] <= 'z') ||
-          (masterpass[i] >= 'A' && masterpass[i] <= 'Z') ||
-          (masterpass[i] >= '0' && masterpass[i] <= '9') ||
-          (masterpass[i] == '.') ||
-          (masterpass[i] == '$') ||
-          (masterpass[i] == '/')))
+  for (i=0; !err && i<strlen(adminpass); ++i) {
+    if (!((adminpass[i] >= 'a' && adminpass[i] <= 'z') ||
+          (adminpass[i] >= 'A' && adminpass[i] <= 'Z') ||
+          (adminpass[i] >= '0' && adminpass[i] <= '9') ||
+          (adminpass[i] == '.') ||
+          (adminpass[i] == '$') ||
+          (adminpass[i] == '/')))
       ++err;
   }
 
