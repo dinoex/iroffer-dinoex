@@ -195,7 +195,7 @@ void t_notice_transfer(transfer * const tr, const char *msg, unsigned int pack, 
   mydelete(tempstr);
 }
 
-/* check ip for matching blacklist and whitelist */
+/* check ip for matching blocklist and accesslist */
 unsigned int t_check_ip_access(transfer *const tr)
 {
   const char *msg;

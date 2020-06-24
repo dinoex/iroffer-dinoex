@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2019 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -40,7 +40,7 @@ static unsigned int is_in_badip4(ir_uint32 remoteip)
     if (b->remoteip == remoteip) {
       b->lastcontact = gdata.curtime;
       if (b->count > 10)
-        return 1; /* blacklisted */
+        return 1; /* blocked */
       break;
     }
   }
@@ -66,7 +66,7 @@ static unsigned int is_in_badip6(struct in6_addr *remoteip)
     if (memcmp(&(b->remoteip), remoteip, sizeof(struct in6_addr)) == 0) {
       b->lastcontact = gdata.curtime;
       if (b->count > 10)
-        return 1; /* blacklisted */
+        return 1; /* blocked */
       break;
     }
   }
@@ -75,7 +75,7 @@ static unsigned int is_in_badip6(struct in6_addr *remoteip)
 
 /* check if ip is allowed
 return: 0 = not blocked
-return: 1 = blacklisted
+return: 1 = blocked by list
 return: -1 = blocked by GeoIP
 */
 unsigned int is_in_badip(ir_sockaddr_union_t *sa)
