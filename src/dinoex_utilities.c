@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -1078,26 +1078,26 @@ void irlist_sort2(irlist_t *list, int (*cmpfunc)(const void *a, const void *b))
           /* p is empty; e must come from q. */
           e = q;
           q = irlist_get_next(q);
-	  irlist_remove(list, e);
+          irlist_remove(list, e);
           qsize--;
         } else if (qsize == 0 || !q) {
           /* q is empty; e must come from p. */
           e = p;
           p = irlist_get_next(p);
-	  irlist_remove(list, e);
+          irlist_remove(list, e);
           psize--;
         } else if (cmpfunc(p, q) <= 0) {
           /* First element of p is lower (or same);
           * e must come from p. */
           e = p;
           p = irlist_get_next(p);
-	  irlist_remove(list, e);
+          irlist_remove(list, e);
           psize--;
         } else {
           /* First element of q is lower; e must come from q. */
           e = q;
           q = irlist_get_next(q);
-	  irlist_remove(list, e);
+          irlist_remove(list, e);
           qsize--;
         }
 
