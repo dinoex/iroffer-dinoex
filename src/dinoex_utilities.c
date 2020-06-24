@@ -130,7 +130,7 @@ const char *save_nick(const char * nick)
 }
 
 /* verify a password against the stored hash */
-unsigned int verifypass2(const char *masterpass, const char *testpass)
+unsigned int verifypass2(const char *adminpass, const char *testpass)
 {
 #ifndef NO_CRYPT
   char *pwout;
@@ -138,22 +138,22 @@ unsigned int verifypass2(const char *masterpass, const char *testpass)
 
   updatecontext();
 
-  if (!masterpass || !testpass)
+  if (!adminpass || !testpass)
     return 0;
 
 #ifndef NO_CRYPT
-  if ((strlen(masterpass) < 13U) ||
+  if ((strlen(adminpass) < 13U) ||
       (strlen(testpass) < 5U) ||
       (strlen(testpass) > 59U))
     return 0;
 
-  pwout = crypt(testpass, masterpass);
-  if (strcmp(pwout, masterpass)) return 0;
+  pwout = crypt(testpass, adminpass);
+  if (strcmp(pwout, adminpass)) return 0;
 #else /* NO_CRYPT */
-  if (!masterpass || !testpass)
+  if (!adminpass || !testpass)
     return 0;
 
-  if (strcmp(testpass, masterpass)) return 0;
+  if (strcmp(testpass, adminpass)) return 0;
 #endif /* NO_CRYPT */
 
   /* allow */
