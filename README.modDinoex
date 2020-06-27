@@ -4,6 +4,9 @@ With Version 3.33:
 ------------------
 
 bugfix: DCC CHAT
+  Chats waiting for connection where never terminated.
+
+bugfix: DCC CHAT
   Fix crash on shutdown when chats are waiting for connection.
 
 417) transferlimits (suggested by Sakura`Kinomoto)

@@ -4,6 +4,9 @@ Ab Version 3.33:
 ----------------
 
 bugfix: DCC CHAT
+  Chats ohne Verbindung wurden nie abgebiochen.
+
+bugfix: DCC CHAT
   Bot crashte beim Heruznterfahren, wenn Chats noch auf Verbindung warten.
 
 417) transferlimits

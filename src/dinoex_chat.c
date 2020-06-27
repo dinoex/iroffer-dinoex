@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -102,8 +102,18 @@ int chat_select_fdset(int highests)
   return highests;
 }
 
+/* check for listen timeout */
+static void chat_istimeout(dccchat_t *chat)
+{
+  updatecontext();
+
+  if ((gdata.curtime - chat->con.lastcontact) > 180) {
+    shutdowndccchat(chat, 0);
+  }
+}
+
 /* handle chat io events */
-void chat_perform(void)
+void chat_perform(int changesec)
 {
   dccchat_t *chat;
   char tempbuffa[INPUT_BUFFER_LENGTH];
@@ -151,6 +161,10 @@ void chat_perform(void)
     if (chat->status == DCCCHAT_LISTENING) {
       if (FD_ISSET(chat->con.listensocket, &gdata.readset)) {
         setupdccchataccept(chat);
+        continue;
+      }
+      if (changesec) {
+        chat_istimeout(chat);
       }
       continue;
     }
@@ -189,6 +203,22 @@ void chat_perform(void)
     }
   }
   gnetwork = NULL;
+}
+
+/* close all dcc chats */
+void chat_shutdown_all(void)
+{
+  dccchat_t *chat;
+
+  updatecontext();
+  for (chat = irlist_get_head(&gdata.dccchats);
+       chat;
+       chat = irlist_delete(&gdata.dccchats, chat)) {
+     if (chat->status == DCCCHAT_CONNECTED) {
+       writedccchat(chat, 0, "iroffer exited, Closing DCC Chat\n");
+     }
+     shutdowndccchat(chat, 1);
+  }
 }
 
 /* End of File */
