@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: DCC CHAT
+  Fix crash on shutdown when chats are waiting for connection.
+
 417) transferlimits (suggested by Sakura`Kinomoto)
   printing flexible units for transferlimits.
 

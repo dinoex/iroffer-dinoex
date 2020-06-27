@@ -998,7 +998,9 @@ static void mainloop (void) {
               chat;
               chat = irlist_delete(&gdata.dccchats,chat))
            {
-             writedccchat(chat, 0, "iroffer exited, Closing DCC Chat\n");
+	     if (chat->status == DCCCHAT_CONNECTED) {
+               writedccchat(chat, 0, "iroffer exited, Closing DCC Chat\n");
+	     }
              shutdowndccchat(chat,1);
            }
          
