@@ -448,8 +448,12 @@ void shutdowndccchat(dccchat_t *chat, int flush)
           flushdccchat(chat);
         }
       
-      usleep(100*1000);
-      shutdown_close(chat->con.clientsocket);
+      if (chat->status != DCCCHAT_LISTENING)
+        {
+          usleep(100*1000);
+          shutdown_close(chat->con.clientsocket);
+	}
+
       mydelete(chat->groups);
       mydelete(chat->hostmask);
       mydelete(chat->nick);

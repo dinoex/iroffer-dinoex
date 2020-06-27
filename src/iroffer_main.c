@@ -334,7 +334,7 @@ static void mainloop (void) {
       
       irc_perform(changesec);
       l_perform(changesec);
-      chat_perform();
+      chat_perform(changesec);
       t_perform(changesec, changequartersec);
 #ifndef WITHOUT_TELNET
       telnet_perform();
@@ -994,14 +994,7 @@ static void mainloop (void) {
       
       if (gdata.exiting && has_closed_servers()) {
          
-         for (chat = irlist_get_head(&gdata.dccchats);
-              chat;
-              chat = irlist_delete(&gdata.dccchats,chat))
-           {
-             writedccchat(chat, 0, "iroffer exited, Closing DCC Chat\n");
-             shutdowndccchat(chat,1);
-           }
-         
+         chat_shutdown_all();
          mylog("iroffer exited\n\n");
          
          exit_iroffer(0);
