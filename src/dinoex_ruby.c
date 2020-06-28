@@ -33,6 +33,12 @@
 
 #pragma GCC diagnostic ignored "-Wstrict-prototypes"
 #pragma GCC diagnostic ignored "-Wredundant-decls"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wcast-qual"
+#ifdef __clang__
+#pragma GCC diagnostic ignored "-Wgcc-compat"
+#pragma GCC diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#endif
 #include "ruby.h"
 #if USE_RUBYVERSION < 19
 #ifndef RSTRING_PTR
