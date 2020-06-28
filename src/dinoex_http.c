@@ -139,10 +139,9 @@ static const unsigned char HEX_NIBBLE[] = "0123456789ABCDEF"; /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP_ADMIN
 
 /*
-	BASE 64
-
-	| b64  | b64   | b64   |  b64 |
-	| octect1 | octect2 | octect3 |
+        BASE 64
+        | b64  | b64   | b64   |  b64 |
+        | octect1 | octect2 | octect3 |
 */
 
 static const unsigned char BASE64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; /* NOTRANSLATE */
@@ -1179,7 +1178,7 @@ static size_t html_link_option(char *str, size_t size, const char *option, const
 }
 
 static char *html_link_build(const char *css, const char *caption, const char *text,
-				const char *group, unsigned int traffic, const char *order)
+                             const char *group, unsigned int traffic, const char *order)
 {
   char *tempstr;
   size_t len;

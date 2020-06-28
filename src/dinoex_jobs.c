@@ -1364,7 +1364,7 @@ int save_unlink(const char *path)
     while (file_not_exits(dest)) {
       snprintf(dest, len, "%s/%s.%03u", gdata.trashcan_dir, file, ++num); /* NOTRANSLATE */
       if (num >= 200) {
-	save_unlink_failed(path, dest);
+        save_unlink_failed(path, dest);
         mydelete(dest);
         return -1;
       }

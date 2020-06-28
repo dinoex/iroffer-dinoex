@@ -1438,7 +1438,7 @@ static void ir_parseline2(ir_parseline_t *ipl)
           ch->nextmsg = gdata.curtime + gdata.waitafterjoin;
           if (ch->joinmsg) {
             writeserver(WRITESERVER_NOW, "PRIVMSG %s :%s", /* NOTRANSLATE */
-	                ch->name, ch->joinmsg);
+                        ch->name, ch->joinmsg);
           }
           gnetwork->botstatus = BOTSTATUS_JOINED;
           start_sends();

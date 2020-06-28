@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -348,7 +348,7 @@ void l_perform(int changesec)
         mydelete(ul->file);
         mydelete(ul->con.remoteaddr);
         ul = irlist_delete(&gdata.uploads, ul);
-	close_qupload(net, nick);
+        close_qupload(net, nick);
         mydelete(nick);
         continue;
       }
