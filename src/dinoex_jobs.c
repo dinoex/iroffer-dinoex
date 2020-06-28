@@ -1449,7 +1449,9 @@ static void xml_buffer_check(xml_buffer_t *xmlbuf, size_t len)
   xml_buffer_flush(xmlbuf);
 }
 
+#ifndef __clang__
 #pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
 static void write_string(xml_buffer_t *xmlbuf, const char *line)
 {
   size_t len;
