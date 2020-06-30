@@ -537,7 +537,7 @@ static void meminfo_grow(int grow)
   newmeminfo[0].ptr          = newmeminfo;
   newmeminfo[0].alloctime    = gdata.curtime;
   newmeminfo[0].size         = len;
-  newmeminfo[0].src_func     = __FUNCTION__;
+  newmeminfo[0].src_func     = __extension__ __FUNCTION__;
   newmeminfo[0].src_file     = __FILE__;
   newmeminfo[0].src_line     = __LINE__;
   
@@ -1909,8 +1909,8 @@ void* irlist_remove(irlist_t *list, void *item)
   
   iitem->next = NULL;
   
+  assert(list->size > 0);
   list->size--;
-  assert(list->size >= 0);
   
   if (next)
     {
@@ -1994,8 +1994,6 @@ void* irlist_get_next(const void *cur)
 unsigned int irlist_size(const irlist_t *list)
 {
   updatecontext();
-  
-  assert(list->size >= 0);
   
   return list->size;
 }
