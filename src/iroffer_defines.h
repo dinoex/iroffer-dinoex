@@ -102,8 +102,8 @@
 #ifndef WITHOUT_MEMSAVE
 /* free'ing just leads to trouble if we dont check first and then make NULL */
 #define mydelete(x) { mydelete2(x); x = NULL; }
-#define mymalloc(x) mymalloc2(x, 0, __FUNCTION__, __FILE__, __LINE__)
-#define mycalloc(x) mymalloc2(x, 1, __FUNCTION__, __FILE__, __LINE__)
+#define mymalloc(x) mymalloc2(x, 0, __extension__ __FUNCTION__, __FILE__, __LINE__)
+#define mycalloc(x) mymalloc2(x, 1, __extension__ __FUNCTION__, __FILE__, __LINE__)
 #else
 #define mydelete(x) { free(x); x = NULL; }
 #define mymalloc(x) malloc(x)
@@ -170,12 +170,12 @@
 #define ceiling(v,c) ( (v) + (((v) % (c)) ? ((c) - ((v) % (c))) : 0) )
 
 
-#define updatecontext() updatecontext_f(__FILE__,__FUNCTION__,__LINE__)
+#define updatecontext() updatecontext_f(__FILE__,__extension__ __FUNCTION__,__LINE__)
 
 /* set os specific values */
 /* linux */
 #if defined(_OS_Linux)
-#define _GNU_SOURCE
+#define _GNU_SOURCE 1
 
 /* bsd */
 #elif defined(_OS_FreeBSD)   || \
