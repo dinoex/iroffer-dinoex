@@ -86,7 +86,7 @@ void l_establishcon (upload * const l)
       l->con.remote.sin6.sin6_family = AF_INET6;
       l->con.remote.sin6.sin6_port = htons(l->con.remoteport);
       retval = inet_pton(AF_INET6, l->con.remoteaddr, &(l->con.remote.sin6.sin6_addr));
-      if (retval < 0)
+      if (retval != 1)
         outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", l->con.remoteaddr);
     }
   

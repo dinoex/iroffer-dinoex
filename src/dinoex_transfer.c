@@ -244,7 +244,7 @@ static void t_passive(transfer * const tr, ir_uint16 remoteport)
     tr->con.remote.sin6.sin6_family = AF_INET6;
     tr->con.remote.sin6.sin6_port = htons(remoteport);
     retval = inet_pton(AF_INET6, tr->con.remoteaddr, &(tr->con.remote.sin6.sin6_addr));
-    if (retval < 0)
+    if (retval != 1)
       outerror(OUTERROR_TYPE_WARN_LOUD, "Invalid IP: %s", tr->con.remoteaddr);
   }
 
