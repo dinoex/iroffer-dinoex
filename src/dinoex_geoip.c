@@ -192,10 +192,10 @@ void geoip_new_connection(transfer *const tr)
 static unsigned int http_check_country(const char *country)
 {
   if (no_verifyshell(&gdata.geoipcountry, country))
-    return 1;
+    return 2;
 
   if (verifyshell(&gdata.nogeoipcountry, country))
-    return 1;
+    return 2;
 
   return 0;
 }

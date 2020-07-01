@@ -76,7 +76,7 @@ static unsigned int is_in_badip6(struct in6_addr *remoteip)
 /* check if ip is allowed
 return: 0 = not blocked
 return: 1 = blocked by list
-return: -1 = blocked by GeoIP
+return: 2 = blocked by GeoIP
 */
 unsigned int is_in_badip(ir_sockaddr_union_t *sa)
 {
