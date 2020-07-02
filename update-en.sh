@@ -47,7 +47,7 @@ then
 	nr=`tail -1 en.txt | cut -d " " -f1`
 fi
 fgrep -h \" src/iroffer*.c src/dinoex*.c |
-grep -v "^#include" |
+egrep -v "^#(include|pragma)" |
 fgrep -v "NOTRANSLATE" |
 sed -e 's|\\"|°|g' |
 awk -F \[\"\] '

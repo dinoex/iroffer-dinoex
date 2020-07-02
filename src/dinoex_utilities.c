@@ -531,6 +531,7 @@ void removenonprintablefile(char *str)
     case ' ':
       if (gdata.spaces_in_filenames)
         break;
+      /* fallthrough */
     case '|':
     case ':':
     case '?':

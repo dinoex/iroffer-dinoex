@@ -139,10 +139,9 @@ static const unsigned char HEX_NIBBLE[] = "0123456789ABCDEF"; /* NOTRANSLATE */
 #ifndef WITHOUT_HTTP_ADMIN
 
 /*
-	BASE 64
-
-	| b64  | b64   | b64   |  b64 |
-	| octect1 | octect2 | octect3 |
+        BASE 64
+        | b64  | b64   | b64   |  b64 |
+        | octect1 | octect2 | octect3 |
 */
 
 static const unsigned char BASE64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; /* NOTRANSLATE */
@@ -498,7 +497,7 @@ static unsigned int h_open_listen(unsigned int i)
   msg = mymalloc(maxtextlength);
   my_getnameinfo(msg, maxtextlength -1, &listenaddr.sa);
   ioutput(OUT_S|OUT_L|OUT_H, COLOR_MAGENTA,
-          "HTTP SERVER waiting for connection on %s",  msg);
+          "HTTP SERVER waiting for connection on %s", msg);
   mydelete(msg);
   return 0;
 }
@@ -972,7 +971,7 @@ static void h_accept(unsigned int i)
   h->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(OUT_S|OUT_H, COLOR_MAGENTA,
-          "HTTP connection received from %s",  h->con.remoteaddr);
+          "HTTP connection received from %s", h->con.remoteaddr);
 
   blocked = is_in_badip(&(h->con.remote));
 #if defined(USE_GEOIP) || defined(USE_MAXMINDDB)
@@ -987,13 +986,13 @@ static void h_accept(unsigned int i)
   }
 
   if (irlist_size(&gdata.http_allow) > 0) {
-    if (!verify_cidr(&gdata.http_allow, &remoteaddr)) {
+    if (!verify_cidr(&gdata.http_allow, &(h->con.remote))) {
       h_herror_403(h, "HTTP connection not allowed");
       return;
     }
   }
 
-  if (verify_cidr(&gdata.http_deny, &remoteaddr)) {
+  if (verify_cidr(&gdata.http_deny, &(h->con.remote))) {
     h_herror_403(h, "HTTP connection denied");
     return;
   }
@@ -1179,7 +1178,7 @@ static size_t html_link_option(char *str, size_t size, const char *option, const
 }
 
 static char *html_link_build(const char *css, const char *caption, const char *text,
-				const char *group, unsigned int traffic, const char *order)
+                             const char *group, unsigned int traffic, const char *order)
 {
   char *tempstr;
   size_t len;

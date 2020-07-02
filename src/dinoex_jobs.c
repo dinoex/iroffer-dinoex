@@ -1364,7 +1364,7 @@ int save_unlink(const char *path)
     while (file_not_exits(dest)) {
       snprintf(dest, len, "%s/%s.%03u", gdata.trashcan_dir, file, ++num); /* NOTRANSLATE */
       if (num >= 200) {
-	save_unlink_failed(path, dest);
+        save_unlink_failed(path, dest);
         mydelete(dest);
         return -1;
       }
@@ -1449,6 +1449,9 @@ static void xml_buffer_check(xml_buffer_t *xmlbuf, size_t len)
   xml_buffer_flush(xmlbuf);
 }
 
+#ifndef __clang__
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
 static void write_string(xml_buffer_t *xmlbuf, const char *line)
 {
   size_t len;

@@ -726,6 +726,7 @@ static unsigned int set_config_string(const char *key, char *text)
        return 0;
      }
      checkadminpass2(key, text);
+     /* fallthrough */
   case 1:
      convert_to_unix_slash(text);
      break;

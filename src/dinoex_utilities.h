@@ -14,11 +14,11 @@
  */
 
 #ifndef WITHOUT_MEMSAVE
-#define mystrdup(x) mystrdup2(x,__FUNCTION__,__FILE__,__LINE__)
+#define mystrdup(x) mystrdup2(x,__extension__ __FUNCTION__,__FILE__,__LINE__)
 char *mystrdup2(const char *str, const char *src_function, const char *src_file, unsigned int src_line);
-#define mystrsuffix(x,y) mystrsuffix2(x,y,__FUNCTION__,__FILE__,__LINE__)
+#define mystrsuffix(x,y) mystrsuffix2(x,y,__extension__ __FUNCTION__,__FILE__,__LINE__)
 char *mystrsuffix2(const char *str, const char *suffix, const char *src_function, const char *src_file, unsigned int src_line);
-#define mystrjoin(x,y,z) mystrjoin2(x,y,z,__FUNCTION__,__FILE__,__LINE__)
+#define mystrjoin(x,y,z) mystrjoin2(x,y,z,__extension__ __FUNCTION__,__FILE__,__LINE__)
 char *mystrjoin2(const char *str1, const char *str2, unsigned int delimiter, const char *src_function, const char *src_file, unsigned int src_line);
 #else
 #define mystrdup(x) strdup(x)
@@ -53,14 +53,14 @@ char *caps(char *str);
 unsigned int max_minutes_waits(time_t *endtime, unsigned int min);
 
 #ifndef WITHOUT_MEMSAVE
-#define get_argv(x,y,z) get_argv2(x,y,z,__FUNCTION__,__FILE__,__LINE__)
+#define get_argv(x,y,z) get_argv2(x,y,z,__extension__ __FUNCTION__,__FILE__,__LINE__)
 unsigned int get_argv2(char **result, const char *line, unsigned int howmany,
              const char *src_function, const char *src_file, unsigned int src_line);
 #else /* WITHOUT_MEMSAVE */
 unsigned int get_argv(char **result, const char *line, unsigned int howmany);
 #endif /* WITHOUT_MEMSAVE */
 #ifndef WITHOUT_MEMSAVE
-#define getpart(x,y) getpart2(x,y,__FUNCTION__,__FILE__,__LINE__)
+#define getpart(x,y) getpart2(x,y,__extension__ __FUNCTION__,__FILE__,__LINE__)
 char *getpart2(const char *line, unsigned int howmany, const char *src_function, const char *src_file, unsigned int src_line);
 #else
 char *getpart(const char *line, unsigned int howmany);

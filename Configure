@@ -1576,6 +1576,7 @@ echo "${irmain1}
  case NO_RECOVERY:
  case TRY_AGAIN:
   i = 1;
+  break;
  default:
   i = 0;
  }

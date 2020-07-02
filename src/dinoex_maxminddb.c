@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2019 Dirk Meyer
+ * Copyright (C) 2019-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -45,7 +45,7 @@ static time_t maxminddb_time(const char *name)
 
   if (stat(name, &st) < 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
-	     "cannot access '%s', ignoring: %s",
+             "cannot access '%s', ignoring: %s",
              name, strerror(errno));
     return 0;
   }
@@ -192,10 +192,10 @@ void maxminddb_new_connection(transfer *const tr)
 static unsigned int http_check_country(const char *country)
 {
   if (no_verifyshell(&gdata.geoipcountry, country))
-    return 1;
+    return 2;
 
   if (verifyshell(&gdata.nogeoipcountry, country))
-    return 1;
+    return 2;
 
   return 0;
 }
