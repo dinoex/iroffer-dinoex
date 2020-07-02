@@ -138,14 +138,14 @@ void upnp_add_redir (const char * addr, const char * port)
 	}
 #ifdef UPNPDISCOVER_SUCCESS
 	r = UPNP_AddPortMapping(urls.controlURL, data.CIF.servicetype,
-	                        port, port, addr, NULL, "TCP", NULL, NULL);
+                                port, port, addr, NULL, "TCP", NULL, NULL);
 #else
 #ifdef UPNPCOMMAND_HTTP_ERROR
 	r = UPNP_AddPortMapping(urls.controlURL, data.CIF.servicetype,
-	                        port, port, addr, 0, "TCP", 0);
+                                port, port, addr, 0, "TCP", 0);
 #else
 	r = UPNP_AddPortMapping(urls.controlURL, data.servicetype,
-	                        port, port, addr, 0, "TCP", 0);
+                                port, port, addr, 0, "TCP", 0);
 #endif /* UPNPCOMMAND_HTTP_ERROR */
 #endif /* UPNPDISCOVER_SUCCESS */
 	if(r!=UPNPCOMMAND_SUCCESS)

@@ -26,8 +26,8 @@ Normal usage is as follows:
        the key, and the number of bytes in the key.
    [3] To encrypt a 64-bit block, call Blowfish_Encrypt with a pointer to
        BLOWFISH_CTX, a pointer to the 32-bit left half of the plaintext
-	   and a pointer to the 32-bit right half.  The plaintext will be
-	   overwritten with the ciphertext.
+           and a pointer to the 32-bit right half.  The plaintext will be
+           overwritten with the ciphertext.
    [4] Decryption is the same as encryption except that the plaintext and
        ciphertext are reversed.
 
