@@ -26,6 +26,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_config.h"
 #include "dinoex_main.h"
+#include "dinoex_ssl.h"
 #include "dinoex_misc.h"
 
 
@@ -1071,7 +1072,6 @@ void dumpgdata(void)
             iter->con.remoteaddr);
   gdata_iter_print_string(nick);
   gdata_irlist_iter_end;
-  gdata_print_int(num_dccchats);
 
   gdata_print_number_cast("%d",curtime,int);
   
@@ -2268,9 +2268,25 @@ int ir_boutput_attempt_flush(ir_boutput_t *bout)
       assert(segment->begin <= IR_BOUTPUT_SEGMENT_SIZE);
       assert(segment->end <= IR_BOUTPUT_SEGMENT_SIZE);
       
-      retval = write(bout->fd,
-                     segment->buffer + segment->begin,
-                     segment->end - segment->begin);
+      if (bout->flags & BOUTPUT_SSL)
+        {
+#ifdef USE_OPENSSL
+          retval = chat_write_ssl(bout->sslp,
+                                  segment->buffer + segment->begin,
+                                  segment->end - segment->begin);
+#endif /* USE_OPENSSL */
+#ifdef USE_GNUTLS
+          retval = chat_write_tls(bout->tlsp,
+                                  segment->buffer + segment->begin,
+                                  segment->end - segment->begin);
+#endif /* USE_GNUTLS */
+        }
+      else
+        {
+          retval = write(bout->fd,
+                         segment->buffer + segment->begin,
+                         segment->end - segment->begin);
+        }
       
       if ((retval < 0) && (errno != EAGAIN))
         {

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -23,6 +23,7 @@
 #include "dinoex_irc.h"
 #include "dinoex_badip.h"
 #include "dinoex_misc.h"
+#include "dinoex_chat.h"
 #include "dinoex_telnet.h"
 
 #ifndef WITHOUT_TELNET
@@ -152,7 +153,6 @@ static void telnet_accept(unsigned int i)
     return;
   }
 
-  ++(gdata.num_dccchats);
   chat->status = DCCCHAT_AUTHENTICATING;
   chat->net = 0;
   chat->nick = mystrdup("telnet"); /* NOTRANSLATE */
@@ -171,19 +171,19 @@ static void telnet_accept(unsigned int i)
   mydelete(msg);
 
   if (is_in_badip(&(chat->con.remote))) {
-    shutdowndccchat(chat, 0);
+    chat_shutdown(chat, 0);
     return;
   }
 
   if (irlist_size(&gdata.telnet_allow) > 0) {
     if (!verify_cidr(&gdata.telnet_allow, &(chat->con.remote))) {
-      shutdowndccchat(chat, 0);
+      chat_shutdown(chat, 0);
       return;
     }
   }
 
   if (verify_cidr(&gdata.telnet_deny, &(chat->con.remote))) {
-    shutdowndccchat(chat, 0);
+    chat_shutdown(chat, 0);
     return;
   }
 
@@ -191,7 +191,7 @@ static void telnet_accept(unsigned int i)
 
   backup = gnetwork;
   gnetwork = &(gdata.networks[chat->net]);
-  setup_chat_banner(chat);
+  chat_banner(chat);
   gnetwork = backup;
 }
 

@@ -39,10 +39,7 @@ static void u_redraw(const userinput * const u);
 static void u_delhist(const userinput * const u);
 static void u_info(const userinput * const u);
 static void u_psend(const userinput * const u);
-static void u_quit(const userinput * const u);
 static void u_status(const userinput * const u);
-static void u_chatme(const userinput * const u);
-static void u_chatl(const userinput * const u);
 static void u_rehash(const userinput * const u);
 static void u_botinfo(const userinput * const u);
 static void u_ignl(const userinput * const u);
@@ -211,11 +208,11 @@ static const userinput_parse_t userinput_parse[] = {
 {6,5,method_allow_all,a_cleargets,     "CLEARGETS",NULL,"Clears download counters for each pack and total sent and uptime"},
 {6,5,method_console,  u_redraw,        "REDRAW",NULL,"Redraws the Screen"},
 {6,5,method_console,  u_delhist,       "DELHIST",NULL,"Deletes console history"},
-{6,1,method_dcc,      u_quit,          "QUIT",NULL,"Close this DCC chat"},
-{6,1,method_dcc,      u_quit,          "EXIT",NULL,"Close this DCC chat"},
-{6,1,method_dcc,      u_quit,          "LOGOUT",NULL,"Close this DCC chat"},
-{6,1,method_msg,      u_chatme,        "CHATME",NULL,"Sends you a DCC Chat Request"},
-{6,1,method_allow_all,u_chatl,         "CHATL",NULL,"Lists DCC chat information"},
+{6,1,method_dcc,      a_quit,          "QUIT",NULL,"Close this DCC chat"},
+{6,1,method_dcc,      a_quit,          "EXIT",NULL,"Close this DCC chat"},
+{6,1,method_dcc,      a_quit,          "LOGOUT",NULL,"Close this DCC chat"},
+{6,1,method_msg,      a_chatme,        "CHATME","[options]","Sends you a DCC Chat Request"},
+{6,1,method_allow_all,a_chatl,         "CHATL",NULL,"Lists DCC chat information"},
 {6,5,method_allow_all,a_closec,        "CLOSEC","[id]","Closes DCC chat <id>"},
 {6,5,method_console,  u_debug,         "DEBUG","x","Set debugging level to <x>"},
 {6,5,method_allow_all,a_config,        "CONFIG","key value","Set config variable <key> to <value>"},
@@ -1181,17 +1178,6 @@ static void u_psend(const userinput * const u)
   
 }
 
-static void u_quit(const userinput * const u)
-{
-  updatecontext();
-  
-  ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "DCC CHAT: QUIT");
-  u_respond(u,"Bye.");
-  
-  shutdowndccchat(u->chat,1);
-  /* caller deletes */
-}
-
 static void u_status(const userinput * const u) {
    char *tempstr = mymalloc(maxtextlength);
    
@@ -1202,89 +1188,6 @@ static void u_status(const userinput * const u) {
    
    mydelete(tempstr);
    }
-
-static void u_chatme(const userinput * const u) {
-   
-   updatecontext();
-   
-   u_respond(u,"Sending You A DCC Chat Request");
-   
-   if (setupdccchatout(u->snick, u->hostmask, NULL))
-      u_respond(u,"[Failed to listen, try again]");
-   
-   
-   }
-
-static void u_chatl(const userinput * const u)
-{
-  char *tempstr;
-  dccchat_t *chat;
-  int count;
-  
-  updatecontext();
-  
-  if (!gdata.num_dccchats)
-    {
-      u_respond(u,"No Active DCC Chats");
-      return;
-    }
-  
-  for (chat = irlist_get_head(&gdata.dccchats), count = 1;
-       chat;
-       chat = irlist_get_next(chat), count++)
-    {
-      if (chat->status == DCCCHAT_UNUSED)
-        {
-          continue;
-        }
-      
-      a_respond(u, "DCC CHAT %u:", count);
-      switch (chat->status)
-        {
-        case DCCCHAT_LISTENING:
-          u_respond(u,"  Chat sent to %s. Waiting for inbound connection.",
-                    chat->nick);
-          break;
-          
-        case DCCCHAT_CONNECTING:
-          u_respond(u,"  Chat received from %s. Waiting for outbound connection.",
-                    chat->nick);
-          break;
-          
-        case DCCCHAT_AUTHENTICATING:
-          u_respond(u,"  Chat established with %s. Waiting for password.",
-                    chat->nick);
-          break;
-          
-        case DCCCHAT_CONNECTED:
-          u_respond(u,"  Chat established with %s.",
-                    chat->nick);
-          break;
-          
-        case DCCCHAT_UNUSED:
-        default:
-          outerror(OUTERROR_TYPE_WARN_LOUD,
-                   "Unexpected dccchat state %u", chat->status);
-          break;
-        }
-      
-      tempstr = mymalloc(maxtextlengthshort);
-      
-      user_getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
-      u_respond(u,"  Connected at %s",tempstr);
-      
-      user_getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
-      u_respond(u,"  Last contact %s",tempstr);
-      
-      mydelete(tempstr);
-      
-      a_respond(u, "  Local: %s, Remote: %s",
-                chat->con.localaddr,
-                chat->con.remoteaddr);
-    }
-  
-  return;
-}
 
 static void u_rehash(const userinput * const u) {
    

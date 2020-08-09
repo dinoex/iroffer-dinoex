@@ -3,7 +3,7 @@
  * Copyright (C) 1998-2005 David Johnson 
  * 
  * By using this file, you agree to the terms and conditions set
- * forth in the GNU General Public License.  More information is    
+ * forth in the GNU General Public License.  More information is
  * available in the LICENSE file.
  * 
  * If you received this file without documentation, it can be
@@ -28,6 +28,7 @@
 #include "dinoex_jobs.h"
 #include "dinoex_http.h"
 #include "dinoex_main.h"
+#include "dinoex_chat.h"
 #include "dinoex_misc.h"
 
 
@@ -1077,7 +1078,7 @@ void shutdowniroffer(void) {
            chat = irlist_delete(&gdata.dccchats,chat))
         {
           writedccchat(chat, 0, "iroffer exited (shutdown), Closing DCC Chat\n");
-          shutdowndccchat(chat,1);
+          chat_shutdown(chat, 1);
         }
       
       mylog("iroffer exited (shutdown)\n\n");
@@ -1129,8 +1130,8 @@ void shutdowniroffer(void) {
            getuptime(tempstr2, 1, gdata.startuptime, maxtextlengthshort);
            snprintf(msg, maxtextlength,
                     "QUIT :%s" /* NOTRANSLATE */
-		    "%s%s - running %s",
-		    "iroffer-dinoex" " " VERSIONLONG,
+                    "%s%s - running %s",
+                    "iroffer-dinoex" " " VERSIONLONG,
                     gdata.hideos ? "" : " - ",
                     gdata.hideos ? "" : gdata.osstring,
                     tempstr2);
@@ -1139,9 +1140,9 @@ void shutdowniroffer(void) {
        else
          {
            if (strcmp(gdata.quit_msg, "none") != 0) /* NOTRANSLATE */
-	     snprintf(msg, maxtextlength, "QUIT :%s", gdata.quit_msg); /* NOTRANSLATE */
+             snprintf(msg, maxtextlength, "QUIT :%s", gdata.quit_msg); /* NOTRANSLATE */
            else
-	     snprintf(msg, maxtextlength, "QUIT"); /* NOTRANSLATE */
+             snprintf(msg, maxtextlength, "QUIT"); /* NOTRANSLATE */
          }
        for (ss=0; ss<gdata.networks_online; ss++)
          {
@@ -1673,12 +1674,12 @@ void startupiroffer(void) {
      {
        outerror(
 #if BLOCKROOT && !defined(_OS_CYGWIN)
-		OUTERROR_TYPE_CRASH,
+                OUTERROR_TYPE_CRASH,
 #else
-		OUTERROR_TYPE_WARN_LOUD,
+                OUTERROR_TYPE_WARN_LOUD,
 #endif
-		"iroffer should not be run as root!"
-		);
+                "iroffer should not be run as root!"
+                );
      }
    
    if (!gdata.background)

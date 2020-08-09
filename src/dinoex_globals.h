@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2020 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -190,14 +190,10 @@ typedef struct {
   time_t next_restrict;
 
 #ifdef USE_OPENSSL
-  SSL_CTX *ssl_ctx;
-  SSL *ssl;
+  ir_openssl_t ssl;
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
-  gnutls_session_t session;
-  gnutls_certificate_credentials_t user_cred;
-  gnutls_x509_crt_t nick_cert;
-  gnutls_x509_privkey_t nick_key;
+  ir_gnutls_t tls;
 #endif /* USE_GNUTLS */
   prefix_t prefixes[MAX_PREFIX];
   char chanmodes[MAX_CHANMODES];

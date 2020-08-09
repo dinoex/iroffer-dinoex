@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+418) DCC SCHAT
+  Erlaube SSL verschlüsselte admin chats.
+
 bugfix: DCC CHAT
   Chats ohne Verbindung wurden nie abgebiochen.
 

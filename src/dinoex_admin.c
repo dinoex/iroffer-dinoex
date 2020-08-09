@@ -28,6 +28,8 @@
 #include "dinoex_config.h"
 #include "dinoex_ruby.h"
 #include "dinoex_transfer.h"
+#include "dinoex_ssl.h"
+#include "dinoex_chat.h"
 #include "dinoex_misc.h"
 #include "strnatcmp.h"
 
@@ -502,7 +504,7 @@ unsigned int reorder_new_groupdesc(const char *group, const char *desc)
   return k;
 }
 
-unsigned static int reorder_groupdesc(const char *group)
+static unsigned int reorder_groupdesc(const char *group)
 {
   xdcc *xd;
   xdcc *firstxd;
@@ -1713,24 +1715,24 @@ static void a_qul2(const userinput * const u, irlist_t *list)
     rtime = get_next_transfer_time();
     add_new_transfer_time(pq->xpack);
     if (rtime < 359999U) {
-       a_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
-                 i,
-                 pq->nick,
-                 number_of_pack(pq->xpack),
-                 getfilename(pq->xpack->file),
-                 (long)((gdata.curtime-pq->queuedtime)/60/60),
-                 (long)(((gdata.curtime-pq->queuedtime)/60)%60),
-                 (long)(rtime/60/60),
-                 (long)(rtime/60)%60);
-     } else {
-       a_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
-                 i,
-                 pq->nick,
-                 number_of_pack(pq->xpack),
-                 getfilename(pq->xpack->file),
-                 (long)((gdata.curtime-pq->queuedtime)/60/60),
-                 (long)(((gdata.curtime-pq->queuedtime)/60)%60));
-     }
+      a_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim   %2lih%2lim",
+                i,
+                pq->nick,
+                number_of_pack(pq->xpack),
+                getfilename(pq->xpack->file),
+                (long)((gdata.curtime-pq->queuedtime)/60/60),
+                (long)(((gdata.curtime-pq->queuedtime)/60)%60),
+                (long)(rtime/60/60),
+                (long)(rtime/60)%60);
+    } else {
+      a_respond(u, "   %2i  %-9s   %-4d %-32s   %2lih%2lim  Unknown",
+                i,
+                pq->nick,
+                number_of_pack(pq->xpack),
+                getfilename(pq->xpack->file),
+                (long)((gdata.curtime-pq->queuedtime)/60/60),
+                (long)(((gdata.curtime-pq->queuedtime)/60)%60));
+    }
   }
 }
 
@@ -2199,7 +2201,7 @@ void a_removedir(const userinput * const u)
   updatecontext();
 
   if (invalid_dir(u, u->arg1) != 0)
-   return;
+    return;
 
   thedir = mystrdup(u->arg1);
   d = a_open_dir_error(u, &thedir);
@@ -2668,10 +2670,10 @@ void a_addgroup(const userinput * const u)
   updatecontext();
 
   if (invalid_group(u, u->arg1) != 0)
-     return;
+    return;
 
   if (invalid_dir(u, u->arg2) != 0)
-     return;
+    return;
 
   if (gdata.groupsincaps)
     caps(u->arg1);
@@ -2841,7 +2843,7 @@ void a_chnote(const userinput * const u)
 
   num = get_pack_nr1(u, u->arg1);
   if (num <= 0)
-     return;
+    return;
 
   xd = irlist_get_nth(&gdata.xdccs, num - 1);
   if (group_restricted(u, xd))
@@ -3483,10 +3485,10 @@ void a_regroup(const userinput * const u)
   updatecontext();
 
   if (invalid_group(u, u->arg1) != 0)
-     return;
+    return;
 
   if (invalid_group(u, u->arg2) != 0)
-     return;
+    return;
 
   if (gdata.groupsincaps) {
     caps(u->arg1);
@@ -4493,10 +4495,10 @@ static void a_rmq3(irlist_t *list)
   for (pq = irlist_get_head(list);
        pq;
        pq = irlist_delete(list, pq)) {
-     gnetwork = &(gdata.networks[pq->net]);
-     notice(pq->nick, "** Removed From Queue: Owner Requested Remove");
-     mydelete(pq->nick);
-     mydelete(pq->hostname);
+    gnetwork = &(gdata.networks[pq->net]);
+    notice(pq->nick, "** Removed From Queue: Owner Requested Remove");
+    mydelete(pq->nick);
+    mydelete(pq->hostname);
   }
   gnetwork = backup;
 }
@@ -4933,7 +4935,104 @@ static void a_closec_sub(const userinput * const u, dccchat_t *chat)
   } else {
     writedccchat(chat, 0, "Disconnected due to CLOSEC\n");
   }
-  shutdowndccchat(chat, 1);
+  chat_shutdown_ssl(chat, 1);
+}
+
+void a_quit(const userinput * const u)
+{
+  updatecontext();
+
+  ioutput(OUT_S|OUT_L, COLOR_MAGENTA, "DCC CHAT: QUIT");
+  a_respond(u, "Bye.");
+
+  chat_shutdown_ssl(u->chat, 1);
+}
+
+void a_chatme(const userinput * const u)
+{
+  int flags = 0;
+
+  updatecontext();
+
+  a_respond(u, "Sending You A DCC Chat Request");
+
+  if (u->arg1 != NULL) {
+    if (strcasecmp(u->arg1, "SCHAT") == 0) /* NOTRANSLATE */
+      flags = 1;
+  }
+  if (chat_setup_out(u->snick, u->hostmask, NULL, flags))
+    a_respond(u, "[Failed to listen, try again]");
+}
+
+void a_chatl(const userinput * const u)
+{
+  char *tempstr;
+  dccchat_t *chat;
+  int count;
+
+  updatecontext();
+
+  if (irlist_size(&gdata.dccchats)) {
+    a_respond(u, "No Active DCC Chats");
+    return;
+  }
+
+  for (chat = irlist_get_head(&gdata.dccchats), count = 1;
+       chat;
+       chat = irlist_get_next(chat), count++) {
+    if (chat->status == DCCCHAT_UNUSED)
+      continue;
+
+    a_respond(u, "DCC CHAT %u:", count);
+    switch (chat->status) {
+    case DCCCHAT_LISTENING:
+      a_respond(u, "  Chat sent to %s. Waiting for inbound connection.",
+                chat->nick);
+      break;
+
+    case DCCCHAT_CONNECTING:
+      a_respond(u, "  Chat received from %s. Waiting for outbound connection.",
+                chat->nick);
+      break;
+
+    case DCCCHAT_SSL_CONNECT:
+          /* fallthrough */
+    case DCCCHAT_SSL_ACCEPT:
+      a_respond(u, "  Chat established with %s." " Waiting for SSL handshake.",
+                chat->nick);
+      break;
+
+    case DCCCHAT_AUTHENTICATING:
+      a_respond(u, "  Chat established with %s." " Waiting for password.",
+                chat->nick);
+      break;
+
+    case DCCCHAT_CONNECTED:
+      a_respond(u, "  Chat established with %s.",
+                chat->nick);
+      break;
+
+    case DCCCHAT_UNUSED:
+    default:
+      outerror(OUTERROR_TYPE_WARN_LOUD,
+               "Unexpected dccchat state %u", chat->status);
+      break;
+    }
+
+    tempstr = mymalloc(maxtextlengthshort);
+
+    user_getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
+    a_respond(u, "  Connected at %s", tempstr);
+
+    user_getdatestr(tempstr, chat->con.connecttime, maxtextlengthshort);
+    a_respond(u, "  Last contact %s", tempstr);
+
+    mydelete(tempstr);
+
+    a_respond(u, "  Local: %s, Remote: %s",
+                chat->con.localaddr,
+                chat->con.remoteaddr);
+  }
 }
 
 void a_closec(const userinput * const u)
@@ -5545,7 +5644,7 @@ static void a_announce_msg(const userinput * const u, const char *match, unsigne
   for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     if (gnetwork->noannounce != 0)
-     continue;
+      continue;
 
     add_snprintf(suffix, maxtextlength - 2, "/MSG %s XDCC SEND %u",
                  get_user_nick(), num);

@@ -29,7 +29,7 @@ static unsigned int is_in_badip4(ir_uint32 remoteip)
 
 #ifdef USE_GEOIP
 #ifndef WITHOUT_HTTP
-  if (http_check_geoip(remoteip))
+  if (http_check_geoip(remoteip) != 0)
     return 2; /* blocked by GeoIP */
 #endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP */
@@ -54,7 +54,7 @@ static unsigned int is_in_badip6(struct in6_addr *remoteip)
 #ifdef USE_GEOIP
 #ifdef USE_GEOIP6
 #ifndef WITHOUT_HTTP
-  if (http_check_geoip6(remoteip))
+  if (http_check_geoip6(remoteip) != 0)
     return 2; /* blocked by GeoIP */
 #endif /* WITHOUT_HTTP */
 #endif /* USE_GEOIP6 */
@@ -82,7 +82,7 @@ unsigned int is_in_badip(ir_sockaddr_union_t *sa)
 {
 #ifdef USE_MAXMINDDB
 #ifndef WITHOUT_HTTP
-  if (http_check_maxminddb(&(sa->sa), "HTTP")) /* NOTRANSLATE */
+  if (http_check_maxminddb(&(sa->sa), "HTTP") != 0) /* NOTRANSLATE */
     return 2; /* blocked by GeoIP */
 #endif /* WITHOUT_HTTP */
 #endif /* USE_MAXMINDDB */

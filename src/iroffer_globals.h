@@ -327,7 +327,6 @@ int ignore;
 unsigned int attop, needsclear, termcols, termlines, nocolor, noscreen;
 unsigned int curcol;
 unsigned int console_history_offset;
-unsigned int num_dccchats;
 unsigned int stdout_buffer_init;
 
 struct termios startup_tio;
