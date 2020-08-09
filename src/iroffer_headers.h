@@ -140,12 +140,35 @@ typedef struct
   char buffer[IR_BOUTPUT_SEGMENT_SIZE];
 } ir_boutput_segment_t;
 
+#ifdef USE_OPENSSL
+typedef struct {
+  SSL_CTX *ssl_ctx;
+  SSL *ssl;
+} ir_openssl_t;
+#endif /* USE_OPENSSL */
+
+#ifdef USE_GNUTLS
+typedef struct {
+  gnutls_session_t session;
+  gnutls_certificate_credentials_t user_cred;
+  gnutls_x509_crt_t user_cert;
+  gnutls_x509_privkey_t user_key;
+  gnutls_priority_t priority_cache;
+} ir_gnutls_t;
+#endif /* USE_GNUTLS */
+
 typedef struct
 {
   int fd;
   unsigned int flags;
   struct MD5Context *md5sum;
   irlist_t segments;
+#ifdef USE_OPENSSL
+  ir_openssl_t *sslp;
+#endif /* USE_OPENSSL */
+#ifdef USE_GNUTLS
+  ir_gnutls_t *tlsp;
+#endif /* USE_GNUTLS */
   unsigned int count_written;
   unsigned int count_flushed;
   unsigned int count_dropped;
@@ -333,13 +356,21 @@ typedef enum
 {
   DCCCHAT_UNUSED,
   DCCCHAT_LISTENING,
+  DCCCHAT_SSL_ACCEPT,
   DCCCHAT_CONNECTING,
+  DCCCHAT_SSL_CONNECT,
   DCCCHAT_AUTHENTICATING,
   DCCCHAT_CONNECTED
 } dccchat_e;
 
 typedef struct
 {
+#ifdef USE_OPENSSL
+  ir_openssl_t ssl;
+#endif /* USE_OPENSSL */
+#ifdef USE_GNUTLS
+  ir_gnutls_t tls;
+#endif /* USE_GNUTLS */
   ir_connection_t con;
   ir_boutput_t boutput;
   const char *name;
@@ -349,7 +380,7 @@ typedef struct
   dccchat_e status;
   unsigned int net;
   unsigned int level;
-  unsigned int dummy;
+  int use_ssl;
   char dcc_input_line[INPUT_BUFFER_LENGTH];
 } dccchat_t;
 
@@ -651,7 +682,7 @@ const char *strsignal(int sig);
 
 /* permanently add/delete items (includes malloc/free) */
 #ifndef WITHOUT_MEMSAVE
-#define irlist_add(x,y) irlist_add2(x,y,__FUNCTION__,__FILE__,__LINE__)
+#define irlist_add(x,y) irlist_add2(x,y,__extension__ __FUNCTION__,__FILE__,__LINE__)
 void* irlist_add2(irlist_t *list, size_t size,
                   const char *src_function, const char *src_file, unsigned int src_line);
 #else
@@ -732,15 +763,7 @@ void write_statefile(void);
 unsigned int read_statefile(void);
 
 /* dccchat.c */
-int setupdccchatout(const char *nick, const char *hostmask, const char *token);
-void setup_chat_banner(dccchat_t *chat);
-void setupdccchataccept(dccchat_t *chat);
-int setupdccchat(const char *nick,
-                 const char *hostmask,
-                 const char *line);
-void setupdccchatconnected(dccchat_t *chat);
-void parsedccchat(dccchat_t *chat,
-                  char* line);
+void parsedccchat(dccchat_t *chat, char* line);
 
 void
 #ifdef __GNUC__
@@ -755,7 +778,6 @@ __attribute__ ((format(printf, 3, 0)))
 vwritedccchat(dccchat_t *chat, int add_return, const char *format, va_list ap);
 void flushdccchat(dccchat_t *chat);
 void writestatus(dccchat_t *chat);
-void shutdowndccchat(dccchat_t *chat, int flush);
 
 /* plugins.c */
 void plugin_initialize (void);

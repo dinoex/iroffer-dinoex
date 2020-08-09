@@ -13,6 +13,12 @@
  *
  */
 
+void chat_shutdown(dccchat_t *chat, int flush);
+int chat_setup_out(const char *nick, const char *hostmask, const char *token,
+               int use_ssl);
+int chat_setup(const char *nick, const char *hostmask, const char *line,
+               int use_ssl);
+void chat_banner(dccchat_t *chat);
 unsigned int dcc_host_password(dccchat_t *chat, char *passwd);
 void chat_writestatus(void);
 int chat_select_fdset(int highests);

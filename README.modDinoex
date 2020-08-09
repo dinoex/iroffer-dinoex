@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+418) DCC SCHAT
+  Support SSL encrpyted admin chats.
+
 bugfix: DCC CHAT
   Chats waiting for connection where never terminated.
 

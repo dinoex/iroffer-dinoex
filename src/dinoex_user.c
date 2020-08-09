@@ -56,7 +56,7 @@ typedef struct {
 
 static const char *type_list[2] = { "NOTICE", "PRIVMSG" }; /* NOTRANSLATE */
 
-const static option_list_t xdcc_option_list[] = {
+static const option_list_t xdcc_option_list[] = {
   { "IPV4",    DCC_OPTION_IPV4,    ~DCC_OPTION_IPV4 }, /* NOTRANSLATE */
   { "IPV6",    DCC_OPTION_IPV6,    ~DCC_OPTION_IPV6 }, /* NOTRANSLATE */
   { "ACTIVE",  DCC_OPTION_ACTIVE , ~DCC_OPTION_ACTIVE }, /* NOTRANSLATE */
@@ -153,6 +153,30 @@ static void log_chat_attempt(privmsginput *pi)
           pi->nick, pi->hostmask, gnetwork->name);
 }
 
+static void command_dcc_chat(privmsginput *pi, int use_ssl)
+{
+  if (verifyshell(&gdata.adminhost, pi->hostmask)) {
+    log_chat_attempt(pi);
+    chat_setup(pi->nick, pi->hostmask, pi->line, use_ssl);
+    return;
+  }
+  if (verifyshell(&gdata.hadminhost, pi->hostmask)) {
+    log_chat_attempt(pi);
+    chat_setup(pi->nick, pi->hostmask, pi->line, use_ssl);
+    return;
+  }
+  if (verifyhost_group(pi->hostmask)) {
+    log_chat_attempt(pi);
+    chat_setup(pi->nick, pi->hostmask, pi->line, use_ssl);
+    return;
+  }
+  notice(pi->nick, "DCC Chat denied from %s", pi->hostmask);
+  ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
+          "DCC CHAT attempt denied from %s (%s on %s)",
+          pi->nick, pi->hostmask, gnetwork->name);
+  return;
+}
+
 static void command_dcc(privmsginput *pi)
 {
   if (strcmp(pi->msg2, "RESUME") == 0) { /* NOTRANSLATE */
@@ -164,26 +188,11 @@ static void command_dcc(privmsginput *pi)
   }
 
   if (strcmp(pi->msg2, "CHAT") == 0) { /* NOTRANSLATE */
-    if (verifyshell(&gdata.adminhost, pi->hostmask)) {
-      log_chat_attempt(pi);
-      setupdccchat(pi->nick, pi->hostmask, pi->line);
-      return;
-    }
-    if (verifyshell(&gdata.hadminhost, pi->hostmask)) {
-      log_chat_attempt(pi);
-      setupdccchat(pi->nick, pi->hostmask, pi->line);
-      return;
-    }
-    if (verifyhost_group(pi->hostmask)) {
-      log_chat_attempt(pi);
-      setupdccchat(pi->nick, pi->hostmask, pi->line);
-      return;
-    }
-    notice(pi->nick, "DCC Chat denied from %s", pi->hostmask);
-    ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-            "DCC CHAT attempt denied from %s (%s on %s)",
-            pi->nick, pi->hostmask, gnetwork->name);
-    return;
+    command_dcc_chat(pi, 0);
+  }
+
+  if (strcmp(pi->msg2, "SCHAT") == 0) { /* NOTRANSLATE */
+    command_dcc_chat(pi, 1);
   }
 
   if (strcmp(pi->msg2, "SEND") == 0) { /* NOTRANSLATE */
