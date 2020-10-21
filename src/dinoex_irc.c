@@ -1748,7 +1748,6 @@ void irc_perform(int changesec)
         length = read(gnetwork->serv_resolv.sp_fd[0],
                       &remote, sizeof(res_addrinfo_t));
 
-        kill(gnetwork->serv_resolv.child_pid, SIGKILL);
         FD_CLR(gnetwork->serv_resolv.sp_fd[0], &gdata.readset);
 
         if (length != sizeof(res_addrinfo_t)) {
