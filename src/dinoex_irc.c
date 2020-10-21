@@ -681,7 +681,7 @@ void irc_resolved(void)
   unsigned int ss;
   int status;
 
-  while ((child = waitpid(-1, &status, WNOHANG)) > 0) {
+  while ((child = waitpid(-1, &status, WNOHANG | WEXITED)) > 0) {
     for (ss=0; ss<gdata.networks_online; ++ss) {
       if (child != gdata.networks[ss].serv_resolv.child_pid)
         continue;
