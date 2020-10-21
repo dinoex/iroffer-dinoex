@@ -801,6 +801,7 @@ void startup_myruby(void)
   rb_define_global_function("iroffer_privmsg", cie_privmsg, 2); /* NOTRANSLATE */
   Init_IrofferEvent();
   load_script(gdata.ruby_script);
+  set_signal_handler();
 }
 
 /* cleanup interpreter */

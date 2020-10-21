@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: dns resolver
+  Reap childs that have been exited
+
 419) ADMIN CHATME SCHAT
   Support SSL encrpyted admin chats.
 

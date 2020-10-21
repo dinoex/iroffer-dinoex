@@ -748,6 +748,7 @@ char* getstatuslinenums(char *str, size_t len);
 void sendxdlqueue(void);
 void initprefixes(void);
 void initvars(void);
+void set_signal_handler(void);
 void startupiroffer(void);
 void isrotatelog(void);
 void createpassword(void);

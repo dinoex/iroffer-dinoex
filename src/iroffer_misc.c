@@ -217,7 +217,7 @@ static int connectirc (server_t *tserver) {
      {
        /* child */
        child_resolver(family);
-       sleep(60);
+       sleep(5);
        _exit(0);
      }
    
@@ -1527,38 +1527,10 @@ void initvars(void)
   }
   return;
 }
-   
-void startupiroffer(void) {
-   char *tempstr23;
-#if !defined(NO_SETUID)
-   uid_t runasuid = 0;
-   gid_t runasgid = 0;
-   gid_t *groups = NULL;
-   int ngroups = 0;
-   int ii;
-#endif
+
+void set_signal_handler(void)
+{
    struct sigaction sa;
-   struct rlimit rlim;
-   int callval;
-   unsigned int ss;
-   unsigned int save;
-   
-   updatecontext();
-   
-   srand((unsigned int)( (getpid()*5000) + (gdata.curtime%5000) ));
-   
-   if (!gdata.background) {
-      initscreen(1, 1);
-      gotobot();
-      gototop();
-      }
-   
-   printf("\n");
-   if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_YELLOW);
-   printf("Welcome to " "iroffer-dinoex" " - " "https://iroffer.net/" FEATURES "\n"
-          "Version " VERSIONLONG "\n");
-   if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_RESET);
-   printf("\n");
    
    /* signal handling */
    bzero(&sa, sizeof(sa));
@@ -1587,6 +1559,42 @@ void startupiroffer(void) {
    signal(SIGALRM,SIG_IGN);
    signal(SIGHUP,SIG_IGN);
    signal(SIGTSTP,SIG_IGN);
+}
+
+void startupiroffer(void)
+{
+   char *tempstr23;
+#if !defined(NO_SETUID)
+   uid_t runasuid = 0;
+   gid_t runasgid = 0;
+   gid_t *groups = NULL;
+   int ngroups = 0;
+   int ii;
+#endif
+   struct rlimit rlim;
+   int callval;
+   unsigned int ss;
+   unsigned int save;
+   
+   updatecontext();
+   
+   srand((unsigned int)( (getpid()*5000) + (gdata.curtime%5000) ));
+   
+   if (!gdata.background) {
+      initscreen(1, 1);
+      gotobot();
+      gototop();
+      }
+   
+   printf("\n");
+   if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_YELLOW);
+   printf("Welcome to " "iroffer-dinoex" " - " "https://iroffer.net/" FEATURES "\n"
+          "Version " VERSIONLONG "\n");
+   if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_RESET);
+   printf("\n");
+   
+   /* signal handling */
+   set_signal_handler();
    
    printf("** " "iroffer-dinoex" " is distributed under the GNU General Public License.\n"
           "**    please see the LICENSE for more information.\n");
