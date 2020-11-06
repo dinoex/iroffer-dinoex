@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: upnp_router
+  Probleme mit der Port-Weiterleitung und AVM-Routern behoben.
+
 bugfix: dns resolver
   Die Prozesse abräumen.
 
