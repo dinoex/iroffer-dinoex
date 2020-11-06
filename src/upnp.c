@@ -2,7 +2,7 @@
 Copyright (c) 2005-2007, Thomas BERNARD
 All rights reserved.
 
-Copyright (c) 2007-2017 Dirk Meyer
+Copyright (c) 2007-2020 Dirk Meyer
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -112,7 +112,7 @@ char *upnp_get_dccip (void)
 {
 	externalIPAddress[0] = 0;
 #ifdef UPNPCOMMAND_HTTP_ERROR
-	UPNP_GetExternalIPAddress(urls.controlURL, data.CIF.servicetype, externalIPAddress);
+	UPNP_GetExternalIPAddress(urls.controlURL, data.first.servicetype, externalIPAddress);
 #else
 	UPNP_GetExternalIPAddress(urls.controlURL, data.servicetype, externalIPAddress);
 #endif /* UPNPCOMMAND_HTTP_ERROR */
@@ -137,11 +137,11 @@ void upnp_add_redir (const char * addr, const char * port)
 		return;
 	}
 #ifdef UPNPDISCOVER_SUCCESS
-	r = UPNP_AddPortMapping(urls.controlURL, data.CIF.servicetype,
+	r = UPNP_AddPortMapping(urls.controlURL, data.first.servicetype,
                                 port, port, addr, NULL, "TCP", NULL, NULL);
 #else
 #ifdef UPNPCOMMAND_HTTP_ERROR
-	r = UPNP_AddPortMapping(urls.controlURL, data.CIF.servicetype,
+	r = UPNP_AddPortMapping(urls.controlURL, data.first.servicetype,
                                 port, port, addr, 0, "TCP", 0);
 #else
 	r = UPNP_AddPortMapping(urls.controlURL, data.servicetype,
@@ -173,7 +173,7 @@ void upnp_rem_redir (int port)
 		return;
 	}
 #ifdef UPNPCOMMAND_HTTP_ERROR
-	UPNP_DeletePortMapping(urls.controlURL, data.CIF.servicetype, port_str, "TCP", 0);
+	UPNP_DeletePortMapping(urls.controlURL, data.first.servicetype, port_str, "TCP", 0);
 #else
 	UPNP_DeletePortMapping(urls.controlURL, data.servicetype, port_str, "TCP", 0);
 #endif /* UPNPCOMMAND_HTTP_ERROR */
