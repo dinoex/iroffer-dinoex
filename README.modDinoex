@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: upnp_router
+  Fix port redirection with AVM routers.
+
 bugfix: dns resolver
   Reap childs that have been exited
 
