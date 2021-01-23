@@ -1,7 +1,7 @@
 #!/usr/local/bin/ruby -w
 
 # Author::    Dirk Meyer
-# Copyright:: Copyright (c) 2008 - 2019 Dirk Meyer
+# Copyright:: Copyright (c) 2008 - 2021 Dirk Meyer
 # License::   Distributes under the same terms as Ruby
 
 require 'resolv'
@@ -152,8 +152,9 @@ class IrofferEvent
   # Admin Command: RUBY rmdup [ test | remove ]
   def rmdup( remove = nil )
     seen = Hash.new
-    pack = 1
+    pack = 0
     while true do
+      pack += 1
       file = info_pack(pack, "file" )
       if file.nil?
         break
@@ -162,14 +163,12 @@ class IrofferEvent
       if seen.has_key?( file )
         warning("duplicate file in pack #{pack} first pack #{seen[ file ]}: #{file}" )
         if  remove != "remove"
-          pack += 1
           next
         end
         command( "remove", pack )
         next
       end
       seen[ file ] = pack
-      pack += 1
     end
   end
 
