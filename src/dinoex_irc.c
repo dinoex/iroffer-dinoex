@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2020 Dirk Meyer
+ * Copyright (C) 2004-2021 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -347,12 +347,12 @@ unsigned int bind_irc_vhost(int family, int clientsocket)
   if (family != AF_INET6 ) {
     addrlen = sizeof(struct sockaddr_in);
     localaddr.sin.sin_family = AF_INET;
-    localaddr.sin.sin_port = 0;
+    localaddr.sin.sin_port = htons(0);
     e = inet_pton(family, vhost, &(localaddr.sin.sin_addr));
   } else {
     addrlen = sizeof(struct sockaddr_in6);
     localaddr.sin6.sin6_family = AF_INET6;
-    localaddr.sin6.sin6_port = 0;
+    localaddr.sin6.sin6_port = htons(0);
     e = inet_pton(family, vhost, &(localaddr.sin6.sin6_addr));
   }
 
