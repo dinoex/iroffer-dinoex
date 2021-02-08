@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2020 Dirk Meyer
+ * Copyright (C) 2004-2021 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -113,8 +113,8 @@ int chat_setup_out(const char *nick, const char *hostmask, const char *token,
   mydelete(token2);
   mydelete(msg);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "DCC CHAT sent to %s on %s, waiting for connection on %s port %d",
-          nick, chat->name, chat->con.localaddr, chat->con.local.sin.sin_port);
+          "DCC CHAT sent to %s on %s, waiting for connection on %s",
+          nick, chat->name, chat->con.localaddr);
   return 0;
 }
 
@@ -247,8 +247,8 @@ int chat_setup(const char *nick, const char *hostmask, const char *line,
   chat->con.remoteaddr = mystrdup(msg);
   mydelete(msg);
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA,
-          "DCC CHAT received from %s on %s, attempting connection to %s port %d",
-          nick, chat->name, chat->con.remoteaddr, chat->con.remote.sin.sin_port);
+          "DCC CHAT received from %s on %s, attempting connection to %s",
+          nick, chat->name, chat->con.remoteaddr);
   return 0;
 }
 
