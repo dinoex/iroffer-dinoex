@@ -1136,7 +1136,7 @@ void dumpgdata(void)
   gdata_iter_print_number_cast("%d", st_ino, int);
   gdata_iter_print_number_cast("%d", xtime, int);
   dump_line("  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "d",
-          iter,
+          (void *)iter,
           iter->gets,
           iter->minspeed,
           iter->maxspeed,
@@ -1169,7 +1169,7 @@ void dumpgdata(void)
       {
         dump_line(
                 "  : ptr=%p ref_count=%d mmap_ptr=%p mmap_offset=0x%.8" LLPRINTFMT "X mmap_size=0x%.8" LLPRINTFMT "X",
-                iter2,
+                (void *)iter2,
                 iter2->ref_count,
                 iter2->mmap_ptr,
                 (ir_uint64)(iter2->mmap_offset),
@@ -1184,7 +1184,7 @@ void dumpgdata(void)
   gdata_iter_print_string(hostname);
   dump_line(
           "  : xpack=%p queuedtime=%ld",
-          iter->xpack,
+          (void *)iter->xpack,
           (long)iter->queuedtime);
   dump_line("  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
   dump_line("  : net=%d", iter->net + 1 );
@@ -1195,7 +1195,7 @@ void dumpgdata(void)
   gdata_iter_print_string(hostname);
   dump_line(
           "  : xpack=%p queuedtime=%ld",
-          iter->xpack,
+          (void *)iter->xpack,
           (long)iter->queuedtime);
   dump_line("  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
   dump_line("  : net=%d", iter->net + 1 );
@@ -1222,7 +1222,7 @@ void dumpgdata(void)
           (long)iter->con.lastcontact,
           (long)iter->con.connecttime,
           iter->lastspeed,
-          iter->xpack);
+          (void *)iter->xpack);
   dump_line(
           "  : listenport=%d local%s remote%s",
           iter->con.localport,
@@ -1230,7 +1230,7 @@ void dumpgdata(void)
           iter->con.remoteaddr);
   dump_line("  : restrictsend_bad=%ld" , (long)iter->restrictsend_bad );
 #ifdef HAVE_MMAP
-  dump_line("  : mmap_info=%p", iter->mmap_info);
+  dump_line("  : mmap_info=%p", (void *)iter->mmap_info);
 #endif
   /* severaddress */
   gdata_iter_print_string(nick);
@@ -1280,7 +1280,7 @@ void dumpgdata(void)
   gdata_iter_print_number_cast("%u",listen_time,unsigned int);
   gdata_irlist_iter_end;
   
-  gdata_print_number("%p", md5build.xpack);
+  gdata_print_number_cast("%p", md5build.xpack, void *);
   gdata_print_int(md5build.file_fd);
   
   /* meminfo */
