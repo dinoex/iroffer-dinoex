@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2020 Dirk Meyer
+ * Copyright (C) 2004-2021 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -177,27 +177,27 @@ static VALUE cie_new(VALUE rclass)
   return tdata;
 }
 
-static VALUE cie_network(void)
+static VALUE cie_network(VALUE UNUSED(self))
 {
   return rb_str_new(gnetwork->name, strlen(gnetwork->name));
 }
 
-static VALUE cie_inputline(void)
+static VALUE cie_inputline(VALUE UNUSED(self))
 {
   return rb_str_new(cLine, strlen(cLine));
 }
 
-static VALUE cie_added_file(void)
+static VALUE cie_added_file(VALUE UNUSED(self))
 {
   return rb_str_new(cFile, strlen(cFile));
 }
 
-static VALUE cie_added_pack(void)
+static VALUE cie_added_pack(VALUE UNUSED(self))
 {
   return INT2NUM(cPack);
 }
 
-static VALUE cie_hostmask(void)
+static VALUE cie_hostmask(VALUE UNUSED(self))
 {
   VALUE copy;
   char *val;
@@ -211,7 +211,7 @@ static VALUE cie_hostmask(void)
   return copy;
 }
 
-static VALUE cie_mynick(void)
+static VALUE cie_mynick(VALUE UNUSED(self))
 {
   const char *mynick;
 
@@ -219,7 +219,7 @@ static VALUE cie_mynick(void)
   return rb_str_new(mynick, strlen(mynick));
 }
 
-static VALUE cie_nick(void)
+static VALUE cie_nick(VALUE UNUSED(self))
 {
   VALUE copy;
   char *val;
@@ -239,7 +239,7 @@ static VALUE cie_nick(void)
   return copy;
 }
 
-static VALUE cie_channel(void)
+static VALUE cie_channel(VALUE UNUSED(self))
 {
   VALUE copy;
   char *val;
@@ -253,7 +253,7 @@ static VALUE cie_channel(void)
   return copy;
 }
 
-static VALUE cie_message(void)
+static VALUE cie_message(VALUE UNUSED(self))
 {
   VALUE copy;
   char *val;

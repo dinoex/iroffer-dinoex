@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2018 Dirk Meyer
+ * Copyright (C) 2004-2021 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -349,7 +349,7 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
   char *vhost;
   CURL *ch;
   CURLcode ces;
-  CURLcode cms;
+  CURLMcode cms;
 
   updatecontext();
 
