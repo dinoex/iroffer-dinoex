@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2020 Dirk Meyer
+ * Copyright (C) 2004-2021 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -526,6 +526,8 @@ static unsigned int report_no_arg(const char *key, const char *text)
 
 static void invalid_args(const char *key, const char *text)
 {
+  if (text == NULL)
+    text = "(null)"; /* NOTRANSLATE */
   outerror(OUTERROR_TYPE_WARN,
            "%s:%ld ignored '%s' because it has invalid args: '%s'",
            current_config, current_line, key, text);
