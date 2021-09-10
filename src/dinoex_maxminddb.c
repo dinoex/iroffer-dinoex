@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2019-2020 Dirk Meyer
+ * Copyright (C) 2019-2021 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -34,7 +34,7 @@ typedef struct {
   char code[8];
 } ir_maxminddb;
 
-static ir_maxminddb maxminddb_data = { NULL, {}, 0 };
+static ir_maxminddb maxminddb_data = { NULL };
 
 static time_t maxminddb_time(const char *name)
 {
@@ -58,6 +58,7 @@ static void maxminddb_close(ir_maxminddb *maxminddb)
     MMDB_close(&(maxminddb->mmdb));
     maxminddb->gi = NULL;
   }
+  maxminddb->loaded = 0;
 }
 
 static void maxminddb_open(ir_maxminddb *maxminddb, const char *maxmindfile)
