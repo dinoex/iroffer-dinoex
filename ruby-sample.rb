@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby -w
+#!/usr/local/bin/ruby
 
 # Author::    Dirk Meyer
 # Copyright:: Copyright (c) 2008 - 2021 Dirk Meyer
