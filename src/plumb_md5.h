@@ -19,9 +19,10 @@
  *  - Ian Jackson <ian@chiark.greenend.org.uk>.
  * Still in the public domain.
  *
- * @(#) iroffer_md5.h 1.5@(#)
- * pmg@wellington.i202.centerclick.org|src/iroffer_md5.h|20040403025021|46162
- * 
+ * SPDX-FileCopyrightText: 1993 Colin Plumb
+ * SPDX-FileCopyrightText: 1995 Ian Jackson
+ * SPDX-License-Identifier: CC-PDDC
+ *
  */
 
 #ifndef MD5_H

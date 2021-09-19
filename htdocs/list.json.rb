@@ -1,8 +1,10 @@
 # htdocs/json.txt.rb: export file info as list.
 
 # Author::    Dirk Meyer
-# Copyright:: Copyright (c) 2012 - 2019 Dirk Meyer
+# Copyright:: Copyright (c) 2012-2021 Dirk Meyer
 # License::   Distributes under the same terms as Ruby
+# SPDX-FileCopyrightText: 2012-2021 Dirk Meyer
+# SPDX-License-Identifier: Ruby
 
 require 'json'
 

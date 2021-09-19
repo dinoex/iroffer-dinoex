@@ -1,5 +1,8 @@
 #!/bin/sh
 #
+# SPDX-FileCopyrightText: 2009-2021 Dirk Meyer
+# SPDX-License-Identifier: GPL-2.0-only
+#
 all="LICENSE README THANKS header.html footer.html doc/iroffer.1.txt doc/xdcc.7.txt"
 fen="README.modDinoex sample.config help-admin-en.txt"
 fde="LIESMICH.modDinoex beispiel.config help-admin-de.txt"
