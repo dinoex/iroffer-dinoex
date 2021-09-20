@@ -53,7 +53,7 @@ typedef struct {
 static int http_listen[MAX_VHOSTS];
 static int http_family[MAX_VHOSTS];
 
-static const char *http_header_status =
+static const char * const http_header_status =
 "HTTP/1.1 %u OK\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
 "Last-Modified: %s\r\n" /* NOTRANSLATE */
@@ -62,7 +62,7 @@ static const char *http_header_status =
 "Connection: close\r\n" /* NOTRANSLATE */
 "Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */;
 
-static const char *http_header_notfound =
+static const char * const http_header_notfound =
 "HTTP/1.1 404 Not Found\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
 "Server: " "iroffer-dinoex" "/" VERSIONLONG "\r\n" /* NOTRANSLATE */
@@ -73,7 +73,7 @@ static const char *http_header_notfound =
 "Not Found\r\n"
 "\r\n"; /* NOTRANSLATE */
 
-static const char *http_header_forbidden =
+static const char * const http_header_forbidden =
 "HTTP/1.1 403 Forbidden\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
 "Server: " "iroffer-dinoex" "/" VERSIONLONG "\r\n" /* NOTRANSLATE */
@@ -85,7 +85,7 @@ static const char *http_header_forbidden =
 "\r\n"; /* NOTRANSLATE */
 
 #ifndef WITHOUT_HTTP_ADMIN
-static const char *http_header_admin =
+static const char * const http_header_admin =
 "HTTP/1.1 401 Unauthorized\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
 "WWW-Authenticate: Basic realm=\"iroffer admin\"\r\n" /* NOTRANSLATE */
@@ -96,7 +96,7 @@ static const char *http_header_admin =
 "Authorization Required\r\n"
 "\r\n"; /* NOTRANSLATE */
 
-static const char *htpp_auth_key = "Basic "; /* NOTRANSLATE */
+static const char * const htpp_auth_key = "Basic "; /* NOTRANSLATE */
 #endif /* WITHOUT_HTTP_ADMIN */
 
 typedef struct {
@@ -679,7 +679,7 @@ static void h_closeconn(http * const h, const char *msg, int errno1)
   h->status = HTTP_STATUS_DONE;
 }
 
-static void h_write_header(http * const h, const char *header)
+static void h_write_header(http * const h, const char * const header)
 {
   char *tempstr;
   char *date;
@@ -749,7 +749,7 @@ static void h_start_sending(http * const h)
             "HTTP '%s' response %ld bytes", h->url, (long)(h->range_end - h->range_start));
 }
 
-static void h_error(http * const h, const char *header)
+static void h_error(http * const h, const char * const header)
 {
   updatecontext();
 

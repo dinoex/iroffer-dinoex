@@ -1236,7 +1236,8 @@ static int botonly_parse(int type, privmsginput *pi)
 
 static void autoqueuef(unsigned int pack, const char *message, privmsginput *pi)
 {
-  const char *format = "** Sending You %s by DCC";
+  const char * const format = "** Sending You %s by DCC";
+  size_t len;
   char *tempstr = NULL;
   const char *msg;
 
@@ -1244,9 +1245,9 @@ static void autoqueuef(unsigned int pack, const char *message, privmsginput *pi)
 
   ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
   if (message) {
-    tempstr = mymalloc(strlen(message) + strlen(format) - 1);
-    snprintf(tempstr, strlen(message) + strlen(format) - 1,
-             format, message);
+    len = strlen(message) + strlen(format) - 1;
+    tempstr = mymalloc(len);
+    snprintf(tempstr, len, format, message);
   }
   send_xdcc_file2(&msg, pi, pack, tempstr, NULL, NULL);
   pi->msg2 = mystrdup("AutoSend");
