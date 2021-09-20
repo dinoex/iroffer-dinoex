@@ -1,17 +1,21 @@
-/*      
- * iroffer by David Johnson (PMG) 
- * Copyright (C) 1998-2005 David Johnson 
- * 
+/*
+ * iroffer by David Johnson (PMG)
+ * Copyright (C) 1998-2005 David Johnson
+ *
  * By using this file, you agree to the terms and conditions set
- * forth in the GNU General Public License.  More information is    
+ * forth in the GNU General Public License.  More information is
  * available in the LICENSE file.
- * 
+ *
  * If you received this file without documentation, it can be
  * downloaded from http://iroffer.org/
- * 
+ *
+ * SPDX-FileCopyrightText: 1998-2005 David Johnson
+ * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
  * @(#) iroffer_upload.c 1.50@(#)
  * pmg@wellington.i202.centerclick.org|src/iroffer_upload.c|20050313183435|24505
- * 
+ *
  */
 
 /* include the headers */

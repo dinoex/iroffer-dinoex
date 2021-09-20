@@ -1,5 +1,8 @@
 #!/bin/sh
-
+#
+# SPDX-FileCopyrightText: 2005 David Johnson
+# SPDX-FileCopyrightText: 2005-2021 Dirk Meyer
+# SPDX-License-Identifier: GPL-2.0-only
 #
 # $Id$
 #

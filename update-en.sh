@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2005-2021 Dirk Meyer
+# SPDX-License-Identifier: GPL-2.0-only
 
 copy_if_differ() {
 	if diff "${1}" "${2}"

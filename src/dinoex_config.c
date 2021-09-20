@@ -9,6 +9,9 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
+ * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
  * $Id$
  *
  */

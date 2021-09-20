@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2010-2021 Dirk Meyer
+# SPDX-License-Identifier: GPL-2.0-only
 ver="${1-2.1}"
 name="miniupnpc-${ver}"
 curl -o "${name}.tar.gz" "http://miniupnp.free.fr/files/${name}.tar.gz"

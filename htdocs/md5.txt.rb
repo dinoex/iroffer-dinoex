@@ -7,6 +7,8 @@
 # Author::    Dirk Meyer
 # Copyright:: Copyright (c) 2011 - 2019 Dirk Meyer
 # License::   Distributes under the same terms as Ruby
+# SPDX-FileCopyrightText: 2011-2021 Dirk Meyer
+# SPDX-License-Identifier: Ruby
 
 now = Time.now.to_s
 

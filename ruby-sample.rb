@@ -3,6 +3,8 @@
 # Author::    Dirk Meyer
 # Copyright:: Copyright (c) 2008 - 2021 Dirk Meyer
 # License::   Distributes under the same terms as Ruby
+# SPDX-FileCopyrightText: 2008-2021 Dirk Meyer
+# SPDX-License-Identifier: Ruby
 
 require 'resolv'
 

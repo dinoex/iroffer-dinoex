@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2011-2021 Dirk Meyer
+# SPDX-License-Identifier: GPL-2.0-only
+
 if test $# != 2
 then
 	echo "Usage: ${0##*/} mybot.log mrtg.log" >&2

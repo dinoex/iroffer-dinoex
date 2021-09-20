@@ -2,7 +2,7 @@
 Copyright (c) 2005-2007, Thomas BERNARD
 All rights reserved.
 
-Copyright (c) 2007-2020 Dirk Meyer
+Copyright (c) 2007-2021 Dirk Meyer
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,10 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
+
+SPDX-FileCopyrightText: 2005-2007 Thomas Bernard
+SPDX-FileCopyrightText: 2007-2021 Dirk Meyer
+SPDX-License-Identifier: BSD-3-Clause-Attribution
 
 $Id$
 

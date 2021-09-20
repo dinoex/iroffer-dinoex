@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2020 Dirk Meyer
+ * Copyright (C) 2004-2021 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -8,6 +8,9 @@
  *
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
+ *
+ * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
  *
@@ -1233,7 +1236,8 @@ static int botonly_parse(int type, privmsginput *pi)
 
 static void autoqueuef(unsigned int pack, const char *message, privmsginput *pi)
 {
-  const char *format = "** Sending You %s by DCC";
+  const char * const format = "** Sending You %s by DCC";
+  size_t len;
   char *tempstr = NULL;
   const char *msg;
 
@@ -1241,9 +1245,9 @@ static void autoqueuef(unsigned int pack, const char *message, privmsginput *pi)
 
   ++(gnetwork->inamnt[gdata.curtime%INAMNT_SIZE]);
   if (message) {
-    tempstr = mymalloc(strlen(message) + strlen(format) - 1);
-    snprintf(tempstr, strlen(message) + strlen(format) - 1,
-             format, message);
+    len = strlen(message) + strlen(format) - 1;
+    tempstr = mymalloc(len);
+    snprintf(tempstr, len, format, message);
   }
   send_xdcc_file2(&msg, pi, pack, tempstr, NULL, NULL);
   pi->msg2 = mystrdup("AutoSend");

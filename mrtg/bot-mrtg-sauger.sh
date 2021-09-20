@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2011-2021 Dirk Meyer
+# SPDX-License-Identifier: GPL-2.0-only
+
 log="${1-mybot.log}"
 new=`grep -s Stat: "${log}" | tail -n 1`
 new="${new#*Stat: }"
