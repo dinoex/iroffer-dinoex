@@ -673,6 +673,7 @@ Loke_AF
 	reporting xddclistfile delay
 	suggesting "VERSION"
 	suggesting verbose "listen on" message
+	reporting adddir_min_size bug
 
 Nouhime
 	reporting "http_search" bug
