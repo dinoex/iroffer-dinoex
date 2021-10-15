@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: adddir_min_size (reported by Loke_AF)
+  Korrektur des Multiplikators von 64k auf 1k
+
 bugfix: upnp_router
   Probleme mit der Port-Weiterleitung und AVM-Routern behoben.
 

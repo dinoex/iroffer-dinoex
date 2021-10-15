@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: adddir_min_size (reported by Loke_AF)
+  Fix multiplicator from 64k to 1k
+
 bugfix: upnp_router
   Fix port redirection with AVM routers.
 
