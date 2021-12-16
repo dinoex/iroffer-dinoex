@@ -1260,7 +1260,7 @@ void dump_slow_context(void)
   context_t *last;
   ir_uint64 offset;
   unsigned int i;
-  unsigned int show;
+  unsigned int show = 0;
 
   last = NULL;
   lastline = mymalloc(maxtextlength);
@@ -1269,7 +1269,6 @@ void dump_slow_context(void)
     c = &gdata.context_log[(gdata.context_cur_ptr + 1 + i) % MAXCONTEXTS];
     if (c->file == NULL)
       continue;
-    show = 0;
     if (last != NULL) {
       offset = c->tv.tv_sec - last->tv.tv_sec;
       offset *= 1000000;
@@ -1279,17 +1278,18 @@ void dump_slow_context(void)
         show = 1;
       }
     }
+    last = c;
+    if (show == 0)
+      continue;
     snprintf(lastline, maxtextlength,
-             "Trace %3u  %-20s %-16s:%5u  %lu.%06lu",
+             "Trace %3d  %-20s %-16s:%5u  %lu.%06lu",
              i-MAXCONTEXTS+1,
              c->func ? c->func : "UNKNOWN",
              c->file ? c->file : "UNKNOWN",
              c->line,
              (unsigned long)c->tv.tv_sec,
              (unsigned long)c->tv.tv_usec);
-    last = c;
-    if (show)
-      ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
+    ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
   }
   mydelete(lastline);
 }
