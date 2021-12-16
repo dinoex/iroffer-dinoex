@@ -170,7 +170,7 @@ static void read_statefile_md5info(statefile_hdr_t *hdr, const char *tag, xdcc *
     xd->st_size = (off_t)((((ir_uint64)ntohl(md5sum_info->st_size.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_size.lower)));
     xd->st_dev  = (dev_t)((((ir_uint64)ntohl(md5sum_info->st_dev.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_dev.lower)));
     xd->st_ino  = (ino_t)((((ir_uint64)ntohl(md5sum_info->st_ino.upper)) << 32) | ((ir_uint64)ntohl(md5sum_info->st_ino.lower)));
-    netval = (ir_int32)md5sum_info->mtime;
+    netval = md5sum_info->mtime;
     xd->mtime   = ntohl(netval);
     memcpy(xd->md5sum, md5sum_info->md5sum, sizeof(MD5Digest));
     return;
@@ -596,10 +596,10 @@ static void write_statefile_xdccs(ir_moutput_t *bout)
   unsigned char *next;
   xdcc *xd;
   statefile_item_md5sum_info32_t *md5sum_info;
-  unsigned int has_desc = 1;
-  unsigned int has_note = 1;
-  unsigned int has_minspeed;
-  unsigned int has_maxspeed;
+  int has_desc = 1;
+  int has_note = 1;
+  int has_minspeed;
+  int has_maxspeed;
   size_t length;
 
   updatecontext();
