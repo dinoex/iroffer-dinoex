@@ -271,7 +271,7 @@ static void free_state(void)
     mydelete(xd->trigger);
   }
 
-  for (ss = gdata.networks_online; ss--; ) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     gnetwork = &(gdata.networks[ss]);
     mydelete(gnetwork->curserveractualname);
     mydelete(gnetwork->user_nick);
