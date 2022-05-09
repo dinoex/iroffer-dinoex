@@ -153,7 +153,7 @@ typedef struct
   statefile_uint64_t st_size;
   statefile_uint64_t st_dev;
   statefile_uint64_t st_ino;
-  ir_int32 mtime;
+  ir_uint32 mtime;
   MD5Digest md5sum;
 } statefile_item_md5sum_info32_t;
 

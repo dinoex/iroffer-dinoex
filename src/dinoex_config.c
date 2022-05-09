@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2021 Dirk Meyer
+ * Copyright (C) 2004-2022 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -190,10 +190,10 @@ static char *print_config_long2(ir_int64 val)
   return text;
 }
 
+#ifndef NO_CRYPT
 /* validate config and warn if password is not encrypted */
 static void checkadminpass2(const char *key, const char *adminpass)
 {
-#ifndef NO_CRYPT
   unsigned int err=0;
   unsigned int i;
 
@@ -214,8 +214,8 @@ static void checkadminpass2(const char *key, const char *adminpass)
   if (err) outerror(OUTERROR_TYPE_CRASH,
                     "%s:%ld %s is not encrypted!",
                     current_config, current_line, key);
-#endif /* NO_CRYPT */
 }
+#endif /* NO_CRYPT */
 
 static int config_sorted_check(config_name_t config_name_f)
 {
@@ -730,7 +730,9 @@ static unsigned int set_config_string(const char *key, char *text)
                 current_config, current_line, key, text);
        return 0;
      }
+#ifndef NO_CRYPT
      checkadminpass2(key, text);
+#endif /* NO_CRYPT */
      /* fallthrough */
   case 1:
      convert_to_unix_slash(text);
@@ -1191,7 +1193,7 @@ static void c_autosendpack(const char * UNUSED(key), char *var)
   if (part[0] && part[1]) {
     autoqueue_t *aq;
     aq = irlist_add(&gdata.autoqueue, sizeof(autoqueue_t));
-    rawval = atoi(part[0]);
+    rawval = (unsigned int)strtoul(part[0], NULL, 10);
     if (rawval == XDCC_SEND_LIST) {
       aq->pack = XDCC_SEND_LIST;
     } else {

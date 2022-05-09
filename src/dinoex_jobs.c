@@ -2485,7 +2485,7 @@ void expire_options(void)
 
   too_old = gdata.curtime;
   too_old -= 24*60*60; /* 24 hrs */
-  for (ss = gdata.networks_online; ss--; ) {
+  for (ss=0; ss<gdata.networks_online; ++ss) {
     dcc_options = irlist_get_head(&gdata.networks[ss].dcc_options);
     while(dcc_options) {
       if (dcc_options->last_seen >= too_old) {
