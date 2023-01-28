@@ -244,8 +244,10 @@ static size_t html_encode(char *buffer, size_t max, const char *src)
       if (ch != http_special[i].s_ch)
         continue;
       len = strlen(http_special[i].s_html);
-      if (len > max)
-        len = max;
+      if (len > max) {
+        max = 0;
+        break;
+      }
       strncpy(dest, http_special[i].s_html, len);
       dest += len;
       max -= len;
