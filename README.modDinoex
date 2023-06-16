@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+bugfix: FETCH
+  Now newer libcurl API 7.55 is used.
+
 420) PRINT
   Support for variables of list type
 

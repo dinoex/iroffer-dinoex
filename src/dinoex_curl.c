@@ -607,17 +607,30 @@ void dinoex_dcl(const userinput *const u)
 {
   fetch_curl_t *ft;
   fetch_queue_t *fq;
+#if LIBCURL_VERSION_NUM <= 0x73701
   double dl_total;
   double dl_size;
+#else
+  curl_off_t dl_total;
+  curl_off_t dl_size;
+#endif
   int progress;
 
   updatecontext();
   for (ft = irlist_get_head(&fetch_trans); ft; ft = irlist_get_next(ft)) {
+#if LIBCURL_VERSION_NUM <= 0x73701
     dl_size = 0.0;
     curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD, &dl_size);
 
     dl_total = 0.0;
     curl_easy_getinfo(ft->curlhandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &dl_total);
+#else
+    dl_size = 0;
+    curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD_T, &dl_size);
+
+    dl_total = 0;
+    curl_easy_getinfo(ft->curlhandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &dl_total);
+#endif
 
     progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
@@ -636,16 +649,24 @@ void dinoex_dcld(const userinput *const u)
   fetch_curl_t *ft;
   fetch_queue_t *fq;
   char *effective_url;
+#if LIBCURL_VERSION_NUM <= 0x73701
   double dl_total;
   double dl_size;
   double dl_speed;
   double dl_time;
+#else
+  curl_off_t dl_total;
+  curl_off_t dl_size;
+  curl_off_t dl_speed;
+  curl_off_t dl_time;
+#endif
   int progress;
   int started;
   int left;
 
   updatecontext();
   for (ft = irlist_get_head(&fetch_trans); ft; ft = irlist_get_next(ft)) {
+#if LIBCURL_VERSION_NUM <= 0x73701
     dl_size = 0.0;
     curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD, &dl_size);
 
@@ -657,6 +678,19 @@ void dinoex_dcld(const userinput *const u)
 
     dl_time = 0.0;
     curl_easy_getinfo(ft->curlhandle, CURLINFO_TOTAL_TIME, &dl_time);
+#else
+    dl_size = 0;
+    curl_easy_getinfo(ft->curlhandle, CURLINFO_SIZE_DOWNLOAD_T, &dl_size);
+
+    dl_total = 0;
+    curl_easy_getinfo(ft->curlhandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &dl_total);
+
+    dl_speed = 0;
+    curl_easy_getinfo(ft->curlhandle, CURLINFO_SPEED_DOWNLOAD_T, &dl_speed);
+
+    dl_time = 0;
+    curl_easy_getinfo(ft->curlhandle, CURLINFO_TOTAL_TIME_T, &dl_time);
+#endif
 
     effective_url = NULL;
     curl_easy_getinfo(ft->curlhandle, CURLINFO_EFFECTIVE_URL, &effective_url);
