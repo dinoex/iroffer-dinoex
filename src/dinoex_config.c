@@ -932,6 +932,75 @@ static unsigned int set_config_list(const char *key, char *text)
   return 0;
 }
 
+static size_t add_delimiter(char *val, size_t len)
+{
+  if ( len <= 1 ) {
+    return 0;
+  }
+  return add_snprintf(val + len, maxtextlength - len,
+                      "%s", "," ); /* NOTRANSLATE */
+}
+
+static char *print_config_list(const char *key)
+{
+  ir_cidr_t *cidr;
+  size_t len = 1;
+  int i;
+  unsigned int netmask;
+  char ip6[maxtextlengthshort];
+  char *string;
+  char *val = NULL;
+
+  updatecontext();
+
+  i = config_find_list(key);
+  if (i < 0)
+    return NULL;
+
+  val = mymalloc(maxtextlength);
+  val[0] = '[';
+  val[1] = 0;
+  switch (config_parse_list[i].flags) {
+  case 5:
+    cidr = irlist_add(config_parse_list[i].list, sizeof(ir_cidr_t));
+    for (cidr = irlist_get_head(config_parse_list[i].list);
+         cidr;
+         cidr = irlist_get_next(cidr)) {
+      len += add_delimiter(val, len);
+      my_getnameinfo(ip6, maxtextlengthshort - 1, &(cidr->remote.sa));
+      netmask = 0;
+      if (cidr->family == AF_INET) {
+        netmask = 32;
+      }
+      if (cidr->family == AF_INET6) {
+        netmask = 128;
+      }
+      if (cidr->netmask == netmask) {
+        len += add_snprintf(val + len, maxtextlength - len,
+                            "%s", /* NOTRANSLATE */
+                            ip6);
+      } else {
+        len += add_snprintf(val + len, maxtextlength - len,
+                            "%s/%u", /* NOTRANSLATE */
+                            ip6, cidr->netmask);
+      }
+    }
+    break;
+  default:
+    for (string = irlist_get_head(config_parse_list[i].list);
+         string;
+         string = irlist_get_next(string)) {
+      len += add_delimiter(val, len);
+      len += add_snprintf(val + len, maxtextlength - len,
+                          "\"%s\"", /* NOTRANSLATE */
+                          string);
+    }
+  }
+  len += add_snprintf(val + len, maxtextlength - len,
+                      "%s", "]" ); /* NOTRANSLATE */
+  return val;
+}
+
 static void dump_config_list(void)
 {
   ir_cidr_t *cidr;
@@ -2757,6 +2826,10 @@ char *print_config_key(const char *key)
   if (val != NULL)
     return val;
 
+  val = print_config_list(key);
+  if (val != NULL)
+    return val;
+
   val = print_config_fprint(key);
   if (val != NULL)
     return val;
@@ -2838,6 +2911,7 @@ size_t config_expand(char *buffer, size_t max, int print)
   found = config_expand_search_typ(config_name_bool, buffer, j, &first);
   found += config_expand_search_typ(config_name_int, buffer, j, &first);
   found += config_expand_search_typ(config_name_string, buffer, j, &first);
+  found += config_expand_search_typ(config_name_list, buffer, j, &first);
   found += config_expand_search_typ(print ? config_name_fprint : config_name_func, buffer, j, &first);
   if (found == 0)
     return 0;
@@ -2849,6 +2923,7 @@ size_t config_expand(char *buffer, size_t max, int print)
   config_expand_list_typ(config_name_bool, buffer, j, first);
   config_expand_list_typ(config_name_int, buffer, j, first);
   config_expand_list_typ(config_name_string, buffer, j, first);
+  config_expand_list_typ(config_name_list, buffer, j, first);
   config_expand_list_typ(print ? config_name_fprint : config_name_func, buffer, j, first);
   tostdout("\n");
   return 0;

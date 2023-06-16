@@ -3,6 +3,12 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.33:
 ----------------
 
+bugfix: FETCH
+  Es wird jetzt das neue libcurl API 7.55 verwendet.
+
+420) PRINT 
+  Ausgabe von Variablen des Typs Liste.
+
 bugfix: adddir_min_size (reported by Loke_AF)
   Korrektur des Multiplikators von 64k auf 1k
 

@@ -829,3 +829,6 @@ slingamn
 fred
 	suggesting "auth_name" with username
 
+Choke
+	suggesting PRINT for lists
+
