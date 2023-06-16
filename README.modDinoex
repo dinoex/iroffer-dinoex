@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.33:
 ------------------
 
+420) PRINT
+  Support for variables of list type
+
 bugfix: adddir_min_size (reported by Loke_AF)
   Fix multiplicator from 64k to 1k
 
