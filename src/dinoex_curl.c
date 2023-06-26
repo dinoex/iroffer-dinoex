@@ -79,7 +79,7 @@ void curl_startup(void)
 /* close the curl lib */
 void curl_shutdown(void)
 {
-  if (cm == NULL) {
+  if (cm != NULL) {
     curl_multi_cleanup(cm);
     cm = NULL;
   }
