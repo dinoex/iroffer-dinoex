@@ -2266,7 +2266,7 @@ int ir_boutput_attempt_flush(ir_boutput_t *bout)
   
   while ((segment = irlist_get_head(&bout->segments)))
     {
-      int retval;
+      int retval = 0;
       
       assert(segment->begin <= segment->end);
       assert(segment->begin <= IR_BOUTPUT_SEGMENT_SIZE);
