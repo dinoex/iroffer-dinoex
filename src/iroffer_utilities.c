@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2023 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_utilities.c 1.205@(#)
@@ -2266,7 +2266,7 @@ int ir_boutput_attempt_flush(ir_boutput_t *bout)
   
   while ((segment = irlist_get_head(&bout->segments)))
     {
-      int retval;
+      int retval = 0;
       
       assert(segment->begin <= segment->end);
       assert(segment->begin <= IR_BOUTPUT_SEGMENT_SIZE);

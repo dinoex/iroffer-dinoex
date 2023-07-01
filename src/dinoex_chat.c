@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2021 Dirk Meyer
+ * Copyright (C) 2004-2023 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2023 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -309,7 +309,9 @@ static void chat_accept(dccchat_t *chat)
 {
   SIGNEDSOCK int addrlen;
   char *msg;
+#if defined(USE_OPENSSL) || defined(USE_GNUTLS)
   int flags = 0;
+#endif /* USE_OPENSSL or USE_GNUTLS */
 
   updatecontext();
 
