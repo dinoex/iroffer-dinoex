@@ -309,7 +309,9 @@ static void chat_accept(dccchat_t *chat)
 {
   SIGNEDSOCK int addrlen;
   char *msg;
+#if defined(USE_OPENSSL) || defined(USE_GNUTLS)
   int flags = 0;
+#endif /* USE_OPENSSL or USE_GNUTLS */
 
   updatecontext();
 
