@@ -354,7 +354,9 @@ vprivmsg_chan(channel_t * const ch, const char *format, va_list ap)
 {
   char tempstr[maxtextlength];
   ssize_t len;
+#ifndef WITHOUT_BLOWFISH
   size_t ulen;
+#endif /* WITHOUT_BLOWFISH */
 
   if (ch == NULL) return;
   if (!ch->name) return;
