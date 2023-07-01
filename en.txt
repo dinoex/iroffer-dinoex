@@ -1808,3 +1808,4 @@
 2844 "XDCCS"
 2845 "[options]"
 2846 " Waiting for SSL handshake."
+2847 "Trace %3d  %-20s %-16s:%5u  %lu.%06lu"
