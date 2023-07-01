@@ -42,6 +42,7 @@
 #pragma GCC diagnostic ignored "-Wgcc-compat"
 #pragma GCC diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 #endif
+#undef HAVE_MMAP
 #include "ruby.h"
 #if USE_RUBYVERSION < 19
 #ifndef RSTRING_PTR
