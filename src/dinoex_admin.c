@@ -4975,7 +4975,7 @@ void a_chatl(const userinput * const u)
 
   updatecontext();
 
-  if (irlist_size(&gdata.dccchats)) {
+  if (!irlist_size(&gdata.dccchats)) {
     a_respond(u, "No Active DCC Chats");
     return;
   }

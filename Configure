@@ -7,7 +7,7 @@
 # $Id$
 #
 
-VERSION="3.33"
+VERSION="3.34"
 RELEASE=1
 
 if [ $RELEASE -eq 1 ]; then
