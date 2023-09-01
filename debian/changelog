@@ -1,3 +1,11 @@
+iroffer-dinoex (3.34-1) unstable; urgency=low
+
+  * Update to 3.34
+
+iroffer-dinoex (3.33-1) unstable; urgency=low
+
+  * Update to 3.33
+
 iroffer-dinoex (3.33-1) unstable; urgency=medium
 
   * Initial release (Closes: #580686)

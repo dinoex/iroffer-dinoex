@@ -1,5 +1,11 @@
 Aktuelle Version auf: https://iroffer.net/
 
+Ab Version 3.34:
+----------------
+
+bugfix: CHATL (reported by richtofenmedia)
+  Korrektur der Bestimmung der laufenden Chats
+
 Ab Version 3.33:
 ----------------
 

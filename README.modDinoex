@@ -1,5 +1,11 @@
 Updated version on: https://iroffer.net/
 
+With Version 3.34:
+------------------
+
+bugfix: CHATL (reported by richtofenmedia)
+  Fix detction of running chats
+
 With Version 3.33:
 ------------------
 
