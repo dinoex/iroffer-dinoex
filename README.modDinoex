@@ -4,7 +4,10 @@ With Version 3.34:
 ------------------
 
 bugfix: CHATL (reported by richtofenmedia)
-  Fix detction of running chats
+  Fix detection of running chats
+
+bugfix: max_upspeed
+  Fix default to match documentation
 
 With Version 3.33:
 ------------------
