@@ -6,6 +6,9 @@ Ab Version 3.34:
 bugfix: CHATL (reported by richtofenmedia)
   Korrektur der Bestimmung der laufenden Chats
 
+bugfix: max_upspeed
+  Korrektur des Default-Wertes laut Beschreibung
+
 Ab Version 3.33:
 ----------------
 
