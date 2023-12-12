@@ -226,6 +226,9 @@ static const char *html_mime(const char *file)
   return http_magic[i].m_mime;
 }
 
+#ifndef __clang__
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
 static size_t html_encode(char *buffer, size_t max, const char *src)
 {
   char *dest = buffer;
