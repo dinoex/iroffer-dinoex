@@ -7,11 +7,12 @@
 # SPDX-License-Identifier: Ruby
 
 require 'resolv'
+require 'date'
 
 # Write something in a logfile with date and time.
 def write_log( *args )
   f = File.open( "ruby-dump.txt", "a+" )
-  f.write Time.now.to_s
+  f.write DateTime.now.to_s
   f.write " "
   f.write args.join(' ')
   f.write "\n"
