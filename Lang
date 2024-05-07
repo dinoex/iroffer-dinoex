@@ -57,9 +57,9 @@ utf-8)
 	;;
 esac
 echo -n "parsing ... "
-sed -e 's| |	|' en.txt > en.tmp
+sed -e 's| |	|' en.txt > "en.tmp.${lang}"
 sed -e 's| |	|' "${lang}.txt" > "${lang}.tmp"
-join -t '	' en.tmp "${lang}.tmp" |
+join -t '	' "en.tmp.${lang}" "${lang}.tmp" |
 sed -e 's|^[0-9]*|s|' -e 's|"$|"	g|' |
 awk -F '	' '
 { 
@@ -70,7 +70,7 @@ awk -F '	' '
 ' |
 ${utf8} |
 sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' -e 's|\&|\\&|g' > "${lang}.sed"
-rm -f en.tmp "${lang}.tmp"
+rm -f "en.tmp.${lang}" "${lang}.tmp"
 echo "done"
 if test ! -d "src.${lang}"
 then
