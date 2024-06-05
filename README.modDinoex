@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.34:
 ------------------
 
+bugfix: CYGWIN
+  Fix build for Windows/CYGWIN.
+
 bugfix: CHATL (reported by richtofenmedia)
   Fix detection of running chats
 

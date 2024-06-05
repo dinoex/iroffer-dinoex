@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.34:
 ----------------
 
+bugfix: CYGWIN
+  Bot baut wieder auf Windows/CYGWIN
+
 bugfix: CHATL (reported by richtofenmedia)
   Korrektur der Bestimmung der laufenden Chats
 

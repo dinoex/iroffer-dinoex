@@ -677,6 +677,12 @@ static  const char *irc_resolved_errormsg[] = {
 };
 #endif
 
+#if defined(_OS_CYGWIN)
+#if !defined(WEXITED)
+#define WEXITED	16	/* Wait for exited processes. */
+#endif
+#endif /* _OS_CYGWIN */
+
 /* collect the the DNS resolution from the child process */
 void irc_resolved(void)
 {
