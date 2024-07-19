@@ -1290,9 +1290,9 @@ ${msg} -n "${irt_seeingif} 'crypt.h' ${irt_isneeded}... "
 echo "${irmain1}
  crypt(\"aaaaaaaa\",\"aa\");
 ${main2}" > config.temp.c
-if $cctype -o config.temp.o -c $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+if $cctype -o config.temp.o -c $WARNS $WERROR $CFLAGS config.temp.c -Wno-unused-command-line-argument $LDFLAGS $libs $LIBS; then
  ${msg} "${irt_notneeded}"
-elif $cctype -o config.temp.o -c -DHAS_CRYPT_H $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+elif $cctype -o config.temp.o -c -DHAS_CRYPT_H $WARNS $WERROR $CFLAGS config.temp.c -Wno-unused-command-line-argument $LDFLAGS $libs $LIBS; then
  echo "#define HAS_CRYPT_H" >> src/iroffer_config.h
  ${msg} "${irt_needed}"
 else
