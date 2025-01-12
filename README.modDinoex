@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.34:
 ------------------
 
+bugfix: RUBY
+  Fix the "Invalid Argument" on Debian 12.9
+
 bugfix: CYGWIN
   Fix build for Windows/CYGWIN.
 

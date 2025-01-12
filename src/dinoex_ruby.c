@@ -592,6 +592,12 @@ static void Init_IrofferEvent(void) {
   rb_gc_register_address(&cIrofferEvent);
 }
 
+static VALUE myruby_rb_load(VALUE name)
+{
+    rb_load(name, 0);
+    return Qnil;
+}
+
 static void load_script(const char *name)
 {
   struct stat st;
@@ -611,7 +617,7 @@ static void load_script(const char *name)
   }
   ruby_script(name);
   myruby_time = st.st_mtime;
-  rb_load_protect(rb_str_new(name, strlen(name)), 0, &rc);
+  rb_protect(myruby_rb_load, rb_str_new2(name), &rc);
   if (rc != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "ruby_exec failed with %d: %s",
