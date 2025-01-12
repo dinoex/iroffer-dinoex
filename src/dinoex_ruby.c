@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2023 Dirk Meyer
+ * Copyright (C) 2004-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2023 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -592,6 +592,12 @@ static void Init_IrofferEvent(void) {
   rb_gc_register_address(&cIrofferEvent);
 }
 
+static VALUE myruby_rb_load(VALUE name)
+{
+    rb_load(name, 0);
+    return Qnil;
+}
+
 static void load_script(const char *name)
 {
   struct stat st;
@@ -611,7 +617,7 @@ static void load_script(const char *name)
   }
   ruby_script(name);
   myruby_time = st.st_mtime;
-  rb_load_protect(rb_str_new(name, strlen(name)), 0, &rc);
+  rb_protect(myruby_rb_load, rb_str_new2(name), &rc);
   if (rc != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "ruby_exec failed with %d: %s",
