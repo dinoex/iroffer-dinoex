@@ -175,6 +175,11 @@ class IrofferEvent
     end
   end
 
+  # Admin Command: RUBY version
+  def version
+    puts irconfig( "version" )
+    puts irconfig( "features" )
+  end
 end
 
 # eof
