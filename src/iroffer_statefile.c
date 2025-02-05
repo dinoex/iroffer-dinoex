@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_statefile.c 1.23@(#)
@@ -231,7 +231,8 @@ void write_statefile(void)
     next = (unsigned char*)(&hdr[1]);
     
     length = add_snprintf((char *)next, maxtextlength,
-                          "iroffer-dinoex" " " VERSIONLONG ", %s", gdata.osstring);
+                          "iroffer-dinoex"
+                          " " VERSIONLONG ", %s", gdata.osstring); /* NOTRANSLATE */
     
         create_statefile_hdr(hdr, STATEFILE_TAG_IROFFER_VERSION, sizeof(statefile_hdr_t) + ceiling(length+1, 4));
         write_statefile_item(&bout, data);
@@ -471,7 +472,8 @@ unsigned int read_statefile(void)
                           "  [Written by %s]", iroffer_version);
                 }
               iroffer_now = mycalloc(maxtextlength);
-              snprintf(iroffer_now, maxtextlength, "iroffer-dinoex" " " VERSIONLONG ", %s", gdata.osstring);
+              snprintf(iroffer_now, maxtextlength, "iroffer-dinoex"
+                       " " VERSIONLONG ", %s", gdata.osstring); /* NOTRANSLATE */
               if (strcmp(iroffer_version, iroffer_now) != 0)
                 {
                   ++save;

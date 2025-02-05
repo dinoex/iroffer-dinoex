@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_dccchat.c 1.77@(#)
@@ -55,7 +55,7 @@ void parsedccchat(dccchat_t *chat,
           
           chat->status = DCCCHAT_CONNECTED;
           
-          writedccchat(chat,0," \n");
+          writedccchat(chat, 0, " \n"); /* NOTRANSLATE */
           writedccchat(chat,0,"Entering DCC Chat Admin Interface\n");
           writedccchat(chat,0,"For Help type \"help\"\n");
           
@@ -66,7 +66,7 @@ void parsedccchat(dccchat_t *chat,
                        count,
                        count != 1 ? "messages" : "message",
                        count ? ", use MSGREAD to read them" : "");
-          writedccchat(chat,0," \n");
+          writedccchat(chat, 0, " \n"); /* NOTRANSLATE */
             }
         }
       else
@@ -169,7 +169,7 @@ void writestatus(dccchat_t *chat) {
    tempstr = mymalloc(maxtextlength);
    
    getstatusline(tempstr,maxtextlength);
-   writedccchat(chat,0,"%s\n",tempstr);
+   writedccchat(chat, 0, "%s\n", tempstr); /* NOTRANSLATE */
    
    mydelete(tempstr);
    }

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2023 Dirk Meyer
+ * Copyright (C) 2004-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2023 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -265,11 +265,12 @@ void chat_banner(dccchat_t *chat)
 
   writedccchat(chat, 0, "Welcome to %s\n",
                get_user_nick());
-  writedccchat(chat, 0, "iroffer-dinoex" " " VERSIONLONG FEATURES "%s%s\n",
-               gdata.hideos ? "" : " - ",
+  writedccchat(chat, 0, "iroffer-dinoex"
+               " " VERSIONLONG FEATURES "%s%s\n", /* NOTRANSLATE */
+               gdata.hideos ? "" : " - ", /* NOTRANSLATE */
                gdata.hideos ? "" : gdata.osstring);
   writedccchat(chat, 0, "    running %s\n", tempstr);
-  writedccchat(chat, 0, " \n");
+  writedccchat(chat, 0, " \n"); /* NOTRANSLATE */
   writedccchat(chat, 0, "Enter Your Password:\n");
 
   mydelete(tempstr);

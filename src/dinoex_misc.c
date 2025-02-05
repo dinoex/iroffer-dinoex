@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2020 Dirk Meyer
+ * Copyright (C) 2004-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -1274,7 +1274,7 @@ void dump_slow_context(void)
       offset *= 1000000;
       offset += c->tv.tv_usec - last->tv.tv_usec;
       if (offset > 171000) {
-        ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
+        ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline); /* NOTRANSLATE */
         show = 1;
       }
     }
@@ -1289,7 +1289,7 @@ void dump_slow_context(void)
              c->line,
              (unsigned long)c->tv.tv_sec,
              (unsigned long)c->tv.tv_usec);
-    ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline);
+    ioutput(OUT_S|OUT_L, COLOR_NO_COLOR, "%s", lastline); /* NOTRANSLATE */
   }
   mydelete(lastline);
 }

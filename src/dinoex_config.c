@@ -111,7 +111,7 @@ static void dump_config_bool2(const char *name, unsigned int val)
     text = "yes"; /* NOTRANSLATE */
     break;
   }
-  dump_line("%s %s", name, text);
+  dump_line("%s %s", name, text); /* NOTRANSLATE */
 }
 
 /* dump an bool variable to logfile if defined */
@@ -2319,8 +2319,9 @@ static char *p_features(void)
   char *text;
 
   text = mymalloc(maxtextlength);
-  snprintf(text, maxtextlength, "iroffer-dinoex" " " VERSIONLONG FEATURES "%s%s",
-           gdata.hideos ? "" : " - ",
+  snprintf(text, maxtextlength, "iroffer-dinoex"
+           " " VERSIONLONG FEATURES "%s%s", /* NOTRANSLATE */
+           gdata.hideos ? "" : " - ", /* NOTRANSLATE */
            gdata.hideos ? "" : gdata.osstring);
   return text;
 }
@@ -2893,8 +2894,8 @@ static void config_expand_list_typ(config_name_t config_name_f, const char *key,
       continue;
 
     if (first != name)
-      tostdout(",");
-    tostdout(" %s", name);
+      tostdout(","); /* NOTRANSLATE */
+    tostdout(" %s", name); /* NOTRANSLATE */
   }
 }
 
@@ -2916,7 +2917,7 @@ size_t config_expand(char *buffer, size_t max, int print)
   if (found == 0)
     return 0;
   if (found == 1) {
-    snprintf(buffer, max, "%s ", first);
+    snprintf(buffer, max, "%s ", first); /* NOTRANSLATE */
     return strlen(first) - j + 1;
   }
   tostdout("** Args:");

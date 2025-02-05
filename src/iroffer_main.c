@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_main.c 1.245@(#)
@@ -83,7 +83,7 @@ static void select_dump(const char *desc, int highests)
     {
       if (FD_ISSET(ii, &gdata.readset))
         {
-          len += add_snprintf(buffer + len, maxtextlength - len, " %d", ii);
+          len += add_snprintf(buffer + len, maxtextlength - len, " %d", ii); /* NOTRANSLATE */
         }
     }
   len += add_snprintf(buffer + len, maxtextlength - len, "] [write");
@@ -91,11 +91,11 @@ static void select_dump(const char *desc, int highests)
     {
       if (FD_ISSET(ii, &gdata.writeset))
         {
-          len += add_snprintf(buffer + len, maxtextlength - len, " %d", ii);
+          len += add_snprintf(buffer + len, maxtextlength - len, " %d", ii); /* NOTRANSLATE */
         }
     }
   (void)add_snprintf(buffer + len, maxtextlength - len, "]");
-  ioutput(OUT_S, COLOR_CYAN, "%s", buffer);
+  ioutput(OUT_S, COLOR_CYAN, "%s", buffer); /* NOTRANSLATE */
   
 }
 
@@ -675,7 +675,7 @@ static void mainloop (void) {
                       {
                         if (tchanm)
                           {
-                            strncat(tchanm,",",maxtextlength-strlen(tchanm)-1);
+                            strncat(tchanm, ",", maxtextlength-strlen(tchanm)-1); /* NOTRANSLATE */
                             strncat(tchanm,ch->name,maxtextlength-strlen(tchanm)-1);
                           }
                         else
@@ -688,7 +688,7 @@ static void mainloop (void) {
                       {
                         if (tchans)
                           {
-                            strncat(tchans,",",maxtextlength-strlen(tchans)-1);
+                            strncat(tchans, ",", maxtextlength-strlen(tchans)-1); /* NOTRANSLATE */
                             strncat(tchans,ch->name,maxtextlength-strlen(tchans)-1);
                           }
                         else
@@ -701,7 +701,7 @@ static void mainloop (void) {
                       {
                         if (tchanf)
                           {
-                            strncat(tchanf,",",maxtextlength-strlen(tchanf)-1);
+                            strncat(tchanf, ",", maxtextlength-strlen(tchanf)-1); /* NOTRANSLATE */
                             strncat(tchanf,ch->name,maxtextlength-strlen(tchanf)-1);
                           }
                         else

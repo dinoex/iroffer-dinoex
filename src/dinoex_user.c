@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2021 Dirk Meyer
+ * Copyright (C) 2004-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -401,7 +401,7 @@ static unsigned int send_xdcc_file2(const char **bad, privmsginput *pi, unsigned
   if ((xd->dlimit_max != 0) && (xd->gets >= xd->dlimit_used)) {
     notice(pi->nick, "** Sorry, This Pack is over download limit for today.  Try again tomorrow.");
     if (xd->dlimit_desc != NULL)
-      notice(pi->nick, "%s", xd->dlimit_desc);
+      notice(pi->nick, "%s", xd->dlimit_desc); /* NOTRANSLATE */
     *bad = "(Over Pack Transfer Limit)";
     return 1;
   }
@@ -1174,7 +1174,10 @@ static int botonly_parse(int type, privmsginput *pi)
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     notice(pi->nick, IRC_CTCP "VERSION" /* NOTRANSLATE */
-           "iroffer-dinoex" " " VERSIONLONG FEATURES ", " "https://iroffer.net/" "%s%s" IRC_CTCP,
+           "iroffer-dinoex"
+           " " VERSIONLONG FEATURES ", " /* NOTRANSLATE */
+           "https://iroffer.net/"
+           "%s%s" IRC_CTCP, /* NOTRANSLATE */
            gdata.hideos ? "" : " - ", /* NOTRANSLATE */
            gdata.hideos ? "" : gdata.osstring); /* NOTRANSLATE */
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_YELLOW,
@@ -1603,8 +1606,8 @@ static void privmsgparse2(int type, int decoded, privmsginput *pi)
                save_nick(gnetwork->user_nick));
     notice_slow(pi->nick,
            "\2(\2XDCC\2)\2 Packs:\2(\2%u\2)\2 "
-           "%s%s"
-           "%s"
+           "%s%s" /* NOTRANSLATE */
+           "%s" /* NOTRANSLATE */
            "Sends:\2(\2%u/%u\2)\2 "
            "Queues:\2(\2%u/%u\2)\2 "
            "Record:\2(\2%1.1fkB/s\2)\2 "

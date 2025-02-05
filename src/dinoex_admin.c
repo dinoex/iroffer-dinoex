@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2023 Dirk Meyer
+ * Copyright (C) 2004-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2023 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -308,7 +308,7 @@ static void a_xdl_pack(const userinput * const u, char *tempstr, unsigned int i,
                         xd->dlimit_used - xd->gets, xd->dlimit_max);
   }
 
-  a_respond(u, "%s", tempstr);
+  a_respond(u, "%s", tempstr); /* NOTRANSLATE */
 
   if (xd->note && xd->note[0]) {
     a_respond(u, " \2^-\2%*s%s", s, "", xd->note);
@@ -458,7 +458,8 @@ void a_xdl(const userinput * const u)
     /* groupe entry and entry is visible */
     if ((xd->group != NULL) && (xd->group_desc != NULL)) {
       snprintf(tempstr, maxtextlength,
-               "%s%s%s", xd->group, gdata.group_seperator, xd->group_desc);
+               "%s%s%s", /* NOTRANSLATE */
+               xd->group, gdata.group_seperator, xd->group_desc);
       irlist_add_string(&grplist, tempstr);
     }
   }
@@ -703,7 +704,7 @@ static unsigned int invalid_group(const userinput * const u, char *arg)
 static unsigned int invalid_text(const userinput * const u, const char *text, const char *arg)
 {
   if (!arg || (arg[0] == 0)) {
-    a_respond(u, "%s", text);
+    a_respond(u, "%s", text); /* NOTRANSLATE */
     return 1;
   }
   return 0;
@@ -5218,7 +5219,7 @@ void a_version(const userinput * const u)
   char *text;
 
   text = print_config_key("features"); /* NOTRANSLATE */
-  a_respond(u, "%s", text);
+  a_respond(u, "%s", text); /* NOTRANSLATE */
   mydelete(text);
 }
 

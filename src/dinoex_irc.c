@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2021 Dirk Meyer
+ * Copyright (C) 2004-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -1094,7 +1094,7 @@ static void irc_001(ir_parseline_t *ipl)
   for (tptr = irlist_get_head(&(gnetwork->server_connected_raw));
        tptr;
        tptr = irlist_get_next(tptr)) {
-    writeserver(WRITESERVER_NORMAL, "%s", tptr);
+    writeserver(WRITESERVER_NORMAL, "%s", tptr); /* NOTRANSLATE */
   }
 
   /* nickserv */

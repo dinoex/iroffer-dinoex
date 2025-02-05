@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_misc.c 1.251@(#)
@@ -655,7 +655,7 @@ void writepidfile (const char *filename) {
    filedescriptor=open(filename, O_WRONLY | O_TRUNC | O_CREAT | ADDED_OPEN_FLAGS, CREAT_PERMISSIONS);
    if (filedescriptor < 0) outerror(OUTERROR_TYPE_CRASH,"Cant Create PID File '%s': %s",filename,strerror(errno));
    
-   snprintf(tempstr2, maxtextlengthshort, "%i\n", (int)getpid());
+   snprintf(tempstr2, maxtextlengthshort, "%i\n", (int)getpid()); /* NOTRANSLATE */
    write(filedescriptor,tempstr2,strlen(tempstr2));
    
    close(filedescriptor);
@@ -1012,7 +1012,7 @@ void logstat(void)
   tempstr = mymalloc(maxtextlength);
   getstatusline(tempstr,maxtextlength);
   
-  mylog("%s", tempstr);
+  mylog("%s", tempstr); /* NOTRANSLATE */
   
   mydelete(tempstr);
   
@@ -1135,8 +1135,9 @@ void shutdowniroffer(void) {
            snprintf(msg, maxtextlength,
                     "QUIT :%s" /* NOTRANSLATE */
                     "%s%s - running %s",
-                    "iroffer-dinoex" " " VERSIONLONG,
-                    gdata.hideos ? "" : " - ",
+                    "iroffer-dinoex"
+                    " " VERSIONLONG, /* NOTRANSLATE */
+                    gdata.hideos ? "" : " - ", /* NOTRANSLATE */
                     gdata.hideos ? "" : gdata.osstring,
                     tempstr2);
            mydelete(tempstr2);
@@ -1410,7 +1411,7 @@ void sendxdlqueue (void)
           user = irlist_get_next(user);
           continue;
         }
-      strcpy(tempstr+len, ",");
+      strcpy(tempstr+len, ","); /* NOTRANSLATE */
       len += strlen(tempstr+len);
       strcpy(tempstr+len, user->nick);
       len += strlen(tempstr+len);
@@ -1592,7 +1593,9 @@ void startupiroffer(void)
    
    printf("\n");
    if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_YELLOW);
-   printf("Welcome to " "iroffer-dinoex" " - " "https://iroffer.net/" FEATURES "\n"
+   printf("Welcome to " "iroffer-dinoex"
+          " - " /* NOTRANSLATE */
+          "https://iroffer.net/" FEATURES "\n"
           "Version " VERSIONLONG "\n");
    if (!gdata.background && !gdata.nocolor) printf(IRVT_COLOR_RESET);
    printf("\n");
@@ -1659,7 +1662,7 @@ void startupiroffer(void)
               gdata.runasuser, (unsigned int)runasuid, (unsigned int)runasgid );
       for (ii=0; ii<ngroups; ii++)
         {
-          printf(" %d", (int)groups[ii]);
+          printf(" %d", (int)groups[ii]); /* NOTRANSLATE */
         }
       printf( ").\n");
       
@@ -1884,13 +1887,15 @@ void createpassword(void) {
    unsigned int saltnum;
    char salt[6], *pwout;
    
-   printf("\n" "iroffer-dinoex" " " VERSIONLONG "\n"
+   printf("\n" /* NOTRANSLATE */
+          "iroffer-dinoex"
+          " " VERSIONLONG "\n" /* NOTRANSLATE */
           "  Configuration File Password Generator\n"
-          "\n"
+          "\n" /* NOTRANSLATE */
           "This will take a password of your choosing and encrypt it.\n"
           "You should place the output this program generates in your config file.\n"
           "You can then use your password you enter here over irc.\n"
-          "\n"
+          "\n" /* NOTRANSLATE */
           "Your password must be between 5 and 59 characters\n");
    
    

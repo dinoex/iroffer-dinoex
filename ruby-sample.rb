@@ -1,9 +1,9 @@
 #!/usr/local/bin/ruby
 
 # Author::    Dirk Meyer
-# Copyright:: Copyright (c) 2008 - 2021 Dirk Meyer
+# Copyright:: Copyright (c) 2008 - 2025 Dirk Meyer
 # License::   Distributes under the same terms as Ruby
-# SPDX-FileCopyrightText: 2008-2021 Dirk Meyer
+# SPDX-FileCopyrightText: 2008-2025 Dirk Meyer
 # SPDX-License-Identifier: Ruby
 
 require 'resolv'
@@ -22,11 +22,9 @@ end
 
 # Get the first IPv4 for a nameserver
 def getipv4server( hostname )
-  dns = Resolv::DNS.new
-  dns.each_address(hostname) do |address|
-    text = address.to_s
-    next if text.include?( ":" )
-    return text
+  Resolv::DNS.open do |dns|
+    list = dns.getresources( hostname, Resolv::DNS::Resource::IN::A )
+    return list.map( &:address ).first.to_s
   end
   nil
 end
