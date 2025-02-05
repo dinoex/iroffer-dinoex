@@ -57,7 +57,9 @@ static const char * const http_header_status =
 "HTTP/1.1 %u OK\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
 "Last-Modified: %s\r\n" /* NOTRANSLATE */
-"Server: " "iroffer-dinoex" "/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Server: " /* NOTRANSLATE */
+"iroffer-dinoex"
+"/" VERSIONLONG "\r\n" /* NOTRANSLATE */
 "Content-Type: %s%s\r\n" /* NOTRANSLATE */
 "Connection: close\r\n" /* NOTRANSLATE */
 "Content-Length: %" LLPRINTFMT "u\r\n" /* NOTRANSLATE */;
@@ -65,7 +67,9 @@ static const char * const http_header_status =
 static const char * const http_header_notfound =
 "HTTP/1.1 404 Not Found\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
-"Server: " "iroffer-dinoex" "/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Server: " /* NOTRANSLATE */
+"iroffer-dinoex"
+"/" VERSIONLONG "\r\n" /* NOTRANSLATE */
 "Content-Type: text/plain\r\n" /* NOTRANSLATE */
 "Connection: close\r\n" /* NOTRANSLATE */
 "Content-Length: 13\r\n" /* NOTRANSLATE */
@@ -76,7 +80,9 @@ static const char * const http_header_notfound =
 static const char * const http_header_forbidden =
 "HTTP/1.1 403 Forbidden\r\n" /* NOTRANSLATE */
 "Date: %s\r\n" /* NOTRANSLATE */
-"Server: " "iroffer-dinoex" "/" VERSIONLONG "\r\n" /* NOTRANSLATE */
+"Server: " /* NOTRANSLATE */
+"iroffer-dinoex"
+"/" VERSIONLONG "\r\n" /* NOTRANSLATE */
 "Content-Type: text/plain\r\n" /* NOTRANSLATE */
 "Connection: close\r\n" /* NOTRANSLATE */
 "Content-Length: 13\r\n" /* NOTRANSLATE */

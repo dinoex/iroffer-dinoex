@@ -1293,7 +1293,7 @@ static char *p_bandmax(void)
   char *text;
 
   text = mymalloc(maxtextlengthshort);
-  snprintf(text, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4); /* NOTRANSLATE */
+  snprintf(text, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4);
   return text;
 }
 
@@ -2311,7 +2311,8 @@ static char *p_user_nick(void)
 
 static char *p_version(void)
 {
-  return mystrdup( "iroffer-dinoex" " " VERSIONLONG ); /* NOTRANSLATE */
+  return mystrdup( "iroffer-dinoex"
+                   " " VERSIONLONG ); /* NOTRANSLATE */
 }
 
 static char *p_features(void)

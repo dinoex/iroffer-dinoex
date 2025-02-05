@@ -1657,7 +1657,7 @@ static void xdcc_save_xml(void)
   write_asc_plain(xmlbuf, 4, "banduse", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   tempstr = mymalloc(maxtextlengthshort);
-  snprintf(tempstr, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4); /* NOTRANSLATE */
+  snprintf(tempstr, maxtextlengthshort, "%u.0kB/s", gdata.maxb / 4);
   write_asc_plain(xmlbuf, 4, "bandmax", tempstr); /* NOTRANSLATE */
   mydelete(tempstr);
   write_string(xmlbuf, "  </bandwidth>\n"); /* NOTRANSLATE */
@@ -1715,7 +1715,9 @@ static void xdcc_save_xml(void)
   gnetwork = backup;
 
   write_string(xmlbuf, "  <stats>\n"); /* NOTRANSLATE */
-  write_asc_plain(xmlbuf, 4, "version", "iroffer-dinoex" " " VERSIONLONG ); /* NOTRANSLATE */
+  write_asc_plain(xmlbuf, 4, "version", /* NOTRANSLATE */
+                  "iroffer-dinoex" 
+                  " " VERSIONLONG ); /* NOTRANSLATE */
   tempstr = mymalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
   write_asc_plain(xmlbuf, 4, "uptime", tempstr); /* NOTRANSLATE */

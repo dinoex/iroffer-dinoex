@@ -1,111 +1,72 @@
-#!/bin/sh
-#
-# by Dirk Meyer (dinoex)
-# Copyright (C) 2004-2021 Dirk Meyer
-#
-# By using this file, you agree to the terms and conditions set
-# forth in the GNU General Public License.  More information is
-# available in the LICENSE file.
-#
-# If you received this file without documentation, it can be
-# downloaded from https://iroffer.net/
-#
-# SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
-# SPDX-License-Identifier: GPL-2.0-only
-#
-# $Id$
-#
-lang="${1-de}"
-lang="${lang%.txt}"
-if test "${lang}" = "en"
-then
-	for c in src/iroffer*.c src/dinoex*.c
-	do
-		if test -f "${c}.en"
-		then
-			echo \
-			mv -f "${c}.en" "${c}"
-			mv -f "${c}.en" "${c}"
-		fi
-	done
-	exit 0
-fi
-utf8="cat"
-if test -n "${2}"
-then
-	charset="${2}"
-else
-	charset="utf-8"
-	case "${LANG}" in
-	*.ISO8859-*|*.ISO_8859-*)
-		# autodetect
-		charset="latin1"
-		;;
-	esac
-fi
-utf8="cat"
-case "${charset}" in
-utf-8)
-	;;
-*)
-	case "${lang}" in
-	de|fr|it)
-		echo "latin1 conversion ..."
-		utf8="iconv -f utf-8 -t latin1"
-		;;
-	esac
-	;;
-esac
-echo -n "parsing ... "
-sed -e 's| |	|' en.txt > "en.tmp.${lang}"
-sed -e 's| |	|' "${lang}.txt" > "${lang}.tmp"
-join -t '	' "en.tmp.${lang}" "${lang}.tmp" |
-sed -e 's|^[0-9]*|s|' -e 's|"$|"	g|' |
-awk -F '	' '
-{ 
-	if ( $2 == $3 )
-		next
-	print
-}
-' |
-${utf8} |
-sed -e 's|\\|\\\\|g' -e 's|\*|\\*|g' -e 's|\+|\\+|g' -e 's|\.|\\.|g' -e 's|\[|\\[|g' -e 's|\]|\\]|g' -e 's|\&|\\&|g' > "${lang}.sed"
-rm -f "en.tmp.${lang}" "${lang}.tmp"
-echo "done"
-if test ! -d "src.${lang}"
-then
-	mkdir "src.${lang}"
-fi
-for c in src/iroffer*.c src/dinoex*.c
-do
-	l="src.${lang}/${c#src/}"
-	sed -f "${lang}.sed" "${c}" > "${l}.new"
-	if test -f "${l}"
-	then
-		if diff -q "${l}" "${l}.new"
-		then
-			rm -f "${l}.new"
-			continue
-		fi
-	fi
-	echo \
-	mv -f "${l}.new" "${l}"
-	mv -f "${l}.new" "${l}"
-done
-for c in src/*.h src/[bcpsu]*.c
-do
-	l="src.${lang}/${c#src/}"
-	cp -p "${c}" "${l}.new"
-	if test -f "${l}"
-	then
-		if diff -q "${l}" "${l}.new"
-		then
-			rm -f "${l}.new"
-			continue
-		fi
-	fi
-	echo \
-	mv -f "${l}.new" "${l}"
-	mv -f "${l}.new" "${l}"
-done
+#!/usr/bin/env ruby
+# Author::    Dirk Meyer
+# Copyright:: Copyright (c) 2025 - 2025 Dirk Meyer
+# License::   Distributes under the same terms as Ruby
+# SPDX-FileCopyrightText: 2025-2025 Dirk Meyer
+# SPDX-License-Identifier: Ruby
+
+require 'fileutils'
+
+def read_lang( filename )
+  list = File.read( filename ).split( "\n" ).map { |e| e.split( ' ', 2 ) }
+  list.each_with_object({}) { |(key, value), h| h[key] = value.gsub( '\\', '\\\\' ) }
+end
+
+def make_subs( lang )
+  @en = read_lang( 'en.txt' )
+  @translated = read_lang( "#{lang}.txt" )
+  @subs = []
+  @en.each_pair do |nr, text|
+    next if text == @translated[ nr ]
+
+    @subs.push( [ text, @translated[ nr ] ] )
+  end
+end
+
+def write_changed( filename, text )
+  if File.exist?( filename )
+    old = File.read( filename )
+    return if old == text
+  end
+  puts "Saving: #{filename}"
+  File.write( filename, text )
+end
+
+def translate_file( file, dest )
+  text = File.read( file ).split( "\n" )
+  text.map! do |line|
+    unless line.include?( 'NOTRANSLATE' )
+      @subs.each do |(pattern, translated)|
+        line.gsub!( pattern) { translated }
+      end
+    end
+    line
+  end
+  text.push( nil )
+  write_changed( dest, text.join( "\n" ) )
+end
+
+def translate_dir( lang )
+  puts "parsing #{lang}"
+  make_subs( lang )
+  @dir = "src.#{lang}"
+  FileUtils.mkdir_p( @dir )
+
+  files = Dir.glob( [ "src/*.h", "src/[bcpsu]*.c" ] )
+  files.each do |file|
+    dest = "#{@dir}/#{file.split( '/' ).last}"
+    FileUtils.cp( file, dest, preserve: true )
+  end
+  files = Dir.glob( [ "src/iroffer*.c", "src/dinoex*.c" ] )
+  files.each do |file|
+    dest = "#{@dir}/#{file.split( '/' ).last}"
+    translate_file( file, dest )
+  end
+end
+
+ARGV.each do |arg|
+  translate_dir( arg )
+end
+
+exit 0
 # eof

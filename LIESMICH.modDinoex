@@ -5,6 +5,7 @@ Ab Version 3.34:
 
 bugfix: ./Lang ??
   Reduzierung der Texte
+  Ersetze keine Texte in Zeilen mit NOTRANSLATE
 
 bugfix: RUBY
   Behebe den "Ivalid Argument" Fehler auf Debian 12.9

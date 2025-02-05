@@ -5,6 +5,7 @@ With Version 3.34:
 
 bugfix: ./Lang ??
   Reduce translation text
+  Skip lines with NOTRANSLATE
 
 bugfix: RUBY
   Fix the "Invalid Argument" on Debian 12.9
