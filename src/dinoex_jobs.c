@@ -1716,7 +1716,7 @@ static void xdcc_save_xml(void)
 
   write_string(xmlbuf, "  <stats>\n"); /* NOTRANSLATE */
   write_asc_plain(xmlbuf, 4, "version", /* NOTRANSLATE */
-                  "iroffer-dinoex" 
+                  "iroffer-dinoex"
                   " " VERSIONLONG ); /* NOTRANSLATE */
   tempstr = mymalloc(maxtextlengthshort);
   tempstr = getuptime(tempstr, 1, gdata.startuptime, maxtextlengthshort);
