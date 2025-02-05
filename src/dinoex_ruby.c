@@ -533,7 +533,7 @@ static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
 
   switch (TYPE(rmsg)) {
    case T_ARRAY:
-     rmsg = rb_ary_join(rmsg, rb_str_new2(" "));
+     rmsg = rb_ary_join(rmsg, rb_str_new2(" ")); /* NOTRANSLATE */
      /* process Array */
      /* fallthrough */
   case T_STRING:

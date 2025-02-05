@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_admin.c 1.215@(#)
@@ -369,7 +369,7 @@ static size_t u_expand_list(char *buffer, size_t max, const char **list)
   if (found == 0)
     return 0;
   if (found == 1) {
-    snprintf(buffer, max, "%s ", first);
+    snprintf(buffer, max, "%s ", first); /* NOTRANSLATE */
     return strlen(first) - j + 1;
   }
   tostdout("** Args:");
@@ -378,8 +378,8 @@ static size_t u_expand_list(char *buffer, size_t max, const char **list)
       continue;
 
     if (list[i] != first)
-      tostdout(",");
-    tostdout(" %s", list[i]);
+      tostdout(","); /* NOTRANSLATE */
+    tostdout(" %s", list[i]); /* NOTRANSLATE */
   }
   tostdout("\n"); /* NOTRANSLATE */
   return 0;
@@ -468,7 +468,7 @@ static size_t u_expand_command2(char *cmd)
   }
   if (found == 1) {
     if (strcmp(userinput_parse[firsti].command, cmd)) {
-      snprintf(gdata.console_input_line, INPUT_BUFFER_LENGTH, "%s ", first);
+      snprintf(gdata.console_input_line, INPUT_BUFFER_LENGTH, "%s ", first); /* NOTRANSLATE */
       return strlen(first) - j + 1;
     }
     u_expand_help(firsti);
@@ -483,8 +483,8 @@ static size_t u_expand_command2(char *cmd)
       continue;
 
     if (userinput_parse[i].command != first)
-      tostdout(",");
-    tostdout(" %s", userinput_parse[i].command);
+      tostdout(","); /* NOTRANSLATE */
+    tostdout(" %s", userinput_parse[i].command); /* NOTRANSLATE */
   }
   tostdout("\n"); /* NOTRANSLATE */
   return 0;
@@ -591,7 +591,7 @@ void u_xdl_head(const userinput * const u)
                line = irlist_get_next(line))
             {
               tempnick = mystrdup(u->snick);
-              for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") )
+              for (chan = strtok(tempnick, ","); chan != NULL; chan = strtok(NULL, ",") ) /* NOTRANSLATE */
                 {
                   if (!strcasecmp(ch->name, chan))
                     {
@@ -1343,8 +1343,11 @@ static void u_botinfo(const userinput * const u) {
    
    u_respond(u,"BotInfo:");
 
-   a_respond(u, "iroffer-dinoex" " " VERSIONLONG FEATURES ", " "https://iroffer.net/" "%s%s",
-             gdata.hideos ? "" : " - ",
+   a_respond(u, "iroffer-dinoex"
+             " " VERSIONLONG FEATURES ", " /* NOTRANSLATE */
+             "https://iroffer.net/" 
+             "%s%s", /* NOTRANSLATE */
+             gdata.hideos ? "" : " - ", /* NOTRANSLATE */
              gdata.hideos ? "" : gdata.osstring);
 
    getuptime(tempstr, 0, gdata.startuptime, maxtextlength);
@@ -1722,8 +1725,8 @@ static void u_msgread(const userinput * const u)
     {
       user_getdatestr(tempstr, ml->when, maxtextlength);
       
-      u_respond(u, "%s: %s", tempstr, ml->hostmask);
-      u_respond(u, " ^- %s", ml->message);
+      u_respond(u, "%s: %s", tempstr, ml->hostmask); /* NOTRANSLATE */
+      u_respond(u, " ^- %s", ml->message); /* NOTRANSLATE */
     }
   
   mydelete(tempstr);
@@ -2287,11 +2290,11 @@ static void u_chanl(const userinput * const u)
         {
           if (!(j%USERS_PER_CHAN_LINE))
             {
-              snprintf(tempstr, maxtextlength, "%s: ", ch->name);
+              snprintf(tempstr, maxtextlength, "%s: ", ch->name); /* NOTRANSLATE */
             }
           snprintf(tempstr + strlen(tempstr),
                    maxtextlength - strlen(tempstr),
-                   "%s%s ", member->prefixes, member->nick);
+                   "%s%s ", member->prefixes, member->nick); /* NOTRANSLATE */
           if (!((j+1)%USERS_PER_CHAN_LINE))
             {
               u_respond(u, "%s", tempstr); /* NOTRANSLATE */
@@ -2307,7 +2310,8 @@ static void u_chanl(const userinput * const u)
           u_respond(u, "%s", tempstr); /* NOTRANSLATE */
         }
       
-      a_respond(u, "%s: %i %s", ch->name, j, j!=1 ? "users" : "user");
+      a_respond(u, "%s: %i %s", /* NOTRANSLATE */
+                ch->name, j, j!=1 ? "users" : "user");
       
       ch = irlist_get_next(ch);
     }

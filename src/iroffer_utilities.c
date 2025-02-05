@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2023 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_utilities.c 1.205@(#)
@@ -50,7 +50,7 @@ void getos (void) {
    
    gdata.osstring = mymalloc(strlen(u1.sysname) + strlen(u1.release) + 2);
    
-   sprintf(gdata.osstring, "%s %s",
+   sprintf(gdata.osstring, "%s %s", /* NOTRANSLATE */
            u1.sysname, u1.release);
    
    /* verify we are who we were configured for, and set config */
@@ -276,7 +276,7 @@ void vioutput(int dest, unsigned int color_flags, const char *format, va_list ap
               tostdout("** ");
             }
       
-      tostdout("%s",tempstr);
+      tostdout("%s", tempstr); /* NOTRANSLATE */
       
           if (!gdata.nocolor && (color_flags != COLOR_NO_COLOR))
             {
@@ -284,13 +284,13 @@ void vioutput(int dest, unsigned int color_flags, const char *format, va_list ap
             }
           else
             {
-              tostdout("\n");
+              tostdout("\n"); /* NOTRANSLATE */
             }
       }
    
    /* log */
    if (dest & OUT_L)
-      mylog("%s", tempstr);
+      mylog("%s", tempstr); /* NOTRANSLATE */
    
    /* dcc chat */
    if (dest & OUT_D)
@@ -318,7 +318,7 @@ void vioutput(int dest, unsigned int color_flags, const char *format, va_list ap
         if (dest & OUT_L)
            return;
         
-        mylog("%s", tempstr);
+        mylog("%s", tempstr); /* NOTRANSLATE */
      }
    
    }
@@ -729,21 +729,21 @@ void dumpcontext(void)
 
 static void dump_config_string4(const char *name, const char *val)
 {
-  dump_line("GDATA * " "%s: %s", name, val ? val : "<undef>" );
+  dump_line("GDATA * " "%s: %s", name, val ? val : "<undef>" ); /* NOTRANSLATE */
 }
 
 static void dump_config_int4(const char *name, unsigned int val)
 {
-  dump_line("GDATA * " "%s: %u", name, val);
+  dump_line("GDATA * " "%s: %u", name, val); /* NOTRANSLATE */
 }
 
 #define gdata_string(x) ((x) ? (x) : "<undef>")
 
 #define gdata_print_number(format,name) \
-    dump_line("GDATA * " #name ": " format, gdata. name);
+    dump_line("GDATA * " #name ": " format, gdata. name); /* NOTRANSLATE */
 
 #define gdata_print_number_cast(format,name,type) \
-    dump_line("GDATA * " #name ": " format, (type) gdata. name);
+    dump_line("GDATA * " #name ": " format, (type) gdata. name); /* NOTRANSLATE */
 
 #define gdata_print_string(name) \
     dump_config_string4(#name, gdata. name);
@@ -751,53 +751,53 @@ static void dump_config_int4(const char *name, unsigned int val)
 #define gdata_print_int(name) \
     dump_config_int4(#name, gdata. name);
 
-#define gdata_print_uint(name)  gdata_print_number("%u", name)
-#define gdata_print_long(name)  gdata_print_number("%ld", name)
-#define gdata_print_float(name) gdata_print_number("%.5f", name)
-#define gdata_print_time(name)  gdata_print_number("%" TTPRINTFMT, name)
+#define gdata_print_uint(name)  gdata_print_number("%u", name) /* NOTRANSLATE */
+#define gdata_print_long(name)  gdata_print_number("%ld", name) /* NOTRANSLATE */
+#define gdata_print_float(name) gdata_print_number("%.5f", name) /* NOTRANSLATE */
+#define gdata_print_time(name)  gdata_print_number("%" TTPRINTFMT, name) /* NOTRANSLATE */
 
 
 #define gdata_print_number_array(format,name) \
-    { if (gdata. name [ii]) { dump_line("GDATA * " #name "[%d]: " format, ii, gdata. name [ii]); } }
+    { if (gdata. name [ii]) { dump_line("GDATA * " #name "[%d]: " format, ii, gdata. name [ii]); } } /* NOTRANSLATE */
 
 #define gdata_print_string_array(name) \
-    { if (gdata. name [ii]) { dump_line("GDATA * " #name "[%d]: %s", ii, gdata_string(gdata. name [ii])); } }
+    { if (gdata. name [ii]) { dump_line("GDATA * " #name "[%d]: %s", ii, gdata_string(gdata. name [ii])); } } /* NOTRANSLATE */
 
 #define gdata_print_number_array_item(format,name,item) \
-    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=" format, ii, gdata. name [ii] . item); } }
+    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=" format, ii, gdata. name [ii] . item); } } /* NOTRANSLATE */
 
 #define gdata_print_number_array_item_cast(format,name,item,type) \
-    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=" format, ii, (type) gdata. name [ii] . item); } }
+    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=" format, ii, (type) gdata. name [ii] . item); } } /* NOTRANSLATE */
 
 #define gdata_print_string_array_item(name,item) \
-    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=%s", ii, gdata_string(gdata. name [ii] . item)); } }
+    { if (gdata. name [ii] . item) { dump_line("GDATA * " #name "[%d]: " #item "=%s", ii, gdata_string(gdata. name [ii] . item)); } } /* NOTRANSLATE */
 
-#define gdata_print_int_array(name)   gdata_print_number_array("%d", name)
-#define gdata_print_ulong_array(name) gdata_print_number_array("%lu", name)
+#define gdata_print_int_array(name)   gdata_print_number_array("%d", name) /* NOTRANSLATE */
+#define gdata_print_ulong_array(name) gdata_print_number_array("%lu", name) /* NOTRANSLATE */
 
 
 #define gdata_irlist_iter_start(name, type) \
-    { type *iter; dump_line("GDATA * " #name ":"); for(iter=irlist_get_head(&gdata. name); iter; iter=irlist_get_next(iter)) { 
+    { type *iter; dump_line("GDATA * " #name ":"); for(iter=irlist_get_head(&gdata. name); iter; iter=irlist_get_next(iter)) { /* NOTRANSLATE */
 
 #define gdata_irlist_iter_end } }
 
 #define gdata_iter_as_print_string \
-    dump_line("  : %s", gdata_string(iter));
+    dump_line("  : %s", gdata_string(iter)); /* NOTRANSLATE */
 
 
 #define gdata_iter_print_number(format,name) \
-    dump_line("  " #name ": " format, iter-> name);
+    dump_line("  " #name ": " format, iter-> name); /* NOTRANSLATE */
 
 #define gdata_iter_print_number_cast(format,name,type) \
-    dump_line("  " #name ": " format, (type) iter-> name);
+    dump_line("  " #name ": " format, (type) iter-> name); /* NOTRANSLATE */
 
 #define gdata_iter_print_string(name) \
-    dump_line("  " #name ": %s", gdata_string(iter-> name));
+    dump_line("  " #name ": %s", gdata_string(iter-> name)); /* NOTRANSLATE */
 
-#define gdata_iter_print_int(name)   gdata_iter_print_number("%d", name)
-#define gdata_iter_print_uint(name)  gdata_iter_print_number("%u", name)
-#define gdata_iter_print_long(name)  gdata_iter_print_number("%ld", name)
-#define gdata_iter_print_time(name)  gdata_iter_print_number("%" TTPRINTFMT, name)
+#define gdata_iter_print_int(name)   gdata_iter_print_number("%d", name) /* NOTRANSLATE */
+#define gdata_iter_print_uint(name)  gdata_iter_print_number("%u", name) /* NOTRANSLATE */
+#define gdata_iter_print_long(name)  gdata_iter_print_number("%ld", name) /* NOTRANSLATE */
+#define gdata_iter_print_time(name)  gdata_iter_print_number("%" TTPRINTFMT, name) /* NOTRANSLATE */
 
 
 
@@ -809,11 +809,11 @@ void dumpgdata(void)
   char *text;
   
   text = print_config_key("features"); /* NOTRANSLATE */
-  dump_line("%s", text);
+  dump_line("%s", text); /* NOTRANSLATE */
   mydelete(text);
 
   config_dump();
-  dump_line("GDATA DUMP BEGIN");
+  dump_line("GDATA DUMP BEGIN"); /* NOTRANSLATE */
   
   gdata_print_int(transfermethod);
   
@@ -825,21 +825,21 @@ void dumpgdata(void)
   gdata_print_string(osstring);
   gdata_print_time(startuptime);
   gdata_print_int(background);
-  gdata_print_number_cast("%d",last_logrotate,int);
-  gdata_print_number_cast("%d", last_update, int);
+  gdata_print_number_cast("%d", last_logrotate, int); /* NOTRANSLATE */
+  gdata_print_number_cast("%d", last_update, int); /* NOTRANSLATE */
 
   gdata_print_int(maxb);
   
   for (ii=0; ii<NUMBER_TRANSFERLIMITS; ii++)
     {
-      gdata_print_number_array_item("%" LLPRINTFMT "u",transferlimits,limit);
-      gdata_print_number_array_item("%" LLPRINTFMT "u",transferlimits,used);
-      gdata_print_number_array_item_cast("%ld",transferlimits,ends,long int);
+      gdata_print_number_array_item("%" LLPRINTFMT "u", transferlimits, limit); /* NOTRANSLATE */
+      gdata_print_number_array_item("%" LLPRINTFMT "u", transferlimits, used); /* NOTRANSLATE */
+      gdata_print_number_array_item_cast("%ld", transferlimits, ends, long int); /* NOTRANSLATE */
     }
   gdata_print_int(transferlimits_over);
   
   gdata_irlist_iter_start(autotrigger, autotrigger_t);
-  dump_line("GDATA * " "pack" ": " "%d", number_of_pack(iter->pack));
+  dump_line("GDATA * " "pack" ": " "%d", number_of_pack(iter->pack)); /* NOTRANSLATE */
   gdata_iter_print_string(word);
   gdata_irlist_iter_end;
 
@@ -907,9 +907,9 @@ void dumpgdata(void)
 
   gdata_print_string(nosendmsg);
 
-  gdata_print_number_cast("%ld", nomd5_start, long);
-  gdata_print_number_cast("%ld", noannounce_start, long);
-  gdata_print_number_cast("%ld", noautoadd, long);
+  gdata_print_number_cast("%ld", nomd5_start, long); /* NOTRANSLATE */
+  gdata_print_number_cast("%ld", noannounce_start, long); /* NOTRANSLATE */
+  gdata_print_number_cast("%ld", noautoadd, long); /* NOTRANSLATE */
   
   gdata_irlist_iter_start(tuploadhost, tupload_t);
   gdata_iter_print_string(u_host);
@@ -939,7 +939,7 @@ void dumpgdata(void)
       /* r_config_nick */
       gdata_print_int(networks[ss].usenatip);
       gdata_print_string(networks[ss].natip);
-      gdata_print_number("0x%.8X", networks[ss].ourip);
+      gdata_print_number("0x%.8X", networks[ss].ourip); /* NOTRANSLATE */
       /* r_ourip */
       gdata_print_string(networks[ss].curserver.hostname);
       gdata_print_uint(networks[ss].curserver.port);
@@ -947,9 +947,9 @@ void dumpgdata(void)
       gdata_print_string(networks[ss].curserveractualname);
       gdata_print_int(networks[ss].nocon);
       gdata_print_int(networks[ss].servertime);
-      gdata_print_number_cast("%d", networks[ss].serverstatus, int);
-      gdata_print_number_cast("%d", networks[ss].botstatus, int);
-      gdata_print_number_cast("%d", networks[ss].lag_method, int);
+      gdata_print_number_cast("%d", networks[ss].serverstatus, int); /* NOTRANSLATE */
+      gdata_print_number_cast("%d", networks[ss].botstatus, int); /* NOTRANSLATE */
+      gdata_print_number_cast("%d", networks[ss].lag_method, int); /* NOTRANSLATE */
       gdata_print_time(networks[ss].connecttime);
       gdata_print_time(networks[ss].lastservercontact);
       gdata_print_time(networks[ss].lastnotify);
@@ -986,13 +986,13 @@ void dumpgdata(void)
       
       for (ii=0; ii<MAX_PREFIX && gdata.networks[ss].prefixes[ii].p_mode; ii++)
         {
-          gdata_print_number_array_item("%c", networks[ss].prefixes, p_mode);
-          gdata_print_number_array_item("%c", networks[ss].prefixes, p_symbol);
+          gdata_print_number_array_item("%c", networks[ss].prefixes, p_mode); /* NOTRANSLATE */
+          gdata_print_number_array_item("%c", networks[ss].prefixes, p_symbol); /* NOTRANSLATE */
         }
       
       for (ii=0; ii<MAX_CHANMODES && gdata.networks[ss].chanmodes[ii]; ii++)
         {
-          gdata_print_number_array("%c", networks[ss].chanmodes);
+          gdata_print_number_array("%c", networks[ss].chanmodes); /* NOTRANSLATE */
         }
       
       for (ii=0; ii<INAMNT_SIZE; ii++)
@@ -1077,13 +1077,13 @@ void dumpgdata(void)
   gdata_iter_print_string(nick);
   gdata_irlist_iter_end;
 
-  gdata_print_number_cast("%d",curtime,int);
+  gdata_print_number_cast("%d", curtime, int); /* NOTRANSLATE */
   
   /* readset writeset */
   
   gdata_print_float(record);
   gdata_print_float(sentrecord);
-  gdata_print_number("%" LLPRINTFMT "d", totalsent);
+  gdata_print_number("%" LLPRINTFMT "d", totalsent); /* NOTRANSLATE */
   gdata_print_long(totaluptime);
   gdata_print_int(exiting);
   gdata_print_int(crashing);
@@ -1102,9 +1102,9 @@ void dumpgdata(void)
     }
   
   gdata_print_int(ignore);
-  gdata_print_number_cast("%ld", noautosave, long);
-  gdata_print_number_cast("%ld", nonewcons, long);
-  gdata_print_number_cast("%ld", nolisting, long);
+  gdata_print_number_cast("%ld", noautosave, long); /* NOTRANSLATE */
+  gdata_print_number_cast("%ld", nonewcons, long); /* NOTRANSLATE */
+  gdata_print_number_cast("%ld", nolisting, long); /* NOTRANSLATE */
   gdata_print_int(needsrehash);
   gdata_print_int(needsshutdown);
   gdata_print_int(needsswitch);
@@ -1112,7 +1112,7 @@ void dumpgdata(void)
   gdata_print_int(delayedshutdown);
   gdata_print_int(cursendptr);
   gdata_print_int(next_tr_id);
-  gdata_print_number("%" LLPRINTFMT "d", max_file_size);
+  gdata_print_number("%" LLPRINTFMT "d", max_file_size); /* NOTRANSLATE */
 
   gdata_print_uint(maxtrans);
   gdata_print_uint(max_fds_from_rlimit);
@@ -1134,11 +1134,11 @@ void dumpgdata(void)
   gdata_iter_print_string(desc);
   gdata_iter_print_string(note);
   gdata_iter_print_string(trigger);
-  gdata_iter_print_number_cast("%d", mtime, int);
-  gdata_iter_print_number_cast("%d", st_size, int);
-  gdata_iter_print_number_cast("%d", st_dev, int);
-  gdata_iter_print_number_cast("%d", st_ino, int);
-  gdata_iter_print_number_cast("%d", xtime, int);
+  gdata_iter_print_number_cast("%d", mtime, int); /* NOTRANSLATE */
+  gdata_iter_print_number_cast("%d", st_size, int); /* NOTRANSLATE */
+  gdata_iter_print_number_cast("%d", st_dev, int); /* NOTRANSLATE */
+  gdata_iter_print_number_cast("%d", st_ino, int); /* NOTRANSLATE */
+  gdata_iter_print_number_cast("%d", xtime, int); /* NOTRANSLATE */
   dump_line("  : ptr=%p gets=%d minspeed=%.1f maxspeed=%.1f st_size=%" LLPRINTFMT "d",
           (void *)iter,
           iter->gets,
@@ -1280,11 +1280,11 @@ void dumpgdata(void)
   gdata_irlist_iter_end;
 
   gdata_irlist_iter_start(listen_ports, ir_listen_port_item_t);
-  gdata_iter_print_number_cast("%hu",port,unsigned short int);
-  gdata_iter_print_number_cast("%u",listen_time,unsigned int);
+  gdata_iter_print_number_cast("%hu", port, unsigned short int); /* NOTRANSLATE */
+  gdata_iter_print_number_cast("%u", listen_time, unsigned int); /* NOTRANSLATE */
   gdata_irlist_iter_end;
   
-  gdata_print_number_cast("%p", md5build.xpack, void *);
+  gdata_print_number_cast("%p", md5build.xpack, void *); /* NOTRANSLATE */
   gdata_print_int(md5build.file_fd);
   
   /* meminfo */
@@ -1297,7 +1297,7 @@ void dumpgdata(void)
   gdata_print_string(runasuser);
 #endif
 
-  dump_line("GDATA DUMP END");
+  dump_line("GDATA DUMP END"); /* NOTRANSLATE */
   
 }
 

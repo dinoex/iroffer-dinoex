@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.34:
 ----------------
 
+bugfix: ./Lang ??
+  Reduzierung der Texte
+
 bugfix: RUBY
   Behebe den "Ivalid Argument" Fehler auf Debian 12.9
 

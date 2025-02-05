@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.34:
 ------------------
 
+bugfix: ./Lang ??
+  Reduce translation text
+
 bugfix: RUBY
   Fix the "Invalid Argument" on Debian 12.9
 

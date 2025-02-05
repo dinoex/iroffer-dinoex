@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_transfer.c 1.105@(#)
@@ -663,7 +663,7 @@ void t_flushed (transfer * const t)
     }
   if (gdata.download_completed_msg)
     {
-      notice_slow(t->nick, "%s", gdata.download_completed_msg);
+      notice_slow(t->nick, "%s", gdata.download_completed_msg); /* NOTRANSLATE */
     }
   
   if ( ((float)(t->xpack->st_size-t->startresume))/1024.0/((float)timetookms/1000.0) > gdata.record )

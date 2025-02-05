@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2021 Dirk Meyer
+ * Copyright (C) 2004-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -28,8 +28,8 @@
 #include "dinoex_kqueue.h"
 #include "dinoex_misc.h"
 
-#define GET_NEXT_DATA(x)	{ ++argv; --argc; x = *argv; \
-				if (x == NULL) usage(); }
+#define GET_NEXT_DATA(x)        { ++argv; --argc; x = *argv; \
+                                if (x == NULL) usage(); }
 
 gnetwork_t *gnetwork;
 gdata_t gdata;
@@ -44,8 +44,11 @@ __attribute__ ((noreturn))
 usage(void)
 {
   printf("\n"
-"iroffer-dinoex" " " VERSIONLONG ", see " "https://iroffer.net/" "\n"
-"\n"
+"iroffer-dinoex"
+" " VERSIONLONG /* NOTRANSLATE */
+", see " "https://iroffer.net/"
+"\n" /* NOTRANSLATE */
+"\n" /* NOTRANSLATE */
 "Usage: %s [-vc] [-bdkn"
 #if !defined(_OS_CYGWIN)
 "s"
@@ -76,7 +79,7 @@ usage(void)
 #endif
 "        -w dir    Chdir to dir as working directory.\n"
 "        -i file   Import and old style mybot.xdcc file.\n"
-"\n", ir_basename);
+"\n", ir_basename); /* NOTRANSLATE */
   exit(64);
 }
 
@@ -146,7 +149,10 @@ void command_options(int argc, char *const *argv)
         break;
 #endif
       case 'v': /* show version */
-        printf("iroffer-dinoex" " " VERSIONLONG FEATURES ", see " "https://iroffer.net/" "\n");
+        printf("iroffer-dinoex"
+               " " VERSIONLONG FEATURES /* NOTRANSLATE */
+               ", see " "https://iroffer.net/"
+               "\n"); /* NOTRANSLATE */
         exit(0);
       case 'w': /* workdir */
         GET_NEXT_DATA(cptr);
