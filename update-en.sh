@@ -1,5 +1,5 @@
 #!/bin/sh
-# SPDX-FileCopyrightText: 2005-2021 Dirk Meyer
+# SPDX-FileCopyrightText: 2005-2025 Dirk Meyer
 # SPDX-License-Identifier: GPL-2.0-only
 
 copy_if_differ() {
@@ -14,7 +14,6 @@ copy_if_differ() {
 LANG="C"
 LANG="en_EN.UTF-8"
 utf8="cat"
-sh ./Lang en
 awk -f ./admin.awk src/iroffer_admin.c > help-admin-en.neu
 copy_if_differ help-admin-en.txt help-admin-en.neu
 for lang in de it fr
