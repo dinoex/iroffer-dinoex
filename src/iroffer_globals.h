@@ -371,6 +371,7 @@ enum
 } transfermethod;
 
 unsigned int needrestart;
+unsigned int idummy4;
 } gdata_t;
 
 
