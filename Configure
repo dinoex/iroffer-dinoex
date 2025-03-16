@@ -509,7 +509,7 @@ cctype="gcc"
 ruby="ruby"
 PREFIX="/usr/local"
 LOCALBASE="/usr/local"
-TRANSLATION="de it fr"
+TRANSLATION="de it fr tr"
 
 while test "${1}" != ""
 do
