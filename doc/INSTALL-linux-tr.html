@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="content-language" content="tr">
+<link rel="stylesheet" type="text/css" href="/dinoex.css">
+<link rel="icon" href="/favicon.ico">
+<title>Iroffer-Dinoex'in GNU/Linux Üzerinde Kurulumu</title>
+</head>
+<body lang="tr">
+<h1>Iroffer-Dinoex'in GNU/Linux üzerinde kullanıcı olarak kurulumu</h1>
+
+<div>
+<h2>Kurulum süreci</h2>
+
+<ol>
+
+<li>Kullanıcı olarak "/home" dizinine gidiyoruz.<br>
+
+
+<pre class="indent">
+cd
+</pre>
+</li>
+
+<li>iroffer için yeni bir dizin oluşturun.<br>
+
+
+<pre class="indent">
+mkdir iroffer
+cd iroffer/
+</pre>
+</li>
+
+<li>İnternet üzerinden programın kaynak kodunu indirin.<br>
+
+
+<pre class="indent">
+wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
+</pre>
+</li>
+
+<li>Kaynak kod arşivini açın.<br>
+
+
+<pre class="indent">
+tar -xvzf iroffer-dinoex-snap.tar.gz
+</pre>
+</li>
+
+<li>Kaynak kodu sizin GNU/Linux sürümünüz için yapılandırın.<br>
+
+
+<pre class="indent">
+cd iroffer-dinoex-snap
+./Configure -curl -geoip -ruby
+</pre>
+</li>
+
+<li>Şayet "Configure" bazı hatlar görüntülüyorsa, hâlâ bazı paketler eksik demektir.<br>
+Debian ile: <br>
+<pre class="indent">
+sudo apt-get install make
+sudo apt-get install gcc
+sudo apt-get install libc-dev
+sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install libmaxminddb-dev
+sudo apt-get install libssl-dev
+sudo apt-get install libminiupnpc-dev
+sudo apt-get install ruby-dev
+sudo apt-get install ruby
+</pre>
+</li>
+
+<li>Programı Türkçe metinler ile derliyoruz.<br>
+
+
+<pre class="indent">
+make tr
+</pre>
+</li>
+
+<li>Programı doğru konuma kopyalıyoruz.<br>
+
+
+<pre class="indent">
+cp -p iroffer-tr ..
+cp *.html ..
+cp -r htdocs ../
+</pre>
+</li>
+
+<li>Yapılandırmamızı kopyalayarak başlıyoruz.<br>
+
+
+<pre class="indent">
+cp misal.config ../mybot.config
+cd ..
+chmod 600 mybot.config
+</pre>
+</li>
+
+<li>Sadece "bot" kullanıcısının yazma izinleri olmalı.<br>
+
+
+<pre class="indent">
+chmod 700 .
+</pre>
+</li>
+
+<li>Yönetim için bir parola oluşturacağız.<br>
+
+
+<pre class="indent">
+./iroffer-tr -c mybot.config
+</pre>
+
+</li>
+
+<li>Tüm dizinleri "mybot.config" yapılandırma dosyasında giriyoruz.<br>
+
+"adminhost" doğru şekilde girilmelidir. Dahili site etkinleştirilmiştir.<br>
+Dosyalar için temel bir dizin ekliyoruz ve onu gönderilen dosyalar için de kullanıyoruz.<br>
+"mybot.config" şunları içermelidir:
+
+<pre class="indent">
+http_port 8000
+http_dir htdocs
+filedir /home/bot/files
+uploaddir /home/bot/files
+</pre>
+('bot' yerine kendi oturum isminizi koyun)<br>
+<br>
+</li>
+
+<li>Dosyalar için dizini oluşturuyoruz.<br>
+
+
+<pre class="indent">
+cd ..
+mkdir files
+</pre>
+
+Dosyaları daha sonra XDCC veya FTP ile göndereceğiz.<br>
+<br>
+</li>
+
+<li>Başlatma betiği oluşturuyoruz.<br>
+
+
+<pre class="indent">
+cd ..
+</pre>
+
+ardından
+
+<pre class="indent">
+nano -w start-iroffer.sh
+</pre>
+
+veya
+
+<pre class="indent">
+vim start-iroffer.sh
+</pre>
+
+Betiği yazıyoruz:<br>
+
+<pre class="indent">
+#!/bin/sh
+cd /home/bot/iroffer
+./iroffer-tr -b /home/bot/iroffer/mybot.config
+</pre>
+('bot' yerine kendi oturum isminizi koyun)
+</li>
+
+<li>Betiği çalıştırılabilir hale getiriyoruz.<br>
+
+
+<pre class="indent">
+chmod +x start-iroffer.sh
+</pre>
+</li>
+
+<li>Başlatıyoruz.<br>
+
+
+<pre class="indent">
+sh start-iroffer.sh
+</pre>
+
+XDCC artık çalışmalıdır.
+</li>
+
+</ol>
+</div>
+</body>
+</html>
+
