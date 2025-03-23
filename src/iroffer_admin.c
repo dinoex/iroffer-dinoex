@@ -1047,11 +1047,11 @@ static void u_info(const userinput * const u)
     }
   
   a_respond(u, " Gets           %u", xd->gets);
-  if (xd->minspeed)
+  if (xd->minspeed > 0)
     {
       a_respond(u, " Minspeed       %1.1fkB/sec", xd->minspeed);
     }
-  if (xd->maxspeed)
+  if (xd->maxspeed > 0)
     {
       a_respond(u, " Maxspeed       %1.1fkB/sec", xd->maxspeed);
     }
@@ -2094,7 +2094,7 @@ void u_listdir(const userinput * const u, const char *dir)
   DIR *d;
   struct dirent *f;
   char *thefile, *tempstr;
-  irlist_t dirlist = {0, 0, 0};
+  irlist_t dirlist = EMPTY_IRLIST;
   int thedirlen;
   
   updatecontext();

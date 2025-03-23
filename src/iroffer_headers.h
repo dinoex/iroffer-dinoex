@@ -137,6 +137,8 @@ typedef struct
   unsigned int dummy;
 } irlist_t;
 
+#define	EMPTY_IRLIST	{0, 0, 0, 0}
+
 typedef struct
 {
   unsigned int begin;
