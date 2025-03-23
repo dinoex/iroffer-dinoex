@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_headers.h 1.142@(#)
@@ -112,7 +112,10 @@
 #endif
 
 #ifdef USE_OPENSSL
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpadded"
 #include <openssl/ssl.h>
+#pragma GCC diagnostic pop
 #define USE_SSL
 #endif /* USE_OPENSSL */
 #ifdef USE_GNUTLS
