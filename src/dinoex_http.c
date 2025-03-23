@@ -35,8 +35,6 @@
 
 #ifndef WITHOUT_HTTP
 
-#define MAX_WEBLIST_SIZE	(2 * 1024 * 1024)
-
 #define HTTP_DATE_LINE		"%a, %d %b %Y %T GMT"	/* NOTRANSLATE */
 
 typedef struct {
