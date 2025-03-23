@@ -1,0 +1,92 @@
+       Iroffer-Dinoex'in GNU/Linux üzerinde kullanıcı olarak kurulumu
+
+Kurulum süreci
+
+    1. Kullanıcı olarak "/home" dizinine gidiyoruz.
+cd
+
+    2. iroffer için yeni bir dizin oluşturun.
+mkdir iroffer
+cd iroffer/
+
+    3. İnternet üzerinden programın kaynak kodunu indirin.
+wget https://iroffer.net/iroffer-dinoex-snap.tar.gz
+
+    4. Kaynak kod arşivini açın.
+tar -xvzf iroffer-dinoex-snap.tar.gz
+
+    5. Kaynak kodu sizin GNU/Linux sürümünüz için yapılandırın.
+cd iroffer-dinoex-snap
+./Configure -curl -geoip -ruby
+
+    6. Şayet "Configure" bazı hatlar görüntülüyorsa, hâlâ bazı paketler
+       eksik demektir.
+       Debian ile:
+sudo apt-get install make
+sudo apt-get install gcc
+sudo apt-get install libc-dev
+sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install libmaxminddb-dev
+sudo apt-get install libssl-dev
+sudo apt-get install libminiupnpc-dev
+sudo apt-get install ruby-dev
+sudo apt-get install ruby
+
+    7. Programı Türkçe metinler ile derliyoruz.
+make tr
+
+    8. Programı doğru konuma kopyalıyoruz.
+cp -p iroffer-tr ..
+cp *.html ..
+cp -r htdocs ../
+
+    9. Yapılandırmamızı kopyalayarak başlıyoruz.
+cp misal.config ../mybot.config
+cd ..
+chmod 600 mybot.config
+
+   10. Sadece "bot" kullanıcısının yazma izinleri olmalı.
+chmod 700 .
+
+   11. Yönetim için bir parola oluşturacağız.
+./iroffer-tr -c mybot.config
+
+   12. Tüm dizinleri "mybot.config" yapılandırma dosyasında giriyoruz.
+       "adminhost" doğru şekilde girilmelidir. Dahili site
+       etkinleştirilmiştir.
+       Dosyalar için temel bir dizin ekliyoruz ve onu gönderilen dosyalar
+       için de kullanıyoruz.
+       "mybot.config" şunları içermelidir:
+http_port 8000
+http_dir htdocs
+filedir /home/bot/files
+uploaddir /home/bot/files
+
+       ('bot' yerine kendi oturum isminizi koyun)
+   13. Dosyalar için dizini oluşturuyoruz.
+cd ..
+mkdir files
+
+       Dosyaları daha sonra XDCC veya FTP ile göndereceğiz.
+   14. Başlatma betiği oluşturuyoruz.
+cd ..
+
+       ardından
+nano -w start-iroffer.sh
+
+       veya
+vim start-iroffer.sh
+
+       Betiği yazıyoruz:
+#!/bin/sh
+cd /home/bot/iroffer
+./iroffer-tr -b /home/bot/iroffer/mybot.config
+
+       ('bot' yerine kendi oturum isminizi koyun)
+   15. Betiği çalıştırılabilir hale getiriyoruz.
+chmod +x start-iroffer.sh
+
+   16. Başlatıyoruz.
+sh start-iroffer.sh
+
+       XDCC artık çalışmalıdır.
