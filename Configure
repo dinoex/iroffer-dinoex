@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # SPDX-FileCopyrightText: 2005 David Johnson
-# SPDX-FileCopyrightText: 2005-2021 Dirk Meyer
+# SPDX-FileCopyrightText: 2005-2025 Dirk Meyer
 # SPDX-License-Identifier: GPL-2.0-only
 #
 # $Id$
@@ -878,11 +878,12 @@ __attribute__ ((noreturn))
 #endif
 main (int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
 "
 
-main2=" exit(0);
+main2="
+ (void)argc;
+ (void)argv;
+ exit(0);
 }"
 
 main0="${main1}${main2}"
@@ -920,6 +921,49 @@ else
  ${msg} " ${irt_no}"
 fi
 
+${msg} -n "${irt_seeingif} $cctype ${irt_accepts} '-Wno-unreachable-code'... "
+echo "
+#include <stdlib.h>
+${main0}" > config.temp.c
+if $cctype -o config.temp -Wno-unreachable-code $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+ ${msg} "${irt_yes}"
+ NOUNREACH="-Wno-unreachable-code"
+else
+ ${msg} " ${irt_no}"
+fi
+
+${msg} -n "${irt_seeingif} $cctype ${irt_accepts} '-Wno-padded'... "
+echo "
+#include <stdlib.h>
+${main0}" > config.temp.c
+if $cctype -o config.temp -Wno-padded $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+ ${msg} "${irt_yes}"
+ NOPADDED="-Wno-padded"
+else
+ ${msg} " ${irt_no}"
+fi
+
+${msg} -n "${irt_seeingif} $cctype ${irt_accepts} '-Wno-system-headers'... "
+echo "
+#include <stdlib.h>
+${main0}" > config.temp.c
+if $cctype -o config.temp -Wno-system-headers $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+ ${msg} "${irt_yes}"
+ CFLAGS="${CFLAGS} -Wno-system-headers"
+else
+ ${msg} " ${irt_no}"
+fi
+
+${msg} -n "${irt_seeingif} $cctype ${irt_accepts} '--system-header-prefix=/usr'... "
+echo "
+#include <stdlib.h>
+${main0}" > config.temp.c
+if $cctype -o config.temp --system-header-prefix=/usr $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+ ${msg} "${irt_yes}"
+ CFLAGS="${CFLAGS} --system-header-prefix=/usr --system-header-prefix=/usr/local/include"
+else
+ ${msg} " ${irt_no}"
+fi
 
 ${msg} -n "${irt_seeing16bit}... "
 echo "
@@ -1061,7 +1105,7 @@ ${msg} -n "${irt_endianness}... "
 echo "${irmain1}
  printf(\"%s\", (100 == ntohl(100)) ? \"big\" : \"little\");
 ${main2}" > config.temp.c
-if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "big" ]; then
+if $cctype -o config.temp $WARNS $WERROR $NOUNREACH $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && [ "`./config.temp`" = "big" ]; then
  ${msg} "${irt_endianbig}"
  echo "#define IR_ENDIAN_BIG" >> src/iroffer_config.h
 elif [ "`./config.temp`" = "little" ]; then
@@ -1083,7 +1127,7 @@ echo "${irmain1}
  (void)array;
  close(fd);
 ${main2}" > config.temp.c
-if $cctype -o config.temp -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
+if $cctype -o config.temp -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE $WARNS $WERROR -Wno-declaration-after-statement $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  ${msg} "${irt_yes}"
  echo "#define _FILE_OFFSET_BITS 64" >> src/iroffer_config.h
  echo "#define _LARGEFILE_SOURCE" >> src/iroffer_config.h
@@ -1158,7 +1202,8 @@ fi
 
 ${msg} -n "${irt_checkfor} snprintf()... "
 echo "${irmain1}
- char *s=0; snprintf(s,10,\"blah\");
+ char *s=0;
+ snprintf(s,10,\"blah\");
 ${main2}" > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  ${msg} "${irt_found}"
@@ -1266,7 +1311,8 @@ fi
 
 ${msg} -n "${irt_checkfor} statvfs()... "
 echo "${irmain1}
- struct statvfs stf; statvfs(\"\",&stf);
+ struct statvfs stf;
+ statvfs(\"\",&stf);
 ${main2}" > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  ${msg} "${irt_found}"
@@ -1277,7 +1323,8 @@ fi
 
 ${msg} -n "${irt_checkfor} statfs()... "
 echo "${irmain1}
- struct statfs stf; statfs(\"\",&stf);
+ struct statfs stf;
+ statfs(\"\",&stf);
 ${main2}" > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS; then
  ${msg} "${irt_found}"
@@ -1323,6 +1370,8 @@ fi
 ${msg} -n "${irt_seeingif} crypt() ${irt_works} ${irt_asexpected}... "
 echo "${irmain1}
  char *pwout;
+ (void)argc;
+ (void)argv;
  pwout = crypt(\"testtest\",\"LH\");
  if (pwout && !strcmp(\"LHD/pLKwfn0.k\", pwout)) {
    fputs(\"result: <plain> \", stderr);
@@ -1570,6 +1619,8 @@ fi
 ${msg} -n "${irt_checkfor} gethostbyname() error ${irt_values}... "
 echo "${irmain1}
  int i;
+ (void)argc;
+ (void)argv;
  switch (h_errno) {
  case HOST_NOT_FOUND:
  case NO_ADDRESS:
@@ -1610,6 +1661,7 @@ if $OPT_KQUEUE; then
  ${msg} -n "${irt_checkfor} kqueue() ... "
  echo "${irheaders}
 #include <sys/event.h>
+extern int ir_kqueue_fd;
 int ir_kqueue_fd;
 ${main1}
  ir_kqueue_fd = kqueue ();
@@ -1629,7 +1681,7 @@ if $OPT_GEOIP; then
 ${main1}
  MMDB_open(NULL, MMDB_MODE_MMAP, NULL);
 ${main2}" > config.temp.c
- if $cctype -o config.temp -DUSE_MAXMINDDB $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lmaxminddb $LDFLAGS $libs $LIBS; then
+ if $cctype -o config.temp -DUSE_MAXMINDDB $WARNS $NOPADDED $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lmaxminddb $LDFLAGS $libs $LIBS; then
   ${msg} "${irt_found}"
   echo "#define USE_MAXMINDDB" >> src/iroffer_config.h
   FEATURES="${FEATURES},geoip2"
@@ -1639,14 +1691,14 @@ ${main2}" > config.temp.c
  fi
 fi
 
-if $OPT_GEOIP; then
- ${msg} -n "${irt_seeingif_lib} GeoIP ${irt_lib_exists}... "
+if $OPT_GEOIP && [ "${MAXMINDDBLIB}" = '' ] ; then
+ ${msg} -n "${irt_seeingif_lib} GeoIP1 ${irt_lib_exists}... "
  echo "${irheaders}
 #include <GeoIP.h>
 ${main1}
  GeoIP_country_code_by_addr(NULL, NULL);
 ${main2}" > config.temp.c
- if $cctype -o config.temp -DUSE_GEOIP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lGeoIP $LDFLAGS $libs $LIBS; then
+ if $cctype -o config.temp -DUSE_GEOIP $WARNS $NOPADDED $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lGeoIP $LDFLAGS $libs $LIBS; then
   ${msg} "${irt_found}"
   echo "#define USE_GEOIP" >> src/iroffer_config.h
   FEATURES="${FEATURES},geoip"
@@ -1659,7 +1711,7 @@ ${main2}" > config.temp.c
 ${main1}
  struct in6_addr remoteip; inet_pton(AF_INET6, 0, &remoteip); GeoIP_country_code_by_ipnum_v6(NULL, remoteip);
 ${main2}" > config.temp.c
-  if $cctype -o config.temp -DUSE_GEOIP6 $WARNS $WERROR $CFLAGS ${GEOINC} config.temp.c ${GEOLDF} ${GEOLIB} $LDFLAGS $libs $LIBS; then
+  if $cctype -o config.temp -DUSE_GEOIP6 $WARNS $NOPADDED $WERROR $CFLAGS ${GEOINC} config.temp.c ${GEOLDF} ${GEOLIB} $LDFLAGS $libs $LIBS; then
    FEATURES="${FEATURES}6"
    ${msg} "${irt_found}"
    echo "#define USE_GEOIP6" >> src/iroffer_config.h
@@ -1690,7 +1742,7 @@ ${main1}
 #endif /* UPNPDISCOVER_SUCCESS */
 #endif
 ${main2}" > config.temp.c
- if $cctype -o config.temp -DUSE_UPNP $WARNS $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lminiupnpc $LDFLAGS $libs $LIBS; then
+ if $cctype -o config.temp -DUSE_UPNP $WARNS $NOPADDED $WERROR $CFLAGS "-I${LOCALBASE}/include" config.temp.c "-L${LOCALBASE}/lib" -lminiupnpc $LDFLAGS $libs $LIBS; then
   ${msg} "${irt_found}"
   echo "#define USE_UPNP" >> src/iroffer_config.h
   FEATURES="${FEATURES},upnp"
@@ -1710,7 +1762,7 @@ if $OPT_CURL; then
 ${main1}
  curl_global_cleanup();
 ${main2}" > config.temp.c
- if $cctype -o config.temp -DUSE_CURL $WARNS $CFLAGS `curl-config  --cflags` config.temp.c "-L${LOCALBASE}/lib" `curl-config  --libs` $LDFLAGS $libs $LIBS; then
+ if $cctype -o config.temp -DUSE_CURL $WARNS $NOPADDED $CFLAGS `curl-config  --cflags` config.temp.c "-L${LOCALBASE}/lib" `curl-config  --libs` $LDFLAGS $libs $LIBS; then
   ${msg} "${irt_found}"
   echo "#define USE_CURL" >> src/iroffer_config.h
   FEATURES="${FEATURES},curl"
@@ -1796,6 +1848,25 @@ if $OPT_RUBY; then
  fi
  ${msg} -n "${irt_seeingif_lib} libruby ${irt_lib_exists} (${irt_for} RUBY-Scripts)... "
  echo "
+#pragma GCC diagnostic ignored \"-Wpadded\"
+#pragma GCC diagnostic ignored \"-Wpedantic\"
+#pragma GCC diagnostic ignored \"-Wstrict-prototypes\"
+#pragma GCC diagnostic ignored \"-Wredundant-decls\"
+#pragma GCC diagnostic ignored \"-Wunused-parameter\"
+#pragma GCC diagnostic ignored \"-Wcast-qual\"
+#pragma GCC diagnostic ignored \"-Wsign-conversion\"
+#ifdef __clang__
+#pragma GCC diagnostic ignored \"-Wgcc-compat\"
+#pragma GCC diagnostic ignored \"-Wgnu-zero-variadic-macro-arguments\"
+#pragma clang diagnostic ignored \"-Wunknown-warning-option\"
+#pragma clang diagnostic ignored \"-Wdisabled-macro-expansion\"
+#pragma clang diagnostic ignored \"-Wdocumentation\"
+#pragma clang diagnostic ignored \"-Wdocumentation-unknown-command\"
+#pragma clang diagnostic ignored \"-Wdeclaration-after-statement\"
+#pragma clang diagnostic ignored \"-Walloca\"
+#pragma clang diagnostic ignored \"-Wc23-extensions\"
+#pragma clang diagnostic ignored \"-Wshift-sign-overflow\"
+#endif
 #include \"ruby.h\"
 ${main1}
  ruby_init(); ruby_finalize();
