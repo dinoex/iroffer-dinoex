@@ -34,13 +34,24 @@
 #include "dinoex_config.h"
 #include "dinoex_ruby.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpadded"
+#pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic ignored "-Wstrict-prototypes"
 #pragma GCC diagnostic ignored "-Wredundant-decls"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wcast-qual"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
 #ifdef __clang__
 #pragma GCC diagnostic ignored "-Wgcc-compat"
 #pragma GCC diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
+#pragma clang diagnostic ignored "-Wdocumentation"
+#pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
+#pragma clang diagnostic ignored "-Wc23-extensions"
+#pragma clang diagnostic ignored "-Wdeclaration-after-statement"
+#pragma clang diagnostic ignored "-Walloca"
+#pragma clang diagnostic ignored "-Wshift-sign-overflow"
 #endif
 #undef HAVE_MMAP
 #include "ruby.h"
@@ -60,6 +71,10 @@
 #else
 #include <ruby/encoding.h>
 #endif
+#pragma GCC diagnostic pop
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
+#endif
 
 
 typedef struct protect_call_arg {
@@ -77,7 +92,7 @@ static char *cLine;
 static char *cFile;
 static unsigned int cPack;
 static VALUE cIrofferEvent;
-static VALUE oIrofferEvent = Qnil;
+static VALUE oIrofferEvent = RUBY_Qnil;
 
 #if USE_RUBYVERSION < 19
 static VALUE rb_errinfo(void)
@@ -130,7 +145,7 @@ static VALUE rb_funcall_protected(VALUE recvobj, ID mid, int argc, ...)
   protect_call_arg_t arg;
 
   if (argc > 0) {
-    argv = ALLOCA_N(VALUE, argc);
+    argv = ALLOCA_N(VALUE, (size_t)argc);
     va_start(ap, argc);
     for (i = 0; i < argc; ++i) {
       argv[i] = va_arg(ap, VALUE);
@@ -146,7 +161,7 @@ static VALUE rb_funcall_protected(VALUE recvobj, ID mid, int argc, ...)
   rval = rb_protect(protect_funcall0, (VALUE) &arg, &state);
   if (state != 0) {
     iroffer_ruby_errro(state);
-    return Qnil;
+    return RUBY_Qnil;
   }
   return rval;
 }
@@ -171,7 +186,7 @@ static void ci_free(void * UNUSED(p))
 
 static VALUE cie_null(VALUE UNUSED(self))
 {
-  return Qnil;
+  return RUBY_Qnil;
 }
 
 static VALUE cie_new(VALUE rclass)
@@ -183,22 +198,22 @@ static VALUE cie_new(VALUE rclass)
 
 static VALUE cie_network(VALUE UNUSED(self))
 {
-  return rb_str_new(gnetwork->name, strlen(gnetwork->name));
+  return rb_str_new(gnetwork->name, (ssize_t)strlen(gnetwork->name));
 }
 
 static VALUE cie_inputline(VALUE UNUSED(self))
 {
-  return rb_str_new(cLine, strlen(cLine));
+  return rb_str_new(cLine, (ssize_t)strlen(cLine));
 }
 
 static VALUE cie_added_file(VALUE UNUSED(self))
 {
-  return rb_str_new(cFile, strlen(cFile));
+  return rb_str_new(cFile, (ssize_t)strlen(cFile));
 }
 
 static VALUE cie_added_pack(VALUE UNUSED(self))
 {
-  return INT2NUM(cPack);
+  return INT2NUM((int)cPack);
 }
 
 static VALUE cie_hostmask(VALUE UNUSED(self))
@@ -208,9 +223,9 @@ static VALUE cie_hostmask(VALUE UNUSED(self))
 
   val = getpart(cLine, 1);
   if (val == NULL)
-    return Qnil;
+    return RUBY_Qnil;
 
-  copy = rb_str_new(val + 1, strlen(val + 1));
+  copy = rb_str_new(val + 1, (ssize_t)strlen(val + 1));
   mydelete(val);
   return copy;
 }
@@ -220,7 +235,7 @@ static VALUE cie_mynick(VALUE UNUSED(self))
   const char *mynick;
 
   mynick = get_user_nick();
-  return rb_str_new(mynick, strlen(mynick));
+  return rb_str_new(mynick, (ssize_t)strlen(mynick));
 }
 
 static VALUE cie_nick(VALUE UNUSED(self))
@@ -232,13 +247,13 @@ static VALUE cie_nick(VALUE UNUSED(self))
 
   val = getpart(cLine, 1);
   if (val == NULL)
-    return Qnil;
+    return RUBY_Qnil;
 
   nick = val + 1;
   end = strchr(nick, '!');
   if (end != NULL)
     *end = 0;
-  copy = rb_str_new(nick, strlen(nick));
+  copy = rb_str_new(nick, (ssize_t)strlen(nick));
   mydelete(val);
   return copy;
 }
@@ -250,9 +265,9 @@ static VALUE cie_channel(VALUE UNUSED(self))
 
   val = getpart(cLine, 3);
   if (val == NULL)
-    return Qnil;
+    return RUBY_Qnil;
 
-  copy = rb_str_new(val, strlen(val));
+  copy = rb_str_new(val, (ssize_t)strlen(val));
   mydelete(val);
   return copy;
 }
@@ -264,9 +279,9 @@ static VALUE cie_message(VALUE UNUSED(self))
 
   val = getpart_eol(cLine, 4);
   if (val == NULL)
-    return Qnil;
+    return RUBY_Qnil;
 
-  copy = rb_str_new(val + 1, strlen(val + 1));
+  copy = rb_str_new(val + 1, (ssize_t)strlen(val + 1));
   mydelete(val);
   return copy;
 }
@@ -278,20 +293,20 @@ static VALUE cie_config(VALUE UNUSED(module), VALUE rkey)
   VALUE copy;
 
   if (NIL_P(rkey))
-    return Qnil;
+    return RUBY_Qnil;
 
   key = rb_obj_as_string_protected(rkey);
   if (!key)
-    return Qnil;
+    return RUBY_Qnil;
 
   val = print_config_key(key);
   if (val != NULL) {
-    copy = rb_str_new(val, strlen(val));
+    copy = rb_str_new(val, (ssize_t)strlen(val));
     mydelete(val);
     return copy;
   }
 
-  return Qnil;
+  return RUBY_Qnil;
 }
 
 static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
@@ -307,22 +322,22 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
   VALUE rval;
 
   if (NIL_P(rnr) || NIL_P(rkey))
-    return Qnil;
+    return RUBY_Qnil;
 
   nr = FIX2UINT(rnr);
   if (nr == 0)
-    return Qnil;
+    return RUBY_Qnil;
 
   if (nr > irlist_size(&gdata.xdccs))
-    return Qnil;
+    return RUBY_Qnil;
 
   xd = get_xdcc_pack(nr);
   if (xd == NULL)
-    return Qnil;
+    return RUBY_Qnil;
 
   key = rb_obj_as_string_protected(rkey);
   if (!key)
-    return Qnil;
+    return RUBY_Qnil;
 
   for (;;) {
     if (strcmp(key, "file") == 0) { /* NOTRANSLATE */
@@ -387,8 +402,7 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
     }
     if (strcmp(key, "size") == 0) { /* NOTRANSLATE */
       tempstr = sizestr(0, xd->st_size);
-      len = strlen(tempstr);
-      rval = rb_str_new(tempstr, len);
+      rval = rb_str_new(tempstr, (ssize_t)strlen(tempstr));
       mydelete(tempstr);
       return rval;
     }
@@ -401,23 +415,23 @@ static VALUE cie_info_pack(VALUE UNUSED(module), VALUE rnr, VALUE rkey)
     if (strcmp(key, "crc32") == 0) { /* NOTRANSLATE */
       tempstr = mymalloc(maxtextlengthshort);
       len = add_snprintf(tempstr, maxtextlengthshort, CRC32_PRINT_FMT, xd->crc32);
-      rval = rb_str_new(tempstr, len);
+      rval = rb_str_new(tempstr, (ssize_t)len);
       mydelete(tempstr);
       return rval;
     }
     if (strcmp(key, "md5sum") == 0) { /* NOTRANSLATE */
       tempstr = mymalloc(maxtextlengthshort);
       len = add_snprintf(tempstr, maxtextlengthshort, MD5_PRINT_FMT, MD5_PRINT_DATA(xd->md5sum));
-      rval = rb_str_new(tempstr, len);
+      rval = rb_str_new(tempstr, (ssize_t)len);
       mydelete(tempstr);
       return rval;
     }
     /* minspeed, maxspeed */
-    return Qnil;
+    return RUBY_Qnil;
   }
   if (val == NULL)
-    return Qnil;
-  return rb_str_new(val, strlen(val));
+    return RUBY_Qnil;
+  return rb_str_new(val, (ssize_t)strlen(val));
 }
 
 static VALUE cie_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
@@ -427,22 +441,22 @@ static VALUE cie_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
   channel_t *ch;
 
   if (NIL_P(rname) || NIL_P(rmsg))
-    return Qnil;
+    return RUBY_Qnil;
 
   name = rb_obj_as_string_protected(rname);
   msg = rb_obj_as_string_protected(rmsg);
   if (!name || !msg)
-    return Qnil;
+    return RUBY_Qnil;
 
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
-    return Qfalse;
+    return RUBY_Qfalse;
 
   if (gnetwork->botstatus != BOTSTATUS_JOINED)
-    return Qfalse;
+    return RUBY_Qfalse;
 
   if (name[0] != '#') {
     privmsg_slow(name, "%s", msg); /* NOTRANSLATE */
-    return Qtrue;
+    return RUBY_Qtrue;
   }
 
   for (ch = irlist_get_head(&(gnetwork->channels));
@@ -450,10 +464,10 @@ static VALUE cie_privmsg(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
        ch = irlist_get_next(ch)) {
     if (strcasecmp(ch->name, name) == 0) {
       privmsg_chan(ch, "%s", msg); /* NOTRANSLATE */
-      return Qtrue;
+      return RUBY_Qtrue;
     }
   }
-  return Qfalse;
+  return RUBY_Qfalse;
 }
 
 static VALUE cie_warning(VALUE UNUSED(module), VALUE rmsg)
@@ -461,14 +475,14 @@ static VALUE cie_warning(VALUE UNUSED(module), VALUE rmsg)
   char *msg;
 
   if (NIL_P(rmsg))
-    return Qnil;
+    return RUBY_Qnil;
 
   msg = rb_obj_as_string_protected(rmsg);
   if (!msg)
-    return Qnil;
+    return RUBY_Qnil;
 
   outerror(OUTERROR_TYPE_WARN_LOUD, "ruby: %s", msg );
-  return Qtrue;
+  return RUBY_Qtrue;
 }
 
 static VALUE cie_mode(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
@@ -478,31 +492,31 @@ static VALUE cie_mode(VALUE UNUSED(module), VALUE rname, VALUE rmsg)
   channel_t *ch;
 
   if (NIL_P(rname) || NIL_P(rmsg))
-    return Qnil;
+    return RUBY_Qnil;
 
   name = rb_obj_as_string_protected(rname);
   msg = rb_obj_as_string_protected(rmsg);
   if (!name || !msg)
-    return Qnil;
+    return RUBY_Qnil;
 
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
-    return Qfalse;
+    return RUBY_Qfalse;
 
   if (gnetwork->botstatus != BOTSTATUS_JOINED)
-    return Qfalse;
+    return RUBY_Qfalse;
 
   if (name[0] != '#')
-    return Qfalse;
+    return RUBY_Qfalse;
 
   for (ch = irlist_get_head(&(gnetwork->channels));
        ch;
        ch = irlist_get_next(ch)) {
     if (strcasecmp(ch->name, name) == 0) {
       writeserver(WRITESERVER_NORMAL, "MODE %s %s", name, msg); /* NOTRANSLATE */
-      return Qtrue;
+      return RUBY_Qtrue;
     }
   }
-  return Qfalse;
+  return RUBY_Qfalse;
 }
 
 static VALUE cie_usenatip(VALUE UNUSED(module), VALUE rval)
@@ -510,17 +524,17 @@ static VALUE cie_usenatip(VALUE UNUSED(module), VALUE rval)
   char *val;
 
   if (NIL_P(rval))
-    return Qnil;
+    return RUBY_Qnil;
 
   val = rb_obj_as_string_protected(rval);
   if (!val)
-    return Qnil;
+    return RUBY_Qnil;
 
   if (gnetwork->serverstatus != SERVERSTATUS_CONNECTED)
-    return Qfalse;
+    return RUBY_Qfalse;
 
   update_natip(val);
-  return Qtrue;
+  return RUBY_Qtrue;
 }
 
 static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
@@ -529,14 +543,15 @@ static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
   userinput *uxdl;
 
   if (NIL_P(rmsg))
-    return Qnil;
+    return RUBY_Qnil;
 
-  switch (TYPE(rmsg)) {
-   case T_ARRAY:
+  switch (rb_type(rmsg)) {
+   case RUBY_T_ARRAY:
      rmsg = rb_ary_join(rmsg, rb_str_new2(" ")); /* NOTRANSLATE */
      /* process Array */
      /* fallthrough */
-  case T_STRING:
+     __attribute__((fallthrough));
+  case RUBY_T_STRING:
      /* process String */
      msg = rb_obj_as_string_protected(rmsg);
      break;
@@ -545,7 +560,7 @@ static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
      break;
   }
   if (!msg)
-    return Qnil;
+    return RUBY_Qnil;
 
   uxdl = mycalloc(sizeof(userinput));
   ioutput(OUT_S|OUT_L|OUT_D, COLOR_MAGENTA, "RUBY %s", msg);
@@ -557,7 +572,7 @@ static VALUE cie_command(VALUE UNUSED(module), VALUE rmsg)
   u_parseit(uxdl);
 
   mydelete(uxdl);
-  return Qtrue;
+  return RUBY_Qtrue;
 }
 
 static void Init_IrofferEvent(void) {
@@ -595,7 +610,7 @@ static void Init_IrofferEvent(void) {
 static VALUE myruby_rb_load(VALUE name)
 {
     rb_load(name, 0);
-    return Qnil;
+    return RUBY_Qnil;
 }
 
 static void load_script(const char *name)
@@ -666,7 +681,7 @@ static unsigned int do_on_event(VALUE userobject, const char *event)
     return 0;
 
   skip = rb_funcall_protected(userobject, method, 0, NULL);
-  return (skip != Qtrue) ? 0 : 1;
+  return (skip != RUBY_Qtrue) ? 0 : 1;
 }
 
 /* push a server line to the ruby class */
@@ -739,8 +754,8 @@ unsigned int do_myruby_ruby(const userinput * const u)
   VALUE *argv;
   ID method;
   VALUE userobject;
-  unsigned int argc;
-  unsigned int i;
+  int argc;
+  int i;
   int state = 0;
 
   if (myruby_loaded == 0)
@@ -755,10 +770,10 @@ unsigned int do_myruby_ruby(const userinput * const u)
     return 0;
 
   if (u->arg2e != NULL) {
-    argc = get_argv(part, u->arg2e, MAX_RUBYCMD_PARTS);
-    argv = ALLOCA_N(VALUE, argc);
+    argc = (int)get_argv(part, u->arg2e, MAX_RUBYCMD_PARTS);
+    argv = ALLOCA_N(VALUE, (size_t)argc);
     for (i = 0; i < argc; ++i) {
-      argv[i] = rb_str_new(part[i], strlen(part[i]));;
+      argv[i] = rb_str_new(part[i], (ssize_t)strlen(part[i]));;
       mydelete(part[i]);
     }
   } else {
@@ -849,7 +864,7 @@ unsigned int http_ruby_script(const char *name, const char *output)
   snprintf(tempstr, maxtextlength, "$stdout = File.new(\"%s\", \"w+\")", output); /* NOTRANSLATE */
   rb_eval_string_protect(tempstr, &rc);
   mydelete(tempstr);
-  rb_load_protect(rb_str_new(name, strlen(name)), 0, &rc);
+  rb_load_protect(rb_str_new(name, (ssize_t)strlen(name)), 0, &rc);
   if (rc != 0) {
     outerror(OUTERROR_TYPE_WARN_LOUD,
              "ruby_exec failed with %d: %s",

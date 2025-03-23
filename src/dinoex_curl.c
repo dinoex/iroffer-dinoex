@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2023 Dirk Meyer
+ * Copyright (C) 2004-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -29,7 +29,15 @@
 #include "dinoex_curl.h"
 
 #ifdef USE_CURL
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpadded"
 #include <curl/curl.h>
+#pragma GCC diagnostic pop
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
+#endif
+
 #include <ctype.h>
 
 typedef struct

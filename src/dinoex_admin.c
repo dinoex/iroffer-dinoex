@@ -430,7 +430,7 @@ void a_xdl(const userinput * const u)
   unsigned int l;
   unsigned int s;
   xdcc *xd;
-  irlist_t grplist = {0, 0, 0};
+  irlist_t grplist = EMPTY_IRLIST;
 
   updatecontext();
 
@@ -2483,7 +2483,7 @@ static void a_adddir_sub(const userinput * const u, const char *thedir, DIR *d, 
   struct stat st;
   struct stat *sta;
   char *thefile, *tempstr;
-  irlist_t dirlist = {0, 0, 0};
+  irlist_t dirlist = EMPTY_IRLIST;
 
   updatecontext();
 
