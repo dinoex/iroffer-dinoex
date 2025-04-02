@@ -8,17 +8,17 @@
 <title>Iroffer-Dinoex'in GNU/Linux Üzerinde Kurulumu</title>
 </head>
 <body lang="tr">
-<h1>Iroffer-Dinoex'in GNU/Linux üzerinde kullanıcı olarak kurulumu virtual Hosts</h1>
+<h1>Iroffer-Dinoex'in GNU/Linux üzerinde sanal makine ayarlarıyla kurulumu</h1>
 
 <div>
 <h2>Kurulum süreci</h2>
 
 <ol>
-<li>Create user "bot" und domain "bot.domain.net" with plexx/confix.<br>
+<li>"bot" kullanıcısını ve "bot.domain.net" alanını plexx/confix ile oluşturun.<br>
 <br>
 </li>
 
-<li>As root, Kullanıcı olarak dizinine gidiyoruz.<br>
+<li>root olarak "bot" kullanıcısının dizinine gidiyoruz.<br>
 
 
 <pre class="indent">
@@ -26,7 +26,7 @@ cd /var/www/vhosts/bot.domain.net/
 </pre>
 </li>
 
-<li>iroffer için yeni bir dizin oluşturun.<br>
+<li>Sadece iroffer için yeni bir dizin oluşturun.<br>
 
 
 <pre class="indent">
@@ -60,7 +60,7 @@ cd iroffer-dinoex-snap
 </pre>
 </li>
 
-<li>Şayet "Configure" bazı hatlar görüntülüyorsa, hâlâ bazı paketler eksik demektir.<br>
+<li>Şayet "Configure" bazı hatalar görüntülüyorsa, hâlâ bazı paketler eksik demektir. Onları yükleyip tekrar denememiz gerekir.<br>
 Debian ile: <br>
 <pre class="indent">
 apt-get install make
@@ -102,7 +102,7 @@ chmod 600 mybot.config
 </pre>
 </li>
 
-<li>Sadece "bot" kullanıcısının yazma izinleri olmalı.<br>
+<li>Burada sadece "bot" kullanıcısının yazma izinleri olmalı.<br>
 
 
 <pre class="indent">
@@ -122,9 +122,8 @@ chmod 700 .
 </li>
 
 <li>Tüm dizinleri "mybot.config" yapılandırma dosyasında giriyoruz.<br>
-
-"adminhost" doğru şekilde girilmelidir. Dahili site etkinleştirilmiştir.<br>
-Dosyalar için temel bir dizin ekliyoruz ve onu gönderilen dosyalar için de kullanıyoruz.<br>
+"adminhost" doğru şekilde girilmelidir.<br><br>
+"mybot.state" ve "mybot.txt" için yolu ayarlıyoruz ki weblist onlara erişebilsin. Dosyalar için dizinler ekleniyor ve bunları yüklemeler için de kullanıyoruz.<br>
 "mybot.config" şunları içermelidir:
 
 <pre class="indent">
@@ -135,7 +134,6 @@ xdcclistfile /httpdocs/mybot.txt
 filedir /files
 uploaddir /files
 </pre>
-('bot' yerine kendi oturum isminizi koyun)<br>
 <br>
 </li>
 
@@ -152,7 +150,7 @@ Dosyaları daha sonra XDCC veya FTP ile göndereceğiz.<br>
 <br>
 </li>
 
-<li>Download the source of the weblist.<br>
+<li>weblist kaynaklarını indirin.<br>
 
 <pre class="indent">
 wget https://iroffer.net/iroffer-state219.zip
@@ -163,25 +161,25 @@ cp iroffer-sample.php index.php
 </pre>
 </li>
 
-<li>Edit the configuration of the weblist.<br>
+<li>weblist yapılandırmasını düzenleyin.<br>
 
 
 <pre class="indent">
 nano -w index.php
 </pre>
 
-or
+veya
 
 <pre class="indent">
 vim index.php
 </pre>
 
-In the file index.php you define und 2) one line with the nickname of your bot:
+index.php dosyasında robotunuzun rumuzunu tanımlıyorsunuz:
 
 <pre class="indent">
-# 2) Set nickname by hand
+# 2) Rumuzu el ile tanımlayın
 #$nick = 'XDCC|irofferbot';
-$nick = 'XDCC|mybot';
+$nick = 'XDCC|benimrobotum';
 </pre>
 </li>
 
@@ -204,14 +202,13 @@ veya
 vim start-iroffer.sh
 </pre>
 
-Betiği yazıyoruz:<br>
+Burada şu satırları ekliyoruz:<br>
 
 <pre class="indent">
 #!/bin/sh
 cd /home/bot/iroffer
 ./iroffer-tr -b /home/bot/iroffer/mybot.config
 </pre>
-('bot' yerine kendi oturum isminizi koyun)
 </li>
 
 <li>Betiği çalıştırılabilir hale getiriyoruz.<br>
@@ -229,12 +226,12 @@ chmod +x start-iroffer.sh
 sh start-iroffer.sh
 </pre>
 
-XDCC artık çalışmalıdır.<br>
+Artık robot çalışmalı ve bağlantıyı kurmalıdır.<br>
 <br>
 </li>
 
 
-<li>If iroffer fails to resolve the DNS name of the IRC server inside your chroot:<br>
+<li>Eğer iroffer, chroot'unuz dahilinde IRC sunucusunun DNS ismini çözümlemekte başarısız oluyorsa:<br>
 <pre class="indent">
 mkdir /var/www/vhosts/bot.domain.net/etc
 cp -p /etc/resolv.conf /etc/nsswitch.conf /var/www/vhosts/bot.domain.net/etc/
@@ -242,7 +239,7 @@ mkdir /var/www/vhosts/bot.domain.net/lib
 cp -p /lib/libnss_dns.so.2 /lib/libresolv.so.2 /var/www/vhosts/bot.domain.net/lib/
 </pre>
 
-The bot don't have to be restarted to connect.
+Bağlantıyı kurmak için robotun tekrar başlatılmasına gerek yoktur.
 </li>
 
 </ol>
