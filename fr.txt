@@ -1483,7 +1483,6 @@
 2258 "** Commande : %s %s, %s\n"
 2259 "(pas d'arguments)"
 2260 "** Commandes :"
-2261 " %s"
 2262 "Connecté sur le serveur actuel depuis : %s "
 2263 "pour "
 2264 ", fish : %s"
