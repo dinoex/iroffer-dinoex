@@ -47,6 +47,7 @@ patch-dinoex-*
 r.sh
 src.*
 t.sh
+tr.sed
 u.sh
 v.sh
 w.sh

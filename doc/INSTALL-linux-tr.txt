@@ -19,8 +19,8 @@ tar -xvzf iroffer-dinoex-snap.tar.gz
 cd iroffer-dinoex-snap
 ./Configure -curl -geoip -ruby
 
-    6. Şayet "Configure" bazı hatlar görüntülüyorsa, hâlâ bazı paketler
-       eksik demektir.
+    6. Şayet "Configure" bazı hatalar görüntülüyorsa, hâlâ bazı paketler
+       eksik demektir. Onları yükleyip tekrar denememiz gerekir.
        Debian ile:
 sudo apt-get install make
 sudo apt-get install gcc
@@ -52,8 +52,8 @@ chmod 700 .
 ./iroffer-tr -c mybot.config
 
    12. Tüm dizinleri "mybot.config" yapılandırma dosyasında giriyoruz.
-       "adminhost" doğru şekilde girilmelidir. Dahili site
-       etkinleştirilmiştir.
+       "adminhost" makine maskenize ayarlanmalıdır. Dahili web sunucusunu
+       etkinleştiriyoruz.
        Dosyalar için temel bir dizin ekliyoruz ve onu gönderilen dosyalar
        için de kullanıyoruz.
        "mybot.config" şunları içermelidir:
@@ -89,4 +89,4 @@ chmod +x start-iroffer.sh
    16. Başlatıyoruz.
 sh start-iroffer.sh
 
-       XDCC artık çalışmalıdır.
+       Artık robot çalışmalı ve bağlantıyı kurmalıdır.

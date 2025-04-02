@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# SPDX-FileCopyrightText: 2009-2021 Dirk Meyer
+# SPDX-FileCopyrightText: 2009-2025 Dirk Meyer
 # SPDX-License-Identifier: GPL-2.0-only
 #
 all="LICENSE README THANKS header.html footer.html doc/iroffer.1.txt doc/xdcc.7.txt"
@@ -8,6 +8,7 @@ fen="README.modDinoex sample.config help-admin-en.txt"
 fde="LIESMICH.modDinoex beispiel.config help-admin-de.txt"
 fit="README.modDinoex sample.config help-admin-it.txt"
 ffr="README.modDinoex exemple.config help-admin-fr.txt"
+ftr="README.modDinoex misal.config help-admin-tr.txt"
 #
 set -e
 ver=`grep ^VERSION= Configure  | cut -d '=' -f2 | tr -d '"'`
@@ -16,7 +17,7 @@ cygwin="cygwin-"`uname -r`
 cygwin="${cygwin%(*}"
 #
 # Convert into DOS files
-zip -l a.zip ${all} ${fen} ${fde} ${fit} ${ffr}
+zip -l a.zip ${all} ${fen} ${fde} ${fit} ${ffr} ${ftr}
 unzip -o a.zip
 rm -f a.zip
 #
@@ -64,6 +65,9 @@ do
 		;;
 	fr)
 		cp -p ${ffr} "${dir}/"
+		;;
+	tr)
+		cp -p ${ftr} "${dir}/"
 		;;
 	esac
 	if test -e /bin/7za

@@ -91,6 +91,8 @@ src_compile() {
         ./Lang it
     elif use linguas_fr ; then
         ./Lang fr
+    elif use linguas_tr ; then
+        ./Lang tr
     fi
 
     emake || die "emake failed"
@@ -138,6 +140,10 @@ src_install() {
 
         if use linguas_fr ; then
             dodoc help-admin-fr.txt
+        fi
+
+        if use linguas_tr ; then
+            dodoc help-admin-tr.txt
         fi
     fi
    
