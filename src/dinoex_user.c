@@ -1174,7 +1174,7 @@ static int botonly_parse(int type, privmsginput *pi)
     if (check_ignore(pi->nick, pi->hostmask))
       return 0;
     notice(pi->nick, IRC_CTCP "VERSION" /* NOTRANSLATE */
-           "iroffer-dinoex"
+           " iroffer-dinoex"
            " " VERSIONLONG FEATURES ", " /* NOTRANSLATE */
            "https://iroffer.net/"
            "%s%s" IRC_CTCP, /* NOTRANSLATE */
