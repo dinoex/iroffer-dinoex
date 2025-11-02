@@ -1769,3 +1769,7 @@
 2845 "[options]"
 2846 " Waiting for SSL handshake."
 2847 "Trace %3d  %-20s %-16s:%5u  %lu.%06lu"
+2848 "** XDCC OPTION set %s"
+2849 "** XDCC OPTION clear %s"
+2850 "** XDCC OPTION failed %s"
+2851 "** XDCC OPTION not found"

@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.34:
 ------------------
 
+422) XDCC OPTION
+  Give feedback to the user if option is supported
+
 421) Turkish translation (contributed by Berki Yenigün)
   Activate with "./Lang tr" after "Configure"
 
