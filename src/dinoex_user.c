@@ -895,15 +895,19 @@ static void xdcc_option(privmsginput *pi)
     if (strcasecmp(option, xdcc_option_list[ss].name) == 0) {
       if (action == '+') {
         dcc_options->options |= xdcc_option_list[ss].setval;
+        notice(pi->nick, "** XDCC OPTION set %s", xdcc_option_list[ss].name);
         return;
       }
       if (action == '-') {
         dcc_options->options &= xdcc_option_list[ss].resetval;
+        notice(pi->nick, "** XDCC OPTION clear %s", xdcc_option_list[ss].name);
         return;
       }
+      notice(pi->nick, "** XDCC OPTION failed %s", xdcc_option_list[ss].name);
       return;
     }
   }
+  notice(pi->nick, "** XDCC OPTION not found");
 }
 
 static void command_xdcc(privmsginput *pi)
