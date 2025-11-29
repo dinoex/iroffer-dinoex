@@ -707,7 +707,7 @@
 850 " - Pack #%u matches, \"%s\""
 853 "Mi spiace ma questo comando non è supportato"
 855 "Trigger:\2(\2/MSG %s XDCC LIST\2)\2 "
-856 "\2(\2XDCC\2)\2 Packs:\2(\2%d\2)\2 "
+856 "\2(\2XDCC\2)\2 Packs:\2(\2%u\2)\2 "
 858 "Sends:\2(\2%u/%u\2)\2 "
 859 "Queues:\2(\2%u/%u\2)\2 "
 860 "Record:\2(\2%1.1fkB/s\2)\2 "
