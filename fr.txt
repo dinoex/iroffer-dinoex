@@ -1428,7 +1428,7 @@
 2133 "\2**\2 Annulé un téléchargement :    \"/MSG %s XDCC CANCEL\" \2**\2"
 2135 "\2**\2 Listage des téléchargements : \"/MSG %s XDCC SEND LIST\" \2**\2"
 2137 "DCC SEND refusé, je reçois déjà ce fichier"
-2138 "DCC SEND refusé (réception en cours) de %s sur %s"
+2138 "DCC SEND refusé (réception en cours) de sur"
 2139 "\2**\2 Recherche :                   \"/MSG %s XDCC SEARCH critère\" \2**\2"
 2149 "Non trouvé\r\n"
 2153 "Authentification requise\r\n"

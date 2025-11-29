@@ -544,7 +544,7 @@
 595 "DCC CHAT Correct password"
 596 "Entering DCC Chat Admin Interface\n"
 597 "For Help type \"help\"\n"
-598 "** Du hast %i %s gepeichert%s\n"
+598 "** Du hast %u %s gepeichert%s\n"
 599 ", zum Lesen bitte MSGREAD eingeben"
 600 "DCC CHAT: Incorrect password"
 601 "Incorrect Password\n"
