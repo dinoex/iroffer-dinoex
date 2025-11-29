@@ -9,29 +9,30 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 src/iroffer*.[ch], dynip.sh, iroffer.cron
-are copyrighted by David Johnson (PMG) under GPL2 below.
+are copyrighted 1998-2005 by David Johnson (PMG) under GPL2 below.
 
-Configure, sample.config are written by
-David Johnson (PMG) and where extended by Dirk Meyer.
+Configure, sample.config are written 1998-2005 by
+David Johnson (PMG) and where extended 2000-2025 by Dirk Meyer.
 These files are under GPL2 below.
 
 src/plumb_md5.[ch] was written by Colin Plumb in 1993 and modified
 by Ian Jackson in 1995, this files are in the public domain.
 
-src/crc32.c is written by 1986 Gary S. Brown and in the public domain.
+src/crc32.c is written 1986 by Gary S. Brown and in the public domain.
 
 src/blowfish.[ch] are copyrighted 1997 by Paul Kocher
-and released under LGPL v2.1.
+and released under LGPL v2.1+
 
 src/strnatcmp.[ch] are copyrighted 2000, 2004 by Martin Pool
 and released under MIT License.
 
-src/upnp.[ch] is writen by Thomas Bernard under BSD license.
+src/upnp.[ch] is writen 2005-2015 by Thomas Bernard
+under BSD-3-clause license.
 
 The ruby files *.rb and htdocs/*.rb are under RUBY license.
 https://www.ruby-lang.org/en/about/license.txt
 
-All other files are written by Dirk Meyer, and are under GPL2,
+All other files are written 2000-2025 by Dirk Meyer and are under GPL2,
 In addition, as a special exception, Dirk Meyer gives
 permission to link the code of portions of this program with the
 OpenSSL library under certain conditions as described in each

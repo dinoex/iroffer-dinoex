@@ -12,6 +12,12 @@ de.sed
 de-iroffer
 de-iroffer_chroot
 de-iroffer_static
+debian/iroffer-dinoex
+debian/.debhelper
+debian/iroffer-dinoex.debhelper.log
+debian/files
+debian/debhelper-build-stamp
+debian/iroffer-dinoex.substvars
 fr.sed
 fr-iroffer
 fr-iroffer_chroot
