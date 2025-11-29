@@ -3,6 +3,9 @@ Updated version on: https://iroffer.net/
 With Version 3.34:
 ------------------
 
+bugfix: CTCP VERSION (reported by techfixpros)
+  Add extra space in CTCP VERSION reply
+
 422) XDCC OPTION
   Give feedback to the user if option is supported
 

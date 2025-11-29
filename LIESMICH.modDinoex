@@ -3,6 +3,9 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.34:
 ----------------
 
+bugfix: CTCP VERSION (reported by techfixpros)
+  In der Antwort zu CTCP VERSION fehlte ein Leerzeichen
+
 422) XDCC OPTION
   Melde dem Benutzer, ob die Option unterstützt ist
 
