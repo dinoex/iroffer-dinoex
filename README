@@ -6,7 +6,7 @@ files using the DCC protocol of IRC instead of a web browser.
 
 iroffer is a standalone executable written entirely in C.
 Designed for speed and efficiency, iroffer can transfer over 95MByte/sec
-over a gigabit ethernet connection.
+over a gigabit Ethernet connection.
 
 See the file "README.modDinoex" for changelog and features.
 
@@ -33,7 +33,7 @@ MacOS X Server
 MacOS X
 Win95/98/NT/2000/2003/2008/7
 
-All other platforms have not been tested, but will probabily work
+All other platforms have not been tested, but will probably work
 
  --- License ---
 
@@ -68,6 +68,8 @@ for French run
 	make fr
 for Italian run
 	make it
+for Turkish run
+	make tr
 
  --- Why use iroffer to offer? ---
 
@@ -84,7 +86,7 @@ for Italian run
  - multiple IRC networks
  - IPv6 supported
  - SSL with the IRC server supported
- - Nickserv or CertFP authentification
+ - Nickserv or CertFP authentication
  - passive DCC
  - build in HTTP-server
  - build in Telnet-server
@@ -101,7 +103,7 @@ for Italian run
  - Pictures, Music, Programs, Shareware/Freeware, Programs you have
      written, etc.
  - Note: Be sure to consult and follow the appropriate copyright
-   statement, distibution policy, and/or license agreement before
+   statement, distribution policy, and/or license agreement before
    offering any content you didn't create yourself
 
  --- End of README ---
