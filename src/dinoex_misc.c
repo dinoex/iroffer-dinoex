@@ -461,6 +461,9 @@ void config_dinoex(void)
 #ifndef WITHOUT_HTTP
   h_setup_listen();
 #endif /* WITHOUT_HTTP */
+#ifdef USE_MAXMINDDB
+  maxminddb_init();
+#endif /* USE_MAXMINDDB */
   global_defaults();
 }
 
