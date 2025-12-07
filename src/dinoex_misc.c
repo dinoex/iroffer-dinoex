@@ -1056,6 +1056,8 @@ const char *text_connectionmethod(how_e how)
     return "wingate"; /* NOTRANSLATE */
   case how_custom:
     return "custom"; /* NOTRANSLATE */
+  default:
+    break;
   }
   return "unknown";
 }

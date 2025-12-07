@@ -639,6 +639,8 @@ static char *file_without_numbers(const char *s)
     if (w != NULL)
       *w = 0;
     break;
+  default:
+    break;
   }
 
   /* strip numbers */
@@ -1212,6 +1214,8 @@ static int a_sort_cmp(const char *k, xdcc *xd1, xdcc *xd2)
       rc = a_sort_type(getfilename(xd3->file), getfilename(xd4->file));
       if (rc != 0)
         return rc;
+      break;
+    default:
       break;
     }
     k = strchr(k, ' ');
@@ -4445,6 +4449,8 @@ void a_getl(const userinput * const u)
       a_respond(u, "running");
       break;
     case QUPLOAD_IDLE:
+      break;
+    default:
       break;
     }
   }
