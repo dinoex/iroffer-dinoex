@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2023 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -387,31 +387,31 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     }
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1);
+  ces = curl_easy_setopt(ch, CURLOPT_NOPROGRESS, 1L);
   if (ces != 0) {
     curl_respond( u, "NOPROGRESS", ces); /* NOTRANSLATE */
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_NOSIGNAL, 1);
+  ces = curl_easy_setopt(ch, CURLOPT_NOSIGNAL, 1L);
   if (ces != 0) {
     curl_respond( u, "NOSIGNAL", ces); /* NOTRANSLATE */
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_FAILONERROR, 1);
+  ces = curl_easy_setopt(ch, CURLOPT_FAILONERROR, 1L);
   if (ces != 0) {
     curl_respond( u, "FAILONERROR", ces); /* NOTRANSLATE */
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYHOST, 0);
+  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYHOST, 0L);
   if (ces != 0) {
     curl_respond( u, "SSL_VERIFYHOST", ces); /* NOTRANSLATE */
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0);
+  ces = curl_easy_setopt(ch, CURLOPT_SSL_VERIFYPEER, 0L);
   if (ces != 0) {
     curl_respond( u, "SSL_VERIFYPEER", ces); /* NOTRANSLATE */
     return 1;
@@ -423,19 +423,19 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 1);
+  ces = curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 1L);
   if (ces != 0) {
     curl_respond( u, "FOLLOWLOCATION", ces); /* NOTRANSLATE */
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_AUTOREFERER, 1);
+  ces = curl_easy_setopt(ch, CURLOPT_AUTOREFERER, 1L);
   if (ces != 0) {
     curl_respond( u, "AUTOREFERER", ces); /* NOTRANSLATE */
     return 1;
   }
 
-  ces = curl_easy_setopt(ch, CURLOPT_FILETIME, 1);
+  ces = curl_easy_setopt(ch, CURLOPT_FILETIME, 1L);
   if (ces != 0) {
     curl_respond( u, "FILETIME", ces); /* NOTRANSLATE */
     return 1;
@@ -640,7 +640,7 @@ void dinoex_dcl(const userinput *const u)
     curl_easy_getinfo(ft->curlhandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &dl_total);
 #endif
 
-    progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
+    progress = (int)((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
   }
 
@@ -703,10 +703,10 @@ void dinoex_dcld(const userinput *const u)
     effective_url = NULL;
     curl_easy_getinfo(ft->curlhandle, CURLINFO_EFFECTIVE_URL, &effective_url);
 
-    started = min2(359999, gdata.curtime - ft->starttime);
-    left = min2(359999, (dl_total - dl_size) /
-                        ((int)(max2(dl_speed, 1))));
-    progress = ((dl_size + 50) * 100) / max2(dl_total, 1);
+    started = (int)(min2(359999, gdata.curtime - ft->starttime));
+    left = (int)(min2(359999, (dl_total - dl_size) /
+                        ((int)(max2(dl_speed, 1)))));
+    progress = (int)((dl_size + 50) * 100) / max2(dl_total, 1);
     a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
     a_respond(u, "                   %s", effective_url ? effective_url : ft->url);
     a_respond(u, "  ^- %5.1fK/s    %6" LLPRINTFMT "dK/%6" LLPRINTFMT "dK  %2i%c%02i%c/%2i%c%02i%c",
