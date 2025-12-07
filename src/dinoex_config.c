@@ -264,6 +264,9 @@ static int config_find_typ(config_name_t config_name_f, const char *key, int bin
 }
 
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+
 static int config_bool_anzahl = 0;
 static config_bool_typ config_parse_bool[] = {
 {"announce_size",          &gdata.announce_size,           0 }, /* NOTRANSLATE */
@@ -354,6 +357,8 @@ static config_bool_typ config_parse_bool[] = {
 {"xdcclist_grouponly",     &gdata.xdcclist_grouponly,      0 }, /* NOTRANSLATE */
 {"xdcclistfileraw",        &gdata.xdcclistfileraw,         0 }, /* NOTRANSLATE */
 {NULL, NULL, 0 }};
+
+#pragma GCC diagnostic pop
 
 static const char *config_name_bool(unsigned int i)
 {
@@ -622,6 +627,9 @@ static void reset_config_int(void)
 }
 
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+
 /*  flags for strings
  0 -> literal string
  1 -> pathname
@@ -699,6 +707,8 @@ static config_string_typ config_parse_string[] = {
 {"xdccxmlfile",             &gdata.xdccxmlfile,             1 }, /* NOTRANSLATE */
 {NULL, NULL, 0 }};
 
+#pragma GCC diagnostic pop
+
 static const char *config_name_string(unsigned int i)
 {
   return config_parse_string[i].name;
@@ -724,19 +734,21 @@ static unsigned int set_config_string(const char *key, char *text)
 
   switch (config_parse_string[i].flags) {
   case 4:
-     if (strchr(text, ' ') != NULL) {
-       outerror(OUTERROR_TYPE_WARN,
-                "%s:%ld ignored %s '%s' because it contains spaces",
-                current_config, current_line, key, text);
-       return 0;
-     }
+    if (strchr(text, ' ') != NULL) {
+      outerror(OUTERROR_TYPE_WARN,
+               "%s:%ld ignored %s '%s' because it contains spaces",
+               current_config, current_line, key, text);
+      return 0;
+    }
 #ifndef NO_CRYPT
-     checkadminpass2(key, text);
+    checkadminpass2(key, text);
 #endif /* NO_CRYPT */
-     /* fallthrough */
+    /* fallthrough */
   case 1:
-     convert_to_unix_slash(text);
-     break;
+    convert_to_unix_slash(text);
+    break;
+  default:
+    break;
   }
   mydelete(*(config_parse_string[i].svar));
   *(config_parse_string[i].svar) = mystrdup(text);
@@ -779,6 +791,9 @@ static void reset_config_string(void)
   }
 }
 
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 
 /*  flags for lists
  0 -> literal string
@@ -832,6 +847,8 @@ static config_list_typ config_parse_list[] = {
 {"xdcc_allow",              &gdata.xdcc_allow,              5 }, /* NOTRANSLATE */
 {"xdcc_deny",               &gdata.xdcc_deny,               5 }, /* NOTRANSLATE */
 {NULL, NULL, 0 }};
+
+#pragma GCC diagnostic pop
 
 static const char *config_name_list(unsigned int i)
 {
@@ -926,6 +943,8 @@ static unsigned int set_config_list(const char *key, char *text)
     return 0;
   case 1:
     convert_to_unix_slash(text);
+    break;
+  default:
     break;
   }
   irlist_add_string(config_parse_list[i].list, text);
@@ -1790,6 +1809,8 @@ static void c_overallmaxspeeddaydays(const char * UNUSED(key), char *var)
       break;
     case 'S':
       gdata.overallmaxspeeddaydays |= 0x40;
+      break;
+    default:
       break;
     }
   }

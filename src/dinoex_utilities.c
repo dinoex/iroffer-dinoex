@@ -534,8 +534,8 @@ void removenonprintablefile(char *str)
     case ' ':
       if (gdata.spaces_in_filenames)
         break;
-      /* fallthrough */
-    case '|':
+      __attribute__((fallthrough));
+    case '|': __attribute__((fallthrough));
     case ':':
     case '?':
     case '*':
@@ -548,6 +548,8 @@ void removenonprintablefile(char *str)
     case '`':
     case 0x7FU:
       *copy = '_';
+      break;
+    default:
       break;
     }
     last = *copy;
@@ -577,6 +579,8 @@ char *getsendname(const char * const full)
       break;
     case ' ':
       spaced = 1;
+      break;
+    default:
       break;
     }
   }
@@ -609,6 +613,8 @@ char *getsendname(const char * const full)
     case '`':
     case 0x7FU:
       copy[i] = '_';
+      break;
+    default:
       break;
     }
   }

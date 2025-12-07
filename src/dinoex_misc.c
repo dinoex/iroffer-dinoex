@@ -461,6 +461,9 @@ void config_dinoex(void)
 #ifndef WITHOUT_HTTP
   h_setup_listen();
 #endif /* WITHOUT_HTTP */
+#ifdef USE_MAXMINDDB
+  maxminddb_init();
+#endif /* USE_MAXMINDDB */
   global_defaults();
 }
 
@@ -1053,6 +1056,8 @@ const char *text_connectionmethod(how_e how)
     return "wingate"; /* NOTRANSLATE */
   case how_custom:
     return "custom"; /* NOTRANSLATE */
+  default:
+    break;
   }
   return "unknown";
 }

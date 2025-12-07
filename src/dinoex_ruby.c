@@ -52,6 +52,7 @@
 #pragma clang diagnostic ignored "-Wdeclaration-after-statement"
 #pragma clang diagnostic ignored "-Walloca"
 #pragma clang diagnostic ignored "-Wshift-sign-overflow"
+#pragma clang diagnostic ignored "-Wdefault-const-init-field-unsafe"
 #endif
 #undef HAVE_MMAP
 #include "ruby.h"

@@ -40,7 +40,7 @@ typedef struct {
   char code[8];
 } ir_maxminddb;
 
-static ir_maxminddb maxminddb_data = { NULL };
+static ir_maxminddb maxminddb_data;
 
 static time_t maxminddb_time(const char *name)
 {
@@ -224,6 +224,13 @@ unsigned int http_check_maxminddb(const struct sockaddr *const sa, const char *h
 void maxminddb_shutdown(void)
 {
   maxminddb_close(&maxminddb_data);
+  bzero(&maxminddb_data, sizeof(maxminddb_data));
+}
+
+/* initialize GeoIP */
+void maxminddb_init(void)
+{
+  bzero(&maxminddb_data, sizeof(maxminddb_data));
 }
 
 #endif /* USE_MAXMINDDB */

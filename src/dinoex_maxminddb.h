@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2019-2021 Dirk Meyer
+ * Copyright (C) 2019-2025 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2019-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2019-2025 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -22,6 +22,7 @@ void maxminddb_new_connection(transfer *const tr);
 unsigned int http_check_maxminddb(const struct sockaddr *const sa, const char *hostname);
 #endif /* WITHOUT_HTTP */
 void maxminddb_shutdown(void);
+void maxminddb_init(void);
 #endif /* USE_MAXMINDDB */
 
 /* End of File */
