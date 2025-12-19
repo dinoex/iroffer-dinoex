@@ -7,6 +7,7 @@ c.sh
 convertxdccfile
 copyrights.grep
 cxref
+cxref2
 d.sh
 de.sed
 de-iroffer
@@ -40,6 +41,8 @@ iroffer-fr
 iroffer-fr_static
 iroffer-it
 iroffer-it_static
+iroffer-tr
+iroffer-tr_static
 it.sed
 it-iroffer
 it-iroffer_chroot
@@ -54,6 +57,8 @@ r.sh
 src.*
 t.sh
 tr.sed
+u.backup
+u.log
 u.sh
 v.sh
 w.sh
