@@ -615,7 +615,7 @@
 680 "uMB sınırı"
 681 "bilinmeyen tür %u"
 682 "Hepsi %"
-683 "aktarma sınırı %s değerinden uMB kullanıldı. Aktarmalar durduruluyor."
+683 "uMB aktarma sınırı %s değerinden kullanıldı. Aktarmalar durduruluyor."
 684 "Özür dilerim, %s aktarma sınırım olan şu değeri aştım: %"
 685 "uMB.  %s sonra tekrar deneyin."
 686 "Artık herhangi bir aktarma sınırı aşılmıyor. Aktarmalara şimdi izin veriliyor."
