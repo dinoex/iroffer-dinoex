@@ -1,13 +1,13 @@
 #!/bin/sh
 #
 # SPDX-FileCopyrightText: 2005 David Johnson
-# SPDX-FileCopyrightText: 2005-2025 Dirk Meyer
+# SPDX-FileCopyrightText: 2005-2026 Dirk Meyer
 # SPDX-License-Identifier: GPL-2.0-only
 #
 # $Id$
 #
 
-VERSION="3.34"
+VERSION="3.35"
 RELEASE=1
 
 if [ $RELEASE -eq 1 ]; then
