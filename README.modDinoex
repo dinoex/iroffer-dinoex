@@ -3,6 +3,11 @@ Updated version on: https://iroffer.net/
 With Version 3.35:
 ------------------
 
+bugfix: ADMIN CHATME CHAT (reported by Caspy)
+  When the bot was build with -no-openssl,
+  the admin did not receive any text in the chat.
+  versions affected: 3.33 - 3.34
+
 With Version 3.34:
 ------------------
 

@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2025 Dirk Meyer
+ * Copyright (C) 2004-2026 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2026 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -352,7 +352,9 @@ static void chat_accept(dccchat_t *chat)
 #if defined(USE_OPENSSL) || defined(USE_GNUTLS)
   if (chat->use_ssl != 0)
     flags |= BOUTPUT_SSL;
+#endif /* USE_OPENSSL or USE_GNUTLS */
   ir_boutput_init(&chat->boutput, chat->con.clientsocket, flags);
+#if defined(USE_OPENSSL) || defined(USE_GNUTLS)
 #ifdef USE_OPENSSL
   chat->boutput.sslp = &(chat->ssl);
 #endif /* USE_OPENSSL */
