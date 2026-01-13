@@ -3,6 +3,8 @@ Aktuelle Version auf: https://iroffer.net/
 Ab Version 3.35:
 ----------------
 
+bugfix: Benutze idas erweiterte "crypt" für neue Passwörter unter cygwin
+
 bugfix: ADMIN CHATME CHAT (reported by Caspy)
   Wenn der Bot mit -no-openssl gebaut wird,
   bekam der Admin keinen Text im Chat.

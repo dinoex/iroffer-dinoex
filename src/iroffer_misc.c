@@ -10,7 +10,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2026 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_misc.c 1.251@(#)
@@ -1926,7 +1926,7 @@ void createpassword(void) {
    
    srand((unsigned int)( (getpid()*5000) + (time(NULL)%5000) ));
    saltnum = get_random_uint( 4096 );
-#if !defined(_OS_CYGWIN)
+#if !defined(NO_CRYPT_MD5)
    salt[0] = '$';
    salt[1] = '1';
    salt[2] = '$';

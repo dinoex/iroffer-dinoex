@@ -1367,34 +1367,69 @@ else
  fi
 fi
 
-${msg} -n "${irt_seeingif} crypt() ${irt_works} ${irt_asexpected}... "
+${msg} -n "${irt_seeingif} crypt() plain ${irt_works} ${irt_asexpected}... "
 echo "${irmain1}
  char *pwout;
  (void)argc;
  (void)argv;
- pwout = crypt(\"testtest\",\"LH\");
+ pwout = crypt(\"testtest\",\"LHD/pLKwfn0.k\");
  if (pwout && !strcmp(\"LHD/pLKwfn0.k\", pwout)) {
-   fputs(\"result: <plain> \", stderr);
-   exit(0);
+  fputs(\"<plain> ok \", stderr);
+  exit(0);
  }
- if (pwout && !strcmp(\"\$1\$LH\$l9z.KKYlyrg6tmiWYw85h0\", pwout)) {
-   fputs(\"result: <md5> \", stderr);
-   exit(0);
- }
- if (pwout && !strcmp(\"\$2a\$04\$L.....................6oC9YEWGQG17v9bdZ7bATu6dyyWPzMy\", pwout)) {
-   fputs(\"result: <blf> \", stderr);
-   exit(0);
- }
- fprintf(stderr, \"result: <unknown> hash = %s \", pwout);
+ fprintf(stderr, \"<plain failed> hash = %s \", pwout);
  exit(1);
 }
 " > config.temp.c
 if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && ./config.temp; then
- ${msg} "${irt_yes}"
+  ${msg} "${irt_yes}"
+
+  ${msg} -n "${irt_seeingif} crypt() md5 ${irt_works} ${irt_asexpected}... "
+  echo "${irmain1}
+ char *pwout;
+ (void)argc;
+ (void)argv;
+ pwout = crypt(\"testtest\",\"\$1\$LH\$l9z.KKYlyrg6tmiWYw85h0\");
+ if (pwout && !strcmp(\"\$1\$LH\$l9z.KKYlyrg6tmiWYw85h0\", pwout)) {
+  fputs(\"<md5> ok \", stderr);
+  exit(0);
+ }
+ fprintf(stderr, \"<md5 failed> hash = %s \", pwout);
+ exit(1);
+}
+  " > config.temp.c
+  if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && ./config.temp; then
+    ${msg} "${irt_yes}"
+  else
+    ${msg} "${irt_no}, ${irt_nopassword}."
+    echo "#define NO_CRYPT_MD5" >> src/iroffer_config.h
+  fi
+ 
+  ${msg} -n "${irt_seeingif} crypt() blf ${irt_works} ${irt_asexpected}... "
+  echo "${irmain1}
+ char *pwout;
+ (void)argc;
+ (void)argv;
+ pwout = crypt(\"testtest\",\"\$2a\$04\$L.....................6oC9YEWGQG17v9bdZ7bATu6dyyWPzMy\");
+ if (pwout && !strcmp(\"\$2a\$04\$L.....................6oC9YEWGQG17v9bdZ7bATu6dyyWPzMy\", pwout)) {
+  fputs(\"<blf> ok \", stderr);
+  exit(0);
+ }
+ fprintf(stderr, \"<blf failed> hash = %s \", pwout);
+ exit(1);
+}
+  " > config.temp.c
+  if $cctype -o config.temp $WARNS $WERROR $CFLAGS config.temp.c $LDFLAGS $libs $LIBS && ./config.temp; then
+    ${msg} "${irt_yes}"
+  else
+    ${msg} "${irt_no}, ${irt_nopassword}."
+    echo "#define NO_CRYPT_BLF" >> src/iroffer_config.h
+  fi
 else
- ${msg} "${irt_no}, ${irt_nopassword}."
- echo "#define NO_CRYPT" >> src/iroffer_config.h
+  ${msg} "${irt_no}, ${irt_nopassword}."
+  echo "#define NO_CRYPT" >> src/iroffer_config.h
 fi
+
 
 if ! $OPT_NOCHROOT; then
   ${msg} -n "${irt_checkfor} chroot()... "

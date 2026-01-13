@@ -3,6 +3,8 @@ Updated version on: https://iroffer.net/
 With Version 3.35:
 ------------------
 
+bugfix: use extended "crypt" for new passwords on cygwin
+
 bugfix: ADMIN CHATME CHAT (reported by Caspy)
   When the bot was build with -no-openssl,
   the admin did not receive any text in the chat.
