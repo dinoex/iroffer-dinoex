@@ -1793,6 +1793,9 @@ fi
 if $OPT_CURL; then
  ${msg} -n "${irt_seeingif_lib} libcurl ${irt_lib_exists} (${irt_for} FETCH-Command)... "
  echo "${irheaders}
+#ifdef __clang__
+#pragma clang diagnostic ignored \"-Wreserved-identifier\"
+#endif
 #include <curl/curl.h>
 ${main1}
  curl_global_cleanup();

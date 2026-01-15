@@ -1,6 +1,6 @@
 /*
  * by Dirk Meyer (dinoex)
- * Copyright (C) 2004-2025 Dirk Meyer
+ * Copyright (C) 2004-2026 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -9,7 +9,7 @@
  * If you received this file without documentation, it can be
  * downloaded from https://iroffer.net/
  *
- * SPDX-FileCopyrightText: 2004-2025 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2026 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * $Id$
@@ -32,10 +32,14 @@
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpadded"
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wreserved-identifier"
+#endif
 #include <curl/curl.h>
 #pragma GCC diagnostic pop
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wdisabled-macro-expansion"
+#pragma clang diagnostic ignored "-Wused-but-marked-unused"
 #endif
 
 #include <ctype.h>
@@ -75,7 +79,7 @@ void curl_startup(void)
   cs = curl_global_init(CURL_GLOBAL_ALL);
   if (cs != 0) {
     ioutput(OUT_S|OUT_L|OUT_D, COLOR_NO_COLOR,
-            "curl_global_init failed with %d", cs);
+            "curl_global_init failed with %u", cs);
   }
   cm = curl_multi_init();
   if (cm == NULL) {
@@ -259,9 +263,9 @@ void fetch_perform(void)
       if (ft->curlhandle == ch) {
         gnetwork = &(gdata.networks[ft->net]);
         if (ft->errorbuf[0] != 0)
-          outerror(OUTERROR_TYPE_WARN_LOUD, "fetch '%s' failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
+          outerror(OUTERROR_TYPE_WARN_LOUD, "fetch '%s' failed with %u: %s", ft->name, msg->data.result, ft->errorbuf);
         if (msg->data.result != 0 ) {
-          a_respond(&(ft->u), "fetch '%s' failed with %d: %s", ft->name, msg->data.result, ft->errorbuf);
+          a_respond(&(ft->u), "fetch '%s' failed with %u: %s", ft->name, msg->data.result, ft->errorbuf);
         } else {
           a_respond(&(ft->u), "fetch '%s' completed", ft->name);
           ioutput(OUT_L, COLOR_NO_COLOR, "fetch '%s' completed", ft->name);
@@ -352,7 +356,7 @@ static size_t fetch_header_cb(void *ptr, size_t size, size_t nmemb, void *userda
 
 static void curl_respond(const userinput *const u, const char *text, CURLcode ces)
 {
-  a_respond(u, "curl_easy_setopt %s failed with %d", text, ces);
+  a_respond(u, "curl_easy_setopt %s failed with %u", text, ces);
 }
 
 static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
@@ -382,7 +386,7 @@ static unsigned int curl_fetch(const userinput *const u, fetch_curl_t *ft)
     ft->vhosttext = mystrdup(vhost);
     ces = curl_easy_setopt(ch, CURLOPT_INTERFACE, ft->vhosttext);
     if (ces != 0) {
-      a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %d", ft->vhosttext, ces);
+      a_respond(u, "curl_easy_setopt INTERFACE for %s failed with %u", ft->vhosttext, ces);
       return 1;
     }
   }
@@ -623,6 +627,7 @@ void dinoex_dcl(const userinput *const u)
   curl_off_t dl_size;
 #endif
   int progress;
+  unsigned int qid;
 
   updatecontext();
   for (ft = irlist_get_head(&fetch_trans); ft; ft = irlist_get_next(ft)) {
@@ -641,13 +646,13 @@ void dinoex_dcl(const userinput *const u)
 #endif
 
     progress = (int)((dl_size + 50) * 100) / max2(dl_total, 1);
-    a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
+    a_respond(u, "   %2u  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
   }
 
   updatecontext();
-  progress = 0;
+  qid = 0;
   for (fq = irlist_get_head(&gdata.fetch_queue); fq; fq = irlist_get_next(fq)) {
-    a_respond(u, "   %2i  fetch       %-32s   Waiting", ++progress, fq->name);
+    a_respond(u, "   %2u  fetch       %-32s   Waiting", ++qid, fq->name);
   }
 }
 
@@ -671,6 +676,7 @@ void dinoex_dcld(const userinput *const u)
   int progress;
   int started;
   int left;
+  unsigned int qid;
 
   updatecontext();
   for (ft = irlist_get_head(&fetch_trans); ft; ft = irlist_get_next(ft)) {
@@ -707,7 +713,7 @@ void dinoex_dcld(const userinput *const u)
     left = (int)(min2(359999, (dl_total - dl_size) /
                         ((int)(max2(dl_speed, 1)))));
     progress = (int)((dl_size + 50) * 100) / max2(dl_total, 1);
-    a_respond(u, "   %2i  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
+    a_respond(u, "   %2u  fetch       %-32s   Receiving %d%%", ft->id, ft->name, progress);
     a_respond(u, "                   %s", effective_url ? effective_url : ft->url);
     a_respond(u, "  ^- %5.1fK/s    %6" LLPRINTFMT "dK/%6" LLPRINTFMT "dK  %2i%c%02i%c/%2i%c%02i%c",
                 (float)(dl_speed/1024),
@@ -724,9 +730,9 @@ void dinoex_dcld(const userinput *const u)
   }
 
   updatecontext();
-  progress = 0;
+  qid = 0;
   for (fq = irlist_get_head(&gdata.fetch_queue); fq; fq = irlist_get_next(fq)) {
-    a_respond(u, "   %2i  fetch       %-32s   Waiting", ++progress, fq->name);
+    a_respond(u, "   %2u  fetch       %-32s   Waiting", ++qid, fq->name);
     a_respond(u, "                   %s", fq->url);
   }
 }
