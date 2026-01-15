@@ -2,7 +2,7 @@
 Copyright (c) 2005-2007, Thomas BERNARD
 All rights reserved.
 
-Copyright (c) 2007-2021 Dirk Meyer
+Copyright (c) 2007-2026 Dirk Meyer
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 SPDX-FileCopyrightText: 2005-2007 Thomas Bernard
-SPDX-FileCopyrightText: 2007-2021 Dirk Meyer
+SPDX-FileCopyrightText: 2007-2026 Dirk Meyer
 SPDX-License-Identifier: BSD-3-Clause-Attribution
 
 $Id$
@@ -45,6 +45,9 @@ $Id$
 
 #include "upnp.h"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdocumentation"
+#endif
 #include <miniupnpc/miniwget.h>
 #include <miniupnpc/miniupnpc.h>
 #include <miniupnpc/upnpcommands.h>
@@ -53,7 +56,7 @@ static struct UPNPUrls urls;
 static struct IGDdatas data;
 static char externalIPAddress[32];
 
-void init_upnp (void)
+void init_upnp (const char * multicastif)
 {
 	struct UPNPDev * devlist;
 	struct UPNPDev * dev;
@@ -65,12 +68,12 @@ void init_upnp (void)
 	bzero(&urls, sizeof(struct UPNPUrls));
 	bzero(&data, sizeof(struct IGDdatas));
 #if MINIUPNPC_API_VERSION >= 14
-	devlist = upnpDiscover(2000, NULL, NULL, 0, 0, 2U, NULL);
+	devlist = upnpDiscover(2000, multicastif, NULL, UPNP_LOCAL_PORT_ANY, 0, 2U, NULL);
 #else
 #ifdef UPNPDISCOVER_SUCCESS
-	devlist = upnpDiscover(2000, NULL, NULL, 0, 0, NULL);
+	devlist = upnpDiscover(2000, multicastif, NULL, 0, 0, NULL);
 #else
-	devlist = upnpDiscover(2000, NULL, NULL, 0);
+	devlist = upnpDiscover(2000, multicastif, NULL, 0);
 #endif /* UPNPDISCOVER_SUCCESS */
 #endif
 	if (devlist)

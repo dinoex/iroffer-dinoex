@@ -3,6 +3,11 @@ Updated version on: https://iroffer.net/
 With Version 3.35:
 ------------------
 
+423) upnp_interface
+  Set the interfaces name or local IP to search for UPNP routers.
+  Only needed if the autodetecton does not work.
+  Default: none.
+
 bugfix: use extended "crypt" for new passwords on cygwin
 
 bugfix: ADMIN CHATME CHAT (reported by Caspy)

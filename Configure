@@ -1763,6 +1763,9 @@ fi
 if $OPT_UPNP; then
  ${msg} -n "${irt_seeingif_lib} miniupnpc ${irt_lib_exists}... "
  echo "${irheaders}
+#ifdef __clang__
+#pragma clang diagnostic ignored \"-Wdocumentation\"
+#endif
 #include <miniupnpc/miniwget.h>
 #include <miniupnpc/miniupnpc.h>
 #include <miniupnpc/upnpcommands.h>

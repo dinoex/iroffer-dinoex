@@ -1,6 +1,7 @@
 /*
  * iroffer by David Johnson (PMG)
  * Copyright (C) 1998-2005 David Johnson
+ * Copyright (C) 2004-2026 Dirk Meyer
  *
  * By using this file, you agree to the terms and conditions set
  * forth in the GNU General Public License.  More information is
@@ -10,7 +11,7 @@
  * downloaded from http://iroffer.org/
  *
  * SPDX-FileCopyrightText: 1998-2005 David Johnson
- * SPDX-FileCopyrightText: 2004-2021 Dirk Meyer
+ * SPDX-FileCopyrightText: 2004-2026 Dirk Meyer
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * @(#) iroffer_globals.h 1.121@(#)
@@ -134,6 +135,7 @@ char *http_access_log;
 char *autoadd_color;
 char *http_forbidden;
 char *announce_suffix_color;
+char *upnp_interface;
 float transferminspeed, transfermaxspeed;
 unsigned char overallmaxspeeddaydays;
 unsigned char cdummy;
