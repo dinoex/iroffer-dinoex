@@ -744,6 +744,9 @@ unsigned int fetch_is_running(const char *file)
 
   updatecontext();
   for (ft = irlist_get_head(&fetch_trans); ft; ft = irlist_get_next(ft)) {
+    if (ft->name == NULL)
+      continue;
+
     if (strcmp(ft->name, file) == 0)
       return 1;
   }
